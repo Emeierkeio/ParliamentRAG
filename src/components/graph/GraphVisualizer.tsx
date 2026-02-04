@@ -27,7 +27,7 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
   const [selectedNode, setSelectedNode] = useState<any>(null);
 
   useEffect(() => {
-    if (!data || data.length === 0) {
+    if (!data || !Array.isArray(data) || data.length === 0) {
         setGraphData({ nodes: [], links: [] });
         return;
     }
@@ -45,24 +45,8 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
     const processItem = (item: any) => {
         if (!item) return;
 
-        // Check if it's a Neo4j Node structure (has labels, identity/elementId, properties)
-        // Since we get raw JSON from backend (which is list of dicts/values), we need heuristic
-
-        // It is tricky without direct neo4j types.
-        // Assuming backend serialization preserves structure:
-        // Node: { id: 123, labels: ["..."], properties: {...} } OR simple dict with 'id'
-        
-        // Let's rely on standard JSON serialization from our backend wrapper.
-        // If our backend returns py2neo/neo4j driver dicts, it might just contain props.
-        // Let's assume nodes have 'id' or 'element_id'.
-        
-        // HEURISTIC: treat any object with an 'id' as a potential node if it looks unique.
-        
-        // HOWEVER, data is likely just an array of dicts like: [{n: {name: "...", label: "..."}}]
-        // We need to inspect values.
-        
         if (typeof item === 'object') {
-            // If it has 'start', 'end', 'type', 'id' -> likely a relationship
+            // If it has 'start', 'end', 'type' -> likely a relationship
             if ('start' in item && 'end' in item && 'type' in item) {
                  const linkId = item.id || `${item.start}-${item.type}-${item.end}`;
                  if (!links.has(linkId)) {
@@ -74,37 +58,53 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
                         ...item
                      });
                  }
-                 // Ensure source/target nodes exist placeholders at least
-                if (!nodes.has(item.start)) nodes.set(item.start, { id: item.start, label: "Unknown", color: "#888" });
-                if (!nodes.has(item.end)) nodes.set(item.end, { id: item.end, label: "Unknown", color: "#888" });
+                if (!nodes.has(item.start)) nodes.set(item.start, { id: item.start, label: "Unknown", caption: "?", color: "#888", properties: {} });
+                if (!nodes.has(item.end)) nodes.set(item.end, { id: item.end, label: "Unknown", caption: "?", color: "#888", properties: {} });
                  return;
             }
 
-            // If it has labels or just props with an id
-            // Let's look for known fields that suggest a node
-             const id = item.id || item.elementId;
-             if (id !== undefined) {
-                 // Likely a node
-                 if (!nodes.has(id)) {
-                     // Try to determine label
-                     let label = "Node";
-                     if (item.labels && Array.isArray(item.labels) && item.labels.length > 0) {
-                         label = item.labels[0];
-                     }
-                     
-                     // Determine name/caption
-                     const caption = item.nome || item.cognome || item.name || item.title || item.label || item.id;
-                     
-                     nodes.set(id, {
-                         id: id,
-                         label: label,
-                         caption: caption,
-                         val: 1, // Size
-                         color: getNodeColor(label),
-                         properties: item
-                     });
-                 }
-             }
+            // Neo4j node structure: { id, labels, properties }
+            const id = item.id || item.elementId;
+            if (id !== undefined) {
+                if (!nodes.has(id)) {
+                    // Get label from labels array
+                    let label = "Node";
+                    if (item.labels && Array.isArray(item.labels) && item.labels.length > 0) {
+                        label = item.labels[0];
+                    }
+
+                    // Properties are nested in item.properties
+                    const props = item.properties || item;
+
+                    // Build caption from properties
+                    let caption = "";
+                    if (props.nome && props.cognome) {
+                        caption = `${props.nome} ${props.cognome}`;
+                    } else if (props.nome) {
+                        caption = props.nome;
+                    } else if (props.cognome) {
+                        caption = props.cognome;
+                    } else if (props.name) {
+                        caption = props.name;
+                    } else if (props.titolo) {
+                        caption = props.titolo;
+                    } else if (props.sigla) {
+                        caption = props.sigla;
+                    } else {
+                        // Fallback to short ID
+                        caption = String(id).split('/').pop()?.substring(0, 15) || String(id).substring(0, 15);
+                    }
+
+                    nodes.set(id, {
+                        id: id,
+                        label: label,
+                        caption: caption,
+                        val: 1,
+                        color: getNodeColor(label),
+                        properties: props
+                    });
+                }
+            }
         }
     }
 
@@ -184,19 +184,49 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
             width={isFullscreen ? window.innerWidth : undefined}
             graphData={graphData}
             nodeLabel="caption"
-            nodeColor="color"
             nodeRelSize={6}
-            linkColor={() => "rgba(255,255,255,0.2)"}
+            linkColor={() => "rgba(255,255,255,0.3)"}
             linkDirectionalArrowLength={3.5}
             linkDirectionalArrowRelPos={1}
-            
+            linkLabel="type"
+
+            // Custom node rendering with label
+            nodeCanvasObject={(node: any, ctx, globalScale) => {
+                const label = node.caption || '';
+                const fontSize = 12 / globalScale;
+                const nodeR = 6;
+
+                // Draw node circle
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, nodeR, 0, 2 * Math.PI);
+                ctx.fillStyle = node.color || '#3b82f6';
+                ctx.fill();
+
+                // Draw border
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 1 / globalScale;
+                ctx.stroke();
+
+                // Draw label below node
+                if (globalScale > 0.5) {
+                    ctx.font = `${fontSize}px Sans-Serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+                    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                    ctx.fillText(label, node.x, node.y + nodeR + 2);
+                }
+            }}
+            nodePointerAreaPaint={(node: any, color, ctx) => {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }}
+
             // Interaction
             cooldownTicks={100}
             onNodeClick={handleNodeClick}
             onBackgroundClick={handleBackgroundClick}
-            onNodeDragEnd={node => {
-                fgRef.current.d3Force('charge').strength(-120);
-            }}
           />
           
           {/* Selected Node Details Panel */}
@@ -228,12 +258,14 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
                         <h4 className="font-semibold text-xs uppercase text-muted-foreground">Properties</h4>
                         <div className="bg-muted/50 rounded-md p-2 space-y-3">
                             {Object.entries(selectedNode.properties || {}).map(([key, val]) => {
-                                if (key === 'labels' || key === 'id' || key === 'elementId') return null;
+                                if (key === 'labels' || key === 'id' || key === 'elementId' || key === 'properties') return null;
+                                const displayVal = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val ?? '');
+                                if (!displayVal) return null;
                                 return (
                                     <div key={key} className="flex flex-col gap-1 text-xs border-b last:border-0 border-border/50 pb-2 last:pb-0">
                                         <span className="font-medium text-muted-foreground">{key}</span>
                                         <div className="font-mono bg-background p-1.5 rounded border border-border/50 break-all whitespace-pre-wrap max-h-[200px] overflow-auto">
-                                            {String(val)}
+                                            {displayVal}
                                         </div>
                                     </div>
                                 );
