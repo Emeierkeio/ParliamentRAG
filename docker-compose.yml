@@ -1,0 +1,19 @@
+services:
+  neo4j:
+    image: neo4j:5.15.0
+    container_name: tesi2-neo4j
+    ports:
+      - "7475:7474"    # HTTP Web UI
+      - "7689:7687"    # Bolt Protocol
+      - "7476:7473"    # HTTPS
+    environment:
+      - NEO4J_AUTH=neo4j/thesis2026
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*
+    volumes:
+      - ./neo4j/neo4j_data:/data
+      - ./neo4j/neo4j_logs:/logs
+      - ./neo4j/neo4j_import:/var/lib/neo4j/import
+      - ./neo4j/neo4j_plugins:/plugins
+    restart: always
