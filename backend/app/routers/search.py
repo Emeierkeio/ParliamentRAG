@@ -48,8 +48,8 @@ async def search_results(
 
     try:
         # Build the Cypher query with filters
-        where_clauses = ["c.testo CONTAINS $query"]
-        params: Dict[str, Any] = {"query": q, "limit": limit}
+        where_clauses = ["c.testo CONTAINS $search_text"]
+        params: Dict[str, Any] = {"search_text": q, "limit": limit}
 
         if deputy_id:
             where_clauses.append("d.id = $deputy_id")
@@ -127,15 +127,15 @@ async def list_deputies(
         if q:
             cypher = """
             MATCH (d:Deputato)
-            WHERE toLower(d.nome) CONTAINS toLower($query)
-               OR toLower(d.cognome) CONTAINS toLower($query)
+            WHERE toLower(d.nome) CONTAINS toLower($search_text)
+               OR toLower(d.cognome) CONTAINS toLower($search_text)
             RETURN d.id AS id,
                    d.nome AS nome,
                    d.cognome AS cognome
             ORDER BY d.cognome, d.nome
             LIMIT $limit
             """
-            params = {"query": q, "limit": limit}
+            params = {"search_text": q, "limit": limit}
         else:
             cypher = """
             MATCH (d:Deputato)
