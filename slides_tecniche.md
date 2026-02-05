@@ -133,15 +133,17 @@ $$sim(q, c) = \frac{E(q) \cdot E(c)}{||E(q)|| \cdot ||E(c)||}$$
 
 dove $E(\cdot)$ = `text-embedding-3-small` (OpenAI, 1536 dim)
 
-**Query Cypher:**
+**Query Cypher (con distinzione MembroGoverno):**
 ```cypher
 CALL db.index.vector.queryNodes('chunk_embedding_index', 200, $query_emb)
 YIELD node AS c, score
 WHERE score >= 0.3
 MATCH (c)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
 OPTIONAL MATCH (speaker)-[mg:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
-WHERE mg.dataInizio <= s.data AND (mg.dataFine IS NULL OR mg.dataFine >= s.data)
-RETURN c, speaker, g, score
+RETURN c, speaker, g, score,
+       CASE WHEN 'MembroGoverno' IN labels(speaker)
+            THEN 'MembroGoverno' ELSE 'Deputato' END AS speaker_type
+-- speaker_type usato per separare Governo da Maggioranza
 ```
 
 ---
