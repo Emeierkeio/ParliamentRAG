@@ -56,7 +56,7 @@ async def search_results(
             params["deputy_id"] = deputy_id
 
         if group:
-            where_clauses.append("mg.nome_gruppo = $group")
+            where_clauses.append("g.nome = $group")
             params["group"] = group
 
         if start_date:
@@ -74,7 +74,7 @@ async def search_results(
         MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(dib:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
         OPTIONAL MATCH (d)-[mg:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
         WHERE mg.dataInizio <= s.data AND (mg.dataFine IS NULL OR mg.dataFine >= s.data)
-        WITH c, i, d, s, dib, mg
+        WITH c, i, d, s, dib, g
         WHERE {where_clause}
         RETURN c.id AS chunk_id,
                c.testo AS testo,
@@ -84,7 +84,7 @@ async def search_results(
                dib.titolo AS dibattito_titolo,
                d.nome AS nome,
                d.cognome AS cognome,
-               mg.nome_gruppo AS gruppo
+               g.nome AS gruppo
         ORDER BY s.data DESC
         LIMIT $limit
         """

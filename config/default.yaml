@@ -159,7 +159,7 @@ citation:
     include_report: true
     # Enable evidence-first writing mode (experimental)
     # When true, text is built around citations for guaranteed coherence
-    evidence_first_mode: false
+    evidence_first_mode: true
 
 # LLM provider configuration
 llm:

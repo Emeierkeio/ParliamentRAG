@@ -132,13 +132,19 @@ class DenseChannel:
                 party = row.get("party", "MISTO")
                 coalition = config.get_coalition(party) if party else "opposizione"
 
-                # Parse date
-                seduta_date = row.get("seduta_date", "")
-                if seduta_date:
-                    try:
-                        # Handle DD/MM/YYYY format
-                        date_obj = datetime.strptime(seduta_date, "%d/%m/%Y").date()
-                    except ValueError:
+                # Parse date - handles both Neo4j Date objects and string formats
+                seduta_date = row.get("seduta_date")
+                if seduta_date is not None:
+                    if hasattr(seduta_date, 'to_native'):
+                        # Neo4j Date object
+                        date_obj = seduta_date.to_native()
+                    elif isinstance(seduta_date, str) and seduta_date:
+                        try:
+                            # Handle DD/MM/YYYY format (legacy)
+                            date_obj = datetime.strptime(seduta_date, "%d/%m/%Y").date()
+                        except ValueError:
+                            date_obj = datetime.now().date()
+                    else:
                         date_obj = datetime.now().date()
                 else:
                     date_obj = datetime.now().date()
