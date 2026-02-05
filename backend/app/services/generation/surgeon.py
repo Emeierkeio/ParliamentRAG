@@ -6,8 +6,10 @@ NO FUZZY MATCHING - offset-based extraction ONLY.
 
 Citation validity = offset validity + successful extraction.
 
-Uses semantic sentence extraction to select the most relevant
-sentences from citations, avoiding arbitrary truncation.
+CITATION-FIRST APPROACH:
+If pre_extracted_citation is available in evidence (from Stage 2),
+use it directly. This ensures the citation matches what the LLM
+saw when writing the introductory text.
 """
 import re
 import logging
@@ -153,7 +155,8 @@ class CitationSurgeon:
                 speaker=evidence.get("speaker_name", ""),
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
-                evidence_id=evidence_id
+                evidence_id=evidence_id,
+                pre_extracted=evidence.get("pre_extracted_citation", "")
             )
 
         # Handle ["text"](id) markdown format - convert to full citation
@@ -174,7 +177,8 @@ class CitationSurgeon:
                 speaker=evidence.get("speaker_name", ""),
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
-                evidence_id=evidence_id
+                evidence_id=evidence_id,
+                pre_extracted=evidence.get("pre_extracted_citation", "")
             )
 
         # First replace [CIT:id] format
@@ -264,7 +268,8 @@ class CitationSurgeon:
         speaker: str,
         party: str,
         date: str,
-        evidence_id: str
+        evidence_id: str,
+        pre_extracted: str = ""
     ) -> str:
         """
         Format citation according to configured format.
@@ -273,20 +278,23 @@ class CitationSurgeon:
         The entire citation is a clickable markdown link.
         Speaker/party/date info is available in the sidebar when clicked.
 
-        Uses semantic extraction to select the most relevant sentences
-        from the quote when a query is available.
+        CITATION-FIRST: If pre_extracted is provided (from Stage 2),
+        use it directly. This ensures consistency between the LLM's
+        introductory text and the actual citation.
         """
-        # Extract the most relevant sentences using semantic matching
-        query = getattr(self, '_current_query', '')
-        if query and len(quote) > 80:
-            # Use semantic extraction - only 1 sentence, max 150 chars
-            # Reduced from 250 for more concise inline citations
-            quote = extract_best_sentences(
-                text=quote,
-                query=query,
-                max_sentences=1,
-                max_chars=150
-            )
+        # CITATION-FIRST: Use pre-extracted citation if available
+        if pre_extracted:
+            quote = pre_extracted
+        else:
+            # Fallback: Extract on-the-fly (legacy behavior)
+            query = getattr(self, '_current_query', '')
+            if query and len(quote) > 80:
+                quote = extract_best_sentences(
+                    text=quote,
+                    query=query,
+                    max_sentences=1,
+                    max_chars=150
+                )
 
         # Clean up whitespace
         quote = " ".join(quote.split())

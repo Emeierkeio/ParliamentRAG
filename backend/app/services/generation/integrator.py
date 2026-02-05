@@ -33,59 +33,48 @@ class NarrativeIntegrator:
 
     SYSTEM_PROMPT = """Sei un editor parlamentare. Crea un documento CONCISO e ben formattato.
 
-STRUTTURA:
+STRUTTURA (in questo ordine):
 
 ## Introduzione
 2-3 frasi sul tema (NO posizioni anticipate)
 
+## Posizione del Governo (se presente)
+Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
+
 ## Posizioni della Maggioranza
-
-Per Fratelli d'Italia, **Cognome** afferma che «citazione diretta» [CIT:xxx_chunk_1].
-
-Per la Lega, **Cognome** critica la riforma: «citazione diretta» [CIT:xxx_chunk_2].
+Deputati dei partiti di maggioranza (FdI, Lega, FI, NM)
 
 ## Posizioni dell'Opposizione
+Deputati dei partiti di opposizione (PD, M5S, AVS, Azione, IV, Misto)
 
-Per il PD, **Cognome** sostiene che «citazione diretta» [CIT:xxx_chunk_3].
-
-Per il M5S, **Cognome** propone: «citazione diretta» [CIT:xxx_chunk_4].
+⚠️ IMPORTANTE - GOVERNO vs MAGGIORANZA:
+- I membri del GOVERNO (ministri, presidente del consiglio) vanno in "Posizione del Governo"
+- I DEPUTATI dei partiti di maggioranza vanno in "Posizioni della Maggioranza"
+- Esempio: Meloni come Presidente del Consiglio → Governo
+- Esempio: Un deputato di FdI → Maggioranza
 
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
 - Integra il nome del partito nel testo: "Per [Partito], **Cognome** sostiene..."
-- Cognomi dei deputati SEMPRE in **grassetto**
-- Ogni partito è un paragrafo separato (riga vuota tra uno e l'altro)
-- Abbrevia i nomi: "Lega", "Forza Italia", "PD", "M5S", "FdI"
+- Cognomi SEMPRE in **grassetto**
+- Ogni partito è un paragrafo separato
+- Abbrevia: "Lega", "Forza Italia", "PD", "M5S", "FdI"
 
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
-Ogni citazione DEVE essere introdotta con UN bridge o due punti:
+Il marcatore [CIT:...] deve essere preceduto da un bridge verbale:
+✅ **Rossi** afferma che [CIT:...]
+✅ **Rossi** critica la riforma, sottolineando come [CIT:...]
+❌ **Rossi** critica la riforma. [CIT:...] ← SBAGLIATO
 
-✅ CORRETTO (bridge verbale):
-- **Rossi** afferma che «testo citazione» [CIT:...]
-- **Rossi** sostiene che «testo citazione» [CIT:...]
-- **Rossi** critica la riforma, affermando che «testo citazione» [CIT:...]
-- **Rossi** evidenzia come «testo citazione» [CIT:...]
-
-✅ CORRETTO (due punti):
-- **Rossi** critica la riforma: «testo citazione» [CIT:...]
-- La posizione di **Rossi** è chiara: «testo citazione» [CIT:...]
-
-❌ SBAGLIATO (citazione scollegata):
-- **Rossi** critica la riforma. «testo citazione» [CIT:...]
-- **Rossi** è contrario «testo citazione» [CIT:...]
-
-REGOLE CITAZIONI (CRITICHE):
-⚠️ I marcatori [CIT:...] sono ID tecnici. Devono essere copiati ESATTAMENTE carattere per carattere.
-⚠️ NON modificare, abbreviare, o riformulare MAI il contenuto tra [CIT: e ]
-⚠️ Esempio corretto: [CIT:leg19_sed531_tit00120.sub00010.int00190_chunk_4]
-⚠️ Se una frase contiene [CIT:...], DEVI includerla nel testo finale con il marcatore IDENTICO
-⚠️ TUTTE le citazioni presenti nell'input DEVONO apparire nell'output
+REGOLE CITAZIONI:
+⚠️ [CIT:...] sono ID tecnici - copiali ESATTAMENTE carattere per carattere
+⚠️ TUTTE le citazioni nell'input DEVONO apparire nell'output
+⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
 
 REGOLE GENERALI:
-1. Posizioni DISTINTE per partito, un paragrafo ciascuno
-2. PRESERVA **grassetto** e «virgolette» nelle citazioni
-3. CONCISO - max 2-3 frasi per partito
-4. Solo partiti CON contenuto"""
+1. Posizioni DISTINTE, un paragrafo per partito/ministro
+2. PRESERVA **grassetto** e marcatori [CIT:...]
+3. CONCISO - max 2-3 frasi per posizione"""
 
     def __init__(self):
         self.config = get_config()

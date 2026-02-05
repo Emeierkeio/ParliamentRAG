@@ -3,6 +3,10 @@ Stage 2: Sectional Writer
 
 Writes one section per party + government, using ONLY retrieved evidence.
 All 10 parties must have sections.
+
+CITATION-FIRST APPROACH:
+Citations are pre-extracted BEFORE the LLM writes the text.
+This ensures the introductory text matches the actual citation content.
 """
 import json
 import logging
@@ -11,6 +15,7 @@ from typing import List, Dict, Any, Optional, AsyncIterator
 import openai
 
 from ...config import get_config, get_settings
+from ..citation import extract_best_sentences
 
 logger = logging.getLogger(__name__)
 
@@ -41,57 +46,42 @@ class SectionalWriter:
     SYSTEM_PROMPT = """Sei un redattore parlamentare italiano esperto.
 Scrivi sezioni BREVI e INCISIVE (max 3-4 frasi per sezione).
 
+⚠️ APPROCCIO CITATION-FIRST:
+Ogni evidenza contiene una ★ CITAZIONE DA USARE già selezionata.
+DEVI costruire il testo introduttivo che PREPARI quella citazione.
+
+⚠️⚠️ REGOLA CRITICA - NON COPIARE LA CITAZIONE:
+Tu scrivi SOLO il testo introduttivo. Il sistema inserirà automaticamente la citazione.
+NON scrivere MAI il contenuto della citazione tra virgolette «».
+Scrivi SOLO fino a [CIT:id] e BASTA.
+
 REGOLE FONDAMENTALI:
-1. Usa SOLO le evidenze fornite - NON inventare
-2. I nomi degli oratori in GRASSETTO: **Nome Cognome**
-3. MASSIMO 1-2 citazioni per sezione
-4. Ogni frase deve aggiungere valore - NO ripetizioni
-5. Tono neutro e professionale
+1. LEGGI la ★ CITAZIONE per capire il TEMA, ma NON copiarla
+2. Scrivi un'intro che PREPARI quel contenuto, poi metti [CIT:id]
+3. I nomi degli oratori in GRASSETTO: **Nome Cognome**
+4. MASSIMO 1-2 citazioni per sezione
 
-COERENZA SEMANTICA (CRITICO):
-Il testo che introduce la citazione DEVE riassumere/anticipare il contenuto della citazione stessa.
-LEGGI ATTENTAMENTE l'evidenza e scrivi un'introduzione che ne rifletta il significato.
+PROCESSO DI SCRITTURA:
+1. Leggi la ★ CITAZIONE (es: «il conflitto in Ucraina ci riguarda tutti»)
+2. Capisci il TEMA: parla di Ucraina e responsabilità collettiva
+3. Scrivi intro che prepari quel tema: "ha sottolineato la rilevanza del conflitto per la comunità internazionale, affermando che [CIT:id]."
+4. STOP - non aggiungere altro dopo [CIT:id]
 
-ESEMPIO COERENTE ✓:
-Evidenza: "Il sistema sanitario è in crisi per mancanza di fondi"
-Testo: **Mario Rossi** denuncia la crisi del sistema, affermando che la sanità [CIT:id].
+ESEMPIO CORRETTO ✓:
+★ CITAZIONE: «il sistema sanitario è in crisi per mancanza di fondi»
+→ **Mario Rossi** denuncia le difficoltà del sistema sanitario, affermando che [CIT:id].
 
-ESEMPIO INCOERENTE ✗:
-Evidenza: "Il sistema sanitario è in crisi per mancanza di fondi"
-Testo: **Mario Rossi** elogia la riforma, sottolineando come il decreto [CIT:id].
-← Il testo parla di "elogio" ma la citazione è una "denuncia" - INCOERENTE!
+ESEMPIO SBAGLIATO ✗:
+→ **Mario Rossi** denuncia che «il sistema è in crisi» [CIT:id]. ← HAI COPIATO LA CITAZIONE!
 
-INTEGRAZIONE CITAZIONI:
-Le citazioni devono essere INTEGRATE naturalmente nel flusso del testo.
-Il sistema sostituirà [CIT:ID] con la citazione completa tra virgolette.
-
-REGOLA GRAMMATICALE:
-La frase deve essere sempre completa (soggetto-predicato-oggetto).
-INSERISCI SEMPRE UN SOGGETTO prima della citazione.
-
-COSTRUZIONI CORRETTE:
-- "...sottolineando come il decreto [CIT:id]"
-- "...affermando che la riforma [CIT:id]"
-- "...evidenziando come il sistema [CIT:id]"
+COSTRUZIONI CORRETTE (bridge verbale + soggetto):
+- "...affermando che il sistema [CIT:id]"
+- "...sottolineando come la riforma [CIT:id]"
 - "...dichiarando che il governo [CIT:id]"
 
-ESEMPI CORRETTI ✓:
-**Marco Rossi** critica la gestione, affermando che il sistema [CIT:id].
-**Laura Bianchi** difende il provvedimento, sottolineando come la misura [CIT:id].
-
-ESEMPI ERRATI ✗:
-**Marco Rossi** critica la riforma [CIT:id]. ← manca costruzione introduttiva
-**Marco Rossi** sottolinea come [CIT:id]. ← MANCA IL SOGGETTO
-**Marco Rossi** parla del CUP unico [CIT:id]. ← ma la citazione parla di altro tema
-
-ERRORI DA EVITARE:
-✗ Testo introduttivo INCOERENTE con il contenuto della citazione
-✗ Citazioni "appese" senza costruzione introduttiva
-✗ Mancanza del soggetto prima della citazione
-
-STRUTTURA:
+STRUTTURA OUTPUT:
 ### [NOME PARTITO]
-[2-4 frasi con citazioni BEN INTEGRATE e COERENTI con il testo]"""
+[2-4 frasi, ogni citazione è SOLO [CIT:id] senza virgolette]"""
 
     def __init__(self):
         self.config = get_config()
@@ -168,8 +158,8 @@ STRUTTURA:
                 "has_evidence": False,
             }
 
-        # Build evidence context
-        evidence_context = self._build_evidence_context(evidence)
+        # Build evidence context with pre-extracted citations
+        evidence_context = self._build_evidence_context(evidence, query)
 
         # Build claims relevant to this party
         party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
@@ -177,17 +167,22 @@ STRUTTURA:
         user_prompt = f"""Domanda: {query}
 
 Partito: {party}
-{"(Sezione Governo)" if is_government else ""}
+{"(Sezione Governo/Esecutivo)" if is_government else ""}
 
 Evidenze disponibili (usa max 1-2):
 {evidence_context}
 
-SCRIVI UNA SEZIONE BREVE (max 3-4 frasi):
-- Usa **grassetto** per i nomi
-- Max 1-2 citazioni con formato [CIT:ID_COMPLETO]
-- LEGGI l'evidenza e scrivi un testo introduttivo COERENTE con il suo contenuto
-- INTEGRA le citazioni con un SOGGETTO: es. "sottolineando come il decreto [CIT:id]"
-- NON scrivere di un tema se la citazione parla di altro
+⚠️ ISTRUZIONI CITATION-FIRST:
+1. LEGGI la ★ CITAZIONE per capire il TEMA
+2. Scrivi SOLO l'introduzione che prepara quel tema
+3. Metti [CIT:ID_COMPLETO] dove andrà la citazione
+4. ⚠️ NON COPIARE MAI il testo della citazione tra «» - il sistema lo inserirà!
+
+FORMATO OUTPUT:
+**Nome Cognome** [contesto], affermando che [CIT:id].
+
+⚠️ SBAGLIATO: **Rossi** dice che «testo citazione» [CIT:id]. ← NON FARE QUESTO!
+✓ GIUSTO: **Rossi** interviene sul tema, affermando che [CIT:id].
 """
 
         try:
@@ -266,22 +261,49 @@ SCRIVI UNA SEZIONE BREVE (max 3-4 frasi):
     def _build_evidence_context(
         self,
         evidence: List[Dict[str, Any]],
+        query: str,
         max_evidence: int = 10
     ) -> str:
-        """Build evidence context string for the prompt."""
+        """
+        Build evidence context with PRE-EXTRACTED citations.
+
+        CITATION-FIRST: Extract the exact citation BEFORE the LLM writes,
+        so the LLM can construct text that matches the citation content.
+        """
         lines = []
 
         for e in evidence[:max_evidence]:
             eid = e.get("evidence_id", "unknown")
             speaker = e.get("speaker_name", "")
             date = e.get("date", "")
-            text = e.get("chunk_text", "")[:500]  # Truncate for context
+
+            # Get the full quote text for extraction
+            quote_text = e.get("quote_text", "") or e.get("chunk_text", "")
+
+            # PRE-EXTRACT the citation that will actually be used
+            # This is the KEY change: LLM sees the EXACT citation
+            if quote_text and query:
+                extracted_citation = extract_best_sentences(
+                    text=quote_text,
+                    query=query,
+                    max_sentences=1,
+                    max_chars=150
+                )
+                # Store pre-extracted citation in evidence for later use by Surgeon
+                e["pre_extracted_citation"] = extracted_citation
+            else:
+                extracted_citation = quote_text[:150] if quote_text else ""
+                e["pre_extracted_citation"] = extracted_citation
+
+            # Also provide context (truncated) for understanding
+            context = e.get("chunk_text", "")[:300]
 
             lines.append(f"""
 [ID: {eid}]
 Speaker: {speaker}
 Date: {date}
-Text: {text}
+★ CITAZIONE DA USARE: «{extracted_citation}»
+Contesto: {context}
 ---""")
 
         return "\n".join(lines)

@@ -82,7 +82,7 @@ class DenseChannel:
                speaker.id AS speaker_id,
                speaker.nome AS speaker_nome,
                speaker.cognome AS speaker_cognome,
-               labels(speaker)[0] AS speaker_type,
+               CASE WHEN 'MembroGoverno' IN labels(speaker) THEN 'MembroGoverno' ELSE 'Deputato' END AS speaker_type,
                g.nome AS party,
                s.id AS seduta_id,
                s.data AS seduta_date,
