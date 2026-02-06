@@ -154,8 +154,11 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[RETRIEVAL] Dense: {retrieval_result['metadata'].get('dense_channel_count', 0)}, "
                    f"Graph: {retrieval_result['metadata'].get('graph_channel_count', 0)}")
 
-        # Compute authority scores with detailed breakdown
-        speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
+        # Compute authority scores with detailed breakdown (exclude GovernmentMember)
+        speaker_ids = list(set(
+            e.speaker_id for e in evidence_list
+            if e.speaker_id and e.speaker_role == "Deputy"
+        ))
         logger.info(f"[AUTHORITY] Computing scores for {len(speaker_ids)} unique speakers...")
         authority_start = time.time()
 
@@ -384,6 +387,9 @@ def _compute_experts_for_frontend(
     party_speakers: Dict[str, Dict[str, Dict]] = {}
 
     for evidence in evidence_list:
+        # GovernmentMember should not be considered as experts
+        if evidence.speaker_role == "GovernmentMember":
+            continue
         party = evidence.party
         speaker_id = evidence.speaker_id
         speaker_name = evidence.speaker_name
