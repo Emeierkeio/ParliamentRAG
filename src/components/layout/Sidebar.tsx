@@ -27,7 +27,9 @@ import {
   Check,
   Search,
   X,
+  ClipboardCheck,
 } from "lucide-react";
+import { SurveyModal } from "@/components/survey/SurveyModal";
 import { config } from "@/config";
 
 interface SidebarProps {
@@ -40,6 +42,7 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: SidebarProps) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [surveyOpen, setSurveyOpen] = useState(false);
 
   return (
     <>
@@ -110,6 +113,11 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: Sideba
               item={{ icon: Database, label: "Graph Explorer", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
             />
+
+            <NavButton
+              item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => setSurveyOpen(true) }}
+              isCollapsed={isCollapsed}
+            />
           </nav>
         </ScrollArea>
 
@@ -152,10 +160,16 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: Sideba
       <InfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
 
       {/* History Modal */}
-      <HistoryModal 
-        open={historyOpen} 
-        onClose={() => setHistoryOpen(false)} 
+      <HistoryModal
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
         onLoadChat={onLoadChat}
+      />
+
+      {/* Survey Modal */}
+      <SurveyModal
+        isOpen={surveyOpen}
+        onClose={() => setSurveyOpen(false)}
       />
     </>
   );

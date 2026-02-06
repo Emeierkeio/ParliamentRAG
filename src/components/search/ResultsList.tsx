@@ -6,14 +6,14 @@ import { Badge } from "@/components/ui/badge";
 
 export interface SearchResultItem {
   chunk_id: string;
-  testo: string;
-  intervento_id: string;
-  data: string;
-  seduta_numero: number;
-  dibattito_titolo: string;
-  nome: string;
-  cognome: string;
-  gruppo: string;
+  text: string;
+  speech_id: string;
+  date: string;
+  session_number: number;
+  debate_title: string;
+  first_name: string;
+  last_name: string;
+  group: string;
 }
 
 interface ResultsListProps {
@@ -47,6 +47,7 @@ export function ResultsList({ results, query }: ResultsListProps) {
 
   // Funzione per evidenziare il testo
   const highlightText = (text: string, highlight: string) => {
+    if (!text) return "";
     if (!highlight.trim()) return text;
     const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
     return (
@@ -73,10 +74,10 @@ export function ResultsList({ results, query }: ResultsListProps) {
                 <div className="space-y-1">
                     <CardTitle className="text-base font-medium flex items-center gap-2">
                         <MessageSquareQuote className="h-4 w-4 text-primary" />
-                        Seduta n. {item.seduta_numero} del {formatDate(item.data)}
+                        Seduta n. {item.session_number} del {formatDate(item.date)}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground line-clamp-1">
-                        {item.dibattito_titolo}
+                        {item.debate_title}
                     </p>
                 </div>
                 <Badge variant="outline" className="whitespace-nowrap shrink-0">
@@ -88,13 +89,13 @@ export function ResultsList({ results, query }: ResultsListProps) {
           <CardContent className="pt-4 px-4 pb-4">
             <div className="relative">
                 <div className="pl-4 border-l-2 border-primary/20 text-sm leading-relaxed text-muted-foreground">
-                    {highlightText(item.testo, query)}
+                    {highlightText(item.text, query)}
                 </div>
             </div>
             
             <div className="mt-4 flex items-center justify-end gap-2">
-                 <a 
-                    href={`https://www.camera.it/leg19/410?idSeduta=${item.seduta_numero}&tipo=seduta`}
+                 <a
+                    href={`https://www.camera.it/leg19/410?idSeduta=${item.session_number}&tipo=seduta`}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-xs text-primary hover:underline flex items-center gap-1"

@@ -26,7 +26,7 @@ import { GraphVisualizer } from "@/components/graph/GraphVisualizer";
 export default function ExplorerPage() {
     const [schema, setSchema] = useState<any>(null);
     const [stats, setStats] = useState<any>(null);
-    const [query, setQuery] = useState("MATCH (n:Deputato) RETURN n.nome, n.cognome LIMIT 10");
+    const [query, setQuery] = useState("MATCH (n:Deputy) RETURN n.first_name, n.last_name LIMIT 10");
     const [results, setResults] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -82,9 +82,9 @@ export default function ExplorerPage() {
                     </h2>
                     {stats && (
                         <div className="text-xs text-muted-foreground mt-1 flex gap-2">
-                             <span>Nodes: {stats.node_count}</span>
+                             <span>Nodes: {stats.total_nodes}</span>
                              <span>•</span>
-                             <span>Rels: {stats.rel_count}</span>
+                             <span>Rels: {stats.total_relationships}</span>
                         </div>
                     )}
                 </div>
@@ -98,7 +98,7 @@ export default function ExplorerPage() {
                                 Labels
                             </h3>
                             <div className="flex flex-wrap gap-2">
-                                {schema?.node_labels?.map((label: string) => (
+                                {schema?.labels?.map((label: string) => (
                                     <Badge 
                                         key={label} 
                                         variant="outline" 

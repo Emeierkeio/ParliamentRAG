@@ -8,49 +8,47 @@ export type MessageStatus = "sending" | "streaming" | "complete" | "error";
 
 export interface Citation {
   chunk_id: string;
-  deputato_nome: string;
-  deputato_cognome: string;
-  gruppo: string;
-  coalizione: string;
-  testo?: string; // Optional because backend might send quote_text
-  quote_text?: string; // Backend field
+  deputy_first_name: string;
+  deputy_last_name: string;
+  group: string;
+  coalition: string;
+  text?: string;
+  quote_text?: string;
   full_text?: string;
-  data: string;
+  date: string;
   similarity: number;
-  dibattito?: string;
+  debate?: string;
   debate_id?: string;
-  dibattito_id?: string;
   intervention_id?: string;
-  intervento_id?: string;
-  scheda_camera?: string;
-  [key: string]: any; // Allow loose props for now
+  camera_profile_url?: string;
+  [key: string]: any;
 }
 
 export interface Expert {
   id: string;
-  nome: string;
-  cognome: string;
-  gruppo: string;
-  scheda_camera?: string;
-  professione?: string;
-  istruzione?: string;
-  commissione?: string;
-  ruolo_istituzionale?: string;
-  coalizione: string;
+  first_name: string;
+  last_name: string;
+  group: string;
+  camera_profile_url?: string;
+  profession?: string;
+  education?: string;
+  committee?: string;
+  institutional_role?: string;
+  coalition: string;
   authority_score: number;
   score_breakdown?: {
-    interventi: number;
-    atti: number;
-    commissione: number;
-    professione: number;
-    istruzione: number;
-    ruolo: number;
+    speeches: number;
+    acts: number;
+    committee: number;
+    profession: number;
+    education: number;
+    role: number;
   };
-  n_interventi_rilevanti: number;
-  atti_dettaglio?: Array<{
-    titolo: string;
+  relevant_speeches_count: number;
+  acts_detail?: Array<{
+    title: string;
     eurovoc: string;
-    is_primo: boolean;
+    is_primary: boolean;
     similarity: number;
   }>;
 }

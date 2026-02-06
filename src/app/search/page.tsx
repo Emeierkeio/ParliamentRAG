@@ -86,7 +86,7 @@ export default function SearchPage() {
                 {/* Header Page */}
                 <div className="border-b px-8 py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Ricerca Atti</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Ricerca</h1>
                         <p className="text-muted-foreground">Esplorazione diretta degli interventi parlamentari</p>
                     </div>
                 </div>

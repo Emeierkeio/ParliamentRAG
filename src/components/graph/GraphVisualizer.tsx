@@ -76,23 +76,61 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
                     // Properties are nested in item.properties
                     const props = item.properties || item;
 
-                    // Build caption from properties
+                    // Build caption based on node label type
                     let caption = "";
-                    if (props.nome && props.cognome) {
-                        caption = `${props.nome} ${props.cognome}`;
-                    } else if (props.nome) {
-                        caption = props.nome;
-                    } else if (props.cognome) {
-                        caption = props.cognome;
-                    } else if (props.name) {
-                        caption = props.name;
-                    } else if (props.titolo) {
-                        caption = props.titolo;
-                    } else if (props.sigla) {
-                        caption = props.sigla;
-                    } else {
-                        // Fallback to short ID
-                        caption = String(id).split('/').pop()?.substring(0, 15) || String(id).substring(0, 15);
+                    const firstName = props.first_name || props.nome;
+                    const lastName = props.last_name || props.cognome;
+                    const title = props.title || props.titolo;
+                    const name = props.name;
+                    const text = props.text || props.testo;
+                    const number = props.number || props.numero;
+                    const date = props.date || props.data;
+
+                    // Label-specific caption logic
+                    switch (label) {
+                        case "Deputy":
+                        case "Deputato":
+                        case "GovernmentMember":
+                        case "MembroGoverno":
+                            caption = firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || "?";
+                            break;
+                        case "Session":
+                        case "Seduta":
+                            caption = number ? `Seduta ${number}` : (date ? `${date}` : "Session");
+                            break;
+                        case "Debate":
+                        case "Dibattito":
+                            caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Debate";
+                            break;
+                        case "Phase":
+                        case "Fase":
+                            caption = title ? (title.length > 25 ? title.substring(0, 25) + "..." : title) : "Phase";
+                            break;
+                        case "Speech":
+                        case "Intervento":
+                            caption = text ? (text.length > 25 ? text.substring(0, 25) + "..." : text) : "Speech";
+                            break;
+                        case "Chunk":
+                            caption = text ? (text.length > 20 ? text.substring(0, 20) + "..." : text) : "Chunk";
+                            break;
+                        case "ParliamentaryGroup":
+                        case "GruppoParlamentare":
+                            caption = name || props.acronym || props.sigla || "Group";
+                            break;
+                        case "Committee":
+                        case "Commissione":
+                            caption = name ? (name.length > 25 ? name.substring(0, 25) + "..." : name) : "Committee";
+                            break;
+                        case "ParliamentaryAct":
+                        case "AttoParlamentare":
+                            caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Act";
+                            break;
+                        default:
+                            // Generic fallback
+                            if (firstName && lastName) caption = `${firstName} ${lastName}`;
+                            else if (name) caption = name;
+                            else if (title) caption = title.length > 25 ? title.substring(0, 25) + "..." : title;
+                            else caption = String(id).split('/').pop()?.substring(0, 12) || "Node";
                     }
 
                     nodes.set(id, {
@@ -127,11 +165,27 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
 
     const getNodeColor = (label: string) => {
         const colors: Record<string, string> = {
-            "Deputato": "#3b82f6", // Blue
-            "Gruppo": "#ef4444", // Red
-            "Commissione": "#10b981", // Green
-            "Atto": "#f59e0b", // Amber
-            "Intervento": "#8b5cf6", // Purple
+            // English labels
+            "Deputy": "#3b82f6", // Blue
+            "GovernmentMember": "#2563eb", // Darker blue
+            "ParliamentaryGroup": "#ef4444", // Red
+            "Committee": "#10b981", // Green
+            "ParliamentaryAct": "#f59e0b", // Amber
+            "Speech": "#8b5cf6", // Purple
+            "Session": "#06b6d4", // Cyan
+            "Debate": "#ec4899", // Pink
+            "Phase": "#f97316", // Orange
+            "Chunk": "#6366f1", // Indigo
+            // Italian fallbacks
+            "Deputato": "#3b82f6",
+            "MembroGoverno": "#2563eb",
+            "GruppoParlamentare": "#ef4444",
+            "Commissione": "#10b981",
+            "AttoParlamentare": "#f59e0b",
+            "Intervento": "#8b5cf6",
+            "Seduta": "#06b6d4",
+            "Dibattito": "#ec4899",
+            "Fase": "#f97316",
         };
         return colors[label] || "#94a3b8"; // Default slate
     };

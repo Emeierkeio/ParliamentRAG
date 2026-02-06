@@ -10,9 +10,9 @@ import { config } from "@/config";
 
 export interface Deputy {
   id: string;
-  nome: string;
-  cognome: string;
-  gruppo?: string;
+  first_name: string;
+  last_name: string;
+  group?: string;
   imgUrl?: string;
 }
 
@@ -77,10 +77,10 @@ export function DeputySelector({ selectedDeputy, onSelect }: DeputySelectorProps
             </div>
             <div className="flex-1 min-w-0 user-select-none">
                 <p className="font-medium text-sm truncate">
-                    {selectedDeputy.nome} {selectedDeputy.cognome}
+                    {selectedDeputy.first_name} {selectedDeputy.last_name}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                    {selectedDeputy.gruppo || "Deputato"}
+                    {selectedDeputy.group || "Deputato"}
                 </p>
             </div>
             <Button 
@@ -133,10 +133,10 @@ export function DeputySelector({ selectedDeputy, onSelect }: DeputySelectorProps
                             </div>
                             <div className="min-w-0">
                                 <p className="text-sm font-medium">
-                                    {deputy.nome} {deputy.cognome}
+                                    {deputy.first_name} {deputy.last_name}
                                 </p>
                                 <p className="text-xs text-muted-foreground truncate">
-                                    {deputy.gruppo}
+                                    {deputy.group}
                                 </p>
                             </div>
                         </li>

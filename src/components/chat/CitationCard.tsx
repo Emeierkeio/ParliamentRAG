@@ -42,7 +42,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const groupColor = citation.coalizione === "maggioranza" ? "#3B82F6" : "#EF4444";
+  const groupColor = citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
 
   // Auto-scroll when highlighted
   useEffect(() => {
@@ -77,19 +77,19 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
               {/* Header */}
               <div className="flex flex-col gap-1 mb-1.5 min-w-0">
                 <div className="flex items-center gap-2 min-w-0">
-                  {citation.scheda_camera ? (
+                  {citation.camera_profile_url ? (
                       <a 
-                          href={citation.scheda_camera}
+                          href={citation.camera_profile_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm font-semibold text-foreground truncate flex-1 min-w-0 hover:underline hover:text-primary transition-colors"
                           onClick={(e) => e.stopPropagation()} 
                       >
-                          {citation.deputato_nome} {citation.deputato_cognome}
+                          {citation.deputy_first_name} {citation.deputy_last_name}
                       </a>
                   ) : (
                       <span className="text-sm font-semibold text-foreground break-words flex-1 min-w-0 hover:underline hover:text-primary transition-colors">
-                          {citation.deputato_nome} {citation.deputato_cognome}
+                          {citation.deputy_first_name} {citation.deputy_last_name}
                       </span>
                   )}
                   <Badge
@@ -100,20 +100,20 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                       color: groupColor,
                     }}
                   >
-                    {citation.coalizione}
+                    {citation.coalition}
                   </Badge>
                 </div>
-                <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.gruppo}>
-                  {citation.gruppo}
+                <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.group}>
+                  {citation.group}
                 </span>
               </div>
 
               {/* Extracted text preview */}
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
-                &ldquo;{citation.testo}&rdquo;
-                {getCameraUrl(citation.intervention_id || citation.intervento_id) && (
+                &ldquo;{citation.text}&rdquo;
+                {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
                      <a 
-                        href={getCameraUrl(citation.intervention_id || citation.intervento_id) || "#"}
+                        href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
@@ -129,23 +129,23 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground font-medium max-w-full">
                 <span className="flex items-center gap-1.5 shrink-0">
                   <Calendar className="h-3 w-3" />
-                  {citation.data}
+                  {citation.date}
                 </span>
-                {citation.dibattito && (
+                {citation.debate && (
                   <span className="flex items-center gap-1 min-w-0 flex-wrap max-w-full">
                     <MapPin className="h-3 w-3 shrink-0" />
-                    {getCameraUrl(citation.debate_id || citation.dibattito_id) ? (
+                    {getCameraUrl(citation.debate_id || citation.debate_id) ? (
                         <a 
-                            href={getCameraUrl(citation.debate_id || citation.dibattito_id) || "#"}
+                            href={getCameraUrl(citation.debate_id || citation.debate_id) || "#"}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hover:underline hover:text-foreground cursor-pointer transition-colors break-words"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            {citation.dibattito}
+                            {citation.debate}
                         </a>
                     ) : (
-                        <span className="break-words max-w-full">{citation.dibattito}</span>
+                        <span className="break-words max-w-full">{citation.debate}</span>
                     )}
                   </span>
                 )}
@@ -175,11 +175,11 @@ interface CitationModalProps {
 }
 
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
-  const groupColor = citation.coalizione === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const displayText = citation.full_text || citation.testo;
+  const groupColor = citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+  const displayText = citation.full_text || citation.text || "";
 
-  const contextUrl = getCameraUrl(citation.debate_id || citation.dibattito_id);
-  const interventionUrl = getCameraUrl(citation.intervention_id || citation.intervento_id);
+  const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
+  const interventionUrl = getCameraUrl(citation.intervention_id || citation.intervention_id);
 
   // Highlighting logic: only highlight if we have a specific quote_text that differs from full_text
   // Don't try to highlight the entire chunk - it doesn't make sense
@@ -233,21 +233,21 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-background shadow-sm border border-border text-lg font-bold text-muted-foreground/80"
                         style={{ color: groupColor, borderColor: `${groupColor}30`, backgroundColor: `${groupColor}05` }}
                     >
-                        {citation.deputato_nome?.[0]}{citation.deputato_cognome?.[0]}
+                        {citation.deputy_first_name?.[0]}{citation.deputy_last_name?.[0]}
                     </div>
                     <div className="flex flex-col min-w-0">
-                        {citation.scheda_camera ? (
+                        {citation.camera_profile_url ? (
                             <a 
-                                href={citation.scheda_camera}
+                                href={citation.camera_profile_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-bold text-foreground text-lg leading-tight truncate hover:underline hover:text-primary transition-colors"
                             >
-                                {citation.deputato_nome} {citation.deputato_cognome}
+                                {citation.deputy_first_name} {citation.deputy_last_name}
                             </a>
                         ) : (
                             <div className="font-bold text-foreground text-lg leading-tight truncate">
-                                {citation.deputato_nome} {citation.deputato_cognome}
+                                {citation.deputy_first_name} {citation.deputy_last_name}
                             </div>
                         )}
                         <div className="flex items-center gap-2 mt-1">
@@ -255,10 +255,10 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                 variant="outline" 
                                 className="h-5 text-[10px] px-1.5 font-medium border-primary/20 text-primary capitalize"
                              >
-                                {citation.coalizione}
+                                {citation.coalition}
                              </Badge>
-                             <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.gruppo}>
-                                {citation.gruppo}
+                             <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.group}>
+                                {citation.group}
                              </span>
                         </div>
                     </div>
@@ -268,7 +268,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                 <div className="hidden sm:flex flex-col items-end text-xs text-muted-foreground gap-1 shrink-0">
                     <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded-md">
                         <Calendar className="w-3 h-3" /> 
-                        <span className="font-medium">{citation.data}</span>
+                        <span className="font-medium">{citation.date}</span>
                     </div>
                 </div>
              </div>
@@ -277,7 +277,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
              <ScrollArea className="flex-1">
                 <div className="p-6 md:p-8 space-y-8">
                     {/* Context Box */}
-                    {citation.dibattito && (
+                    {citation.debate && (
                         <div className="bg-muted/30 rounded-xl p-4 border border-border/50 text-sm leading-relaxed text-muted-foreground">
                             <div className="flex items-center gap-2 mb-2 text-primary font-medium text-xs uppercase tracking-wider">
                                 <MapPin className="w-3 h-3" />
@@ -290,11 +290,11 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                     rel="noopener noreferrer"
                                     className="hover:text-primary hover:underline transition-colors flex items-center gap-1 group/link"
                                 >
-                                    {citation.dibattito}
+                                    {citation.debate}
                                     <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity" />
                                 </a>
                             ) : (
-                                citation.dibattito
+                                citation.debate
                             )}
                         </div>
                     )}

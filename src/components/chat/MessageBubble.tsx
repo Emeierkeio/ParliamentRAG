@@ -275,8 +275,8 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
                <div className="space-y-6 pt-2">
                  {(() => {
                     const groupedExperts = message.experts!.reduce((acc, expert) => {
-                         if (!acc[expert.gruppo]) acc[expert.gruppo] = [];
-                         acc[expert.gruppo].push(expert);
+                         if (!acc[expert.group]) acc[expert.group] = [];
+                         acc[expert.group].push(expert);
                          return acc;
                     }, {} as Record<string, typeof message.experts>);
 
