@@ -85,10 +85,57 @@ async def lifespan(app: FastAPI):
         logger.error(f"Configuration error: {e}")
         raise
 
+    # Warm up Neo4j vector index to avoid cold start latency
+    await _warmup_neo4j_index(settings)
+
     yield
 
     # Shutdown
     logger.info("Shutting down Multi-View RAG API...")
+
+
+async def _warmup_neo4j_index(settings):
+    """
+    Warm up Neo4j vector index by running a dummy query.
+
+    This forces Neo4j to load the vector index into memory,
+    eliminating the 15-18s cold start penalty on first real query.
+    """
+    import time
+    from .services.neo4j_client import Neo4jClient
+
+    logger.info("[WARMUP] Starting Neo4j vector index warmup...")
+    start_time = time.time()
+
+    try:
+        client = Neo4jClient(
+            uri=settings.neo4j_uri,
+            user=settings.neo4j_user,
+            password=settings.neo4j_password
+        )
+
+        # Create a dummy embedding with positive L2 norm (Neo4j requires non-zero vectors)
+        # Using a normalized vector: [1/sqrt(1536), 1/sqrt(1536), ...]
+        import math
+        norm_value = 1.0 / math.sqrt(1536)
+        dummy_embedding = [norm_value] * 1536
+
+        # Run a minimal vector query to force index loading
+        warmup_query = """
+        CALL db.index.vector.queryNodes('chunk_embedding_index', 1, $embedding)
+        YIELD node, score
+        RETURN count(node) as cnt
+        """
+
+        result = client.query(warmup_query, {"embedding": dummy_embedding})
+
+        elapsed = (time.time() - start_time) * 1000
+        logger.info(f"[WARMUP] Neo4j vector index loaded in {elapsed:.1f}ms")
+
+        client.close()
+
+    except Exception as e:
+        logger.warning(f"[WARMUP] Neo4j warmup failed (non-critical): {e}")
 
 
 # Create FastAPI app

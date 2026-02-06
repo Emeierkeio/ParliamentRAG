@@ -86,7 +86,8 @@ STRUTTURA OUTPUT:
     def __init__(self):
         self.config = get_config()
         self.settings = get_settings()
-        self.client = openai.OpenAI(api_key=self.settings.openai_api_key)
+        # Use AsyncOpenAI for true parallel execution with asyncio.gather()
+        self.client = openai.AsyncOpenAI(api_key=self.settings.openai_api_key)
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("writer", "gpt-4o")
@@ -103,7 +104,7 @@ STRUTTURA OUTPUT:
         government_evidence: Optional[List[Dict[str, Any]]] = None
     ) -> AsyncIterator[Dict[str, Any]]:
         """
-        Write sections for all parties.
+        Write sections for all parties IN PARALLEL.
 
         Yields section data as they are generated (for streaming).
 
@@ -116,27 +117,41 @@ STRUTTURA OUTPUT:
         Yields:
             Section dictionaries with party, content, citations
         """
-        # Write government section first if there's evidence
+        import asyncio
+
+        # Build all tasks for parallel execution
+        tasks = []
+        task_order = []  # Track order: government first, then parties
+
+        # Government section task (if evidence exists)
         if government_evidence:
-            section = await self._write_section(
+            tasks.append(self._write_section(
                 query=query,
                 party="GOVERNO",
                 evidence=government_evidence,
                 claims=claims,
                 is_government=True
-            )
-            yield section
+            ))
+            task_order.append("GOVERNO")
 
-        # Write section for each party
+        # Party section tasks
         for party in ALL_PARTIES:
             evidence = evidence_by_party.get(party, [])
-            section = await self._write_section(
+            tasks.append(self._write_section(
                 query=query,
                 party=party,
                 evidence=evidence,
                 claims=claims,
                 is_government=False
-            )
+            ))
+            task_order.append(party)
+
+        # Execute ALL sections in parallel
+        logger.info(f"Writing {len(tasks)} sections in parallel...")
+        sections = await asyncio.gather(*tasks)
+
+        # Yield results in order
+        for section in sections:
             yield section
 
     async def _write_section(
@@ -186,7 +201,8 @@ FORMATO OUTPUT:
 """
 
         try:
-            response = self.client.chat.completions.create(
+            # Async call for true parallel execution
+            response = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": self.SYSTEM_PROMPT},

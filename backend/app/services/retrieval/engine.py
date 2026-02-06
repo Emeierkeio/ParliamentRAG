@@ -81,8 +81,7 @@ class RetrievalEngine:
         """
         Perform dual-channel retrieval (synchronous version).
 
-        This method is designed to be run in a thread pool to avoid
-        blocking the async event loop.
+        OPTIMIZED: Dense and Graph channels run IN PARALLEL using ThreadPoolExecutor.
 
         Args:
             query: User query
@@ -94,26 +93,39 @@ class RetrievalEngine:
         Returns:
             Dictionary with evidence list and metadata
         """
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
         start_time = time.time()
 
         # Generate query embedding
         logger.info(f"Generating embedding for query: {query[:50]}...")
         query_embedding = self.embed_query(query)
 
-        # Run both channels
-        logger.info("Running dense channel...")
-        dense_results = self.dense_channel.retrieve(
-            query_embedding=query_embedding,
-            top_k=top_k * 2  # Over-retrieve for merging
-        )
+        # Run both channels IN PARALLEL
+        logger.info("Running dense and graph channels in parallel...")
 
-        logger.info("Running graph channel...")
-        graph_results = self.graph_channel.retrieve(
-            query=query,
-            query_embedding=query_embedding,
-            date_start=date_start,
-            date_end=date_end
-        )
+        def run_dense():
+            return self.dense_channel.retrieve(
+                query_embedding=query_embedding,
+                top_k=top_k * 2  # Over-retrieve for merging
+            )
+
+        def run_graph():
+            return self.graph_channel.retrieve(
+                query=query,
+                query_embedding=query_embedding,
+                date_start=date_start,
+                date_end=date_end
+            )
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            dense_future = executor.submit(run_dense)
+            graph_future = executor.submit(run_graph)
+
+            dense_results = dense_future.result()
+            graph_results = graph_future.result()
+
+        logger.info(f"Channels complete: dense={len(dense_results)}, graph={len(graph_results)}")
 
         # Merge channels
         logger.info("Merging channels...")
