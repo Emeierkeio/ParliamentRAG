@@ -44,7 +44,6 @@ export const config = {
       { id: 5, label: "Statistiche", description: "Calcolo metriche di bilanciamento" },
       { id: 6, label: "Bussola Ideologica", description: "Analisi di posizionamento politico" },
       { id: 7, label: "Generazione", description: "Sintesi della risposta finale" },
-      { id: 8, label: "Valutazione", description: "Valutazione del testo generato (Best-of-N)" },
     ],
   },
 

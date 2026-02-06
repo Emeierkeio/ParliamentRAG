@@ -98,7 +98,7 @@ export function useChat(options: UseChatOptions = {}) {
   }, []);
 
   // Send message with streaming support
-  const sendMessage = useCallback(async (content: string, mode: "standard" | "high_quality" = "standard") => {
+  const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading) return;
 
     // Abort any previous request
@@ -137,7 +137,7 @@ export function useChat(options: UseChatOptions = {}) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: content, mode }),
+        body: JSON.stringify({ query: content }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -212,8 +212,8 @@ export function useChat(options: UseChatOptions = {}) {
                 if (Array.isArray(data.experts)) {
                   experts = data.experts;
                   updateLastAssistantMessage({ experts: [...experts] });
-                  const magg = experts.filter(e => e.coalizione === "maggioranza").length;
-                  const opp = experts.filter(e => e.coalizione === "opposizione").length;
+                  const magg = experts.filter(e => e.coalition === "maggioranza").length;
+                  const opp = experts.filter(e => e.coalition === "opposizione").length;
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
@@ -292,21 +292,6 @@ export function useChat(options: UseChatOptions = {}) {
                     updateLastAssistantMessage({ citations: [...citations] });
                     console.log("[useChat] Updated verified citations:", citations.length);
                 }
-                break;
-
-              case "hq_variants":
-                // Best-of-N results with all generation variants
-                updateLastAssistantMessage({ hqMetadata: data });
-                console.log("[useChat] HQ variants received:", data);
-                setProgress((prev) => prev ? {
-                  ...prev,
-                  stepResults: [...prev.stepResults, {
-                    step: 8,
-                    label: "Valutazione",
-                    result: `Scelta variante vincitrice (Score: ${data.variants.find((v: any) => v.is_best)?.score}/10)`,
-                    details: data
-                  }]
-                } : null);
                 break;
 
               case "chunk":
