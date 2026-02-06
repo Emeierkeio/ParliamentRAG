@@ -13,6 +13,21 @@ from ..config import get_settings
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/graph", tags=["Graph"])
 
+# English labels (migrated schema)
+ENGLISH_LABELS = {
+    "Speech", "Phase", "Debate", "Session", "Deputy",
+    "GovernmentMember", "ParliamentaryGroup", "Committee",
+    "ParliamentaryAct", "Chunk"
+}
+
+# English relationship types (migrated schema)
+ENGLISH_RELATIONSHIPS = {
+    "SPOKEN_BY", "CONTAINS_SPEECH", "HAS_PHASE", "HAS_DEBATE",
+    "HAS_CHUNK", "MEMBER_OF_GROUP", "MEMBER_OF_COMMITTEE",
+    "PRIMARY_SIGNATORY", "CO_SIGNATORY", "IS_PRESIDENT",
+    "IS_SECRETARY", "IS_VICE_PRESIDENT", "GOVERNMENT_REFERENCE", "NEXT"
+}
+
 # Global client instance
 _neo4j_client: Optional[Neo4jClient] = None
 
@@ -30,6 +45,25 @@ def get_client() -> Neo4jClient:
     return _neo4j_client
 
 
+def serialize_neo4j_value(value: Any) -> Any:
+    """Serialize Neo4j types to JSON-compatible values."""
+    if value is None:
+        return None
+    # Handle Neo4j Date/DateTime/Time
+    if hasattr(value, 'iso_format'):
+        return value.iso_format()
+    # Handle Neo4j Duration
+    if hasattr(value, 'months') and hasattr(value, 'days') and hasattr(value, 'seconds'):
+        return str(value)
+    # Handle lists
+    if isinstance(value, list):
+        return [serialize_neo4j_value(v) for v in value]
+    # Handle dicts
+    if isinstance(value, dict):
+        return {k: serialize_neo4j_value(v) for k, v in value.items()}
+    return value
+
+
 class CypherQueryRequest(BaseModel):
     """Request model for Cypher queries."""
     cypher: str
@@ -45,24 +79,26 @@ async def get_graph_schema() -> Dict[str, Any]:
     client = get_client()
 
     try:
-        # Get node labels
+        # Get node labels (filter to English only)
         with client.session() as session:
             labels_result = session.run("CALL db.labels()")
-            labels = [record["label"] for record in labels_result]
+            all_labels = [record["label"] for record in labels_result]
+            labels = [l for l in all_labels if l in ENGLISH_LABELS]
 
-        # Get relationship types
+        # Get relationship types (filter to English only)
         with client.session() as session:
             rel_result = session.run("CALL db.relationshipTypes()")
-            relationship_types = [record["relationshipType"] for record in rel_result]
+            all_rels = [record["relationshipType"] for record in rel_result]
+            relationship_types = [r for r in all_rels if r in ENGLISH_RELATIONSHIPS]
 
         # Get property keys
         with client.session() as session:
             props_result = session.run("CALL db.propertyKeys()")
             property_keys = [record["propertyKey"] for record in props_result]
 
-        # Get sample properties per label (limited for performance)
+        # Get sample properties per label
         node_schemas = {}
-        for label in labels[:20]:  # Limit to 20 labels
+        for label in labels:  # Already filtered to English
             with client.session() as session:
                 query = f"""
                 MATCH (n:{label})
@@ -101,13 +137,14 @@ async def get_graph_stats() -> Dict[str, Any]:
     try:
         stats = {}
 
-        # Get node counts by label
+        # Get node counts by label (English only)
         with client.session() as session:
             labels_result = session.run("CALL db.labels()")
-            labels = [record["label"] for record in labels_result]
+            all_labels = [record["label"] for record in labels_result]
+            labels = [l for l in all_labels if l in ENGLISH_LABELS]
 
         node_counts = {}
-        for label in labels[:20]:  # Limit for performance
+        for label in labels:  # Already filtered to English
             with client.session() as session:
                 result = session.run(f"MATCH (n:{label}) RETURN count(n) AS count")
                 record = result.single()
@@ -169,16 +206,16 @@ async def execute_cypher_query(request: CypherQueryRequest) -> Dict[str, Any]:
                         record_dict[key] = {
                             "id": value.element_id,
                             "labels": list(value.labels),
-                            "properties": dict(value)
+                            "properties": serialize_neo4j_value(dict(value))
                         }
                     # Handle Neo4j Relationship objects
                     elif hasattr(value, 'type'):
                         record_dict[key] = {
                             "type": value.type,
-                            "properties": dict(value)
+                            "properties": serialize_neo4j_value(dict(value))
                         }
                     else:
-                        record_dict[key] = value
+                        record_dict[key] = serialize_neo4j_value(value)
                 records.append(record_dict)
 
             return {

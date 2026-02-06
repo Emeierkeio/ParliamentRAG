@@ -13,8 +13,8 @@ Ricerca vettoriale sull'indice `chunk_embedding_index` di Neo4j:
 ```cypher
 CALL db.index.vector.queryNodes('chunk_embedding_index', $top_k, $query_embedding)
 YIELD node AS c, score
-MATCH (c)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
-MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(d:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
+MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
 RETURN c, i, speaker, s, score
 ```
 
@@ -46,27 +46,27 @@ Il canale grafo implementa un matching ibrido (lessicale + semantico):
 
 **Fase 1 - Matching Lessicale**:
 ```cypher
-MATCH (a:AttoParlamentare)
+MATCH (a:ParliamentaryAct)
 WHERE a.eurovoc CONTAINS $keyword
-   OR toLower(a.titolo) CONTAINS toLower($keyword)
+   OR toLower(a.title) CONTAINS toLower($keyword)
 RETURN a
 ```
 
 **Fase 2 - Rerank Semantico**:
-Calcolo similarità coseno tra query embedding e `a.embedding_titolo`.
+Calcolo similarità coseno tra query embedding e `a.title_embedding`.
 
 **Fase 3 - Traversal**:
 ```cypher
-MATCH (d:Deputato)-[:PRIMO_FIRMATARIO|ALTRO_FIRMATARIO]->(a:AttoParlamentare)
+MATCH (d:Deputy)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
 WHERE a.uri IN $relevant_act_uris
-MATCH (i:Intervento)-[:PRONUNCIATO_DA]->(d)
-MATCH (i)-[:HA_CHUNK]->(c:Chunk)
+MATCH (i:Speech)-[:SPOKEN_BY]->(d)
+MATCH (i)-[:HAS_CHUNK]->(c:Chunk)
 RETURN c, i, d
 ```
 
 ### Motivazione dell'Approccio Ibrido
 
-Non esiste un indice vettoriale su `AttoParlamentare`. Creare un nuovo indice richiederebbe modifiche allo schema. L'approccio ibrido:
+Non esiste un indice vettoriale su `ParliamentaryAct`. Creare un nuovo indice richiederebbe modifiche allo schema. L'approccio ibrido:
 - Sfrutta i campi testuali esistenti (lexical)
 - Utilizza embedding pre-calcolati per reranking (semantic)
 - Non richiede modifiche al database

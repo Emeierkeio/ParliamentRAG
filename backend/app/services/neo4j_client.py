@@ -152,23 +152,23 @@ class Neo4jClient:
         cypher = """
         CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
         YIELD node AS c, score
-        MATCH (c)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
-        MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(d:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
+        MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         RETURN c.id AS chunk_id,
-               c.testo AS chunk_text,
+               c.text AS chunk_text,
                c.start_char_raw AS span_start,
                c.end_char_raw AS span_end,
-               c.indice AS chunk_index,
-               i.id AS intervento_id,
-               i.testo_raw AS testo_raw,
+               c.index AS chunk_index,
+               i.id AS speech_id,
+               i.text AS text,
                speaker.id AS speaker_id,
-               speaker.nome AS speaker_nome,
-               speaker.cognome AS speaker_cognome,
+               speaker.first_name AS speaker_first_name,
+               speaker.last_name AS speaker_last_name,
                labels(speaker)[0] AS speaker_type,
-               s.id AS seduta_id,
-               s.data AS seduta_date,
-               s.numero AS seduta_numero,
-               d.titolo AS dibattito_titolo,
+               s.id AS session_id,
+               s.date AS session_date,
+               s.number AS session_number,
+               d.title AS debate_title,
                score
         ORDER BY score DESC
         """
@@ -197,13 +197,13 @@ class Neo4jClient:
             Group information or None
         """
         cypher = """
-        MATCH (speaker)-[r:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
+        MATCH (speaker)-[r:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE speaker.id = $speaker_id
-          AND r.dataInizio <= $target_date
-          AND (r.dataFine IS NULL OR r.dataFine >= $target_date)
-        RETURN g.nome AS gruppo,
-               r.dataInizio AS data_inizio,
-               r.dataFine AS data_fine
+          AND r.start_date <= $target_date
+          AND (r.end_date IS NULL OR r.end_date >= $target_date)
+        RETURN g.name AS group,
+               r.start_date AS start_date,
+               r.end_date AS end_date
         LIMIT 1
         """
         return self.query_single(
@@ -227,12 +227,12 @@ class Neo4jClient:
             List of group memberships with dates
         """
         cypher = """
-        MATCH (speaker)-[r:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
+        MATCH (speaker)-[r:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE speaker.id = $speaker_id
-        RETURN g.nome AS gruppo,
-               r.dataInizio AS data_inizio,
-               r.dataFine AS data_fine
-        ORDER BY r.dataInizio
+        RETURN g.name AS group,
+               r.start_date AS start_date,
+               r.end_date AS end_date
+        ORDER BY r.start_date
         """
         return self.query(cypher, {"speaker_id": speaker_id})
 
@@ -260,7 +260,7 @@ class Neo4jClient:
 
         if keywords:
             keyword_conditions = " OR ".join(
-                f"toLower(i.testo) CONTAINS toLower($kw{i})"
+                f"toLower(i.text) CONTAINS toLower($kw{i})"
                 for i in range(len(keywords))
             )
             conditions.append(f"({keyword_conditions})")
@@ -268,18 +268,18 @@ class Neo4jClient:
                 params[f"kw{i}"] = kw
 
         if date_start:
-            conditions.append("s.data >= $date_start")
+            conditions.append("s.date >= $date_start")
             params["date_start"] = date_start
 
         if date_end:
-            conditions.append("s.data <= $date_end")
+            conditions.append("s.date <= $date_end")
             params["date_end"] = date_end
 
         where_clause = " AND ".join(conditions)
 
         cypher = f"""
-        MATCH (i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
-        MATCH (i)<-[:CONTIENE_INTERVENTO]-()<-[:HA_FASE]-()<-[:HA_DIBATTITO]-(s:Seduta)
+        MATCH (i:Speech)-[:SPOKEN_BY]->(speaker)
+        MATCH (i)<-[:CONTAINS_SPEECH]-()<-[:HAS_PHASE]-()<-[:HAS_DEBATE]-(s:Session)
         WHERE {where_clause}
         RETURN count(i) AS count
         """
@@ -306,8 +306,8 @@ class Neo4jClient:
 
         if keywords:
             keyword_conditions = " OR ".join(
-                f"toLower(a.titolo) CONTAINS toLower($kw{i}) OR "
-                f"toLower(a.descrizione) CONTAINS toLower($kw{i}) OR "
+                f"toLower(a.title) CONTAINS toLower($kw{i}) OR "
+                f"toLower(a.description) CONTAINS toLower($kw{i}) OR "
                 f"toLower(a.eurovoc) CONTAINS toLower($kw{i})"
                 for i in range(len(keywords))
             )
@@ -318,7 +318,7 @@ class Neo4jClient:
         where_clause = " AND ".join(conditions)
 
         cypher = f"""
-        MATCH (speaker)-[:PRIMO_FIRMATARIO|ALTRO_FIRMATARIO]->(a:AttoParlamentare)
+        MATCH (speaker)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
         WHERE {where_clause}
         RETURN count(DISTINCT a) AS count
         """

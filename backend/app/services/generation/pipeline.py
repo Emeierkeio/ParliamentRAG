@@ -300,14 +300,14 @@ class GenerationPipeline:
     ) -> Dict[str, List[Dict[str, Any]]]:
         """Group evidence by parliamentary party.
 
-        IMPORTANT: Excludes government members (MembroGoverno) as they have
+        IMPORTANT: Excludes government members (GovernmentMember) as they have
         their own separate section.
         """
         by_party: Dict[str, List[Dict[str, Any]]] = {party: [] for party in ALL_PARTIES}
 
         for evidence in evidence_list:
             # Skip government members - they go in the GOVERNO section
-            if evidence.get("speaker_role") == "MembroGoverno":
+            if evidence.get("speaker_role") == "GovernmentMember":
                 continue
 
             party = evidence.get("party", "MISTO")
@@ -335,5 +335,5 @@ class GenerationPipeline:
         """Get evidence from government members."""
         return [
             e for e in evidence_list
-            if e.get("speaker_role") == "MembroGoverno"
+            if e.get("speaker_role") == "GovernmentMember"
         ]

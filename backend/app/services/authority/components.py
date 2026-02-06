@@ -215,7 +215,7 @@ class ProfessionComponent(AuthorityComponent):
         query_embedding: List[float],
         reference_date: date
     ) -> float:
-        profession_embedding = parse_embedding(speaker_data.get("embedding_professione"))
+        profession_embedding = parse_embedding(speaker_data.get("profession_embedding"))
 
         if not profession_embedding:
             return 0.5  # Neutral default for missing data
@@ -240,7 +240,7 @@ class EducationComponent(AuthorityComponent):
         query_embedding: List[float],
         reference_date: date
     ) -> float:
-        education_embedding = parse_embedding(speaker_data.get("embedding_istruzione"))
+        education_embedding = parse_embedding(speaker_data.get("education_embedding"))
 
         if not education_embedding:
             return 0.5  # Neutral default for missing data
@@ -281,22 +281,22 @@ class CommitteeComponent(AuthorityComponent):
 
         for membership in memberships:
             # Check temporal validity - parse dates from Neo4j
-            start_date = parse_neo4j_date(membership.get("dataInizio"))
-            end_date = parse_neo4j_date(membership.get("dataFine"))
+            membership_start = parse_neo4j_date(membership.get("start_date"))
+            membership_end = parse_neo4j_date(membership.get("end_date"))
 
-            if start_date and start_date > reference_date:
+            if membership_start and membership_start > reference_date:
                 continue
 
-            if end_date and end_date < reference_date:
+            if membership_end and membership_end < reference_date:
                 continue
 
             # Committee is active at reference_date
             active_committees += 1
 
             # Compute topic relevance
-            commissione_nome = membership.get("commissione_nome", "")
+            committee_name = membership.get("committee_name", "")
             topic_relevance = self._compute_topic_relevance(
-                commissione_nome, query_embedding
+                committee_name, query_embedding
             )
             total_relevance += topic_relevance
 
@@ -458,22 +458,32 @@ class RoleComponent(AuthorityComponent):
     """
     Institutional role component.
 
-    Provides bonus for significant institutional roles.
+    Computes score based on:
+    1. Base role weight (president > vice_president > secretary)
+    2. Topic relevance bonus if the committee is relevant to the query
+
+    Formula: base_weight × (1 + relevance_bonus)
     """
 
-    # Role weights (configurable)
-    ROLE_WEIGHTS = {
-        "Presidente della Camera": 1.0,
-        "Vicepresidente della Camera": 0.8,
-        "Questore": 0.6,
-        "Segretario": 0.5,
-        "Presidente di Commissione": 0.7,
-        "Vicepresidente di Commissione": 0.5,
-        "Capogruppo": 0.6,
-        "Ministro": 0.9,
-        "Sottosegretario": 0.7,
-        "Viceministro": 0.8,
+    # Base weights for institutional roles in committees
+    ROLE_BASE_WEIGHTS = {
+        "president": 0.7,
+        "vice_president": 0.5,
+        "secretary": 0.4,
     }
+
+    # Government position weights (for GovernmentMember)
+    GOVERNMENT_WEIGHTS = {
+        "ministro": 0.9,
+        "viceministro": 0.8,
+        "sottosegretario": 0.7,
+    }
+
+    # Relevance bonus multiplier when committee is topically relevant
+    RELEVANCE_BONUS = 0.3
+
+    # Similarity threshold for topic relevance
+    RELEVANCE_THRESHOLD = 0.5
 
     def compute(
         self,
@@ -481,28 +491,47 @@ class RoleComponent(AuthorityComponent):
         query_embedding: List[float],
         reference_date: date
     ) -> float:
-        roles = speaker_data.get("roles", [])
+        # Check for government position first (GovernmentMember)
+        gov_position = speaker_data.get("government_position", "")
+        if gov_position:
+            for key, weight in self.GOVERNMENT_WEIGHTS.items():
+                if key in gov_position.lower():
+                    return self.cap_score(weight)
 
-        if not roles:
-            return 0.3  # Base score for regular deputies
+        # Get institutional roles from graph
+        institutional_roles = speaker_data.get("institutional_roles", [])
+
+        if not institutional_roles:
+            return 0.3  # Base score for regular deputies without roles
 
         max_role_score = 0.3  # Minimum base
 
-        for role in roles:
-            role_name = role.get("role", "")
-            start_date = parse_neo4j_date(role.get("dataInizio"))
-            end_date = parse_neo4j_date(role.get("dataFine"))
+        for role in institutional_roles:
+            role_type = role.get("role_type", "")
+            role_start = parse_neo4j_date(role.get("start_date"))
+            role_end = parse_neo4j_date(role.get("end_date"))
 
             # Check temporal validity
-            if start_date and start_date > reference_date:
+            if role_start and role_start > reference_date:
                 continue
-            if end_date and end_date < reference_date:
+            if role_end and role_end < reference_date:
                 continue
 
-            # Find matching role weight
-            for role_key, weight in self.ROLE_WEIGHTS.items():
-                if role_key.lower() in role_name.lower():
-                    max_role_score = max(max_role_score, weight)
-                    break
+            # Get base weight for this role type
+            base_weight = self.ROLE_BASE_WEIGHTS.get(role_type, 0.3)
+
+            # Calculate topic relevance bonus
+            committee_embedding = role.get("committee_embedding")
+            relevance_multiplier = 1.0
+
+            if committee_embedding and query_embedding:
+                similarity = cosine_similarity(query_embedding, committee_embedding)
+                if similarity >= self.RELEVANCE_THRESHOLD:
+                    # Apply relevance bonus proportional to similarity
+                    relevance_multiplier = 1.0 + (self.RELEVANCE_BONUS * similarity)
+
+            # Final score for this role
+            role_score = base_weight * relevance_multiplier
+            max_role_score = max(max_role_score, role_score)
 
         return self.cap_score(max_role_score)

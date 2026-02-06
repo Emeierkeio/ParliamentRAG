@@ -34,7 +34,7 @@ class EvidenceResponse(BaseModel):
     # Text content
     chunk_text: str  # Preview text
     quote_text: str  # EXACT verbatim quote
-    testo_raw: Optional[str] = None  # Full intervention text (optional)
+    text: Optional[str] = None  # Full intervention text (optional)
 
     # Offsets
     span_start: int
@@ -42,8 +42,8 @@ class EvidenceResponse(BaseModel):
 
     # Context
     date: str
-    dibattito_titolo: Optional[str]
-    seduta_numero: int
+    debate_title: Optional[str]
+    session_number: int
 
     # Verification
     citation_verified: bool
@@ -81,32 +81,32 @@ async def get_evidence(
     # Query for full evidence details
     cypher = """
     MATCH (c:Chunk {id: $evidence_id})
-    MATCH (c)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
-    MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(d:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
-    OPTIONAL MATCH (speaker)-[:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
+    MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+    MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+    OPTIONAL MATCH (speaker)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
     WHERE g IS NULL OR (
-        (speaker)-[:MEMBRO_GRUPPO {dataFine: null}]->(g) OR
-        NOT EXISTS { MATCH (speaker)-[:MEMBRO_GRUPPO {dataFine: null}]->(:GruppoParlamentare) }
+        (speaker)-[:MEMBER_OF_GROUP {end_date: null}]->(g) OR
+        NOT EXISTS { MATCH (speaker)-[:MEMBER_OF_GROUP {end_date: null}]->(:ParliamentaryGroup) }
     )
     WITH c, i, speaker, d, s, g
     ORDER BY CASE WHEN g IS NOT NULL THEN 0 ELSE 1 END
     LIMIT 1
 
     RETURN c.id AS chunk_id,
-           c.testo AS chunk_text,
+           c.text AS chunk_text,
            c.start_char_raw AS span_start,
            c.end_char_raw AS span_end,
            i.id AS speech_id,
-           i.testo_raw AS testo_raw,
+           i.text AS text,
            speaker.id AS speaker_id,
-           speaker.nome AS nome,
-           speaker.cognome AS cognome,
+           speaker.first_name AS first_name,
+           speaker.last_name AS last_name,
            labels(speaker)[0] AS speaker_role,
-           g.nome AS party,
+           g.name AS party,
            s.id AS doc_id,
-           s.data AS date,
-           s.numero AS seduta_numero,
-           d.titolo AS dibattito_titolo
+           s.date AS date,
+           s.number AS session_number,
+           d.title AS debate_title
     """
 
     with client.session() as session:
@@ -122,14 +122,14 @@ async def get_evidence(
         data = dict(record)
 
         # Extract exact quote using offsets
-        testo_raw = data.get("testo_raw", "")
+        text = data.get("text", "")
         span_start = data.get("span_start", 0)
         span_end = data.get("span_end", 0)
 
         try:
-            quote_text = compute_quote_text(testo_raw, span_start, span_end)
+            quote_text = compute_quote_text(text, span_start, span_end)
             citation_verified = verify_citation_integrity(
-                quote_text, testo_raw, span_start, span_end
+                quote_text, text, span_start, span_end
             )
         except ValueError as e:
             logger.error(f"Quote extraction failed for {evidence_id}: {e}")
@@ -143,9 +143,9 @@ async def get_evidence(
         coalition = coalition_logic.get_coalition(party)
 
         # Build speaker name
-        nome = data.get("nome", "")
-        cognome = data.get("cognome", "")
-        speaker_name = f"{nome} {cognome}".strip() or "Unknown"
+        first_name = data.get("first_name", "")
+        last_name = data.get("last_name", "")
+        speaker_name = f"{first_name} {last_name}".strip() or "Unknown"
 
         return EvidenceResponse(
             evidence_id=evidence_id,
@@ -154,17 +154,17 @@ async def get_evidence(
             doc_id=data.get("doc_id", ""),
             speaker_id=data.get("speaker_id", ""),
             speaker_name=speaker_name,
-            speaker_role=data.get("speaker_role", "Deputato"),
+            speaker_role=data.get("speaker_role", "Deputy"),
             party=party,
             coalition=coalition,
             chunk_text=data.get("chunk_text", ""),
             quote_text=quote_text,
-            testo_raw=testo_raw if len(testo_raw) < 10000 else None,  # Omit if too large
+            text=text if len(text) < 10000 else None,  # Omit if too large
             span_start=span_start,
             span_end=span_end,
             date=str(data.get("date", "")),
-            dibattito_titolo=data.get("dibattito_titolo"),
-            seduta_numero=data.get("seduta_numero", 0),
+            debate_title=data.get("debate_title"),
+            session_number=data.get("session_number", 0),
             citation_verified=citation_verified,
         )
 
@@ -182,11 +182,11 @@ async def verify_evidence(
 
     cypher = """
     MATCH (c:Chunk {id: $evidence_id})
-    MATCH (c)<-[:HA_CHUNK]-(i:Intervento)
-    RETURN c.testo AS chunk_text,
+    MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
+    RETURN c.text AS chunk_text,
            c.start_char_raw AS span_start,
            c.end_char_raw AS span_end,
-           i.testo_raw AS testo_raw
+           i.text AS text
     """
 
     with client.session() as session:
@@ -200,13 +200,13 @@ async def verify_evidence(
             )
 
         data = dict(record)
-        testo_raw = data.get("testo_raw", "")
+        text = data.get("text", "")
         span_start = data.get("span_start", 0)
         span_end = data.get("span_end", 0)
 
         # Verify
         try:
-            quote_text = compute_quote_text(testo_raw, span_start, span_end)
+            quote_text = compute_quote_text(text, span_start, span_end)
             is_valid = True
             error = None
         except ValueError as e:
@@ -219,7 +219,7 @@ async def verify_evidence(
             "is_valid": is_valid,
             "span_start": span_start,
             "span_end": span_end,
-            "testo_raw_length": len(testo_raw),
+            "text_length": len(text),
             "quote_text": quote_text,
             "quote_length": len(quote_text) if quote_text else 0,
             "error": error,

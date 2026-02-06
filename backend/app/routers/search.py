@@ -48,7 +48,7 @@ async def search_results(
 
     try:
         # Build the Cypher query with filters
-        where_clauses = ["c.testo CONTAINS $search_text"]
+        where_clauses = ["c.text CONTAINS $search_text"]
         params: Dict[str, Any] = {"search_text": q, "limit": limit}
 
         if deputy_id:
@@ -56,36 +56,36 @@ async def search_results(
             params["deputy_id"] = deputy_id
 
         if group:
-            where_clauses.append("g.nome = $group")
+            where_clauses.append("g.name = $group")
             params["group"] = group
 
         if start_date:
-            where_clauses.append("s.data >= date($start_date)")
+            where_clauses.append("s.date >= date($start_date)")
             params["start_date"] = start_date
 
         if end_date:
-            where_clauses.append("s.data <= date($end_date)")
+            where_clauses.append("s.date <= date($end_date)")
             params["end_date"] = end_date
 
         where_clause = " AND ".join(where_clauses)
 
         cypher = f"""
-        MATCH (c:Chunk)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(d:Deputato)
-        MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(dib:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
-        OPTIONAL MATCH (d)-[mg:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
-        WHERE mg.dataInizio <= s.data AND (mg.dataFine IS NULL OR mg.dataFine >= s.data)
+        MATCH (c:Chunk)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(d:Deputy)
+        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(dib:Debate)<-[:HAS_DEBATE]-(s:Session)
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
         WITH c, i, d, s, dib, g
         WHERE {where_clause}
         RETURN c.id AS chunk_id,
-               c.testo AS testo,
-               i.id AS intervento_id,
-               toString(s.data) AS data,
-               s.numero AS seduta_numero,
-               dib.titolo AS dibattito_titolo,
-               d.nome AS nome,
-               d.cognome AS cognome,
-               g.nome AS gruppo
-        ORDER BY s.data DESC
+               c.text AS text,
+               i.id AS speech_id,
+               toString(s.date) AS date,
+               s.number AS session_number,
+               dib.title AS debate_title,
+               d.first_name AS first_name,
+               d.last_name AS last_name,
+               g.name AS group_name
+        ORDER BY s.date DESC
         LIMIT $limit
         """
 
@@ -95,14 +95,14 @@ async def search_results(
             for record in result:
                 records.append({
                     "chunk_id": record["chunk_id"],
-                    "testo": record["testo"][:500] if record["testo"] else "",
-                    "intervento_id": record["intervento_id"],
-                    "data": record["data"],
-                    "seduta_numero": record["seduta_numero"],
-                    "dibattito_titolo": record["dibattito_titolo"] or "",
-                    "nome": record["nome"] or "",
-                    "cognome": record["cognome"] or "",
-                    "gruppo": record["gruppo"] or "MISTO",
+                    "text": record["text"][:500] if record["text"] else "",
+                    "speech_id": record["speech_id"],
+                    "date": record["date"],
+                    "session_number": record["session_number"],
+                    "debate_title": record["debate_title"] or "",
+                    "first_name": record["first_name"] or "",
+                    "last_name": record["last_name"] or "",
+                    "group": record["group_name"] or "MISTO",
                 })
 
             logger.info(f"Search for '{q}' returned {len(records)} results")
@@ -126,23 +126,23 @@ async def list_deputies(
     try:
         if q:
             cypher = """
-            MATCH (d:Deputato)
-            WHERE toLower(d.nome) CONTAINS toLower($search_text)
-               OR toLower(d.cognome) CONTAINS toLower($search_text)
+            MATCH (d:Deputy)
+            WHERE toLower(d.first_name) CONTAINS toLower($search_text)
+               OR toLower(d.last_name) CONTAINS toLower($search_text)
             RETURN d.id AS id,
-                   d.nome AS nome,
-                   d.cognome AS cognome
-            ORDER BY d.cognome, d.nome
+                   d.first_name AS first_name,
+                   d.last_name AS last_name
+            ORDER BY d.last_name, d.first_name
             LIMIT $limit
             """
             params = {"search_text": q, "limit": limit}
         else:
             cypher = """
-            MATCH (d:Deputato)
+            MATCH (d:Deputy)
             RETURN d.id AS id,
-                   d.nome AS nome,
-                   d.cognome AS cognome
-            ORDER BY d.cognome, d.nome
+                   d.first_name AS first_name,
+                   d.last_name AS last_name
+            ORDER BY d.last_name, d.first_name
             LIMIT $limit
             """
             params = {"limit": limit}
@@ -152,8 +152,8 @@ async def list_deputies(
             return [
                 {
                     "id": record["id"],
-                    "nome": record["nome"],
-                    "cognome": record["cognome"],
+                    "first_name": record["first_name"],
+                    "last_name": record["last_name"],
                 }
                 for record in result
             ]
@@ -172,11 +172,11 @@ async def list_groups() -> List[Dict[str, Any]]:
 
     try:
         cypher = """
-        MATCH (g:GruppoParlamentare)
-        OPTIONAL MATCH (d:Deputato)-[:MEMBRO_GRUPPO]->(g)
+        MATCH (g:ParliamentaryGroup)
+        OPTIONAL MATCH (d:Deputy)-[:MEMBER_OF_GROUP]->(g)
         WITH g, count(d) AS member_count
-        RETURN g.nome AS nome,
-               g.sigla AS sigla,
+        RETURN g.name AS name,
+               g.acronym AS acronym,
                member_count
         ORDER BY member_count DESC
         """
@@ -185,8 +185,8 @@ async def list_groups() -> List[Dict[str, Any]]:
             result = session.run(cypher)
             return [
                 {
-                    "nome": record["nome"],
-                    "sigla": record["sigla"],
+                    "name": record["name"],
+                    "acronym": record["acronym"],
                     "member_count": record["member_count"],
                 }
                 for record in result

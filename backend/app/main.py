@@ -15,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import query_router, evidence_router, config_router, chat_router, history_router
 from .routers.graph import router as graph_router
 from .routers.search import router as search_router
+from .routers.survey import router as survey_router
 from .config import get_config, get_settings
 
 
@@ -181,6 +182,7 @@ app.include_router(chat_router)  # Frontend-compatible chat endpoint
 app.include_router(history_router)  # Conversation history
 app.include_router(graph_router)  # Graph exploration
 app.include_router(search_router)  # Parliamentary record search
+app.include_router(survey_router)  # User surveys/evaluations
 
 
 @app.get("/")

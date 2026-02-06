@@ -15,7 +15,7 @@ AuthorityScore(speaker, query, date) ∈ [0, 1]
 Similarità semantica tra embedding della query e embedding della professione dello speaker.
 
 ```python
-score = cosine_similarity(query_embedding, speaker.embedding_professione)
+score = cosine_similarity(query_embedding, speaker.profession_embedding)
 score = (score + 1) / 2  # Normalizza da [-1,1] a [0,1]
 score = min(score, 0.8)  # Cap al 80%
 ```
@@ -24,7 +24,7 @@ score = min(score, 0.8)  # Cap al 80%
 
 ### 2. Istruzione (peso: 0.10)
 
-Analogo alla professione, usa `embedding_istruzione`.
+Analogo alla professione, usa `education_embedding`.
 
 ### 3. Membership in Commissioni (peso: 0.20)
 
@@ -117,7 +117,7 @@ def normalize_percentile(scores: Dict[str, float]) -> Dict[str, float]:
 
 ## Limitazioni Note
 
-1. **Dati mancanti**: `embedding_professione` ha ~14% di valori nulli
+1. **Dati mancanti**: `profession_embedding` ha ~14% di valori nulli
 2. **Topic mapping manuale**: Le commissioni sono mappate manualmente a topic in YAML
 3. **Confini coalizioni binari**: Non esistono sfumature per "opposizione costruttiva"
 

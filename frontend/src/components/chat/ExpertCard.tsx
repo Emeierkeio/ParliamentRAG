@@ -42,9 +42,9 @@ interface ExpertCardProps {
 export function ExpertCard({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const groupConfig = config.politicalGroups[expert.gruppo as keyof typeof config.politicalGroups];
+  const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
-  const groupLabel = groupConfig?.label || expert.gruppo;
+  const groupLabel = groupConfig?.label || expert.group;
 
   const scoreLevel =
     expert.authority_score >= config.authorityScore.high
@@ -76,26 +76,26 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
               style={{ backgroundColor: groupColor }}
             >
-              {expert.nome[0]}
-              {expert.cognome[0]}
+              {expert.first_name[0]}
+              {expert.last_name[0]}
             </div>
 
             <div className="flex-1 min-w-0">
               {/* Name */}
               {/* Name */}
-              {expert.scheda_camera ? (
+              {expert.camera_profile_url ? (
                   <a 
-                    href={expert.scheda_camera}
+                    href={expert.camera_profile_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-semibold text-foreground leading-tight hover:underline hover:text-primary transition-colors block"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {expert.nome} {expert.cognome}
+                    {expert.first_name} {expert.last_name}
                   </a>
               ) : (
                   <p className="text-sm font-semibold text-foreground leading-tight">
-                    {expert.nome} {expert.cognome}
+                    {expert.first_name} {expert.last_name}
                   </p>
               )}
 
@@ -109,7 +109,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
 
               {/* Coalizione indicator */}
               <p className="text-xs text-muted-foreground mt-1">
-                {expert.coalizione === "maggioranza" ? "Maggioranza" : "Opposizione"}
+                {expert.coalition === "maggioranza" ? "Maggioranza" : "Opposizione"}
               </p>
 
               {/* Authority score preview */}
@@ -149,7 +149,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
 
 export function ExpertRow({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const groupConfig = config.politicalGroups[expert.gruppo as keyof typeof config.politicalGroups];
+  const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
 
   return (
@@ -166,29 +166,29 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm"
           style={{ backgroundColor: groupColor }}
         >
-          {expert.nome[0]}{expert.cognome[0]}
+          {expert.first_name[0]}{expert.last_name[0]}
         </div>
 
         <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
              <div className="min-w-0 flex flex-col justify-center">
                   <div className="font-semibold text-sm truncate leading-tight flex items-center gap-2">
-                       {expert.scheda_camera ? (
+                       {expert.camera_profile_url ? (
                            <a 
-                             href={expert.scheda_camera} 
+                             href={expert.camera_profile_url} 
                              target="_blank"
                              rel="noopener noreferrer"
                              className="hover:underline hover:text-primary relative z-10" 
                              onClick={(e) => e.stopPropagation()}
                            >
-                              {expert.nome} {expert.cognome}
+                              {expert.first_name} {expert.last_name}
                            </a>
                        ) : (
-                          <span>{expert.nome} {expert.cognome}</span>
+                          <span>{expert.first_name} {expert.last_name}</span>
                        )}
                   </div>
-                  {expert.ruolo_istituzionale && (
+                  {expert.institutional_role && (
                       <span className="text-[10px] text-muted-foreground truncate max-w-[200px] block">
-                          {expert.ruolo_istituzionale}
+                          {expert.institutional_role}
                       </span>
                   )}
              </div>
@@ -223,50 +223,50 @@ interface ExpertModalProps {
 }
 
 function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
-  const groupConfig = config.politicalGroups[expert.gruppo as keyof typeof config.politicalGroups];
+  const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
-  const groupLabel = groupConfig?.label || expert.gruppo;
+  const groupLabel = groupConfig?.label || expert.group;
 
   const scoreBreakdown = [
     {
       icon: MessageSquare,
       label: "Interventi",
-      value: expert.score_breakdown?.interventi || 0,
+      value: expert.score_breakdown?.speeches || 0,
       description: "Volume e pertinenza",
     },
     {
       icon: Target,
       label: "Atti",
-      value: expert.score_breakdown?.atti || 0,
+      value: expert.score_breakdown?.acts || 0,
       description: "Atti presentati",
     },
     {
       icon: Network,
       label: "Commissione",
-      value: expert.score_breakdown?.commissione || 0,
+      value: expert.score_breakdown?.committee || 0,
       description: "Pertinenza commissione",
-      tooltip: expert.commissione
+      tooltip: expert.committee
     },
     {
       icon: User,
       label: "Professione",
-      value: expert.score_breakdown?.professione || 0,
+      value: expert.score_breakdown?.profession || 0,
       description: "Background",
-      tooltip: expert.professione
+      tooltip: expert.profession
     },
     {
       icon: Layers,
       label: "Istruzione",
-      value: expert.score_breakdown?.istruzione || 0,
+      value: expert.score_breakdown?.education || 0,
       description: "Titoli di studio",
-      tooltip: expert.istruzione
+      tooltip: expert.education
     },
     {
       icon: Award,
       label: "Ruolo",
-      value: expert.score_breakdown?.ruolo || 0,
+      value: expert.score_breakdown?.role || 0,
       description: "Incarichi",
-      tooltip: expert.ruolo_istituzionale
+      tooltip: expert.institutional_role
     },
   ];
 
@@ -294,22 +294,22 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
               className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-bold text-white shadow-lg"
               style={{ backgroundColor: groupColor }}
             >
-              {expert.nome[0]}
-              {expert.cognome[0]}
+              {expert.first_name[0]}
+              {expert.last_name[0]}
             </div>
             <div className="flex-1 space-y-1">
-              {expert.scheda_camera ? (
+              {expert.camera_profile_url ? (
                   <a 
-                    href={expert.scheda_camera}
+                    href={expert.camera_profile_url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-2xl font-bold text-foreground hover:underline hover:text-primary transition-colors block"
                   >
-                    {expert.nome} {expert.cognome}
+                    {expert.first_name} {expert.last_name}
                   </a>
               ) : (
                   <h3 className="text-2xl font-bold text-foreground">
-                    {expert.nome} {expert.cognome}
+                    {expert.first_name} {expert.last_name}
                   </h3>
               )}
               <div className="flex flex-wrap items-center gap-2">
@@ -324,7 +324,7 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                 </Badge>
                 <span className="text-muted-foreground text-sm">•</span>
                 <span className="text-sm font-medium text-muted-foreground">
-                    {expert.coalizione === "maggioranza" ? "Maggioranza" : "Opposizione"}
+                    {expert.coalition === "maggioranza" ? "Maggioranza" : "Opposizione"}
                 </span>
               </div>
             </div>
@@ -352,7 +352,7 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {scoreBreakdown.map((item) => {
                     const isAtti = item.label === "Atti";
-                    const hasDetails = isAtti && expert.atti_dettaglio && expert.atti_dettaglio.length > 0;
+                    const hasDetails = isAtti && expert.acts_detail && expert.acts_detail.length > 0;
 
                     const content = (
                          <div 
@@ -403,7 +403,7 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
           </div>
 
           {/* Details Panel (Conditional) */}
-          {selectedDetail === "atti" && expert.atti_dettaglio && (
+          {selectedDetail === "atti" && expert.acts_detail && (
               <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
                   <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -419,11 +419,11 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                   </div>
                   <ScrollArea className="h-64 rounded-xl border border-border/40 bg-muted/5 p-3">
                       <div className="space-y-3">
-                          {expert.atti_dettaglio.map((atto, idx) => (
+                          {expert.acts_detail.map((atto, idx) => (
                               <div key={idx} className="p-3 bg-card rounded-lg border border-border/30 shadow-sm space-y-2">
                                   <div className="flex items-start justify-between gap-3">
                                       <p className="text-xs font-semibold leading-tight line-clamp-3 flex-1 italic text-foreground/90">
-                                          "{atto.titolo || 'Senza titolo'}"
+                                          "{atto.title || 'Senza titolo'}"
                                       </p>
                                       <Badge variant="outline" className="shrink-0 text-[10px] px-1.5 py-0 h-4 border-primary/20 text-primary">
                                           {Math.round(atto.similarity * 100)}% Match
@@ -433,9 +433,9 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                                       <div className="flex items-center gap-1.5">
                                           <Badge className={cn(
                                               "text-[9px] px-1 py-0 h-4 font-normal",
-                                              atto.is_primo ? "bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200" : "bg-gray-100 text-gray-600 hover:bg-gray-100 border-gray-200"
+                                              atto.is_primary ? "bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200" : "bg-gray-100 text-gray-600 hover:bg-gray-100 border-gray-200"
                                           )}>
-                                              {atto.is_primo ? "1° Firmatario" : "Co-firmatario"}
+                                              {atto.is_primary ? "1° Firmatario" : "Co-firmatario"}
                                           </Badge>
                                           {atto.eurovoc && (
                                               <span className="truncate max-w-[150px]">Tema: {atto.eurovoc}</span>

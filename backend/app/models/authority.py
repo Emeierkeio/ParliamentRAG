@@ -49,7 +49,7 @@ class AuthorityScore(BaseModel):
     """
     speaker_id: str = Field(description="Speaker identifier")
     speaker_name: str = Field(description="Full name")
-    speaker_role: str = Field(description="Deputato or MembroGoverno")
+    speaker_role: str = Field(description="Deputy or GovernmentMember")
     party: str = Field(description="Current parliamentary group")
     coalition: str = Field(description="Current coalition")
 
@@ -80,7 +80,7 @@ class AuthorityScore(BaseModel):
             "example": {
                 "speaker_id": "d300001",
                 "speaker_name": "Mario Rossi",
-                "speaker_role": "Deputato",
+                "speaker_role": "Deputy",
                 "party": "FRATELLI D'ITALIA",
                 "coalition": "maggioranza",
                 "score": 0.75,

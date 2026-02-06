@@ -155,7 +155,7 @@ class CoalitionLogic:
 
         Args:
             memberships: List of group memberships with dates
-                         [{"gruppo": str, "dataInizio": date, "dataFine": date}, ...]
+                         [{"group": str, "start_date": date, "end_date": date}, ...]
             reference_date: Reference date for authority calculation
             current_group: Current parliamentary group of the speaker
 
@@ -166,9 +166,9 @@ class CoalitionLogic:
         valid_periods = []
 
         for membership in memberships:
-            group = membership.get("gruppo", "")
-            start = parse_neo4j_date(membership.get("dataInizio"))
-            end = parse_neo4j_date(membership.get("dataFine"))
+            group = membership.get("group", "")
+            start = parse_neo4j_date(membership.get("start_date"))
+            end = parse_neo4j_date(membership.get("end_date"))
 
             # Skip if no dates
             if not start:

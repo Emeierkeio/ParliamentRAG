@@ -180,39 +180,47 @@ function formatEventForFrontend(event: Record<string, unknown>): Record<string, 
 
 /**
  * Formatta un expert dal backend per il frontend
+ * Backend now uses English field names, pass through directly
  */
 function formatExpert(expert: Record<string, unknown>) {
   return {
     id: expert.id,
-    nome: expert.nome,
-    cognome: expert.cognome,
-    gruppoParlamentare: expert.gruppo,
-    coalizione: expert.coalizione,
-    authorityScore: expert.authority_score,
-    scoreBreakdown: expert.score_breakdown ? {
-      frequenzaInterventi: (expert.score_breakdown as Record<string, number>).interventi,
-      relevanzeaTematica: (expert.score_breakdown as Record<string, number>).atti,
-      centralitaCommissione: (expert.score_breakdown as Record<string, number>).commissione,
-      backgroundProfessionale: (expert.score_breakdown as Record<string, number>).professione,
-    } : undefined,
-    interventiCount: expert.n_interventi_rilevanti,
+    first_name: expert.first_name || expert.nome,
+    last_name: expert.last_name || expert.cognome,
+    group: expert.group || expert.gruppo,
+    coalition: expert.coalition || expert.coalizione,
+    authority_score: expert.authority_score,
+    camera_profile_url: expert.camera_profile_url || expert.scheda_camera,
+    profession: expert.profession || expert.professione,
+    education: expert.education || expert.istruzione,
+    committee: expert.committee || expert.commissione,
+    institutional_role: expert.institutional_role || expert.ruolo_istituzionale,
+    score_breakdown: expert.score_breakdown,
+    relevant_speeches_count: expert.relevant_speeches_count || expert.n_interventi_rilevanti,
+    acts_detail: expert.acts_detail || expert.atti_dettaglio,
   };
 }
 
 /**
  * Formatta una citation dal backend per il frontend
+ * Backend now uses English field names, pass through directly
  */
 function formatCitation(citation: Record<string, unknown>) {
   return {
-    id: citation.chunk_id,
-    deputatoNome: citation.deputato_nome,
-    deputatoCognome: citation.deputato_cognome,
-    gruppoParlamentare: citation.gruppo,
-    coalizione: citation.coalizione,
-    data: citation.data,
-    argomento: citation.dibattito,
-    testoEstratto: citation.testo,
-    relevanceScore: citation.similarity,
+    chunk_id: citation.chunk_id,
+    deputy_first_name: citation.deputy_first_name || citation.deputato_nome,
+    deputy_last_name: citation.deputy_last_name || citation.deputato_cognome,
+    group: citation.group || citation.gruppo,
+    coalition: citation.coalition || citation.coalizione,
+    date: citation.date || citation.data,
+    debate: citation.debate || citation.dibattito,
+    debate_id: citation.debate_id || citation.dibattito_id,
+    intervention_id: citation.intervention_id || citation.intervento_id,
+    text: citation.text || citation.testo,
+    quote_text: citation.quote_text,
+    full_text: citation.full_text,
+    similarity: citation.similarity,
+    camera_profile_url: citation.camera_profile_url || citation.scheda_camera,
   };
 }
 

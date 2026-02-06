@@ -26,7 +26,7 @@ class CitationSurgeon:
     Stage 4 of the generation pipeline.
 
     INVIOLABLE RULES:
-    1. Quote extraction ONLY via: testo_raw[span_start:span_end]
+    1. Quote extraction ONLY via: text[span_start:span_end]
     2. NEVER compare extracted quote with chunk_text for verification
     3. Citation validity = valid offsets + successful extraction
     4. chunk_text is ONLY for retrieval preview, NOT for citation
@@ -95,11 +95,11 @@ class CitationSurgeon:
             quote_text = evidence.get("quote_text", "")
 
             if not quote_text:
-                testo_raw = evidence.get("testo_raw", "")
+                text = evidence.get("text", "")
                 span_start = evidence.get("span_start", 0)
                 span_end = evidence.get("span_end", 0)
-                if testo_raw and span_end > span_start:
-                    quote_text = self._extract_quote(testo_raw, span_start, span_end)
+                if text and span_end > span_start:
+                    quote_text = self._extract_quote(text, span_start, span_end)
 
             if not quote_text:
                 # Fallback to chunk_text if quote_text extraction failed
@@ -112,14 +112,14 @@ class CitationSurgeon:
                     })
                     return None, None
 
-            # Verify citation if enabled and testo_raw is available
+            # Verify citation if enabled and text is available
             if self.verify_on_insert:
-                testo_raw = evidence.get("testo_raw", "")
+                text = evidence.get("text", "")
                 span_start = evidence.get("span_start", 0)
                 span_end = evidence.get("span_end", 0)
 
-                if testo_raw and span_end > span_start:
-                    if not self._verify_citation(quote_text, testo_raw, span_start, span_end):
+                if text and span_end > span_start:
+                    if not self._verify_citation(quote_text, text, span_start, span_end):
                         logger.warning(f"Citation verification failed for {evidence_id}, using chunk_text")
                         # Don't fail - use chunk_text as fallback
                         quote_text = evidence.get("chunk_text", "")[:300]
@@ -197,18 +197,18 @@ class CitationSurgeon:
 
     def _extract_quote(
         self,
-        testo_raw: str,
+        text: str,
         span_start: int,
         span_end: int
     ) -> Optional[str]:
         """
-        Extract EXACT quote using offsets from testo_raw.
+        Extract EXACT quote using offsets from text.
 
         CRITICAL: This is the ONLY valid citation source.
         DO NOT use chunk_text for verification or comparison.
 
         Args:
-            testo_raw: Raw intervention text
+            text: Speech text
             span_start: Start offset
             span_end: End offset
 
@@ -219,9 +219,9 @@ class CitationSurgeon:
             logger.error(f"Invalid span_start: {span_start}")
             return None
 
-        if span_end > len(testo_raw):
+        if span_end > len(text):
             logger.error(
-                f"span_end ({span_end}) exceeds text length ({len(testo_raw)})"
+                f"span_end ({span_end}) exceeds text length ({len(text)})"
             )
             return None
 
@@ -229,12 +229,12 @@ class CitationSurgeon:
             logger.error(f"Invalid span: {span_start} >= {span_end}")
             return None
 
-        return testo_raw[span_start:span_end]
+        return text[span_start:span_end]
 
     def _verify_citation(
         self,
         quote_text: str,
-        testo_raw: str,
+        text: str,
         span_start: int,
         span_end: int
     ) -> bool:
@@ -246,7 +246,7 @@ class CitationSurgeon:
 
         Args:
             quote_text: Quote text to verify
-            testo_raw: Raw intervention text
+            text: Speech text
             span_start: Start offset
             span_end: End offset
 
@@ -254,7 +254,7 @@ class CitationSurgeon:
             True if citation is valid
         """
         try:
-            re_extracted = self._extract_quote(testo_raw, span_start, span_end)
+            re_extracted = self._extract_quote(text, span_start, span_end)
             if re_extracted is None:
                 return False
             return re_extracted == quote_text

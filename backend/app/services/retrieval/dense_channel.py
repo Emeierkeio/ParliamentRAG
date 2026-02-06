@@ -67,27 +67,27 @@ class DenseChannel:
         CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
         YIELD node AS c, score
         WHERE score >= $threshold
-        MATCH (c)<-[:HA_CHUNK]-(i:Intervento)-[:PRONUNCIATO_DA]->(speaker)
-        MATCH (i)<-[:CONTIENE_INTERVENTO]-(f:Fase)<-[:HA_FASE]-(d:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
-        OPTIONAL MATCH (speaker)-[mg:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
-        WHERE mg.dataInizio <= s.data AND (mg.dataFine IS NULL OR mg.dataFine >= s.data)
+        MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
         RETURN c.id AS chunk_id,
-               c.testo AS chunk_text,
+               c.text AS chunk_text,
                c.embedding AS embedding,
                c.start_char_raw AS span_start,
                c.end_char_raw AS span_end,
-               c.indice AS chunk_index,
-               i.id AS intervento_id,
-               i.testo_raw AS testo_raw,
+               c.index AS chunk_index,
+               i.id AS speech_id,
+               i.text AS text,
                speaker.id AS speaker_id,
-               speaker.nome AS speaker_nome,
-               speaker.cognome AS speaker_cognome,
-               CASE WHEN 'MembroGoverno' IN labels(speaker) THEN 'MembroGoverno' ELSE 'Deputato' END AS speaker_type,
-               g.nome AS party,
-               s.id AS seduta_id,
-               s.data AS seduta_date,
-               s.numero AS seduta_numero,
-               d.titolo AS dibattito_titolo,
+               speaker.first_name AS speaker_first_name,
+               speaker.last_name AS speaker_last_name,
+               CASE WHEN 'GovernmentMember' IN labels(speaker) THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+               g.name AS party,
+               s.id AS session_id,
+               s.date AS session_date,
+               s.number AS session_number,
+               d.title AS debate_title,
                score AS similarity
         ORDER BY score DESC
         """
@@ -109,7 +109,7 @@ class DenseChannel:
         """
         Process raw query results into structured evidence candidates.
 
-        Computes quote_text from testo_raw using offsets.
+        Computes quote_text from text using offsets.
         """
         processed = []
         config = get_config()
@@ -117,12 +117,12 @@ class DenseChannel:
         for row in results:
             try:
                 # Extract quote using offsets - CRITICAL for citation integrity
-                testo_raw = row.get("testo_raw", "")
+                text = row.get("text", "")
                 span_start = row.get("span_start", 0)
                 span_end = row.get("span_end", 0)
 
-                if testo_raw and span_start is not None and span_end is not None:
-                    quote_text = compute_quote_text(testo_raw, span_start, span_end)
+                if text and span_start is not None and span_end is not None:
+                    quote_text = compute_quote_text(text, span_start, span_end)
                 else:
                     # Fallback to chunk_text if offsets unavailable
                     quote_text = row.get("chunk_text", "")
@@ -133,15 +133,15 @@ class DenseChannel:
                 coalition = config.get_coalition(party) if party else "opposizione"
 
                 # Parse date - handles both Neo4j Date objects and string formats
-                seduta_date = row.get("seduta_date")
-                if seduta_date is not None:
-                    if hasattr(seduta_date, 'to_native'):
+                session_date = row.get("session_date")
+                if session_date is not None:
+                    if hasattr(session_date, 'to_native'):
                         # Neo4j Date object
-                        date_obj = seduta_date.to_native()
-                    elif isinstance(seduta_date, str) and seduta_date:
+                        date_obj = session_date.to_native()
+                    elif isinstance(session_date, str) and session_date:
                         try:
                             # Handle DD/MM/YYYY format (legacy)
-                            date_obj = datetime.strptime(seduta_date, "%d/%m/%Y").date()
+                            date_obj = datetime.strptime(session_date, "%d/%m/%Y").date()
                         except ValueError:
                             date_obj = datetime.now().date()
                     else:
@@ -151,11 +151,11 @@ class DenseChannel:
 
                 processed.append({
                     "evidence_id": row.get("chunk_id", ""),
-                    "doc_id": row.get("seduta_id", ""),
-                    "speech_id": row.get("intervento_id", ""),
+                    "doc_id": row.get("session_id", ""),
+                    "speech_id": row.get("speech_id", ""),
                     "speaker_id": row.get("speaker_id", ""),
-                    "speaker_name": f"{row.get('speaker_nome', '')} {row.get('speaker_cognome', '')}".strip(),
-                    "speaker_role": row.get("speaker_type", "Deputato"),
+                    "speaker_name": f"{row.get('speaker_first_name', '')} {row.get('speaker_last_name', '')}".strip(),
+                    "speaker_role": row.get("speaker_type", "Deputy"),
                     "party": party or "MISTO",
                     "coalition": coalition,
                     "date": date_obj,
@@ -163,8 +163,8 @@ class DenseChannel:
                     "quote_text": quote_text,
                     "span_start": span_start or 0,
                     "span_end": span_end or 0,
-                    "dibattito_titolo": row.get("dibattito_titolo"),
-                    "seduta_numero": row.get("seduta_numero", 0),
+                    "debate_title": row.get("debate_title"),
+                    "session_number": row.get("session_number", 0),
                     "similarity": row.get("similarity", 0.0),
                     "embedding": row.get("embedding"),  # For compass PCA
                     "retrieval_channel": "dense"
