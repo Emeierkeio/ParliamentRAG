@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
@@ -14,7 +14,7 @@ interface ChatAreaProps {
   messages: Message[];
   isLoading: boolean;
   progress: ProcessingProgress | null;
-  onSendMessage: (message: string, mode?: "standard" | "high_quality") => void;
+  onSendMessage: (message: string) => void;
   onCancelRequest: () => void;
   className?: string;
 }
@@ -27,8 +27,6 @@ export function ChatArea({
   onCancelRequest,
   className,
 }: ChatAreaProps) {
-  const [isHighQuality, setIsHighQuality] = useState(false);
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -51,11 +49,9 @@ export function ChatArea({
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="mx-auto max-w-3xl p-4 py-5">
           <ChatInput
-            onSend={(msg) => onSendMessage(msg, isHighQuality ? "high_quality" : "standard")}
+            onSend={onSendMessage}
             onCancel={onCancelRequest}
             isLoading={isLoading}
-            isHighQuality={isHighQuality}
-            onToggleHighQuality={() => setIsHighQuality(!isHighQuality)}
             placeholder="Fai una domanda..."
             className="w-full"
           />
@@ -66,7 +62,7 @@ export function ChatArea({
       <ScrollArea className="flex-1" ref={scrollRef}>
         <div className="mx-auto max-w-3xl px-4 pb-12">
           {!hasMessages ? (
-            <WelcomeScreen onSendMessage={(msg) => onSendMessage(msg, isHighQuality ? "high_quality" : "standard")} />
+            <WelcomeScreen onSendMessage={onSendMessage} />
           ) : (
             <div className="space-y-0 min-h-[50vh]">
               {messages.map((message) => (
@@ -90,7 +86,7 @@ export function ChatArea({
 }
 
 interface WelcomeScreenProps {
-  onSendMessage: (message: string, mode?: "standard" | "high_quality") => void;
+  onSendMessage: (message: string) => void;
 }
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {

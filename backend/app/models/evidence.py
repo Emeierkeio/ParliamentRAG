@@ -3,7 +3,7 @@ Evidence models for the Multi-View RAG system.
 
 CRITICAL: This module implements the UnifiedEvidence schema with CLEAR SEPARATION between:
 - chunk_text: used for retrieval preview (may be preprocessed)
-- quote_text: VERBATIM extraction from testo_raw using offsets
+- quote_text: VERBATIM extraction from text using offsets
 
 Citation integrity is enforced through offset-based extraction ONLY.
 NO fuzzy matching is allowed.
@@ -28,7 +28,7 @@ class UnifiedEvidence(BaseModel):
     """
     Schema for evidence records with CLEAR SEPARATION between:
     - chunk_text: used for retrieval preview (may be preprocessed)
-    - quote_text: VERBATIM extraction from testo_raw using offsets
+    - quote_text: VERBATIM extraction from text using offsets
 
     CRITICAL: quote_text is the ONLY valid citation source.
     Citation validity = valid offsets + verbatim extraction.
@@ -36,13 +36,13 @@ class UnifiedEvidence(BaseModel):
     """
     # Identifiers
     evidence_id: str = Field(description="Chunk ID - unique identifier")
-    doc_id: str = Field(description="Seduta ID")
-    speech_id: str = Field(description="Intervento ID")
-    speaker_id: str = Field(description="Deputato or MembroGoverno ID")
+    doc_id: str = Field(description="Session ID")
+    speech_id: str = Field(description="Speech ID")
+    speaker_id: str = Field(description="Deputy or GovernmentMember ID")
 
     # Speaker info
     speaker_name: str = Field(description="Full speaker name")
-    speaker_role: Literal["Deputato", "MembroGoverno"] = Field(
+    speaker_role: Literal["Deputy", "GovernmentMember"] = Field(
         description="Speaker type"
     )
     party: str = Field(description="Parliamentary group name")
@@ -53,21 +53,21 @@ class UnifiedEvidence(BaseModel):
 
     # TEXT FIELDS - CLEARLY DISTINGUISHED
     chunk_text: str = Field(
-        description="chunk.testo - used for retrieval/preview ONLY. "
+        description="chunk.text - used for retrieval/preview ONLY. "
                     "May be preprocessed. NOT valid for citation."
     )
     quote_text: str = Field(
-        description="VERBATIM extraction from intervento.testo_raw[span_start:span_end]. "
+        description="VERBATIM extraction from speech.text[span_start:span_end]. "
                     "This is the ONLY valid citation source."
     )
 
     # Offset metadata for verification
-    span_start: int = Field(ge=0, description="Start offset in testo_raw")
-    span_end: int = Field(gt=0, description="End offset in testo_raw")
+    span_start: int = Field(ge=0, description="Start offset in text")
+    span_end: int = Field(gt=0, description="End offset in text")
 
     # Context
-    dibattito_titolo: Optional[str] = Field(default=None, description="Debate title")
-    seduta_numero: int = Field(description="Session number")
+    debate_title: Optional[str] = Field(default=None, description="Debate title")
+    session_number: int = Field(description="Session number")
 
     # Scores
     similarity: float = Field(ge=0.0, le=1.0, description="Semantic similarity score")
@@ -101,16 +101,16 @@ class UnifiedEvidence(BaseModel):
                 "speech_id": "leg19_sed123_tit00010.int00005",
                 "speaker_id": "d300001",
                 "speaker_name": "Mario Rossi",
-                "speaker_role": "Deputato",
+                "speaker_role": "Deputy",
                 "party": "FRATELLI D'ITALIA",
                 "coalition": "maggioranza",
                 "date": "2023-05-15",
                 "chunk_text": "Preview text for retrieval...",
-                "quote_text": "Exact verbatim quote from testo_raw",
+                "quote_text": "Exact verbatim quote from text",
                 "span_start": 1523,
                 "span_end": 1687,
-                "dibattito_titolo": "Discussione DL immigrazione",
-                "seduta_numero": 123,
+                "debate_title": "Discussione DL immigrazione",
+                "session_number": 123,
                 "similarity": 0.85,
                 "authority_score": 0.72,
                 "ideology": {
@@ -124,42 +124,64 @@ class UnifiedEvidence(BaseModel):
         }
 
 
-def compute_quote_text(intervento_testo_raw: str, span_start: int, span_end: int) -> str:
+def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:
     """
-    Extract EXACT quote using offsets. This is the ONLY valid method.
+    Extract quote using offsets, with automatic clamping and word-boundary alignment.
 
-    CRITICAL: This function extracts verbatim text from the source.
-    NEVER compare the result with chunk.testo for verification.
-    Citation validity = valid offsets + successful extraction.
+    This function:
+    1. Clamps offsets to valid text bounds
+    2. Extends start backward to the nearest word boundary (space or start of text)
+    3. Extends end forward to the nearest word boundary (space or end of text)
 
     Args:
-        intervento_testo_raw: The raw intervention text
+        speech_text: The raw speech text
         span_start: Start offset (inclusive)
         span_end: End offset (exclusive)
 
     Returns:
-        Verbatim extracted quote
+        Extracted quote aligned to word boundaries
 
     Raises:
-        ValueError: If offsets are invalid
+        ValueError: If offsets are completely invalid (negative end, start > end after clamping)
     """
-    if span_start < 0:
-        raise ValueError(f"span_start must be non-negative, got {span_start}")
-    if span_end > len(intervento_testo_raw):
-        raise ValueError(
-            f"span_end ({span_end}) exceeds text length ({len(intervento_testo_raw)})"
-        )
+    text_len = len(speech_text)
+
+    # Handle empty text
+    if text_len == 0:
+        return ""
+
+    # Clamp offsets to valid bounds
+    span_start = max(0, span_start)
+    span_end = min(text_len, span_end)
+
+    # Validate after clamping
     if span_start >= span_end:
         raise ValueError(
-            f"span_start ({span_start}) must be less than span_end ({span_end})"
+            f"Invalid span after clamping: start={span_start}, end={span_end}"
         )
 
-    return intervento_testo_raw[span_start:span_end]
+    # Extend start backward to word boundary (find previous space or start of text)
+    while span_start > 0 and speech_text[span_start] != ' ' and speech_text[span_start - 1] != ' ':
+        span_start -= 1
+
+    # Skip leading space if we landed on one
+    if span_start < text_len and speech_text[span_start] == ' ':
+        span_start += 1
+
+    # Extend end forward to word boundary (find next space or end of text)
+    while span_end < text_len and speech_text[span_end - 1] != ' ' and speech_text[span_end] != ' ':
+        span_end += 1
+
+    # Strip trailing space if we landed before one
+    while span_end > span_start and speech_text[span_end - 1] == ' ':
+        span_end -= 1
+
+    return speech_text[span_start:span_end]
 
 
 def verify_citation_integrity(
     quote_or_evidence,
-    intervento_testo_raw: str,
+    speech_text: str,
     span_start: Optional[int] = None,
     span_end: Optional[int] = None
 ) -> bool:
@@ -170,12 +192,12 @@ def verify_citation_integrity(
     Verification is done by re-extraction only.
 
     Can be called in two ways:
-    1. verify_citation_integrity(evidence, testo_raw) - with UnifiedEvidence object
-    2. verify_citation_integrity(quote_text, testo_raw, start, end) - with individual params
+    1. verify_citation_integrity(evidence, text) - with UnifiedEvidence object
+    2. verify_citation_integrity(quote_text, text, start, end) - with individual params
 
     Args:
         quote_or_evidence: Either an UnifiedEvidence object or a quote string
-        intervento_testo_raw: The raw intervention text
+        speech_text: The raw speech text
         span_start: Start offset (required if quote_or_evidence is a string)
         span_end: End offset (required if quote_or_evidence is a string)
 
@@ -186,14 +208,14 @@ def verify_citation_integrity(
         # Check if first argument is an UnifiedEvidence object
         if isinstance(quote_or_evidence, UnifiedEvidence):
             evidence = quote_or_evidence
-            re_extracted = intervento_testo_raw[evidence.span_start:evidence.span_end]
+            re_extracted = speech_text[evidence.span_start:evidence.span_end]
             return re_extracted == evidence.quote_text
         else:
             # Individual parameters provided
             if span_start is None or span_end is None:
                 raise ValueError("span_start and span_end required when quote is a string")
             quote_text = quote_or_evidence
-            re_extracted = intervento_testo_raw[span_start:span_end]
+            re_extracted = speech_text[span_start:span_end]
             return re_extracted == quote_text
     except (IndexError, ValueError):
         return False

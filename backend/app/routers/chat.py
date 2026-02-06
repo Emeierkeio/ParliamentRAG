@@ -306,19 +306,42 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
 def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[str, Any]:
     """Fetch detailed speaker information from Neo4j."""
-    # Try Deputato first
+    # Try Deputy first
     cypher = """
-    MATCH (d:Deputato {id: $speaker_id})
-    OPTIONAL MATCH (d)-[mc:MEMBRO_COMMISSIONE]->(c:Commissione)
-    WHERE mc.dataFine IS NULL OR mc.dataFine >= date()
-    WITH d, collect(c.nome)[0] AS commissione_attuale
+    MATCH (d:Deputy {id: $speaker_id})
+    OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+    WHERE mc.end_date IS NULL OR mc.end_date >= date()
+    WITH d, collect(c.name)[0] AS current_committee
+
+    // Get institutional roles using CALL subqueries
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
+        WHERE rp.end_date IS NULL OR rp.end_date >= date()
+        RETURN collect(DISTINCT 'Presidente ' + cp.name) AS president_roles
+    }
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
+        WHERE rv.end_date IS NULL OR rv.end_date >= date()
+        RETURN collect(DISTINCT 'Vicepresidente ' + cv.name) AS vice_roles
+    }
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
+        WHERE rs.end_date IS NULL OR rs.end_date >= date()
+        RETURN collect(DISTINCT 'Segretario ' + cs.name) AS secretary_roles
+    }
+    WITH d, current_committee, president_roles + vice_roles + secretary_roles AS all_roles
+
     RETURN d.id AS id,
-           d.nome AS nome,
-           d.cognome AS cognome,
-           d.professione AS professione,
-           d.istruzione AS istruzione,
-           d.urlSchedaCamera AS scheda_camera,
-           commissione_attuale
+           d.first_name AS first_name,
+           d.last_name AS last_name,
+           d.profession AS profession,
+           d.education AS education,
+           COALESCE(d.camera_profile_url, d.url_scheda_camera) AS camera_profile_url,
+           current_committee,
+           CASE WHEN size(all_roles) > 0 THEN all_roles[0] ELSE null END AS institutional_role
     """
     with neo4j_client.session() as session:
         result = session.run(cypher, speaker_id=speaker_id)
@@ -326,23 +349,23 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         if record:
             return dict(record)
 
-    # Try MembroGoverno
+    # Try GovernmentMember
     cypher_gov = """
-    MATCH (m:MembroGoverno {id: $speaker_id})
+    MATCH (m:GovernmentMember {id: $speaker_id})
     RETURN m.id AS id,
-           m.nome AS nome,
-           m.cognome AS cognome,
-           m.incarico AS ruolo_istituzionale,
-           m.urlSchedaCamera AS scheda_camera
+           m.first_name AS first_name,
+           m.last_name AS last_name,
+           COALESCE(m.position, m.incarico) AS institutional_role,
+           COALESCE(m.camera_profile_url, m.url_scheda_camera) AS camera_profile_url
     """
     with neo4j_client.session() as session:
         result = session.run(cypher_gov, speaker_id=speaker_id)
         record = result.single()
         if record:
             data = dict(record)
-            data["professione"] = None
-            data["istruzione"] = None
-            data["commissione_attuale"] = None
+            data["profession"] = None
+            data["education"] = None
+            data["current_committee"] = None
             return data
 
     return {}
@@ -388,10 +411,10 @@ def _compute_experts_for_frontend(
             top_speaker = speakers[top_speaker_id]
             coalition = coalition_logic.get_coalition(party)
 
-            # Split name into nome/cognome if possible
+            # Split name into first_name/last_name if possible
             name_parts = top_speaker["speaker_name"].split(" ", 1)
-            nome = name_parts[0] if name_parts else ""
-            cognome = name_parts[1] if len(name_parts) > 1 else ""
+            first_name = name_parts[0] if name_parts else ""
+            last_name = name_parts[1] if len(name_parts) > 1 else ""
 
             # Get detailed authority breakdown
             details = authority_details.get(top_speaker_id, {})
@@ -402,26 +425,26 @@ def _compute_experts_for_frontend(
 
             experts.append({
                 "id": top_speaker_id,
-                "nome": nome,
-                "cognome": cognome,
-                "gruppo": party,
-                "coalizione": coalition,
+                "first_name": first_name,
+                "last_name": last_name,
+                "group": party,
+                "coalition": coalition,
                 "authority_score": round(top_speaker["authority_score"], 2),
-                "n_interventi_rilevanti": top_speaker["count"],
+                "relevant_speeches_count": top_speaker["count"],
                 # Additional details for frontend
-                "scheda_camera": speaker_info.get("scheda_camera"),
-                "professione": speaker_info.get("professione"),
-                "istruzione": speaker_info.get("istruzione"),
-                "commissione": speaker_info.get("commissione_attuale"),
-                "ruolo_istituzionale": speaker_info.get("ruolo_istituzionale"),
+                "camera_profile_url": speaker_info.get("camera_profile_url"),
+                "profession": speaker_info.get("profession"),
+                "education": speaker_info.get("education"),
+                "committee": speaker_info.get("current_committee"),
+                "institutional_role": speaker_info.get("institutional_role"),
                 # Score breakdown
                 "score_breakdown": {
-                    "interventi": round(components.get("interventions", 0), 2),
-                    "atti": round(components.get("acts", 0), 2),
-                    "commissione": round(components.get("committee", 0), 2),
-                    "professione": round(components.get("profession", 0), 2),
-                    "istruzione": round(components.get("education", 0), 2),
-                    "ruolo": round(components.get("role", 0), 2),
+                    "speeches": round(components.get("interventions", 0), 2),
+                    "acts": round(components.get("acts", 0), 2),
+                    "committee": round(components.get("committee", 0), 2),
+                    "profession": round(components.get("profession", 0), 2),
+                    "education": round(components.get("education", 0), 2),
+                    "role": round(components.get("role", 0), 2),
                 },
             })
 
@@ -434,7 +457,7 @@ def _build_citations_for_frontend(
     """
     Build citations in frontend-expected format.
 
-    Frontend expects: deputato_nome, deputato_cognome, testo, gruppo, coalizione, data
+    Frontend expects: deputy_first_name, deputy_last_name, text, group, coalition, date
     Uses evidence_id as chunk_id so links in generated text match the sidebar.
     """
     from ..services.authority.coalition_logic import CoalitionLogic
@@ -447,24 +470,24 @@ def _build_citations_for_frontend(
         party = e.get("party", "MISTO")
         coalition = coalition_logic.get_coalition(party)
 
-        # Split name into nome/cognome
+        # Split name into first_name/last_name
         name_parts = speaker_name.split(" ", 1)
-        nome = name_parts[0] if name_parts else ""
-        cognome = name_parts[1] if len(name_parts) > 1 else ""
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
 
         citations.append({
             "chunk_id": evidence_id,  # For linking
-            "deputato_nome": nome,
-            "deputato_cognome": cognome,
-            "testo": e.get("chunk_text", "")[:300],  # Frontend field
+            "deputy_first_name": first_name,
+            "deputy_last_name": last_name,
+            "text": e.get("chunk_text", "")[:300],
             "quote_text": e.get("quote_text", ""),
             "full_text": e.get("chunk_text", ""),
-            "gruppo": party,
-            "coalizione": coalition,
-            "data": str(e.get("date", "")),
+            "group": party,
+            "coalition": coalition,
+            "date": str(e.get("date", "")),
             "similarity": round(e.get("similarity", 0), 2),
-            "dibattito": e.get("dibattito_titolo", ""),
-            "intervento_id": e.get("speech_id", ""),
+            "debate": e.get("debate_title", ""),
+            "intervention_id": e.get("speech_id", ""),
         })
 
     return citations
@@ -540,7 +563,7 @@ def _build_verified_citations(
     Build verified citations with full details.
 
     Uses evidence_id as chunk_id for consistent linking.
-    Frontend expects: deputato_nome, deputato_cognome, testo, coalizione, etc.
+    Frontend expects: deputy_first_name, deputy_last_name, text, coalition, etc.
     """
     from ..services.authority.coalition_logic import CoalitionLogic
     coalition_logic = CoalitionLogic()
@@ -553,26 +576,26 @@ def _build_verified_citations(
         party = cit.get("party", evidence.get("party", "MISTO"))
         coalition = coalition_logic.get_coalition(party)
 
-        # Split name into nome/cognome
+        # Split name into first_name/last_name
         speaker_name = cit.get("speaker_name", evidence.get("speaker_name", ""))
         name_parts = speaker_name.split(" ", 1)
-        nome = name_parts[0] if name_parts else ""
-        cognome = name_parts[1] if len(name_parts) > 1 else ""
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
 
         verified.append({
             "chunk_id": eid,  # For linking
-            "deputato_nome": nome,
-            "deputato_cognome": cognome,
-            "testo": cit.get("quote_text", ""),
+            "deputy_first_name": first_name,
+            "deputy_last_name": last_name,
+            "text": cit.get("quote_text", ""),
             "quote_text": cit.get("quote_text", ""),
             "full_text": evidence.get("chunk_text", ""),
-            "gruppo": party,
-            "coalizione": coalition,
-            "data": str(cit.get("date", "")),
+            "group": party,
+            "coalition": coalition,
+            "date": str(cit.get("date", "")),
             "span_start": cit.get("span_start", 0),
             "span_end": cit.get("span_end", 0),
-            "dibattito": evidence.get("dibattito_titolo", ""),
-            "intervento_id": evidence.get("speech_id", ""),
+            "debate": evidence.get("debate_title", ""),
+            "intervention_id": evidence.get("speech_id", ""),
             "verified": True,
         })
 

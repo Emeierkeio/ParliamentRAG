@@ -252,43 +252,76 @@ class AuthorityScorer:
         """
         Fetch all necessary data for a speaker from Neo4j.
         """
-        # Try Deputato first
+        # Try Deputy first
         cypher = """
-        MATCH (d:Deputato {id: $speaker_id})
-        OPTIONAL MATCH (d)-[mg:MEMBRO_GRUPPO]->(g:GruppoParlamentare)
+        MATCH (d:Deputy {id: $speaker_id})
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WITH d, collect({
-            gruppo: g.nome,
-            dataInizio: mg.dataInizio,
-            dataFine: mg.dataFine
+            group: g.name,
+            start_date: mg.start_date,
+            end_date: mg.end_date
         }) AS group_memberships
 
-        OPTIONAL MATCH (d)-[mc:MEMBRO_COMMISSIONE]->(c:Commissione)
+        OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
         WITH d, group_memberships, collect({
-            commissione_nome: c.nome,
-            dataInizio: mc.dataInizio,
-            dataFine: mc.dataFine
+            committee_name: c.name,
+            committee_embedding: c.embedding,
+            start_date: mc.start_date,
+            end_date: mc.end_date
         }) AS committee_memberships
 
-        OPTIONAL MATCH (d)-[:PRIMO_FIRMATARIO|ALTRO_FIRMATARIO]->(a:AttoParlamentare)
+        // Fetch institutional roles (President, Vice President, Secretary of committees)
+        OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
         WITH d, group_memberships, committee_memberships, collect({
+            role_type: 'president',
+            committee_name: cp.name,
+            committee_embedding: cp.embedding,
+            start_date: rp.start_date,
+            end_date: rp.end_date
+        }) AS president_roles
+
+        OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
+        WITH d, group_memberships, committee_memberships, president_roles, collect({
+            role_type: 'vice_president',
+            committee_name: cv.name,
+            committee_embedding: cv.embedding,
+            start_date: rv.start_date,
+            end_date: rv.end_date
+        }) AS vice_president_roles
+
+        OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
+        WITH d, group_memberships, committee_memberships, president_roles, vice_president_roles, collect({
+            role_type: 'secretary',
+            committee_name: cs.name,
+            committee_embedding: cs.embedding,
+            start_date: rs.start_date,
+            end_date: rs.end_date
+        }) AS secretary_roles
+
+        WITH d, group_memberships, committee_memberships,
+             president_roles + vice_president_roles + secretary_roles AS institutional_roles
+
+        OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
+        WITH d, group_memberships, committee_memberships, institutional_roles, collect({
             uri: a.uri,
-            date: a.dataPresentazione
+            date: a.presentation_date
         }) AS acts
 
-        OPTIONAL MATCH (i:Intervento)-[:PRONUNCIATO_DA]->(d)
-        OPTIONAL MATCH (i)<-[:CONTIENE_INTERVENTO]-(:Fase)<-[:HA_FASE]-(:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
-        WITH d, group_memberships, committee_memberships, acts, collect({
-            intervento_id: i.id,
-            date: s.data
+        OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
+        OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+        WITH d, group_memberships, committee_memberships, institutional_roles, acts, collect({
+            speech_id: i.id,
+            date: s.date
         }) AS interventions
 
         RETURN d.id AS speaker_id,
-               d.nome AS nome,
-               d.cognome AS cognome,
-               d.embedding_professione AS embedding_professione,
-               d.embedding_istruzione AS embedding_istruzione,
+               d.first_name AS first_name,
+               d.last_name AS last_name,
+               d.profession_embedding AS profession_embedding,
+               d.education_embedding AS education_embedding,
                group_memberships,
                committee_memberships,
+               institutional_roles,
                acts,
                interventions
         """
@@ -303,32 +336,34 @@ class AuthorityScorer:
                 # Determine current group
                 current_group = "MISTO"
                 for membership in data.get("group_memberships", []):
-                    start = parse_neo4j_date(membership.get("dataInizio"))
-                    end = parse_neo4j_date(membership.get("dataFine"))
+                    start = parse_neo4j_date(membership.get("start_date"))
+                    end = parse_neo4j_date(membership.get("end_date"))
 
                     if start and start <= reference_date:
                         if not end or end >= reference_date:
-                            current_group = membership.get("gruppo", "MISTO")
+                            current_group = membership.get("group", "MISTO")
                             break
 
                 data["current_group"] = current_group
                 return data
 
-        # Try MembroGoverno if not found as Deputato
+        # Try GovernmentMember if not found as Deputy
         cypher_gov = """
-        MATCH (m:MembroGoverno {id: $speaker_id})
-        OPTIONAL MATCH (i:Intervento)-[:PRONUNCIATO_DA]->(m)
-        OPTIONAL MATCH (i)<-[:CONTIENE_INTERVENTO]-(:Fase)<-[:HA_FASE]-(:Dibattito)<-[:HA_DIBATTITO]-(s:Seduta)
+        MATCH (m:GovernmentMember {id: $speaker_id})
+        OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(m)
+        OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
         WITH m, collect({
-            intervento_id: i.id,
-            date: s.data
+            speech_id: i.id,
+            date: s.date
         }) AS interventions
 
         RETURN m.id AS speaker_id,
-               m.nome AS nome,
-               m.cognome AS cognome,
+               m.first_name AS first_name,
+               m.last_name AS last_name,
+               COALESCE(m.position, m.incarico) AS government_position,
                [] AS group_memberships,
                [] AS committee_memberships,
+               [] AS institutional_roles,
                [] AS acts,
                interventions
         """

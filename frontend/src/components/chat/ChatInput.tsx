@@ -4,14 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { config } from "@/config";
-import { Send, Square, Loader2, Sparkles } from "lucide-react";
+import { Send, Square } from "lucide-react";
 
 interface ChatInputProps {
-  onSend: (message: string, mode: "standard" | "high_quality") => void;
+  onSend: (message: string) => void;
   onCancel?: () => void;
   isLoading?: boolean;
-  isHighQuality?: boolean;
-  onToggleHighQuality?: () => void;
   disabled?: boolean;
   className?: string;
   placeholder?: string;
@@ -21,8 +19,6 @@ export function ChatInput({
   onSend,
   onCancel,
   isLoading = false,
-  isHighQuality = false,
-  onToggleHighQuality,
   disabled = false,
   className,
   placeholder,
@@ -42,7 +38,7 @@ export function ChatInput({
   const handleSubmit = () => {
     const trimmed = value.trim();
     if (trimmed && !disabled && !isLoading) {
-      onSend(trimmed, isHighQuality ? "high_quality" : "standard");
+      onSend(trimmed);
       setValue("");
     }
   };
@@ -80,22 +76,6 @@ export function ChatInput({
               "scrollbar-thin max-h-[200px]"
             )}
           />
-
-          {/* High Quality Toggle */}
-          {!isLoading && (
-            <Button
-              size="icon"
-              variant="ghost" 
-              onClick={() => onToggleHighQuality?.()}
-              title={isHighQuality ? "Deep Search Attivo (Best-of-N)" : "Attiva Deep Search"}
-              className={cn(
-                "h-8 w-8 shrink-0 rounded-lg transition-all",
-                isHighQuality ? "text-primary bg-primary/10 hover:bg-primary/20" : "text-muted-foreground hover:bg-muted"
-              )}
-            >
-              <Sparkles className="h-4 w-4" />
-            </Button>
-          )}
 
           {/* Action button */}
           {isLoading ? (
