@@ -229,3 +229,7 @@ neo4j/
 slides.md
 thesis.md
 slides_tecniche.md
+
+assets/
+backend/data/chat_history.json
+docs/
