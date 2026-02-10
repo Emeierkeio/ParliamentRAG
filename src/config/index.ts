@@ -61,6 +61,19 @@ export const config = {
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": { color: "#9C27B0", label: "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC, Italia al Centro) - MAIE" },
     "MISTO": { color: "#9E9E9E", label: "Gruppo Misto" },
 
+    // Normalized display names (from backend normalize_party_name)
+    "Fratelli d'Italia": { color: "#1565C0", label: "Fratelli d'Italia" },
+    "Partito Democratico - Italia Democratica e Progressista": { color: "#E53935", label: "Partito Democratico - Italia Democratica e Progressista" },
+    "Lega - Salvini Premier": { color: "#4CAF50", label: "Lega - Salvini Premier" },
+    "Movimento 5 Stelle": { color: "#FFC107", label: "Movimento 5 Stelle" },
+    "Forza Italia - Berlusconi Presidente - PPE": { color: "#2196F3", label: "Forza Italia - Berlusconi Presidente - PPE" },
+    "Alleanza Verdi e Sinistra": { color: "#66BB6A", label: "Alleanza Verdi e Sinistra" },
+    "Azione - Popolari Europeisti Riformatori - Renew Europe": { color: "#FF9800", label: "Azione - Popolari Europeisti Riformatori - Renew Europe" },
+    "Italia Viva - Il Centro - Renew Europe": { color: "#E91E63", label: "Italia Viva - Il Centro - Renew Europe" },
+    "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": { color: "#9C27B0", label: "Noi Moderati - MAIE - Centro Popolare" },
+    "Misto": { color: "#9E9E9E", label: "Gruppo Misto" },
+    "Governo": { color: "#4B0082", label: "Governo" },
+
     // Aliases for common short names (robustness)
     "Lega": { color: "#4CAF50", label: "Lega - Salvini Premier" },
     "Forza Italia": { color: "#2196F3", label: "Forza Italia - Berlusconi Presidente - PPE" },
@@ -69,7 +82,7 @@ export const config = {
     "M5S": { color: "#FFC107", label: "Movimento 5 Stelle" },
     "Azione": { color: "#FF9800", label: "Azione - Popolari Europeisti Riformatori - Renew Europe" },
     "Italia Viva": { color: "#E91E63", label: "Italia Viva - Il Centro - Renew Europe" },
-    "Noi Moderati": { color: "#9C27B0", label: "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC, Italia al Centro) - MAIE" },
+    "Noi Moderati": { color: "#9C27B0", label: "Noi Moderati - MAIE - Centro Popolare" },
     "Gruppo Misto": { color: "#9E9E9E", label: "Gruppo Misto" },
   },
 
