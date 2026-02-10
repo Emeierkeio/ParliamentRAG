@@ -257,7 +257,7 @@ class GraphChannel:
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
         RETURN c.id AS chunk_id,
-               c.text AS chunk_text,
+               COALESCE(c.text, c.testo) AS chunk_text,
                c.embedding AS embedding,
                c.start_char_raw AS span_start,
                c.end_char_raw AS span_end,
@@ -289,10 +289,10 @@ class GraphChannel:
                 span_start = row.get("span_start", 0)
                 span_end = row.get("span_end", 0)
 
-                if text and span_start is not None and span_end is not None:
+                if text and span_start is not None and span_end is not None and span_start < span_end:
                     quote_text = compute_quote_text(text, span_start, span_end)
                 else:
-                    quote_text = row.get("chunk_text", "")
+                    quote_text = row.get("chunk_text", "") or text
 
                 party = row.get("party", "MISTO")
                 coalition = config.get_coalition(party) if party else "opposizione"

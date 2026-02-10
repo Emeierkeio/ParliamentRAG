@@ -155,7 +155,7 @@ class Neo4jClient:
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         RETURN c.id AS chunk_id,
-               c.text AS chunk_text,
+               COALESCE(c.text, c.testo) AS chunk_text,
                c.start_char_raw AS span_start,
                c.end_char_raw AS span_end,
                c.index AS chunk_index,

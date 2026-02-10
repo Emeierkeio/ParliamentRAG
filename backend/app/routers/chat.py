@@ -342,7 +342,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
            d.last_name AS last_name,
            d.profession AS profession,
            d.education AS education,
-           COALESCE(d.camera_profile_url, d.url_scheda_camera) AS camera_profile_url,
+           d.deputy_card AS camera_profile_url,
            current_committee,
            CASE WHEN size(all_roles) > 0 THEN all_roles[0] ELSE null END AS institutional_role
     """
@@ -358,8 +358,8 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
     RETURN m.id AS id,
            m.first_name AS first_name,
            m.last_name AS last_name,
-           COALESCE(m.position, m.incarico) AS institutional_role,
-           COALESCE(m.camera_profile_url, m.url_scheda_camera) AS camera_profile_url
+           m.institutional_role AS institutional_role,
+           m.deputy_card AS camera_profile_url
     """
     with neo4j_client.session() as session:
         result = session.run(cypher_gov, speaker_id=speaker_id)
@@ -481,13 +481,17 @@ def _build_citations_for_frontend(
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
+        chunk_text = e.get("chunk_text") or ""
+        quote_text = e.get("quote_text") or ""
+        display_text = (chunk_text or quote_text)[:300]
+
         citations.append({
             "chunk_id": evidence_id,  # For linking
             "deputy_first_name": first_name,
             "deputy_last_name": last_name,
-            "text": e.get("chunk_text", "")[:300],
-            "quote_text": e.get("quote_text", ""),
-            "full_text": e.get("chunk_text", ""),
+            "text": display_text,
+            "quote_text": quote_text,
+            "full_text": chunk_text or quote_text,
             "group": party,
             "coalition": coalition,
             "date": str(e.get("date", "")),

@@ -360,7 +360,7 @@ class AuthorityScorer:
         RETURN m.id AS speaker_id,
                m.first_name AS first_name,
                m.last_name AS last_name,
-               COALESCE(m.position, m.incarico) AS government_position,
+               m.institutional_role AS government_position,
                [] AS group_memberships,
                [] AS committee_memberships,
                [] AS institutional_roles,
