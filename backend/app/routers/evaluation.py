@@ -19,6 +19,7 @@ from fastapi.responses import StreamingResponse
 from app.models.evaluation import (
     AutomatedMetrics,
     AggregatedMetrics,
+    BaselineComparison,
     CombinedEvaluation,
     EvaluationDashboardData,
 )

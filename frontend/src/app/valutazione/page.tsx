@@ -197,8 +197,9 @@ export default function ValutazionePage() {
 function OverviewTab({ data }: { data: EvaluationDashboardData }) {
   const agg = data.automated_aggregate;
   const human = data.human_aggregate;
+  const bl = data.baseline;
 
-  // Radar metrics: automated (0-1 scale)
+  // Radar metrics: full system (0-1 scale)
   const radarMetrics = [
     agg.avg_party_coverage,
     agg.avg_citation_integrity,
@@ -214,16 +215,23 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
     "Completezza",
   ];
 
-  // Human metrics normalized to 0-1 (from 1-5 scale)
-  const humanRadar = human
-    ? [
-        (human.avg_answer_quality - 1) / 4,
-        ((human.avg_citations_relevance + human.avg_citations_accuracy) / 2 - 1) / 4,
-        ((human.avg_balance_perception + human.avg_balance_fairness) / 2 - 1) / 4,
-        (human.avg_experts_usefulness - 1) / 4,
-        (human.avg_overall_satisfaction - 1) / 4,
-      ]
-    : undefined;
+  // Baseline metrics for radar comparison
+  const baselineRadar = [
+    bl.party_coverage,
+    bl.citation_integrity,
+    bl.balance_score,
+    bl.authority_utilization,
+    bl.response_completeness,
+  ];
+
+  // Improvement deltas
+  const deltas = [
+    { label: "Copertura", system: agg.avg_party_coverage, baseline: bl.party_coverage },
+    { label: "Citazioni", system: agg.avg_citation_integrity, baseline: bl.citation_integrity },
+    { label: "Bilanciamento", system: agg.avg_balance_score, baseline: bl.balance_score },
+    { label: "Autorevolezza", system: agg.avg_authority_utilization, baseline: bl.authority_utilization },
+    { label: "Completezza", system: agg.avg_response_completeness, baseline: bl.response_completeness },
+  ];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -302,21 +310,81 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         </div>
       </div>
 
-      {/* Radar Chart */}
+      {/* Radar Chart: System vs Baseline */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">
-            Profilo di Qualità Multi-Dimensionale
+            ParliamentRAG vs Naive RAG — Profilo Multi-Dimensionale
           </CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
           <RadarChart
             metrics={radarMetrics}
             labels={radarLabels}
-            secondaryMetrics={humanRadar}
-            secondaryLabel="Valutazione Umana"
+            secondaryMetrics={baselineRadar}
+            secondaryLabel={bl.label}
             size={350}
           />
+        </CardContent>
+      </Card>
+
+      {/* Improvement over baseline */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">
+            Miglioramento rispetto alla Baseline
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {deltas.map((d) => {
+              const improvement = d.system - d.baseline;
+              const improvementPct = d.baseline > 0
+                ? ((improvement / d.baseline) * 100).toFixed(0)
+                : "—";
+              return (
+                <div key={d.label} className="flex items-center gap-4">
+                  <span className="w-28 text-sm text-gray-600 dark:text-gray-400">
+                    {d.label}
+                  </span>
+                  <div className="flex-1 flex items-center gap-2">
+                    {/* Baseline bar */}
+                    <div className="flex-1 relative h-6 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="absolute h-full rounded-full bg-amber-300/50 dark:bg-amber-700/30"
+                        style={{ width: `${d.baseline * 100}%` }}
+                      />
+                      <div
+                        className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
+                        style={{ width: `${d.system * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-24 text-right">
+                    <span className={cn(
+                      "text-sm font-semibold",
+                      improvement > 0 ? "text-emerald-600" : improvement < 0 ? "text-red-600" : "text-gray-500"
+                    )}>
+                      {improvement > 0 ? "+" : ""}{(improvement * 100).toFixed(1)}pp
+                    </span>
+                    <span className="text-xs text-muted-foreground ml-1">
+                      ({improvement > 0 ? "+" : ""}{improvementPct}%)
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+              ParliamentRAG (sistema completo)
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-3 h-3 rounded bg-amber-300/50 dark:bg-amber-700/30" />
+              {bl.label}
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -327,12 +395,14 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
 
 function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
   const agg = data.automated_aggregate;
+  const bl = data.baseline;
 
   const metrics = [
     {
       label: "Copertura Partitica (Party Coverage)",
       value: agg.avg_party_coverage,
       ci: agg.ci_party_coverage,
+      baseline: bl.party_coverage,
       description:
         "Percentuale di gruppi parlamentari rappresentati nelle citazioni (target: 100%)",
     },
@@ -340,6 +410,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Integrità Citazioni (Citation Integrity)",
       value: agg.avg_citation_integrity,
       ci: agg.ci_citation_integrity,
+      baseline: bl.citation_integrity,
       description:
         "Percentuale di citazioni con estrazione verbatim valida",
     },
@@ -347,6 +418,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Bilanciamento Politico (Balance Score)",
       value: agg.avg_balance_score,
       ci: agg.ci_balance_score,
+      baseline: bl.balance_score,
       description:
         "Equilibrio tra maggioranza e opposizione (1 = perfetto bilanciamento)",
     },
@@ -354,6 +426,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Utilizzo Autorevolezza (Authority Utilization)",
       value: agg.avg_authority_utilization,
       ci: agg.ci_authority_utilization,
+      baseline: bl.authority_utilization,
       description:
         "Media del punteggio di autorevolezza degli esperti citati",
     },
@@ -361,6 +434,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Completezza Risposta (Response Completeness)",
       value: agg.avg_response_completeness,
       ci: agg.ci_response_completeness,
+      baseline: bl.response_completeness,
       description:
         "Percentuale di sezioni per-partito presenti nella risposta",
     },
@@ -374,7 +448,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
             Metriche Automatiche
           </h2>
           <p className="text-sm text-muted-foreground">
-            Calcolate da {agg.total_chats} conversazioni nel sistema
+            Calcolate da {agg.total_chats} conversazioni — confronto con baseline Naive RAG
           </p>
         </div>
       </div>
@@ -391,32 +465,55 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
         </CardContent>
       </Card>
 
-      {/* Detailed descriptions */}
+      {/* Detailed cards with baseline comparison */}
       <div className="space-y-4">
-        {metrics.map((m) => (
-          <Card key={m.label}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
-                    {m.label}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {m.description}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-bold font-mono">
-                    {(m.value * 100).toFixed(1)}%
+        {metrics.map((m) => {
+          const delta = m.value - m.baseline;
+          const deltaPct = m.baseline > 0 ? ((delta / m.baseline) * 100).toFixed(0) : "—";
+          return (
+            <Card key={m.label}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {m.label}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {m.description}
+                    </p>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    IC 95%: [{(m.ci[0] * 100).toFixed(1)}%, {(m.ci[1] * 100).toFixed(1)}%]
+                  <div className="text-right">
+                    <div className="text-xl font-bold font-mono">
+                      {(m.value * 100).toFixed(1)}%
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      IC 95%: [{(m.ci[0] * 100).toFixed(1)}%, {(m.ci[1] * 100).toFixed(1)}%]
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                {/* Baseline comparison */}
+                <div className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
+                  <span className="text-xs text-muted-foreground w-20">Baseline:</span>
+                  <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-amber-400/60"
+                      style={{ width: `${m.baseline * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-mono text-muted-foreground w-12 text-right">
+                    {(m.baseline * 100).toFixed(0)}%
+                  </span>
+                  <span className={cn(
+                    "text-xs font-semibold w-16 text-right",
+                    delta > 0 ? "text-emerald-600" : delta < 0 ? "text-red-600" : "text-gray-500"
+                  )}>
+                    {delta > 0 ? "+" : ""}{(delta * 100).toFixed(1)}pp
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
