@@ -31,6 +31,11 @@ export interface SurveyResponse {
   compass_usefulness: number;
   experts_usefulness: number;
 
+  // Baseline comparison
+  baseline_improvement: number;
+  authority_value: number;
+  citation_pipeline_value: number;
+
   // Overall satisfaction
   overall_satisfaction: number;
   would_recommend: boolean;
@@ -60,6 +65,10 @@ export interface SurveyResponseCreate {
   compass_usefulness: number;
   experts_usefulness: number;
 
+  baseline_improvement: number;
+  authority_value: number;
+  citation_pipeline_value: number;
+
   overall_satisfaction: number;
   would_recommend: boolean;
 
@@ -88,6 +97,9 @@ export interface SurveyStats {
   avg_balance_fairness: number;
   avg_compass_usefulness: number;
   avg_experts_usefulness: number;
+  avg_baseline_improvement: number;
+  avg_authority_value: number;
+  avg_citation_pipeline_value: number;
   avg_overall_satisfaction: number;
   recommendation_rate: number;
   scores_distribution: Record<string, Record<number, number>>;
@@ -122,6 +134,9 @@ export interface SurveyFormState {
   balance_fairness: number;
   compass_usefulness: number;
   experts_usefulness: number;
+  baseline_improvement: number;
+  authority_value: number;
+  citation_pipeline_value: number;
   overall_satisfaction: number;
   would_recommend: boolean;
   feedback_positive: string;
@@ -185,6 +200,24 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     description: "Considera se aiuta a identificare le voci autorevoli sul tema",
   },
   {
+    id: "baseline_improvement",
+    category: "Confronto Baseline",
+    question: "Quanto ritieni che il sistema sia migliore di un RAG standard?",
+    description: "Confronta con un sistema che non ha authority scoring, compass ideologico e verifica citazioni",
+  },
+  {
+    id: "authority_value",
+    category: "Confronto Baseline",
+    question: "Quanto valore aggiunge il sistema di authority scoring?",
+    description: "Valuta se la selezione degli esperti per competenza migliora la qualità rispetto a una selezione casuale",
+  },
+  {
+    id: "citation_pipeline_value",
+    category: "Confronto Baseline",
+    question: "Quanto valore aggiunge la pipeline di verifica citazioni?",
+    description: "Valuta se la verifica offset-based delle citazioni migliora l'affidabilità rispetto al fuzzy matching",
+  },
+  {
     id: "overall_satisfaction",
     category: "Valutazione Complessiva",
     question: "Qual è la tua soddisfazione complessiva?",
@@ -203,6 +236,9 @@ export const getInitialSurveyFormState = (): SurveyFormState => ({
   balance_fairness: 0,
   compass_usefulness: 0,
   experts_usefulness: 0,
+  baseline_improvement: 0,
+  authority_value: 0,
+  citation_pipeline_value: 0,
   overall_satisfaction: 0,
   would_recommend: false,
   feedback_positive: "",
