@@ -88,45 +88,55 @@ async def get_history() -> HistoryListResponse:
 @router.post("/history")
 async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
     """Save a chat session to history."""
-    clean_text = _strip_markdown(chat.answer)
-    chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
+    try:
+        clean_text = _strip_markdown(chat.answer)
+        chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
 
-    client = _get_client()
+        client = _get_client()
 
-    client.query("""
-        CREATE (c:ChatHistory {
-            id: $id,
-            query: $query,
-            answer: $answer,
-            preview: $preview,
-            timestamp: $timestamp,
-            citations: $citations,
-            experts: $experts,
-            balance: $balance,
-            compass: $compass
+        # Serialize with size limits to avoid Neo4j property size issues
+        citations_json = json.dumps(chat.citations, ensure_ascii=False, default=str)
+        experts_json = json.dumps(chat.experts, ensure_ascii=False, default=str)
+        balance_json = json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else ""
+        compass_json = json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else ""
+
+        client.query("""
+            CREATE (c:ChatHistory {
+                id: $id,
+                query: $query,
+                answer: $answer,
+                preview: $preview,
+                timestamp: $timestamp,
+                citations: $citations,
+                experts: $experts,
+                balance: $balance,
+                compass: $compass
+            })
+        """, {
+            "id": chat.id,
+            "query": chat.query,
+            "answer": chat.answer[:50000],  # Limit answer size
+            "preview": chat.preview,
+            "timestamp": chat.timestamp.isoformat(),
+            "citations": citations_json,
+            "experts": experts_json,
+            "balance": balance_json,
+            "compass": compass_json,
         })
-    """, {
-        "id": chat.id,
-        "query": chat.query,
-        "answer": chat.answer,
-        "preview": chat.preview,
-        "timestamp": chat.timestamp.isoformat(),
-        "citations": json.dumps(chat.citations, ensure_ascii=False, default=str),
-        "experts": json.dumps(chat.experts, ensure_ascii=False, default=str),
-        "balance": json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else "",
-        "compass": json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else "",
-    })
 
-    # Keep only last 50 chats
-    client.query("""
-        MATCH (c:ChatHistory)
-        WITH c ORDER BY c.timestamp DESC
-        SKIP 50
-        DELETE c
-    """)
+        # Keep only last 50 chats
+        client.query("""
+            MATCH (c:ChatHistory)
+            WITH c ORDER BY c.timestamp DESC
+            SKIP 50
+            DELETE c
+        """)
 
-    logger.info(f"Saved chat to history: {chat.id}, query: {chat.query[:50]}...")
-    return chat
+        logger.info(f"Saved chat to history: {chat.id}, query: {chat.query[:50]}...")
+        return chat
+    except Exception as e:
+        logger.error(f"Failed to save chat to history: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to save chat: {str(e)}")
 
 
 @router.get("/history/{chat_id}")

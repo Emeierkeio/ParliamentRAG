@@ -197,6 +197,10 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # Build citations list for frontend
         citations = _build_citations_for_frontend(evidence_dicts)
+        if citations:
+            logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
+                       f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
+                       f"text_len={len(citations[0].get('text', ''))}")
         yield sse_event("citations", {"citations": citations})
         await asyncio.sleep(0)  # Flush
         step_times["step_4_citations"] = time.time() - step_start
@@ -222,6 +226,9 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         await asyncio.sleep(0)  # Flush
 
         compass_data = _compute_compass_data(services["ideology"], evidence_dicts)
+        logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
+                   f"groups_count={len(compass_data.get('groups', []))}, "
+                   f"axes_keys={list(compass_data.get('axes', {}).keys())}")
         yield sse_event("compass", compass_data)
         await asyncio.sleep(0)  # Flush
         step_times["step_6_compass"] = time.time() - step_start
@@ -469,6 +476,12 @@ def _build_citations_for_frontend(
     from ..services.authority.coalition_logic import CoalitionLogic
     coalition_logic = CoalitionLogic()
     citations = []
+
+    if evidence_dicts:
+        sample = evidence_dicts[0]
+        logger.info(f"[CITATIONS_DEBUG] evidence_dicts[0] keys: {list(sample.keys())}")
+        logger.info(f"[CITATIONS_DEBUG] speaker_name={sample.get('speaker_name')}, "
+                   f"party={sample.get('party')}, coalition={sample.get('coalition')}")
 
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
