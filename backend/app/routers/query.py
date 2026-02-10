@@ -120,7 +120,13 @@ async def process_query_streaming(
         )
 
         evidence_list = retrieval_result["evidence"]
-        evidence_dicts = [e.model_dump() for e in evidence_list]
+        # Include embedding (excluded by default via Field(exclude=True)) for compass PCA
+        evidence_dicts = []
+        for e in evidence_list:
+            d = e.model_dump()
+            if e.embedding is not None:
+                d["embedding"] = e.embedding
+            evidence_dicts.append(d)
 
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
 
