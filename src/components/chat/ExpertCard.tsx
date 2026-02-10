@@ -245,28 +245,28 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
       label: "Commissione",
       value: expert.score_breakdown?.committee || 0,
       description: "Pertinenza commissione",
-      tooltip: expert.committee
+      tooltip: expert.committee || "Non assegnata"
     },
     {
       icon: User,
       label: "Professione",
       value: expert.score_breakdown?.profession || 0,
       description: "Background",
-      tooltip: expert.profession
+      tooltip: expert.profession || "Non rilevata"
     },
     {
       icon: Layers,
       label: "Istruzione",
       value: expert.score_breakdown?.education || 0,
       description: "Titoli di studio",
-      tooltip: expert.education
+      tooltip: expert.education || "Non rilevata"
     },
     {
       icon: Award,
       label: "Ruolo",
       value: expert.score_breakdown?.role || 0,
       description: "Incarichi",
-      tooltip: expert.institutional_role
+      tooltip: expert.institutional_role || "Deputato"
     },
   ];
 
