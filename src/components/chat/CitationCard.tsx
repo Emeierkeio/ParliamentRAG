@@ -110,7 +110,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
 
               {/* Extracted text preview */}
               <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
-                &ldquo;{citation.text}&rdquo;
+                &ldquo;{citation.text || citation.quote_text || ""}&rdquo;
                 {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
                      <a 
                         href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
