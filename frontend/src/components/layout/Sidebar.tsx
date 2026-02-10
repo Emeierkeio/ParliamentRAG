@@ -89,14 +89,6 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         {/* Navigation */}
         <ScrollArea className="flex-1 py-6 px-3">
           <nav className="flex flex-col gap-2">
-            <div className="mb-6">
-                <NavButton
-                item={{ icon: MessageSquare, label: "Nuova Analisi", isActive: true, onClick: onNewChat }}
-                isCollapsed={isCollapsed}
-                variant="primary"
-                />
-            </div>
-            
             <NavButton
               item={{ icon: History, label: "Cronologia", onClick: () => setHistoryOpen(true) }}
               isCollapsed={isCollapsed}
