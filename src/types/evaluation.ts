@@ -49,9 +49,19 @@ export interface CombinedEvaluation {
   human: SurveyResponse | null;
 }
 
+export interface BaselineComparison {
+  party_coverage: number;
+  citation_integrity: number;
+  balance_score: number;
+  authority_utilization: number;
+  response_completeness: number;
+  label: string;
+}
+
 export interface EvaluationDashboardData {
   automated_aggregate: AggregatedMetrics;
   human_aggregate: SurveyStats | null;
+  baseline: BaselineComparison;
   per_chat: CombinedEvaluation[];
   total_chats: number;
   total_evaluated: number;
