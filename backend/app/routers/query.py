@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from ..services.neo4j_client import Neo4jClient
 from ..services.retrieval import RetrievalEngine
 from ..services.authority import AuthorityScorer
+from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.compass import IdeologyScorer
 from ..services.generation import GenerationPipeline
 from ..config import get_config, get_settings
@@ -130,53 +131,48 @@ async def process_query_streaming(
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
         query_embedding = services["retrieval"].embed_query(request.query)
 
-        authority_scores = services["authority"].compute_batch_authority(
-            speaker_ids, query_embedding
+        # Compute per-speaker authority with detailed breakdowns
+        authority_scores = {}
+        authority_details = {}
+        for speaker_id in speaker_ids:
+            result = services["authority"].compute_authority(
+                speaker_id, query_embedding
+            )
+            authority_scores[speaker_id] = result["total_score"]
+            authority_details[speaker_id] = result
+
+        # Compute experts with full details for frontend
+        experts = _compute_experts(
+            evidence_list, authority_scores, authority_details, services["neo4j"]
         )
 
-        # Compute experts per party
-        experts = _compute_experts(evidence_list, authority_scores)
+        yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
 
-        yield f"data: {json.dumps({'type': 'experts', 'data': experts})}\n\n"
-
-        # Step 4: Compass analysis
+        # Step 4: Compass analysis (2D text-based positioning)
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
 
-        coverage_metrics = services["ideology"].compute_coverage_metrics(evidence_dicts)
-
+        compass_result = services["ideology"].compute_2d_text_positions(evidence_dicts)
         compass_data = {
-            "balance_score": coverage_metrics["balance_score"],
-            "position_coverage": coverage_metrics["position_coverage"],
-            "missing_positions": coverage_metrics["missing_positions"],
+            "meta": compass_result.get("meta", {}),
+            "axes": compass_result.get("axes", {}),
+            "groups": compass_result.get("groups", []),
+            "scatter_sample": compass_result.get("scatter_sample", []),
         }
 
-        yield f"data: {json.dumps({'type': 'compass', 'data': compass_data})}\n\n"
+        yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
 
         # Step 5: Generation
         yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
-
-        # Stream callback for generation progress
-        async def gen_callback(event):
-            pass  # We'll handle this differently
 
         generation_result = await services["generation"].generate(
             query=request.query,
             evidence_list=evidence_dicts
         )
 
-        # Step 6: Citations
-        citations_data = []
-        for i, cit in enumerate(generation_result.get("citations", [])):
-            citations_data.append({
-                "chunk_id": f"cit_{i+1}",
-                "chunk_real_id": cit.get("evidence_id", ""),
-                "quote_text": cit.get("quote_text", ""),
-                "speaker_name": cit.get("speaker_name", ""),
-                "party": cit.get("party", ""),
-                "date": cit.get("date", ""),
-            })
+        # Step 6: Citations (from evidence_dicts, not generation_result)
+        citations_data = _build_citations_for_frontend(evidence_dicts)
 
-        yield f"data: {json.dumps({'type': 'citations', 'data': citations_data})}\n\n"
+        yield f"data: {json.dumps({'type': 'citations', 'data': citations_data}, default=str)}\n\n"
 
         # Step 7: Stream text chunks
         final_text = generation_result.get("text", "")
@@ -196,14 +192,84 @@ async def process_query_streaming(
         yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
 
 
+def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[str, Any]:
+    """Fetch detailed speaker information from Neo4j."""
+    cypher = """
+    MATCH (d:Deputy {id: $speaker_id})
+    OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+    WHERE mc.end_date IS NULL OR mc.end_date >= date()
+    WITH d, collect(c.name)[0] AS current_committee
+
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
+        WHERE rp.end_date IS NULL OR rp.end_date >= date()
+        RETURN collect(DISTINCT 'Presidente ' + cp.name) AS president_roles
+    }
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
+        WHERE rv.end_date IS NULL OR rv.end_date >= date()
+        RETURN collect(DISTINCT 'Vicepresidente ' + cv.name) AS vice_roles
+    }
+    CALL {
+        WITH d
+        OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
+        WHERE rs.end_date IS NULL OR rs.end_date >= date()
+        RETURN collect(DISTINCT 'Segretario ' + cs.name) AS secretary_roles
+    }
+    WITH d, current_committee, president_roles + vice_roles + secretary_roles AS all_roles
+
+    RETURN d.id AS id,
+           d.first_name AS first_name,
+           d.last_name AS last_name,
+           d.profession AS profession,
+           d.education AS education,
+           d.deputy_card AS camera_profile_url,
+           current_committee,
+           CASE WHEN size(all_roles) > 0 THEN all_roles[0] ELSE null END AS institutional_role
+    """
+    with neo4j_client.session() as session:
+        result = session.run(cypher, speaker_id=speaker_id)
+        record = result.single()
+        if record:
+            return dict(record)
+
+    # Try GovernmentMember
+    cypher_gov = """
+    MATCH (m:GovernmentMember {id: $speaker_id})
+    RETURN m.id AS id,
+           m.first_name AS first_name,
+           m.last_name AS last_name,
+           m.institutional_role AS institutional_role,
+           m.deputy_card AS camera_profile_url
+    """
+    with neo4j_client.session() as session:
+        result = session.run(cypher_gov, speaker_id=speaker_id)
+        record = result.single()
+        if record:
+            data = dict(record)
+            data["profession"] = None
+            data["education"] = None
+            data["current_committee"] = None
+            return data
+
+    return {}
+
+
 def _compute_experts(
     evidence_list: List[Any],
-    authority_scores: Dict[str, float]
-) -> Dict[str, Dict[str, Any]]:
-    """Compute top expert per party."""
+    authority_scores: Dict[str, float],
+    authority_details: Dict[str, Dict[str, Any]],
+    neo4j_client: Neo4jClient
+) -> List[Dict[str, Any]]:
+    """Compute experts in frontend-expected format with full details."""
+    coalition_logic = CoalitionLogic()
     party_speakers: Dict[str, Dict[str, Dict]] = {}
 
     for evidence in evidence_list:
+        if evidence.speaker_role == "GovernmentMember":
+            continue
         party = evidence.party
         speaker_id = evidence.speaker_id
         speaker_name = evidence.speaker_name
@@ -215,13 +281,13 @@ def _compute_experts(
             party_speakers[party][speaker_id] = {
                 "speaker_name": speaker_name,
                 "authority_score": authority_scores.get(speaker_id, 0.5),
-                "count": 0
+                "count": 0,
+                "party": party,
             }
 
         party_speakers[party][speaker_id]["count"] += 1
 
-    # Get top expert per party
-    experts = {}
+    experts = []
     for party, speakers in party_speakers.items():
         if speakers:
             top_speaker_id = max(
@@ -229,14 +295,80 @@ def _compute_experts(
                 key=lambda s: speakers[s]["authority_score"]
             )
             top_speaker = speakers[top_speaker_id]
-            experts[party] = {
-                "speaker_id": top_speaker_id,
-                "speaker_name": top_speaker["speaker_name"],
-                "authority_score": top_speaker["authority_score"],
-                "intervention_count": top_speaker["count"],
-            }
+            coalition = coalition_logic.get_coalition(party)
+
+            name_parts = top_speaker["speaker_name"].split(" ", 1)
+            first_name = name_parts[0] if name_parts else ""
+            last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+            details = authority_details.get(top_speaker_id, {})
+            components = details.get("components", {})
+
+            speaker_info = _fetch_speaker_details(neo4j_client, top_speaker_id)
+
+            experts.append({
+                "id": top_speaker_id,
+                "first_name": first_name,
+                "last_name": last_name,
+                "group": party,
+                "coalition": coalition,
+                "authority_score": round(top_speaker["authority_score"], 2),
+                "relevant_speeches_count": top_speaker["count"],
+                "camera_profile_url": speaker_info.get("camera_profile_url"),
+                "profession": speaker_info.get("profession"),
+                "education": speaker_info.get("education"),
+                "committee": speaker_info.get("current_committee"),
+                "institutional_role": speaker_info.get("institutional_role"),
+                "score_breakdown": {
+                    "speeches": round(components.get("interventions", 0), 2),
+                    "acts": round(components.get("acts", 0), 2),
+                    "committee": round(components.get("committee", 0), 2),
+                    "profession": round(components.get("profession", 0), 2),
+                    "education": round(components.get("education", 0), 2),
+                    "role": round(components.get("role", 0), 2),
+                },
+            })
 
     return experts
+
+
+def _build_citations_for_frontend(
+    evidence_dicts: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
+    """Build citations in frontend-expected format from evidence dicts."""
+    coalition_logic = CoalitionLogic()
+    citations = []
+
+    for i, e in enumerate(evidence_dicts[:20]):
+        evidence_id = e.get("evidence_id", f"cit_{i+1}")
+        speaker_name = e.get("speaker_name", "")
+        party = e.get("party", "MISTO")
+        coalition = coalition_logic.get_coalition(party)
+
+        name_parts = speaker_name.split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+        chunk_text = e.get("chunk_text") or ""
+        quote_text = e.get("quote_text") or ""
+        display_text = (chunk_text or quote_text)[:300]
+
+        citations.append({
+            "chunk_id": evidence_id,
+            "deputy_first_name": first_name,
+            "deputy_last_name": last_name,
+            "text": display_text,
+            "quote_text": quote_text,
+            "full_text": chunk_text or quote_text,
+            "group": party,
+            "coalition": coalition,
+            "date": str(e.get("date", "")),
+            "similarity": round(e.get("similarity", 0), 2),
+            "debate": e.get("debate_title", ""),
+            "intervention_id": e.get("speech_id", ""),
+        })
+
+    return citations
 
 
 @router.post("/query")
