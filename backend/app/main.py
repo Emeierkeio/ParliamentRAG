@@ -16,6 +16,7 @@ from .routers import query_router, evidence_router, config_router, chat_router, 
 from .routers.graph import router as graph_router
 from .routers.search import router as search_router
 from .routers.survey import router as survey_router
+from .routers.evaluation import router as evaluation_router
 from .config import get_config, get_settings
 
 
@@ -187,6 +188,7 @@ app.include_router(history_router)  # Conversation history
 app.include_router(graph_router)  # Graph exploration
 app.include_router(search_router)  # Parliamentary record search
 app.include_router(survey_router)  # User surveys/evaluations
+app.include_router(evaluation_router)  # Evaluation dashboard
 
 
 @app.get("/")
