@@ -369,49 +369,63 @@ def _search_acts_semantic(
 @router.get("/results")
 async def search_results(
     q: str = Query(..., min_length=2, description="Search query"),
-    limit: int = Query(100, ge=1, le=500, description="Max results"),
     deputy_id: Optional[str] = Query(None, description="Filter by deputy ID"),
     group: Optional[str] = Query(None, description="Filter by parliamentary group"),
     start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
     end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
     search_type: str = Query("text", description="Search type: text, semantic, hybrid"),
-) -> List[Dict[str, Any]]:
+    doc_type: str = Query("all", description="Document type filter: all, speech, act"),
+    page: int = Query(1, ge=1, description="Page number"),
+    page_size: int = Query(20, ge=1, le=100, description="Results per page"),
+) -> Dict[str, Any]:
     """
     Search parliamentary records (Speech chunks + ParliamentaryAct).
 
     - text: exact text matching
     - semantic: vector similarity search
     - hybrid: both text and semantic combined
+
+    Returns paginated results with total count.
     """
     client = get_client()
     all_results: List[Dict[str, Any]] = []
 
+    # Fetch enough results to allow proper pagination
+    fetch_limit = 500
+
     try:
-        half_limit = max(limit // 2, 20)
+        search_speeches = doc_type in ("all", "speech")
+        search_acts = doc_type in ("all", "act")
 
         # Text search
         if search_type in ("text", "hybrid"):
-            speech_text = _search_speeches_text(client, q, half_limit, deputy_id, group, start_date, end_date)
-            act_text = _search_acts_text(client, q, half_limit, deputy_id, group, start_date, end_date)
-            all_results.extend(speech_text)
-            all_results.extend(act_text)
+            if search_speeches:
+                speech_text = _search_speeches_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
+                all_results.extend(speech_text)
+            if search_acts:
+                act_text = _search_acts_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
+                all_results.extend(act_text)
 
         # Semantic search
         if search_type in ("semantic", "hybrid"):
             try:
                 embedding = _generate_embedding(q)
-                speech_sem = _search_speeches_semantic(client, embedding, half_limit)
-                act_sem = _search_acts_semantic(client, embedding, half_limit)
-                all_results.extend(speech_sem)
-                all_results.extend(act_sem)
+                if search_speeches:
+                    speech_sem = _search_speeches_semantic(client, embedding, fetch_limit)
+                    all_results.extend(speech_sem)
+                if search_acts:
+                    act_sem = _search_acts_semantic(client, embedding, fetch_limit)
+                    all_results.extend(act_sem)
             except Exception as e:
                 logger.error(f"Semantic search failed: {e}")
                 # Fall back to text-only if semantic fails
                 if search_type == "semantic":
-                    speech_text = _search_speeches_text(client, q, half_limit, deputy_id, group, start_date, end_date)
-                    act_text = _search_acts_text(client, q, half_limit, deputy_id, group, start_date, end_date)
-                    all_results.extend(speech_text)
-                    all_results.extend(act_text)
+                    if search_speeches:
+                        speech_text = _search_speeches_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
+                        all_results.extend(speech_text)
+                    if search_acts:
+                        act_text = _search_acts_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
+                        all_results.extend(act_text)
 
         # Deduplicate by id
         seen = set()
@@ -429,11 +443,21 @@ async def search_results(
 
         unique_results.sort(key=sort_key)
 
-        # Limit
-        unique_results = unique_results[:limit]
+        total = len(unique_results)
 
-        logger.info(f"Search '{q}' (type={search_type}): {len(unique_results)} results")
-        return unique_results
+        # Paginate
+        start = (page - 1) * page_size
+        end = start + page_size
+        page_results = unique_results[start:end]
+
+        logger.info(f"Search '{q}' (type={search_type}, doc_type={doc_type}, page={page}): {total} total, returning {len(page_results)}")
+        return {
+            "results": page_results,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": (total + page_size - 1) // page_size if total > 0 else 0,
+        }
 
     except Exception as e:
         logger.error(f"Search failed: {e}")
