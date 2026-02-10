@@ -136,6 +136,20 @@ class RetrievalEngine:
             top_k=top_k
         )
 
+        # Coverage fill: find chunks for missing parties
+        covered_parties = {r.get("party") for r in merged_results if r.get("party")}
+        all_parties = set(self.config.get_all_parties())
+        missing_parties = all_parties - covered_parties
+
+        fill_count = 0
+        if missing_parties:
+            logger.info(f"Coverage fill: searching for {len(missing_parties)} missing parties: {missing_parties}")
+            fill_results = self._coverage_fill(query_embedding, missing_parties)
+            if fill_results:
+                fill_count = len(fill_results)
+                merged_results.extend(fill_results)
+                logger.info(f"Coverage fill: added {fill_count} chunks for missing parties")
+
         # Convert to UnifiedEvidence
         evidence_list = self._to_evidence_records(merged_results)
 
@@ -221,6 +235,78 @@ class RetrievalEngine:
                 continue
 
         return evidence_list
+
+    def _coverage_fill(
+        self,
+        query_embedding: List[float],
+        missing_parties: set,
+        chunks_per_party: int = 5
+    ) -> List[Dict[str, Any]]:
+        """
+        Fill coverage gaps by doing targeted vector search for missing parties.
+
+        For each missing party, queries the vector index and filters results
+        to only include speakers from that party.
+        """
+        config = get_config()
+        retrieval_config = config.retrieval.get("dense_channel", {})
+        index_name = retrieval_config.get("index_name", "chunk_embedding_index")
+
+        fill_results = []
+
+        for party in missing_parties:
+            try:
+                cypher = """
+                CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
+                YIELD node AS c, score
+                WHERE score >= 0.25
+                MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+                MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+                AND g.name = $party_name
+                RETURN c.id AS chunk_id,
+                       c.text AS chunk_text,
+                       c.embedding AS embedding,
+                       c.start_char_raw AS span_start,
+                       c.end_char_raw AS span_end,
+                       i.id AS speech_id,
+                       i.text AS text,
+                       speaker.id AS speaker_id,
+                       speaker.first_name AS speaker_first_name,
+                       speaker.last_name AS speaker_last_name,
+                       CASE WHEN 'GovernmentMember' IN labels(speaker) THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+                       g.name AS party,
+                       s.id AS session_id,
+                       s.date AS session_date,
+                       s.number AS session_number,
+                       d.title AS debate_title,
+                       score AS similarity
+                ORDER BY score DESC
+                LIMIT $limit
+                """
+
+                results = self.client.query(cypher, {
+                    "index_name": index_name,
+                    "top_k": 500,  # Search wider to find this party's chunks
+                    "query_embedding": query_embedding,
+                    "party_name": party,
+                    "limit": chunks_per_party
+                })
+
+                if results:
+                    processed = self.dense_channel._process_results(results)
+                    for r in processed:
+                        r["retrieval_channel"] = "coverage_fill"
+                    fill_results.extend(processed)
+                    logger.info(f"Coverage fill: found {len(results)} chunks for {party}")
+                else:
+                    logger.warning(f"Coverage fill: no chunks found for {party}")
+
+            except Exception as e:
+                logger.error(f"Coverage fill error for {party}: {e}")
+
+        return fill_results
 
     def _compute_party_coverage(
         self,
