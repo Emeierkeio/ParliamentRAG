@@ -80,7 +80,7 @@ def _search_speeches_text(
     q: str,
     limit: int,
     deputy_id: Optional[str] = None,
-    group: Optional[str] = None,
+    group: Optional[List[str]] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
@@ -92,8 +92,8 @@ def _search_speeches_text(
         where_clauses.append("d.id = $deputy_id")
         params["deputy_id"] = deputy_id
     if group:
-        where_clauses.append("g.name = $group")
-        params["group"] = group
+        where_clauses.append("g.name IN $groups")
+        params["groups"] = group
     if start_date:
         where_clauses.append("s.date >= date($start_date)")
         params["start_date"] = start_date
@@ -154,7 +154,7 @@ def _search_acts_text(
     q: str,
     limit: int,
     deputy_id: Optional[str] = None,
-    group: Optional[str] = None,
+    group: Optional[List[str]] = None,
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
@@ -180,8 +180,8 @@ def _search_acts_text(
     # Group filter handled separately since it's on the signatory's group
     group_filter = ""
     if group:
-        group_filter = "WHERE g.name = $group"
-        params["group"] = group
+        group_filter = "WHERE g.name IN $groups"
+        params["groups"] = group
 
     cypher = f"""
     MATCH (d)-[:PRIMARY_SIGNATORY]->(a:ParliamentaryAct)
@@ -370,7 +370,7 @@ def _search_acts_semantic(
 async def search_results(
     q: str = Query(..., min_length=2, description="Search query"),
     deputy_id: Optional[str] = Query(None, description="Filter by deputy ID"),
-    group: Optional[str] = Query(None, description="Filter by parliamentary group"),
+    group: Optional[List[str]] = Query(None, description="Filter by parliamentary group(s)"),
     start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
     end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
     search_type: str = Query("text", description="Search type: text, semantic, hybrid"),

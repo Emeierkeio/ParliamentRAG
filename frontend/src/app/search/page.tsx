@@ -9,7 +9,6 @@ import { ResultsList, SearchResultItem } from "@/components/search/ResultsList";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Search as SearchIcon,
     Loader2,
@@ -18,6 +17,8 @@ import {
     MessageSquareQuote,
     ChevronLeft,
     ChevronRight,
+    User,
+    Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
@@ -30,10 +31,11 @@ export default function SearchPage() {
     // State
     const [query, setQuery] = useState("");
     const [selectedDeputy, setSelectedDeputy] = useState<Deputy | null>(null);
-    const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+    const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [docType, setDocType] = useState<"all" | "speech" | "act">("all");
+    const [authorFilterMode, setAuthorFilterMode] = useState<"all" | "deputy" | "group">("all");
 
     const [results, setResults] = useState<SearchResultItem[]>([]);
     const [totalResults, setTotalResults] = useState(0);
@@ -56,11 +58,13 @@ export default function SearchPage() {
             params.append('page', String(page));
             params.append('page_size', String(PAGE_SIZE));
 
-            if (selectedDeputy) {
+            if (selectedDeputy && authorFilterMode === 'deputy') {
                 params.append('deputy_id', selectedDeputy.id);
             }
-            if (selectedGroup && !selectedDeputy) {
-                params.append('group', selectedGroup);
+            if (selectedGroups.length > 0 && authorFilterMode === 'group') {
+                for (const g of selectedGroups) {
+                    params.append('group', g);
+                }
             }
             if (startDate) params.append('start_date', startDate);
             if (endDate) params.append('end_date', endDate);
@@ -88,17 +92,17 @@ export default function SearchPage() {
 
     const handlePageChange = async (page: number) => {
         await fetchPage(page);
-        // Scroll to results
         document.getElementById("search-results")?.scrollIntoView({ behavior: "smooth" });
     };
 
     const clearFilters = () => {
         setQuery("");
         setSelectedDeputy(null);
-        setSelectedGroup(null);
+        setSelectedGroups([]);
         setStartDate("");
         setEndDate("");
         setDocType("all");
+        setAuthorFilterMode("all");
         setResults([]);
         setTotalResults(0);
         setTotalPages(0);
@@ -106,15 +110,19 @@ export default function SearchPage() {
         setHasSearched(false);
     }
 
-    const speechCount = results.filter(r => r.type === "speech").length;
-    const actCount = results.filter(r => r.type === "act").length;
+    const handleAuthorModeChange = (mode: "all" | "deputy" | "group") => {
+        setAuthorFilterMode(mode);
+        if (mode === 'deputy') setSelectedGroups([]);
+        if (mode === 'group') setSelectedDeputy(null);
+        if (mode === 'all') { setSelectedDeputy(null); setSelectedGroups([]); }
+    };
 
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
              <Sidebar isCollapsed={isCollapsed} onToggle={toggle} />
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
-                {/* Header Page */}
+                {/* Header */}
                 <div className="border-b px-8 py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Ricerca</h1>
@@ -125,130 +133,129 @@ export default function SearchPage() {
                 <div className="flex-1 overflow-y-auto px-8 py-6">
                     <div className="max-w-4xl mx-auto space-y-8 pb-20">
 
-                        {/* Search Main Card */}
-                        <div className="bg-card border rounded-xl shadow-lg overflow-hidden transition-all hover:shadow-xl">
-                            <div className="p-8 space-y-8">
+                        {/* Search Card */}
+                        <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
 
-                                {/* Main Search Input */}
-                                <div className="space-y-4">
-                                     <div className="relative">
-                                         <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
-                                         <Input
-                                            placeholder="Cerca negli atti e interventi parlamentari (es. superbonus, pnrr, diminuzione tassazione)..."
-                                            value={query}
-                                            onChange={(e) => setQuery(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                            className="h-16 text-xl px-14 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
-                                         />
-                                         {query && (
-                                              <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => setQuery("")}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
-                                              >
-                                                  <FilterX className="h-4 w-4" />
-                                              </Button>
-                                         )}
-                                    </div>
-                                </div>
-
-                                {/* Filters Sections */}
-                                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-
-                                    {/* Author Filter (Col 1 - Span 7) */}
-                                    <div className="md:col-span-7 space-y-3">
-                                        <Label className="text-sm font-semibold flex items-center gap-2">
-                                            Filtra per Autore (Opzionale)
-                                        </Label>
-                                        <Tabs
-                                            defaultValue="all"
-                                            className="w-full text-foreground/80 font-normal"
-                                            onValueChange={(val) => {
-                                                if(val === 'deputy') setSelectedGroup(null);
-                                                if(val === 'group') setSelectedDeputy(null);
-                                                if(val === 'all') { setSelectedDeputy(null); setSelectedGroup(null); }
-                                            }}
+                            {/* Search Input */}
+                            <div className="p-6 pb-0">
+                                <div className="relative">
+                                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Cerca negli atti e interventi parlamentari..."
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                        className="h-14 text-lg pl-12 pr-10 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
+                                    />
+                                    {query && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setQuery("")}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
                                         >
-                                            <TabsList className="grid w-full grid-cols-3 mb-4">
-                                                <TabsTrigger value="all">Tutti</TabsTrigger>
-                                                <TabsTrigger value="deputy">Deputato</TabsTrigger>
-                                                <TabsTrigger value="group">Gruppo</TabsTrigger>
-                                            </TabsList>
+                                            <FilterX className="h-4 w-4" />
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
 
-                                            <TabsContent value="all" className="text-sm text-muted-foreground py-2 text-center bg-muted/20 rounded-md border border-dashed">
-                                                Ricerca in tutti gli atti e interventi
-                                            </TabsContent>
+                            {/* Filters Grid */}
+                            <div className="p-6 space-y-5">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-                                            <TabsContent value="deputy" className="space-y-2">
+                                    {/* Left: Author Filter */}
+                                    <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <User className="h-4 w-4 text-primary" />
+                                            <Label className="text-sm font-semibold">Autore</Label>
+                                            <span className="text-xs text-muted-foreground ml-auto">Opzionale</span>
+                                        </div>
+
+                                        {/* Author mode tabs */}
+                                        <div className="inline-flex rounded-lg border p-0.5 bg-background w-full">
+                                            {([
+                                                { value: "all" as const, label: "Tutti" },
+                                                { value: "deputy" as const, label: "Deputato" },
+                                                { value: "group" as const, label: "Gruppo" },
+                                            ]).map((tab) => (
+                                                <button
+                                                    key={tab.value}
+                                                    onClick={() => handleAuthorModeChange(tab.value)}
+                                                    className={cn(
+                                                        "flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+                                                        authorFilterMode === tab.value
+                                                            ? "bg-primary text-primary-foreground shadow-sm"
+                                                            : "text-muted-foreground hover:text-foreground"
+                                                    )}
+                                                >
+                                                    {tab.label}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {/* Author filter content */}
+                                        <div className="min-h-[42px]">
+                                            {authorFilterMode === "all" && (
+                                                <p className="text-sm text-muted-foreground text-center py-2 bg-background rounded-md border border-dashed">
+                                                    Ricerca in tutti gli atti e interventi
+                                                </p>
+                                            )}
+                                            {authorFilterMode === "deputy" && (
                                                 <DeputySelector
                                                     selectedDeputy={selectedDeputy}
                                                     onSelect={setSelectedDeputy}
                                                 />
-                                            </TabsContent>
-
-                                            <TabsContent value="group" className="space-y-2">
+                                            )}
+                                            {authorFilterMode === "group" && (
                                                 <GroupSelector
-                                                    selectedGroup={selectedGroup}
-                                                    onSelect={setSelectedGroup}
+                                                    selectedGroups={selectedGroups}
+                                                    onSelect={setSelectedGroups}
                                                 />
-                                            </TabsContent>
-                                        </Tabs>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    {/* Right column: Doc Type + Date */}
-                                    <div className="md:col-span-5 space-y-6">
-                                        {/* Document Type Filter */}
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-semibold flex items-center gap-2">
-                                                Tipo Documento
-                                            </Label>
-                                            <div className="inline-flex rounded-lg border p-0.5 bg-muted/30 w-full">
-                                                <button
-                                                    onClick={() => setDocType("all")}
-                                                    className={cn(
-                                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
-                                                        docType === "all"
-                                                            ? "bg-background shadow-sm text-foreground"
-                                                            : "text-muted-foreground hover:text-foreground"
-                                                    )}
-                                                >
-                                                    Tutti
-                                                </button>
-                                                <button
-                                                    onClick={() => setDocType("speech")}
-                                                    className={cn(
-                                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
-                                                        docType === "speech"
-                                                            ? "bg-background shadow-sm text-foreground"
-                                                            : "text-muted-foreground hover:text-foreground"
-                                                    )}
-                                                >
-                                                    <MessageSquareQuote className="h-3.5 w-3.5" />
-                                                    Interventi
-                                                </button>
-                                                <button
-                                                    onClick={() => setDocType("act")}
-                                                    className={cn(
-                                                        "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
-                                                        docType === "act"
-                                                            ? "bg-background shadow-sm text-foreground"
-                                                            : "text-muted-foreground hover:text-foreground"
-                                                    )}
-                                                >
-                                                    <FileText className="h-3.5 w-3.5" />
-                                                    Atti
-                                                </button>
+                                    {/* Right: Doc Type + Date */}
+                                    <div className="space-y-5">
+                                        {/* Document Type */}
+                                        <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <FileText className="h-4 w-4 text-primary" />
+                                                <Label className="text-sm font-semibold">Tipo Documento</Label>
+                                            </div>
+                                            <div className="inline-flex rounded-lg border p-0.5 bg-background w-full">
+                                                {([
+                                                    { value: "all" as const, label: "Tutti", icon: null },
+                                                    { value: "speech" as const, label: "Interventi", icon: MessageSquareQuote },
+                                                    { value: "act" as const, label: "Atti", icon: FileText },
+                                                ]).map((tab) => (
+                                                    <button
+                                                        key={tab.value}
+                                                        onClick={() => setDocType(tab.value)}
+                                                        className={cn(
+                                                            "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+                                                            docType === tab.value
+                                                                ? "bg-primary text-primary-foreground shadow-sm"
+                                                                : "text-muted-foreground hover:text-foreground"
+                                                        )}
+                                                    >
+                                                        {tab.icon && <tab.icon className="h-3.5 w-3.5" />}
+                                                        {tab.label}
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
 
-                                        {/* Date Filter */}
-                                        <div className="space-y-3">
-                                            <Label className="text-sm font-semibold flex items-center gap-2">
-                                                Periodo
-                                            </Label>
-                                            <div className="bg-muted/30 p-4 rounded-lg border space-y-3">
-                                                <div className="grid gap-2">
+                                        {/* Date Range */}
+                                        <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <Calendar className="h-4 w-4 text-primary" />
+                                                <Label className="text-sm font-semibold">Periodo</Label>
+                                                <span className="text-xs text-muted-foreground ml-auto">Opzionale</span>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div className="space-y-1.5">
                                                     <Label className="text-xs text-muted-foreground">Da</Label>
                                                     <Input
                                                         type="date"
@@ -257,7 +264,7 @@ export default function SearchPage() {
                                                         className="h-9 bg-background"
                                                     />
                                                 </div>
-                                                <div className="grid gap-2">
+                                                <div className="space-y-1.5">
                                                     <Label className="text-xs text-muted-foreground">A</Label>
                                                     <Input
                                                         type="date"
@@ -269,29 +276,29 @@ export default function SearchPage() {
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                {/* Main Action */}
-                                <div className="pt-2">
+                                {/* Action Buttons */}
+                                <div className="flex gap-3 pt-1">
                                     <Button
                                         size="lg"
                                         disabled={!query.trim() || loading}
                                         onClick={handleSearch}
-                                        className="w-full py-6 text-lg font-semibold shadow-xl transition-all hover:scale-[1.01]"
+                                        className="flex-1 h-12 text-base font-semibold shadow-md transition-all hover:shadow-lg"
                                     >
-                                        {loading ? <Loader2 className="mr-2 h-6 w-6 animate-spin" /> : <SearchIcon className="mr-2 h-6 w-6" />}
+                                        {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SearchIcon className="mr-2 h-5 w-5" />}
                                         Esegui Ricerca
                                     </Button>
-                                    {(hasSearched) && (
-                                         <Button
-                                            variant="link"
-                                            size="sm"
+                                    {hasSearched && (
+                                        <Button
+                                            variant="outline"
+                                            size="lg"
                                             onClick={clearFilters}
-                                            className="w-full mt-2 text-muted-foreground"
-                                         >
-                                            Resetta filtri
-                                         </Button>
+                                            className="h-12 px-5 text-muted-foreground"
+                                        >
+                                            <FilterX className="mr-2 h-4 w-4" />
+                                            Resetta
+                                        </Button>
                                     )}
                                 </div>
                             </div>
