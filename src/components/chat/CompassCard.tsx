@@ -72,6 +72,7 @@ interface CompassCardProps {
 
 export function CompassCard({ data }: CompassCardProps) {
   const [zoom, setZoom] = useState(1);
+  if (!data?.meta || !data?.groups) return null;
   const dimensionality = data.meta.dimensionality ?? 2;
 
   // Group colors and abbreviations map
