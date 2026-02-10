@@ -37,9 +37,10 @@ interface SidebarProps {
   onToggle: () => void;
   onNewChat?: () => void;
   onLoadChat?: (chat: any) => void;
+  isQueryRunning?: boolean;
 }
 
-export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryRunning = false }: SidebarProps) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [surveyOpen, setSurveyOpen] = useState(false);
@@ -102,13 +103,14 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: Sideba
             <NavButton
               item={{ icon: History, label: "Cronologia", onClick: () => setHistoryOpen(true) }}
               isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
             />
 
             <NavButton
               item={{ icon: Search, label: "Ricerca", href: "/search", onClick: () => window.location.href = "/search" }}
               isCollapsed={isCollapsed}
             />
-            
+
             <NavButton
               item={{ icon: Database, label: "Graph Explorer", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
@@ -117,6 +119,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat }: Sideba
             <NavButton
               item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => setSurveyOpen(true) }}
               isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
             />
           </nav>
         </ScrollArea>
@@ -187,14 +190,16 @@ interface NavButtonProps {
   item: NavItem;
   isCollapsed: boolean;
   variant?: "primary" | "default";
+  disabled?: boolean;
 }
 
-function NavButton({ item, isCollapsed, variant = "default" }: NavButtonProps) {
+function NavButton({ item, isCollapsed, variant = "default", disabled = false }: NavButtonProps) {
   const isPrimary = variant === "primary";
 
   const button = (
     <Button
       variant="ghost"
+      disabled={disabled}
       className={cn(
         "w-full justify-start gap-3 h-10 mb-1 transition-all duration-200",
         // Default State
@@ -204,7 +209,9 @@ function NavButton({ item, isCollapsed, variant = "default" }: NavButtonProps) {
         // Primary Variant
         isPrimary && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm",
         // Collapsed Logic
-        isCollapsed && "justify-center px-0 w-10 h-10 mx-auto"
+        isCollapsed && "justify-center px-0 w-10 h-10 mx-auto",
+        // Disabled State
+        disabled && "opacity-40 pointer-events-none"
       )}
       onClick={item.onClick}
     >

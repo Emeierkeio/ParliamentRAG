@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <Sidebar isCollapsed={isCollapsed} onToggle={toggle} onLoadChat={loadChat} />
+      <Sidebar isCollapsed={isCollapsed} onToggle={toggle} onLoadChat={loadChat} isQueryRunning={isLoading} />
 
       {/* Main content */}
       <main className="flex-1 overflow-hidden">
