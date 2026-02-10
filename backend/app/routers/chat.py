@@ -270,18 +270,29 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
         await asyncio.sleep(0)
 
-        logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
-        baseline_result = await services["generation"].generate_baseline(
-            query=request.query,
-            evidence_list=evidence_dicts
-        )
-        baseline_text = baseline_result.get("text", "")
+        baseline_text = ""
+        ab_assignment = None
+        try:
+            logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
+            baseline_result = await services["generation"].generate_baseline(
+                query=request.query,
+                evidence_list=evidence_dicts
+            )
+            baseline_text = baseline_result.get("text", "")
 
-        # Random A/B assignment for blind evaluation
-        ab_assignment = random.choice([
-            {"A": "system", "B": "baseline"},
-            {"A": "baseline", "B": "system"}
-        ])
+            if not baseline_text.strip():
+                logger.warning("[BASELINE] Baseline generation returned empty text! Result keys: %s", list(baseline_result.keys()))
+                logger.warning("[BASELINE] Full result: %s", {k: (v[:100] if isinstance(v, str) else v) for k, v in baseline_result.items()})
+
+            # Random A/B assignment for blind evaluation
+            ab_assignment = random.choice([
+                {"A": "system", "B": "baseline"},
+                {"A": "baseline", "B": "system"}
+            ])
+        except Exception as e:
+            logger.error(f"[BASELINE] Baseline generation failed: {e}", exc_info=True)
+            baseline_text = ""
+            ab_assignment = None
 
         step_times["step_8_baseline"] = time.time() - step_start
         logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")

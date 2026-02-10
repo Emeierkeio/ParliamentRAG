@@ -312,14 +312,17 @@ class GenerationPipeline:
         baseline_evidence = [
             {**e, "authority_score": 0.5} for e in evidence_list
         ]
+        logger.info(f"[BASELINE] Evidence count: {len(baseline_evidence)}")
 
         # 2. Stage 1: Analyst (identical)
         claims_result = self.analyst.analyze(query, baseline_evidence)
         claims = claims_result.get("claims", [])
+        logger.info(f"[BASELINE] Analyst produced {len(claims)} claims")
 
         # 3. Stage 2: Sectional Writer
         evidence_by_party = self._group_evidence_by_party(baseline_evidence)
         government_evidence = self._get_government_evidence(baseline_evidence)
+        logger.info(f"[BASELINE] Parties with evidence: {list(evidence_by_party.keys())}, gov evidence: {len(government_evidence) if government_evidence else 0}")
 
         sections = []
         async for section in self.sectional_writer.write_sections(
@@ -329,19 +332,27 @@ class GenerationPipeline:
             government_evidence=government_evidence
         ):
             sections.append(section)
+        logger.info(f"[BASELINE] Sectional writer produced {len(sections)} sections, "
+                     f"with evidence: {sum(1 for s in sections if s.get('has_evidence'))}")
 
         # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
         integrated = self.integrator.integrate(query, sections)
+        raw_text = integrated.get("text", "")
+        logger.info(f"[BASELINE] Integrator produced {len(raw_text)} chars (integration_failed={integrated.get('integration_failed', False)})")
 
         # 5. Remove unresolved [CIT:id] placeholders
-        text = re.sub(r'\[CIT:[^\]]+\]', '', integrated.get("text", ""))
+        text = re.sub(r'\[CIT:[^\]]+\]', '', raw_text)
         # Clean up double spaces left by removed citations
-        text = re.sub(r'  +', ' ', text)
+        text = re.sub(r'  +', ' ', text).strip()
+
+        if len(text) < 10 and len(raw_text) > 0:
+            logger.warning(f"[BASELINE] Text reduced from {len(raw_text)} to {len(text)} chars after CIT removal!")
+            logger.warning(f"[BASELINE] Raw text sample: {raw_text[:500]}")
 
         duration_ms = (datetime.now() - start_time).total_seconds() * 1000
 
         logger.info(
-            f"Baseline generation complete: {len(text)} chars, "
+            f"[BASELINE] Generation complete: {len(text)} chars, "
             f"{len(sections)} sections, {duration_ms:.1f}ms"
         )
 
