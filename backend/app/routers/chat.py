@@ -273,16 +273,16 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         baseline_text = ""
         ab_assignment = None
         try:
-            logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
+            print("[BASELINE] Starting baseline generation...", flush=True)
             baseline_result = await services["generation"].generate_baseline(
                 query=request.query,
                 evidence_list=evidence_dicts
             )
             baseline_text = baseline_result.get("text", "")
+            print(f"[BASELINE] Result: {len(baseline_text)} chars, keys={list(baseline_result.keys())}", flush=True)
 
             if not baseline_text.strip():
-                logger.warning("[BASELINE] Baseline generation returned empty text! Result keys: %s", list(baseline_result.keys()))
-                logger.warning("[BASELINE] Full result: %s", {k: (v[:100] if isinstance(v, str) else v) for k, v in baseline_result.items()})
+                print(f"[BASELINE] WARNING: empty text! metadata={baseline_result.get('metadata', {})}", flush=True)
 
             # Random A/B assignment for blind evaluation
             ab_assignment = random.choice([
@@ -290,13 +290,14 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 {"A": "baseline", "B": "system"}
             ])
         except Exception as e:
-            logger.error(f"[BASELINE] Baseline generation failed: {e}", exc_info=True)
+            print(f"[BASELINE] FAILED: {type(e).__name__}: {e}", flush=True)
+            import traceback
+            traceback.print_exc()
             baseline_text = ""
             ab_assignment = None
 
         step_times["step_8_baseline"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
-        logger.info(f"[BASELINE] Generated {len(baseline_text)} chars, A/B assignment: {ab_assignment}")
+        print(f"[BASELINE] Step 8 done: {step_times['step_8_baseline']*1000:.1f}ms, text={len(baseline_text)} chars, ab={ab_assignment}", flush=True)
 
         # === Step 9: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":

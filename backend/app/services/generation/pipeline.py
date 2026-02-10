@@ -305,6 +305,7 @@ class GenerationPipeline:
 
         Uses the same evidence but with uniform authority scores (0.5)
         and skips Stage 4 (Citation Surgeon) and coherence validation.
+        Each stage has its own error handling to maximize resilience.
         """
         start_time = datetime.now()
 
@@ -314,10 +315,14 @@ class GenerationPipeline:
         ]
         logger.info(f"[BASELINE] Evidence count: {len(baseline_evidence)}")
 
-        # 2. Stage 1: Analyst (identical)
-        claims_result = self.analyst.analyze(query, baseline_evidence)
-        claims = claims_result.get("claims", [])
-        logger.info(f"[BASELINE] Analyst produced {len(claims)} claims")
+        # 2. Stage 1: Analyst
+        claims = []
+        try:
+            claims_result = self.analyst.analyze(query, baseline_evidence)
+            claims = claims_result.get("claims", [])
+            logger.info(f"[BASELINE] Analyst produced {len(claims)} claims")
+        except Exception as e:
+            logger.error(f"[BASELINE] Analyst failed, continuing without claims: {e}")
 
         # 3. Stage 2: Sectional Writer
         evidence_by_party = self._group_evidence_by_party(baseline_evidence)
@@ -325,22 +330,36 @@ class GenerationPipeline:
         logger.info(f"[BASELINE] Parties with evidence: {list(evidence_by_party.keys())}, gov evidence: {len(government_evidence) if government_evidence else 0}")
 
         sections = []
-        async for section in self.sectional_writer.write_sections(
-            query=query,
-            claims=claims,
-            evidence_by_party=evidence_by_party,
-            government_evidence=government_evidence
-        ):
-            sections.append(section)
-        logger.info(f"[BASELINE] Sectional writer produced {len(sections)} sections, "
-                     f"with evidence: {sum(1 for s in sections if s.get('has_evidence'))}")
+        try:
+            async for section in self.sectional_writer.write_sections(
+                query=query,
+                claims=claims,
+                evidence_by_party=evidence_by_party,
+                government_evidence=government_evidence
+            ):
+                sections.append(section)
+            logger.info(f"[BASELINE] Sectional writer produced {len(sections)} sections, "
+                         f"with evidence: {sum(1 for s in sections if s.get('has_evidence'))}")
+        except Exception as e:
+            logger.error(f"[BASELINE] Sectional writer failed: {e}")
 
         # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
-        integrated = self.integrator.integrate(query, sections)
-        raw_text = integrated.get("text", "")
-        logger.info(f"[BASELINE] Integrator produced {len(raw_text)} chars (integration_failed={integrated.get('integration_failed', False)})")
+        raw_text = ""
+        if sections:
+            try:
+                integrated = self.integrator.integrate(query, sections)
+                raw_text = integrated.get("text", "")
+                logger.info(f"[BASELINE] Integrator produced {len(raw_text)} chars (integration_failed={integrated.get('integration_failed', False)})")
+            except Exception as e:
+                logger.error(f"[BASELINE] Integrator failed, using simple concatenation: {e}")
+                raw_text = self.integrator._simple_concatenation(sections)
 
-        # 5. Remove unresolved [CIT:id] placeholders
+        # 5. Fallback: if no text yet, build directly from evidence
+        if not raw_text.strip():
+            logger.warning("[BASELINE] No text from pipeline, building fallback from evidence")
+            raw_text = self._build_baseline_fallback(query, baseline_evidence)
+
+        # 6. Remove unresolved [CIT:id] placeholders
         text = re.sub(r'\[CIT:[^\]]+\]', '', raw_text)
         # Clean up double spaces left by removed citations
         text = re.sub(r'  +', ' ', text).strip()
@@ -370,6 +389,49 @@ class GenerationPipeline:
                 "sections_count": len(sections),
             }
         }
+
+    def _build_baseline_fallback(
+        self,
+        query: str,
+        evidence_list: List[Dict[str, Any]]
+    ) -> str:
+        """Build a minimal baseline response directly from evidence when LLM stages fail."""
+        from .sectional import ALL_PARTIES
+        from ..authority.coalition_logic import CoalitionLogic
+        coalition_logic = CoalitionLogic()
+
+        parts = ["## Introduzione\n\nRisposte parlamentari sul tema richiesto.\n"]
+
+        # Group evidence by coalition
+        magg_parts = []
+        opp_parts = []
+
+        evidence_by_party = self._group_evidence_by_party(evidence_list)
+        for party in ALL_PARTIES:
+            party_evidence = evidence_by_party.get(party, [])
+            if not party_evidence:
+                continue
+            # Take top 2 evidence pieces per party
+            top = party_evidence[:2]
+            lines = []
+            for e in top:
+                speaker = e.get("speaker_name", "")
+                quote = (e.get("quote_text") or e.get("chunk_text", ""))[:200]
+                if speaker and quote:
+                    lines.append(f"**{speaker}** ({party}): {quote}")
+            if lines:
+                coalition = coalition_logic.get_coalition(party)
+                if coalition == "maggioranza":
+                    magg_parts.extend(lines)
+                else:
+                    opp_parts.extend(lines)
+
+        if magg_parts:
+            parts.append("## Posizioni della Maggioranza\n\n" + "\n\n".join(magg_parts))
+        if opp_parts:
+            parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
+
+        return "\n\n".join(parts)
 
     def _group_evidence_by_party(
         self,
