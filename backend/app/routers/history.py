@@ -52,7 +52,7 @@ def _get_client():
     return get_neo4j_client()
 
 
-def _ensure_constraint():
+def ensure_constraint():
     """Create uniqueness constraint on ChatHistory.id if not exists."""
     try:
         _get_client().query(
@@ -60,10 +60,6 @@ def _ensure_constraint():
         )
     except Exception as e:
         logger.debug(f"Constraint already exists or error: {e}")
-
-
-# Run on import
-_ensure_constraint()
 
 
 @router.get("/history")
