@@ -160,7 +160,7 @@ def _search_acts_text(
 ) -> List[Dict[str, Any]]:
     """Text search on ParliamentaryAct title and description."""
     where_clauses = [
-        "(toLower(a.titolo) CONTAINS toLower($search_text) OR toLower(a.descrizione) CONTAINS toLower($search_text))"
+        "(toLower(a.title) CONTAINS toLower($search_text) OR toLower(a.description) CONTAINS toLower($search_text))"
     ]
     params: Dict[str, Any] = {"search_text": q, "limit": limit}
 
@@ -191,8 +191,8 @@ def _search_acts_text(
     {group_filter}
     RETURN a.uri AS act_uri,
            a.tipo AS act_type,
-           a.titolo AS act_title,
-           a.descrizione AS description,
+           a.title AS act_title,
+           a.description AS description,
            a.dataPresentazione AS date_raw,
            a.numero AS act_number,
            a.destinatario AS destinatario,
@@ -315,8 +315,8 @@ def _search_acts_semantic(
     OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
     RETURN a.uri AS act_uri,
            a.tipo AS act_type,
-           a.titolo AS act_title,
-           a.descrizione AS description,
+           a.title AS act_title,
+           a.description AS description,
            a.dataPresentazione AS date_raw,
            a.numero AS act_number,
            a.destinatario AS destinatario,
