@@ -48,6 +48,8 @@ import {
   createSurvey,
   getEvaluatedChatIds,
 } from "@/lib/survey-api";
+import { getChatMetrics } from "@/lib/evaluation-api";
+import type { AutomatedMetrics } from "@/types/evaluation";
 
 interface SurveyModalProps {
   isOpen: boolean;
@@ -72,7 +74,16 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Citazioni": <Quote className="w-4 h-4" />,
   "Bilanciamento Politico": <Scale className="w-4 h-4" />,
   "Funzionalità": <Compass className="w-4 h-4" />,
+  "Confronto Baseline": <Eye className="w-4 h-4" />,
   "Valutazione Complessiva": <Star className="w-4 h-4" />,
+};
+
+const BASELINE_VALUES: Record<string, { value: number; label: string }> = {
+  party_coverage_score: { value: 0.35, label: "Copertura Partiti" },
+  citation_integrity_score: { value: 0.65, label: "Integrità Citazioni" },
+  balance_score: { value: 0.60, label: "Bilanciamento" },
+  authority_utilization: { value: 0.50, label: "Utilizzo Autorità" },
+  response_completeness: { value: 0.25, label: "Completezza Risposta" },
 };
 
 export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
@@ -87,7 +98,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeContentTab, setActiveContentTab] = useState<"response" | "compass">("response");
+  const [activeContentTab, setActiveContentTab] = useState<"response" | "compass" | "metrics">("response");
+  const [chatMetrics, setChatMetrics] = useState<AutomatedMetrics | null>(null);
+  const [isLoadingMetrics, setIsLoadingMetrics] = useState(false);
 
   // Group questions by category
   const categories = SURVEY_QUESTIONS.reduce((acc, q) => {
@@ -144,14 +157,29 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     }
   }, [isOpen, loadData]);
 
+  // Load automated metrics for a chat
+  const loadChatMetrics = useCallback(async (chatId: string) => {
+    setIsLoadingMetrics(true);
+    try {
+      const metrics = await getChatMetrics(chatId);
+      setChatMetrics(metrics);
+    } catch (err) {
+      console.error("Failed to load metrics:", err);
+      setChatMetrics(null);
+    } finally {
+      setIsLoadingMetrics(false);
+    }
+  }, []);
+
   // Handle chat selection
   const handleSelectChat = async (chat: PendingChat) => {
     setSelectedChat(chat);
     setFormState(getInitialSurveyFormState());
     setCurrentCategory(0);
     setActiveContentTab("response");
+    setChatMetrics(null);
     setStep("form");
-    await loadChatDetails(chat.id);
+    await Promise.all([loadChatDetails(chat.id), loadChatMetrics(chat.id)]);
   };
 
   // Handle form field change

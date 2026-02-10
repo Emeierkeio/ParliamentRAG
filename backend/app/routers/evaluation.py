@@ -293,6 +293,7 @@ async def export_csv():
         "citations_relevance", "citations_accuracy",
         "balance_perception", "balance_fairness",
         "compass_usefulness", "experts_usefulness",
+        "baseline_improvement", "authority_value", "citation_pipeline_value",
         "overall_satisfaction", "would_recommend",
         "feedback_positive", "feedback_improvement",
     ])
@@ -329,6 +330,9 @@ async def export_csv():
             s.get("balance_fairness", ""),
             s.get("compass_usefulness", ""),
             s.get("experts_usefulness", ""),
+            s.get("baseline_improvement", ""),
+            s.get("authority_value", ""),
+            s.get("citation_pipeline_value", ""),
             s.get("overall_satisfaction", ""),
             s.get("would_recommend", ""),
             s.get("feedback_positive", ""),

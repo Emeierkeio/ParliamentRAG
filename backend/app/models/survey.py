@@ -48,6 +48,11 @@ class SurveyResponse(BaseModel):
     compass_usefulness: int = Field(..., ge=1, le=5, description="Usefulness of ideological compass")
     experts_usefulness: int = Field(..., ge=1, le=5, description="Usefulness of expert identification")
 
+    # Baseline comparison (ParliamentRAG vs naive RAG)
+    baseline_improvement: int = Field(..., ge=1, le=5, description="Perceived improvement over standard RAG")
+    authority_value: int = Field(..., ge=1, le=5, description="Value of authority scoring feature")
+    citation_pipeline_value: int = Field(..., ge=1, le=5, description="Value of citation verification pipeline")
+
     # Overall satisfaction
     overall_satisfaction: int = Field(..., ge=1, le=5, description="Overall satisfaction")
     would_recommend: bool = Field(..., description="Would recommend to colleagues")
@@ -77,6 +82,10 @@ class SurveyResponseCreate(BaseModel):
 
     compass_usefulness: int = Field(..., ge=1, le=5)
     experts_usefulness: int = Field(..., ge=1, le=5)
+
+    baseline_improvement: int = Field(..., ge=1, le=5)
+    authority_value: int = Field(..., ge=1, le=5)
+    citation_pipeline_value: int = Field(..., ge=1, le=5)
 
     overall_satisfaction: int = Field(..., ge=1, le=5)
     would_recommend: bool
@@ -108,6 +117,9 @@ class SurveyStats(BaseModel):
     avg_balance_fairness: float
     avg_compass_usefulness: float
     avg_experts_usefulness: float
+    avg_baseline_improvement: float
+    avg_authority_value: float
+    avg_citation_pipeline_value: float
     avg_overall_satisfaction: float
     recommendation_rate: float  # % who would recommend
 
@@ -177,6 +189,24 @@ SURVEY_QUESTIONS = [
         "category": "Funzionalità",
         "question": "L'identificazione degli esperti è utile?",
         "description": "Considera se aiuta a identificare le voci autorevoli sul tema"
+    },
+    {
+        "id": "baseline_improvement",
+        "category": "Confronto Baseline",
+        "question": "Quanto ritieni che il sistema sia migliore di un RAG standard?",
+        "description": "Confronta con un sistema che non ha authority scoring, compass ideologico e verifica citazioni"
+    },
+    {
+        "id": "authority_value",
+        "category": "Confronto Baseline",
+        "question": "Quanto valore aggiunge il sistema di authority scoring?",
+        "description": "Valuta se la selezione degli esperti per competenza migliora la qualità rispetto a una selezione casuale"
+    },
+    {
+        "id": "citation_pipeline_value",
+        "category": "Confronto Baseline",
+        "question": "Quanto valore aggiunge la pipeline di verifica citazioni?",
+        "description": "Valuta se la verifica offset-based delle citazioni migliora l'affidabilità rispetto al fuzzy matching"
     },
     {
         "id": "overall_satisfaction",

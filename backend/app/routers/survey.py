@@ -75,6 +75,9 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
             avg_balance_fairness=0,
             avg_compass_usefulness=0,
             avg_experts_usefulness=0,
+            avg_baseline_improvement=0,
+            avg_authority_value=0,
+            avg_citation_pipeline_value=0,
             avg_overall_satisfaction=0,
             recommendation_rate=0,
             scores_distribution={},
@@ -87,6 +90,7 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
         "citations_relevance", "citations_accuracy",
         "balance_perception", "balance_fairness",
         "compass_usefulness", "experts_usefulness",
+        "baseline_improvement", "authority_value", "citation_pipeline_value",
         "overall_satisfaction"
     ]
 
