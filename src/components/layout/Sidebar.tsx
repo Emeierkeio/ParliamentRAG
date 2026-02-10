@@ -106,16 +106,19 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             <NavButton
               item={{ icon: Search, label: "Ricerca", href: "/search", onClick: () => window.location.href = "/search" }}
               isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
             />
 
             <NavButton
               item={{ icon: Database, label: "Graph Explorer", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
             />
 
             <NavButton
               item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => window.location.href = "/valutazione" }}
               isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
             />
           </nav>
         </ScrollArea>
