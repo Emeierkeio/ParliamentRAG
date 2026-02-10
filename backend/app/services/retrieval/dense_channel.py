@@ -72,7 +72,7 @@ class DenseChannel:
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
         RETURN c.id AS chunk_id,
-               COALESCE(c.text, c.testo) AS chunk_text,
+               c.text AS chunk_text,
                c.embedding AS embedding,
                c.start_char_raw AS span_start,
                c.end_char_raw AS span_end,

@@ -49,7 +49,18 @@ class HistoryListResponse(BaseModel):
 
 
 def _get_client():
-    return get_neo4j_client()
+    try:
+        return get_neo4j_client()
+    except RuntimeError:
+        # Global client not initialized yet - create and register it
+        from ..config import get_settings
+        from ..services.neo4j_client import Neo4jClient, init_neo4j_client
+        settings = get_settings()
+        return init_neo4j_client(
+            uri=settings.neo4j_uri,
+            user=settings.neo4j_user,
+            password=settings.neo4j_password
+        )
 
 
 def ensure_constraint():

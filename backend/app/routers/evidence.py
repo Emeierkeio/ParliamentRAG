@@ -93,7 +93,7 @@ async def get_evidence(
     LIMIT 1
 
     RETURN c.id AS chunk_id,
-           COALESCE(c.text, c.testo) AS chunk_text,
+           c.text AS chunk_text,
            c.start_char_raw AS span_start,
            c.end_char_raw AS span_end,
            i.id AS speech_id,
