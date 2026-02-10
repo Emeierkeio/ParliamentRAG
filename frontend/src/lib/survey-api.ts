@@ -1,0 +1,157 @@
+/**
+ * Survey API client for ParliamentRAG evaluation system.
+ */
+
+import { config } from "@/config";
+import type {
+  SurveyResponse,
+  SurveyResponseCreate,
+  SurveyListResponse,
+  SurveyQuestion,
+  PendingChatsResponse,
+  SurveyStats,
+} from "@/types/survey";
+
+const BASE_URL = `${config.api.baseUrl}/surveys`;
+
+/**
+ * Get survey questions configuration
+ */
+export async function getSurveyQuestions(): Promise<{ questions: SurveyQuestion[] }> {
+  const response = await fetch(`${BASE_URL}/questions`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch survey questions: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Create a new survey response
+ */
+export async function createSurvey(survey: SurveyResponseCreate): Promise<SurveyResponse> {
+  const response = await fetch(BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(survey),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Failed to create survey: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Update an existing survey
+ */
+export async function updateSurvey(
+  chatId: string,
+  survey: SurveyResponseCreate
+): Promise<SurveyResponse> {
+  const response = await fetch(`${BASE_URL}/${chatId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(survey),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Failed to update survey: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Get survey for a specific chat
+ */
+export async function getSurveyByChat(chatId: string): Promise<SurveyResponse | null> {
+  const response = await fetch(`${BASE_URL}/${chatId}`);
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`Failed to fetch survey: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * List all surveys with optional statistics
+ */
+export async function listSurveys(
+  options: {
+    includeStats?: boolean;
+    limit?: number;
+    offset?: number;
+  } = {}
+): Promise<SurveyListResponse> {
+  const params = new URLSearchParams();
+  if (options.includeStats !== undefined) {
+    params.set("include_stats", String(options.includeStats));
+  }
+  if (options.limit !== undefined) {
+    params.set("limit", String(options.limit));
+  }
+  if (options.offset !== undefined) {
+    params.set("offset", String(options.offset));
+  }
+
+  const url = params.toString() ? `${BASE_URL}?${params}` : BASE_URL;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Failed to list surveys: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Delete a survey
+ */
+export async function deleteSurvey(chatId: string): Promise<void> {
+  const response = await fetch(`${BASE_URL}/${chatId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete survey: ${response.statusText}`);
+  }
+}
+
+/**
+ * Get survey statistics summary
+ */
+export async function getSurveyStats(): Promise<SurveyStats> {
+  const response = await fetch(`${BASE_URL}/stats/summary`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch survey stats: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Get list of evaluated chat IDs
+ */
+export async function getEvaluatedChatIds(): Promise<{ chat_ids: string[] }> {
+  const response = await fetch(`${BASE_URL}/chats/evaluated`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch evaluated chat IDs: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Get chats pending evaluation
+ */
+export async function getPendingChats(): Promise<PendingChatsResponse> {
+  const response = await fetch(`${BASE_URL}/chats/pending`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch pending chats: ${response.statusText}`);
+  }
+  return response.json();
+}
