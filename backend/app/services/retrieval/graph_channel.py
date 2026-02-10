@@ -173,7 +173,8 @@ class GraphChannel:
                a.presentation_date AS date,
                a.type AS type,
                a.title_embedding AS title_embedding,
-               a.eurovoc_embedding AS eurovoc_embedding
+               a.eurovoc_embedding AS eurovoc_embedding,
+               a.description_embedding AS description_embedding
         LIMIT {top_k}
         """
 
@@ -197,6 +198,7 @@ class GraphChannel:
         for act in acts:
             emb_title = act.get("title_embedding")
             emb_eurovoc = act.get("eurovoc_embedding")
+            emb_description = act.get("description_embedding")
 
             # Compute similarity with available embeddings
             similarities = []
@@ -204,6 +206,8 @@ class GraphChannel:
                 similarities.append(cosine_similarity(query_embedding, emb_title))
             if emb_eurovoc and len(emb_eurovoc) == len(query_embedding):
                 similarities.append(cosine_similarity(query_embedding, emb_eurovoc))
+            if emb_description and len(emb_description) == len(query_embedding):
+                similarities.append(cosine_similarity(query_embedding, emb_description))
 
             if similarities:
                 act["similarity"] = max(similarities)

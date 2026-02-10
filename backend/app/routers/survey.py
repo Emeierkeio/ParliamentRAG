@@ -28,7 +28,7 @@ router = APIRouter(prefix="/api/surveys", tags=["surveys"])
 # Data file path
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
 SURVEYS_FILE = DATA_DIR / "surveys.json"
-HISTORY_FILE = DATA_DIR / "chat_history.json"
+from ..services.neo4j_client import get_neo4j_client
 
 
 def _load_surveys() -> List[dict]:
@@ -50,25 +50,15 @@ def _save_surveys(surveys: List[dict]) -> None:
         json.dump(surveys, f, ensure_ascii=False, indent=2, default=str)
 
 
-def _load_chat_history() -> List[dict]:
-    """Load chat history for reference"""
-    if not HISTORY_FILE.exists():
-        return []
-    try:
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError) as e:
-        logger.error(f"Error loading chat history: {e}")
-        return []
-
-
 def _get_chat_by_id(chat_id: str) -> Optional[dict]:
-    """Get a specific chat by ID"""
-    history = _load_chat_history()
-    for chat in history:
-        if chat.get("id") == chat_id:
-            return chat
-    return None
+    """Get a specific chat by ID from Neo4j."""
+    client = get_neo4j_client()
+    result = client.query("""
+        MATCH (c:ChatHistory {id: $id})
+        RETURN c.id AS id, c.query AS query, c.answer AS answer,
+               c.timestamp AS timestamp
+    """, {"id": chat_id})
+    return result[0] if result else None
 
 
 def _calculate_stats(surveys: List[dict]) -> SurveyStats:
@@ -216,10 +206,19 @@ async def list_surveys(
     """List all surveys with optional statistics"""
 
     surveys = _load_surveys()
-    history = _load_chat_history()
 
-    # Create chat lookup
-    chat_lookup = {c.get("id"): c for c in history}
+    # Get chat IDs from surveys
+    chat_ids = [s.get("chat_id") for s in surveys if s.get("chat_id")]
+
+    # Fetch chats from Neo4j
+    chat_lookup = {}
+    if chat_ids:
+        client = get_neo4j_client()
+        results = client.query("""
+            MATCH (c:ChatHistory) WHERE c.id IN $ids
+            RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
+        """, {"ids": chat_ids})
+        chat_lookup = {r["id"]: r for r in results}
 
     # Build response with chat metadata
     surveys_with_chat = []
@@ -288,21 +287,25 @@ async def get_pending_chats():
     """Get chats that haven't been evaluated yet"""
 
     surveys = _load_surveys()
-    history = _load_chat_history()
-
     evaluated_ids = {s.get("chat_id") for s in surveys}
+
+    # Fetch all chats from Neo4j
+    client = get_neo4j_client()
+    history = client.query("""
+        MATCH (c:ChatHistory)
+        RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
+        ORDER BY c.timestamp DESC
+    """)
+
     pending = [
         {
-            "id": c.get("id"),
-            "query": c.get("query"),
-            "preview": c.get("preview"),
-            "timestamp": c.get("timestamp"),
+            "id": c["id"],
+            "query": c["query"],
+            "preview": c.get("preview", ""),
+            "timestamp": c.get("timestamp", ""),
         }
         for c in history
-        if c.get("id") not in evaluated_ids
+        if c["id"] not in evaluated_ids
     ]
-
-    # Sort by timestamp descending
-    pending.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
 
     return {"pending": pending, "total": len(pending)}

@@ -1,18 +1,19 @@
 """
 History endpoint for chat conversation history.
 
-Stores complete chat sessions with all metadata for replay.
+Stores complete chat sessions in Neo4j for persistence across deploys.
 """
 import json
 import logging
 import re
 from datetime import datetime
-from pathlib import Path
 from typing import List, Optional, Dict, Any
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
+
+from ..services.neo4j_client import get_neo4j_client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["History"])
@@ -20,20 +21,12 @@ router = APIRouter(prefix="/api", tags=["History"])
 
 def _strip_markdown(text: str) -> str:
     """Remove markdown formatting for clean preview text."""
-    # Remove headers (##, ###, etc.)
     text = re.sub(r'^#{1,6}\s+', '', text, flags=re.MULTILINE)
-    # Remove bold/italic
     text = re.sub(r'\*{1,2}([^*]+)\*{1,2}', r'\1', text)
-    # Remove links [text](url)
     text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
-    # Remove citation markers [CIT:...]
     text = re.sub(r'\[CIT:[^\]]+\]', '', text)
-    # Clean up extra whitespace
     text = re.sub(r'\s+', ' ', text).strip()
     return text
-
-# Path to the JSON file for persistent storage
-HISTORY_FILE = Path(__file__).parent.parent.parent / "data" / "chat_history.json"
 
 
 class ChatHistoryItem(BaseModel):
@@ -41,10 +34,9 @@ class ChatHistoryItem(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
     query: str
     answer: str
-    preview: str = ""  # Short preview for list display
+    preview: str = ""
     timestamp: datetime = Field(default_factory=datetime.now)
 
-    # Full response metadata
     citations: List[Dict[str, Any]] = []
     experts: List[Dict[str, Any]] = []
     balance: Optional[Dict[str, Any]] = None
@@ -56,122 +48,143 @@ class HistoryListResponse(BaseModel):
     history: List[Dict[str, Any]] = []
 
 
-def _load_history() -> List[ChatHistoryItem]:
-    """Load chat history from JSON file."""
-    if not HISTORY_FILE.exists():
-        return []
-    try:
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        return [ChatHistoryItem(**item) for item in data]
-    except (json.JSONDecodeError, Exception) as e:
-        logger.error(f"Error loading history: {e}")
-        return []
+def _get_client():
+    return get_neo4j_client()
 
 
-def _save_history(history: List[ChatHistoryItem]) -> None:
-    """Save chat history to JSON file."""
-    HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+def _ensure_constraint():
+    """Create uniqueness constraint on ChatHistory.id if not exists."""
     try:
-        data = [item.model_dump(mode="json") for item in history]
-        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+        _get_client().query(
+            "CREATE CONSTRAINT chat_history_id IF NOT EXISTS FOR (c:ChatHistory) REQUIRE c.id IS UNIQUE"
+        )
     except Exception as e:
-        logger.error(f"Error saving history: {e}")
+        logger.debug(f"Constraint already exists or error: {e}")
+
+
+# Run on import
+_ensure_constraint()
 
 
 @router.get("/history")
 async def get_history() -> HistoryListResponse:
-    """
-    Get chat history list.
+    """Get chat history list for sidebar display."""
+    client = _get_client()
+    results = client.query("""
+        MATCH (c:ChatHistory)
+        RETURN c.id AS id, c.query AS query, c.preview AS preview,
+               c.timestamp AS timestamp
+        ORDER BY c.timestamp DESC
+        LIMIT 50
+    """)
 
-    Returns simplified list for sidebar display.
-    """
-    _chat_history = _load_history()
     history_list = []
-    for item in _chat_history:
-        # Use existing preview or generate clean one
-        if item.preview and not item.preview.startswith("#"):
-            preview = item.preview
-        else:
-            clean_text = _strip_markdown(item.answer)
-            preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
+    for r in results:
         history_list.append({
-            "id": item.id,
-            "query": item.query,
-            "preview": preview,
-            "timestamp": item.timestamp.isoformat(),
+            "id": r["id"],
+            "query": r["query"],
+            "preview": r.get("preview", ""),
+            "timestamp": r["timestamp"],
         })
     return HistoryListResponse(history=history_list)
 
 
 @router.post("/history")
 async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
-    """
-    Save a chat session to history.
-    """
-    # Generate clean preview (strip markdown)
+    """Save a chat session to history."""
     clean_text = _strip_markdown(chat.answer)
     chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
 
-    _chat_history = _load_history()
-    _chat_history.insert(0, chat)  # Most recent first
+    client = _get_client()
+
+    client.query("""
+        CREATE (c:ChatHistory {
+            id: $id,
+            query: $query,
+            answer: $answer,
+            preview: $preview,
+            timestamp: $timestamp,
+            citations: $citations,
+            experts: $experts,
+            balance: $balance,
+            compass: $compass
+        })
+    """, {
+        "id": chat.id,
+        "query": chat.query,
+        "answer": chat.answer,
+        "preview": chat.preview,
+        "timestamp": chat.timestamp.isoformat(),
+        "citations": json.dumps(chat.citations, ensure_ascii=False, default=str),
+        "experts": json.dumps(chat.experts, ensure_ascii=False, default=str),
+        "balance": json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else "",
+        "compass": json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else "",
+    })
 
     # Keep only last 50 chats
-    while len(_chat_history) > 50:
-        _chat_history.pop()
+    client.query("""
+        MATCH (c:ChatHistory)
+        WITH c ORDER BY c.timestamp DESC
+        SKIP 50
+        DELETE c
+    """)
 
-    _save_history(_chat_history)
     logger.info(f"Saved chat to history: {chat.id}, query: {chat.query[:50]}...")
     return chat
 
 
 @router.get("/history/{chat_id}")
 async def get_chat(chat_id: str) -> Dict[str, Any]:
-    """
-    Get a specific chat session by ID.
+    """Get a specific chat session by ID."""
+    client = _get_client()
+    result = client.query("""
+        MATCH (c:ChatHistory {id: $id})
+        RETURN c.id AS id, c.query AS query, c.answer AS answer,
+               c.timestamp AS timestamp, c.citations AS citations,
+               c.experts AS experts, c.balance AS balance, c.compass AS compass
+    """, {"id": chat_id})
 
-    Returns full data for replay including citations, experts, etc.
-    """
-    _chat_history = _load_history()
-    for item in _chat_history:
-        if item.id == chat_id:
-            return {
-                "id": item.id,
-                "query": item.query,
-                "answer": item.answer,
-                "timestamp": item.timestamp.isoformat(),
-                "citations": item.citations,
-                "experts": item.experts,
-                "balance": item.balance,
-                "compass": item.compass,
-            }
+    if not result:
+        raise HTTPException(status_code=404, detail="Chat not found")
 
-    raise HTTPException(status_code=404, detail="Chat not found")
+    r = result[0]
+    return {
+        "id": r["id"],
+        "query": r["query"],
+        "answer": r["answer"],
+        "timestamp": r["timestamp"],
+        "citations": json.loads(r["citations"]) if r.get("citations") else [],
+        "experts": json.loads(r["experts"]) if r.get("experts") else [],
+        "balance": json.loads(r["balance"]) if r.get("balance") else None,
+        "compass": json.loads(r["compass"]) if r.get("compass") else None,
+    }
 
 
 @router.delete("/history/{chat_id}")
 async def delete_chat(chat_id: str) -> Dict[str, Any]:
-    """
-    Delete a chat from history.
-    """
-    _chat_history = _load_history()
-    original_len = len(_chat_history)
-    _chat_history = [c for c in _chat_history if c.id != chat_id]
+    """Delete a chat from history."""
+    client = _get_client()
+    result = client.query("""
+        MATCH (c:ChatHistory {id: $id})
+        DELETE c
+        RETURN count(*) AS deleted
+    """, {"id": chat_id})
 
-    if len(_chat_history) == original_len:
+    if not result or result[0]["deleted"] == 0:
         raise HTTPException(status_code=404, detail="Chat not found")
 
-    _save_history(_chat_history)
     return {"deleted": True, "id": chat_id}
 
 
 @router.delete("/history")
 async def clear_history() -> Dict[str, Any]:
-    """
-    Clear all chat history.
-    """
-    _chat_history = _load_history()
-    count = len(_chat_history)
-    _save_history([])
+    """Clear all chat history."""
+    client = _get_client()
+    result = client.query("""
+        MATCH (c:ChatHistory)
+        WITH c, count(*) AS count
+        DELETE c
+        RETURN count
+    """)
+    count = result[0]["count"] if result else 0
     return {"cleared": True, "count": count}
