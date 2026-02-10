@@ -1,0 +1,180 @@
+# Multi-View RAG Configuration
+# All weights, thresholds, and settings are configurable here
+#
+# IMPORTANT: Secrets (API keys, passwords) are in .env, NOT here.
+# This file can be committed to version control.
+
+retrieval:
+  dense_channel:
+    top_k: 200
+    similarity_threshold: 0.3
+    index_name: "chunk_embedding_index"
+
+  graph_channel:
+    # Hybrid Eurovoc matching (lexical + semantic)
+    lexical_keywords_min_match: 1
+    semantic_similarity_threshold: 0.4
+    max_acts_per_query: 100
+
+  merger:
+    diversity_weight: 0.2      # Penalize same-speaker dominance
+    coverage_weight: 0.3       # Reward party coverage
+    authority_weight: 0.3      # Authority-aware reweighting
+    relevance_weight: 0.2      # Base similarity score
+
+authority:
+  weights:
+    profession: 0.10
+    education: 0.10
+    committee: 0.20
+    acts: 0.25
+    interventions: 0.30
+    role: 0.05
+
+  time_decay:
+    acts_half_life_days: 365
+    speeches_half_life_days: 180
+
+  normalization: "percentile"
+  # Cap individual component contributions
+  max_component_contribution: 0.8
+
+# SOFT ideological anchors - fully configurable
+# These are guidelines for multi-view coverage, NOT hard classifications
+compass:
+  purpose: "multi-view coverage"  # NOT ideology discovery
+
+  anchors:
+    enabled: false  # Set to true to enable soft anchors for axis orientation
+    left:
+      groups:
+        - "ALLEANZA VERDI E SINISTRA"
+        - "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+      confidence: 0.8
+
+    center:
+      groups:
+        - "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+        - "ITALIA VIVA-IL CENTRO-RENEW EUROPE"
+        - "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+      confidence: 0.6
+
+    right:
+      groups:
+        - "FRATELLI D'ITALIA"
+        - "LEGA - SALVINI PREMIER"
+        - "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+      confidence: 0.8
+
+  # Ambiguous groups - position configurable based on research needs
+  ambiguous:
+    "MOVIMENTO 5 STELLE":
+      default_position: "left"
+      confidence: 0.5
+      note: "Position contested - configurable"
+
+  # Groups without default ideological position
+  unclassified:
+    - "MISTO"
+
+  clustering:
+    min_fragments_for_kde: 3
+    kde_bandwidth: "scott"  # or numeric value
+
+  # Weighted PCA parameters (IC-1)
+  max_weight_per_fragment: 0.05  # Clip max weight to prevent single-group dominance
+
+  # Dimensionality decision (IC-1)
+  pc2_pc1_ratio_threshold: 0.40  # If PC2/PC1 < 0.40, use 1D mode
+  min_variance_explained: 0.05   # Refuse analysis if total variance < 5%
+
+  # Projection parameters (IC-2)
+  z_score_clip_threshold: 4.0    # Soft clip Z-scores beyond ±4σ
+  scr_confidence_threshold: 0.15 # Filter fragments with SCR < 0.15
+
+  # Axis labeling parameters (IC-6)
+  tfidf_top_terms: 3             # Number of top TF-IDF terms for label
+  reference_axis_threshold: 0.25 # Cosine similarity threshold for reference axis match
+  pole_purity_threshold: 0.30    # Minimum pole coherence
+
+  # Visualization parameters
+  scatter_sample_size: 200       # Max points in scatter plot
+  scatter_random_seed: 42        # Fixed seed for reproducibility
+
+generation:
+  # OpenAI models for 4-stage pipeline
+  
+  models:
+    analyst: "gpt-4o"       # Stage 1: Claim decomposition
+    writer: "gpt-4o"        # Stage 2: Sectional writing
+    integrator: "gpt-4o"    # Stage 3: Narrative integration
+    # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
+
+  parameters:
+    max_tokens: 4000
+    temperature: 0.3
+    top_p: 1.0
+
+  # All 10 parties must have sections
+  require_all_parties: true
+  no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
+
+# Coalition definitions for temporal authority logic
+# CRITICAL: Coalition crossing (maggioranza <-> opposizione) invalidates prior authority
+coalitions:
+  maggioranza:
+    - "FRATELLI D'ITALIA"
+    - "LEGA - SALVINI PREMIER"
+    - "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+    - "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+
+  opposizione:
+    - "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+    - "MOVIMENTO 5 STELLE"
+    - "ALLEANZA VERDI E SINISTRA"
+    - "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+    - "ITALIA VIVA-IL CENTRO-RENEW EUROPE"
+    - "MISTO"
+
+# Citation extraction settings
+citation:
+  # ONLY offset-based extraction allowed
+  method: "offset"  # NO fuzzy matching
+  format: "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
+  # Validation: re-extract must match stored quote_text
+  verify_on_insert: true
+
+  # Citation integrity system settings
+  integrity:
+    # Enable citation registry for tracking
+    enable_registry: true
+    # Minimum semantic coherence score (0.0-1.0)
+    # Lower values allow more flexibility, higher values are stricter
+    min_coherence_score: 0.2
+    # Enable integrator guard to prevent citation loss
+    integrator_guard: true
+    # Fail on unresolved citations (strict mode)
+    strict_resolution: true
+    # Include detailed integrity report in response
+    include_report: true
+    # Enable evidence-first writing mode (experimental)
+    # When true, text is built around citations for guaranteed coherence
+    evidence_first_mode: true
+
+# LLM provider configuration
+llm:
+  provider: "openai"  # ONLY openai supported at runtime
+
+  # Embedding model
+  embedding_model: "text-embedding-3-small"
+  embedding_dimensions: 1536
+
+  # Rate limiting
+  rate_limit:
+    requests_per_minute: 60
+    tokens_per_minute: 90000
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

@@ -320,7 +320,7 @@ class CommitteeComponent(AuthorityComponent):
 
         config_path = os.path.join(
             os.path.dirname(__file__),
-            "../../../../config/commissioni_topics.yaml"
+            "../../../config/commissioni_topics.yaml"
         )
 
         try:

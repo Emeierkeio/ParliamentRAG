@@ -20,11 +20,16 @@ from pydantic_settings import BaseSettings
 
 logger = logging.getLogger(__name__)
 
-# Project root directory (tesi_2/)
-# config.py is at: tesi_2/backend/app/config.py
-# .parent = app/, .parent.parent = backend/, .parent.parent.parent = tesi_2/
-PROJECT_ROOT = Path(__file__).parent.parent.parent
+# Project root directory
+# config.py is at: backend/app/config.py
+# In Docker: /app/app/config.py → .parent.parent = /app/ (backend root)
+# Locally: .parent.parent.parent = project root (ParliamentRAG/)
+# config/ is at backend/config/ (Docker) or ParliamentRAG/config/ (local)
+PROJECT_ROOT = Path(__file__).parent.parent  # backend/ or /app/
 CONFIG_DIR = PROJECT_ROOT / "config"
+if not CONFIG_DIR.exists():
+    # Fallback for local dev: config/ at project root
+    CONFIG_DIR = PROJECT_ROOT.parent / "config"
 
 
 class Settings(BaseSettings):
