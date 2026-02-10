@@ -185,7 +185,7 @@ STRUTTURA OUTPUT:
 Partito: {party}
 {"(Sezione Governo/Esecutivo)" if is_government else ""}
 
-Evidenze disponibili (usa max 1-2):
+Evidenze disponibili (ordinate per autorità, usa le PRIME 1-2):
 {evidence_context}
 
 ⚠️ ISTRUZIONI CITATION-FIRST:

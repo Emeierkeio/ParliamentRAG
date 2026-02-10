@@ -111,66 +111,18 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            <SuggestionCard 
-                label="Piano Nazionale Ripresa" 
-                query="Qual è la posizione dei gruppi sul PNRR?"
-                onClick={onSendMessage} 
-            />
-            <SuggestionCard 
-                label="Riforma Sanitaria" 
-                query="Cosa si dice sulla riforma del sistema sanitario?"
-                onClick={onSendMessage} 
-            />
-            <SuggestionCard 
-                label="Transizione Energetica" 
-                query="Quali sono le proposte sull'energia?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Salario Minimo" 
-                query="Chi è a favore o contro il salario minimo?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Politica Estera" 
-                query="Posizioni sul conflitto in Ucraina"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Riforma Fiscale" 
-                query="Quali sono le proposte sulla riforma fiscale?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Autonomia Differenziata" 
-                query="Quali sono le posizioni sull'autonomia differenziata?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Giustizia" 
-                query="Cosa propone la riforma della giustizia?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Immigrazione" 
-                query="Qual è la linea sulla gestione dei flussi migratori?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Scuola e Istruzione" 
-                query="Quali interventi sono previsti per la scuola?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Ambiente" 
-                query="Quali misure per il contrasto al cambiamento climatico?"
-                onClick={onSendMessage} 
-            />
-             <SuggestionCard 
-                label="Infrastrutture" 
-                query="Quali sono le priorità per le infrastrutture?"
-                onClick={onSendMessage} 
-            />
+            <SuggestionCard topic="PNRR" onClick={onSendMessage} />
+            <SuggestionCard topic="riforma del sistema sanitario" onClick={onSendMessage} />
+            <SuggestionCard topic="transizione energetica" onClick={onSendMessage} />
+            <SuggestionCard topic="salario minimo" onClick={onSendMessage} />
+            <SuggestionCard topic="conflitto in Ucraina" onClick={onSendMessage} />
+            <SuggestionCard topic="riforma fiscale" onClick={onSendMessage} />
+            <SuggestionCard topic="autonomia differenziata" onClick={onSendMessage} />
+            <SuggestionCard topic="riforma della giustizia" onClick={onSendMessage} />
+            <SuggestionCard topic="gestione dei flussi migratori" onClick={onSendMessage} />
+            <SuggestionCard topic="scuola e istruzione" onClick={onSendMessage} />
+            <SuggestionCard topic="cambiamento climatico" onClick={onSendMessage} />
+            <SuggestionCard topic="infrastrutture" onClick={onSendMessage} />
         </div>
       </div>
     </div>
@@ -178,25 +130,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
 }
 
 interface SuggestionCardProps {
-  label: string;
-  query: string;
+  topic: string;
   onClick: (message: string) => void;
 }
 
-function SuggestionCard({ label, query, onClick }: SuggestionCardProps) {
+function SuggestionCard({ topic, onClick }: SuggestionCardProps) {
+  const query = `Qual è la posizione dei gruppi parlamentari sul tema: ${topic}?`;
   return (
     <button
       className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 text-left transition-all duration-300 hover:border-primary/50 hover:shadow-md active:scale-[0.98]"
       onClick={() => onClick(query)}
     >
-      <div className="relative z-10 flex flex-col gap-1">
-        <span className="font-semibold text-foreground text-sm flex items-center gap-2">
-            {label}
-            <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity -translate-y-0.5 translate-x-0.5" />
+      <div className="relative z-10 flex items-center gap-2">
+        <span className="font-semibold text-foreground text-sm capitalize">
+            {topic}
         </span>
-        <span className="text-xs text-muted-foreground line-clamp-1">
-            {query}
-        </span>
+        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity -translate-y-0.5 translate-x-0.5" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </button>

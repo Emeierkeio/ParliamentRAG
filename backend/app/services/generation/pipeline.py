@@ -298,7 +298,7 @@ class GenerationPipeline:
         self,
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Group evidence by parliamentary party.
+        """Group evidence by parliamentary party, sorted by authority score (descending).
 
         IMPORTANT: Excludes government members (GovernmentMember) as they have
         their own separate section.
@@ -310,7 +310,7 @@ class GenerationPipeline:
             if evidence.get("speaker_role") == "GovernmentMember":
                 continue
 
-            party = evidence.get("party", "MISTO")
+            party = evidence.get("party", "Misto")
 
             # Handle potential party name variations
             if party not in by_party:
@@ -322,9 +322,16 @@ class GenerationPipeline:
                         matched = True
                         break
                 if not matched:
-                    by_party["MISTO"].append(evidence)
+                    by_party["Misto"].append(evidence)
             else:
                 by_party[party].append(evidence)
+
+        # Sort each party's evidence by authority score (highest first)
+        for party in by_party:
+            by_party[party].sort(
+                key=lambda e: e.get("authority_score", 0.0),
+                reverse=True
+            )
 
         return by_party
 

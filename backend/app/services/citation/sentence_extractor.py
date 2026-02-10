@@ -297,8 +297,9 @@ class SentenceExtractor:
             if max_chars and total_chars + len(sentence) > max_chars:
                 # Check if we have at least one sentence
                 if not selected:
-                    # Take this sentence even if over limit
-                    selected.append((sentence, orig_idx))
+                    # Truncate on the last comma before max_chars
+                    truncated = self._truncate_at_boundary(sentence, max_chars)
+                    selected.append((truncated, orig_idx))
                 break
 
             selected.append((sentence, orig_idx))
@@ -308,6 +309,27 @@ class SentenceExtractor:
         selected.sort(key=lambda x: x[1])
 
         return [s for s, _ in selected]
+
+    def _truncate_at_boundary(self, text: str, max_chars: int) -> str:
+        """Truncate text at the last comma or semicolon before max_chars."""
+        if len(text) <= max_chars:
+            return text
+
+        # Look for last comma or semicolon within limit
+        truncated = text[:max_chars]
+        last_comma = truncated.rfind(',')
+        last_semicolon = truncated.rfind(';')
+        cut_point = max(last_comma, last_semicolon)
+
+        if cut_point > max_chars // 3:
+            return truncated[:cut_point].rstrip()
+
+        # No good boundary found - cut at last space
+        last_space = truncated.rfind(' ')
+        if last_space > max_chars // 3:
+            return truncated[:last_space].rstrip()
+
+        return truncated.rstrip()
 
 
 # Module-level convenience function

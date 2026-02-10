@@ -147,6 +147,11 @@ async def process_query_streaming(
             authority_scores[speaker_id] = result["total_score"]
             authority_details[speaker_id] = result
 
+        # Inject authority scores into evidence dicts so generation can sort by authority
+        for ed in evidence_dicts:
+            sid = ed.get("speaker_id", "")
+            ed["authority_score"] = authority_scores.get(sid, 0.0)
+
         # Compute experts with full details for frontend
         experts = _compute_experts(
             evidence_list, authority_scores, authority_details, services["neo4j"]
@@ -209,22 +214,24 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
     CALL {
         WITH d
         OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
-        WHERE rp.end_date IS NULL OR rp.end_date >= date()
-        RETURN collect(DISTINCT 'Presidente ' + cp.name) AS president_roles
+        RETURN collect(DISTINCT {role: 'Presidente ' + cp.name, active: rp.end_date IS NULL OR rp.end_date >= date()}) AS president_roles
     }
     CALL {
         WITH d
         OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
-        WHERE rv.end_date IS NULL OR rv.end_date >= date()
-        RETURN collect(DISTINCT 'Vicepresidente ' + cv.name) AS vice_roles
+        RETURN collect(DISTINCT {role: 'Vicepresidente ' + cv.name, active: rv.end_date IS NULL OR rv.end_date >= date()}) AS vice_roles
     }
     CALL {
         WITH d
         OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
-        WHERE rs.end_date IS NULL OR rs.end_date >= date()
-        RETURN collect(DISTINCT 'Segretario ' + cs.name) AS secretary_roles
+        RETURN collect(DISTINCT {role: 'Segretario ' + cs.name, active: rs.end_date IS NULL OR rs.end_date >= date()}) AS secretary_roles
     }
     WITH d, current_committee, president_roles + vice_roles + secretary_roles AS all_roles
+
+    // Prefer active roles, fall back to any role
+    WITH d, current_committee, all_roles,
+         [r IN all_roles WHERE r.active | r.role] AS active_roles,
+         [r IN all_roles | r.role] AS any_roles
 
     RETURN d.id AS id,
            d.first_name AS first_name,
@@ -233,7 +240,11 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
            d.education AS education,
            d.deputy_card AS camera_profile_url,
            current_committee,
-           CASE WHEN size(all_roles) > 0 THEN all_roles[0] ELSE null END AS institutional_role
+           CASE
+               WHEN size(active_roles) > 0 THEN active_roles[0]
+               WHEN size(any_roles) > 0 THEN any_roles[0]
+               ELSE null
+           END AS institutional_role
     """
     with neo4j_client.session() as session:
         result = session.run(cypher, speaker_id=speaker_id)
