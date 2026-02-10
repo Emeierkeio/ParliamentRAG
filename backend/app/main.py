@@ -3,6 +3,7 @@ Multi-View RAG API for Italian Parliamentary Data.
 
 FastAPI application entry point.
 """
+import sys
 import logging
 from datetime import datetime
 from contextlib import asynccontextmanager
@@ -44,7 +45,7 @@ def setup_logging():
     root_logger.setLevel(logging.INFO)
 
     # Console handler
-    console_handler = logging.StreamHandler()
+    console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
 

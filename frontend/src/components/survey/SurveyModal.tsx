@@ -437,9 +437,19 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                 </div>
               ) : pendingChats.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                  <CheckCircle2 className="w-12 h-12 mb-3 text-emerald-500" />
-                  <p className="text-lg font-medium">Tutte le conversazioni sono state valutate!</p>
-                  <p className="text-sm mt-1">Grazie per il tuo contributo.</p>
+                  {evaluatedIds.size > 0 ? (
+                    <>
+                      <CheckCircle2 className="w-12 h-12 mb-3 text-emerald-500" />
+                      <p className="text-lg font-medium">Tutte le conversazioni sono state valutate!</p>
+                      <p className="text-sm mt-1">Grazie per il tuo contributo.</p>
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="w-12 h-12 mb-3 text-gray-400" />
+                      <p className="text-lg font-medium">Nessuna conversazione disponibile</p>
+                      <p className="text-sm mt-1 text-center max-w-xs">Non ci sono ancora conversazioni con baseline per il confronto A/B. Usa la chat per generarne.</p>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-3">
