@@ -346,8 +346,12 @@ export function useChat(options: UseChatOptions = {}) {
                       } : null,
                       compass: compassData,
                     }),
-                  }).then(() => {
-                    console.log("[useChat] Chat saved to history");
+                  }).then((res) => {
+                    if (res.ok) {
+                      console.log("[useChat] Chat saved to history");
+                    } else {
+                      console.error("[useChat] Failed to save to history:", res.status, res.statusText);
+                    }
                   }).catch((err) => {
                     console.error("[useChat] Failed to save to history:", err);
                   });
