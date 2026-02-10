@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // Proxy verso il backend FastAPI
-    const backendResponse = await fetch(`${BACKEND_URL}/query`, {
+    const backendResponse = await fetch(`${BACKEND_URL}/api/query`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
