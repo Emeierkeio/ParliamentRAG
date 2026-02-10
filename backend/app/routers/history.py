@@ -42,6 +42,10 @@ class ChatHistoryItem(BaseModel):
     balance: Optional[Dict[str, Any]] = None
     compass: Optional[Dict[str, Any]] = None
 
+    # A/B Baseline comparison fields (optional for backwards compatibility)
+    baseline_answer: Optional[str] = None
+    ab_assignment: Optional[Dict[str, str]] = None  # e.g. {"A": "system", "B": "baseline"}
+
 
 class HistoryListResponse(BaseModel):
     """Response for history list endpoint."""
@@ -110,6 +114,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         experts_json = json.dumps(chat.experts, ensure_ascii=False, default=str)
         balance_json = json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else ""
         compass_json = json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else ""
+        ab_assignment_json = json.dumps(chat.ab_assignment, ensure_ascii=False) if chat.ab_assignment else ""
 
         client.query("""
             CREATE (c:ChatHistory {
@@ -121,7 +126,9 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
                 citations: $citations,
                 experts: $experts,
                 balance: $balance,
-                compass: $compass
+                compass: $compass,
+                baseline_answer: $baseline_answer,
+                ab_assignment: $ab_assignment
             })
         """, {
             "id": chat.id,
@@ -133,6 +140,8 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
             "experts": experts_json,
             "balance": balance_json,
             "compass": compass_json,
+            "baseline_answer": (chat.baseline_answer or "")[:50000],
+            "ab_assignment": ab_assignment_json,
         })
 
         # Keep only last 50 chats
@@ -158,7 +167,8 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         MATCH (c:ChatHistory {id: $id})
         RETURN c.id AS id, c.query AS query, c.answer AS answer,
                c.timestamp AS timestamp, c.citations AS citations,
-               c.experts AS experts, c.balance AS balance, c.compass AS compass
+               c.experts AS experts, c.balance AS balance, c.compass AS compass,
+               c.baseline_answer AS baseline_answer, c.ab_assignment AS ab_assignment
     """, {"id": chat_id})
 
     if not result:
@@ -174,6 +184,8 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         "experts": json.loads(r["experts"]) if r.get("experts") else [],
         "balance": json.loads(r["balance"]) if r.get("balance") else None,
         "compass": json.loads(r["compass"]) if r.get("compass") else None,
+        "baseline_answer": r.get("baseline_answer") or None,
+        "ab_assignment": json.loads(r["ab_assignment"]) if r.get("ab_assignment") else None,
     }
 
 

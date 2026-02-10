@@ -1,11 +1,11 @@
 """
-Survey router for user evaluations of ParliamentRAG responses.
+Survey router for A/B blind evaluations of ParliamentRAG vs Baseline RAG.
 """
 
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 from uuid import uuid4
 
@@ -19,6 +19,7 @@ from app.models.survey import (
     SurveyStats,
     SurveyListResponse,
     SURVEY_QUESTIONS,
+    AB_DIMENSIONS,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,68 +57,134 @@ def _get_chat_by_id(chat_id: str) -> Optional[dict]:
     result = client.query("""
         MATCH (c:ChatHistory {id: $id})
         RETURN c.id AS id, c.query AS query, c.answer AS answer,
-               c.timestamp AS timestamp
+               c.timestamp AS timestamp, c.ab_assignment AS ab_assignment
     """, {"id": chat_id})
     return result[0] if result else None
 
 
+def _get_ab_assignment(chat_id: str) -> Optional[Dict[str, str]]:
+    """Get the A/B assignment for a chat to de-blind results."""
+    chat = _get_chat_by_id(chat_id)
+    if not chat or not chat.get("ab_assignment"):
+        return None
+    ab = chat["ab_assignment"]
+    if isinstance(ab, str):
+        try:
+            return json.loads(ab)
+        except (json.JSONDecodeError, TypeError):
+            return None
+    return ab
+
+
+def _deblind_preference(preference: str, ab_assignment: Dict[str, str]) -> str:
+    """Convert A/B preference to system/baseline/equal."""
+    if preference == "equal":
+        return "equal"
+    # preference is "A" or "B" - map to what A or B represents
+    mapped = ab_assignment.get(preference)
+    return mapped if mapped in ("system", "baseline") else "equal"
+
+
 def _calculate_stats(surveys: List[dict]) -> SurveyStats:
-    """Calculate aggregated statistics from surveys"""
+    """Calculate aggregated A/B statistics with de-blinding."""
+    empty_stats = SurveyStats(
+        total_surveys=0,
+        system_avg_per_dimension={d: 0.0 for d in AB_DIMENSIONS},
+        baseline_avg_per_dimension={d: 0.0 for d in AB_DIMENSIONS},
+        system_avg_overall=0.0,
+        baseline_avg_overall=0.0,
+        system_win_rate=0.0,
+        baseline_win_rate=0.0,
+        tie_rate=0.0,
+        per_dimension_preference={d: {"system": 0, "baseline": 0, "equal": 0} for d in AB_DIMENSIONS},
+        recommendation_rate=0.0,
+    )
+
     if not surveys:
-        return SurveyStats(
-            total_surveys=0,
-            avg_answer_quality=0,
-            avg_answer_clarity=0,
-            avg_answer_completeness=0,
-            avg_citations_relevance=0,
-            avg_citations_accuracy=0,
-            avg_balance_perception=0,
-            avg_balance_fairness=0,
-            avg_compass_usefulness=0,
-            avg_experts_usefulness=0,
-            avg_baseline_improvement=0,
-            avg_authority_value=0,
-            avg_citation_pipeline_value=0,
-            avg_overall_satisfaction=0,
-            recommendation_rate=0,
-            scores_distribution={},
-        )
+        return empty_stats
 
-    n = len(surveys)
+    # Collect de-blinded ratings
+    system_ratings: Dict[str, List[float]] = {d: [] for d in AB_DIMENSIONS}
+    baseline_ratings: Dict[str, List[float]] = {d: [] for d in AB_DIMENSIONS}
+    system_overall: List[float] = []
+    baseline_overall: List[float] = []
+    per_dim_pref: Dict[str, Dict[str, int]] = {
+        d: {"system": 0, "baseline": 0, "equal": 0} for d in AB_DIMENSIONS
+    }
+    overall_pref = {"system": 0, "baseline": 0, "equal": 0}
+    valid_count = 0
 
-    metrics = [
-        "answer_quality", "answer_clarity", "answer_completeness",
-        "citations_relevance", "citations_accuracy",
-        "balance_perception", "balance_fairness",
-        "compass_usefulness", "experts_usefulness",
-        "baseline_improvement", "authority_value", "citation_pipeline_value",
-        "overall_satisfaction"
-    ]
+    for s in surveys:
+        ab_assignment = _get_ab_assignment(s.get("chat_id", ""))
+        if not ab_assignment:
+            # Skip surveys without valid A/B assignment (old format)
+            continue
+
+        valid_count += 1
+        is_a_system = ab_assignment.get("A") == "system"
+
+        for dim in AB_DIMENSIONS:
+            dim_data = s.get(dim, {})
+            if isinstance(dim_data, dict):
+                rating_a = dim_data.get("rating_a", 0)
+                rating_b = dim_data.get("rating_b", 0)
+                pref = dim_data.get("preference", "equal")
+
+                if is_a_system:
+                    system_ratings[dim].append(rating_a)
+                    baseline_ratings[dim].append(rating_b)
+                else:
+                    system_ratings[dim].append(rating_b)
+                    baseline_ratings[dim].append(rating_a)
+
+                deblinded_pref = _deblind_preference(pref, ab_assignment)
+                per_dim_pref[dim][deblinded_pref] += 1
+
+        # Overall satisfaction
+        sat_a = s.get("overall_satisfaction_a", 0)
+        sat_b = s.get("overall_satisfaction_b", 0)
+        if is_a_system:
+            system_overall.append(sat_a)
+            baseline_overall.append(sat_b)
+        else:
+            system_overall.append(sat_b)
+            baseline_overall.append(sat_a)
+
+        # Overall preference
+        overall_p = _deblind_preference(s.get("overall_preference", "equal"), ab_assignment)
+        overall_pref[overall_p] += 1
+
+    if valid_count == 0:
+        return empty_stats
 
     # Calculate averages
-    averages = {}
-    for metric in metrics:
-        total = sum(s.get(metric, 0) for s in surveys)
-        averages[f"avg_{metric}"] = round(total / n, 2)
+    def safe_avg(lst):
+        return round(sum(lst) / len(lst), 2) if lst else 0.0
 
-    # Calculate recommendation rate
+    system_avg_dim = {d: safe_avg(system_ratings[d]) for d in AB_DIMENSIONS}
+    baseline_avg_dim = {d: safe_avg(baseline_ratings[d]) for d in AB_DIMENSIONS}
+
+    # Win rates
+    total_pref = sum(overall_pref.values()) or 1
+    system_win = round(overall_pref["system"] / total_pref * 100, 1)
+    baseline_win = round(overall_pref["baseline"] / total_pref * 100, 1)
+    tie = round(overall_pref["equal"] / total_pref * 100, 1)
+
+    # Recommendation rate
     recommendations = sum(1 for s in surveys if s.get("would_recommend", False))
-    recommendation_rate = round((recommendations / n) * 100, 1)
-
-    # Calculate score distribution
-    scores_distribution = {}
-    for metric in metrics:
-        scores_distribution[metric] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
-        for s in surveys:
-            score = s.get(metric, 0)
-            if 1 <= score <= 5:
-                scores_distribution[metric][score] += 1
+    recommendation_rate = round((recommendations / len(surveys)) * 100, 1)
 
     return SurveyStats(
-        total_surveys=n,
+        total_surveys=valid_count,
+        system_avg_per_dimension=system_avg_dim,
+        baseline_avg_per_dimension=baseline_avg_dim,
+        system_avg_overall=safe_avg(system_overall),
+        baseline_avg_overall=safe_avg(baseline_overall),
+        system_win_rate=system_win,
+        baseline_win_rate=baseline_win,
+        tie_rate=tie,
+        per_dimension_preference=per_dim_pref,
         recommendation_rate=recommendation_rate,
-        scores_distribution=scores_distribution,
-        **averages,
     )
 
 
@@ -129,7 +196,7 @@ async def get_survey_questions():
 
 @router.post("", response_model=SurveyResponse)
 async def create_survey(survey_data: SurveyResponseCreate):
-    """Create a new survey response"""
+    """Create a new A/B survey response"""
 
     # Verify chat exists
     chat = _get_chat_by_id(survey_data.chat_id)
@@ -274,7 +341,7 @@ async def delete_survey(chat_id: str):
 
 @router.get("/stats/summary", response_model=SurveyStats)
 async def get_stats_summary():
-    """Get aggregated survey statistics"""
+    """Get aggregated survey statistics (de-blinded)"""
     surveys = _load_surveys()
     return _calculate_stats(surveys)
 
@@ -288,15 +355,16 @@ async def get_evaluated_chat_ids():
 
 @router.get("/chats/pending")
 async def get_pending_chats():
-    """Get chats that haven't been evaluated yet"""
+    """Get chats that haven't been evaluated yet (only those with baseline)"""
 
     surveys = _load_surveys()
     evaluated_ids = {s.get("chat_id") for s in surveys}
 
-    # Fetch all chats from Neo4j
+    # Fetch all chats from Neo4j - only those with baseline_answer
     client = get_neo4j_client()
     history = client.query("""
         MATCH (c:ChatHistory)
+        WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
         RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
         ORDER BY c.timestamp DESC
     """)

@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { MessageSquareQuote, Calendar, FileText, ExternalLink, User, Sparkles, Building2, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { config } from "@/config";
+import { ResultDetailDialog } from "./ResultDetailDialog";
 
 export interface SearchResultItem {
   type: "speech" | "act";
@@ -54,7 +56,7 @@ const ACT_TYPE_COLORS: Record<string, string> = {
   "INTERPELLANZA": "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300",
 };
 
-function getActTypeLabel(tipo: string): string {
+export function getActTypeLabel(tipo: string): string {
   if (!tipo) return "Atto";
   const exact = ACT_TYPE_SHORT[tipo.toUpperCase()];
   if (exact) return exact;
@@ -66,7 +68,7 @@ function getActTypeLabel(tipo: string): string {
   return tipo.length > 30 ? tipo.slice(0, 30) + "..." : tipo;
 }
 
-function getActTypeColor(tipo: string): string {
+export function getActTypeColor(tipo: string): string {
   if (!tipo) return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
   const upper = tipo.toUpperCase();
   for (const [key, color] of Object.entries(ACT_TYPE_COLORS)) {
@@ -75,12 +77,12 @@ function getActTypeColor(tipo: string): string {
   return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
 }
 
-function getGroupColor(groupName: string): string {
+export function getGroupColor(groupName: string): string {
   const entry = (config.politicalGroups as Record<string, { color: string }>)[groupName];
   return entry?.color || "#9E9E9E";
 }
 
-function getGroupShortLabel(groupName: string): string {
+export function getGroupShortLabel(groupName: string): string {
   if (!groupName) return "";
   const entry = (config.politicalGroups as Record<string, { color: string; label: string }>)[groupName];
   if (entry?.label) {
@@ -93,6 +95,14 @@ function getGroupShortLabel(groupName: string): string {
 }
 
 export function ResultsList({ results, query }: ResultsListProps) {
+  const [selectedItem, setSelectedItem] = useState<SearchResultItem | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleCardClick = (item: SearchResultItem) => {
+    setSelectedItem(item);
+    setDialogOpen(true);
+  };
+
   if (results.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
@@ -141,15 +151,23 @@ export function ResultsList({ results, query }: ResultsListProps) {
   };
 
   return (
-    <div className="space-y-4">
-      {results.map((item, idx) =>
-        item.type === "act" ? (
-          <ActCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} />
-        ) : (
-          <SpeechCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} />
-        )
-      )}
-    </div>
+    <>
+      <div className="space-y-4">
+        {results.map((item, idx) =>
+          item.type === "act" ? (
+            <ActCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
+          ) : (
+            <SpeechCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
+          )
+        )}
+      </div>
+
+      <ResultDetailDialog
+        item={selectedItem}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+    </>
   );
 }
 
@@ -160,16 +178,18 @@ function SpeechCard({
   query,
   formatDate,
   highlightText,
+  onClick,
 }: {
   item: SearchResultItem;
   query: string;
   formatDate: (s: string) => string;
   highlightText: (text: string, q: string) => React.ReactNode;
+  onClick: () => void;
 }) {
   const groupColor = getGroupColor(item.group);
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4" style={{ borderLeftColor: groupColor }}>
+    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4 cursor-pointer" style={{ borderLeftColor: groupColor }} onClick={onClick}>
       <CardHeader className="bg-muted/30 pb-3 pt-4 px-4">
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">
@@ -230,6 +250,7 @@ function SpeechCard({
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-primary hover:underline flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
             >
               Vedi fonte ufficiale <ExternalLink className="h-3 w-3" />
             </a>
@@ -247,11 +268,13 @@ function ActCard({
   query,
   formatDate,
   highlightText,
+  onClick,
 }: {
   item: SearchResultItem;
   query: string;
   formatDate: (s: string) => string;
   highlightText: (text: string, q: string) => React.ReactNode;
+  onClick: () => void;
 }) {
   const groupColor = getGroupColor(item.group);
   const typeLabel = getActTypeLabel(item.act_type || "");
@@ -263,7 +286,7 @@ function ActCard({
     : [];
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4 border-l-emerald-500/70">
+    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4 border-l-emerald-500/70 cursor-pointer" onClick={onClick}>
       <CardHeader className="bg-emerald-50/50 dark:bg-emerald-950/20 pb-3 pt-4 px-4">
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">

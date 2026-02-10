@@ -294,6 +294,72 @@ class GenerationPipeline:
         import asyncio
         return asyncio.run(self.generate(query, evidence_list))
 
+    async def generate_baseline(
+        self,
+        query: str,
+        evidence_list: List[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """
+        Generate a baseline RAG response WITHOUT authority scoring
+        and WITHOUT citation correction (surgeon/coherence).
+
+        Uses the same evidence but with uniform authority scores (0.5)
+        and skips Stage 4 (Citation Surgeon) and coherence validation.
+        """
+        start_time = datetime.now()
+
+        # 1. Neutralize authority scores
+        baseline_evidence = [
+            {**e, "authority_score": 0.5} for e in evidence_list
+        ]
+
+        # 2. Stage 1: Analyst (identical)
+        claims_result = self.analyst.analyze(query, baseline_evidence)
+        claims = claims_result.get("claims", [])
+
+        # 3. Stage 2: Sectional Writer
+        evidence_by_party = self._group_evidence_by_party(baseline_evidence)
+        government_evidence = self._get_government_evidence(baseline_evidence)
+
+        sections = []
+        async for section in self.sectional_writer.write_sections(
+            query=query,
+            claims=claims,
+            evidence_by_party=evidence_by_party,
+            government_evidence=government_evidence
+        ):
+            sections.append(section)
+
+        # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
+        integrated = self.integrator.integrate(query, sections)
+
+        # 5. Remove unresolved [CIT:id] placeholders
+        text = re.sub(r'\[CIT:[^\]]+\]', '', integrated.get("text", ""))
+        # Clean up double spaces left by removed citations
+        text = re.sub(r'  +', ' ', text)
+
+        duration_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+        logger.info(
+            f"Baseline generation complete: {len(text)} chars, "
+            f"{len(sections)} sections, {duration_ms:.1f}ms"
+        )
+
+        return {
+            "text": text,
+            "citations": [],
+            "sections": [
+                {"party": s["party"], "has_evidence": s.get("has_evidence", False)}
+                for s in sections
+            ],
+            "metadata": {
+                "pipeline": "baseline",
+                "duration_ms": duration_ms,
+                "claims_count": len(claims),
+                "sections_count": len(sections),
+            }
+        }
+
     def _group_evidence_by_party(
         self,
         evidence_list: List[Dict[str, Any]]

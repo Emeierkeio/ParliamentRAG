@@ -7,6 +7,7 @@ Includes comprehensive timing logs for performance monitoring.
 import json
 import logging
 import asyncio
+import random
 import time
 from datetime import date, datetime
 from typing import Optional, List, Dict, Any, AsyncGenerator
@@ -97,14 +98,14 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
     try:
         # === Step 1: Analisi query ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 1, "total": 8, "message": "Analisi query"})
+        yield sse_event("progress", {"step": 1, "total": 9, "message": "Analisi query"})
         await asyncio.sleep(0)  # Flush immediately
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
         # === Step 2: Commissioni ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 2, "total": 8, "message": "Commissioni"})
+        yield sse_event("progress", {"step": 2, "total": 9, "message": "Commissioni"})
         await asyncio.sleep(0)  # Flush
 
         # Find relevant commissions based on query keywords
@@ -122,7 +123,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 3: Esperti (Authority) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 3, "total": 8, "message": "Esperti"})
+        yield sse_event("progress", {"step": 3, "total": 9, "message": "Esperti"})
         await asyncio.sleep(0)  # Flush before long retrieval operation
 
         # Retrieval - use sync wrapper to run in thread pool
@@ -192,7 +193,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 4: Interventi (Citations) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 4, "total": 8, "message": "Interventi"})
+        yield sse_event("progress", {"step": 4, "total": 9, "message": "Interventi"})
         await asyncio.sleep(0)  # Flush
 
         # Build citations list for frontend
@@ -208,7 +209,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 5: Statistiche (Balance) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 5, "total": 8, "message": "Statistiche"})
+        yield sse_event("progress", {"step": 5, "total": 9, "message": "Statistiche"})
         await asyncio.sleep(0)  # Flush
 
         balance = _compute_balance_metrics(evidence_dicts)
@@ -222,7 +223,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 6: Bussola Ideologica (Compass) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 6, "total": 8, "message": "Bussola Ideologica"})
+        yield sse_event("progress", {"step": 6, "total": 9, "message": "Bussola Ideologica"})
         await asyncio.sleep(0)  # Flush
 
         compass_data = _compute_compass_data(services["ideology"], evidence_dicts)
@@ -236,7 +237,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 7: Generazione ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 7, "total": 8, "message": "Generazione"})
+        yield sse_event("progress", {"step": 7, "total": 9, "message": "Generazione"})
         await asyncio.sleep(0)  # Flush before long generation operation
 
         logger.info("[GENERATION] Starting 4-stage generation pipeline...")
@@ -264,16 +265,37 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         step_times["step_7_generation"] = time.time() - step_start
         logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
 
-        # === Step 8: Valutazione (if high_quality mode) ===
+        # === Step 8: Baseline Generation ===
+        step_start = time.time()
+        yield sse_event("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
+        await asyncio.sleep(0)
+
+        logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
+        baseline_result = await services["generation"].generate_baseline(
+            query=request.query,
+            evidence_list=evidence_dicts
+        )
+        baseline_text = baseline_result.get("text", "")
+
+        # Random A/B assignment for blind evaluation
+        ab_assignment = random.choice([
+            {"A": "system", "B": "baseline"},
+            {"A": "baseline", "B": "system"}
+        ])
+
+        step_times["step_8_baseline"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
+        logger.info(f"[BASELINE] Generated {len(baseline_text)} chars, A/B assignment: {ab_assignment}")
+
+        # === Step 9: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             step_start = time.time()
-            yield sse_event("progress", {"step": 8, "total": 8, "message": "Valutazione"})
-            # Best-of-N would go here
+            yield sse_event("progress", {"step": 9, "total": 9, "message": "Valutazione"})
             yield sse_event("hq_variants", {
                 "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
             })
-            step_times["step_8_valutazione"] = time.time() - step_start
-            logger.info(f"[TIMING] Step 8 (Valutazione): {step_times['step_8_valutazione']*1000:.1f}ms")
+            step_times["step_9_valutazione"] = time.time() - step_start
+            logger.info(f"[TIMING] Step 9 (Valutazione): {step_times['step_9_valutazione']*1000:.1f}ms")
 
         # === Citation details (verified citations) ===
         verified_citations = _build_verified_citations(
@@ -302,6 +324,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info("=" * 60)
 
         yield sse_event("complete", {
+            "baseline_answer": baseline_text,
+            "ab_assignment": ab_assignment,
             "metadata": {
                 **retrieval_result.get("metadata", {}),
                 "timing": {k: round(v * 1000, 1) for k, v in step_times.items()},

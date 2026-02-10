@@ -1,5 +1,5 @@
 """
-Evaluation models for automated and combined assessment of ParliamentRAG responses.
+Evaluation models for automated and A/B comparison assessment of ParliamentRAG responses.
 Designed for scientific evaluation in thesis/paper context.
 """
 
@@ -64,32 +64,28 @@ class CombinedEvaluation(BaseModel):
     human: Optional[SurveyResponse] = None
 
 
-class BaselineComparison(BaseModel):
-    """
-    Baseline reference values for a standard RAG/LLM system
-    WITHOUT authority scoring, ideological compass, or citation correction.
+class ABComparisonStats(BaseModel):
+    """Aggregated A/B comparison results from human evaluations (de-blinded)."""
+    total_evaluations: int
 
-    Values derived from RAG evaluation literature:
-    - Citation integrity: standard RAG with fuzzy matching ~60-70%
-    - Party coverage: dense retrieval without diversity enforcement ~30-40%
-    - Balance: no coalition-aware retrieval, majority-dominated ~55-65% bias
-    - Authority: no scoring, equal weight = ~0.5 random
-    - Completeness: no per-party sectional writing ~20-30%
-    """
-    party_coverage: float = Field(default=0.35, description="Dense retrieval without diversity enforcement")
-    citation_integrity: float = Field(default=0.65, description="RAG with fuzzy matching, no offset verification")
-    balance_score: float = Field(default=0.60, description="No coalition-aware retrieval")
-    authority_utilization: float = Field(default=0.50, description="No authority scoring, random selection")
-    response_completeness: float = Field(default=0.25, description="No per-party sectional generation")
+    system_win_rate: float   # % of overall preferences favoring system
+    baseline_win_rate: float  # % of overall preferences favoring baseline
+    tie_rate: float           # % equal
 
-    label: str = "Naive RAG (senza authority/compass/citation pipeline)"
+    system_avg_ratings: Dict[str, float]   # dimension -> avg rating for system
+    baseline_avg_ratings: Dict[str, float]  # dimension -> avg rating for baseline
+
+    system_avg_overall: float
+    baseline_avg_overall: float
+
+    per_dimension_preference: Dict[str, Dict[str, int]]  # dim -> {system: N, baseline: N, equal: N}
 
 
 class EvaluationDashboardData(BaseModel):
     """Full dashboard payload combining automated and human evaluation."""
     automated_aggregate: AggregatedMetrics
     human_aggregate: Optional[SurveyStats] = None
-    baseline: BaselineComparison = Field(default_factory=BaselineComparison)
+    ab_comparison: Optional[ABComparisonStats] = None
     per_chat: List[CombinedEvaluation]
     total_chats: int
     total_evaluated: int

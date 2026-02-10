@@ -8,7 +8,7 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator } from "@/components/shared/ProgressIndicator";
 import { config } from "@/config";
 import type { Message, ProcessingProgress } from "@/types";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Atom, ArrowRight } from "lucide-react";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -96,7 +96,7 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
       {/* Action-oriented Hero */}
       <div className="mb-10 max-w-xl space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-1.5 text-xs font-medium text-primary mb-2">
-          <Sparkles className="w-3.5 h-3.5" />
+          <Atom className="w-3.5 h-3.5" />
           Camera dei Deputati - XIX Legislatura
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl leading-tight">
@@ -110,7 +110,7 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
       {/* Topic pills */}
       <div className="w-full max-w-2xl">
         <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/60 mb-4">
-          Temi frequenti
+          Temi di tendenza
         </p>
 
         <div className="flex flex-wrap justify-center gap-2">

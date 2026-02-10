@@ -49,19 +49,22 @@ export interface CombinedEvaluation {
   human: SurveyResponse | null;
 }
 
-export interface BaselineComparison {
-  party_coverage: number;
-  citation_integrity: number;
-  balance_score: number;
-  authority_utilization: number;
-  response_completeness: number;
-  label: string;
+export interface ABComparisonStats {
+  total_evaluations: number;
+  system_win_rate: number;
+  baseline_win_rate: number;
+  tie_rate: number;
+  system_avg_ratings: Record<string, number>;
+  baseline_avg_ratings: Record<string, number>;
+  system_avg_overall: number;
+  baseline_avg_overall: number;
+  per_dimension_preference: Record<string, Record<string, number>>;
 }
 
 export interface EvaluationDashboardData {
   automated_aggregate: AggregatedMetrics;
   human_aggregate: SurveyStats | null;
-  baseline: BaselineComparison;
+  ab_comparison: ABComparisonStats | null;
   per_chat: CombinedEvaluation[];
   total_chats: number;
   total_evaluated: number;

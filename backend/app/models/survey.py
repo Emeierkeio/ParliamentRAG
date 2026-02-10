@@ -1,10 +1,12 @@
 """
-Survey models for user evaluation of ParliamentRAG responses.
-Designed for professional journalists to evaluate system quality.
+Survey models for A/B blind evaluation of ParliamentRAG vs Baseline RAG.
+
+Users evaluate both responses (blind A/B) on the same dimensions,
+rating each 1-5 and indicating preference per dimension.
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Literal
 from datetime import datetime
 from uuid import uuid4
 from enum import Enum
@@ -19,42 +21,33 @@ class RatingScale(int, Enum):
     EXCELLENT = 5
 
 
-class SurveyQuestion(BaseModel):
-    """Individual survey question response"""
-    question_id: str
-    rating: int = Field(..., ge=1, le=5, description="Rating 1-5 stars")
+class ABRating(BaseModel):
+    """Rating for a single dimension, comparing Response A and Response B."""
+    rating_a: int = Field(..., ge=1, le=5, description="Rating for Risposta A")
+    rating_b: int = Field(..., ge=1, le=5, description="Rating for Risposta B")
+    preference: Literal["A", "B", "equal"] = Field(..., description="Which response is better")
 
 
 class SurveyResponse(BaseModel):
-    """Complete survey response for a single chat session"""
+    """Complete A/B survey response for a single chat session."""
     id: str = Field(default_factory=lambda: str(uuid4()))
     chat_id: str = Field(..., description="Associated chat history ID")
     timestamp: datetime = Field(default_factory=datetime.now)
 
-    # Core evaluation metrics (1-5 scale)
-    answer_quality: int = Field(..., ge=1, le=5, description="Overall answer quality")
-    answer_clarity: int = Field(..., ge=1, le=5, description="Clarity and readability")
-    answer_completeness: int = Field(..., ge=1, le=5, description="Completeness of information")
+    # A/B comparative ratings per dimension
+    answer_quality: ABRating
+    answer_clarity: ABRating
+    answer_completeness: ABRating
+    citations_relevance: ABRating
+    citations_accuracy: ABRating
+    balance_perception: ABRating
+    balance_fairness: ABRating
 
-    # Citations evaluation
-    citations_relevance: int = Field(..., ge=1, le=5, description="Relevance of parliamentary citations")
-    citations_accuracy: int = Field(..., ge=1, le=5, description="Accuracy of citation attribution")
+    # Overall
+    overall_satisfaction_a: int = Field(..., ge=1, le=5, description="Overall satisfaction for Risposta A")
+    overall_satisfaction_b: int = Field(..., ge=1, le=5, description="Overall satisfaction for Risposta B")
+    overall_preference: Literal["A", "B", "equal"] = Field(..., description="Overall preferred response")
 
-    # Political balance evaluation
-    balance_perception: int = Field(..., ge=1, le=5, description="Perceived political balance")
-    balance_fairness: int = Field(..., ge=1, le=5, description="Fair representation of viewpoints")
-
-    # Feature-specific evaluations
-    compass_usefulness: int = Field(..., ge=1, le=5, description="Usefulness of ideological compass")
-    experts_usefulness: int = Field(..., ge=1, le=5, description="Usefulness of expert identification")
-
-    # Baseline comparison (ParliamentRAG vs naive RAG)
-    baseline_improvement: int = Field(..., ge=1, le=5, description="Perceived improvement over standard RAG")
-    authority_value: int = Field(..., ge=1, le=5, description="Value of authority scoring feature")
-    citation_pipeline_value: int = Field(..., ge=1, le=5, description="Value of citation verification pipeline")
-
-    # Overall satisfaction
-    overall_satisfaction: int = Field(..., ge=1, le=5, description="Overall satisfaction")
     would_recommend: bool = Field(..., description="Would recommend to colleagues")
 
     # Qualitative feedback
@@ -62,32 +55,28 @@ class SurveyResponse(BaseModel):
     feedback_improvement: Optional[str] = Field(None, max_length=1000, description="Suggestions for improvement")
 
     # Metadata
-    evaluator_role: Optional[str] = Field(None, description="Role of evaluator (e.g., journalist, researcher)")
-    evaluation_context: Optional[str] = Field(None, description="Context of evaluation (e.g., article research)")
+    evaluator_role: Optional[str] = Field(None, description="Role of evaluator")
+    evaluation_context: Optional[str] = Field(None, description="Context of evaluation")
 
 
 class SurveyResponseCreate(BaseModel):
-    """Model for creating a new survey response"""
+    """Model for creating a new A/B survey response."""
     chat_id: str
 
-    answer_quality: int = Field(..., ge=1, le=5)
-    answer_clarity: int = Field(..., ge=1, le=5)
-    answer_completeness: int = Field(..., ge=1, le=5)
+    # A/B comparative ratings per dimension
+    answer_quality: ABRating
+    answer_clarity: ABRating
+    answer_completeness: ABRating
+    citations_relevance: ABRating
+    citations_accuracy: ABRating
+    balance_perception: ABRating
+    balance_fairness: ABRating
 
-    citations_relevance: int = Field(..., ge=1, le=5)
-    citations_accuracy: int = Field(..., ge=1, le=5)
+    # Overall
+    overall_satisfaction_a: int = Field(..., ge=1, le=5)
+    overall_satisfaction_b: int = Field(..., ge=1, le=5)
+    overall_preference: Literal["A", "B", "equal"]
 
-    balance_perception: int = Field(..., ge=1, le=5)
-    balance_fairness: int = Field(..., ge=1, le=5)
-
-    compass_usefulness: int = Field(..., ge=1, le=5)
-    experts_usefulness: int = Field(..., ge=1, le=5)
-
-    baseline_improvement: int = Field(..., ge=1, le=5)
-    authority_value: int = Field(..., ge=1, le=5)
-    citation_pipeline_value: int = Field(..., ge=1, le=5)
-
-    overall_satisfaction: int = Field(..., ge=1, le=5)
     would_recommend: bool
 
     feedback_positive: Optional[str] = None
@@ -98,120 +87,103 @@ class SurveyResponseCreate(BaseModel):
 
 
 class SurveyWithChat(BaseModel):
-    """Survey response with associated chat metadata"""
+    """Survey response with associated chat metadata."""
     survey: SurveyResponse
     chat_query: str
     chat_preview: str
     chat_timestamp: datetime
 
 
-class SurveyStats(BaseModel):
-    """Aggregated survey statistics"""
-    total_surveys: int
-    avg_answer_quality: float
-    avg_answer_clarity: float
-    avg_answer_completeness: float
-    avg_citations_relevance: float
-    avg_citations_accuracy: float
-    avg_balance_perception: float
-    avg_balance_fairness: float
-    avg_compass_usefulness: float
-    avg_experts_usefulness: float
-    avg_baseline_improvement: float
-    avg_authority_value: float
-    avg_citation_pipeline_value: float
-    avg_overall_satisfaction: float
-    recommendation_rate: float  # % who would recommend
+# Dimensions used for A/B comparison
+AB_DIMENSIONS = [
+    "answer_quality",
+    "answer_clarity",
+    "answer_completeness",
+    "citations_relevance",
+    "citations_accuracy",
+    "balance_perception",
+    "balance_fairness",
+]
 
-    # Score breakdown
-    scores_distribution: Dict[str, Dict[int, int]]  # metric -> {score: count}
+
+class SurveyStats(BaseModel):
+    """Aggregated A/B survey statistics (de-blinded)."""
+    total_surveys: int
+
+    # De-blinded averages per dimension
+    system_avg_per_dimension: Dict[str, float]
+    baseline_avg_per_dimension: Dict[str, float]
+
+    # Overall satisfaction averages
+    system_avg_overall: float
+    baseline_avg_overall: float
+
+    # Win rates (de-blinded)
+    system_win_rate: float   # % of preferences favoring system
+    baseline_win_rate: float  # % of preferences favoring baseline
+    tie_rate: float           # % equal
+
+    # Per-dimension preference counts (de-blinded)
+    per_dimension_preference: Dict[str, Dict[str, int]]  # dim -> {"system": N, "baseline": N, "equal": N}
+
+    recommendation_rate: float
 
 
 class SurveyListResponse(BaseModel):
-    """Response for listing surveys"""
+    """Response for listing surveys."""
     surveys: List[SurveyWithChat]
     total: int
     stats: Optional[SurveyStats] = None
 
 
-# Survey questions configuration (for frontend)
+# Survey questions configuration (for frontend) - A/B format
 SURVEY_QUESTIONS = [
     {
         "id": "answer_quality",
-        "category": "Qualità Risposta",
-        "question": "Come valuti la qualità complessiva della risposta?",
-        "description": "Considera l'utilità pratica per il tuo lavoro giornalistico"
+        "category": "Qualita Risposta",
+        "question": "Qualita complessiva della risposta",
+        "description": "Considera l'utilita pratica per il lavoro giornalistico"
     },
     {
         "id": "answer_clarity",
-        "category": "Qualità Risposta",
-        "question": "Quanto è chiara e leggibile la risposta?",
-        "description": "Valuta la struttura, il linguaggio e la facilità di comprensione"
+        "category": "Qualita Risposta",
+        "question": "Chiarezza e leggibilita della risposta",
+        "description": "Valuta la struttura, il linguaggio e la facilita di comprensione"
     },
     {
         "id": "answer_completeness",
-        "category": "Qualità Risposta",
-        "question": "La risposta copre tutti gli aspetti rilevanti?",
+        "category": "Qualita Risposta",
+        "question": "Completezza delle informazioni",
         "description": "Considera se mancano informazioni importanti"
     },
     {
         "id": "citations_relevance",
         "category": "Citazioni",
-        "question": "Le citazioni parlamentari sono pertinenti?",
+        "question": "Pertinenza delle citazioni parlamentari",
         "description": "Valuta se le citazioni supportano effettivamente la risposta"
     },
     {
         "id": "citations_accuracy",
         "category": "Citazioni",
-        "question": "Le attribuzioni delle citazioni sono accurate?",
+        "question": "Accuratezza delle attribuzioni",
         "description": "Considera se deputato, data e contesto sono corretti"
     },
     {
         "id": "balance_perception",
         "category": "Bilanciamento Politico",
-        "question": "Percepisci un adeguato bilanciamento politico?",
+        "question": "Bilanciamento politico percepito",
         "description": "Valuta se sono rappresentate diverse posizioni politiche"
     },
     {
         "id": "balance_fairness",
         "category": "Bilanciamento Politico",
-        "question": "Le diverse posizioni sono trattate equamente?",
-        "description": "Considera se c'è imparzialità nella presentazione"
-    },
-    {
-        "id": "compass_usefulness",
-        "category": "Funzionalità",
-        "question": "La bussola ideologica è utile per comprendere le posizioni?",
-        "description": "Valuta se la visualizzazione aiuta l'analisi"
-    },
-    {
-        "id": "experts_usefulness",
-        "category": "Funzionalità",
-        "question": "L'identificazione degli esperti è utile?",
-        "description": "Considera se aiuta a identificare le voci autorevoli sul tema"
-    },
-    {
-        "id": "baseline_improvement",
-        "category": "Confronto Baseline",
-        "question": "Quanto ritieni che il sistema sia migliore di un RAG standard?",
-        "description": "Confronta con un sistema che non ha authority scoring, compass ideologico e verifica citazioni"
-    },
-    {
-        "id": "authority_value",
-        "category": "Confronto Baseline",
-        "question": "Quanto valore aggiunge il sistema di authority scoring?",
-        "description": "Valuta se la selezione degli esperti per competenza migliora la qualità rispetto a una selezione casuale"
-    },
-    {
-        "id": "citation_pipeline_value",
-        "category": "Confronto Baseline",
-        "question": "Quanto valore aggiunge la pipeline di verifica citazioni?",
-        "description": "Valuta se la verifica offset-based delle citazioni migliora l'affidabilità rispetto al fuzzy matching"
+        "question": "Equita nella rappresentazione",
+        "description": "Considera se c'e imparzialita nella presentazione"
     },
     {
         "id": "overall_satisfaction",
         "category": "Valutazione Complessiva",
-        "question": "Qual è la tua soddisfazione complessiva?",
-        "description": "Valutazione generale dell'esperienza"
+        "question": "Soddisfazione complessiva",
+        "description": "Valutazione generale dell'esperienza con ciascuna risposta"
     }
 ]

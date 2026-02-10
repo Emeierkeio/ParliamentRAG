@@ -78,6 +78,9 @@ export interface Message {
   compass?: any; // CompassData
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
+  // A/B baseline comparison
+  baselineAnswer?: string;
+  abAssignment?: Record<string, string>; // e.g. {"A": "system", "B": "baseline"}
 }
 
 export interface BalanceMetrics {

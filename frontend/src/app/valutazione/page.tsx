@@ -8,18 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
-  RadarChart,
   HorizontalBarChart,
-  ScoreDistribution,
   MetricCard,
   MiniMetricBars,
+  ABComparisonChart,
+  WinRateChart,
 } from "@/components/evaluation/EvaluationCharts";
 import { getDashboardData, getExportCsvUrl } from "@/lib/evaluation-api";
 import type { EvaluationDashboardData, CombinedEvaluation } from "@/types/evaluation";
-import { SURVEY_QUESTIONS } from "@/types/survey";
+import { AB_DIMENSIONS } from "@/types/survey";
+import type { ABRating } from "@/types/survey";
 import {
   BarChart3,
   Users,
@@ -37,8 +36,19 @@ import {
   ChevronUp,
   ThumbsUp,
   Target,
+  Trophy,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const DIMENSION_LABELS: Record<string, string> = {
+  answer_quality: "Qualita risposta",
+  answer_clarity: "Chiarezza",
+  answer_completeness: "Completezza",
+  citations_relevance: "Pertinenza citazioni",
+  citations_accuracy: "Accuratezza citazioni",
+  balance_perception: "Bilanciamento percepito",
+  balance_fairness: "Equita",
+};
 
 export default function ValutazionePage() {
   const { isCollapsed, toggle } = useSidebar();
@@ -83,7 +93,7 @@ export default function ValutazionePage() {
               Valutazione Sistema
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Framework di valutazione scientifica — metriche automatiche e umane
+              Framework di valutazione scientifica — metriche automatiche e confronto A/B cieco
             </p>
           </div>
           <div className="flex gap-2">
@@ -155,7 +165,7 @@ export default function ValutazionePage() {
               </TabsTrigger>
               <TabsTrigger value="human" className="text-sm gap-1.5">
                 <Users className="w-4 h-4" />
-                Valutazioni Umane
+                Confronto A/B
               </TabsTrigger>
               <TabsTrigger value="details" className="text-sm gap-1.5">
                 <FileText className="w-4 h-4" />
@@ -196,42 +206,8 @@ export default function ValutazionePage() {
 
 function OverviewTab({ data }: { data: EvaluationDashboardData }) {
   const agg = data.automated_aggregate;
+  const ab = data.ab_comparison;
   const human = data.human_aggregate;
-  const bl = data.baseline;
-
-  // Radar metrics: full system (0-1 scale)
-  const radarMetrics = [
-    agg.avg_party_coverage,
-    agg.avg_citation_integrity,
-    agg.avg_balance_score,
-    agg.avg_authority_utilization,
-    agg.avg_response_completeness,
-  ];
-  const radarLabels = [
-    "Copertura",
-    "Citazioni",
-    "Bilanciamento",
-    "Autorevolezza",
-    "Completezza",
-  ];
-
-  // Baseline metrics for radar comparison
-  const baselineRadar = [
-    bl.party_coverage,
-    bl.citation_integrity,
-    bl.balance_score,
-    bl.authority_utilization,
-    bl.response_completeness,
-  ];
-
-  // Improvement deltas
-  const deltas = [
-    { label: "Copertura", system: agg.avg_party_coverage, baseline: bl.party_coverage },
-    { label: "Citazioni", system: agg.avg_citation_integrity, baseline: bl.citation_integrity },
-    { label: "Bilanciamento", system: agg.avg_balance_score, baseline: bl.balance_score },
-    { label: "Autorevolezza", system: agg.avg_authority_utilization, baseline: bl.authority_utilization },
-    { label: "Completezza", system: agg.avg_response_completeness, baseline: bl.response_completeness },
-  ];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
@@ -250,23 +226,23 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             <div className="text-3xl font-bold text-blue-600">
               {data.total_evaluated}
             </div>
-            <div className="text-sm text-muted-foreground">Valutate (umane)</div>
+            <div className="text-sm text-muted-foreground">Valutate (A/B blind)</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-emerald-600">
-              {human ? `${human.recommendation_rate.toFixed(0)}%` : "—"}
+              {ab ? `${(ab.system_win_rate * 100).toFixed(0)}%` : "—"}
             </div>
-            <div className="text-sm text-muted-foreground">Tasso raccomandazione</div>
+            <div className="text-sm text-muted-foreground">Win rate sistema</div>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-amber-600">
-              {human ? human.avg_overall_satisfaction.toFixed(2) : "—"}
+              {human ? `${human.recommendation_rate.toFixed(0)}%` : "—"}
             </div>
-            <div className="text-sm text-muted-foreground">Soddisfazione media</div>
+            <div className="text-sm text-muted-foreground">Tasso raccomandazione</div>
           </CardContent>
         </Card>
       </div>
@@ -284,7 +260,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             icon={<Users className="w-4 h-4" />}
           />
           <MetricCard
-            label="Integrità Citazioni"
+            label="Integrita Citazioni"
             value={agg.avg_citation_integrity}
             ci={agg.ci_citation_integrity}
             icon={<Quote className="w-4 h-4" />}
@@ -310,83 +286,81 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         </div>
       </div>
 
-      {/* Radar Chart: System vs Baseline */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            ParliamentRAG vs Naive RAG — Profilo Multi-Dimensionale
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center">
-          <RadarChart
-            metrics={radarMetrics}
-            labels={radarLabels}
-            secondaryMetrics={baselineRadar}
-            secondaryLabel={bl.label}
-            size={350}
-          />
-        </CardContent>
-      </Card>
+      {/* A/B Win Rate */}
+      {ab && ab.total_evaluations > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              Preferenza Complessiva — Valutazione Blind A/B
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <WinRateChart
+              systemWinRate={ab.system_win_rate}
+              baselineWinRate={ab.baseline_win_rate}
+              tieRate={ab.tie_rate}
+              totalEvaluations={ab.total_evaluations}
+            />
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Improvement over baseline */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">
-            Miglioramento rispetto alla Baseline
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {deltas.map((d) => {
-              const improvement = d.system - d.baseline;
-              const improvementPct = d.baseline > 0
-                ? ((improvement / d.baseline) * 100).toFixed(0)
-                : "—";
-              return (
-                <div key={d.label} className="flex items-center gap-4">
-                  <span className="w-28 text-sm text-gray-600 dark:text-gray-400">
-                    {d.label}
-                  </span>
-                  <div className="flex-1 flex items-center gap-2">
-                    {/* Baseline bar */}
-                    <div className="flex-1 relative h-6 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div
-                        className="absolute h-full rounded-full bg-amber-300/50 dark:bg-amber-700/30"
-                        style={{ width: `${d.baseline * 100}%` }}
-                      />
-                      <div
-                        className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
-                        style={{ width: `${d.system * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="w-24 text-right">
-                    <span className={cn(
-                      "text-sm font-semibold",
-                      improvement > 0 ? "text-emerald-600" : improvement < 0 ? "text-red-600" : "text-gray-500"
-                    )}>
-                      {improvement > 0 ? "+" : ""}{(improvement * 100).toFixed(1)}pp
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-1">
-                      ({improvement > 0 ? "+" : ""}{improvementPct}%)
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
-              ParliamentRAG (sistema completo)
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded bg-amber-300/50 dark:bg-amber-700/30" />
-              {bl.label}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* A/B Comparison per dimension */}
+      {ab && ab.total_evaluations > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">
+              ParliamentRAG vs Baseline RAG — Punteggi Medi per Dimensione
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ABComparisonChart
+              items={AB_DIMENSIONS.map((dim) => ({
+                label: DIMENSION_LABELS[dim] || dim,
+                systemValue: ab.system_avg_ratings[dim] || 0,
+                baselineValue: ab.baseline_avg_ratings[dim] || 0,
+              }))}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Overall satisfaction comparison */}
+      {ab && ab.total_evaluations > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Sistema</div>
+              <div className="text-4xl font-bold text-blue-600">
+                {ab.system_avg_overall.toFixed(2)}
+              </div>
+              <div className="text-sm text-muted-foreground">/5</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Baseline</div>
+              <div className="text-4xl font-bold text-amber-600">
+                {ab.baseline_avg_overall.toFixed(2)}
+              </div>
+              <div className="text-sm text-muted-foreground">/5</div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {!ab && (
+        <Card>
+          <CardContent className="p-8 text-center text-gray-500">
+            <Users className="w-12 h-12 opacity-30 mx-auto mb-3" />
+            <p className="text-lg font-medium">Nessuna valutazione A/B disponibile</p>
+            <p className="text-sm mt-1">
+              Esegui query con baseline e usa &quot;Nuova Valutazione&quot; per confrontare le risposte.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -395,22 +369,19 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
 
 function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
   const agg = data.automated_aggregate;
-  const bl = data.baseline;
 
   const metrics = [
     {
       label: "Copertura Partitica (Party Coverage)",
       value: agg.avg_party_coverage,
       ci: agg.ci_party_coverage,
-      baseline: bl.party_coverage,
       description:
         "Percentuale di gruppi parlamentari rappresentati nelle citazioni (target: 100%)",
     },
     {
-      label: "Integrità Citazioni (Citation Integrity)",
+      label: "Integrita Citazioni (Citation Integrity)",
       value: agg.avg_citation_integrity,
       ci: agg.ci_citation_integrity,
-      baseline: bl.citation_integrity,
       description:
         "Percentuale di citazioni con estrazione verbatim valida",
     },
@@ -418,7 +389,6 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Bilanciamento Politico (Balance Score)",
       value: agg.avg_balance_score,
       ci: agg.ci_balance_score,
-      baseline: bl.balance_score,
       description:
         "Equilibrio tra maggioranza e opposizione (1 = perfetto bilanciamento)",
     },
@@ -426,7 +396,6 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Utilizzo Autorevolezza (Authority Utilization)",
       value: agg.avg_authority_utilization,
       ci: agg.ci_authority_utilization,
-      baseline: bl.authority_utilization,
       description:
         "Media del punteggio di autorevolezza degli esperti citati",
     },
@@ -434,7 +403,6 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       label: "Completezza Risposta (Response Completeness)",
       value: agg.avg_response_completeness,
       ci: agg.ci_response_completeness,
-      baseline: bl.response_completeness,
       description:
         "Percentuale di sezioni per-partito presenti nella risposta",
     },
@@ -442,15 +410,13 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Metriche Automatiche
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Calcolate da {agg.total_chats} conversazioni — confronto con baseline Naive RAG
-          </p>
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          Metriche Automatiche
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Calcolate da {agg.total_chats} conversazioni
+        </p>
       </div>
 
       <Card>
@@ -465,72 +431,50 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
         </CardContent>
       </Card>
 
-      {/* Detailed cards with baseline comparison */}
+      {/* Detailed cards */}
       <div className="space-y-4">
-        {metrics.map((m) => {
-          const delta = m.value - m.baseline;
-          const deltaPct = m.baseline > 0 ? ((delta / m.baseline) * 100).toFixed(0) : "—";
-          return (
-            <Card key={m.label}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
-                      {m.label}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {m.description}
-                    </p>
+        {metrics.map((m) => (
+          <Card key={m.label}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
+                    {m.label}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {m.description}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-xl font-bold font-mono">
+                    {(m.value * 100).toFixed(1)}%
                   </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold font-mono">
-                      {(m.value * 100).toFixed(1)}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      IC 95%: [{(m.ci[0] * 100).toFixed(1)}%, {(m.ci[1] * 100).toFixed(1)}%]
-                    </div>
+                  <div className="text-xs text-muted-foreground">
+                    IC 95%: [{(m.ci[0] * 100).toFixed(1)}%, {(m.ci[1] * 100).toFixed(1)}%]
                   </div>
                 </div>
-                {/* Baseline comparison */}
-                <div className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-900/50 rounded-lg">
-                  <span className="text-xs text-muted-foreground w-20">Baseline:</span>
-                  <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-amber-400/60"
-                      style={{ width: `${m.baseline * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-xs font-mono text-muted-foreground w-12 text-right">
-                    {(m.baseline * 100).toFixed(0)}%
-                  </span>
-                  <span className={cn(
-                    "text-xs font-semibold w-16 text-right",
-                    delta > 0 ? "text-emerald-600" : delta < 0 ? "text-red-600" : "text-gray-500"
-                  )}>
-                    {delta > 0 ? "+" : ""}{(delta * 100).toFixed(1)}pp
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ─── Human Tab ─── */
+/* ─── Human Tab (A/B Comparison) ─── */
 
 function HumanTab({ data }: { data: EvaluationDashboardData }) {
+  const ab = data.ab_comparison;
   const human = data.human_aggregate;
 
-  if (!human || human.total_surveys === 0) {
+  if (!ab || ab.total_evaluations === 0) {
     return (
       <div className="max-w-4xl mx-auto">
         <div className="flex flex-col items-center justify-center h-60 text-gray-500">
           <Users className="w-12 h-12 opacity-30 mb-3" />
           <p className="text-lg font-medium">
-            Nessuna valutazione umana disponibile
+            Nessuna valutazione A/B disponibile
           </p>
           <p className="text-sm mt-1">
             Usa il bottone &quot;Nuova Valutazione&quot; per iniziare.
@@ -540,109 +484,138 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
     );
   }
 
-  // Map question IDs to their average and distribution
-  const questionMetrics: {
-    id: string;
-    label: string;
-    category: string;
-    avg: number;
-    distribution: Record<number, number>;
-  }[] = [];
-
-  const avgMap: Record<string, number> = {
-    answer_quality: human.avg_answer_quality,
-    answer_clarity: human.avg_answer_clarity,
-    answer_completeness: human.avg_answer_completeness,
-    citations_relevance: human.avg_citations_relevance,
-    citations_accuracy: human.avg_citations_accuracy,
-    balance_perception: human.avg_balance_perception,
-    balance_fairness: human.avg_balance_fairness,
-    compass_usefulness: human.avg_compass_usefulness,
-    experts_usefulness: human.avg_experts_usefulness,
-    overall_satisfaction: human.avg_overall_satisfaction,
-  };
-
-  for (const q of SURVEY_QUESTIONS) {
-    questionMetrics.push({
-      id: q.id,
-      label: q.question,
-      category: q.category,
-      avg: avgMap[q.id] || 0,
-      distribution: human.scores_distribution[q.id] || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    });
-  }
-
-  // Group by category
-  const categories = questionMetrics.reduce(
-    (acc, q) => {
-      if (!acc[q.category]) acc[q.category] = [];
-      acc[q.category].push(q);
-      return acc;
-    },
-    {} as Record<string, typeof questionMetrics>
-  );
-
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Valutazioni Umane
+            Confronto A/B Cieco
           </h2>
           <p className="text-sm text-muted-foreground">
-            {human.total_surveys} valutazioni raccolte — Tasso raccomandazione:{" "}
-            {human.recommendation_rate.toFixed(0)}%
+            {ab.total_evaluations} valutazioni blind — risultati de-blindati
           </p>
         </div>
-        <Badge
-          variant="outline"
-          className={cn(
-            "text-sm px-3 py-1",
-            human.recommendation_rate >= 70
-              ? "border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-400"
-              : "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-400"
-          )}
-        >
-          <ThumbsUp className="w-4 h-4 mr-1" />
-          {human.recommendation_rate.toFixed(0)}% raccomanderebbe
-        </Badge>
+        {human && (
+          <Badge
+            variant="outline"
+            className={cn(
+              "text-sm px-3 py-1",
+              human.recommendation_rate >= 70
+                ? "border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-400"
+                : "border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-400"
+            )}
+          >
+            <ThumbsUp className="w-4 h-4 mr-1" />
+            {human.recommendation_rate.toFixed(0)}% raccomanderebbe
+          </Badge>
+        )}
       </div>
 
-      {/* Average scores as horizontal bars */}
+      {/* Win rate */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Punteggi Medi per Domanda</CardTitle>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-amber-500" />
+            Preferenza Complessiva
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <HorizontalBarChart
-            items={questionMetrics.map((q) => ({
-              label: q.label.length > 50 ? q.label.slice(0, 47) + "..." : q.label,
-              value: q.avg / 5,
-              max: 1,
-            }))}
-            colorClass="from-amber-400 to-amber-600"
+          <WinRateChart
+            systemWinRate={ab.system_win_rate}
+            baselineWinRate={ab.baseline_win_rate}
+            tieRate={ab.tie_rate}
+            totalEvaluations={ab.total_evaluations}
           />
         </CardContent>
       </Card>
 
-      {/* Distributions by category */}
-      {Object.entries(categories).map(([category, questions]) => (
-        <Card key={category}>
-          <CardHeader>
-            <CardTitle className="text-base">{category}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {questions.map((q) => (
-              <ScoreDistribution
-                key={q.id}
-                label={q.label}
-                distribution={q.distribution}
-                average={q.avg}
-              />
-            ))}
+      {/* Per-dimension comparison */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Punteggi Medi per Dimensione (1-5)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ABComparisonChart
+            items={AB_DIMENSIONS.map((dim) => ({
+              label: DIMENSION_LABELS[dim] || dim,
+              systemValue: ab.system_avg_ratings[dim] || 0,
+              baselineValue: ab.baseline_avg_ratings[dim] || 0,
+            }))}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Per-dimension preference breakdown */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Preferenza per Dimensione</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {AB_DIMENSIONS.map((dim) => {
+            const prefs = ab.per_dimension_preference[dim];
+            if (!prefs) return null;
+            const total = (prefs.system || 0) + (prefs.baseline || 0) + (prefs.equal || 0);
+            if (total === 0) return null;
+            const sysPct = ((prefs.system || 0) / total) * 100;
+            const basePct = ((prefs.baseline || 0) / total) * 100;
+            const tiePct = ((prefs.equal || 0) / total) * 100;
+            return (
+              <div key={dim} className="space-y-1">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">
+                    {DIMENSION_LABELS[dim] || dim}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {prefs.system || 0}S / {prefs.equal || 0}= / {prefs.baseline || 0}B
+                  </span>
+                </div>
+                <div className="flex items-center h-6 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                  {sysPct > 0 && (
+                    <div
+                      className="h-full bg-blue-500"
+                      style={{ width: `${sysPct}%` }}
+                    />
+                  )}
+                  {tiePct > 0 && (
+                    <div
+                      className="h-full bg-gray-300 dark:bg-gray-600"
+                      style={{ width: `${tiePct}%` }}
+                    />
+                  )}
+                  {basePct > 0 && (
+                    <div
+                      className="h-full bg-amber-400"
+                      style={{ width: `${basePct}%` }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </CardContent>
+      </Card>
+
+      {/* Overall satisfaction comparison */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Sistema</div>
+            <div className="text-4xl font-bold text-blue-600">
+              {ab.system_avg_overall.toFixed(2)}
+            </div>
+            <div className="text-sm text-muted-foreground">/5</div>
           </CardContent>
         </Card>
-      ))}
+        <Card>
+          <CardContent className="p-6 text-center">
+            <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Baseline</div>
+            <div className="text-4xl font-bold text-amber-600">
+              {ab.baseline_avg_overall.toFixed(2)}
+            </div>
+            <div className="text-sm text-muted-foreground">/5</div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -732,9 +705,9 @@ function ChatEvaluationRow({
               {item.human && (
                 <Badge
                   variant="secondary"
-                  className="text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                  className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
                 >
-                  Valutata: {item.human.overall_satisfaction}/5
+                  Valutata A/B
                 </Badge>
               )}
             </div>
@@ -758,7 +731,7 @@ function ChatEvaluationRow({
               <div className="space-y-2">
                 {[
                   { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti` },
-                  { label: "Integrità citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide` },
+                  { label: "Integrita citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide` },
                   { label: "Bilanciamento", value: m.balance_score, detail: `Magg. ${m.maggioranza_pct.toFixed(0)}% / Opp. ${m.opposizione_pct.toFixed(0)}%` },
                   { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti` },
                   { label: "Completezza", value: m.response_completeness, detail: "" },
@@ -796,43 +769,77 @@ function ChatEvaluationRow({
               )}
             </div>
 
-            {/* Human metrics */}
+            {/* Human A/B metrics */}
             <div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                Valutazione Umana
+                Valutazione Umana A/B
               </h4>
               {item.human ? (
-                <div className="space-y-2">
-                  {[
-                    { label: "Qualità risposta", value: item.human.answer_quality },
-                    { label: "Chiarezza", value: item.human.answer_clarity },
-                    { label: "Completezza", value: item.human.answer_completeness },
-                    { label: "Pertinenza citazioni", value: item.human.citations_relevance },
-                    { label: "Accuratezza citazioni", value: item.human.citations_accuracy },
-                    { label: "Bilanciamento percepito", value: item.human.balance_perception },
-                    { label: "Equità", value: item.human.balance_fairness },
-                    { label: "Utilità bussola", value: item.human.compass_usefulness },
-                    { label: "Utilità esperti", value: item.human.experts_usefulness },
-                    { label: "Soddisfazione", value: item.human.overall_satisfaction },
-                  ].map((row) => (
-                    <div key={row.label} className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">{row.label}</span>
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <div
-                            key={i}
-                            className={cn(
-                              "w-2 h-2 rounded-full",
-                              i < row.value
-                                ? "bg-amber-400"
-                                : "bg-gray-200 dark:bg-gray-700"
-                            )}
-                          />
-                        ))}
-                        <span className="ml-1 text-xs font-mono">{row.value}/5</span>
+                <div className="space-y-3">
+                  {AB_DIMENSIONS.map((dim) => {
+                    const rating = (item.human as any)[dim] as ABRating | undefined;
+                    if (!rating) return null;
+                    return (
+                      <div key={dim} className="text-sm">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-gray-600 dark:text-gray-400">
+                            {DIMENSION_LABELS[dim] || dim}
+                          </span>
+                          <span className="text-xs text-muted-foreground">
+                            Pref: {rating.preference === "A" ? "A" : rating.preference === "B" ? "B" : "="}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="w-6 text-blue-600">A:</span>
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <div
+                                key={i}
+                                className={cn(
+                                  "w-2 h-2 rounded-full",
+                                  i < rating.rating_a
+                                    ? "bg-blue-400"
+                                    : "bg-gray-200 dark:bg-gray-700"
+                                )}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-mono">{rating.rating_a}/5</span>
+                          <span className="mx-1 text-gray-300">|</span>
+                          <span className="w-6 text-amber-600">B:</span>
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <div
+                                key={i}
+                                className={cn(
+                                  "w-2 h-2 rounded-full",
+                                  i < rating.rating_b
+                                    ? "bg-amber-400"
+                                    : "bg-gray-200 dark:bg-gray-700"
+                                )}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-mono">{rating.rating_b}/5</span>
+                        </div>
                       </div>
+                    );
+                  })}
+
+                  <div className="mt-2 pt-2 border-t text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Soddisfazione A</span>
+                      <span className="font-mono">{item.human.overall_satisfaction_a}/5</span>
                     </div>
-                  ))}
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Soddisfazione B</span>
+                      <span className="font-mono">{item.human.overall_satisfaction_b}/5</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400">Preferenza</span>
+                      <span className="font-semibold">{item.human.overall_preference}</span>
+                    </div>
+                  </div>
 
                   {item.human.would_recommend && (
                     <div className="mt-2 flex items-center gap-1 text-emerald-600 text-sm">

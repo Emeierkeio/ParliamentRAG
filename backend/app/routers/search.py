@@ -546,3 +546,124 @@ async def list_groups() -> List[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"List groups failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/speech/{chunk_id}")
+async def get_speech_detail(chunk_id: str) -> Dict[str, Any]:
+    """
+    Get full speech/intervention detail by chunk ID.
+    Returns the complete intervention text and all metadata.
+    """
+    client = get_client()
+
+    try:
+        cypher = """
+        MATCH (c:Chunk {id: $chunk_id})<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(d)
+        WHERE (d:Deputy OR d:GovernmentMember)
+        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(dib:Debate)<-[:HAS_DEBATE]-(s:Session)
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+        RETURN i.text AS full_text,
+               c.text AS chunk_text,
+               i.id AS speech_id,
+               toString(s.date) AS date,
+               s.number AS session_number,
+               dib.title AS debate_title,
+               d.first_name AS first_name,
+               d.last_name AS last_name,
+               CASE WHEN 'GovernmentMember' IN labels(d) THEN 'Governo'
+                    ELSE coalesce(g.name, 'MISTO') END AS group_name
+        LIMIT 1
+        """
+
+        with client.session() as session:
+            result = session.run(cypher, chunk_id=chunk_id)
+            record = result.single()
+
+            if not record:
+                raise HTTPException(status_code=404, detail=f"Speech chunk {chunk_id} not found")
+
+            return {
+                "type": "speech",
+                "id": chunk_id,
+                "speech_id": record["speech_id"],
+                "full_text": record["full_text"] or "",
+                "chunk_text": record["chunk_text"] or "",
+                "date": record["date"],
+                "session_number": record["session_number"],
+                "debate_title": record["debate_title"] or "",
+                "first_name": record["first_name"] or "",
+                "last_name": record["last_name"] or "",
+                "group": record["group_name"] or "MISTO",
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get speech detail failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/act/{act_uri:path}")
+async def get_act_detail(act_uri: str) -> Dict[str, Any]:
+    """
+    Get full parliamentary act detail by URI.
+    Returns the complete description and all metadata.
+    """
+    client = get_client()
+
+    try:
+        cypher = """
+        MATCH (a:ParliamentaryAct {uri: $act_uri})
+        OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a)
+        WHERE (d:Deputy OR d:GovernmentMember)
+        OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        RETURN a.uri AS act_uri,
+               a.tipo AS act_type,
+               a.title AS act_title,
+               a.description AS description,
+               a.dataPresentazione AS date_raw,
+               a.numero AS act_number,
+               a.destinatario AS destinatario,
+               a.eurovoc AS eurovoc,
+               d.first_name AS first_name,
+               d.last_name AS last_name,
+               coalesce(g.name, 'MISTO') AS group_name
+        LIMIT 1
+        """
+
+        with client.session() as session:
+            result = session.run(cypher, act_uri=act_uri)
+            record = result.single()
+
+            if not record:
+                raise HTTPException(status_code=404, detail=f"Act {act_uri} not found")
+
+            # Format date from YYYYMMDD to YYYY-MM-DD
+            date_raw = record["date_raw"] or ""
+            formatted_date = ""
+            if len(date_raw) == 8:
+                formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
+            else:
+                formatted_date = date_raw
+
+            return {
+                "type": "act",
+                "id": act_uri,
+                "act_type": record["act_type"] or "",
+                "act_title": record["act_title"] or "",
+                "description": record["description"] or "",
+                "date": formatted_date,
+                "act_number": record["act_number"] or "",
+                "destinatario": record["destinatario"] or "",
+                "eurovoc": record["eurovoc"] or "",
+                "first_name": record["first_name"] or "",
+                "last_name": record["last_name"] or "",
+                "group": record["group_name"] or "MISTO",
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get act detail failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

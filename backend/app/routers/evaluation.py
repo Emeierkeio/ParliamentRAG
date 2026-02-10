@@ -19,11 +19,11 @@ from fastapi.responses import StreamingResponse
 from app.models.evaluation import (
     AutomatedMetrics,
     AggregatedMetrics,
-    BaselineComparison,
+    ABComparisonStats,
     CombinedEvaluation,
     EvaluationDashboardData,
 )
-from app.models.survey import SurveyResponse, SurveyStats
+from app.models.survey import SurveyResponse, SurveyStats, AB_DIMENSIONS
 from app.routers.survey import _load_surveys, _calculate_stats
 
 logger = logging.getLogger(__name__)
@@ -234,9 +234,25 @@ async def get_dashboard():
     automated_aggregate = _compute_aggregated(all_metrics)
     human_aggregate = _calculate_stats(surveys) if surveys else None
 
+    # Compute A/B comparison stats from human aggregate
+    ab_comparison = None
+    if human_aggregate and human_aggregate.total_surveys > 0:
+        ab_comparison = ABComparisonStats(
+            total_evaluations=human_aggregate.total_surveys,
+            system_win_rate=human_aggregate.system_win_rate,
+            baseline_win_rate=human_aggregate.baseline_win_rate,
+            tie_rate=human_aggregate.tie_rate,
+            system_avg_ratings=human_aggregate.system_avg_per_dimension,
+            baseline_avg_ratings=human_aggregate.baseline_avg_per_dimension,
+            system_avg_overall=human_aggregate.system_avg_overall,
+            baseline_avg_overall=human_aggregate.baseline_avg_overall,
+            per_dimension_preference=human_aggregate.per_dimension_preference,
+        )
+
     return EvaluationDashboardData(
         automated_aggregate=automated_aggregate,
         human_aggregate=human_aggregate,
+        ab_comparison=ab_comparison,
         per_chat=per_chat,
         total_chats=len(chats),
         total_evaluated=len(survey_map),
@@ -280,7 +296,16 @@ async def export_csv():
     output = io.StringIO()
     writer = csv.writer(output)
 
-    # Header
+    # Build A/B de-blinding lookup
+    from app.routers.survey import _get_ab_assignment, _deblind_preference
+
+    # Header - A/B format with de-blinded columns
+    dim_headers = []
+    for dim in AB_DIMENSIONS:
+        dim_headers.extend([
+            f"{dim}_system", f"{dim}_baseline", f"{dim}_preference"
+        ])
+
     writer.writerow([
         "chat_id", "query", "timestamp",
         # Automated metrics
@@ -288,13 +313,11 @@ async def export_csv():
         "authority_utilization", "response_completeness",
         "parties_represented", "citations_valid", "citations_total",
         "maggioranza_pct", "opposizione_pct", "experts_count",
-        # Human metrics
-        "answer_quality", "answer_clarity", "answer_completeness",
-        "citations_relevance", "citations_accuracy",
-        "balance_perception", "balance_fairness",
-        "compass_usefulness", "experts_usefulness",
-        "baseline_improvement", "authority_value", "citation_pipeline_value",
-        "overall_satisfaction", "would_recommend",
+        # Human A/B metrics (de-blinded)
+        *dim_headers,
+        "overall_satisfaction_system", "overall_satisfaction_baseline",
+        "overall_preference",
+        "would_recommend",
         "feedback_positive", "feedback_improvement",
     ])
 
@@ -305,6 +328,35 @@ async def export_csv():
             continue
 
         s = survey_map.get(chat["id"], {})
+        ab = _get_ab_assignment(chat["id"]) if s else None
+
+        # De-blind dimension ratings
+        dim_values = []
+        for dim in AB_DIMENSIONS:
+            dim_data = s.get(dim, {})
+            if isinstance(dim_data, dict) and ab:
+                is_a_system = ab.get("A") == "system"
+                r_a = dim_data.get("rating_a", "")
+                r_b = dim_data.get("rating_b", "")
+                pref = _deblind_preference(dim_data.get("preference", "equal"), ab) if ab else ""
+                system_r = r_a if is_a_system else r_b
+                baseline_r = r_b if is_a_system else r_a
+                dim_values.extend([system_r, baseline_r, pref])
+            else:
+                dim_values.extend(["", "", ""])
+
+        # De-blind overall satisfaction
+        if ab:
+            is_a_system = ab.get("A") == "system"
+            sat_a = s.get("overall_satisfaction_a", "")
+            sat_b = s.get("overall_satisfaction_b", "")
+            overall_sys = sat_a if is_a_system else sat_b
+            overall_base = sat_b if is_a_system else sat_a
+            overall_pref = _deblind_preference(s.get("overall_preference", "equal"), ab)
+        else:
+            overall_sys = ""
+            overall_base = ""
+            overall_pref = ""
 
         writer.writerow([
             chat["id"],
@@ -321,19 +373,8 @@ async def export_csv():
             m.maggioranza_pct,
             m.opposizione_pct,
             m.experts_count,
-            s.get("answer_quality", ""),
-            s.get("answer_clarity", ""),
-            s.get("answer_completeness", ""),
-            s.get("citations_relevance", ""),
-            s.get("citations_accuracy", ""),
-            s.get("balance_perception", ""),
-            s.get("balance_fairness", ""),
-            s.get("compass_usefulness", ""),
-            s.get("experts_usefulness", ""),
-            s.get("baseline_improvement", ""),
-            s.get("authority_value", ""),
-            s.get("citation_pipeline_value", ""),
-            s.get("overall_satisfaction", ""),
+            *dim_values,
+            overall_sys, overall_base, overall_pref,
             s.get("would_recommend", ""),
             s.get("feedback_positive", ""),
             s.get("feedback_improvement", ""),
