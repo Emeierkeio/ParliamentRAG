@@ -231,6 +231,7 @@ export function useChat(options: UseChatOptions = {}) {
                 // Step 4 result: citazioni trovate
                 const citationsPayload = data.data || data.citations;
                 if (Array.isArray(citationsPayload)) {
+                  console.log("[useChat] Citation sample:", JSON.stringify(citationsPayload[0]));
                   citations = citationsPayload;
                   updateLastAssistantMessage({ citations: [...citations] });
                   setProgress((prev) => prev ? {
