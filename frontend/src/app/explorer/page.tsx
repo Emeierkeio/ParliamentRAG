@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-    Database, 
-    Search, 
-    Play, 
-    Table as TableIcon, 
-    Code, 
+import {
+    Search,
+    Play,
+    Table as TableIcon,
+    Code,
     RefreshCcw,
     Layers,
     ArrowRightLeft,
-    Share2
+    Share2,
+    Landmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getGraphSchema, getGraphStats, executeCypherQuery } from "@/lib/graph-api";
+import { config } from "@/config";
 import { GraphVisualizer } from "@/components/graph/GraphVisualizer";
 
 export default function ExplorerPage() {
@@ -76,12 +77,21 @@ export default function ExplorerPage() {
             {/* Sidebar (Schema) */}
             <div className="w-[300px] border-r border-border bg-muted/10 flex flex-col">
                 <div className="p-4 border-b border-border">
-                    <h2 className="font-semibold flex items-center gap-2">
-                        <Database className="h-4 w-4 text-primary" />
-                        Database Schema
-                    </h2>
+                    <div
+                        className="flex items-center gap-3 cursor-pointer"
+                        onClick={() => window.location.href = "/"}
+                    >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                            <Landmark className="h-5 w-5" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-bold tracking-tight text-foreground">
+                                {config.app.name}
+                            </span>
+                        </div>
+                    </div>
                     {stats && (
-                        <div className="text-xs text-muted-foreground mt-1 flex gap-2">
+                        <div className="text-xs text-muted-foreground mt-2 flex gap-2">
                              <span>Nodes: {stats.total_nodes}</span>
                              <span>•</span>
                              <span>Rels: {stats.total_relationships}</span>
