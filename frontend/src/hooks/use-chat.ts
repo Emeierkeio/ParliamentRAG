@@ -209,8 +209,9 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "experts":
                 // Step 3 result: esperti identificati
-                if (Array.isArray(data.experts)) {
-                  experts = data.experts;
+                const expertsPayload = data.data || data.experts;
+                if (Array.isArray(expertsPayload)) {
+                  experts = expertsPayload;
                   updateLastAssistantMessage({ experts: [...experts] });
                   const magg = experts.filter(e => e.coalition === "maggioranza").length;
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
@@ -228,8 +229,9 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "citations":
                 // Step 4 result: citazioni trovate
-                if (Array.isArray(data.citations)) {
-                  citations = data.citations;
+                const citationsPayload = data.data || data.citations;
+                if (Array.isArray(citationsPayload)) {
+                  citations = citationsPayload;
                   updateLastAssistantMessage({ citations: [...citations] });
                   setProgress((prev) => prev ? {
                     ...prev,
@@ -265,9 +267,8 @@ export function useChat(options: UseChatOptions = {}) {
               case "compass":
                 // Step 6 result: Compass analysis
                 try {
-                  // The payload IS the CompassData (data itself, not data.compass)
-                  // Store in local variable for saving to history later
-                  compassData = data;
+                  // The payload is in data.data (from backend) or data itself
+                  compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
                   
                   setProgress((prev) => prev ? {
@@ -287,15 +288,16 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "citation_details":
                 // Step 7 result: citazioni verificate e arricchite con testo completo
-                if (Array.isArray(data.citations)) {
-                    citations = data.citations;
+                const citDetailsPayload = data.data || data.citations;
+                if (Array.isArray(citDetailsPayload)) {
+                    citations = citDetailsPayload;
                     updateLastAssistantMessage({ citations: [...citations] });
                     console.log("[useChat] Updated verified citations:", citations.length);
                 }
                 break;
 
               case "chunk":
-                accumulatedContent += data.content;
+                accumulatedContent += (data.data || data.content || "");
                 setStreamingContent(accumulatedContent);
                 updateLastAssistantMessage({ content: accumulatedContent });
                 
