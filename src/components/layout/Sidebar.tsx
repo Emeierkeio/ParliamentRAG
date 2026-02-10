@@ -122,11 +122,6 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         <div className="p-3 pb-6">
           <nav className="flex flex-col gap-1">
             <NavButton
-              item={{ icon: Info, label: "Informazioni", onClick: () => setInfoOpen(true) }}
-              isCollapsed={isCollapsed}
-            />
-
-            <NavButton
                 item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />

@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ClipboardCheck,
   ChevronRight,
@@ -25,22 +24,21 @@ import {
   MessageSquare,
   Quote,
   Scale,
-  Compass,
   Star,
   Send,
   RefreshCw,
   CheckCircle2,
-  FileText,
-  Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import { StarRating } from "./StarRating";
-import { CompassCard } from "@/components/chat/CompassCard";
 import {
   SURVEY_QUESTIONS,
+  AB_DIMENSIONS,
   type SurveyFormState,
+  type ABRating,
   type PendingChat,
+  type ABDimension,
   getInitialSurveyFormState,
 } from "@/types/survey";
 import {
@@ -48,8 +46,6 @@ import {
   createSurvey,
   getEvaluatedChatIds,
 } from "@/lib/survey-api";
-import { getChatMetrics } from "@/lib/evaluation-api";
-import type { AutomatedMetrics } from "@/types/evaluation";
 
 interface SurveyModalProps {
   isOpen: boolean;
@@ -65,25 +61,17 @@ interface ChatDetails {
   balance: any;
   compass: any;
   timestamp: string;
+  baseline_answer?: string;
+  ab_assignment?: Record<string, string>;
 }
 
 type SurveyStep = "select" | "form" | "success";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  "Qualità Risposta": <MessageSquare className="w-4 h-4" />,
+  "Qualita Risposta": <MessageSquare className="w-4 h-4" />,
   "Citazioni": <Quote className="w-4 h-4" />,
   "Bilanciamento Politico": <Scale className="w-4 h-4" />,
-  "Funzionalità": <Compass className="w-4 h-4" />,
-  "Confronto Baseline": <Eye className="w-4 h-4" />,
   "Valutazione Complessiva": <Star className="w-4 h-4" />,
-};
-
-const BASELINE_VALUES: Record<string, { value: number; label: string }> = {
-  party_coverage_score: { value: 0.35, label: "Copertura Partiti" },
-  citation_integrity_score: { value: 0.65, label: "Integrità Citazioni" },
-  balance_score: { value: 0.60, label: "Bilanciamento" },
-  authority_utilization: { value: 0.50, label: "Utilizzo Autorità" },
-  response_completeness: { value: 0.25, label: "Completezza Risposta" },
 };
 
 export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
@@ -98,18 +86,36 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeContentTab, setActiveContentTab] = useState<"response" | "compass" | "metrics">("response");
-  const [chatMetrics, setChatMetrics] = useState<AutomatedMetrics | null>(null);
-  const [isLoadingMetrics, setIsLoadingMetrics] = useState(false);
 
-  // Group questions by category
-  const categories = SURVEY_QUESTIONS.reduce((acc, q) => {
+  // Group questions by category (exclude overall_satisfaction - handled separately)
+  const categories = SURVEY_QUESTIONS.filter(q => q.id !== "overall_satisfaction").reduce((acc, q) => {
     if (!acc.find((c) => c.name === q.category)) {
       acc.push({ name: q.category, questions: [] });
     }
     acc.find((c) => c.name === q.category)?.questions.push(q);
     return acc;
   }, [] as { name: string; questions: typeof SURVEY_QUESTIONS }[]);
+
+  // Add final "Valutazione Complessiva" category
+  categories.push({
+    name: "Valutazione Complessiva",
+    questions: SURVEY_QUESTIONS.filter(q => q.id === "overall_satisfaction"),
+  });
+
+  // Get response A and B based on ab_assignment
+  const getResponseA = (): string => {
+    if (!chatDetails) return "";
+    const ab = chatDetails.ab_assignment;
+    if (!ab) return chatDetails.answer;
+    return ab["A"] === "system" ? chatDetails.answer : (chatDetails.baseline_answer || "");
+  };
+
+  const getResponseB = (): string => {
+    if (!chatDetails) return "";
+    const ab = chatDetails.ab_assignment;
+    if (!ab) return chatDetails.baseline_answer || "";
+    return ab["B"] === "system" ? chatDetails.answer : (chatDetails.baseline_answer || "");
+  };
 
   // Load pending chats
   const loadData = useCallback(async () => {
@@ -157,53 +163,71 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     }
   }, [isOpen, loadData]);
 
-  // Load automated metrics for a chat
-  const loadChatMetrics = useCallback(async (chatId: string) => {
-    setIsLoadingMetrics(true);
-    try {
-      const metrics = await getChatMetrics(chatId);
-      setChatMetrics(metrics);
-    } catch (err) {
-      console.error("Failed to load metrics:", err);
-      setChatMetrics(null);
-    } finally {
-      setIsLoadingMetrics(false);
-    }
-  }, []);
-
   // Handle chat selection
   const handleSelectChat = async (chat: PendingChat) => {
     setSelectedChat(chat);
     setFormState(getInitialSurveyFormState());
     setCurrentCategory(0);
-    setActiveContentTab("response");
-    setChatMetrics(null);
     setStep("form");
-    await Promise.all([loadChatDetails(chat.id), loadChatMetrics(chat.id)]);
+    await loadChatDetails(chat.id);
   };
 
-  // Handle form field change
-  const handleFieldChange = (field: keyof SurveyFormState, value: number | boolean | string) => {
-    setFormState((prev) => ({ ...prev, [field]: value }));
+  // Handle AB rating change for a dimension
+  const handleABRatingChange = (
+    dimension: ABDimension,
+    field: keyof ABRating,
+    value: number | string
+  ) => {
+    setFormState((prev) => ({
+      ...prev,
+      [dimension]: {
+        ...prev[dimension],
+        [field]: value,
+      },
+    }));
+  };
+
+  // Check if a dimension's AB rating is complete
+  const isABRatingComplete = (rating: ABRating): boolean => {
+    return rating.rating_a > 0 && rating.rating_b > 0 && rating.preference !== "";
   };
 
   // Check if current category is complete
   const isCategoryComplete = (catIndex: number) => {
     const cat = categories[catIndex];
-    return cat.questions.every((q) => formState[q.id as keyof SurveyFormState] !== 0);
+    if (cat.name === "Valutazione Complessiva") {
+      return formState.overall_satisfaction_a > 0 &&
+             formState.overall_satisfaction_b > 0 &&
+             formState.overall_preference !== "";
+    }
+    return cat.questions.every((q) => {
+      const rating = formState[q.id as ABDimension];
+      return isABRatingComplete(rating);
+    });
   };
 
   // Check if all required fields are filled
   const isFormComplete = () => {
-    return SURVEY_QUESTIONS.every((q) => formState[q.id as keyof SurveyFormState] !== 0);
+    const dimensionsComplete = AB_DIMENSIONS.every((dim) =>
+      isABRatingComplete(formState[dim])
+    );
+    const overallComplete = formState.overall_satisfaction_a > 0 &&
+                           formState.overall_satisfaction_b > 0 &&
+                           formState.overall_preference !== "";
+    return dimensionsComplete && overallComplete;
   };
 
   // Calculate completion percentage
   const completionPercentage = () => {
-    const filled = SURVEY_QUESTIONS.filter(
-      (q) => formState[q.id as keyof SurveyFormState] !== 0
-    ).length;
-    return Math.round((filled / SURVEY_QUESTIONS.length) * 100);
+    let total = AB_DIMENSIONS.length + 1; // dimensions + overall
+    let filled = 0;
+    for (const dim of AB_DIMENSIONS) {
+      if (isABRatingComplete(formState[dim])) filled++;
+    }
+    if (formState.overall_satisfaction_a > 0 && formState.overall_satisfaction_b > 0 && formState.overall_preference !== "") {
+      filled++;
+    }
+    return Math.round((filled / total) * 100);
   };
 
   // Navigate categories
@@ -236,12 +260,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         citations_accuracy: formState.citations_accuracy,
         balance_perception: formState.balance_perception,
         balance_fairness: formState.balance_fairness,
-        compass_usefulness: formState.compass_usefulness,
-        experts_usefulness: formState.experts_usefulness,
-        baseline_improvement: formState.baseline_improvement,
-        authority_value: formState.authority_value,
-        citation_pipeline_value: formState.citation_pipeline_value,
-        overall_satisfaction: formState.overall_satisfaction,
+        overall_satisfaction_a: formState.overall_satisfaction_a,
+        overall_satisfaction_b: formState.overall_satisfaction_b,
+        overall_preference: formState.overall_preference as "A" | "B" | "equal",
         would_recommend: formState.would_recommend,
         feedback_positive: formState.feedback_positive || undefined,
         feedback_improvement: formState.feedback_improvement || undefined,
@@ -269,27 +290,17 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     }
   };
 
-  // Render markdown-like content with proper citation formatting
+  // Render markdown-like content
   const renderContent = (text: string) => {
-    // Counter object to track citations across nested function calls
     const counter = { value: 0 };
 
-    // Process inline text to handle citations and formatting
     const processInlineText = (lineText: string): React.ReactNode[] => {
       const results: React.ReactNode[] = [];
-
-      // Combined regex to match various citation formats:
-      // 1. (leg19_..._chunk_N) - raw chunk IDs in parentheses
-      // 2. [«text»](chunk_id) - markdown link format
-      // 3. [CIT:chunk_id] - explicit citation marker
-      // 4. **bold text** - markdown bold
       const combinedRegex = /(\(leg\d+_[^)]+\)|\[«[^»]+»\]\([^)]+\)|\[CIT:[^\]]+\]|\*\*[^*]+\*\*)/g;
-
       let lastIndex = 0;
       let match;
 
       while ((match = combinedRegex.exec(lineText)) !== null) {
-        // Add text before match
         if (match.index > lastIndex) {
           results.push(lineText.slice(lastIndex, match.index));
         }
@@ -297,50 +308,38 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         const matched = match[0];
 
         if (matched.startsWith("(leg") && matched.endsWith(")")) {
-          // Raw chunk ID in parentheses - show as citation badge
           counter.value++;
           results.push(
-            <Badge
-              key={`cit-${match.index}`}
-              variant="secondary"
+            <Badge key={`cit-${match.index}`} variant="secondary"
               className="mx-0.5 text-[10px] px-1.5 py-0 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 cursor-help"
-              title={matched.slice(1, -1)}
-            >
-              📎 Fonte {counter.value}
+              title={matched.slice(1, -1)}>
+              Fonte {counter.value}
             </Badge>
           );
         } else if (matched.startsWith("[«") && matched.includes("](")) {
-          // Markdown link format with citation - extract quoted text
           const quoteMatch = matched.match(/\[«([^»]+)»\]\(([^)]+)\)/);
           if (quoteMatch) {
             counter.value++;
             results.push(
               <span key={`quote-${match.index}`} className="inline">
                 <span className="italic text-gray-600 dark:text-gray-400">&laquo;{quoteMatch[1]}&raquo;</span>
-                <Badge
-                  variant="secondary"
+                <Badge variant="secondary"
                   className="ml-0.5 text-[10px] px-1.5 py-0 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 cursor-help"
-                  title={quoteMatch[2]}
-                >
+                  title={quoteMatch[2]}>
                   {counter.value}
                 </Badge>
               </span>
             );
           }
         } else if (matched.startsWith("[CIT:")) {
-          // Explicit citation marker
           counter.value++;
           results.push(
-            <Badge
-              key={`cit-${match.index}`}
-              variant="secondary"
-              className="mx-0.5 text-[10px] px-1.5 py-0 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700"
-            >
-              📎 {counter.value}
+            <Badge key={`cit-${match.index}`} variant="secondary"
+              className="mx-0.5 text-[10px] px-1.5 py-0 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700">
+              {counter.value}
             </Badge>
           );
         } else if (matched.startsWith("**") && matched.endsWith("**")) {
-          // Bold text
           results.push(
             <strong key={`bold-${match.index}`}>{matched.slice(2, -2)}</strong>
           );
@@ -349,7 +348,6 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         lastIndex = match.index + matched.length;
       }
 
-      // Add remaining text
       if (lastIndex < lineText.length) {
         results.push(lineText.slice(lastIndex));
       }
@@ -357,7 +355,6 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
       return results;
     };
 
-    // Simple markdown rendering
     const lines = text.split("\n");
     return lines.map((line, i) => {
       if (line.startsWith("## ")) {
@@ -389,14 +386,14 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         )}
         style={
           step === "form"
-            ? { width: "1400px", maxWidth: "95vw", height: "90vh" }
+            ? { width: "1600px", maxWidth: "95vw", height: "90vh" }
             : { maxWidth: "42rem", maxHeight: "90vh" }
         }
       >
         <DialogHeader className="px-6 py-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30">
           <DialogTitle className="flex items-center gap-2 text-lg">
             <ClipboardCheck className="w-5 h-5 text-blue-600" />
-            Valutazione Sistema
+            Valutazione A/B Blind
           </DialogTitle>
           {step === "form" && (
             <div className="flex items-center gap-3 mt-2">
@@ -419,14 +416,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900/50 border-b">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Seleziona una conversazione da valutare
+                  Seleziona una conversazione da valutare (solo chat con baseline)
                 </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={loadData}
-                  disabled={isLoading}
-                >
+                <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading}>
                   <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
                   Aggiorna
                 </Button>
@@ -489,162 +481,73 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             <div className="px-6 py-4 border-t bg-gray-50 dark:bg-gray-900/50">
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <span>{pendingChats.length} conversazioni da valutare</span>
-                <span>{evaluatedIds.size} già valutate</span>
+                <span>{evaluatedIds.size} gia valutate</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* Step: Survey Form with Content Preview */}
+        {/* Step: Survey Form with A/B Blind Comparison */}
         {step === "form" && selectedChat && (
           <div className="flex flex-1 min-h-0">
-            {/* Left Panel: Content Preview */}
-            <div className="w-1/2 border-r flex flex-col bg-white dark:bg-gray-950 min-h-0 overflow-hidden">
+            {/* Left Panel: Side-by-side A/B Responses */}
+            <div className="w-3/5 border-r flex flex-col bg-white dark:bg-gray-950 min-h-0 overflow-hidden">
               {/* Query Header */}
               <div className="px-4 py-3 bg-blue-50 dark:bg-blue-950/30 border-b">
                 <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
                   <span className="text-blue-600 dark:text-blue-400">Domanda:</span> {selectedChat.query}
                 </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Confronta le due risposte. Non sai quale sia il sistema avanzato e quale la baseline.
+                </p>
               </div>
 
-              {/* Content Tabs */}
-              <Tabs value={activeContentTab} onValueChange={(v) => setActiveContentTab(v as any)} className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                <TabsList className="mx-4 mt-3 grid w-auto grid-cols-3 h-9">
-                  <TabsTrigger value="response" className="text-sm gap-1.5">
-                    <FileText className="w-4 h-4" />
-                    Risposta
-                  </TabsTrigger>
-                  <TabsTrigger value="compass" className="text-sm gap-1.5" disabled={!chatDetails?.compass}>
-                    <Compass className="w-4 h-4" />
-                    Compass
-                  </TabsTrigger>
-                  <TabsTrigger value="metrics" className="text-sm gap-1.5">
-                    <Eye className="w-4 h-4" />
-                    Metriche
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="response" className="flex-1 m-0 min-h-0 overflow-hidden data-[state=active]:flex data-[state=active]:flex-col">
-                  <ScrollArea className="flex-1 px-4 py-4">
-                    {isLoadingDetails ? (
-                      <div className="flex items-center justify-center h-40">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                        <span className="ml-2 text-sm text-gray-500">Caricamento risposta...</span>
-                      </div>
-                    ) : chatDetails?.answer ? (
-                      <div className="prose prose-sm dark:prose-invert max-w-none">
-                        {renderContent(chatDetails.answer)}
-                      </div>
-                    ) : (
-                      <p className="text-gray-500 text-center">Nessuna risposta disponibile</p>
-                    )}
-                  </ScrollArea>
-                </TabsContent>
-
-                <TabsContent value="compass" className="flex-1 m-0 min-h-0 overflow-hidden data-[state=active]:flex data-[state=active]:flex-col">
-                  <ScrollArea className="flex-1 px-4 py-4">
-                    {isLoadingDetails ? (
-                      <div className="flex items-center justify-center h-40">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                        <span className="ml-2 text-sm text-gray-500">Caricamento compass...</span>
-                      </div>
-                    ) : chatDetails?.compass ? (
-                      <CompassCard data={chatDetails.compass} />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                        <Compass className="w-10 h-10 mb-2 opacity-30" />
-                        <p>Compass non disponibile per questa risposta</p>
-                      </div>
-                    )}
-                  </ScrollArea>
-                </TabsContent>
-
-                <TabsContent value="metrics" className="flex-1 m-0 min-h-0 overflow-hidden data-[state=active]:flex data-[state=active]:flex-col">
-                  <ScrollArea className="flex-1 px-4 py-4">
-                    {isLoadingMetrics ? (
-                      <div className="flex items-center justify-center h-40">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                        <span className="ml-2 text-sm text-gray-500">Caricamento metriche...</span>
-                      </div>
-                    ) : chatMetrics ? (
-                      <div className="space-y-4">
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                          Metriche automatiche calcolate dalla pipeline — confronto con baseline Naive RAG
-                        </p>
-                        {/* Metric bars with baseline comparison */}
-                        {Object.entries(BASELINE_VALUES).map(([key, { value: baseline, label }]) => {
-                          const systemValue = chatMetrics[key as keyof typeof chatMetrics] as number;
-                          const delta = systemValue - baseline;
-                          return (
-                            <div key={key} className="space-y-1">
-                              <div className="flex items-center justify-between text-sm">
-                                <span className="font-medium text-gray-700 dark:text-gray-300">{label}</span>
-                                <span className="font-mono text-sm">{(systemValue * 100).toFixed(0)}%</span>
-                              </div>
-                              <div className="relative h-5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                                <div
-                                  className="absolute h-full rounded-full bg-amber-300/50 dark:bg-amber-700/30"
-                                  style={{ width: `${baseline * 100}%` }}
-                                />
-                                <div
-                                  className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
-                                  style={{ width: `${systemValue * 100}%` }}
-                                />
-                              </div>
-                              <div className="flex items-center justify-between text-xs text-gray-500">
-                                <span>Baseline: {(baseline * 100).toFixed(0)}%</span>
-                                <span className={delta > 0 ? "text-emerald-600 font-semibold" : delta < 0 ? "text-red-600 font-semibold" : ""}>
-                                  {delta > 0 ? "+" : ""}{(delta * 100).toFixed(1)}pp
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                        {/* Legend */}
-                        <div className="flex items-center gap-4 mt-4 pt-3 border-t text-xs text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
-                            ParliamentRAG
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <div className="w-3 h-3 rounded bg-amber-300/50 dark:bg-amber-700/30" />
-                            Naive RAG (baseline)
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                        <Eye className="w-10 h-10 mb-2 opacity-30" />
-                        <p>Metriche non disponibili</p>
-                      </div>
-                    )}
-                  </ScrollArea>
-                </TabsContent>
-              </Tabs>
-
-              {/* Balance Info */}
-              {chatDetails?.balance && (
-                <div className="px-4 py-3 border-t bg-gray-50 dark:bg-gray-900/50">
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500" />
-                      <span className="text-gray-600 dark:text-gray-400">
-                        Maggioranza: {Math.round(chatDetails.balance.maggioranza_percentage || 0)}%
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <span className="text-gray-600 dark:text-gray-400">
-                        Opposizione: {Math.round(chatDetails.balance.opposizione_percentage || 0)}%
-                      </span>
-                    </div>
+              {/* A/B Side by side */}
+              <div className="flex flex-1 min-h-0 overflow-hidden">
+                {/* Response A */}
+                <div className="w-1/2 border-r flex flex-col min-h-0">
+                  <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 border-b text-center">
+                    <span className="font-semibold text-blue-700 dark:text-blue-300 text-sm">
+                      Risposta A
+                    </span>
                   </div>
+                  <ScrollArea className="flex-1 px-3 py-3">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
+                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                        {renderContent(getResponseA())}
+                      </div>
+                    )}
+                  </ScrollArea>
                 </div>
-              )}
+
+                {/* Response B */}
+                <div className="w-1/2 flex flex-col min-h-0">
+                  <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 border-b text-center">
+                    <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">
+                      Risposta B
+                    </span>
+                  </div>
+                  <ScrollArea className="flex-1 px-3 py-3">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
+                        <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                        {renderContent(getResponseB())}
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
+              </div>
             </div>
 
             {/* Right Panel: Survey Form */}
-            <div className="w-1/2 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden">
+            <div className="w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden">
               {/* Category tabs */}
               <div className="px-4 py-3 border-b bg-white dark:bg-gray-950 flex gap-2 overflow-x-auto">
                 {categories.map((cat, idx) => (
@@ -670,72 +573,176 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
 
               {/* Questions */}
               <ScrollArea className="flex-1 min-h-0 px-4 py-4">
-                <div className="space-y-6">
-                  {categories[currentCategory].questions.map((question) => (
-                    <div key={question.id} className="space-y-2 p-4 bg-white dark:bg-gray-950 rounded-lg border">
-                      <div>
+                <div className="space-y-5">
+                  {/* A/B dimension questions */}
+                  {categories[currentCategory].name !== "Valutazione Complessiva" ? (
+                    categories[currentCategory].questions.map((question) => {
+                      const dim = question.id as ABDimension;
+                      const rating = formState[dim];
+                      return (
+                        <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
+                          <div>
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
+                              {question.question}
+                            </p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {question.description}
+                            </p>
+                          </div>
+
+                          {/* Rating A */}
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
+                            <StarRating
+                              value={rating.rating_a}
+                              onChange={(val) => handleABRatingChange(dim, "rating_a", val)}
+                              size="md"
+                            />
+                          </div>
+
+                          {/* Rating B */}
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
+                            <StarRating
+                              value={rating.rating_b}
+                              onChange={(val) => handleABRatingChange(dim, "rating_b", val)}
+                              size="md"
+                            />
+                          </div>
+
+                          {/* Preference */}
+                          <div className="flex items-center gap-2 pt-1">
+                            <span className="text-xs text-gray-500">Preferenza:</span>
+                            <div className="flex gap-1.5">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={rating.preference === "A" ? "default" : "outline"}
+                                onClick={() => handleABRatingChange(dim, "preference", "A")}
+                                className={cn(
+                                  "h-7 px-3 text-xs",
+                                  rating.preference === "A" && "bg-blue-600 hover:bg-blue-700"
+                                )}
+                              >
+                                A migliore
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={rating.preference === "equal" ? "default" : "outline"}
+                                onClick={() => handleABRatingChange(dim, "preference", "equal")}
+                                className={cn(
+                                  "h-7 px-3 text-xs",
+                                  rating.preference === "equal" && "bg-gray-600 hover:bg-gray-700"
+                                )}
+                              >
+                                Uguale
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={rating.preference === "B" ? "default" : "outline"}
+                                onClick={() => handleABRatingChange(dim, "preference", "B")}
+                                className={cn(
+                                  "h-7 px-3 text-xs",
+                                  rating.preference === "B" && "bg-amber-600 hover:bg-amber-700"
+                                )}
+                              >
+                                B migliore
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    /* Overall satisfaction category */
+                    <>
+                      <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
                         <p className="font-medium text-gray-900 dark:text-gray-100">
-                          {question.question}
+                          Soddisfazione complessiva
                         </p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {question.description}
+                          Valutazione generale dell'esperienza con ciascuna risposta
                         </p>
-                      </div>
-                      <StarRating
-                        value={formState[question.id as keyof SurveyFormState] as number}
-                        onChange={(val) => handleFieldChange(question.id as keyof SurveyFormState, val)}
-                        size="lg"
-                      />
-                    </div>
-                  ))}
 
-                  {/* Final category: additional fields */}
-                  {currentCategory === categories.length - 1 && (
-                    <>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
+                          <StarRating
+                            value={formState.overall_satisfaction_a}
+                            onChange={(val) => setFormState(prev => ({ ...prev, overall_satisfaction_a: val }))}
+                            size="md"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
+                          <StarRating
+                            value={formState.overall_satisfaction_b}
+                            onChange={(val) => setFormState(prev => ({ ...prev, overall_satisfaction_b: val }))}
+                            size="md"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <span className="text-xs text-gray-500">Preferenza complessiva:</span>
+                          <div className="flex gap-1.5">
+                            <Button type="button" size="sm"
+                              variant={formState.overall_preference === "A" ? "default" : "outline"}
+                              onClick={() => setFormState(prev => ({ ...prev, overall_preference: "A" }))}
+                              className={cn("h-7 px-3 text-xs", formState.overall_preference === "A" && "bg-blue-600 hover:bg-blue-700")}>
+                              A migliore
+                            </Button>
+                            <Button type="button" size="sm"
+                              variant={formState.overall_preference === "equal" ? "default" : "outline"}
+                              onClick={() => setFormState(prev => ({ ...prev, overall_preference: "equal" }))}
+                              className={cn("h-7 px-3 text-xs", formState.overall_preference === "equal" && "bg-gray-600 hover:bg-gray-700")}>
+                              Uguale
+                            </Button>
+                            <Button type="button" size="sm"
+                              variant={formState.overall_preference === "B" ? "default" : "outline"}
+                              onClick={() => setFormState(prev => ({ ...prev, overall_preference: "B" }))}
+                              className={cn("h-7 px-3 text-xs", formState.overall_preference === "B" && "bg-amber-600 hover:bg-amber-700")}>
+                              B migliore
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
                       <Separator className="my-4" />
 
                       {/* Would recommend */}
                       <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
                         <p className="font-medium text-gray-900 dark:text-gray-100">
-                          Consiglieresti questo sistema ai tuoi colleghi?
+                          Consiglieresti questo tipo di sistema ai tuoi colleghi?
                         </p>
                         <div className="flex gap-3">
-                          <Button
-                            type="button"
+                          <Button type="button"
                             variant={formState.would_recommend ? "default" : "outline"}
-                            onClick={() => handleFieldChange("would_recommend", true)}
-                            className={cn(
-                              "flex-1",
-                              formState.would_recommend && "bg-emerald-600 hover:bg-emerald-700"
-                            )}
-                          >
+                            onClick={() => setFormState(prev => ({ ...prev, would_recommend: true }))}
+                            className={cn("flex-1", formState.would_recommend && "bg-emerald-600 hover:bg-emerald-700")}>
                             <ThumbsUp className="w-4 h-4 mr-2" />
-                            Sì, lo consiglierei
+                            Si
                           </Button>
-                          <Button
-                            type="button"
+                          <Button type="button"
                             variant={!formState.would_recommend ? "default" : "outline"}
-                            onClick={() => handleFieldChange("would_recommend", false)}
-                            className={cn(
-                              "flex-1",
-                              !formState.would_recommend && "bg-gray-600 hover:bg-gray-700"
-                            )}
-                          >
-                            Non ancora
+                            onClick={() => setFormState(prev => ({ ...prev, would_recommend: false }))}
+                            className={cn("flex-1", !formState.would_recommend && "bg-gray-600 hover:bg-gray-700")}>
+                            No
                           </Button>
                         </div>
                       </div>
 
-                      {/* Feedback text areas */}
+                      {/* Feedback */}
                       <div className="space-y-4 p-4 bg-white dark:bg-gray-950 rounded-lg border">
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             Cosa ha funzionato bene? (opzionale)
                           </label>
                           <Textarea
-                            placeholder="Descrivi gli aspetti positivi della tua esperienza..."
+                            placeholder="Descrivi gli aspetti positivi..."
                             value={formState.feedback_positive}
-                            onChange={(e) => handleFieldChange("feedback_positive", e.target.value)}
+                            onChange={(e) => setFormState(prev => ({ ...prev, feedback_positive: e.target.value }))}
                             className="min-h-[80px] resize-none"
                           />
                         </div>
@@ -746,7 +753,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                           <Textarea
                             placeholder="Come potremmo migliorare il sistema..."
                             value={formState.feedback_improvement}
-                            onChange={(e) => handleFieldChange("feedback_improvement", e.target.value)}
+                            onChange={(e) => setFormState(prev => ({ ...prev, feedback_improvement: e.target.value }))}
                             className="min-h-[80px] resize-none"
                           />
                         </div>
@@ -808,7 +815,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
               Grazie per la tua valutazione!
             </h3>
             <p className="text-gray-500 dark:text-gray-400 text-center max-w-sm mb-6">
-              Il tuo feedback è prezioso per migliorare il sistema e renderlo più utile per la ricerca giornalistica.
+              Il tuo feedback e prezioso per confrontare il sistema avanzato con la baseline.
             </p>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setStep("select")}>

@@ -1,5 +1,5 @@
 /**
- * Survey types for user evaluation of ParliamentRAG responses.
+ * Survey types for A/B blind evaluation of ParliamentRAG vs Baseline RAG.
  */
 
 export interface SurveyQuestion {
@@ -9,35 +9,31 @@ export interface SurveyQuestion {
   description: string;
 }
 
+export interface ABRating {
+  rating_a: number;
+  rating_b: number;
+  preference: "A" | "B" | "equal" | "";
+}
+
 export interface SurveyResponse {
   id: string;
   chat_id: string;
   timestamp: string;
 
-  // Core evaluation metrics (1-5 scale)
-  answer_quality: number;
-  answer_clarity: number;
-  answer_completeness: number;
+  // A/B comparative ratings per dimension
+  answer_quality: ABRating;
+  answer_clarity: ABRating;
+  answer_completeness: ABRating;
+  citations_relevance: ABRating;
+  citations_accuracy: ABRating;
+  balance_perception: ABRating;
+  balance_fairness: ABRating;
 
-  // Citations evaluation
-  citations_relevance: number;
-  citations_accuracy: number;
+  // Overall
+  overall_satisfaction_a: number;
+  overall_satisfaction_b: number;
+  overall_preference: "A" | "B" | "equal";
 
-  // Political balance evaluation
-  balance_perception: number;
-  balance_fairness: number;
-
-  // Feature-specific evaluations
-  compass_usefulness: number;
-  experts_usefulness: number;
-
-  // Baseline comparison
-  baseline_improvement: number;
-  authority_value: number;
-  citation_pipeline_value: number;
-
-  // Overall satisfaction
-  overall_satisfaction: number;
   would_recommend: boolean;
 
   // Qualitative feedback
@@ -52,24 +48,18 @@ export interface SurveyResponse {
 export interface SurveyResponseCreate {
   chat_id: string;
 
-  answer_quality: number;
-  answer_clarity: number;
-  answer_completeness: number;
+  answer_quality: ABRating;
+  answer_clarity: ABRating;
+  answer_completeness: ABRating;
+  citations_relevance: ABRating;
+  citations_accuracy: ABRating;
+  balance_perception: ABRating;
+  balance_fairness: ABRating;
 
-  citations_relevance: number;
-  citations_accuracy: number;
+  overall_satisfaction_a: number;
+  overall_satisfaction_b: number;
+  overall_preference: "A" | "B" | "equal";
 
-  balance_perception: number;
-  balance_fairness: number;
-
-  compass_usefulness: number;
-  experts_usefulness: number;
-
-  baseline_improvement: number;
-  authority_value: number;
-  citation_pipeline_value: number;
-
-  overall_satisfaction: number;
   would_recommend: boolean;
 
   feedback_positive?: string;
@@ -88,21 +78,15 @@ export interface SurveyWithChat {
 
 export interface SurveyStats {
   total_surveys: number;
-  avg_answer_quality: number;
-  avg_answer_clarity: number;
-  avg_answer_completeness: number;
-  avg_citations_relevance: number;
-  avg_citations_accuracy: number;
-  avg_balance_perception: number;
-  avg_balance_fairness: number;
-  avg_compass_usefulness: number;
-  avg_experts_usefulness: number;
-  avg_baseline_improvement: number;
-  avg_authority_value: number;
-  avg_citation_pipeline_value: number;
-  avg_overall_satisfaction: number;
+  system_avg_per_dimension: Record<string, number>;
+  baseline_avg_per_dimension: Record<string, number>;
+  system_avg_overall: number;
+  baseline_avg_overall: number;
+  system_win_rate: number;
+  baseline_win_rate: number;
+  tie_rate: number;
+  per_dimension_preference: Record<string, Record<string, number>>;
   recommendation_rate: number;
-  scores_distribution: Record<string, Record<number, number>>;
 }
 
 export interface SurveyListResponse {
@@ -123,123 +107,106 @@ export interface PendingChatsResponse {
   total: number;
 }
 
-// Survey form state
+// A/B dimensions for comparison
+export const AB_DIMENSIONS = [
+  "answer_quality",
+  "answer_clarity",
+  "answer_completeness",
+  "citations_relevance",
+  "citations_accuracy",
+  "balance_perception",
+  "balance_fairness",
+] as const;
+
+export type ABDimension = typeof AB_DIMENSIONS[number];
+
+// Survey form state for A/B evaluation
 export interface SurveyFormState {
-  answer_quality: number;
-  answer_clarity: number;
-  answer_completeness: number;
-  citations_relevance: number;
-  citations_accuracy: number;
-  balance_perception: number;
-  balance_fairness: number;
-  compass_usefulness: number;
-  experts_usefulness: number;
-  baseline_improvement: number;
-  authority_value: number;
-  citation_pipeline_value: number;
-  overall_satisfaction: number;
+  answer_quality: ABRating;
+  answer_clarity: ABRating;
+  answer_completeness: ABRating;
+  citations_relevance: ABRating;
+  citations_accuracy: ABRating;
+  balance_perception: ABRating;
+  balance_fairness: ABRating;
+  overall_satisfaction_a: number;
+  overall_satisfaction_b: number;
+  overall_preference: "A" | "B" | "equal" | "";
   would_recommend: boolean;
   feedback_positive: string;
   feedback_improvement: string;
 }
 
-// Survey questions configuration
+// Survey questions configuration - A/B format
 export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "answer_quality",
-    category: "Qualità Risposta",
-    question: "Come valuti la qualità complessiva della risposta?",
-    description: "Considera l'utilità pratica per il tuo lavoro giornalistico",
+    category: "Qualita Risposta",
+    question: "Qualita complessiva della risposta",
+    description: "Considera l'utilita pratica per il lavoro giornalistico",
   },
   {
     id: "answer_clarity",
-    category: "Qualità Risposta",
-    question: "Quanto è chiara e leggibile la risposta?",
-    description: "Valuta la struttura, il linguaggio e la facilità di comprensione",
+    category: "Qualita Risposta",
+    question: "Chiarezza e leggibilita della risposta",
+    description: "Valuta la struttura, il linguaggio e la facilita di comprensione",
   },
   {
     id: "answer_completeness",
-    category: "Qualità Risposta",
-    question: "La risposta copre tutti gli aspetti rilevanti?",
+    category: "Qualita Risposta",
+    question: "Completezza delle informazioni",
     description: "Considera se mancano informazioni importanti",
   },
   {
     id: "citations_relevance",
     category: "Citazioni",
-    question: "Le citazioni parlamentari sono pertinenti?",
+    question: "Pertinenza delle citazioni parlamentari",
     description: "Valuta se le citazioni supportano effettivamente la risposta",
   },
   {
     id: "citations_accuracy",
     category: "Citazioni",
-    question: "Le attribuzioni delle citazioni sono accurate?",
+    question: "Accuratezza delle attribuzioni",
     description: "Considera se deputato, data e contesto sono corretti",
   },
   {
     id: "balance_perception",
     category: "Bilanciamento Politico",
-    question: "Percepisci un adeguato bilanciamento politico?",
+    question: "Bilanciamento politico percepito",
     description: "Valuta se sono rappresentate diverse posizioni politiche",
   },
   {
     id: "balance_fairness",
     category: "Bilanciamento Politico",
-    question: "Le diverse posizioni sono trattate equamente?",
-    description: "Considera se c'è imparzialità nella presentazione",
-  },
-  {
-    id: "compass_usefulness",
-    category: "Funzionalità",
-    question: "La bussola ideologica è utile per comprendere le posizioni?",
-    description: "Valuta se la visualizzazione aiuta l'analisi",
-  },
-  {
-    id: "experts_usefulness",
-    category: "Funzionalità",
-    question: "L'identificazione degli esperti è utile?",
-    description: "Considera se aiuta a identificare le voci autorevoli sul tema",
-  },
-  {
-    id: "baseline_improvement",
-    category: "Confronto Baseline",
-    question: "Quanto ritieni che il sistema sia migliore di un RAG standard?",
-    description: "Confronta con un sistema che non ha authority scoring, compass ideologico e verifica citazioni",
-  },
-  {
-    id: "authority_value",
-    category: "Confronto Baseline",
-    question: "Quanto valore aggiunge il sistema di authority scoring?",
-    description: "Valuta se la selezione degli esperti per competenza migliora la qualità rispetto a una selezione casuale",
-  },
-  {
-    id: "citation_pipeline_value",
-    category: "Confronto Baseline",
-    question: "Quanto valore aggiunge la pipeline di verifica citazioni?",
-    description: "Valuta se la verifica offset-based delle citazioni migliora l'affidabilità rispetto al fuzzy matching",
+    question: "Equita nella rappresentazione",
+    description: "Considera se c'e imparzialita nella presentazione",
   },
   {
     id: "overall_satisfaction",
     category: "Valutazione Complessiva",
-    question: "Qual è la tua soddisfazione complessiva?",
-    description: "Valutazione generale dell'esperienza",
+    question: "Soddisfazione complessiva",
+    description: "Valutazione generale dell'esperienza con ciascuna risposta",
   },
 ];
 
 // Initial form state
+export const getInitialABRating = (): ABRating => ({
+  rating_a: 0,
+  rating_b: 0,
+  preference: "",
+});
+
 export const getInitialSurveyFormState = (): SurveyFormState => ({
-  answer_quality: 0,
-  answer_clarity: 0,
-  answer_completeness: 0,
-  citations_relevance: 0,
-  citations_accuracy: 0,
-  balance_perception: 0,
-  balance_fairness: 0,
-  compass_usefulness: 0,
-  experts_usefulness: 0,
-  baseline_improvement: 0,
-  authority_value: 0,
-  citation_pipeline_value: 0,
-  overall_satisfaction: 0,
+  answer_quality: getInitialABRating(),
+  answer_clarity: getInitialABRating(),
+  answer_completeness: getInitialABRating(),
+  citations_relevance: getInitialABRating(),
+  citations_accuracy: getInitialABRating(),
+  balance_perception: getInitialABRating(),
+  balance_fairness: getInitialABRating(),
+  overall_satisfaction_a: 0,
+  overall_satisfaction_b: 0,
+  overall_preference: "",
   would_recommend: false,
   feedback_positive: "",
   feedback_improvement: "",

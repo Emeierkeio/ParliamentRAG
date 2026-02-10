@@ -156,6 +156,8 @@ export function useChat(options: UseChatOptions = {}) {
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: any = null;
+      let baselineAnswer = "";
+      let abAssignment: Record<string, string> | null = null;
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -319,6 +321,10 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
+                // Extract baseline data from complete event
+                baselineAnswer = data.baseline_answer || "";
+                abAssignment = data.ab_assignment || null;
+
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
                 );
@@ -328,6 +334,8 @@ export function useChat(options: UseChatOptions = {}) {
                   citations,
                   experts,
                   balanceMetrics,
+                  baselineAnswer: baselineAnswer || undefined,
+                  abAssignment: abAssignment || undefined,
                 });
 
                 // Save to history
@@ -346,6 +354,8 @@ export function useChat(options: UseChatOptions = {}) {
                         bias_score: balanceMetrics.biasScore,
                       } : null,
                       compass: compassData,
+                      baseline_answer: baselineAnswer || null,
+                      ab_assignment: abAssignment || null,
                     }),
                   }).then((res) => {
                     if (res.ok) {
@@ -430,7 +440,7 @@ export function useChat(options: UseChatOptions = {}) {
       id: historyData.id,
       role: "assistant",
       content: historyData.answer,
-      timestamp: new Date(historyData.timestamp), // o un po' dopo
+      timestamp: new Date(historyData.timestamp),
       status: "complete",
       citations: historyData.citations,
       experts: historyData.experts,
@@ -439,7 +449,9 @@ export function useChat(options: UseChatOptions = {}) {
           opposizionePercentage: historyData.balance.opposizione_percentage,
           biasScore: historyData.balance.bias_score
       } : undefined,
-      compass: historyData.compass
+      compass: historyData.compass,
+      baselineAnswer: historyData.baseline_answer || undefined,
+      abAssignment: historyData.ab_assignment || undefined,
     };
 
     setMessages([userMsg, assistantMsg]);

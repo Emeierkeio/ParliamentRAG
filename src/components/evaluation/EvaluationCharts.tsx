@@ -355,3 +355,148 @@ export function MiniMetricBars({ values }: MiniMetricBarsProps) {
     </div>
   );
 }
+
+/* ─── ABComparisonChart ─── */
+
+interface ABComparisonItem {
+  label: string;
+  systemValue: number;
+  baselineValue: number;
+}
+
+interface ABComparisonChartProps {
+  items: ABComparisonItem[];
+  maxValue?: number;
+}
+
+export function ABComparisonChart({ items, maxValue = 5 }: ABComparisonChartProps) {
+  return (
+    <div className="space-y-4">
+      {items.map((item) => {
+        const sysPct = (item.systemValue / maxValue) * 100;
+        const basePct = (item.baselineValue / maxValue) * 100;
+        const delta = item.systemValue - item.baselineValue;
+        return (
+          <div key={item.label} className="space-y-1.5">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-700 dark:text-gray-300 font-medium">
+                {item.label}
+              </span>
+              <span className={cn(
+                "text-xs font-semibold",
+                delta > 0 ? "text-emerald-600" : delta < 0 ? "text-red-600" : "text-gray-500"
+              )}>
+                {delta > 0 ? "+" : ""}{delta.toFixed(2)}
+              </span>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-20 text-xs text-blue-600 dark:text-blue-400">Sistema</span>
+                <div className="flex-1 h-5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+                    style={{ width: `${Math.min(sysPct, 100)}%` }}
+                  />
+                </div>
+                <span className="w-10 text-xs font-mono text-right text-gray-600 dark:text-gray-400">
+                  {item.systemValue.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-20 text-xs text-amber-600 dark:text-amber-400">Baseline</span>
+                <div className="flex-1 h-5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-500"
+                    style={{ width: `${Math.min(basePct, 100)}%` }}
+                  />
+                </div>
+                <span className="w-10 text-xs font-mono text-right text-gray-600 dark:text-gray-400">
+                  {item.baselineValue.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+          ParliamentRAG
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-amber-400 to-amber-500" />
+          Baseline RAG
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── WinRateChart ─── */
+
+interface WinRateChartProps {
+  systemWinRate: number;
+  baselineWinRate: number;
+  tieRate: number;
+  totalEvaluations: number;
+}
+
+export function WinRateChart({ systemWinRate, baselineWinRate, tieRate, totalEvaluations }: WinRateChartProps) {
+  const sysW = Math.round(systemWinRate * 100);
+  const baseW = Math.round(baselineWinRate * 100);
+  const tieW = Math.round(tieRate * 100);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+        {sysW > 0 && (
+          <div
+            className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold"
+            style={{ width: `${sysW}%` }}
+          >
+            {sysW > 8 ? `${sysW}%` : ""}
+          </div>
+        )}
+        {tieW > 0 && (
+          <div
+            className="h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 text-xs font-bold"
+            style={{ width: `${tieW}%` }}
+          >
+            {tieW > 8 ? `${tieW}%` : ""}
+          </div>
+        )}
+        {baseW > 0 && (
+          <div
+            className="h-full bg-gradient-to-r from-amber-400 to-amber-500 flex items-center justify-center text-white text-xs font-bold"
+            style={{ width: `${baseW}%` }}
+          >
+            {baseW > 8 ? `${baseW}%` : ""}
+          </div>
+        )}
+      </div>
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+          <span className="text-gray-600 dark:text-gray-400">
+            ParliamentRAG preferito ({sysW}%)
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-gray-300 dark:bg-gray-600" />
+          <span className="text-gray-600 dark:text-gray-400">
+            Pari ({tieW}%)
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-amber-400 to-amber-500" />
+          <span className="text-gray-600 dark:text-gray-400">
+            Baseline preferito ({baseW}%)
+          </span>
+        </div>
+      </div>
+      <p className="text-xs text-center text-muted-foreground">
+        Basato su {totalEvaluations} valutazioni blind A/B
+      </p>
+    </div>
+  );
+}
