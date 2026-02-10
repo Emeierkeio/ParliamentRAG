@@ -8,7 +8,7 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator } from "@/components/shared/ProgressIndicator";
 import { config } from "@/config";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, MessageSquare, ExternalLink } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -52,7 +52,7 @@ export function ChatArea({
             onSend={onSendMessage}
             onCancel={onCancelRequest}
             isLoading={isLoading}
-            placeholder="Fai una domanda..."
+            placeholder="Cerca un tema..."
             className="w-full"
           />
         </div>
@@ -91,63 +91,61 @@ interface WelcomeScreenProps {
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center pt-10 pb-12 text-center fade-in slide-in-from-bottom-5 duration-700">
-      
-      {/* Minimal Hero */}
-      <div className="space-y-4 mb-8 max-w-2xl">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Analisi Parlamentare AI
+    <div className="flex flex-col items-center justify-center pt-16 pb-12 text-center">
+
+      {/* Action-oriented Hero */}
+      <div className="mb-10 max-w-xl space-y-3">
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-1.5 text-xs font-medium text-primary mb-2">
+          <Sparkles className="w-3.5 h-3.5" />
+          Camera dei Deputati - XIX Legislatura
+        </div>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl leading-tight">
+          Cerca un tema e scopri cosa ne pensano i gruppi parlamentari
         </h1>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
-          Esplora i dibattiti, confronta le posizioni e analizza i dati ufficiali della Camera dei Deputati con l'intelligenza artificiale.
+        <p className="text-muted-foreground text-base leading-relaxed">
+          Scrivi un tema nella barra in alto oppure scegli uno dei temi qui sotto.
         </p>
       </div>
 
-      {/* Modern Suggestion grid/pills */}
-      <div className="w-full max-w-full">
-        <div className="flex items-center justify-center gap-2 mb-6 text-xs font-medium uppercase tracking-widest text-muted-foreground/70">
-          <MessageSquare className="w-3 h-3" />
-          <span>Temi Suggeriti</span>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            <SuggestionCard topic="PNRR" onClick={onSendMessage} />
-            <SuggestionCard topic="riforma del sistema sanitario" onClick={onSendMessage} />
-            <SuggestionCard topic="transizione energetica" onClick={onSendMessage} />
-            <SuggestionCard topic="salario minimo" onClick={onSendMessage} />
-            <SuggestionCard topic="conflitto in Ucraina" onClick={onSendMessage} />
-            <SuggestionCard topic="riforma fiscale" onClick={onSendMessage} />
-            <SuggestionCard topic="autonomia differenziata" onClick={onSendMessage} />
-            <SuggestionCard topic="riforma della giustizia" onClick={onSendMessage} />
-            <SuggestionCard topic="gestione dei flussi migratori" onClick={onSendMessage} />
-            <SuggestionCard topic="scuola e istruzione" onClick={onSendMessage} />
-            <SuggestionCard topic="cambiamento climatico" onClick={onSendMessage} />
-            <SuggestionCard topic="infrastrutture" onClick={onSendMessage} />
+      {/* Topic pills */}
+      <div className="w-full max-w-2xl">
+        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/60 mb-4">
+          Temi frequenti
+        </p>
+
+        <div className="flex flex-wrap justify-center gap-2">
+          <TopicPill topic="PNRR" onClick={onSendMessage} />
+          <TopicPill topic="riforma sanitaria" onClick={onSendMessage} />
+          <TopicPill topic="transizione energetica" onClick={onSendMessage} />
+          <TopicPill topic="salario minimo" onClick={onSendMessage} />
+          <TopicPill topic="conflitto in Ucraina" onClick={onSendMessage} />
+          <TopicPill topic="riforma fiscale" onClick={onSendMessage} />
+          <TopicPill topic="autonomia differenziata" onClick={onSendMessage} />
+          <TopicPill topic="riforma della giustizia" onClick={onSendMessage} />
+          <TopicPill topic="flussi migratori" onClick={onSendMessage} />
+          <TopicPill topic="scuola e istruzione" onClick={onSendMessage} />
+          <TopicPill topic="cambiamento climatico" onClick={onSendMessage} />
+          <TopicPill topic="infrastrutture" onClick={onSendMessage} />
         </div>
       </div>
     </div>
   );
 }
 
-interface SuggestionCardProps {
+interface TopicPillProps {
   topic: string;
   onClick: (message: string) => void;
 }
 
-function SuggestionCard({ topic, onClick }: SuggestionCardProps) {
+function TopicPill({ topic, onClick }: TopicPillProps) {
   const query = `Qual è la posizione dei gruppi parlamentari sul tema: ${topic}?`;
   return (
     <button
-      className="group relative overflow-hidden rounded-xl border border-border bg-card p-4 text-left transition-all duration-300 hover:border-primary/50 hover:shadow-md active:scale-[0.98]"
+      className="group inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-4 py-2 text-sm text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm active:scale-[0.97]"
       onClick={() => onClick(query)}
     >
-      <div className="relative z-10 flex items-center gap-2">
-        <span className="font-semibold text-foreground text-sm capitalize">
-            {topic}
-        </span>
-        <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-50 transition-opacity -translate-y-0.5 translate-x-0.5" />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <span className="capitalize">{topic}</span>
+      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5" />
     </button>
   );
 }
