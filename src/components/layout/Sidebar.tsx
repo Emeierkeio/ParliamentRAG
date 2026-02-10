@@ -59,7 +59,10 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             )}
           >
             {/* Logo Area */}
-            <div className={cn("flex items-center gap-3 transition-opacity duration-300", isCollapsed && "w-10 justify-center")}>
+            <div
+              className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
+              onClick={() => window.location.href = "/"}
+            >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
                 <Landmark className="h-5 w-5" />
               </div>
