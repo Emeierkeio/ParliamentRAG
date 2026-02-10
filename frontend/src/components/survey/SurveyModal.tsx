@@ -238,6 +238,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         balance_fairness: formState.balance_fairness,
         compass_usefulness: formState.compass_usefulness,
         experts_usefulness: formState.experts_usefulness,
+        baseline_improvement: formState.baseline_improvement,
+        authority_value: formState.authority_value,
+        citation_pipeline_value: formState.citation_pipeline_value,
         overall_satisfaction: formState.overall_satisfaction,
         would_recommend: formState.would_recommend,
         feedback_positive: formState.feedback_positive || undefined,
@@ -506,7 +509,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
 
               {/* Content Tabs */}
               <Tabs value={activeContentTab} onValueChange={(v) => setActiveContentTab(v as any)} className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                <TabsList className="mx-4 mt-3 grid w-auto grid-cols-2 h-9">
+                <TabsList className="mx-4 mt-3 grid w-auto grid-cols-3 h-9">
                   <TabsTrigger value="response" className="text-sm gap-1.5">
                     <FileText className="w-4 h-4" />
                     Risposta
@@ -514,6 +517,10 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                   <TabsTrigger value="compass" className="text-sm gap-1.5" disabled={!chatDetails?.compass}>
                     <Compass className="w-4 h-4" />
                     Compass
+                  </TabsTrigger>
+                  <TabsTrigger value="metrics" className="text-sm gap-1.5">
+                    <Eye className="w-4 h-4" />
+                    Metriche
                   </TabsTrigger>
                 </TabsList>
 
@@ -547,6 +554,68 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                       <div className="flex flex-col items-center justify-center h-40 text-gray-500">
                         <Compass className="w-10 h-10 mb-2 opacity-30" />
                         <p>Compass non disponibile per questa risposta</p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="metrics" className="flex-1 m-0 min-h-0 overflow-hidden data-[state=active]:flex data-[state=active]:flex-col">
+                  <ScrollArea className="flex-1 px-4 py-4">
+                    {isLoadingMetrics ? (
+                      <div className="flex items-center justify-center h-40">
+                        <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                        <span className="ml-2 text-sm text-gray-500">Caricamento metriche...</span>
+                      </div>
+                    ) : chatMetrics ? (
+                      <div className="space-y-4">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                          Metriche automatiche calcolate dalla pipeline — confronto con baseline Naive RAG
+                        </p>
+                        {/* Metric bars with baseline comparison */}
+                        {Object.entries(BASELINE_VALUES).map(([key, { value: baseline, label }]) => {
+                          const systemValue = chatMetrics[key as keyof typeof chatMetrics] as number;
+                          const delta = systemValue - baseline;
+                          return (
+                            <div key={key} className="space-y-1">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="font-medium text-gray-700 dark:text-gray-300">{label}</span>
+                                <span className="font-mono text-sm">{(systemValue * 100).toFixed(0)}%</span>
+                              </div>
+                              <div className="relative h-5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                <div
+                                  className="absolute h-full rounded-full bg-amber-300/50 dark:bg-amber-700/30"
+                                  style={{ width: `${baseline * 100}%` }}
+                                />
+                                <div
+                                  className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
+                                  style={{ width: `${systemValue * 100}%` }}
+                                />
+                              </div>
+                              <div className="flex items-center justify-between text-xs text-gray-500">
+                                <span>Baseline: {(baseline * 100).toFixed(0)}%</span>
+                                <span className={delta > 0 ? "text-emerald-600 font-semibold" : delta < 0 ? "text-red-600 font-semibold" : ""}>
+                                  {delta > 0 ? "+" : ""}{(delta * 100).toFixed(1)}pp
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {/* Legend */}
+                        <div className="flex items-center gap-4 mt-4 pt-3 border-t text-xs text-gray-500">
+                          <div className="flex items-center gap-1">
+                            <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+                            ParliamentRAG
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <div className="w-3 h-3 rounded bg-amber-300/50 dark:bg-amber-700/30" />
+                            Naive RAG (baseline)
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+                        <Eye className="w-10 h-10 mb-2 opacity-30" />
+                        <p>Metriche non disponibili</p>
                       </div>
                     )}
                   </ScrollArea>

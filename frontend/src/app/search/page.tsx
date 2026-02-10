@@ -9,28 +9,29 @@ import { ResultsList, SearchResultItem } from "@/components/search/ResultsList";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-    Search as SearchIcon, 
-    Loader2, 
-    FilterX, 
-    Calendar as CalendarIcon,
-    User,
-    Users
+import {
+    Search as SearchIcon,
+    Loader2,
+    FilterX,
+    Sparkles,
+    FileText,
+    MessageSquareQuote,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { config } from "@/config";
 
 export default function SearchPage() {
     const { isCollapsed, toggle } = useSidebar();
     
     // State
-    const [query, setQuery] = useState(""); 
+    const [query, setQuery] = useState("");
     const [selectedDeputy, setSelectedDeputy] = useState<Deputy | null>(null);
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    
+    const [searchType, setSearchType] = useState<"text" | "semantic" | "hybrid">("text");
+
     const [results, setResults] = useState<SearchResultItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
@@ -46,6 +47,7 @@ export default function SearchPage() {
             const params = new URLSearchParams();
             params.append('q', query);
             params.append('limit', '100');
+            params.append('search_type', searchType);
             
             if (selectedDeputy) {
                 params.append('deputy_id', selectedDeputy.id);
@@ -74,9 +76,13 @@ export default function SearchPage() {
         setSelectedGroup(null);
         setStartDate("");
         setEndDate("");
+        setSearchType("text");
         setResults([]);
         setHasSearched(false);
     }
+
+    const speechCount = results.filter(r => r.type === "speech").length;
+    const actCount = results.filter(r => r.type === "act").length;
 
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
@@ -87,7 +93,7 @@ export default function SearchPage() {
                 <div className="border-b px-8 py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0">
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">Ricerca</h1>
-                        <p className="text-muted-foreground">Esplorazione diretta degli interventi parlamentari</p>
+                        <p className="text-muted-foreground">Esplorazione diretta degli atti e interventi parlamentari</p>
                     </div>
                 </div>
 
@@ -103,7 +109,7 @@ export default function SearchPage() {
                                      <div className="relative">
                                          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
                                          <Input 
-                                            placeholder="Cerca negli atti parlamentari (es. superbonus, pnrr)..." 
+                                            placeholder="Cerca negli atti e interventi parlamentari (es. superbonus, pnrr, diminuzione tassazione)..." 
                                             value={query}
                                             onChange={(e) => setQuery(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -119,6 +125,50 @@ export default function SearchPage() {
                                                   <FilterX className="h-4 w-4" />
                                               </Button>
                                          )}
+                                    </div>
+                                </div>
+
+                                {/* Search Type Toggle */}
+                                <div className="flex items-center gap-2">
+                                    <Label className="text-sm font-semibold mr-2">Modalità:</Label>
+                                    <div className="inline-flex rounded-lg border p-0.5 bg-muted/30">
+                                        <button
+                                            onClick={() => setSearchType("text")}
+                                            className={cn(
+                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+                                                searchType === "text"
+                                                    ? "bg-background shadow-sm text-foreground"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            <SearchIcon className="h-3.5 w-3.5" />
+                                            Testuale
+                                        </button>
+                                        <button
+                                            onClick={() => setSearchType("semantic")}
+                                            className={cn(
+                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+                                                searchType === "semantic"
+                                                    ? "bg-background shadow-sm text-foreground"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            <Sparkles className="h-3.5 w-3.5" />
+                                            Semantica
+                                        </button>
+                                        <button
+                                            onClick={() => setSearchType("hybrid")}
+                                            className={cn(
+                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all",
+                                                searchType === "hybrid"
+                                                    ? "bg-background shadow-sm text-foreground"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            )}
+                                        >
+                                            <SearchIcon className="h-3.5 w-3.5" />
+                                            <Sparkles className="h-3.5 w-3.5 -ml-1" />
+                                            Ibrida
+                                        </button>
                                     </div>
                                 </div>
 
@@ -146,7 +196,7 @@ export default function SearchPage() {
                                             </TabsList>
                                             
                                             <TabsContent value="all" className="text-sm text-muted-foreground py-2 text-center bg-muted/20 rounded-md border border-dashed">
-                                                Ricerca in tutti gli interventi
+                                                Ricerca in tutti gli atti e interventi
                                             </TabsContent>
                                             
                                             <TabsContent value="deputy" className="space-y-2">
@@ -227,8 +277,21 @@ export default function SearchPage() {
                                         <div className="h-8 w-1 bg-primary rounded-full"></div>
                                         <div>
                                             <h2 className="text-xl font-bold tracking-tight">Risultati</h2>
-                                            <p className="text-sm text-muted-foreground">
-                                                {results.length} atti trovati
+                                            <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                                <span>{results.length} risultati</span>
+                                                {results.length > 0 && (
+                                                    <>
+                                                        <span className="text-muted-foreground/50">—</span>
+                                                        <span className="flex items-center gap-1">
+                                                            <MessageSquareQuote className="h-3 w-3" />
+                                                            {speechCount} interventi
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <FileText className="h-3 w-3" />
+                                                            {actCount} atti
+                                                        </span>
+                                                    </>
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -237,7 +300,11 @@ export default function SearchPage() {
                                 {loading ? (
                                     <div className="flex flex-col items-center justify-center py-20 space-y-4 border rounded-xl bg-card/50">
                                         <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                                        <p className="text-muted-foreground animate-pulse">Scansione degli atti parlamentari in corso...</p>
+                                        <p className="text-muted-foreground animate-pulse">
+                                            {searchType === "semantic" || searchType === "hybrid"
+                                                ? "Ricerca semantica in corso..."
+                                                : "Scansione degli atti parlamentari in corso..."}
+                                        </p>
                                     </div>
                                 ) : (
                                     <ResultsList results={results} query={query} />
