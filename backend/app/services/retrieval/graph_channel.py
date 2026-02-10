@@ -15,7 +15,7 @@ from datetime import datetime
 import numpy as np
 
 from ..neo4j_client import Neo4jClient
-from ...models.evidence import compute_quote_text
+from ...models.evidence import compute_quote_text, normalize_speaker_name, normalize_party_name
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
@@ -256,6 +256,7 @@ class GraphChannel:
         WHERE {date_clause}
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+        AND (mg.end_date IS NULL OR mg.end_date >= date())
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
@@ -319,9 +320,9 @@ class GraphChannel:
                     "doc_id": row.get("session_id", ""),
                     "speech_id": row.get("speech_id", ""),
                     "speaker_id": row.get("speaker_id", ""),
-                    "speaker_name": f"{row.get('speaker_first_name', '')} {row.get('speaker_last_name', '')}".strip(),
+                    "speaker_name": normalize_speaker_name(row.get('speaker_first_name', ''), row.get('speaker_last_name', '')),
                     "speaker_role": row.get("speaker_type", "Deputy"),
-                    "party": party or "MISTO",
+                    "party": normalize_party_name(party or "MISTO"),
                     "coalition": coalition,
                     "date": date_obj,
                     "chunk_text": row.get("chunk_text", ""),

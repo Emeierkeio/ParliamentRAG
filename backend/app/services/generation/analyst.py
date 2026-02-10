@@ -88,16 +88,16 @@ Analizza la domanda e identifica i claim atomici da affrontare.
 Assicurati di coprire TUTTI i partiti parlamentari, anche quelli senza evidenza.
 
 I 10 gruppi parlamentari sono:
-1. FRATELLI D'ITALIA
-2. PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA
-3. LEGA - SALVINI PREMIER
-4. MOVIMENTO 5 STELLE
-5. FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE
-6. ALLEANZA VERDI E SINISTRA
-7. AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE
-8. ITALIA VIVA-IL CENTRO-RENEW EUROPE
-9. NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE
-10. MISTO
+1. Fratelli d'Italia
+2. Partito Democratico - Italia Democratica e Progressista
+3. Lega - Salvini Premier
+4. Movimento 5 Stelle
+5. Forza Italia - Berlusconi Presidente - PPE
+6. Alleanza Verdi e Sinistra
+7. Azione - Popolari Europeisti Riformatori - Renew Europe
+8. Italia Viva - Il Centro - Renew Europe
+9. Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare
+10. Misto
 
 Rispondi in JSON."""
 

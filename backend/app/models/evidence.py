@@ -13,6 +13,34 @@ from typing import Literal, Optional, List
 from pydantic import BaseModel, Field, field_validator
 
 
+# ── Name normalisation (deterministic, applied at retrieval time) ────────────
+
+PARTY_DISPLAY_NAMES: dict[str, str] = {
+    "FRATELLI D'ITALIA": "Fratelli d'Italia",
+    "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": "Partito Democratico - Italia Democratica e Progressista",
+    "LEGA - SALVINI PREMIER": "Lega - Salvini Premier",
+    "MOVIMENTO 5 STELLE": "Movimento 5 Stelle",
+    "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": "Forza Italia - Berlusconi Presidente - PPE",
+    "ALLEANZA VERDI E SINISTRA": "Alleanza Verdi e Sinistra",
+    "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva - Il Centro - Renew Europe",
+    "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+    "MISTO": "Misto",
+    "GOVERNO": "Governo",
+}
+
+
+def normalize_speaker_name(first_name: str, last_name: str) -> str:
+    """Return speaker name in title case (e.g. 'Mario Rossi')."""
+    full = f"{first_name} {last_name}".strip()
+    return full.title() if full else ""
+
+
+def normalize_party_name(raw_party: str) -> str:
+    """Map DB party name (UPPERCASE) to readable display name."""
+    return PARTY_DISPLAY_NAMES.get(raw_party, raw_party.title() if raw_party else "Misto")
+
+
 class IdeologyScore(BaseModel):
     """Ideological positioning score for a fragment or speaker."""
     left: float = Field(ge=0.0, le=1.0, description="Left positioning score")

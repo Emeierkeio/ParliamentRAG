@@ -21,17 +21,18 @@ logger = logging.getLogger(__name__)
 
 
 # All 10 parliamentary groups (must all appear in output)
+# Uses display names (title case) matching normalize_party_name() output
 ALL_PARTIES = [
-    "FRATELLI D'ITALIA",
-    "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
-    "LEGA - SALVINI PREMIER",
-    "MOVIMENTO 5 STELLE",
-    "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE",
-    "ALLEANZA VERDI E SINISTRA",
-    "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
-    "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
-    "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-    "MISTO",
+    "Fratelli d'Italia",
+    "Partito Democratico - Italia Democratica e Progressista",
+    "Lega - Salvini Premier",
+    "Movimento 5 Stelle",
+    "Forza Italia - Berlusconi Presidente - PPE",
+    "Alleanza Verdi e Sinistra",
+    "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "Italia Viva - Il Centro - Renew Europe",
+    "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+    "Misto",
 ]
 
 

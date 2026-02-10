@@ -95,7 +95,7 @@ class CoalitionLogic:
         coalitions = self.config.load_config().get("coalitions", {})
 
         # Government members are always in maggioranza
-        if group_name == "GOVERNO":
+        if group_name in ("GOVERNO", "Governo"):
             self._coalition_cache[group_name] = "maggioranza"
             return "maggioranza"
 
@@ -248,16 +248,16 @@ def test_coalition_crossing_invalidates_authority():
     logic = CoalitionLogic()
 
     # Test basic coalition crossing
-    assert logic.authority_carries_over("PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
-                                        "FRATELLI D'ITALIA") == False
+    assert logic.authority_carries_over("Partito Democratico - Italia Democratica e Progressista",
+                                        "Fratelli d'Italia") == False
 
     # Test same coalition
-    assert logic.authority_carries_over("FRATELLI D'ITALIA",
-                                        "LEGA - SALVINI PREMIER") == True
+    assert logic.authority_carries_over("Fratelli d'Italia",
+                                        "Lega - Salvini Premier") == True
 
     # Test opposition stays opposition
-    assert logic.authority_carries_over("MOVIMENTO 5 STELLE",
-                                        "ALLEANZA VERDI E SINISTRA") == True
+    assert logic.authority_carries_over("Movimento 5 Stelle",
+                                        "Alleanza Verdi e Sinistra") == True
 
     print("Coalition crossing test PASSED")
 

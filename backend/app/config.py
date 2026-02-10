@@ -152,35 +152,35 @@ class ConfigLoader:
                 "anchors": {
                     "left": {
                         "groups": [
-                            "ALLEANZA VERDI E SINISTRA",
-                            "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+                            "Alleanza Verdi e Sinistra",
+                            "Partito Democratico - Italia Democratica e Progressista"
                         ],
                         "confidence": 0.8
                     },
                     "center": {
                         "groups": [
-                            "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
-                            "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
-                            "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+                            "Azione - Popolari Europeisti Riformatori - Renew Europe",
+                            "Italia Viva - Il Centro - Renew Europe",
+                            "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
                         ],
                         "confidence": 0.6
                     },
                     "right": {
                         "groups": [
-                            "FRATELLI D'ITALIA",
-                            "LEGA - SALVINI PREMIER",
-                            "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+                            "Fratelli d'Italia",
+                            "Lega - Salvini Premier",
+                            "Forza Italia - Berlusconi Presidente - PPE"
                         ],
                         "confidence": 0.8
                     }
                 },
                 "ambiguous": {
-                    "MOVIMENTO 5 STELLE": {
+                    "Movimento 5 Stelle": {
                         "default_position": "left",
                         "confidence": 0.5
                     }
                 },
-                "unclassified": ["MISTO"],
+                "unclassified": ["Misto"],
                 "clustering": {
                     "min_fragments_for_kde": 3,
                     "kde_bandwidth": "scott"
@@ -202,18 +202,18 @@ class ConfigLoader:
             },
             "coalitions": {
                 "maggioranza": [
-                    "FRATELLI D'ITALIA",
-                    "LEGA - SALVINI PREMIER",
-                    "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE",
-                    "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+                    "Fratelli d'Italia",
+                    "Lega - Salvini Premier",
+                    "Forza Italia - Berlusconi Presidente - PPE",
+                    "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
                 ],
                 "opposizione": [
-                    "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
-                    "MOVIMENTO 5 STELLE",
-                    "ALLEANZA VERDI E SINISTRA",
-                    "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
-                    "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
-                    "MISTO"
+                    "Partito Democratico - Italia Democratica e Progressista",
+                    "Movimento 5 Stelle",
+                    "Alleanza Verdi e Sinistra",
+                    "Azione - Popolari Europeisti Riformatori - Renew Europe",
+                    "Italia Viva - Il Centro - Renew Europe",
+                    "Misto"
                 ]
             },
             "citation": {

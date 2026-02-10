@@ -42,23 +42,23 @@ STRUTTURA (in questo ordine):
 Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
 
 ## Posizioni della Maggioranza
-Deputati dei partiti di maggioranza (FdI, Lega, FI, NM)
+Deputati dei partiti di maggioranza (Fratelli d'Italia, Lega, Forza Italia, Noi Moderati)
 
 ## Posizioni dell'Opposizione
-Deputati dei partiti di opposizione (PD, M5S, AVS, Azione, IV, Misto)
+Deputati dei partiti di opposizione (Partito Democratico, Movimento 5 Stelle, Alleanza Verdi e Sinistra, Azione, Italia Viva, Misto)
 
 ⚠️ IMPORTANTE - GOVERNO vs MAGGIORANZA:
 - I membri del GOVERNO (ministri, presidente del consiglio) vanno in "Posizione del Governo"
 - I DEPUTATI dei partiti di maggioranza vanno in "Posizioni della Maggioranza"
 - Esempio: Meloni come Presidente del Consiglio → Governo
-- Esempio: Un deputato di FdI → Maggioranza
+- Esempio: Un deputato di Fratelli d'Italia → Maggioranza
 
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
 - Integra il nome del partito nel testo: "Per [Partito], **Cognome** sostiene..."
 - Cognomi SEMPRE in **grassetto**
 - Ogni partito è un paragrafo separato
-- Abbrevia: "Lega", "Forza Italia", "PD", "M5S", "FdI"
+- Usa SEMPRE il nome completo del partito (es. "Fratelli d'Italia", "Movimento 5 Stelle", "Partito Democratico"), MAI abbreviazioni
 
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
 Il marcatore [CIT:...] deve essere preceduto da un bridge verbale:
@@ -163,19 +163,19 @@ Crea documento CONCISO con Introduzione (2-3 frasi) + sezioni per coalizione.
 
     # Coalition membership
     MAGGIORANZA = [
-        "FRATELLI D'ITALIA",
-        "LEGA - SALVINI PREMIER",
-        "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE",
-        "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+        "Fratelli d'Italia",
+        "Lega - Salvini Premier",
+        "Forza Italia - Berlusconi Presidente - PPE",
+        "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
     ]
 
     OPPOSIZIONE = [
-        "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
-        "MOVIMENTO 5 STELLE",
-        "ALLEANZA VERDI E SINISTRA",
-        "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
-        "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
-        "MISTO",
+        "Partito Democratico - Italia Democratica e Progressista",
+        "Movimento 5 Stelle",
+        "Alleanza Verdi e Sinistra",
+        "Azione - Popolari Europeisti Riformatori - Renew Europe",
+        "Italia Viva - Il Centro - Renew Europe",
+        "Misto",
     ]
 
     def _get_section_by_party(self, sections: List[Dict[str, Any]], party: str) -> str:

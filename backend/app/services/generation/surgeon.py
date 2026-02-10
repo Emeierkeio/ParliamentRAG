@@ -311,21 +311,9 @@ class CitationSurgeon:
         return f'[«{quote}»]({evidence_id})'
 
     def _shorten_party_name(self, party: str) -> str:
-        """Shorten long party names for citation display."""
-        party_map = {
-            "FRATELLI D'ITALIA": "FdI",
-            "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": "PD",
-            "LEGA - SALVINI PREMIER": "Lega",
-            "MOVIMENTO 5 STELLE": "M5S",
-            "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": "FI",
-            "ALLEANZA VERDI E SINISTRA": "AVS",
-            "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione",
-            "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "IV",
-            "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "NM",
-            "MISTO": "Misto",
-            "GOVERNO": "Governo",
-        }
-        return party_map.get(party, party[:15] if len(party) > 15 else party)
+        """Return readable display name for a party (full name, title case)."""
+        from ...models.evidence import normalize_party_name
+        return normalize_party_name(party)
 
     def extract_unsupported_claims(
         self,
