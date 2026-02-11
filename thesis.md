@@ -556,10 +556,10 @@ porterà benefici significativi.
 - PERMESSO: frasi di transizione, correzioni grammaticali
 - PERMESSO: riordino sezioni per migliorare flusso narrativo
 - OBBLIGATORIO: mantenere tutti i placeholder [CIT:*]
-- OBBLIGATORIO: variare i bridge verbali (nessuna ripetizione nel documento)
+- OBBLIGATORIO: variare i bridge verbali — ogni verbo introduttivo usabile **una sola volta** nell'intero documento. Il sistema fornisce un repertorio di ~25 verbi categorizzati per tono (propositivo, critico, neutro, affermativo, interrogativo) e il prompt include esempi espliciti di output errato (verbi ripetuti) vs. corretto (verbi tutti diversi)
 
 **Introduzione con Dati Reali:**
-L'Integrator riceve statistiche computate dalle evidenze recuperate: numero di interventi analizzati, numero di parlamentari coinvolti, periodo temporale (data primo e ultimo intervento). Questi dati vengono inseriti nell'introduzione per fornire contesto fattuale concreto, evitando introduzioni generiche.
+L'Integrator riceve statistiche computate dalle evidenze recuperate: titolo del provvedimento/dibattito principale (campo `debate_title`, estratto come titolo più frequente tra le evidenze), numero di interventi analizzati, numero di parlamentari coinvolti, periodo temporale (data primo e ultimo intervento). Questi dati vengono inseriti nell'introduzione per fornire contesto fattuale concreto, nominando specificamente il provvedimento in discussione ed evitando introduzioni generiche.
 
 #### 4.4.4 Stage 4: Citation Surgeon
 
@@ -675,7 +675,15 @@ Per garantire che le citazioni estratte siano frasi sintatticamente complete e c
 
 $$score = 0.45 \times overlap + 0.25 \times completeness + 0.2 \times density + 0.1 \times position$$
 
-dove $completeness \in \{0, 0.5, 1.0\}$ penalizza frammenti senza verbo (0.0) o che iniziano a metà clausola (0.5), premiando frasi sintatticamente complete (1.0). Questo impedisce la selezione di frammenti decontestualizzati come citazioni.
+dove $completeness \in \{0, 0.2, 0.5, 0.7, 1.0\}$ implementa una scala granulare di qualità sintattica:
+
+- **1.0**: frase completa con verbo, inizio maiuscolo, nessuna troncatura
+- **0.7**: frase completa ma con terminazione sospesa (preposizione/articolo finale)
+- **0.5**: contiene verbo ma inizia a metà clausola
+- **0.2**: frammento di clausola subordinata (inizia con *se*, *che*, *quando*, *dove*, *perché*, ecc.) — sintatticamente dipendente e incomprensibile senza il contesto della clausola principale
+- **0.0**: nessun verbo rilevato (frammento nominale)
+
+Il sistema applica inoltre una **soglia minima di qualità** (`MIN_QUALITY_SCORE = 0.15`): le frasi con punteggio inferiore vengono scartate in favore di alternative meno rilevanti ma sintatticamente complete. Questo impedisce la selezione di frammenti decontestualizzati come citazioni (es. «se allora vi sembrava ineludibile per garantire» — clausola subordinata troncata con punteggio 0.2, sostituita da una frase completa).
 
 #### 4.5.3 Integrator Guard (Livello 3)
 
