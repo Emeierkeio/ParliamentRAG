@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { Sidebar } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
 import { useSidebar, useChat } from "@/hooks";
@@ -15,20 +14,6 @@ export default function Home() {
     cancelRequest,
     loadChat,
   } = useChat();
-
-  // Load pending chat from history navigation (from other pages)
-  useEffect(() => {
-    const pending = sessionStorage.getItem("pendingChat");
-    if (pending) {
-      sessionStorage.removeItem("pendingChat");
-      try {
-        const data = JSON.parse(pending);
-        loadChat(data);
-      } catch (err) {
-        console.error("Failed to load pending chat:", err);
-      }
-    }
-  }, [loadChat]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

@@ -156,6 +156,8 @@ export function useChat(options: UseChatOptions = {}) {
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: any = null;
+      let baselineAnswer = "";
+      let abAssignment: Record<string, string> | null = null;
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -319,8 +321,9 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
-                // chat_id is provided by backend for history coordination
-                const chatId = data.chat_id || "";
+                // Extract baseline data from complete event
+                baselineAnswer = data.baseline_answer || "";
+                abAssignment = data.ab_assignment || null;
 
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
@@ -331,16 +334,16 @@ export function useChat(options: UseChatOptions = {}) {
                   citations,
                   experts,
                   balanceMetrics,
+                  baselineAnswer: baselineAnswer || undefined,
+                  abAssignment: abAssignment || undefined,
                 });
 
-                // Save to history using backend-provided chat_id
-                // Baseline will be added asynchronously by the backend background task
+                // Save to history
                 try {
                   fetch(`${config.api.baseUrl}/history`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      id: chatId,
                       query: content,
                       answer: accumulatedContent,
                       citations,
@@ -351,10 +354,12 @@ export function useChat(options: UseChatOptions = {}) {
                         bias_score: balanceMetrics.biasScore,
                       } : null,
                       compass: compassData,
+                      baseline_answer: baselineAnswer || null,
+                      ab_assignment: abAssignment || null,
                     }),
                   }).then((res) => {
                     if (res.ok) {
-                      console.log("[useChat] Chat saved to history with id:", chatId);
+                      console.log("[useChat] Chat saved to history");
                     } else {
                       console.error("[useChat] Failed to save to history:", res.status, res.statusText);
                     }
@@ -422,30 +427,20 @@ export function useChat(options: UseChatOptions = {}) {
     setIsLoading(false);
     setProgress(null);
     setStreamingContent("");
-
-    // Defensive timestamp parsing
-    const parseTs = (ts: any): Date => {
-      if (!ts) return new Date();
-      if (ts instanceof Date) return ts;
-      const d = new Date(typeof ts === "string" ? ts : String(ts));
-      return isNaN(d.getTime()) ? new Date() : d;
-    };
-
-    const ts = parseTs(historyData.timestamp);
-
+    
     const userMsg: Message = {
       id: `user_${historyData.id}`,
       role: "user",
-      content: historyData.query || "",
-      timestamp: ts,
+      content: historyData.query,
+      timestamp: new Date(historyData.timestamp),
       status: "complete"
     };
 
     const assistantMsg: Message = {
       id: historyData.id,
       role: "assistant",
-      content: historyData.answer || "",
-      timestamp: ts,
+      content: historyData.answer,
+      timestamp: new Date(historyData.timestamp),
       status: "complete",
       citations: historyData.citations,
       experts: historyData.experts,
