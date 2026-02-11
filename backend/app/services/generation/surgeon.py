@@ -314,6 +314,26 @@ class CitationSurgeon:
         quote = quote.lstrip('.,;:')
         quote = quote.lstrip()
 
+        # Trim trailing dangling words: articles, prepositions, conjunctions,
+        # truncated references (e.g. "– n"), etc. that signal a mid-phrase cut.
+        # These patterns at the end mean the quote was truncated mid-sentence.
+        dangling = re.compile(
+            r'\s+(?:'
+            r'il|lo|la|i|gli|le|un|uno|una|l|dell|del|della|dello|dei|degli|delle|'
+            r'nel|nella|nello|nei|negli|nelle|sul|sulla|sullo|sui|sugli|sulle|'
+            r'al|alla|allo|ai|agli|alle|dal|dalla|dallo|dai|dagli|dalle|'
+            r'di|a|da|in|con|su|per|tra|fra|'
+            r'e|o|ma|che|né|se|'
+            r'[–\-]\s*\w{0,2}'  # truncated references like "– n", "- 2"
+            r')$',
+            re.IGNORECASE
+        )
+        # Apply repeatedly — removing "il" may expose "che", etc.
+        prev = None
+        while quote != prev:
+            prev = quote
+            quote = dangling.sub('', quote)
+
         # Lowercase first letter (citations follow introductory constructions)
         if quote:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()

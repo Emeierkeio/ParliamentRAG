@@ -97,6 +97,30 @@ STRUTTURA OUTPUT:
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
         )
 
+    @staticmethod
+    def _truncate_at_boundary(text: str, max_chars: int) -> str:
+        """Truncate text at a natural boundary, not mid-phrase."""
+        if len(text) <= max_chars:
+            return text
+        truncated = text[:max_chars]
+        min_pos = max_chars // 3
+        # Prefer sentence boundaries
+        for punct in '.!?':
+            pos = truncated.rfind(punct)
+            if pos > min_pos:
+                return truncated[:pos + 1].rstrip()
+        for punct in ';:':
+            pos = truncated.rfind(punct)
+            if pos > min_pos:
+                return truncated[:pos].rstrip()
+        pos = truncated.rfind(',')
+        if pos > min_pos:
+            return truncated[:pos].rstrip()
+        pos = truncated.rfind(' ')
+        if pos > min_pos:
+            return truncated[:pos].rstrip()
+        return truncated.rstrip()
+
     async def write_sections(
         self,
         query: str,
@@ -309,7 +333,11 @@ FORMATO OUTPUT:
                 # Store pre-extracted citation in evidence for later use by Surgeon
                 e["pre_extracted_citation"] = extracted_citation
             else:
-                extracted_citation = quote_text[:150] if quote_text else ""
+                # Truncate at a natural boundary, not mid-phrase
+                if quote_text and len(quote_text) > 150:
+                    extracted_citation = self._truncate_at_boundary(quote_text, 150)
+                else:
+                    extracted_citation = quote_text or ""
                 e["pre_extracted_citation"] = extracted_citation
 
             # Also provide context (truncated) for understanding
