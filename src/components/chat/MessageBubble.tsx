@@ -53,10 +53,12 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           <span>Tu</span>
           <span>•</span>
           <span>
-            {message.timestamp.toLocaleTimeString("it-IT", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            {message.timestamp instanceof Date && !isNaN(message.timestamp.getTime())
+              ? message.timestamp.toLocaleTimeString("it-IT", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : ""}
           </span>
         </div>
       </div>
