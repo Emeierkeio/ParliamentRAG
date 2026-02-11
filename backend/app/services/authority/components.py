@@ -499,7 +499,10 @@ class RoleComponent(AuthorityComponent):
                     return self.cap_score(weight)
 
         # Get institutional roles from graph
-        institutional_roles = speaker_data.get("institutional_roles", [])
+                institutional_roles = [
+            r for r in speaker_data.get("institutional_roles", [])
+            if r.get("committee_name")
+        ]
 
         if not institutional_roles:
             return 0.3  # Base score for regular deputies without roles

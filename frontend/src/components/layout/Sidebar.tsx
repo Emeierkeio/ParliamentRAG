@@ -306,14 +306,20 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
   };
 
   const handleSelectChat = async (id: string) => {
-    if (!onLoadChat) return;
     setIsLoading(true);
     try {
         const res = await fetch(`${config.api.baseUrl}/history/${id}`);
         if (!res.ok) throw new Error("Failed to load chat details");
         const data = await res.json();
-        onLoadChat(data);
-        onClose();
+        if (onLoadChat) {
+            // Already on homepage: load chat directly
+            onLoadChat(data);
+            onClose();
+        } else {
+            // On another page: save data and navigate to homepage
+            sessionStorage.setItem("pendingChat", JSON.stringify(data));
+            window.location.href = "/";
+        }
     } catch (err) {
         console.error(err);
         setError("Impossibile caricare la chat");

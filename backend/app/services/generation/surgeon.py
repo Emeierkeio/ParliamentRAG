@@ -299,9 +299,20 @@ class CitationSurgeon:
         # Clean up whitespace
         quote = " ".join(quote.split())
 
-        # Remove parenthetical content (e.g., applausi, interruzioni) and replace with ...
+        # Remove parenthetical content (e.g., applausi, interruzioni)
         quote = re.sub(r'\s*\([^)]*\)\s*', '', quote)
         quote = quote.strip()
+
+        # Strip trailing sentence punctuation — citations are always embedded
+        # in narrative text inside «», so a trailing "." would read as:
+        # «dimezzare le tasse.» è quello che vuole il Governo (wrong)
+        # vs «dimezzare le tasse» è quello che vuole il Governo (correct)
+        quote = quote.rstrip('.!?')
+        quote = quote.rstrip()  # clean any trailing space left
+
+        # Strip leading sentence punctuation artifacts (e.g. comma, semicolon)
+        quote = quote.lstrip('.,;:')
+        quote = quote.lstrip()
 
         # Lowercase first letter (citations follow introductory constructions)
         if quote:

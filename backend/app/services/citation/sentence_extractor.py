@@ -110,9 +110,9 @@ class SentenceExtractor:
         if text and text[0].islower():
             text = text[0].upper() + text[1:]
 
-        # Remove trailing incomplete phrases (ending with comma)
-        if text.endswith(','):
-            text = text[:-1]
+        # Remove trailing incomplete punctuation (comma, semicolon, colon)
+        text = text.rstrip(',;:')
+        text = text.rstrip()
 
         return text
 
@@ -134,30 +134,18 @@ class SentenceExtractor:
         for s in raw_sentences:
             s = s.strip()
             if len(s) >= self.min_sentence_length:
-                # If sentence is long, try progressive splitting
-                if len(s) > 200:
-                    # First try semicolons and colons
+                # If sentence is very long, try splitting on semicolons/colons only
+                # (these are strong clause boundaries that produce self-sufficient parts)
+                if len(s) > 250:
                     sub_parts = re.split(r'[;:]', s)
                     if len(sub_parts) > 1:
-                        for part in sub_parts:
-                            part = part.strip()
-                            if len(part) >= self.min_sentence_length:
-                                sentences.append(part)
-                        continue
-
-                    # Then try splitting on subordinate clauses
-                    clause_parts = self._split_on_subordinates(s)
-                    if clause_parts:
-                        sentences.extend(clause_parts)
-                        continue
+                        valid_parts = [p.strip() for p in sub_parts
+                                       if len(p.strip()) >= self.min_sentence_length]
+                        if len(valid_parts) > 1:
+                            sentences.extend(valid_parts)
+                            continue
 
                 sentences.append(s)
-
-        # If still no valid sentences or all are too long, split on commas
-        if not sentences or (len(sentences) == 1 and len(sentences[0]) > 200):
-            comma_parts = self._split_on_meaningful_commas(text)
-            if comma_parts:
-                sentences = comma_parts
 
         # Final fallback
         if not sentences and len(text) >= self.min_sentence_length:
@@ -280,7 +268,11 @@ class SentenceExtractor:
         scored: List[Tuple[str, float, int]],
         max_chars: Optional[int]
     ) -> List[str]:
-        """Select the best sentences within character limit."""
+        """Select the best sentences within character limit.
+
+        Prefers complete sentences that fit within the limit over
+        truncating a longer sentence.
+        """
         if not scored:
             return []
 
@@ -295,11 +287,19 @@ class SentenceExtractor:
                 break
 
             if max_chars and total_chars + len(sentence) > max_chars:
-                # Check if we have at least one sentence
                 if not selected:
-                    # Truncate on the last comma before max_chars
-                    truncated = self._truncate_at_boundary(sentence, max_chars)
-                    selected.append((truncated, orig_idx))
+                    # Best sentence doesn't fit — try to find a shorter one
+                    # that still scores well (at least 50% of best score)
+                    best_score = sorted_by_score[0][1]
+                    for alt_sentence, alt_score, alt_idx in sorted_by_score[1:]:
+                        if alt_score >= best_score * 0.5 and len(alt_sentence) <= max_chars:
+                            selected.append((alt_sentence, alt_idx))
+                            total_chars += len(alt_sentence) + 1
+                            break
+                    # If still nothing fits, truncate as last resort
+                    if not selected:
+                        truncated = self._truncate_at_boundary(sentence, max_chars)
+                        selected.append((truncated, orig_idx))
                 break
 
             selected.append((sentence, orig_idx))
@@ -311,23 +311,38 @@ class SentenceExtractor:
         return [s for s, _ in selected]
 
     def _truncate_at_boundary(self, text: str, max_chars: int) -> str:
-        """Truncate text at the last comma or semicolon before max_chars."""
+        """Truncate text at the best natural boundary before max_chars.
+
+        Priority: sentence boundary (.!?) > semicolon/colon > comma > space.
+        This avoids producing quotes that end mid-phrase.
+        """
         if len(text) <= max_chars:
             return text
 
-        # Look for last comma or semicolon within limit
         truncated = text[:max_chars]
-        last_comma = truncated.rfind(',')
-        last_semicolon = truncated.rfind(';')
-        cut_point = max(last_comma, last_semicolon)
+        min_pos = max_chars // 3  # Don't cut too early
 
-        if cut_point > max_chars // 3:
-            return truncated[:cut_point].rstrip()
+        # 1. Prefer sentence boundaries (. ! ?)
+        for punct in '.!?':
+            pos = truncated.rfind(punct)
+            if pos > min_pos:
+                return truncated[:pos + 1].rstrip()
 
-        # No good boundary found - cut at last space
-        last_space = truncated.rfind(' ')
-        if last_space > max_chars // 3:
-            return truncated[:last_space].rstrip()
+        # 2. Try semicolons / colons (strong clause boundaries)
+        for punct in ';:':
+            pos = truncated.rfind(punct)
+            if pos > min_pos:
+                return truncated[:pos].rstrip()
+
+        # 3. Try commas (weaker, but better than mid-word)
+        pos = truncated.rfind(',')
+        if pos > min_pos:
+            return truncated[:pos].rstrip()
+
+        # 4. Last resort: space
+        pos = truncated.rfind(' ')
+        if pos > min_pos:
+            return truncated[:pos].rstrip()
 
         return truncated.rstrip()
 
