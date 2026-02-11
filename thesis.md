@@ -681,9 +681,11 @@ dove $completeness \in \{0, 0.2, 0.5, 0.7, 1.0\}$ implementa una scala granulare
 - **0.7**: frase completa ma con terminazione sospesa (preposizione/articolo finale)
 - **0.5**: contiene verbo ma inizia a metà clausola
 - **0.2**: frammento di clausola subordinata (inizia con *se*, *che*, *quando*, *dove*, *perché*, ecc.) — sintatticamente dipendente e incomprensibile senza il contesto della clausola principale
-- **0.0**: nessun verbo rilevato (frammento nominale)
+- **0.0**: nessun verbo rilevato (frammento nominale), oppure **intestazione di identificazione oratore**
 
-Il sistema applica inoltre una **soglia minima di qualità** (`MIN_QUALITY_SCORE = 0.15`): le frasi con punteggio inferiore vengono scartate in favore di alternative meno rilevanti ma sintatticamente complete. Questo impedisce la selezione di frammenti decontestualizzati come citazioni (es. «se allora vi sembrava ineludibile per garantire» — clausola subordinata troncata con punteggio 0.2, sostituita da una frase completa).
+Il punteggio 0.0 viene assegnato anche alle righe di identificazione dell'oratore presenti nei resoconti parlamentari (es. "VANNIA GAVA, Vice Ministra dell'Ambiente e della sicurezza energetica"), che rappresentano intestazioni protocollari e non contenuto citabile. Il rilevamento avviene tramite pattern matching su nomi in maiuscolo seguiti da ruoli istituzionali (Ministro, Sottosegretario, Presidente, Relatore, ecc.).
+
+Il sistema applica inoltre una **soglia minima di qualità** (`MIN_QUALITY_SCORE = 0.15`): le frasi con punteggio inferiore vengono scartate in favore di alternative meno rilevanti ma sintatticamente complete. Questo impedisce la selezione di frammenti decontestualizzati o intestazioni protocollari come citazioni.
 
 #### 4.5.3 Integrator Guard (Livello 3)
 
