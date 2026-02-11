@@ -42,6 +42,9 @@ _authority_scorer: Optional[AuthorityScorer] = None
 _ideology_scorer: Optional[IdeologyScorer] = None
 _generation_pipeline: Optional[GenerationPipeline] = None
 
+# Keep references to background tasks to prevent garbage collection
+_background_tasks: set = set()
+
 
 def get_services():
     """Get or initialize service instances."""
@@ -305,6 +308,19 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 logger.info(f"  {step_name}: {step_time*1000:.1f}ms ({pct:.1f}%)")
         logger.info("=" * 60)
 
+        # Launch baseline generation in background BEFORE final yield
+        # (code after last yield may not execute reliably in async generators)
+        task = asyncio.create_task(_generate_baseline_background(
+            chat_id=chat_id,
+            query=request.query,
+            evidence_list=evidence_dicts,
+            pipeline=services["generation"],
+            neo4j_client=services["neo4j"],
+        ))
+        # Prevent garbage collection of the task
+        _background_tasks.add(task)
+        task.add_done_callback(_background_tasks.discard)
+
         yield sse_event("complete", {
             "chat_id": chat_id,
             "metadata": {
@@ -312,15 +328,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 "timing": {k: round(v * 1000, 1) for k, v in step_times.items()},
             }
         })
-
-        # Launch baseline generation in background (fire-and-forget)
-        asyncio.create_task(_generate_baseline_background(
-            chat_id=chat_id,
-            query=request.query,
-            evidence_list=evidence_dicts,
-            pipeline=services["generation"],
-            neo4j_client=services["neo4j"],
-        ))
 
     except Exception as e:
         total_time = time.time() - pipeline_start
