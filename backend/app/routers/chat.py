@@ -266,18 +266,38 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
 
         # === Citation details (verified citations) ===
-        # Sent immediately after text streaming so citation cards always
-        # match inline citations, even if later steps (baseline) fail.
+        # Extract ALL evidence IDs referenced in the generated text so the
+        # sidebar always matches inline citation links.  The pipeline's
+        # surgeon/recovery may miss some IDs that the LLM inserted as
+        # direct markdown links, causing a sidebar mismatch.
+        import re as _re
+        text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
+        evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
+
+        # Start from surgeon-tracked citations
         gen_citations = generation_result.get("citations", [])
-        logger.info(f"[CITATIONS] generation_result has {len(gen_citations)} citations")
-        for gc in gen_citations:
-            logger.info(f"[CITATIONS]   surgeon tracked: {gc.get('evidence_id')} - {gc.get('speaker_name')}")
+        tracked_ids = {c.get("evidence_id") for c in gen_citations}
+
+        # Add any evidence IDs found in text but not tracked by surgeon
+        for eid in text_evidence_ids:
+            if eid not in tracked_ids and eid in evidence_map_for_cit:
+                ev = evidence_map_for_cit[eid]
+                gen_citations.append({
+                    "evidence_id": eid,
+                    "quote_text": "",
+                    "speaker_name": ev.get("speaker_name", ""),
+                    "party": ev.get("party", ""),
+                    "date": str(ev.get("date", "")),
+                })
+                tracked_ids.add(eid)
+                logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
+
+        logger.info(f"[CITATIONS] {len(gen_citations)} total citations ({len(text_evidence_ids)} in text, {len(tracked_ids)} tracked)")
 
         verified_citations = _build_verified_citations(gen_citations, evidence_dicts)
-        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send:")
-        for vc in verified_citations:
-            logger.info(f"[CITATIONS]   chunk_id={vc.get('chunk_id')} speaker={vc.get('deputy_first_name')} {vc.get('deputy_last_name')}")
+        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
         yield sse_event("citation_details", {"citations": verified_citations})
+        await asyncio.sleep(0)  # Flush
 
         # === Step 8: Baseline Generation ===
         step_start = time.time()

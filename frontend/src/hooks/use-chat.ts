@@ -210,7 +210,8 @@ export function useChat(options: UseChatOptions = {}) {
               case "progress":
                 const stepIndex = data.step - 1;
                 const step = config.ui.progressSteps[stepIndex];
-                console.log(`[Pipeline] Step ${data.step}/${data.total}: ${step?.label || data.message}`);
+                const totalSteps = data.total || config.ui.progressSteps.length;
+                console.log(`[Pipeline] Step ${data.step}/${totalSteps}: ${step?.label || data.message}`);
                 setProgress((prev) => ({
                   currentStep: data.step,
                   totalSteps: data.total || config.ui.progressSteps.length,
