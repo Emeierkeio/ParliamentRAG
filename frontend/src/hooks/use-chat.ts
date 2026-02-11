@@ -296,6 +296,10 @@ export function useChat(options: UseChatOptions = {}) {
                     citations = citDetailsPayload;
                     updateLastAssistantMessage({ citations: [...citations] });
                     console.log("[useChat] Updated verified citations:", citations.length);
+                    console.log("[useChat] Citation chunk_ids:", citations.map(c => c.chunk_id));
+                    console.log("[useChat] Citation speakers:", citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`));
+                } else {
+                    console.warn("[useChat] citation_details payload is NOT an array:", citDetailsPayload);
                 }
                 break;
 

@@ -268,12 +268,16 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         # === Citation details (verified citations) ===
         # Sent immediately after text streaming so citation cards always
         # match inline citations, even if later steps (baseline) fail.
-        verified_citations = _build_verified_citations(
-            generation_result.get("citations", []),
-            evidence_dicts
-        )
+        gen_citations = generation_result.get("citations", [])
+        logger.info(f"[CITATIONS] generation_result has {len(gen_citations)} citations")
+        for gc in gen_citations:
+            logger.info(f"[CITATIONS]   surgeon tracked: {gc.get('evidence_id')} - {gc.get('speaker_name')}")
+
+        verified_citations = _build_verified_citations(gen_citations, evidence_dicts)
+        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send:")
+        for vc in verified_citations:
+            logger.info(f"[CITATIONS]   chunk_id={vc.get('chunk_id')} speaker={vc.get('deputy_first_name')} {vc.get('deputy_last_name')}")
         yield sse_event("citation_details", {"citations": verified_citations})
-        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations sent")
 
         # === Step 8: Baseline Generation ===
         step_start = time.time()
