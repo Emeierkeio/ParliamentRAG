@@ -88,8 +88,9 @@ class SentenceExtractor:
         selected = self._select_best(scored, max_total_chars)
 
         if not selected:
-            # Fallback to first sentence
-            return self._clean_result(sentences[0] if sentences else text)
+            # No sentence passed quality threshold — return empty
+            # to signal that this evidence has no citable content
+            return ""
 
         result = " ".join(selected)
         return self._clean_result(result)

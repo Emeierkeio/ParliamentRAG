@@ -409,6 +409,12 @@ FORMATO OUTPUT:
                     extracted_citation = quote_text or ""
                 e["pre_extracted_citation"] = extracted_citation
 
+            # Skip evidence whose citation extraction returned empty
+            # (all sentences below quality threshold — no citable content)
+            if not extracted_citation:
+                logger.info(f"Skipping evidence {eid} ({speaker}): no sentence passed quality threshold")
+                continue
+
             # Also provide context (truncated) for understanding
             context = e.get("chunk_text", "")[:300]
 
