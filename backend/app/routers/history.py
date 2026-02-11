@@ -91,11 +91,12 @@ async def get_history() -> HistoryListResponse:
 
     history_list = []
     for r in results:
+        ts = r["timestamp"]
         history_list.append({
             "id": r["id"],
             "query": r["query"],
             "preview": r.get("preview", ""),
-            "timestamp": r["timestamp"],
+            "timestamp": ts.isoformat() if hasattr(ts, 'isoformat') else str(ts),
         })
     return HistoryListResponse(history=history_list)
 
@@ -175,11 +176,12 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=404, detail="Chat not found")
 
     r = result[0]
+    ts = r["timestamp"]
     return {
         "id": r["id"],
         "query": r["query"],
         "answer": r["answer"],
-        "timestamp": r["timestamp"],
+        "timestamp": ts.isoformat() if hasattr(ts, 'isoformat') else str(ts),
         "citations": json.loads(r["citations"]) if r.get("citations") else [],
         "experts": json.loads(r["experts"]) if r.get("experts") else [],
         "balance": json.loads(r["balance"]) if r.get("balance") else None,
