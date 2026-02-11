@@ -422,20 +422,30 @@ export function useChat(options: UseChatOptions = {}) {
     setIsLoading(false);
     setProgress(null);
     setStreamingContent("");
-    
+
+    // Defensive timestamp parsing
+    const parseTs = (ts: any): Date => {
+      if (!ts) return new Date();
+      if (ts instanceof Date) return ts;
+      const d = new Date(typeof ts === "string" ? ts : String(ts));
+      return isNaN(d.getTime()) ? new Date() : d;
+    };
+
+    const ts = parseTs(historyData.timestamp);
+
     const userMsg: Message = {
       id: `user_${historyData.id}`,
       role: "user",
-      content: historyData.query,
-      timestamp: new Date(historyData.timestamp),
+      content: historyData.query || "",
+      timestamp: ts,
       status: "complete"
     };
 
     const assistantMsg: Message = {
       id: historyData.id,
       role: "assistant",
-      content: historyData.answer,
-      timestamp: new Date(historyData.timestamp),
+      content: historyData.answer || "",
+      timestamp: ts,
       status: "complete",
       citations: historyData.citations,
       experts: historyData.experts,
