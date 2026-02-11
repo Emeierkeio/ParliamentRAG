@@ -3,6 +3,7 @@ Stage 1: Claim Analyst
 
 Decomposes the query into atomic claims with evidence requirements.
 """
+import asyncio
 import json
 import logging
 from typing import List, Dict, Any, Optional
@@ -12,6 +13,9 @@ import openai
 from ...config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
+
+MAX_RETRIES = 3
+RETRY_BASE_DELAY = 2.0  # seconds
 
 
 class ClaimAnalyst:
@@ -57,6 +61,7 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         self.config = get_config()
         self.settings = get_settings()
         self.client = openai.OpenAI(api_key=self.settings.openai_api_key)
+        self.async_client = openai.AsyncOpenAI(api_key=self.settings.openai_api_key)
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("analyst", "gpt-4o")
@@ -67,14 +72,7 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """
-        Analyze query and evidence to produce claim structure.
-
-        Args:
-            query: User query
-            evidence_list: Retrieved evidence with party associations
-
-        Returns:
-            Dictionary with claims and metadata
+        Synchronous analyze (used by main pipeline).
         """
         # Build evidence summary for the prompt
         evidence_summary = self._summarize_evidence(evidence_list)
@@ -82,29 +80,7 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         # Get all parties represented
         parties_in_evidence = set(e.get("party", "MISTO") for e in evidence_list)
 
-        user_prompt = f"""Domanda dell'utente: {query}
-
-Partiti presenti nelle evidenze: {', '.join(parties_in_evidence)}
-
-Riepilogo evidenze per partito:
-{evidence_summary}
-
-Analizza la domanda e identifica i claim atomici da affrontare.
-Assicurati di coprire TUTTI i partiti parlamentari, anche quelli senza evidenza.
-
-I 10 gruppi parlamentari sono:
-1. Fratelli d'Italia
-2. Partito Democratico - Italia Democratica e Progressista
-3. Lega - Salvini Premier
-4. Movimento 5 Stelle
-5. Forza Italia - Berlusconi Presidente - PPE
-6. Alleanza Verdi e Sinistra
-7. Azione - Popolari Europeisti Riformatori - Renew Europe
-8. Italia Viva - Il Centro - Renew Europe
-9. Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare
-10. Misto
-
-Rispondi in JSON."""
+        user_prompt = self._build_prompt(query, parties_in_evidence, evidence_summary)
 
         try:
             response = self.client.chat.completions.create(
@@ -130,21 +106,105 @@ Rispondi in JSON."""
 
         except Exception as e:
             logger.error(f"Analyst stage failed: {e}")
-            # Return minimal structure on error
-            return {
-                "claims": [
-                    {
-                        "claim_id": "c1",
-                        "claim": query,
-                        "evidence_needed": True,
-                        "party": None,
-                        "priority": "high"
-                    }
-                ],
-                "query_type": "general",
-                "requires_government_view": True,
-                "error": str(e)
-            }
+            return self._fallback_result(query, e)
+
+    async def analyze_async(
+        self,
+        query: str,
+        evidence_list: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Async analyze with retry and exponential backoff.
+        Used by baseline pipeline to avoid blocking the event loop.
+        """
+        evidence_summary = self._summarize_evidence(evidence_list)
+        parties_in_evidence = set(e.get("party", "MISTO") for e in evidence_list)
+        user_prompt = self._build_prompt(query, parties_in_evidence, evidence_summary)
+
+        for attempt in range(MAX_RETRIES):
+            try:
+                response = await self.async_client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": self.SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    temperature=0.3,
+                    max_tokens=2000,
+                    response_format={"type": "json_object"}
+                )
+
+                result = json.loads(response.choices[0].message.content)
+                if "claims" not in result:
+                    result["claims"] = []
+
+                logger.info(f"Analyst (async) identified {len(result.get('claims', []))} claims")
+                return result
+
+            except (openai.RateLimitError, openai.APITimeoutError) as e:
+                delay = RETRY_BASE_DELAY * (2 ** attempt)
+                logger.warning(
+                    f"Analyst async attempt {attempt + 1}/{MAX_RETRIES} failed "
+                    f"({type(e).__name__}), retrying in {delay:.1f}s..."
+                )
+                if attempt < MAX_RETRIES - 1:
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(f"Analyst async failed after {MAX_RETRIES} retries: {e}")
+                    return self._fallback_result(query, e)
+
+            except Exception as e:
+                logger.error(f"Analyst async stage failed: {e}")
+                return self._fallback_result(query, e)
+
+        return self._fallback_result(query, Exception("Max retries exceeded"))
+
+    def _build_prompt(
+        self,
+        query: str,
+        parties_in_evidence: set,
+        evidence_summary: str
+    ) -> str:
+        return f"""Domanda dell'utente: {query}
+
+Partiti presenti nelle evidenze: {', '.join(parties_in_evidence)}
+
+Riepilogo evidenze per partito:
+{evidence_summary}
+
+Analizza la domanda e identifica i claim atomici da affrontare.
+Assicurati di coprire TUTTI i partiti parlamentari, anche quelli senza evidenza.
+
+I 10 gruppi parlamentari sono:
+1. Fratelli d'Italia
+2. Partito Democratico - Italia Democratica e Progressista
+3. Lega - Salvini Premier
+4. Movimento 5 Stelle
+5. Forza Italia - Berlusconi Presidente - PPE
+6. Alleanza Verdi e Sinistra
+7. Azione - Popolari Europeisti Riformatori - Renew Europe
+8. Italia Viva - Il Centro - Renew Europe
+9. Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare
+10. Misto
+
+Rispondi in JSON."""
+
+    @staticmethod
+    def _fallback_result(query: str, error: Exception) -> Dict[str, Any]:
+        return {
+            "claims": [
+                {
+                    "claim_id": "c1",
+                    "claim": query,
+                    "evidence_needed": True,
+                    "party": None,
+                    "priority": "high"
+                }
+            ],
+            "query_type": "general",
+            "requires_government_view": True,
+            "error": str(error)
+        }
 
     def _summarize_evidence(
         self,

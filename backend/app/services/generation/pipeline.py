@@ -318,6 +318,9 @@ class GenerationPipeline:
 
         Uses the same evidence but with uniform authority scores (0.5)
         and skips Stage 4 (Citation Surgeon) and coherence validation.
+
+        Sections are written sequentially (not in parallel) to avoid
+        OpenAI rate limit bursts after the main pipeline.
         """
         start_time = datetime.now()
 
@@ -326,30 +329,59 @@ class GenerationPipeline:
             {**e, "authority_score": 0.5} for e in evidence_list
         ]
 
-        # 2. Stage 1: Analyst (identical)
-        claims_result = self.analyst.analyze(query, baseline_evidence)
+        # 2. Stage 1: Analyst (async to avoid blocking the event loop)
+        claims_result = await self.analyst.analyze_async(query, baseline_evidence)
         claims = claims_result.get("claims", [])
 
-        # 3. Stage 2: Sectional Writer
+        # 3. Stage 2: Sectional Writer — SEQUENTIAL to avoid RPM burst
+        # The main pipeline already consumed ~13 API calls; running 11
+        # more in parallel here would exceed the 60 RPM rate limit.
         evidence_by_party = self._group_evidence_by_party(baseline_evidence)
         government_evidence = self._get_government_evidence(baseline_evidence)
 
         sections = []
-        async for section in self.sectional_writer.write_sections(
-            query=query,
-            claims=claims,
-            evidence_by_party=evidence_by_party,
-            government_evidence=government_evidence
-        ):
+        all_parties = list(evidence_by_party.keys())
+
+        # Government section first (if evidence exists)
+        if government_evidence:
+            section = await self.sectional_writer._write_section(
+                query=query,
+                party="GOVERNO",
+                evidence=government_evidence,
+                claims=claims,
+                is_government=True
+            )
+            sections.append(section)
+
+        # Party sections sequentially
+        for party in all_parties:
+            evidence = evidence_by_party.get(party, [])
+            section = await self.sectional_writer._write_section(
+                query=query,
+                party=party,
+                evidence=evidence,
+                claims=claims,
+                is_government=False
+            )
             sections.append(section)
 
         # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
-        integrated = self.integrator.integrate(query, sections)
+        # Pass topic_statistics for a fair A/B comparison
+        topic_statistics = self._compute_topic_statistics(baseline_evidence)
+        integrated = self.integrator.integrate(
+            query, sections, topic_statistics=topic_statistics
+        )
 
-        # 5. Remove unresolved [CIT:id] placeholders
-        text = re.sub(r'\[CIT:[^\]]+\]', '', integrated.get("text", ""))
-        # Clean up double spaces left by removed citations
+        # 5. Remove unresolved [CIT:id] placeholders and clean up artifacts
+        text = integrated.get("text", "")
+        # Remove placeholders, including any space before punctuation
+        text = re.sub(r'\s*\[CIT:[^\]]+\]', '', text)
+        # Clean up double spaces
         text = re.sub(r'  +', ' ', text)
+        # Clean up space before punctuation left by removals
+        text = re.sub(r'\s+([.,:;!?)])', r'\1', text)
+        # Clean up empty lines
+        text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
 
         duration_ms = (datetime.now() - start_time).total_seconds() * 1000
 

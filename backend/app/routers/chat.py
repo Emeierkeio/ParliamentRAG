@@ -278,25 +278,38 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         # === Step 8: Baseline Generation ===
         step_start = time.time()
         yield sse_event("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
-        await asyncio.sleep(0)
+
+        # Delay to let OpenAI rate limits recover after ~13 calls from Step 7
+        await asyncio.sleep(3)
 
         baseline_text = ""
+        baseline_error = None
         ab_assignment = None
         try:
-            logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
+            logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon, sequential sections)...")
             baseline_result = await services["generation"].generate_baseline(
                 query=request.query,
                 evidence_list=evidence_dicts
             )
             baseline_text = baseline_result.get("text", "")
 
-            # Random A/B assignment for blind evaluation
-            ab_assignment = random.choice([
-                {"A": "system", "B": "baseline"},
-                {"A": "baseline", "B": "system"}
-            ])
+            if baseline_text:
+                # Random A/B assignment for blind evaluation
+                ab_assignment = random.choice([
+                    {"A": "system", "B": "baseline"},
+                    {"A": "baseline", "B": "system"}
+                ])
+                logger.info(f"[BASELINE] Success: {len(baseline_text)} chars")
+            else:
+                baseline_error = "Baseline returned empty text"
+                logger.warning(f"[BASELINE] {baseline_error}")
+
         except Exception as e:
-            logger.warning(f"[BASELINE] Baseline generation failed (non-critical): {e}")
+            baseline_error = f"{type(e).__name__}: {e}"
+            logger.error(
+                f"[BASELINE] Generation failed: {baseline_error}",
+                exc_info=True
+            )
 
         step_times["step_8_baseline"] = time.time() - step_start
         logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
@@ -333,6 +346,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("complete", {
             "baseline_answer": baseline_text,
             "ab_assignment": ab_assignment,
+            "baseline_error": baseline_error,
             "metadata": {
                 **retrieval_result.get("metadata", {}),
                 "timing": {k: round(v * 1000, 1) for k, v in step_times.items()},
