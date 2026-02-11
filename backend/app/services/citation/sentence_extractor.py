@@ -116,6 +116,52 @@ class SentenceExtractor:
 
         return text
 
+    # Common Italian verb forms for syntactic completeness check
+    _VERB_AUXILIARIES = {
+        'è', 'ha', 'sono', 'hanno', 'sia', 'siano', 'abbiamo',
+        'era', 'erano', 'sarà', 'saranno', 'può', 'deve', 'vuole',
+        'dobbiamo', 'possiamo', 'vogliamo', 'devono', 'possono',
+        'vogliono', 'viene', 'vengono', 'va', 'vanno', 'sta', 'stanno',
+        'risulta', 'risultano', 'sembra', 'sembrano', 'rappresenta',
+    }
+
+    # Regex for common Italian verb conjugation endings
+    _VERB_ENDING_PATTERN = re.compile(
+        r'\b\w+(?:amo|ano|ono|ato|uto|ito|ando|endo|isce|isce|iamo|ono'
+        r'|ava|evano|iva|ivano|ò|ì|arono|irono|erà|irà|eranno|iranno'
+        r'|asse|assero|esse|essero|isse|issero'
+        r'|ando|endo|ato|uto|ito|ata|uta|ita|ati|uti|iti|ate|ute|ite)\b',
+        re.IGNORECASE
+    )
+
+    def _has_verb(self, text: str) -> bool:
+        """Check if text contains at least one Italian verb form."""
+        words = set(re.findall(r'\b\w+\b', text.lower()))
+        # Check auxiliaries
+        if words & self._VERB_AUXILIARIES:
+            return True
+        # Check conjugation endings
+        if self._VERB_ENDING_PATTERN.search(text):
+            return True
+        return False
+
+    def _syntactic_completeness_score(self, sentence: str) -> float:
+        """
+        Score syntactic completeness of a sentence.
+
+        Returns:
+            1.0: contains verb and starts with uppercase (complete sentence)
+            0.5: contains verb but starts mid-clause
+            0.0: no verb detected (fragment)
+        """
+        if not self._has_verb(sentence):
+            return 0.0
+        # Check if it starts as a complete sentence (uppercase or quote mark)
+        first_char = sentence.lstrip()[0] if sentence.strip() else ''
+        if first_char.isupper() or first_char in '«"\'':
+            return 1.0
+        return 0.5
+
     def _split_sentences(self, text: str) -> List[str]:
         """Split text into sentences or meaningful clauses.
 
@@ -137,10 +183,11 @@ class SentenceExtractor:
                 # If sentence is very long, try splitting on semicolons/colons only
                 # (these are strong clause boundaries that produce self-sufficient parts)
                 if len(s) > 250:
-                    sub_parts = re.split(r'[;:]', s)
+                    sub_parts = re.split(r';', s)
                     if len(sub_parts) > 1:
                         valid_parts = [p.strip() for p in sub_parts
-                                       if len(p.strip()) >= self.min_sentence_length]
+                                       if len(p.strip()) >= self.min_sentence_length
+                                       and self._has_verb(p)]
                         if len(valid_parts) > 1:
                             sentences.extend(valid_parts)
                             continue
@@ -258,7 +305,8 @@ class SentenceExtractor:
             # Density bonus - how many query words per sentence length
             density = len(overlap) / len(sentence_tokens) if sentence_tokens else 0
 
-            total_score = overlap_score * 0.6 + density * 0.3 + position_bonus * 0.1
+            completeness = self._syntactic_completeness_score(sentence)
+            total_score = overlap_score * 0.45 + completeness * 0.25 + density * 0.2 + position_bonus * 0.1
             scored.append((sentence, total_score, i))
 
         return scored
