@@ -326,8 +326,23 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "complete":
                 // Extract baseline data from complete event
+                console.log("[useChat][BASELINE-DEBUG] Raw complete event data:", JSON.stringify({
+                  baseline_answer_type: typeof data.baseline_answer,
+                  baseline_answer_length: data.baseline_answer ? data.baseline_answer.length : 0,
+                  baseline_answer_truthy: !!data.baseline_answer,
+                  baseline_answer_preview: data.baseline_answer ? data.baseline_answer.substring(0, 200) : "EMPTY/NULL",
+                  ab_assignment: data.ab_assignment,
+                  baseline_error: data.baseline_error,
+                }));
+
                 baselineAnswer = data.baseline_answer || "";
                 abAssignment = data.ab_assignment || null;
+
+                console.log("[useChat][BASELINE-DEBUG] After extraction:", {
+                  baselineAnswer_length: baselineAnswer.length,
+                  baselineAnswer_truthy: !!baselineAnswer,
+                  abAssignment,
+                });
 
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
@@ -344,34 +359,44 @@ export function useChat(options: UseChatOptions = {}) {
 
                 // Save to history
                 try {
+                  const historyPayload = {
+                    query: content,
+                    answer: accumulatedContent,
+                    citations,
+                    experts,
+                    balance: balanceMetrics ? {
+                      maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
+                      opposizione_percentage: balanceMetrics.opposizionePercentage,
+                      bias_score: balanceMetrics.biasScore,
+                    } : null,
+                    compass: compassData,
+                    baseline_answer: baselineAnswer || null,
+                    ab_assignment: abAssignment || null,
+                  };
+                  console.log("[useChat][BASELINE-DEBUG] History payload baseline fields:", {
+                    baseline_answer_type: typeof historyPayload.baseline_answer,
+                    baseline_answer_length: historyPayload.baseline_answer ? historyPayload.baseline_answer.length : 0,
+                    baseline_answer_is_null: historyPayload.baseline_answer === null,
+                    ab_assignment: historyPayload.ab_assignment,
+                  });
+
                   fetch(`${config.api.baseUrl}/history`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      query: content,
-                      answer: accumulatedContent,
-                      citations,
-                      experts,
-                      balance: balanceMetrics ? {
-                        maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
-                        opposizione_percentage: balanceMetrics.opposizionePercentage,
-                        bias_score: balanceMetrics.biasScore,
-                      } : null,
-                      compass: compassData,
-                      baseline_answer: baselineAnswer || null,
-                      ab_assignment: abAssignment || null,
-                    }),
+                    body: JSON.stringify(historyPayload),
                   }).then((res) => {
                     if (res.ok) {
-                      console.log("[useChat] Chat saved to history");
+                      console.log("[useChat][BASELINE-DEBUG] Chat saved to history successfully");
                     } else {
-                      console.error("[useChat] Failed to save to history:", res.status, res.statusText);
+                      res.text().then(body => {
+                        console.error("[useChat][BASELINE-DEBUG] Failed to save to history:", res.status, res.statusText, body);
+                      });
                     }
                   }).catch((err) => {
-                    console.error("[useChat] Failed to save to history:", err);
+                    console.error("[useChat][BASELINE-DEBUG] Failed to save to history:", err);
                   });
                 } catch (e) {
-                  console.error("[useChat] Error saving to history:", e);
+                  console.error("[useChat][BASELINE-DEBUG] Error saving to history:", e);
                 }
                 break;
 
