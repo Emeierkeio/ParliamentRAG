@@ -324,6 +324,15 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
         logger.info(f"[BASELINE] FINAL STATE: text_len={len(baseline_text)}, ab_assignment={ab_assignment}, error={baseline_error}")
 
+        # Send baseline as a dedicated SSE event so it's not lost if the
+        # complete event payload is large (metadata can bloat the JSON).
+        yield sse_event("baseline", {
+            "baseline_answer": baseline_text,
+            "ab_assignment": ab_assignment,
+            "baseline_error": baseline_error,
+        })
+        await asyncio.sleep(0)  # Flush
+
         # === Step 9: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             step_start = time.time()

@@ -335,6 +335,17 @@ export function useChat(options: UseChatOptions = {}) {
                 }
                 break;
 
+              case "baseline":
+                // Dedicated baseline event — arrives before "complete"
+                baselineAnswer = data.baseline_answer || "";
+                abAssignment = data.ab_assignment || null;
+                console.log(`[Pipeline:Baseline] Received dedicated event: type=${typeof data.baseline_answer}, len=${data.baseline_answer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
+                if (data.baseline_answer) {
+                  console.log(`[Pipeline:Baseline] Preview: "${data.baseline_answer.substring(0, 150)}..."`);
+                }
+                console.log(`[Pipeline:Baseline] ab_assignment:`, data.ab_assignment);
+                break;
+
               case "chunk":
                 accumulatedContent += (data.data || data.content || "");
                 setStreamingContent(accumulatedContent);
@@ -372,14 +383,15 @@ export function useChat(options: UseChatOptions = {}) {
                   console.log(`[Pipeline:Citations] All ${textCitLinks.length} text citation links matched in sidebar`);
                 }
 
-                console.log(`[Pipeline:Baseline] baseline_answer: type=${typeof data.baseline_answer}, len=${data.baseline_answer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
-                if (data.baseline_answer) {
-                  console.log(`[Pipeline:Baseline] Preview: "${data.baseline_answer.substring(0, 150)}..."`);
+                // Fallback: pick up baseline from complete event if the
+                // dedicated "baseline" event was missed (backward compat)
+                if (!baselineAnswer && data.baseline_answer) {
+                  baselineAnswer = data.baseline_answer;
+                  abAssignment = data.ab_assignment || null;
+                  console.log(`[Pipeline:Baseline] Recovered from complete event: ${baselineAnswer.length} chars`);
                 }
-                console.log(`[Pipeline:Baseline] ab_assignment:`, data.ab_assignment);
-
-                baselineAnswer = data.baseline_answer || "";
-                abAssignment = data.ab_assignment || null;
+                console.log(`[Pipeline:Baseline] baseline_answer: type=${typeof baselineAnswer}, len=${baselineAnswer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
+                console.log(`[Pipeline:Baseline] ab_assignment:`, abAssignment);
 
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
