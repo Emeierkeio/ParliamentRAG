@@ -355,6 +355,7 @@ class GenerationPipeline:
                 raw_text = self.integrator._simple_concatenation(sections)
 
         # 5. Fallback: if no text yet, build directly from evidence
+        raw_text = raw_text or ""
         if not raw_text.strip():
             logger.warning("[BASELINE] No text from pipeline, building fallback from evidence")
             raw_text = self._build_baseline_fallback(query, baseline_evidence)

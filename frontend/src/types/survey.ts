@@ -100,6 +100,7 @@ export interface PendingChat {
   query: string;
   preview: string;
   timestamp: string;
+  baseline_ready?: boolean;
 }
 
 export interface PendingChatsResponse {

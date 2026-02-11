@@ -156,8 +156,6 @@ export function useChat(options: UseChatOptions = {}) {
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: any = null;
-      let baselineAnswer = "";
-      let abAssignment: Record<string, string> | null = null;
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -321,9 +319,8 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
-                // Extract baseline data from complete event
-                baselineAnswer = data.baseline_answer || "";
-                abAssignment = data.ab_assignment || null;
+                // chat_id is provided by backend for history coordination
+                const chatId = data.chat_id || "";
 
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
@@ -334,16 +331,16 @@ export function useChat(options: UseChatOptions = {}) {
                   citations,
                   experts,
                   balanceMetrics,
-                  baselineAnswer: baselineAnswer || undefined,
-                  abAssignment: abAssignment || undefined,
                 });
 
-                // Save to history
+                // Save to history using backend-provided chat_id
+                // Baseline will be added asynchronously by the backend background task
                 try {
                   fetch(`${config.api.baseUrl}/history`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
+                      id: chatId,
                       query: content,
                       answer: accumulatedContent,
                       citations,
@@ -354,12 +351,10 @@ export function useChat(options: UseChatOptions = {}) {
                         bias_score: balanceMetrics.biasScore,
                       } : null,
                       compass: compassData,
-                      baseline_answer: baselineAnswer || null,
-                      ab_assignment: abAssignment || null,
                     }),
                   }).then((res) => {
                     if (res.ok) {
-                      console.log("[useChat] Chat saved to history");
+                      console.log("[useChat] Chat saved to history with id:", chatId);
                     } else {
                       console.error("[useChat] Failed to save to history:", res.status, res.statusText);
                     }
