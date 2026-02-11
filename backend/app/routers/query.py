@@ -179,16 +179,160 @@ async def process_query_streaming(
             query=request.query,
             evidence_list=evidence_dicts
         )
+        logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
+                     f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
-        # Step 6: Citations (from evidence_dicts, not generation_result)
+        # Step 6: Initial citations (first 20 from retrieval, sent early for UI)
         citations_data = _build_citations_for_frontend(evidence_dicts)
-
+        logger.info(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
         yield f"data: {json.dumps({'type': 'citations', 'data': citations_data}, default=str)}\n\n"
 
-        # Step 7: Stream text chunks
+        # === Resolve extra citation IDs via DB lookup ===
+        import re as _re
         final_text = generation_result.get("text", "")
+        extra_citation_ids = generation_result.get("extra_citation_ids", [])
+        extra_evidence_map: Dict[str, Dict[str, Any]] = {}
 
-        # Split into chunks for streaming effect
+        if extra_citation_ids:
+            logger.info(f"[QUERY:CITATIONS] Resolving {len(extra_citation_ids)} extra IDs from DB: {extra_citation_ids[:5]}")
+            try:
+                db_rows = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: services["neo4j"].query(
+                        """
+                        UNWIND $chunk_ids AS cid
+                        MATCH (c:Chunk {id: cid})<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+                        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                          WHERE mg.start_date <= s.date
+                            AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+                        RETURN c.id AS chunk_id,
+                               c.text AS chunk_text,
+                               c.start_char_raw AS span_start,
+                               c.end_char_raw AS span_end,
+                               i.id AS speech_id,
+                               i.text AS text,
+                               speaker.id AS speaker_id,
+                               speaker.first_name AS speaker_first_name,
+                               speaker.last_name AS speaker_last_name,
+                               CASE WHEN 'GovernmentMember' IN labels(speaker)
+                                    THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+                               g.name AS party,
+                               s.id AS session_id,
+                               s.date AS session_date,
+                               d.title AS debate_title
+                        """,
+                        {"chunk_ids": extra_citation_ids}
+                    )
+                )
+                from ..models.evidence import normalize_speaker_name, normalize_party_name
+                config = get_config()
+                for row in db_rows:
+                    eid = row.get("chunk_id", "")
+                    party = normalize_party_name(row.get("party") or "MISTO")
+                    session_date = row.get("session_date")
+                    if session_date is not None and hasattr(session_date, 'to_native'):
+                        date_obj = session_date.to_native()
+                    elif isinstance(session_date, str) and session_date:
+                        from datetime import datetime as _dt
+                        try:
+                            date_obj = _dt.strptime(session_date, "%d/%m/%Y").date()
+                        except ValueError:
+                            date_obj = _dt.now().date()
+                    else:
+                        date_obj = date.today()
+
+                    extra_evidence_map[eid] = {
+                        "evidence_id": eid,
+                        "chunk_text": row.get("chunk_text", ""),
+                        "quote_text": row.get("chunk_text", ""),
+                        "speech_id": row.get("speech_id", ""),
+                        "speaker_id": row.get("speaker_id", ""),
+                        "speaker_name": normalize_speaker_name(
+                            row.get("speaker_first_name", ""),
+                            row.get("speaker_last_name", "")
+                        ),
+                        "speaker_role": row.get("speaker_type", "Deputy"),
+                        "party": party,
+                        "coalition": config.get_coalition(party),
+                        "date": date_obj,
+                        "span_start": row.get("span_start", 0),
+                        "span_end": row.get("span_end", 0),
+                        "debate_title": row.get("debate_title", ""),
+                        "session_id": row.get("session_id", ""),
+                    }
+                found_ids = set(extra_evidence_map.keys())
+                missing_ids = set(extra_citation_ids) - found_ids
+                logger.info(f"[QUERY:CITATIONS] DB lookup done: {len(found_ids)} found, {len(missing_ids)} not in DB")
+                if missing_ids:
+                    logger.warning(f"[QUERY:CITATIONS] IDs not in DB (will strip): {list(missing_ids)[:5]}")
+
+                # Strip links for IDs that truly don't exist in DB
+                if missing_ids:
+                    def _strip_missing(match):
+                        href = match.group(2)
+                        if href in missing_ids:
+                            logger.warning(f"[QUERY:CITATIONS] Stripping non-existent ID: {href}")
+                            return match.group(1)
+                        return match.group(0)
+                    final_text = _re.sub(
+                        r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                        _strip_missing,
+                        final_text
+                    )
+            except Exception as e:
+                logger.error(f"[QUERY:CITATIONS] DB lookup failed: {e}", exc_info=True)
+                extra_ids_set = set(extra_citation_ids)
+                def _strip_extra(match):
+                    if match.group(2) in extra_ids_set:
+                        return match.group(1)
+                    return match.group(0)
+                final_text = _re.sub(
+                    r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                    _strip_extra,
+                    final_text
+                )
+        else:
+            logger.info("[QUERY:CITATIONS] No extra citation IDs to resolve")
+
+        # === Build complete citation_details ===
+        text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
+        evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
+        evidence_map_for_cit.update(extra_evidence_map)
+        logger.info(f"[QUERY:CITATIONS] Text has {len(text_evidence_ids)} citation links, "
+                     f"evidence_map has {len(evidence_map_for_cit)} entries "
+                     f"(original={len(evidence_dicts)}, extra={len(extra_evidence_map)})")
+
+        gen_citations = generation_result.get("citations", [])
+        tracked_ids = {c.get("evidence_id") for c in gen_citations}
+        logger.info(f"[QUERY:CITATIONS] Pipeline returned {len(gen_citations)} tracked citations")
+
+        for eid in text_evidence_ids:
+            if eid not in tracked_ids and eid in evidence_map_for_cit:
+                ev = evidence_map_for_cit[eid]
+                gen_citations.append({
+                    "evidence_id": eid,
+                    "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
+                    "speaker_name": ev.get("speaker_name", ""),
+                    "party": ev.get("party", ""),
+                    "date": str(ev.get("date", "")),
+                    "span_start": ev.get("span_start", 0),
+                    "span_end": ev.get("span_end", 0),
+                })
+                tracked_ids.add(eid)
+                logger.info(f"[QUERY:CITATIONS] Recovered from text: {eid}")
+            elif eid not in tracked_ids:
+                logger.warning(f"[QUERY:CITATIONS] ID in text but NOT in any map: {eid}")
+
+        logger.info(f"[QUERY:CITATIONS] Final: {len(gen_citations)} total citations to send as citation_details")
+
+        # Send citation_details to update the sidebar with ALL cited chunks
+        all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
+        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify)
+        logger.info(f"[QUERY:CITATIONS] Verified: {len(verified_citations)} citations built")
+        yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
+
+        # Step 7: Stream text chunks
         chunk_size = 100
         for i in range(0, len(final_text), chunk_size):
             chunk = final_text[i:i+chunk_size]
@@ -386,6 +530,50 @@ def _build_citations_for_frontend(
         })
 
     return citations
+
+
+def _build_verified_citations(
+    generation_citations: List[Dict],
+    evidence_dicts: List[Dict]
+) -> List[Dict[str, Any]]:
+    """
+    Build verified citations with full details for citation_details event.
+
+    Uses evidence_id as chunk_id for consistent linking.
+    """
+    coalition_logic = CoalitionLogic()
+    evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
+
+    verified = []
+    for cit in generation_citations:
+        eid = cit.get("evidence_id", "")
+        evidence = evidence_map.get(eid, {})
+        party = cit.get("party", evidence.get("party", "MISTO"))
+        coalition = coalition_logic.get_coalition(party)
+
+        speaker_name = cit.get("speaker_name", evidence.get("speaker_name", ""))
+        name_parts = speaker_name.split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+        verified.append({
+            "chunk_id": eid,
+            "deputy_first_name": first_name,
+            "deputy_last_name": last_name,
+            "text": cit.get("quote_text", "") or evidence.get("chunk_text", ""),
+            "quote_text": cit.get("quote_text", ""),
+            "full_text": evidence.get("chunk_text", ""),
+            "group": party,
+            "coalition": coalition,
+            "date": str(cit.get("date", "")),
+            "span_start": cit.get("span_start", 0),
+            "span_end": cit.get("span_end", 0),
+            "debate": evidence.get("debate_title", ""),
+            "intervention_id": evidence.get("speech_id", ""),
+            "verified": True,
+        })
+
+    return verified
 
 
 @router.post("/query")
