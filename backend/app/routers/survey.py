@@ -170,9 +170,10 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     baseline_win = round(overall_pref["baseline"] / total_pref * 100, 1)
     tie = round(overall_pref["equal"] / total_pref * 100, 1)
 
-    # Recommendation rate
-    recommendations = sum(1 for s in surveys if s.get("would_recommend", False))
-    recommendation_rate = round((recommendations / len(surveys)) * 100, 1)
+    # Recommendation rate (only count valid surveys with ab_assignment)
+    valid_surveys = [s for s in surveys if _get_ab_assignment(s.get("chat_id", ""))]
+    recommendations = sum(1 for s in valid_surveys if s.get("would_recommend", False))
+    recommendation_rate = round((recommendations / len(valid_surveys)) * 100, 1) if valid_surveys else 0.0
 
     return SurveyStats(
         total_surveys=valid_count,
