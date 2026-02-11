@@ -190,12 +190,17 @@ class AuthorityScorer:
         # Ensure total is in [0, 1]
         total_score = max(0.0, min(1.0, total_score))
 
+        # Extract matched institutional role label from role component
+        role_component = self.components.get("role")
+        institutional_role = getattr(role_component, "matched_role_label", None)
+
         return {
             "speaker_id": speaker_id,
             "total_score": total_score,
             "components": component_scores,
             "coalition": self.coalition_logic.get_coalition(current_group),
             "current_group": current_group,
+            "institutional_role": institutional_role,
         }
 
     def compute_batch_authority(

@@ -335,7 +335,7 @@ def _compute_experts(
                 "profession": speaker_info.get("profession"),
                 "education": speaker_info.get("education"),
                 "committee": speaker_info.get("current_committee"),
-                "institutional_role": speaker_info.get("institutional_role"),
+                "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
                 "score_breakdown": {
                     "speeches": round(components.get("interventions", 0), 2),
                     "acts": round(components.get("acts", 0), 2),

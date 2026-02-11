@@ -485,17 +485,28 @@ class RoleComponent(AuthorityComponent):
     # Similarity threshold for topic relevance
     RELEVANCE_THRESHOLD = 0.5
 
+    # Human-readable labels for role types
+    ROLE_LABELS = {
+        "president": "Presidente",
+        "vice_president": "Vicepresidente",
+        "secretary": "Segretario",
+    }
+
     def compute(
         self,
         speaker_data: Dict[str, Any],
         query_embedding: List[float],
         reference_date: date
     ) -> float:
+        # Reset matched role label
+        self.matched_role_label = None
+
         # Check for government position first (GovernmentMember)
         gov_position = speaker_data.get("government_position", "")
         if gov_position:
             for key, weight in self.GOVERNMENT_WEIGHTS.items():
                 if key in gov_position.lower():
+                    self.matched_role_label = gov_position
                     return self.cap_score(weight)
 
         # Get institutional roles from graph
@@ -508,6 +519,7 @@ class RoleComponent(AuthorityComponent):
             return 0.3  # Base score for regular deputies without roles
 
         max_role_score = 0.3  # Minimum base
+        best_role_label = None
 
         for role in institutional_roles:
             role_type = role.get("role_type", "")
@@ -535,6 +547,11 @@ class RoleComponent(AuthorityComponent):
 
             # Final score for this role
             role_score = base_weight * relevance_multiplier
-            max_role_score = max(max_role_score, role_score)
+            if role_score > max_role_score:
+                max_role_score = role_score
+                label = self.ROLE_LABELS.get(role_type, role_type)
+                committee_name = role.get("committee_name", "")
+                best_role_label = f"{label} {committee_name}" if committee_name else label
 
+        self.matched_role_label = best_role_label
         return self.cap_score(max_role_score)

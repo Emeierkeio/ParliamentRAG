@@ -473,7 +473,7 @@ def _compute_experts_for_frontend(
                 "profession": speaker_info.get("profession"),
                 "education": speaker_info.get("education"),
                 "committee": speaker_info.get("current_committee"),
-                "institutional_role": speaker_info.get("institutional_role"),
+                "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
                 # Score breakdown
                 "score_breakdown": {
                     "speeches": round(components.get("interventions", 0), 2),
