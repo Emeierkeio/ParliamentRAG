@@ -384,6 +384,7 @@ class GenerationPipeline:
                 "speaker_count": 0,
                 "first_date": None,
                 "last_date": None,
+                "debate_title": None,
             }
 
         unique_speeches = set(
@@ -394,11 +395,23 @@ class GenerationPipeline:
         )
         dates = [e.get("date") for e in evidence_list if e.get("date")]
 
+        # Find the most frequent debate title to name the specific provvedimento
+        from collections import Counter
+        debate_titles = [
+            e.get("debate_title") for e in evidence_list
+            if e.get("debate_title")
+        ]
+        most_common_title = (
+            Counter(debate_titles).most_common(1)[0][0]
+            if debate_titles else None
+        )
+
         return {
             "intervention_count": len(unique_speeches),
             "speaker_count": len(unique_speakers),
             "first_date": min(dates) if dates else None,
             "last_date": max(dates) if dates else None,
+            "debate_title": most_common_title,
         }
 
     def _group_evidence_by_party(

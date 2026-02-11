@@ -104,11 +104,14 @@ REGOLE GENERALI:
 
         parts = ["STATISTICHE DEL TEMA (usa questi dati nell'Introduzione):"]
 
+        debate_title = topic_statistics.get("debate_title")
         intervention_count = topic_statistics.get("intervention_count", 0)
         speaker_count = topic_statistics.get("speaker_count", 0)
         first_date = topic_statistics.get("first_date")
         last_date = topic_statistics.get("last_date")
 
+        if debate_title:
+            parts.append(f"- Provvedimento/dibattito principale: {debate_title}")
         if intervention_count:
             parts.append(f"- Interventi analizzati: {intervention_count}")
         if speaker_count:
