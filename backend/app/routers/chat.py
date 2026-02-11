@@ -265,23 +265,38 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         step_times["step_7_generation"] = time.time() - step_start
         logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
 
+        # === Citation details (verified citations) ===
+        # Sent immediately after text streaming so citation cards always
+        # match inline citations, even if later steps (baseline) fail.
+        verified_citations = _build_verified_citations(
+            generation_result.get("citations", []),
+            evidence_dicts
+        )
+        yield sse_event("citation_details", {"citations": verified_citations})
+        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations sent")
+
         # === Step 8: Baseline Generation ===
         step_start = time.time()
         yield sse_event("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
         await asyncio.sleep(0)
 
-        logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
-        baseline_result = await services["generation"].generate_baseline(
-            query=request.query,
-            evidence_list=evidence_dicts
-        )
-        baseline_text = baseline_result.get("text", "")
+        baseline_text = ""
+        ab_assignment = None
+        try:
+            logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon)...")
+            baseline_result = await services["generation"].generate_baseline(
+                query=request.query,
+                evidence_list=evidence_dicts
+            )
+            baseline_text = baseline_result.get("text", "")
 
-        # Random A/B assignment for blind evaluation
-        ab_assignment = random.choice([
-            {"A": "system", "B": "baseline"},
-            {"A": "baseline", "B": "system"}
-        ])
+            # Random A/B assignment for blind evaluation
+            ab_assignment = random.choice([
+                {"A": "system", "B": "baseline"},
+                {"A": "baseline", "B": "system"}
+            ])
+        except Exception as e:
+            logger.warning(f"[BASELINE] Baseline generation failed (non-critical): {e}")
 
         step_times["step_8_baseline"] = time.time() - step_start
         logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
@@ -296,14 +311,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
             })
             step_times["step_9_valutazione"] = time.time() - step_start
             logger.info(f"[TIMING] Step 9 (Valutazione): {step_times['step_9_valutazione']*1000:.1f}ms")
-
-        # === Citation details (verified citations) ===
-        verified_citations = _build_verified_citations(
-            generation_result.get("citations", []),
-            evidence_dicts
-        )
-        yield sse_event("citation_details", {"citations": verified_citations})
-        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations inserted")
 
         # === Complete ===
         total_time = time.time() - pipeline_start
