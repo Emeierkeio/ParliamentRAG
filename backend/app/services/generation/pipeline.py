@@ -240,27 +240,24 @@ class GenerationPipeline:
         # === Final Verification ===
         final_text = final_result.get("text", "")
 
-        # Check for markdown links with evidence-ID-like hrefs not in evidence_map.
-        # The Integrator LLM sometimes outputs direct markdown links [text](id)
-        # instead of [CIT:id] placeholders, with hallucinated/corrupted IDs that
-        # bypass the Surgeon's pattern matching.
-        def _strip_invalid_citation_links(text: str, valid_ids: set) -> str:
-            def _replace_if_invalid(match):
-                display_text = match.group(1)
-                href = match.group(2)
-                if href in valid_ids:
-                    return match.group(0)  # Keep valid links
-                logger.warning(f"Removing markdown link with invalid evidence ID: {href}")
-                # Keep the display text (without link) so the quote is still visible
-                return display_text
-            return re.sub(
-                r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
-                _replace_if_invalid,
-                text
-            )
-
+        # Collect citation IDs found in text but NOT in evidence_map.
+        # These may be valid DB chunks the LLM cited from broader context
+        # (e.g. sectional writer saw them but they weren't in the top-20 sidebar).
+        # We pass them to the caller (chat.py) so it can verify them against
+        # the DB and add them to the sidebar — instead of stripping them here.
         valid_evidence_ids = set(evidence_map.keys())
-        final_text = _strip_invalid_citation_links(final_text, valid_evidence_ids)
+        all_text_ids = set(
+            m[1] for m in re.findall(
+                r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)', final_text
+            )
+        )
+        extra_citation_ids = list(all_text_ids - valid_evidence_ids)
+        if extra_citation_ids:
+            logger.info(
+                f"Found {len(extra_citation_ids)} citation IDs in text not in "
+                f"evidence_map — passing to caller for DB verification: "
+                f"{extra_citation_ids[:5]}"
+            )
 
         # === Post-Surgeon: Recover untracked citations ===
         # The Integrator LLM sometimes outputs direct markdown links
@@ -324,7 +321,7 @@ class GenerationPipeline:
                 )
                 registry.mark_resolved(cit_id, success=False, error="unresolved_placeholder")
 
-        # Always save the cleaned text (stripped invalid links + resolved placeholders)
+        # Save text with resolved placeholders (link stripping deferred to chat.py)
         final_result["text"] = final_text
 
         # Extract unsupported claims (use existing method in surgeon)
@@ -347,6 +344,7 @@ class GenerationPipeline:
             "text": final_result.get("text", ""),
             "citations": final_result.get("citations", []),
             "failed_citations": final_result.get("failed_citations", []),
+            "extra_citation_ids": extra_citation_ids,
             "claims": claims,
             "sections": [
                 {"party": s["party"], "has_evidence": s.get("has_evidence", False)}

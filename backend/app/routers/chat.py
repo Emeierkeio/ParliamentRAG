@@ -252,8 +252,119 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         generation_time = time.time() - generation_start
         logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
 
-        # Stream text content in chunks
         final_text = generation_result.get("text", "")
+
+        # === Resolve extra citation IDs via DB lookup ===
+        # The pipeline found citation links in the text whose IDs are not in
+        # the initial evidence_list (e.g. the LLM cited chunks from broader
+        # context).  Query Neo4j to verify they exist and fetch metadata.
+        import re as _re
+        extra_citation_ids = generation_result.get("extra_citation_ids", [])
+        extra_evidence_map: Dict[str, Dict[str, Any]] = {}
+
+        if extra_citation_ids:
+            logger.info(f"[CITATIONS] Resolving {len(extra_citation_ids)} extra citation IDs from DB...")
+            try:
+                db_rows = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: services["neo4j"].query(
+                        """
+                        UNWIND $chunk_ids AS cid
+                        MATCH (c:Chunk {id: cid})<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+                        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                          WHERE mg.start_date <= s.date
+                            AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+                        RETURN c.id AS chunk_id,
+                               c.text AS chunk_text,
+                               c.start_char_raw AS span_start,
+                               c.end_char_raw AS span_end,
+                               i.id AS speech_id,
+                               i.text AS text,
+                               speaker.id AS speaker_id,
+                               speaker.first_name AS speaker_first_name,
+                               speaker.last_name AS speaker_last_name,
+                               CASE WHEN 'GovernmentMember' IN labels(speaker)
+                                    THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+                               g.name AS party,
+                               s.id AS session_id,
+                               s.date AS session_date,
+                               d.title AS debate_title
+                        """,
+                        {"chunk_ids": extra_citation_ids}
+                    )
+                )
+                from ..models.evidence import normalize_speaker_name, normalize_party_name
+                config = get_config()
+                for row in db_rows:
+                    eid = row.get("chunk_id", "")
+                    party = normalize_party_name(row.get("party") or "MISTO")
+                    session_date = row.get("session_date")
+                    if session_date is not None and hasattr(session_date, 'to_native'):
+                        date_obj = session_date.to_native()
+                    elif isinstance(session_date, str) and session_date:
+                        from datetime import datetime as _dt
+                        try:
+                            date_obj = _dt.strptime(session_date, "%d/%m/%Y").date()
+                        except ValueError:
+                            date_obj = _dt.now().date()
+                    else:
+                        date_obj = date.today()
+
+                    extra_evidence_map[eid] = {
+                        "evidence_id": eid,
+                        "chunk_text": row.get("chunk_text", ""),
+                        "quote_text": row.get("chunk_text", ""),
+                        "speech_id": row.get("speech_id", ""),
+                        "speaker_id": row.get("speaker_id", ""),
+                        "speaker_name": normalize_speaker_name(
+                            row.get("speaker_first_name", ""),
+                            row.get("speaker_last_name", "")
+                        ),
+                        "speaker_role": row.get("speaker_type", "Deputy"),
+                        "party": party,
+                        "coalition": config.get_coalition(party),
+                        "date": date_obj,
+                        "span_start": row.get("span_start", 0),
+                        "span_end": row.get("span_end", 0),
+                        "debate_title": row.get("debate_title", ""),
+                        "session_id": row.get("session_id", ""),
+                    }
+                found_ids = set(extra_evidence_map.keys())
+                missing_ids = set(extra_citation_ids) - found_ids
+                logger.info(
+                    f"[CITATIONS] DB lookup: {len(found_ids)} found, "
+                    f"{len(missing_ids)} not in DB"
+                )
+
+                # Strip links for IDs that truly don't exist in DB
+                if missing_ids:
+                    def _strip_missing(match):
+                        href = match.group(2)
+                        if href in missing_ids:
+                            logger.warning(f"[CITATIONS] Stripping non-existent ID: {href}")
+                            return match.group(1)  # keep display text only
+                        return match.group(0)
+                    final_text = _re.sub(
+                        r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                        _strip_missing,
+                        final_text
+                    )
+            except Exception as e:
+                logger.error(f"[CITATIONS] DB lookup failed: {e}", exc_info=True)
+                # On failure, strip all extra IDs to avoid broken links
+                extra_ids_set = set(extra_citation_ids)
+                def _strip_extra(match):
+                    if match.group(2) in extra_ids_set:
+                        return match.group(1)
+                    return match.group(0)
+                final_text = _re.sub(
+                    r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                    _strip_extra,
+                    final_text
+                )
+
+        # Stream text content in chunks
         chunk_size = 50  # Characters per chunk
         logger.info(f"[GENERATION] Generated {len(final_text)} chars, streaming in {len(final_text)//chunk_size + 1} chunks")
 
@@ -266,35 +377,36 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
 
         # === Citation details (verified citations) ===
-        # Extract ALL evidence IDs referenced in the generated text so the
-        # sidebar always matches inline citation links.  The pipeline's
-        # surgeon/recovery may miss some IDs that the LLM inserted as
-        # direct markdown links, causing a sidebar mismatch.
-        import re as _re
+        # Build the complete citation list including DB-resolved extra IDs.
         text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
         evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
+        # Merge extra evidence from DB lookup
+        evidence_map_for_cit.update(extra_evidence_map)
 
-        # Start from surgeon-tracked citations
         gen_citations = generation_result.get("citations", [])
         tracked_ids = {c.get("evidence_id") for c in gen_citations}
 
-        # Add any evidence IDs found in text but not tracked by surgeon
+        # Add any evidence IDs found in text but not yet tracked
         for eid in text_evidence_ids:
             if eid not in tracked_ids and eid in evidence_map_for_cit:
                 ev = evidence_map_for_cit[eid]
                 gen_citations.append({
                     "evidence_id": eid,
-                    "quote_text": "",
+                    "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
                     "speaker_name": ev.get("speaker_name", ""),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
+                    "span_start": ev.get("span_start", 0),
+                    "span_end": ev.get("span_end", 0),
                 })
                 tracked_ids.add(eid)
                 logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
 
         logger.info(f"[CITATIONS] {len(gen_citations)} total citations ({len(text_evidence_ids)} in text, {len(tracked_ids)} tracked)")
 
-        verified_citations = _build_verified_citations(gen_citations, evidence_dicts)
+        # Combine original + extra evidence for building verified citations
+        all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
+        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify)
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
         yield sse_event("citation_details", {"citations": verified_citations})
         await asyncio.sleep(0)  # Flush
