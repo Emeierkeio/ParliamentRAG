@@ -76,13 +76,20 @@ REGOLE CITAZIONI:
 ⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
 
 VARIAZIONE OBBLIGATORIA DEI BRIDGE VERBALI:
-NON usare lo stesso verbo introduttivo più di una volta nell'intero documento.
-Repertorio (scegli in base al TONO della citazione):
-- Tono propositivo: propone, invoca, auspica, suggerisce
-- Tono critico: denuncia, contesta, lamenta, critica il fatto che
-- Tono neutro: rileva, osserva, evidenzia, fa notare
-- Tono affermativo: afferma, sostiene, dichiara, ribadisce
-- Tono interrogativo: solleva interrogativi su, chiede conto di
+⚠️ OGNI citazione DEVE usare un verbo introduttivo DIVERSO da tutte le altre. ZERO ripetizioni.
+Prima di scrivere un bridge, verifica che NON sia già stato usato nel documento.
+
+Repertorio COMPLETO (scegli in base al TONO, ogni verbo usabile UNA SOLA VOLTA):
+- Propositivo: propone, invoca, auspica, suggerisce, caldeggia
+- Critico: denuncia, contesta, lamenta, critica il fatto che, mette in discussione
+- Neutro: rileva, osserva, evidenzia, fa notare, puntualizza, precisa
+- Affermativo: afferma, sostiene, dichiara, ribadisce, conferma, assicura
+- Interrogativo: solleva interrogativi su, chiede conto di, domanda se
+
+❌ SBAGLIATO (verbo ripetuto):
+**Rossi** sottolineando che [CIT:1]... **Bianchi** sottolineando che [CIT:2] ← "sottolineando" usato 2 volte!
+✅ CORRETTO (verbi tutti diversi):
+**Rossi** sottolineando che [CIT:1]... **Bianchi** contestando che [CIT:2] ← verbi diversi
 
 REGOLE GENERALI:
 1. Posizioni DISTINTE, un paragrafo per partito/ministro
