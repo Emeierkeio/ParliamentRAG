@@ -95,16 +95,22 @@ class CoalitionLogic:
         coalitions = self.config.load_config().get("coalitions", {})
 
         # Government members are always in maggioranza
-        if group_name in ("GOVERNO", "Governo"):
+        if group_name.upper() in ("GOVERNO",):
             self._coalition_cache[group_name] = "maggioranza"
             return "maggioranza"
 
-        if group_name in coalitions.get("maggioranza", []):
-            self._coalition_cache[group_name] = "maggioranza"
-            return "maggioranza"
-        elif group_name in coalitions.get("opposizione", []):
-            self._coalition_cache[group_name] = "opposizione"
-            return "opposizione"
+        # Case-insensitive comparison against config values
+        group_upper = group_name.upper()
+
+        for g in coalitions.get("maggioranza", []):
+            if g.upper() == group_upper:
+                self._coalition_cache[group_name] = "maggioranza"
+                return "maggioranza"
+
+        for g in coalitions.get("opposizione", []):
+            if g.upper() == group_upper:
+                self._coalition_cache[group_name] = "opposizione"
+                return "opposizione"
         else:
             # Default unknown groups to opposition
             logger.warning(f"Unknown group '{group_name}', defaulting to opposizione")
