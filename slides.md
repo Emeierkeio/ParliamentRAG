@@ -463,7 +463,8 @@ affermando che [CIT:chunk_42]</pre>
   <div class="column card">
     <div class="badge">3. Integrator</div>
     <p style="font-size: 0.6em; color: #3b82f6;"><strong>IN</strong>: 10 sezioni separate</p>
-    <p style="font-size: 0.6em; color: #22c55e;"><strong>OUT</strong>: <code>## Intro (dati reali) ... ## Governo... ## Maggioranza... ## Opposizione...</code></p>
+    <p style="font-size: 0.6em; color: #22c55e;"><strong>OUT</strong>: <code>## Intro (provvedimento + N interventi + date) ... ## Governo... ## Maggioranza... ## Opposizione...</code></p>
+    <p style="font-size: 0.55em; color: #a78bfa;">Bridge verbs: zero ripetizioni (~25 verbi per tono)</p>
   </div>
   <div class="column card" style="border: 2px solid #22c55e;">
     <div class="badge" style="background: #dcfce7;">4. Surgeon</div>
@@ -543,7 +544,7 @@ $quote = testo\_raw[span\_start:span\_end]$ → **No fuzzy matching**
 </table>
 
 <div class="highlight-box" style="font-size: 0.65em; margin-top: 10px; padding: 8px 12px;">
-  <strong>Sentence Extractor</strong>: Seleziona la frase più rilevante dal chunk (max 200 char) con score = <code>0.45×overlap + 0.25×completeness + 0.2×density + 0.1×position</code> dove <em>completeness</em> verifica la presenza di forme verbali (frase sintattica completa)
+  <strong>Sentence Extractor</strong>: Seleziona la frase più rilevante dal chunk (max 200 char) con score = <code>0.45×overlap + 0.25×completeness + 0.2×density + 0.1×position</code> dove <em>completeness</em> ∈ {0, 0.2, 0.5, 0.7, 1.0} — penalizza clausole subordinate orfane (0.2) e terminazioni sospese (0.7). Soglia minima di qualità: frammenti sotto <code>MIN_QUALITY_SCORE</code> scartati in favore di alternative complete
 </div>
 
 ---
