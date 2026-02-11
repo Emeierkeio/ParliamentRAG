@@ -240,6 +240,14 @@ class GenerationPipeline:
         # === Final Verification ===
         final_text = final_result.get("text", "")
 
+        # Check for bare «» citations not wrapped in markdown links
+        bare_citations = re.findall(r'(?<!\[)«[^»]+»(?!\])', final_text)
+        if bare_citations:
+            logger.warning(
+                f"Found {len(bare_citations)} bare citations without markdown links: "
+                f"{[c[:50] for c in bare_citations[:3]]}"
+            )
+
         # Check for unresolved [CIT:id] placeholders
         remaining_placeholders = re.findall(r'\[CIT:([^\]]+)\]', final_text)
         if remaining_placeholders:

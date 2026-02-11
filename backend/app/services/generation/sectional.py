@@ -416,7 +416,7 @@ FORMATO OUTPUT:
 [ID: {eid}]
 Speaker: {speaker}
 Date: {date}
-★ CITAZIONE DA USARE: «{extracted_citation}»
+★ CITAZIONE DA USARE (NON COPIARE NEL TESTO): [{extracted_citation}]
 Contesto: {context}
 ---""")
 
