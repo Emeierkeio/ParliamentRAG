@@ -355,17 +355,17 @@ async def get_evaluated_chat_ids():
 
 @router.get("/chats/pending")
 async def get_pending_chats():
-    """Get chats that haven't been evaluated yet, including those awaiting baseline."""
+    """Get chats that haven't been evaluated yet (only those with baseline)"""
 
     surveys = _load_surveys()
     evaluated_ids = {s.get("chat_id") for s in surveys}
 
-    # Fetch all chats from Neo4j (baseline may still be generating in background)
+    # Fetch all chats from Neo4j - only those with baseline_answer
     client = get_neo4j_client()
     history = client.query("""
         MATCH (c:ChatHistory)
-        RETURN c.id AS id, c.query AS query, c.preview AS preview,
-               c.timestamp AS timestamp, c.baseline_answer AS baseline_answer
+        WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
+        RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
         ORDER BY c.timestamp DESC
     """)
 
@@ -375,7 +375,6 @@ async def get_pending_chats():
             "query": c["query"],
             "preview": c.get("preview", ""),
             "timestamp": c.get("timestamp", ""),
-            "baseline_ready": bool(c.get("baseline_answer")),
         }
         for c in history
         if c["id"] not in evaluated_ids

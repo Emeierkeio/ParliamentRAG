@@ -152,44 +152,6 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     }
   }, []);
 
-  // Poll for baseline when chatDetails is loaded but baseline is missing
-  const [baselinePolling, setBaselinePolling] = useState(false);
-
-  useEffect(() => {
-    if (!chatDetails || chatDetails.baseline_answer) {
-      setBaselinePolling(false);
-      return;
-    }
-
-    // Baseline not ready yet — poll every 5s
-    setBaselinePolling(true);
-    let attempts = 0;
-    const maxAttempts = 24; // 2 minutes max
-
-    const interval = setInterval(async () => {
-      attempts++;
-      if (attempts > maxAttempts) {
-        clearInterval(interval);
-        setBaselinePolling(false);
-        return;
-      }
-      try {
-        const res = await fetch(`${config.api.baseUrl}/history/${chatDetails.id}`);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.baseline_answer) {
-          setChatDetails(data);
-          setBaselinePolling(false);
-          clearInterval(interval);
-        }
-      } catch {
-        // ignore polling errors
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [chatDetails?.id, chatDetails?.baseline_answer]);
-
   useEffect(() => {
     if (isOpen) {
       loadData();
@@ -454,7 +416,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900/50 border-b">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Seleziona una conversazione da valutare
+                  Seleziona una conversazione da valutare (solo chat con baseline)
                 </p>
                 <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading}>
                   <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
@@ -485,7 +447,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                     <>
                       <AlertCircle className="w-12 h-12 mb-3 text-gray-400" />
                       <p className="text-lg font-medium">Nessuna conversazione disponibile</p>
-                      <p className="text-sm mt-1 text-center max-w-xs">Non ci sono ancora conversazioni per il confronto A/B. Usa la chat per generarne.</p>
+                      <p className="text-sm mt-1 text-center max-w-xs">Non ci sono ancora conversazioni con baseline per il confronto A/B. Usa la chat per generarne.</p>
                     </>
                   )}
                 </div>
@@ -513,12 +475,6 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                             )}
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            {chat.baseline_ready === false && (
-                              <Badge variant="secondary" className="text-xs whitespace-nowrap bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300">
-                                <Loader2 className="w-3 h-3 animate-spin mr-1" />
-                                Baseline in corso
-                              </Badge>
-                            )}
                             <Badge variant="outline" className="text-xs whitespace-nowrap">
                               {formatDate(chat.timestamp)}
                             </Badge>
@@ -566,12 +522,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                     </span>
                   </div>
                   <ScrollArea className="flex-1 px-3 py-3">
-                    {isLoadingDetails || (baselinePolling && !getResponseA()) ? (
-                      <div className="flex flex-col items-center justify-center h-40 gap-3">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                        {baselinePolling && (
-                          <p className="text-sm text-gray-500">Generazione baseline in corso...</p>
-                        )}
                       </div>
                     ) : (
                       <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
@@ -589,12 +542,9 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                     </span>
                   </div>
                   <ScrollArea className="flex-1 px-3 py-3">
-                    {isLoadingDetails || (baselinePolling && !getResponseB()) ? (
-                      <div className="flex flex-col items-center justify-center h-40 gap-3">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
-                        {baselinePolling && (
-                          <p className="text-sm text-gray-500">Generazione baseline in corso...</p>
-                        )}
                       </div>
                     ) : (
                       <div className="prose prose-sm dark:prose-invert max-w-none text-sm">

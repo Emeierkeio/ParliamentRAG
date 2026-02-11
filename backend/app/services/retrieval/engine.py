@@ -263,7 +263,7 @@ class RetrievalEngine:
                 MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
                 MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-                WHERE toLower(g.name) = toLower($party_name)
+                WHERE g.name = $party_name
                 AND mg.start_date <= s.date
                 AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                 AND (mg.end_date IS NULL OR mg.end_date >= date())

@@ -499,11 +499,7 @@ class RoleComponent(AuthorityComponent):
                     return self.cap_score(weight)
 
         # Get institutional roles from graph
-        # Filter out phantom entries from OPTIONAL MATCH (committee_name is null)
-        institutional_roles = [
-            r for r in speaker_data.get("institutional_roles", [])
-            if r.get("committee_name")
-        ]
+        institutional_roles = speaker_data.get("institutional_roles", [])
 
         if not institutional_roles:
             return 0.3  # Base score for regular deputies without roles

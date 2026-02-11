@@ -22,56 +22,6 @@ class SentenceExtractor:
     without requiring API calls.
     """
 
-    # Procedural/filler patterns that lack political substance
-    FILLER_PATTERNS = [
-        r"^c[''\s]è\s+(anche\s+)?il\s+tema\b",
-        r"^(il|la)\s+prossim[oa]\s+\d+",
-        r"\bentrerà\s+in\s+vigore\b",
-        r"^(signor|signora)\s+(presidente|ministro)",
-        r"^(ministro|presidente),?\s",
-        r"^(vorrei|volevo)\s+(chiedere|sapere|domandare)\b",
-        r"^(ringrazio|grazie)\s",
-        r"^(passo|cedo)\s+la\s+parola\b",
-        r"^(come\s+)?dicevo\b",
-        r"^(per\s+quanto\s+riguarda|in\s+merito\s+a|relativamente\s+a)\b",
-        r"^(abbiamo|ho)\s+presentato\s+(un|una|l')\s*(interrogazione|interpellanza|mozione)\b",
-    ]
-
-    # Indicators of political substance (opinion, position, argument)
-    SUBSTANCE_INDICATORS = {
-        "critica", "criticato", "denuncia", "denunciato",
-        "propone", "proposto", "proposta", "proponiamo",
-        "sostiene", "sostenuto", "difende", "difeso",
-        "contesta", "contestato", "contrario", "contraria",
-        "favorevole", "favorevoli",
-        "chiede", "chiediamo", "richiede", "richiesta",
-        "condanna", "condannato", "respinge", "respinto",
-        "ritiene", "riteniamo", "considera", "consideriamo",
-        "inaccettabile", "insufficiente", "inadeguato", "inadeguata",
-        "necessario", "necessaria", "urgente", "urgenti",
-        "sbagliato", "sbagliata", "pericoloso", "pericolosa",
-        "fondamentale", "essenziale", "prioritario", "prioritaria",
-        "rischio", "rischi", "problema", "problematico",
-        "opportunità", "beneficio", "benefici", "vantaggio",
-        "fallimento", "fallimentare", "disastro", "disastroso",
-        "riforma", "riformare", "abolire", "abolizione",
-        "tutelare", "tutela", "garantire", "garanzia",
-        "investire", "investimento", "investimenti",
-        "taglio", "tagli", "tagliare", "ridurre", "riduzione",
-        "aumentare", "aumento", "potenziare", "potenziamento",
-        "vogliamo", "dobbiamo", "bisogna", "occorre",
-        "ingiusto", "ingiusta", "ingiustizia",
-        "diritto", "diritti", "libertà",
-        "disuguaglianza", "disuguaglianze", "discriminazione",
-        "favorisce", "favorire", "penalizza", "penalizzare",
-        "danneggia", "danneggiare", "colpisce", "colpire",
-        "aumentando", "riducendo", "eliminando", "rafforzando",
-        "indebolendo", "compromettendo", "minacciando",
-        "insostenibile", "irresponsabile", "vergognoso", "vergognosa",
-        "positivo", "positiva", "negativo", "negativa",
-        "efficace", "inefficace", "equo", "equa", "iniquo", "iniqua",
-    }
-
     # Italian stop words to ignore
     STOP_WORDS = {
         "il", "lo", "la", "i", "gli", "le", "un", "uno", "una",
@@ -291,7 +241,7 @@ class SentenceExtractor:
         query: str
     ) -> List[Tuple[str, float, int]]:
         """
-        Score sentences by relevance to query and political substance.
+        Score sentences by relevance to query.
 
         Returns list of (sentence, score, original_index) tuples.
         """
@@ -320,43 +270,10 @@ class SentenceExtractor:
             # Density bonus - how many query words per sentence length
             density = len(overlap) / len(sentence_tokens) if sentence_tokens else 0
 
-            # Substance score - penalize filler, reward political content
-            substance = self._score_substance(sentence, sentence_set)
-
-            total_score = (
-                overlap_score * 0.45
-                + density * 0.2
-                + position_bonus * 0.1
-                + substance * 0.25
-            )
+            total_score = overlap_score * 0.6 + density * 0.3 + position_bonus * 0.1
             scored.append((sentence, total_score, i))
 
         return scored
-
-    def _score_substance(self, sentence: str, sentence_tokens: set) -> float:
-        """
-        Score the political substance of a sentence.
-
-        Returns a value between 0.0 (procedural/filler) and 1.0 (substantive).
-        """
-        # Check for filler patterns → heavy penalty
-        sentence_lower = sentence.lower().strip()
-        for pattern in self.FILLER_PATTERNS:
-            if re.search(pattern, sentence_lower):
-                return 0.0
-
-        # Count substance indicators present
-        substance_hits = sentence_tokens & self.SUBSTANCE_INDICATORS
-        if substance_hits:
-            # More indicators = more substantive, cap at 1.0
-            return min(1.0, 0.5 + 0.25 * len(substance_hits))
-
-        # No substance indicators and short sentence → likely filler
-        if len(sentence) < 60:
-            return 0.15
-
-        # Medium-length sentence without explicit indicators → neutral
-        return 0.35
 
     def _select_best(
         self,
