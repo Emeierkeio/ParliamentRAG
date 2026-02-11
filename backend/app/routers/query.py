@@ -6,6 +6,7 @@ Supports both synchronous and SSE streaming responses.
 import json
 import logging
 import asyncio
+import random
 from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
@@ -339,8 +340,42 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
 
-        # Step 8: Complete
-        yield f"data: {json.dumps({'type': 'complete', 'metadata': retrieval_result['metadata']})}\n\n"
+        # Step 8: Baseline Generation
+        logger.info("[QUERY:BASELINE] Starting baseline generation...")
+        baseline_text = ""
+        baseline_error = None
+        ab_assignment = None
+
+        # Delay to let OpenAI rate limits recover after generation calls
+        await asyncio.sleep(3)
+
+        try:
+            baseline_result = await services["generation"].generate_baseline(
+                query=request.query,
+                evidence_list=evidence_dicts
+            )
+            logger.info(f"[QUERY:BASELINE] generate_baseline() returned: keys={list(baseline_result.keys())}")
+            baseline_text = baseline_result.get("text", "")
+            logger.info(f"[QUERY:BASELINE] Text: len={len(baseline_text)}, empty={not baseline_text}")
+
+            if baseline_text:
+                ab_assignment = random.choice([
+                    {"A": "system", "B": "baseline"},
+                    {"A": "baseline", "B": "system"}
+                ])
+                logger.info(f"[QUERY:BASELINE] Success: {len(baseline_text)} chars, ab={ab_assignment}")
+            else:
+                baseline_error = "Baseline returned empty text"
+                logger.warning(f"[QUERY:BASELINE] {baseline_error}")
+        except Exception as e:
+            baseline_error = f"{type(e).__name__}: {e}"
+            logger.error(f"[QUERY:BASELINE] Failed: {baseline_error}", exc_info=True)
+
+        # Send baseline as dedicated SSE event
+        yield f"data: {json.dumps({'type': 'baseline', 'baseline_answer': baseline_text, 'ab_assignment': ab_assignment, 'baseline_error': baseline_error}, default=str)}\n\n"
+
+        # Step 9: Complete
+        yield f"data: {json.dumps({'type': 'complete', 'baseline_answer': baseline_text, 'ab_assignment': ab_assignment, 'baseline_error': baseline_error, 'metadata': retrieval_result['metadata']}, default=str)}\n\n"
 
     except Exception as e:
         logger.error(f"Query processing error: {e}")
