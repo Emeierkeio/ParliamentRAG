@@ -240,6 +240,28 @@ class GenerationPipeline:
         # === Final Verification ===
         final_text = final_result.get("text", "")
 
+        # Check for markdown links with evidence-ID-like hrefs not in evidence_map.
+        # The Integrator LLM sometimes outputs direct markdown links [text](id)
+        # instead of [CIT:id] placeholders, with hallucinated/corrupted IDs that
+        # bypass the Surgeon's pattern matching.
+        def _strip_invalid_citation_links(text: str, valid_ids: set) -> str:
+            def _replace_if_invalid(match):
+                display_text = match.group(1)
+                href = match.group(2)
+                if href in valid_ids:
+                    return match.group(0)  # Keep valid links
+                logger.warning(f"Removing markdown link with invalid evidence ID: {href}")
+                # Keep the display text (without link) so the quote is still visible
+                return display_text
+            return re.sub(
+                r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                _replace_if_invalid,
+                text
+            )
+
+        valid_evidence_ids = set(evidence_map.keys())
+        final_text = _strip_invalid_citation_links(final_text, valid_evidence_ids)
+
         # Check for bare «» citations not wrapped in markdown links
         bare_citations = re.findall(r'(?<!\[)«[^»]+»(?!\])', final_text)
         if bare_citations:
@@ -323,15 +345,25 @@ class GenerationPipeline:
         OpenAI rate limit bursts after the main pipeline.
         """
         start_time = datetime.now()
+        logger.info(f"[BASELINE-PIPELINE] === Starting generate_baseline ===")
+        logger.info(f"[BASELINE-PIPELINE] Query: '{query[:100]}...'")
+        logger.info(f"[BASELINE-PIPELINE] Evidence count: {len(evidence_list)}")
 
         # 1. Neutralize authority scores
         baseline_evidence = [
             {**e, "authority_score": 0.5} for e in evidence_list
         ]
+        logger.info(f"[BASELINE-PIPELINE] Step 1: Neutralized {len(baseline_evidence)} evidence items to authority_score=0.5")
 
         # 2. Stage 1: Analyst (async to avoid blocking the event loop)
-        claims_result = await self.analyst.analyze_async(query, baseline_evidence)
-        claims = claims_result.get("claims", [])
+        logger.info("[BASELINE-PIPELINE] Step 2: Running analyst.analyze_async...")
+        try:
+            claims_result = await self.analyst.analyze_async(query, baseline_evidence)
+            claims = claims_result.get("claims", [])
+            logger.info(f"[BASELINE-PIPELINE] Step 2 done: {len(claims)} claims extracted")
+        except Exception as e:
+            logger.error(f"[BASELINE-PIPELINE] Step 2 FAILED: {type(e).__name__}: {e}", exc_info=True)
+            raise
 
         # 3. Stage 2: Sectional Writer — SEQUENTIAL to avoid RPM burst
         # The main pipeline already consumed ~13 API calls; running 11
@@ -341,39 +373,61 @@ class GenerationPipeline:
 
         sections = []
         all_parties = list(evidence_by_party.keys())
+        logger.info(f"[BASELINE-PIPELINE] Step 3: Writing sections for {len(all_parties)} parties, gov_evidence={'yes' if government_evidence else 'no'}")
 
         # Government section first (if evidence exists)
         if government_evidence:
-            section = await self.sectional_writer._write_section(
-                query=query,
-                party="GOVERNO",
-                evidence=government_evidence,
-                claims=claims,
-                is_government=True
-            )
-            sections.append(section)
+            logger.info(f"[BASELINE-PIPELINE] Step 3: Writing GOVERNO section ({len(government_evidence)} evidence)...")
+            try:
+                section = await self.sectional_writer._write_section(
+                    query=query,
+                    party="GOVERNO",
+                    evidence=government_evidence,
+                    claims=claims,
+                    is_government=True
+                )
+                sections.append(section)
+                logger.info(f"[BASELINE-PIPELINE] Step 3: GOVERNO section done: {len(section.get('text', ''))} chars")
+            except Exception as e:
+                logger.error(f"[BASELINE-PIPELINE] Step 3: GOVERNO section FAILED: {type(e).__name__}: {e}", exc_info=True)
+                raise
 
         # Party sections sequentially
-        for party in all_parties:
+        for i, party in enumerate(all_parties):
             evidence = evidence_by_party.get(party, [])
-            section = await self.sectional_writer._write_section(
-                query=query,
-                party=party,
-                evidence=evidence,
-                claims=claims,
-                is_government=False
-            )
-            sections.append(section)
+            logger.info(f"[BASELINE-PIPELINE] Step 3: Writing party {i+1}/{len(all_parties)}: '{party}' ({len(evidence)} evidence)...")
+            try:
+                section = await self.sectional_writer._write_section(
+                    query=query,
+                    party=party,
+                    evidence=evidence,
+                    claims=claims,
+                    is_government=False
+                )
+                sections.append(section)
+                logger.info(f"[BASELINE-PIPELINE] Step 3: '{party}' section done: {len(section.get('text', ''))} chars")
+            except Exception as e:
+                logger.error(f"[BASELINE-PIPELINE] Step 3: '{party}' section FAILED: {type(e).__name__}: {e}", exc_info=True)
+                raise
+
+        logger.info(f"[BASELINE-PIPELINE] Step 3 complete: {len(sections)} total sections")
 
         # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
         # Pass topic_statistics for a fair A/B comparison
+        logger.info("[BASELINE-PIPELINE] Step 4: Running integrator.integrate...")
         topic_statistics = self._compute_topic_statistics(baseline_evidence)
-        integrated = self.integrator.integrate(
-            query, sections, topic_statistics=topic_statistics
-        )
+        try:
+            integrated = self.integrator.integrate(
+                query, sections, topic_statistics=topic_statistics
+            )
+            logger.info(f"[BASELINE-PIPELINE] Step 4 done: integrated keys={list(integrated.keys())}, text_len={len(integrated.get('text', ''))}")
+        except Exception as e:
+            logger.error(f"[BASELINE-PIPELINE] Step 4 FAILED: {type(e).__name__}: {e}", exc_info=True)
+            raise
 
         # 5. Remove unresolved [CIT:id] placeholders and clean up artifacts
         text = integrated.get("text", "")
+        logger.info(f"[BASELINE-PIPELINE] Step 5: Cleaning text (pre-clean len={len(text)})")
         # Remove placeholders, including any space before punctuation
         text = re.sub(r'\s*\[CIT:[^\]]+\]', '', text)
         # Clean up double spaces
@@ -382,6 +436,7 @@ class GenerationPipeline:
         text = re.sub(r'\s+([.,:;!?)])', r'\1', text)
         # Clean up empty lines
         text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
+        logger.info(f"[BASELINE-PIPELINE] Step 5: Cleaned text (post-clean len={len(text)})")
 
         duration_ms = (datetime.now() - start_time).total_seconds() * 1000
 

@@ -126,11 +126,14 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         getPendingChats(),
         getEvaluatedChatIds(),
       ]);
+      console.log("[SurveyModal][BASELINE-DEBUG] Pending chats response:", JSON.stringify(pendingRes));
+      console.log("[SurveyModal][BASELINE-DEBUG] Evaluated chat IDs:", evaluatedRes.chat_ids);
+      console.log("[SurveyModal][BASELINE-DEBUG] Pending count:", pendingRes.pending.length, "Total:", pendingRes.total);
       setPendingChats(pendingRes.pending);
       setEvaluatedIds(new Set(evaluatedRes.chat_ids));
     } catch (err) {
       setError("Errore nel caricamento delle conversazioni");
-      console.error(err);
+      console.error("[SurveyModal][BASELINE-DEBUG] Error loading data:", err);
     } finally {
       setIsLoading(false);
     }

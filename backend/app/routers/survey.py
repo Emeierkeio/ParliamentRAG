@@ -358,17 +358,42 @@ async def get_evaluated_chat_ids():
 async def get_pending_chats():
     """Get chats that haven't been evaluated yet (only those with baseline)"""
 
+    logger.info("[PENDING-CHATS] === Fetching pending chats for A/B evaluation ===")
+
     surveys = _load_surveys()
     evaluated_ids = {s.get("chat_id") for s in surveys}
+    logger.info(f"[PENDING-CHATS] Evaluated chat IDs: {evaluated_ids}")
+
+    # First, debug: fetch ALL chats to see baseline status
+    client = get_neo4j_client()
+    all_chats_debug = client.query("""
+        MATCH (c:ChatHistory)
+        RETURN c.id AS id, c.query AS query,
+               c.baseline_answer AS baseline_answer,
+               c.ab_assignment AS ab_assignment
+        ORDER BY c.timestamp DESC
+    """)
+    logger.info(f"[PENDING-CHATS] Total ChatHistory nodes in Neo4j: {len(all_chats_debug)}")
+    for chat in all_chats_debug:
+        ba = chat.get("baseline_answer", None)
+        ba_len = len(ba) if ba else 0
+        ba_type = type(ba).__name__
+        ba_is_null = ba is None
+        ba_is_empty = ba == ""
+        logger.info(
+            f"[PENDING-CHATS]   id={chat['id']}, query='{chat.get('query', '')[:50]}...', "
+            f"baseline_answer: type={ba_type}, is_null={ba_is_null}, is_empty={ba_is_empty}, len={ba_len}, "
+            f"ab_assignment='{chat.get('ab_assignment', '')}'"
+        )
 
     # Fetch all chats from Neo4j - only those with baseline_answer
-    client = get_neo4j_client()
     history = client.query("""
         MATCH (c:ChatHistory)
         WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
         RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
         ORDER BY c.timestamp DESC
     """)
+    logger.info(f"[PENDING-CHATS] Chats WITH valid baseline_answer: {len(history)}")
 
     pending = [
         {
@@ -381,4 +406,5 @@ async def get_pending_chats():
         if c["id"] not in evaluated_ids
     ]
 
+    logger.info(f"[PENDING-CHATS] Pending (not yet evaluated): {len(pending)}")
     return {"pending": pending, "total": len(pending)}

@@ -291,11 +291,15 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         ab_assignment = None
         try:
             logger.info("[BASELINE] Starting baseline generation (no authority, no surgeon, sequential sections)...")
+            logger.info(f"[BASELINE] Input: query='{request.query[:80]}...', evidence_count={len(evidence_dicts)}")
             baseline_result = await services["generation"].generate_baseline(
                 query=request.query,
                 evidence_list=evidence_dicts
             )
+            logger.info(f"[BASELINE] generate_baseline() returned: keys={list(baseline_result.keys())}")
+            logger.info(f"[BASELINE] Result metadata: {baseline_result.get('metadata', {})}")
             baseline_text = baseline_result.get("text", "")
+            logger.info(f"[BASELINE] Extracted text: type={type(baseline_text).__name__}, len={len(baseline_text) if baseline_text else 0}, empty={not baseline_text}, repr_start={repr(baseline_text[:200]) if baseline_text else 'EMPTY'}")
 
             if baseline_text:
                 # Random A/B assignment for blind evaluation
@@ -303,10 +307,11 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     {"A": "system", "B": "baseline"},
                     {"A": "baseline", "B": "system"}
                 ])
-                logger.info(f"[BASELINE] Success: {len(baseline_text)} chars")
+                logger.info(f"[BASELINE] Success: {len(baseline_text)} chars, ab_assignment={ab_assignment}")
             else:
                 baseline_error = "Baseline returned empty text"
                 logger.warning(f"[BASELINE] {baseline_error}")
+                logger.warning(f"[BASELINE] Full result dump: sections={baseline_result.get('sections', [])}, citations={baseline_result.get('citations', [])}")
 
         except Exception as e:
             baseline_error = f"{type(e).__name__}: {e}"
@@ -317,7 +322,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         step_times["step_8_baseline"] = time.time() - step_start
         logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
-        logger.info(f"[BASELINE] Generated {len(baseline_text)} chars, A/B assignment: {ab_assignment}")
+        logger.info(f"[BASELINE] FINAL STATE: text_len={len(baseline_text)}, ab_assignment={ab_assignment}, error={baseline_error}")
 
         # === Step 9: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
