@@ -33,6 +33,11 @@ Per ogni claim devi indicare:
 2. Se richiede evidenza documentale
 3. Quale partito/gruppo parlamentare è associato (se applicabile)
 
+OGNI claim DEVE contenere una POSIZIONE CONCRETA (a favore, contro, proposta specifica).
+NON produrre claim generici come "Il partito X si è espresso sul tema" o "Il partito X è intervenuto".
+Claim valido: "FdI difende il decreto Flussi sostenendo che rafforza i corridoi legali"
+Claim NON valido: "FdI ha parlato di immigrazione"
+
 Rispondi SOLO in formato JSON valido con questa struttura:
 {
     "claims": [

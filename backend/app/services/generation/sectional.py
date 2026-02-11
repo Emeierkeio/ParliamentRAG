@@ -81,6 +81,11 @@ COSTRUZIONI CORRETTE (bridge verbale + soggetto) - VARIA il verbo in base al TON
 - Neutro: "...rilevando come [CIT:id]", "...osservando che [CIT:id]"
 - Affermativo: "...affermando che [CIT:id]", "...dichiarando che [CIT:id]"
 
+DIVIETO DI FILLER:
+NON scrivere frasi vuote come "ha espresso la propria posizione" o "è intervenuto sul tema".
+Ogni frase DEVE comunicare una posizione CONCRETA (a favore/contro cosa, quale proposta, quale critica).
+Se l'evidenza non contiene una posizione chiara, riporta il fatto specifico citato dall'oratore.
+
 STRUTTURA OUTPUT:
 ### [NOME PARTITO]
 [2-4 frasi, ogni citazione è SOLO [CIT:id] senza virgolette]"""
