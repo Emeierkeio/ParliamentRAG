@@ -121,6 +121,56 @@ STRUTTURA OUTPUT:
             return truncated[:pos].rstrip()
         return truncated.rstrip()
 
+    def _deduplicate_citations_across_speakers(
+        self,
+        all_evidence: List[Dict[str, Any]],
+        query: str
+    ) -> None:
+        """
+        Mark duplicate citations across different speakers.
+
+        Pre-extracts citations for all evidence and marks duplicates
+        (keeping the one with higher authority_score).
+        Mutates evidence in-place by setting 'citation_duplicate_of' key.
+        """
+        seen_citations: Dict[str, Dict[str, Any]] = {}  # normalized_text -> evidence dict
+
+        for e in all_evidence:
+            quote_text = e.get("quote_text", "") or e.get("chunk_text", "")
+            if not quote_text or not query:
+                continue
+
+            extracted = extract_best_sentences(
+                text=quote_text,
+                query=query,
+                max_sentences=1,
+                max_chars=200
+            )
+            if not extracted:
+                continue
+
+            # Normalize for comparison
+            normalized = " ".join(extracted.lower().split())
+
+            if normalized in seen_citations:
+                existing = seen_citations[normalized]
+                # Keep the one with higher authority score
+                existing_score = existing.get("authority_score", 0) or 0
+                current_score = e.get("authority_score", 0) or 0
+                if current_score > existing_score:
+                    # Current is better — mark existing as duplicate
+                    existing["citation_duplicate_of"] = e.get("evidence_id", "")
+                    seen_citations[normalized] = e
+                else:
+                    # Existing is better — mark current as duplicate
+                    e["citation_duplicate_of"] = existing.get("evidence_id", "")
+                logger.info(
+                    f"Duplicate citation detected: '{normalized[:60]}...' "
+                    f"between {e.get('speaker_name', '?')} and {existing.get('speaker_name', '?')}"
+                )
+            else:
+                seen_citations[normalized] = e
+
     async def write_sections(
         self,
         query: str,
@@ -143,6 +193,14 @@ STRUTTURA OUTPUT:
             Section dictionaries with party, content, citations
         """
         import asyncio
+
+        # Deduplicate citations across all speakers before writing sections
+        all_evidence = []
+        if government_evidence:
+            all_evidence.extend(government_evidence)
+        for party_evidence in evidence_by_party.values():
+            all_evidence.extend(party_evidence)
+        self._deduplicate_citations_across_speakers(all_evidence, query)
 
         # Build all tasks for parallel execution
         tasks = []
@@ -314,6 +372,11 @@ FORMATO OUTPUT:
         lines = []
 
         for e in evidence[:max_evidence]:
+            # Skip evidence marked as duplicate by cross-speaker dedup
+            if e.get("citation_duplicate_of"):
+                logger.info(f"Skipping duplicate citation {e.get('evidence_id')} (duplicate of {e['citation_duplicate_of']})")
+                continue
+
             eid = e.get("evidence_id", "unknown")
             speaker = e.get("speaker_name", "")
             date = e.get("date", "")
