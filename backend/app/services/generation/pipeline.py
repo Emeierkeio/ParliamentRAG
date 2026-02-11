@@ -161,8 +161,13 @@ class GenerationPipeline:
                 "message": "Integrating narrative..."
             })
 
+        # Compute topic statistics for the introduction
+        topic_statistics = self._compute_topic_statistics(evidence_list)
+
         # Use integrate_with_guard to verify citation preservation
-        integrated = self.integrator.integrate_with_guard(query, sections, registry)
+        integrated = self.integrator.integrate_with_guard(
+            query, sections, registry, topic_statistics=topic_statistics
+        )
 
         pipeline_metadata["stages"]["integrator"] = {
             "integration_success": not integrated.get("integration_failed", False),
@@ -358,6 +363,34 @@ class GenerationPipeline:
                 "claims_count": len(claims),
                 "sections_count": len(sections),
             }
+        }
+
+    def _compute_topic_statistics(
+        self,
+        evidence_list: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """Compute real statistics about the topic from retrieved evidence."""
+        if not evidence_list:
+            return {
+                "intervention_count": 0,
+                "speaker_count": 0,
+                "first_date": None,
+                "last_date": None,
+            }
+
+        unique_speeches = set(
+            e.get("speech_id") for e in evidence_list if e.get("speech_id")
+        )
+        unique_speakers = set(
+            e.get("speaker_id") for e in evidence_list if e.get("speaker_id")
+        )
+        dates = [e.get("date") for e in evidence_list if e.get("date")]
+
+        return {
+            "intervention_count": len(unique_speeches),
+            "speaker_count": len(unique_speakers),
+            "first_date": min(dates) if dates else None,
+            "last_date": max(dates) if dates else None,
         }
 
     def _group_evidence_by_party(

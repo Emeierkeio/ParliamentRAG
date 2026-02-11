@@ -75,10 +75,11 @@ ESEMPIO CORRETTO ✓:
 ESEMPIO SBAGLIATO ✗:
 → **Mario Rossi** denuncia che «il sistema è in crisi» [CIT:id]. ← HAI COPIATO LA CITAZIONE!
 
-COSTRUZIONI CORRETTE (bridge verbale + soggetto):
-- "...affermando che il sistema [CIT:id]"
-- "...sottolineando come la riforma [CIT:id]"
-- "...dichiarando che il governo [CIT:id]"
+COSTRUZIONI CORRETTE (bridge verbale + soggetto) - VARIA il verbo in base al TONO:
+- Propositivo: "...proponendo che [CIT:id]", "...auspicando che [CIT:id]"
+- Critico: "...denunciando che [CIT:id]", "...contestando il fatto che [CIT:id]"
+- Neutro: "...rilevando come [CIT:id]", "...osservando che [CIT:id]"
+- Affermativo: "...affermando che [CIT:id]", "...dichiarando che [CIT:id]"
 
 STRUTTURA OUTPUT:
 ### [NOME PARTITO]

@@ -36,7 +36,11 @@ class NarrativeIntegrator:
 STRUTTURA (in questo ordine):
 
 ## Introduzione
-2-3 frasi sul tema (NO posizioni anticipate)
+2-3 frasi che inquadrano il tema con DATI CONCRETI forniti nelle statistiche:
+- NOMINA specificamente il provvedimento, decreto, DDL o proposta in discussione
+- CITA il numero di interventi analizzati e il numero di parlamentari coinvolti
+- INDICA il periodo temporale (data primo e ultimo intervento)
+- NON anticipare le posizioni dei partiti
 
 ## Posizione del Governo (se presente)
 Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
@@ -71,6 +75,15 @@ REGOLE CITAZIONI:
 ⚠️ TUTTE le citazioni nell'input DEVONO apparire nell'output
 ⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
 
+VARIAZIONE OBBLIGATORIA DEI BRIDGE VERBALI:
+NON usare lo stesso verbo introduttivo più di una volta nell'intero documento.
+Repertorio (scegli in base al TONO della citazione):
+- Tono propositivo: propone, invoca, auspica, suggerisce
+- Tono critico: denuncia, contesta, lamenta, critica il fatto che
+- Tono neutro: rileva, osserva, evidenzia, fa notare
+- Tono affermativo: afferma, sostiene, dichiara, ribadisce
+- Tono interrogativo: solleva interrogativi su, chiede conto di
+
 REGOLE GENERALI:
 1. Posizioni DISTINTE, un paragrafo per partito/ministro
 2. PRESERVA **grassetto** e marcatori [CIT:...]
@@ -84,10 +97,37 @@ REGOLE GENERALI:
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("integrator", "gpt-4o")
 
+    def _format_statistics(self, topic_statistics: Optional[Dict[str, Any]]) -> str:
+        """Format topic statistics for the integrator prompt."""
+        if not topic_statistics:
+            return ""
+
+        parts = ["STATISTICHE DEL TEMA (usa questi dati nell'Introduzione):"]
+
+        intervention_count = topic_statistics.get("intervention_count", 0)
+        speaker_count = topic_statistics.get("speaker_count", 0)
+        first_date = topic_statistics.get("first_date")
+        last_date = topic_statistics.get("last_date")
+
+        if intervention_count:
+            parts.append(f"- Interventi analizzati: {intervention_count}")
+        if speaker_count:
+            parts.append(f"- Parlamentari coinvolti: {speaker_count}")
+        if last_date:
+            date_str = last_date.strftime("%d/%m/%Y") if hasattr(last_date, 'strftime') else str(last_date)
+            parts.append(f"- Ultimo intervento: {date_str}")
+        if first_date and last_date:
+            first_str = first_date.strftime("%d/%m/%Y") if hasattr(first_date, 'strftime') else str(first_date)
+            last_str = last_date.strftime("%d/%m/%Y") if hasattr(last_date, 'strftime') else str(last_date)
+            parts.append(f"- Periodo: dal {first_str} al {last_str}")
+
+        return "\n".join(parts) + "\n"
+
     def integrate(
         self,
         query: str,
-        sections: List[Dict[str, Any]]
+        sections: List[Dict[str, Any]],
+        topic_statistics: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Integrate sections into coherent narrative.
@@ -95,19 +135,22 @@ REGOLE GENERALI:
         Args:
             query: Original user query
             sections: List of section dictionaries from Stage 2
+            topic_statistics: Optional statistics about the topic for the introduction
 
         Returns:
             Dictionary with integrated text and metadata
         """
         # Build sections text
         sections_text = self._build_sections_text(sections)
+        stats_text = self._format_statistics(topic_statistics)
 
         user_prompt = f"""Domanda: {query}
 
+{stats_text}
 Sezioni:
 {sections_text}
 
-Crea documento CONCISO con Introduzione (2-3 frasi) + sezioni per coalizione.
+Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento specifico e citano le STATISTICHE fornite sopra) + sezioni per coalizione.
 
 ⚠️ CRITICO:
 1. Copia ESATTAMENTE ogni [CIT:...] carattere per carattere - NON modificare gli ID!
@@ -274,7 +317,8 @@ Sezioni originali con citazioni:
         self,
         query: str,
         sections: List[Dict[str, Any]],
-        registry: Optional['CitationRegistry'] = None
+        registry: Optional['CitationRegistry'] = None,
+        topic_statistics: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Integrate with citation guard.
@@ -286,6 +330,7 @@ Sezioni originali con citazioni:
             query: Original user query
             sections: List of section dictionaries from Stage 2
             registry: Optional CitationRegistry for tracking
+            topic_statistics: Optional statistics about the topic for the introduction
 
         Returns:
             Dictionary with integrated text, citations, and verification report
@@ -310,7 +355,7 @@ Sezioni originali con citazioni:
         logger.info(f"Integrator guard: {len(expected_citations)} citations expected")
 
         # Perform standard integration
-        result = self.integrate(query, sections)
+        result = self.integrate(query, sections, topic_statistics=topic_statistics)
 
         # Post-integration: verify citations preserved
         integrated_text = result.get("text", "")
