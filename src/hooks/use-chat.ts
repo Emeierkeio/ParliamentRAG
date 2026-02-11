@@ -36,12 +36,8 @@ export function useChat(options: UseChatOptions = {}) {
     };
     
     setMessages((prev) => {
-       // Logging temporaneo
-       const existingIds = prev.map(m => m.id);
-       console.log("[useChat] Existing IDs:", existingIds);
-       console.log("[useChat] Incoming User Msg ID:", newMessage.id);
-
        if (prev.some(m => m.id === newMessage.id)) {
+         console.warn("[Pipeline] Duplicate user message skipped:", newMessage.id);
          return prev;
        }
        return [...prev, newMessage];
@@ -68,14 +64,8 @@ export function useChat(options: UseChatOptions = {}) {
     };
     
     setMessages((prev) => {
-      // Logging temporaneo richiesto per debug
-      const existingIds = prev.map(m => m.id);
-      console.log("[useChat] Existing IDs:", existingIds);
-      console.log("[useChat] Incoming Assistant Msg ID:", newMessage.id);
-      
-      // Deduplicazione
       if (prev.some(m => m.id === newMessage.id)) {
-        console.warn("[useChat] Detected duplicate message ID, skipping add:", newMessage.id);
+        console.warn("[Pipeline] Duplicate assistant message skipped:", newMessage.id);
         return prev;
       }
       return [...prev, newMessage];
@@ -162,7 +152,43 @@ export function useChat(options: UseChatOptions = {}) {
 
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {
+          // Flush TextDecoder remaining bytes + process any buffered data
+          buffer += decoder.decode();
+          if (buffer.trim()) {
+            console.warn(`[Pipeline:Buffer] Stream ended with ${buffer.length} bytes in buffer — flushing`);
+            const remainingLines = buffer.split("\n").filter((l: string) => l.startsWith("data: "));
+            for (const line of remainingLines) {
+              try {
+                const jsonStr = line.slice(6).trim();
+                if (!jsonStr) continue;
+                const data = JSON.parse(jsonStr);
+                console.log(`[Pipeline:Buffer] Recovered event: "${data.type}"`, data.type === "complete" ? {
+                  baseline: typeof data.baseline_answer === "string" ? `${data.baseline_answer.length} chars` : "missing",
+                  ab: data.ab_assignment,
+                  error: data.baseline_error || "none",
+                } : "");
+                if (data.type === "complete") {
+                  baselineAnswer = data.baseline_answer || "";
+                  abAssignment = data.ab_assignment || null;
+                  setProgress((prev) => prev ? { ...prev, isComplete: true } : null);
+                  updateLastAssistantMessage({
+                    status: "complete",
+                    content: accumulatedContent,
+                    citations,
+                    experts,
+                    balanceMetrics,
+                    baselineAnswer: baselineAnswer || undefined,
+                    abAssignment: abAssignment || undefined,
+                  });
+                }
+              } catch (e) {
+                console.error(`[Pipeline:Buffer] Failed to parse buffered data:`, e, `raw: "${line.substring(0, 200)}"`);
+              }
+            }
+          }
+          break;
+        }
 
         // Aggiungi al buffer e processa solo messaggi completi
         buffer += decoder.decode(value, { stream: true });
@@ -179,12 +205,12 @@ export function useChat(options: UseChatOptions = {}) {
             if (!jsonStr) continue;
 
             const data = JSON.parse(jsonStr);
-            console.log("[SSE] Received event:", data.type, data);
 
             switch (data.type) {
               case "progress":
                 const stepIndex = data.step - 1;
                 const step = config.ui.progressSteps[stepIndex];
+                console.log(`[Pipeline] Step ${data.step}/${data.total}: ${step?.label || data.message}`);
                 setProgress((prev) => ({
                   currentStep: data.step,
                   totalSteps: data.total || config.ui.progressSteps.length,
@@ -196,8 +222,8 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "commissioni":
-                // Step 2 result: commissioni trovate
                 const commList = data.commissioni || [];
+                console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commList.map((c: any) => c.name || c));
                 setProgress((prev) => prev ? {
                   ...prev,
                   stepResults: [...prev.stepResults, {
@@ -210,13 +236,13 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "experts":
-                // Step 3 result: esperti identificati
                 const expertsPayload = data.data || data.experts;
                 if (Array.isArray(expertsPayload)) {
                   experts = expertsPayload;
                   updateLastAssistantMessage({ experts: [...experts] });
                   const magg = experts.filter(e => e.coalition === "maggioranza").length;
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
+                  console.log(`[Pipeline] Step 3 result: ${experts.length} esperti (${magg} magg, ${opp} opp)`);
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
@@ -226,16 +252,17 @@ export function useChat(options: UseChatOptions = {}) {
                       details: { experts: experts.length, maggioranza: magg, opposizione: opp }
                     }]
                   } : null);
+                } else {
+                  console.warn("[Pipeline] Step 3: experts payload is not an array", expertsPayload);
                 }
                 break;
 
               case "citations":
-                // Step 4 result: citazioni trovate
                 const citationsPayload = data.data || data.citations;
                 if (Array.isArray(citationsPayload)) {
-                  console.log("[useChat] Citation sample:", JSON.stringify(citationsPayload[0]));
                   citations = citationsPayload;
                   updateLastAssistantMessage({ citations: [...citations] });
+                  console.log(`[Pipeline:Citations] Step 4: ${citations.length} interventi ricevuti, chunk_ids:`, citations.map(c => c.chunk_id));
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
@@ -245,16 +272,18 @@ export function useChat(options: UseChatOptions = {}) {
                       details: { citations: citations.length }
                     }]
                   } : null);
+                } else {
+                  console.warn("[Pipeline:Citations] Step 4: payload is not an array", citationsPayload);
                 }
                 break;
 
               case "balance":
-                // Step 5 result: metriche di bilanciamento
                 balanceMetrics = {
                   maggioranzaPercentage: data.maggioranza_percentage,
                   opposizionePercentage: data.opposizione_percentage,
                   biasScore: data.bias_score,
                 };
+                console.log(`[Pipeline] Step 5: Magg ${data.maggioranza_percentage?.toFixed(1)}% / Opp ${data.opposizione_percentage?.toFixed(1)}% (bias: ${data.bias_score?.toFixed(2)})`);
                 updateLastAssistantMessage({ balanceMetrics });
                 setProgress((prev) => prev ? {
                   ...prev,
@@ -268,12 +297,10 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "compass":
-                // Step 6 result: Compass analysis
                 try {
-                  // The payload is in data.data (from backend) or data itself
                   compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
-                  
+                  console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${compassData.axes?.length || 0} assi`);
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
@@ -283,23 +310,28 @@ export function useChat(options: UseChatOptions = {}) {
                       details: { axes: compassData.axes, groups: compassData.groups?.length }
                     }]
                   } : null);
-                  console.log("[useChat] Compass data received");
                 } catch(e) {
-                   console.error("Error handling compass data", e);
+                   console.error("[Pipeline] Step 6: Compass error", e);
                 }
                 break;
 
               case "citation_details":
-                // Step 7 result: citazioni verificate e arricchite con testo completo
                 const citDetailsPayload = data.data || data.citations;
                 if (Array.isArray(citDetailsPayload)) {
+                    const prevChunkIds = citations.map(c => c.chunk_id);
                     citations = citDetailsPayload;
                     updateLastAssistantMessage({ citations: [...citations] });
-                    console.log("[useChat] Updated verified citations:", citations.length);
-                    console.log("[useChat] Citation chunk_ids:", citations.map(c => c.chunk_id));
-                    console.log("[useChat] Citation speakers:", citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`));
+                    const newChunkIds = citations.map(c => c.chunk_id);
+                    const added = newChunkIds.filter(id => !prevChunkIds.includes(id));
+                    const removed = prevChunkIds.filter(id => !newChunkIds.includes(id));
+                    console.log(`[Pipeline:Citations] Verified: ${citations.length} citations`, {
+                      chunk_ids: newChunkIds,
+                      speakers: citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`),
+                      added: added.length ? added : "none",
+                      removed: removed.length ? removed : "none",
+                    });
                 } else {
-                    console.warn("[useChat] citation_details payload is NOT an array:", citDetailsPayload);
+                    console.warn("[Pipeline:Citations] citation_details payload is NOT an array:", citDetailsPayload);
                 }
                 break;
 
@@ -307,12 +339,12 @@ export function useChat(options: UseChatOptions = {}) {
                 accumulatedContent += (data.data || data.content || "");
                 setStreamingContent(accumulatedContent);
                 updateLastAssistantMessage({ content: accumulatedContent });
-                
-                // On first chunk, mark Step 7 as complete in history
+
                 setProgress((prev) => {
                   if (!prev) return null;
                   const alreadyDone = prev.stepResults.some(r => r.step === 7);
                   if (alreadyDone) return prev;
+                  console.log(`[Pipeline] Step 7: First chunk received (streaming ${accumulatedContent.length} chars)`);
                   return {
                     ...prev,
                     stepResults: [...prev.stepResults, {
@@ -325,24 +357,29 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
-                // Extract baseline data from complete event
-                console.log("[useChat][BASELINE-DEBUG] Raw complete event data:", JSON.stringify({
-                  baseline_answer_type: typeof data.baseline_answer,
-                  baseline_answer_length: data.baseline_answer ? data.baseline_answer.length : 0,
-                  baseline_answer_truthy: !!data.baseline_answer,
-                  baseline_answer_preview: data.baseline_answer ? data.baseline_answer.substring(0, 200) : "EMPTY/NULL",
-                  ab_assignment: data.ab_assignment,
-                  baseline_error: data.baseline_error,
-                }));
+                console.log(`[Pipeline] === COMPLETE ===`);
+                console.log(`[Pipeline] Content: ${accumulatedContent.length} chars`);
+                console.log(`[Pipeline:Citations] Final: ${citations.length} citations in sidebar`);
+
+                // Extract citation links from generated text for cross-check
+                const textCitLinks = (accumulatedContent.match(/\]\((leg1[89]_[^)]+)\)/g) || [])
+                  .map((m: string) => m.slice(2, -1));
+                const sidebarIds = new Set(citations.map(c => c.chunk_id));
+                const unmatchedLinks = textCitLinks.filter((id: string) => !sidebarIds.has(id));
+                if (unmatchedLinks.length > 0) {
+                  console.warn(`[Pipeline:Citations] MISMATCH: ${unmatchedLinks.length} citation links in text not in sidebar:`, unmatchedLinks);
+                } else if (textCitLinks.length > 0) {
+                  console.log(`[Pipeline:Citations] All ${textCitLinks.length} text citation links matched in sidebar`);
+                }
+
+                console.log(`[Pipeline:Baseline] baseline_answer: type=${typeof data.baseline_answer}, len=${data.baseline_answer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
+                if (data.baseline_answer) {
+                  console.log(`[Pipeline:Baseline] Preview: "${data.baseline_answer.substring(0, 150)}..."`);
+                }
+                console.log(`[Pipeline:Baseline] ab_assignment:`, data.ab_assignment);
 
                 baselineAnswer = data.baseline_answer || "";
                 abAssignment = data.ab_assignment || null;
-
-                console.log("[useChat][BASELINE-DEBUG] After extraction:", {
-                  baselineAnswer_length: baselineAnswer.length,
-                  baselineAnswer_truthy: !!baselineAnswer,
-                  abAssignment,
-                });
 
                 setProgress((prev) =>
                   prev ? { ...prev, isComplete: true } : null
@@ -356,6 +393,12 @@ export function useChat(options: UseChatOptions = {}) {
                   baselineAnswer: baselineAnswer || undefined,
                   abAssignment: abAssignment || undefined,
                 });
+
+                // Log timing if available
+                if (data.metadata?.timing) {
+                  const timing = data.metadata.timing;
+                  console.log(`[Pipeline] Timing breakdown (ms):`, timing);
+                }
 
                 // Save to history
                 try {
@@ -373,12 +416,8 @@ export function useChat(options: UseChatOptions = {}) {
                     baseline_answer: baselineAnswer || null,
                     ab_assignment: abAssignment || null,
                   };
-                  console.log("[useChat][BASELINE-DEBUG] History payload baseline fields:", {
-                    baseline_answer_type: typeof historyPayload.baseline_answer,
-                    baseline_answer_length: historyPayload.baseline_answer ? historyPayload.baseline_answer.length : 0,
-                    baseline_answer_is_null: historyPayload.baseline_answer === null,
-                    ab_assignment: historyPayload.ab_assignment,
-                  });
+
+                  console.log(`[Pipeline:Baseline] Saving to history: baseline=${baselineAnswer ? baselineAnswer.length + " chars" : "null"}, ab=${abAssignment ? JSON.stringify(abAssignment) : "null"}`);
 
                   fetch(`${config.api.baseUrl}/history`, {
                     method: "POST",
@@ -386,29 +425,29 @@ export function useChat(options: UseChatOptions = {}) {
                     body: JSON.stringify(historyPayload),
                   }).then((res) => {
                     if (res.ok) {
-                      console.log("[useChat][BASELINE-DEBUG] Chat saved to history successfully");
+                      console.log("[Pipeline] History saved OK");
                     } else {
                       res.text().then(body => {
-                        console.error("[useChat][BASELINE-DEBUG] Failed to save to history:", res.status, res.statusText, body);
+                        console.error("[Pipeline] History save failed:", res.status, body);
                       });
                     }
                   }).catch((err) => {
-                    console.error("[useChat][BASELINE-DEBUG] Failed to save to history:", err);
+                    console.error("[Pipeline] History save error:", err);
                   });
                 } catch (e) {
-                  console.error("[useChat][BASELINE-DEBUG] Error saving to history:", e);
+                  console.error("[Pipeline] History payload error:", e);
                 }
                 break;
 
               case "error":
+                console.error(`[Pipeline] ERROR from server:`, data.message);
                 throw new Error(data.message);
 
               default:
-                console.log("SSE event:", data.type, data);
+                console.log(`[Pipeline] Unknown event: "${data.type}"`, data);
             }
           } catch (parseError) {
-            // Skip invalid JSON lines
-            console.warn("Failed to parse SSE data:", parseError);
+            console.warn(`[Pipeline:Buffer] JSON parse error:`, parseError, `raw: "${line.substring(0, 200)}"`);
           }
         }
       }
