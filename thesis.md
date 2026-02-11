@@ -1151,6 +1151,29 @@ $$ROUGE-L = \frac{LCS(candidate, reference)}{|reference|}$$
 3. **Unbalanced RAG**: senza vincoli di bilanciamento
 4. **No-Authority RAG**: senza authority scoring
 
+#### 6.7.1 Architettura della Baseline Interna
+
+Per la valutazione A/B cieca, il sistema genera internamente una risposta baseline ad ogni query. La baseline utilizza le stesse evidenze recuperate dal retrieval ma con le seguenti differenze rispetto al sistema completo:
+
+| Aspetto | Sistema Completo | Baseline |
+|---------|-----------------|----------|
+| Authority Scores | Variabili (0-1) | Uniformi (0.5) |
+| Stage 1: Analyst | Sincrono | Asincrono con retry |
+| Stage 2: Sectional Writer | Parallelo (`asyncio.gather`) | **Sequenziale** |
+| Stage 3: Integrator | Con guard e repair | Semplice (senza guard) |
+| Stage 4: Citation Surgeon | Risoluzione completa | **Omesso** |
+| Topic Statistics | Passate all'integrator | Passate all'integrator |
+| Citazioni finali | Citazioni verbatim risolte | Placeholder rimossi |
+
+**Gestione dei Rate Limit**: La pipeline principale consuma circa 13 chiamate API OpenAI (1 Analyst + ~11 Sectional Writer in parallelo + 1 Integrator). Per evitare il superamento del rate limit di 60 RPM, la baseline adotta due strategie:
+
+1. **Delay inter-pipeline**: un ritardo di 3 secondi tra la fine della generazione principale e l'inizio della baseline
+2. **Sezioni sequenziali**: le 11 sezioni della baseline vengono generate una alla volta, anziché in parallelo, distribuendo le chiamate API nel tempo
+
+**Retry con Backoff Esponenziale**: L'Analyst della baseline utilizza `AsyncOpenAI` con retry automatico (max 3 tentativi, backoff esponenziale con base 2s) per gestire errori transitori di rate limit (`RateLimitError`) e timeout (`APITimeoutError`).
+
+**Pulizia del Testo**: Dopo la rimozione dei placeholder `[CIT:id]`, il testo viene ripulito da artefatti residui (spazi doppi, spazi prima della punteggiatura, righe vuote consecutive).
+
 ### 6.8 Test di Stress
 
 #### 6.8.1 Query Adversariali

@@ -620,6 +620,38 @@ $quote = testo\_raw[span\_start:span\_end]$ → **No fuzzy matching**
 
 ---
 
+# 5.1 Baseline A/B: Robustezza della Generazione
+
+<div class="columns" style="gap: 20px;">
+  <div class="column card" style="flex: 1.3;">
+    <div class="badge">Problema Risolto</div>
+    <p style="font-size: 0.7em; margin: 5px 0;">La baseline falliva frequentemente per <strong>rate limit OpenAI</strong>:</p>
+    <ul style="font-size: 0.65em; margin: 5px 0; padding-left: 15px;">
+      <li>Pipeline principale: ~13 chiamate gpt-4o (11 parallele)</li>
+      <li>Baseline subito dopo: +13 chiamate parallele</li>
+      <li>Totale: ~26 chiamate → supera 60 RPM</li>
+      <li>Analyst sincrono bloccava l'event loop</li>
+    </ul>
+  </div>
+  <div class="column card" style="border: 2px solid #22c55e; flex: 1;">
+    <div class="badge" style="background: #dcfce7;">Soluzione</div>
+    <table style="font-size: 0.55em; margin-top: 5px;">
+      <tr><th>Fix</th><th>Effetto</th></tr>
+      <tr><td><strong>Sezioni sequenziali</strong></td><td>No burst RPM</td></tr>
+      <tr><td><strong>Delay 3s</strong></td><td>Rate limit recovery</td></tr>
+      <tr><td><strong>Analyst async</strong></td><td>Non blocca event loop</td></tr>
+      <tr><td><strong>Retry + backoff</strong></td><td>Resilienza a 429</td></tr>
+      <tr><td><strong>topic_statistics</strong></td><td>Confronto A/B equo</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="highlight-box" style="font-size: 0.65em; margin-top: 10px;">
+  <strong>Risultato</strong>: La baseline ora viene generata in modo affidabile ad ogni query, rendendo la valutazione A/B cieca sempre disponibile.
+</div>
+
+---
+
 # 6. Protocollo di Valutazione Sperimentale
 
 <div class="columns" style="gap: 25px;">
