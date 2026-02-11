@@ -544,7 +544,7 @@ $quote = testo\_raw[span\_start:span\_end]$ → **No fuzzy matching**
 </table>
 
 <div class="highlight-box" style="font-size: 0.65em; margin-top: 10px; padding: 8px 12px;">
-  <strong>Sentence Extractor</strong>: Seleziona la frase più rilevante dal chunk (max 200 char) con score = <code>0.45×overlap + 0.25×completeness + 0.2×density + 0.1×position</code> dove <em>completeness</em> ∈ {0, 0.2, 0.5, 0.7, 1.0} — penalizza clausole subordinate orfane (0.2) e terminazioni sospese (0.7). Soglia minima di qualità: frammenti sotto <code>MIN_QUALITY_SCORE</code> scartati in favore di alternative complete
+  <strong>Sentence Extractor</strong>: Seleziona la frase più rilevante dal chunk (max 200 char) con score = <code>0.45×overlap + 0.25×completeness + 0.2×density + 0.1×position</code> dove <em>completeness</em> ∈ {0, 0.2, 0.5, 0.7, 1.0} — penalizza clausole subordinate orfane (0.2), terminazioni sospese (0.7), e filtra intestazioni oratore (0.0, es. "GAVA, Vice Ministra..."). Soglia minima: frammenti sotto <code>MIN_QUALITY_SCORE</code> scartati
 </div>
 
 ---
