@@ -323,7 +323,9 @@ class GenerationPipeline:
                     "[Citazione non risolta]"
                 )
                 registry.mark_resolved(cit_id, success=False, error="unresolved_placeholder")
-            final_result["text"] = final_text
+
+        # Always save the cleaned text (stripped invalid links + resolved placeholders)
+        final_result["text"] = final_text
 
         # Extract unsupported claims (use existing method in surgeon)
         unsupported_claims = self.surgeon.extract_unsupported_claims(final_text)
