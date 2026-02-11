@@ -98,16 +98,20 @@ class CoalitionLogic:
         if group_name.upper() in ("GOVERNO",):
             self._coalition_cache[group_name] = "maggioranza"
             return "maggioranza"
-        # Case-insensitive comparison against config values
-        group_upper = group_name.upper()
+        # Normalize for comparison: uppercase + collapse whitespace around hyphens
+        # DB may return "AZIONE-POPOLARI" while config has "Azione - Popolari"
+        def normalize(name: str) -> str:
+            return name.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-")
+
+        group_norm = normalize(group_name)
 
         for g in coalitions.get("maggioranza", []):
-            if g.upper() == group_upper:
+            if normalize(g) == group_norm:
                 self._coalition_cache[group_name] = "maggioranza"
                 return "maggioranza"
 
         for g in coalitions.get("opposizione", []):
-            if g.upper() == group_upper:
+            if normalize(g) == group_norm:
                 self._coalition_cache[group_name] = "opposizione"
                 return "opposizione"
             
