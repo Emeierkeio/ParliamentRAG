@@ -145,6 +145,38 @@ class SentenceExtractor:
             return True
         return False
 
+    # Pattern to detect parliamentary speaker identification lines
+    # e.g. "VANNIA GAVA, Vice Ministra dell'Ambiente e della sicurezza energetica."
+    # These are headers, not citable speech content.
+    _SPEAKER_ID_PATTERN = re.compile(
+        r'^[A-Z\s\'.]+,'  # ALL CAPS name followed by comma
+        r'\s*(?:Vice\s*)?'  # optional "Vice"
+        r'(?:Ministr[oa]|Sottosegretari[oa]|President[e]|Segretari[oa]'
+        r'|Relator[e]|Deputat[oa]|Senatric[e]|Senator[e]'
+        r'|Capogruppo|Questore|Commissari[oa])',
+        re.IGNORECASE
+    )
+
+    # Also catch short identification-only lines (name + party/role, no real content)
+    _SHORT_ID_PATTERN = re.compile(
+        r'^[A-Z][a-zàèéìòù]+\s+[A-Z][a-zàèéìòù]+\s*'  # "Nome Cognome"
+        r'[,(]\s*(?:Vice\s*)?(?:Ministr|Sottosegretari|President|Gruppo|Partito)',
+        re.IGNORECASE
+    )
+
+    def _is_speaker_identification(self, sentence: str) -> bool:
+        """Detect parliamentary speaker identification headers.
+
+        These are lines like "VANNIA GAVA, Vice Ministra dell'Ambiente..."
+        that identify who is speaking but contain no citable content.
+        """
+        stripped = sentence.strip()
+        if self._SPEAKER_ID_PATTERN.match(stripped):
+            return True
+        if self._SHORT_ID_PATTERN.match(stripped) and len(stripped) < 120:
+            return True
+        return False
+
     # Subordinating conjunctions that signal a dependent clause fragment
     _SUBORDINATING_CONJUNCTIONS = {
         'se', 'che', 'quando', 'dove', 'come', 'perché', 'poiché',
@@ -175,6 +207,11 @@ class SentenceExtractor:
             return 0.0
 
         stripped = sentence.strip()
+
+        # Speaker identification headers are not citable content
+        if self._is_speaker_identification(stripped):
+            return 0.0
+
         first_word = re.match(r'\b(\w+)\b', stripped.lower())
         has_dangling = bool(self._DANGLING_ENDING_PATTERN.search(stripped))
 
