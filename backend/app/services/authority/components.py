@@ -499,7 +499,7 @@ class RoleComponent(AuthorityComponent):
                     return self.cap_score(weight)
 
         # Get institutional roles from graph
-                institutional_roles = [
+        institutional_roles = [
             r for r in speaker_data.get("institutional_roles", [])
             if r.get("committee_name")
         ]
