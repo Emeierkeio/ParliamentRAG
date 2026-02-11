@@ -151,7 +151,10 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                           "transition-all duration-150",
                           highlightedChunkId === href && "bg-yellow-400/30 border-yellow-500 text-yellow-800 dark:text-yellow-300"
                         )}
-                        onClick={() => setHighlightedChunkId(href)}
+                        onClick={() => {
+                          console.log("[Citation click] href:", href, "available chunk_ids:", message.citations?.map(c => c.chunk_id));
+                          setHighlightedChunkId(href);
+                        }}
                         title="Clicca per evidenziare la fonte"
                       >
                         {children}
