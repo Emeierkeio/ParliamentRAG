@@ -145,21 +145,47 @@ class SentenceExtractor:
             return True
         return False
 
+    # Subordinating conjunctions that signal a dependent clause fragment
+    _SUBORDINATING_CONJUNCTIONS = {
+        'se', 'che', 'quando', 'dove', 'come', 'perché', 'poiché',
+        'affinché', 'sebbene', 'benché', 'giacché', 'purché',
+        'qualora', 'laddove', 'allorché', 'finché', 'ove',
+    }
+
+    # Dangling endings that signal truncation mid-phrase
+    _DANGLING_ENDING_PATTERN = re.compile(
+        r'\s+(?:per|di|a|da|in|con|su|il|lo|la|i|gli|le|un|uno|una|'
+        r'al|alla|allo|del|della|dello|nel|nella|nello|'
+        r'e|o|ma|che|né|se)$',
+        re.IGNORECASE
+    )
+
     def _syntactic_completeness_score(self, sentence: str) -> float:
         """
         Score syntactic completeness of a sentence.
 
         Returns:
-            1.0: contains verb and starts with uppercase (complete sentence)
+            1.0: contains verb, starts with uppercase, no dangling ending
+            0.7: complete but ends with dangling word
             0.5: contains verb but starts mid-clause
+            0.2: subordinate clause fragment (starts with se/che/quando...)
             0.0: no verb detected (fragment)
         """
         if not self._has_verb(sentence):
             return 0.0
-        # Check if it starts as a complete sentence (uppercase or quote mark)
-        first_char = sentence.lstrip()[0] if sentence.strip() else ''
+
+        stripped = sentence.strip()
+        first_word = re.match(r'\b(\w+)\b', stripped.lower())
+        has_dangling = bool(self._DANGLING_ENDING_PATTERN.search(stripped))
+
+        # Subordinate clause without main clause = very low quality
+        if first_word and first_word.group(1) in self._SUBORDINATING_CONJUNCTIONS:
+            return 0.2
+
+        first_char = stripped[0] if stripped else ''
         if first_char.isupper() or first_char in '«"\'':
-            return 1.0
+            return 0.7 if has_dangling else 1.0
+
         return 0.5
 
     def _split_sentences(self, text: str) -> List[str]:
@@ -311,6 +337,11 @@ class SentenceExtractor:
 
         return scored
 
+    # Minimum completeness score to accept a citation.
+    # Sentences below this (e.g. subordinate fragments) are skipped
+    # in favour of lower-relevance but syntactically complete alternatives.
+    MIN_QUALITY_SCORE = 0.15
+
     def _select_best(
         self,
         scored: List[Tuple[str, float, int]],
@@ -319,13 +350,21 @@ class SentenceExtractor:
         """Select the best sentences within character limit.
 
         Prefers complete sentences that fit within the limit over
-        truncating a longer sentence.
+        truncating a longer sentence. Skips sentences whose completeness
+        score is below MIN_QUALITY_SCORE when alternatives exist.
         """
         if not scored:
             return []
 
         # Sort by score descending
         sorted_by_score = sorted(scored, key=lambda x: x[1], reverse=True)
+
+        # Filter out very low quality sentences if better alternatives exist
+        if len(sorted_by_score) > 1:
+            sorted_by_score = [
+                s for s in sorted_by_score
+                if s[1] >= self.MIN_QUALITY_SCORE
+            ] or sorted_by_score[:1]  # keep at least one
 
         selected = []
         total_chars = 0
