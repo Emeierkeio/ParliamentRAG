@@ -685,7 +685,7 @@ dove $completeness \in \{0, 0.2, 0.5, 0.7, 1.0\}$ implementa una scala granulare
 
 Il punteggio 0.0 viene assegnato anche alle righe di identificazione dell'oratore presenti nei resoconti parlamentari (es. "VANNIA GAVA, Vice Ministra dell'Ambiente e della sicurezza energetica"), che rappresentano intestazioni protocollari e non contenuto citabile. Il rilevamento avviene tramite pattern matching su nomi in maiuscolo seguiti da ruoli istituzionali (Ministro, Sottosegretario, Presidente, Relatore, ecc.).
 
-Il sistema applica inoltre una **soglia minima di qualità** (`MIN_QUALITY_SCORE = 0.15`): le frasi con punteggio inferiore vengono scartate in favore di alternative meno rilevanti ma sintatticamente complete. Questo impedisce la selezione di frammenti decontestualizzati o intestazioni protocollari come citazioni.
+Il sistema applica inoltre una **soglia minima di qualità** (`MIN_QUALITY_SCORE = 0.15`): le frasi con punteggio inferiore vengono scartate in favore di alternative sintatticamente complete. Quando **nessuna** frase di un'evidenza supera la soglia (es. il chunk contiene solo l'intestazione protocollare dell'oratore senza contenuto sostanziale), l'estrattore restituisce stringa vuota e l'evidenza viene esclusa interamente dal contesto fornito al LLM. In questo modo la sezione non conterrà una citazione inutilizzabile, ma solo citazioni di qualità verificata.
 
 #### 4.5.3 Integrator Guard (Livello 3)
 
