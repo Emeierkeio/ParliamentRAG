@@ -293,7 +293,7 @@ class CitationSurgeon:
                     text=quote,
                     query=query,
                     max_sentences=1,
-                    max_chars=150
+                    max_chars=200
                 )
 
         # Clean up whitespace

@@ -328,14 +328,14 @@ FORMATO OUTPUT:
                     text=quote_text,
                     query=query,
                     max_sentences=1,
-                    max_chars=150
+                    max_chars=200
                 )
                 # Store pre-extracted citation in evidence for later use by Surgeon
                 e["pre_extracted_citation"] = extracted_citation
             else:
                 # Truncate at a natural boundary, not mid-phrase
-                if quote_text and len(quote_text) > 150:
-                    extracted_citation = self._truncate_at_boundary(quote_text, 150)
+                if quote_text and len(quote_text) > 200:
+                    extracted_citation = self._truncate_at_boundary(quote_text, 200)
                 else:
                     extracted_citation = quote_text or ""
                 e["pre_extracted_citation"] = extracted_citation
