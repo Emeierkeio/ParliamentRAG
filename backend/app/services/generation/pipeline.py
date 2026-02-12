@@ -22,6 +22,7 @@ from .analyst import ClaimAnalyst
 from .sectional import SectionalWriter, ALL_PARTIES
 from .integrator import NarrativeIntegrator
 from .surgeon import CitationSurgeon
+from .synthesis import ConvergenceDivergenceAnalyzer
 from .citation_registry import CitationRegistry
 from .coherence_validator import CoherenceValidator
 from ...config import get_config
@@ -50,10 +51,14 @@ class GenerationPipeline:
         config_data = self.config.load_config()
         integrity_config = config_data.get("citation", {}).get("integrity", {})
 
+        gen_config = config_data.get("generation", {})
+        self.enable_synthesis = gen_config.get("enable_synthesis", True)
+
         self.analyst = ClaimAnalyst()
         self.sectional_writer = SectionalWriter()
         self.integrator = NarrativeIntegrator()
         self.surgeon = CitationSurgeon()
+        self.synthesis_analyzer = ConvergenceDivergenceAnalyzer()
         self.coherence_validator = CoherenceValidator(
             min_coherence_score=integrity_config.get("min_coherence_score", 0.6),
             method=integrity_config.get("coherence_method", "embedding"),
@@ -194,6 +199,39 @@ class GenerationPipeline:
                 f"opposition={balance_info['opposition_words']} words, "
                 f"ratio={balance_info['ratio']:.1f}:1"
             )
+
+        # === Stage 3.5: Convergence-Divergence Analysis ===
+        if self.enable_synthesis:
+            if stream_callback:
+                await stream_callback({
+                    "type": "progress",
+                    "stage": 3.5,
+                    "message": "Analyzing convergences and divergences..."
+                })
+
+            synthesis_result = self.synthesis_analyzer.analyze(
+                integrated.get("text", ""), query
+            )
+
+            if synthesis_result.get("success") and synthesis_result.get("synthesis_text"):
+                # Append synthesis section to integrated text
+                integrated_text = integrated.get("text", "")
+                synthesis_section = (
+                    "\n\n## Analisi Trasversale\n\n"
+                    + synthesis_result["synthesis_text"]
+                )
+                integrated["text"] = integrated_text + synthesis_section
+
+                pipeline_metadata["stages"]["synthesis"] = {
+                    "success": True,
+                }
+                logger.info("Stage 3.5 complete: Convergence-divergence analysis added")
+            else:
+                pipeline_metadata["stages"]["synthesis"] = {
+                    "success": False,
+                    "error": synthesis_result.get("error", "unknown"),
+                }
+                logger.warning("Stage 3.5: Synthesis analysis failed, continuing without")
 
         # === Pre-Surgeon: Coherence Validation ===
         coherence_report = self.coherence_validator.validate_all_citations(

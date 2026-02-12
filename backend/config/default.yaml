@@ -119,6 +119,10 @@ generation:
   require_all_parties: true
   no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
 
+  # Enable convergence-divergence synthesis section (Stage 3.5)
+  # Adds "Analisi Trasversale" section identifying cross-party patterns
+  enable_synthesis: true
+
 # Coalition definitions for temporal authority logic
 # CRITICAL: Coalition crossing (maggioranza <-> opposizione) invalidates prior authority
 coalitions:
