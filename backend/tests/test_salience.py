@@ -76,6 +76,26 @@ class TestPoliticalSalienceScore:
         s = "Questa riforma rappresenta un passo indietro per il Paese."
         assert extractor._political_salience_score(s) == 0.9
 
+    def test_parere_favorevole(self, extractor):
+        s = "Sull'ordine del giorno n. 9/1606-A/33 Scerra, il parere è favorevole."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_parere_contrario(self, extractor):
+        s = "Il parere è contrario sull'emendamento presentato."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_emendamento_approvato(self, extractor):
+        s = "L'emendamento è approvato."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_governo_esprime_parere(self, extractor):
+        s = "Il Governo esprime parere favorevole sull'ordine del giorno."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_relatore_invita_ritiro(self, extractor):
+        s = "Il relatore invita al ritiro dell'emendamento 1.5."
+        assert extractor._political_salience_score(s) == 0.2
+
     def test_empty_string(self, extractor):
         assert extractor._political_salience_score("") == 0.5
 
