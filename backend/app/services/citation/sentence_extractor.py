@@ -217,6 +217,12 @@ class SentenceExtractor:
         re.compile(r'\b(?:il Governo|il relatore)\s+(?:esprime parere|invita al ritiro|accetta|non accetta)\b', re.IGNORECASE),
         re.compile(r'\b(?:do lettura del|si intende approvato|si intendono approvati|è così stabilito)\b', re.IGNORECASE),
         re.compile(r'\b(?:chiedo che la Presidenza|ai sensi dell\'articolo|a norma dell\'articolo)\b', re.IGNORECASE),
+        # Formulaic vote announcements
+        re.compile(r'\bannuncio il voto\s+(?:favorevole|contrario)\b', re.IGNORECASE),
+        re.compile(r'\bdichiaro? (?:il|di)\s*voto\s+(?:favorevole|contrario)\b', re.IGNORECASE),
+        re.compile(r'\bcon quest\'auspicio\b', re.IGNORECASE),
+        re.compile(r'\bvoto favorevole del gruppo\b', re.IGNORECASE),
+        re.compile(r'\bvoto contrario del gruppo\b', re.IGNORECASE),
     ]
 
     # Patterns indicating argumentation with data (medium-high salience)
