@@ -355,7 +355,9 @@ class CitationSurgeon:
         # Trim trailing dangling words: articles, prepositions, conjunctions,
         # truncated references (e.g. "– n"), etc. that signal a mid-phrase cut.
         # These patterns at the end mean the quote was truncated mid-sentence.
+        # Also catches trailing comma + fragment (e.g. "..., secondo")
         dangling = re.compile(
+            r'(?:'
             r'\s+(?:'
             r'il|lo|la|i|gli|le|un|uno|una|l|dell|del|della|dello|dei|degli|delle|'
             r'nel|nella|nello|nei|negli|nelle|sul|sulla|sullo|sui|sugli|sulle|'
@@ -363,6 +365,8 @@ class CitationSurgeon:
             r'di|a|da|in|con|su|per|tra|fra|'
             r'e|o|ma|che|né|se|'
             r'[–\-]\s*\w{0,2}'  # truncated references like "– n", "- 2"
+            r')'
+            r'|,\s+\w{1,6}'  # trailing comma + short word fragment
             r')$',
             re.IGNORECASE
         )

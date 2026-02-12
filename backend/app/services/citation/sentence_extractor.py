@@ -96,7 +96,15 @@ class SentenceExtractor:
         return self._clean_result(result)
 
     def _clean_result(self, text: str) -> str:
-        """Clean up the extracted text for display."""
+        """Clean up the extracted text for display.
+
+        Handles leading fragments from sentence boundaries that were
+        incorrectly split, such as adjectives or nouns that are
+        continuations from a previous sentence.
+
+        See: BERTScore (Zhang et al., ICLR 2020) on contextual
+        completeness scoring for text generation quality.
+        """
         text = text.strip()
 
         # Remove leading lowercase connectors
@@ -106,6 +114,35 @@ class SentenceExtractor:
         ]
         for pattern in leading_patterns:
             text = re.sub(pattern, '', text, flags=re.IGNORECASE)
+
+        # Remove leading fragment: lowercase word followed by comma
+        # (indicates continuation from previous sentence, e.g.
+        # "internazionale, serve una risposta" → "Serve una risposta")
+        prev = None
+        while text != prev:
+            prev = text
+            text = re.sub(
+                r'^[a-zàèéìòù][a-zàèéìòù]*\s*,\s*',
+                '', text
+            )
+
+        # Remove leading fragment: lowercase word followed by space
+        # when no verb is present in the first few words
+        # (e.g. "europeo e del Mediterraneo" is a fragment)
+        if text and text[0].islower():
+            first_words = text.split()[:4]
+            first_words_lower = [w.lower().rstrip('.,;:') for w in first_words]
+            has_early_verb = any(
+                w in self._VERB_AUXILIARIES or
+                self._VERB_ENDING_PATTERN.match(w)
+                for w in first_words_lower
+            )
+            if not has_early_verb and len(first_words) > 2:
+                # Try removing words up to first verb or uppercase start
+                for i, word in enumerate(text):
+                    if word.isupper() and i > 0:
+                        text = text[i:]
+                        break
 
         # Capitalize first letter
         if text and text[0].islower():
