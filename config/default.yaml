@@ -17,10 +17,11 @@ retrieval:
     max_acts_per_query: 100
 
   merger:
-    diversity_weight: 0.2      # Penalize same-speaker dominance
-    coverage_weight: 0.3       # Reward party coverage
-    authority_weight: 0.3      # Authority-aware reweighting
-    relevance_weight: 0.2      # Base similarity score
+    diversity_weight: 0.15     # Penalize same-speaker dominance
+    coverage_weight: 0.25      # Reward party coverage
+    authority_weight: 0.25     # Authority-aware reweighting
+    relevance_weight: 0.15     # Base similarity score
+    salience_weight: 0.20      # Prefer politically substantive chunks over procedural text
 
 authority:
   weights:

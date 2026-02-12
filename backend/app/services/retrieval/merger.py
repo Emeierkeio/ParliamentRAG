@@ -12,6 +12,7 @@ from typing import List, Dict, Any, Set, Optional
 from collections import defaultdict
 
 from ...config import get_config
+from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -52,10 +53,11 @@ class ChannelMerger:
         merger_config = self.config.retrieval.get("merger", {})
 
         # Get weights
-        relevance_weight = merger_config.get("relevance_weight", 0.2)
-        diversity_weight = merger_config.get("diversity_weight", 0.2)
-        coverage_weight = merger_config.get("coverage_weight", 0.3)
-        authority_weight = merger_config.get("authority_weight", 0.3)
+        relevance_weight = merger_config.get("relevance_weight", 0.15)
+        diversity_weight = merger_config.get("diversity_weight", 0.15)
+        coverage_weight = merger_config.get("coverage_weight", 0.25)
+        authority_weight = merger_config.get("authority_weight", 0.25)
+        salience_weight = merger_config.get("salience_weight", 0.20)
 
         logger.info(
             f"Merging {len(dense_results)} dense + {len(graph_results)} graph results"
@@ -72,7 +74,8 @@ class ChannelMerger:
             relevance_weight,
             diversity_weight,
             coverage_weight,
-            authority_weight
+            authority_weight,
+            salience_weight
         )
 
         # Sort and select top_k with diversity
@@ -112,7 +115,8 @@ class ChannelMerger:
         relevance_weight: float,
         diversity_weight: float,
         coverage_weight: float,
-        authority_weight: float
+        authority_weight: float,
+        salience_weight: float = 0.20
     ) -> List[Dict[str, Any]]:
         """
         Compute final scores for all results.
@@ -151,12 +155,20 @@ class ChannelMerger:
             if authority_scores and speaker_id in authority_scores:
                 authority = authority_scores[speaker_id]
 
+            # Political salience score
+            salience = result.get("salience")
+            if salience is None:
+                text = result.get("chunk_text") or result.get("quote_text", "")
+                salience = compute_chunk_salience(text)
+                result["salience"] = salience
+
             # Final score
             final_score = (
                 relevance_weight * relevance +
                 diversity_weight * diversity +
                 coverage_weight * coverage +
-                authority_weight * authority
+                authority_weight * authority +
+                salience_weight * salience
             )
 
             result["final_score"] = final_score
@@ -164,7 +176,8 @@ class ChannelMerger:
                 "relevance": relevance,
                 "diversity": diversity,
                 "coverage": coverage,
-                "authority": authority
+                "authority": authority,
+                "salience": salience
             }
 
         return results
