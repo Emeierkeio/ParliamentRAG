@@ -4,7 +4,7 @@
 
 ### Multi-View RAG for Italian Parliamentary Data
 
-A Retrieval-Augmented Generation system that delivers **balanced, multi-view analysis** of Italian parliamentary debates — ensuring all political voices are represented in every response.
+A Retrieval-Augmented Generation system that delivers **balanced, multi-view analysis** of Italian parliamentary debates (XIX Legislatura) — ensuring all 10 parliamentary groups are represented in every response, with deterministic offset-based citations and query-dependent authority scoring.
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
@@ -21,9 +21,9 @@ A Retrieval-Augmented Generation system that delivers **balanced, multi-view ana
 
 ## Overview
 
-ParliamentRAG is a research system built for a Master's thesis that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
+ParliamentRAG is a research system built for a Master's thesis in Data Science (Universita' degli Studi di Milano-Bicocca, A.A. 2025/2026) that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
 
-The system features a 4-stage generation pipeline with **deterministic, offset-based citations** — zero fuzzy matching — ensuring full auditability and traceability of every quoted passage.
+The system features a **4-stage generation pipeline** (Analyst → Sectional Writer → Integrator → Citation Surgeon) with **deterministic, offset-based citations** — zero fuzzy matching — ensuring full auditability and traceability of every quoted passage. A **5-factor merger** (relevance, diversity, coverage, authority, salience) and **embedding-based coherence validation** guarantee both quality and fairness of the output.
 
 <div align="center">
   <a href="https://www.parliamentrag.it">
@@ -37,19 +37,27 @@ The system features a 4-stage generation pipeline with **deterministic, offset-b
 
 ## Key Features
 
-**Dual-Channel Retrieval** — Combines dense vector similarity search with structured graph traversal for comprehensive evidence gathering
+**Dual-Channel Retrieval** — Combines dense vector similarity search (Neo4j native vector index, top_k=200) with structured graph traversal (hybrid Eurovoc matching on `ParliamentaryAct` nodes) for comprehensive evidence gathering
 
-**Query-Dependent Authority Scoring** — Ranks speakers by topic-specific credibility using profession, education, committee roles, legislative activity, and speech frequency — with coalition-aware temporal logic
+**5-Factor Merger Scoring** — Combines relevance (0.15), diversity (0.15), coverage (0.25), authority (0.25), and salience (0.20) to produce a balanced, high-quality result set. Salience penalizes procedural boilerplate ("il parere e' favorevole", "ringrazio il Presidente")
 
-**Ideological Compass** — Semi-supervised 2D positioning of parliamentary groups using PCA on text embeddings with configurable soft anchors
+**Query-Dependent Authority Scoring** — Ranks speakers by topic-specific credibility across 6 components: profession (0.10), education (0.10), committee (0.20), acts (0.25), interventions (0.30), role (0.05) — with exponential time decay and coalition-aware temporal logic that invalidates authority on majority↔opposition crossing
 
-**4-Stage Generation Pipeline** — Analyst → Sectional Writer → Integrator → Citation Surgeon, each stage independently verifiable
+**Ideological Compass** — Data-driven 2D positioning of parliamentary groups using weighted PCA on text embeddings (IC-1 → IC-6 pipeline), with KDE clustering, TF-IDF axis labeling, and configurable soft anchors (disabled by default)
 
-**Deterministic Citations** — Offset-based extraction from raw text, no fuzzy matching. Every quote is verbatim and auditable
+**4-Stage Generation Pipeline** — Analyst (gpt-4o-mini) → Sectional Writer (gpt-4o) → Integrator (gpt-4o) → Citation Surgeon (deterministic), each stage independently verifiable
 
-**Mandatory Multi-View Coverage** — All 10 parliamentary groups are represented in every response, preventing political bias
+**Citation-First Writing** — The LLM sees the pre-extracted citation *before* writing the intro text, then inserts a `[CIT:id]` placeholder. The deterministic Surgeon replaces it with the verbatim offset-based quote. Zero fuzzy matching — every citation is auditable
 
-**Real-Time Streaming** — SSE-based streaming with visible pipeline progress across all 9 processing stages
+**5-Level Citation Integrity** — Citation Registry (state tracking) → Citation-First Writer (coherence by construction) → Integrator Guard (citation preservation) → Coherence Validator (embedding cosine similarity, threshold 0.6) → Final Completeness Check
+
+**Mandatory Multi-View Coverage** — All 10 parliamentary groups are represented in every response. Post-generation balance check ensures majority/opposition word ratio ≤ 2:1 (Coverage-based Fairness, NAACL 2025)
+
+**Semantic Deduplication** — MMR-inspired cross-speaker deduplication using embedding cosine similarity > 0.85, keeping the most authoritative source
+
+**Real-Time Streaming** — SSE-based streaming with visible pipeline progress across 9 event types (progress, commissioni, experts, citations, balance, compass, citation_details, chunk, complete)
+
+**A/B Evaluation** — Integrated baseline pipeline (authority neutralized, no Surgeon/Coherence) with blind A/B comparison at `/valutazione`
 
 ---
 
@@ -70,9 +78,9 @@ flowchart TB
   subgraph Backend["<b>Backend</b> — FastAPI"]
     direction LR
     subgraph Retrieval["Retrieval"]
-      Dense["Dense Channel"]
-      Graph["Graph Channel"]
-      Merger["Merger"]
+      Dense["Dense Channel<br/><i>Vector Similarity</i>"]
+      Graph["Graph Channel<br/><i>Eurovoc + KG Traversal</i>"]
+      Merger["5-Factor Merger<br/><i>rel · div · cov · auth · sal</i>"]
     end
     subgraph Authority["Authority Scoring"]
       Prof["Profession & Education"]
@@ -80,18 +88,20 @@ flowchart TB
       Coal["Coalition Logic"]
     end
     subgraph Generation["4-Stage Pipeline"]
-      S1["1 · Analyst"]
-      S2["2 · Sectional Writer"]
-      S3["3 · Integrator"]
-      S4["4 · Citation Surgeon"]
+      S1["1 · Analyst<br/><i>gpt-4o-mini</i>"]
+      S2["2 · Sectional Writer<br/><i>gpt-4o · citation-first</i>"]
+      S3["3 · Integrator<br/><i>gpt-4o · balance check</i>"]
+      S4["4 · Citation Surgeon<br/><i>deterministic · offset</i>"]
       S1 --> S2 --> S3 --> S4
     end
-    Compass["Ideological Compass<br/><i>PCA · KDE · Soft Anchors</i>"]
+    Compass["Ideological Compass<br/><i>Weighted PCA · KDE · TF-IDF</i>"]
+    Integrity["Citation Integrity<br/><i>Registry · Coherence · Guard</i>"]
   end
 
   Retrieval --> Authority
   Authority --> Generation
   Authority --> Compass
+  Generation --> Integrity
 
   Backend -->|"Bolt"| DB
 
@@ -109,6 +119,7 @@ flowchart TB
   style Authority fill:#3b1f5e,stroke:#8b5cf6,color:#ede9fe
   style Generation fill:#4a1d34,stroke:#ec4899,color:#fce7f3
   style Compass fill:#365314,stroke:#84cc16,color:#ecfccb
+  style Integrity fill:#4a2c0a,stroke:#f59e0b,color:#fef3c7
 ```
 
 ---
@@ -210,13 +221,19 @@ Full interactive documentation available at `/docs` when the backend is running.
 All weights and thresholds are managed through YAML configuration in `config/default.yaml`:
 
 ```yaml
-# Retrieval merger weights
+# Retrieval merger weights (5-factor scoring)
 retrieval:
+  dense_channel:
+    top_k: 200
+    similarity_threshold: 0.3
+  graph_channel:
+    semantic_similarity_threshold: 0.4
   merger:
-    diversity_weight: 0.2    # Penalizes speaker dominance
-    coverage_weight: 0.3     # Favors party representation
-    authority_weight: 0.3    # Query-dependent credibility
-    relevance_weight: 0.2    # Semantic similarity
+    relevance_weight: 0.15   # Semantic similarity
+    diversity_weight: 0.15   # Penalizes speaker dominance
+    coverage_weight: 0.25    # Favors party representation
+    authority_weight: 0.25   # Query-dependent credibility
+    salience_weight: 0.20    # Political substantiveness (vs procedural)
 
 # Authority scoring components
 authority:
@@ -224,17 +241,30 @@ authority:
     profession: 0.10
     education: 0.10
     committee: 0.20
-    acts: 0.25
-    interventions: 0.30
+    acts: 0.25               # Time decay: half-life 365 days
+    interventions: 0.30      # Time decay: half-life 180 days
     role: 0.05
+  normalization: "percentile"
 
 # Generation model selection
 generation:
   models:
-    analyst: "gpt-4o-mini"   # Stage 1: query decomposition
+    analyst: "gpt-4o-mini"   # Stage 1: query decomposition (cost optimized)
     writer: "gpt-4o"         # Stage 2: per-party sections
     integrator: "gpt-4o"     # Stage 3: narrative coherence
     # Stage 4 is deterministic (no LLM)
+  parameters:
+    temperature: 0.3
+    max_tokens: 4000
+
+# Citation integrity
+citation:
+  method: "offset"           # ONLY offset-based, NO fuzzy matching
+  integrity:
+    min_coherence_score: 0.2 # Embedding cosine similarity threshold
+    enable_registry: true
+    integrator_guard: true
+    evidence_first_mode: true
 ```
 
 ---
@@ -302,18 +332,13 @@ pytest tests/test_citation_exact.py -v        # Offset-based citation extraction
 
 ## Documentation
 
-Detailed documentation is available in the [`docs/`](docs/) directory:
-
 | Document | Topic |
 |----------|-------|
-| [architecture.md](docs/architecture.md) | System design and component overview |
-| [retrieval.md](docs/retrieval.md) | Dual-channel retrieval pipeline |
-| [authority_score.md](docs/authority_score.md) | Query-dependent authority scoring |
-| [ideological_compass.md](docs/ideological_compass.md) | Semi-supervised compass methodology |
-| [citation_integrity.md](docs/citation_integrity.md) | Offset-based citation verification |
-| [generation_pipeline.md](docs/generation_pipeline.md) | 4-stage generation pipeline |
-| [design_choices.md](docs/design_choices.md) | Architectural decisions and rationale |
-| [evaluation.md](docs/evaluation.md) | A/B testing methodology |
+| [thesis.md](thesis.md) | Full thesis document (Chapters 1-8) |
+| [slides.md](slides.md) | Marp presentation slides |
+| [scelte.md](scelte.md) | 24 architectural decisions with rationale |
+| [biblio.md](biblio.md) | 15 papers with traceability to design choices |
+| [config/default.yaml](config/default.yaml) | All weights, thresholds, and parameters |
 
 ---
 
@@ -328,11 +353,12 @@ ParliamentRAG/
 │   │   ├── models/              # Pydantic data models
 │   │   ├── routers/             # API endpoints (9 routers)
 │   │   └── services/
-│   │       ├── retrieval/       # Dense + Graph channels, Merger
+│   │       ├── retrieval/       # Dense + Graph channels, 5-factor Merger
 │   │       ├── authority/       # Authority scoring, Coalition logic
-│   │       ├── generation/      # 4-stage pipeline
-│   │       ├── compass/         # Ideological compass (PCA, KDE)
-│   │       └── citation/        # Sentence extraction
+│   │       ├── generation/      # 4-stage pipeline, Citation Registry,
+│   │       │                    # Coherence Validator, Evidence-First Writer
+│   │       ├── compass/         # Ideological compass (PCA, KDE, TF-IDF)
+│   │       └── citation/        # Sentence extraction, Salience scoring
 │   ├── config/                  # YAML configuration
 │   ├── requirements.txt
 │   └── Dockerfile
@@ -343,8 +369,14 @@ ParliamentRAG/
 │       ├── hooks/               # Custom React hooks
 │       └── types/               # TypeScript definitions
 ├── config/                      # Shared YAML configuration
-├── docs/                        # Technical documentation
+│   ├── default.yaml             # All weights, thresholds, parameters
+│   └── commissioni_topics.yaml  # Committee topic mappings
+├── neo4j/                       # Neo4j Docker data volumes
 ├── docker-compose.yml           # Neo4j container
+├── thesis.md                    # Full thesis document
+├── slides.md                    # Marp presentation slides
+├── scelte.md                    # Architectural decisions
+├── biblio.md                    # Bibliography with traceability
 ├── .env.example                 # Environment template
 └── LICENSE
 ```
@@ -353,7 +385,11 @@ ParliamentRAG/
 
 ## Author
 
-**Mirko Tritella** — Master's Thesis Project
+**Mirko Tritella** — Tesi di Laurea Magistrale in Data Science, A.A. 2025/2026
+
+Relatore: Prof. Matteo **Palmonari** — Correlatore: Dott. Riccardo **Pozzi**
+
+Universita' degli Studi di Milano-Bicocca
 
 ---
 
