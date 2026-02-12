@@ -242,9 +242,36 @@ def _search_speeches_semantic(
     embedding: List[float],
     limit: int,
     threshold: float = 0.5,
+    deputy_id: Optional[str] = None,
+    group: Optional[List[str]] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """Semantic search on Speech chunks using vector index."""
-    cypher = """
+    extra_where = []
+    params: Dict[str, Any] = {
+        "top_k": limit * 2,
+        "embedding": embedding,
+        "threshold": threshold,
+        "limit": limit,
+    }
+
+    if deputy_id:
+        extra_where.append("d.id = $deputy_id")
+        params["deputy_id"] = deputy_id
+    if group:
+        extra_where.append("g.name IN $groups")
+        params["groups"] = group
+    if start_date:
+        extra_where.append("s.date >= date($start_date)")
+        params["start_date"] = start_date
+    if end_date:
+        extra_where.append("s.date <= date($end_date)")
+        params["end_date"] = end_date
+
+    filter_clause = ("AND " + " AND ".join(extra_where)) if extra_where else ""
+
+    cypher = f"""
     CALL db.index.vector.queryNodes('chunk_embedding_index', $top_k, $embedding)
     YIELD node AS c, score
     WHERE score >= $threshold
@@ -253,6 +280,8 @@ def _search_speeches_semantic(
     MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(dib:Debate)<-[:HAS_DEBATE]-(s:Session)
     OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
     WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+    WITH c, i, d, s, dib, g, score
+    WHERE true {filter_clause}
     RETURN c.id AS chunk_id,
            c.text AS text,
            i.id AS speech_id,
@@ -267,12 +296,7 @@ def _search_speeches_semantic(
     LIMIT $limit
     """
 
-    results = client.query(cypher, {
-        "top_k": limit * 2,
-        "embedding": embedding,
-        "threshold": threshold,
-        "limit": limit,
-    })
+    results = client.query(cypher, params)
 
     records = []
     for r in results:
@@ -302,17 +326,56 @@ def _search_acts_semantic(
     embedding: List[float],
     limit: int,
     threshold: float = 0.5,
+    deputy_id: Optional[str] = None,
+    group: Optional[List[str]] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """Semantic search on ParliamentaryAct using vector index."""
     _ensure_act_vector_index()
 
-    cypher = """
+    extra_where = []
+    params: Dict[str, Any] = {
+        "top_k": limit * 2,
+        "embedding": embedding,
+        "threshold": threshold,
+        "limit": limit,
+    }
+
+    if deputy_id:
+        extra_where.append("d.id = $deputy_id")
+        params["deputy_id"] = deputy_id
+    if group:
+        extra_where.append("g.name IN $groups")
+        params["groups"] = group
+    if start_date:
+        extra_where.append("a.dataPresentazione >= $start_date_act")
+        params["start_date_act"] = start_date.replace("-", "")
+    if end_date:
+        extra_where.append("a.dataPresentazione <= $end_date_act")
+        params["end_date_act"] = end_date.replace("-", "")
+
+    # When filtering by deputy/group, use MATCH instead of OPTIONAL MATCH
+    if deputy_id or group:
+        signatory_match = "MATCH (d)-[:PRIMARY_SIGNATORY]->(a)\n    WHERE (d:Deputy OR d:GovernmentMember)"
+    else:
+        signatory_match = "OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a)\n    WHERE (d:Deputy OR d:GovernmentMember)"
+
+    if group:
+        group_match = "MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)"
+    else:
+        group_match = "OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)"
+
+    filter_clause = ("WHERE " + " AND ".join(extra_where)) if extra_where else ""
+
+    cypher = f"""
     CALL db.index.vector.queryNodes('act_description_embedding_index', $top_k, $embedding)
     YIELD node AS a, score
     WHERE score >= $threshold
-    OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a)
-    WHERE (d:Deputy OR d:GovernmentMember)
-    OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+    {signatory_match}
+    {group_match}
+    WITH a, d, g, score
+    {filter_clause}
     RETURN a.uri AS act_uri,
            a.tipo AS act_type,
            a.title AS act_title,
@@ -329,12 +392,7 @@ def _search_acts_semantic(
     LIMIT $limit
     """
 
-    results = client.query(cypher, {
-        "top_k": limit * 2,
-        "embedding": embedding,
-        "threshold": threshold,
-        "limit": limit,
-    })
+    results = client.query(cypher, params)
 
     records = []
     for r in results:
@@ -411,10 +469,10 @@ async def search_results(
             try:
                 embedding = _generate_embedding(q)
                 if search_speeches:
-                    speech_sem = _search_speeches_semantic(client, embedding, fetch_limit)
+                    speech_sem = _search_speeches_semantic(client, embedding, fetch_limit, deputy_id=deputy_id, group=group, start_date=start_date, end_date=end_date)
                     all_results.extend(speech_sem)
                 if search_acts:
-                    act_sem = _search_acts_semantic(client, embedding, fetch_limit)
+                    act_sem = _search_acts_semantic(client, embedding, fetch_limit, deputy_id=deputy_id, group=group, start_date=start_date, end_date=end_date)
                     all_results.extend(act_sem)
             except Exception as e:
                 logger.error(f"Semantic search failed: {e}")
