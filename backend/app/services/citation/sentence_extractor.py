@@ -210,6 +210,13 @@ class SentenceExtractor:
         re.compile(r'\b(?:come dicevo|come stavo dicendo|tornando al tema|riprendendo il discorso)\b', re.IGNORECASE),
         re.compile(r'\b(?:l\'ordine del giorno reca|è iscritto a parlare|risulta assente)\b', re.IGNORECASE),
         re.compile(r'\b(?:avverto che|comunico che|informo l\'assemblea)\b', re.IGNORECASE),
+        # Formulaic vote/opinion expressions on amendments and agenda items
+        re.compile(r'\bil parere è\s+(?:favorevole|contrario|conforme)\b', re.IGNORECASE),
+        re.compile(r'\bsull\'ordine del giorno\s+n\.\s*\d+', re.IGNORECASE),
+        re.compile(r'\b(?:l\'emendamento|l\'articolo|il subemendamento)\s+(?:è approvato|è respinto|è ritirato|è precluso|è assorbito)\b', re.IGNORECASE),
+        re.compile(r'\b(?:il Governo|il relatore)\s+(?:esprime parere|invita al ritiro|accetta|non accetta)\b', re.IGNORECASE),
+        re.compile(r'\b(?:do lettura del|si intende approvato|si intendono approvati|è così stabilito)\b', re.IGNORECASE),
+        re.compile(r'\b(?:chiedo che la Presidenza|ai sensi dell\'articolo|a norma dell\'articolo)\b', re.IGNORECASE),
     ]
 
     # Patterns indicating argumentation with data (medium-high salience)
