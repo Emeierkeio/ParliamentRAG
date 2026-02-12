@@ -200,38 +200,7 @@ class GenerationPipeline:
                 f"ratio={balance_info['ratio']:.1f}:1"
             )
 
-        # === Stage 3.5: Convergence-Divergence Analysis ===
-        if self.enable_synthesis:
-            if stream_callback:
-                await stream_callback({
-                    "type": "progress",
-                    "stage": 3.5,
-                    "message": "Analyzing convergences and divergences..."
-                })
-
-            synthesis_result = self.synthesis_analyzer.analyze(
-                integrated.get("text", ""), query
-            )
-
-            if synthesis_result.get("success") and synthesis_result.get("synthesis_text"):
-                # Append synthesis section to integrated text
-                integrated_text = integrated.get("text", "")
-                synthesis_section = (
-                    "\n\n## Analisi Trasversale\n\n"
-                    + synthesis_result["synthesis_text"]
-                )
-                integrated["text"] = integrated_text + synthesis_section
-
-                pipeline_metadata["stages"]["synthesis"] = {
-                    "success": True,
-                }
-                logger.info("Stage 3.5 complete: Convergence-divergence analysis added")
-            else:
-                pipeline_metadata["stages"]["synthesis"] = {
-                    "success": False,
-                    "error": synthesis_result.get("error", "unknown"),
-                }
-                logger.warning("Stage 3.5: Synthesis analysis failed, continuing without")
+        # Stage 3.5 (Convergence-Divergence Analysis) removed
 
         # === Pre-Surgeon: Coherence Validation ===
         coherence_report = self.coherence_validator.validate_all_citations(

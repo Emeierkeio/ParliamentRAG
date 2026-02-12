@@ -380,19 +380,7 @@ class CitationSurgeon:
         if quote:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()
 
-        # Build session reference for academic traceability
-        # Format: «quote» — Cognome, Seduta N. X, DD/MM/YYYY
-        session_ref = ""
-        speaker_surname = speaker.split()[-1] if speaker else ""
-        if speaker_surname:
-            ref_parts = [speaker_surname]
-            if session_number:
-                ref_parts.append(f"Seduta N. {session_number}")
-            if date:
-                ref_parts.append(date)
-            session_ref = f" — {', '.join(ref_parts)}"
-
-        return f'[«{quote}»{session_ref}]({evidence_id})'
+        return f'[«{quote}»]({evidence_id})'
 
     def _shorten_party_name(self, party: str) -> str:
         """Return readable display name for a party (full name, title case)."""
