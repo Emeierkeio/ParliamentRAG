@@ -178,6 +178,76 @@ class SentenceExtractor:
             return True
         return False
 
+    # --- Political salience patterns ---
+
+    # Patterns indicating political opinion/stance (high salience)
+    _OPINION_PATTERNS = [
+        # Explicit stance markers
+        re.compile(r'\b(?:riteniamo|crediamo|pensiamo|consideriamo|reputiamo)\b', re.IGNORECASE),
+        re.compile(r'\b(?:ci opponiamo|siamo contrari|non condividiamo|respingiamo|contestiamo)\b', re.IGNORECASE),
+        re.compile(r'\b(?:proponiamo|chiediamo|auspichiamo|sollecitiamo|esigiamo)\b', re.IGNORECASE),
+        re.compile(r'\b(?:sosteniamo|appoggiamo|condividiamo|approviamo|accogliamo)\b', re.IGNORECASE),
+        re.compile(r'\b(?:denunciamo|segnaliamo|stigmatizziamo|deploriamo|condanniamo)\b', re.IGNORECASE),
+        re.compile(r'\b(?:votiamo|voteremo)\s+(?:contro|a favore|sì|no)\b', re.IGNORECASE),
+        # Value judgments
+        re.compile(r'\bè\s+(?:inaccettabile|fondamentale|necessario|urgente|grave|doveroso|indispensabile|inammissibile|scandaloso|vergognoso)\b', re.IGNORECASE),
+        re.compile(r'\b(?:non possiamo|non si può|bisogna|occorre|serve|servono)\b', re.IGNORECASE),
+        # Group identity markers
+        re.compile(r'\b(?:il nostro gruppo|la nostra parte politica|noi di|il nostro partito|la maggioranza|l\'opposizione)\b', re.IGNORECASE),
+        # Policy direction
+        re.compile(r'\b(?:questa riforma|questo provvedimento|questa legge|questo decreto)\s+(?:è|rappresenta|costituisce|significa)\b', re.IGNORECASE),
+        # Argumentative connectors with opinion
+        re.compile(r'\b(?:per questo motivo|ecco perché|proprio per questo|a nostro avviso|a nostro giudizio|secondo noi)\b', re.IGNORECASE),
+    ]
+
+    # Patterns indicating procedural/formulaic text (low salience)
+    _PROCEDURAL_PATTERNS = [
+        re.compile(r'\b(?:dichiaro aperta|dichiaro chiusa|la seduta è aperta|la seduta è chiusa)\b', re.IGNORECASE),
+        re.compile(r'\b(?:ha facoltà di parlare|ha la parola|prego|do la parola|cedo la parola|passo la parola)\b', re.IGNORECASE),
+        re.compile(r'\b(?:metto in votazione|passiamo ai voti|procediamo alla votazione|si proceda alla votazione)\b', re.IGNORECASE),
+        re.compile(r'\b(?:ringrazio il presidente|ringrazio la presidente|ringrazio il ministro|ringrazio i colleghi|ringrazio l\'onorevole)\b', re.IGNORECASE),
+        re.compile(r'\b(?:presidente,?\s+colleghi|onorevoli colleghi|signor presidente|signora presidente)\b', re.IGNORECASE),
+        re.compile(r'\b(?:come dicevo|come stavo dicendo|tornando al tema|riprendendo il discorso)\b', re.IGNORECASE),
+        re.compile(r'\b(?:l\'ordine del giorno reca|è iscritto a parlare|risulta assente)\b', re.IGNORECASE),
+        re.compile(r'\b(?:avverto che|comunico che|informo l\'assemblea)\b', re.IGNORECASE),
+    ]
+
+    # Patterns indicating argumentation with data (medium-high salience)
+    _ARGUMENTATION_PATTERNS = [
+        # Numerical evidence
+        re.compile(r'\b\d+[\.,]?\d*\s*(?:per cento|%|miliardi|milioni|miliardo|milione|euro)\b', re.IGNORECASE),
+        # Legal references
+        re.compile(r'\b(?:articolo|art\.)\s+\d+', re.IGNORECASE),
+        re.compile(r'\b(?:decreto|legge|disegno di legge|proposta di legge)\s+(?:n\.|numero|del)\b', re.IGNORECASE),
+        # Comparative/temporal argumentation
+        re.compile(r'\b(?:rispetto a|a differenza di|contrariamente a|mentre invece|al contrario)\b', re.IGNORECASE),
+    ]
+
+    def _political_salience_score(self, sentence: str) -> float:
+        """Score the political salience of a sentence.
+
+        Returns:
+            1.0: strong political opinion/stance
+            0.7: argumentation with data/evidence
+            0.5: neutral (no strong signal either way)
+            0.2: procedural/formulaic text
+        """
+        opinion_hits = sum(1 for p in self._OPINION_PATTERNS if p.search(sentence))
+        procedural_hits = sum(1 for p in self._PROCEDURAL_PATTERNS if p.search(sentence))
+        argumentation_hits = sum(1 for p in self._ARGUMENTATION_PATTERNS if p.search(sentence))
+
+        if procedural_hits > 0 and opinion_hits == 0:
+            return 0.2
+        if opinion_hits >= 2:
+            return 1.0
+        if opinion_hits == 1:
+            return 0.9
+        if argumentation_hits >= 2:
+            return 0.8
+        if argumentation_hits == 1:
+            return 0.7
+        return 0.5
+
     # Subordinating conjunctions that signal a dependent clause fragment
     _SUBORDINATING_CONJUNCTIONS = {
         'se', 'che', 'quando', 'dove', 'come', 'perché', 'poiché',
@@ -370,7 +440,10 @@ class SentenceExtractor:
             density = len(overlap) / len(sentence_tokens) if sentence_tokens else 0
 
             completeness = self._syntactic_completeness_score(sentence)
-            total_score = overlap_score * 0.45 + completeness * 0.25 + density * 0.2 + position_bonus * 0.1
+            salience = self._political_salience_score(sentence)
+            total_score = (overlap_score * 0.30 + completeness * 0.20
+                           + density * 0.15 + salience * 0.25
+                           + position_bonus * 0.10)
             scored.append((sentence, total_score, i))
 
         return scored
@@ -472,6 +545,24 @@ class SentenceExtractor:
         return truncated.rstrip()
 
 
+    def compute_salience(self, text: str) -> float:
+        """Compute the political salience score for a chunk of text.
+
+        Splits text into sentences and returns the max salience score
+        found across all sentences. Useful for ranking chunks by
+        political relevance in the merger.
+
+        Returns:
+            Float between 0.0 and 1.0
+        """
+        if not text:
+            return 0.0
+        sentences = self._split_sentences(text)
+        if not sentences:
+            return self._political_salience_score(text)
+        return max(self._political_salience_score(s) for s in sentences)
+
+
 # Module-level convenience function
 _extractor = None
 
@@ -500,3 +591,17 @@ def extract_best_sentences(
         _extractor = SentenceExtractor(max_sentences=max_sentences)
 
     return _extractor.extract(text, query, max_chars)
+
+
+def compute_chunk_salience(text: str) -> float:
+    """Compute political salience score for a chunk of text.
+
+    Convenience function for use in the retrieval merger.
+
+    Returns:
+        Float between 0.0 and 1.0
+    """
+    global _extractor
+    if _extractor is None:
+        _extractor = SentenceExtractor()
+    return _extractor.compute_salience(text)
