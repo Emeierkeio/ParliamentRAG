@@ -47,11 +47,17 @@ class GenerationPipeline:
 
     def __init__(self):
         self.config = get_config()
+        config_data = self.config.load_config()
+        integrity_config = config_data.get("citation", {}).get("integrity", {})
+
         self.analyst = ClaimAnalyst()
         self.sectional_writer = SectionalWriter()
         self.integrator = NarrativeIntegrator()
         self.surgeon = CitationSurgeon()
-        self.coherence_validator = CoherenceValidator()
+        self.coherence_validator = CoherenceValidator(
+            min_coherence_score=integrity_config.get("min_coherence_score", 0.6),
+            method=integrity_config.get("coherence_method", "embedding"),
+        )
 
     async def generate(
         self,

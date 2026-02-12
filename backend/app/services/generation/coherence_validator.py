@@ -2,16 +2,30 @@
 Semantic Coherence Validator.
 
 Verifies that introductory text matches citation content semantically.
-Uses lightweight keyword-based approach (no API calls) for fast validation.
+
+Two-tier validation approach:
+1. Primary: Embedding cosine similarity (OpenAI text-embedding-3-small)
+2. Fallback: Keyword-based Jaccard overlap (no API calls)
+
+Grounded in:
+- SummaC (Laban et al., TACL 2022): NLI-based models outperform lexical
+  overlap for inconsistency detection in summarization
+- BERTScore (Zhang et al., ICLR 2020): contextual embedding matching
+  captures paraphrasing that Jaccard ignores
 
 This is a critical component for ensuring citation integrity:
 - The text that introduces a citation must reflect its actual content
 - A positive intro ("elogia", "sostiene") cannot introduce a negative quote
-- Keyword overlap ensures topical alignment
+- Semantic similarity ensures topical alignment beyond keyword overlap
 """
 import re
 import logging
 from typing import Dict, Any, List, Optional
+
+import numpy as np
+import openai
+
+from ...config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +34,11 @@ class CoherenceValidator:
     """
     Validates semantic coherence between intro text and citations.
 
-    Uses keyword overlap scoring for fast validation without API calls.
+    Primary method: embedding cosine similarity (threshold 0.6)
+    Fallback method: Jaccard keyword overlap (threshold 0.2)
 
     Example:
-        validator = CoherenceValidator(min_coherence_score=0.2)
+        validator = CoherenceValidator(min_coherence_score=0.6)
 
         result = validator.validate_coherence(
             intro_text="Il deputato critica la gestione sanitaria",
@@ -34,7 +49,7 @@ class CoherenceValidator:
             print(f"Warning: {result['warning']}")
     """
 
-    # Italian stop words to filter out
+    # Italian stop words to filter out (for Jaccard fallback)
     STOP_WORDS = {
         "il", "lo", "la", "i", "gli", "le", "un", "uno", "una",
         "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
@@ -71,14 +86,69 @@ class CoherenceValidator:
         "controbatte", "rifiuta", "contrasta", "rigetta", "boccia"
     }
 
-    def __init__(self, min_coherence_score: float = 0.2):
+    def __init__(
+        self,
+        min_coherence_score: float = 0.6,
+        method: str = "embedding"
+    ):
         """
         Initialize validator.
 
         Args:
-            min_coherence_score: Minimum score for text to be considered coherent (0.0-1.0)
+            min_coherence_score: Minimum score for coherence (0.0-1.0).
+                For embedding method: 0.6 recommended.
+                For jaccard method: 0.2 recommended.
+            method: "embedding" (primary) or "jaccard" (fallback/legacy)
         """
         self.min_coherence_score = min_coherence_score
+        self.method = method
+        self._embedding_available = None  # Lazy check
+        self._client = None
+
+    def _get_client(self) -> openai.OpenAI:
+        """Lazy-init OpenAI client."""
+        if self._client is None:
+            settings = get_settings()
+            self._client = openai.OpenAI(api_key=settings.openai_api_key)
+        return self._client
+
+    def _embedding_similarity(self, text_a: str, text_b: str) -> Optional[float]:
+        """Compute cosine similarity between embeddings of two texts.
+
+        Returns None if embedding API is unavailable.
+        """
+        try:
+            client = self._get_client()
+            response = client.embeddings.create(
+                model="text-embedding-3-small",
+                input=[text_a, text_b]
+            )
+            vec_a = np.array(response.data[0].embedding, dtype=np.float32)
+            vec_b = np.array(response.data[1].embedding, dtype=np.float32)
+
+            # Normalize and compute cosine similarity
+            norm_a = np.linalg.norm(vec_a)
+            norm_b = np.linalg.norm(vec_b)
+            if norm_a == 0 or norm_b == 0:
+                return 0.0
+
+            return float(np.dot(vec_a, vec_b) / (norm_a * norm_b))
+        except Exception as exc:
+            logger.warning(f"Embedding coherence check failed: {exc}")
+            self._embedding_available = False
+            return None
+
+    def _jaccard_similarity(self, text_a: str, text_b: str) -> float:
+        """Compute Jaccard keyword overlap (fallback method)."""
+        tokens_a = set(self._tokenize(text_a))
+        tokens_b = set(self._tokenize(text_b))
+
+        if not tokens_a or not tokens_b:
+            return 0.0
+
+        overlap = tokens_a & tokens_b
+        union_size = len(tokens_a | tokens_b)
+        return len(overlap) / union_size if union_size > 0 else 0.0
 
     def validate_coherence(
         self,
@@ -88,6 +158,9 @@ class CoherenceValidator:
         """
         Validate semantic coherence between intro and quote.
 
+        Uses embedding cosine similarity as primary method,
+        falls back to Jaccard if embeddings unavailable.
+
         Args:
             intro_text: The introductory text before the citation
             quote_text: The actual citation text
@@ -95,64 +168,94 @@ class CoherenceValidator:
         Returns:
             Dictionary with:
             - is_coherent: Boolean indicating if texts are coherent
-            - score: Keyword overlap score (0.0-1.0)
-            - overlap_keywords: List of matching keywords
+            - score: Similarity score (0.0-1.0)
+            - method: "embedding" or "jaccard"
             - sentiment_mismatch: Boolean if sentiments contradict
             - warning: Optional warning message
         """
-        # Tokenize
-        intro_tokens = self._tokenize(intro_text)
-        quote_tokens = self._tokenize(quote_text)
-
-        if not intro_tokens or not quote_tokens:
+        if not intro_text or not quote_text:
             return {
-                "is_coherent": True,  # Can't validate, assume OK
+                "is_coherent": True,
                 "score": 0.0,
-                "warning": "Empty tokens - cannot validate",
-                "intro_tokens": len(intro_tokens),
-                "quote_tokens": len(quote_tokens),
+                "method": "none",
+                "warning": "Empty text - cannot validate",
                 "overlap_keywords": [],
                 "sentiment_mismatch": False
             }
 
-        # Keyword overlap score
-        intro_set = set(intro_tokens)
-        quote_set = set(quote_tokens)
-        overlap = intro_set & quote_set
-
-        # Calculate Jaccard-like score
-        union_size = len(intro_set | quote_set)
-        overlap_score = len(overlap) / union_size if union_size > 0 else 0
-
-        # Check for sentiment contradiction
+        # Check sentiment mismatch (always, regardless of method)
         intro_sentiment = self._detect_sentiment(intro_text)
         quote_sentiment = self._detect_sentiment(quote_text)
-
         sentiment_mismatch = (
             intro_sentiment is not None and
             quote_sentiment is not None and
             intro_sentiment != quote_sentiment
         )
 
+        # Compute similarity score
+        score = 0.0
+        method_used = self.method
+        overlap_keywords = []
+
+        if self.method == "embedding" and self._embedding_available is not False:
+            embedding_score = self._embedding_similarity(intro_text, quote_text)
+            if embedding_score is not None:
+                score = embedding_score
+                method_used = "embedding"
+            else:
+                # Fallback to Jaccard
+                score = self._jaccard_similarity(intro_text, quote_text)
+                method_used = "jaccard"
+                # Adjust threshold for Jaccard
+                overlap_keywords = list(
+                    set(self._tokenize(intro_text)) &
+                    set(self._tokenize(quote_text))
+                )[:10]
+        else:
+            score = self._jaccard_similarity(intro_text, quote_text)
+            method_used = "jaccard"
+            overlap_keywords = list(
+                set(self._tokenize(intro_text)) &
+                set(self._tokenize(quote_text))
+            )[:10]
+
+        # Determine threshold based on method
+        if method_used == "embedding":
+            threshold = self.min_coherence_score  # 0.6 for embedding
+        else:
+            threshold = 0.2  # Original Jaccard threshold
+
         # Final coherence decision
-        is_coherent = overlap_score >= self.min_coherence_score and not sentiment_mismatch
+        is_coherent = score >= threshold and not sentiment_mismatch
 
         result = {
             "is_coherent": is_coherent,
-            "score": round(overlap_score, 3),
-            "overlap_keywords": list(overlap)[:10],
+            "score": round(score, 3),
+            "method": method_used,
+            "threshold": threshold,
+            "overlap_keywords": overlap_keywords,
             "intro_sentiment": intro_sentiment,
             "quote_sentiment": quote_sentiment,
             "sentiment_mismatch": sentiment_mismatch
         }
 
         if sentiment_mismatch:
-            result["warning"] = f"Sentiment mismatch: intro={intro_sentiment}, quote={quote_sentiment}"
-            logger.warning(f"Coherence: Sentiment mismatch detected - intro={intro_sentiment}, quote={quote_sentiment}")
-
-        elif overlap_score < self.min_coherence_score:
-            result["warning"] = f"Low keyword overlap: {overlap_score:.2f} < {self.min_coherence_score}"
-            logger.warning(f"Coherence: Low overlap score {overlap_score:.2f}")
+            result["warning"] = (
+                f"Sentiment mismatch: intro={intro_sentiment}, "
+                f"quote={quote_sentiment}"
+            )
+            logger.warning(
+                f"Coherence: Sentiment mismatch detected - "
+                f"intro={intro_sentiment}, quote={quote_sentiment}"
+            )
+        elif not is_coherent:
+            result["warning"] = (
+                f"Low {method_used} score: {score:.2f} < {threshold}"
+            )
+            logger.warning(
+                f"Coherence: Low {method_used} score {score:.2f} "
+                f"(threshold {threshold})"
+            )
 
         return result
 

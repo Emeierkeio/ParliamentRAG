@@ -152,8 +152,11 @@ citation:
     # Enable citation registry for tracking
     enable_registry: true
     # Minimum semantic coherence score (0.0-1.0)
-    # Lower values allow more flexibility, higher values are stricter
-    min_coherence_score: 0.2
+    # For embedding method: 0.6 recommended (cosine similarity)
+    # For jaccard method: 0.2 recommended (keyword overlap)
+    min_coherence_score: 0.6
+    # Coherence validation method: "embedding" (primary) or "jaccard" (fallback)
+    coherence_method: "embedding"
     # Enable integrator guard to prevent citation loss
     integrator_guard: true
     # Fail on unresolved citations (strict mode)
