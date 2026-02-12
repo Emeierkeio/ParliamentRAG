@@ -535,12 +535,19 @@ class GenerationPipeline:
             if debate_titles else None
         )
 
+        # Collect session numbers for academic traceability
+        session_numbers = [
+            e.get("session_number") for e in evidence_list
+            if e.get("session_number")
+        ]
+
         return {
             "intervention_count": len(unique_speeches),
             "speaker_count": len(unique_speakers),
             "first_date": min(dates) if dates else None,
             "last_date": max(dates) if dates else None,
             "debate_title": most_common_title,
+            "session_numbers": list(set(session_numbers)),
         }
 
     def _group_evidence_by_party(

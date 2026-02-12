@@ -40,6 +40,7 @@ STRUTTURA (in questo ordine):
 - NOMINA specificamente il provvedimento, decreto, DDL o proposta in discussione
 - CITA il numero di interventi analizzati e il numero di parlamentari coinvolti
 - INDICA il periodo temporale (data primo e ultimo intervento)
+- CITA le sedute specifiche (es. Seduta N. 123) quando disponibili
 - NON anticipare le posizioni dei partiti
 
 ## Posizione del Governo (se presente)
@@ -130,6 +131,15 @@ REGOLE GENERALI:
             first_str = first_date.strftime("%d/%m/%Y") if hasattr(first_date, 'strftime') else str(first_date)
             last_str = last_date.strftime("%d/%m/%Y") if hasattr(last_date, 'strftime') else str(last_date)
             parts.append(f"- Periodo: dal {first_str} al {last_str}")
+
+        # Session numbers for academic traceability
+        session_numbers = topic_statistics.get("session_numbers", [])
+        if session_numbers:
+            sorted_sessions = sorted(session_numbers)
+            sessions_str = ", ".join(str(s) for s in sorted_sessions[:5])
+            if len(sorted_sessions) > 5:
+                sessions_str += f" e altre {len(sorted_sessions) - 5}"
+            parts.append(f"- Sedute parlamentari: N. {sessions_str}")
 
         return "\n".join(parts) + "\n"
 

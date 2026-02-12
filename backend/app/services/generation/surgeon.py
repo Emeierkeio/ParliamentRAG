@@ -157,7 +157,8 @@ class CitationSurgeon:
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
                 evidence_id=evidence_id,
-                pre_extracted=evidence.get("pre_extracted_citation", "")
+                pre_extracted=evidence.get("pre_extracted_citation", ""),
+                session_number=evidence.get("session_number")
             )
 
         # Handle ["text"](id) markdown format - convert to full citation
@@ -179,7 +180,8 @@ class CitationSurgeon:
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
                 evidence_id=evidence_id,
-                pre_extracted=evidence.get("pre_extracted_citation", "")
+                pre_extracted=evidence.get("pre_extracted_citation", ""),
+                session_number=evidence.get("session_number")
             )
 
         # First replace [CIT:id] format
@@ -270,14 +272,19 @@ class CitationSurgeon:
         party: str,
         date: str,
         evidence_id: str,
-        pre_extracted: str = ""
+        pre_extracted: str = "",
+        session_number: Optional[int] = None
     ) -> str:
         """
         Format citation according to configured format.
 
-        Format: [«quote»](evidence_id)
+        Format: [«quote» — Speaker, Seduta N. X, DD/MM/YYYY](evidence_id)
         The entire citation is a clickable markdown link.
-        Speaker/party/date info is available in the sidebar when clicked.
+        Full metadata is also available in the sidebar when clicked.
+
+        Includes session reference for academic traceability.
+        See: ALCE (Gao et al., EMNLP 2023) on citation traceability;
+        Abercrombie & Batista-Navarro (2019) on parliamentary metadata standards.
 
         CITATION-FIRST: If pre_extracted is provided (from Stage 2),
         use it directly. This ensures consistency between the LLM's
@@ -369,8 +376,19 @@ class CitationSurgeon:
         if quote:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()
 
-        # Format as clean clickable citation (no metadata - shown in sidebar)
-        return f'[«{quote}»]({evidence_id})'
+        # Build session reference for academic traceability
+        # Format: «quote» — Cognome, Seduta N. X, DD/MM/YYYY
+        session_ref = ""
+        speaker_surname = speaker.split()[-1] if speaker else ""
+        if speaker_surname:
+            ref_parts = [speaker_surname]
+            if session_number:
+                ref_parts.append(f"Seduta N. {session_number}")
+            if date:
+                ref_parts.append(date)
+            session_ref = f" — {', '.join(ref_parts)}"
+
+        return f'[«{quote}»{session_ref}]({evidence_id})'
 
     def _shorten_party_name(self, party: str) -> str:
         """Return readable display name for a party (full name, title case)."""
