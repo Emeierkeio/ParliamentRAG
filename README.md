@@ -245,28 +245,34 @@ The Neo4j knowledge graph models Italian parliamentary data through the followin
 
 ```mermaid
 graph LR
-  Seduta([<b>Seduta</b><br/><i>Sessions</i>]):::session
-  Dibattito([<b>Dibattito</b><br/><i>Debates</i>]):::debate
-  Intervento([<b>Intervento</b><br/><i>Speeches</i>]):::speech
-  Chunk([<b>Chunk</b><br/><i>Text + Embedding</i>]):::chunk
-  Deputato([<b>Deputato</b><br/><i>MPs</i>]):::person
-  MembroGoverno([<b>MembroGoverno</b><br/><i>Gov. Members</i>]):::person
-  Gruppo([<b>GruppoParlamentare</b><br/><i>Political Groups</i>]):::group
-  Commissione([<b>Commissione</b><br/><i>Commissions</i>]):::group
-  Atto([<b>AttoParlamentare</b><br/><i>Legislative Acts</i>]):::act
+  Session([<b>Session</b>]):::session
+  Debate([<b>Debate</b>]):::debate
+  Phase([<b>Phase</b>]):::phase
+  Speech([<b>Speech</b>]):::speech
+  Chunk([<b>Chunk</b><br/><i>+ embedding</i>]):::chunk
+  Deputy([<b>Deputy</b>]):::person
+  GovMember([<b>GovernmentMember</b>]):::person
+  Group([<b>ParliamentaryGroup</b>]):::group
+  Committee([<b>Committee</b>]):::group
+  Act([<b>ParliamentaryAct</b>]):::act
 
-  Seduta -->|HAS_DEBATE| Dibattito
-  Dibattito -->|CONTAINS| Intervento
-  Intervento -->|HAS_CHUNK| Chunk
-  Intervento -->|SPOKEN_BY| Deputato
-  Intervento -->|SPOKEN_BY| MembroGoverno
-  Deputato -->|MEMBER_OF| Gruppo
-  Deputato -->|IN_COMMISSION| Commissione
-  Deputato -->|PRIMARY_SIGNATORY| Atto
-  Deputato -->|CO_SIGNATORY| Atto
+  Session -->|HAS_DEBATE| Debate
+  Debate -->|HAS_PHASE| Phase
+  Phase -->|CONTAINS_SPEECH| Speech
+  Speech -->|HAS_CHUNK| Chunk
+  Speech -->|SPOKEN_BY| Deputy
+  Speech -->|SPOKEN_BY| GovMember
+  Deputy -->|MEMBER_OF_GROUP| Group
+  Deputy -->|MEMBER_OF_COMMITTEE| Committee
+  Deputy -->|IS_PRESIDENT| Committee
+  Deputy -->|IS_VICE_PRESIDENT| Committee
+  Deputy -->|IS_SECRETARY| Committee
+  Deputy -->|PRIMARY_SIGNATORY| Act
+  Deputy -->|CO_SIGNATORY| Act
 
   classDef session fill:#4C8BF5,stroke:#2d6ae0,color:#fff,rx:12
   classDef debate fill:#7B61FF,stroke:#5a3fd6,color:#fff,rx:12
+  classDef phase fill:#a855f7,stroke:#7e22ce,color:#fff,rx:12
   classDef speech fill:#F97316,stroke:#d4600e,color:#fff,rx:12
   classDef chunk fill:#EF4444,stroke:#c53030,color:#fff,rx:12
   classDef person fill:#10B981,stroke:#059669,color:#fff,rx:12
