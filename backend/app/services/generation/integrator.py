@@ -92,6 +92,11 @@ Repertorio COMPLETO (scegli in base al TONO, ogni verbo usabile UNA SOLA VOLTA):
 ✅ CORRETTO (verbi tutti diversi):
 **Rossi** sottolineando che [CIT:1]... **Bianchi** contestando che [CIT:2] ← verbi diversi
 
+BILANCIAMENTO (Coverage-based Fairness):
+Le sezioni Maggioranza e Opposizione devono avere lunghezza comparabile.
+Se una coalizione ha più partiti con evidenze, dai comunque spazio adeguato all'altra.
+Non liquidare partiti di opposizione con una sola frase se quelli di maggioranza ne hanno più di due.
+
 REGOLE GENERALI:
 1. Posizioni DISTINTE, un paragrafo per partito/ministro
 2. PRESERVA **grassetto** e marcatori [CIT:...]

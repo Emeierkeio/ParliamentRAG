@@ -184,6 +184,17 @@ class GenerationPipeline:
         logger.info(f"Stage 3 complete: Narrative integrated, "
                     f"{integrated.get('citations_repaired', 0)} citations repaired")
 
+        # === Post-Integration: Balance Check (Coverage-based Fairness) ===
+        balance_info = self._check_coalition_balance(integrated.get("text", ""))
+        pipeline_metadata["stages"]["balance"] = balance_info
+        if balance_info.get("balance_warning"):
+            logger.warning(
+                f"Coalition imbalance detected: "
+                f"majority={balance_info['majority_words']} words, "
+                f"opposition={balance_info['opposition_words']} words, "
+                f"ratio={balance_info['ratio']:.1f}:1"
+            )
+
         # === Pre-Surgeon: Coherence Validation ===
         coherence_report = self.coherence_validator.validate_all_citations(
             integrated.get("text", ""),
@@ -596,6 +607,47 @@ class GenerationPipeline:
             )
 
         return by_party
+
+    def _check_coalition_balance(
+        self,
+        text: str
+    ) -> Dict[str, Any]:
+        """Check word count balance between majority and opposition sections.
+
+        Based on Coverage-based Fairness (NAACL 2025) equal coverage principle.
+        Logs a warning if the ratio exceeds 2:1.
+
+        Returns:
+            Dictionary with word counts, ratio, and balance_warning flag.
+        """
+        majority_section = ""
+        opposition_section = ""
+
+        # Extract sections by header
+        sections = re.split(r'##\s+', text)
+        for section in sections:
+            if section.startswith("Posizioni della Maggioranza"):
+                majority_section = section
+            elif section.startswith("Posizioni dell'Opposizione") or section.startswith("Posizioni dell\u2019Opposizione"):
+                opposition_section = section
+
+        majority_words = len(majority_section.split())
+        opposition_words = len(opposition_section.split())
+
+        # Compute ratio (avoid division by zero)
+        if opposition_words > 0:
+            ratio = majority_words / opposition_words
+        elif majority_words > 0:
+            ratio = float('inf')
+        else:
+            ratio = 1.0
+
+        return {
+            "majority_words": majority_words,
+            "opposition_words": opposition_words,
+            "ratio": round(ratio, 2),
+            "balance_warning": ratio > 2.0 or (1 / ratio if ratio > 0 else 0) > 2.0,
+        }
 
     def _get_government_evidence(
         self,

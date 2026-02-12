@@ -88,6 +88,11 @@ COSTRUZIONI CORRETTE (bridge verbale + soggetto) - VARIA il verbo in base al TON
 - Neutro: "...rilevando come [CIT:id]", "...osservando che [CIT:id]"
 - Affermativo: "...affermando che [CIT:id]", "...dichiarando che [CIT:id]"
 
+PROFONDITÀ MINIMA:
+Ogni sezione deve avere ALMENO 2 frasi di analisi sostantiva.
+Non liquidare nessun partito con una sola frase generica.
+Se hai più evidenze, usa le prime 1-2 per citazioni e aggiungi contesto con le altre.
+
 DIVIETO DI FILLER:
 NON scrivere frasi vuote come "ha espresso la propria posizione" o "è intervenuto sul tema".
 Ogni frase DEVE comunicare una posizione CONCRETA (a favore/contro cosa, quale proposta, quale critica).
