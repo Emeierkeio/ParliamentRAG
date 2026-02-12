@@ -389,7 +389,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         )}
         style={
           step === "form"
-            ? { width: "1600px", maxWidth: "95vw", height: "90vh" }
+            ? { width: "1600px", maxWidth: "95vw", height: "95vh", maxHeight: "95vh" }
             : { maxWidth: "42rem", maxHeight: "90vh" }
         }
       >
@@ -502,35 +502,35 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
 
         {/* Step: Survey Form with A/B Blind Comparison */}
         {step === "form" && selectedChat && (
-          <div className="flex flex-1 min-h-0">
+          <div className="flex flex-col md:flex-row flex-1 min-h-0">
             {/* Left Panel: Side-by-side A/B Responses */}
-            <div className="w-3/5 border-r flex flex-col bg-white dark:bg-gray-950 min-h-0 overflow-hidden">
+            <div className="md:w-3/5 md:border-r flex flex-col bg-white dark:bg-gray-950 min-h-0 overflow-hidden border-b md:border-b-0">
               {/* Query Header */}
-              <div className="px-4 py-3 bg-blue-50 dark:bg-blue-950/30 border-b">
-                <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              <div className="px-3 md:px-4 py-2 md:py-3 bg-blue-50 dark:bg-blue-950/30 border-b">
+                <p className="text-sm font-medium text-blue-900 dark:text-blue-100 line-clamp-2">
                   <span className="text-blue-600 dark:text-blue-400">Domanda:</span> {selectedChat.query}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1 hidden md:block">
                   Confronta le due risposte. Non sai quale sia il sistema avanzato e quale la baseline.
                 </p>
               </div>
 
-              {/* A/B Side by side */}
+              {/* A/B Side by side (desktop) / Tabbed (mobile) */}
               <div className="flex flex-1 min-h-0 overflow-hidden">
                 {/* Response A */}
                 <div className="w-1/2 border-r flex flex-col min-h-0">
                   <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 border-b text-center">
-                    <span className="font-semibold text-blue-700 dark:text-blue-300 text-sm">
+                    <span className="font-semibold text-blue-700 dark:text-blue-300 text-xs md:text-sm">
                       Risposta A
                     </span>
                   </div>
-                  <ScrollArea className="flex-1 px-3 py-3">
+                  <ScrollArea className="flex-1 px-2 md:px-3 py-2 md:py-3">
                     {isLoadingDetails ? (
                       <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                       </div>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-xs md:text-sm">
                         {renderContent(getResponseA())}
                       </div>
                     )}
@@ -540,17 +540,17 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                 {/* Response B */}
                 <div className="w-1/2 flex flex-col min-h-0">
                   <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 border-b text-center">
-                    <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">
+                    <span className="font-semibold text-amber-700 dark:text-amber-300 text-xs md:text-sm">
                       Risposta B
                     </span>
                   </div>
-                  <ScrollArea className="flex-1 px-3 py-3">
+                  <ScrollArea className="flex-1 px-2 md:px-3 py-2 md:py-3">
                     {isLoadingDetails ? (
                       <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
                       </div>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-xs md:text-sm">
                         {renderContent(getResponseB())}
                       </div>
                     )}
@@ -560,7 +560,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             </div>
 
             {/* Right Panel: Survey Form */}
-            <div className="w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden">
+            <div className="md:w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden flex-1 md:flex-none">
               {/* Category tabs */}
               <div className="px-4 py-3 border-b bg-white dark:bg-gray-950 flex gap-2 overflow-x-auto">
                 {categories.map((cat, idx) => (

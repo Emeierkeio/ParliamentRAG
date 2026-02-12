@@ -274,41 +274,41 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-card border-none shadow-2xl p-0 overflow-hidden sm:rounded-2xl max-h-[85vh] flex flex-col">
-        <DialogHeader className="p-6 pb-2 shrink-0">
-          <DialogTitle className="flex items-center gap-3 text-xl">
+      <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-card border-none shadow-2xl p-0 overflow-hidden rounded-xl sm:rounded-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col">
+        <DialogHeader className="p-4 sm:p-6 pb-2 shrink-0">
+          <DialogTitle className="flex items-center gap-3 text-lg sm:text-xl">
              <div className="p-2 bg-primary/10 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-primary" />
              </div>
             Scheda Autorità
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             Analisi del profilo e dell'autorevolezza sul tema specifico.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-6 pt-2 space-y-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 pt-2 space-y-4 sm:space-y-6 overflow-y-auto">
           {/* Header Profile */}
-          <div className="flex items-start gap-5">
+          <div className="flex items-start gap-3 sm:gap-5">
             <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-xl font-bold text-white shadow-lg"
+              className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl text-lg sm:text-xl font-bold text-white shadow-lg"
               style={{ backgroundColor: groupColor }}
             >
               {expert.first_name[0]}
               {expert.last_name[0]}
             </div>
-            <div className="flex-1 space-y-1">
+            <div className="flex-1 min-w-0 space-y-1">
               {expert.camera_profile_url ? (
-                  <a 
+                  <a
                     href={expert.camera_profile_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-2xl font-bold text-foreground hover:underline hover:text-primary transition-colors block"
+                    className="text-xl sm:text-2xl font-bold text-foreground hover:underline hover:text-primary transition-colors block truncate"
                   >
                     {expert.first_name} {expert.last_name}
                   </a>
               ) : (
-                  <h3 className="text-2xl font-bold text-foreground">
+                  <h3 className="text-xl sm:text-2xl font-bold text-foreground truncate">
                     {expert.first_name} {expert.last_name}
                   </h3>
               )}
@@ -331,10 +331,10 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
           </div>
 
           {/* Main Score */}
-          <div className="bg-muted/30 rounded-xl p-5 border border-border/50">
+          <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50">
              <div className="flex justify-between items-end mb-3">
-                <span className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Authority Score</span>
-                <span className="text-3xl font-bold text-primary">{(expert.authority_score * 100).toFixed(0)}</span>
+                <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Authority Score</span>
+                <span className="text-2xl sm:text-3xl font-bold text-primary">{(expert.authority_score * 100).toFixed(0)}</span>
              </div>
              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
                 <div 
@@ -404,11 +404,11 @@ function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
 
           {/* Details Panel (Conditional) */}
           {selectedDetail === "atti" && expert.acts_detail && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
-                  <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-primary" />
-                          <h4 className="text-sm font-semibold">Atti che hanno contribuito allo score</h4>
+              <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                          <FileText className="w-4 h-4 text-primary shrink-0" />
+                          <h4 className="text-xs sm:text-sm font-semibold truncate">Atti che hanno contribuito allo score</h4>
                       </div>
                       <button 
                         onClick={() => setSelectedDetail(null)}

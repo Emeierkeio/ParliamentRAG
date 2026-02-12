@@ -17,6 +17,7 @@ interface ChatAreaProps {
   onSendMessage: (message: string) => void;
   onCancelRequest: () => void;
   className?: string;
+  mobileMenuButton?: React.ReactNode;
 }
 
 export function ChatArea({
@@ -26,6 +27,7 @@ export function ChatArea({
   onSendMessage,
   onCancelRequest,
   className,
+  mobileMenuButton,
 }: ChatAreaProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -47,14 +49,17 @@ export function ChatArea({
     <div className={cn("flex h-full flex-col bg-background", className)}>
       {/* Top Search Area - Minimal & Clean */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="mx-auto max-w-3xl p-4 py-5">
-          <ChatInput
-            onSend={onSendMessage}
-            onCancel={onCancelRequest}
-            isLoading={isLoading}
-            placeholder="Cerca un tema..."
-            className="w-full"
-          />
+        <div className="mx-auto max-w-3xl p-3 py-4 md:p-4 md:py-5">
+          <div className="flex items-center gap-2">
+            {mobileMenuButton}
+            <ChatInput
+              onSend={onSendMessage}
+              onCancel={onCancelRequest}
+              isLoading={isLoading}
+              placeholder="Cerca un tema..."
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
 
@@ -91,18 +96,18 @@ interface WelcomeScreenProps {
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center pt-16 pb-12 text-center">
+    <div className="flex flex-col items-center justify-center pt-8 sm:pt-16 pb-12 text-center px-2">
 
       {/* Action-oriented Hero */}
-      <div className="mb-10 max-w-xl space-y-3">
+      <div className="mb-6 sm:mb-10 max-w-xl space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-1.5 text-xs font-medium text-primary mb-2">
           <Atom className="w-3.5 h-3.5" />
           Camera dei Deputati - XIX Legislatura
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl leading-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground leading-tight">
           Cerca un tema e scopri cosa ne pensano i gruppi parlamentari
         </h1>
-        <p className="text-muted-foreground text-base leading-relaxed">
+        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
           Scrivi un tema nella barra in alto oppure scegli uno dei temi qui sotto.
         </p>
       </div>

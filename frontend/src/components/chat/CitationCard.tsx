@@ -215,7 +215,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl bg-background border-none shadow-2xl p-0 overflow-hidden sm:rounded-2xl h-[85vh] flex flex-col">
+      <DialogContent className="max-w-[95vw] sm:max-w-3xl bg-background border-none shadow-2xl p-0 overflow-hidden rounded-xl sm:rounded-2xl h-[90vh] sm:h-[85vh] flex flex-col">
         
         {/* Header: Title & Close */}
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
