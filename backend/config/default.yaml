@@ -143,6 +143,9 @@ citation:
   format: "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
   # Validation: re-extract must match stored quote_text
   verify_on_insert: true
+  # Semantic dedup threshold (cosine similarity, MMR-inspired)
+  # Citations with similarity > threshold are considered duplicates
+  dedup_similarity_threshold: 0.85
 
   # Citation integrity system settings
   integrity:

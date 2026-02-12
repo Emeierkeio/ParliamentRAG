@@ -7,11 +7,17 @@ All 10 parties must have sections.
 CITATION-FIRST APPROACH:
 Citations are pre-extracted BEFORE the LLM writes the text.
 This ensures the introductory text matches the actual citation content.
+
+SEMANTIC DEDUPLICATION (MMR-inspired):
+Uses embedding cosine similarity instead of exact string match to detect
+paraphrased duplicates across speakers. Based on MMR (Carbonell & Goldstein,
+SIGIR 1998) and Sentence-BERT (Reimers & Gurevych, EMNLP 2019).
 """
 import json
 import logging
 from typing import List, Dict, Any, Optional, AsyncIterator
 
+import numpy as np
 import openai
 
 from ...config import get_config, get_settings
@@ -137,19 +143,53 @@ STRUTTURA OUTPUT:
             return truncated[:pos].rstrip()
         return truncated.rstrip()
 
+    def _get_embeddings_batch(self, texts: List[str]) -> List[np.ndarray]:
+        """Get embeddings for a batch of texts using OpenAI API.
+
+        Uses the same embedding model configured for retrieval.
+        Returns normalized vectors for cosine similarity via dot product.
+        """
+        if not texts:
+            return []
+
+        try:
+            sync_client = openai.OpenAI(api_key=self.settings.openai_api_key)
+            response = sync_client.embeddings.create(
+                model="text-embedding-3-small",
+                input=texts
+            )
+            embeddings = []
+            for item in response.data:
+                vec = np.array(item.embedding, dtype=np.float32)
+                # Normalize for cosine similarity via dot product
+                norm = np.linalg.norm(vec)
+                if norm > 0:
+                    vec = vec / norm
+                embeddings.append(vec)
+            return embeddings
+        except Exception as exc:
+            logger.warning(f"Embedding API failed for dedup, falling back to exact match: {exc}")
+            return []
+
     def _deduplicate_citations_across_speakers(
         self,
         all_evidence: List[Dict[str, Any]],
         query: str
     ) -> None:
         """
-        Mark duplicate citations across different speakers.
+        Mark duplicate citations across different speakers using
+        semantic similarity (MMR-inspired, Carbonell & Goldstein 1998).
 
-        Pre-extracts citations for all evidence and marks duplicates
-        (keeping the one with higher authority_score).
+        Uses embedding cosine similarity instead of exact string match
+        to detect paraphrased duplicates. Keeps the citation with higher
+        authority_score when duplicates are found.
+
+        Falls back to exact string match if embedding API is unavailable.
+
         Mutates evidence in-place by setting 'citation_duplicate_of' key.
         """
-        seen_citations: Dict[str, Dict[str, Any]] = {}  # normalized_text -> evidence dict
+        # Phase 1: Extract citations for all evidence
+        citations_with_evidence: List[tuple] = []  # (extracted_text, evidence_dict)
 
         for e in all_evidence:
             quote_text = e.get("quote_text", "") or e.get("chunk_text", "")
@@ -165,27 +205,72 @@ STRUTTURA OUTPUT:
             if not extracted:
                 continue
 
-            # Normalize for comparison
-            normalized = " ".join(extracted.lower().split())
+            citations_with_evidence.append((extracted, e))
 
-            if normalized in seen_citations:
-                existing = seen_citations[normalized]
-                # Keep the one with higher authority score
-                existing_score = existing.get("authority_score", 0) or 0
-                current_score = e.get("authority_score", 0) or 0
-                if current_score > existing_score:
-                    # Current is better — mark existing as duplicate
-                    existing["citation_duplicate_of"] = e.get("evidence_id", "")
-                    seen_citations[normalized] = e
+        if len(citations_with_evidence) < 2:
+            return
+
+        # Phase 2: Try embedding-based dedup
+        texts = [c[0] for c in citations_with_evidence]
+        embeddings = self._get_embeddings_batch(texts)
+
+        if embeddings and len(embeddings) == len(texts):
+            # Embedding-based semantic dedup
+            config_data = self.config.load_config()
+            threshold = config_data.get("citation", {}).get(
+                "dedup_similarity_threshold", 0.85
+            )
+
+            for i in range(len(citations_with_evidence)):
+                e_i = citations_with_evidence[i][1]
+                if e_i.get("citation_duplicate_of"):
+                    continue
+
+                for j in range(i + 1, len(citations_with_evidence)):
+                    e_j = citations_with_evidence[j][1]
+                    if e_j.get("citation_duplicate_of"):
+                        continue
+
+                    similarity = float(np.dot(embeddings[i], embeddings[j]))
+
+                    if similarity > threshold:
+                        # Keep the one with higher authority score
+                        score_i = e_i.get("authority_score", 0) or 0
+                        score_j = e_j.get("authority_score", 0) or 0
+
+                        if score_j > score_i:
+                            e_i["citation_duplicate_of"] = e_j.get("evidence_id", "")
+                        else:
+                            e_j["citation_duplicate_of"] = e_i.get("evidence_id", "")
+
+                        logger.info(
+                            f"Semantic duplicate (sim={similarity:.2f}): "
+                            f"'{texts[i][:60]}...' vs '{texts[j][:60]}...' "
+                            f"({e_i.get('speaker_name', '?')} vs {e_j.get('speaker_name', '?')})"
+                        )
+        else:
+            # Fallback: exact string match (original behavior)
+            logger.info("Using exact-match dedup fallback")
+            seen_citations: Dict[str, Dict[str, Any]] = {}
+
+            for extracted, e in citations_with_evidence:
+                normalized = " ".join(extracted.lower().split())
+
+                if normalized in seen_citations:
+                    existing = seen_citations[normalized]
+                    existing_score = existing.get("authority_score", 0) or 0
+                    current_score = e.get("authority_score", 0) or 0
+                    if current_score > existing_score:
+                        existing["citation_duplicate_of"] = e.get("evidence_id", "")
+                        seen_citations[normalized] = e
+                    else:
+                        e["citation_duplicate_of"] = existing.get("evidence_id", "")
+                    logger.info(
+                        f"Exact duplicate: '{normalized[:60]}...' "
+                        f"between {e.get('speaker_name', '?')} and {existing.get('speaker_name', '?')}"
+                    )
                 else:
-                    # Existing is better — mark current as duplicate
-                    e["citation_duplicate_of"] = existing.get("evidence_id", "")
-                logger.info(
-                    f"Duplicate citation detected: '{normalized[:60]}...' "
-                    f"between {e.get('speaker_name', '?')} and {existing.get('speaker_name', '?')}"
-                )
-            else:
-                seen_citations[normalized] = e
+                    seen_citations[normalized] = e
 
     async def write_sections(
         self,
