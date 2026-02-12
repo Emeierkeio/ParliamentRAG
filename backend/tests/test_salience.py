@@ -96,6 +96,27 @@ class TestPoliticalSalienceScore:
         s = "Il relatore invita al ritiro dell'emendamento 1.5."
         assert extractor._political_salience_score(s) == 0.2
 
+    def test_annuncio_voto_favorevole(self, extractor):
+        s = "Con quest'auspicio annuncio il voto favorevole del gruppo Noi Moderati."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_dichiaro_voto(self, extractor):
+        s = "Dichiaro il voto favorevole del mio gruppo su questa mozione."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_real_case_gava(self, extractor):
+        """Real case from COP28 debate output."""
+        s = "Sull'ordine del giorno n. 9/1606-A/33 Scerra, il parere è favorevole."
+        assert extractor._political_salience_score(s) == 0.2
+
+    def test_real_case_cirielli_is_substantive(self, extractor):
+        """Real case: Cirielli expressing a political stance."""
+        s = ("Sinceramente la narrazione di un Governo negazionista "
+             "dei cambiamenti climatici è priva di fondamento.")
+        score = extractor._political_salience_score(s)
+        # Should NOT be procedural — it's a political judgment
+        assert score >= 0.5
+
     def test_empty_string(self, extractor):
         assert extractor._political_salience_score("") == 0.5
 
