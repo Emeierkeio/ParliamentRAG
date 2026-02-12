@@ -340,6 +340,9 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
 
+        # Signal that text streaming is complete and baseline is starting
+        yield f"data: {json.dumps({'type': 'progress', 'step': 8, 'message': 'Generazione risposta di confronto...'})}\n\n"
+
         # Step 8: Baseline Generation
         logger.info("[QUERY:BASELINE] Starting baseline generation...")
         baseline_text = ""
