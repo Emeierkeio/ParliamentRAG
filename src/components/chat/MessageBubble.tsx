@@ -193,8 +193,8 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           </div>
         )}
 
-        {/* Additional metadata for assistant messages — show progressively as data arrives */}
-        {!isUser && (message.status === "complete" || message.status === "streaming") && (
+        {/* Additional metadata for assistant messages — show progressively once text is visible */}
+        {!isUser && message.content && (message.status === "complete" || message.status === "streaming") && (
           <AssistantMetadata
             message={message}
             highlightedChunkId={highlightedChunkId}
