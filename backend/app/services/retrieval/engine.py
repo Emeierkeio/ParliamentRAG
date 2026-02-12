@@ -17,6 +17,7 @@ from .graph_channel import GraphChannel
 from .merger import ChannelMerger
 from ...models.evidence import UnifiedEvidence
 from ...config import get_config, get_settings
+from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -150,6 +151,10 @@ class RetrievalEngine:
                 merged_results.extend(fill_results)
                 logger.info(f"Coverage fill: added {fill_count} chunks for missing parties")
 
+        # Expand to neighboring chunks when a more politically salient
+        # adjacent chunk exists for the same speech
+        merged_results = self._expand_neighbors(merged_results)
+
         # Convert to UnifiedEvidence
         evidence_list = self._to_evidence_records(merged_results)
 
@@ -235,6 +240,118 @@ class RetrievalEngine:
                 continue
 
         return evidence_list
+
+    def _expand_neighbors(
+        self,
+        results: List[Dict[str, Any]],
+        salience_threshold: float = 0.5
+    ) -> List[Dict[str, Any]]:
+        """Expand to neighboring chunks when they have higher political salience.
+
+        For each retrieved chunk with low salience, checks the previous and
+        next chunks via the SUCCESSIVO relationship. If a neighbor has higher
+        political salience, it replaces the original chunk.
+        """
+        if not results:
+            return results
+
+        # Compute salience for all current chunks
+        for r in results:
+            text = r.get("chunk_text") or r.get("quote_text", "")
+            r["salience"] = compute_chunk_salience(text)
+
+        # Only expand chunks with low salience
+        low_salience = [r for r in results if r.get("salience", 0) < salience_threshold]
+        if not low_salience:
+            logger.info("Neighbor expansion: all chunks above salience threshold, skipping")
+            return results
+
+        # Collect chunk IDs to expand
+        chunk_ids = [r.get("evidence_id") for r in low_salience if r.get("evidence_id")]
+        if not chunk_ids:
+            return results
+
+        logger.info(f"Neighbor expansion: checking neighbors for {len(chunk_ids)} low-salience chunks")
+
+        try:
+            cypher = """
+            UNWIND $chunk_ids AS cid
+            MATCH (c:Chunk {id: cid})
+            OPTIONAL MATCH (prev:Chunk)-[:SUCCESSIVO]->(c)
+            OPTIONAL MATCH (c)-[:SUCCESSIVO]->(next:Chunk)
+            MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
+            RETURN cid,
+                   prev.id AS prev_id, prev.text AS prev_text,
+                   prev.start_char_raw AS prev_start, prev.end_char_raw AS prev_end,
+                   next.id AS next_id, next.text AS next_text,
+                   next.start_char_raw AS next_start, next.end_char_raw AS next_end,
+                   i.text AS speech_text
+            """
+            neighbor_rows = self.client.query(cypher, {"chunk_ids": chunk_ids})
+        except Exception as e:
+            logger.error(f"Neighbor expansion query failed: {e}")
+            return results
+
+        # Build lookup: chunk_id -> neighbor info
+        neighbor_map = {}
+        for row in neighbor_rows:
+            neighbor_map[row["cid"]] = row
+
+        # Existing evidence IDs to avoid duplicates
+        existing_ids = {r.get("evidence_id") for r in results}
+
+        replaced = 0
+        for r in results:
+            eid = r.get("evidence_id")
+            if eid not in neighbor_map or r.get("salience", 0) >= salience_threshold:
+                continue
+
+            row = neighbor_map[eid]
+            current_salience = r.get("salience", 0)
+            best_replacement = None
+            best_salience = current_salience
+
+            # Check previous chunk
+            if row.get("prev_text") and row.get("prev_id") not in existing_ids:
+                prev_salience = compute_chunk_salience(row["prev_text"])
+                if prev_salience > best_salience:
+                    best_salience = prev_salience
+                    best_replacement = ("prev", row)
+
+            # Check next chunk
+            if row.get("next_text") and row.get("next_id") not in existing_ids:
+                next_salience = compute_chunk_salience(row["next_text"])
+                if next_salience > best_salience:
+                    best_salience = next_salience
+                    best_replacement = ("next", row)
+
+            if best_replacement:
+                direction, nrow = best_replacement
+                prefix = "prev" if direction == "prev" else "next"
+                new_id = nrow.get(f"{prefix}_id")
+                new_text = nrow.get(f"{prefix}_text")
+                new_start = nrow.get(f"{prefix}_start", 0)
+                new_end = nrow.get(f"{prefix}_end", 0)
+                speech_text = nrow.get("speech_text", "")
+
+                # Compute quote_text from speech offsets
+                from ...models.evidence import compute_quote_text
+                if speech_text and new_start is not None and new_end is not None and new_start < new_end:
+                    new_quote = compute_quote_text(speech_text, new_start, new_end)
+                else:
+                    new_quote = new_text
+
+                r["evidence_id"] = new_id
+                r["chunk_text"] = new_text
+                r["quote_text"] = new_quote
+                r["span_start"] = new_start or 0
+                r["span_end"] = new_end or 0
+                r["salience"] = best_salience
+                existing_ids.add(new_id)
+                replaced += 1
+
+        logger.info(f"Neighbor expansion: replaced {replaced}/{len(low_salience)} low-salience chunks")
+        return results
 
     def _coverage_fill(
         self,
