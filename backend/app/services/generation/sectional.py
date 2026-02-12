@@ -427,8 +427,11 @@ FORMATO OUTPUT:
 
             # Skip procedural citations (e.g. "il parere è favorevole",
             # "annuncio il voto favorevole del gruppo", "dichiaro aperta la seduta")
+            # and low-substance meta-comments (e.g. "è un tema delicato").
+            # Threshold 0.35 filters both procedural (0.2) and meta-comments (0.35).
+            # See: FActScore (Min et al., EMNLP 2023) for atomic fact verification.
             citation_salience = compute_chunk_salience(extracted_citation)
-            if citation_salience <= 0.2:
+            if citation_salience <= 0.35:
                 logger.info(
                     f"Skipping procedural citation for {eid} ({speaker}): "
                     f"salience={citation_salience:.1f}, text='{extracted_citation[:80]}...'"

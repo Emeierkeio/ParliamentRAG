@@ -225,6 +225,29 @@ class SentenceExtractor:
         re.compile(r'\bvoto contrario del gruppo\b', re.IGNORECASE),
     ]
 
+    # Patterns indicating meta-comments about the debate itself (low substance)
+    # These sentences comment on the process/importance of the discussion
+    # without conveying an actual political position or policy argument.
+    # Grounded in FActScore (Min et al., EMNLP 2023): each atomic claim
+    # must carry factual/policy content, not just meta-commentary.
+    _META_COMMENT_PATTERNS = [
+        # Generic importance claims without policy content
+        re.compile(r'\buno dei (?:più|piu)\s+(?:delicati|importanti|complessi|difficili|significativi)\b', re.IGNORECASE),
+        re.compile(r'\bè un tema\s+(?:importante|delicato|complesso|cruciale|rilevante|centrale|fondamentale)\b', re.IGNORECASE),
+        re.compile(r'\bsu un tema (?:così|cosi)\s+(?:complesso|importante|delicato|cruciale)\b', re.IGNORECASE),
+        # Debate-about-debate references
+        re.compile(r'\bin (?:questo contesto|questa sede|quest\'aula|questo dibattito)\b', re.IGNORECASE),
+        re.compile(r'\bl\'esame di questo (?:provvedimento|decreto|disegno)\b', re.IGNORECASE),
+        re.compile(r'\bla (?:I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV) Commissione\s+(?:si è trovata|ha esaminato|ha affrontato)\b', re.IGNORECASE),
+        # Epistemic hedges without substance
+        re.compile(r'\bcome (?:sappiamo|noto|è evidente|è noto|abbiamo detto|dicevo)\b', re.IGNORECASE),
+        re.compile(r'\bmi (?:preme|pare|sembra)\s+(?:sottolineare|evidenziare|ricordare|dire)\b', re.IGNORECASE),
+        # Generic "we discussed" / "we examined" without position
+        re.compile(r'\babbiamo (?:discusso|esaminato|affrontato|analizzato)\s+(?:il|la|lo|questo|questa)\b', re.IGNORECASE),
+        # Calls for attention without content
+        re.compile(r'\b(?:vorrei|voglio)\s+(?:richiamare|porre)\s+l\'attenzione\b', re.IGNORECASE),
+    ]
+
     # Patterns indicating argumentation with data (medium-high salience)
     _ARGUMENTATION_PATTERNS = [
         # Numerical evidence
@@ -243,11 +266,13 @@ class SentenceExtractor:
             1.0: strong political opinion/stance
             0.7: argumentation with data/evidence
             0.5: neutral (no strong signal either way)
+            0.35: meta-comment about debate without policy content
             0.2: procedural/formulaic text
         """
         opinion_hits = sum(1 for p in self._OPINION_PATTERNS if p.search(sentence))
         procedural_hits = sum(1 for p in self._PROCEDURAL_PATTERNS if p.search(sentence))
         argumentation_hits = sum(1 for p in self._ARGUMENTATION_PATTERNS if p.search(sentence))
+        meta_hits = sum(1 for p in self._META_COMMENT_PATTERNS if p.search(sentence))
 
         if procedural_hits > 0 and opinion_hits == 0:
             return 0.2
@@ -259,6 +284,9 @@ class SentenceExtractor:
             return 0.8
         if argumentation_hits == 1:
             return 0.7
+        # Meta-comments without any opinion or argumentation content
+        if meta_hits > 0 and opinion_hits == 0 and argumentation_hits == 0:
+            return 0.35
         return 0.5
 
     # Subordinating conjunctions that signal a dependent clause fragment

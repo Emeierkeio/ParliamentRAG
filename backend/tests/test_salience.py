@@ -120,6 +120,70 @@ class TestPoliticalSalienceScore:
     def test_empty_string(self, extractor):
         assert extractor._political_salience_score("") == 0.5
 
+    # --- Meta-comment pattern tests (FActScore-inspired, C1) ---
+
+    def test_meta_comment_delicate_topic(self, extractor):
+        """Generic importance claim without policy content."""
+        s = "Questo mi sembra uno dei più delicati dossier che la I Commissione si è trovata a dover esaminare."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_important_topic(self, extractor):
+        s = "È un tema importante che merita la nostra attenzione."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_complex_topic(self, extractor):
+        s = "Su un tema così complesso, probabilmente, in quest'Aula avremmo potuto dare un contributo."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_in_questa_sede(self, extractor):
+        s = "In questa sede vogliamo ribadire l'importanza del confronto parlamentare."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_come_sappiamo(self, extractor):
+        s = "Come sappiamo, il tema è stato ampiamente dibattuto nelle commissioni."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_mi_preme(self, extractor):
+        s = "Mi preme sottolineare l'importanza di questa discussione."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_abbiamo_esaminato(self, extractor):
+        s = "Abbiamo esaminato il provvedimento con grande attenzione."
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_comment_with_opinion_wins(self, extractor):
+        """Meta-comment with opinion marker should score as opinion, not meta."""
+        s = "È un tema importante e riteniamo che il Governo debba intervenire."
+        score = extractor._political_salience_score(s)
+        assert score >= 0.9  # Opinion wins over meta
+
+    def test_meta_comment_with_argumentation_wins(self, extractor):
+        """Meta-comment with argumentation should score as argumentation."""
+        s = "Su un tema così complesso, i costi sono aumentati del 40 per cento."
+        score = extractor._political_salience_score(s)
+        assert score >= 0.7  # Argumentation wins over meta
+
+    def test_meta_real_case_kelany(self, extractor):
+        """Real case from analyzed output: Kelany's meta-comment."""
+        s = ("Uno dei più delicati, da quando è iniziata la legislatura, "
+             "che la I Commissione si è trovata a dover esaminare.")
+        assert extractor._political_salience_score(s) == 0.35
+
+    def test_meta_real_case_grippo(self, extractor):
+        """Real case: Grippo's meta-comment about collaboration.
+        Contains 'la maggioranza' which triggers group identity opinion pattern,
+        so opinion (0.9) wins over meta-comment (0.35)."""
+        s = ("Vede, su un tema così complesso, probabilmente, in quest'Aula, "
+             "la maggioranza e l'opposizione avrebbero potuto dare un contributo.")
+        # Opinion marker wins over meta-comment
+        assert extractor._political_salience_score(s) >= 0.9
+
+    def test_meta_pure_process_comment(self, extractor):
+        """Pure meta-comment with no opinion or argumentation markers."""
+        s = ("Vede, su un tema così complesso, probabilmente "
+             "avremmo potuto dare un contributo migliore.")
+        assert extractor._political_salience_score(s) == 0.35
+
 
 # --- compute_salience (chunk-level) tests ---
 
@@ -334,6 +398,33 @@ class TestSectionalSalienceFilter:
         context = writer._build_evidence_context(evidence, "cambiamenti climatici")
         # Vote announcement should be filtered
         assert "vote_1" not in context
+
+    def test_build_evidence_context_skips_meta_comment(self, writer):
+        """Meta-comments about debate importance should be filtered (C1)."""
+        evidence = [
+            {
+                "evidence_id": "meta_1",
+                "speaker_name": "Kelany",
+                "date": "2024-01-15",
+                "quote_text": ("Questo mi sembra uno dei più delicati dossier "
+                               "che la I Commissione si è trovata a dover esaminare."),
+                "chunk_text": ("Questo mi sembra uno dei più delicati dossier "
+                               "che la I Commissione si è trovata a dover esaminare."),
+            },
+            {
+                "evidence_id": "opinion_1",
+                "speaker_name": "Rossi",
+                "date": "2024-01-15",
+                "quote_text": "Riteniamo che questa riforma sia fondamentale per il Paese.",
+                "chunk_text": "Riteniamo che questa riforma sia fondamentale per il Paese.",
+            },
+        ]
+
+        context = writer._build_evidence_context(evidence, "immigrazione")
+        # Meta-comment should be filtered
+        assert "meta_1" not in context
+        # Opinion should be kept
+        assert "opinion_1" in context
 
 
 class TestSurgeonSalienceGate:
