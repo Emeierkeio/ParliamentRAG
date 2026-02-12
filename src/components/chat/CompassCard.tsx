@@ -1,15 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronUp, Compass, Plus, Minus, Info } from "lucide-react";
+import { Plus, Minus, Info, RotateCcw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CompassData {
@@ -72,8 +67,49 @@ interface CompassCardProps {
 
 export function CompassCard({ data }: CompassCardProps) {
   const [zoom, setZoom] = useState(1);
+  // Pan offset in percentage points (0,0 = centered)
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ dragging: boolean; startX: number; startY: number; startPanX: number; startPanY: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   if (!data?.meta || !data?.groups) return null;
   const dimensionality = data.meta.dimensionality ?? 2;
+
+  const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
+
+  // Drag handlers
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    const el = containerRef.current;
+    if (!el) return;
+    el.setPointerCapture(e.pointerId);
+    dragRef.current = { dragging: true, startX: e.clientX, startY: e.clientY, startPanX: pan.x, startPanY: pan.y };
+  }, [pan]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d?.dragging) return;
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    // Convert pixel delta to percentage of container
+    const dx = ((e.clientX - d.startX) / rect.width) * 100;
+    const dy = ((e.clientY - d.startY) / rect.height) * 100;
+    setPan({ x: d.startPanX + dx, y: d.startPanY + dy });
+  }, []);
+
+  const onPointerUp = useCallback(() => {
+    if (dragRef.current) dragRef.current.dragging = false;
+  }, []);
+
+  // Wheel zoom
+  const onWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    setZoom(z => {
+      const delta = e.deltaY > 0 ? -0.15 : 0.15;
+      return Math.min(6, Math.max(0.2, z + delta));
+    });
+  }, []);
 
   // Group colors and abbreviations map
   const groupConfig: Record<string, { color: string; abbrev: string }> = {
@@ -107,17 +143,13 @@ export function CompassCard({ data }: CompassCardProps) {
        return groupId.substring(0, 3);
   }
 
-  // Scaling
-  const scale = (val: number) => {
-      const unitPercent = 10 * zoom; 
+  // Scaling with pan offset
+  const scale = (val: number, axis: 'x' | 'y') => {
+      const unitPercent = 10 * zoom;
       const offset = val * unitPercent;
-      return 50 + offset; 
+      return 50 + offset + (axis === 'x' ? pan.x : pan.y);
   };
 
-  // 1D Specific Scaling for width
-  const scaleWidth = (val: number) => {
-      return val * 10 * zoom; // % width
-  };
 
   const getAxisLabel = (axis: AxisDef, side: 'pos' | 'neg') => {
       if (side === 'pos' && axis.positive_side?.label) return axis.positive_side.label;
@@ -171,10 +203,19 @@ export function CompassCard({ data }: CompassCardProps) {
             </div>
          )}
          
-         <div className={cn(
-             "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto",
-             dimensionality === 1 ? "h-[200px]" : "aspect-square max-w-[500px]"
-         )}>
+         <div
+             ref={containerRef}
+             onPointerDown={onPointerDown}
+             onPointerMove={onPointerMove}
+             onPointerUp={onPointerUp}
+             onPointerCancel={onPointerUp}
+             onWheel={onWheel}
+             className={cn(
+                 "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto select-none touch-none",
+                 dimensionality === 1 ? "h-[200px]" : "aspect-square max-w-[500px]",
+                 "cursor-grab active:cursor-grabbing"
+             )}
+         >
               
               {dimensionality === 2 ? (
                 <>
@@ -201,22 +242,22 @@ export function CompassCard({ data }: CompassCardProps) {
 
               {/* Scatter Points */}
               {data.scatter_sample.map((pt, i) => (
-                  <div 
+                  <div
                     key={i}
                     className="absolute w-1.5 h-1.5 rounded-full opacity-20 transition-opacity hover:opacity-60"
                     style={{
-                        left: `${scale(pt.x)}%`,
-                        top: dimensionality === 1 ? '50%' : `${scale(-pt.y)}%`, 
+                        left: `${scale(pt.x, 'x')}%`,
+                        top: dimensionality === 1 ? '50%' : `${scale(-pt.y, 'y')}%`,
                         backgroundColor: getGroupColor(pt.group_id),
-                        transform: 'translate(-50%, -50%)' 
+                        transform: 'translate(-50%, -50%)'
                     }}
                   />
               ))}
 
               {/* Group Centroids with Labels */}
                {data.groups.map((grp) => {
-                   const cx = scale(grp.position_x);
-                   const cy = dimensionality === 1 ? 50 : scale(-grp.position_y);
+                   const cx = scale(grp.position_x, 'x');
+                   const cy = dimensionality === 1 ? 50 : scale(-grp.position_y, 'y');
                    const color = getGroupColor(grp.group_id);
                    const abbrev = getGroupAbbrev(grp.group_id);
 
@@ -293,12 +334,16 @@ export function CompassCard({ data }: CompassCardProps) {
                     </Tooltip>
                  </TooltipProvider>
              </div>
-             <div className="flex gap-1">
-                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.max(0.5, z - 0.2))}>
+             <div className="flex gap-1 items-center">
+                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.max(0.2, z - 0.2))}>
                      <Minus className="h-3 w-3" />
                  </Button>
-                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.min(3, z + 0.2))}>
+                 <span className="text-[10px] text-muted-foreground w-8 text-center">{Math.round(zoom * 100)}%</span>
+                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.min(6, z + 0.2))}>
                      <Plus className="h-3 w-3" />
+                 </Button>
+                 <Button variant="outline" size="icon" className="h-6 w-6 ml-1" onClick={resetView} title="Reset vista">
+                     <RotateCcw className="h-3 w-3" />
                  </Button>
              </div>
           </div>
