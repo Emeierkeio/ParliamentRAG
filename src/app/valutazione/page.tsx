@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { Sidebar, MobileMenuButton } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { SurveyModal } from "@/components/survey/SurveyModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,7 +51,7 @@ const DIMENSION_LABELS: Record<string, string> = {
 };
 
 export default function ValutazionePage() {
-  const { isCollapsed, toggle } = useSidebar();
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const [data, setData] = useState<EvaluationDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,42 +82,47 @@ export default function ValutazionePage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
-      <Sidebar isCollapsed={isCollapsed} onToggle={toggle} />
+      <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="border-b px-8 py-5 bg-background flex items-center justify-between shrink-0">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <ClipboardCheck className="w-6 h-6 text-blue-600" />
-              Valutazione Sistema
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Framework di valutazione scientifica — metriche automatiche e confronto A/B cieco
-            </p>
+        <div className="border-b px-4 md:px-8 py-4 md:py-5 bg-background flex items-center justify-between shrink-0 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <MobileMenuButton onClick={toggle} />
+            <div className="min-w-0">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                <ClipboardCheck className="w-5 h-5 md:w-6 md:h-6 text-blue-600 shrink-0" />
+                <span className="truncate">Valutazione</span>
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1 hidden sm:block">
+                Framework di valutazione scientifica — metriche automatiche e confronto A/B cieco
+              </p>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5 md:gap-2 shrink-0">
             <Button
               variant="outline"
               size="sm"
               onClick={loadData}
               disabled={isLoading}
+              className="px-2 md:px-3"
             >
-              <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
-              Aggiorna
+              <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+              <span className="hidden md:inline ml-1">Aggiorna</span>
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={handleExportCsv}
               disabled={!data || data.total_chats === 0}
+              className="px-2 md:px-3 hidden sm:flex"
             >
-              <Download className="w-4 h-4 mr-1" />
-              Esporta CSV
+              <Download className="w-4 h-4" />
+              <span className="hidden md:inline ml-1">Esporta CSV</span>
             </Button>
-            <Button size="sm" onClick={() => setSurveyModalOpen(true)}>
-              <ClipboardCheck className="w-4 h-4 mr-1" />
-              Nuova Valutazione
+            <Button size="sm" onClick={() => setSurveyModalOpen(true)} className="px-2 md:px-3">
+              <ClipboardCheck className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">Nuova Valutazione</span>
             </Button>
           </div>
         </div>
@@ -154,26 +159,26 @@ export default function ValutazionePage() {
             onValueChange={setActiveTab}
             className="flex-1 flex flex-col min-h-0"
           >
-            <TabsList className="mx-8 mt-4 grid w-auto grid-cols-4 h-10 shrink-0">
-              <TabsTrigger value="overview" className="text-sm gap-1.5">
+            <TabsList className="mx-4 md:mx-8 mt-4 grid w-auto grid-cols-4 h-10 shrink-0">
+              <TabsTrigger value="overview" className="text-xs md:text-sm gap-1 md:gap-1.5">
                 <BarChart3 className="w-4 h-4" />
-                Panoramica
+                <span className="hidden sm:inline">Panoramica</span>
               </TabsTrigger>
-              <TabsTrigger value="automated" className="text-sm gap-1.5">
+              <TabsTrigger value="automated" className="text-xs md:text-sm gap-1 md:gap-1.5">
                 <Target className="w-4 h-4" />
-                Metriche Automatiche
+                <span className="hidden sm:inline">Metriche</span>
               </TabsTrigger>
-              <TabsTrigger value="human" className="text-sm gap-1.5">
+              <TabsTrigger value="human" className="text-xs md:text-sm gap-1 md:gap-1.5">
                 <Users className="w-4 h-4" />
-                Confronto A/B
+                <span className="hidden sm:inline">A/B</span>
               </TabsTrigger>
-              <TabsTrigger value="details" className="text-sm gap-1.5">
+              <TabsTrigger value="details" className="text-xs md:text-sm gap-1 md:gap-1.5">
                 <FileText className="w-4 h-4" />
-                Dettaglio Chat
+                <span className="hidden sm:inline">Dettaglio</span>
               </TabsTrigger>
             </TabsList>
 
-            <div className="flex-1 overflow-y-auto px-8 py-6">
+            <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6">
               <TabsContent value="overview" className="mt-0">
                 <OverviewTab data={data} />
               </TabsContent>
@@ -212,7 +217,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
@@ -252,7 +257,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Metriche Automatiche
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
           <MetricCard
             label="Copertura Partitica"
             value={agg.avg_party_coverage}
@@ -721,8 +726,8 @@ function ChatEvaluationRow({
       </div>
 
       {isExpanded && (
-        <div className="border-t px-4 py-4 bg-gray-50 dark:bg-gray-900/30">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="border-t px-3 md:px-4 py-4 bg-gray-50 dark:bg-gray-900/30">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {/* Automated metrics */}
             <div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">

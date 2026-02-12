@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sidebar } from "@/components/layout";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
 import { GroupSelector } from "@/components/search/GroupSelector";
@@ -26,7 +26,7 @@ import { config } from "@/config";
 const PAGE_SIZE = 20;
 
 export default function SearchPage() {
-    const { isCollapsed, toggle } = useSidebar();
+    const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
 
     // State
     const [query, setQuery] = useState("");
@@ -119,25 +119,28 @@ export default function SearchPage() {
 
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
-             <Sidebar isCollapsed={isCollapsed} onToggle={toggle} />
+             <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
                 {/* Header */}
-                <div className="border-b px-8 py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Ricerca</h1>
-                        <p className="text-muted-foreground">Esplorazione diretta degli atti e interventi parlamentari</p>
+                <div className="border-b px-4 md:px-8 py-4 md:py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0 gap-3">
+                    <div className="flex items-center gap-3">
+                        <MobileMenuButton onClick={toggle} />
+                        <div>
+                            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Ricerca</h1>
+                            <p className="text-muted-foreground text-sm hidden sm:block">Esplorazione diretta degli atti e interventi parlamentari</p>
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-8 py-6">
-                    <div className="max-w-4xl mx-auto space-y-8 pb-20">
+                <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6">
+                    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20">
 
                         {/* Search Card */}
                         <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
 
                             {/* Search Input */}
-                            <div className="p-6 pb-0">
+                            <div className="p-4 md:p-6 pb-0">
                                 <div className="relative">
                                     <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                     <Input
@@ -161,7 +164,7 @@ export default function SearchPage() {
                             </div>
 
                             {/* Filters Grid */}
-                            <div className="p-6 space-y-5">
+                            <div className="p-4 md:p-6 space-y-5">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
                                     {/* Left: Author Filter */}
@@ -338,27 +341,27 @@ export default function SearchPage() {
 
                                         {/* Pagination */}
                                         {totalPages > 1 && (
-                                            <div className="flex items-center justify-center gap-2 pt-4">
+                                            <div className="flex items-center justify-center gap-1 sm:gap-2 pt-4 flex-wrap">
                                                 <Button
                                                     variant="outline"
                                                     size="sm"
                                                     disabled={currentPage <= 1}
                                                     onClick={() => handlePageChange(currentPage - 1)}
                                                 >
-                                                    <ChevronLeft className="h-4 w-4 mr-1" />
-                                                    Precedente
+                                                    <ChevronLeft className="h-4 w-4 sm:mr-1" />
+                                                    <span className="hidden sm:inline">Precedente</span>
                                                 </Button>
 
                                                 <div className="flex items-center gap-1">
                                                     {generatePageNumbers(currentPage, totalPages).map((p, i) =>
                                                         p === "..." ? (
-                                                            <span key={`ellipsis-${i}`} className="px-2 text-muted-foreground">...</span>
+                                                            <span key={`ellipsis-${i}`} className="px-1 sm:px-2 text-muted-foreground">...</span>
                                                         ) : (
                                                             <Button
                                                                 key={p}
                                                                 variant={p === currentPage ? "default" : "outline"}
                                                                 size="sm"
-                                                                className="w-9 h-9 p-0"
+                                                                className="w-8 h-8 sm:w-9 sm:h-9 p-0"
                                                                 onClick={() => handlePageChange(p as number)}
                                                             >
                                                                 {p}
@@ -373,8 +376,8 @@ export default function SearchPage() {
                                                     disabled={currentPage >= totalPages}
                                                     onClick={() => handlePageChange(currentPage + 1)}
                                                 >
-                                                    Successiva
-                                                    <ChevronRight className="h-4 w-4 ml-1" />
+                                                    <span className="hidden sm:inline">Successiva</span>
+                                                    <ChevronRight className="h-4 w-4 sm:ml-1" />
                                                 </Button>
                                             </div>
                                         )}

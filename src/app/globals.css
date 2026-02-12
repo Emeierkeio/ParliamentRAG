@@ -155,4 +155,49 @@
     word-break: break-word;
     hyphens: auto;
   }
+
+  /* Safe area insets for notched devices (iPhone X+) */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  .safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .safe-y {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Mobile touch optimizations */
+@media (pointer: coarse) {
+  /* Prevent text selection on tap for interactive elements */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Ensure minimum tap target size */
+  button:not(.min-tap-none),
+  a:not(.min-tap-none),
+  [role="button"]:not(.min-tap-none) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Prevent iOS zoom on input focus */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
 }

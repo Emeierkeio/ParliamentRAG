@@ -28,6 +28,7 @@ import {
   Search,
   X,
   ClipboardCheck,
+  Menu,
 } from "lucide-react";
 import { config } from "@/config";
 
@@ -37,16 +38,125 @@ interface SidebarProps {
   onNewChat?: () => void;
   onLoadChat?: (chat: any) => void;
   isQueryRunning?: boolean;
+  isMobile?: boolean;
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryRunning = false }: SidebarProps) {
+export function MobileMenuButton({ onClick, className }: { onClick: () => void; className?: string }) {
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={onClick}
+      className={cn("md:hidden h-10 w-10 shrink-0", className)}
+    >
+      <Menu className="h-5 w-5" />
+    </Button>
+  );
+}
+
+export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+
+  const handleNavClick = (action: () => void) => {
+    action();
+    if (isMobile && onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  // On mobile, render as overlay
+  if (isMobile) {
+    return (
+      <>
+        {/* Backdrop */}
+        {isMobileOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={onCloseMobile}
+          />
+        )}
+
+        {/* Slide-in sidebar */}
+        <aside
+          className={cn(
+            "fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-300 ease-out",
+            isMobileOpen ? "translate-x-0" : "-translate-x-full"
+          )}
+        >
+          {/* Header */}
+          <div className="flex h-16 items-center justify-between px-4">
+            <div
+              className="flex items-center gap-3 cursor-pointer"
+              onClick={() => handleNavClick(() => { window.location.href = "/"; })}
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                <Landmark className="h-5 w-5" />
+              </div>
+              <span className="text-sm font-bold tracking-tight text-foreground">
+                {config.app.name}
+              </span>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onCloseMobile}
+              className="h-8 w-8 text-muted-foreground"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* Navigation */}
+          <ScrollArea className="flex-1 py-4 px-3">
+            <nav className="flex flex-col gap-1">
+              <NavButton
+                item={{ icon: History, label: "Cronologia", onClick: () => handleNavClick(() => setHistoryOpen(true)) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+              <NavButton
+                item={{ icon: Search, label: "Ricerca", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+              <NavButton
+                item={{ icon: Database, label: "Graph Explorer", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+              <NavButton
+                item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+            </nav>
+          </ScrollArea>
+
+          {/* Bottom */}
+          <div className="p-3 pb-6">
+            <NavButton
+              item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
+              isCollapsed={false}
+            />
+          </div>
+        </aside>
+
+        {/* Modals */}
+        <InfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
+        <HistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} onLoadChat={onLoadChat} />
+      </>
+    );
+  }
+
+  // Desktop sidebar
   return (
     <>
       <aside
         className={cn(
-          "flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-out",
+          "hidden md:flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-out",
           isCollapsed ? "w-[70px]" : "w-[260px]"
         )}
       >

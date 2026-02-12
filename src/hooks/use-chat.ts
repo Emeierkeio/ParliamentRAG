@@ -345,6 +345,26 @@ export function useChat(options: UseChatOptions = {}) {
                   console.log(`[Pipeline:Baseline] Preview: "${data.baseline_answer.substring(0, 150)}..."`);
                 }
                 console.log(`[Pipeline:Baseline] ab_assignment:`, data.ab_assignment);
+
+                // Mark step 8 (Baseline) as complete in progress stepper
+                setProgress((prev) => {
+                  if (!prev) return null;
+                  const alreadyDone = prev.stepResults.some(r => r.step === 8);
+                  if (alreadyDone) return prev;
+                  return {
+                    ...prev,
+                    currentStep: 9,
+                    stepLabel: config.ui.progressSteps[8]?.label || "Valutazione",
+                    stepDescription: config.ui.progressSteps[8]?.description || "",
+                    stepResults: [...prev.stepResults, {
+                      step: 8,
+                      label: "Baseline",
+                      result: data.baseline_error
+                        ? "Non disponibile"
+                        : `${(data.baseline_answer?.length || 0)} caratteri generati`,
+                    }]
+                  };
+                });
                 break;
 
               case "chunk":
@@ -394,9 +414,27 @@ export function useChat(options: UseChatOptions = {}) {
                 console.log(`[Pipeline:Baseline] baseline_answer: type=${typeof baselineAnswer}, len=${baselineAnswer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
                 console.log(`[Pipeline:Baseline] ab_assignment:`, abAssignment);
 
-                setProgress((prev) =>
-                  prev ? { ...prev, isComplete: true } : null
-                );
+                // Mark step 9 as complete and finalize progress
+                setProgress((prev) => {
+                  if (!prev) return null;
+                  const newResults = [...prev.stepResults];
+                  // Ensure step 8 is marked complete (fallback if baseline event was missed)
+                  if (!newResults.some(r => r.step === 8)) {
+                    newResults.push({
+                      step: 8,
+                      label: "Baseline",
+                      result: baselineAnswer ? "Completata" : "Non disponibile",
+                    });
+                  }
+                  if (!newResults.some(r => r.step === 9)) {
+                    newResults.push({
+                      step: 9,
+                      label: "Valutazione",
+                      result: "Completata",
+                    });
+                  }
+                  return { ...prev, isComplete: true, stepResults: newResults };
+                });
                 updateLastAssistantMessage({
                   status: "complete",
                   content: accumulatedContent,

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import type { ProcessingProgress } from "@/types";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, CheckCircle2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -25,18 +25,38 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
     return progress.stepResults?.find(r => r.step === stepNumber);
   };
 
+  // After step 7, the answer is already visible — show a compact finalizing banner
+  const isPostGeneration = progress.currentStep >= 8 && !progress.isComplete;
+
   return (
     <div className={cn("w-full max-w-3xl mx-auto px-4", className)}>
+      {/* Post-generation: show compact banner instead of full stepper */}
+      {isPostGeneration && (
+        <div className="mb-4 flex items-center gap-3 rounded-lg bg-primary/5 border border-primary/15 px-4 py-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <CheckCircle2 className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-primary">Risposta pronta</span>
+          </div>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <span>
+              {progress.currentStep === 8
+                ? "Generazione risposta di confronto per la valutazione..."
+                : "Finalizzazione..."}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className="relative mb-6 px-4">
         <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
           <div
             className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
             style={{
-              // Calculation: (currentStep - 1) / (totalSteps - 1) keeps it aligned with circle centers
-              // We add a safety check for totalSteps <= 1 to avoid division by zero
-              width: progress.isComplete 
-                ? "100%" 
+              width: progress.isComplete
+                ? "100%"
                 : `${((progress.currentStep - 1) / (Math.max(1, progress.totalSteps - 1))) * 100}%`,
             }}
           />
