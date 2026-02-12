@@ -211,8 +211,13 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
 
 @router.delete("/history/{chat_id}")
 async def delete_chat(chat_id: str) -> Dict[str, Any]:
-    """Delete a chat from history."""
+    """Delete a chat from history and its associated survey."""
     client = _get_client()
+    # Delete associated survey if any
+    client.query("""
+        MATCH (s:SurveyEvaluation {chat_id: $id})
+        DELETE s
+    """, {"id": chat_id})
     result = client.query("""
         MATCH (c:ChatHistory {id: $id})
         DELETE c
@@ -227,8 +232,10 @@ async def delete_chat(chat_id: str) -> Dict[str, Any]:
 
 @router.delete("/history")
 async def clear_history() -> Dict[str, Any]:
-    """Clear all chat history."""
+    """Clear all chat history and associated surveys."""
     client = _get_client()
+    # Delete all surveys first
+    client.query("MATCH (s:SurveyEvaluation) DELETE s")
     result = client.query("""
         MATCH (c:ChatHistory)
         WITH c, count(*) AS count

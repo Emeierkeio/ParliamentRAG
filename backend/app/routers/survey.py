@@ -1,16 +1,15 @@
 """
 Survey router for A/B blind evaluations of ParliamentRAG vs Baseline RAG.
+Surveys are persisted as SurveyEvaluation nodes in Neo4j.
 """
 
 import json
 import logging
-from pathlib import Path
 from typing import List, Optional, Dict
 from datetime import datetime
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel
 
 from app.models.survey import (
     SurveyResponse,
@@ -26,34 +25,122 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/surveys", tags=["surveys"])
 
-# Data file path
-DATA_DIR = Path(__file__).parent.parent.parent / "data"
-SURVEYS_FILE = DATA_DIR / "surveys.json"
-from ..services.neo4j_client import get_neo4j_client
+
+def _get_client():
+    """Get Neo4j client, reusing history router's pattern."""
+    from ..services.neo4j_client import get_neo4j_client
+    try:
+        return get_neo4j_client()
+    except RuntimeError:
+        from ..config import get_settings
+        from ..services.neo4j_client import init_neo4j_client
+        settings = get_settings()
+        return init_neo4j_client(
+            uri=settings.neo4j_uri,
+            user=settings.neo4j_user,
+            password=settings.neo4j_password,
+        )
+
+
+def ensure_survey_constraint():
+    """Create uniqueness constraint on SurveyEvaluation.chat_id if not exists."""
+    try:
+        _get_client().query(
+            "CREATE CONSTRAINT survey_chat_id IF NOT EXISTS "
+            "FOR (s:SurveyEvaluation) REQUIRE s.chat_id IS UNIQUE"
+        )
+    except Exception as e:
+        logger.debug(f"Survey constraint already exists or error: {e}")
+
+
+def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
+    """Convert a SurveyResponse to Neo4j node properties."""
+    params = {
+        "id": survey.id,
+        "chat_id": survey.chat_id,
+        "timestamp": survey.timestamp.isoformat() if isinstance(survey.timestamp, datetime) else str(survey.timestamp),
+        "overall_satisfaction_a": survey.overall_satisfaction_a,
+        "overall_satisfaction_b": survey.overall_satisfaction_b,
+        "overall_preference": survey.overall_preference,
+        "would_recommend": survey.would_recommend,
+        "feedback_positive": survey.feedback_positive or "",
+        "feedback_improvement": survey.feedback_improvement or "",
+        "evaluator_role": survey.evaluator_role or "",
+        "evaluation_context": survey.evaluation_context or "",
+    }
+    # Serialize each A/B dimension as JSON string
+    for dim in AB_DIMENSIONS:
+        dim_data = getattr(survey, dim, None)
+        if dim_data:
+            params[dim] = json.dumps(dim_data.model_dump(), ensure_ascii=False)
+        else:
+            params[dim] = ""
+    return params
+
+
+def _neo4j_record_to_dict(r: dict) -> dict:
+    """Convert a Neo4j SurveyEvaluation record to a plain dict compatible with SurveyResponse."""
+    result = {
+        "id": r["id"],
+        "chat_id": r["chat_id"],
+        "timestamp": r.get("timestamp", ""),
+        "overall_satisfaction_a": r.get("overall_satisfaction_a", 0),
+        "overall_satisfaction_b": r.get("overall_satisfaction_b", 0),
+        "overall_preference": r.get("overall_preference", "equal"),
+        "would_recommend": r.get("would_recommend", False),
+        "feedback_positive": r.get("feedback_positive") or None,
+        "feedback_improvement": r.get("feedback_improvement") or None,
+        "evaluator_role": r.get("evaluator_role") or None,
+        "evaluation_context": r.get("evaluation_context") or None,
+    }
+    # Deserialize A/B dimensions from JSON strings
+    for dim in AB_DIMENSIONS:
+        raw = r.get(dim)
+        if raw:
+            try:
+                result[dim] = json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
+        else:
+            result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Survey field list for Cypher queries
+# ---------------------------------------------------------------------------
+_SURVEY_FIELDS = (
+    "s.id AS id, s.chat_id AS chat_id, s.timestamp AS timestamp, "
+    "s.overall_satisfaction_a AS overall_satisfaction_a, "
+    "s.overall_satisfaction_b AS overall_satisfaction_b, "
+    "s.overall_preference AS overall_preference, "
+    "s.would_recommend AS would_recommend, "
+    "s.feedback_positive AS feedback_positive, "
+    "s.feedback_improvement AS feedback_improvement, "
+    "s.evaluator_role AS evaluator_role, "
+    "s.evaluation_context AS evaluation_context, "
+    + ", ".join(f"s.{d} AS {d}" for d in AB_DIMENSIONS)
+)
 
 
 def _load_surveys() -> List[dict]:
-    """Load surveys from JSON file"""
-    if not SURVEYS_FILE.exists():
-        return []
-    try:
-        with open(SURVEYS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except (json.JSONDecodeError, IOError) as e:
-        logger.error(f"Error loading surveys: {e}")
-        return []
+    """Load all surveys from Neo4j. Returns list of dicts compatible with SurveyResponse."""
+    client = _get_client()
+    results = client.query(f"""
+        MATCH (s:SurveyEvaluation)
+        RETURN {_SURVEY_FIELDS}
+        ORDER BY s.timestamp DESC
+    """)
+    return [_neo4j_record_to_dict(r) for r in results]
 
 
-def _save_surveys(surveys: List[dict]) -> None:
-    """Save surveys to JSON file"""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    with open(SURVEYS_FILE, "w", encoding="utf-8") as f:
-        json.dump(surveys, f, ensure_ascii=False, indent=2, default=str)
-
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
 
 def _get_chat_by_id(chat_id: str) -> Optional[dict]:
     """Get a specific chat by ID from Neo4j."""
-    client = get_neo4j_client()
+    client = _get_client()
     result = client.query("""
         MATCH (c:ChatHistory {id: $id})
         RETURN c.id AS id, c.query AS query, c.answer AS answer,
@@ -80,7 +167,6 @@ def _deblind_preference(preference: str, ab_assignment: Dict[str, str]) -> str:
     """Convert A/B preference to system/baseline/equal."""
     if preference == "equal":
         return "equal"
-    # preference is "A" or "B" - map to what A or B represents
     mapped = ab_assignment.get(preference)
     return mapped if mapped in ("system", "baseline") else "equal"
 
@@ -117,7 +203,6 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     for s in surveys:
         ab_assignment = _get_ab_assignment(s.get("chat_id", ""))
         if not ab_assignment:
-            # Skip surveys without valid A/B assignment (old format)
             continue
 
         valid_count += 1
@@ -157,20 +242,17 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     if valid_count == 0:
         return empty_stats
 
-    # Calculate averages
     def safe_avg(lst):
         return round(sum(lst) / len(lst), 2) if lst else 0.0
 
     system_avg_dim = {d: safe_avg(system_ratings[d]) for d in AB_DIMENSIONS}
     baseline_avg_dim = {d: safe_avg(baseline_ratings[d]) for d in AB_DIMENSIONS}
 
-    # Win rates
     total_pref = sum(overall_pref.values()) or 1
     system_win = round(overall_pref["system"] / total_pref * 100, 1)
     baseline_win = round(overall_pref["baseline"] / total_pref * 100, 1)
     tie = round(overall_pref["equal"] / total_pref * 100, 1)
 
-    # Recommendation rate (only count valid surveys with ab_assignment)
     valid_surveys = [s for s in surveys if _get_ab_assignment(s.get("chat_id", ""))]
     recommendations = sum(1 for s in valid_surveys if s.get("would_recommend", False))
     recommendation_rate = round((recommendations / len(valid_surveys)) * 100, 1) if valid_surveys else 0.0
@@ -189,84 +271,65 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     )
 
 
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
+
 @router.get("/questions")
 async def get_survey_questions():
     """Get the survey questions configuration"""
     return {"questions": SURVEY_QUESTIONS}
 
 
-@router.post("", response_model=SurveyResponse)
-async def create_survey(survey_data: SurveyResponseCreate):
-    """Create a new A/B survey response"""
-
-    # Verify chat exists
-    chat = _get_chat_by_id(survey_data.chat_id)
-    if not chat:
-        raise HTTPException(status_code=404, detail="Chat not found")
-
-    # Check if survey already exists for this chat
+@router.get("/stats/summary", response_model=SurveyStats)
+async def get_stats_summary():
+    """Get aggregated survey statistics (de-blinded)"""
     surveys = _load_surveys()
-    existing = next((s for s in surveys if s.get("chat_id") == survey_data.chat_id), None)
-    if existing:
-        raise HTTPException(
-            status_code=409,
-            detail="Survey already exists for this chat. Use PUT to update."
-        )
-
-    # Create survey response
-    survey = SurveyResponse(
-        id=str(uuid4()),
-        timestamp=datetime.now(),
-        **survey_data.model_dump(),
-    )
-
-    # Save
-    surveys.append(survey.model_dump())
-    _save_surveys(surveys)
-
-    logger.info(f"Survey created for chat {survey_data.chat_id}")
-    return survey
+    return _calculate_stats(surveys)
 
 
-@router.put("/{chat_id}", response_model=SurveyResponse)
-async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
-    """Update an existing survey response"""
-
-    surveys = _load_surveys()
-    survey_index = next(
-        (i for i, s in enumerate(surveys) if s.get("chat_id") == chat_id),
-        None
-    )
-
-    if survey_index is None:
-        raise HTTPException(status_code=404, detail="Survey not found")
-
-    # Update survey
-    existing = surveys[survey_index]
-    updated = SurveyResponse(
-        id=existing.get("id"),
-        timestamp=datetime.now(),
-        **survey_data.model_dump(),
-    )
-
-    surveys[survey_index] = updated.model_dump()
-    _save_surveys(surveys)
-
-    logger.info(f"Survey updated for chat {chat_id}")
-    return updated
+@router.get("/chats/evaluated")
+async def get_evaluated_chat_ids():
+    """Get list of chat IDs that have been evaluated"""
+    client = _get_client()
+    results = client.query("""
+        MATCH (s:SurveyEvaluation)
+        RETURN s.chat_id AS chat_id
+    """)
+    return {"chat_ids": [r["chat_id"] for r in results]}
 
 
-@router.get("/{chat_id}", response_model=SurveyResponse)
-async def get_survey_by_chat(chat_id: str):
-    """Get survey for a specific chat"""
+@router.get("/chats/pending")
+async def get_pending_chats():
+    """Get chats that haven't been evaluated yet (only those with baseline)"""
 
-    surveys = _load_surveys()
-    survey = next((s for s in surveys if s.get("chat_id") == chat_id), None)
+    logger.info("[PENDING-CHATS] === Fetching pending chats for A/B evaluation ===")
 
-    if not survey:
-        raise HTTPException(status_code=404, detail="Survey not found")
+    client = _get_client()
 
-    return SurveyResponse(**survey)
+    # Single query: chats with baseline that have no SurveyEvaluation
+    pending_results = client.query("""
+        MATCH (c:ChatHistory)
+        WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
+          AND NOT EXISTS {
+            MATCH (s:SurveyEvaluation {chat_id: c.id})
+          }
+        RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
+        ORDER BY c.timestamp DESC
+    """)
+
+    pending = [
+        {
+            "id": r["id"],
+            "query": r["query"],
+            "preview": r.get("preview", ""),
+            "timestamp": r.get("timestamp", ""),
+        }
+        for r in pending_results
+    ]
+
+    logger.info(f"[PENDING-CHATS] Pending (not yet evaluated): {len(pending)}")
+    return {"pending": pending, "total": len(pending)}
 
 
 @router.get("", response_model=SurveyListResponse)
@@ -285,7 +348,7 @@ async def list_surveys(
     # Fetch chats from Neo4j
     chat_lookup = {}
     if chat_ids:
-        client = get_neo4j_client()
+        client = _get_client()
         results = client.query("""
             MATCH (c:ChatHistory) WHERE c.id IN $ids
             RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
@@ -323,88 +386,131 @@ async def list_surveys(
     )
 
 
+@router.post("", response_model=SurveyResponse)
+async def create_survey(survey_data: SurveyResponseCreate):
+    """Create a new A/B survey response"""
+
+    # Verify chat exists
+    chat = _get_chat_by_id(survey_data.chat_id)
+    if not chat:
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    # Check if survey already exists for this chat
+    client = _get_client()
+    existing = client.query("""
+        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+        RETURN s.id AS id
+    """, {"chat_id": survey_data.chat_id})
+    if existing:
+        raise HTTPException(
+            status_code=409,
+            detail="Survey already exists for this chat. Use PUT to update."
+        )
+
+    # Create survey response
+    survey = SurveyResponse(
+        id=str(uuid4()),
+        timestamp=datetime.now(),
+        **survey_data.model_dump(),
+    )
+
+    params = _survey_to_neo4j_params(survey)
+
+    # Build SET clause dynamically from dimension fields
+    dim_sets = ", ".join(f"{d}: ${d}" for d in AB_DIMENSIONS)
+
+    client.query(f"""
+        CREATE (s:SurveyEvaluation {{
+            id: $id,
+            chat_id: $chat_id,
+            timestamp: $timestamp,
+            overall_satisfaction_a: $overall_satisfaction_a,
+            overall_satisfaction_b: $overall_satisfaction_b,
+            overall_preference: $overall_preference,
+            would_recommend: $would_recommend,
+            feedback_positive: $feedback_positive,
+            feedback_improvement: $feedback_improvement,
+            evaluator_role: $evaluator_role,
+            evaluation_context: $evaluation_context,
+            {dim_sets}
+        }})
+    """, params)
+
+    logger.info(f"Survey created for chat {survey_data.chat_id}")
+    return survey
+
+
+@router.get("/{chat_id}", response_model=SurveyResponse)
+async def get_survey_by_chat(chat_id: str):
+    """Get survey for a specific chat"""
+
+    client = _get_client()
+    result = client.query(f"""
+        MATCH (s:SurveyEvaluation {{chat_id: $chat_id}})
+        RETURN {_SURVEY_FIELDS}
+    """, {"chat_id": chat_id})
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Survey not found")
+
+    return SurveyResponse(**_neo4j_record_to_dict(result[0]))
+
+
+@router.put("/{chat_id}", response_model=SurveyResponse)
+async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
+    """Update an existing survey response"""
+
+    client = _get_client()
+    existing = client.query("""
+        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+        RETURN s.id AS id
+    """, {"chat_id": chat_id})
+
+    if not existing:
+        raise HTTPException(status_code=404, detail="Survey not found")
+
+    updated = SurveyResponse(
+        id=existing[0]["id"],
+        timestamp=datetime.now(),
+        **survey_data.model_dump(),
+    )
+
+    params = _survey_to_neo4j_params(updated)
+    params["match_chat_id"] = chat_id
+
+    dim_sets = ", ".join(f"s.{d} = ${d}" for d in AB_DIMENSIONS)
+
+    client.query(f"""
+        MATCH (s:SurveyEvaluation {{chat_id: $match_chat_id}})
+        SET s.timestamp = $timestamp,
+            s.overall_satisfaction_a = $overall_satisfaction_a,
+            s.overall_satisfaction_b = $overall_satisfaction_b,
+            s.overall_preference = $overall_preference,
+            s.would_recommend = $would_recommend,
+            s.feedback_positive = $feedback_positive,
+            s.feedback_improvement = $feedback_improvement,
+            s.evaluator_role = $evaluator_role,
+            s.evaluation_context = $evaluation_context,
+            {dim_sets}
+    """, params)
+
+    logger.info(f"Survey updated for chat {chat_id}")
+    return updated
+
+
 @router.delete("/{chat_id}")
 async def delete_survey(chat_id: str):
     """Delete a survey"""
 
-    surveys = _load_surveys()
-    original_len = len(surveys)
-    surveys = [s for s in surveys if s.get("chat_id") != chat_id]
+    client = _get_client()
+    result = client.query("""
+        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+        DELETE s
+        RETURN count(*) AS deleted
+    """, {"chat_id": chat_id})
 
-    if len(surveys) == original_len:
+    if not result or result[0]["deleted"] == 0:
         raise HTTPException(status_code=404, detail="Survey not found")
 
-    _save_surveys(surveys)
     logger.info(f"Survey deleted for chat {chat_id}")
-
     return {"message": "Survey deleted", "chat_id": chat_id}
-
-
-@router.get("/stats/summary", response_model=SurveyStats)
-async def get_stats_summary():
-    """Get aggregated survey statistics (de-blinded)"""
-    surveys = _load_surveys()
-    return _calculate_stats(surveys)
-
-
-@router.get("/chats/evaluated")
-async def get_evaluated_chat_ids():
-    """Get list of chat IDs that have been evaluated"""
-    surveys = _load_surveys()
-    return {"chat_ids": [s.get("chat_id") for s in surveys]}
-
-
-@router.get("/chats/pending")
-async def get_pending_chats():
-    """Get chats that haven't been evaluated yet (only those with baseline)"""
-
-    logger.info("[PENDING-CHATS] === Fetching pending chats for A/B evaluation ===")
-
-    surveys = _load_surveys()
-    evaluated_ids = {s.get("chat_id") for s in surveys}
-    logger.info(f"[PENDING-CHATS] Evaluated chat IDs: {evaluated_ids}")
-
-    # First, debug: fetch ALL chats to see baseline status
-    client = get_neo4j_client()
-    all_chats_debug = client.query("""
-        MATCH (c:ChatHistory)
-        RETURN c.id AS id, c.query AS query,
-               c.baseline_answer AS baseline_answer,
-               c.ab_assignment AS ab_assignment
-        ORDER BY c.timestamp DESC
-    """)
-    logger.info(f"[PENDING-CHATS] Total ChatHistory nodes in Neo4j: {len(all_chats_debug)}")
-    for chat in all_chats_debug:
-        ba = chat.get("baseline_answer", None)
-        ba_len = len(ba) if ba else 0
-        ba_type = type(ba).__name__
-        ba_is_null = ba is None
-        ba_is_empty = ba == ""
-        logger.info(
-            f"[PENDING-CHATS]   id={chat['id']}, query='{chat.get('query', '')[:50]}...', "
-            f"baseline_answer: type={ba_type}, is_null={ba_is_null}, is_empty={ba_is_empty}, len={ba_len}, "
-            f"ab_assignment='{chat.get('ab_assignment', '')}'"
-        )
-
-    # Fetch all chats from Neo4j - only those with baseline_answer
-    history = client.query("""
-        MATCH (c:ChatHistory)
-        WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
-        RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
-        ORDER BY c.timestamp DESC
-    """)
-    logger.info(f"[PENDING-CHATS] Chats WITH valid baseline_answer: {len(history)}")
-
-    pending = [
-        {
-            "id": c["id"],
-            "query": c["query"],
-            "preview": c.get("preview", ""),
-            "timestamp": c.get("timestamp", ""),
-        }
-        for c in history
-        if c["id"] not in evaluated_ids
-    ]
-
-    logger.info(f"[PENDING-CHATS] Pending (not yet evaluated): {len(pending)}")
-    return {"pending": pending, "total": len(pending)}

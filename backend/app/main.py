@@ -91,9 +91,11 @@ async def lifespan(app: FastAPI):
     # Warm up Neo4j vector index to avoid cold start latency
     await _warmup_neo4j_index(settings)
 
-    # Ensure ChatHistory constraint exists
+    # Ensure Neo4j constraints exist
     from .routers.history import ensure_constraint
     ensure_constraint()
+    from .routers.survey import ensure_survey_constraint
+    ensure_survey_constraint()
 
     yield
 
