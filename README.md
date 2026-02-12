@@ -13,7 +13,7 @@ A Retrieval-Augmented Generation system that delivers **balanced, multi-view ana
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Railway-blueviolet?style=for-the-badge&logo=railway&logoColor=white)](https://truthful-amazement-production.up.railway.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Railway-blueviolet?style=for-the-badge&logo=railway&logoColor=white)](https://www.parliamentrag.it)
 
 </div>
 
@@ -26,11 +26,11 @@ ParliamentRAG is a research system built for a Master's thesis that combines **v
 The system features a 4-stage generation pipeline with **deterministic, offset-based citations** — zero fuzzy matching — ensuring full auditability and traceability of every quoted passage.
 
 <div align="center">
-  <a href="https://truthful-amazement-production.up.railway.app/">
+  <a href="https://www.parliamentrag.it">
     <img src="assets/neo4j_graph.png" alt="Neo4j Knowledge Graph" width="700"/>
   </a>
   <br/>
-  <sub>Knowledge graph of Italian parliamentary data in Neo4j — <a href="https://truthful-amazement-production.up.railway.app/"><b>Try the live demo</b></a> · <a href="https://truthful-amazement-production.up.railway.app/explorer"><b>Interactive schema explorer</b></a></sub>
+  <sub>Knowledge graph of Italian parliamentary data in Neo4j — <a href="https://www.parliamentrag.it"><b>Try the live demo</b></a> · <a href="https://www.parliamentrag.it/explorer"><b>Interactive schema explorer</b></a></sub>
 </div>
 
 ---
