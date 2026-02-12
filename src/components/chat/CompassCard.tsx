@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -102,13 +102,19 @@ export function CompassCard({ data }: CompassCardProps) {
     if (dragRef.current) dragRef.current.dragging = false;
   }, []);
 
-  // Wheel zoom
-  const onWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault();
-    setZoom(z => {
-      const delta = e.deltaY > 0 ? -0.15 : 0.15;
-      return Math.min(6, Math.max(0.2, z + delta));
-    });
+  // Wheel zoom – registered with { passive: false } to allow preventDefault
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      setZoom(z => {
+        const delta = e.deltaY > 0 ? -0.15 : 0.15;
+        return Math.min(6, Math.max(0.2, z + delta));
+      });
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
   }, []);
 
   // Group colors and abbreviations map
@@ -167,7 +173,7 @@ export function CompassCard({ data }: CompassCardProps) {
     <div className="w-full">
          {/* Header con titolo onesto e tooltip esplicativo */}
          <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Mappa del conflitto politico (analisi semantica)</h4>
+            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Mappa del conflitto politico</h4>
             <TooltipProvider>
                <Tooltip>
                   <TooltipTrigger asChild>
@@ -209,7 +215,7 @@ export function CompassCard({ data }: CompassCardProps) {
              onPointerMove={onPointerMove}
              onPointerUp={onPointerUp}
              onPointerCancel={onPointerUp}
-             onWheel={onWheel}
+
              className={cn(
                  "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto select-none touch-none",
                  dimensionality === 1 ? "h-[200px]" : "aspect-square max-w-[500px]",
