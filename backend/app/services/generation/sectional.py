@@ -16,6 +16,7 @@ import openai
 
 from ...config import get_config, get_settings
 from ..citation import extract_best_sentences
+from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,15 @@ DIVIETO DI FILLER:
 NON scrivere frasi vuote come "ha espresso la propria posizione" o "è intervenuto sul tema".
 Ogni frase DEVE comunicare una posizione CONCRETA (a favore/contro cosa, quale proposta, quale critica).
 Se l'evidenza non contiene una posizione chiara, riporta il fatto specifico citato dall'oratore.
+
+DIVIETO DI CITAZIONI PROCEDURALI:
+NON usare citazioni che contengono SOLO contenuto procedurale o formulaico, come:
+- "il parere è favorevole/contrario"
+- "annuncio il voto favorevole del gruppo"
+- "dichiaro il voto favorevole/contrario"
+- "l'emendamento è approvato/respinto"
+- "ringrazio il Presidente"
+Se la ★ CITAZIONE è procedurale, IGNORA quell'evidenza e usa le successive.
 
 STRUTTURA OUTPUT:
 ### [NOME PARTITO]
@@ -413,6 +423,16 @@ FORMATO OUTPUT:
             # (all sentences below quality threshold — no citable content)
             if not extracted_citation:
                 logger.info(f"Skipping evidence {eid} ({speaker}): no sentence passed quality threshold")
+                continue
+
+            # Skip procedural citations (e.g. "il parere è favorevole",
+            # "annuncio il voto favorevole del gruppo", "dichiaro aperta la seduta")
+            citation_salience = compute_chunk_salience(extracted_citation)
+            if citation_salience <= 0.2:
+                logger.info(
+                    f"Skipping procedural citation for {eid} ({speaker}): "
+                    f"salience={citation_salience:.1f}, text='{extracted_citation[:80]}...'"
+                )
                 continue
 
             # Also provide context (truncated) for understanding

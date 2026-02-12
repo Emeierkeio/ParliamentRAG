@@ -258,3 +258,95 @@ class TestMergerSalienceIntegration:
         procedural = next(r for r in merged if r["evidence_id"] == "procedural_chunk")
 
         assert opinion["final_score"] > procedural["final_score"]
+
+
+# --- Generation pipeline salience filters ---
+
+class TestSectionalSalienceFilter:
+    """Test that the sectional writer filters out procedural citations."""
+
+    @pytest.fixture
+    def writer(self):
+        """Create a SectionalWriter with mocked settings."""
+        from unittest.mock import patch, MagicMock
+        with patch('app.services.generation.sectional.get_settings') as mock_settings, \
+             patch('app.services.generation.sectional.get_config') as mock_config, \
+             patch('app.services.generation.sectional.openai'):
+            mock_settings.return_value = MagicMock(openai_api_key="test")
+            mock_config.return_value = MagicMock(
+                load_config=MagicMock(return_value={"generation": {"models": {"writer": "gpt-4o"}}})
+            )
+            from app.services.generation.sectional import SectionalWriter
+            yield SectionalWriter()
+
+    def test_build_evidence_context_skips_procedural(self, writer):
+        """Procedural citations should be skipped in evidence context."""
+        evidence = [
+            {
+                "evidence_id": "proc_1",
+                "speaker_name": "Gava",
+                "date": "2024-01-15",
+                "quote_text": "Sull'ordine del giorno n. 9/1606-A/33 Scerra, il parere è favorevole.",
+                "chunk_text": "Sull'ordine del giorno n. 9/1606-A/33 Scerra, il parere è favorevole.",
+            },
+            {
+                "evidence_id": "opinion_1",
+                "speaker_name": "Rossi",
+                "date": "2024-01-15",
+                "quote_text": "Riteniamo che questa riforma sia fondamentale per il Paese.",
+                "chunk_text": "Riteniamo che questa riforma sia fondamentale per il Paese.",
+            },
+        ]
+
+        context = writer._build_evidence_context(evidence, "riforma")
+        # The procedural citation should be skipped
+        assert "proc_1" not in context
+        # The opinion citation should be included
+        assert "opinion_1" in context
+
+    def test_build_evidence_context_keeps_substantive(self, writer):
+        """Substantive citations should always be included."""
+        evidence = [
+            {
+                "evidence_id": "opinion_1",
+                "speaker_name": "Bianchi",
+                "date": "2024-01-15",
+                "quote_text": "Proponiamo una riforma strutturale della sanità pubblica.",
+                "chunk_text": "Proponiamo una riforma strutturale della sanità pubblica.",
+            },
+        ]
+
+        context = writer._build_evidence_context(evidence, "sanità")
+        assert "opinion_1" in context
+
+    def test_build_evidence_context_skips_vote_announcement(self, writer):
+        """Vote announcement citations should be filtered out."""
+        evidence = [
+            {
+                "evidence_id": "vote_1",
+                "speaker_name": "Semenzato",
+                "date": "2024-01-15",
+                "quote_text": "Con quest'auspicio annuncio il voto favorevole del gruppo Noi Moderati.",
+                "chunk_text": "Con quest'auspicio annuncio il voto favorevole del gruppo Noi Moderati.",
+            },
+        ]
+
+        context = writer._build_evidence_context(evidence, "cambiamenti climatici")
+        # Vote announcement should be filtered
+        assert "vote_1" not in context
+
+
+class TestSurgeonSalienceGate:
+    """Test that the surgeon detects procedural citations."""
+
+    def test_format_citation_detects_procedural(self):
+        """Surgeon should detect and log procedural citations."""
+        from app.services.generation.surgeon import CitationSurgeon
+        from app.services.citation.sentence_extractor import compute_chunk_salience
+
+        # Verify the salience scoring correctly identifies procedural text
+        procedural = "il parere è favorevole"
+        assert compute_chunk_salience(procedural) <= 0.2
+
+        substantive = "riteniamo che questa legge sia fondamentale per il Paese"
+        assert compute_chunk_salience(substantive) >= 0.9

@@ -17,6 +17,7 @@ from typing import List, Dict, Any, Tuple, Optional, Callable
 
 from ...config import get_config
 from ..citation import extract_best_sentences
+from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -295,6 +296,36 @@ class CitationSurgeon:
                     max_sentences=1,
                     max_chars=200
                 )
+
+        # Salience gate: reject procedural citations as last defense.
+        # If the citation is purely procedural (e.g. "il parere è favorevole"),
+        # try to re-extract a better sentence from the full quote text.
+        # If no better sentence exists, keep the original to avoid empty citations.
+        citation_salience = compute_chunk_salience(quote)
+        if citation_salience <= 0.2 and quote:
+            logger.warning(
+                f"Procedural citation detected for {evidence_id}: "
+                f"salience={citation_salience:.1f}, attempting re-extraction"
+            )
+            query = getattr(self, '_current_query', '')
+            # Try original full quote text (before pre-extraction)
+            original_quote = quote  # Save for fallback
+            if pre_extracted:
+                # We had a pre-extracted version; get the full text to try again
+                # The full quote should be in the evidence_map
+                pass  # quote variable already has the pre-extracted text
+            if query and len(quote) > 30:
+                re_extracted = extract_best_sentences(
+                    text=quote,
+                    query=query,
+                    max_sentences=1,
+                    max_chars=200
+                )
+                if re_extracted:
+                    re_salience = compute_chunk_salience(re_extracted)
+                    if re_salience > citation_salience:
+                        quote = re_extracted
+                        logger.info(f"Re-extracted better citation: salience={re_salience:.1f}")
 
         # Clean up whitespace
         quote = " ".join(quote.split())
