@@ -25,30 +25,37 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
     return progress.stepResults?.find(r => r.step === stepNumber);
   };
 
-  // After step 7, the answer is already visible — show a compact finalizing banner
-  const isPostGeneration = progress.currentStep >= 8 && !progress.isComplete;
+  // Text is already visible once step 7 result exists (chunks started)
+  const textIsVisible = progress.stepResults?.some(r => r.step === 7);
 
-  return (
-    <div className={cn("w-full max-w-3xl mx-auto px-4", className)}>
-      {/* Post-generation: show compact banner instead of full stepper */}
-      {isPostGeneration && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg bg-primary/5 border border-primary/15 px-4 py-3">
+  // After text is visible, hide the full stepper and show compact banner only
+  if (textIsVisible && !progress.isComplete) {
+    return (
+      <div className={cn("w-full max-w-3xl mx-auto px-4", className)}>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 rounded-lg bg-primary/5 border border-primary/15 px-4 py-3">
           <div className="flex items-center gap-2 shrink-0">
             <CheckCircle2 className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-primary">Risposta pronta</span>
           </div>
-          <div className="h-4 w-px bg-border" />
+          <div className="hidden sm:block h-4 w-px bg-border" />
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
             <span>
-              {progress.currentStep === 8
-                ? "Generazione risposta di confronto per la valutazione..."
-                : "Finalizzazione..."}
+              {progress.currentStep <= 7
+                ? "Completamento scrittura..."
+                : progress.currentStep === 8
+                  ? "Generazione risposta di confronto per la valutazione..."
+                  : "Finalizzazione..."}
             </span>
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
 
+  // Full stepper for steps 1-7 (before text is visible)
+  return (
+    <div className={cn("w-full max-w-3xl mx-auto px-4", className)}>
       {/* Progress bar */}
       <div className="relative mb-6 px-4">
         <div className="h-1 w-full rounded-full bg-muted overflow-hidden">

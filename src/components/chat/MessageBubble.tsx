@@ -193,14 +193,12 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           </div>
         )}
 
-        {/* Additional metadata for assistant messages */}
-        {!isUser && message.status === "complete" && (
-          <div className="mt-6 border-t border-border pt-6">
-            <AssistantMetadata
-              message={message}
-              highlightedChunkId={highlightedChunkId}
-            />
-          </div>
+        {/* Additional metadata for assistant messages — show progressively as data arrives */}
+        {!isUser && (message.status === "complete" || message.status === "streaming") && (
+          <AssistantMetadata
+            message={message}
+            highlightedChunkId={highlightedChunkId}
+          />
         )}
       </div>
     </div>
@@ -217,11 +215,18 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
   const hasExperts = message.experts && message.experts.length > 0;
   const hasBalance = message.balanceMetrics;
   const hasHQMetaData = !!message.hqMetadata;
+  const hasCompass = !!message.compass;
 
-  if (!hasCitations && !hasExperts && !hasBalance && !hasHQMetaData) return null;
+  // During streaming, only show if we have at least some data
+  const hasAnyData = hasCitations || hasExperts || hasBalance || hasHQMetaData || hasCompass;
+  if (!hasAnyData) return null;
 
   return (
-    <div className="flex flex-col gap-2 w-full min-w-0">
+    <div className={cn(
+      "flex flex-col gap-2 w-full min-w-0",
+      // Add visual separator only when content is visible above
+      message.content && "mt-6 border-t border-border pt-6"
+    )}>
       {/* High Quality Variants Analysis */}
       {hasHQMetaData && (
         <CollapsibleSection
