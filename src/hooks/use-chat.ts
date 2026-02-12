@@ -212,14 +212,19 @@ export function useChat(options: UseChatOptions = {}) {
                 const step = config.ui.progressSteps[stepIndex];
                 const totalSteps = data.total || config.ui.progressSteps.length;
                 console.log(`[Pipeline] Step ${data.step}/${totalSteps}: ${step?.label || data.message}`);
-                setProgress((prev) => ({
-                  currentStep: data.step,
-                  totalSteps: data.total || config.ui.progressSteps.length,
-                  stepLabel: step?.label || data.message || "",
-                  stepDescription: step?.description || "",
-                  isComplete: false,
-                  stepResults: prev?.stepResults || [],
-                }));
+                setProgress((prev) => {
+                  // Only advance forward, never go backwards
+                  const newStep = Math.max(prev?.currentStep || 0, data.step);
+                  const newStepConfig = config.ui.progressSteps[newStep - 1];
+                  return {
+                    currentStep: newStep,
+                    totalSteps: data.total || config.ui.progressSteps.length,
+                    stepLabel: newStepConfig?.label || data.message || "",
+                    stepDescription: newStepConfig?.description || "",
+                    isComplete: false,
+                    stepResults: prev?.stepResults || [],
+                  };
+                });
                 break;
 
               case "commissioni":
@@ -286,15 +291,24 @@ export function useChat(options: UseChatOptions = {}) {
                 };
                 console.log(`[Pipeline] Step 5: Magg ${data.maggioranza_percentage?.toFixed(1)}% / Opp ${data.opposizione_percentage?.toFixed(1)}% (bias: ${data.bias_score?.toFixed(2)})`);
                 updateLastAssistantMessage({ balanceMetrics });
-                setProgress((prev) => prev ? {
-                  ...prev,
-                  stepResults: [...prev.stepResults, {
-                    step: 5,
-                    label: "Statistiche",
-                    result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
-                    details: balanceMetrics
-                  }]
-                } : null);
+                setProgress((prev) => {
+                  if (!prev) return null;
+                  // Advance stepper to at least step 6 (balance = step 5 complete)
+                  const nextStep = Math.max(prev.currentStep, 6);
+                  const stepConfig = config.ui.progressSteps[nextStep - 1];
+                  return {
+                    ...prev,
+                    currentStep: nextStep,
+                    stepLabel: stepConfig?.label || prev.stepLabel,
+                    stepDescription: stepConfig?.description || prev.stepDescription,
+                    stepResults: [...prev.stepResults, {
+                      step: 5,
+                      label: "Statistiche",
+                      result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
+                      details: balanceMetrics
+                    }]
+                  };
+                });
                 break;
 
               case "compass":
@@ -302,15 +316,24 @@ export function useChat(options: UseChatOptions = {}) {
                   compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
                   console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${compassData.axes?.length || 0} assi`);
-                  setProgress((prev) => prev ? {
-                    ...prev,
-                    stepResults: [...prev.stepResults, {
-                      step: 6,
-                      label: "Bussola Ideologica",
-                      result: "Analisi completata",
-                      details: { axes: compassData.axes, groups: compassData.groups?.length }
-                    }]
-                  } : null);
+                  setProgress((prev) => {
+                    if (!prev) return null;
+                    // Advance stepper to at least step 7 (compass = step 6 complete)
+                    const nextStep = Math.max(prev.currentStep, 7);
+                    const stepConfig = config.ui.progressSteps[nextStep - 1];
+                    return {
+                      ...prev,
+                      currentStep: nextStep,
+                      stepLabel: stepConfig?.label || prev.stepLabel,
+                      stepDescription: stepConfig?.description || prev.stepDescription,
+                      stepResults: [...prev.stepResults, {
+                        step: 6,
+                        label: "Bussola Ideologica",
+                        result: "Analisi completata",
+                        details: { axes: compassData.axes, groups: compassData.groups?.length }
+                      }]
+                    };
+                  });
                 } catch(e) {
                    console.error("[Pipeline] Step 6: Compass error", e);
                 }
@@ -377,8 +400,13 @@ export function useChat(options: UseChatOptions = {}) {
                   const alreadyDone = prev.stepResults.some(r => r.step === 7);
                   if (alreadyDone) return prev;
                   console.log(`[Pipeline] Step 7: First chunk received (streaming ${accumulatedContent.length} chars)`);
+                  // Advance stepper to step 7 and mark it as completing
+                  const stepConfig = config.ui.progressSteps[6]; // step 7 (0-indexed)
                   return {
                     ...prev,
+                    currentStep: 7,
+                    stepLabel: stepConfig?.label || "Generazione",
+                    stepDescription: "Scrittura in corso...",
                     stepResults: [...prev.stepResults, {
                       step: 7,
                       label: "Generazione",
