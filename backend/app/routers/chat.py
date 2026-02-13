@@ -601,10 +601,14 @@ def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) ->
     RETURN sid, role
     """
     result_map: Dict[str, str] = {}
+    unique_ids = list(set(speaker_ids))
+    logger.info(f"[GOV_ROLES_DEBUG] Fetching gov roles for {len(unique_ids)} speaker IDs: {unique_ids}")
     with neo4j_client.session() as session:
-        result = session.run(cypher, ids=list(set(speaker_ids)))
+        result = session.run(cypher, ids=unique_ids)
         for record in result:
+            logger.info(f"[GOV_ROLES_DEBUG] Found gov role: sid={record['sid']}, role={record['role']}")
             result_map[record["sid"]] = record["role"]
+    logger.info(f"[GOV_ROLES_DEBUG] Final gov_role_map: {result_map}")
     return result_map
 
 
@@ -798,12 +802,21 @@ def _build_citations_for_frontend(
         # Check ALL speakers for government roles (Deputies who are also ministers)
         gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
+    logger.info(f"[CITATIONS_GOV_DEBUG] gov_role_map keys: {list(gov_role_map.keys())}")
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
         speaker_name = e.get("speaker_name", "")
         speaker_id = e.get("speaker_id", "")
         party = e.get("party", "MISTO")
-        is_government = e.get("speaker_role") == "GovernmentMember" or speaker_id in gov_role_map
+        speaker_role = e.get("speaker_role", "Unknown")
+        is_in_gov_map = speaker_id in gov_role_map
+        is_government = speaker_role == "GovernmentMember" or is_in_gov_map
+
+        logger.info(
+            f"[CITATIONS_GOV_DEBUG] Citation {i}: speaker={speaker_name}, "
+            f"speaker_id={speaker_id}, party={party}, speaker_role={speaker_role}, "
+            f"in_gov_map={is_in_gov_map}, is_government={is_government}"
+        )
 
         if is_government:
             group = "Governo"

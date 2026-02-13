@@ -137,6 +137,10 @@ class DenseChannel:
                 # made while in their current group.
                 party = row.get("party")
                 speaker_role = row.get("speaker_type", "Deputy")
+                logger.info(
+                    f"[DENSE_DEBUG] chunk={row.get('chunk_id')}, speaker={row.get('speaker_last_name')}, "
+                    f"speaker_id={row.get('speaker_id')}, speaker_type={speaker_role}, party={party}"
+                )
                 if party is None and speaker_role != "GovernmentMember":
                     logger.debug(
                         f"Skipping chunk {row.get('chunk_id')}: speaker "
