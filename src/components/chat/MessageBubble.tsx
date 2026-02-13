@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Children, isValidElement, cloneElement } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { CitationCard } from "./CitationCard";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
 import { CompassCard } from "./CompassCard";
 import { TopicStatsModal } from "./TopicStatsModal";
-import type { Message, TopicStatistics } from "@/types";
+import type { Message } from "@/types";
 import { config } from "@/config";
 import {
   User,
@@ -109,12 +109,37 @@ function extractSpeakersBySection(
 }
 
 /** Tooltip showing speakers grouped by parliamentary group (or role for government members) */
-function SpeakersTooltip({ speakers, iconSize }: { speakers: SpeakerInfo[]; iconSize: string }) {
-  // Group speakers by their parliamentary group or institutional role for government members
+function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: SpeakerInfo[]; iconSize: string; sectionTitle?: string }) {
+  const isGovernoSection = sectionTitle?.toLowerCase().includes("governo");
+
+  if (isGovernoSection) {
+    // Government section: show names with roles, no parliamentary groups
+    return (
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          <span className="inline-flex cursor-help">
+            <Info className={cn(iconSize, "text-muted-foreground/60 hover:text-primary transition-colors")} />
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="right" className="max-w-[350px]">
+          <p className="font-semibold text-xs mb-1.5">Membri del Governo in questa sezione</p>
+          <div className="space-y-1">
+            {speakers.map((s) => (
+              <div key={s.name} className="text-[11px]">
+                <span className="font-semibold text-foreground">{s.name}</span>
+                {s.role && <span className="text-muted-foreground"> — {s.role}</span>}
+              </div>
+            ))}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  // Regular section: group speakers by parliamentary group
   const grouped: Record<string, string[]> = {};
   for (const s of speakers) {
-    const isGov = s.group?.toLowerCase() === "governo";
-    const label = isGov && s.role ? s.role : (s.group || "Altro");
+    const label = s.group || "Altro";
     if (!grouped[label]) grouped[label] = [];
     grouped[label].push(s.name);
   }
@@ -166,38 +191,38 @@ function ShareButton({ chatId }: { chatId: string }) {
   };
 
   return (
-    <div className="flex justify-end mt-2">
-      <button
-        onClick={handleShare}
-        className={cn(
-          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all",
-          copied
-            ? "text-green-600 bg-green-50 dark:bg-green-950/30"
-            : "text-muted-foreground hover:text-primary hover:bg-muted/50"
-        )}
-      >
-        {copied ? (
-          <>
-            <CheckIcon className="h-3 w-3" />
-            <span>Link copiato</span>
-          </>
-        ) : (
-          <>
-            <Share2 className="h-3 w-3" />
-            <span>Condividi</span>
-          </>
-        )}
-      </button>
-    </div>
+    <button
+      onClick={handleShare}
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0",
+        copied
+          ? "text-green-600 bg-green-50 dark:bg-green-950/30"
+          : "text-muted-foreground hover:text-primary hover:bg-muted/50"
+      )}
+    >
+      {copied ? (
+        <>
+          <CheckIcon className="h-3 w-3" />
+          <span>Copiato</span>
+        </>
+      ) : (
+        <>
+          <Share2 className="h-3 w-3" />
+          <span>Condividi</span>
+        </>
+      )}
+    </button>
   );
 }
 
 interface MessageBubbleProps {
   message: Message;
   className?: string;
+  chatId?: string;
+  progressSlot?: React.ReactNode;
 }
 
-export function MessageBubble({ message, className }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, progressSlot }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
@@ -207,9 +232,12 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
   if (isUser) {
     return (
       <div className={cn("py-6 border-b border-border/50", className)}>
-        <h2 className="text-2xl font-semibold text-foreground mb-2">
-          {message.content}
-        </h2>
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-2xl font-semibold text-foreground mb-2">
+            {message.content}
+          </h2>
+          {chatId && <ShareButton chatId={chatId} />}
+        </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <User className="h-3 w-3" />
           <span>Tu</span>
@@ -225,6 +253,7 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           <Landmark className="h-3 w-3" />
           <span className="font-medium">Camera dei Deputati — XIX Legislatura</span>
         </div>
+        {progressSlot}
       </div>
     );
   }
@@ -263,11 +292,7 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
             <ReactMarkdown
               components={{
                 p: ({ children }) => (
-                  <p className="mb-4 leading-relaxed last:mb-0">
-                    {message.topicStats
-                      ? linkifyStats(children, message.topicStats, setStatsModalView)
-                      : children}
-                  </p>
+                  <p className="mb-4 leading-relaxed last:mb-0">{children}</p>
                 ),
                 ul: ({ children }) => (
                   <ul className="mb-4 ml-4 list-disc space-y-1">{children}</ul>
@@ -324,7 +349,7 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                     <h2 className="text-xl font-bold mb-3 mt-5 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
-                        <SpeakersTooltip speakers={speakers} iconSize="h-4 w-4" />
+                        <SpeakersTooltip speakers={speakers} iconSize="h-4 w-4" sectionTitle={title} />
                       )}
                     </h2>
                   );
@@ -337,7 +362,7 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                     <h3 className="text-lg font-bold mb-2 mt-4 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
-                        <SpeakersTooltip speakers={speakers} iconSize="h-3.5 w-3.5" />
+                        <SpeakersTooltip speakers={speakers} iconSize="h-3.5 w-3.5" sectionTitle={title} />
                       )}
                     </h3>
                   );
@@ -353,6 +378,20 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                   </blockquote>
                 ),
                 a: ({ href, children }) => {
+                  // Check if it's a stats link (stats://interventions, stats://speakers, stats://sessions)
+                  if (href?.startsWith("stats://")) {
+                    const view = href.replace("stats://", "") as "interventions" | "speakers" | "sessions";
+                    return (
+                      <span
+                        className="cursor-pointer text-primary font-semibold border-b border-primary/40 hover:border-primary hover:bg-primary/5 transition-all duration-150 rounded-sm px-0.5 -mx-0.5"
+                        onClick={() => setStatsModalView(view)}
+                        title="Clicca per vedere il dettaglio"
+                      >
+                        {children}
+                      </span>
+                    );
+                  }
+
                   // Check if it's a citation link (evidence_id patterns)
                   const isCitationLink = href && (
                     href.includes("chunk_") ||
@@ -402,7 +441,9 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                 }
               }}
             >
-              {message.content}
+              {message.topicStats
+                ? injectStatsLinks(message.content)
+                : message.content}
             </ReactMarkdown>
           </div>
         )}
@@ -411,11 +452,6 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           <div className="flex items-center gap-2 mt-2">
             <span className="inline-block w-2 h-4 bg-primary animate-pulse" />
           </div>
-        )}
-
-        {/* Share button */}
-        {!isUser && message.status === "complete" && message.chatId && (
-          <ShareButton chatId={message.chatId} />
         )}
 
         {/* Additional metadata for assistant messages — show progressively once text is visible */}
@@ -440,99 +476,38 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
 }
 
 /**
- * Scans React children for text patterns matching introduction stats
- * (e.g. "81 interventi", "46 parlamentari", "N. 27, 49, 56")
- * and replaces them with clickable spans.
+ * Preprocesses markdown content to inject stats:// links for clickable stats.
+ * Wraps patterns like "81 interventi", "52 parlamentari", "N. 8, 15, 26, 69, 73"
+ * with markdown links [text](stats://view) that ReactMarkdown renders as <a>.
  */
-function linkifyStats(
-  children: React.ReactNode,
-  stats: TopicStatistics,
-  openModal: (view: "interventions" | "speakers" | "sessions") => void,
-): React.ReactNode {
-  return processChildren(children, (text: string) => {
-    const parts: (string | React.ReactElement)[] = [];
-    let remaining = text;
-    let keyIdx = 0;
+function injectStatsLinks(content: string): string {
+  // Only process the introduction (before the first ## heading)
+  // to avoid false positives in party sections with citation links.
+  const headingIndex = content.search(/^##\s/m);
+  const intro = headingIndex === -1 ? content : content.slice(0, headingIndex);
+  const rest = headingIndex === -1 ? "" : content.slice(headingIndex);
 
-    // Pattern for "N interventi" / "N intervento"
-    const interventionRe = /(\d+)\s+intervent[oi]/g;
-    // Pattern for "N parlamentari"
-    const speakerRe = /(\d+)\s+parlamentar[ie]/g;
-    // Pattern for "N. 27, 49, 56 e 65" or "N. 27, 49, 56, 61 e 65"
-    const sessionRe = /N\.\s*[\d]+(?:,\s*[\d]+)*(?:\s*e\s*[\d]+)?/g;
+  let result = intro;
 
-    // Collect all matches with positions
-    type Match = { index: number; length: number; text: string; view: "interventions" | "speakers" | "sessions" };
-    const matches: Match[] = [];
+  // Pattern for "N interventi" / "N intervento" (also handles "analizzati" suffix)
+  result = result.replace(
+    /(\d+)\s+(intervent[oi](?:\s+analizzat[oi])?)/g,
+    "[$1 $2](stats://interventions)"
+  );
 
-    let m: RegExpExecArray | null;
-    interventionRe.lastIndex = 0;
-    while ((m = interventionRe.exec(text)) !== null) {
-      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "interventions" });
-    }
-    speakerRe.lastIndex = 0;
-    while ((m = speakerRe.exec(text)) !== null) {
-      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "speakers" });
-    }
-    sessionRe.lastIndex = 0;
-    while ((m = sessionRe.exec(text)) !== null) {
-      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "sessions" });
-    }
+  // Pattern for "N parlamentari"
+  result = result.replace(
+    /(\d+)\s+(parlamentar[ie])/g,
+    "[$1 $2](stats://speakers)"
+  );
 
-    if (matches.length === 0) return text;
+  // Pattern for session numbers: "N. 8, 15, 26, 69, 73 e altre 30" or "N. 8, 15, 26, 69, 73 e 80"
+  result = result.replace(
+    /(N\.\s*\d+(?:,\s*\d+)*(?:\s+e\s+(?:altr[eiao]\s+)?\d+)?)/g,
+    "[$1](stats://sessions)"
+  );
 
-    // Sort by position
-    matches.sort((a, b) => a.index - b.index);
-
-    let cursor = 0;
-    for (const match of matches) {
-      // Skip overlapping matches
-      if (match.index < cursor) continue;
-
-      if (match.index > cursor) {
-        parts.push(remaining.slice(cursor, match.index));
-      }
-      parts.push(
-        <span
-          key={`stat-${keyIdx++}`}
-          className="cursor-pointer text-primary font-semibold border-b border-primary/40 hover:border-primary hover:bg-primary/5 transition-all duration-150 rounded-sm px-0.5 -mx-0.5"
-          onClick={() => openModal(match.view)}
-          title="Clicca per vedere il dettaglio"
-        >
-          {match.text}
-        </span>
-      );
-      cursor = match.index + match.length;
-    }
-    if (cursor < remaining.length) {
-      parts.push(remaining.slice(cursor));
-    }
-
-    return parts.length === 1 ? parts[0] : parts;
-  });
-}
-
-/**
- * Recursively process React children, applying a transform function to text nodes.
- */
-function processChildren(
-  children: React.ReactNode,
-  transformText: (text: string) => React.ReactNode,
-): React.ReactNode {
-  return Children.map(children, (child: React.ReactNode) => {
-    if (typeof child === "string") {
-      return transformText(child);
-    }
-    if (isValidElement(child)) {
-      const props = child.props as Record<string, unknown>;
-      if (props.children) {
-        return cloneElement(child as React.ReactElement<Record<string, unknown>>, {
-          children: processChildren(props.children as React.ReactNode, transformText),
-        });
-      }
-    }
-    return child;
-  });
+  return result + rest;
 }
 
 interface AssistantMetadataProps {
