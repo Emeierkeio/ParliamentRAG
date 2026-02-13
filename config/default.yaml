@@ -116,6 +116,14 @@ generation:
     temperature: 0.3
     top_p: 1.0
 
+  # Position brief: provides group-level context to the sectional writer
+  # so citations are selected consistently with the group's overall stance
+  position_brief:
+    enabled: true
+    max_chunks: 5          # Top N chunks to include in brief
+    chars_per_chunk: 200   # Max chars per chunk in the brief
+    context_chars: 500     # Context chars shown per evidence item (was 300)
+
   # All 10 parties must have sections
   require_all_parties: true
   no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."

@@ -23,6 +23,7 @@ import openai
 from ...config import get_config, get_settings
 from ..citation import extract_best_sentences
 from ..citation.sentence_extractor import compute_chunk_salience
+from .position_brief import PositionBriefBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +108,18 @@ NON usare citazioni che contengono SOLO contenuto procedurale o formulaico, come
 - "ringrazio il Presidente"
 Se la ★ CITAZIONE è procedurale, IGNORA quell'evidenza e usa le successive.
 
+POSIZIONE DI GRUPPO:
+Prima delle evidenze troverai una "POSIZIONE COMPLESSIVA DEL GRUPPO" con la sintesi
+degli interventi più autorevoli. Usa questa sintesi per:
+1. CAPIRE la direzione generale del gruppo (favorevole, contrario, critico, propositivo)
+2. SCEGLIERE citazioni che siano COERENTI con la posizione complessiva
+3. Se una citazione, letta da sola, potrebbe sembrare opposta alla posizione
+   del gruppo, NON usarla - usa la citazione successiva
+
+REGOLA ANTI-FRAINTENDIMENTO:
+Prima di usare una ★ CITAZIONE, chiediti: "Letto senza contesto, questo frammento
+esprime la stessa posizione del gruppo?" Se la risposta è no, scegli un'altra evidenza.
+
 STRUTTURA OUTPUT:
 ### [NOME PARTITO]
 [2-4 frasi, ogni citazione è SOLO [CIT:id] senza virgolette]"""
@@ -123,6 +136,10 @@ STRUTTURA OUTPUT:
             "no_evidence_message",
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
         )
+        self._position_brief_builder = PositionBriefBuilder()
+
+        brief_config = gen_config.get("position_brief", {})
+        self._context_chars = brief_config.get("context_chars", 500)
 
     @staticmethod
     def _truncate_at_boundary(text: str, max_chars: int) -> str:
@@ -376,11 +393,15 @@ Partito: {party}
 Evidenze disponibili (ordinate per autorità, usa le PRIME 1-2):
 {evidence_context}
 
-⚠️ ISTRUZIONI CITATION-FIRST:
-1. LEGGI la ★ CITAZIONE per capire il TEMA
-2. Scrivi SOLO l'introduzione che prepara quel tema
-3. Metti [CIT:ID_COMPLETO] dove andrà la citazione
-4. ⚠️ NON COPIARE MAI il testo della citazione tra «» - il sistema lo inserirà!
+⚠️ ISTRUZIONI CITATION-FIRST CON CONTESTO DI POSIZIONE:
+1. LEGGI la POSIZIONE COMPLESSIVA DEL GRUPPO per capire la direzione generale
+2. LEGGI la ★ CITAZIONE per capire il TEMA
+3. VERIFICA che la citazione sia COERENTE con la posizione complessiva
+4. Se la citazione, letta isolatamente, potrebbe trasmettere il CONTRARIO della
+   posizione del gruppo, SALTA a un'altra evidenza
+5. Scrivi SOLO l'introduzione che prepara quel tema
+6. Metti [CIT:ID_COMPLETO] dove andrà la citazione
+7. ⚠️ NON COPIARE MAI il testo della citazione tra «» - il sistema lo inserirà!
 
 FORMATO OUTPUT:
 **Nome Cognome** [contesto], affermando che [CIT:id].
@@ -474,8 +495,22 @@ FORMATO OUTPUT:
 
         CITATION-FIRST: Extract the exact citation BEFORE the LLM writes,
         so the LLM can construct text that matches the citation content.
+
+        POSITION-AWARE: Include a brief of the group's overall position
+        so citations are understood in proper context.
         """
         lines = []
+
+        # Build and insert position brief at the top
+        party = evidence[0].get("party", "") if evidence else ""
+        position_brief = self._position_brief_builder.build_brief(
+            evidence=evidence,
+            party=party,
+        )
+        if position_brief:
+            lines.append(position_brief)
+            lines.append("")
+            lines.append("--- EVIDENZE CON CITAZIONI PRE-ESTRATTE ---")
 
         for e in evidence[:max_evidence]:
             # Skip evidence marked as duplicate by cross-speaker dedup
@@ -529,7 +564,7 @@ FORMATO OUTPUT:
                 continue
 
             # Also provide context (truncated) for understanding
-            context = e.get("chunk_text", "")[:300]
+            context = e.get("chunk_text", "")[:self._context_chars]
 
             lines.append(f"""
 [ID: {eid}]

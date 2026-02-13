@@ -11,6 +11,7 @@ export default function Home() {
     messages,
     isLoading,
     progress,
+    lastCompletedProgress,
     sendMessage,
     cancelRequest,
     loadChat,
@@ -49,6 +50,7 @@ export default function Home() {
           messages={messages}
           isLoading={isLoading}
           progress={progress}
+          lastCompletedProgress={lastCompletedProgress}
           onSendMessage={sendMessage}
           onCancelRequest={cancelRequest}
           mobileMenuButton={<MobileMenuButton onClick={toggle} />}

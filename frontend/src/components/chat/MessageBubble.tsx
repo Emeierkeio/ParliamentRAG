@@ -28,8 +28,44 @@ import {
   Compass,
   Sparkles,
   Trophy,
+  Info,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+/**
+ * Parse markdown content to extract bold names (**Name**) grouped by section (## heading).
+ * Returns a map: sectionTitle → list of speaker names found in that section.
+ */
+function extractSpeakersBySection(content: string): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+  let currentSection = "";
+
+  for (const line of content.split("\n")) {
+    const headingMatch = line.match(/^#{1,3}\s+(.+)/);
+    if (headingMatch) {
+      currentSection = headingMatch[1].trim();
+      if (!result[currentSection]) result[currentSection] = [];
+      continue;
+    }
+    if (currentSection) {
+      const boldNames = line.match(/\*\*([A-Z\u00C0-\u024F][a-z\u00C0-\u024F]+(?:\s+[A-Z\u00C0-\u024F][a-z\u00C0-\u024F]+)+)\*\*/g);
+      if (boldNames) {
+        for (const match of boldNames) {
+          const name = match.replace(/\*\*/g, "");
+          if (!result[currentSection].includes(name)) {
+            result[currentSection].push(name);
+          }
+        }
+      }
+    }
+  }
+  return result;
+}
 
 interface MessageBubbleProps {
   message: Message;
@@ -116,12 +152,60 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                 h1: ({ children }) => (
                   <h1 className="text-2xl font-bold mb-4 mt-6">{children}</h1>
                 ),
-                h2: ({ children }) => (
-                  <h2 className="text-xl font-bold mb-3 mt-5">{children}</h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-lg font-bold mb-2 mt-4">{children}</h3>
-                ),
+                h2: ({ children }) => {
+                  const title = typeof children === "string" ? children : String(children);
+                  const speakersBySection = extractSpeakersBySection(message.content);
+                  const speakers = speakersBySection[title] || [];
+                  return (
+                    <h2 className="text-xl font-bold mb-3 mt-5 flex items-center gap-2">
+                      <span>{children}</span>
+                      {speakers.length > 0 && (
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger asChild>
+                            <span className="inline-flex cursor-help">
+                              <Info className="h-4 w-4 text-muted-foreground/60 hover:text-primary transition-colors" />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-[300px]">
+                            <p className="font-semibold text-xs mb-1">Parlamentari in questa sezione</p>
+                            <ul className="text-[11px] text-muted-foreground space-y-0.5">
+                              {speakers.map((s) => (
+                                <li key={s}>• {s}</li>
+                              ))}
+                            </ul>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </h2>
+                  );
+                },
+                h3: ({ children }) => {
+                  const title = typeof children === "string" ? children : String(children);
+                  const speakersBySection = extractSpeakersBySection(message.content);
+                  const speakers = speakersBySection[title] || [];
+                  return (
+                    <h3 className="text-lg font-bold mb-2 mt-4 flex items-center gap-2">
+                      <span>{children}</span>
+                      {speakers.length > 0 && (
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger asChild>
+                            <span className="inline-flex cursor-help">
+                              <Info className="h-3.5 w-3.5 text-muted-foreground/60 hover:text-primary transition-colors" />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="max-w-[300px]">
+                            <p className="font-semibold text-xs mb-1">Parlamentari in questa sezione</p>
+                            <ul className="text-[11px] text-muted-foreground space-y-0.5">
+                              {speakers.map((s) => (
+                                <li key={s}>• {s}</li>
+                              ))}
+                            </ul>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </h3>
+                  );
+                },
                 code: ({ children }) => (
                   <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">
                     {children}
@@ -234,6 +318,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
           title="Analisi High Quality (Best-of-N)"
           count={message.hqMetadata!.variants.length}
           defaultOpen={false}
+          infoTooltip="Vengono generate 3 varianti della risposta a temperature diverse, poi un giudice LLM seleziona la migliore per qualità e bilanciamento."
         >
           <div className="pt-2 px-1">
             <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 mb-4">
@@ -285,6 +370,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
           icon={Users}
           title="Esperti"
           count={message.experts!.length}
+          infoTooltip="Gli esperti sono calcolati tramite un authority score basato su: interventi in aula, atti presentati, appartenenza alle commissioni pertinenti, professione, titolo di studio e ruolo istituzionale."
         >
             {message.experts && (
                <div className="space-y-6 pt-2">
@@ -319,8 +405,9 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
         <CollapsibleSection
             icon={Compass}
             title="Bussola Ideologica"
-            count={1} // Just 1 complex visualization
+            count={1}
             defaultOpen={true}
+            infoTooltip="Mappa 2D del posizionamento ideologico dei gruppi parlamentari sul tema, calcolata analizzando i contenuti degli interventi lungo assi tematici estratti automaticamente."
         >
              <CompassCard data={message.compass} />
         </CollapsibleSection>
@@ -334,6 +421,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
           count={message.citations!.length}
           defaultOpen={true}
           forceOpen={!!highlightedChunkId}
+          infoTooltip="Interventi parlamentari recuperati dal database tramite ricerca semantica ibrida (vettoriale + full-text) e filtrati per rilevanza al tema."
         >
           <div className="grid gap-2 w-full min-w-0">
             {/* Deduplicate citations by chunk_id to prevent key errors */}
@@ -359,6 +447,7 @@ interface CollapsibleSectionProps {
   defaultOpen?: boolean;
   children: React.ReactNode;
   forceOpen?: boolean;
+  infoTooltip?: string;
 }
 
 function CollapsibleSection({
@@ -368,6 +457,7 @@ function CollapsibleSection({
   defaultOpen = false,
   children,
   forceOpen = false,
+  infoTooltip,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -387,6 +477,18 @@ function CollapsibleSection({
           <div className="flex items-center gap-2">
             <Icon className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">{title}</span>
+            {infoTooltip && (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <span className="inline-flex cursor-help">
+                    <Info className="h-3.5 w-3.5 text-muted-foreground/50 hover:text-primary transition-colors" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-[300px]">
+                  <p className="text-[11px]">{infoTooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
             <Badge variant="secondary" className="text-xs">
               {count}
             </Badge>
@@ -424,6 +526,16 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
           <div className="flex items-center gap-2">
             <PieChart className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">Bilanciamento</span>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
+                <span className="inline-flex cursor-help">
+                  <Info className="h-3.5 w-3.5 text-muted-foreground/50 hover:text-primary transition-colors" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-[300px]">
+                <p className="text-[11px]">Percentuale di rappresentazione delle citazioni usate nella risposta tra maggioranza e opposizione. Un punteggio alto indica una risposta bilanciata.</p>
+              </TooltipContent>
+            </Tooltip>
             <Badge
               variant={isBalanced ? "default" : "secondary"}
               className={cn(
