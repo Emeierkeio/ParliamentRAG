@@ -97,7 +97,7 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
 
   return (
     <div className={cn("w-full max-w-3xl mx-auto", className)}>
-      {/* Mobile layout: compact dots */}
+      {/* Mobile layout: compact bars with active step label */}
       <div className="sm:hidden">
         <div className="flex items-center gap-1.5 px-1">
           {steps.map((step, index) => {
@@ -133,6 +133,9 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
             );
           })}
         </div>
+        <p className="text-[10px] text-primary font-medium mt-1.5 px-1 truncate">
+          {steps[progress.currentStep - 1]?.label}
+        </p>
       </div>
 
       {/* Desktop layout: circles only with progress bar */}

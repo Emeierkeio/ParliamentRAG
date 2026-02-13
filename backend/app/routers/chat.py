@@ -589,10 +589,12 @@ def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) ->
     UNWIND $ids AS sid
     // Direct GovernmentMember match
     OPTIONAL MATCH (m:GovernmentMember {id: sid})
-    // Also check if a Deputy matches a GovernmentMember by name
+    // Also check if a Deputy matches a GovernmentMember by name (case-insensitive)
     OPTIONAL MATCH (d:Deputy {id: sid})
     OPTIONAL MATCH (gm:GovernmentMember)
-    WHERE gm.first_name = d.first_name AND gm.last_name = d.last_name
+    WHERE d IS NOT NULL
+      AND toLower(gm.first_name) = toLower(d.first_name)
+      AND toLower(gm.last_name) = toLower(d.last_name)
     WITH sid,
          COALESCE(m.institutional_role, gm.institutional_role) AS role
     WHERE role IS NOT NULL
