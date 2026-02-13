@@ -878,6 +878,8 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             <CitationReviewStep
               citationsA={getCitationsA()}
               citationsB={getCitationsB()}
+              responseTextA={getResponseA()}
+              responseTextB={getResponseB()}
               evaluationsA={formState.citation_evaluations_a}
               evaluationsB={formState.citation_evaluations_b}
               onUpdateEvaluationA={(index, evaluation) => {
