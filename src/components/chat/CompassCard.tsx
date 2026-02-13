@@ -173,25 +173,6 @@ export function CompassCard({ data }: CompassCardProps) {
     <div className="w-full">
          {/* Header con titolo onesto e tooltip esplicativo */}
          <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Mappa del conflitto politico</h4>
-            <TooltipProvider>
-               <Tooltip>
-                  <TooltipTrigger asChild>
-                     <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-sm">
-                     <div className="space-y-1 text-xs">
-                        <p><strong>Cosa mostra questa mappa:</strong></p>
-                        <ul className="list-disc list-inside space-y-0.5">
-                           <li>Gli assi emergono automaticamente dai dati (PCA)</li>
-                           <li>NON sono categorie ideologiche predefinite</li>
-                           <li>Le etichette sono algoritmiche e possono variare</li>
-                           <li>Varianza bassa = sovrapposizione/consenso</li>
-                        </ul>
-                     </div>
-                  </TooltipContent>
-               </Tooltip>
-            </TooltipProvider>
          </div>
          <div className="text-xs text-muted-foreground mb-2">
             {data.meta.query ? `Analisi basata su: "${data.meta.query}"` : "Posizionamento politico dinamico."}

@@ -29,6 +29,7 @@ import {
   Sparkles,
   Trophy,
   Info,
+  Landmark,
 } from "lucide-react";
 import {
   Tooltip,
@@ -37,12 +38,38 @@ import {
 } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+interface SpeakerInfo {
+  name: string;
+  group: string;
+}
+
 /**
- * Parse markdown content to extract bold names (**Name**) grouped by section (## heading).
- * Returns a map: sectionTitle → list of speaker names found in that section.
+ * Parse markdown content to extract bold names (**Name**) grouped by section (## heading),
+ * and resolve their parliamentary group from experts/citations data.
  */
-function extractSpeakersBySection(content: string): Record<string, string[]> {
-  const result: Record<string, string[]> = {};
+function extractSpeakersBySection(
+  content: string,
+  experts?: import("@/types").Expert[],
+  citations?: import("@/types").Citation[],
+): Record<string, SpeakerInfo[]> {
+  // Build a name → group lookup from experts and citations
+  const nameToGroup: Record<string, string> = {};
+  if (experts) {
+    for (const e of experts) {
+      const fullName = `${e.first_name} ${e.last_name}`;
+      nameToGroup[fullName] = e.group;
+    }
+  }
+  if (citations) {
+    for (const c of citations) {
+      const fullName = `${c.deputy_first_name} ${c.deputy_last_name}`;
+      if (!nameToGroup[fullName]) {
+        nameToGroup[fullName] = c.group;
+      }
+    }
+  }
+
+  const result: Record<string, SpeakerInfo[]> = {};
   let currentSection = "";
 
   for (const line of content.split("\n")) {
@@ -57,14 +84,50 @@ function extractSpeakersBySection(content: string): Record<string, string[]> {
       if (boldNames) {
         for (const match of boldNames) {
           const name = match.replace(/\*\*/g, "");
-          if (!result[currentSection].includes(name)) {
-            result[currentSection].push(name);
+          if (!result[currentSection].some(s => s.name === name)) {
+            result[currentSection].push({
+              name,
+              group: nameToGroup[name] || "",
+            });
           }
         }
       }
     }
   }
   return result;
+}
+
+/** Tooltip showing speakers grouped by parliamentary group */
+function SpeakersTooltip({ speakers, iconSize }: { speakers: SpeakerInfo[]; iconSize: string }) {
+  // Group speakers by their parliamentary group
+  const grouped: Record<string, string[]> = {};
+  for (const s of speakers) {
+    const group = s.group || "Altro";
+    if (!grouped[group]) grouped[group] = [];
+    grouped[group].push(s.name);
+  }
+  const groups = Object.entries(grouped);
+
+  return (
+    <Tooltip delayDuration={0}>
+      <TooltipTrigger asChild>
+        <span className="inline-flex cursor-help">
+          <Info className={cn(iconSize, "text-muted-foreground/60 hover:text-primary transition-colors")} />
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="right" className="max-w-[350px]">
+        <p className="font-semibold text-xs mb-1.5">Parlamentari in questa sezione</p>
+        <div className="space-y-1.5">
+          {groups.map(([group, names]) => (
+            <div key={group}>
+              <p className="text-[11px] font-semibold text-foreground">{group}</p>
+              <p className="text-[11px] text-muted-foreground">{names.join(", ")}</p>
+            </div>
+          ))}
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
 }
 
 interface MessageBubbleProps {
@@ -94,6 +157,10 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
               minute: "2-digit",
             })}
           </span>
+        </div>
+        <div className="flex items-center gap-1.5 mt-1 text-[10px] text-muted-foreground/60">
+          <Landmark className="h-3 w-3" />
+          <span className="font-medium">Camera dei Deputati — XIX Legislatura</span>
         </div>
       </div>
     );
@@ -154,54 +221,26 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                 ),
                 h2: ({ children }) => {
                   const title = typeof children === "string" ? children : String(children);
-                  const speakersBySection = extractSpeakersBySection(message.content);
+                  const speakersBySection = extractSpeakersBySection(message.content, message.experts, message.citations);
                   const speakers = speakersBySection[title] || [];
                   return (
                     <h2 className="text-xl font-bold mb-3 mt-5 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex cursor-help">
-                              <Info className="h-4 w-4 text-muted-foreground/60 hover:text-primary transition-colors" />
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="right" className="max-w-[300px]">
-                            <p className="font-semibold text-xs mb-1">Parlamentari in questa sezione</p>
-                            <ul className="text-[11px] text-muted-foreground space-y-0.5">
-                              {speakers.map((s) => (
-                                <li key={s}>• {s}</li>
-                              ))}
-                            </ul>
-                          </TooltipContent>
-                        </Tooltip>
+                        <SpeakersTooltip speakers={speakers} iconSize="h-4 w-4" />
                       )}
                     </h2>
                   );
                 },
                 h3: ({ children }) => {
                   const title = typeof children === "string" ? children : String(children);
-                  const speakersBySection = extractSpeakersBySection(message.content);
+                  const speakersBySection = extractSpeakersBySection(message.content, message.experts, message.citations);
                   const speakers = speakersBySection[title] || [];
                   return (
                     <h3 className="text-lg font-bold mb-2 mt-4 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex cursor-help">
-                              <Info className="h-3.5 w-3.5 text-muted-foreground/60 hover:text-primary transition-colors" />
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="right" className="max-w-[300px]">
-                            <p className="font-semibold text-xs mb-1">Parlamentari in questa sezione</p>
-                            <ul className="text-[11px] text-muted-foreground space-y-0.5">
-                              {speakers.map((s) => (
-                                <li key={s}>• {s}</li>
-                              ))}
-                            </ul>
-                          </TooltipContent>
-                        </Tooltip>
+                        <SpeakersTooltip speakers={speakers} iconSize="h-3.5 w-3.5" />
                       )}
                     </h3>
                   );

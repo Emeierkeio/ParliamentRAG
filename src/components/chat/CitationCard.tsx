@@ -42,7 +42,9 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const groupColor = citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+  const isGoverno = citation.group?.toLowerCase() === "governo";
+  const coalitionLabel = isGoverno ? "governo" : citation.coalition;
+  const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
 
   // Auto-scroll when highlighted
   useEffect(() => {
@@ -100,12 +102,14 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                       color: groupColor,
                     }}
                   >
-                    {citation.coalition}
+                    {coalitionLabel}
                   </Badge>
                 </div>
-                <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.group}>
-                  {citation.group}
-                </span>
+                {!isGoverno && (
+                  <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.group}>
+                    {citation.group}
+                  </span>
+                )}
               </div>
 
               {/* Extracted text preview */}
@@ -175,7 +179,9 @@ interface CitationModalProps {
 }
 
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
-  const groupColor = citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+  const isGoverno = citation.group?.toLowerCase() === "governo";
+  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
+  const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
   const displayText = citation.full_text || citation.text || "";
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
@@ -251,15 +257,18 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                             </div>
                         )}
                         <div className="flex items-center gap-2 mt-1">
-                             <Badge 
-                                variant="outline" 
-                                className="h-5 text-[10px] px-1.5 font-medium border-primary/20 text-primary capitalize"
+                             <Badge
+                                variant="outline"
+                                className="h-5 text-[10px] px-1.5 font-medium capitalize"
+                                style={{ borderColor: `${groupColor}40`, color: groupColor }}
                              >
-                                {citation.coalition}
+                                {coalitionLabel}
                              </Badge>
-                             <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.group}>
-                                {citation.group}
-                             </span>
+                             {!isGoverno && (
+                               <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.group}>
+                                  {citation.group}
+                               </span>
+                             )}
                         </div>
                     </div>
                 </div>

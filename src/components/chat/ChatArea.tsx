@@ -6,9 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper } from "@/components/shared/ProgressIndicator";
-import { config } from "@/config";
 import type { Message, ProcessingProgress } from "@/types";
-import { Atom, ArrowRight, Landmark } from "lucide-react";
+import { Atom, ArrowRight } from "lucide-react";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -52,11 +51,6 @@ export function ChatArea({
       {/* Top Search Area - Minimal & Clean */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="mx-auto max-w-3xl p-3 py-4 md:p-4 md:py-5">
-          {/* Legislatura label */}
-          <div className="flex items-center gap-1.5 mb-2 text-xs text-muted-foreground">
-            <Landmark className="h-3 w-3" />
-            <span className="font-medium">Camera dei Deputati — XIX Legislatura</span>
-          </div>
           <div className="flex items-center gap-2">
             {mobileMenuButton}
             <ChatInput
