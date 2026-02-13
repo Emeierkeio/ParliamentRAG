@@ -343,7 +343,13 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 config = get_config()
                 for row in db_rows:
                     eid = row.get("chunk_id", "")
-                    party = normalize_party_name(row.get("party") or "MISTO")
+                    raw_party = row.get("party")
+                    speaker_type = row.get("speaker_type", "Deputy")
+                    # GovernmentMembers have no ParliamentaryGroup → party is NULL
+                    if raw_party is None and speaker_type == "GovernmentMember":
+                        party = "Governo"
+                    else:
+                        party = normalize_party_name(raw_party or "MISTO")
                     session_date = row.get("session_date")
                     if session_date is not None and hasattr(session_date, 'to_native'):
                         date_obj = session_date.to_native()
@@ -439,6 +445,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     "evidence_id": eid,
                     "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
                     "speaker_name": ev.get("speaker_name", ""),
+                    "speaker_id": ev.get("speaker_id", ""),
+                    "speaker_role": ev.get("speaker_role", "Deputy"),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
                     "span_start": ev.get("span_start", 0),

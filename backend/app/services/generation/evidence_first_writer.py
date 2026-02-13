@@ -170,6 +170,8 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
                 "citation_id": evidence_id,
                 "evidence_id": evidence_id,
                 "speaker_name": speaker_name,
+                "speaker_id": e.get("speaker_id", ""),
+                "speaker_role": e.get("speaker_role", "Deputy"),
                 "party": party_name,
                 "date": str(e.get("date", "")),
             })

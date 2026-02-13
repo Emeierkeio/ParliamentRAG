@@ -135,6 +135,8 @@ class CitationSurgeon:
                     "evidence_id": evidence_id,
                     "quote_text": quote_text,
                     "speaker_name": evidence.get("speaker_name"),
+                    "speaker_id": evidence.get("speaker_id", ""),
+                    "speaker_role": evidence.get("speaker_role", "Deputy"),
                     "party": evidence.get("party"),
                     "date": str(evidence.get("date", "")),
                     "span_start": evidence.get("span_start"),
