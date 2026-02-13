@@ -19,6 +19,7 @@ export function useChat(options: UseChatOptions = {}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
+  const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -99,6 +100,7 @@ export function useChat(options: UseChatOptions = {}) {
 
     setIsLoading(true);
     setStreamingContent("");
+    setLastCompletedProgress(null);
     setProgress({
       currentStep: 1,
       totalSteps: config.ui.progressSteps.length,
@@ -108,10 +110,14 @@ export function useChat(options: UseChatOptions = {}) {
       stepResults: [],
     });
 
-    // Add user message
-    addUserMessage(content);
-
-    // Add placeholder for assistant message
+    // Reset messages: clear previous conversation and start fresh
+    const userMessage: Message = {
+      id: generateId(),
+      role: "user",
+      content,
+      timestamp: new Date(),
+      status: "complete",
+    };
     const assistantMessage: Message = {
       id: generateId(),
       role: "assistant",
@@ -119,7 +125,7 @@ export function useChat(options: UseChatOptions = {}) {
       timestamp: new Date(),
       status: "streaming",
     };
-    setMessages((prev) => [...prev, assistantMessage]);
+    setMessages([userMessage, assistantMessage]);
 
     try {
       const response = await fetch(`${config.api.baseUrl}/chat`, {
@@ -545,8 +551,12 @@ export function useChat(options: UseChatOptions = {}) {
 
       options.onError?.(error instanceof Error ? error : new Error(errorMessage));
     } finally {
+      // Save completed progress before clearing
+      setProgress((prev) => {
+        if (prev) setLastCompletedProgress(prev);
+        return null;
+      });
       setIsLoading(false);
-      setProgress(null);
       setStreamingContent("");
       abortControllerRef.current = null;
     }
@@ -608,6 +618,7 @@ export function useChat(options: UseChatOptions = {}) {
     messages,
     isLoading,
     progress,
+    lastCompletedProgress,
     streamingContent,
     sendMessage,
     cancelRequest,

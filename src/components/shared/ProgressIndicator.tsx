@@ -233,6 +233,98 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
   );
 }
 
+/**
+ * Completed progress stepper: shown after the response is done.
+ * All steps appear as completed with hover tooltips showing what was done.
+ */
+export function CompletedProgressStepper({ progress, className }: ProgressIndicatorProps) {
+  if (!progress) return null;
+
+  const steps = config.ui.progressSteps;
+
+  const getStepResult = (stepNumber: number) => {
+    return progress.stepResults?.find(r => r.step === stepNumber);
+  };
+
+  // Build descriptive tooltips for each step
+  const getStepTooltip = (stepNumber: number) => {
+    const stepResult = getStepResult(stepNumber);
+    const step = steps[stepNumber - 1];
+    if (!step) return null;
+
+    const descriptions: Record<number, string> = {
+      1: "Analizzata e classificata la domanda dell'utente per identificare il tema principale",
+      2: "Trovata la commissione parlamentare più specifica al tema",
+      3: "Identificati i parlamentari con maggiore autorità sul tema per ciascuna coalizione",
+      4: "Recuperati gli interventi parlamentari più rilevanti dal database",
+      5: "Calcolate le percentuali di rappresentazione maggioranza/opposizione",
+      6: "Analizzato il posizionamento ideologico dei gruppi parlamentari sul tema",
+      7: "Generata la sintesi finale bilanciata con citazioni verificate",
+      8: "Generata una risposta di confronto per la valutazione A/B",
+      9: "Completata la verifica finale e salvato in cronologia",
+    };
+
+    return {
+      description: descriptions[stepNumber] || step.description,
+      result: stepResult?.result || "Completato",
+    };
+  };
+
+  return (
+    <div className={cn("w-full", className)}>
+      {/* Mobile: compact dots */}
+      <div className="sm:hidden flex items-center gap-1.5 px-1">
+        {steps.map((step, index) => {
+          const stepNumber = index + 1;
+          const tooltip = getStepTooltip(stepNumber);
+          return (
+            <Tooltip key={step.id} delayDuration={0}>
+              <TooltipTrigger asChild>
+                <div className="h-1.5 rounded-full bg-primary flex-1 cursor-pointer" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-[250px]">
+                <p className="font-semibold text-xs">{step.label}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{tooltip?.description}</p>
+                <p className="text-[11px] text-primary font-medium mt-1">Risultato: {tooltip?.result}</p>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
+      </div>
+
+      {/* Desktop: full completed stepper */}
+      <div className="hidden sm:block">
+        <div className="flex justify-between items-start gap-1">
+          {steps.map((step, index) => {
+            const stepNumber = index + 1;
+            const tooltip = getStepTooltip(stepNumber);
+
+            return (
+              <Tooltip key={step.id} delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-col items-center gap-1.5 group min-w-0 cursor-pointer">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium transition-all group-hover:ring-2 group-hover:ring-primary/30">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-[9px] font-medium text-center leading-tight max-w-[65px] break-words line-clamp-2 text-muted-foreground group-hover:text-primary transition-colors">
+                      {step.label}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[280px]">
+                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{tooltip?.description}</p>
+                  <p className="text-[11px] text-primary font-medium mt-1">Risultato: {tooltip?.result}</p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Compact version for inline display
 export function ProgressIndicatorCompact({ progress }: ProgressIndicatorProps) {
   if (!progress) return null;
