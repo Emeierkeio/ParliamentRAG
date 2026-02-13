@@ -21,6 +21,8 @@ import {
   Copy,
   Send,
   SkipForward,
+  FileText,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StarRating } from "./StarRating";
@@ -34,6 +36,8 @@ import {
 interface CitationReviewStepProps {
   citationsA: Citation[];
   citationsB: Citation[];
+  responseTextA: string;
+  responseTextB: string;
   evaluationsA: CitationEvaluation[];
   evaluationsB: CitationEvaluation[];
   onUpdateEvaluationA: (index: number, evaluation: CitationEvaluation) => void;
@@ -59,9 +63,99 @@ function isCitationEvalComplete(ev: CitationEvaluation): boolean {
   return ev.relevance > 0 && ev.faithfulness > 0 && ev.informativeness > 0 && ev.attribution !== "";
 }
 
+/**
+ * Extract the context paragraph from the response text where a citation is used.
+ * Citations appear as [«quote»](evidence_id) or (evidence_id) in the text.
+ * Returns the surrounding paragraph with the citation highlighted.
+ */
+function extractCitationContext(
+  responseText: string,
+  chunkId: string
+): { before: string; citation: string; after: string } | null {
+  if (!responseText || !chunkId) return null;
+
+  // Find the citation in the text: [«quote»](chunk_id) or (chunk_id)
+  // Pattern 1: markdown link format [«...»](chunk_id)
+  const linkPattern = new RegExp(
+    `\\[«([^»]*)»\\]\\(${escapeRegExp(chunkId)}\\)`,
+    "g"
+  );
+  // Pattern 2: bare reference (chunk_id)
+  const barePattern = new RegExp(
+    `\\(${escapeRegExp(chunkId)}\\)`,
+    "g"
+  );
+
+  let match = linkPattern.exec(responseText);
+  let matchedText = "";
+  let matchStart = -1;
+
+  if (match) {
+    matchedText = match[0];
+    matchStart = match.index;
+  } else {
+    match = barePattern.exec(responseText);
+    if (match) {
+      matchedText = match[0];
+      matchStart = match.index;
+    }
+  }
+
+  if (matchStart === -1) return null;
+
+  // Extract surrounding context: find the paragraph boundaries
+  const lines = responseText.split("\n");
+  let charCount = 0;
+  let contextLines: string[] = [];
+  let foundLineIdx = -1;
+
+  for (let i = 0; i < lines.length; i++) {
+    const lineStart = charCount;
+    const lineEnd = charCount + lines[i].length;
+
+    if (matchStart >= lineStart && matchStart < lineEnd + 1) {
+      foundLineIdx = i;
+      break;
+    }
+    charCount = lineEnd + 1; // +1 for \n
+  }
+
+  if (foundLineIdx === -1) return null;
+
+  // Get 1 line before and 1 line after for context
+  const startLine = Math.max(0, foundLineIdx - 1);
+  const endLine = Math.min(lines.length - 1, foundLineIdx + 1);
+  const contextText = lines.slice(startLine, endLine + 1).join("\n");
+
+  // Find the match position within the context
+  const matchInContext = contextText.indexOf(matchedText);
+  if (matchInContext === -1) {
+    return { before: contextText, citation: "", after: "" };
+  }
+
+  return {
+    before: contextText.slice(0, matchInContext),
+    citation: matchedText,
+    after: contextText.slice(matchInContext + matchedText.length),
+  };
+}
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Clean citation text for display: extract quote from [«quote»](id) format */
+function formatCitationDisplay(citationText: string): string {
+  const quoteMatch = citationText.match(/\[«([^»]*)»\]\([^)]+\)/);
+  if (quoteMatch) return `«${quoteMatch[1]}»`;
+  return citationText;
+}
+
 export function CitationReviewStep({
   citationsA,
   citationsB,
+  responseTextA,
+  responseTextB,
   evaluationsA,
   evaluationsB,
   onUpdateEvaluationA,
@@ -77,12 +171,19 @@ export function CitationReviewStep({
 
   const citations = activeResponse === "A" ? citationsA : citationsB;
   const evaluations = activeResponse === "A" ? evaluationsA : evaluationsB;
+  const responseText = activeResponse === "A" ? responseTextA : responseTextB;
   const currentIndex = activeResponse === "A" ? currentIndexA : currentIndexB;
   const setCurrentIndex = activeResponse === "A" ? setCurrentIndexA : setCurrentIndexB;
   const onUpdateEvaluation = activeResponse === "A" ? onUpdateEvaluationA : onUpdateEvaluationB;
 
   const currentCitation = citations[currentIndex];
   const currentEvaluation = evaluations[currentIndex];
+
+  // Extract context from the response text for the current citation
+  const citationContext = useMemo(() => {
+    if (!currentCitation) return null;
+    return extractCitationContext(responseText, currentCitation.chunk_id);
+  }, [responseText, currentCitation]);
 
   const completedA = evaluationsA.filter(isCitationEvalComplete).length;
   const completedB = evaluationsB.filter(isCitationEvalComplete).length;
@@ -214,7 +315,7 @@ export function CitationReviewStep({
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={cn(
-                    "w-7 h-7 rounded-full text-xs font-medium transition-all flex items-center justify-center",
+                    "w-7 h-7 rounded-full text-xs font-medium transition-all flex items-center justify-center flex-shrink-0",
                     idx === currentIndex
                       ? activeResponse === "A"
                         ? "bg-blue-600 text-white ring-2 ring-blue-300"
@@ -230,13 +331,45 @@ export function CitationReviewStep({
             })}
           </div>
 
-          {/* Citation card + evaluation form */}
+          {/* Citation context + evaluation form */}
           <ScrollArea className="flex-1 px-4 py-4">
             {currentCitation && currentEvaluation && (
               <div className="space-y-4">
-                {/* Citation metadata card */}
+
+                {/* Section 1: How the citation is used in the generated response */}
+                <Card className="border-l-4 border-l-blue-500">
+                  <CardContent className="p-4 space-y-2">
+                    <div className="flex items-center gap-2 text-sm font-medium text-blue-700 dark:text-blue-300">
+                      <FileText className="w-4 h-4" />
+                      Come appare nella risposta generata
+                    </div>
+
+                    {citationContext ? (
+                      <div className="bg-blue-50 dark:bg-blue-950/20 rounded-lg p-3 text-sm leading-relaxed">
+                        <p className="text-gray-700 dark:text-gray-300">
+                          <span>{citationContext.before}</span>
+                          <span className="bg-yellow-200 dark:bg-yellow-800/50 px-1 py-0.5 rounded font-medium text-gray-900 dark:text-yellow-200">
+                            {formatCitationDisplay(citationContext.citation)}
+                          </span>
+                          <span>{citationContext.after}</span>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 italic">
+                        Contesto non trovato nel testo della risposta per questo riferimento.
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Section 2: Original source / citation metadata */}
                 <Card className="border-l-4 border-l-indigo-500">
                   <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                      <BookOpen className="w-4 h-4" />
+                      Fonte originale
+                    </div>
+
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-indigo-600" />
@@ -274,7 +407,7 @@ export function CitationReviewStep({
                       </p>
                     )}
 
-                    {/* Quote text */}
+                    {/* Original quote text from source */}
                     {(currentCitation.quote_text || currentCitation.text) && (
                       <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-3 border-l-2 border-gray-300">
                         <div className="flex items-start gap-2">
@@ -285,19 +418,10 @@ export function CitationReviewStep({
                         </div>
                       </div>
                     )}
-
-                    {currentCitation.similarity !== undefined && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">Similarity:</span>
-                        <Badge variant="secondary" className="text-xs">
-                          {(currentCitation.similarity * 100).toFixed(0)}%
-                        </Badge>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
 
-                {/* Evaluation form */}
+                {/* Section 3: Evaluation form */}
                 <Card>
                   <CardContent className="p-4 space-y-5">
                     {/* Relevance */}
@@ -307,7 +431,7 @@ export function CitationReviewStep({
                           Pertinenza
                         </label>
                         <span className="text-xs text-gray-400">
-                          La citazione e rilevante per la domanda?
+                          La citazione e rilevante nel contesto in cui e usata?
                         </span>
                       </div>
                       <StarRating
@@ -324,7 +448,7 @@ export function CitationReviewStep({
                           Fedelta
                         </label>
                         <span className="text-xs text-gray-400">
-                          Il testo riportato e fedele all'originale?
+                          Il testo nella risposta e fedele alla fonte originale?
                         </span>
                       </div>
                       <StarRating
@@ -341,7 +465,7 @@ export function CitationReviewStep({
                           Valore informativo
                         </label>
                         <span className="text-xs text-gray-400">
-                          La citazione aggiunge informazione utile?
+                          La citazione aggiunge informazione utile alla risposta?
                         </span>
                       </div>
                       <StarRating
