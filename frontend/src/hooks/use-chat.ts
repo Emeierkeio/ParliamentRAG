@@ -222,26 +222,36 @@ export function useChat(options: UseChatOptions = {}) {
                   // Only advance forward, never go backwards
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
                   const newStepConfig = config.ui.progressSteps[newStep - 1];
+                  const newResults = [...(prev?.stepResults || [])];
+                  // Mark step 1 as completed when we advance past it
+                  if (newStep >= 2 && !newResults.some(r => r.step === 1)) {
+                    newResults.push({
+                      step: 1,
+                      label: "Analisi query",
+                      result: data.message || "Query classificata",
+                    });
+                  }
                   return {
                     currentStep: newStep,
                     totalSteps: data.total || config.ui.progressSteps.length,
                     stepLabel: newStepConfig?.label || data.message || "",
                     stepDescription: newStepConfig?.description || "",
                     isComplete: false,
-                    stepResults: prev?.stepResults || [],
+                    stepResults: newResults,
                   };
                 });
                 break;
 
               case "commissioni":
                 const commList = data.commissioni || [];
-                console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commList.map((c: any) => c.name || c));
+                const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
+                console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
                 setProgress((prev) => prev ? {
                   ...prev,
                   stepResults: [...prev.stepResults, {
                     step: 2,
                     label: "Commissioni",
-                    result: `${commList.length} commissioni pertinenti`,
+                    result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
                     details: { commissioni: commList }
                   }]
                 } : null);
@@ -255,12 +265,13 @@ export function useChat(options: UseChatOptions = {}) {
                   const magg = experts.filter(e => e.coalition === "maggioranza").length;
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
                   console.log(`[Pipeline] Step 3 result: ${experts.length} esperti (${magg} magg, ${opp} opp)`);
+                  const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
                       step: 3,
                       label: "Esperti",
-                      result: `${experts.length} esperti (${magg} magg., ${opp} opp.)`,
+                      result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
                       details: { experts: experts.length, maggioranza: magg, opposizione: opp }
                     }]
                   } : null);
@@ -275,12 +286,14 @@ export function useChat(options: UseChatOptions = {}) {
                   citations = citationsPayload;
                   updateLastAssistantMessage({ citations: [...citations] });
                   console.log(`[Pipeline:Citations] Step 4: ${citations.length} interventi ricevuti, chunk_ids:`, citations.map(c => c.chunk_id));
+                  const uniqueDeputies = [...new Set(citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`))];
+                  const deputyPreview = uniqueDeputies.slice(0, 3).join(", ");
                   setProgress((prev) => prev ? {
                     ...prev,
                     stepResults: [...prev.stepResults, {
                       step: 4,
                       label: "Interventi",
-                      result: `${citations.length} interventi rilevanti`,
+                      result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
                       details: { citations: citations.length }
                     }]
                   } : null);
@@ -335,7 +348,7 @@ export function useChat(options: UseChatOptions = {}) {
                       stepResults: [...prev.stepResults, {
                         step: 6,
                         label: "Bussola Ideologica",
-                        result: "Analisi completata",
+                        result: `${compassData.groups?.length || 0} gruppi posizionati su ${compassData.axes?.length || 0} assi tematici`,
                         details: { axes: compassData.axes, groups: compassData.groups?.length }
                       }]
                     };

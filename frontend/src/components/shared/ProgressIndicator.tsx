@@ -15,6 +15,24 @@ interface ProgressIndicatorProps {
   className?: string;
 }
 
+/** Shared step descriptions for tooltips */
+const STEP_DESCRIPTIONS: Record<number, string> = {
+  1: "Classifica la domanda dell'utente per identificare il tema principale",
+  2: "Identifica la commissione parlamentare più pertinente al tema",
+  3: "Seleziona i parlamentari con maggiore autorità sul tema per ciascuna coalizione",
+  4: "Recupera gli interventi parlamentari più rilevanti dal database vettoriale",
+  5: "Calcola le percentuali di rappresentazione maggioranza/opposizione",
+  6: "Analizza il posizionamento ideologico dei gruppi parlamentari sul tema",
+  7: "Genera la sintesi finale bilanciata con citazioni verificate",
+  8: "Genera una risposta di confronto per la valutazione A/B",
+  9: "Completa la verifica finale e salva in cronologia",
+};
+
+/** Format detailed result — uses the specific result string saved in stepResults */
+function formatStepDetails(_step: number, result?: string, _details?: any): string {
+  return result || "Completato";
+}
+
 /**
  * Sticky banner shown after the response text is visible (step 7+).
  * Rendered separately in ChatArea as a sticky element.
@@ -199,23 +217,31 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
               </div>
             );
 
-            if (isComplete && stepResult) {
-              return (
-                <Tooltip key={step.id} delayDuration={0}>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-pointer">
-                      {stepIndicator}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-[200px]">
-                    <p className="font-medium text-xs">{stepResult.label}</p>
-                    <p className="text-xs text-muted-foreground">{stepResult.result}</p>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            }
-
-            return <div key={step.id}>{stepIndicator}</div>;
+            return (
+              <Tooltip key={step.id} delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div className="cursor-pointer">
+                    {stepIndicator}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[280px]">
+                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                  </p>
+                  {isComplete && stepResult && (
+                    <p className="text-[11px] text-primary font-medium mt-1">
+                      Risultato: {formatStepDetails(stepNumber, stepResult.result, stepResult.details)}
+                    </p>
+                  )}
+                  {isActive && (
+                    <p className="text-[11px] text-primary/70 font-medium mt-1 italic">
+                      In corso...
+                    </p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            );
           })}
         </div>
 
@@ -246,27 +272,14 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
     return progress.stepResults?.find(r => r.step === stepNumber);
   };
 
-  // Build descriptive tooltips for each step
   const getStepTooltip = (stepNumber: number) => {
     const stepResult = getStepResult(stepNumber);
     const step = steps[stepNumber - 1];
     if (!step) return null;
 
-    const descriptions: Record<number, string> = {
-      1: "Analizzata e classificata la domanda dell'utente per identificare il tema principale",
-      2: "Trovata la commissione parlamentare più specifica al tema",
-      3: "Identificati i parlamentari con maggiore autorità sul tema per ciascuna coalizione",
-      4: "Recuperati gli interventi parlamentari più rilevanti dal database",
-      5: "Calcolate le percentuali di rappresentazione maggioranza/opposizione",
-      6: "Analizzato il posizionamento ideologico dei gruppi parlamentari sul tema",
-      7: "Generata la sintesi finale bilanciata con citazioni verificate",
-      8: "Generata una risposta di confronto per la valutazione A/B",
-      9: "Completata la verifica finale e salvato in cronologia",
-    };
-
     return {
-      description: descriptions[stepNumber] || step.description,
-      result: stepResult?.result || "Completato",
+      description: STEP_DESCRIPTIONS[stepNumber] || step.description,
+      result: formatStepDetails(stepNumber, stepResult?.result, stepResult?.details),
     };
   };
 
