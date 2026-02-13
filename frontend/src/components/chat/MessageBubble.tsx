@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, Children, isValidElement, cloneElement } from "react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { CitationCard } from "./CitationCard";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
 import { CompassCard } from "./CompassCard";
-import type { Message } from "@/types";
+import { TopicStatsModal } from "./TopicStatsModal";
+import type { Message, TopicStatistics } from "@/types";
 import { config } from "@/config";
 import {
   User,
@@ -30,6 +31,8 @@ import {
   Trophy,
   Info,
   Landmark,
+  Share2,
+  Check as CheckIcon,
 } from "lucide-react";
 import {
   Tooltip,
@@ -41,11 +44,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 interface SpeakerInfo {
   name: string;
   group: string;
+  role?: string;
 }
 
 /**
  * Parse markdown content to extract bold names (**Name**) grouped by section (## heading),
  * and resolve their parliamentary group from experts/citations data.
+ * For government members, resolves institutional role instead of party.
  */
 function extractSpeakersBySection(
   content: string,
@@ -54,10 +59,12 @@ function extractSpeakersBySection(
 ): Record<string, SpeakerInfo[]> {
   // Build a name → group lookup from experts and citations
   const nameToGroup: Record<string, string> = {};
+  const nameToRole: Record<string, string> = {};
   if (experts) {
     for (const e of experts) {
       const fullName = `${e.first_name} ${e.last_name}`;
       nameToGroup[fullName] = e.group;
+      if (e.institutional_role) nameToRole[fullName] = e.institutional_role;
     }
   }
   if (citations) {
@@ -65,6 +72,9 @@ function extractSpeakersBySection(
       const fullName = `${c.deputy_first_name} ${c.deputy_last_name}`;
       if (!nameToGroup[fullName]) {
         nameToGroup[fullName] = c.group;
+      }
+      if (c.institutional_role && !nameToRole[fullName]) {
+        nameToRole[fullName] = c.institutional_role;
       }
     }
   }
@@ -88,6 +98,7 @@ function extractSpeakersBySection(
             result[currentSection].push({
               name,
               group: nameToGroup[name] || "",
+              role: nameToRole[name],
             });
           }
         }
@@ -97,14 +108,15 @@ function extractSpeakersBySection(
   return result;
 }
 
-/** Tooltip showing speakers grouped by parliamentary group */
+/** Tooltip showing speakers grouped by parliamentary group (or role for government members) */
 function SpeakersTooltip({ speakers, iconSize }: { speakers: SpeakerInfo[]; iconSize: string }) {
-  // Group speakers by their parliamentary group
+  // Group speakers by their parliamentary group or institutional role for government members
   const grouped: Record<string, string[]> = {};
   for (const s of speakers) {
-    const group = s.group || "Altro";
-    if (!grouped[group]) grouped[group] = [];
-    grouped[group].push(s.name);
+    const isGov = s.group?.toLowerCase() === "governo";
+    const label = isGov && s.role ? s.role : (s.group || "Altro");
+    if (!grouped[label]) grouped[label] = [];
+    grouped[label].push(s.name);
   }
   const groups = Object.entries(grouped);
 
@@ -130,6 +142,56 @@ function SpeakersTooltip({ speakers, iconSize }: { speakers: SpeakerInfo[]; icon
   );
 }
 
+/** Share button that copies the chat URL to clipboard */
+function ShareButton({ chatId }: { chatId: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/chat/${chatId}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback for older browsers
+      const input = document.createElement("input");
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div className="flex justify-end mt-2">
+      <button
+        onClick={handleShare}
+        className={cn(
+          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all",
+          copied
+            ? "text-green-600 bg-green-50 dark:bg-green-950/30"
+            : "text-muted-foreground hover:text-primary hover:bg-muted/50"
+        )}
+      >
+        {copied ? (
+          <>
+            <CheckIcon className="h-3 w-3" />
+            <span>Link copiato</span>
+          </>
+        ) : (
+          <>
+            <Share2 className="h-3 w-3" />
+            <span>Condividi</span>
+          </>
+        )}
+      </button>
+    </div>
+  );
+}
+
 interface MessageBubbleProps {
   message: Message;
   className?: string;
@@ -140,6 +202,7 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
   const [highlightedChunkId, setHighlightedChunkId] = useState<string | null>(null);
+  const [statsModalView, setStatsModalView] = useState<"interventions" | "speakers" | "sessions" | null>(null);
 
   if (isUser) {
     return (
@@ -200,7 +263,11 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
             <ReactMarkdown
               components={{
                 p: ({ children }) => (
-                  <p className="mb-4 leading-relaxed last:mb-0">{children}</p>
+                  <p className="mb-4 leading-relaxed last:mb-0">
+                    {message.topicStats
+                      ? linkifyStats(children, message.topicStats, setStatsModalView)
+                      : children}
+                  </p>
                 ),
                 ul: ({ children }) => (
                   <ul className="mb-4 ml-4 list-disc space-y-1">{children}</ul>
@@ -211,11 +278,41 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
                   </ol>
                 ),
                 li: ({ children }) => <li className="">{children}</li>,
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-foreground">
-                    {children}
-                  </strong>
-                ),
+                strong: ({ children }) => {
+                  const text = typeof children === "string" ? children : String(children);
+                  // Build name → URL lookup from citations and experts
+                  const nameToUrl: Record<string, string> = {};
+                  if (message.experts) {
+                    for (const e of message.experts) {
+                      const fullName = `${e.first_name} ${e.last_name}`;
+                      if (e.camera_profile_url) nameToUrl[fullName] = e.camera_profile_url;
+                    }
+                  }
+                  if (message.citations) {
+                    for (const c of message.citations) {
+                      const fullName = `${c.deputy_first_name} ${c.deputy_last_name}`;
+                      if (c.camera_profile_url && !nameToUrl[fullName]) nameToUrl[fullName] = c.camera_profile_url;
+                    }
+                  }
+                  const url = nameToUrl[text];
+                  if (url) {
+                    return (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-foreground hover:text-primary hover:underline underline-offset-2 transition-colors"
+                      >
+                        {children}
+                      </a>
+                    );
+                  }
+                  return (
+                    <strong className="font-semibold text-foreground">
+                      {children}
+                    </strong>
+                  );
+                },
                 h1: ({ children }) => (
                   <h1 className="text-2xl font-bold mb-4 mt-6">{children}</h1>
                 ),
@@ -316,6 +413,11 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
           </div>
         )}
 
+        {/* Share button */}
+        {!isUser && message.status === "complete" && message.chatId && (
+          <ShareButton chatId={message.chatId} />
+        )}
+
         {/* Additional metadata for assistant messages — show progressively once text is visible */}
         {!isUser && message.content && (message.status === "complete" || message.status === "streaming") && (
           <AssistantMetadata
@@ -323,9 +425,114 @@ export function MessageBubble({ message, className }: MessageBubbleProps) {
             highlightedChunkId={highlightedChunkId}
           />
         )}
+        {/* Topic Stats Modal */}
+        {message.topicStats && statsModalView && (
+          <TopicStatsModal
+            stats={message.topicStats}
+            isOpen={!!statsModalView}
+            onClose={() => setStatsModalView(null)}
+            defaultView={statsModalView}
+          />
+        )}
       </div>
     </div>
   );
+}
+
+/**
+ * Scans React children for text patterns matching introduction stats
+ * (e.g. "81 interventi", "46 parlamentari", "N. 27, 49, 56")
+ * and replaces them with clickable spans.
+ */
+function linkifyStats(
+  children: React.ReactNode,
+  stats: TopicStatistics,
+  openModal: (view: "interventions" | "speakers" | "sessions") => void,
+): React.ReactNode {
+  return processChildren(children, (text: string) => {
+    const parts: (string | React.ReactElement)[] = [];
+    let remaining = text;
+    let keyIdx = 0;
+
+    // Pattern for "N interventi" / "N intervento"
+    const interventionRe = /(\d+)\s+intervent[oi]/g;
+    // Pattern for "N parlamentari"
+    const speakerRe = /(\d+)\s+parlamentar[ie]/g;
+    // Pattern for "N. 27, 49, 56 e 65" or "N. 27, 49, 56, 61 e 65"
+    const sessionRe = /N\.\s*[\d]+(?:,\s*[\d]+)*(?:\s*e\s*[\d]+)?/g;
+
+    // Collect all matches with positions
+    type Match = { index: number; length: number; text: string; view: "interventions" | "speakers" | "sessions" };
+    const matches: Match[] = [];
+
+    let m: RegExpExecArray | null;
+    interventionRe.lastIndex = 0;
+    while ((m = interventionRe.exec(text)) !== null) {
+      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "interventions" });
+    }
+    speakerRe.lastIndex = 0;
+    while ((m = speakerRe.exec(text)) !== null) {
+      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "speakers" });
+    }
+    sessionRe.lastIndex = 0;
+    while ((m = sessionRe.exec(text)) !== null) {
+      matches.push({ index: m.index, length: m[0].length, text: m[0], view: "sessions" });
+    }
+
+    if (matches.length === 0) return text;
+
+    // Sort by position
+    matches.sort((a, b) => a.index - b.index);
+
+    let cursor = 0;
+    for (const match of matches) {
+      // Skip overlapping matches
+      if (match.index < cursor) continue;
+
+      if (match.index > cursor) {
+        parts.push(remaining.slice(cursor, match.index));
+      }
+      parts.push(
+        <span
+          key={`stat-${keyIdx++}`}
+          className="cursor-pointer text-primary font-semibold border-b border-primary/40 hover:border-primary hover:bg-primary/5 transition-all duration-150 rounded-sm px-0.5 -mx-0.5"
+          onClick={() => openModal(match.view)}
+          title="Clicca per vedere il dettaglio"
+        >
+          {match.text}
+        </span>
+      );
+      cursor = match.index + match.length;
+    }
+    if (cursor < remaining.length) {
+      parts.push(remaining.slice(cursor));
+    }
+
+    return parts.length === 1 ? parts[0] : parts;
+  });
+}
+
+/**
+ * Recursively process React children, applying a transform function to text nodes.
+ */
+function processChildren(
+  children: React.ReactNode,
+  transformText: (text: string) => React.ReactNode,
+): React.ReactNode {
+  return Children.map(children, (child: React.ReactNode) => {
+    if (typeof child === "string") {
+      return transformText(child);
+    }
+    if (isValidElement(child)) {
+      const props = child.props as Record<string, unknown>;
+      if (props.children) {
+        return cloneElement(child as React.ReactElement<Record<string, unknown>>, {
+          children: processChildren(props.children as React.ReactNode, transformText),
+        });
+      }
+    }
+    return child;
+  });
 }
 
 interface AssistantMetadataProps {

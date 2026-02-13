@@ -375,6 +375,7 @@ class GenerationPipeline:
                 for s in sections
             ],
             "metadata": pipeline_metadata,
+            "topic_statistics": topic_statistics,
             "citation_integrity": {
                 "is_complete": integrity_report["is_complete"],
                 "success_rate": integrity_report["success_rate"],
@@ -530,7 +531,11 @@ class GenerationPipeline:
         self,
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """Compute real statistics about the topic from retrieved evidence."""
+        """Compute real statistics about the topic from retrieved evidence.
+
+        Returns both aggregate counts (for the integrator prompt) and detailed
+        lists (for the frontend clickable stats in the introduction).
+        """
         if not evidence_list:
             return {
                 "intervention_count": 0,
@@ -538,7 +543,12 @@ class GenerationPipeline:
                 "first_date": None,
                 "last_date": None,
                 "debate_title": None,
+                "speakers_detail": [],
+                "interventions_detail": [],
+                "sessions_detail": [],
             }
+
+        from collections import Counter
 
         unique_speeches = set(
             e.get("speech_id") for e in evidence_list if e.get("speech_id")
@@ -549,7 +559,6 @@ class GenerationPipeline:
         dates = [e.get("date") for e in evidence_list if e.get("date")]
 
         # Find the most frequent debate title to name the specific provvedimento
-        from collections import Counter
         debate_titles = [
             e.get("debate_title") for e in evidence_list
             if e.get("debate_title")
@@ -565,6 +574,74 @@ class GenerationPipeline:
             if e.get("session_number")
         ]
 
+        # --- Detailed lists for frontend clickable stats ---
+
+        # Speakers: one entry per unique speaker with intervention count
+        speaker_interventions: Dict[str, Dict[str, Any]] = {}
+        for e in evidence_list:
+            sid = e.get("speaker_id")
+            if not sid:
+                continue
+            if sid not in speaker_interventions:
+                speaker_interventions[sid] = {
+                    "speaker_id": sid,
+                    "speaker_name": e.get("speaker_name", ""),
+                    "party": e.get("party", ""),
+                    "coalition": e.get("coalition", ""),
+                    "speech_ids": set(),
+                }
+            speech_id = e.get("speech_id")
+            if speech_id:
+                speaker_interventions[sid]["speech_ids"].add(speech_id)
+
+        speakers_detail = []
+        for info in speaker_interventions.values():
+            speakers_detail.append({
+                "speaker_id": info["speaker_id"],
+                "speaker_name": info["speaker_name"],
+                "party": info["party"],
+                "coalition": info["coalition"],
+                "intervention_count": len(info["speech_ids"]),
+            })
+        speakers_detail.sort(key=lambda x: x["intervention_count"], reverse=True)
+
+        # Interventions: one entry per unique speech
+        seen_speeches: Dict[str, Dict[str, Any]] = {}
+        for e in evidence_list:
+            speech_id = e.get("speech_id")
+            if not speech_id or speech_id in seen_speeches:
+                continue
+            seen_speeches[speech_id] = {
+                "speech_id": speech_id,
+                "speaker_name": e.get("speaker_name", ""),
+                "party": e.get("party", ""),
+                "coalition": e.get("coalition", ""),
+                "date": str(e.get("date", "")),
+                "debate_title": e.get("debate_title", ""),
+                "session_number": e.get("session_number", 0),
+            }
+        interventions_detail = sorted(
+            seen_speeches.values(),
+            key=lambda x: x["date"],
+            reverse=True,
+        )
+
+        # Sessions: one entry per unique session number
+        seen_sessions: Dict[int, Dict[str, Any]] = {}
+        for e in evidence_list:
+            sn = e.get("session_number")
+            if not sn or sn in seen_sessions:
+                continue
+            seen_sessions[sn] = {
+                "session_number": sn,
+                "date": str(e.get("date", "")),
+                "debate_title": e.get("debate_title", ""),
+            }
+        sessions_detail = sorted(
+            seen_sessions.values(),
+            key=lambda x: x["session_number"],
+        )
+
         return {
             "intervention_count": len(unique_speeches),
             "speaker_count": len(unique_speakers),
@@ -572,6 +649,9 @@ class GenerationPipeline:
             "last_date": max(dates) if dates else None,
             "debate_title": most_common_title,
             "session_numbers": list(set(session_numbers)),
+            "speakers_detail": speakers_detail,
+            "interventions_detail": interventions_detail,
+            "sessions_detail": sessions_detail,
         }
 
     def _group_evidence_by_party(

@@ -66,6 +66,40 @@ export interface HQMetadata {
   variants: HQVariant[];
 }
 
+export interface SpeakerDetail {
+  speaker_id: string;
+  speaker_name: string;
+  party: string;
+  coalition: string;
+  intervention_count: number;
+}
+
+export interface InterventionDetail {
+  speech_id: string;
+  speaker_name: string;
+  party: string;
+  coalition: string;
+  date: string;
+  debate_title: string;
+  session_number: number;
+}
+
+export interface SessionDetail {
+  session_number: number;
+  date: string;
+  debate_title: string;
+}
+
+export interface TopicStatistics {
+  intervention_count: number;
+  speaker_count: number;
+  first_date: string;
+  last_date: string;
+  speakers_detail: SpeakerDetail[];
+  interventions_detail: InterventionDetail[];
+  sessions_detail: SessionDetail[];
+}
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -78,9 +112,12 @@ export interface Message {
   compass?: any; // CompassData
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
+  topicStats?: TopicStatistics;
   // A/B baseline comparison
   baselineAnswer?: string;
   abAssignment?: Record<string, string>; // e.g. {"A": "system", "B": "baseline"}
+  // History ID for sharing
+  chatId?: string;
 }
 
 export interface BalanceMetrics {

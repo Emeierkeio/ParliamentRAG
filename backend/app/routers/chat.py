@@ -197,7 +197,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         await asyncio.sleep(0)  # Flush
 
         # Build citations list for frontend
-        citations = _build_citations_for_frontend(evidence_dicts)
+        citations = _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
         if citations:
             logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
                        f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
@@ -253,6 +253,35 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
 
         final_text = generation_result.get("text", "")
+
+        # === Send topic statistics for frontend clickable intro stats ===
+        topic_stats = generation_result.get("topic_statistics")
+        if topic_stats:
+            # Serialize dates to strings for JSON
+            ts_payload = {
+                "intervention_count": topic_stats.get("intervention_count", 0),
+                "speaker_count": topic_stats.get("speaker_count", 0),
+                "first_date": (
+                    topic_stats["first_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("first_date"), "strftime")
+                    else str(topic_stats.get("first_date", ""))
+                ),
+                "last_date": (
+                    topic_stats["last_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("last_date"), "strftime")
+                    else str(topic_stats.get("last_date", ""))
+                ),
+                "speakers_detail": topic_stats.get("speakers_detail", []),
+                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "sessions_detail": topic_stats.get("sessions_detail", []),
+            }
+            yield sse_event("topic_stats", ts_payload)
+            await asyncio.sleep(0)  # Flush
+            logger.info(
+                f"[TOPIC_STATS] Sent: {ts_payload['intervention_count']} interventions, "
+                f"{ts_payload['speaker_count']} speakers, "
+                f"{len(ts_payload['sessions_detail'])} sessions"
+            )
 
         # === Resolve extra citation IDs via DB lookup ===
         # The pipeline found citation links in the text whose IDs are not in
@@ -406,7 +435,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # Combine original + extra evidence for building verified citations
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
-        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify)
+        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
         yield sse_event("citation_details", {"citations": verified_citations})
         await asyncio.sleep(0)  # Flush
@@ -507,6 +536,44 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         total_time = time.time() - pipeline_start
         logger.error(f"[PIPELINE ERROR] Failed after {total_time*1000:.1f}ms: {e}", exc_info=True)
         yield sse_event("error", {"message": str(e)})
+
+
+def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
+    """Batch-fetch deputy_card URLs for a list of speaker IDs. Returns {speaker_id: url}."""
+    if not speaker_ids:
+        return {}
+    cypher = """
+    UNWIND $ids AS sid
+    OPTIONAL MATCH (d:Deputy {id: sid})
+    OPTIONAL MATCH (m:GovernmentMember {id: sid})
+    WITH sid, coalesce(d.deputy_card, m.deputy_card) AS url
+    WHERE url IS NOT NULL
+    RETURN sid, url
+    """
+    result_map: Dict[str, str] = {}
+    with neo4j_client.session() as session:
+        result = session.run(cypher, ids=list(set(speaker_ids)))
+        for record in result:
+            result_map[record["sid"]] = record["url"]
+    return result_map
+
+
+def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
+    """Batch-fetch institutional roles for GovernmentMember speakers. Returns {speaker_id: role}."""
+    if not speaker_ids:
+        return {}
+    cypher = """
+    UNWIND $ids AS sid
+    MATCH (m:GovernmentMember {id: sid})
+    WHERE m.institutional_role IS NOT NULL
+    RETURN m.id AS sid, m.institutional_role AS role
+    """
+    result_map: Dict[str, str] = {}
+    with neo4j_client.session() as session:
+        result = session.run(cypher, ids=list(set(speaker_ids)))
+        for record in result:
+            result_map[record["sid"]] = record["role"]
+    return result_map
 
 
 def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[str, Any]:
@@ -660,7 +727,8 @@ def _compute_experts_for_frontend(
 
 
 def _build_citations_for_frontend(
-    evidence_dicts: List[Dict[str, Any]]
+    evidence_dicts: List[Dict[str, Any]],
+    neo4j_client: Neo4jClient = None,
 ) -> List[Dict[str, Any]]:
     """
     Build citations in frontend-expected format.
@@ -678,11 +746,30 @@ def _build_citations_for_frontend(
         logger.info(f"[CITATIONS_DEBUG] speaker_name={sample.get('speaker_name')}, "
                    f"party={sample.get('party')}, coalition={sample.get('coalition')}")
 
+    # Batch-fetch deputy_card URLs and government roles
+    deputy_card_map: Dict[str, str] = {}
+    gov_role_map: Dict[str, str] = {}
+    if neo4j_client:
+        speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20] if e.get("speaker_id")]
+        deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
+        gov_speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20]
+                          if e.get("speaker_role") == "GovernmentMember" and e.get("speaker_id")]
+        if gov_speaker_ids:
+            gov_role_map = _batch_fetch_gov_roles(neo4j_client, gov_speaker_ids)
+
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
         speaker_name = e.get("speaker_name", "")
+        speaker_id = e.get("speaker_id", "")
         party = e.get("party", "MISTO")
-        coalition = coalition_logic.get_coalition(party)
+        is_government = e.get("speaker_role") == "GovernmentMember"
+
+        if is_government:
+            group = "Governo"
+            coalition = "governo"
+        else:
+            group = party
+            coalition = coalition_logic.get_coalition(party)
 
         # Split name into first_name/last_name
         name_parts = speaker_name.split(" ", 1)
@@ -693,20 +780,24 @@ def _build_citations_for_frontend(
         quote_text = e.get("quote_text") or ""
         display_text = (chunk_text or quote_text)[:300]
 
-        citations.append({
+        cit_data: Dict[str, Any] = {
             "chunk_id": evidence_id,  # For linking
             "deputy_first_name": first_name,
             "deputy_last_name": last_name,
             "text": display_text,
             "quote_text": quote_text,
             "full_text": chunk_text or quote_text,
-            "group": party,
+            "group": group,
             "coalition": coalition,
             "date": str(e.get("date", "")),
             "similarity": round(e.get("similarity", 0), 2),
             "debate": e.get("debate_title", ""),
             "intervention_id": e.get("speech_id", ""),
-        })
+            "camera_profile_url": deputy_card_map.get(speaker_id),
+        }
+        if is_government and speaker_id in gov_role_map:
+            cit_data["institutional_role"] = gov_role_map[speaker_id]
+        citations.append(cit_data)
 
     return citations
 
@@ -775,7 +866,8 @@ def _compute_compass_data(
 
 def _build_verified_citations(
     generation_citations: List[Dict],
-    evidence_dicts: List[Dict]
+    evidence_dicts: List[Dict],
+    neo4j_client: Neo4jClient = None,
 ) -> List[Dict[str, Any]]:
     """
     Build verified citations with full details.
@@ -787,12 +879,40 @@ def _build_verified_citations(
     coalition_logic = CoalitionLogic()
     evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
 
+    # Batch-fetch deputy_card URLs and government roles
+    deputy_card_map: Dict[str, str] = {}
+    gov_role_map: Dict[str, str] = {}
+    if neo4j_client:
+        speaker_ids = []
+        gov_speaker_ids = []
+        for cit in generation_citations:
+            eid = cit.get("evidence_id", "")
+            evidence = evidence_map.get(eid, {})
+            sid = cit.get("speaker_id") or evidence.get("speaker_id", "")
+            if sid:
+                speaker_ids.append(sid)
+                role = cit.get("speaker_role") or evidence.get("speaker_role", "Deputy")
+                if role == "GovernmentMember":
+                    gov_speaker_ids.append(sid)
+        deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
+        if gov_speaker_ids:
+            gov_role_map = _batch_fetch_gov_roles(neo4j_client, gov_speaker_ids)
+
     verified = []
     for cit in generation_citations:
         eid = cit.get("evidence_id", "")
         evidence = evidence_map.get(eid, {})
         party = cit.get("party", evidence.get("party", "MISTO"))
-        coalition = coalition_logic.get_coalition(party)
+        speaker_id = cit.get("speaker_id") or evidence.get("speaker_id", "")
+        speaker_role = cit.get("speaker_role") or evidence.get("speaker_role", "Deputy")
+        is_government = speaker_role == "GovernmentMember"
+
+        if is_government:
+            group = "Governo"
+            coalition = "governo"
+        else:
+            group = party
+            coalition = coalition_logic.get_coalition(party)
 
         # Split name into first_name/last_name
         speaker_name = cit.get("speaker_name", evidence.get("speaker_name", ""))
@@ -800,22 +920,26 @@ def _build_verified_citations(
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        verified.append({
+        cit_data = {
             "chunk_id": eid,  # For linking
             "deputy_first_name": first_name,
             "deputy_last_name": last_name,
             "text": cit.get("quote_text", ""),
             "quote_text": cit.get("quote_text", ""),
             "full_text": evidence.get("chunk_text", ""),
-            "group": party,
+            "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),
             "span_start": cit.get("span_start", 0),
             "span_end": cit.get("span_end", 0),
             "debate": evidence.get("debate_title", ""),
             "intervention_id": evidence.get("speech_id", ""),
+            "camera_profile_url": deputy_card_map.get(speaker_id),
             "verified": True,
-        })
+        }
+        if is_government and speaker_id in gov_role_map:
+            cit_data["institutional_role"] = gov_role_map[speaker_id]
+        verified.append(cit_data)
 
     return verified
 
