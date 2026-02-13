@@ -138,15 +138,27 @@ async def process_query_streaming(
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
         query_embedding = services["retrieval"].embed_query(request.query)
 
-        # Compute per-speaker authority with detailed breakdowns
+        # Compute per-speaker authority with detailed breakdowns in parallel
+        # to avoid blocking the event loop
+        from concurrent.futures import ThreadPoolExecutor
+
         authority_scores = {}
         authority_details = {}
-        for speaker_id in speaker_ids:
-            result = services["authority"].compute_authority(
-                speaker_id, query_embedding
-            )
-            authority_scores[speaker_id] = result["total_score"]
-            authority_details[speaker_id] = result
+
+        def _compute_single(sid):
+            return sid, services["authority"].compute_authority(sid, query_embedding)
+
+        loop = asyncio.get_event_loop()
+        with ThreadPoolExecutor(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
+            futures = [
+                loop.run_in_executor(pool, _compute_single, sid)
+                for sid in speaker_ids
+            ]
+            results = await asyncio.gather(*futures)
+
+        for sid, result in results:
+            authority_scores[sid] = result["total_score"]
+            authority_details[sid] = result
 
         # Inject authority scores into evidence dicts so generation can sort by authority
         for ed in evidence_dicts:
@@ -154,7 +166,7 @@ async def process_query_streaming(
             ed["authority_score"] = authority_scores.get(sid, 0.0)
 
         # Compute experts with full details for frontend
-        experts = _compute_experts(
+        experts = await _compute_experts(
             evidence_list, authority_scores, authority_details, services["neo4j"]
         )
 
@@ -163,7 +175,9 @@ async def process_query_streaming(
         # Step 4: Compass analysis (2D text-based positioning)
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
 
-        compass_result = services["ideology"].compute_2d_text_positions(evidence_dicts)
+        compass_result = await asyncio.get_event_loop().run_in_executor(
+            None, services["ideology"].compute_2d_text_positions, evidence_dicts
+        )
         compass_data = {
             "meta": compass_result.get("meta", {}),
             "axes": compass_result.get("axes", {}),
@@ -184,7 +198,9 @@ async def process_query_streaming(
                      f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
         # Step 6: Initial citations (first 20 from retrieval, sent early for UI)
-        citations_data = _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
+        citations_data = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
+        )
         logger.info(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
         yield f"data: {json.dumps({'type': 'citations', 'data': citations_data}, default=str)}\n\n"
 
@@ -329,7 +345,9 @@ async def process_query_streaming(
 
         # Send citation_details to update the sidebar with ALL cited chunks
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
-        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
+        verified_citations = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
+        )
         logger.info(f"[QUERY:CITATIONS] Verified: {len(verified_citations)} citations built")
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
@@ -456,13 +474,14 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
     return {}
 
 
-def _compute_experts(
+async def _compute_experts(
     evidence_list: List[Any],
     authority_scores: Dict[str, float],
     authority_details: Dict[str, Dict[str, Any]],
     neo4j_client: Neo4jClient
 ) -> List[Dict[str, Any]]:
     """Compute experts in frontend-expected format with full details."""
+    from concurrent.futures import ThreadPoolExecutor
     coalition_logic = CoalitionLogic()
     party_speakers: Dict[str, Dict[str, Dict]] = {}
 
@@ -486,47 +505,58 @@ def _compute_experts(
 
         party_speakers[party][speaker_id]["count"] += 1
 
-    experts = []
+    # Collect top speakers per party
+    top_speakers_info = []
     for party, speakers in party_speakers.items():
         if speakers:
             top_speaker_id = max(
                 speakers.keys(),
                 key=lambda s: speakers[s]["authority_score"]
             )
-            top_speaker = speakers[top_speaker_id]
-            coalition = coalition_logic.get_coalition(party)
+            top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
-            name_parts = top_speaker["speaker_name"].split(" ", 1)
-            first_name = name_parts[0] if name_parts else ""
-            last_name = name_parts[1] if len(name_parts) > 1 else ""
+    # Fetch all speaker details in parallel
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
+        detail_futures = [
+            loop.run_in_executor(pool, _fetch_speaker_details, neo4j_client, info[1])
+            for info in top_speakers_info
+        ]
+        speaker_details_list = await asyncio.gather(*detail_futures)
 
-            details = authority_details.get(top_speaker_id, {})
-            components = details.get("components", {})
+    experts = []
+    for (party, top_speaker_id, top_speaker), speaker_info in zip(top_speakers_info, speaker_details_list):
+        coalition = coalition_logic.get_coalition(party)
 
-            speaker_info = _fetch_speaker_details(neo4j_client, top_speaker_id)
+        name_parts = top_speaker["speaker_name"].split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-            experts.append({
-                "id": top_speaker_id,
-                "first_name": first_name,
-                "last_name": last_name,
-                "group": party,
-                "coalition": coalition,
-                "authority_score": round(top_speaker["authority_score"], 2),
-                "relevant_speeches_count": top_speaker["count"],
-                "camera_profile_url": speaker_info.get("camera_profile_url"),
-                "profession": speaker_info.get("profession"),
-                "education": speaker_info.get("education"),
-                "committee": speaker_info.get("current_committee"),
-                "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
-                "score_breakdown": {
-                    "speeches": round(components.get("interventions", 0), 2),
-                    "acts": round(components.get("acts", 0), 2),
-                    "committee": round(components.get("committee", 0), 2),
-                    "profession": round(components.get("profession", 0), 2),
-                    "education": round(components.get("education", 0), 2),
-                    "role": round(components.get("role", 0), 2),
-                },
-            })
+        details = authority_details.get(top_speaker_id, {})
+        components = details.get("components", {})
+
+        experts.append({
+            "id": top_speaker_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "group": party,
+            "coalition": coalition,
+            "authority_score": round(top_speaker["authority_score"], 2),
+            "relevant_speeches_count": top_speaker["count"],
+            "camera_profile_url": speaker_info.get("camera_profile_url"),
+            "profession": speaker_info.get("profession"),
+            "education": speaker_info.get("education"),
+            "committee": speaker_info.get("current_committee"),
+            "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
+            "score_breakdown": {
+                "speeches": round(components.get("interventions", 0), 2),
+                "acts": round(components.get("acts", 0), 2),
+                "committee": round(components.get("committee", 0), 2),
+                "profession": round(components.get("profession", 0), 2),
+                "education": round(components.get("education", 0), 2),
+                "role": round(components.get("role", 0), 2),
+            },
+        })
 
     return experts
 
@@ -692,14 +722,29 @@ async def query_endpoint(request: QueryRequest):
             evidence_dicts = [e.model_dump() for e in evidence_list]
 
             # Authority
-            speaker_ids = list(set(e.speaker_id for e in evidence_list))
+            speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
             query_embedding = services["retrieval"].embed_query(request.query)
-            authority_scores = services["authority"].compute_batch_authority(
-                speaker_ids, query_embedding
-            )
+
+            # Compute authority in parallel
+            from concurrent.futures import ThreadPoolExecutor as _TPE
+            authority_scores = {}
+            authority_details = {}
+
+            def _compute_single_sync(sid):
+                return sid, services["authority"].compute_authority(sid, query_embedding)
+
+            loop = asyncio.get_event_loop()
+            with _TPE(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
+                futs = [loop.run_in_executor(pool, _compute_single_sync, sid) for sid in speaker_ids]
+                results = await asyncio.gather(*futs)
+            for sid, result in results:
+                authority_scores[sid] = result["total_score"]
+                authority_details[sid] = result
 
             # Experts
-            experts = _compute_experts(evidence_list, authority_scores)
+            experts = await _compute_experts(
+                evidence_list, authority_scores, authority_details, services["neo4j"]
+            )
 
             # Compass
             coverage = services["ideology"].compute_coverage_metrics(evidence_dicts)

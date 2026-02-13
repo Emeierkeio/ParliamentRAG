@@ -168,12 +168,24 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         authority_scores = {}
         authority_details = {}  # Store detailed breakdowns
         if speaker_ids:
-            for speaker_id in speaker_ids:
-                result = services["authority"].compute_authority(
-                    speaker_id, query_embedding
-                )
-                authority_scores[speaker_id] = result["total_score"]
-                authority_details[speaker_id] = result
+            # Run authority scoring in parallel using ThreadPoolExecutor
+            # to avoid blocking the event loop
+            from concurrent.futures import ThreadPoolExecutor
+
+            def _compute_single(sid):
+                return sid, services["authority"].compute_authority(sid, query_embedding)
+
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor(max_workers=min(10, len(speaker_ids))) as pool:
+                futures = [
+                    loop.run_in_executor(pool, _compute_single, sid)
+                    for sid in speaker_ids
+                ]
+                results = await asyncio.gather(*futures)
+
+            for sid, result in results:
+                authority_scores[sid] = result["total_score"]
+                authority_details[sid] = result
 
         authority_time = time.time() - authority_start
         step_times["step_3_authority"] = time.time() - step_start
@@ -181,7 +193,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[TIMING] Step 3 (Esperti) total: {step_times['step_3_authority']*1000:.1f}ms")
 
         # Compute experts per coalition with detailed info
-        experts = _compute_experts_for_frontend(
+        experts = await _compute_experts_for_frontend(
             evidence_list, authority_scores, authority_details, services["neo4j"]
         )
         maggioranza_experts = sum(1 for e in experts if e.get("coalizione") == "maggioranza")
@@ -196,8 +208,10 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("progress", {"step": 4, "total": 9, "message": "Interventi"})
         await asyncio.sleep(0)  # Flush
 
-        # Build citations list for frontend
-        citations = _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
+        # Build citations list for frontend (run in executor to avoid blocking)
+        citations = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
+        )
         if citations:
             logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
                        f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
@@ -226,7 +240,9 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("progress", {"step": 6, "total": 9, "message": "Bussola Ideologica"})
         await asyncio.sleep(0)  # Flush
 
-        compass_data = _compute_compass_data(services["ideology"], evidence_dicts)
+        compass_data = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
+        )
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
                    f"axes_keys={list(compass_data.get('axes', {}).keys())}")
@@ -435,7 +451,9 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # Combine original + extra evidence for building verified citations
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
-        verified_citations = _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
+        verified_citations = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
+        )
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
         yield sse_event("citation_details", {"citations": verified_citations})
         await asyncio.sleep(0)  # Flush
@@ -655,7 +673,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
     return {}
 
 
-def _compute_experts_for_frontend(
+async def _compute_experts_for_frontend(
     evidence_list: List[Any],
     authority_scores: Dict[str, float],
     authority_details: Dict[str, Dict[str, Any]],
@@ -663,6 +681,7 @@ def _compute_experts_for_frontend(
 ) -> List[Dict[str, Any]]:
     """Compute experts in frontend-expected format with full details."""
     from ..services.authority.coalition_logic import CoalitionLogic
+    from concurrent.futures import ThreadPoolExecutor
     coalition_logic = CoalitionLogic()
 
     party_speakers: Dict[str, Dict[str, Dict]] = {}
@@ -688,52 +707,62 @@ def _compute_experts_for_frontend(
 
         party_speakers[party][speaker_id]["count"] += 1
 
-    experts = []
+    # Collect top speakers per party
+    top_speakers_info = []
     for party, speakers in party_speakers.items():
         if speakers:
             top_speaker_id = max(
                 speakers.keys(),
                 key=lambda s: speakers[s]["authority_score"]
             )
-            top_speaker = speakers[top_speaker_id]
-            coalition = coalition_logic.get_coalition(party)
+            top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
-            # Split name into first_name/last_name if possible
-            name_parts = top_speaker["speaker_name"].split(" ", 1)
-            first_name = name_parts[0] if name_parts else ""
-            last_name = name_parts[1] if len(name_parts) > 1 else ""
+    # Fetch all speaker details in parallel
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
+        detail_futures = [
+            loop.run_in_executor(pool, _fetch_speaker_details, neo4j_client, info[1])
+            for info in top_speakers_info
+        ]
+        speaker_details_list = await asyncio.gather(*detail_futures)
 
-            # Get detailed authority breakdown
-            details = authority_details.get(top_speaker_id, {})
-            components = details.get("components", {})
+    experts = []
+    for (party, top_speaker_id, top_speaker), speaker_info in zip(top_speakers_info, speaker_details_list):
+        coalition = coalition_logic.get_coalition(party)
 
-            # Fetch additional speaker info from Neo4j
-            speaker_info = _fetch_speaker_details(neo4j_client, top_speaker_id)
+        # Split name into first_name/last_name if possible
+        name_parts = top_speaker["speaker_name"].split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-            experts.append({
-                "id": top_speaker_id,
-                "first_name": first_name,
-                "last_name": last_name,
-                "group": party,
-                "coalition": coalition,
-                "authority_score": round(top_speaker["authority_score"], 2),
-                "relevant_speeches_count": top_speaker["count"],
-                # Additional details for frontend
-                "camera_profile_url": speaker_info.get("camera_profile_url"),
-                "profession": speaker_info.get("profession"),
-                "education": speaker_info.get("education"),
-                "committee": speaker_info.get("current_committee"),
-                "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
-                # Score breakdown
-                "score_breakdown": {
-                    "speeches": round(components.get("interventions", 0), 2),
-                    "acts": round(components.get("acts", 0), 2),
-                    "committee": round(components.get("committee", 0), 2),
-                    "profession": round(components.get("profession", 0), 2),
-                    "education": round(components.get("education", 0), 2),
-                    "role": round(components.get("role", 0), 2),
-                },
-            })
+        # Get detailed authority breakdown
+        details = authority_details.get(top_speaker_id, {})
+        components = details.get("components", {})
+
+        experts.append({
+            "id": top_speaker_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "group": party,
+            "coalition": coalition,
+            "authority_score": round(top_speaker["authority_score"], 2),
+            "relevant_speeches_count": top_speaker["count"],
+            # Additional details for frontend
+            "camera_profile_url": speaker_info.get("camera_profile_url"),
+            "profession": speaker_info.get("profession"),
+            "education": speaker_info.get("education"),
+            "committee": speaker_info.get("current_committee"),
+            "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
+            # Score breakdown
+            "score_breakdown": {
+                "speeches": round(components.get("interventions", 0), 2),
+                "acts": round(components.get("acts", 0), 2),
+                "committee": round(components.get("committee", 0), 2),
+                "profession": round(components.get("profession", 0), 2),
+                "education": round(components.get("education", 0), 2),
+                "role": round(components.get("role", 0), 2),
+            },
+        })
 
     return experts
 
