@@ -42,8 +42,8 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const isGoverno = citation.group?.toLowerCase() === "governo";
-  const coalitionLabel = isGoverno ? "governo" : citation.coalition;
+  const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
+  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
 
   // Auto-scroll when highlighted
@@ -179,7 +179,7 @@ interface CitationModalProps {
 }
 
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
-  const isGoverno = citation.group?.toLowerCase() === "governo";
+  const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
   const displayText = citation.full_text || citation.text || "";
