@@ -221,7 +221,7 @@ function formatCitation(citation: Record<string, unknown>) {
     full_text: citation.full_text,
     similarity: citation.similarity,
     camera_profile_url: citation.camera_profile_url || citation.scheda_camera,
-    institutional_role: citation.institutional_role,
+    institutional_role: citation.institutional_role || citation.ruolo_istituzionale,
   };
 }
 
