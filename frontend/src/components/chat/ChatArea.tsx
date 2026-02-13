@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
@@ -74,23 +74,34 @@ export function ChatArea({
             <WelcomeScreen onSendMessage={onSendMessage} />
           ) : (
             <div className="space-y-0 min-h-[50vh]">
-              {/* Completed progress stepper (persists after response is done) */}
-              {!isLoading && lastCompletedProgress && (
-                <div className="py-4">
-                  <CompletedProgressStepper progress={lastCompletedProgress} />
-                </div>
-              )}
+              {messages.map((message, idx) => {
+                // For user messages, pass chatId and progress slot
+                const nextMsg = messages[idx + 1];
+                const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
+                const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
 
-              {messages.map((message) => (
-                <MessageBubble key={message.id} message={message} />
-              ))}
+                // Show progress stepper below the last user message
+                let progressSlot: React.ReactNode = null;
+                if (isLastUserMsg) {
+                  if (isLoading && progress) {
+                    progressSlot = (
+                      <div className="pt-4">
+                        <ProgressIndicator progress={progress} />
+                      </div>
+                    );
+                  } else if (!isLoading && lastCompletedProgress) {
+                    progressSlot = (
+                      <div className="pt-4">
+                        <CompletedProgressStepper progress={lastCompletedProgress} />
+                      </div>
+                    );
+                  }
+                }
 
-              {/* Progress indicator during processing */}
-              {isLoading && progress && (
-                <div className="py-6 border-t border-border/50">
-                  <ProgressIndicator progress={progress} />
-                </div>
-              )}
+                return (
+                  <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} />
+                );
+              })}
 
               <div ref={messagesEndRef} className="h-4" />
             </div>

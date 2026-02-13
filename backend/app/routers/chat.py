@@ -559,14 +559,26 @@ def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str])
 
 
 def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
-    """Batch-fetch institutional roles for GovernmentMember speakers. Returns {speaker_id: role}."""
+    """
+    Batch-fetch institutional roles for government members.
+    Also matches Deputies who hold government positions (e.g. PM, ministers who are also MPs)
+    by looking up GovernmentMember nodes with the same first_name + last_name.
+    Returns {speaker_id: role}.
+    """
     if not speaker_ids:
         return {}
     cypher = """
     UNWIND $ids AS sid
-    MATCH (m:GovernmentMember {id: sid})
-    WHERE m.institutional_role IS NOT NULL
-    RETURN m.id AS sid, m.institutional_role AS role
+    // Direct GovernmentMember match
+    OPTIONAL MATCH (m:GovernmentMember {id: sid})
+    // Also check if a Deputy matches a GovernmentMember by name
+    OPTIONAL MATCH (d:Deputy {id: sid})
+    OPTIONAL MATCH (gm:GovernmentMember)
+    WHERE gm.first_name = d.first_name AND gm.last_name = d.last_name
+    WITH sid,
+         COALESCE(m.institutional_role, gm.institutional_role) AS role
+    WHERE role IS NOT NULL
+    RETURN sid, role
     """
     result_map: Dict[str, str] = {}
     with neo4j_client.session() as session:
@@ -752,17 +764,15 @@ def _build_citations_for_frontend(
     if neo4j_client:
         speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20] if e.get("speaker_id")]
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
-        gov_speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20]
-                          if e.get("speaker_role") == "GovernmentMember" and e.get("speaker_id")]
-        if gov_speaker_ids:
-            gov_role_map = _batch_fetch_gov_roles(neo4j_client, gov_speaker_ids)
+        # Check ALL speakers for government roles (Deputies who are also ministers)
+        gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
         speaker_name = e.get("speaker_name", "")
         speaker_id = e.get("speaker_id", "")
         party = e.get("party", "MISTO")
-        is_government = e.get("speaker_role") == "GovernmentMember"
+        is_government = e.get("speaker_role") == "GovernmentMember" or speaker_id in gov_role_map
 
         if is_government:
             group = "Governo"
@@ -884,19 +894,15 @@ def _build_verified_citations(
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = []
-        gov_speaker_ids = []
         for cit in generation_citations:
             eid = cit.get("evidence_id", "")
             evidence = evidence_map.get(eid, {})
             sid = cit.get("speaker_id") or evidence.get("speaker_id", "")
             if sid:
                 speaker_ids.append(sid)
-                role = cit.get("speaker_role") or evidence.get("speaker_role", "Deputy")
-                if role == "GovernmentMember":
-                    gov_speaker_ids.append(sid)
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
-        if gov_speaker_ids:
-            gov_role_map = _batch_fetch_gov_roles(neo4j_client, gov_speaker_ids)
+        # Check ALL speakers for government roles (Deputies who are also ministers)
+        gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
     verified = []
     for cit in generation_citations:
@@ -905,7 +911,7 @@ def _build_verified_citations(
         party = cit.get("party", evidence.get("party", "MISTO"))
         speaker_id = cit.get("speaker_id") or evidence.get("speaker_id", "")
         speaker_role = cit.get("speaker_role") or evidence.get("speaker_role", "Deputy")
-        is_government = speaker_role == "GovernmentMember"
+        is_government = speaker_role == "GovernmentMember" or speaker_id in gov_role_map
 
         if is_government:
             group = "Governo"

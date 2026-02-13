@@ -234,14 +234,7 @@ export function useChat(options: UseChatOptions = {}) {
                       result: "Query classificata",
                     });
                   }
-                  // Mark step 2 as completed (fallback if commissioni event was missed)
-                  if (newStep >= 3 && !newResults.some(r => r.step === 2)) {
-                    newResults.push({
-                      step: 2,
-                      label: "Commissioni",
-                      result: "Commissioni identificate",
-                    });
-                  }
+                  // Note: step 2 result is set by the "commissioni" event with actual names
                   return {
                     currentStep: newStep,
                     totalSteps: data.total || config.ui.progressSteps.length,
@@ -257,15 +250,20 @@ export function useChat(options: UseChatOptions = {}) {
                 const commList = data.commissioni || [];
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
                 console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
-                setProgress((prev) => prev ? {
-                  ...prev,
-                  stepResults: [...prev.stepResults, {
-                    step: 2,
-                    label: "Commissioni",
-                    result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
-                    details: { commissioni: commList }
-                  }]
-                } : null);
+                setProgress((prev) => {
+                  if (!prev) return null;
+                  // Replace any existing step 2 result with actual commission names
+                  const filtered = prev.stepResults.filter(r => r.step !== 2);
+                  return {
+                    ...prev,
+                    stepResults: [...filtered, {
+                      step: 2,
+                      label: "Commissioni",
+                      result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
+                      details: { commissioni: commList }
+                    }]
+                  };
+                });
                 break;
 
               case "experts":
