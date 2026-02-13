@@ -251,9 +251,9 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
 
       {/* Desktop: completed stepper with connecting line */}
       <div className="hidden sm:block">
-        <div className="relative flex justify-between items-center">
+        <div className="relative flex justify-between items-start">
           {/* Connecting line behind circles */}
-          <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-0.5 bg-primary/30 rounded-full" />
+          <div className="absolute left-4 right-4 top-[14px] -translate-y-1/2 h-0.5 bg-primary/30 rounded-full" />
 
           {steps.map((step, index) => {
             const stepNumber = index + 1;
@@ -262,10 +262,15 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             return (
               <Tooltip key={step.id} delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <div
-                    className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-pointer transition-all hover:ring-2 hover:ring-primary/30"
-                  >
-                    <Check className="h-3.5 w-3.5" />
+                  <div className="relative z-10 flex flex-col items-center gap-1.5 cursor-pointer min-w-0 flex-1">
+                    <div
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium transition-all hover:ring-2 hover:ring-primary/30"
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-[10px] leading-tight text-center truncate w-full px-0.5 text-primary font-medium">
+                      {step.label}
+                    </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
