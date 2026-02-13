@@ -471,11 +471,37 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
  * with markdown links [text](stats://view) that ReactMarkdown renders as <a>.
  */
 function injectStatsLinks(content: string): string {
-  // Only process the introduction (before the first ## heading)
-  // to avoid false positives in party sections with citation links.
-  const headingIndex = content.search(/^##\s/m);
-  const intro = headingIndex === -1 ? content : content.slice(0, headingIndex);
-  const rest = headingIndex === -1 ? "" : content.slice(headingIndex);
+  // Only process the introduction section to avoid false positives
+  // in party sections with citation links.
+  // The intro text lives UNDER the first ## heading (e.g. "## Introduzione"),
+  // so we extract from the first heading up to the second heading.
+  const firstHeading = content.search(/^##\s/m);
+  let secondHeading = -1;
+  if (firstHeading !== -1) {
+    const afterFirst = content.slice(firstHeading + 1).search(/^##\s/m);
+    secondHeading = afterFirst !== -1 ? firstHeading + 1 + afterFirst : -1;
+  }
+
+  let before: string;
+  let intro: string;
+  let rest: string;
+
+  if (firstHeading === -1) {
+    // No headings at all — treat everything as intro
+    before = "";
+    intro = content;
+    rest = "";
+  } else if (secondHeading === -1) {
+    // Only one heading — everything after it is intro
+    before = content.slice(0, firstHeading);
+    intro = content.slice(firstHeading);
+    rest = "";
+  } else {
+    // Multiple headings — intro is from first heading to second heading
+    before = content.slice(0, firstHeading);
+    intro = content.slice(firstHeading, secondHeading);
+    rest = content.slice(secondHeading);
+  }
 
   let result = intro;
 
@@ -500,7 +526,7 @@ function injectStatsLinks(content: string): string {
     "[$1](stats://sessions)"
   );
 
-  return result + rest;
+  return before + result + rest;
 }
 
 interface AssistantMetadataProps {
