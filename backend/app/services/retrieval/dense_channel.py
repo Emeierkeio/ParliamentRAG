@@ -131,7 +131,20 @@ class DenseChannel:
                         logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
 
                 # Determine coalition
-                party = row.get("party", "MISTO")
+                # If party is NULL the speaker's current group doesn't cover
+                # this session date (e.g. they switched group after the debate).
+                # Skip the result — the deputy should only be cited for speeches
+                # made while in their current group.
+                party = row.get("party")
+                speaker_role = row.get("speaker_type", "Deputy")
+                if party is None and speaker_role != "GovernmentMember":
+                    logger.debug(
+                        f"Skipping chunk {row.get('chunk_id')}: speaker "
+                        f"{row.get('speaker_last_name')} has no current group "
+                        f"covering session date {row.get('session_date')}"
+                    )
+                    continue
+                party = party or "GOVERNO"
                 coalition = config.get_coalition(party) if party else "opposizione"
 
                 # Parse date - handles both Neo4j Date objects and string formats
@@ -158,7 +171,7 @@ class DenseChannel:
                     "speaker_id": row.get("speaker_id", ""),
                     "speaker_name": normalize_speaker_name(row.get('speaker_first_name', ''), row.get('speaker_last_name', '')),
                     "speaker_role": row.get("speaker_type", "Deputy"),
-                    "party": normalize_party_name(party or "MISTO"),
+                    "party": normalize_party_name(party),
                     "coalition": coalition,
                     "date": date_obj,
                     "chunk_text": row.get("chunk_text", ""),

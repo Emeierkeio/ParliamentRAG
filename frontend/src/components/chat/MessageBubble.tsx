@@ -203,7 +203,7 @@ function ShareButton({ chatId }: { chatId: string }) {
       {copied ? (
         <>
           <CheckIcon className="h-3 w-3" />
-          <span>Copiato</span>
+          <span>Link copiato negli appunti</span>
         </>
       ) : (
         <>
@@ -490,20 +490,23 @@ function injectStatsLinks(content: string): string {
   let result = intro;
 
   // Pattern for "N interventi" / "N intervento" (also handles "analizzati" suffix)
+  // Handles optional bold markers: **N interventi**, **N** interventi, or plain
   result = result.replace(
-    /(\d+)\s+(intervent[oi](?:\s+analizzat[oi])?)/g,
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(intervent[oi](?:\s+analizzat[oi])?)\*{0,2}/g,
     "[$1 $2](stats://interventions)"
   );
 
   // Pattern for "N parlamentari"
+  // Handles optional bold markers: **N parlamentari**, **N** parlamentari, or plain
   result = result.replace(
-    /(\d+)\s+(parlamentar[ie])/g,
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(parlamentar[ie])\*{0,2}/g,
     "[$1 $2](stats://speakers)"
   );
 
   // Pattern for session numbers: "N. 8, 15, 26, 69, 73 e altre 30" or "N. 8, 15, 26, 69, 73 e 80"
+  // Handles optional bold markers around the whole expression
   result = result.replace(
-    /(N\.\s*\d+(?:,\s*\d+)*(?:\s+e\s+(?:altr[eiao]\s+)?\d+)?)/g,
+    /\*{0,2}(N\.\s*\d+(?:,\s*\d+)*(?:\s+e\s+(?:altr[eiao]\s+)?\d+)?)\*{0,2}/g,
     "[$1](stats://sessions)"
   );
 
