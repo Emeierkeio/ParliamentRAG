@@ -515,7 +515,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
                                 </p>
                                 <div className="flex justify-between items-center pt-1">
                                     <span className="text-xs text-muted-foreground">
-                                        {new Date(item.timestamp).toLocaleDateString()}
+                                        {new Date(item.timestamp).toLocaleDateString()} · {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                     {deleteConfirmationId === item.id ? (
                                         <div className="flex gap-1">
