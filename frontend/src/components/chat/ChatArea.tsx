@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
-import { ProgressIndicator } from "@/components/shared/ProgressIndicator";
+import { ProgressIndicator, ProgressBanner } from "@/components/shared/ProgressIndicator";
 import { config } from "@/config";
 import type { Message, ProcessingProgress } from "@/types";
 import { Atom, ArrowRight } from "lucide-react";
@@ -65,6 +65,9 @@ export function ChatArea({
 
       {/* Main Content Area */}
       <ScrollArea className="flex-1" ref={scrollRef}>
+        {/* Sticky banner for baseline generation (stays at top while scrolling) */}
+        {isLoading && <ProgressBanner progress={progress} />}
+
         <div className="mx-auto max-w-3xl px-4 pb-12">
           {!hasMessages ? (
             <WelcomeScreen onSendMessage={onSendMessage} />
