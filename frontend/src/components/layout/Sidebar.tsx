@@ -141,6 +141,21 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
               isCollapsed={false}
             />
+            <Separator className="my-3" />
+            <div className="px-2 space-y-1">
+              <p className="text-[11px] font-semibold text-foreground/70">Mirko Tritella</p>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                Tesi di Laurea Magistrale in Data Science
+                <br />A.A. 2025/2026
+              </p>
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                Rel. Prof. M. Palmonari
+                <br />Corr. Dott. R. Pozzi
+              </p>
+              <p className="text-[10px] text-muted-foreground/60">
+                Univ. degli Studi di Milano-Bicocca
+              </p>
+            </div>
           </div>
         </aside>
 
@@ -235,6 +250,24 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                 item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />
+
+            {/* Credits */}
+            {!isCollapsed && (
+              <div className="mt-3 pt-3 border-t border-sidebar-border px-2 space-y-1">
+                <p className="text-[11px] font-semibold text-foreground/70">Mirko Tritella</p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  Tesi di Laurea Magistrale in Data Science
+                  <br />A.A. 2025/2026
+                </p>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  Rel. Prof. M. Palmonari
+                  <br />Corr. Dott. R. Pozzi
+                </p>
+                <p className="text-[10px] text-muted-foreground/60">
+                  Univ. degli Studi di Milano-Bicocca
+                </p>
+              </div>
+            )}
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (

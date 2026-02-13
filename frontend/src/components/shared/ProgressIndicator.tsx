@@ -231,26 +231,38 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
 
   return (
     <div className={cn("w-full", className)}>
-      {/* Mobile: compact dots */}
-      <div className="sm:hidden flex items-center gap-1.5 px-1">
-        {steps.map((step, index) => {
-          const stepNumber = index + 1;
-          const stepResult = getStepResult(stepNumber);
-          return (
-            <Tooltip key={step.id} delayDuration={0}>
-              <TooltipTrigger asChild>
-                <div className="h-1.5 rounded-full bg-primary flex-1 cursor-pointer" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[250px]">
-                <p className="font-semibold text-xs">{step.label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  {STEP_DESCRIPTIONS[stepNumber] || step.description}
-                </p>
-                <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
+      {/* Mobile: circles with labels (matching desktop) */}
+      <div className="sm:hidden">
+        <div className="relative flex justify-between items-start">
+          {/* Connecting line behind circles */}
+          <div className="absolute left-3 right-3 top-[11px] -translate-y-1/2 h-0.5 bg-primary/30 rounded-full" />
+
+          {steps.map((step, index) => {
+            const stepNumber = index + 1;
+            const stepResult = getStepResult(stepNumber);
+            return (
+              <Tooltip key={step.id} delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div className="relative z-10 flex flex-col items-center gap-1 cursor-pointer min-w-0 flex-1">
+                    <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Check className="h-3 w-3" />
+                    </div>
+                    <span className="text-[8px] leading-tight text-center truncate w-full px-0.5 text-primary font-medium">
+                      {step.label}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px]">
+                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                  </p>
+                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
       </div>
 
       {/* Desktop: completed stepper with connecting line */}
