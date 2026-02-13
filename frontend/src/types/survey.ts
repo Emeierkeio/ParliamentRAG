@@ -15,6 +15,33 @@ export interface ABRating {
   preference: "A" | "B" | "equal" | "";
 }
 
+export interface CitationEvaluation {
+  evidence_id: string;
+  relevance: number;      // 1-5
+  faithfulness: number;    // 1-5
+  informativeness: number; // 1-5
+  attribution: "correct" | "incorrect" | "unverifiable" | "";
+  issues: string[];
+}
+
+export const CITATION_ISSUES = [
+  { id: "none", label: "Nessun problema", icon: "check" },
+  { id: "out_of_context", label: "Fuori contesto", icon: "alert" },
+  { id: "truncated", label: "Citazione troncata", icon: "scissors" },
+  { id: "wrong_attribution", label: "Attribuzione errata", icon: "user-x" },
+  { id: "duplicate", label: "Duplicata", icon: "copy" },
+  { id: "unverifiable", label: "Non verificabile", icon: "help" },
+] as const;
+
+export const getInitialCitationEvaluation = (evidenceId: string): CitationEvaluation => ({
+  evidence_id: evidenceId,
+  relevance: 0,
+  faithfulness: 0,
+  informativeness: 0,
+  attribution: "",
+  issues: [],
+});
+
 export interface SurveyResponse {
   id: string;
   chat_id: string;
@@ -40,6 +67,10 @@ export interface SurveyResponse {
   feedback_positive?: string;
   feedback_improvement?: string;
 
+  // Individual citation evaluations
+  citation_evaluations_a: CitationEvaluation[];
+  citation_evaluations_b: CitationEvaluation[];
+
   // Metadata
   evaluator_role?: string;
   evaluation_context?: string;
@@ -64,6 +95,9 @@ export interface SurveyResponseCreate {
 
   feedback_positive?: string;
   feedback_improvement?: string;
+
+  citation_evaluations_a?: CitationEvaluation[];
+  citation_evaluations_b?: CitationEvaluation[];
 
   evaluator_role?: string;
   evaluation_context?: string;
@@ -135,6 +169,8 @@ export interface SurveyFormState {
   would_recommend: boolean;
   feedback_positive: string;
   feedback_improvement: string;
+  citation_evaluations_a: CitationEvaluation[];
+  citation_evaluations_b: CitationEvaluation[];
 }
 
 // Survey questions configuration - A/B format
@@ -210,4 +246,6 @@ export const getInitialSurveyFormState = (): SurveyFormState => ({
   would_recommend: false,
   feedback_positive: "",
   feedback_improvement: "",
+  citation_evaluations_a: [],
+  citation_evaluations_b: [],
 });

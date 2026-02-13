@@ -21,6 +21,29 @@ class RatingScale(int, Enum):
     EXCELLENT = 5
 
 
+# Valid issue tags for individual citation evaluation
+CITATION_ISSUES = [
+    "out_of_context",
+    "truncated",
+    "wrong_attribution",
+    "duplicate",
+    "unverifiable",
+    "none",
+]
+
+
+class CitationEvaluation(BaseModel):
+    """Evaluation of a single citation within a response."""
+    evidence_id: str = Field(..., description="chunk_id of the citation")
+    relevance: int = Field(..., ge=1, le=5, description="How relevant is this citation to the query/response")
+    faithfulness: int = Field(..., ge=1, le=5, description="How faithfully does the quote represent the original speech")
+    informativeness: int = Field(..., ge=1, le=5, description="How much value does this citation add")
+    attribution: Literal["correct", "incorrect", "unverifiable"] = Field(
+        ..., description="Is the speaker/group/date attribution correct"
+    )
+    issues: List[str] = Field(default_factory=list, description="Issue tags for quick triage")
+
+
 class ABRating(BaseModel):
     """Rating for a single dimension, comparing Response A and Response B."""
     rating_a: int = Field(..., ge=1, le=5, description="Rating for Risposta A")
@@ -54,6 +77,10 @@ class SurveyResponse(BaseModel):
     feedback_positive: Optional[str] = Field(None, max_length=1000, description="What worked well")
     feedback_improvement: Optional[str] = Field(None, max_length=1000, description="Suggestions for improvement")
 
+    # Individual citation evaluations
+    citation_evaluations_a: List[CitationEvaluation] = Field(default_factory=list, description="Per-citation evaluations for Response A")
+    citation_evaluations_b: List[CitationEvaluation] = Field(default_factory=list, description="Per-citation evaluations for Response B")
+
     # Metadata
     evaluator_role: Optional[str] = Field(None, description="Role of evaluator")
     evaluation_context: Optional[str] = Field(None, description="Context of evaluation")
@@ -81,6 +108,10 @@ class SurveyResponseCreate(BaseModel):
 
     feedback_positive: Optional[str] = None
     feedback_improvement: Optional[str] = None
+
+    # Individual citation evaluations
+    citation_evaluations_a: List[CitationEvaluation] = Field(default_factory=list)
+    citation_evaluations_b: List[CitationEvaluation] = Field(default_factory=list)
 
     evaluator_role: Optional[str] = None
     evaluation_context: Optional[str] = None

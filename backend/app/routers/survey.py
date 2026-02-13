@@ -17,6 +17,7 @@ from app.models.survey import (
     SurveyWithChat,
     SurveyStats,
     SurveyListResponse,
+    CitationEvaluation,
     SURVEY_QUESTIONS,
     AB_DIMENSIONS,
 )
@@ -75,6 +76,13 @@ def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
             params[dim] = json.dumps(dim_data.model_dump(), ensure_ascii=False)
         else:
             params[dim] = ""
+    # Serialize individual citation evaluations as JSON strings
+    params["citation_evaluations_a"] = json.dumps(
+        [ce.model_dump() for ce in survey.citation_evaluations_a], ensure_ascii=False
+    )
+    params["citation_evaluations_b"] = json.dumps(
+        [ce.model_dump() for ce in survey.citation_evaluations_b], ensure_ascii=False
+    )
     return params
 
 
@@ -103,6 +111,16 @@ def _neo4j_record_to_dict(r: dict) -> dict:
                 result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
         else:
             result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
+    # Deserialize individual citation evaluations
+    for field in ("citation_evaluations_a", "citation_evaluations_b"):
+        raw = r.get(field)
+        if raw:
+            try:
+                result[field] = json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                result[field] = []
+        else:
+            result[field] = []
     return result
 
 
@@ -119,6 +137,8 @@ _SURVEY_FIELDS = (
     "s.feedback_improvement AS feedback_improvement, "
     "s.evaluator_role AS evaluator_role, "
     "s.evaluation_context AS evaluation_context, "
+    "s.citation_evaluations_a AS citation_evaluations_a, "
+    "s.citation_evaluations_b AS citation_evaluations_b, "
     + ", ".join(f"s.{d} AS {d}" for d in AB_DIMENSIONS)
 )
 
@@ -432,6 +452,8 @@ async def create_survey(survey_data: SurveyResponseCreate):
             feedback_improvement: $feedback_improvement,
             evaluator_role: $evaluator_role,
             evaluation_context: $evaluation_context,
+            citation_evaluations_a: $citation_evaluations_a,
+            citation_evaluations_b: $citation_evaluations_b,
             {dim_sets}
         }})
     """, params)
@@ -491,6 +513,8 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
             s.feedback_improvement = $feedback_improvement,
             s.evaluator_role = $evaluator_role,
             s.evaluation_context = $evaluation_context,
+            s.citation_evaluations_a = $citation_evaluations_a,
+            s.citation_evaluations_b = $citation_evaluations_b,
             {dim_sets}
     """, params)
 

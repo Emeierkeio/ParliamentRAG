@@ -32,6 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import { StarRating } from "./StarRating";
+import { CitationReviewStep } from "./CitationReviewStep";
 import {
   SURVEY_QUESTIONS,
   AB_DIMENSIONS,
@@ -39,8 +40,11 @@ import {
   type ABRating,
   type PendingChat,
   type ABDimension,
+  type CitationEvaluation,
   getInitialSurveyFormState,
+  getInitialCitationEvaluation,
 } from "@/types/survey";
+import type { Citation } from "@/types/chat";
 import {
   getPendingChats,
   createSurvey,
@@ -65,7 +69,7 @@ interface ChatDetails {
   ab_assignment?: Record<string, string>;
 }
 
-type SurveyStep = "select" | "form" | "success";
+type SurveyStep = "select" | "form" | "citations" | "success";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Qualita Risposta": <MessageSquare className="w-4 h-4" />,
@@ -246,7 +250,44 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     }
   };
 
-  // Submit survey
+  // Extract citations for response A and B based on ab_assignment
+  const getCitationsA = (): Citation[] => {
+    if (!chatDetails) return [];
+    const ab = chatDetails.ab_assignment;
+    if (!ab) return chatDetails.citations || [];
+    // A is system → use system citations; A is baseline → no citations available for baseline
+    return ab["A"] === "system" ? (chatDetails.citations || []) : [];
+  };
+
+  const getCitationsB = (): Citation[] => {
+    if (!chatDetails) return [];
+    const ab = chatDetails.ab_assignment;
+    if (!ab) return [];
+    return ab["B"] === "system" ? (chatDetails.citations || []) : [];
+  };
+
+  // Go to citations step
+  const handleGoToCitations = () => {
+    if (!isFormComplete()) return;
+    // Initialize citation evaluations if not already done
+    const citA = getCitationsA();
+    const citB = getCitationsB();
+    if (formState.citation_evaluations_a.length === 0 && citA.length > 0) {
+      setFormState(prev => ({
+        ...prev,
+        citation_evaluations_a: citA.map(c => getInitialCitationEvaluation(c.chunk_id)),
+      }));
+    }
+    if (formState.citation_evaluations_b.length === 0 && citB.length > 0) {
+      setFormState(prev => ({
+        ...prev,
+        citation_evaluations_b: citB.map(c => getInitialCitationEvaluation(c.chunk_id)),
+      }));
+    }
+    setStep("citations");
+  };
+
+  // Submit survey (final)
   const handleSubmit = async () => {
     if (!selectedChat || !isFormComplete()) return;
 
@@ -254,6 +295,14 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     setError(null);
 
     try {
+      // Filter out incomplete citation evaluations (only send completed ones)
+      const validCitEvalsA = formState.citation_evaluations_a.filter(
+        ce => ce.relevance > 0 && ce.faithfulness > 0 && ce.informativeness > 0 && ce.attribution !== ""
+      );
+      const validCitEvalsB = formState.citation_evaluations_b.filter(
+        ce => ce.relevance > 0 && ce.faithfulness > 0 && ce.informativeness > 0 && ce.attribution !== ""
+      );
+
       await createSurvey({
         chat_id: selectedChat.id,
         answer_quality: formState.answer_quality,
@@ -269,6 +318,8 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         would_recommend: formState.would_recommend,
         feedback_positive: formState.feedback_positive || undefined,
         feedback_improvement: formState.feedback_improvement || undefined,
+        citation_evaluations_a: validCitEvalsA,
+        citation_evaluations_b: validCitEvalsB,
       });
 
       setStep("success");
@@ -385,11 +436,13 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
       <DialogContent
         className={cn(
           "p-0 gap-0 overflow-hidden flex flex-col",
-          step === "form" && "sm:!max-w-[95vw]"
+          (step === "form" || step === "citations") && "sm:!max-w-[95vw]"
         )}
         style={
           step === "form"
             ? { width: "1600px", maxWidth: "95vw", height: "95vh", maxHeight: "95vh" }
+            : step === "citations"
+            ? { width: "700px", maxWidth: "95vw", height: "95vh", maxHeight: "95vh" }
             : { maxWidth: "42rem", maxHeight: "90vh" }
         }
       >
@@ -410,6 +463,11 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                 {completionPercentage()}%
               </span>
             </div>
+          )}
+          {step === "citations" && (
+            <p className="text-sm text-gray-500 mt-1">
+              Valuta ogni citazione singolarmente (opzionale - puoi saltare)
+            </p>
           )}
         </DialogHeader>
 
@@ -800,21 +858,64 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                     </Button>
                   ) : (
                     <Button
-                      onClick={handleSubmit}
-                      disabled={!isFormComplete() || isSubmitting}
+                      onClick={handleGoToCitations}
+                      disabled={!isFormComplete()}
                       className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
                     >
-                      {isSubmitting ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4 mr-2" />
-                      )}
-                      Invia Valutazione
+                      Valuta Citazioni
+                      <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   )}
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Step: Citation Review */}
+        {step === "citations" && (
+          <div className="flex flex-col h-[80vh]">
+            <CitationReviewStep
+              citationsA={getCitationsA()}
+              citationsB={getCitationsB()}
+              evaluationsA={formState.citation_evaluations_a}
+              evaluationsB={formState.citation_evaluations_b}
+              onUpdateEvaluationA={(index, evaluation) => {
+                setFormState(prev => {
+                  const updated = [...prev.citation_evaluations_a];
+                  updated[index] = evaluation;
+                  return { ...prev, citation_evaluations_a: updated };
+                });
+              }}
+              onUpdateEvaluationB={(index, evaluation) => {
+                setFormState(prev => {
+                  const updated = [...prev.citation_evaluations_b];
+                  updated[index] = evaluation;
+                  return { ...prev, citation_evaluations_b: updated };
+                });
+              }}
+              onSubmit={handleSubmit}
+              onSkip={() => {
+                // Submit without citation evaluations
+                setFormState(prev => ({
+                  ...prev,
+                  citation_evaluations_a: [],
+                  citation_evaluations_b: [],
+                }));
+                handleSubmit();
+              }}
+              onBack={() => {
+                setStep("form");
+                setCurrentCategory(categories.length - 1);
+              }}
+              isSubmitting={isSubmitting}
+            />
+            {error && (
+              <div className="px-4 py-2 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm flex items-center gap-2 border-t">
+                <AlertCircle className="w-4 h-4" />
+                {error}
+              </div>
+            )}
           </div>
         )}
 
