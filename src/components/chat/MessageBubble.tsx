@@ -276,16 +276,6 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
           </div>
         )}
 
-        {/* Loading/Streaming State */}
-        {isStreaming && !message.content && (
-          <div className="flex items-center gap-2 text-muted-foreground py-4">
-            <Loader2 className="h-5 w-5 animate-spin text-primary" />
-            <span className="text-sm font-medium">
-              Generazione della risposta in corso...
-            </span>
-          </div>
-        )}
-
         {/* Content */}
         {message.content && (
           <div className="prose prose-sm max-w-none prose-neutral dark:prose-invert">
