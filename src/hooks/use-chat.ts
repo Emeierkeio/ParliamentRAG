@@ -8,6 +8,7 @@ import type {
   BalanceMetrics,
   ProcessingProgress,
   StepResult,
+  TopicStatistics,
 } from "@/types";
 import { config } from "@/config";
 
@@ -154,6 +155,7 @@ export function useChat(options: UseChatOptions = {}) {
       let compassData: any = null;
       let baselineAnswer = "";
       let abAssignment: Record<string, string> | null = null;
+      let topicStats: TopicStatistics | undefined;
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -184,6 +186,7 @@ export function useChat(options: UseChatOptions = {}) {
                     citations,
                     experts,
                     balanceMetrics,
+                    topicStats,
                     baselineAnswer: baselineAnswer || undefined,
                     abAssignment: abAssignment || undefined,
                   });
@@ -228,7 +231,15 @@ export function useChat(options: UseChatOptions = {}) {
                     newResults.push({
                       step: 1,
                       label: "Analisi query",
-                      result: data.message || "Query classificata",
+                      result: "Query classificata",
+                    });
+                  }
+                  // Mark step 2 as completed (fallback if commissioni event was missed)
+                  if (newStep >= 3 && !newResults.some(r => r.step === 2)) {
+                    newResults.push({
+                      step: 2,
+                      label: "Commissioni",
+                      result: "Commissioni identificate",
                     });
                   }
                   return {
@@ -348,7 +359,7 @@ export function useChat(options: UseChatOptions = {}) {
                       stepResults: [...prev.stepResults, {
                         step: 6,
                         label: "Bussola Ideologica",
-                        result: `${compassData.groups?.length || 0} gruppi posizionati su ${compassData.axes?.length || 0} assi tematici`,
+                        result: `${compassData.groups?.length || 0} gruppi posizionati su ${Object.keys(compassData.axes || {}).length} assi tematici`,
                         details: { axes: compassData.axes, groups: compassData.groups?.length }
                       }]
                     };
@@ -356,6 +367,12 @@ export function useChat(options: UseChatOptions = {}) {
                 } catch(e) {
                    console.error("[Pipeline] Step 6: Compass error", e);
                 }
+                break;
+
+              case "topic_stats":
+                topicStats = data as TopicStatistics;
+                updateLastAssistantMessage({ topicStats });
+                console.log(`[Pipeline] Topic stats: ${topicStats.intervention_count} interventions, ${topicStats.speaker_count} speakers, ${topicStats.sessions_detail?.length || 0} sessions`);
                 break;
 
               case "citation_details":
@@ -488,6 +505,7 @@ export function useChat(options: UseChatOptions = {}) {
                   citations,
                   experts,
                   balanceMetrics,
+                  topicStats,
                   baselineAnswer: baselineAnswer || undefined,
                   abAssignment: abAssignment || undefined,
                 });
@@ -511,6 +529,7 @@ export function useChat(options: UseChatOptions = {}) {
                       bias_score: balanceMetrics.biasScore,
                     } : null,
                     compass: compassData,
+                    topic_stats: topicStats || null,
                     baseline_answer: baselineAnswer || null,
                     ab_assignment: abAssignment || null,
                   };
@@ -521,9 +540,11 @@ export function useChat(options: UseChatOptions = {}) {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(historyPayload),
-                  }).then((res) => {
+                  }).then(async (res) => {
                     if (res.ok) {
-                      console.log("[Pipeline] History saved OK");
+                      const savedChat = await res.json();
+                      console.log("[Pipeline] History saved OK, id:", savedChat.id);
+                      updateLastAssistantMessage({ chatId: savedChat.id });
                     } else {
                       res.text().then(body => {
                         console.error("[Pipeline] History save failed:", res.status, body);
@@ -620,8 +641,10 @@ export function useChat(options: UseChatOptions = {}) {
           biasScore: historyData.balance.bias_score
       } : undefined,
       compass: historyData.compass,
+      topicStats: historyData.topic_stats || undefined,
       baselineAnswer: historyData.baseline_answer || undefined,
       abAssignment: historyData.ab_assignment || undefined,
+      chatId: historyData.id,
     };
 
     setMessages([userMsg, assistantMsg]);
