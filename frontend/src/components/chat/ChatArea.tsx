@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
-import { ProgressIndicator, ProgressBanner, CompletedProgressStepper } from "@/components/shared/ProgressIndicator";
+import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, PipelineActivityPanel } from "@/components/shared/ProgressIndicator";
 import type { Message, ProcessingProgress } from "@/types";
 import { Atom, ArrowRight } from "lucide-react";
 
@@ -84,9 +84,11 @@ export function ChatArea({
                 let progressSlot: React.ReactNode = null;
                 if (isLastUserMsg) {
                   if (isLoading && progress) {
+                    const textStarted = progress.stepResults?.some(r => r.step === 7);
                     progressSlot = (
                       <div className="pt-4">
                         <ProgressIndicator progress={progress} />
+                        {!textStarted && <PipelineActivityPanel progress={progress} />}
                       </div>
                     );
                   } else if (!isLoading && lastCompletedProgress) {
