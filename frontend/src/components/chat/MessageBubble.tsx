@@ -194,7 +194,7 @@ function ShareButton({ chatId }: { chatId: string }) {
     <button
       onClick={handleShare}
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0",
+        "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all shrink-0",
         copied
           ? "text-green-600 bg-green-50 dark:bg-green-950/30"
           : "text-muted-foreground hover:text-primary hover:bg-muted/50"
@@ -202,12 +202,12 @@ function ShareButton({ chatId }: { chatId: string }) {
     >
       {copied ? (
         <>
-          <CheckIcon className="h-3 w-3" />
+          <CheckIcon className="h-4 w-4" />
           <span>Link copiato negli appunti</span>
         </>
       ) : (
         <>
-          <Share2 className="h-3 w-3" />
+          <Share2 className="h-4 w-4" />
           <span>Condividi</span>
         </>
       )}
@@ -249,8 +249,8 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
             })}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 mt-1 text-[10px] text-muted-foreground/60">
-          <Landmark className="h-3 w-3" />
+        <div className="flex items-center gap-2 mt-1.5 text-sm text-muted-foreground/70">
+          <Landmark className="h-4 w-4" />
           <span className="font-medium">Camera dei Deputati — XIX Legislatura</span>
         </div>
         {progressSlot}

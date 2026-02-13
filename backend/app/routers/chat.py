@@ -834,8 +834,22 @@ def _build_citations_for_frontend(
             "intervention_id": e.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),
         }
-        if is_government and speaker_id in gov_role_map:
-            cit_data["institutional_role"] = gov_role_map[speaker_id]
+        if is_government:
+            role = gov_role_map.get(speaker_id)
+            if not role and neo4j_client:
+                # Fallback: fetch role directly for GovernmentMember not in batch
+                try:
+                    with neo4j_client.session() as sess:
+                        rec = sess.run(
+                            "MATCH (m:GovernmentMember {id: $sid}) RETURN m.institutional_role AS role",
+                            sid=speaker_id
+                        ).single()
+                        if rec and rec["role"]:
+                            role = rec["role"]
+                except Exception:
+                    pass
+            if role:
+                cit_data["institutional_role"] = role
         citations.append(cit_data)
 
     return citations
@@ -972,8 +986,21 @@ def _build_verified_citations(
             "camera_profile_url": deputy_card_map.get(speaker_id),
             "verified": True,
         }
-        if is_government and speaker_id in gov_role_map:
-            cit_data["institutional_role"] = gov_role_map[speaker_id]
+        if is_government:
+            role = gov_role_map.get(speaker_id)
+            if not role and neo4j_client:
+                try:
+                    with neo4j_client.session() as sess:
+                        rec = sess.run(
+                            "MATCH (m:GovernmentMember {id: $sid}) RETURN m.institutional_role AS role",
+                            sid=speaker_id
+                        ).single()
+                        if rec and rec["role"]:
+                            role = rec["role"]
+                except Exception:
+                    pass
+            if role:
+                cit_data["institutional_role"] = role
         verified.append(cit_data)
 
     return verified

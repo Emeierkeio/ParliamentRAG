@@ -28,9 +28,33 @@ const STEP_DESCRIPTIONS: Record<number, string> = {
   9: "Completa la verifica finale e salva in cronologia",
 };
 
-/** Format detailed result — uses the specific result string saved in stepResults */
-function formatStepDetails(_step: number, result?: string, _details?: any): string {
-  return result || "Completato";
+/** Render rich step result details based on step type */
+function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: any }) {
+  // Step 2: Commissioni — show commission names with scores and keywords
+  if (step === 2 && details?.commissioni?.length > 0) {
+    return (
+      <div className="mt-1.5 space-y-1.5">
+        {details.commissioni.map((c: any, i: number) => (
+          <div key={i} className="text-[11px]">
+            <p className="text-primary font-medium leading-snug">{c.nome || c.name}</p>
+            <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
+              {c.score != null && <span>Score: {c.score}</span>}
+              {c.matched_keywords?.length > 0 && (
+                <span>Keywords: {c.matched_keywords.join(", ")}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Default: show result string
+  return (
+    <p className="text-[11px] text-primary font-medium mt-1">
+      Risultato: {result || "Completato"}
+    </p>
+  );
 }
 
 /**
@@ -54,21 +78,7 @@ export function ProgressBanner({ progress, className }: ProgressIndicatorProps) 
       "sticky top-0 z-20 w-full bg-background/95 backdrop-blur-md border-b border-primary/10",
       "animate-in slide-in-from-top-2 duration-300",
       className
-    )}>
-      <div className="mx-auto max-w-3xl px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 shrink-0">
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span className="text-xs font-semibold text-primary">Risposta pronta</span>
-          </div>
-          <div className="h-3 w-px bg-border/60" />
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
-            <Loader2 className="h-3 w-3 animate-spin shrink-0 text-muted-foreground/70" />
-            <span className="truncate">{statusText}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    )}></div>
   );
 }
 
@@ -113,9 +123,7 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
                     {STEP_DESCRIPTIONS[stepNumber] || step.description}
                   </p>
                   {isComplete && (
-                    <p className="text-[11px] text-primary font-medium mt-1">
-                      Risultato: {formatStepDetails(stepNumber, getStepResult(stepNumber)?.result, getStepResult(stepNumber)?.details)}
-                    </p>
+                    <StepResultDetails step={stepNumber} result={getStepResult(stepNumber)?.result} details={getStepResult(stepNumber)?.details} />
                   )}
                   {isActive && (
                     <p className="text-[11px] text-primary/70 font-medium mt-1 italic">In corso...</p>
@@ -139,8 +147,8 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
           </div>
         </div>
 
-        {/* Step circles only — no labels */}
-        <div className="flex justify-between items-center">
+        {/* Step circles with labels */}
+        <div className="flex justify-between items-start">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
             const isActive = stepNumber === progress.currentStep;
@@ -151,21 +159,33 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
             return (
               <Tooltip key={step.id} delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <div
-                    className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-all duration-300 cursor-pointer",
-                      isComplete && "bg-primary text-primary-foreground",
-                      isActive && "bg-primary/20 text-primary ring-2 ring-primary/50",
-                      isPending && "bg-muted text-muted-foreground opacity-40"
-                    )}
-                  >
-                    {isComplete ? (
-                      <Check className="h-4 w-4" />
-                    ) : isActive ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      stepNumber
-                    )}
+                  <div className="flex flex-col items-center gap-1.5 cursor-pointer min-w-0 flex-1">
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-all duration-300",
+                        isComplete && "bg-primary text-primary-foreground",
+                        isActive && "bg-primary/20 text-primary ring-2 ring-primary/50",
+                        isPending && "bg-muted text-muted-foreground opacity-40"
+                      )}
+                    >
+                      {isComplete ? (
+                        <Check className="h-4 w-4" />
+                      ) : isActive ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        stepNumber
+                      )}
+                    </div>
+                    <span
+                      className={cn(
+                        "text-[10px] leading-tight text-center truncate w-full px-0.5 transition-all duration-300",
+                        isComplete && "text-primary font-medium",
+                        isActive && "text-primary font-semibold",
+                        isPending && "text-muted-foreground opacity-40"
+                      )}
+                    >
+                      {step.label}
+                    </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
@@ -174,9 +194,7 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
                     {STEP_DESCRIPTIONS[stepNumber] || step.description}
                   </p>
                   {isComplete && (
-                    <p className="text-[11px] text-primary font-medium mt-1">
-                      Risultato: {formatStepDetails(stepNumber, stepResult?.result, stepResult?.details)}
-                    </p>
+                    <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
                   )}
                   {isActive && (
                     <p className="text-[11px] text-primary/70 font-medium mt-1 italic">
@@ -207,24 +225,13 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
     return progress.stepResults?.find(r => r.step === stepNumber);
   };
 
-  const getStepTooltip = (stepNumber: number) => {
-    const stepResult = getStepResult(stepNumber);
-    const step = steps[stepNumber - 1];
-    if (!step) return null;
-
-    return {
-      description: STEP_DESCRIPTIONS[stepNumber] || step.description,
-      result: formatStepDetails(stepNumber, stepResult?.result, stepResult?.details),
-    };
-  };
-
   return (
     <div className={cn("w-full", className)}>
       {/* Mobile: compact dots */}
       <div className="sm:hidden flex items-center gap-1.5 px-1">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
-          const tooltip = getStepTooltip(stepNumber);
+          const stepResult = getStepResult(stepNumber);
           return (
             <Tooltip key={step.id} delayDuration={0}>
               <TooltipTrigger asChild>
@@ -232,8 +239,10 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-[250px]">
                 <p className="font-semibold text-xs">{step.label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{tooltip?.description}</p>
-                <p className="text-[11px] text-primary font-medium mt-1">Risultato: {tooltip?.result}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                </p>
+                <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
               </TooltipContent>
             </Tooltip>
           );
@@ -248,7 +257,7 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
 
           {steps.map((step, index) => {
             const stepNumber = index + 1;
-            const tooltip = getStepTooltip(stepNumber);
+            const stepResult = getStepResult(stepNumber);
 
             return (
               <Tooltip key={step.id} delayDuration={0}>
@@ -261,8 +270,10 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
                   <p className="font-semibold text-xs">{step.label}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{tooltip?.description}</p>
-                  <p className="text-[11px] text-primary font-medium mt-1">Risultato: {tooltip?.result}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                  </p>
+                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
                 </TooltipContent>
               </Tooltip>
             );
