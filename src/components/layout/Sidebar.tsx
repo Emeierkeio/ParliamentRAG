@@ -29,6 +29,9 @@ import {
   X,
   ClipboardCheck,
   Menu,
+  GraduationCap,
+  BookOpen,
+  Building2,
 } from "lucide-react";
 import { config } from "@/config";
 
@@ -142,19 +145,29 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               isCollapsed={false}
             />
             <Separator className="my-3" />
-            <div className="px-2 space-y-1">
-              <p className="text-[11px] font-semibold text-foreground/70">Mirko Tritella</p>
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                Tesi di Laurea Magistrale in Data Science
-                <br />A.A. 2025/2026
-              </p>
-              <p className="text-[10px] text-muted-foreground leading-relaxed">
-                Rel. Prof. M. Palmonari
-                <br />Corr. Dott. R. Pozzi
-              </p>
-              <p className="text-[10px] text-muted-foreground/60">
-                Univ. degli Studi di Milano-Bicocca
-              </p>
+            <div className="rounded-lg bg-muted/40 p-3 space-y-2.5">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[11px] font-semibold text-foreground/80">Mirko Tritella</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <BookOpen className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                <p className="text-[10px] text-muted-foreground leading-relaxed">
+                  Tesi di Laurea Magistrale in Data Science
+                  <span className="text-muted-foreground/60"> · </span>
+                  <span className="text-muted-foreground/70">A.A. 2025/2026</span>
+                </p>
+              </div>
+              <div className="pl-5 text-[10px] text-muted-foreground/70 space-y-0.5">
+                <p>Rel. Prof. M. Palmonari</p>
+                <p>Corr. Dott. R. Pozzi</p>
+              </div>
+              <div className="flex items-center gap-2 pt-0.5">
+                <Building2 className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+                <p className="text-[10px] text-muted-foreground/50">
+                  Univ. degli Studi di Milano-Bicocca
+                </p>
+              </div>
             </div>
           </div>
         </aside>
@@ -253,19 +266,31 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
             {/* Credits */}
             {!isCollapsed && (
-              <div className="mt-3 pt-3 border-t border-sidebar-border px-2 space-y-1">
-                <p className="text-[11px] font-semibold text-foreground/70">Mirko Tritella</p>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  Tesi di Laurea Magistrale in Data Science
-                  <br />A.A. 2025/2026
-                </p>
-                <p className="text-[10px] text-muted-foreground leading-relaxed">
-                  Rel. Prof. M. Palmonari
-                  <br />Corr. Dott. R. Pozzi
-                </p>
-                <p className="text-[10px] text-muted-foreground/60">
-                  Univ. degli Studi di Milano-Bicocca
-                </p>
+              <div className="mt-3 pt-3 border-t border-sidebar-border">
+                <div className="rounded-lg bg-muted/40 p-3 space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-[11px] font-semibold text-foreground/80">Mirko Tritella</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <BookOpen className="h-3 w-3 text-muted-foreground mt-0.5 shrink-0" />
+                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                      Tesi di Laurea Magistrale in Data Science
+                      <span className="text-muted-foreground/60"> · </span>
+                      <span className="text-muted-foreground/70">A.A. 2025/2026</span>
+                    </p>
+                  </div>
+                  <div className="pl-5 text-[10px] text-muted-foreground/70 space-y-0.5">
+                    <p>Rel. Prof. M. Palmonari</p>
+                    <p>Corr. Dott. R. Pozzi</p>
+                  </div>
+                  <div className="flex items-center gap-2 pt-0.5">
+                    <Building2 className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+                    <p className="text-[10px] text-muted-foreground/50">
+                      Univ. degli Studi di Milano-Bicocca
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 
