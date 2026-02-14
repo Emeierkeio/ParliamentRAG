@@ -226,15 +226,17 @@ export function useChat(options: UseChatOptions = {}) {
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
                   const newStepConfig = config.ui.progressSteps[newStep - 1];
                   const newResults = [...(prev?.stepResults || [])];
-                  // Mark step 1 as completed when we advance past it
-                  if (newStep >= 2 && !newResults.some(r => r.step === 1)) {
-                    newResults.push({
-                      step: 1,
-                      label: "Analisi query",
-                      result: "Query classificata",
-                    });
+                  // Mark all completed steps that don't have a result yet
+                  for (let s = 1; s < newStep; s++) {
+                    if (!newResults.some(r => r.step === s)) {
+                      const stepCfg = config.ui.progressSteps[s - 1];
+                      newResults.push({
+                        step: s,
+                        label: stepCfg?.label || `Step ${s}`,
+                        result: stepCfg?.description || "Completato",
+                      });
+                    }
                   }
-                  // Note: step 2 result is set by the "commissioni" event with actual names
                   return {
                     currentStep: newStep,
                     totalSteps: data.total || config.ui.progressSteps.length,

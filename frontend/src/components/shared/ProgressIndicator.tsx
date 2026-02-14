@@ -337,22 +337,15 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
 
       {/* ===== MOBILE LAYOUT ===== */}
       <div className="md:hidden flex flex-col items-center w-full">
-        {/* Mobile progress bar */}
+        {/* Mobile progress dots */}
         <div className="w-full mb-5">
-          <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center justify-between mb-2">
             <span className="text-[11px] text-muted-foreground">Analisi in corso</span>
             <span className="text-[11px] font-medium text-primary">
               {progress.currentStep} / {steps.length}
             </span>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          {/* Mobile compact step dots */}
-          <div className="flex items-center gap-1 mt-2">
+          <div className="flex items-center gap-1">
             {steps.map((step, index) => {
               const stepNumber = index + 1;
               const isActive = stepNumber === progress.currentStep;
