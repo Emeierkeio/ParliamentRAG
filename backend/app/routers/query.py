@@ -197,6 +197,33 @@ async def process_query_streaming(
         logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
                      f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
+        # === Send topic statistics for frontend clickable intro stats ===
+        topic_stats = generation_result.get("topic_statistics")
+        if topic_stats:
+            ts_payload = {
+                "intervention_count": topic_stats.get("intervention_count", 0),
+                "speaker_count": topic_stats.get("speaker_count", 0),
+                "first_date": (
+                    topic_stats["first_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("first_date"), "strftime")
+                    else str(topic_stats.get("first_date", ""))
+                ),
+                "last_date": (
+                    topic_stats["last_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("last_date"), "strftime")
+                    else str(topic_stats.get("last_date", ""))
+                ),
+                "speakers_detail": topic_stats.get("speakers_detail", []),
+                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "sessions_detail": topic_stats.get("sessions_detail", []),
+            }
+            yield f"data: {json.dumps({'type': 'topic_stats', **ts_payload}, default=str)}\n\n"
+            logger.info(
+                f"[TOPIC_STATS] Sent: {ts_payload['intervention_count']} interventions, "
+                f"{ts_payload['speaker_count']} speakers, "
+                f"{len(ts_payload['sessions_detail'])} sessions"
+            )
+
         # Step 6: Initial citations (first 20 from retrieval, sent early for UI)
         citations_data = await asyncio.get_event_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
