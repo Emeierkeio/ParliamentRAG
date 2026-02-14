@@ -226,9 +226,11 @@ export function useChat(options: UseChatOptions = {}) {
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
                   const newStepConfig = config.ui.progressSteps[newStep - 1];
                   const newResults = [...(prev?.stepResults || [])];
+                  // Steps that have dedicated SSE events with real data - don't fill with generic placeholders
+                  const stepsWithDedicatedEvents = new Set([2, 3, 4, 5, 6]);
                   // Mark all completed steps that don't have a result yet
                   for (let s = 1; s < newStep; s++) {
-                    if (!newResults.some(r => r.step === s)) {
+                    if (!newResults.some(r => r.step === s) && !stepsWithDedicatedEvents.has(s)) {
                       const stepCfg = config.ui.progressSteps[s - 1];
                       console.log(`[Pipeline:Debug] Generic fill for step ${s}: "${stepCfg?.description || "Completato"}" (no specific event received yet)`);
                       newResults.push({
