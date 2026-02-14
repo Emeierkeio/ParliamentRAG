@@ -343,13 +343,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 config = get_config()
                 for row in db_rows:
                     eid = row.get("chunk_id", "")
-                    raw_party = row.get("party")
-                    speaker_type = row.get("speaker_type", "Deputy")
-                    # GovernmentMembers have no ParliamentaryGroup → party is NULL
-                    if raw_party is None and speaker_type == "GovernmentMember":
-                        party = "Governo"
-                    else:
-                        party = normalize_party_name(raw_party or "MISTO")
+                    party = normalize_party_name(row.get("party") or "MISTO")
                     session_date = row.get("session_date")
                     if session_date is not None and hasattr(session_date, 'to_native'):
                         date_obj = session_date.to_native()
@@ -445,8 +439,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     "evidence_id": eid,
                     "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
                     "speaker_name": ev.get("speaker_name", ""),
-                    "speaker_id": ev.get("speaker_id", ""),
-                    "speaker_role": ev.get("speaker_role", "Deputy"),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
                     "span_start": ev.get("span_start", 0),
@@ -597,26 +589,20 @@ def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) ->
     UNWIND $ids AS sid
     // Direct GovernmentMember match
     OPTIONAL MATCH (m:GovernmentMember {id: sid})
-    // Also check if a Deputy matches a GovernmentMember by name (case-insensitive)
+    // Also check if a Deputy matches a GovernmentMember by name
     OPTIONAL MATCH (d:Deputy {id: sid})
     OPTIONAL MATCH (gm:GovernmentMember)
-    WHERE d IS NOT NULL
-      AND toLower(gm.first_name) = toLower(d.first_name)
-      AND toLower(gm.last_name) = toLower(d.last_name)
+    WHERE gm.first_name = d.first_name AND gm.last_name = d.last_name
     WITH sid,
          COALESCE(m.institutional_role, gm.institutional_role) AS role
     WHERE role IS NOT NULL
     RETURN sid, role
     """
     result_map: Dict[str, str] = {}
-    unique_ids = list(set(speaker_ids))
-    logger.info(f"[GOV_ROLES_DEBUG] Fetching gov roles for {len(unique_ids)} speaker IDs: {unique_ids}")
     with neo4j_client.session() as session:
-        result = session.run(cypher, ids=unique_ids)
+        result = session.run(cypher, ids=list(set(speaker_ids)))
         for record in result:
-            logger.info(f"[GOV_ROLES_DEBUG] Found gov role: sid={record['sid']}, role={record['role']}")
             result_map[record["sid"]] = record["role"]
-    logger.info(f"[GOV_ROLES_DEBUG] Final gov_role_map: {result_map}")
     return result_map
 
 
@@ -810,21 +796,12 @@ def _build_citations_for_frontend(
         # Check ALL speakers for government roles (Deputies who are also ministers)
         gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
-    logger.info(f"[CITATIONS_GOV_DEBUG] gov_role_map keys: {list(gov_role_map.keys())}")
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
         speaker_name = e.get("speaker_name", "")
         speaker_id = e.get("speaker_id", "")
         party = e.get("party", "MISTO")
-        speaker_role = e.get("speaker_role", "Unknown")
-        is_in_gov_map = speaker_id in gov_role_map
-        is_government = speaker_role == "GovernmentMember" or is_in_gov_map
-
-        logger.info(
-            f"[CITATIONS_GOV_DEBUG] Citation {i}: speaker={speaker_name}, "
-            f"speaker_id={speaker_id}, party={party}, speaker_role={speaker_role}, "
-            f"in_gov_map={is_in_gov_map}, is_government={is_government}"
-        )
+        is_government = e.get("speaker_role") == "GovernmentMember" or speaker_id in gov_role_map
 
         if is_government:
             group = "Governo"

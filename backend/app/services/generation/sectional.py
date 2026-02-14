@@ -462,8 +462,6 @@ FORMATO OUTPUT:
                             "citation_id": cit_id,
                             "evidence_id": e.get("evidence_id"),
                             "speaker_name": e.get("speaker_name"),
-                            "speaker_id": e.get("speaker_id"),
-                            "speaker_role": e.get("speaker_role"),
                             "party": e.get("party"),
                             "date": str(e.get("date", "")),
                         })

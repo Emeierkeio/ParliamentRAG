@@ -70,7 +70,6 @@ function extractSpeakersBySection(
   if (citations) {
     for (const c of citations) {
       const fullName = `${c.deputy_first_name} ${c.deputy_last_name}`;
-      console.log(`[TOOLTIP_DEBUG] Citation: ${fullName}, group=${c.group}, coalition=${c.coalition}, institutional_role=${c.institutional_role}`);
       if (!nameToGroup[fullName]) {
         nameToGroup[fullName] = c.group;
       }
@@ -79,8 +78,6 @@ function extractSpeakersBySection(
       }
     }
   }
-  console.log("[TOOLTIP_DEBUG] nameToGroup:", nameToGroup);
-  console.log("[TOOLTIP_DEBUG] nameToRole:", nameToRole);
 
   const result: Record<string, SpeakerInfo[]> = {};
   let currentSection = "";
