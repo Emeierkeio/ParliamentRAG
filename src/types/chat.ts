@@ -72,6 +72,11 @@ export interface SpeakerDetail {
   party: string;
   coalition: string;
   intervention_count: number;
+  camera_profile_url?: string;
+  profession?: string;
+  education?: string;
+  committee?: string;
+  institutional_role?: string;
 }
 
 export interface InterventionDetail {
