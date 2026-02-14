@@ -70,6 +70,15 @@ function buildSessionUrl(sessionNumber: number): string {
   return `https://www.camera.it/leg19/410?idSeduta=${padded}&tipo=stenografico#sed${padded}`;
 }
 
+function buildSpeechUrl(speechId: string): string | null {
+  if (!speechId) return null;
+  const match = speechId.match(/leg\d+_sed(\d+)_(.+)/);
+  if (!match) return null;
+  const [, sedutaStr, rest] = match;
+  const sedutaId = sedutaStr.padStart(4, "0");
+  return `https://www.camera.it/leg19/410?idSeduta=${sedutaId}&tipo=stenografico#sed${sedutaId}.stenografico.${rest}`;
+}
+
 export function TopicStatsModal({
   stats,
   isOpen,
@@ -135,67 +144,74 @@ export function TopicStatsModal({
           <TabsContent value="interventions" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
               <div className="px-6 py-4 space-y-2">
-                {stats.interventions_detail.map((intervention, i) => (
-                  <div
-                    key={`${intervention.speech_id}-${i}`}
-                    className="flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-muted/30 transition-colors"
-                  >
-                    <div
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                      style={{
-                        backgroundColor: `${getGroupColor(intervention.party)}10`,
-                        color: getGroupColor(intervention.party),
-                        border: `1px solid ${getGroupColor(intervention.party)}30`,
-                      }}
+                {stats.interventions_detail.map((intervention, i) => {
+                  const speechUrl = buildSpeechUrl(intervention.speech_id);
+                  const Wrapper = speechUrl ? "a" : "div";
+                  const wrapperProps = speechUrl
+                    ? { href: speechUrl, target: "_blank" as const, rel: "noopener noreferrer", title: "Apri intervento su camera.it" }
+                    : {};
+
+                  return (
+                    <Wrapper
+                      key={`${intervention.speech_id}-${i}`}
+                      className={`group flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card/50 overflow-hidden transition-colors ${
+                        speechUrl ? "hover:bg-primary/5 hover:border-primary/20" : "hover:bg-muted/30"
+                      }`}
+                      {...wrapperProps}
                     >
-                      {intervention.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-sm font-semibold text-foreground truncate">
-                          {intervention.speaker_name}
-                        </span>
-                        <Badge
-                          variant="outline"
-                          className="shrink-0 text-[9px] px-1.5 py-0 h-4"
-                          style={{
-                            borderColor: `${getGroupColor(intervention.party)}40`,
-                            color: getGroupColor(intervention.party),
-                          }}
-                        >
-                          {intervention.coalition === "maggioranza" ? "magg." : "opp."}
-                        </Badge>
+                      <div
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                        style={{
+                          backgroundColor: `${getGroupColor(intervention.party)}10`,
+                          color: getGroupColor(intervention.party),
+                          border: `1px solid ${getGroupColor(intervention.party)}30`,
+                        }}
+                      >
+                        {intervention.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
                       </div>
-                      <p className="text-[11px] text-muted-foreground truncate" title={intervention.party}>
-                        {intervention.party}
-                      </p>
-                      <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-2.5 w-2.5" />
-                          {formatDate(intervention.date)}
-                        </span>
-                        {intervention.session_number > 0 && (
-                          <a
-                            href={buildSessionUrl(intervention.session_number)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-primary hover:text-primary/80 hover:underline transition-colors"
-                            title="Apri stenografico Camera"
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                            {intervention.speaker_name}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="shrink-0 text-[9px] px-1.5 py-0 h-4"
+                            style={{
+                              borderColor: `${getGroupColor(intervention.party)}40`,
+                              color: getGroupColor(intervention.party),
+                            }}
                           >
-                            <Hash className="h-2.5 w-2.5" />
-                            Seduta {intervention.session_number}
-                            <ExternalLink className="h-2 w-2" />
-                          </a>
+                            {intervention.coalition === "maggioranza" ? "magg." : "opp."}
+                          </Badge>
+                          {speechUrl && (
+                            <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground truncate" title={intervention.party}>
+                          {intervention.party}
+                        </p>
+                        <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-2.5 w-2.5" />
+                            {formatDate(intervention.date)}
+                          </span>
+                          {intervention.session_number > 0 && (
+                            <span className="flex items-center gap-1">
+                              <Hash className="h-2.5 w-2.5" />
+                              Seduta {intervention.session_number}
+                            </span>
+                          )}
+                        </div>
+                        {intervention.debate_title && (
+                          <p className="text-[10px] text-muted-foreground/70 mt-1 truncate" title={intervention.debate_title}>
+                            {intervention.debate_title}
+                          </p>
                         )}
                       </div>
-                      {intervention.debate_title && (
-                        <p className="text-[10px] text-muted-foreground/70 mt-1 truncate" title={intervention.debate_title}>
-                          {intervention.debate_title}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                    </Wrapper>
+                  );
+                })}
                 {stats.interventions_detail.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
                     Nessun intervento disponibile.
@@ -216,7 +232,7 @@ export function TopicStatsModal({
                   return (
                     <div
                       key={`${speaker.speaker_id}-${i}`}
-                      className={`group p-3 rounded-lg border border-border/50 bg-card/50 transition-colors ${
+                      className={`group p-3 rounded-lg border border-border/50 bg-card/50 overflow-hidden transition-colors ${
                         hasProfileUrl ? "hover:bg-primary/5 hover:border-primary/20" : "hover:bg-muted/30"
                       }`}
                     >
@@ -325,7 +341,7 @@ export function TopicStatsModal({
                       href={sessionUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 transition-colors block"
+                      className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 transition-colors block overflow-hidden"
                       title="Apri resoconto stenografico su camera.it"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm">
