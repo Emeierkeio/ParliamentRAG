@@ -272,11 +272,11 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             );
           })}
         </div>
-        <div className="flex justify-between px-0.5">
+        <div className="flex justify-between px-0.5 overflow-hidden">
           {steps.map((step) => (
             <span
               key={step.id}
-              className="text-[8px] leading-tight text-center text-primary/70 font-medium truncate flex-1 px-0.5"
+              className="text-[7px] leading-tight text-center text-primary/70 font-medium truncate flex-1 px-px max-w-[11%]"
             >
               {step.label}
             </span>

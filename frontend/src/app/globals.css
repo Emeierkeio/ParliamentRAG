@@ -186,9 +186,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Ensure minimum tap target size */
+  /* Ensure minimum tap target size — only standalone buttons/links, not inline text links */
   button:not(.min-tap-none),
-  a:not(.min-tap-none),
   [role="button"]:not(.min-tap-none) {
     min-height: 44px;
     min-width: 44px;

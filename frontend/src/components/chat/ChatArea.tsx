@@ -78,7 +78,7 @@ export function ChatArea({
             />
           </div>
         ) : (
-          <div className="mx-auto max-w-3xl px-4 pb-12">
+          <div className="mx-auto max-w-3xl px-4 pb-12 overflow-x-hidden">
             {!hasMessages ? (
               <WelcomeScreen onSendMessage={onSendMessage} />
             ) : (
