@@ -23,12 +23,11 @@ export function useChat(options: UseChatOptions = {}) {
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
-  // Task ID for reconnection after mobile browser kills the SSE connection
-  const activeTaskIdRef = useRef<string | null>(null);
-  const isRecoveringRef = useRef(false);
+  // Mobile reconnection: track query and retry count for silent re-send
   const queryContentRef = useRef<string>("");
+  const retryCountRef = useRef(0);
+  const streamCompletedRef = useRef(false);
   const sendMessageRef = useRef<((content: string) => Promise<void>) | null>(null);
-  const recoverFromTaskRef = useRef<((taskId: string) => Promise<void>) | null>(null);
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -96,7 +95,7 @@ export function useChat(options: UseChatOptions = {}) {
   }, []);
 
   // Send message with streaming support
-  const sendMessage = useCallback(async (content: string) => {
+  const sendMessage = useCallback(async (content: string, isRetry = false) => {
     if (!content.trim() || isLoading) return;
 
     // Abort any previous request
@@ -107,7 +106,14 @@ export function useChat(options: UseChatOptions = {}) {
 
     setIsLoading(true);
     setStreamingContent("");
-    setLastCompletedProgress(null);
+    streamCompletedRef.current = false;
+
+    if (!isRetry) {
+      // Fresh query: reset retry count
+      retryCountRef.current = 0;
+      setLastCompletedProgress(null);
+    }
+
     setProgress({
       currentStep: 1,
       totalSteps: config.ui.progressSteps.length,
@@ -119,7 +125,6 @@ export function useChat(options: UseChatOptions = {}) {
 
     // Generate a task_id for reconnection support
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-    activeTaskIdRef.current = taskId;
     queryContentRef.current = content;
 
     // Reset messages: clear previous conversation and start fresh
@@ -230,11 +235,8 @@ export function useChat(options: UseChatOptions = {}) {
 
             switch (data.type) {
               case "task_id":
-                // Server confirmed the task ID (may differ from client-generated one)
-                if (data.task_id) {
-                  activeTaskIdRef.current = data.task_id;
-                  console.log(`[Pipeline] Task ID confirmed: ${data.task_id}`);
-                }
+                // Server confirmed the task ID
+                console.log(`[Pipeline] Task ID confirmed: ${data.task_id}`);
                 break;
 
               case "progress":
@@ -552,8 +554,8 @@ export function useChat(options: UseChatOptions = {}) {
                   }
                   return { ...prev, isComplete: true, stepResults: newResults };
                 });
-                // Clear task ID — stream completed successfully, no recovery needed
-                activeTaskIdRef.current = null;
+                // Mark stream as completed — no retry needed
+                streamCompletedRef.current = true;
 
                 updateLastAssistantMessage({
                   status: "complete",
@@ -628,44 +630,48 @@ export function useChat(options: UseChatOptions = {}) {
       }
     } catch (error) {
       if ((error as Error).name === "AbortError") {
-        // Request was cancelled, ignore
+        // Request was cancelled by user, ignore
         return;
       }
 
-      // If we have a task ID, attempt recovery immediately (don't wait for visibilitychange)
-      if (activeTaskIdRef.current && !isRecoveringRef.current) {
-        const taskToRecover = activeTaskIdRef.current;
-        console.log(`[Pipeline] Stream interrupted, attempting immediate recovery for task ${taskToRecover}`);
-        // Use setTimeout to allow the finally block to complete first
-        setTimeout(() => recoverFromTaskRef.current?.(taskToRecover), 500);
+      console.warn(`[Pipeline] Stream error:`, (error as Error).message);
+
+      // If stream didn't complete and we can retry, do a silent re-send
+      if (!streamCompletedRef.current && retryCountRef.current < 2) {
+        retryCountRef.current++;
+        const savedQuery = queryContentRef.current;
+        console.log(`[Pipeline:Retry] Silent retry ${retryCountRef.current}/2 for: "${savedQuery.substring(0, 50)}..."`);
+        setIsLoading(false);
+        abortControllerRef.current = null;
+        // Re-send after a brief delay
+        setTimeout(() => sendMessageRef.current?.(savedQuery, true), 300);
         return;
       }
 
+      // Max retries exhausted — show error
       const errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
-
       updateLastAssistantMessage({
         status: "error",
         content: `Mi dispiace, si è verificato un errore: ${errorMessage}`,
       });
-
       options.onError?.(error instanceof Error ? error : new Error(errorMessage));
     } finally {
-      // If stream was interrupted and we have a task ID, keep isLoading=true
-      // so the visibilitychange handler can attempt recovery
-      if (activeTaskIdRef.current && !isRecoveringRef.current) {
-        // Stream was interrupted but task may still be running on backend
-        console.log(`[Pipeline] Stream ended but task ${activeTaskIdRef.current} may still be running`);
+      // If stream ended without "complete" (e.g. mobile browser killed connection)
+      // and we haven't exhausted retries, do a silent re-send
+      if (!streamCompletedRef.current && retryCountRef.current < 2) {
+        retryCountRef.current++;
+        const savedQuery = queryContentRef.current;
+        console.log(`[Pipeline:Retry] Stream ended without complete, silent retry ${retryCountRef.current}/2`);
+        setIsLoading(false);
+        setStreamingContent("");
         abortControllerRef.current = null;
+        setTimeout(() => sendMessageRef.current?.(savedQuery, true), 300);
         return;
       }
 
-      // Save completed progress before clearing
+      // Normal completion or retries exhausted
       setProgress((prev) => {
         if (prev) {
-          console.log(`[Pipeline:Debug] Saving lastCompletedProgress with ${prev.stepResults.length} step results:`);
-          prev.stepResults.forEach(sr => {
-            console.log(`[Pipeline:Debug]   Step ${sr.step} (${sr.label}): result="${sr.result}", hasDetails=${!!sr.details}`);
-          });
           setLastCompletedProgress(prev);
         }
         return null;
@@ -673,186 +679,32 @@ export function useChat(options: UseChatOptions = {}) {
       setIsLoading(false);
       setStreamingContent("");
       abortControllerRef.current = null;
-      activeTaskIdRef.current = null;
     }
   }, [isLoading, addUserMessage, updateLastAssistantMessage, options]);
 
-  // Keep a ref to sendMessage so recoverFromTask can call it without circular deps
+  // Keep a ref to sendMessage for silent retry from catch/finally
   sendMessageRef.current = sendMessage;
 
-  // Recover results from a background task via polling, or re-send the query
-  const recoverFromTask = useCallback(async (taskId: string) => {
-    if (isRecoveringRef.current) return;
-    isRecoveringRef.current = true;
-    const savedQuery = queryContentRef.current;
-    console.log(`[Pipeline:Recovery] Attempting recovery for task ${taskId}, query="${savedQuery.substring(0, 50)}..."`);
-
-    try {
-      // Try polling the backend for task results (quick: max 3 attempts)
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          const response = await fetch(`${config.api.baseUrl}/chat/task/${taskId}`);
-          if (!response.ok) {
-            console.warn(`[Pipeline:Recovery] Poll ${attempt}/3 failed: HTTP ${response.status}`);
-            if (response.status === 404) break; // Task not found, skip to re-send
-            continue;
-          }
-
-          const taskData = await response.json();
-          console.log(`[Pipeline:Recovery] Task status: ${taskData.status}, events: ${taskData.events?.length || 0}`);
-
-          if (taskData.status === "completed" || taskData.status === "error") {
-            // Replay all events to reconstruct the final state
-            let accumulatedContent = "";
-            let citations: Citation[] = [];
-            let experts: Expert[] = [];
-            let balanceMetrics: BalanceMetrics | undefined;
-            let compassData: any = null;
-            let baselineAnswer = "";
-            let abAssignment: Record<string, string> | null = null;
-            let topicStats: TopicStatistics | undefined;
-
-            for (const event of taskData.events || []) {
-              switch (event.type) {
-                case "experts": {
-                  const ep = event.data || event.experts;
-                  if (Array.isArray(ep)) experts = ep;
-                  break;
-                }
-                case "citations": {
-                  const cp = event.data || event.citations;
-                  if (Array.isArray(cp)) citations = cp;
-                  break;
-                }
-                case "citation_details": {
-                  const cdp = event.data || event.citations;
-                  if (Array.isArray(cdp)) citations = cdp;
-                  break;
-                }
-                case "balance":
-                  balanceMetrics = {
-                    maggioranzaPercentage: event.maggioranza_percentage,
-                    opposizionePercentage: event.opposizione_percentage,
-                    biasScore: event.bias_score,
-                  };
-                  break;
-                case "compass":
-                  compassData = event.data || event;
-                  break;
-                case "topic_stats":
-                  topicStats = event as TopicStatistics;
-                  break;
-                case "chunk":
-                  accumulatedContent += (event.data || event.content || "");
-                  break;
-                case "baseline":
-                  baselineAnswer = event.baseline_answer || "";
-                  abAssignment = event.ab_assignment || null;
-                  break;
-                case "complete":
-                  if (!baselineAnswer && event.baseline_answer) {
-                    baselineAnswer = event.baseline_answer;
-                    abAssignment = event.ab_assignment || null;
-                  }
-                  break;
-              }
-            }
-
-            if (taskData.status === "completed" && accumulatedContent) {
-              console.log(`[Pipeline:Recovery] Recovered via polling: ${accumulatedContent.length} chars`);
-              updateLastAssistantMessage({
-                status: "complete",
-                content: accumulatedContent,
-                citations, experts, balanceMetrics,
-                compass: compassData, topicStats,
-                baselineAnswer: baselineAnswer || undefined,
-                abAssignment: abAssignment || undefined,
-              });
-              setProgress((prev) => {
-                if (prev) setLastCompletedProgress({ ...prev, isComplete: true });
-                return null;
-              });
-              setIsLoading(false);
-              setStreamingContent("");
-              activeTaskIdRef.current = null;
-
-              // Save to history
-              try {
-                fetch(`${config.api.baseUrl}/history`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    query: savedQuery, answer: accumulatedContent,
-                    citations, experts,
-                    balance: balanceMetrics ? {
-                      maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
-                      opposizione_percentage: balanceMetrics.opposizionePercentage,
-                      bias_score: balanceMetrics.biasScore,
-                    } : null,
-                    compass: compassData, topic_stats: topicStats || null,
-                    baseline_answer: baselineAnswer || null,
-                    ab_assignment: abAssignment || null,
-                  }),
-                }).then(async (res) => {
-                  if (res.ok) {
-                    const saved = await res.json();
-                    updateLastAssistantMessage({ chatId: saved.id });
-                  }
-                }).catch(() => {});
-              } catch {}
-              return; // Recovery via polling succeeded
-            }
-          }
-
-          if (taskData.status === "processing") {
-            // Still running — wait a bit before next attempt
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            continue;
-          }
-        } catch (fetchError) {
-          console.warn(`[Pipeline:Recovery] Poll attempt ${attempt} error:`, fetchError);
-        }
-      }
-
-      // Polling failed — fallback: re-send the query automatically
-      console.log(`[Pipeline:Recovery] Polling failed, re-sending query: "${savedQuery.substring(0, 50)}..."`);
-      activeTaskIdRef.current = null;
-      isRecoveringRef.current = false;
-      setIsLoading(false); // Reset so sendMessage accepts the call
-      setStreamingContent("");
-      // Small delay to let React process state updates before re-sending
-      await new Promise(resolve => setTimeout(resolve, 100));
-      sendMessageRef.current?.(savedQuery);
-    } catch (e) {
-      console.error("[Pipeline:Recovery] Unexpected error:", e);
-      isRecoveringRef.current = false;
-      activeTaskIdRef.current = null;
-      setIsLoading(false);
-      setStreamingContent("");
-      setProgress(null);
-    }
-  }, [updateLastAssistantMessage]);
-
-  // Keep ref to recoverFromTask for use in sendMessage's catch (avoids circular dependency)
-  recoverFromTaskRef.current = recoverFromTask;
-
-  // Visibility change handler: recover results when user returns to the page
+  // Visibility change handler: if user returns and stream was interrupted, retry
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (
         document.visibilityState === "visible" &&
-        activeTaskIdRef.current &&
-        isLoading &&
-        !isRecoveringRef.current
+        !streamCompletedRef.current &&
+        queryContentRef.current &&
+        !isLoading &&
+        retryCountRef.current < 2
       ) {
-        console.log(`[Pipeline:Visibility] Page became visible, recovering task ${activeTaskIdRef.current}`);
-        recoverFromTask(activeTaskIdRef.current);
+        retryCountRef.current++;
+        const savedQuery = queryContentRef.current;
+        console.log(`[Pipeline:Visibility] Page visible, retrying query: "${savedQuery.substring(0, 50)}..."`);
+        sendMessageRef.current?.(savedQuery, true);
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [isLoading, recoverFromTask]);
+  }, [isLoading]);
 
   // Cancel current request
   const cancelRequest = useCallback(() => {
@@ -860,7 +712,8 @@ export function useChat(options: UseChatOptions = {}) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    activeTaskIdRef.current = null;
+    streamCompletedRef.current = true; // Prevent retry
+    retryCountRef.current = 2; // Prevent retry
     setIsLoading(false);
     setProgress(null);
     setStreamingContent("");
