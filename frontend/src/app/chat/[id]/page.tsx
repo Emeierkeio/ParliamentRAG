@@ -72,7 +72,7 @@ export default function SharedChatPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-background w-full max-w-[100vw]">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}

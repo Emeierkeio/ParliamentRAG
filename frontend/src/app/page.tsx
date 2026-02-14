@@ -32,7 +32,7 @@ export default function Home() {
   }, [loadChat]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-background w-full max-w-[100vw]">
       {/* Sidebar */}
       <Sidebar
         isCollapsed={isCollapsed}
