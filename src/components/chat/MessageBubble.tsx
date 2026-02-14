@@ -203,12 +203,12 @@ function ShareButton({ chatId }: { chatId: string }) {
       {copied ? (
         <>
           <CheckIcon className="h-4 w-4" />
-          <span>Link copiato negli appunti</span>
+          <span className="hidden sm:inline">Link copiato negli appunti</span>
         </>
       ) : (
         <>
           <Share2 className="h-4 w-4" />
-          <span>Condividi</span>
+          <span className="hidden sm:inline">Condividi</span>
         </>
       )}
     </button>

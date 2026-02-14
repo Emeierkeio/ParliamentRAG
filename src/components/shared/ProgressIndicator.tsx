@@ -251,15 +251,15 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
   return (
     <div className={cn("w-full", className)}>
       {/* Mobile: progress bar with step labels */}
-      <div className="sm:hidden">
-        <div className="flex items-center gap-1.5 px-1 mb-2">
+      <div className="sm:hidden w-full overflow-hidden">
+        <div className="flex items-center gap-1 px-1 mb-2">
           {steps.map((step, index) => {
             const stepNumber = index + 1;
             const stepResult = getStepResult(stepNumber);
             return (
               <Tooltip key={step.id} delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <div className="h-1.5 rounded-full bg-primary flex-1 cursor-pointer" />
+                  <div className="h-1.5 rounded-full bg-primary flex-1 min-w-0 cursor-pointer" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[250px]">
                   <p className="font-semibold text-xs">{step.label}</p>
@@ -272,11 +272,11 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             );
           })}
         </div>
-        <div className="flex justify-between px-0.5 overflow-hidden">
+        <div className="flex justify-between px-0.5 overflow-hidden w-full">
           {steps.map((step) => (
             <span
               key={step.id}
-              className="text-[7px] leading-tight text-center text-primary/70 font-medium truncate flex-1 px-px max-w-[11%]"
+              className="text-[7px] leading-tight text-center text-primary/70 font-medium truncate flex-1 min-w-0 px-px"
             >
               {step.label}
             </span>
