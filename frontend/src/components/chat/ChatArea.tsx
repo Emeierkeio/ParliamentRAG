@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
-import { ProgressIndicator, ProgressBanner, CompletedProgressStepper } from "@/components/shared/ProgressIndicator";
+import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import type { Message, ProcessingProgress } from "@/types";
 import { Atom, ArrowRight } from "lucide-react";
 
@@ -69,44 +69,54 @@ export function ChatArea({
         {/* Sticky banner for baseline generation (stays at top while scrolling) */}
         {isLoading && <ProgressBanner progress={progress} />}
 
-        <div className="mx-auto max-w-3xl px-4 pb-12">
-          {!hasMessages ? (
-            <WelcomeScreen onSendMessage={onSendMessage} />
-          ) : (
-            <div className="space-y-0 min-h-[50vh]">
-              {messages.map((message, idx) => {
-                // For user messages, pass chatId and progress slot
-                const nextMsg = messages[idx + 1];
-                const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
-                const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
+        {/* Full-page progress view: shown during pre-streaming steps (1-6) */}
+        {isLoading && progress && !progress.isComplete && !progress.stepResults?.some(r => r.step === 7) ? (
+          <div className="mx-auto w-full max-w-5xl">
+            <ProgressFullPage
+              progress={progress}
+              query={messages.length > 0 ? messages[messages.length - 1]?.content || messages[messages.length - 2]?.content : undefined}
+            />
+          </div>
+        ) : (
+          <div className="mx-auto max-w-3xl px-4 pb-12">
+            {!hasMessages ? (
+              <WelcomeScreen onSendMessage={onSendMessage} />
+            ) : (
+              <div className="space-y-0 min-h-[50vh]">
+                {messages.map((message, idx) => {
+                  // For user messages, pass chatId and progress slot
+                  const nextMsg = messages[idx + 1];
+                  const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
+                  const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
 
-                // Show progress stepper below the last user message
-                let progressSlot: React.ReactNode = null;
-                if (isLastUserMsg) {
-                  if (isLoading && progress) {
-                    progressSlot = (
-                      <div className="pt-4">
-                        <ProgressIndicator progress={progress} />
-                      </div>
-                    );
-                  } else if (!isLoading && lastCompletedProgress) {
-                    progressSlot = (
-                      <div className="pt-4">
-                        <CompletedProgressStepper progress={lastCompletedProgress} />
-                      </div>
-                    );
+                  // Show progress stepper below the last user message (only when streaming text or completed)
+                  let progressSlot: React.ReactNode = null;
+                  if (isLastUserMsg) {
+                    if (isLoading && progress && progress.stepResults?.some(r => r.step === 7)) {
+                      progressSlot = (
+                        <div className="pt-4">
+                          <ProgressIndicator progress={progress} />
+                        </div>
+                      );
+                    } else if (!isLoading && lastCompletedProgress) {
+                      progressSlot = (
+                        <div className="pt-4">
+                          <CompletedProgressStepper progress={lastCompletedProgress} />
+                        </div>
+                      );
+                    }
                   }
-                }
 
-                return (
-                  <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} />
-                );
-              })}
+                  return (
+                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} />
+                  );
+                })}
 
-              <div ref={messagesEndRef} className="h-4" />
-            </div>
-          )}
-        </div>
+                <div ref={messagesEndRef} className="h-4" />
+              </div>
+            )}
+          </div>
+        )}
       </ScrollArea>
     </div>
   );

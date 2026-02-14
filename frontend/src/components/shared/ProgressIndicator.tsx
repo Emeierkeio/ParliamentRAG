@@ -3,7 +3,20 @@
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import type { ProcessingProgress } from "@/types";
-import { Check, Loader2, CheckCircle2 } from "lucide-react";
+import {
+  Check,
+  Loader2,
+  CheckCircle2,
+  Search,
+  Landmark,
+  Users,
+  MessageSquare,
+  BarChart3,
+  Compass,
+  PenTool,
+  GitCompare,
+  Target,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -279,6 +292,325 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             );
           })}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** Map step icon names to Lucide components */
+const STEP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Search,
+  Landmark,
+  Users,
+  MessageSquare,
+  BarChart3,
+  Compass,
+  PenTool,
+  GitCompare,
+  CheckCircle2,
+};
+
+interface ProgressFullPageProps {
+  progress: ProcessingProgress;
+  query?: string;
+  className?: string;
+}
+
+/**
+ * Full-page progress view shown during pipeline processing (steps 1-6).
+ * Uses the entire available space to explain what each step does and why.
+ */
+export function ProgressFullPage({ progress, query, className }: ProgressFullPageProps) {
+  const steps = config.ui.progressSteps;
+  const currentStepConfig = steps.find(s => s.id === progress.currentStep);
+  const completedCount = Math.max(0, progress.currentStep - 1);
+  const progressPercent = (completedCount / Math.max(1, steps.length - 1)) * 100;
+
+  const getStepResult = (stepNumber: number) => {
+    return progress.stepResults?.find(r => r.step === stepNumber);
+  };
+
+  const ActiveIcon = currentStepConfig?.icon ? STEP_ICONS[currentStepConfig.icon] : Loader2;
+
+  return (
+    <div className={cn("flex flex-col md:flex-row gap-0 md:gap-8 w-full min-h-[50vh] md:min-h-[60vh] py-4 md:py-6 px-3 md:px-8", className)}>
+
+      {/* ===== MOBILE LAYOUT ===== */}
+      <div className="md:hidden flex flex-col items-center w-full">
+        {/* Mobile progress bar */}
+        <div className="w-full mb-5">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[11px] text-muted-foreground">Analisi in corso</span>
+            <span className="text-[11px] font-medium text-primary">
+              {progress.currentStep} / {steps.length}
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+          {/* Mobile compact step dots */}
+          <div className="flex items-center gap-1 mt-2">
+            {steps.map((step, index) => {
+              const stepNumber = index + 1;
+              const isActive = stepNumber === progress.currentStep;
+              const isComplete = stepNumber < progress.currentStep;
+              return (
+                <div
+                  key={step.id}
+                  className={cn(
+                    "h-1 rounded-full transition-all duration-300 flex-1",
+                    isComplete && "bg-primary",
+                    isActive && "bg-primary/50",
+                    !isComplete && !isActive && "bg-muted"
+                  )}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Mobile active step card */}
+        {currentStepConfig && (
+          <div className="w-full text-center space-y-4">
+            {/* Icon */}
+            <div className="flex justify-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary ring-3 ring-primary/5">
+                {ActiveIcon ? (
+                  <ActiveIcon className="h-7 w-7" />
+                ) : (
+                  <Loader2 className="h-7 w-7 animate-spin" />
+                )}
+              </div>
+            </div>
+
+            {/* Title */}
+            <div>
+              <p className="text-[11px] font-medium text-primary/60 uppercase tracking-wider mb-0.5">
+                Step {progress.currentStep}
+              </p>
+              <h2 className="text-lg font-semibold text-foreground">
+                {currentStepConfig.label}
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {currentStepConfig.description}
+              </p>
+            </div>
+
+            {/* Why */}
+            <div className="bg-muted/40 rounded-xl px-4 py-3 text-left">
+              <p className="text-[13px] text-muted-foreground leading-relaxed">
+                {currentStepConfig.whyDescription}
+              </p>
+            </div>
+
+            {/* Loading */}
+            <div className="flex items-center justify-center gap-2 text-sm text-primary/70">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>In corso...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile completed results */}
+        {progress.stepResults && progress.stepResults.length > 0 && (
+          <div className="w-full mt-5 pt-4 border-t border-border/30">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60 mb-2">
+              Risultati ottenuti
+            </p>
+            <div className="space-y-1.5">
+              {progress.stepResults.map((sr) => (
+                <div key={sr.step} className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <span className="text-[13px] font-medium text-foreground">{sr.label}</span>
+                    {sr.result && (
+                      <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{sr.result}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Mobile objective */}
+        <div className="w-full mt-5 pt-4 border-t border-border/30">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <Target className="h-3 w-3 text-primary/60" />
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60">
+              Obiettivo finale
+            </p>
+          </div>
+          <p className="text-[13px] text-muted-foreground leading-relaxed">
+            Generare un&apos;analisi bilanciata delle posizioni di tutti i gruppi parlamentari, con citazioni verificate dai discorsi in aula.
+          </p>
+        </div>
+      </div>
+
+      {/* ===== DESKTOP LAYOUT ===== */}
+      {/* LEFT SIDEBAR: Step list + Objective */}
+      <div className="hidden md:block w-64 lg:w-72 shrink-0">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-4">
+          Pipeline di analisi
+        </p>
+
+        {/* Vertical step list */}
+        <div className="space-y-1">
+          {steps.map((step, index) => {
+            const stepNumber = index + 1;
+            const isActive = stepNumber === progress.currentStep;
+            const isComplete = stepNumber < progress.currentStep;
+            const isPending = stepNumber > progress.currentStep;
+
+            return (
+              <div
+                key={step.id}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300",
+                  isActive && "bg-primary/10",
+                  isComplete && "opacity-80",
+                  isPending && "opacity-30"
+                )}
+              >
+                {/* Step indicator */}
+                <div
+                  className={cn(
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-medium transition-all duration-300",
+                    isComplete && "bg-primary text-primary-foreground",
+                    isActive && "bg-primary/20 text-primary ring-2 ring-primary/40",
+                    isPending && "bg-muted text-muted-foreground"
+                  )}
+                >
+                  {isComplete ? (
+                    <Check className="h-3.5 w-3.5" />
+                  ) : isActive ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    stepNumber
+                  )}
+                </div>
+
+                {/* Label + short result */}
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={cn(
+                      "text-sm leading-tight truncate transition-all duration-300",
+                      isComplete && "text-primary font-medium",
+                      isActive && "text-primary font-semibold",
+                      isPending && "text-muted-foreground"
+                    )}
+                  >
+                    {step.label}
+                  </p>
+                  {isComplete && getStepResult(stepNumber)?.result && (
+                    <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                      {getStepResult(stepNumber)!.result}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Objective */}
+        <div className="mt-6 pt-5 border-t border-border/40">
+          <div className="flex items-center gap-2 mb-2">
+            <Target className="h-3.5 w-3.5 text-primary/60" />
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60">
+              Obiettivo
+            </p>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Generare un&apos;analisi bilanciata delle posizioni di tutti i gruppi parlamentari, con citazioni verificate dai discorsi in aula.
+          </p>
+        </div>
+      </div>
+
+      {/* DESKTOP MAIN AREA: Active step detail */}
+      <div className="hidden md:flex flex-1 flex-col items-center justify-center">
+        {/* Progress bar */}
+        <div className="w-full max-w-lg mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-muted-foreground">Progresso</span>
+            <span className="text-xs font-medium text-primary">
+              {progress.currentStep} / {steps.length}
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Active step card */}
+        {currentStepConfig && (
+          <div className="w-full max-w-lg text-center space-y-5">
+            {/* Icon */}
+            <div className="flex justify-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-4 ring-primary/5">
+                {ActiveIcon ? (
+                  <ActiveIcon className="h-8 w-8" />
+                ) : (
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                )}
+              </div>
+            </div>
+
+            {/* Step title */}
+            <div>
+              <p className="text-xs font-medium text-primary/60 uppercase tracking-wider mb-1">
+                Step {progress.currentStep}
+              </p>
+              <h2 className="text-xl lg:text-2xl font-semibold text-foreground">
+                {currentStepConfig.label}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {currentStepConfig.description}
+              </p>
+            </div>
+
+            {/* Why description */}
+            <div className="bg-muted/40 rounded-xl px-6 py-4 text-left">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {currentStepConfig.whyDescription}
+              </p>
+            </div>
+
+            {/* Loading indicator */}
+            <div className="flex items-center justify-center gap-2 text-sm text-primary/70">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>In corso...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Completed results summary */}
+        {progress.stepResults && progress.stepResults.length > 0 && (
+          <div className="w-full max-w-lg mt-8 pt-6 border-t border-border/30">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">
+              Risultati ottenuti
+            </p>
+            <div className="space-y-2">
+              {progress.stepResults.map((sr) => (
+                <div key={sr.step} className="flex items-start gap-2.5">
+                  <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <div className="min-w-0">
+                    <span className="text-sm font-medium text-foreground">{sr.label}</span>
+                    {sr.result && (
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{sr.result}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
