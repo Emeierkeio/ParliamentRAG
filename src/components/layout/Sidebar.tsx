@@ -29,6 +29,9 @@ import {
   X,
   ClipboardCheck,
   Menu,
+  GraduationCap,
+  BookOpen,
+  Building2,
 } from "lucide-react";
 import { config } from "@/config";
 
@@ -141,6 +144,45 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
               isCollapsed={false}
             />
+            <div className="mt-3 pt-3 border-t border-sidebar-border">
+              <div className="rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-sidebar-border/50 p-3.5 space-y-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-semibold text-foreground/85 leading-tight">Mirko Tritella</span>
+                    <span className="text-[9px] text-muted-foreground/60 leading-tight">A.A. 2025/2026</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 pl-0.5">
+                  <BookOpen className="h-3 w-3 text-muted-foreground/50 mt-[3px] shrink-0" />
+                  <p className="text-[10px] text-muted-foreground/70 leading-[1.5]">
+                    Tesi di Laurea Magistrale
+                    <br />in Data Science
+                  </p>
+                </div>
+
+                <div className="space-y-1 pl-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-px w-2 bg-muted-foreground/20" />
+                    <p className="text-[9px] text-muted-foreground/55">Rel. Prof. M. Palmonari</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-px w-2 bg-muted-foreground/20" />
+                    <p className="text-[9px] text-muted-foreground/55">Corr. Dott. R. Pozzi</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
+                  <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                  <p className="text-[9px] text-muted-foreground/45 leading-tight">
+                    Univ. degli Studi di Milano-Bicocca
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -235,6 +277,49 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                 item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />
+
+            {/* Credits */}
+            {!isCollapsed && (
+              <div className="mt-3 pt-3 border-t border-sidebar-border">
+                <div className="rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-sidebar-border/50 p-3.5 space-y-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[11px] font-semibold text-foreground/85 leading-tight">Mirko Tritella</span>
+                      <span className="text-[9px] text-muted-foreground/60 leading-tight">A.A. 2025/2026</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 pl-0.5">
+                    <BookOpen className="h-3 w-3 text-muted-foreground/50 mt-[3px] shrink-0" />
+                    <p className="text-[10px] text-muted-foreground/70 leading-[1.5]">
+                      Tesi di Laurea Magistrale
+                      <br />in Data Science
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 pl-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-px w-2 bg-muted-foreground/20" />
+                      <p className="text-[9px] text-muted-foreground/55">Rel. Prof. M. Palmonari</p>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="h-px w-2 bg-muted-foreground/20" />
+                      <p className="text-[9px] text-muted-foreground/55">Corr. Dott. R. Pozzi</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
+                    <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
+                    <p className="text-[9px] text-muted-foreground/45 leading-tight">
+                      Univ. degli Studi di Milano-Bicocca
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (
