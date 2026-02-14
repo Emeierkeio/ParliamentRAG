@@ -27,6 +27,8 @@ export function useChat(options: UseChatOptions = {}) {
   const activeTaskIdRef = useRef<string | null>(null);
   const isRecoveringRef = useRef(false);
   const queryContentRef = useRef<string>("");
+  const sendMessageRef = useRef<((content: string) => Promise<void>) | null>(null);
+  const recoverFromTaskRef = useRef<((taskId: string) => Promise<void>) | null>(null);
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -630,10 +632,12 @@ export function useChat(options: UseChatOptions = {}) {
         return;
       }
 
-      // If we have a task ID, don't show error immediately — try recovery via polling
+      // If we have a task ID, attempt recovery immediately (don't wait for visibilitychange)
       if (activeTaskIdRef.current && !isRecoveringRef.current) {
-        console.log(`[Pipeline] Stream interrupted, will attempt recovery for task ${activeTaskIdRef.current}`);
-        // Don't clear isLoading — the visibilitychange handler will attempt recovery
+        const taskToRecover = activeTaskIdRef.current;
+        console.log(`[Pipeline] Stream interrupted, attempting immediate recovery for task ${taskToRecover}`);
+        // Use setTimeout to allow the finally block to complete first
+        setTimeout(() => recoverFromTaskRef.current?.(taskToRecover), 500);
         return;
       }
 
@@ -673,26 +677,25 @@ export function useChat(options: UseChatOptions = {}) {
     }
   }, [isLoading, addUserMessage, updateLastAssistantMessage, options]);
 
-  // Recover results from a background task via polling
+  // Keep a ref to sendMessage so recoverFromTask can call it without circular deps
+  sendMessageRef.current = sendMessage;
+
+  // Recover results from a background task via polling, or re-send the query
   const recoverFromTask = useCallback(async (taskId: string) => {
     if (isRecoveringRef.current) return;
     isRecoveringRef.current = true;
-    console.log(`[Pipeline:Recovery] Attempting recovery for task ${taskId}`);
-
-    const maxAttempts = 30; // Max 60 seconds of polling (30 * 2s)
-    let attempt = 0;
+    const savedQuery = queryContentRef.current;
+    console.log(`[Pipeline:Recovery] Attempting recovery for task ${taskId}, query="${savedQuery.substring(0, 50)}..."`);
 
     try {
-      while (attempt < maxAttempts) {
-        attempt++;
+      // Try polling the backend for task results (quick: max 3 attempts)
+      for (let attempt = 1; attempt <= 3; attempt++) {
         try {
           const response = await fetch(`${config.api.baseUrl}/chat/task/${taskId}`);
           if (!response.ok) {
-            if (response.status === 404) {
-              console.warn(`[Pipeline:Recovery] Task ${taskId} not found (expired or invalid)`);
-              break;
-            }
-            throw new Error(`HTTP ${response.status}`);
+            console.warn(`[Pipeline:Recovery] Poll ${attempt}/3 failed: HTTP ${response.status}`);
+            if (response.status === 404) break; // Task not found, skip to re-send
+            continue;
           }
 
           const taskData = await response.json();
@@ -755,93 +758,83 @@ export function useChat(options: UseChatOptions = {}) {
               }
             }
 
-            console.log(`[Pipeline:Recovery] Recovered: ${accumulatedContent.length} chars, ${citations.length} citations, ${experts.length} experts`);
-
-            // Update the assistant message with recovered data
-            updateLastAssistantMessage({
-              status: taskData.status === "error" ? "error" : "complete",
-              content: taskData.status === "error"
-                ? `Mi dispiace, si è verificato un errore: ${taskData.error_message || "Errore sconosciuto"}`
-                : accumulatedContent,
-              citations,
-              experts,
-              balanceMetrics,
-              compass: compassData,
-              topicStats,
-              baselineAnswer: baselineAnswer || undefined,
-              abAssignment: abAssignment || undefined,
-            });
-
-            setProgress((prev) => {
-              if (prev) setLastCompletedProgress({ ...prev, isComplete: true });
-              return null;
-            });
-            setIsLoading(false);
-            setStreamingContent("");
-            activeTaskIdRef.current = null;
-
-            // Save to history if completed successfully
             if (taskData.status === "completed" && accumulatedContent) {
-              try {
-                const historyPayload = {
-                  query: queryContentRef.current,
-                  answer: accumulatedContent,
-                  citations,
-                  experts,
-                  balance: balanceMetrics ? {
-                    maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
-                    opposizione_percentage: balanceMetrics.opposizionePercentage,
-                    bias_score: balanceMetrics.biasScore,
-                  } : null,
-                  compass: compassData,
-                  topic_stats: topicStats || null,
-                  baseline_answer: baselineAnswer || null,
-                  ab_assignment: abAssignment || null,
-                };
+              console.log(`[Pipeline:Recovery] Recovered via polling: ${accumulatedContent.length} chars`);
+              updateLastAssistantMessage({
+                status: "complete",
+                content: accumulatedContent,
+                citations, experts, balanceMetrics,
+                compass: compassData, topicStats,
+                baselineAnswer: baselineAnswer || undefined,
+                abAssignment: abAssignment || undefined,
+              });
+              setProgress((prev) => {
+                if (prev) setLastCompletedProgress({ ...prev, isComplete: true });
+                return null;
+              });
+              setIsLoading(false);
+              setStreamingContent("");
+              activeTaskIdRef.current = null;
 
+              // Save to history
+              try {
                 fetch(`${config.api.baseUrl}/history`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(historyPayload),
+                  body: JSON.stringify({
+                    query: savedQuery, answer: accumulatedContent,
+                    citations, experts,
+                    balance: balanceMetrics ? {
+                      maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
+                      opposizione_percentage: balanceMetrics.opposizionePercentage,
+                      bias_score: balanceMetrics.biasScore,
+                    } : null,
+                    compass: compassData, topic_stats: topicStats || null,
+                    baseline_answer: baselineAnswer || null,
+                    ab_assignment: abAssignment || null,
+                  }),
                 }).then(async (res) => {
                   if (res.ok) {
-                    const savedChat = await res.json();
-                    console.log("[Pipeline:Recovery] History saved OK, id:", savedChat.id);
-                    updateLastAssistantMessage({ chatId: savedChat.id });
+                    const saved = await res.json();
+                    updateLastAssistantMessage({ chatId: saved.id });
                   }
-                }).catch((err) => {
-                  console.error("[Pipeline:Recovery] History save error:", err);
-                });
-              } catch (e) {
-                console.error("[Pipeline:Recovery] History payload error:", e);
-              }
+                }).catch(() => {});
+              } catch {}
+              return; // Recovery via polling succeeded
             }
-
-            return; // Recovery complete
           }
 
-          // Task still processing — wait and retry
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          if (taskData.status === "processing") {
+            // Still running — wait a bit before next attempt
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            continue;
+          }
         } catch (fetchError) {
-          console.error(`[Pipeline:Recovery] Poll attempt ${attempt} failed:`, fetchError);
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          console.warn(`[Pipeline:Recovery] Poll attempt ${attempt} error:`, fetchError);
         }
       }
 
-      // Exhausted retries
-      console.error(`[Pipeline:Recovery] Failed after ${maxAttempts} attempts`);
-      updateLastAssistantMessage({
-        status: "error",
-        content: "Mi dispiace, non è stato possibile recuperare i risultati. Riprova la query.",
-      });
-      setProgress(null);
+      // Polling failed — fallback: re-send the query automatically
+      console.log(`[Pipeline:Recovery] Polling failed, re-sending query: "${savedQuery.substring(0, 50)}..."`);
+      activeTaskIdRef.current = null;
+      isRecoveringRef.current = false;
+      setIsLoading(false); // Reset so sendMessage accepts the call
+      setStreamingContent("");
+      // Small delay to let React process state updates before re-sending
+      await new Promise(resolve => setTimeout(resolve, 100));
+      sendMessageRef.current?.(savedQuery);
+    } catch (e) {
+      console.error("[Pipeline:Recovery] Unexpected error:", e);
+      isRecoveringRef.current = false;
+      activeTaskIdRef.current = null;
       setIsLoading(false);
       setStreamingContent("");
-      activeTaskIdRef.current = null;
-    } finally {
-      isRecoveringRef.current = false;
+      setProgress(null);
     }
   }, [updateLastAssistantMessage]);
+
+  // Keep ref to recoverFromTask for use in sendMessage's catch (avoids circular dependency)
+  recoverFromTaskRef.current = recoverFromTask;
 
   // Visibility change handler: recover results when user returns to the page
   useEffect(() => {
