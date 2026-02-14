@@ -373,7 +373,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                     const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
                     return (
                       <span
-                        className="cursor-pointer text-primary font-semibold border-b border-primary/40 hover:border-primary hover:bg-primary/5 transition-all duration-150 rounded-sm px-0.5 -mx-0.5"
+                        className="inline cursor-pointer rounded px-1 py-0.5 bg-primary/5 text-primary/90 font-semibold hover:bg-primary/15 border-b-2 border-primary/40 hover:border-primary/60 transition-all duration-150"
                         onClick={() => setStatsModalView(view)}
                         title="Clicca per vedere il dettaglio"
                       >
