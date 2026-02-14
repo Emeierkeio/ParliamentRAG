@@ -44,22 +44,32 @@ const STEP_DESCRIPTIONS: Record<number, string> = {
 /** Render rich step result details based on step type */
 function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: any }) {
   // Step 2: Commissioni — show commission names with scores and keywords
-  if (step === 2 && details?.commissioni?.length > 0) {
-    return (
-      <div className="mt-1.5 space-y-1.5">
-        {details.commissioni.map((c: any, i: number) => (
-          <div key={i} className="text-[11px]">
-            <p className="text-primary font-medium leading-snug">{c.nome || c.name}</p>
-            <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
-              {c.score != null && <span>Score: {c.score}</span>}
-              {c.matched_keywords?.length > 0 && (
-                <span>Keywords: {c.matched_keywords.join(", ")}</span>
-              )}
+  if (step === 2) {
+    if (details?.commissioni?.length > 0) {
+      return (
+        <div className="mt-1.5 space-y-1.5">
+          {details.commissioni.map((c: any, i: number) => (
+            <div key={i} className="text-[11px]">
+              <p className="text-primary font-medium leading-snug">{c.nome || c.name}</p>
+              <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
+                {c.score != null && <span>Score: {c.score}</span>}
+                {c.matched_keywords?.length > 0 && (
+                  <span>Keywords: {c.matched_keywords.join(", ")}</span>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    );
+          ))}
+        </div>
+      );
+    }
+    // Fallback: show result string which contains commission names from the commissioni handler
+    if (result) {
+      return (
+        <p className="text-[11px] text-primary font-medium mt-1">
+          {result}
+        </p>
+      );
+    }
   }
 
   // Default: show result string
@@ -240,33 +250,45 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
 
   return (
     <div className={cn("w-full", className)}>
-      {/* Mobile: compact dots */}
-      <div className="sm:hidden flex items-center gap-1.5 px-1">
-        {steps.map((step, index) => {
-          const stepNumber = index + 1;
-          const stepResult = getStepResult(stepNumber);
-          return (
-            <Tooltip key={step.id} delayDuration={0}>
-              <TooltipTrigger asChild>
-                <div className="h-1.5 rounded-full bg-primary flex-1 cursor-pointer" />
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[250px]">
-                <p className="font-semibold text-xs">{step.label}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  {STEP_DESCRIPTIONS[stepNumber] || step.description}
-                </p>
-                <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
-              </TooltipContent>
-            </Tooltip>
-          );
-        })}
+      {/* Mobile: progress bar with step labels */}
+      <div className="sm:hidden">
+        <div className="flex items-center gap-1.5 px-1 mb-2">
+          {steps.map((step, index) => {
+            const stepNumber = index + 1;
+            const stepResult = getStepResult(stepNumber);
+            return (
+              <Tooltip key={step.id} delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <div className="h-1.5 rounded-full bg-primary flex-1 cursor-pointer" />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px]">
+                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                  </p>
+                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
+                </TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+        <div className="flex justify-between px-0.5">
+          {steps.map((step) => (
+            <span
+              key={step.id}
+              className="text-[8px] leading-tight text-center text-primary/70 font-medium truncate flex-1 px-0.5"
+            >
+              {step.label}
+            </span>
+          ))}
+        </div>
       </div>
 
-      {/* Desktop: completed stepper with connecting line */}
+      {/* Desktop: completed stepper with connecting line and labels */}
       <div className="hidden sm:block">
-        <div className="relative flex justify-between items-center">
+        <div className="relative flex justify-between items-start">
           {/* Connecting line behind circles */}
-          <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-0.5 bg-primary/30 rounded-full" />
+          <div className="absolute left-4 right-4 top-[14px] h-0.5 bg-primary/30 rounded-full" />
 
           {steps.map((step, index) => {
             const stepNumber = index + 1;
@@ -275,10 +297,15 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             return (
               <Tooltip key={step.id} delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <div
-                    className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-pointer transition-all hover:ring-2 hover:ring-primary/30"
-                  >
-                    <Check className="h-3.5 w-3.5" />
+                  <div className="flex flex-col items-center gap-1.5 cursor-pointer min-w-0 flex-1">
+                    <div
+                      className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium transition-all hover:ring-2 hover:ring-primary/30"
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    <span className="text-[10px] leading-tight text-center text-primary font-medium truncate w-full px-0.5">
+                      {step.label}
+                    </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
