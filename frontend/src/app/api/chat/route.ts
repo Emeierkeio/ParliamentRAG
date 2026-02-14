@@ -11,7 +11,7 @@ import { NextRequest } from "next/server";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
 
 export async function POST(request: NextRequest) {
-  const { query } = await request.json();
+  const { query, task_id } = await request.json();
 
   if (!query || typeof query !== "string") {
     return new Response(
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
       },
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, task_id }),
     });
 
     if (!backendResponse.ok) {

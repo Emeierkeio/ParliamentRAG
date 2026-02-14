@@ -13,7 +13,7 @@ from datetime import date, datetime
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from ..services.neo4j_client import Neo4jClient
@@ -22,6 +22,7 @@ from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.authority import AuthorityScorer
 from ..services.compass import IdeologyScorer
 from ..services.generation import GenerationPipeline
+from ..services.task_store import get_task_store
 from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ class ChatRequest(BaseModel):
     """Request model matching frontend expectations."""
     query: str = Field(..., min_length=3, max_length=4000)
     mode: str = Field(default="standard")  # "standard" or "high_quality"
+    task_id: Optional[str] = Field(default=None)  # Client-provided task ID for reconnection
 
 
 # Global service instances
@@ -75,6 +77,463 @@ def sse_event(event_type: str, data: Any) -> str:
     else:
         payload = {"type": event_type, "data": data}
     return f"data: {json.dumps(payload, default=str)}\n\n"
+
+
+async def process_chat_background(request: ChatRequest, task_id: str):
+    """
+    Process chat pipeline in the background, storing events in TaskStore.
+
+    This runs independently of the SSE connection so that mobile browsers
+    can disconnect without losing results.
+    """
+    store = get_task_store()
+
+    async def emit(event_type: str, data: Any):
+        """Emit an SSE event to both the task store and format it."""
+        if isinstance(data, dict):
+            payload = {"type": event_type, **data}
+        else:
+            payload = {"type": event_type, "data": data}
+        await store.add_event(task_id, payload)
+
+    services = get_services()
+    pipeline_start = time.time()
+    step_times: Dict[str, float] = {}
+
+    logger.info("=" * 60)
+    logger.info(f"[PIPELINE START] Task: {task_id}")
+    logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
+    logger.info(f"[PIPELINE START] Mode: {request.mode}")
+    logger.info("=" * 60)
+
+    try:
+        # === Step 1: Analisi query ===
+        step_start = time.time()
+        await emit("progress", {"step": 1, "total": 9, "message": "Analisi query"})
+        step_times["step_1_init"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
+
+        # === Step 2: Commissioni ===
+        step_start = time.time()
+        await emit("progress", {"step": 2, "total": 9, "message": "Commissioni"})
+
+        commission_matcher = get_commission_matcher()
+        relevant_commissions = commission_matcher.find_relevant_commissions(
+            query=request.query, top_k=3, min_score=0.1
+        )
+        await emit("commissioni", {"commissioni": relevant_commissions})
+        step_times["step_2_commissioni"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 2 (Commissioni): {step_times['step_2_commissioni']*1000:.1f}ms - {len(relevant_commissions)} found")
+
+        # === Step 3: Esperti (Authority) ===
+        step_start = time.time()
+        await emit("progress", {"step": 3, "total": 9, "message": "Esperti"})
+
+        logger.info("[RETRIEVAL] Starting dual-channel retrieval...")
+        retrieval_start = time.time()
+
+        def _do_retrieval():
+            return services["retrieval"].retrieve_sync(query=request.query, top_k=100)
+
+        retrieval_result = await asyncio.get_event_loop().run_in_executor(None, _do_retrieval)
+        retrieval_time = time.time() - retrieval_start
+        logger.info(f"[TIMING] Retrieval completed: {retrieval_time*1000:.1f}ms")
+
+        evidence_list = retrieval_result["evidence"]
+        evidence_dicts = []
+        for e in evidence_list:
+            d = e.model_dump()
+            d["embedding"] = e.embedding
+            evidence_dicts.append(d)
+
+        logger.info(f"[RETRIEVAL] Retrieved {len(evidence_list)} evidence pieces")
+        logger.info(f"[RETRIEVAL] Dense: {retrieval_result['metadata'].get('dense_channel_count', 0)}, "
+                   f"Graph: {retrieval_result['metadata'].get('graph_channel_count', 0)}")
+
+        speaker_ids = list(set(
+            e.speaker_id for e in evidence_list
+            if e.speaker_id and e.speaker_role == "Deputy"
+        ))
+        logger.info(f"[AUTHORITY] Computing scores for {len(speaker_ids)} unique speakers...")
+        authority_start = time.time()
+
+        query_embedding = services["retrieval"].embed_query(request.query)
+
+        authority_scores = {}
+        authority_details = {}
+        if speaker_ids:
+            from concurrent.futures import ThreadPoolExecutor
+
+            def _compute_single(sid):
+                return sid, services["authority"].compute_authority(sid, query_embedding)
+
+            loop = asyncio.get_event_loop()
+            with ThreadPoolExecutor(max_workers=min(10, len(speaker_ids))) as pool:
+                futures = [loop.run_in_executor(pool, _compute_single, sid) for sid in speaker_ids]
+                results = await asyncio.gather(*futures)
+
+            for sid, result in results:
+                authority_scores[sid] = result["total_score"]
+                authority_details[sid] = result
+
+        authority_time = time.time() - authority_start
+        step_times["step_3_authority"] = time.time() - step_start
+        logger.info(f"[TIMING] Authority scoring: {authority_time*1000:.1f}ms")
+        logger.info(f"[TIMING] Step 3 (Esperti) total: {step_times['step_3_authority']*1000:.1f}ms")
+
+        experts = await _compute_experts_for_frontend(
+            evidence_list, authority_scores, authority_details, services["neo4j"]
+        )
+        maggioranza_experts = sum(1 for e in experts if e.get("coalizione") == "maggioranza")
+        opposizione_experts = sum(1 for e in experts if e.get("coalizione") == "opposizione")
+        logger.info(f"[EXPERTS] Found {len(experts)} experts: {maggioranza_experts} maggioranza, {opposizione_experts} opposizione")
+
+        await emit("experts", {"experts": experts})
+
+        # === Step 4: Interventi (Citations) ===
+        step_start = time.time()
+        await emit("progress", {"step": 4, "total": 9, "message": "Interventi"})
+
+        citations = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
+        )
+        if citations:
+            logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
+                       f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
+                       f"text_len={len(citations[0].get('text', ''))}")
+        await emit("citations", {"citations": citations})
+        step_times["step_4_citations"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 4 (Interventi): {step_times['step_4_citations']*1000:.1f}ms - {len(citations)} citations")
+
+        # === Step 5: Statistiche (Balance) ===
+        step_start = time.time()
+        await emit("progress", {"step": 5, "total": 9, "message": "Statistiche"})
+
+        balance = _compute_balance_metrics(evidence_dicts)
+        await emit("balance", balance)
+        step_times["step_5_balance"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 5 (Statistiche): {step_times['step_5_balance']*1000:.1f}ms")
+        logger.info(f"[BALANCE] Maggioranza: {balance.get('maggioranza_percentage', 0):.1f}%, "
+                   f"Opposizione: {balance.get('opposizione_percentage', 0):.1f}%, "
+                   f"Bias: {balance.get('bias_score', 0):.2f}")
+
+        # === Step 6: Bussola Ideologica (Compass) ===
+        step_start = time.time()
+        await emit("progress", {"step": 6, "total": 9, "message": "Bussola Ideologica"})
+
+        compass_data = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
+        )
+        logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
+                   f"groups_count={len(compass_data.get('groups', []))}, "
+                   f"axes_keys={list(compass_data.get('axes', {}).keys())}")
+        await emit("compass", compass_data)
+        step_times["step_6_compass"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
+
+        # === Step 7: Generazione ===
+        step_start = time.time()
+        await emit("progress", {"step": 7, "total": 9, "message": "Generazione"})
+
+        logger.info("[GENERATION] Starting 4-stage generation pipeline...")
+        generation_start = time.time()
+
+        generation_result = await services["generation"].generate(
+            query=request.query, evidence_list=evidence_dicts
+        )
+
+        generation_time = time.time() - generation_start
+        logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
+
+        final_text = generation_result.get("text", "")
+
+        # === Send topic statistics ===
+        topic_stats = generation_result.get("topic_statistics")
+        if topic_stats:
+            ts_payload = {
+                "intervention_count": topic_stats.get("intervention_count", 0),
+                "speaker_count": topic_stats.get("speaker_count", 0),
+                "first_date": (
+                    topic_stats["first_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("first_date"), "strftime")
+                    else str(topic_stats.get("first_date", ""))
+                ),
+                "last_date": (
+                    topic_stats["last_date"].strftime("%Y-%m-%d")
+                    if hasattr(topic_stats.get("last_date"), "strftime")
+                    else str(topic_stats.get("last_date", ""))
+                ),
+                "speakers_detail": topic_stats.get("speakers_detail", []),
+                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "sessions_detail": topic_stats.get("sessions_detail", []),
+            }
+            await emit("topic_stats", ts_payload)
+            logger.info(
+                f"[TOPIC_STATS] Sent: {ts_payload['intervention_count']} interventions, "
+                f"{ts_payload['speaker_count']} speakers, "
+                f"{len(ts_payload['sessions_detail'])} sessions"
+            )
+
+        # === Resolve extra citation IDs via DB lookup ===
+        import re as _re
+        extra_citation_ids = generation_result.get("extra_citation_ids", [])
+        extra_evidence_map: Dict[str, Dict[str, Any]] = {}
+
+        if extra_citation_ids:
+            logger.info(f"[CITATIONS] Resolving {len(extra_citation_ids)} extra citation IDs from DB...")
+            try:
+                db_rows = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: services["neo4j"].query(
+                        """
+                        UNWIND $chunk_ids AS cid
+                        MATCH (c:Chunk {id: cid})<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+                        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                          WHERE mg.start_date <= s.date
+                            AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+                        RETURN c.id AS chunk_id,
+                               c.text AS chunk_text,
+                               c.start_char_raw AS span_start,
+                               c.end_char_raw AS span_end,
+                               i.id AS speech_id,
+                               i.text AS text,
+                               speaker.id AS speaker_id,
+                               speaker.first_name AS speaker_first_name,
+                               speaker.last_name AS speaker_last_name,
+                               CASE WHEN 'GovernmentMember' IN labels(speaker)
+                                    THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+                               g.name AS party,
+                               s.id AS session_id,
+                               s.date AS session_date,
+                               d.title AS debate_title
+                        """,
+                        {"chunk_ids": extra_citation_ids}
+                    )
+                )
+                from ..models.evidence import normalize_speaker_name, normalize_party_name
+                config = get_config()
+                for row in db_rows:
+                    eid = row.get("chunk_id", "")
+                    party = normalize_party_name(row.get("party") or "MISTO")
+                    session_date = row.get("session_date")
+                    if session_date is not None and hasattr(session_date, 'to_native'):
+                        date_obj = session_date.to_native()
+                    elif isinstance(session_date, str) and session_date:
+                        from datetime import datetime as _dt
+                        try:
+                            date_obj = _dt.strptime(session_date, "%d/%m/%Y").date()
+                        except ValueError:
+                            date_obj = _dt.now().date()
+                    else:
+                        date_obj = date.today()
+
+                    extra_evidence_map[eid] = {
+                        "evidence_id": eid,
+                        "chunk_text": row.get("chunk_text", ""),
+                        "quote_text": row.get("chunk_text", ""),
+                        "speech_id": row.get("speech_id", ""),
+                        "speaker_id": row.get("speaker_id", ""),
+                        "speaker_name": normalize_speaker_name(
+                            row.get("speaker_first_name", ""),
+                            row.get("speaker_last_name", "")
+                        ),
+                        "speaker_role": row.get("speaker_type", "Deputy"),
+                        "party": party,
+                        "coalition": config.get_coalition(party),
+                        "date": date_obj,
+                        "span_start": row.get("span_start", 0),
+                        "span_end": row.get("span_end", 0),
+                        "debate_title": row.get("debate_title", ""),
+                        "session_id": row.get("session_id", ""),
+                    }
+                found_ids = set(extra_evidence_map.keys())
+                missing_ids = set(extra_citation_ids) - found_ids
+                logger.info(
+                    f"[CITATIONS] DB lookup: {len(found_ids)} found, "
+                    f"{len(missing_ids)} not in DB"
+                )
+
+                if missing_ids:
+                    def _strip_missing(match):
+                        href = match.group(2)
+                        if href in missing_ids:
+                            logger.warning(f"[CITATIONS] Stripping non-existent ID: {href}")
+                            return match.group(1)
+                        return match.group(0)
+                    final_text = _re.sub(
+                        r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                        _strip_missing,
+                        final_text
+                    )
+            except Exception as e:
+                logger.error(f"[CITATIONS] DB lookup failed: {e}", exc_info=True)
+                extra_ids_set = set(extra_citation_ids)
+                def _strip_extra(match):
+                    if match.group(2) in extra_ids_set:
+                        return match.group(1)
+                    return match.group(0)
+                final_text = _re.sub(
+                    r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
+                    _strip_extra,
+                    final_text
+                )
+
+        # Stream text content in chunks
+        chunk_size = 50
+        logger.info(f"[GENERATION] Generated {len(final_text)} chars, streaming in {len(final_text)//chunk_size + 1} chunks")
+
+        for i in range(0, len(final_text), chunk_size):
+            chunk = final_text[i:i+chunk_size]
+            await emit("chunk", {"content": chunk})
+            await asyncio.sleep(0.02)
+
+        step_times["step_7_generation"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
+
+        # === Citation details (verified citations) ===
+        text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
+        evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
+        evidence_map_for_cit.update(extra_evidence_map)
+
+        gen_citations = generation_result.get("citations", [])
+        tracked_ids = {c.get("evidence_id") for c in gen_citations}
+
+        for eid in text_evidence_ids:
+            if eid not in tracked_ids and eid in evidence_map_for_cit:
+                ev = evidence_map_for_cit[eid]
+                gen_citations.append({
+                    "evidence_id": eid,
+                    "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
+                    "speaker_name": ev.get("speaker_name", ""),
+                    "party": ev.get("party", ""),
+                    "date": str(ev.get("date", "")),
+                    "span_start": ev.get("span_start", 0),
+                    "span_end": ev.get("span_end", 0),
+                })
+                tracked_ids.add(eid)
+                logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
+
+        logger.info(f"[CITATIONS] {len(gen_citations)} total citations ({len(text_evidence_ids)} in text, {len(tracked_ids)} tracked)")
+
+        all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
+        verified_citations = await asyncio.get_event_loop().run_in_executor(
+            None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
+        )
+        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
+        await emit("citation_details", {"citations": verified_citations})
+
+        # === Step 8: Baseline Generation ===
+        step_start = time.time()
+        await emit("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
+
+        await asyncio.sleep(3)
+
+        baseline_text = ""
+        baseline_error = None
+        ab_assignment = None
+        try:
+            logger.info("[BASELINE] Starting baseline generation...")
+            logger.info(f"[BASELINE] Input: query='{request.query[:80]}...', evidence_count={len(evidence_dicts)}")
+            baseline_result = await services["generation"].generate_baseline(
+                query=request.query, evidence_list=evidence_dicts
+            )
+            logger.info(f"[BASELINE] generate_baseline() returned: keys={list(baseline_result.keys())}")
+            baseline_text = baseline_result.get("text", "")
+            logger.info(f"[BASELINE] Extracted text: type={type(baseline_text).__name__}, len={len(baseline_text) if baseline_text else 0}")
+
+            if baseline_text:
+                ab_assignment = random.choice([
+                    {"A": "system", "B": "baseline"},
+                    {"A": "baseline", "B": "system"}
+                ])
+                logger.info(f"[BASELINE] Success: {len(baseline_text)} chars, ab_assignment={ab_assignment}")
+            else:
+                baseline_error = "Baseline returned empty text"
+                logger.warning(f"[BASELINE] {baseline_error}")
+        except Exception as e:
+            baseline_error = f"{type(e).__name__}: {e}"
+            logger.error(f"[BASELINE] Generation failed: {baseline_error}", exc_info=True)
+
+        step_times["step_8_baseline"] = time.time() - step_start
+        logger.info(f"[TIMING] Step 8 (Baseline): {step_times['step_8_baseline']*1000:.1f}ms")
+
+        await emit("baseline", {
+            "baseline_answer": baseline_text,
+            "ab_assignment": ab_assignment,
+            "baseline_error": baseline_error,
+        })
+
+        # === Step 9: Valutazione (if high_quality mode) ===
+        if request.mode == "high_quality":
+            step_start = time.time()
+            await emit("progress", {"step": 9, "total": 9, "message": "Valutazione"})
+            await emit("hq_variants", {
+                "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
+            })
+            step_times["step_9_valutazione"] = time.time() - step_start
+            logger.info(f"[TIMING] Step 9 (Valutazione): {step_times['step_9_valutazione']*1000:.1f}ms")
+
+        # === Complete ===
+        total_time = time.time() - pipeline_start
+        step_times["total"] = total_time
+
+        logger.info("=" * 60)
+        logger.info("[PIPELINE COMPLETE] Summary:")
+        logger.info(f"  Total time: {total_time*1000:.1f}ms ({total_time:.2f}s)")
+        logger.info(f"  Evidence: {len(evidence_list)} pieces from {len(speaker_ids)} speakers")
+        logger.info(f"  Balance: {balance.get('maggioranza_percentage', 0):.1f}% / {balance.get('opposizione_percentage', 0):.1f}%")
+        logger.info(f"  Generated: {len(final_text)} chars, {len(verified_citations)} citations")
+        logger.info("[TIMING BREAKDOWN]:")
+        for step_name, step_time in step_times.items():
+            if step_name != "total":
+                pct = (step_time / total_time) * 100 if total_time > 0 else 0
+                logger.info(f"  {step_name}: {step_time*1000:.1f}ms ({pct:.1f}%)")
+        logger.info("=" * 60)
+
+        await emit("complete", {
+            "baseline_answer": baseline_text,
+            "ab_assignment": ab_assignment,
+            "baseline_error": baseline_error,
+            "metadata": {
+                **retrieval_result.get("metadata", {}),
+                "timing": {k: round(v * 1000, 1) for k, v in step_times.items()},
+            }
+        })
+
+        await store.complete_task(task_id)
+
+    except Exception as e:
+        total_time = time.time() - pipeline_start
+        logger.error(f"[PIPELINE ERROR] Failed after {total_time*1000:.1f}ms: {e}", exc_info=True)
+        await emit("error", {"message": str(e)})
+        await store.fail_task(task_id, str(e))
+
+
+async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
+    """
+    Stream SSE events from a background task via its queue.
+
+    If the client disconnects, the background task keeps running.
+    The client can reconnect and poll for results via GET /api/chat/task/{task_id}.
+    """
+    store = get_task_store()
+    queue = store.get_queue(task_id)
+    if not queue:
+        yield sse_event("error", {"message": f"Task {task_id} not found"})
+        return
+
+    while True:
+        try:
+            event = await asyncio.wait_for(queue.get(), timeout=60.0)
+            if event is None:  # Sentinel: task completed
+                break
+            yield f"data: {json.dumps(event, default=str)}\n\n"
+        except asyncio.TimeoutError:
+            # Send keepalive comment to prevent proxy timeouts
+            yield ": keepalive\n\n"
+        except Exception:
+            break
 
 
 async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, None]:
@@ -1011,10 +1470,31 @@ async def chat_endpoint(request: ChatRequest):
     """
     Main chat endpoint with SSE streaming.
 
-    Compatible with the tesi frontend.
+    Uses a background task so the pipeline continues even if the client
+    disconnects (e.g. mobile browser going to background).
+    The client can poll GET /api/chat/task/{task_id} to recover results.
     """
+    store = get_task_store()
+
+    # Cleanup expired tasks periodically
+    await store.cleanup_expired()
+
+    # Use client-provided task_id or generate one
+    task_id = request.task_id or store.generate_task_id()
+    await store.create_task(task_id)
+
+    # Launch pipeline in background (runs independently of this response)
+    asyncio.create_task(process_chat_background(request, task_id))
+
+    # Stream events from the background task to the client
+    async def stream_with_task_id():
+        # Send task_id as the first event so the client can use it for reconnection
+        yield sse_event("task_id", {"task_id": task_id})
+        async for chunk in stream_from_task(task_id):
+            yield chunk
+
     return StreamingResponse(
-        process_chat_streaming(request),
+        stream_with_task_id(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
@@ -1022,3 +1502,26 @@ async def chat_endpoint(request: ChatRequest):
             "X-Accel-Buffering": "no",
         }
     )
+
+
+@router.get("/chat/task/{task_id}")
+async def get_task_status(task_id: str):
+    """
+    Poll endpoint for recovering task results after SSE disconnection.
+
+    Returns the task status and all accumulated events.
+    Used by the frontend when the user returns to the page after
+    the mobile browser killed the SSE connection.
+    """
+    store = get_task_store()
+    task = await store.get_task(task_id)
+
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    return JSONResponse({
+        "task_id": task.task_id,
+        "status": task.status,
+        "events": task.events,
+        "error_message": task.error_message,
+    })
