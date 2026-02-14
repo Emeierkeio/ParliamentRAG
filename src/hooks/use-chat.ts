@@ -172,6 +172,7 @@ export function useChat(options: UseChatOptions = {}) {
       let baselineAnswer = "";
       let abAssignment: Record<string, string> | null = null;
       let topicStats: TopicStatistics | undefined;
+      let commissioni: any[] = [];
       // Accumulator for step results — survives React state batching race conditions
       const stepResultsMap = new Map<number, { step: number; label: string; result: string; details?: any }>();
       let buffer = ""; // Buffer per messaggi SSE parziali
@@ -283,13 +284,18 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "commissioni":
                 const commList = data.commissioni || [];
+                commissioni = commList;
+                updateLastAssistantMessage({ commissioni: [...commList] });
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
                 console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
                 // Save to accumulator so it survives React state batching
+                const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
                 const commResult = {
                   step: 2,
                   label: "Commissioni",
-                  result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
+                  result: topComm
+                    ? `${topComm}${commList.length > 1 ? ` (+${commList.length - 1})` : ""}`
+                    : "Nessuna commissione pertinente",
                   details: { commissioni: commList }
                 };
                 stepResultsMap.set(2, commResult);
@@ -581,6 +587,7 @@ export function useChat(options: UseChatOptions = {}) {
                     answer: accumulatedContent,
                     citations,
                     experts,
+                    commissioni,
                     balance: balanceMetrics ? {
                       maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
                       opposizione_percentage: balanceMetrics.opposizionePercentage,
@@ -753,6 +760,7 @@ export function useChat(options: UseChatOptions = {}) {
           biasScore: historyData.balance.bias_score
       } : undefined,
       compass: historyData.compass,
+      commissioni: historyData.commissioni || undefined,
       topicStats: historyData.topic_stats || undefined,
       baselineAnswer: historyData.baseline_answer || undefined,
       abAssignment: historyData.ab_assignment || undefined,
@@ -764,6 +772,16 @@ export function useChat(options: UseChatOptions = {}) {
     // Rebuild a synthetic completed progress from available data
     const stepResults: { step: number; label: string; result: string; details?: any }[] = [];
     stepResults.push({ step: 1, label: "Analisi query", result: "Completata" });
+
+    if (historyData.commissioni?.length) {
+      const topComm = historyData.commissioni[0].nome || historyData.commissioni[0].name || String(historyData.commissioni[0]);
+      stepResults.push({
+        step: 2,
+        label: "Commissioni",
+        result: `${topComm}${historyData.commissioni.length > 1 ? ` (+${historyData.commissioni.length - 1})` : ""}`,
+        details: { commissioni: historyData.commissioni },
+      });
+    }
 
     if (historyData.citations?.length) {
       const uniqueDeputies = [...new Set(historyData.citations.map((c: any) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
