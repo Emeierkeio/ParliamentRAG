@@ -368,9 +368,9 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   </blockquote>
                 ),
                 a: ({ href, children }) => {
-                  // Check if it's a stats link (stats://interventions, stats://speakers, stats://sessions)
-                  if (href?.startsWith("stats://")) {
-                    const view = href.replace("stats://", "") as "interventions" | "speakers" | "sessions";
+                  // Check if it's a stats link (#stats-interventions, #stats-speakers, #stats-sessions)
+                  if (href?.startsWith("#stats-")) {
+                    const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
                     return (
                       <span
                         className="cursor-pointer text-primary font-semibold border-b border-primary/40 hover:border-primary hover:bg-primary/5 transition-all duration-150 rounded-sm px-0.5 -mx-0.5"
@@ -466,9 +466,9 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
 }
 
 /**
- * Preprocesses markdown content to inject stats:// links for clickable stats.
+ * Preprocesses markdown content to inject #stats- links for clickable stats.
  * Wraps patterns like "81 interventi", "52 parlamentari", "N. 8, 15, 26, 69, 73"
- * with markdown links [text](stats://view) that ReactMarkdown renders as <a>.
+ * with markdown links [text](#stats-view) that ReactMarkdown renders as <a>.
  */
 function injectStatsLinks(content: string): string {
   // Only process the introduction section to avoid false positives
@@ -509,21 +509,21 @@ function injectStatsLinks(content: string): string {
   // Handles optional bold markers: **N interventi**, **N** interventi, or plain
   result = result.replace(
     /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(intervent[oi](?:\s+analizzat[oi])?)\*{0,2}/g,
-    "[$1 $2](stats://interventions)"
+    "[$1 $2](#stats-interventions)"
   );
 
   // Pattern for "N parlamentari"
   // Handles optional bold markers: **N parlamentari**, **N** parlamentari, or plain
   result = result.replace(
     /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(parlamentar[ie])\*{0,2}/g,
-    "[$1 $2](stats://speakers)"
+    "[$1 $2](#stats-speakers)"
   );
 
   // Pattern for session numbers: "N. 8, 15, 26, 69, 73 e altre 30" or "N. 8, 15, 26, 69, 73 e 80"
   // Handles optional bold markers around the whole expression
   result = result.replace(
     /\*{0,2}(N\.\s*\d+(?:,\s*\d+)*(?:\s+e\s+(?:altr[eiao]\s+)?\d+)?)\*{0,2}/g,
-    "[$1](stats://sessions)"
+    "[$1](#stats-sessions)"
   );
 
   return before + result + rest;
