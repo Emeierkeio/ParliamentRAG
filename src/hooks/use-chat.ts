@@ -760,6 +760,59 @@ export function useChat(options: UseChatOptions = {}) {
     };
 
     setMessages([userMsg, assistantMsg]);
+
+    // Rebuild a synthetic completed progress from available data
+    const stepResults: { step: number; label: string; result: string; details?: any }[] = [];
+    stepResults.push({ step: 1, label: "Analisi query", result: "Completata" });
+
+    if (historyData.citations?.length) {
+      const uniqueDeputies = [...new Set(historyData.citations.map((c: any) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
+      stepResults.push({
+        step: 4,
+        label: "Interventi",
+        result: `${historyData.citations.length} interventi di ${uniqueDeputies.slice(0, 3).join(", ")}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
+        details: { citations: historyData.citations.length },
+      });
+    }
+    if (historyData.experts?.length) {
+      const magg = historyData.experts.filter((e: any) => e.coalition === "maggioranza").length;
+      const opp = historyData.experts.filter((e: any) => e.coalition === "opposizione").length;
+      const topExperts = historyData.experts.slice(0, 3).map((e: any) => `${e.first_name} ${e.last_name}`).join(", ");
+      stepResults.push({
+        step: 3,
+        label: "Esperti",
+        result: `${historyData.experts.length} esperti: ${topExperts}${historyData.experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
+        details: { experts: historyData.experts.length, maggioranza: magg, opposizione: opp },
+      });
+    }
+    if (historyData.balance) {
+      stepResults.push({
+        step: 5,
+        label: "Statistiche",
+        result: `Magg. ${historyData.balance.maggioranza_percentage?.toFixed(0)}% / Opp. ${historyData.balance.opposizione_percentage?.toFixed(0)}%`,
+        details: historyData.balance,
+      });
+    }
+    if (historyData.compass) {
+      stepResults.push({
+        step: 6,
+        label: "Bussola Ideologica",
+        result: `${historyData.compass.groups?.length || 0} gruppi posizionati`,
+        details: { groups: historyData.compass.groups?.length },
+      });
+    }
+    stepResults.push({ step: 7, label: "Generazione", result: "Sintesi completata" });
+    stepResults.push({ step: 8, label: "Baseline", result: historyData.baseline_answer ? "Completata" : "Non disponibile" });
+    stepResults.push({ step: 9, label: "Valutazione", result: "Completata" });
+
+    setLastCompletedProgress({
+      currentStep: config.ui.progressSteps.length,
+      totalSteps: config.ui.progressSteps.length,
+      stepLabel: "Completato",
+      stepDescription: "",
+      isComplete: true,
+      stepResults,
+    });
   }, []);
 
   return {
