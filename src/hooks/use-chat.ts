@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import type {
   Message,
   Citation,
@@ -23,6 +23,10 @@ export function useChat(options: UseChatOptions = {}) {
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
+  // Task ID for reconnection after mobile browser kills the SSE connection
+  const activeTaskIdRef = useRef<string | null>(null);
+  const isRecoveringRef = useRef(false);
+  const queryContentRef = useRef<string>("");
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -111,6 +115,11 @@ export function useChat(options: UseChatOptions = {}) {
       stepResults: [],
     });
 
+    // Generate a task_id for reconnection support
+    const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+    activeTaskIdRef.current = taskId;
+    queryContentRef.current = content;
+
     // Reset messages: clear previous conversation and start fresh
     const userMessage: Message = {
       id: generateId(),
@@ -134,7 +143,7 @@ export function useChat(options: UseChatOptions = {}) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query: content }),
+        body: JSON.stringify({ query: content, task_id: taskId }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -218,6 +227,14 @@ export function useChat(options: UseChatOptions = {}) {
             const data = JSON.parse(jsonStr);
 
             switch (data.type) {
+              case "task_id":
+                // Server confirmed the task ID (may differ from client-generated one)
+                if (data.task_id) {
+                  activeTaskIdRef.current = data.task_id;
+                  console.log(`[Pipeline] Task ID confirmed: ${data.task_id}`);
+                }
+                break;
+
               case "progress":
                 const stepIndex = data.step - 1;
                 const step = config.ui.progressSteps[stepIndex];
@@ -533,6 +550,9 @@ export function useChat(options: UseChatOptions = {}) {
                   }
                   return { ...prev, isComplete: true, stepResults: newResults };
                 });
+                // Clear task ID — stream completed successfully, no recovery needed
+                activeTaskIdRef.current = null;
+
                 updateLastAssistantMessage({
                   status: "complete",
                   content: accumulatedContent,
@@ -610,6 +630,13 @@ export function useChat(options: UseChatOptions = {}) {
         return;
       }
 
+      // If we have a task ID, don't show error immediately — try recovery via polling
+      if (activeTaskIdRef.current && !isRecoveringRef.current) {
+        console.log(`[Pipeline] Stream interrupted, will attempt recovery for task ${activeTaskIdRef.current}`);
+        // Don't clear isLoading — the visibilitychange handler will attempt recovery
+        return;
+      }
+
       const errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
 
       updateLastAssistantMessage({
@@ -619,6 +646,15 @@ export function useChat(options: UseChatOptions = {}) {
 
       options.onError?.(error instanceof Error ? error : new Error(errorMessage));
     } finally {
+      // If stream was interrupted and we have a task ID, keep isLoading=true
+      // so the visibilitychange handler can attempt recovery
+      if (activeTaskIdRef.current && !isRecoveringRef.current) {
+        // Stream was interrupted but task may still be running on backend
+        console.log(`[Pipeline] Stream ended but task ${activeTaskIdRef.current} may still be running`);
+        abortControllerRef.current = null;
+        return;
+      }
+
       // Save completed progress before clearing
       setProgress((prev) => {
         if (prev) {
@@ -633,18 +669,208 @@ export function useChat(options: UseChatOptions = {}) {
       setIsLoading(false);
       setStreamingContent("");
       abortControllerRef.current = null;
+      activeTaskIdRef.current = null;
     }
   }, [isLoading, addUserMessage, updateLastAssistantMessage, options]);
+
+  // Recover results from a background task via polling
+  const recoverFromTask = useCallback(async (taskId: string) => {
+    if (isRecoveringRef.current) return;
+    isRecoveringRef.current = true;
+    console.log(`[Pipeline:Recovery] Attempting recovery for task ${taskId}`);
+
+    const maxAttempts = 30; // Max 60 seconds of polling (30 * 2s)
+    let attempt = 0;
+
+    try {
+      while (attempt < maxAttempts) {
+        attempt++;
+        try {
+          const response = await fetch(`${config.api.baseUrl}/chat/task/${taskId}`);
+          if (!response.ok) {
+            if (response.status === 404) {
+              console.warn(`[Pipeline:Recovery] Task ${taskId} not found (expired or invalid)`);
+              break;
+            }
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const taskData = await response.json();
+          console.log(`[Pipeline:Recovery] Task status: ${taskData.status}, events: ${taskData.events?.length || 0}`);
+
+          if (taskData.status === "completed" || taskData.status === "error") {
+            // Replay all events to reconstruct the final state
+            let accumulatedContent = "";
+            let citations: Citation[] = [];
+            let experts: Expert[] = [];
+            let balanceMetrics: BalanceMetrics | undefined;
+            let compassData: any = null;
+            let baselineAnswer = "";
+            let abAssignment: Record<string, string> | null = null;
+            let topicStats: TopicStatistics | undefined;
+
+            for (const event of taskData.events || []) {
+              switch (event.type) {
+                case "experts": {
+                  const ep = event.data || event.experts;
+                  if (Array.isArray(ep)) experts = ep;
+                  break;
+                }
+                case "citations": {
+                  const cp = event.data || event.citations;
+                  if (Array.isArray(cp)) citations = cp;
+                  break;
+                }
+                case "citation_details": {
+                  const cdp = event.data || event.citations;
+                  if (Array.isArray(cdp)) citations = cdp;
+                  break;
+                }
+                case "balance":
+                  balanceMetrics = {
+                    maggioranzaPercentage: event.maggioranza_percentage,
+                    opposizionePercentage: event.opposizione_percentage,
+                    biasScore: event.bias_score,
+                  };
+                  break;
+                case "compass":
+                  compassData = event.data || event;
+                  break;
+                case "topic_stats":
+                  topicStats = event as TopicStatistics;
+                  break;
+                case "chunk":
+                  accumulatedContent += (event.data || event.content || "");
+                  break;
+                case "baseline":
+                  baselineAnswer = event.baseline_answer || "";
+                  abAssignment = event.ab_assignment || null;
+                  break;
+                case "complete":
+                  if (!baselineAnswer && event.baseline_answer) {
+                    baselineAnswer = event.baseline_answer;
+                    abAssignment = event.ab_assignment || null;
+                  }
+                  break;
+              }
+            }
+
+            console.log(`[Pipeline:Recovery] Recovered: ${accumulatedContent.length} chars, ${citations.length} citations, ${experts.length} experts`);
+
+            // Update the assistant message with recovered data
+            updateLastAssistantMessage({
+              status: taskData.status === "error" ? "error" : "complete",
+              content: taskData.status === "error"
+                ? `Mi dispiace, si è verificato un errore: ${taskData.error_message || "Errore sconosciuto"}`
+                : accumulatedContent,
+              citations,
+              experts,
+              balanceMetrics,
+              compass: compassData,
+              topicStats,
+              baselineAnswer: baselineAnswer || undefined,
+              abAssignment: abAssignment || undefined,
+            });
+
+            setProgress((prev) => {
+              if (prev) setLastCompletedProgress({ ...prev, isComplete: true });
+              return null;
+            });
+            setIsLoading(false);
+            setStreamingContent("");
+            activeTaskIdRef.current = null;
+
+            // Save to history if completed successfully
+            if (taskData.status === "completed" && accumulatedContent) {
+              try {
+                const historyPayload = {
+                  query: queryContentRef.current,
+                  answer: accumulatedContent,
+                  citations,
+                  experts,
+                  balance: balanceMetrics ? {
+                    maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
+                    opposizione_percentage: balanceMetrics.opposizionePercentage,
+                    bias_score: balanceMetrics.biasScore,
+                  } : null,
+                  compass: compassData,
+                  topic_stats: topicStats || null,
+                  baseline_answer: baselineAnswer || null,
+                  ab_assignment: abAssignment || null,
+                };
+
+                fetch(`${config.api.baseUrl}/history`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(historyPayload),
+                }).then(async (res) => {
+                  if (res.ok) {
+                    const savedChat = await res.json();
+                    console.log("[Pipeline:Recovery] History saved OK, id:", savedChat.id);
+                    updateLastAssistantMessage({ chatId: savedChat.id });
+                  }
+                }).catch((err) => {
+                  console.error("[Pipeline:Recovery] History save error:", err);
+                });
+              } catch (e) {
+                console.error("[Pipeline:Recovery] History payload error:", e);
+              }
+            }
+
+            return; // Recovery complete
+          }
+
+          // Task still processing — wait and retry
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        } catch (fetchError) {
+          console.error(`[Pipeline:Recovery] Poll attempt ${attempt} failed:`, fetchError);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+
+      // Exhausted retries
+      console.error(`[Pipeline:Recovery] Failed after ${maxAttempts} attempts`);
+      updateLastAssistantMessage({
+        status: "error",
+        content: "Mi dispiace, non è stato possibile recuperare i risultati. Riprova la query.",
+      });
+      setProgress(null);
+      setIsLoading(false);
+      setStreamingContent("");
+      activeTaskIdRef.current = null;
+    } finally {
+      isRecoveringRef.current = false;
+    }
+  }, [updateLastAssistantMessage]);
+
+  // Visibility change handler: recover results when user returns to the page
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (
+        document.visibilityState === "visible" &&
+        activeTaskIdRef.current &&
+        isLoading &&
+        !isRecoveringRef.current
+      ) {
+        console.log(`[Pipeline:Visibility] Page became visible, recovering task ${activeTaskIdRef.current}`);
+        recoverFromTask(activeTaskIdRef.current);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [isLoading, recoverFromTask]);
 
   // Cancel current request
   const cancelRequest = useCallback(() => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
-      setIsLoading(false);
-      setProgress(null);
-      setStreamingContent("");
     }
+    activeTaskIdRef.current = null;
+    setIsLoading(false);
+    setProgress(null);
+    setStreamingContent("");
   }, []);
 
   // Clear all messages
