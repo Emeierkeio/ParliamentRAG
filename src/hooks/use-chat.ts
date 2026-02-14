@@ -156,6 +156,8 @@ export function useChat(options: UseChatOptions = {}) {
       let baselineAnswer = "";
       let abAssignment: Record<string, string> | null = null;
       let topicStats: TopicStatistics | undefined;
+      // Accumulator for step results — survives React state batching race conditions
+      const stepResultsMap = new Map<number, { step: number; label: string; result: string; details?: any }>();
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -225,15 +227,22 @@ export function useChat(options: UseChatOptions = {}) {
                   // Only advance forward, never go backwards
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
                   const newStepConfig = config.ui.progressSteps[newStep - 1];
-                  const newResults = [...(prev?.stepResults || [])];
-                  // Steps that have dedicated SSE events with real data - don't fill with generic placeholders
+                  // Build results: start from accumulator (source of truth) + any existing results
+                  const resultsById = new Map<number, { step: number; label: string; result?: string; details?: any }>();
+                  // Copy existing results
+                  for (const r of (prev?.stepResults || [])) {
+                    resultsById.set(r.step, r);
+                  }
+                  // Overlay accumulator (always wins — it has the real data)
+                  for (const [step, result] of stepResultsMap) {
+                    resultsById.set(step, result);
+                  }
+                  // Fill generic placeholders only for steps WITHOUT dedicated SSE events
                   const stepsWithDedicatedEvents = new Set([2, 3, 4, 5, 6]);
-                  // Mark all completed steps that don't have a result yet
                   for (let s = 1; s < newStep; s++) {
-                    if (!newResults.some(r => r.step === s) && !stepsWithDedicatedEvents.has(s)) {
+                    if (!resultsById.has(s) && !stepsWithDedicatedEvents.has(s)) {
                       const stepCfg = config.ui.progressSteps[s - 1];
-                      console.log(`[Pipeline:Debug] Generic fill for step ${s}: "${stepCfg?.description || "Completato"}" (no specific event received yet)`);
-                      newResults.push({
+                      resultsById.set(s, {
                         step: s,
                         label: stepCfg?.label || `Step ${s}`,
                         result: stepCfg?.description || "Completato",
@@ -246,7 +255,7 @@ export function useChat(options: UseChatOptions = {}) {
                     stepLabel: newStepConfig?.label || data.message || "",
                     stepDescription: newStepConfig?.description || "",
                     isComplete: false,
-                    stepResults: newResults,
+                    stepResults: Array.from(resultsById.values()),
                   };
                 });
                 break;
@@ -255,21 +264,20 @@ export function useChat(options: UseChatOptions = {}) {
                 const commList = data.commissioni || [];
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
                 console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
-                console.log(`[Pipeline:Debug] commissioni raw data:`, JSON.stringify(data));
+                // Save to accumulator so it survives React state batching
+                const commResult = {
+                  step: 2,
+                  label: "Commissioni",
+                  result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
+                  details: { commissioni: commList }
+                };
+                stepResultsMap.set(2, commResult);
                 setProgress((prev) => {
                   if (!prev) return null;
-                  // Replace any existing step 2 result with actual commission names
                   const filtered = prev.stepResults.filter(r => r.step !== 2);
-                  const newResult = {
-                    step: 2,
-                    label: "Commissioni",
-                    result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
-                    details: { commissioni: commList }
-                  };
-                  console.log(`[Pipeline:Debug] Step 2 result set to:`, JSON.stringify(newResult));
                   return {
                     ...prev,
-                    stepResults: [...filtered, newResult]
+                    stepResults: [...filtered, commResult]
                   };
                 });
                 break;
@@ -283,17 +291,19 @@ export function useChat(options: UseChatOptions = {}) {
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
                   console.log(`[Pipeline] Step 3 result: ${experts.length} esperti (${magg} magg, ${opp} opp)`);
                   const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
+                  const expertsResult = {
+                    step: 3,
+                    label: "Esperti",
+                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
+                    details: { experts: experts.length, maggioranza: magg, opposizione: opp }
+                  };
+                  stepResultsMap.set(3, expertsResult);
                   setProgress((prev) => {
                     if (!prev) return null;
                     const filtered = prev.stepResults.filter(r => r.step !== 3);
                     return {
                       ...prev,
-                      stepResults: [...filtered, {
-                        step: 3,
-                        label: "Esperti",
-                        result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
-                        details: { experts: experts.length, maggioranza: magg, opposizione: opp }
-                      }]
+                      stepResults: [...filtered, expertsResult]
                     };
                   });
                 } else {
@@ -309,17 +319,19 @@ export function useChat(options: UseChatOptions = {}) {
                   console.log(`[Pipeline:Citations] Step 4: ${citations.length} interventi ricevuti, chunk_ids:`, citations.map(c => c.chunk_id));
                   const uniqueDeputies = [...new Set(citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`))];
                   const deputyPreview = uniqueDeputies.slice(0, 3).join(", ");
+                  const citationsResult = {
+                    step: 4,
+                    label: "Interventi",
+                    result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
+                    details: { citations: citations.length }
+                  };
+                  stepResultsMap.set(4, citationsResult);
                   setProgress((prev) => {
                     if (!prev) return null;
                     const filtered = prev.stepResults.filter(r => r.step !== 4);
                     return {
                       ...prev,
-                      stepResults: [...filtered, {
-                        step: 4,
-                        label: "Interventi",
-                        result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
-                        details: { citations: citations.length }
-                      }]
+                      stepResults: [...filtered, citationsResult]
                     };
                   });
                 } else {
@@ -335,6 +347,13 @@ export function useChat(options: UseChatOptions = {}) {
                 };
                 console.log(`[Pipeline] Step 5: Magg ${data.maggioranza_percentage?.toFixed(1)}% / Opp ${data.opposizione_percentage?.toFixed(1)}% (bias: ${data.bias_score?.toFixed(2)})`);
                 updateLastAssistantMessage({ balanceMetrics });
+                const balanceResult = {
+                  step: 5,
+                  label: "Statistiche",
+                  result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
+                  details: balanceMetrics
+                };
+                stepResultsMap.set(5, balanceResult);
                 setProgress((prev) => {
                   if (!prev) return null;
                   // Advance stepper to at least step 6 (balance = step 5 complete)
@@ -345,12 +364,7 @@ export function useChat(options: UseChatOptions = {}) {
                     currentStep: nextStep,
                     stepLabel: stepConfig?.label || prev.stepLabel,
                     stepDescription: stepConfig?.description || prev.stepDescription,
-                    stepResults: [...prev.stepResults.filter(r => r.step !== 5), {
-                      step: 5,
-                      label: "Statistiche",
-                      result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
-                      details: balanceMetrics
-                    }]
+                    stepResults: [...prev.stepResults.filter(r => r.step !== 5), balanceResult]
                   };
                 });
                 break;
@@ -360,6 +374,13 @@ export function useChat(options: UseChatOptions = {}) {
                   compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
                   console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${compassData.axes?.length || 0} assi`);
+                  const compassResult = {
+                    step: 6,
+                    label: "Bussola Ideologica",
+                    result: `${compassData.groups?.length || 0} gruppi posizionati su ${Object.keys(compassData.axes || {}).length} assi tematici`,
+                    details: { axes: compassData.axes, groups: compassData.groups?.length }
+                  };
+                  stepResultsMap.set(6, compassResult);
                   setProgress((prev) => {
                     if (!prev) return null;
                     // Advance stepper to at least step 7 (compass = step 6 complete)
@@ -370,12 +391,7 @@ export function useChat(options: UseChatOptions = {}) {
                       currentStep: nextStep,
                       stepLabel: stepConfig?.label || prev.stepLabel,
                       stepDescription: stepConfig?.description || prev.stepDescription,
-                      stepResults: [...prev.stepResults.filter(r => r.step !== 6), {
-                        step: 6,
-                        label: "Bussola Ideologica",
-                        result: `${compassData.groups?.length || 0} gruppi posizionati su ${Object.keys(compassData.axes || {}).length} assi tematici`,
-                        details: { axes: compassData.axes, groups: compassData.groups?.length }
-                      }]
+                      stepResults: [...prev.stepResults.filter(r => r.step !== 6), compassResult]
                     };
                   });
                 } catch(e) {
@@ -495,7 +511,11 @@ export function useChat(options: UseChatOptions = {}) {
                 // Mark step 9 as complete and finalize progress
                 setProgress((prev) => {
                   if (!prev) return null;
-                  const newResults = [...prev.stepResults];
+                  // Merge accumulator results (source of truth for dedicated events)
+                  const resultsById = new Map<number, any>();
+                  for (const r of prev.stepResults) resultsById.set(r.step, r);
+                  for (const [step, result] of stepResultsMap) resultsById.set(step, result);
+                  const newResults = Array.from(resultsById.values());
                   // Ensure step 8 is marked complete (fallback if baseline event was missed)
                   if (!newResults.some(r => r.step === 8)) {
                     newResults.push({
