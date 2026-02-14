@@ -232,8 +232,8 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
   if (isUser) {
     return (
       <div className={cn("py-6 border-b border-border/50", className)}>
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">
+        <div className="flex items-start justify-between gap-2 min-w-0">
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 break-words min-w-0">
             {message.content}
           </h2>
           {chatId && <ShareButton chatId={chatId} />}
@@ -278,7 +278,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
 
         {/* Content */}
         {message.content && (
-          <div className="prose prose-sm max-w-none prose-neutral dark:prose-invert">
+          <div className="prose prose-sm max-w-none prose-neutral dark:prose-invert overflow-hidden break-words">
             <ReactMarkdown
               components={{
                 p: ({ children }) => (
@@ -363,7 +363,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   </code>
                 ),
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-primary/20 pl-4 py-1 italic text-muted-foreground my-4">
+                  <blockquote className="border-l-4 border-primary/20 pl-4 py-1 italic text-muted-foreground my-4 overflow-hidden break-words">
                     {children}
                   </blockquote>
                 ),
