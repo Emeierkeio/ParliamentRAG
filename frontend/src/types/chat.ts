@@ -114,6 +114,7 @@ export interface Message {
   // Metadati opzionali per le risposte dell'assistente
   citations?: Citation[];
   experts?: Expert[];
+  commissioni?: Array<{ nome: string; score: number; matched_keywords: string[]; categories: string[] }>;
   compass?: any; // CompassData
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;

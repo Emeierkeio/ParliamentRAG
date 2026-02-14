@@ -39,6 +39,7 @@ class ChatHistoryItem(BaseModel):
 
     citations: List[Dict[str, Any]] = []
     experts: List[Dict[str, Any]] = []
+    commissioni: List[Dict[str, Any]] = []
     balance: Optional[Dict[str, Any]] = None
     compass: Optional[Dict[str, Any]] = None
 
@@ -121,6 +122,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         # Serialize with size limits to avoid Neo4j property size issues
         citations_json = json.dumps(chat.citations, ensure_ascii=False, default=str)
         experts_json = json.dumps(chat.experts, ensure_ascii=False, default=str)
+        commissioni_json = json.dumps(chat.commissioni, ensure_ascii=False, default=str)
         balance_json = json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else ""
         compass_json = json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else ""
         topic_stats_json = json.dumps(chat.topic_stats, ensure_ascii=False, default=str) if chat.topic_stats else ""
@@ -138,6 +140,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
                 timestamp: $timestamp,
                 citations: $citations,
                 experts: $experts,
+                commissioni: $commissioni,
                 balance: $balance,
                 compass: $compass,
                 topic_stats: $topic_stats,
@@ -152,6 +155,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
             "timestamp": chat.timestamp.isoformat(),
             "citations": citations_json,
             "experts": experts_json,
+            "commissioni": commissioni_json,
             "balance": balance_json,
             "compass": compass_json,
             "topic_stats": topic_stats_json,
@@ -192,7 +196,8 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         MATCH (c:ChatHistory {id: $id})
         RETURN c.id AS id, c.query AS query, c.answer AS answer,
                c.timestamp AS timestamp, c.citations AS citations,
-               c.experts AS experts, c.balance AS balance, c.compass AS compass,
+               c.experts AS experts, c.commissioni AS commissioni,
+               c.balance AS balance, c.compass AS compass,
                c.topic_stats AS topic_stats,
                c.baseline_answer AS baseline_answer, c.ab_assignment AS ab_assignment
     """, {"id": chat_id})
@@ -208,6 +213,7 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         "timestamp": r["timestamp"],
         "citations": json.loads(r["citations"]) if r.get("citations") else [],
         "experts": json.loads(r["experts"]) if r.get("experts") else [],
+        "commissioni": json.loads(r["commissioni"]) if r.get("commissioni") else [],
         "balance": json.loads(r["balance"]) if r.get("balance") else None,
         "compass": json.loads(r["compass"]) if r.get("compass") else None,
         "topic_stats": json.loads(r["topic_stats"]) if r.get("topic_stats") else None,
