@@ -200,6 +200,24 @@ async def process_query_streaming(
         # === Send topic statistics for frontend clickable intro stats ===
         topic_stats = generation_result.get("topic_statistics")
         if topic_stats:
+            # Enrich speakers_detail with profile URL, profession, education, committee from Neo4j
+            speakers_detail = topic_stats.get("speakers_detail", [])
+            speaker_ids_for_enrichment = [s["speaker_id"] for s in speakers_detail if s.get("speaker_id")]
+            if speaker_ids_for_enrichment:
+                enrichment_data = await asyncio.get_event_loop().run_in_executor(
+                    None, lambda: _batch_fetch_speaker_enrichment(services["neo4j"], speaker_ids_for_enrichment)
+                )
+                for speaker in speakers_detail:
+                    sid = speaker.get("speaker_id", "")
+                    if sid in enrichment_data:
+                        info = enrichment_data[sid]
+                        speaker["camera_profile_url"] = info.get("camera_profile_url")
+                        speaker["profession"] = info.get("profession")
+                        speaker["education"] = info.get("education")
+                        speaker["committee"] = info.get("committee")
+                        if info.get("institutional_role"):
+                            speaker["institutional_role"] = info["institutional_role"]
+
             ts_payload = {
                 "intervention_count": topic_stats.get("intervention_count", 0),
                 "speaker_count": topic_stats.get("speaker_count", 0),
@@ -213,7 +231,7 @@ async def process_query_streaming(
                     if hasattr(topic_stats.get("last_date"), "strftime")
                     else str(topic_stats.get("last_date", ""))
                 ),
-                "speakers_detail": topic_stats.get("speakers_detail", []),
+                "speakers_detail": speakers_detail,
                 "interventions_detail": topic_stats.get("interventions_detail", []),
                 "sessions_detail": topic_stats.get("sessions_detail", []),
             }
@@ -605,6 +623,64 @@ def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str])
         result = session.run(cypher, ids=list(set(speaker_ids)))
         for record in result:
             result_map[record["sid"]] = record["url"]
+    return result_map
+
+
+def _batch_fetch_speaker_enrichment(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, Dict[str, Any]]:
+    """Batch-fetch detailed speaker info (profile URL, profession, education, committee, role) from Neo4j."""
+    if not speaker_ids:
+        return {}
+
+    unique_ids = list(set(speaker_ids))
+
+    # Fetch Deputies with full details
+    cypher_deputies = """
+    UNWIND $ids AS sid
+    OPTIONAL MATCH (d:Deputy {id: sid})
+    WITH sid, d WHERE d IS NOT NULL
+    OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+    WHERE mc.end_date IS NULL OR mc.end_date >= date()
+    WITH sid, d, collect(c.name)[0] AS current_committee
+    RETURN sid,
+           d.deputy_card AS camera_profile_url,
+           d.profession AS profession,
+           d.education AS education,
+           current_committee
+    """
+
+    result_map: Dict[str, Dict[str, Any]] = {}
+    with neo4j_client.session() as session:
+        result = session.run(cypher_deputies, ids=unique_ids)
+        for record in result:
+            result_map[record["sid"]] = {
+                "camera_profile_url": record["camera_profile_url"],
+                "profession": record["profession"],
+                "education": record["education"],
+                "committee": record["current_committee"],
+            }
+
+    # Fetch GovernmentMembers for any IDs not found as Deputies
+    missing_ids = [sid for sid in unique_ids if sid not in result_map]
+    if missing_ids:
+        cypher_gov = """
+        UNWIND $ids AS sid
+        OPTIONAL MATCH (m:GovernmentMember {id: sid})
+        WITH sid, m WHERE m IS NOT NULL
+        RETURN sid,
+               m.deputy_card AS camera_profile_url,
+               m.institutional_role AS institutional_role
+        """
+        with neo4j_client.session() as session:
+            result = session.run(cypher_gov, ids=missing_ids)
+            for record in result:
+                result_map[record["sid"]] = {
+                    "camera_profile_url": record["camera_profile_url"],
+                    "profession": None,
+                    "education": None,
+                    "committee": None,
+                    "institutional_role": record["institutional_role"],
+                }
+
     return result_map
 
 
