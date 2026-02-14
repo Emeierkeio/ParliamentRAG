@@ -581,6 +581,36 @@ def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str])
     return result_map
 
 
+def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
+    """
+    Batch-fetch institutional roles for government members.
+    Also matches Deputies who hold government positions (e.g. PM, ministers who are also MPs)
+    by looking up GovernmentMember nodes with the same first_name + last_name.
+    Returns {speaker_id: role}.
+    """
+    if not speaker_ids:
+        return {}
+    cypher = """
+    UNWIND $ids AS sid
+    // Direct GovernmentMember match
+    OPTIONAL MATCH (m:GovernmentMember {id: sid})
+    // Also check if a Deputy matches a GovernmentMember by name
+    OPTIONAL MATCH (d:Deputy {id: sid})
+    OPTIONAL MATCH (gm:GovernmentMember)
+    WHERE gm.first_name = d.first_name AND gm.last_name = d.last_name
+    WITH sid,
+         COALESCE(m.institutional_role, gm.institutional_role) AS role
+    WHERE role IS NOT NULL
+    RETURN sid, role
+    """
+    result_map: Dict[str, str] = {}
+    with neo4j_client.session() as session:
+        result = session.run(cypher, ids=list(set(speaker_ids)))
+        for record in result:
+            result_map[record["sid"]] = record["role"]
+    return result_map
+
+
 def _build_citations_for_frontend(
     evidence_dicts: List[Dict[str, Any]],
     neo4j_client: Neo4jClient = None,
@@ -589,18 +619,27 @@ def _build_citations_for_frontend(
     coalition_logic = CoalitionLogic()
     citations = []
 
-    # Batch-fetch deputy_card URLs
+    # Batch-fetch deputy_card URLs and government roles
     deputy_card_map: Dict[str, str] = {}
+    gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20] if e.get("speaker_id")]
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
+        gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
     for i, e in enumerate(evidence_dicts[:20]):
         evidence_id = e.get("evidence_id", f"cit_{i+1}")
         speaker_name = e.get("speaker_name", "")
         speaker_id = e.get("speaker_id", "")
         party = e.get("party", "MISTO")
-        coalition = coalition_logic.get_coalition(party)
+        is_government = e.get("speaker_role") == "GovernmentMember" or speaker_id in gov_role_map
+
+        if is_government:
+            group = "Governo"
+            coalition = "governo"
+        else:
+            group = party
+            coalition = coalition_logic.get_coalition(party)
 
         name_parts = speaker_name.split(" ", 1)
         first_name = name_parts[0] if name_parts else ""
@@ -610,21 +649,37 @@ def _build_citations_for_frontend(
         quote_text = e.get("quote_text") or ""
         display_text = (chunk_text or quote_text)[:300]
 
-        citations.append({
+        cit_data: Dict[str, Any] = {
             "chunk_id": evidence_id,
             "deputy_first_name": first_name,
             "deputy_last_name": last_name,
             "text": display_text,
             "quote_text": quote_text,
             "full_text": chunk_text or quote_text,
-            "group": party,
+            "group": group,
             "coalition": coalition,
             "date": str(e.get("date", "")),
             "similarity": round(e.get("similarity", 0), 2),
             "debate": e.get("debate_title", ""),
             "intervention_id": e.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),
-        })
+        }
+        if is_government:
+            role = gov_role_map.get(speaker_id)
+            if not role and neo4j_client:
+                try:
+                    with neo4j_client.session() as sess:
+                        rec = sess.run(
+                            "MATCH (m:GovernmentMember {id: $sid}) RETURN m.institutional_role AS role",
+                            sid=speaker_id
+                        ).single()
+                        if rec and rec["role"]:
+                            role = rec["role"]
+                except Exception:
+                    pass
+            if role:
+                cit_data["institutional_role"] = role
+        citations.append(cit_data)
 
     return citations
 
@@ -642,8 +697,9 @@ def _build_verified_citations(
     coalition_logic = CoalitionLogic()
     evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
 
-    # Batch-fetch deputy_card URLs
+    # Batch-fetch deputy_card URLs and government roles
     deputy_card_map: Dict[str, str] = {}
+    gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = []
         for cit in generation_citations:
@@ -653,28 +709,37 @@ def _build_verified_citations(
             if sid:
                 speaker_ids.append(sid)
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
+        gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
     verified = []
     for cit in generation_citations:
         eid = cit.get("evidence_id", "")
         evidence = evidence_map.get(eid, {})
         party = cit.get("party", evidence.get("party", "MISTO"))
-        coalition = coalition_logic.get_coalition(party)
         speaker_id = cit.get("speaker_id") or evidence.get("speaker_id", "")
+        speaker_role = cit.get("speaker_role") or evidence.get("speaker_role", "Deputy")
+        is_government = speaker_role == "GovernmentMember" or speaker_id in gov_role_map
+
+        if is_government:
+            group = "Governo"
+            coalition = "governo"
+        else:
+            group = party
+            coalition = coalition_logic.get_coalition(party)
 
         speaker_name = cit.get("speaker_name", evidence.get("speaker_name", ""))
         name_parts = speaker_name.split(" ", 1)
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        verified.append({
+        cit_data: Dict[str, Any] = {
             "chunk_id": eid,
             "deputy_first_name": first_name,
             "deputy_last_name": last_name,
             "text": cit.get("quote_text", "") or evidence.get("chunk_text", ""),
             "quote_text": cit.get("quote_text", ""),
             "full_text": evidence.get("chunk_text", ""),
-            "group": party,
+            "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),
             "span_start": cit.get("span_start", 0),
@@ -683,7 +748,23 @@ def _build_verified_citations(
             "intervention_id": evidence.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),
             "verified": True,
-        })
+        }
+        if is_government:
+            role = gov_role_map.get(speaker_id)
+            if not role and neo4j_client:
+                try:
+                    with neo4j_client.session() as sess:
+                        rec = sess.run(
+                            "MATCH (m:GovernmentMember {id: $sid}) RETURN m.institutional_role AS role",
+                            sid=speaker_id
+                        ).single()
+                        if rec and rec["role"]:
+                            role = rec["role"]
+                except Exception:
+                    pass
+            if role:
+                cit_data["institutional_role"] = role
+        verified.append(cit_data)
 
     return verified
 
