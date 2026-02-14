@@ -230,6 +230,7 @@ export function useChat(options: UseChatOptions = {}) {
                   for (let s = 1; s < newStep; s++) {
                     if (!newResults.some(r => r.step === s)) {
                       const stepCfg = config.ui.progressSteps[s - 1];
+                      console.log(`[Pipeline:Debug] Generic fill for step ${s}: "${stepCfg?.description || "Completato"}" (no specific event received yet)`);
                       newResults.push({
                         step: s,
                         label: stepCfg?.label || `Step ${s}`,
@@ -252,18 +253,21 @@ export function useChat(options: UseChatOptions = {}) {
                 const commList = data.commissioni || [];
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
                 console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
+                console.log(`[Pipeline:Debug] commissioni raw data:`, JSON.stringify(data));
                 setProgress((prev) => {
                   if (!prev) return null;
                   // Replace any existing step 2 result with actual commission names
                   const filtered = prev.stepResults.filter(r => r.step !== 2);
+                  const newResult = {
+                    step: 2,
+                    label: "Commissioni",
+                    result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
+                    details: { commissioni: commList }
+                  };
+                  console.log(`[Pipeline:Debug] Step 2 result set to:`, JSON.stringify(newResult));
                   return {
                     ...prev,
-                    stepResults: [...filtered, {
-                      step: 2,
-                      label: "Commissioni",
-                      result: commNames.length > 0 ? commNames.join(", ") : `${commList.length} commissioni pertinenti`,
-                      details: { commissioni: commList }
-                    }]
+                    stepResults: [...filtered, newResult]
                   };
                 });
                 break;
@@ -277,15 +281,19 @@ export function useChat(options: UseChatOptions = {}) {
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
                   console.log(`[Pipeline] Step 3 result: ${experts.length} esperti (${magg} magg, ${opp} opp)`);
                   const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
-                  setProgress((prev) => prev ? {
-                    ...prev,
-                    stepResults: [...prev.stepResults, {
-                      step: 3,
-                      label: "Esperti",
-                      result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
-                      details: { experts: experts.length, maggioranza: magg, opposizione: opp }
-                    }]
-                  } : null);
+                  setProgress((prev) => {
+                    if (!prev) return null;
+                    const filtered = prev.stepResults.filter(r => r.step !== 3);
+                    return {
+                      ...prev,
+                      stepResults: [...filtered, {
+                        step: 3,
+                        label: "Esperti",
+                        result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
+                        details: { experts: experts.length, maggioranza: magg, opposizione: opp }
+                      }]
+                    };
+                  });
                 } else {
                   console.warn("[Pipeline] Step 3: experts payload is not an array", expertsPayload);
                 }
@@ -299,15 +307,19 @@ export function useChat(options: UseChatOptions = {}) {
                   console.log(`[Pipeline:Citations] Step 4: ${citations.length} interventi ricevuti, chunk_ids:`, citations.map(c => c.chunk_id));
                   const uniqueDeputies = [...new Set(citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`))];
                   const deputyPreview = uniqueDeputies.slice(0, 3).join(", ");
-                  setProgress((prev) => prev ? {
-                    ...prev,
-                    stepResults: [...prev.stepResults, {
-                      step: 4,
-                      label: "Interventi",
-                      result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
-                      details: { citations: citations.length }
-                    }]
-                  } : null);
+                  setProgress((prev) => {
+                    if (!prev) return null;
+                    const filtered = prev.stepResults.filter(r => r.step !== 4);
+                    return {
+                      ...prev,
+                      stepResults: [...filtered, {
+                        step: 4,
+                        label: "Interventi",
+                        result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
+                        details: { citations: citations.length }
+                      }]
+                    };
+                  });
                 } else {
                   console.warn("[Pipeline:Citations] Step 4: payload is not an array", citationsPayload);
                 }
@@ -331,7 +343,7 @@ export function useChat(options: UseChatOptions = {}) {
                     currentStep: nextStep,
                     stepLabel: stepConfig?.label || prev.stepLabel,
                     stepDescription: stepConfig?.description || prev.stepDescription,
-                    stepResults: [...prev.stepResults, {
+                    stepResults: [...prev.stepResults.filter(r => r.step !== 5), {
                       step: 5,
                       label: "Statistiche",
                       result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
@@ -356,7 +368,7 @@ export function useChat(options: UseChatOptions = {}) {
                       currentStep: nextStep,
                       stepLabel: stepConfig?.label || prev.stepLabel,
                       stepDescription: stepConfig?.description || prev.stepDescription,
-                      stepResults: [...prev.stepResults, {
+                      stepResults: [...prev.stepResults.filter(r => r.step !== 6), {
                         step: 6,
                         label: "Bussola Ideologica",
                         result: `${compassData.groups?.length || 0} gruppi posizionati su ${Object.keys(compassData.axes || {}).length} assi tematici`,
@@ -415,7 +427,7 @@ export function useChat(options: UseChatOptions = {}) {
                     currentStep: 9,
                     stepLabel: config.ui.progressSteps[8]?.label || "Valutazione",
                     stepDescription: config.ui.progressSteps[8]?.description || "",
-                    stepResults: [...prev.stepResults, {
+                    stepResults: [...prev.stepResults.filter(r => r.step !== 8), {
                       step: 8,
                       label: "Baseline",
                       result: data.baseline_error
@@ -587,7 +599,13 @@ export function useChat(options: UseChatOptions = {}) {
     } finally {
       // Save completed progress before clearing
       setProgress((prev) => {
-        if (prev) setLastCompletedProgress(prev);
+        if (prev) {
+          console.log(`[Pipeline:Debug] Saving lastCompletedProgress with ${prev.stepResults.length} step results:`);
+          prev.stepResults.forEach(sr => {
+            console.log(`[Pipeline:Debug]   Step ${sr.step} (${sr.label}): result="${sr.result}", hasDetails=${!!sr.details}`);
+          });
+          setLastCompletedProgress(prev);
+        }
         return null;
       });
       setIsLoading(false);
