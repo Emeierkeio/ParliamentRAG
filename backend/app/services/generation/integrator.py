@@ -38,11 +38,11 @@ STRUTTURA (in questo ordine):
 ## Introduzione
 2-3 frasi che inquadrano il tema con DATI CONCRETI forniti nelle statistiche:
 - NOMINA specificamente il provvedimento, decreto, DDL o proposta in discussione
-- CITA il numero di interventi analizzati e il numero di parlamentari coinvolti
+- CITA il numero di interventi analizzati e il numero di deputati coinvolti
 - INDICA il periodo temporale (data primo e ultimo intervento)
 - CITA le sedute specifiche (es. Seduta N. 123) quando disponibili
 - NON anticipare le posizioni dei partiti
-- NON usare **grassetto** per numeri, statistiche o dati nell'introduzione (il grassetto è riservato SOLO ai cognomi dei parlamentari)
+- NON usare **grassetto** per numeri, statistiche o dati nell'introduzione (il grassetto è riservato SOLO ai cognomi dei deputati)
 
 ## Posizione del Governo (se presente)
 Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)

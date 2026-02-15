@@ -153,7 +153,7 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
         </span>
       </TooltipTrigger>
       <TooltipContent side="right" className="max-w-[350px]">
-        <p className="font-semibold text-xs mb-1.5">Parlamentari in questa sezione</p>
+        <p className="font-semibold text-xs mb-1.5">Deputati in questa sezione</p>
         <div className="space-y-1.5">
           {groups.map(([group, names]) => (
             <div key={group}>
@@ -467,7 +467,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
 
 /**
  * Preprocesses markdown content to inject #stats- links for clickable stats.
- * Wraps patterns like "81 interventi", "52 parlamentari", "N. 8, 15, 26, 69, 73"
+ * Wraps patterns like "81 interventi", "52 deputati", "N. 8, 15, 26, 69, 73"
  * with markdown links [text](#stats-view) that ReactMarkdown renders as <a>.
  */
 function injectStatsLinks(content: string): string {
@@ -512,10 +512,10 @@ function injectStatsLinks(content: string): string {
     "[$1 $2](#stats-interventions)"
   );
 
-  // Pattern for "N parlamentari"
-  // Handles optional bold markers: **N parlamentari**, **N** parlamentari, or plain
+  // Pattern for "N deputati" or "N parlamentari" (legacy)
+  // Handles optional bold markers: **N deputati**, **N** deputati, or plain
   result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(parlamentar[ie])\*{0,2}/g,
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(deputat[oi]|parlamentar[ie])\*{0,2}/g,
     "[$1 $2](#stats-speakers)"
   );
 
