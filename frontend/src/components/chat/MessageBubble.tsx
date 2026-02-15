@@ -526,6 +526,12 @@ function injectStatsLinks(content: string): string {
     "[$1](#stats-sessions)"
   );
 
+  // Strip any remaining bold markers from the intro section.
+  // The LLM often wraps entire phrases in bold (e.g. "**analizzando un totale di 95 interventi**"),
+  // and the regexes above only strip ** immediately around the matched patterns, leaving outer
+  // markers intact. Speaker names don't appear in the intro so this is safe.
+  result = result.replace(/\*\*/g, "");
+
   return before + result + rest;
 }
 
