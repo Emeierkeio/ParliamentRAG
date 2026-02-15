@@ -56,26 +56,16 @@ const STEP_DESCRIPTIONS: Record<number, string> = {
 
 /** Render rich step result details based on step type */
 function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: any }) {
-  // Step 2: Commissioni — show commission names with scores and keywords
+  // Step 2: Commissioni — show commission name
   if (step === 2) {
-    if (details?.commissioni?.length > 0) {
+    const topCommName = details?.commissioni?.[0]?.nome || details?.commissioni?.[0]?.name;
+    if (topCommName) {
       return (
-        <div className="mt-1.5 space-y-1.5">
-          {details.commissioni.map((c: any, i: number) => (
-            <div key={i} className="text-[11px]">
-              <p className="text-primary font-medium leading-snug">{c.nome || c.name}</p>
-              <div className="flex items-center gap-2 mt-0.5 text-muted-foreground">
-                {c.score != null && <span>Score: {c.score}</span>}
-                {c.matched_keywords?.length > 0 && (
-                  <span>Keywords: {c.matched_keywords.join(", ")}</span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="text-[11px] text-primary font-medium mt-1">
+          Commissione: {topCommName}
+        </p>
       );
     }
-    // Fallback: show result string which contains commission names from the commissioni handler
     if (result) {
       return (
         <p className="text-[11px] text-primary font-medium mt-1">
