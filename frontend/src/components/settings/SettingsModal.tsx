@@ -12,13 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Settings, RefreshCw, Save, AlertCircle } from "lucide-react";
-import { getSettings, updateSettings } from "@/lib/api";
+import { getConfig, updateConfig } from "@/lib/api";
+import type { SystemConfig, ConfigUpdate } from "@/lib/api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
-import { WeightsEditor, ManualAuthoritiesEditor } from "./GraphicalEditors";
+import { RetrievalEditor, AuthorityEditor, GenerationEditor } from "./GraphicalEditors";
 
 interface SettingsModalProps {
   open: boolean;
@@ -26,21 +27,21 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
+  const [configData, setConfigData] = useState<SystemConfig | null>(null);
   const [jsonContent, setJsonContent] = useState("");
-  const [parsedConfig, setParsedConfig] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const loadSettings = async () => {
+  const loadConfig = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getSettings();
-      setParsedConfig(data);
+      const data = await getConfig();
+      setConfigData(data);
       setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore nel caricamento delle impostazioni");
+      setError(err instanceof Error ? err.message : "Errore nel caricamento della configurazione");
     } finally {
       setIsLoading(false);
     }
@@ -48,30 +49,32 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   useEffect(() => {
     if (open) {
-      loadSettings();
+      loadConfig();
       setSuccess(false);
     }
   }, [open]);
 
-  const handleSave = async (dataToSave?: any) => {
+  // Sync JSON view when graphical editors change
+  useEffect(() => {
+    if (configData) {
+      setJsonContent(JSON.stringify(configData, null, 2));
+    }
+  }, [configData]);
+
+  const handleSave = async () => {
+    if (!configData) return;
     setIsLoading(true);
     setError(null);
     setSuccess(false);
     try {
-        let payload = dataToSave;
-        
-        if (!payload) {
-             // Validate JSON from text area
-            try {
-                payload = JSON.parse(jsonContent);
-            } catch (e) {
-                throw new Error("Formato JSON non valido. Correggi gli errori di sintassi.");
-            }
-        }
-
-      const updated = await updateSettings(payload);
-      setParsedConfig(updated);
-      setJsonContent(JSON.stringify(updated, null, 2)); // Sync JSON view
+      const payload: ConfigUpdate = {
+        retrieval: configData.retrieval,
+        authority: configData.authority,
+        generation: configData.generation,
+      };
+      const updated = await updateConfig(payload);
+      setConfigData(updated);
+      setJsonContent(JSON.stringify(updated, null, 2));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -81,11 +84,33 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     }
   };
 
-  const handleWeightsChange = (newWeights: any) => {
-      const newConfig = { ...parsedConfig, AUTHORITY_WEIGHTS: newWeights };
-      setParsedConfig(newConfig);
-      setJsonContent(JSON.stringify(newConfig, null, 2));
-  }
+  const handleJsonSave = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      let parsed: any;
+      try {
+        parsed = JSON.parse(jsonContent);
+      } catch {
+        throw new Error("Formato JSON non valido. Correggi gli errori di sintassi.");
+      }
+      const payload: ConfigUpdate = {
+        retrieval: parsed.retrieval,
+        authority: parsed.authority,
+        generation: parsed.generation,
+      };
+      const updated = await updateConfig(payload);
+      setConfigData(updated);
+      setJsonContent(JSON.stringify(updated, null, 2));
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore nel salvataggio");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -101,110 +126,117 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </DialogHeader>
 
         <div className="flex-1 overflow-hidden flex flex-col gap-4 py-2">
-            {error && (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Errore</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
-                </Alert>
-            )}
-            {success && (
-                <Alert className="bg-green-50 text-green-700 border-green-200">
-                    <Save className="h-4 w-4" />
-                    <AlertTitle>Successo</AlertTitle>
-                    <AlertDescription>Impostazioni salvate correttamente.</AlertDescription>
-                </Alert>
-            )}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Errore</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert className="bg-green-50 text-green-700 border-green-200">
+              <Save className="h-4 w-4" />
+              <AlertTitle>Successo</AlertTitle>
+              <AlertDescription>Impostazioni salvate correttamente.</AlertDescription>
+            </Alert>
+          )}
 
-            <Tabs defaultValue="visual" className="flex-1 flex flex-col">
-                <TabsList>
-                    <TabsTrigger value="visual">Editor Grafico</TabsTrigger>
-                    <TabsTrigger value="json">Editor JSON Avanzato</TabsTrigger>
-                    <TabsTrigger value="info">Guida</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="visual" className="h-[calc(85vh-180px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
-                    {parsedConfig ? (
-                        <div className="space-y-6 pb-4">
-                            <WeightsEditor 
-                                weights={parsedConfig.AUTHORITY_WEIGHTS || {}} 
-                                onChange={handleWeightsChange} 
-                            />
-                            
-                            <ManualAuthoritiesEditor 
-                                authorities={parsedConfig.MANUAL_AUTHORITIES || {}} 
-                                onChange={(newAuths) => {
-                                    /* Read-only for now in visual mode */
-                                }}
-                            />
-                            
-                            <div className="text-xs text-muted-foreground text-center">
-                                Per modifiche strutturali (Role Lists, Groups), usa l'editor JSON.
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="flex items-center justify-center h-full">
-                            <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
-                        </div>
-                    )}
-                </TabsContent>
+          <Tabs defaultValue="visual" className="flex-1 flex flex-col">
+            <TabsList>
+              <TabsTrigger value="visual">Editor Grafico</TabsTrigger>
+              <TabsTrigger value="json">Editor JSON</TabsTrigger>
+              <TabsTrigger value="info">Guida</TabsTrigger>
+            </TabsList>
 
-                <TabsContent value="json" className="flex-1 min-h-0 relative border rounded-md">
-                   <Textarea
-                        value={jsonContent}
-                        onChange={(e) => {
-                            setJsonContent(e.target.value);
-                            // Optional: Try parse to update visual state if valid? 
-                            // Better skip to avoid sync issues on partial edits.
-                        }}
-                        className="w-full h-full font-mono text-xs resize-none border-0 focus-visible:ring-0 p-4"
-                        placeholder="Caricamento configurazione..."
-                        disabled={isLoading}
-                    />
-                </TabsContent>
-                
-                <TabsContent value="info" className="flex-1 overflow-auto">
-                    <ScrollArea className="h-full pr-4">
-                        <div className="space-y-4 p-4 text-sm">
-                            <h3 className="font-bold">Struttura del file di configurazione</h3>
-                            
-                            <div>
-                                <h4 className="font-semibold text-primary">MANUAL_AUTHORITIES</h4>
-                                <p className="text-muted-foreground">
-                                    Override manuale per assegnare un esperto specifico a un gruppo su un determinato tema.
-                                </p>
-                                <pre className="bg-muted p-2 rounded mt-2 text-xs">
-{`"MANUAL_AUTHORITIES": {
-  "giustizia": {
-    "FI": "ENRICO COSTA" 
-  }
-}`}
-                                </pre>
-                            </div>
-                            
-                            <Separator />
-                            
-                            <div>
-                                <h4 className="font-semibold text-primary">AUTHORITY_WEIGHTS</h4>
-                                <p className="text-muted-foreground">
-                                    Pesi usati per calcolare lo score di autorità (somma deve essere ~1.0).
-                                </p>
-                            </div>
-                        </div>
-                    </ScrollArea>
-                </TabsContent>
-            </Tabs>
+            <TabsContent value="visual" className="h-[calc(85vh-200px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
+              {configData ? (
+                <div className="space-y-6 pb-4">
+                  <RetrievalEditor
+                    data={configData.retrieval}
+                    onChange={(retrieval) => setConfigData({ ...configData, retrieval })}
+                  />
+                  <AuthorityEditor
+                    data={configData.authority}
+                    onChange={(authority) => setConfigData({ ...configData, authority })}
+                  />
+                  <GenerationEditor
+                    data={configData.generation}
+                    onChange={(generation) => setConfigData({ ...configData, generation })}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="json" className="flex-1 min-h-0 relative border rounded-md">
+              <Textarea
+                value={jsonContent}
+                onChange={(e) => setJsonContent(e.target.value)}
+                className="w-full h-full font-mono text-xs resize-none border-0 focus-visible:ring-0 p-4"
+                placeholder="Caricamento configurazione..."
+                disabled={isLoading}
+              />
+            </TabsContent>
+
+            <TabsContent value="info" className="flex-1 overflow-auto">
+              <ScrollArea className="h-full pr-4">
+                <div className="space-y-4 p-4 text-sm">
+                  <h3 className="font-bold">Struttura della configurazione</h3>
+
+                  <div>
+                    <h4 className="font-semibold text-primary">Retrieval</h4>
+                    <p className="text-muted-foreground">
+                      Parametri per la ricerca: Dense Top-K (quanti chunk recuperare),
+                      soglie di similarità, e pesi del merger che bilanciano rilevanza,
+                      diversità, copertura e autorevolezza.
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-primary">Authority</h4>
+                    <p className="text-muted-foreground">
+                      Pesi per il calcolo dello score di autorevolezza dei deputati.
+                      La somma dei pesi deve essere circa 1.0.
+                      Half-life controlla il decadimento temporale di atti e interventi.
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h4 className="font-semibold text-primary">Generazione</h4>
+                    <p className="text-muted-foreground">
+                      Modelli OpenAI usati nelle 3 fasi della pipeline (analisi, scrittura, integrazione).
+                      Il toggle &quot;Analisi Trasversale&quot; abilita la sezione convergenze/divergenze.
+                    </p>
+                  </div>
+
+                  <Separator />
+
+                  <div className="text-xs text-muted-foreground">
+                    Le sezioni Compass, Coalizioni e Citation sono di sola lettura
+                    e possono essere modificate solo editando direttamente il file YAML.
+                  </div>
+                </div>
+              </ScrollArea>
+            </TabsContent>
+          </Tabs>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
           <div className="flex-1 flex justify-start">
-            <Button variant="outline" size="sm" onClick={loadSettings} disabled={isLoading}>
-                <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Ricarica
+            <Button variant="outline" size="sm" onClick={loadConfig} disabled={isLoading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+              Ricarica
             </Button>
           </div>
           <Button variant="outline" onClick={onClose} disabled={isLoading}>Annulla</Button>
-          <Button onClick={() => handleSave(parsedConfig)} disabled={isLoading}>
+          <Button onClick={handleSave} disabled={isLoading}>
             {isLoading ? "Salvataggio..." : "Salva Modifiche"}
           </Button>
         </DialogFooter>

@@ -223,6 +223,14 @@ class ConfigLoader:
             }
         }
 
+    def save_config(self, data: Dict[str, Any]) -> None:
+        """Save configuration to YAML file and reset cache."""
+        config_path = self.config_dir / "default.yaml"
+        with open(config_path, "w", encoding="utf-8") as f:
+            yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        self._config = None  # Reset cache so next load_config() reads fresh
+        logger.info(f"Saved configuration to {config_path}")
+
     @property
     def retrieval(self) -> Dict[str, Any]:
         """Get retrieval configuration."""

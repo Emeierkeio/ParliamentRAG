@@ -4,7 +4,7 @@ Configuration endpoint for exposing system settings.
 Returns effective configuration WITHOUT secrets.
 """
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -170,6 +170,120 @@ async def get_configuration():
         citation=citation_config,
         all_parties=all_parties,
     )
+
+
+class ConfigUpdateRequest(BaseModel):
+    """Partial config update. Only provided fields are merged."""
+    retrieval: Optional[Dict[str, Any]] = None
+    authority: Optional[Dict[str, Any]] = None
+    generation: Optional[Dict[str, Any]] = None
+
+    class Config:
+        extra = "forbid"
+
+
+def _deep_merge(base: Dict, updates: Dict) -> Dict:
+    """Recursively merge updates into base dict."""
+    result = base.copy()
+    for key, value in updates.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+
+def _apply_retrieval_update(current: Dict, update: Dict) -> Dict:
+    """Map flat API field names back to nested YAML structure."""
+    retrieval = current.get("retrieval", {})
+    dense = retrieval.get("dense_channel", {})
+    graph = retrieval.get("graph_channel", {})
+    merger = retrieval.get("merger", {})
+
+    if "dense_top_k" in update:
+        dense["top_k"] = update["dense_top_k"]
+    if "dense_similarity_threshold" in update:
+        dense["similarity_threshold"] = update["dense_similarity_threshold"]
+    if "graph_lexical_min_match" in update:
+        graph["lexical_keywords_min_match"] = update["graph_lexical_min_match"]
+    if "graph_semantic_threshold" in update:
+        graph["semantic_similarity_threshold"] = update["graph_semantic_threshold"]
+    if "merger_weights" in update:
+        mw = update["merger_weights"]
+        if "relevance" in mw:
+            merger["relevance_weight"] = mw["relevance"]
+        if "diversity" in mw:
+            merger["diversity_weight"] = mw["diversity"]
+        if "coverage" in mw:
+            merger["coverage_weight"] = mw["coverage"]
+        if "authority" in mw:
+            merger["authority_weight"] = mw["authority"]
+
+    retrieval["dense_channel"] = dense
+    retrieval["graph_channel"] = graph
+    retrieval["merger"] = merger
+    current["retrieval"] = retrieval
+    return current
+
+
+def _apply_authority_update(current: Dict, update: Dict) -> Dict:
+    """Map flat API field names back to nested YAML structure."""
+    authority = current.get("authority", {})
+
+    if "weights" in update:
+        authority["weights"] = update["weights"]
+    if "time_decay_acts_half_life" in update:
+        authority.setdefault("time_decay", {})["acts_half_life_days"] = update["time_decay_acts_half_life"]
+    if "time_decay_speeches_half_life" in update:
+        authority.setdefault("time_decay", {})["speeches_half_life_days"] = update["time_decay_speeches_half_life"]
+    if "normalization" in update:
+        authority["normalization"] = update["normalization"]
+    if "max_component_contribution" in update:
+        authority["max_component_contribution"] = update["max_component_contribution"]
+
+    current["authority"] = authority
+    return current
+
+
+def _apply_generation_update(current: Dict, update: Dict) -> Dict:
+    """Map flat API field names back to nested YAML structure."""
+    generation = current.get("generation", {})
+
+    if "models" in update:
+        generation["models"] = _deep_merge(generation.get("models", {}), update["models"])
+    if "require_all_parties" in update:
+        generation["require_all_parties"] = update["require_all_parties"]
+    if "no_evidence_message" in update:
+        generation["no_evidence_message"] = update["no_evidence_message"]
+    if "enable_synthesis" in update:
+        generation["enable_synthesis"] = update["enable_synthesis"]
+
+    current["generation"] = generation
+    return current
+
+
+@router.put("", response_model=ConfigResponse)
+async def update_configuration(update: ConfigUpdateRequest):
+    """
+    Update system configuration (partial merge).
+
+    Only retrieval, authority, and generation sections can be updated.
+    Changes are persisted to config/default.yaml.
+    """
+    config = get_config()
+    current = config.load_config()
+
+    if update.retrieval is not None:
+        current = _apply_retrieval_update(current, update.retrieval)
+    if update.authority is not None:
+        current = _apply_authority_update(current, update.authority)
+    if update.generation is not None:
+        current = _apply_generation_update(current, update.generation)
+
+    config.save_config(current)
+    logger.info("Configuration updated via API")
+
+    return await get_configuration()
 
 
 @router.get("/parties")
