@@ -373,7 +373,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                     const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
                     return (
                       <span
-                        className="inline cursor-pointer rounded px-1 py-0.5 bg-primary/5 text-primary/90 font-semibold hover:bg-primary/15 border-b-2 border-primary/40 hover:border-primary/60 transition-all duration-150"
+                        className="inline cursor-pointer rounded px-1 py-0.5 bg-primary/5 text-primary/90 font-medium hover:bg-primary/15 border-b-2 border-primary/40 hover:border-primary/60 transition-all duration-150"
                         onClick={() => setStatsModalView(view)}
                         title="Clicca per vedere il dettaglio"
                       >
@@ -522,7 +522,7 @@ function injectStatsLinks(content: string): string {
   // Pattern for session numbers: "N. 8, 15, 26, 69, 73 e altre 30" or "N. 8, 15, 26, 69, 73 e 80"
   // Handles optional bold markers around the whole expression
   result = result.replace(
-    /\*{0,2}(N\.\s*\d+(?:,\s*\d+)*(?:\s+e\s+(?:altr[eiao]\s+)?\d+)?)\*{0,2}/g,
+    /\*{0,2}(N\.\s*\d+(?:,\s*\d+)*(?:,?\s+e\s+(?:altr[eiao]\s+)?\d+)?)\*{0,2}/g,
     "[$1](#stats-sessions)"
   );
 
