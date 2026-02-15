@@ -37,6 +37,24 @@ function getGroupColor(party: string): string {
   return entry?.color || "#9E9E9E";
 }
 
+function getCoalitionColor(coalition: string): string {
+  switch (coalition) {
+    case "maggioranza": return "#3B82F6";
+    case "governo": return "#4B0082";
+    case "opposizione": return "#EF4444";
+    default: return "#9E9E9E";
+  }
+}
+
+function getCoalitionLabel(coalition: string): string {
+  switch (coalition) {
+    case "maggioranza": return "maggioranza";
+    case "governo": return "governo";
+    case "opposizione": return "opposizione";
+    default: return coalition || "opposizione";
+  }
+}
+
 function formatDate(dateStr: string): string {
   if (!dateStr) return "";
   try {
@@ -143,7 +161,7 @@ export function TopicStatsModal({
           {/* Interventions Tab */}
           <TabsContent value="interventions" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2">
+              <div className="px-6 py-4 space-y-2 overflow-hidden">
                 {stats.interventions_detail.map((intervention, i) => {
                   const speechUrl = buildSpeechUrl(intervention.speech_id);
                   const Wrapper = speechUrl ? "a" : "div";
@@ -154,7 +172,7 @@ export function TopicStatsModal({
                   return (
                     <Wrapper
                       key={`${intervention.speech_id}-${i}`}
-                      className={`group flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card/50 overflow-hidden transition-colors ${
+                      className={`group flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card/50 overflow-hidden transition-colors w-full max-w-full ${
                         speechUrl ? "hover:bg-primary/5 hover:border-primary/20" : "hover:bg-muted/30"
                       }`}
                       {...wrapperProps}
@@ -178,11 +196,11 @@ export function TopicStatsModal({
                             variant="outline"
                             className="shrink-0 text-[9px] px-1.5 py-0 h-4"
                             style={{
-                              borderColor: `${getGroupColor(intervention.party)}40`,
-                              color: getGroupColor(intervention.party),
+                              borderColor: `${getCoalitionColor(intervention.coalition)}40`,
+                              color: getCoalitionColor(intervention.coalition),
                             }}
                           >
-                            {intervention.coalition || "opposizione"}
+                            {getCoalitionLabel(intervention.coalition)}
                           </Badge>
                           {speechUrl && (
                             <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -224,7 +242,7 @@ export function TopicStatsModal({
           {/* Speakers Tab */}
           <TabsContent value="speakers" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2">
+              <div className="px-6 py-4 space-y-2 overflow-hidden">
                 {stats.speakers_detail.map((speaker, i) => {
                   const hasProfileUrl = !!speaker.camera_profile_url;
                   const hasExtraInfo = !!(speaker.profession || speaker.education || speaker.committee || speaker.institutional_role);
@@ -270,11 +288,11 @@ export function TopicStatsModal({
                               variant="outline"
                               className="shrink-0 text-[9px] px-1.5 py-0 h-4"
                               style={{
-                                borderColor: `${getGroupColor(speaker.party)}40`,
-                                color: getGroupColor(speaker.party),
+                                borderColor: `${getCoalitionColor(speaker.coalition)}40`,
+                                color: getCoalitionColor(speaker.coalition),
                               }}
                             >
-                              {speaker.coalition || "opposizione"}
+                              {getCoalitionLabel(speaker.coalition)}
                             </Badge>
                           </div>
                           <p className="text-[11px] text-muted-foreground truncate" title={speaker.party}>
@@ -332,7 +350,7 @@ export function TopicStatsModal({
           {/* Sessions Tab */}
           <TabsContent value="sessions" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2">
+              <div className="px-6 py-4 space-y-2 overflow-hidden">
                 {stats.sessions_detail.map((session, i) => {
                   const sessionUrl = buildSessionUrl(session.session_number);
                   return (

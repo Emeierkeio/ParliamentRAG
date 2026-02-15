@@ -74,7 +74,7 @@ class UnifiedEvidence(BaseModel):
         description="Speaker type"
     )
     party: str = Field(description="Parliamentary group name")
-    coalition: Literal["maggioranza", "opposizione"] = Field(
+    coalition: Literal["maggioranza", "opposizione", "governo"] = Field(
         description="Coalition membership"
     )
     date: date_type = Field(description="Date of the intervention")

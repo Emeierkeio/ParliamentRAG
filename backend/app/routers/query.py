@@ -304,6 +304,12 @@ async def process_query_streaming(
                     else:
                         date_obj = date.today()
 
+                    speaker_role = row.get("speaker_type", "Deputy")
+                    if speaker_role == "GovernmentMember":
+                        coalition = "governo"
+                    else:
+                        coalition = config.get_coalition(party)
+
                     extra_evidence_map[eid] = {
                         "evidence_id": eid,
                         "chunk_text": row.get("chunk_text", ""),
@@ -314,9 +320,9 @@ async def process_query_streaming(
                             row.get("speaker_first_name", ""),
                             row.get("speaker_last_name", "")
                         ),
-                        "speaker_role": row.get("speaker_type", "Deputy"),
+                        "speaker_role": speaker_role,
                         "party": party,
-                        "coalition": config.get_coalition(party),
+                        "coalition": coalition,
                         "date": date_obj,
                         "span_start": row.get("span_start", 0),
                         "span_end": row.get("span_end", 0),

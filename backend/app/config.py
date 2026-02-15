@@ -257,16 +257,27 @@ class ConfigLoader:
         """
         Determine which coalition a group belongs to.
 
+        Uses case-insensitive matching with normalized hyphens to handle
+        DB names (UPPERCASE) vs config names (display case).
+
         Args:
             group_name: Parliamentary group name
 
         Returns:
             'maggioranza' or 'opposizione'
         """
+        if not group_name:
+            return "opposizione"
+
+        def normalize(name: str) -> str:
+            return name.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-")
+
+        group_norm = normalize(group_name)
         coalitions = self.coalitions
         for coalition, groups in coalitions.items():
-            if group_name in groups:
-                return coalition
+            for g in groups:
+                if normalize(g) == group_norm:
+                    return coalition
         # Default to opposizione for unknown groups
         return "opposizione"
 

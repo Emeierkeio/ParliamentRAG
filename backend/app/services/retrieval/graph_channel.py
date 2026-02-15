@@ -308,8 +308,11 @@ class GraphChannel:
                         f"covering session date {row.get('session_date')}"
                     )
                     continue
-                party = party or "GOVERNO"
-                coalition = config.get_coalition(party) if party else "opposizione"
+                if speaker_role == "GovernmentMember":
+                    party = party or "GOVERNO"
+                    coalition = "governo"
+                else:
+                    coalition = config.get_coalition(party) if party else "opposizione"
 
                 # Parse date - handles both Neo4j Date objects and string formats
                 session_date = row.get("session_date")
