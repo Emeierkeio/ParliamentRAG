@@ -27,7 +27,7 @@ export function useChat(options: UseChatOptions = {}) {
   const queryContentRef = useRef<string>("");
   const retryCountRef = useRef(0);
   const streamCompletedRef = useRef(false);
-  const sendMessageRef = useRef<((content: string) => Promise<void>) | null>(null);
+  const sendMessageRef = useRef<((content: string, isRetry?: boolean) => Promise<void>) | null>(null);
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
