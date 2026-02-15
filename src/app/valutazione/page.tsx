@@ -737,7 +737,7 @@ function ChatEvaluationRow({
                 {[
                   { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti` },
                   { label: "Integrita citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide` },
-                  { label: "Bilanciamento", value: m.balance_score, detail: `Magg. ${m.maggioranza_pct.toFixed(0)}% / Opp. ${m.opposizione_pct.toFixed(0)}%` },
+                  { label: "Bilanciamento", value: m.balance_score, detail: `Maggioranza ${m.maggioranza_pct.toFixed(0)}% / Opposizione ${m.opposizione_pct.toFixed(0)}%` },
                   { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti` },
                   { label: "Completezza", value: m.response_completeness, detail: "" },
                 ].map((row) => (

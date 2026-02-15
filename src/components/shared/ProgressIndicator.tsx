@@ -28,6 +28,19 @@ interface ProgressIndicatorProps {
   className?: string;
 }
 
+/** Short labels for mobile display (max ~5 chars) */
+const STEP_SHORT_LABELS: Record<number, string> = {
+  1: "Query",
+  2: "Comm.",
+  3: "Esperti",
+  4: "Interv.",
+  5: "Stats",
+  6: "Bussola",
+  7: "Testo",
+  8: "Base",
+  9: "Check",
+};
+
 /** Shared step descriptions for tooltips */
 const STEP_DESCRIPTIONS: Record<number, string> = {
   1: "Classifica la domanda dell'utente per identificare il tema principale",
@@ -207,7 +220,8 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
                         isPending && "text-muted-foreground opacity-40"
                       )}
                     >
-                      {step.label}
+                      <span className="lg:hidden">{STEP_SHORT_LABELS[stepNumber] || step.label}</span>
+                      <span className="hidden lg:inline">{step.label}</span>
                     </span>
                   </div>
                 </TooltipTrigger>
@@ -276,9 +290,9 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
           {steps.map((step) => (
             <span
               key={step.id}
-              className="text-[7px] leading-tight text-center text-primary/70 font-medium truncate flex-1 min-w-0 px-px"
+              className="text-[8px] leading-tight text-center text-primary/70 font-medium truncate flex-1 min-w-0 px-px"
             >
-              {step.label}
+              {STEP_SHORT_LABELS[step.id] || step.label}
             </span>
           ))}
         </div>
@@ -304,7 +318,8 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
                       <Check className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-[10px] leading-tight text-center text-primary font-medium truncate w-full px-0.5">
-                      {step.label}
+                      <span className="lg:hidden">{STEP_SHORT_LABELS[step.id] || step.label}</span>
+                      <span className="hidden lg:inline">{step.label}</span>
                     </span>
                   </div>
                 </TooltipTrigger>
