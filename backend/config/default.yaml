@@ -94,7 +94,6 @@ compass:
 
   # Axis labeling parameters (IC-6)
   tfidf_top_terms: 3             # Number of top TF-IDF terms for label
-  reference_axis_threshold: 0.25 # Cosine similarity threshold for reference axis match
   pole_purity_threshold: 0.30    # Minimum pole coherence
 
   # Visualization parameters
@@ -109,11 +108,6 @@ generation:
     writer: "gpt-4o"        # Stage 2: Sectional writing
     integrator: "gpt-4o"    # Stage 3: Narrative integration
     # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
-
-  parameters:
-    max_tokens: 4000
-    temperature: 0.3
-    top_p: 1.0
 
   # All 10 parties must have sections
   require_all_parties: true
@@ -153,38 +147,14 @@ citation:
 
   # Citation integrity system settings
   integrity:
-    # Enable citation registry for tracking
-    enable_registry: true
     # Minimum semantic coherence score (0.0-1.0)
     # For embedding method: 0.6 recommended (cosine similarity)
     # For jaccard method: 0.2 recommended (keyword overlap)
     min_coherence_score: 0.6
     # Coherence validation method: "embedding" (primary) or "jaccard" (fallback)
     coherence_method: "embedding"
-    # Enable integrator guard to prevent citation loss
-    integrator_guard: true
-    # Fail on unresolved citations (strict mode)
-    strict_resolution: true
-    # Include detailed integrity report in response
-    include_report: true
-    # Enable evidence-first writing mode (experimental)
-    # When true, text is built around citations for guaranteed coherence
-    evidence_first_mode: true
 
 # LLM provider configuration
 llm:
-  provider: "openai"  # ONLY openai supported at runtime
-
   # Embedding model
   embedding_model: "text-embedding-3-small"
-  embedding_dimensions: 1536
-
-  # Rate limiting
-  rate_limit:
-    requests_per_minute: 60
-    tokens_per_minute: 90000
-
-# Logging configuration
-logging:
-  level: "INFO"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

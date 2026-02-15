@@ -33,6 +33,7 @@ class AnchorManager:
         compass_config = config.get("compass", {})
 
         self._anchors = {
+            "enabled": False,
             "left": {
                 "groups": [],
                 "confidence": 0.8,
@@ -51,6 +52,12 @@ class AnchorManager:
 
         # Load from config
         anchors_config = compass_config.get("anchors", {})
+        self._anchors["enabled"] = anchors_config.get("enabled", False)
+
+        # Only load group mappings if anchors are enabled
+        if not self._anchors["enabled"]:
+            logger.info("Compass anchors disabled, using neutral positioning")
+            return self._anchors
 
         for position in ["left", "center", "right"]:
             pos_config = anchors_config.get(position, {})
