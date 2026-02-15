@@ -115,7 +115,7 @@ export function TopicStatsModal({
           </div>
         </DialogHeader>
 
-        <Tabs defaultValue={defaultView} className="flex-1 flex flex-col min-h-0">
+        <Tabs defaultValue={defaultView} className="flex-1 flex flex-col min-h-0 overflow-hidden">
           <TabsList className="grid w-full grid-cols-3 h-10 px-6 mt-2 shrink-0">
             <TabsTrigger value="interventions" className="text-xs gap-1.5">
               <MessageSquareQuote className="h-3.5 w-3.5" />
@@ -182,7 +182,7 @@ export function TopicStatsModal({
                               color: getGroupColor(intervention.party),
                             }}
                           >
-                            {intervention.coalition === "maggioranza" ? "maggioranza" : "opposizione"}
+                            {intervention.coalition || "opposizione"}
                           </Badge>
                           {speechUrl && (
                             <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -274,7 +274,7 @@ export function TopicStatsModal({
                                 color: getGroupColor(speaker.party),
                               }}
                             >
-                              {speaker.coalition === "maggioranza" ? "maggioranza" : "opposizione"}
+                              {speaker.coalition || "opposizione"}
                             </Badge>
                           </div>
                           <p className="text-[11px] text-muted-foreground truncate" title={speaker.party}>
