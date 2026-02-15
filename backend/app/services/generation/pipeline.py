@@ -613,6 +613,7 @@ class GenerationPipeline:
                 continue
             seen_speeches[speech_id] = {
                 "speech_id": speech_id,
+                "speaker_id": e.get("speaker_id", ""),
                 "speaker_name": e.get("speaker_name", ""),
                 "party": e.get("party", ""),
                 "coalition": e.get("coalition", ""),

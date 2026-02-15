@@ -250,6 +250,23 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Send topic statistics ===
         topic_stats = generation_result.get("topic_statistics")
         if topic_stats:
+            # Enrich speakers/interventions with photo URLs from Neo4j
+            speakers_detail = topic_stats.get("speakers_detail", [])
+            interventions_detail = topic_stats.get("interventions_detail", [])
+            neo4j = services.get("neo4j")
+            if neo4j:
+                all_sids = list(set(
+                    s.get("speaker_id", "") for s in speakers_detail
+                ) | set(
+                    i.get("speaker_id", "") for i in interventions_detail
+                    if i.get("speaker_id")
+                ))
+                photo_map = _batch_fetch_photos(neo4j, [s for s in all_sids if s])
+                for s in speakers_detail:
+                    s["photo"] = photo_map.get(s.get("speaker_id", ""))
+                for i in interventions_detail:
+                    i["photo"] = photo_map.get(i.get("speaker_id", ""))
+
             ts_payload = {
                 "intervention_count": topic_stats.get("intervention_count", 0),
                 "speaker_count": topic_stats.get("speaker_count", 0),
@@ -263,8 +280,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     if hasattr(topic_stats.get("last_date"), "strftime")
                     else str(topic_stats.get("last_date", ""))
                 ),
-                "speakers_detail": topic_stats.get("speakers_detail", []),
-                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "speakers_detail": speakers_detail,
+                "interventions_detail": interventions_detail,
                 "sessions_detail": topic_stats.get("sessions_detail", []),
             }
             await emit("topic_stats", ts_payload)
@@ -732,6 +749,23 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         # === Send topic statistics for frontend clickable intro stats ===
         topic_stats = generation_result.get("topic_statistics")
         if topic_stats:
+            # Enrich speakers/interventions with photo URLs from Neo4j
+            speakers_detail = topic_stats.get("speakers_detail", [])
+            interventions_detail = topic_stats.get("interventions_detail", [])
+            neo4j = services.get("neo4j")
+            if neo4j:
+                all_sids = list(set(
+                    s.get("speaker_id", "") for s in speakers_detail
+                ) | set(
+                    i.get("speaker_id", "") for i in interventions_detail
+                    if i.get("speaker_id")
+                ))
+                photo_map = _batch_fetch_photos(neo4j, [s for s in all_sids if s])
+                for s in speakers_detail:
+                    s["photo"] = photo_map.get(s.get("speaker_id", ""))
+                for i in interventions_detail:
+                    i["photo"] = photo_map.get(i.get("speaker_id", ""))
+
             # Serialize dates to strings for JSON
             ts_payload = {
                 "intervention_count": topic_stats.get("intervention_count", 0),
@@ -746,8 +780,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     if hasattr(topic_stats.get("last_date"), "strftime")
                     else str(topic_stats.get("last_date", ""))
                 ),
-                "speakers_detail": topic_stats.get("speakers_detail", []),
-                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "speakers_detail": speakers_detail,
+                "interventions_detail": interventions_detail,
                 "sessions_detail": topic_stats.get("sessions_detail", []),
             }
             yield sse_event("topic_stats", ts_payload)
@@ -1035,6 +1069,25 @@ def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str])
     return result_map
 
 
+def _batch_fetch_photos(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
+    """Batch-fetch photo URLs for a list of speaker IDs. Returns {speaker_id: url}."""
+    if not speaker_ids:
+        return {}
+    cypher = """
+    UNWIND $ids AS sid
+    OPTIONAL MATCH (d:Deputy {id: sid})
+    WITH sid, d.photo AS url
+    WHERE url IS NOT NULL
+    RETURN sid, url
+    """
+    result_map: Dict[str, str] = {}
+    with neo4j_client.session() as session:
+        result = session.run(cypher, ids=list(set(speaker_ids)))
+        for record in result:
+            result_map[record["sid"]] = record["url"]
+    return result_map
+
+
 def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
     """
     Batch-fetch institutional roles for government members.
@@ -1101,6 +1154,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
            d.profession AS profession,
            d.education AS education,
            d.deputy_card AS camera_profile_url,
+           d.photo AS photo,
            current_committee,
            CASE WHEN size(all_roles) > 0 THEN all_roles[0] ELSE null END AS institutional_role
     """

@@ -177,16 +177,25 @@ export function TopicStatsModal({
                       }`}
                       {...wrapperProps}
                     >
-                      <div
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                        style={{
-                          backgroundColor: `${getGroupColor(intervention.party)}10`,
-                          color: getGroupColor(intervention.party),
-                          border: `1px solid ${getGroupColor(intervention.party)}30`,
-                        }}
-                      >
-                        {intervention.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                      </div>
+                      {intervention.photo ? (
+                        <img
+                          src={intervention.photo}
+                          alt={intervention.speaker_name}
+                          className="h-8 w-8 shrink-0 rounded-full object-cover"
+                          style={{ border: `2px solid ${getGroupColor(intervention.party)}40` }}
+                        />
+                      ) : (
+                        <div
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                          style={{
+                            backgroundColor: `${getGroupColor(intervention.party)}10`,
+                            color: getGroupColor(intervention.party),
+                            border: `1px solid ${getGroupColor(intervention.party)}30`,
+                          }}
+                        >
+                          {intervention.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <span className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
@@ -256,16 +265,25 @@ export function TopicStatsModal({
                     >
                       {/* Main row */}
                       <div className="flex items-center gap-3">
-                        <div
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
-                          style={{
-                            backgroundColor: `${getGroupColor(speaker.party)}10`,
-                            color: getGroupColor(speaker.party),
-                            border: `1px solid ${getGroupColor(speaker.party)}30`,
-                          }}
-                        >
-                          {speaker.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
-                        </div>
+                        {speaker.photo ? (
+                          <img
+                            src={speaker.photo}
+                            alt={speaker.speaker_name}
+                            className="h-10 w-10 shrink-0 rounded-full object-cover"
+                            style={{ border: `2px solid ${getGroupColor(speaker.party)}40` }}
+                          />
+                        ) : (
+                          <div
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                            style={{
+                              backgroundColor: `${getGroupColor(speaker.party)}10`,
+                              color: getGroupColor(speaker.party),
+                              border: `1px solid ${getGroupColor(speaker.party)}30`,
+                            }}
+                          >
+                            {speaker.speaker_name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                          </div>
+                        )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
                             {hasProfileUrl ? (
