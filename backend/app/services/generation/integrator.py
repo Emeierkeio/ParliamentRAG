@@ -42,6 +42,7 @@ STRUTTURA (in questo ordine):
 - INDICA il periodo temporale (data primo e ultimo intervento)
 - CITA le sedute specifiche (es. Seduta N. 123) quando disponibili
 - NON anticipare le posizioni dei partiti
+- NON usare **grassetto** per numeri, statistiche o dati nell'introduzione (il grassetto è riservato SOLO ai cognomi dei parlamentari)
 
 ## Posizione del Governo (se presente)
 Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
