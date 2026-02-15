@@ -73,6 +73,7 @@ export interface SpeakerDetail {
   coalition: string;
   intervention_count: number;
   camera_profile_url?: string;
+  photo?: string;
   profession?: string;
   education?: string;
   committee?: string;
@@ -81,12 +82,14 @@ export interface SpeakerDetail {
 
 export interface InterventionDetail {
   speech_id: string;
+  speaker_id?: string;
   speaker_name: string;
   party: string;
   coalition: string;
   date: string;
   debate_title: string;
   session_number: number;
+  photo?: string;
 }
 
 export interface SessionDetail {
