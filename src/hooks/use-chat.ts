@@ -292,9 +292,9 @@ export function useChat(options: UseChatOptions = {}) {
                 const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
                 const commResult = {
                   step: 2,
-                  label: "Commissioni",
+                  label: "Commissione",
                   result: topComm
-                    ? `${topComm}${commList.length > 1 ? ` (+${commList.length - 1})` : ""}`
+                    ? `Trovata commissione competente: ${topComm}`
                     : "Nessuna commissione pertinente",
                   details: { commissioni: commList }
                 };
