@@ -161,7 +161,7 @@ export function TopicStatsModal({
           {/* Interventions Tab */}
           <TabsContent value="interventions" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2 overflow-hidden">
+              <div className="px-6 py-4 space-y-2 overflow-hidden w-full max-w-full">
                 {stats.interventions_detail.map((intervention, i) => {
                   const speechUrl = buildSpeechUrl(intervention.speech_id);
                   const Wrapper = speechUrl ? "a" : "div";
@@ -242,7 +242,7 @@ export function TopicStatsModal({
           {/* Speakers Tab */}
           <TabsContent value="speakers" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2 overflow-hidden">
+              <div className="px-6 py-4 space-y-2 overflow-hidden w-full max-w-full">
                 {stats.speakers_detail.map((speaker, i) => {
                   const hasProfileUrl = !!speaker.camera_profile_url;
                   const hasExtraInfo = !!(speaker.profession || speaker.education || speaker.committee || speaker.institutional_role);
@@ -350,7 +350,7 @@ export function TopicStatsModal({
           {/* Sessions Tab */}
           <TabsContent value="sessions" className="flex-1 min-h-0 mt-0 data-[state=active]:flex data-[state=active]:flex-col">
             <ScrollArea className="flex-1 h-0">
-              <div className="px-6 py-4 space-y-2 overflow-hidden">
+              <div className="px-6 py-4 space-y-2 overflow-hidden w-full max-w-full">
                 {stats.sessions_detail.map((session, i) => {
                   const sessionUrl = buildSessionUrl(session.session_number);
                   return (
@@ -359,7 +359,7 @@ export function TopicStatsModal({
                       href={sessionUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 transition-colors block overflow-hidden"
+                      className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 transition-colors overflow-hidden w-full max-w-full"
                       title="Apri resoconto stenografico su camera.it"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm">
