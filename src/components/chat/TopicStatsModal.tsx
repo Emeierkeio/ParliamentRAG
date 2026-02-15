@@ -119,7 +119,7 @@ export function TopicStatsModal({
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
-              {stats.speaker_count} parlamentari
+              {stats.speaker_count} deputati
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
@@ -144,7 +144,7 @@ export function TopicStatsModal({
             </TabsTrigger>
             <TabsTrigger value="speakers" className="text-xs gap-1.5">
               <Users className="h-3.5 w-3.5" />
-              Parlamentari
+              Deputati
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 ml-1">
                 {stats.speaker_count}
               </Badge>
@@ -340,7 +340,7 @@ export function TopicStatsModal({
                 })}
                 {stats.speakers_detail.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
-                    Nessun parlamentare disponibile.
+                    Nessun deputato disponibile.
                   </p>
                 )}
               </div>
