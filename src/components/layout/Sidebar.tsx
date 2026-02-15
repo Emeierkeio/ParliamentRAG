@@ -23,6 +23,7 @@ import {
   Github,
   ExternalLink,
   Database,
+  Settings,
   Trash2,
   Check,
   Search,
@@ -34,6 +35,7 @@ import {
   Building2,
 } from "lucide-react";
 import { config } from "@/config";
+import { SettingsModal } from "@/components/settings/SettingsModal";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -62,6 +64,7 @@ export function MobileMenuButton({ onClick, className }: { onClick: () => void; 
 export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleNavClick = (action: () => void) => {
     action();
@@ -141,6 +144,10 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
           {/* Bottom */}
           <div className="p-3 pb-6">
             <NavButton
+              item={{ icon: Settings, label: "Impostazioni", onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
+              isCollapsed={false}
+            />
+            <NavButton
               item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
               isCollapsed={false}
             />
@@ -189,6 +196,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         {/* Modals */}
         <InfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
         <HistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} onLoadChat={onLoadChat} />
+        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
       </>
     );
   }
@@ -274,6 +282,10 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         <div className="p-3 pb-6">
           <nav className="flex flex-col gap-1">
             <NavButton
+                item={{ icon: Settings, label: "Impostazioni", onClick: () => setSettingsOpen(true) }}
+                isCollapsed={isCollapsed}
+            />
+            <NavButton
                 item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />
@@ -352,6 +364,9 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         onClose={() => setHistoryOpen(false)}
         onLoadChat={onLoadChat}
       />
+
+      {/* Settings Modal */}
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
     </>
   );
