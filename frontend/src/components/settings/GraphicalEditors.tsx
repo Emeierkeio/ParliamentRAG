@@ -13,7 +13,6 @@ import {
   Clock,
   Target,
   Users,
-  BookOpen,
   Briefcase,
   GraduationCap,
   FileText,
@@ -303,10 +302,6 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
   };
 
-  const updateField = (patch: Partial<SystemConfig["generation"]>) => {
-    onChange({ ...data, ...patch });
-  };
-
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -314,51 +309,25 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           <Zap className="h-4 w-4 text-primary" />
           Generazione
         </CardTitle>
-        <CardDescription>Modelli LLM e opzioni della pipeline di generazione</CardDescription>
+        <CardDescription>Modelli LLM per la pipeline di generazione a 3 stadi</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
-          {Object.entries(data.models).map(([stage, model]) => (
-            <div key={stage} className="flex items-center gap-3">
-              <Label className="w-28 text-sm capitalize shrink-0">
-                {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
-              </Label>
-              <select
-                value={model}
-                onChange={(e) => updateModel(stage, e.target.value)}
-                className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {MODEL_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium">Analisi Trasversale</p>
-            <p className="text-xs text-muted-foreground">Sezione convergenze/divergenze tra partiti</p>
+      <CardContent className="space-y-3">
+        {Object.entries(data.models).map(([stage, model]) => (
+          <div key={stage} className="flex items-center gap-3">
+            <Label className="w-28 text-sm capitalize shrink-0">
+              {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
+            </Label>
+            <select
+              value={model}
+              onChange={(e) => updateModel(stage, e.target.value)}
+              className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {MODEL_OPTIONS.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={data.require_all_parties}
-            onClick={() => updateField({ require_all_parties: !data.require_all_parties })}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-              data.require_all_parties ? "bg-primary" : "bg-muted"
-            }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                data.require_all_parties ? "translate-x-6" : "translate-x-1"
-              }`}
-            />
-          </button>
-        </div>
+        ))}
       </CardContent>
     </Card>
   );
