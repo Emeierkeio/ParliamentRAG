@@ -182,7 +182,7 @@ export function TopicStatsModal({
                               color: getGroupColor(intervention.party),
                             }}
                           >
-                            {intervention.coalition === "maggioranza" ? "magg." : "opp."}
+                            {intervention.coalition === "maggioranza" ? "maggioranza" : "opposizione"}
                           </Badge>
                           {speechUrl && (
                             <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -274,7 +274,7 @@ export function TopicStatsModal({
                                 color: getGroupColor(speaker.party),
                               }}
                             >
-                              {speaker.coalition === "maggioranza" ? "magg." : "opp."}
+                              {speaker.coalition === "maggioranza" ? "maggioranza" : "opposizione"}
                             </Badge>
                           </div>
                           <p className="text-[11px] text-muted-foreground truncate" title={speaker.party}>

@@ -321,7 +321,7 @@ export function useChat(options: UseChatOptions = {}) {
                   const expertsResult = {
                     step: 3,
                     label: "Esperti",
-                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
+                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} maggioranza, ${opp} opposizione)`,
                     details: { experts: experts.length, maggioranza: magg, opposizione: opp }
                   };
                   stepResultsMap.set(3, expertsResult);
@@ -377,7 +377,7 @@ export function useChat(options: UseChatOptions = {}) {
                 const balanceResult = {
                   step: 5,
                   label: "Statistiche",
-                  result: `Magg. ${data.maggioranza_percentage?.toFixed(0)}% / Opp. ${data.opposizione_percentage?.toFixed(0)}%`,
+                  result: `Maggioranza ${data.maggioranza_percentage?.toFixed(0)}% / Opposizione ${data.opposizione_percentage?.toFixed(0)}%`,
                   details: balanceMetrics
                 };
                 stepResultsMap.set(5, balanceResult);
@@ -760,7 +760,6 @@ export function useChat(options: UseChatOptions = {}) {
           biasScore: historyData.balance.bias_score
       } : undefined,
       compass: historyData.compass,
-      commissioni: historyData.commissioni || undefined,
       topicStats: historyData.topic_stats || undefined,
       baselineAnswer: historyData.baseline_answer || undefined,
       abAssignment: historyData.ab_assignment || undefined,
@@ -772,16 +771,6 @@ export function useChat(options: UseChatOptions = {}) {
     // Rebuild a synthetic completed progress from available data
     const stepResults: { step: number; label: string; result: string; details?: any }[] = [];
     stepResults.push({ step: 1, label: "Analisi query", result: "Completata" });
-
-    if (historyData.commissioni?.length) {
-      const topComm = historyData.commissioni[0].nome || historyData.commissioni[0].name || String(historyData.commissioni[0]);
-      stepResults.push({
-        step: 2,
-        label: "Commissioni",
-        result: `${topComm}${historyData.commissioni.length > 1 ? ` (+${historyData.commissioni.length - 1})` : ""}`,
-        details: { commissioni: historyData.commissioni },
-      });
-    }
 
     if (historyData.citations?.length) {
       const uniqueDeputies = [...new Set(historyData.citations.map((c: any) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
@@ -799,7 +788,7 @@ export function useChat(options: UseChatOptions = {}) {
       stepResults.push({
         step: 3,
         label: "Esperti",
-        result: `${historyData.experts.length} esperti: ${topExperts}${historyData.experts.length > 3 ? "..." : ""} (${magg} magg., ${opp} opp.)`,
+        result: `${historyData.experts.length} esperti: ${topExperts}${historyData.experts.length > 3 ? "..." : ""} (${magg} maggioranza, ${opp} opposizione)`,
         details: { experts: historyData.experts.length, maggioranza: magg, opposizione: opp },
       });
     }
@@ -807,7 +796,7 @@ export function useChat(options: UseChatOptions = {}) {
       stepResults.push({
         step: 5,
         label: "Statistiche",
-        result: `Magg. ${historyData.balance.maggioranza_percentage?.toFixed(0)}% / Opp. ${historyData.balance.opposizione_percentage?.toFixed(0)}%`,
+        result: `Maggioranza ${historyData.balance.maggioranza_percentage?.toFixed(0)}% / Opposizione ${historyData.balance.opposizione_percentage?.toFixed(0)}%`,
         details: historyData.balance,
       });
     }

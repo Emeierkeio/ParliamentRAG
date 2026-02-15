@@ -115,7 +115,18 @@
     @apply bg-background text-foreground antialiased font-sans;
     overflow-x: hidden;
     width: 100%;
-    max-width: 100vw;
+    max-width: 100%;
+  }
+}
+
+/* iOS Safari overflow containment — Safari ignores overflow-x:hidden on html/body */
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    -webkit-overflow-scrolling: touch;
+  }
+  body > div {
+    overflow-x: hidden;
+    max-width: 100%;
   }
 }
 
@@ -159,7 +170,8 @@
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
-    hyphens: auto;
+    -webkit-hyphens: none;
+    hyphens: none;
   }
 
   /* Safe area insets for notched devices (iPhone X+) */
