@@ -134,7 +134,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               />
 
               {/* Strumenti */}
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 mt-5 mb-1.5 px-3">Strumenti</p>
+              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Strumenti</p>
               <NavButton
                 item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
                 isCollapsed={false}
@@ -289,7 +289,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
             {/* Strumenti */}
             {!isCollapsed && (
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 mt-5 mb-1.5 px-3">Strumenti</p>
+              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Strumenti</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
@@ -447,23 +447,33 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       variant="ghost"
       disabled={disabled}
       className={cn(
-        "w-full justify-start gap-3 h-10 mb-1 transition-all duration-200",
+        "w-full justify-start transition-all duration-200",
+        // Primary: full-size nav item
+        isPrimary && "gap-3 h-10 mb-1",
+        // Default (strumenti): compact
+        !isPrimary && "gap-2.5 h-8 mb-0.5 text-[13px]",
         // Default State
-        "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+        "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
         // Active State
-        item.isActive && !isPrimary && "bg-sidebar-accent text-sidebar-foreground font-medium",
-        // Primary Variant
-        isPrimary && "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground shadow-sm",
+        item.isActive && !isPrimary && "bg-sidebar-accent/60 text-sidebar-foreground font-medium",
+        // Primary Variant - subtle highlight, no heavy box
+        isPrimary && "text-sidebar-foreground font-semibold hover:bg-sidebar-accent/50",
+        isPrimary && item.isActive && "bg-sidebar-accent/40",
         // Collapsed Logic
-        isCollapsed && "justify-center px-0 w-10 h-10 mx-auto",
+        isCollapsed && "justify-center px-0 mx-auto",
+        isCollapsed && isPrimary && "w-10 h-10",
+        isCollapsed && !isPrimary && "w-9 h-9",
         // Disabled State
         disabled && "opacity-40 pointer-events-none"
       )}
       onClick={item.onClick}
     >
-      <item.icon className={cn("h-5 w-5 shrink-0", isPrimary ? "text-sidebar-primary-foreground" : "text-current")} />
+      <item.icon className={cn(
+        "shrink-0",
+        isPrimary ? "h-5 w-5 text-sidebar-foreground" : "h-4 w-4 text-current"
+      )} />
       {!isCollapsed && (
-        <span className={cn("truncate", isPrimary && "font-medium")}>{item.label}</span>
+        <span className="truncate">{item.label}</span>
       )}
     </Button>
   );
