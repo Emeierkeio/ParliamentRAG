@@ -193,7 +193,7 @@ export default function ExplorerPage() {
                         )}
 
                         {/* Query Editor */}
-                        <div className="h-[100px] md:h-[160px] border-b border-border relative bg-muted/5 shrink-0">
+                        <div className="h-[100px] md:h-[160px] border-b border-border relative bg-muted/5 shrink-0 overflow-hidden">
                             <Textarea
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
@@ -203,7 +203,7 @@ export default function ExplorerPage() {
                                         if (!isWriteQuery(query)) runQuery();
                                     }
                                 }}
-                                className="w-full h-full font-mono text-sm p-3 md:p-4 resize-none border-0 focus-visible:ring-0 bg-transparent"
+                                className="w-full h-full font-mono text-sm p-3 md:p-4 resize-none border-0 focus-visible:ring-0 bg-transparent overflow-y-auto"
                                 placeholder="Inserisci una query Cypher..."
                             />
                             <div className="absolute bottom-2 right-2 text-[10px] text-muted-foreground bg-background/80 px-2 py-0.5 rounded hidden sm:block">
