@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     "intelligenza artificiale",
     "analisi politica",
   ],
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
