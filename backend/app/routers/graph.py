@@ -167,48 +167,53 @@ async def get_graph_stats() -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Write keywords to block before even reaching the database
+WRITE_KEYWORDS = [
+    "CREATE", "DELETE", "DETACH", "SET ", "REMOVE", "MERGE",
+    "DROP", "FOREACH", "LOAD CSV",
+    "CALL DB.CREATEINDEX", "CALL DB.CREATECONSTRAINT",
+    "CALL DB.INDEX.FULLTEXT.CREATE", "CALL APOC.CREATE",
+    "CALL APOC.MERGE", "CALL APOC.REFACTOR",
+]
+
+
 @router.post("/query")
 async def execute_cypher_query(request: CypherQueryRequest) -> Dict[str, Any]:
     """
     Execute a read-only Cypher query.
 
-    WARNING: Only read queries are allowed for safety.
+    Enforces read-only access at two levels:
+    1. Keyword blocklist (rejects obvious write queries early)
+    2. Neo4j execute_read transaction (database-level enforcement)
     """
     client = get_client()
     cypher = request.cypher.strip()
 
-    # Basic safety check - block write operations
-    dangerous_keywords = [
-        "CREATE", "DELETE", "DETACH", "SET", "REMOVE", "MERGE",
-        "DROP", "CALL db.createIndex", "CALL db.createConstraint"
-    ]
-
+    # Layer 1: Block write operations by keyword
     cypher_upper = cypher.upper()
-    for keyword in dangerous_keywords:
+    for keyword in WRITE_KEYWORDS:
         if keyword in cypher_upper:
             raise HTTPException(
-                status_code=400,
-                detail=f"Write operations are not allowed: {keyword}"
+                status_code=403,
+                detail=f"Operazione di scrittura non consentita. Il Graph Explorer è in modalità sola lettura."
             )
 
     try:
-        with client.session() as session:
-            result = session.run(cypher)
+        # Layer 2: Use execute_read to enforce read-only at the driver level.
+        # Neo4j will reject any write operation even if it bypasses the keyword check.
+        def read_tx(tx):
+            result = tx.run(cypher)
             records = []
-
             for record in result:
-                # Convert record to dict, handling Neo4j types
                 record_dict = {}
                 for key in record.keys():
                     value = record[key]
-                    # Handle Neo4j Node objects
                     if hasattr(value, 'labels'):
                         record_dict[key] = {
                             "id": value.element_id,
                             "labels": list(value.labels),
                             "properties": serialize_neo4j_value(dict(value))
                         }
-                    # Handle Neo4j Relationship objects
                     elif hasattr(value, 'type'):
                         record_dict[key] = {
                             "type": value.type,
@@ -217,6 +222,10 @@ async def execute_cypher_query(request: CypherQueryRequest) -> Dict[str, Any]:
                     else:
                         record_dict[key] = serialize_neo4j_value(value)
                 records.append(record_dict)
+            return records
+
+        with client.session() as session:
+            records = session.execute_read(read_tx)
 
             return {
                 "records": records[:1000],  # Limit results

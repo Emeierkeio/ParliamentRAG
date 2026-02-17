@@ -224,12 +224,13 @@ class ConfigLoader:
         }
 
     def save_config(self, data: Dict[str, Any]) -> None:
-        """Save configuration to YAML file and reset cache."""
-        config_path = self.config_dir / "default.yaml"
-        with open(config_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
-        self._config = None  # Reset cache so next load_config() reads fresh
-        logger.info(f"Saved configuration to {config_path}")
+        """Apply configuration in-memory only (not persisted to disk).
+
+        Changes take effect immediately for the current process but are
+        lost on restart, preserving config/default.yaml as the source of truth.
+        """
+        self._config = data
+        logger.info("Applied configuration in-memory (not persisted to disk)")
 
     @property
     def retrieval(self) -> Dict[str, Any]:
