@@ -19,6 +19,9 @@ import {
     ChevronRight,
     User,
     Calendar,
+    Text,
+    Users,
+    SlidersHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
@@ -126,12 +129,44 @@ export default function SearchPage() {
                 <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
                     <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
-                        <h1 className="text-base font-semibold whitespace-nowrap">Ricerca</h1>
+                        <h1 className="text-base font-semibold whitespace-nowrap">Ricerca Atti</h1>
                     </div>
                 </header>
 
                 <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6">
                     <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20">
+
+                        {/* Intro */}
+                        {!hasSearched && (
+                          <div className="text-center space-y-4 pt-2 pb-2">
+                            <div className="mx-auto h-14 w-14 rounded-2xl bg-primary/8 flex items-center justify-center">
+                              <SearchIcon className="h-7 w-7 text-primary/60" />
+                            </div>
+                            <div className="space-y-2">
+                              <h2 className="text-xl font-semibold text-foreground">
+                                Ricerca Atti e Interventi
+                              </h2>
+                              <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                                Cerca tra gli atti parlamentari e gli interventi in aula.
+                                Puoi filtrare per deputato, gruppo parlamentare, tipo di documento e periodo temporale.
+                              </p>
+                            </div>
+                            <div className="flex flex-wrap justify-center gap-3 pt-1 max-w-md mx-auto">
+                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                                <Text className="h-3.5 w-3.5 text-primary/70" />
+                                Ricerca testuale
+                              </div>
+                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                                <Users className="h-3.5 w-3.5 text-primary/70" />
+                                Filtra per autore
+                              </div>
+                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                                <SlidersHorizontal className="h-3.5 w-3.5 text-primary/70" />
+                                Tipo e periodo
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Search Card */}
                         <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
