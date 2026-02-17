@@ -133,7 +133,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Score Autorità", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                item={{ icon: BarChart3, label: "Ranking Autorità", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -279,7 +279,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Score Autorità", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
+              item={{ icon: BarChart3, label: "Ranking Autorità", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
