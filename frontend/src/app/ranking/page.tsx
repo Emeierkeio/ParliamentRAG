@@ -19,7 +19,6 @@ import {
   Award,
   RotateCcw,
   Landmark,
-  Sparkles,
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -100,7 +99,6 @@ export default function RankingPage() {
   const [sortBy, setSortBy] = useState<SortKey>("authority_score");
   const [sortOpen, setSortOpen] = useState(false);
   const [groupsOpen, setGroupsOpen] = useState(false);
-  const [topicsOpen, setTopicsOpen] = useState(false);
 
   // ── Fetch ranking ──
   const fetchRanking = useCallback(async (topicText: string) => {
@@ -137,14 +135,8 @@ export default function RankingPage() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchRanking(topic);
-  };
-
   const handleTopicClick = (t: string) => {
     setTopic(t);
-    setTopicsOpen(false);
     fetchRanking(t);
   };
 
@@ -232,56 +224,14 @@ export default function RankingPage() {
       />
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* ── Header con ricerca integrata ── */}
+        {/* ── Header ── */}
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
-            <Crown className="h-5 w-5 text-primary shrink-0" />
             <h1 className="text-base font-semibold whitespace-nowrap">Ranking Autorità</h1>
 
-            {/* Search bar integrata nell'header */}
-            <form onSubmit={handleSubmit} className="flex-1 max-w-md ml-4">
-              <div className="relative flex items-center">
-                <Search className="absolute left-2.5 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-                <Input
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  placeholder="Cerca un tema..."
-                  className="pl-8 pr-20 h-9 text-sm rounded-lg"
-                />
-                <div className="absolute right-1 flex items-center gap-1">
-                  <Popover open={topicsOpen} onOpenChange={setTopicsOpen}>
-                    <PopoverTrigger asChild>
-                      <Button type="button" variant="ghost" size="icon-xs" className="h-6 w-6 text-muted-foreground hover:text-foreground">
-                        <Sparkles className="h-3.5 w-3.5" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-72 p-3" align="end">
-                      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-                        Temi suggeriti
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {TOPICS.map((t) => (
-                          <button
-                            key={t}
-                            onClick={() => handleTopicClick(t)}
-                            className="inline-flex items-center gap-1 rounded-md border border-border/80 bg-card px-2.5 py-1 text-xs text-foreground transition-colors hover:border-primary/40 hover:bg-primary/5"
-                          >
-                            <span className="capitalize">{t}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                  <Button type="submit" size="xs" disabled={!topic.trim()} className="h-6 px-2.5 text-xs rounded-md">
-                    Cerca
-                  </Button>
-                </div>
-              </div>
-            </form>
-
             {activeTopic && !loading && (
-              <div className="hidden sm:flex items-center gap-2 ml-auto shrink-0">
+              <div className="flex items-center gap-2 ml-auto shrink-0">
                 <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
                   {activeTopic}
                 </Badge>
@@ -507,6 +457,26 @@ export default function RankingPage() {
                     Cerca un tema politico e scopri quali deputati sono più autorevoli in materia,
                     sulla base di interventi, atti, commissioni, professione, istruzione e ruolo istituzionale.
                   </p>
+                </div>
+
+                {/* Search bar — stile coerente con pagina Ricerca */}
+                <div className="w-full max-w-md mx-auto pt-2">
+                  <form onSubmit={(e) => { e.preventDefault(); fetchRanking(topic); }} className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      placeholder="Cerca un tema..."
+                      className="h-14 text-lg pl-12 pr-24 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
+                    />
+                    <Button
+                      type="submit"
+                      disabled={!topic.trim()}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-4"
+                    >
+                      Cerca
+                    </Button>
+                  </form>
                 </div>
 
                 {/* Come funziona */}

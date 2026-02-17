@@ -123,15 +123,12 @@ export default function SearchPage() {
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
                 {/* Header */}
-                <div className="border-b px-4 md:px-8 py-4 md:py-5 bg-background flex items-center justify-between sticky top-0 z-10 shrink-0 gap-3">
-                    <div className="flex items-center gap-3">
+                <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
+                    <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
-                        <div>
-                            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Ricerca</h1>
-                            <p className="text-muted-foreground text-sm hidden sm:block">Esplorazione diretta degli atti e interventi parlamentari</p>
-                        </div>
+                        <h1 className="text-base font-semibold whitespace-nowrap">Ricerca</h1>
                     </div>
-                </div>
+                </header>
 
                 <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6">
                     <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20">

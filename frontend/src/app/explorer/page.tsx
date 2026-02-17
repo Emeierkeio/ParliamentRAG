@@ -93,7 +93,6 @@ export default function ExplorerPage() {
                 <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
                     <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
-                        <Network className="h-5 w-5 text-primary shrink-0" />
                         <h1 className="text-base font-semibold whitespace-nowrap">Graph Explorer</h1>
 
                         {stats && (
