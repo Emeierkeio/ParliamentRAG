@@ -498,8 +498,9 @@ ParliamentRAG/
 
 **Mirko Tritella** — Tesi di Laurea Magistrale in Data Science
 
-Università degli Studi di Milano - Bicocca
+Relatore: Prof. Matteo **Palmonari** — Correlatore: Dott. Riccardo **Pozzi**
 
+Università degli Studi di Milano - Bicocca
 ---
 
 ## License
