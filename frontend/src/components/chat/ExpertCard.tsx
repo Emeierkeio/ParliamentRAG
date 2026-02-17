@@ -222,7 +222,7 @@ interface ExpertModalProps {
   onClose: () => void;
 }
 
-function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
+export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
   const groupLabel = groupConfig?.label || expert.group;
