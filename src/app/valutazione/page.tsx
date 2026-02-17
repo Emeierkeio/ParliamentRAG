@@ -86,46 +86,38 @@ export default function ValutazionePage() {
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="border-b px-4 md:px-8 py-4 md:py-5 bg-background flex items-center justify-between shrink-0 gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
+          <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
-            <div className="min-w-0">
-              <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                <ClipboardCheck className="w-5 h-5 md:w-6 md:h-6 text-blue-600 shrink-0" />
-                <span className="truncate">Valutazione</span>
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1 hidden sm:block">
-                Framework di valutazione scientifica — metriche automatiche e confronto A/B cieco
-              </p>
+            <h1 className="text-base font-semibold whitespace-nowrap">Valutazione</h1>
+            <div className="flex gap-1.5 md:gap-2 ml-auto shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={loadData}
+                disabled={isLoading}
+                className="h-8 px-2 md:px-3"
+              >
+                <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+                <span className="hidden md:inline ml-1">Aggiorna</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportCsv}
+                disabled={!data || data.total_chats === 0}
+                className="h-8 px-2 md:px-3 hidden sm:flex"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden md:inline ml-1">Esporta CSV</span>
+              </Button>
+              <Button size="sm" onClick={() => setSurveyModalOpen(true)} className="h-8 px-2 md:px-3">
+                <ClipboardCheck className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">Nuova Valutazione</span>
+              </Button>
             </div>
           </div>
-          <div className="flex gap-1.5 md:gap-2 shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadData}
-              disabled={isLoading}
-              className="px-2 md:px-3"
-            >
-              <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
-              <span className="hidden md:inline ml-1">Aggiorna</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleExportCsv}
-              disabled={!data || data.total_chats === 0}
-              className="px-2 md:px-3 hidden sm:flex"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden md:inline ml-1">Esporta CSV</span>
-            </Button>
-            <Button size="sm" onClick={() => setSurveyModalOpen(true)} className="px-2 md:px-3">
-              <ClipboardCheck className="w-4 h-4" />
-              <span className="hidden sm:inline ml-1">Nuova Valutazione</span>
-            </Button>
-          </div>
-        </div>
+        </header>
 
         {/* Content */}
         {isLoading ? (

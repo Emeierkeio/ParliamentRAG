@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -66,6 +67,7 @@ export function MobileMenuButton({ onClick, className }: { onClick: () => void; 
 }
 
 export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
+  const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -123,27 +125,27 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
           <ScrollArea className="flex-1 py-4 px-3">
             <nav className="flex flex-col gap-1">
               <NavButton
-                item={{ icon: MessageSquare, label: "Chat", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
+                item={{ icon: MessageSquare, label: "Ricerca Topic", isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Search, label: "Ricerca Atti", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
+                item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Ranking Autorità", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                item={{ icon: BarChart3, label: "Ranking Autorità", isActive: pathname === "/ranking", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Network, label: "Esplora Grafo", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
+                item={{ icon: Network, label: "Esplora Grafo", isActive: pathname === "/explorer", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
+                item={{ icon: ClipboardCheck, label: "Valutazione", isActive: pathname === "/valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -267,31 +269,31 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         <ScrollArea className="flex-1 py-6 px-3">
           <nav className="flex flex-col gap-2">
             <NavButton
-              item={{ icon: MessageSquare, label: "Chat", href: "/", onClick: () => window.location.href = "/" }}
+              item={{ icon: MessageSquare, label: "Ricerca Topic", href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Search, label: "Ricerca Atti", href: "/search", onClick: () => window.location.href = "/search" }}
+              item={{ icon: Search, label: "Ricerca Atti", href: "/search", isActive: pathname === "/search", onClick: () => window.location.href = "/search" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Ranking Autorità", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
+              item={{ icon: BarChart3, label: "Ranking Autorità", href: "/ranking", isActive: pathname === "/ranking", onClick: () => window.location.href = "/ranking" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Network, label: "Esplora Grafo", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
+              item={{ icon: Network, label: "Esplora Grafo", href: "/explorer", isActive: pathname === "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => window.location.href = "/valutazione" }}
+              item={{ icon: ClipboardCheck, label: "Valutazione", isActive: pathname === "/valutazione", onClick: () => window.location.href = "/valutazione" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
