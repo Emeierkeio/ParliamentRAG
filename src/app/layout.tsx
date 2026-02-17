@@ -21,16 +21,40 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ParliamentRAG",
+  title: {
+    default: "ParliamentRAG — Analisi AI dei Dibattiti Parlamentari Italiani",
+    template: "%s | ParliamentRAG",
+  },
   description:
-    "Sistema RAG innovativo per l'analisi dei dibattiti parlamentari italiani con risposte bilanciate che rappresentano tutte le forze politiche.",
+    "Esplora i dibattiti della Camera dei Deputati con l'intelligenza artificiale. Ricerca atti, confronta posizioni politiche e visualizza il posizionamento ideologico dei gruppi parlamentari su qualsiasi tema.",
   keywords: [
     "parlamento italiano",
+    "camera dei deputati",
     "dibattiti parlamentari",
-    "RAG",
-    "intelligenza artificiale",
+    "atti parlamentari",
     "analisi politica",
+    "RAG",
+    "retrieval augmented generation",
+    "intelligenza artificiale",
+    "NLP",
+    "posizionamento politico",
+    "compasso ideologico",
+    "gruppi parlamentari",
+    "interventi parlamentari",
   ],
+  authors: [{ name: "Mirko Tritella" }],
+  openGraph: {
+    title: "ParliamentRAG — Analisi AI dei Dibattiti Parlamentari Italiani",
+    description:
+      "Esplora i dibattiti della Camera dei Deputati con l'intelligenza artificiale. Ricerca atti, confronta posizioni e visualizza il posizionamento ideologico dei gruppi parlamentari.",
+    siteName: "ParliamentRAG",
+    locale: "it_IT",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: "/favicon.svg",
   },
