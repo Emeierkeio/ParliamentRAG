@@ -28,6 +28,7 @@ import {
   Search,
   X,
   ClipboardCheck,
+  Compass,
   Menu,
   GraduationCap,
   BookOpen,
@@ -141,6 +142,11 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               />
               <NavButton
                 item={{ icon: BarChart3, label: "Ranking Autorità", isActive: pathname === "/ranking", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+              <NavButton
+                item={{ icon: Compass, label: "Compasso Ideologico", isActive: pathname === "/compass", onClick: () => handleNavClick(() => { window.location.href = "/compass"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -295,6 +301,12 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
             <NavButton
               item={{ icon: BarChart3, label: "Ranking Autorità", href: "/ranking", isActive: pathname === "/ranking", onClick: () => window.location.href = "/ranking" }}
+              isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
+            />
+
+            <NavButton
+              item={{ icon: Compass, label: "Compasso Ideologico", href: "/compass", isActive: pathname === "/compass", onClick: () => window.location.href = "/compass" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
