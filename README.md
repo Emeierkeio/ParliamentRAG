@@ -21,7 +21,7 @@ A Retrieval-Augmented Generation system that delivers **balanced, multi-view ana
 
 ## Overview
 
-ParliamentRAG is a research system built for a Master's thesis in Data Science (Sapienza Universita' di Roma) that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
+ParliamentRAG is a research system built for a Master's thesis in Data Science that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
 
 The system features a **4-stage generation pipeline** (Analyst → Sectional Writer → Integrator → Citation Surgeon) with **deterministic, offset-based citations** — zero fuzzy matching — ensuring full auditability and traceability of every quoted passage. A **5-factor merger** (relevance, diversity, coverage, authority, salience) and **embedding-based coherence validation** guarantee both quality and fairness of the output.
 
