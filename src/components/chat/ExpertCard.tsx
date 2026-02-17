@@ -72,13 +72,21 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             {/* Avatar */}
-            <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
-              style={{ backgroundColor: groupColor }}
-            >
-              {expert.first_name[0]}
-              {expert.last_name[0]}
-            </div>
+            {expert.photo ? (
+              <img
+                src={expert.photo}
+                alt={`${expert.first_name} ${expert.last_name}`}
+                className="h-11 w-11 shrink-0 rounded-full object-cover shadow-sm"
+              />
+            ) : (
+              <div
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white shadow-sm"
+                style={{ backgroundColor: groupColor }}
+              >
+                {expert.first_name[0]}
+                {expert.last_name[0]}
+              </div>
+            )}
 
             <div className="flex-1 min-w-0">
               {/* Name */}
@@ -162,12 +170,20 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
         onClick={() => setIsModalOpen(true)}
       >
         {/* Avatar */}
-        <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm"
-          style={{ backgroundColor: groupColor }}
-        >
-          {expert.first_name[0]}{expert.last_name[0]}
-        </div>
+        {expert.photo ? (
+          <img
+            src={expert.photo}
+            alt={`${expert.first_name} ${expert.last_name}`}
+            className="h-9 w-9 shrink-0 rounded-full object-cover shadow-sm"
+          />
+        ) : (
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white shadow-sm"
+            style={{ backgroundColor: groupColor }}
+          >
+            {expert.first_name[0]}{expert.last_name[0]}
+          </div>
+        )}
 
         <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
              <div className="min-w-0 flex flex-col justify-center">
@@ -290,13 +306,21 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
         <div className="p-4 sm:p-6 pt-2 space-y-4 sm:space-y-6 overflow-y-auto">
           {/* Header Profile */}
           <div className="flex items-start gap-3 sm:gap-5">
-            <div
-              className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl text-lg sm:text-xl font-bold text-white shadow-lg"
-              style={{ backgroundColor: groupColor }}
-            >
-              {expert.first_name[0]}
-              {expert.last_name[0]}
-            </div>
+            {expert.photo ? (
+              <img
+                src={expert.photo}
+                alt={`${expert.first_name} ${expert.last_name}`}
+                className="h-12 w-12 sm:h-16 sm:w-16 shrink-0 rounded-xl sm:rounded-2xl object-cover shadow-lg"
+              />
+            ) : (
+              <div
+                className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl text-lg sm:text-xl font-bold text-white shadow-lg"
+                style={{ backgroundColor: groupColor }}
+              >
+                {expert.first_name[0]}
+                {expert.last_name[0]}
+              </div>
+            )}
             <div className="flex-1 min-w-0 space-y-1">
               {expert.camera_profile_url ? (
                   <a
