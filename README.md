@@ -498,7 +498,7 @@ ParliamentRAG/
 
 **Mirko Tritella** — Tesi di Laurea Magistrale in Data Science
 
-Sapienza Universita' di Roma
+Università degli Studi di Milano - Bicocca
 
 ---
 
