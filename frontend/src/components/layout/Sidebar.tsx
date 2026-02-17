@@ -33,6 +33,7 @@ import {
   GraduationCap,
   BookOpen,
   Building2,
+  Crown,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -125,6 +126,11 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               />
               <NavButton
                 item={{ icon: Search, label: "Ricerca", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
+                isCollapsed={false}
+                disabled={isQueryRunning}
+              />
+              <NavButton
+                item={{ icon: Crown, label: "Ranking", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -260,6 +266,12 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
             <NavButton
               item={{ icon: Search, label: "Ricerca", href: "/search", onClick: () => window.location.href = "/search" }}
+              isCollapsed={isCollapsed}
+              disabled={isQueryRunning}
+            />
+
+            <NavButton
+              item={{ icon: Crown, label: "Ranking", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
