@@ -19,11 +19,8 @@ import {
   PanelLeftClose,
   PanelLeft,
   History,
-  Info,
-  Landmark,
   Github,
-  ExternalLink,
-  Database,
+  Network,
   Settings,
   Trash2,
   Check,
@@ -34,7 +31,7 @@ import {
   GraduationCap,
   BookOpen,
   Building2,
-  Crown,
+  BarChart3,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -121,27 +118,27 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
           <ScrollArea className="flex-1 py-4 px-3">
             <nav className="flex flex-col gap-1">
               <NavButton
-                item={{ icon: History, label: "Cronologia", onClick: () => handleNavClick(() => setHistoryOpen(true)) }}
+                item={{ icon: MessageSquare, label: "Chat", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Search, label: "Ricerca", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
+                item={{ icon: Search, label: "Ricerca Atti", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Crown, label: "Ranking", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                item={{ icon: BarChart3, label: "Classifica", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Database, label: "Graph Explorer", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
+                item={{ icon: Network, label: "Grafo", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
+                item={{ icon: ClipboardCheck, label: "Valutazione RAG", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -150,6 +147,11 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
           {/* Bottom */}
           <div className="p-3 pb-6">
+            <NavButton
+              item={{ icon: History, label: "Cronologia", onClick: () => handleNavClick(() => setHistoryOpen(true)) }}
+              isCollapsed={false}
+              disabled={isQueryRunning}
+            />
             <NavButton
               item={{ icon: Settings, label: "Impostazioni", onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
               isCollapsed={false}
@@ -260,31 +262,31 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         <ScrollArea className="flex-1 py-6 px-3">
           <nav className="flex flex-col gap-2">
             <NavButton
-              item={{ icon: History, label: "Cronologia", onClick: () => setHistoryOpen(true) }}
+              item={{ icon: MessageSquare, label: "Chat", href: "/", onClick: () => window.location.href = "/" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Search, label: "Ricerca", href: "/search", onClick: () => window.location.href = "/search" }}
+              item={{ icon: Search, label: "Ricerca Atti", href: "/search", onClick: () => window.location.href = "/search" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Crown, label: "Ranking", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
+              item={{ icon: BarChart3, label: "Classifica", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Database, label: "Graph Explorer", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
+              item={{ icon: Network, label: "Grafo", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => window.location.href = "/valutazione" }}
+              item={{ icon: ClipboardCheck, label: "Valutazione RAG", onClick: () => window.location.href = "/valutazione" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
@@ -294,6 +296,11 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
         {/* Bottom Navigation */}
         <div className="p-3 pb-6">
           <nav className="flex flex-col gap-1">
+            <NavButton
+                item={{ icon: History, label: "Cronologia", onClick: () => setHistoryOpen(true) }}
+                isCollapsed={isCollapsed}
+                disabled={isQueryRunning}
+            />
             <NavButton
                 item={{ icon: Settings, label: "Impostazioni", onClick: () => setSettingsOpen(true) }}
                 isCollapsed={isCollapsed}
