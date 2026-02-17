@@ -157,15 +157,19 @@ export default function CompassPage() {
                 )}
                 <form
                   onSubmit={(e) => { e.preventDefault(); fetchCompass(topic); }}
-                  className="hidden sm:flex items-center gap-1.5 ml-1"
+                  className="hidden sm:flex items-center gap-1.5 ml-2"
                 >
-                  <Input
-                    value={topic}
-                    onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Nuovo tema..."
-                    className="h-7 w-36 text-xs border-border/50 bg-muted/30"
-                  />
-                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-7 px-2 text-xs">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      value={topic}
+                      onChange={(e) => setTopic(e.target.value)}
+                      placeholder="Nuovo tema..."
+                      className="h-8 w-44 text-xs pl-7 pr-2 border-border bg-background"
+                    />
+                  </div>
+                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs gap-1">
+                    Analizza
                     <ArrowRight className="h-3 w-3" />
                   </Button>
                 </form>
@@ -338,7 +342,7 @@ export default function CompassPage() {
 
               {/* Compass visualization - fills remaining space */}
               <div className="flex-1 min-h-0 p-3 sm:p-4">
-                <div className="h-full w-full max-w-[min(100%,calc(100vh-12rem))] mx-auto">
+                <div className="h-full w-full mx-auto">
                   <CompassCard data={compassData as any} />
                 </div>
               </div>
@@ -384,12 +388,13 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
   return (
     <div className="flex items-center gap-2 text-xs">
       <span className="font-semibold text-foreground/70">{label}</span>
+      <span className="text-[10px] text-muted-foreground/50">({label === "PC1" ? "asse X" : "asse Y"})</span>
       <span className="text-[10px] text-muted-foreground">{variancePercent}%</span>
       <div className="flex items-center gap-1.5">
         {negLabel && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium cursor-help truncate max-w-[140px]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium cursor-help max-w-[280px]">
                 <span className="text-blue-400 text-[10px]">&minus;</span>
                 {negLabel}
               </span>
@@ -410,7 +415,7 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
         {posLabel && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-100 text-rose-700 text-[11px] font-medium cursor-help truncate max-w-[140px]">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-100 text-rose-700 text-[11px] font-medium cursor-help max-w-[280px]">
                 <span className="text-rose-400 text-[10px]">+</span>
                 {posLabel}
               </span>

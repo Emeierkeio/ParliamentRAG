@@ -170,26 +170,8 @@ export function CompassCard({ data }: CompassCardProps) {
   );
 
   return (
-    <div className="w-full">
-         {/* Header con titolo onesto e tooltip esplicativo */}
-         <div className="flex items-center gap-2 mb-2">
-         </div>
-         <div className="text-xs text-muted-foreground mb-2">
-            {data.meta.query ? `Analisi basata su: "${data.meta.query}"` : "Posizionamento politico dinamico."}
-            {dimensionality === 1 && <Badge variant="secondary" className="ml-2 text-[10px]">1D Spectrum</Badge>}
-         </div>
-         
-         {/* Warnings e Flags dal backend */}
-         {data.meta.warnings && data.meta.warnings.length > 0 && (
-            <div className="mb-3 space-y-1">
-               {data.meta.warnings.map((warning, idx) => (
-                  <Badge key={idx} variant="outline" className="mr-1 text-[10px] border-orange-500 text-orange-700 dark:text-orange-400">
-                     {warning.includes('WEAK_ALIGNMENT') ? '⚠️ Asse secondario: rumore (usare 1D)' : `⚠️ ${warning}`}
-                  </Badge>
-               ))}
-            </div>
-         )}
-         
+    <div className="w-full h-full flex flex-col">
+         {/* Chart area - fills available space */}
          <div
              ref={containerRef}
              onPointerDown={onPointerDown}
@@ -199,7 +181,7 @@ export function CompassCard({ data }: CompassCardProps) {
 
              className={cn(
                  "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto select-none touch-none",
-                 dimensionality === 1 ? "h-[200px]" : "aspect-square",
+                 dimensionality === 1 ? "h-[200px]" : "flex-1 min-h-0",
                  "cursor-grab active:cursor-grabbing"
              )}
          >
@@ -289,7 +271,7 @@ export function CompassCard({ data }: CompassCardProps) {
           </div>
           
           {/* Legend */}
-          <div className="flex flex-wrap gap-2 mt-3 justify-center">
+          <div className="flex flex-wrap gap-2 mt-2 justify-center shrink-0">
               {data.groups.map((grp) => (
                   <div key={grp.group_id} className="flex items-center gap-1 text-xs">
                       <div
@@ -301,7 +283,7 @@ export function CompassCard({ data }: CompassCardProps) {
               ))}
           </div>
 
-          <div className="flex justify-between items-center mt-2 px-2">
+          <div className="flex justify-between items-center mt-1.5 px-2 shrink-0">
              {/* Varianza spiegata con tooltip esplicativo */}
              <div className="flex items-center gap-1 text-xs text-muted-foreground">
                  <span>Varianza spiegata: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
