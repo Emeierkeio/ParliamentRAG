@@ -1,6 +1,20 @@
 
 import { config } from "@/config";
 
+const WRITE_KEYWORDS = [
+  "CREATE", "DELETE", "DETACH", "SET ", "REMOVE", "MERGE",
+  "DROP", "FOREACH", "LOAD CSV",
+];
+
+/**
+ * Check if a Cypher query contains write operations.
+ * Used for client-side validation before sending to the backend.
+ */
+export function isWriteQuery(cypher: string): boolean {
+  const upper = cypher.toUpperCase();
+  return WRITE_KEYWORDS.some((kw) => upper.includes(kw));
+}
+
 export async function getGraphSchema() {
   const response = await fetch(`${config.api.baseUrl}/graph/schema`);
   if (!response.ok) throw new Error("Failed to fetch schema");
@@ -14,6 +28,10 @@ export async function getGraphStats() {
 }
 
 export async function executeCypherQuery(cypher: string) {
+  if (isWriteQuery(cypher)) {
+    throw new Error("Operazione di scrittura non consentita. Il Graph Explorer è in modalità sola lettura.");
+  }
+
   const response = await fetch(`${config.api.baseUrl}/graph/query`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
