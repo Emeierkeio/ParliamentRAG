@@ -16,10 +16,16 @@ import {
   Map,
   Info,
   ArrowRight,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -103,6 +109,7 @@ export default function CompassPage() {
   };
 
   const hasResults = compassData !== null;
+  const dimensionality = compassData?.meta?.dimensionality ?? 2;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -121,24 +128,68 @@ export default function CompassPage() {
             <MobileMenuButton onClick={toggle} />
             <h1 className="text-base font-semibold whitespace-nowrap">Compasso Ideologico</h1>
 
-            {activeTopic && !loading && (
+            {hasResults && !loading && (
               <div className="flex items-center gap-2 ml-auto shrink-0">
+                <span className="text-[11px] text-muted-foreground hidden sm:inline">
+                  {compassData.groups.length} gruppi
+                  {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
+                </span>
                 <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
                   {activeTopic}
                 </Badge>
-                <Button variant="ghost" size="icon-xs" onClick={handleReset} className="h-6 w-6">
+                {compassData.meta.warnings && compassData.meta.warnings.length > 0 && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-100 text-amber-600">
+                        <AlertTriangle className="h-3 w-3" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-xs">
+                      {compassData.meta.warnings.map((w, i) => (
+                        <p key={i}>
+                          {w.includes("WEAK_ALIGNMENT")
+                            ? "Asse secondario con rumore elevato. Consigliata analisi 1D."
+                            : w}
+                        </p>
+                      ))}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                <form
+                  onSubmit={(e) => { e.preventDefault(); fetchCompass(topic); }}
+                  className="hidden sm:flex items-center gap-1.5 ml-1"
+                >
+                  <Input
+                    value={topic}
+                    onChange={(e) => setTopic(e.target.value)}
+                    placeholder="Nuovo tema..."
+                    className="h-7 w-36 text-xs border-border/50 bg-muted/30"
+                  />
+                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-7 px-2 text-xs">
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                </form>
+                <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1 px-2">
                   <RotateCcw className="h-3 w-3" />
+                  <span className="hidden sm:inline">Reset</span>
                 </Button>
+              </div>
+            )}
+
+            {activeTopic && loading && (
+              <div className="flex items-center gap-2 ml-auto shrink-0">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                <span className="text-xs text-muted-foreground">Analisi in corso...</span>
               </div>
             )}
           </div>
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Empty state */}
           {!hasResults && !loading && (
-            <div className="flex flex-col items-center justify-center h-full px-4 pb-16">
+            <div className="flex flex-col items-center justify-center h-full px-4 pb-16 overflow-y-auto">
               <div className="text-center space-y-6 max-w-lg">
                 <div className="mx-auto h-16 w-16 rounded-2xl bg-primary/8 flex items-center justify-center">
                   <Compass className="h-8 w-8 text-primary/60" />
@@ -247,88 +298,68 @@ export default function CompassPage() {
             </div>
           )}
 
-          {/* Results */}
+          {/* Results - full screen layout */}
           {hasResults && !loading && (
-            <div className="px-4 sm:px-6 py-6 max-w-4xl mx-auto w-full space-y-6 animate-in fade-in duration-500">
-              {/* Results info bar */}
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">
-                  {compassData.groups.length} gruppi parlamentari analizzati
-                  {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
-                </p>
-                <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1.5">
-                  <RotateCcw className="h-3 w-3" />
-                  Nuova analisi
-                </Button>
-              </div>
-
-              {/* Compass visualization card */}
-              <div className="rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm shadow-sm p-5 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Compass className="h-5 w-5 text-primary" />
-                  <h3 className="text-sm font-semibold text-foreground">Mappa dei posizionamenti</h3>
-                  <Badge variant="secondary" className="ml-auto text-[10px]">
-                    {compassData.meta.dimensionality === 1 ? "1D Spectrum" : "2D PCA"}
+            <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-500">
+              {/* Axis summary bar */}
+              <div className="shrink-0 border-b border-border/40 bg-muted/20 px-4 sm:px-6 py-2.5">
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                  {/* PC1 */}
+                  {compassData.axes.x && (compassData.axes.x.negative_side || compassData.axes.x.positive_side) && (
+                    <AxisSummary
+                      label="PC1"
+                      variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[0] || 0) * 100)}
+                      negLabel={compassData.axes.x.negative_side?.label}
+                      posLabel={compassData.axes.x.positive_side?.label}
+                      negKeywords={compassData.axes.x.negative_side?.keywords}
+                      posKeywords={compassData.axes.x.positive_side?.keywords}
+                    />
+                  )}
+                  {/* PC2 */}
+                  {dimensionality !== 1 && compassData.axes.y && (compassData.axes.y.negative_side || compassData.axes.y.positive_side) && (
+                    <>
+                      <div className="hidden sm:block w-px h-5 bg-border/60" />
+                      <AxisSummary
+                        label="PC2"
+                        variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[1] || 0) * 100)}
+                        negLabel={compassData.axes.y.negative_side?.label}
+                        posLabel={compassData.axes.y.positive_side?.label}
+                        negKeywords={compassData.axes.y.negative_side?.keywords}
+                        posKeywords={compassData.axes.y.positive_side?.keywords}
+                      />
+                    </>
+                  )}
+                  {/* Dimensionality badge */}
+                  <Badge variant="outline" className="text-[10px] ml-auto hidden sm:inline-flex">
+                    {dimensionality === 1 ? "1D Spectrum" : "2D PCA"}
                   </Badge>
                 </div>
-                <CompassCard data={compassData as any} />
               </div>
 
-              {/* Axis details cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* X axis */}
-                {compassData.axes.x && (
-                  <AxisDetailCard
-                    axisLabel="Asse X (PC1)"
-                    axis={compassData.axes.x}
-                    variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[0] || 0) * 100)}
-                  />
-                )}
-                {/* Y axis */}
-                {compassData.meta.dimensionality !== 1 && compassData.axes.y && (
-                  <AxisDetailCard
-                    axisLabel="Asse Y (PC2)"
-                    axis={compassData.axes.y}
-                    variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[1] || 0) * 100)}
-                  />
-                )}
-              </div>
-
-              {/* Warnings */}
-              {compassData.meta.warnings && compassData.meta.warnings.length > 0 && (
-                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Info className="h-4 w-4 text-amber-600" />
-                    <span className="text-xs font-medium text-amber-800">Note sull&apos;analisi</span>
-                  </div>
-                  <ul className="space-y-1">
-                    {compassData.meta.warnings.map((w, i) => (
-                      <li key={i} className="text-xs text-amber-700 pl-6">
-                        {w.includes("WEAK_ALIGNMENT")
-                          ? "L'asse secondario presenta rumore elevato. Si consiglia l'analisi 1D."
-                          : w}
-                      </li>
-                    ))}
-                  </ul>
+              {/* Compass visualization - fills remaining space */}
+              <div className="flex-1 min-h-0 p-3 sm:p-4">
+                <div className="h-full w-full max-w-[min(100%,calc(100vh-12rem))] mx-auto">
+                  <CompassCard data={compassData as any} />
                 </div>
-              )}
+              </div>
 
-              {/* Search again inline */}
-              <div className="rounded-xl border border-border/50 bg-muted/20 p-4">
+              {/* Mobile search bar */}
+              <div className="sm:hidden shrink-0 border-t border-border/40 px-4 py-2">
                 <form
                   onSubmit={(e) => { e.preventDefault(); fetchCompass(topic); }}
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-2"
                 >
-                  <Search className="h-4 w-4 text-muted-foreground shrink-0" />
                   <Input
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Analizza un altro tema..."
-                    className="h-9 text-sm flex-1 border-0 bg-transparent shadow-none focus-visible:ring-0 px-0"
+                    placeholder="Nuovo tema..."
+                    className="h-8 text-xs flex-1"
                   />
-                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs gap-1">
-                    Analizza
+                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs">
                     <ArrowRight className="h-3 w-3" />
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleReset} className="h-8 px-2">
+                    <RotateCcw className="h-3 w-3" />
                   </Button>
                 </form>
               </div>
@@ -340,61 +371,61 @@ export default function CompassPage() {
   );
 }
 
-// ── Axis Detail Card ──────────────────────────────────────────
+// ── Axis Summary (compact inline) ─────────────────────────────
 
-function AxisDetailCard({ axisLabel, axis, variancePercent }: {
-  axisLabel: string;
-  axis: AxisDef;
+function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, posKeywords }: {
+  label: string;
   variancePercent: number;
+  negLabel?: string;
+  posLabel?: string;
+  negKeywords?: string[];
+  posKeywords?: string[];
 }) {
-  const pos = axis.positive_side;
-  const neg = axis.negative_side;
-
-  if (!pos && !neg) return null;
-
   return (
-    <div className="rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-foreground">{axisLabel}</span>
-        <Badge variant="outline" className="text-[10px]">{variancePercent}% varianza</Badge>
-      </div>
-
-      {/* Poles visualization */}
-      <div className="flex items-stretch gap-2">
-        {/* Negative pole */}
-        {neg && (
-          <div className="flex-1 rounded-lg bg-blue-50 border border-blue-100 p-2.5 space-y-1">
-            <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wide">Polo (−)</span>
-            <p className="text-xs font-medium text-blue-900">{neg.label}</p>
-            <p className="text-[10px] text-blue-700/80 leading-relaxed">{neg.explanation}</p>
-            {neg.keywords && neg.keywords.length > 0 && (
-              <div className="flex flex-wrap gap-1 pt-1">
-                {neg.keywords.slice(0, 4).map((kw, i) => (
-                  <span key={i} className="px-1.5 py-0.5 text-[9px] bg-blue-100 text-blue-700 rounded">
-                    {kw}
-                  </span>
-                ))}
-              </div>
+    <div className="flex items-center gap-2 text-xs">
+      <span className="font-semibold text-foreground/70">{label}</span>
+      <span className="text-[10px] text-muted-foreground">{variancePercent}%</span>
+      <div className="flex items-center gap-1.5">
+        {negLabel && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium cursor-help truncate max-w-[140px]">
+                <span className="text-blue-400 text-[10px]">&minus;</span>
+                {negLabel}
+              </span>
+            </TooltipTrigger>
+            {negKeywords && negKeywords.length > 0 && (
+              <TooltipContent side="bottom" className="text-xs">
+                <p className="font-medium mb-1">Parole chiave polo (−)</p>
+                <div className="flex flex-wrap gap-1">
+                  {negKeywords.slice(0, 6).map((kw, i) => (
+                    <span key={i} className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px]">{kw}</span>
+                  ))}
+                </div>
+              </TooltipContent>
             )}
-          </div>
+          </Tooltip>
         )}
-
-        {/* Positive pole */}
-        {pos && (
-          <div className="flex-1 rounded-lg bg-rose-50 border border-rose-100 p-2.5 space-y-1">
-            <span className="text-[10px] font-bold text-rose-700 uppercase tracking-wide">Polo (+)</span>
-            <p className="text-xs font-medium text-rose-900">{pos.label}</p>
-            <p className="text-[10px] text-rose-700/80 leading-relaxed">{pos.explanation}</p>
-            {pos.keywords && pos.keywords.length > 0 && (
-              <div className="flex flex-wrap gap-1 pt-1">
-                {pos.keywords.slice(0, 4).map((kw, i) => (
-                  <span key={i} className="px-1.5 py-0.5 text-[9px] bg-rose-100 text-rose-700 rounded">
-                    {kw}
-                  </span>
-                ))}
-              </div>
+        <span className="text-muted-foreground/40">↔</span>
+        {posLabel && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-100 text-rose-700 text-[11px] font-medium cursor-help truncate max-w-[140px]">
+                <span className="text-rose-400 text-[10px]">+</span>
+                {posLabel}
+              </span>
+            </TooltipTrigger>
+            {posKeywords && posKeywords.length > 0 && (
+              <TooltipContent side="bottom" className="text-xs">
+                <p className="font-medium mb-1">Parole chiave polo (+)</p>
+                <div className="flex flex-wrap gap-1">
+                  {posKeywords.slice(0, 6).map((kw, i) => (
+                    <span key={i} className="px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px]">{kw}</span>
+                  ))}
+                </div>
+              </TooltipContent>
             )}
-          </div>
+          </Tooltip>
         )}
       </div>
     </div>
