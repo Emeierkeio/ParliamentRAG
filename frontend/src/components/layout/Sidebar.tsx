@@ -124,11 +124,16 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
           {/* Navigation */}
           <ScrollArea className="flex-1 py-4 px-3">
             <nav className="flex flex-col gap-1">
+              {/* Primary */}
               <NavButton
                 item={{ icon: MessageSquare, label: "Ricerca Topic", isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
                 isCollapsed={false}
+                variant="primary"
                 disabled={isQueryRunning}
               />
+
+              {/* Strumenti */}
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 mt-5 mb-1.5 px-3">Strumenti</p>
               <NavButton
                 item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
                 isCollapsed={false}
@@ -267,12 +272,20 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
         {/* Navigation */}
         <ScrollArea className="flex-1 py-6 px-3">
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-1">
+            {/* Primary */}
             <NavButton
               item={{ icon: MessageSquare, label: "Ricerca Topic", href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
               isCollapsed={isCollapsed}
+              variant="primary"
               disabled={isQueryRunning}
             />
+
+            {/* Strumenti */}
+            {!isCollapsed && (
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-sidebar-foreground/40 mt-5 mb-1.5 px-3">Strumenti</p>
+            )}
+            {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
             <NavButton
               item={{ icon: Search, label: "Ricerca Atti", href: "/search", isActive: pathname === "/search", onClick: () => window.location.href = "/search" }}
