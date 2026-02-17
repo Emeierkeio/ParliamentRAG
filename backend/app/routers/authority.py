@@ -165,6 +165,7 @@ async def authority_ranking(request: RankingRequest):
                 "education": round(components.get("education", 0), 4),
                 "role": round(components.get("role", 0), 4),
             },
+            "photo": details.get("photo"),
             "camera_profile_url": details.get("camera_profile_url"),
             "profession": details.get("profession"),
             "education": details.get("education"),

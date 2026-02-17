@@ -29,6 +29,7 @@ export interface Expert {
   first_name: string;
   last_name: string;
   group: string;
+  photo?: string;
   camera_profile_url?: string;
   profession?: string;
   education?: string;

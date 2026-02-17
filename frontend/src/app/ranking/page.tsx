@@ -683,12 +683,20 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
 
         {/* Deputy */}
         <div className="flex items-center gap-3 min-w-0">
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-            style={{ backgroundColor: groupColor }}
-          >
-            {deputy.first_name[0]}{deputy.last_name[0]}
-          </div>
+          {deputy.photo ? (
+            <img
+              src={deputy.photo}
+              alt={`${deputy.first_name} ${deputy.last_name}`}
+              className="h-9 w-9 shrink-0 rounded-full object-cover"
+            />
+          ) : (
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+              style={{ backgroundColor: groupColor }}
+            >
+              {deputy.first_name[0]}{deputy.last_name[0]}
+            </div>
+          )}
           <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
             {deputy.first_name} {deputy.last_name}
           </p>
@@ -732,12 +740,20 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
             <span className="text-xs font-bold text-muted-foreground/50">{index + 1}</span>
           )}
         </div>
-        <div
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-          style={{ backgroundColor: groupColor }}
-        >
-          {deputy.first_name[0]}{deputy.last_name[0]}
-        </div>
+        {deputy.photo ? (
+          <img
+            src={deputy.photo}
+            alt={`${deputy.first_name} ${deputy.last_name}`}
+            className="h-9 w-9 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+            style={{ backgroundColor: groupColor }}
+          >
+            {deputy.first_name[0]}{deputy.last_name[0]}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground truncate">
             {deputy.first_name} {deputy.last_name}

@@ -1261,6 +1261,7 @@ async def _compute_experts_for_frontend(
             "authority_score": round(top_speaker["authority_score"], 2),
             "relevant_speeches_count": top_speaker["count"],
             # Additional details for frontend
+            "photo": speaker_info.get("photo"),
             "camera_profile_url": speaker_info.get("camera_profile_url"),
             "profession": speaker_info.get("profession"),
             "education": speaker_info.get("education"),

@@ -540,7 +540,8 @@ async def list_deputies(
                OR toLower(d.last_name) CONTAINS toLower($search_text)
             RETURN d.id AS id,
                    d.first_name AS first_name,
-                   d.last_name AS last_name
+                   d.last_name AS last_name,
+                   d.photo AS photo
             ORDER BY d.last_name, d.first_name
             LIMIT $limit
             """
@@ -550,7 +551,8 @@ async def list_deputies(
             MATCH (d:Deputy)
             RETURN d.id AS id,
                    d.first_name AS first_name,
-                   d.last_name AS last_name
+                   d.last_name AS last_name,
+                   d.photo AS photo
             ORDER BY d.last_name, d.first_name
             LIMIT $limit
             """
@@ -563,6 +565,7 @@ async def list_deputies(
                     "id": record["id"],
                     "first_name": record["first_name"],
                     "last_name": record["last_name"],
+                    "photo": record["photo"],
                 }
                 for record in result
             ]
