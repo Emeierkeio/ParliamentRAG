@@ -32,6 +32,11 @@ import {
   BookOpen,
   Building2,
   BarChart3,
+  Loader2,
+  MessageCircle,
+  Clock,
+  Inbox,
+  AlertCircle,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -542,11 +547,9 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
         if (!res.ok) throw new Error("Failed to load chat details");
         const data = await res.json();
         if (onLoadChat) {
-            // Already on homepage: load chat directly
             onLoadChat(data);
             onClose();
         } else {
-            // On another page: save data and navigate to homepage
             sessionStorage.setItem("pendingChat", JSON.stringify(data));
             window.location.href = "/";
         }
@@ -576,7 +579,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
       e.preventDefault();
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
-      
+
       try {
           const res = await fetch(`${config.api.baseUrl}/history/${id}`, { method: 'DELETE' });
           if(res.ok) {
@@ -588,8 +591,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
         setDeleteConfirmationId(null);
       }
   }
-  
-  // Use useEffect to fetch data when modal opens
+
   useEffect(() => {
     if (open) {
         fetchHistory();
@@ -598,80 +600,112 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-xl h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <History className="h-5 w-5 text-sidebar-foreground" />
-            Cronologia Chat
+      <DialogContent className="max-w-[95vw] sm:max-w-xl bg-background border-none shadow-2xl p-0 overflow-hidden rounded-xl sm:rounded-2xl h-[85vh] sm:h-[80vh] flex flex-col">
+        {/* Header */}
+        <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
+          <DialogTitle className="flex items-center gap-2 text-lg">
+            <History className="h-5 w-5 text-primary" />
+            <span>Cronologia Chat</span>
           </DialogTitle>
-          <DialogDescription>
-            Le tue conversazioni precedenti
-          </DialogDescription>
+          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <MessageCircle className="h-3 w-3" />
+              {history.length} conversazion{history.length === 1 ? "e" : "i"}
+            </span>
+            <span className="text-muted-foreground/50">
+              Le tue conversazioni precedenti
+            </span>
+          </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden flex flex-col pt-4">
-            {isLoading && history.length === 0 ? (
-                 <div className="flex justify-center items-center h-40">
-                     <span className="loading loading-spinner text-sidebar-foreground">Caricamento...</span>
-                 </div>
-            ) : error ? (
-                <div className="text-red-500 text-center p-4">{error}</div>
-            ) : history.length === 0 ? (
-                <div className="text-center text-muted-foreground p-8">
-                    Nessuna conversazione salvata.
-                </div>
-            ) : (
-                <ScrollArea className="flex-1 pr-4">
-                    <div className="space-y-3">
-                        {history.map((item) => (
-                            <div
-                                key={item.id}
-                                onClick={() => handleSelectChat(item.id)}
-                                className="group flex flex-col gap-2 p-3 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                            >
-                                <span className="font-medium text-sm line-clamp-2">{item.query}</span>
-                                <p className="text-xs text-muted-foreground line-clamp-1">
-                                    {item.preview}
-                                </p>
-                                <div className="flex justify-between items-center pt-1">
-                                    <span className="text-xs text-muted-foreground">
-                                        {new Date(item.timestamp).toLocaleDateString()} · {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </span>
-                                    {deleteConfirmationId === item.id ? (
-                                        <div className="flex gap-1">
-                                            <Button
-                                                variant="secondary"
-                                                size="icon"
-                                                className="h-6 w-6 bg-muted hover:bg-muted/80"
-                                                onClick={handleCancelDelete}
-                                            >
-                                                <X className="h-3 w-3" />
-                                            </Button>
-                                            <Button
-                                                variant="destructive"
-                                                size="icon"
-                                                className="h-6 w-6"
-                                                onClick={(e) => handleConfirmDelete(e, item.id)}
-                                            >
-                                                <Check className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10"
-                                            onClick={(e) => handleRequestDelete(e, item.id)}
-                                        >
-                                            <Trash2 className="h-3 w-3 text-destructive" />
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+        {/* Content */}
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+          {isLoading && history.length === 0 ? (
+            <div className="flex flex-col items-center justify-center flex-1 gap-3">
+              <Loader2 className="h-6 w-6 text-primary animate-spin" />
+              <span className="text-sm text-muted-foreground">Caricamento cronologia...</span>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center flex-1 gap-3 px-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+                <AlertCircle className="h-6 w-6 text-destructive" />
+              </div>
+              <p className="text-sm text-muted-foreground text-center">{error}</p>
+            </div>
+          ) : history.length === 0 ? (
+            <div className="flex flex-col items-center justify-center flex-1 gap-3 px-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <Inbox className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <div className="text-center space-y-1">
+                <p className="text-sm font-medium text-foreground">Nessuna conversazione</p>
+                <p className="text-xs text-muted-foreground">Le tue chat appariranno qui</p>
+              </div>
+            </div>
+          ) : (
+            <ScrollArea className="flex-1 h-0 [&_[data-radix-scroll-area-viewport]>div]:!block">
+              <div className="px-6 py-4 space-y-2">
+                {history.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleSelectChat(item.id)}
+                    className="group flex items-start gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 cursor-pointer transition-colors"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 mt-0.5">
+                      <MessageCircle className="h-4 w-4 text-primary" />
                     </div>
-                </ScrollArea>
-            )}
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <span className="font-medium text-sm line-clamp-2 text-foreground">
+                        {item.query}
+                      </span>
+                      {item.preview && (
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {item.preview}
+                        </p>
+                      )}
+                      <div className="flex items-center gap-1.5 pt-0.5">
+                        <Clock className="h-3 w-3 text-muted-foreground/60" />
+                        <span className="text-[11px] text-muted-foreground/70">
+                          {new Date(item.timestamp).toLocaleDateString("it-IT", { day: "2-digit", month: "short", year: "numeric" })} · {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="shrink-0 pt-1">
+                      {deleteConfirmationId === item.id ? (
+                        <div className="flex gap-1">
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            className="h-7 w-7 bg-muted hover:bg-muted/80"
+                            onClick={handleCancelDelete}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={(e) => handleConfirmDelete(e, item.id)}
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          onClick={(e) => handleRequestDelete(e, item.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
         </div>
       </DialogContent>
     </Dialog>
