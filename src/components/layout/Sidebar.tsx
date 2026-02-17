@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -181,45 +182,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
               isCollapsed={false}
             />
-            <div className="mt-3 pt-3 border-t border-sidebar-border">
-              <div className="rounded-xl bg-sidebar-accent/30 border border-sidebar-border/50 p-3.5 space-y-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent">
-                    <GraduationCap className="h-3.5 w-3.5 text-sidebar-foreground" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-semibold text-sidebar-foreground leading-tight">Mirko Tritella</span>
-                    <span className="text-[9px] text-sidebar-foreground/60 leading-tight">A.A. 2025/2026</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2 pl-0.5">
-                  <BookOpen className="h-3 w-3 text-sidebar-foreground/50 mt-[3px] shrink-0" />
-                  <p className="text-[10px] text-sidebar-foreground/70 leading-[1.5]">
-                    Tesi di Laurea Magistrale
-                    <br />in Data Science
-                  </p>
-                </div>
-
-                <div className="space-y-1 pl-0.5">
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-px w-2 bg-sidebar-foreground/20" />
-                    <p className="text-[9px] text-sidebar-foreground/55">Rel. Prof. M. Palmonari</p>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-px w-2 bg-sidebar-foreground/20" />
-                    <p className="text-[9px] text-sidebar-foreground/55">Corr. Dott. R. Pozzi</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
-                  <Building2 className="h-3 w-3 text-sidebar-foreground/40 shrink-0" />
-                  <p className="text-[9px] text-sidebar-foreground/45 leading-tight">
-                    Univ. degli Studi di Milano-Bicocca
-                  </p>
-                </div>
-              </div>
-            </div>
+            <CreditsRow isCollapsed={false} />
           </div>
         </aside>
 
@@ -352,47 +315,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             />
 
             {/* Credits */}
-            {!isCollapsed && (
-              <div className="mt-3 pt-3 border-t border-sidebar-border">
-                <div className="rounded-xl bg-sidebar-accent/30 border border-sidebar-border/50 p-3.5 space-y-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent">
-                      <GraduationCap className="h-3.5 w-3.5 text-sidebar-foreground" />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[11px] font-semibold text-sidebar-foreground leading-tight">Mirko Tritella</span>
-                      <span className="text-[9px] text-sidebar-foreground/60 leading-tight">A.A. 2025/2026</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 pl-0.5">
-                    <BookOpen className="h-3 w-3 text-sidebar-foreground/50 mt-[3px] shrink-0" />
-                    <p className="text-[10px] text-sidebar-foreground/70 leading-[1.5]">
-                      Tesi di Laurea Magistrale
-                      <br />in Data Science
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pl-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-px w-2 bg-sidebar-foreground/20" />
-                      <p className="text-[9px] text-sidebar-foreground/55">Rel. Prof. M. Palmonari</p>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-px w-2 bg-sidebar-foreground/20" />
-                      <p className="text-[9px] text-sidebar-foreground/55">Corr. Dott. R. Pozzi</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
-                    <Building2 className="h-3 w-3 text-sidebar-foreground/40 shrink-0" />
-                    <p className="text-[9px] text-sidebar-foreground/45 leading-tight">
-                      Univ. degli Studi di Milano-Bicocca
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+            <CreditsRow isCollapsed={isCollapsed} />
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (
@@ -430,6 +353,66 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
     </>
+  );
+}
+
+function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
+  const content = (
+    <div className="space-y-3 text-sm">
+      <div className="flex items-center gap-2">
+        <GraduationCap className="h-4 w-4 text-primary" />
+        <span className="font-medium">Tesi di Laurea Magistrale</span>
+      </div>
+      <p className="text-muted-foreground text-xs leading-relaxed">
+        Sistema RAG per l&apos;analisi bilanciata dei dibattiti parlamentari italiani.
+      </p>
+      <Separator />
+      <div className="space-y-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <BookOpen className="h-3.5 w-3.5" />
+          <span>Autore: <strong className="text-foreground">Mirko Tritella</strong></span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Building2 className="h-3.5 w-3.5" />
+          <span>Sapienza Università di Roma</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (isCollapsed) {
+    return (
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            className="w-9 h-9 justify-center px-0 mx-auto text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+          >
+            <GraduationCap className="h-4 w-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right" sideOffset={10} className="max-w-[260px] p-3">
+          {content}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-2.5 h-8 mb-0.5 text-[13px] text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+        >
+          <GraduationCap className="h-4 w-4 shrink-0" />
+          <span className="truncate">Crediti</span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent side="top" align="start" className="w-[260px] p-4">
+        {content}
+      </PopoverContent>
+    </Popover>
   );
 }
 
