@@ -293,11 +293,8 @@ export default function RankingPage() {
           </div>
         </header>
 
-        {/* ── Barra filtri persistente ── */}
-        <div className={cn(
-          "sticky top-14 z-20 border-b border-border/50 bg-muted/30 backdrop-blur-sm px-4 sm:px-6 py-2.5 shrink-0 transition-opacity",
-          !filtersEnabled && "opacity-50 pointer-events-none"
-        )}>
+        {/* ── Barra filtri persistente (solo quando ci sono risultati) ── */}
+        {filtersEnabled && <div className="sticky top-14 z-20 border-b border-border/50 bg-muted/30 backdrop-blur-sm px-4 sm:px-6 py-2.5 shrink-0">
           <div className="flex flex-wrap items-center gap-2 max-w-6xl">
             {/* Coalition toggle */}
             <div className="flex rounded-lg border border-border overflow-hidden text-xs font-medium">
@@ -491,36 +488,53 @@ export default function RankingPage() {
               })}
             </div>
           )}
-        </div>
+        </div>}
 
         {/* ── Content area ── */}
         <div className="flex-1 overflow-y-auto">
           {/* ── Stato vuoto — dashboard style ── */}
           {!hasResults && !loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 pb-16">
-              <div className="text-center space-y-4 max-w-md">
+              <div className="text-center space-y-6 max-w-lg">
                 <div className="mx-auto h-16 w-16 rounded-2xl bg-primary/8 flex items-center justify-center">
                   <Crown className="h-8 w-8 text-primary/60" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Nessun ranking calcolato
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Ranking Autorità dei Deputati
                   </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Inserisci un tema nella barra di ricerca per scoprire i deputati più autorevoli.
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+                    Cerca un tema politico e scopri quali deputati sono più autorevoli in materia,
+                    sulla base di interventi, atti, commissioni, professione, istruzione e ruolo istituzionale.
                   </p>
                 </div>
 
-                {/* Topic chips compatti */}
-                <div className="pt-2">
-                  <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/50 mb-3">
-                    Prova con
+                {/* Come funziona */}
+                <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto pt-2">
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                    <Search className="h-4 w-4 text-primary/70" />
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Cerca un tema</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                    <ArrowUpDown className="h-4 w-4 text-primary/70" />
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Classifica generata</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                    <Users className="h-4 w-4 text-primary/70" />
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Filtra e esplora</span>
+                  </div>
+                </div>
+
+                {/* Topic chips */}
+                <div className="pt-3">
+                  <p className="text-xs font-medium text-muted-foreground mb-3">
+                    Oppure prova con un tema suggerito
                   </p>
-                  <div className="flex flex-wrap justify-center gap-1.5">
+                  <div className="flex flex-wrap justify-center gap-2">
                     {TOPICS.slice(0, 8).map((t) => (
                       <button
                         key={t}
-                        className="inline-flex items-center gap-1 rounded-md border border-border/60 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground hover:bg-primary/5"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground hover:bg-primary/5 hover:shadow-sm"
                         onClick={() => handleTopicClick(t)}
                       >
                         <span className="capitalize">{t}</span>
