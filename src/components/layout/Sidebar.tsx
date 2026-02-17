@@ -40,6 +40,7 @@ import {
   Clock,
   Inbox,
   AlertCircle,
+  Users,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -374,7 +375,15 @@ function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
         </div>
         <div className="flex items-center gap-2">
           <Building2 className="h-3.5 w-3.5" />
-          <span>Sapienza Università di Roma</span>
+          <span>Università degli Studi di Milano Bicocca</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Users className="h-3.5 w-3.5" />
+          <span>Relatore: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Users className="h-3.5 w-3.5" />
+          <span>Correlatore: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
         </div>
       </div>
     </div>
