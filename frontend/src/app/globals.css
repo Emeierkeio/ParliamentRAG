@@ -46,62 +46,62 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* Modern Minimal Theme */
+/* Institutional Italian Parliament Theme */
 :root {
   --radius: 0.75rem;
 
-  /* Background: Pure almost-white for a clean canvas */
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.12 0.01 260);
+  /* Background: Warm off-white with subtle warmth */
+  --background: oklch(0.985 0.003 80);
+  --foreground: oklch(0.18 0.03 250);
 
-  /* Surface: White with subtle separation */
+  /* Surface: Clean white cards */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.12 0.01 260);
+  --card-foreground: oklch(0.18 0.03 250);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.01 260);
+  --popover-foreground: oklch(0.18 0.03 250);
 
-  /* Primary: Deep, sophisticated Indigo/Slate */
-  --primary: oklch(0.25 0.02 260); /* Deep Slate Blue */
-  --primary-foreground: oklch(1 0 0);
+  /* Primary: Blu Istituzionale Italiano */
+  --primary: oklch(0.32 0.08 250); /* #1B3A5C */
+  --primary-foreground: oklch(0.95 0.01 80);
 
-  /* Secondary: Very subtle gray */
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.25 0.02 260);
+  /* Secondary: Warm sand tone */
+  --secondary: oklch(0.95 0.01 80);
+  --secondary-foreground: oklch(0.32 0.08 250);
 
-  /* Muted: Lighter gray for less emphasis */
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.55 0 0);
+  /* Muted: Warm light gray */
+  --muted: oklch(0.96 0.005 80);
+  --muted-foreground: oklch(0.5 0.01 250);
 
-  /* Accent: For hover states etc */
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.2 0.02 260);
+  /* Accent: Light blue institutional tint */
+  --accent: oklch(0.94 0.015 250);
+  --accent-foreground: oklch(0.25 0.06 250);
 
-  /* Destructive */
-  --destructive: oklch(0.58 0.2 25);
+  /* Destructive: Bordeaux parlamentare */
+  --destructive: oklch(0.48 0.18 15);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders: Extremely subtle */
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.85 0 0);
+  /* Borders: Warm subtle borders */
+  --border: oklch(0.91 0.005 80);
+  --input: oklch(0.91 0.005 80);
+  --ring: oklch(0.55 0.1 250);
 
-  /* Charts - Refined Palette */
-  --chart-1: oklch(0.6 0.18 25); /* Red */
-  --chart-2: oklch(0.5 0.15 250); /* Blue */
-  --chart-3: oklch(0.55 0.12 145); /* Green */
-  --chart-4: oklch(0.75 0.14 85); /* Yellow */
-  --chart-5: oklch(0.55 0.15 300); /* Purple */
+  /* Charts - Institutional Palette */
+  --chart-1: oklch(0.32 0.08 250); /* Blu Istituzionale */
+  --chart-2: oklch(0.48 0.18 15);  /* Bordeaux */
+  --chart-3: oklch(0.62 0.06 80);  /* Oro scuro */
+  --chart-4: oklch(0.55 0.12 145); /* Verde */
+  --chart-5: oklch(0.5 0.15 300);  /* Viola */
 
-  /* Sidebar */
-  --sidebar: oklch(0.985 0 0); /* Slightly distinctive from main bg */
-  --sidebar-foreground: oklch(0.35 0 0);
-  --sidebar-primary: oklch(0.25 0.02 260);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.96 0 0);
-  --sidebar-accent-foreground: oklch(0.15 0 0);
-  --sidebar-border: oklch(0.94 0 0);
-  --sidebar-ring: oklch(0.85 0 0);
+  /* Sidebar: Blu scuro istituzionale */
+  --sidebar: oklch(0.22 0.05 250);
+  --sidebar-foreground: oklch(0.85 0.01 80);
+  --sidebar-primary: oklch(0.95 0.01 80);
+  --sidebar-primary-foreground: oklch(0.22 0.05 250);
+  --sidebar-accent: oklch(0.28 0.06 250);
+  --sidebar-accent-foreground: oklch(0.92 0.005 80);
+  --sidebar-border: oklch(0.30 0.04 250);
+  --sidebar-ring: oklch(0.55 0.1 250);
 }
 
 @layer base {

@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import Image from "next/image";
 import {
   MessageSquare,
   PanelLeftClose,
@@ -99,10 +100,10 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               className="flex items-center gap-3 cursor-pointer"
               onClick={() => handleNavClick(() => { window.location.href = "/"; })}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                <Landmark className="h-5 w-5" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden">
+                <Image src="/logo.svg" alt={config.app.name} width={40} height={40} className="rounded-xl" />
               </div>
-              <span className="text-sm font-bold tracking-tight text-foreground">
+              <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
                 {config.app.name}
               </span>
             </div>
@@ -110,7 +111,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               variant="ghost"
               size="icon"
               onClick={onCloseMobile}
-              className="h-8 w-8 text-muted-foreground"
+              className="h-8 w-8 text-sidebar-foreground/50 hover:text-sidebar-foreground"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -158,20 +159,20 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               isCollapsed={false}
             />
             <div className="mt-3 pt-3 border-t border-sidebar-border">
-              <div className="rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-sidebar-border/50 p-3.5 space-y-3">
+              <div className="rounded-xl bg-sidebar-accent/30 border border-sidebar-border/50 p-3.5 space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                    <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent">
+                    <GraduationCap className="h-3.5 w-3.5 text-sidebar-foreground" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-semibold text-foreground/85 leading-tight">Mirko Tritella</span>
-                    <span className="text-[9px] text-muted-foreground/60 leading-tight">A.A. 2025/2026</span>
+                    <span className="text-[11px] font-semibold text-sidebar-foreground leading-tight">Mirko Tritella</span>
+                    <span className="text-[9px] text-sidebar-foreground/60 leading-tight">A.A. 2025/2026</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2 pl-0.5">
-                  <BookOpen className="h-3 w-3 text-muted-foreground/50 mt-[3px] shrink-0" />
-                  <p className="text-[10px] text-muted-foreground/70 leading-[1.5]">
+                  <BookOpen className="h-3 w-3 text-sidebar-foreground/50 mt-[3px] shrink-0" />
+                  <p className="text-[10px] text-sidebar-foreground/70 leading-[1.5]">
                     Tesi di Laurea Magistrale
                     <br />in Data Science
                   </p>
@@ -179,18 +180,18 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
                 <div className="space-y-1 pl-0.5">
                   <div className="flex items-center gap-1.5">
-                    <div className="h-px w-2 bg-muted-foreground/20" />
-                    <p className="text-[9px] text-muted-foreground/55">Rel. Prof. M. Palmonari</p>
+                    <div className="h-px w-2 bg-sidebar-foreground/20" />
+                    <p className="text-[9px] text-sidebar-foreground/55">Rel. Prof. M. Palmonari</p>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="h-px w-2 bg-muted-foreground/20" />
-                    <p className="text-[9px] text-muted-foreground/55">Corr. Dott. R. Pozzi</p>
+                    <div className="h-px w-2 bg-sidebar-foreground/20" />
+                    <p className="text-[9px] text-sidebar-foreground/55">Corr. Dott. R. Pozzi</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
-                  <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                  <p className="text-[9px] text-muted-foreground/45 leading-tight">
+                  <Building2 className="h-3 w-3 text-sidebar-foreground/40 shrink-0" />
+                  <p className="text-[9px] text-sidebar-foreground/45 leading-tight">
                     Univ. degli Studi di Milano-Bicocca
                   </p>
                 </div>
@@ -229,12 +230,12 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
               onClick={() => window.location.href = "/"}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                <Landmark className="h-5 w-5" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden">
+                <Image src="/logo.svg" alt={config.app.name} width={40} height={40} className="rounded-xl" />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">
-                  <span className="text-sm font-bold tracking-tight text-foreground">
+                  <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
                     {config.app.name}
                   </span>
                 </div>
@@ -247,7 +248,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                   variant="ghost"
                   size="icon"
                   onClick={onToggle}
-                  className="h-8 w-8 text-muted-foreground hover:bg-transparent hover:text-foreground ml-auto"
+                  className="h-8 w-8 text-sidebar-foreground/50 hover:bg-transparent hover:text-sidebar-foreground ml-auto"
                 >
                   <PanelLeftClose className="h-4 w-4" />
                 </Button>
@@ -305,20 +306,20 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             {/* Credits */}
             {!isCollapsed && (
               <div className="mt-3 pt-3 border-t border-sidebar-border">
-                <div className="rounded-xl bg-gradient-to-br from-muted/50 to-muted/20 border border-sidebar-border/50 p-3.5 space-y-3">
+                <div className="rounded-xl bg-sidebar-accent/30 border border-sidebar-border/50 p-3.5 space-y-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent">
+                      <GraduationCap className="h-3.5 w-3.5 text-sidebar-foreground" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[11px] font-semibold text-foreground/85 leading-tight">Mirko Tritella</span>
-                      <span className="text-[9px] text-muted-foreground/60 leading-tight">A.A. 2025/2026</span>
+                      <span className="text-[11px] font-semibold text-sidebar-foreground leading-tight">Mirko Tritella</span>
+                      <span className="text-[9px] text-sidebar-foreground/60 leading-tight">A.A. 2025/2026</span>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-2 pl-0.5">
-                    <BookOpen className="h-3 w-3 text-muted-foreground/50 mt-[3px] shrink-0" />
-                    <p className="text-[10px] text-muted-foreground/70 leading-[1.5]">
+                    <BookOpen className="h-3 w-3 text-sidebar-foreground/50 mt-[3px] shrink-0" />
+                    <p className="text-[10px] text-sidebar-foreground/70 leading-[1.5]">
                       Tesi di Laurea Magistrale
                       <br />in Data Science
                     </p>
@@ -326,18 +327,18 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
 
                   <div className="space-y-1 pl-0.5">
                     <div className="flex items-center gap-1.5">
-                      <div className="h-px w-2 bg-muted-foreground/20" />
-                      <p className="text-[9px] text-muted-foreground/55">Rel. Prof. M. Palmonari</p>
+                      <div className="h-px w-2 bg-sidebar-foreground/20" />
+                      <p className="text-[9px] text-sidebar-foreground/55">Rel. Prof. M. Palmonari</p>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <div className="h-px w-2 bg-muted-foreground/20" />
-                      <p className="text-[9px] text-muted-foreground/55">Corr. Dott. R. Pozzi</p>
+                      <div className="h-px w-2 bg-sidebar-foreground/20" />
+                      <p className="text-[9px] text-sidebar-foreground/55">Corr. Dott. R. Pozzi</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 pt-1 border-t border-sidebar-border/30">
-                    <Building2 className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                    <p className="text-[9px] text-muted-foreground/45 leading-tight">
+                    <Building2 className="h-3 w-3 text-sidebar-foreground/40 shrink-0" />
+                    <p className="text-[9px] text-sidebar-foreground/45 leading-tight">
                       Univ. degli Studi di Milano-Bicocca
                     </p>
                   </div>
@@ -354,7 +355,7 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                         variant="ghost"
                         size="icon"
                         onClick={onToggle}
-                        className="h-10 w-10 text-muted-foreground hover:text-foreground transition-colors"
+                        className="h-10 w-10 text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors"
                     >
                         <PanelLeft className="h-5 w-5" />
                     </Button>
@@ -409,11 +410,11 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       className={cn(
         "w-full justify-start gap-3 h-10 mb-1 transition-all duration-200",
         // Default State
-        "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
+        "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
         // Active State
-        item.isActive && !isPrimary && "bg-sidebar-accent text-foreground font-medium",
+        item.isActive && !isPrimary && "bg-sidebar-accent text-sidebar-foreground font-medium",
         // Primary Variant
-        isPrimary && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground shadow-sm",
+        isPrimary && "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 hover:text-sidebar-primary-foreground shadow-sm",
         // Collapsed Logic
         isCollapsed && "justify-center px-0 w-10 h-10 mx-auto",
         // Disabled State
@@ -421,7 +422,7 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       )}
       onClick={item.onClick}
     >
-      <item.icon className={cn("h-5 w-5 shrink-0", isPrimary ? "text-primary-foreground" : "text-current")} />
+      <item.icon className={cn("h-5 w-5 shrink-0", isPrimary ? "text-sidebar-primary-foreground" : "text-current")} />
       {!isCollapsed && (
         <span className={cn("truncate", isPrimary && "font-medium")}>{item.label}</span>
       )}
@@ -449,7 +450,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Landmark className="h-5 w-5 text-primary" />
+            <Image src="/logo.svg" alt="" width={24} height={24} className="rounded-md" />
             {config.app.name}
           </DialogTitle>
           <DialogDescription>
@@ -593,7 +594,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
       <DialogContent className="max-w-xl h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <History className="h-5 w-5 text-primary" />
+            <History className="h-5 w-5 text-sidebar-foreground" />
             Cronologia Chat
           </DialogTitle>
           <DialogDescription>
@@ -604,7 +605,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
         <div className="flex-1 overflow-hidden flex flex-col pt-4">
             {isLoading && history.length === 0 ? (
                  <div className="flex justify-center items-center h-40">
-                     <span className="loading loading-spinner text-primary">Caricamento...</span>
+                     <span className="loading loading-spinner text-sidebar-foreground">Caricamento...</span>
                  </div>
             ) : error ? (
                 <div className="text-red-500 text-center p-4">{error}</div>
