@@ -97,8 +97,8 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               className="flex items-center gap-3 cursor-pointer"
               onClick={() => handleNavClick(() => { window.location.href = "/"; })}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden">
-                <Image src="/logo.svg" alt={config.app.name} width={40} height={40} className="rounded-xl" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
+                <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
               </div>
               <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
                 {config.app.name}
@@ -128,17 +128,17 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Classifica", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                item={{ icon: BarChart3, label: "Score Autorità", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: Network, label: "Grafo", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
+                item={{ icon: Network, label: "Esplora Grafo", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
               <NavButton
-                item={{ icon: ClipboardCheck, label: "Valutazione RAG", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
+                item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
                 isCollapsed={false}
                 disabled={isQueryRunning}
               />
@@ -232,8 +232,8 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
               className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
               onClick={() => window.location.href = "/"}
             >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden">
-                <Image src="/logo.svg" alt={config.app.name} width={40} height={40} className="rounded-xl" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
+                <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">
@@ -274,19 +274,19 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, onLoadChat, isQueryR
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Classifica", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
+              item={{ icon: BarChart3, label: "Score Autorità", href: "/ranking", onClick: () => window.location.href = "/ranking" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: Network, label: "Grafo", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
+              item={{ icon: Network, label: "Esplora Grafo", href: "/explorer", onClick: () => window.location.href = "/explorer" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
 
             <NavButton
-              item={{ icon: ClipboardCheck, label: "Valutazione RAG", onClick: () => window.location.href = "/valutazione" }}
+              item={{ icon: ClipboardCheck, label: "Valutazione", onClick: () => window.location.href = "/valutazione" }}
               isCollapsed={isCollapsed}
               disabled={isQueryRunning}
             />
@@ -457,7 +457,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="" width={24} height={24} className="rounded-md" />
+            <Image src="/logo.svg" alt="" width={24} height={24} />
             {config.app.name}
           </DialogTitle>
           <DialogDescription>
