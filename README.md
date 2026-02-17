@@ -8,7 +8,7 @@ A Retrieval-Augmented Generation system that delivers **balanced, multi-view ana
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Next.js](https://img.shields.io/badge/Next.js-16+-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
 [![Neo4j](https://img.shields.io/badge/Neo4j-5.15-4581C3?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com)
 [![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
@@ -21,7 +21,7 @@ A Retrieval-Augmented Generation system that delivers **balanced, multi-view ana
 
 ## Overview
 
-ParliamentRAG is a research system built for a Master's thesis in Data Science (Universita' degli Studi di Milano-Bicocca, A.A. 2024/2025) that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
+ParliamentRAG is a research system built for a Master's thesis in Data Science (Sapienza Universita' di Roma) that combines **vector search** and **knowledge graph traversal** to analyze Italian parliamentary debates. It enforces balanced political representation by guaranteeing that all 10 parliamentary groups appear in every generated response.
 
 The system features a **4-stage generation pipeline** (Analyst → Sectional Writer → Integrator → Citation Surgeon) with **deterministic, offset-based citations** — zero fuzzy matching — ensuring full auditability and traceability of every quoted passage. A **5-factor merger** (relevance, diversity, coverage, authority, salience) and **embedding-based coherence validation** guarantee both quality and fairness of the output.
 
@@ -65,17 +65,19 @@ The system features a **4-stage generation pipeline** (Analyst → Sectional Wri
 
 ```mermaid
 flowchart TB
-  subgraph Frontend["<b>Frontend</b> — Next.js 16 / React 19"]
+  subgraph Frontend["<b>Frontend</b> — Next.js 16.1 / React 19"]
     direction LR
     Chat["Chat"]
-    Search["Search"]
-    Explorer["Graph Explorer"]
-    Survey["Survey"]
+    Search["Ricerca Atti"]
+    Ranking["Ranking Autorita'"]
+    Compass["Compasso Ideologico"]
+    Explorer["Esplora Grafo"]
+    Eval["Valutazione A/B"]
   end
 
   Frontend -->|"SSE / REST"| Backend
 
-  subgraph Backend["<b>Backend</b> — FastAPI"]
+  subgraph Backend["<b>Backend</b> — FastAPI (11 routers)"]
     direction LR
     subgraph Retrieval["Retrieval"]
       Dense["Dense Channel<br/><i>Vector Similarity</i>"]
@@ -94,13 +96,13 @@ flowchart TB
       S4["4 · Citation Surgeon<br/><i>deterministic · offset</i>"]
       S1 --> S2 --> S3 --> S4
     end
-    Compass["Ideological Compass<br/><i>Weighted PCA · KDE · TF-IDF</i>"]
+    CompassSvc["Ideological Compass<br/><i>Weighted PCA · KDE · TF-IDF</i>"]
     Integrity["Citation Integrity<br/><i>Registry · Coherence · Guard</i>"]
   end
 
   Retrieval --> Authority
   Authority --> Generation
-  Authority --> Compass
+  Authority --> CompassSvc
   Generation --> Integrity
 
   Backend -->|"Bolt"| DB
@@ -118,7 +120,7 @@ flowchart TB
   style Retrieval fill:#1e3a5f,stroke:#3b82f6,color:#e0f2fe
   style Authority fill:#3b1f5e,stroke:#8b5cf6,color:#ede9fe
   style Generation fill:#4a1d34,stroke:#ec4899,color:#fce7f3
-  style Compass fill:#365314,stroke:#84cc16,color:#ecfccb
+  style CompassSvc fill:#365314,stroke:#84cc16,color:#ecfccb
   style Integrity fill:#4a2c0a,stroke:#f59e0b,color:#fef3c7
 ```
 
@@ -128,12 +130,28 @@ flowchart TB
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS 4, shadcn/ui |
+| **Frontend** | Next.js 16.1, React 19, TypeScript 5, Tailwind CSS 4, shadcn/ui, react-force-graph-2d |
 | **Backend** | FastAPI, Python 3.10+, Pydantic 2, spaCy (Italian NLP) |
-| **Database** | Neo4j 5.15 (Graph + Native Vector Index) |
+| **Database** | Neo4j 5.15 (Graph + Native Vector Index), APOC, Graph Data Science |
 | **LLM** | OpenAI GPT-4o (generation), GPT-4o-mini (analysis) |
 | **Embeddings** | text-embedding-3-small (1536 dimensions) |
 | **Infrastructure** | Docker, Docker Compose, Uvicorn |
+
+---
+
+## Frontend Pages
+
+| Page | Route | Description |
+|------|-------|-------------|
+| **Ricerca Topic** | `/` | Main chat interface with multi-view RAG analysis |
+| **Ricerca Atti** | `/search` | Full-text and semantic search of parliamentary records |
+| **Ranking Autorita'** | `/ranking` | Deputy authority scores ranked by topic |
+| **Compasso Ideologico** | `/compass` | Standalone ideological positioning analyzer |
+| **Esplora Grafo** | `/explorer` | Interactive Neo4j schema browser with Cypher editor |
+| **Valutazione** | `/valutazione` | A/B evaluation dashboard with automated metrics |
+| **Cronologia** | `/chat/[id]` | Load and review saved conversations |
+
+The sidebar organizes pages into two sections: **Strumenti** (Search, Ranking, Compass) and **Avanzate** (Graph Explorer, Evaluation).
 
 ---
 
@@ -196,21 +214,72 @@ npm run dev
 
 ## API Reference
 
+The backend exposes **11 routers** with the following endpoints:
+
+### Chat & Query
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/chat` | POST | Chat with SSE streaming |
+| `/api/chat` | POST | Main chat endpoint with SSE streaming |
+| `/api/chat/task/{task_id}` | GET | Poll async task status |
 | `/api/query` | POST | Alternative query endpoint |
 | `/api/evidence/{id}` | GET | Full evidence details |
-| `/api/config` | GET | System configuration |
-| `/api/history` | GET/POST | Chat history |
-| `/api/history/{id}` | GET/DELETE | Specific conversation |
+| `/api/evidence/{id}/verify` | GET | Verify citation integrity |
+| `/api/health` | GET | Health check |
+
+### Search & Graph
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/search/results` | GET | Parliamentary record search |
+| `/api/search/deputies` | GET | Deputy list with filters |
+| `/api/search/groups` | GET | Parliamentary groups |
+| `/api/search/speech/{chunk_id}` | GET | Full speech by chunk ID |
+| `/api/search/act/{act_uri}` | GET | Parliamentary act details |
 | `/api/graph/schema` | GET | Neo4j graph schema |
 | `/api/graph/stats` | GET | Database statistics |
-| `/api/search/results` | GET | Parliamentary record search |
-| `/api/search/deputies` | GET | Deputy list |
-| `/api/search/groups` | GET | Parliamentary groups |
-| `/api/evaluation` | POST | A/B evaluation submission |
-| `/api/survey/create` | POST | User survey creation |
+| `/api/graph/query` | POST | Execute Cypher queries |
+
+### Specialized Analysis
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/authority-ranking` | POST | Rank deputies by authority on a topic |
+| `/api/compass` | POST | Compute ideological compass |
+
+### Configuration
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/config` | GET | System configuration |
+| `/api/config` | PUT | Update configuration |
+| `/api/config/parties` | GET | Parliamentary parties |
+| `/api/config/coalitions` | GET | Coalition mappings |
+
+### History
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/history` | GET | List conversations |
+| `/api/history` | POST | Save conversation |
+| `/api/history/{id}` | GET | Load conversation |
+| `/api/history/{id}` | DELETE | Delete conversation |
+| `/api/history` | DELETE | Clear all history |
+
+### Evaluation & Surveys
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/evaluation/dashboard` | GET | A/B evaluation metrics |
+| `/api/evaluation/metrics/{chat_id}` | GET | Automated metrics for a chat |
+| `/api/evaluation/export/csv` | GET | Export evaluations as CSV |
+| `/api/surveys` | GET | List surveys |
+| `/api/surveys` | POST | Submit survey |
+| `/api/surveys/questions` | GET | Survey questions |
+| `/api/surveys/stats/summary` | GET | Survey statistics |
+| `/api/surveys/chats/evaluated` | GET | Evaluated chats |
+| `/api/surveys/chats/pending` | GET | Pending evaluations |
+| `/api/surveys/{chat_id}` | GET/PUT/DELETE | Manage specific survey |
 
 Full interactive documentation available at `/docs` when the backend is running.
 
@@ -334,10 +403,17 @@ pytest tests/test_citation_exact.py -v        # Offset-based citation extraction
 
 | Document | Topic |
 |----------|-------|
-| [thesis.md](thesis.md) | Full thesis document (Chapters 1-8) |
-| [slides.md](slides.md) | Marp presentation slides |
-| [scelte.md](scelte.md) | 24 architectural decisions with rationale |
-| [biblio.md](biblio.md) | 15 papers with traceability to design choices |
+| [docs/architecture.md](docs/architecture.md) | System architecture and data flow |
+| [docs/retrieval.md](docs/retrieval.md) | Dual-channel retrieval strategy |
+| [docs/authority_score.md](docs/authority_score.md) | Authority scoring methodology |
+| [docs/generation_pipeline.md](docs/generation_pipeline.md) | 4-stage generation pipeline |
+| [docs/citation_integrity.md](docs/citation_integrity.md) | Offset-based citation system |
+| [docs/ideological_compass.md](docs/ideological_compass.md) | Ideological compass (IC-1 → IC-6) |
+| [docs/design_choices.md](docs/design_choices.md) | Architectural decisions |
+| [docs/evaluation.md](docs/evaluation.md) | Evaluation methodology |
+| [docs/scelte.md](docs/scelte.md) | 24 design choices with rationale |
+| [docs/slides.md](docs/slides.md) | Marp presentation slides |
+| [docs/thesis.md](docs/thesis.md) | Full thesis document (Chapters 1-8) |
 | [config/default.yaml](config/default.yaml) | All weights, thresholds, and parameters |
 
 ---
@@ -348,11 +424,30 @@ pytest tests/test_citation_exact.py -v        # Offset-based citation extraction
 ParliamentRAG/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI entry point
-│   │   ├── config.py            # Settings & config loader
+│   │   ├── main.py              # FastAPI entry point (11 routers)
+│   │   ├── config.py            # Settings & YAML config loader
 │   │   ├── models/              # Pydantic data models
-│   │   ├── routers/             # API endpoints (9 routers)
+│   │   │   ├── evidence.py      # UnifiedEvidence schema
+│   │   │   ├── compass.py       # Compass analysis models
+│   │   │   ├── authority.py     # Authority scoring models
+│   │   │   ├── evaluation.py    # A/B evaluation models
+│   │   │   ├── survey.py        # User survey models
+│   │   │   └── query.py         # Query/response models
+│   │   ├── routers/             # API endpoints (11 routers)
+│   │   │   ├── chat.py          # SSE streaming chat
+│   │   │   ├── query.py         # Alternative query + health
+│   │   │   ├── evidence.py      # Evidence details + verification
+│   │   │   ├── config.py        # Configuration + parties + coalitions
+│   │   │   ├── history.py       # Conversation persistence
+│   │   │   ├── graph.py         # Schema, stats, Cypher queries
+│   │   │   ├── search.py        # Records, deputies, groups, speeches, acts
+│   │   │   ├── authority.py     # Deputy ranking by topic
+│   │   │   ├── compass.py       # Standalone ideological compass
+│   │   │   ├── evaluation.py    # A/B dashboard + metrics + export
+│   │   │   └── survey.py        # User surveys (CRUD + stats)
 │   │   └── services/
+│   │       ├── neo4j_client.py  # Database client
+│   │       ├── task_store.py    # Async task tracking
 │   │       ├── retrieval/       # Dense + Graph channels, 5-factor Merger
 │   │       ├── authority/       # Authority scoring, Coalition logic
 │   │       ├── generation/      # 4-stage pipeline, Citation Registry,
@@ -360,23 +455,39 @@ ParliamentRAG/
 │   │       ├── compass/         # Ideological compass (PCA, KDE, TF-IDF)
 │   │       └── citation/        # Sentence extraction, Salience scoring
 │   ├── config/                  # YAML configuration
+│   ├── logs/                    # Rotating log files (auto-generated)
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── frontend/
 │   └── src/
-│       ├── app/                 # Next.js App Router pages
-│       ├── components/          # React components
+│       ├── app/                 # Next.js App Router (7 pages)
+│       │   ├── page.tsx         # Ricerca Topic (main chat)
+│       │   ├── search/          # Ricerca Atti
+│       │   ├── ranking/         # Ranking Autorita'
+│       │   ├── compass/         # Compasso Ideologico
+│       │   ├── explorer/        # Esplora Grafo
+│       │   ├── valutazione/     # Valutazione A/B
+│       │   └── chat/[id]/       # Cronologia conversazioni
+│       ├── components/
+│       │   ├── ui/              # shadcn/ui primitives
+│       │   ├── chat/            # ChatArea, ExpertCard, CitationCard, CompassCard
+│       │   ├── layout/          # Sidebar with Strumenti/Avanzate sections
+│       │   ├── search/          # Deputy/Group selectors, results
+│       │   ├── graph/           # Graph visualizer (react-force-graph-2d)
+│       │   ├── evaluation/      # Charts, comparison views
+│       │   ├── survey/          # Survey modal
+│       │   ├── settings/        # Configuration editors
+│       │   └── shared/          # Progress indicators
 │       ├── hooks/               # Custom React hooks
-│       └── types/               # TypeScript definitions
+│       ├── types/               # TypeScript definitions
+│       └── lib/                 # Utilities
 ├── config/                      # Shared YAML configuration
 │   ├── default.yaml             # All weights, thresholds, parameters
 │   └── commissioni_topics.yaml  # Committee topic mappings
+├── docs/                        # Technical documentation (11 files + PDF)
+├── assets/                      # Images and visual assets
 ├── neo4j/                       # Neo4j Docker data volumes
-├── docker-compose.yml           # Neo4j container
-├── thesis.md                    # Full thesis document
-├── slides.md                    # Marp presentation slides
-├── scelte.md                    # Architectural decisions
-├── biblio.md                    # Bibliography with traceability
+├── docker-compose.yml           # Neo4j 5.15 + APOC + GDS
 ├── .env.example                 # Environment template
 └── LICENSE
 ```
@@ -385,11 +496,9 @@ ParliamentRAG/
 
 ## Author
 
-**Mirko Tritella** — Tesi di Laurea Magistrale in Data Science, A.A. 2025/2026
+**Mirko Tritella** — Tesi di Laurea Magistrale in Data Science
 
-Relatore: Prof. Matteo **Palmonari** — Correlatore: Dott. Riccardo **Pozzi**
-
-Universita' degli Studi di Milano-Bicocca
+Sapienza Universita' di Roma
 
 ---
 
