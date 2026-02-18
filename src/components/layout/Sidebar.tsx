@@ -385,7 +385,7 @@ function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
           <Users className="h-3.5 w-3.5" />
           <span>Correlatore: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
         </div>
-      </div>
+      </div>w
     </div>
   );
 
@@ -497,7 +497,7 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
 function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-[95vw] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Image src="/logo.svg" alt="" width={24} height={24} />
@@ -714,7 +714,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
                           <Button
                             variant="secondary"
                             size="icon"
-                            className="h-7 w-7 bg-muted hover:bg-muted/80"
+                            className="h-9 w-9 min-tap-none bg-muted hover:bg-muted/80"
                             onClick={handleCancelDelete}
                           >
                             <X className="h-3.5 w-3.5" />
@@ -722,7 +722,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
                           <Button
                             variant="destructive"
                             size="icon"
-                            className="h-7 w-7"
+                            className="h-9 w-9 min-tap-none"
                             onClick={(e) => handleConfirmDelete(e, item.id)}
                           >
                             <Check className="h-3.5 w-3.5" />
@@ -732,7 +732,7 @@ function HistoryModal({ open, onClose, onLoadChat }: { open: boolean; onClose: (
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          className="h-9 w-9 min-tap-none opacity-0 group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100 transition-opacity text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                           onClick={(e) => handleRequestDelete(e, item.id)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
