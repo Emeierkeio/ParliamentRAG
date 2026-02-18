@@ -114,7 +114,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[85vh] flex flex-col">
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl h-[90vh] sm:h-[85vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5 text-primary" />
@@ -148,7 +148,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               <TabsTrigger value="info">Guida</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="visual" className="h-[calc(85vh-200px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
+            <TabsContent value="visual" className="h-[calc(90vh-220px)] sm:h-[calc(85vh-200px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
               {configData ? (
                 <div className="space-y-6 pb-4">
                   <RetrievalEditor
