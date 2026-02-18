@@ -304,14 +304,14 @@ export function CompassCard({ data }: CompassCardProps) {
                  </TooltipProvider>
              </div>
              <div className="flex gap-1 items-center">
-                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.max(0.2, z - 0.2))}>
+                 <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none" onClick={() => setZoom(z => Math.max(0.2, z - 0.2))}>
                      <Minus className="h-3 w-3" />
                  </Button>
                  <span className="text-[10px] text-muted-foreground w-8 text-center">{Math.round(zoom * 100)}%</span>
-                 <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => setZoom(z => Math.min(6, z + 0.2))}>
+                 <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none" onClick={() => setZoom(z => Math.min(6, z + 0.2))}>
                      <Plus className="h-3 w-3" />
                  </Button>
-                 <Button variant="outline" size="icon" className="h-6 w-6 ml-1" onClick={resetView} title="Reset vista">
+                 <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none ml-1" onClick={resetView} title="Reset vista">
                      <RotateCcw className="h-3 w-3" />
                  </Button>
              </div>
