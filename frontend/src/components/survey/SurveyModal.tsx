@@ -90,6 +90,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mobileResponseTab, setMobileResponseTab] = useState<"A" | "B">("A");
 
   // Group questions by category (exclude overall_satisfaction - handled separately)
   const categories = SURVEY_QUESTIONS.filter(q => q.id !== "overall_satisfaction").reduce((acc, q) => {
@@ -575,20 +576,63 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
 
               {/* A/B Side by side (desktop) / Tabbed (mobile) */}
               <div className="flex flex-1 min-h-0 overflow-hidden">
+
+                {/* ── MOBILE: tab switcher A / B ── */}
+                <div className="md:hidden flex flex-col w-full min-h-0">
+                  {/* Tab bar */}
+                  <div className="flex shrink-0 border-b">
+                    <button
+                      onClick={() => setMobileResponseTab("A")}
+                      className={cn(
+                        "flex-1 py-2 text-sm font-semibold transition-colors border-b-2 -mb-px",
+                        mobileResponseTab === "A"
+                          ? "border-blue-500 text-blue-700 bg-blue-50 dark:bg-blue-950/30 dark:text-blue-300"
+                          : "border-transparent text-gray-500 hover:text-gray-700"
+                      )}
+                    >
+                      Risposta A
+                    </button>
+                    <button
+                      onClick={() => setMobileResponseTab("B")}
+                      className={cn(
+                        "flex-1 py-2 text-sm font-semibold transition-colors border-b-2 -mb-px",
+                        mobileResponseTab === "B"
+                          ? "border-amber-500 text-amber-700 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-300"
+                          : "border-transparent text-gray-500 hover:text-gray-700"
+                      )}
+                    >
+                      Risposta B
+                    </button>
+                  </div>
+                  {/* Content */}
+                  <ScrollArea className="flex-1 px-3 py-3">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
+                        <Loader2 className={cn("w-6 h-6 animate-spin", mobileResponseTab === "A" ? "text-blue-500" : "text-amber-500")} />
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                        {mobileResponseTab === "A" ? renderContent(getResponseA()) : renderContent(getResponseB())}
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
+
+                {/* ── DESKTOP: Side by side ── */}
                 {/* Response A */}
-                <div className="w-1/2 border-r flex flex-col min-h-0">
-                  <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 border-b text-center">
-                    <span className="font-semibold text-blue-700 dark:text-blue-300 text-xs md:text-sm">
+                <div className="hidden md:flex w-1/2 border-r flex-col min-h-0">
+                  <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 border-b text-center shrink-0">
+                    <span className="font-semibold text-blue-700 dark:text-blue-300 text-sm">
                       Risposta A
                     </span>
                   </div>
-                  <ScrollArea className="flex-1 px-2 md:px-3 py-2 md:py-3">
+                  <ScrollArea className="flex-1 px-3 py-3">
                     {isLoadingDetails ? (
                       <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                       </div>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-xs md:text-sm">
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
                         {renderContent(getResponseA())}
                       </div>
                     )}
@@ -596,19 +640,19 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
                 </div>
 
                 {/* Response B */}
-                <div className="w-1/2 flex flex-col min-h-0">
-                  <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 border-b text-center">
-                    <span className="font-semibold text-amber-700 dark:text-amber-300 text-xs md:text-sm">
+                <div className="hidden md:flex w-1/2 flex-col min-h-0">
+                  <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 border-b text-center shrink-0">
+                    <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">
                       Risposta B
                     </span>
                   </div>
-                  <ScrollArea className="flex-1 px-2 md:px-3 py-2 md:py-3">
+                  <ScrollArea className="flex-1 px-3 py-3">
                     {isLoadingDetails ? (
                       <div className="flex items-center justify-center h-40">
                         <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
                       </div>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-xs md:text-sm">
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
                         {renderContent(getResponseB())}
                       </div>
                     )}
