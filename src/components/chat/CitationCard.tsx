@@ -274,7 +274,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                 </div>
                 
                 {/* Date & Meta */}
-                <div className="hidden sm:flex flex-col items-end text-xs text-muted-foreground gap-1 shrink-0">
+                <div className="flex flex-col items-end text-xs text-muted-foreground gap-1 shrink-0">
                     <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded-md">
                         <Calendar className="w-3 h-3" /> 
                         <span className="font-medium">{citation.date}</span>
