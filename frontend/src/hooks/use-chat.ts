@@ -240,6 +240,20 @@ export function useChat(options: UseChatOptions = {}) {
                 console.log(`[Pipeline] Task ID confirmed: ${data.task_id}`);
                 break;
 
+              case "waiting":
+                console.log(`[Pipeline] Waiting: ${data.message}`);
+                setProgress({
+                  currentStep: 0,
+                  totalSteps: config.ui.progressSteps.length,
+                  stepLabel: "In attesa...",
+                  stepDescription: data.message || "Attualmente troppi utenti stanno utilizzando il sistema, aspetta...",
+                  isComplete: false,
+                  isWaiting: true,
+                  waitingMessage: data.message,
+                  stepResults: [],
+                });
+                break;
+
               case "progress":
                 const stepIndex = data.step - 1;
                 const step = config.ui.progressSteps[stepIndex];

@@ -79,6 +79,18 @@ def sse_event(event_type: str, data: Any) -> str:
     return f"data: {json.dumps(payload, default=str)}\n\n"
 
 
+# Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion
+_MAX_CONCURRENT_PIPELINES = 5
+_pipeline_semaphore: Optional[asyncio.Semaphore] = None
+
+
+def _get_pipeline_semaphore() -> asyncio.Semaphore:
+    global _pipeline_semaphore
+    if _pipeline_semaphore is None:
+        _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
+    return _pipeline_semaphore
+
+
 async def process_chat_background(request: ChatRequest, task_id: str):
     """
     Process chat pipeline in the background, storing events in TaskStore.
@@ -105,6 +117,12 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
     logger.info(f"[PIPELINE START] Mode: {request.mode}")
     logger.info("=" * 60)
+
+    semaphore = _get_pipeline_semaphore()
+    if semaphore.locked():
+        logger.info(f"[PIPELINE] Semaphore full, task {task_id} waiting...")
+        await emit("waiting", {"message": "Attualmente troppi utenti stanno utilizzando il sistema, aspetta..."})
+    await semaphore.acquire()
 
     try:
         # === Step 1: Analisi query ===
@@ -525,6 +543,9 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.error(f"[PIPELINE ERROR] Failed after {total_time*1000:.1f}ms: {e}", exc_info=True)
         await emit("error", {"message": str(e)})
         await store.fail_task(task_id, str(e))
+    finally:
+        semaphore.release()
+        logger.info(f"[PIPELINE] Semaphore released for task {task_id}")
 
 
 async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
@@ -1101,10 +1122,9 @@ def _batch_fetch_gov_roles(neo4j_client: Neo4jClient, speaker_ids: List[str]) ->
     UNWIND $ids AS sid
     // Direct GovernmentMember match
     OPTIONAL MATCH (m:GovernmentMember {id: sid})
-    // Also check if a Deputy matches a GovernmentMember by name
+    // Also check if a Deputy matches a GovernmentMember by name (indexed lookup, no full scan)
     OPTIONAL MATCH (d:Deputy {id: sid})
-    OPTIONAL MATCH (gm:GovernmentMember)
-    WHERE gm.first_name = d.first_name AND gm.last_name = d.last_name
+    OPTIONAL MATCH (gm:GovernmentMember {first_name: d.first_name, last_name: d.last_name})
     WITH sid,
          COALESCE(m.institutional_role, gm.institutional_role) AS role
     WHERE role IS NOT NULL

@@ -353,6 +353,20 @@ interface ProgressFullPageProps {
  * Uses the entire available space to explain what each step does and why.
  */
 export function ProgressFullPage({ progress, query, className }: ProgressFullPageProps) {
+  if (progress.isWaiting) {
+    return (
+      <div className={cn("flex flex-col items-center justify-center w-full min-h-[50vh] md:min-h-[60vh] py-8 px-6 text-center", className)}>
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-4 ring-primary/5 mb-5">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+        <h2 className="text-lg font-semibold text-foreground mb-2">Sistema al completo</h2>
+        <p className="text-sm text-muted-foreground max-w-xs">
+          {progress.waitingMessage || "Attualmente troppi utenti stanno utilizzando il sistema, aspetta..."}
+        </p>
+      </div>
+    );
+  }
+
   const steps = config.ui.progressSteps;
   const currentStepConfig = steps.find(s => s.id === progress.currentStep);
   const completedCount = Math.max(0, progress.currentStep - 1);
