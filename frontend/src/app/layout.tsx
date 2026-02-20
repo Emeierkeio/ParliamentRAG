@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "ParliamentRAGs",
+    default: "ParliamentRAG",
     template: "%s | ParliamentRAG",
   },
   description:
