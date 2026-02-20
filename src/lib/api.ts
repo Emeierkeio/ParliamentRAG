@@ -78,3 +78,31 @@ export async function updateConfig(update: ConfigUpdate): Promise<SystemConfig> 
   }
   return response.json();
 }
+
+// ─── Acronyms API ──────────────────────────────────────────────────────────────
+
+export interface AcronymsData {
+  built_in: Record<string, string>;
+  custom: Record<string, string>;
+}
+
+export async function getAcronyms(): Promise<AcronymsData> {
+  const response = await fetch(`${config.api.baseUrl}/config/acronyms`);
+  if (!response.ok) {
+    throw new Error(`Errore nel caricamento acronimi: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+export async function updateAcronyms(payload: { custom_acronyms: Record<string, string> }): Promise<AcronymsData> {
+  const response = await fetch(`${config.api.baseUrl}/config/acronyms`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Errore nel salvataggio acronimi: ${text}`);
+  }
+  return response.json();
+}
