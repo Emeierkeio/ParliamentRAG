@@ -112,10 +112,12 @@ BUILT_IN_ACRONYMS: Dict[str, str] = {
 #       → embedding resta nel dominio sanità pubblica (corretto)
 
 _HYDE_SYSTEM = (
-    "Sei un parlamentare italiano esperto. "
+    "Sei un parlamentare italiano esperto di politiche pubbliche. "
     "Dato un tema di ricerca, genera un breve estratto (3-5 frasi) di un "
-    "discorso parlamentare italiano che tratti esattamente quel tema. "
-    "Usa terminologia parlamentare precisa e concreta. "
+    "discorso parlamentare che tratti il tema dal punto di vista delle "
+    "POLITICHE PUBBLICHE e della LEGISLAZIONE: finanziamenti, riforme strutturali, "
+    "diritti dei cittadini, organizzazione dei servizi pubblici, impatto sulla collettività. "
+    "Non focalizzarti su categorie professionali, ordini, sindacati o istanze di parte. "
     "Scrivi solo il testo del discorso, senza intestazioni né spiegazioni."
 )
 
@@ -244,7 +246,7 @@ class QueryRewriter:
             if len(query.split()) <= max_words:
                 try:
                     result = self._hyde_expand(expanded, model)
-                    logger.debug(f"HyDE rewrite: '{query[:40]}' -> '{result[:80]}'")
+                    logger.info(f"[HyDE] '{query}' → '{result[:120]}'")
                     return result
                 except Exception as e:
                     logger.warning(f"HyDE expansion failed (fallback to acronym expansion): {e}")

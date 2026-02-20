@@ -9,6 +9,7 @@ import time
 from typing import List, Dict, Any, Optional
 from datetime import date
 
+import numpy as np
 import openai
 
 from ..neo4j_client import Neo4jClient
@@ -75,6 +76,59 @@ class RetrievalEngine:
 
         return response.data[0].embedding
 
+    def _rerank_with_original_query(
+        self,
+        results: List[Dict[str, Any]],
+        original_embedding: List[float],
+        hyde_weight: float = 0.35,
+        original_weight: float = 0.65,
+    ) -> List[Dict[str, Any]]:
+        """
+        Re-score dense results combining HyDE similarity with original-query similarity.
+
+        Problem this solves:
+            HyDE generates a hypothetical document for broad recall.
+            But if the generated document drifts into a wrong sub-topic
+            (e.g. "riforma sanitaria" → HyDE mentions "professionisti sanitari"),
+            chunks from that sub-topic get inflated HyDE similarity scores.
+            Re-scoring against the original query corrects this: those chunks
+            have LOW original_sim and get de-ranked.
+
+        Scoring:
+            final_sim = hyde_weight * hyde_sim + original_weight * original_sim
+
+        hyde_weight=0.35, original_weight=0.65 biases toward precision
+        (the original query signal is more reliable than the generated document).
+
+        Chunks whose embedding is missing or unparseable keep their original score.
+        """
+        orig_vec = np.array(original_embedding, dtype=np.float32)
+        orig_norm = orig_vec / (np.linalg.norm(orig_vec) + 1e-10)
+
+        reranked = []
+        for r in results:
+            chunk_emb = r.get("embedding")
+            if chunk_emb is not None:
+                try:
+                    # chunk embeddings may be a list of floats or a JSON string
+                    if isinstance(chunk_emb, str):
+                        import json
+                        chunk_emb = json.loads(chunk_emb)
+                    chunk_vec = np.array(chunk_emb, dtype=np.float32)
+                    chunk_norm = chunk_vec / (np.linalg.norm(chunk_vec) + 1e-10)
+                    original_sim = float(np.dot(orig_norm, chunk_norm))
+                    hyde_sim = r.get("similarity", 0.0)
+                    r = dict(r)  # shallow copy to avoid mutating shared state
+                    r["similarity"] = hyde_weight * hyde_sim + original_weight * original_sim
+                    r["hyde_similarity"] = hyde_sim
+                    r["original_similarity"] = original_sim
+                except Exception as e:
+                    logger.debug(f"Re-ranking skipped for chunk {r.get('evidence_id')}: {e}")
+            reranked.append(r)
+
+        reranked.sort(key=lambda x: x.get("similarity", 0.0), reverse=True)
+        return reranked
+
     def retrieve_sync(
         self,
         query: str,
@@ -102,16 +156,28 @@ class RetrievalEngine:
 
         start_time = time.time()
 
-        # Rewrite query before embedding: acronym expansion + LLM semantic expansion.
-        # The rewritten version enriches the embedding with related terms.
-        # The original query is kept unchanged for the graph channel (keyword matching).
+        # Stage 1 — rewrite query (acronym expansion + HyDE).
+        # The HyDE document is used for broad semantic RECALL in the dense channel.
+        # The original query is always kept for: graph channel, generation, compass.
         rewritten_query = self.query_rewriter.rewrite(query)
-        if rewritten_query != query:
-            logger.info(f"Query rewritten for embedding: '{query[:50]}' → '{rewritten_query[:80]}'")
+        hyde_was_applied = rewritten_query != query
 
-        # Generate query embedding from the enriched query
+        # Stage 2 — embed.
+        # If HyDE was applied, we embed BOTH the HyDE document and the original query.
+        # The original query embedding is used for PRECISION re-ranking after dense retrieval:
+        # a chunk must be semantically close to BOTH the HyDE document (recall signal)
+        # AND the original query (precision signal) to rank high.
+        # This prevents false positives where HyDE generates text near wrong clusters
+        # (e.g. "riforma sanitaria" HyDE mentions "professionisti sanitari" → those
+        # chunks get high hyde_sim but LOW original_sim → de-ranked).
         logger.info(f"Generating embedding for query: {query[:50]}...")
-        query_embedding = self.embed_query(rewritten_query)
+        if hyde_was_applied:
+            query_embedding = self.embed_query(rewritten_query)   # broad recall
+            original_embedding = self.embed_query(query)          # precision anchor
+            logger.info(f"HyDE applied — dual embedding active for re-ranking")
+        else:
+            query_embedding = self.embed_query(query)
+            original_embedding = None
 
         # Run both channels IN PARALLEL
         logger.info("Running dense and graph channels in parallel...")
@@ -138,6 +204,12 @@ class RetrievalEngine:
             graph_results = graph_future.result()
 
         logger.info(f"Channels complete: dense={len(dense_results)}, graph={len(graph_results)}")
+
+        # Dual-embedding re-ranking: if HyDE was applied, re-score dense results
+        # using the original query embedding to filter out HyDE-induced false positives.
+        if original_embedding is not None and dense_results:
+            dense_results = self._rerank_with_original_query(dense_results, original_embedding)
+            logger.info(f"Dual-embedding re-ranking applied on {len(dense_results)} dense results")
 
         # Merge channels
         logger.info("Merging channels...")

@@ -341,3 +341,56 @@ async def update_acronyms(update: AcronymsUpdate):
     normalized = {k.strip().upper(): v.strip() for k, v in update.custom_acronyms.items() if k.strip() and v.strip()}
     config.save_custom_acronyms(normalized)
     return AcronymsResponse(built_in=BUILT_IN_ACRONYMS, custom=normalized)
+
+
+# ─── Debug: query rewriter test ───────────────────────────────────────────────
+
+class RewriteDebugResponse(BaseModel):
+    """Query rewriter debug output."""
+    original_query: str
+    acronym_expanded: str
+    hyde_document: Optional[str]
+    hyde_applied: bool
+    rewriting_enabled: bool
+
+
+@router.get("/debug/rewrite", response_model=RewriteDebugResponse)
+async def debug_query_rewrite(q: str):
+    """
+    Test the query rewriter pipeline for a given query.
+
+    Returns each stage's output so you can verify HyDE is working correctly.
+    Useful for diagnosing semantic drift issues.
+
+    Example: GET /api/config/debug/rewrite?q=riforma+sanitaria
+    """
+    from ..services.retrieval.query_rewriter import QueryRewriter
+    from ..config import get_settings
+    import openai as _openai
+
+    settings = get_settings()
+    config = get_config()
+    client = _openai.OpenAI(api_key=settings.openai_api_key)
+    rewriter = QueryRewriter(client, config)
+
+    rw_cfg = rewriter._get_rewriting_config()
+    enabled = rw_cfg.get("enabled", True)
+
+    acronym_expanded = rewriter.expand_acronyms(q)
+
+    hyde_document = None
+    if enabled:
+        llm_cfg = rw_cfg.get("llm_expansion", {})
+        if llm_cfg.get("enabled", True) and len(q.split()) <= llm_cfg.get("max_query_words", 5):
+            try:
+                hyde_document = rewriter._hyde_expand(acronym_expanded, llm_cfg.get("model", "gpt-4o-mini"))
+            except Exception as e:
+                hyde_document = f"[ERROR: {e}]"
+
+    return RewriteDebugResponse(
+        original_query=q,
+        acronym_expanded=acronym_expanded,
+        hyde_document=hyde_document,
+        hyde_applied=hyde_document is not None and not hyde_document.startswith("[ERROR"),
+        rewriting_enabled=enabled,
+    )
