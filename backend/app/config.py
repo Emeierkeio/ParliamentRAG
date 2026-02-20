@@ -95,6 +95,28 @@ class ConfigLoader:
 
         return self._config
 
+    def load_custom_acronyms(self) -> Dict[str, str]:
+        """Load user-defined acronyms from custom_acronyms.yaml."""
+        path = self.config_dir / "custom_acronyms.yaml"
+        if not path.exists():
+            return {}
+        with open(path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        return data.get("custom_acronyms", {})
+
+    def save_custom_acronyms(self, acronyms: Dict[str, str]) -> None:
+        """Persist user-defined acronyms to custom_acronyms.yaml."""
+        path = self.config_dir / "custom_acronyms.yaml"
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(
+                {"custom_acronyms": acronyms},
+                f,
+                allow_unicode=True,
+                default_flow_style=False,
+                sort_keys=True,
+            )
+        logger.info(f"Saved {len(acronyms)} custom acronyms to {path}")
+
     def load_commissioni_topics(self) -> Dict[str, Any]:
         """Load commission topic mapping."""
         if self._commissioni_topics is not None:

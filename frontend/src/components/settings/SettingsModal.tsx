@@ -20,6 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
 import { RetrievalEditor, AuthorityEditor, GenerationEditor } from "./GraphicalEditors";
+import { AcronymsEditor } from "./AcronymsEditor";
 
 interface SettingsModalProps {
   open: boolean;
@@ -32,6 +33,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState("visual");
 
   const loadConfig = async () => {
     setIsLoading(true);
@@ -141,9 +143,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             </Alert>
           )}
 
-          <Tabs defaultValue="visual" className="flex-1 flex flex-col">
+          <Tabs defaultValue="visual" className="flex-1 flex flex-col" onValueChange={setActiveTab}>
             <TabsList>
               <TabsTrigger value="visual">Editor Grafico</TabsTrigger>
+              <TabsTrigger value="acronyms">Acronimi</TabsTrigger>
               <TabsTrigger value="json">Editor JSON</TabsTrigger>
               <TabsTrigger value="info">Guida</TabsTrigger>
             </TabsList>
@@ -169,6 +172,10 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="acronyms" className="h-[calc(90vh-220px)] sm:h-[calc(85vh-200px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
+              <AcronymsEditor />
             </TabsContent>
 
             <TabsContent value="json" className="flex-1 min-h-0 relative border rounded-md">
@@ -230,15 +237,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         <DialogFooter className="gap-2 sm:gap-0">
           <div className="flex-1 flex justify-start">
-            <Button variant="outline" size="sm" onClick={loadConfig} disabled={isLoading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              Ricarica
-            </Button>
+            {activeTab !== "acronyms" && (
+              <Button variant="outline" size="sm" onClick={loadConfig} disabled={isLoading}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                Ricarica
+              </Button>
+            )}
           </div>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>Annulla</Button>
-          <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading ? "Salvataggio..." : "Salva Modifiche"}
+          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+            {activeTab === "acronyms" ? "Chiudi" : "Annulla"}
           </Button>
+          {activeTab !== "acronyms" && (
+            <Button onClick={activeTab === "json" ? handleJsonSave : handleSave} disabled={isLoading}>
+              {isLoading ? "Salvataggio..." : "Salva Modifiche"}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

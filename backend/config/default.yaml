@@ -158,3 +158,13 @@ citation:
 llm:
   # Embedding model
   embedding_model: "text-embedding-3-small"
+
+# Query rewriting — preprocessing before embedding
+# Expands acronyms and short queries before generating embeddings.
+# Custom acronyms are stored in config/custom_acronyms.yaml (editable via UI).
+query_rewriting:
+  enabled: true
+  llm_expansion:
+    enabled: true
+    model: "gpt-4o-mini"
+    max_query_words: 5  # Only expand queries with <= N words (longer queries are already rich)

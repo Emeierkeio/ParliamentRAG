@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from ..config import get_config
+from ..services.retrieval.query_rewriter import BUILT_IN_ACRONYMS
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/config", tags=["Configuration"])
@@ -299,3 +300,44 @@ async def get_coalitions():
     config = get_config()
     config_data = config.load_config()
     return config_data.get("coalitions", {})
+
+
+# ─── Acronyms endpoints ────────────────────────────────────────────────────────
+
+class AcronymsResponse(BaseModel):
+    """Built-in and custom acronyms."""
+    built_in: Dict[str, str]
+    custom: Dict[str, str]
+
+
+class AcronymsUpdate(BaseModel):
+    """Custom acronyms update payload."""
+    custom_acronyms: Dict[str, str]
+
+
+@router.get("/acronyms", response_model=AcronymsResponse)
+async def get_acronyms():
+    """
+    Get all acronyms available for query expansion.
+
+    Returns built-in parliamentary acronyms (read-only) and
+    user-defined custom acronyms (editable via PUT).
+    """
+    config = get_config()
+    custom = config.load_custom_acronyms()
+    return AcronymsResponse(built_in=BUILT_IN_ACRONYMS, custom=custom)
+
+
+@router.put("/acronyms", response_model=AcronymsResponse)
+async def update_acronyms(update: AcronymsUpdate):
+    """
+    Update user-defined custom acronyms.
+
+    Persists to config/custom_acronyms.yaml.
+    Custom acronyms override built-in ones when the same key is present.
+    """
+    config = get_config()
+    # Uppercase all keys for consistency
+    normalized = {k.strip().upper(): v.strip() for k, v in update.custom_acronyms.items() if k.strip() and v.strip()}
+    config.save_custom_acronyms(normalized)
+    return AcronymsResponse(built_in=BUILT_IN_ACRONYMS, custom=normalized)

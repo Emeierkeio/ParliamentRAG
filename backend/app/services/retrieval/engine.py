@@ -15,6 +15,7 @@ from ..neo4j_client import Neo4jClient
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
+from .query_rewriter import QueryRewriter
 from ...models.evidence import UnifiedEvidence
 from ...config import get_config, get_settings
 from ..citation.sentence_extractor import compute_chunk_salience
@@ -50,6 +51,9 @@ class RetrievalEngine:
 
         # Initialize OpenAI client
         self.openai_client = openai.OpenAI(api_key=self.settings.openai_api_key)
+
+        # Query rewriter: acronym expansion + LLM semantic expansion
+        self.query_rewriter = QueryRewriter(self.openai_client, self.config)
 
     def embed_query(self, query: str) -> List[float]:
         """
@@ -98,9 +102,16 @@ class RetrievalEngine:
 
         start_time = time.time()
 
-        # Generate query embedding
+        # Rewrite query before embedding: acronym expansion + LLM semantic expansion.
+        # The rewritten version enriches the embedding with related terms.
+        # The original query is kept unchanged for the graph channel (keyword matching).
+        rewritten_query = self.query_rewriter.rewrite(query)
+        if rewritten_query != query:
+            logger.info(f"Query rewritten for embedding: '{query[:50]}' → '{rewritten_query[:80]}'")
+
+        # Generate query embedding from the enriched query
         logger.info(f"Generating embedding for query: {query[:50]}...")
-        query_embedding = self.embed_query(query)
+        query_embedding = self.embed_query(rewritten_query)
 
         # Run both channels IN PARALLEL
         logger.info("Running dense and graph channels in parallel...")
