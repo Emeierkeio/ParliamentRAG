@@ -44,7 +44,7 @@ export default function SearchPage() {
     type SearchHistoryData = {
         query: string;
         authorFilterMode: "all" | "deputy" | "group";
-        selectedDeputy: Deputy | null;
+        selectedDeputies: Deputy[];
         selectedGroups: string[];
         startDate: string;
         endDate: string;
@@ -55,7 +55,7 @@ export default function SearchPage() {
     const restoreSearchEntry = async (data: SearchHistoryData) => {
         setQuery(data.query);
         setAuthorFilterMode(data.authorFilterMode);
-        setSelectedDeputy(data.selectedDeputy);
+        setSelectedDeputies(data.selectedDeputies);
         setSelectedGroups(data.selectedGroups);
         setStartDate(data.startDate);
         setEndDate(data.endDate);
@@ -67,7 +67,7 @@ export default function SearchPage() {
 
     // State
     const [query, setQuery] = useState("");
-    const [selectedDeputy, setSelectedDeputy] = useState<Deputy | null>(null);
+    const [selectedDeputies, setSelectedDeputies] = useState<Deputy[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
@@ -84,7 +84,7 @@ export default function SearchPage() {
     const fetchPage = async (page: number, override?: SearchHistoryData) => {
         const q = override?.query ?? query;
         const mode = override?.authorFilterMode ?? authorFilterMode;
-        const deputy = override?.selectedDeputy ?? selectedDeputy;
+        const deputies = override?.selectedDeputies ?? selectedDeputies;
         const groups = override?.selectedGroups ?? selectedGroups;
         const sd = override?.startDate ?? startDate;
         const ed = override?.endDate ?? endDate;
@@ -103,7 +103,9 @@ export default function SearchPage() {
             params.append('page', String(page));
             params.append('page_size', String(PAGE_SIZE));
 
-            if (deputy && mode === 'deputy') params.append('deputy_id', deputy.id);
+            if (deputies.length > 0 && mode === 'deputy') {
+                for (const d of deputies) params.append('deputy_id', d.id);
+            }
             if (groups.length > 0 && mode === 'group') {
                 for (const g of groups) params.append('group', g);
             }
@@ -132,7 +134,7 @@ export default function SearchPage() {
         searchHistory.addEntry(query.trim(), {
             query,
             authorFilterMode,
-            selectedDeputy,
+            selectedDeputies,
             selectedGroups,
             startDate,
             endDate,
@@ -147,7 +149,7 @@ export default function SearchPage() {
 
     const clearFilters = () => {
         setQuery("");
-        setSelectedDeputy(null);
+        setSelectedDeputies([]);
         setSelectedGroups([]);
         setStartDate("");
         setEndDate("");
@@ -163,16 +165,18 @@ export default function SearchPage() {
     const handleAuthorModeChange = (mode: "all" | "deputy" | "group") => {
         setAuthorFilterMode(mode);
         if (mode === 'deputy') setSelectedGroups([]);
-        if (mode === 'group') setSelectedDeputy(null);
-        if (mode === 'all') { setSelectedDeputy(null); setSelectedGroups([]); }
+        if (mode === 'group') setSelectedDeputies([]);
+        if (mode === 'all') { setSelectedDeputies([]); setSelectedGroups([]); }
     };
 
     const formatDate = (d: string) => d.split('-').reverse().join('/');
 
     const getFilterTags = (data: SearchHistoryData): string[] => {
         const tags: string[] = [];
-        if (data.authorFilterMode === 'deputy' && data.selectedDeputy) {
-            tags.push(`${data.selectedDeputy.first_name} ${data.selectedDeputy.last_name}`);
+        if (data.authorFilterMode === 'deputy' && data.selectedDeputies.length > 0) {
+            tags.push(data.selectedDeputies.length === 1
+                ? `${data.selectedDeputies[0].first_name} ${data.selectedDeputies[0].last_name}`
+                : `${data.selectedDeputies.length} deputati`);
         }
         if (data.authorFilterMode === 'group' && data.selectedGroups.length > 0) {
             tags.push(data.selectedGroups.length === 1 ? data.selectedGroups[0] : `${data.selectedGroups.length} gruppi`);
@@ -361,8 +365,8 @@ export default function SearchPage() {
                                             )}
                                             {authorFilterMode === "deputy" && (
                                                 <DeputySelector
-                                                    selectedDeputy={selectedDeputy}
-                                                    onSelect={setSelectedDeputy}
+                                                    selectedDeputies={selectedDeputies}
+                                                    onSelect={setSelectedDeputies}
                                                 />
                                             )}
                                             {authorFilterMode === "group" && (
