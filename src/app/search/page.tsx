@@ -52,7 +52,7 @@ export default function SearchPage() {
     };
     const searchHistory = useLocalHistory<SearchHistoryData>("parliamentrag-search-history");
 
-    const restoreSearchEntry = (data: SearchHistoryData) => {
+    const restoreSearchEntry = async (data: SearchHistoryData) => {
         setQuery(data.query);
         setAuthorFilterMode(data.authorFilterMode);
         setSelectedDeputy(data.selectedDeputy);
@@ -60,6 +60,9 @@ export default function SearchPage() {
         setStartDate(data.startDate);
         setEndDate(data.endDate);
         setDocType(data.docType);
+        setHasSearched(true);
+        setCurrentPage(1);
+        await fetchPage(1, data);
     };
 
     // State
@@ -78,30 +81,34 @@ export default function SearchPage() {
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
 
-    const fetchPage = async (page: number) => {
-        if (!query.trim()) return;
+    const fetchPage = async (page: number, override?: SearchHistoryData) => {
+        const q = override?.query ?? query;
+        const mode = override?.authorFilterMode ?? authorFilterMode;
+        const deputy = override?.selectedDeputy ?? selectedDeputy;
+        const groups = override?.selectedGroups ?? selectedGroups;
+        const sd = override?.startDate ?? startDate;
+        const ed = override?.endDate ?? endDate;
+        const dt = override?.docType ?? docType;
+
+        if (!q.trim()) return;
 
         setLoading(true);
         setResults([]);
 
         try {
             const params = new URLSearchParams();
-            params.append('q', query);
+            params.append('q', q);
             params.append('search_type', 'hybrid');
-            params.append('doc_type', docType);
+            params.append('doc_type', dt);
             params.append('page', String(page));
             params.append('page_size', String(PAGE_SIZE));
 
-            if (selectedDeputy && authorFilterMode === 'deputy') {
-                params.append('deputy_id', selectedDeputy.id);
+            if (deputy && mode === 'deputy') params.append('deputy_id', deputy.id);
+            if (groups.length > 0 && mode === 'group') {
+                for (const g of groups) params.append('group', g);
             }
-            if (selectedGroups.length > 0 && authorFilterMode === 'group') {
-                for (const g of selectedGroups) {
-                    params.append('group', g);
-                }
-            }
-            if (startDate) params.append('start_date', startDate);
-            if (endDate) params.append('end_date', endDate);
+            if (sd) params.append('start_date', sd);
+            if (ed) params.append('end_date', ed);
 
             const res = await fetch(`${config.api.baseUrl}/search/results?${params.toString()}`);
             if (res.ok) {
@@ -160,6 +167,29 @@ export default function SearchPage() {
         if (mode === 'all') { setSelectedDeputy(null); setSelectedGroups([]); }
     };
 
+    const formatDate = (d: string) => d.split('-').reverse().join('/');
+
+    const getFilterTags = (data: SearchHistoryData): string[] => {
+        const tags: string[] = [];
+        if (data.authorFilterMode === 'deputy' && data.selectedDeputy) {
+            tags.push(`${data.selectedDeputy.first_name} ${data.selectedDeputy.last_name}`);
+        }
+        if (data.authorFilterMode === 'group' && data.selectedGroups.length > 0) {
+            tags.push(data.selectedGroups.length === 1 ? data.selectedGroups[0] : `${data.selectedGroups.length} gruppi`);
+        }
+        if (data.docType !== 'all') {
+            tags.push(data.docType === 'speech' ? 'Interventi' : 'Atti');
+        }
+        if (data.startDate && data.endDate) {
+            tags.push(`${formatDate(data.startDate)} – ${formatDate(data.endDate)}`);
+        } else if (data.startDate) {
+            tags.push(`dal ${formatDate(data.startDate)}`);
+        } else if (data.endDate) {
+            tags.push(`al ${formatDate(data.endDate)}`);
+        }
+        return tags;
+    };
+
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
              <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
@@ -180,30 +210,44 @@ export default function SearchPage() {
                                         <History className="h-4 w-4" />
                                     </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-72 p-2" align="end">
+                                <PopoverContent className="w-80 p-2" align="end">
                                     <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
                                     {searchHistory.entries.length === 0 ? (
                                         <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
                                     ) : (
                                         <div className="space-y-0.5">
-                                            {searchHistory.entries.map((entry) => (
-                                                <div key={entry.id} className="flex items-center gap-1 group rounded-md hover:bg-muted/60">
-                                                    <button
-                                                        className="flex-1 flex items-center gap-2 px-2 py-1.5 text-left min-w-0"
-                                                        onClick={() => restoreSearchEntry(entry.data)}
-                                                    >
-                                                        <Clock className="h-3 w-3 shrink-0 text-muted-foreground/60" />
-                                                        <span className="text-xs font-medium truncate">{entry.topic}</span>
-                                                    </button>
-                                                    <button
-                                                        className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
-                                                        onClick={() => searchHistory.removeEntry(entry.id)}
-                                                        title="Rimuovi"
-                                                    >
-                                                        <X className="h-3 w-3" />
-                                                    </button>
-                                                </div>
-                                            ))}
+                                            {searchHistory.entries.map((entry) => {
+                                                const tags = getFilterTags(entry.data);
+                                                return (
+                                                    <div key={entry.id} className="flex items-start gap-1 group rounded-md hover:bg-muted/60">
+                                                        <button
+                                                            className="flex-1 flex items-start gap-2 px-2 py-2 text-left min-w-0"
+                                                            onClick={() => restoreSearchEntry(entry.data)}
+                                                        >
+                                                            <Clock className="h-3 w-3 shrink-0 text-muted-foreground/60 mt-0.5" />
+                                                            <div className="min-w-0 space-y-1">
+                                                                <span className="text-xs font-medium truncate block">{entry.topic}</span>
+                                                                {tags.length > 0 && (
+                                                                    <div className="flex flex-wrap gap-1">
+                                                                        {tags.map((tag, i) => (
+                                                                            <span key={i} className="inline-block text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground leading-none">
+                                                                                {tag}
+                                                                            </span>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </button>
+                                                        <button
+                                                            className="shrink-0 p-1.5 mt-0.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
+                                                            onClick={() => searchHistory.removeEntry(entry.id)}
+                                                            title="Rimuovi"
+                                                        >
+                                                            <X className="h-3 w-3" />
+                                                        </button>
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     )}
                                 </PopoverContent>
