@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
+import { HistoryModal } from "@/components/shared/HistoryModal";
 import { useSidebar, useChat } from "@/hooks";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
     cancelRequest,
     loadChat,
   } = useChat();
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   // Load pending chat from history navigation (from other pages)
   useEffect(() => {
@@ -37,12 +39,12 @@ export default function Home() {
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}
-        onLoadChat={loadChat}
         isQueryRunning={isLoading}
         isMobile={isMobile}
         isMobileOpen={isMobileOpen}
         onCloseMobile={closeMobile}
       />
+      <HistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} onLoadChat={loadChat} />
 
       {/* Main content */}
       <main className="flex-1 overflow-hidden">
@@ -53,6 +55,7 @@ export default function Home() {
           lastCompletedProgress={lastCompletedProgress}
           onSendMessage={sendMessage}
           onCancelRequest={cancelRequest}
+          onOpenHistory={() => setHistoryOpen(true)}
           mobileMenuButton={<MobileMenuButton onClick={toggle} />}
         />
       </main>
