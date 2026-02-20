@@ -170,7 +170,7 @@ export function CompassCard({ data }: CompassCardProps) {
   );
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full h-full flex flex-col">
          {/* Chart area - fills available space */}
          <div
              ref={containerRef}
@@ -181,7 +181,7 @@ export function CompassCard({ data }: CompassCardProps) {
 
              className={cn(
                  "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto select-none touch-none",
-                 dimensionality === 1 ? "h-[200px]" : "h-[380px]",
+                 dimensionality === 1 ? "h-[200px]" : "flex-1 min-h-0",
                  "cursor-grab active:cursor-grabbing"
              )}
          >

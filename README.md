@@ -558,5 +558,5 @@ Università degli Studi di Milano-Bicocca
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
-&nbsp;&nbsp;
+
 </div>
