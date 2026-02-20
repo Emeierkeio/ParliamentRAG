@@ -97,18 +97,31 @@ BUILT_IN_ACRONYMS: Dict[str, str] = {
     "IA": "Intelligenza Artificiale machine learning automazione tecnologia digitale",
 }
 
-# ─── Prompt LLM ────────────────────────────────────────────────────────────────
+# ─── Prompt HyDE ───────────────────────────────────────────────────────────────
+# Hypothetical Document Expansion: invece di aggiungere parole chiave (che possono
+# portare l'embedding nella direzione sbagliata), generiamo un ipotetico estratto
+# di discorso parlamentare sul tema. Il documento rimane naturalmente ancorato
+# al dominio semantico corretto senza disambiguazione esplicita.
+#
+# Esempio:
+#   Query: "riforma sanitaria"
+#   Espansione keyword: "riforma sanitaria professionisti operatori sanitari..."
+#       → embedding si sposta verso "riforma professioni sanitarie" (sbagliato)
+#   HyDE: "Il governo ha proposto una riforma del SSN per ridurre le liste
+#           d'attesa e aumentare il finanziamento degli ospedali pubblici..."
+#       → embedding resta nel dominio sanità pubblica (corretto)
 
-_SYSTEM_PROMPT = (
-    "Sei un assistente specializzato nel linguaggio parlamentare italiano. "
-    "Data una query di ricerca, espandila con sinonimi, concetti correlati e "
-    "varianti lessicali del contesto parlamentare. "
-    "NON alterare il significato. Restituisci SOLO la query espansa, senza spiegazioni."
+_HYDE_SYSTEM = (
+    "Sei un parlamentare italiano esperto. "
+    "Dato un tema di ricerca, genera un breve estratto (3-5 frasi) di un "
+    "discorso parlamentare italiano che tratti esattamente quel tema. "
+    "Usa terminologia parlamentare precisa e concreta. "
+    "Scrivi solo il testo del discorso, senza intestazioni né spiegazioni."
 )
 
-_USER_TEMPLATE = (
-    'Query originale: "{query}"\n\n'
-    "Espandi aggiungendo 5-10 termini parlamentari correlati separati da spazio."
+_HYDE_USER = (
+    'Tema della ricerca: "{query}"\n\n'
+    "Genera l'estratto del discorso parlamentare italiano su questo tema."
 )
 
 
@@ -123,9 +136,12 @@ class QueryRewriter:
         Combina acronimi built-in con quelli custom definiti dall'utente nelle impostazioni.
         Costo: zero. Latenza: trascurabile.
 
-    Stadio 2 — LLM expansion (opzionale):
-        Per query brevi (≤ N parole), chiede a gpt-4o-mini di arricchire
-        semanticamente la query espansa. Fallback silenzioso se l'API fallisce.
+    Stadio 2 — HyDE (opzionale):
+        Per query brevi (≤ N parole), genera un ipotetico discorso parlamentare
+        sul tema tramite gpt-4o-mini. Si embeddà il documento, non la query.
+        Questo evita il drift semantico dell'espansione a parole chiave
+        (es. "riforma sanitaria" → non finisce su "libero professionista").
+        Fallback silenzioso se l'API fallisce.
 
     IMPORTANTE: la query riscritta va SOLO all'embedding (dense channel).
     Il graph channel riceve sempre la query originale per preservare il
@@ -175,18 +191,28 @@ class QueryRewriter:
 
         return " ".join(expanded_parts)
 
-    # ── Stadio 2: espansione LLM ───────────────────────────────────────────────
+    # ── Stadio 2: HyDE ─────────────────────────────────────────────────────────
 
-    def _llm_expand(self, query: str, model: str) -> str:
-        """Chiama il modello LLM per arricchire semanticamente la query."""
+    def _hyde_expand(self, query: str, model: str) -> str:
+        """
+        Hypothetical Document Expansion.
+
+        Genera un ipotetico discorso parlamentare sul tema della query.
+        Il documento risultante — non la query originale — viene embeddato.
+
+        Questo approccio è superiore all'espansione a parole chiave perché:
+        - Il vocabolario generato rispecchia quello dei documenti reali nel corpus
+        - Non introduce termini ambigui che possono deviare l'embedding
+        - Il dominio semantico è ancorato dal contesto narrativo del discorso
+        """
         response = self.client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": _SYSTEM_PROMPT},
-                {"role": "user", "content": _USER_TEMPLATE.format(query=query)},
+                {"role": "system", "content": _HYDE_SYSTEM},
+                {"role": "user", "content": _HYDE_USER.format(query=query)},
             ],
-            temperature=0.1,
-            max_tokens=150,
+            temperature=0.3,   # leggermente più alta per naturalezza del testo
+            max_tokens=200,
         )
         return response.choices[0].message.content.strip()
 
@@ -210,17 +236,17 @@ class QueryRewriter:
         # Stadio 1 — sempre
         expanded = self.expand_acronyms(query)
 
-        # Stadio 2 — condizionale
+        # Stadio 2 — HyDE condizionale
         llm_cfg = rw_cfg.get("llm_expansion", {})
         if llm_cfg.get("enabled", True):
             max_words = llm_cfg.get("max_query_words", 5)
             model = llm_cfg.get("model", "gpt-4o-mini")
             if len(query.split()) <= max_words:
                 try:
-                    result = self._llm_expand(expanded, model)
-                    logger.debug(f"Query rewritten: '{query[:40]}' -> '{result[:80]}'")
+                    result = self._hyde_expand(expanded, model)
+                    logger.debug(f"HyDE rewrite: '{query[:40]}' -> '{result[:80]}'")
                     return result
                 except Exception as e:
-                    logger.warning(f"LLM query expansion failed (fallback to acronym expansion): {e}")
+                    logger.warning(f"HyDE expansion failed (fallback to acronym expansion): {e}")
 
         return expanded
