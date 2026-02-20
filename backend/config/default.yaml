@@ -158,16 +158,3 @@ citation:
 llm:
   # Embedding model
   embedding_model: "text-embedding-3-small"
-
-# Query rewriting — preprocessing before embedding
-# Stage 1: deterministic acronym expansion (built-in + custom from custom_acronyms.yaml)
-# Stage 2: HyDE (Hypothetical Document Expansion) for short queries via LLM.
-#   Generates a hypothetical parliamentary speech on the topic and embeds THAT,
-#   avoiding semantic drift from keyword expansion (e.g. "riforma sanitaria"
-#   won't drift toward "libero professionista" territory).
-query_rewriting:
-  enabled: true
-  llm_expansion:
-    enabled: true
-    model: "gpt-4o-mini"
-    max_query_words: 5  # Only apply HyDE to queries with <= N words

@@ -10,7 +10,6 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from ..config import get_config
-from ..services.retrieval.query_rewriter import BUILT_IN_ACRONYMS
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/config", tags=["Configuration"])
@@ -300,97 +299,3 @@ async def get_coalitions():
     config = get_config()
     config_data = config.load_config()
     return config_data.get("coalitions", {})
-
-
-# ─── Acronyms endpoints ────────────────────────────────────────────────────────
-
-class AcronymsResponse(BaseModel):
-    """Built-in and custom acronyms."""
-    built_in: Dict[str, str]
-    custom: Dict[str, str]
-
-
-class AcronymsUpdate(BaseModel):
-    """Custom acronyms update payload."""
-    custom_acronyms: Dict[str, str]
-
-
-@router.get("/acronyms", response_model=AcronymsResponse)
-async def get_acronyms():
-    """
-    Get all acronyms available for query expansion.
-
-    Returns built-in parliamentary acronyms (read-only) and
-    user-defined custom acronyms (editable via PUT).
-    """
-    config = get_config()
-    custom = config.load_custom_acronyms()
-    return AcronymsResponse(built_in=BUILT_IN_ACRONYMS, custom=custom)
-
-
-@router.put("/acronyms", response_model=AcronymsResponse)
-async def update_acronyms(update: AcronymsUpdate):
-    """
-    Update user-defined custom acronyms.
-
-    Persists to config/custom_acronyms.yaml.
-    Custom acronyms override built-in ones when the same key is present.
-    """
-    config = get_config()
-    # Uppercase all keys for consistency
-    normalized = {k.strip().upper(): v.strip() for k, v in update.custom_acronyms.items() if k.strip() and v.strip()}
-    config.save_custom_acronyms(normalized)
-    return AcronymsResponse(built_in=BUILT_IN_ACRONYMS, custom=normalized)
-
-
-# ─── Debug: query rewriter test ───────────────────────────────────────────────
-
-class RewriteDebugResponse(BaseModel):
-    """Query rewriter debug output."""
-    original_query: str
-    acronym_expanded: str
-    hyde_document: Optional[str]
-    hyde_applied: bool
-    rewriting_enabled: bool
-
-
-@router.get("/debug/rewrite", response_model=RewriteDebugResponse)
-async def debug_query_rewrite(q: str):
-    """
-    Test the query rewriter pipeline for a given query.
-
-    Returns each stage's output so you can verify HyDE is working correctly.
-    Useful for diagnosing semantic drift issues.
-
-    Example: GET /api/config/debug/rewrite?q=riforma+sanitaria
-    """
-    from ..services.retrieval.query_rewriter import QueryRewriter
-    from ..config import get_settings
-    import openai as _openai
-
-    settings = get_settings()
-    config = get_config()
-    client = _openai.OpenAI(api_key=settings.openai_api_key)
-    rewriter = QueryRewriter(client, config)
-
-    rw_cfg = rewriter._get_rewriting_config()
-    enabled = rw_cfg.get("enabled", True)
-
-    acronym_expanded = rewriter.expand_acronyms(q)
-
-    hyde_document = None
-    if enabled:
-        llm_cfg = rw_cfg.get("llm_expansion", {})
-        if llm_cfg.get("enabled", True) and len(q.split()) <= llm_cfg.get("max_query_words", 5):
-            try:
-                hyde_document = rewriter._hyde_expand(acronym_expanded, llm_cfg.get("model", "gpt-4o-mini"))
-            except Exception as e:
-                hyde_document = f"[ERROR: {e}]"
-
-    return RewriteDebugResponse(
-        original_query=q,
-        acronym_expanded=acronym_expanded,
-        hyde_document=hyde_document,
-        hyde_applied=hyde_document is not None and not hyde_document.startswith("[ERROR"),
-        rewriting_enabled=enabled,
-    )
