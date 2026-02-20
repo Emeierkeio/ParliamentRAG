@@ -4,8 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
-// Set NEXT_PUBLIC_MAINTENANCE_MODE=true in .env.local to enable.
-const MAINTENANCE_MODE = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
+// Change to true to show the maintenance page. Restart Next.js after changing.
+const MAINTENANCE_MODE = true;
 
 function MaintenancePage() {
   return (
