@@ -4,8 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
-// Change to true to show the maintenance page. Restart Next.js after changing.
-const MAINTENANCE_MODE = true;
+// Change to true to show the maintenance page. Restart Next.js after changing. MANUTENZIONE SETTA QUI!
+const MAINTENANCE_MODE = false;
 
 function MaintenancePage() {
   return (

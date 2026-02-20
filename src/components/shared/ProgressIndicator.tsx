@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import type { ProcessingProgress } from "@/types";
@@ -16,6 +17,7 @@ import {
   PenTool,
   GitCompare,
   Target,
+  Clock,
 } from "lucide-react";
 import {
   Tooltip,
@@ -342,6 +344,40 @@ const STEP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   CheckCircle2,
 };
 
+/** Feature cards shown to users while they wait in queue */
+const SYSTEM_TOUR_FEATURES = [
+  {
+    icon: Search,
+    title: "Ricerca semantica",
+    desc: "Trova interventi per concetto, non solo per parola chiave esatta.",
+  },
+  {
+    icon: Users,
+    title: "Esperti per tema",
+    desc: "Identifica i parlamentari con più autorità su ogni argomento.",
+  },
+  {
+    icon: Compass,
+    title: "Compasso ideologico",
+    desc: "Visualizza il posizionamento dei gruppi parlamentari su qualsiasi tema.",
+  },
+  {
+    icon: MessageSquare,
+    title: "Citazioni verificate",
+    desc: "Ogni affermazione è collegata al discorso originale in aula.",
+  },
+  {
+    icon: BarChart3,
+    title: "Bilancio maggioranza/opposizione",
+    desc: "Controlla se la risposta è bilanciata tra i due schieramenti.",
+  },
+  {
+    icon: Landmark,
+    title: "Commissioni parlamentari",
+    desc: "Scopri quale commissione è competente per ogni tema trattato.",
+  },
+] satisfies Array<{ icon: React.ComponentType<{ className?: string }>; title: string; desc: string }>;
+
 interface ProgressFullPageProps {
   progress: ProcessingProgress;
   query?: string;
@@ -353,16 +389,148 @@ interface ProgressFullPageProps {
  * Uses the entire available space to explain what each step does and why.
  */
 export function ProgressFullPage({ progress, query, className }: ProgressFullPageProps) {
-  if (progress.isWaiting) {
+  // Client-side elapsed counter: starts from backend value, increments every second
+  const [localElapsed, setLocalElapsed] = useState(progress.elapsedSeconds ?? 0);
+
+  useEffect(() => {
+    if (!progress.isWaiting) return;
+    setLocalElapsed(progress.elapsedSeconds ?? 0);
+    const interval = setInterval(() => setLocalElapsed(s => s + 1), 1000);
+    return () => clearInterval(interval);
+  }, [progress.isWaiting, progress.elapsedSeconds]);
+
+  // currentStep: 0 = connecting — first SSE event not yet received
+  if (!progress.isWaiting && progress.currentStep === 0) {
     return (
-      <div className={cn("flex flex-col items-center justify-center w-full min-h-[50vh] md:min-h-[60vh] py-8 px-6 text-center", className)}>
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary ring-4 ring-primary/5 mb-5">
-          <Loader2 className="h-8 w-8 animate-spin" />
+      <div className={cn(
+        "flex items-center justify-center w-full min-h-[50vh] md:min-h-[60vh]",
+        className
+      )}>
+        <Loader2 className="h-6 w-6 animate-spin text-primary/30" />
+      </div>
+    );
+  }
+
+  if (progress.isWaiting) {
+    const pos = progress.queuePosition;
+    const active = progress.activeCount ?? 0;
+    const displaySlots = Math.min(active, 4);
+    const extraActive = active > 4 ? active - 4 : 0;
+
+    const formatElapsed = (s: number) =>
+      s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
+
+    return (
+      <div className={cn(
+        "flex flex-col items-center justify-center w-full min-h-[50vh] md:min-h-[60vh] py-10 px-6 text-center",
+        className
+      )}>
+
+        {/* Pulsing clock icon */}
+        <div className="relative mb-7">
+          <div className="absolute -inset-4 rounded-full bg-amber-400/15 animate-ping" />
+          <div className="absolute -inset-2 rounded-full bg-amber-400/10 animate-pulse" />
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 shadow-sm">
+            <Clock className="h-8 w-8" />
+          </div>
         </div>
-        <h2 className="text-lg font-semibold text-foreground mb-2">Sistema al completo</h2>
-        <p className="text-sm text-muted-foreground max-w-xs">
-          {progress.waitingMessage || "Attualmente troppi utenti stanno utilizzando il sistema, aspetta..."}
+
+        {/* Title */}
+        <h2 className="text-lg font-semibold text-foreground mb-1.5">
+          Sistema al completo
+        </h2>
+        <p className="text-sm text-muted-foreground max-w-xs mb-7">
+          {pos !== undefined
+            ? <>Sei il <span className="font-semibold text-amber-600">#{pos}</span> in lista d&apos;attesa. Verrai elaborato automaticamente appena si libera uno slot.</>
+            : "La tua richiesta è in coda. Verrai elaborato non appena si libera un posto."
+          }
         </p>
+
+        {/* Visual queue */}
+        <div className="flex items-end gap-3 mb-7">
+          {/* Active slots */}
+          {displaySlots > 0 && (
+            <div className="flex items-end gap-2">
+              {Array.from({ length: displaySlots }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-1.5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                  </div>
+                  <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide">In corso</span>
+                </div>
+              ))}
+              {extraActive > 0 && (
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted border border-border text-muted-foreground text-xs font-semibold">
+                    +{extraActive}
+                  </div>
+                  <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide">In corso</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Arrow divider */}
+          {active > 0 && (
+            <div className="flex flex-col items-center gap-1.5 pb-4">
+              <svg width="20" height="12" viewBox="0 0 20 12" className="text-muted-foreground/30 fill-current">
+                <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
+              </svg>
+            </div>
+          )}
+
+          {/* User's waiting slot — pulsing amber */}
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-xl bg-amber-400/30 animate-pulse" />
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 border-2 border-amber-400 ring-4 ring-amber-400/20">
+                {pos !== undefined ? (
+                  <span className="text-sm font-bold text-amber-700">#{pos}</span>
+                ) : (
+                  <Clock className="h-5 w-5 text-amber-600" />
+                )}
+              </div>
+            </div>
+            <span className="text-[9px] font-semibold text-amber-600 uppercase tracking-wide">Tu</span>
+          </div>
+        </div>
+
+        {/* Elapsed time */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-5">
+          <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span>In attesa da <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
+        </div>
+
+        {/* Reassuring note */}
+        <p className="text-xs text-muted-foreground/60 max-w-xs leading-relaxed mb-10">
+          Non chiudere la pagina — la richiesta è registrata e verrà eseguita automaticamente.
+        </p>
+
+        {/* System tour while waiting */}
+        <div className="w-full max-w-lg border-t border-border/30 pt-7">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/50 mb-4 text-center">
+            Nel frattempo, scopri cosa puoi fare
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {SYSTEM_TOUR_FEATURES.map((feat) => {
+              const Icon = feat.icon;
+              return (
+                <div
+                  key={feat.title}
+                  className="flex flex-col gap-2 rounded-xl bg-muted/40 border border-border/40 px-3 py-3 text-left hover:bg-muted/70 transition-colors"
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-foreground leading-tight">{feat.title}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{feat.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     );
   }

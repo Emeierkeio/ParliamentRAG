@@ -357,7 +357,7 @@ function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
           <Users className="h-3.5 w-3.5" />
           <span>Correlatore: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
         </div>
-      </div>w
+      </div>
     </div>
   );
 

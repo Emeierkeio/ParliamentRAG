@@ -162,4 +162,7 @@ export interface ProcessingProgress {
   stepResults: StepResult[];
   isWaiting?: boolean;
   waitingMessage?: string;
+  queuePosition?: number;   // position in queue (1 = next)
+  activeCount?: number;     // pipelines currently running
+  elapsedSeconds?: number;  // seconds spent waiting so far
 }
