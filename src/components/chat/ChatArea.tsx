@@ -3,11 +3,12 @@
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import type { Message, ProcessingProgress } from "@/types";
-import { Atom, ArrowRight } from "lucide-react";
+import { Atom, ArrowRight, History } from "lucide-react";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -16,6 +17,7 @@ interface ChatAreaProps {
   lastCompletedProgress?: ProcessingProgress | null;
   onSendMessage: (message: string) => void;
   onCancelRequest: () => void;
+  onOpenHistory?: () => void;
   className?: string;
   mobileMenuButton?: React.ReactNode;
 }
@@ -27,6 +29,7 @@ export function ChatArea({
   lastCompletedProgress,
   onSendMessage,
   onCancelRequest,
+  onOpenHistory,
   className,
   mobileMenuButton,
 }: ChatAreaProps) {
@@ -58,8 +61,19 @@ export function ChatArea({
               onCancel={onCancelRequest}
               isLoading={isLoading}
               placeholder="Cerca un tema..."
-              className="w-full"
+              className="flex-1"
             />
+            {onOpenHistory && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onOpenHistory}
+                className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
+                title="Cronologia"
+              >
+                <History className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

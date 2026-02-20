@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
+import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,8 @@ import {
   RotateCcw,
   Landmark,
   ChevronRight,
+  History,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +85,9 @@ const TOPICS = [
 
 export default function RankingPage() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
+  const rankingHistory = useLocalHistory<{ deputies: RankingDeputy[]; computationTime: number }>(
+    "parliamentrag-ranking-history"
+  );
 
   // Data state
   const [deputies, setDeputies] = useState<RankingDeputy[]>([]);
@@ -122,13 +128,14 @@ export default function RankingPage() {
       });
       if (!res.ok) throw new Error("Errore nel calcolo del ranking");
       const data = await res.json();
-      setDeputies(
-        data.deputies.map((d: any) => ({
-          ...d,
-          relevant_speeches_count: 0,
-        }))
-      );
-      setComputationTime(data.computation_time_ms || 0);
+      const mapped: RankingDeputy[] = data.deputies.map((d: any) => ({
+        ...d,
+        relevant_speeches_count: 0,
+      }));
+      const ct = data.computation_time_ms || 0;
+      setDeputies(mapped);
+      setComputationTime(ct);
+      rankingHistory.addEntry(topicText, { deputies: mapped, computationTime: ct });
     } catch (e: any) {
       setError(e.message || "Errore sconosciuto");
       setDeputies([]);
@@ -136,6 +143,22 @@ export default function RankingPage() {
       setLoading(false);
     }
   }, []);
+
+  const restoreRankingEntry = useCallback(
+    (entry: { topic: string; data: { deputies: RankingDeputy[]; computationTime: number } }) => {
+      setActiveTopic(entry.topic);
+      setTopic(entry.topic);
+      setDeputies(entry.data.deputies);
+      setComputationTime(entry.data.computationTime);
+      setError("");
+      setNameSearch("");
+      setCoalitionFilter("all");
+      setSelectedGroups([]);
+      setCommitteeSearch("");
+      setSortBy("authority_score");
+    },
+    []
+  );
 
   const handleTopicClick = (t: string) => {
     setTopic(t);
@@ -232,16 +255,52 @@ export default function RankingPage() {
             <MobileMenuButton onClick={toggle} />
             <h1 className="text-base font-semibold whitespace-nowrap">Ranking Autorità</h1>
 
-            {activeTopic && !loading && (
-              <div className="flex items-center gap-2 ml-auto shrink-0">
-                <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
-                  {activeTopic}
-                </Badge>
-                <Button variant="ghost" size="icon-xs" onClick={handleReset} className="h-6 w-6">
-                  <RotateCcw className="h-3 w-3" />
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-2 ml-auto shrink-0">
+              {activeTopic && !loading && (
+                <>
+                  <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
+                    {activeTopic}
+                  </Badge>
+                  <Button variant="ghost" size="icon-xs" onClick={handleReset} className="h-6 w-6">
+                    <RotateCcw className="h-3 w-3" />
+                  </Button>
+                </>
+              )}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title="Cronologia">
+                    <History className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-2" align="end">
+                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
+                  {rankingHistory.entries.length === 0 ? (
+                    <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
+                  ) : (
+                    <div className="space-y-0.5">
+                      {rankingHistory.entries.map((entry) => (
+                        <div key={entry.id} className="flex items-center gap-1 group rounded-md hover:bg-muted/60">
+                          <button
+                            className="flex-1 flex items-center gap-2 px-2 py-1.5 text-left min-w-0"
+                            onClick={() => restoreRankingEntry(entry)}
+                          >
+                            <Clock className="h-3 w-3 shrink-0 text-muted-foreground/60" />
+                            <span className="text-xs font-medium truncate">{entry.topic}</span>
+                          </button>
+                          <button
+                            className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
+                            onClick={() => rankingHistory.removeEntry(entry.id)}
+                            title="Rimuovi"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </header>
 

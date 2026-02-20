@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
+import { useLocalHistory } from "@/hooks/use-local-history";
 import { CompassCard } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,9 @@ import {
   Info,
   ArrowRight,
   AlertTriangle,
+  History,
+  Clock,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +30,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -64,6 +73,9 @@ const TOPICS = [
 
 export default function CompassPage() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
+  const compassHistory = useLocalHistory<{ compassData: CompassData; computationTime: number }>(
+    "parliamentrag-compass-history"
+  );
 
   const [compassData, setCompassData] = useState<CompassData | null>(null);
   const [topic, setTopic] = useState("");
@@ -86,8 +98,10 @@ export default function CompassPage() {
       });
       if (!res.ok) throw new Error("Errore nel calcolo del compasso ideologico");
       const data = await res.json();
+      const ct = data.computation_time_ms || 0;
       setCompassData(data);
-      setComputationTime(data.computation_time_ms || 0);
+      setComputationTime(ct);
+      compassHistory.addEntry(topicText, { compassData: data, computationTime: ct });
     } catch (e: any) {
       setError(e.message || "Errore sconosciuto");
       setCompassData(null);
@@ -95,6 +109,17 @@ export default function CompassPage() {
       setLoading(false);
     }
   }, []);
+
+  const restoreCompassEntry = useCallback(
+    (entry: { topic: string; data: { compassData: CompassData; computationTime: number } }) => {
+      setActiveTopic(entry.topic);
+      setTopic(entry.topic);
+      setCompassData(entry.data.compassData);
+      setComputationTime(entry.data.computationTime);
+      setError("");
+    },
+    []
+  );
 
   const handleTopicClick = (t: string) => {
     setTopic(t);
@@ -128,64 +153,101 @@ export default function CompassPage() {
             <MobileMenuButton onClick={toggle} />
             <h1 className="text-base font-semibold whitespace-nowrap">Compasso Ideologico</h1>
 
-            {hasResults && !loading && (
-              <div className="flex items-center gap-2 ml-auto shrink-0">
-                <span className="text-[11px] text-muted-foreground hidden sm:inline">
-                  {compassData.groups.length} gruppi
-                  {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
-                </span>
-                <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
-                  {activeTopic}
-                </Badge>
-                {compassData.meta.warnings && compassData.meta.warnings.length > 0 && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-100 text-amber-600">
-                        <AlertTriangle className="h-3 w-3" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="max-w-xs text-xs">
-                      {compassData.meta.warnings.map((w, i) => (
-                        <p key={i}>
-                          {w.includes("WEAK_ALIGNMENT")
-                            ? "Asse secondario con rumore elevato. Consigliata analisi 1D."
-                            : w}
-                        </p>
-                      ))}
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-                <form
-                  onSubmit={(e) => { e.preventDefault(); fetchCompass(topic); }}
-                  className="hidden sm:flex items-center gap-1.5 ml-2"
-                >
-                  <div className="relative">
-                    <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                    <Input
-                      value={topic}
-                      onChange={(e) => setTopic(e.target.value)}
-                      placeholder="Nuovo tema..."
-                      className="h-8 w-44 text-xs pl-7 pr-2 border-border bg-background"
-                    />
-                  </div>
-                  <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs gap-1">
-                    Analizza
-                    <ArrowRight className="h-3 w-3" />
+            <div className="flex items-center gap-2 ml-auto shrink-0">
+              {hasResults && !loading && (
+                <>
+                  <span className="text-[11px] text-muted-foreground hidden sm:inline">
+                    {compassData.groups.length} gruppi
+                    {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
+                  </span>
+                  <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
+                    {activeTopic}
+                  </Badge>
+                  {compassData.meta.warnings && compassData.meta.warnings.length > 0 && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-100 text-amber-600">
+                          <AlertTriangle className="h-3 w-3" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-xs text-xs">
+                        {compassData.meta.warnings.map((w, i) => (
+                          <p key={i}>
+                            {w.includes("WEAK_ALIGNMENT")
+                              ? "Asse secondario con rumore elevato. Consigliata analisi 1D."
+                              : w}
+                          </p>
+                        ))}
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  <form
+                    onSubmit={(e) => { e.preventDefault(); fetchCompass(topic); }}
+                    className="hidden sm:flex items-center gap-1.5 ml-2"
+                  >
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                      <Input
+                        value={topic}
+                        onChange={(e) => setTopic(e.target.value)}
+                        placeholder="Nuovo tema..."
+                        className="h-8 w-44 text-xs pl-7 pr-2 border-border bg-background"
+                      />
+                    </div>
+                    <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs gap-1">
+                      Analizza
+                      <ArrowRight className="h-3 w-3" />
+                    </Button>
+                  </form>
+                  <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1 px-2">
+                    <RotateCcw className="h-3 w-3" />
+                    <span className="hidden sm:inline">Reset</span>
                   </Button>
-                </form>
-                <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1 px-2">
-                  <RotateCcw className="h-3 w-3" />
-                  <span className="hidden sm:inline">Reset</span>
-                </Button>
-              </div>
-            )}
+                </>
+              )}
 
-            {activeTopic && loading && (
-              <div className="flex items-center gap-2 ml-auto shrink-0">
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                <span className="text-xs text-muted-foreground">Analisi in corso...</span>
-              </div>
-            )}
+              {activeTopic && loading && (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+                  <span className="text-xs text-muted-foreground">Analisi in corso...</span>
+                </>
+              )}
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title="Cronologia">
+                    <History className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-72 p-2" align="end">
+                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
+                  {compassHistory.entries.length === 0 ? (
+                    <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
+                  ) : (
+                    <div className="space-y-0.5">
+                      {compassHistory.entries.map((entry) => (
+                        <div key={entry.id} className="flex items-center gap-1 group rounded-md hover:bg-muted/60">
+                          <button
+                            className="flex-1 flex items-center gap-2 px-2 py-1.5 text-left min-w-0"
+                            onClick={() => restoreCompassEntry(entry)}
+                          >
+                            <Clock className="h-3 w-3 shrink-0 text-muted-foreground/60" />
+                            <span className="text-xs font-medium truncate">{entry.topic}</span>
+                          </button>
+                          <button
+                            className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
+                            onClick={() => compassHistory.removeEntry(entry.id)}
+                            title="Rimuovi"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </header>
 
