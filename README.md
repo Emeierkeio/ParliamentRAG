@@ -559,6 +559,4 @@ Università degli Studi di Milano-Bicocca
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 &nbsp;&nbsp;
-<sub>Built with the <a href="frontend/public/favicon.svg">ParliamentRAG</a> logo — the Italian parliamentary hemicycle</sub>
-
 </div>
