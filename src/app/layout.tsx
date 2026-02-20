@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "ParliamentRAG — Analisi dei Dibattiti Parlamentari Italiani",
+    default: "ParliamentRAGs",
     template: "%s | ParliamentRAG",
   },
   description:
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Mirko Tritella" }],
   openGraph: {
-    title: "ParliamentRAG — Analisi dei Dibattiti Parlamentari Italiani",
+    title: "ParliamentRAG",
     description:
       "Esplora i dibattiti della Camera dei Deputati. Ricerca atti, confronta posizioni e visualizza il posizionamento ideologico dei gruppi parlamentari.",
     siteName: "ParliamentRAG",
