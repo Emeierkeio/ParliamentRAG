@@ -261,7 +261,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
       label: "Commissione",
       value: expert.score_breakdown?.committee || 0,
       description: "Pertinenza commissione",
-      tooltip: expert.committee || "Non assegnata"
+      tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees.join(", ") : (expert.committee || "Non assegnata")
     },
     {
       icon: User,

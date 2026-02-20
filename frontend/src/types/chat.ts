@@ -34,6 +34,7 @@ export interface Expert {
   profession?: string;
   education?: string;
   committee?: string;
+  committees?: string[];
   institutional_role?: string;
   coalition: string;
   authority_score: number;
