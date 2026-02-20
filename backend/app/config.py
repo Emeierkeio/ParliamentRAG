@@ -60,6 +60,9 @@ class Settings(BaseSettings):
     # This system uses OpenAI for all LLM inference.
     
 
+    # Maintenance mode — set to True to block all API requests with 503
+    maintenance_mode: bool = Field(default=False, description="Enable maintenance mode")
+
     # Debug settings
     debug: bool = Field(default=False, description="Enable debug mode")
     log_level: str = Field(default="INFO", description="Logging level")

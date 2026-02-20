@@ -10,8 +10,9 @@ from contextlib import asynccontextmanager
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from .routers import query_router, evidence_router, config_router, chat_router, history_router
 from .routers.graph import router as graph_router
@@ -183,6 +184,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def maintenance_middleware(request: Request, call_next):
+    """Block all requests with 503 when MAINTENANCE_MODE=true."""
+    settings = get_settings()
+    if settings.maintenance_mode:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "detail": "Sistema in manutenzione. Torneremo presto.",
+                "maintenance": True,
+            },
+            headers={"Retry-After": "3600"},
+        )
+    return await call_next(request)
+
 
 # Include routers
 app.include_router(query_router)

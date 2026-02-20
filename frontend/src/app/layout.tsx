@@ -3,6 +3,26 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
+// ─── Maintenance mode ────────────────────────────────────────────────────────
+// Set NEXT_PUBLIC_MAINTENANCE_MODE=true in .env.local to enable.
+const MAINTENANCE_MODE = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true";
+
+function MaintenancePage() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-900 px-6">
+      <div className="max-w-md text-center space-y-6">
+        <div className="text-6xl">🔧</div>
+        <h1 className="text-3xl font-semibold tracking-tight">Sistema in manutenzione</h1>
+        <p className="text-gray-500 text-base leading-relaxed">
+          Stiamo effettuando operazioni di manutenzione per migliorare il servizio.
+          Torneremo online a breve.
+        </p>
+        <p className="text-gray-400 text-sm">ParliamentRAG</p>
+      </div>
+    </div>
+  );
+}
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -69,9 +89,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
-        <TooltipProvider delayDuration={0}>
-          {children}
-        </TooltipProvider>
+        {MAINTENANCE_MODE ? (
+          <MaintenancePage />
+        ) : (
+          <TooltipProvider delayDuration={0}>
+            {children}
+          </TooltipProvider>
+        )}
       </body>
     </html>
   );
