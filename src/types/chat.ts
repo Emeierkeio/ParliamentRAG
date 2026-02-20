@@ -160,4 +160,6 @@ export interface ProcessingProgress {
   stepDescription: string;
   isComplete: boolean;
   stepResults: StepResult[];
+  isWaiting?: boolean;
+  waitingMessage?: string;
 }
