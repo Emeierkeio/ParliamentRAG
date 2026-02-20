@@ -21,6 +21,7 @@ import numpy as np
 import openai
 
 from ...config import get_config, get_settings
+from ...key_pool import make_client, make_async_client
 from ..citation import extract_best_sentences
 from ..citation.sentence_extractor import compute_chunk_salience
 from .position_brief import PositionBriefBuilder
@@ -128,7 +129,7 @@ STRUTTURA OUTPUT:
         self.config = get_config()
         self.settings = get_settings()
         # Use AsyncOpenAI for true parallel execution with asyncio.gather()
-        self.client = openai.AsyncOpenAI(api_key=self.settings.openai_api_key)
+        self.client = make_async_client()
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("writer", "gpt-4o")
@@ -175,7 +176,7 @@ STRUTTURA OUTPUT:
             return []
 
         try:
-            sync_client = openai.OpenAI(api_key=self.settings.openai_api_key)
+            sync_client = make_client()
             response = sync_client.embeddings.create(
                 model="text-embedding-3-small",
                 input=texts

@@ -23,10 +23,11 @@ TASK_TTL_SECONDS = 30 * 60
 class TaskState:
     """State of a background query task."""
     task_id: str
-    status: str = "processing"  # "processing" | "completed" | "error"
+    status: str = "processing"  # "processing" | "completed" | "error" | "cancelled"
     events: List[Dict[str, Any]] = field(default_factory=list)
     error_message: Optional[str] = None
     created_at: float = field(default_factory=time.time)
+    cancelled: bool = False
 
 
 class TaskStore:
@@ -78,6 +79,23 @@ class TaskStore:
         queue = self._queues.get(task_id)
         if queue:
             await queue.put(None)  # Sentinel
+
+    async def cancel_task(self, task_id: str):
+        """Mark a task as cancelled and unblock any queue reader."""
+        async with self._lock:
+            state = self._tasks.get(task_id)
+            if state:
+                state.cancelled = True
+                state.status = "cancelled"
+                logger.info(f"[TaskStore] Task {task_id} marked as cancelled")
+        queue = self._queues.get(task_id)
+        if queue:
+            await queue.put(None)  # Unblock stream_from_task
+
+    def is_cancelled(self, task_id: str) -> bool:
+        """Fast synchronous check — safe to call without await."""
+        state = self._tasks.get(task_id)
+        return state.cancelled if state else False
 
     async def get_task(self, task_id: str) -> Optional[TaskState]:
         async with self._lock:

@@ -10,7 +10,7 @@ import random
 from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
@@ -99,7 +99,8 @@ def get_services():
 
 
 async def process_query_streaming(
-    request: QueryRequest
+    request: QueryRequest,
+    http_request: Optional[Request] = None,
 ) -> AsyncGenerator[str, None]:
     """
     Process query with SSE streaming.
@@ -172,20 +173,38 @@ async def process_query_streaming(
 
         yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
 
+        # Check if client disconnected before compass
+        if http_request and await http_request.is_disconnected():
+            logger.info("[QUERY] Client disconnected before compass – aborting")
+            return
+
         # Step 4: Compass analysis (2D text-based positioning)
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
 
-        compass_result = await asyncio.get_event_loop().run_in_executor(
-            None, services["ideology"].compute_2d_text_positions, evidence_dicts
-        )
-        compass_data = {
-            "meta": compass_result.get("meta", {}),
-            "axes": compass_result.get("axes", {}),
-            "groups": compass_result.get("groups", []),
-            "scatter_sample": compass_result.get("scatter_sample", []),
-        }
+        try:
+            compass_result = await asyncio.get_event_loop().run_in_executor(
+                None, services["ideology"].compute_2d_text_positions, evidence_dicts
+            )
+            compass_data = {
+                "meta": compass_result.get("meta", {}),
+                "axes": compass_result.get("axes", {}),
+                "groups": compass_result.get("groups", []),
+                "scatter_sample": compass_result.get("scatter_sample", []),
+            }
+            logger.info(
+                f"[COMPASS] groups={len(compass_data.get('groups', []))}, "
+                f"variance={compass_data.get('meta', {}).get('explained_variance_ratio')}, "
+                f"dimensionality={compass_data.get('meta', {}).get('dimensionality')}, "
+                f"is_stable={compass_data.get('meta', {}).get('is_stable')}"
+            )
+            yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
+        except Exception as _compass_err:
+            logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
 
-        yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
+        # Check if client disconnected before generation
+        if http_request and await http_request.is_disconnected():
+            logger.info("[QUERY] Client disconnected before generation – aborting")
+            return
 
         # Step 5: Generation
         yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
@@ -405,9 +424,17 @@ async def process_query_streaming(
         # Step 7: Stream text chunks
         chunk_size = 100
         for i in range(0, len(final_text), chunk_size):
+            if http_request and await http_request.is_disconnected():
+                logger.info("[QUERY] Client disconnected during text streaming – aborting")
+                return
             chunk = final_text[i:i+chunk_size]
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
+
+        # Check before baseline (expensive LLM call)
+        if http_request and await http_request.is_disconnected():
+            logger.info("[QUERY] Client disconnected before baseline – aborting")
+            return
 
         # Signal that text streaming is complete and baseline is starting
         yield f"data: {json.dumps({'type': 'progress', 'step': 8, 'message': 'Generazione risposta di confronto...'})}\n\n"
@@ -879,7 +906,7 @@ def _build_verified_citations(
 
 
 @router.post("/query")
-async def query_endpoint(request: QueryRequest):
+async def query_endpoint(request: QueryRequest, http_request: Request):
     """
     Main query endpoint.
 
@@ -887,7 +914,7 @@ async def query_endpoint(request: QueryRequest):
     """
     if request.stream:
         return StreamingResponse(
-            process_query_streaming(request),
+            process_query_streaming(request, http_request),
             media_type="text/event-stream",
             headers={
                 "Cache-Control": "no-cache",

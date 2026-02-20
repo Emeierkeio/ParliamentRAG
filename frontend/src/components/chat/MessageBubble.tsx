@@ -651,7 +651,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
         <CollapsibleSection
             icon={Compass}
             title="Bussola Ideologica"
-            count={1}
+            count={message.compass?.groups?.length ?? 0}
             defaultOpen={true}
             infoTooltip="Mappa 2D del posizionamento ideologico dei gruppi parlamentari sul tema, calcolata analizzando i contenuti degli interventi lungo assi tematici estratti automaticamente."
         >

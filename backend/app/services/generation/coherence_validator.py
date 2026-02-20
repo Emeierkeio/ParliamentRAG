@@ -26,6 +26,7 @@ import numpy as np
 import openai
 
 from ...config import get_settings
+from ...key_pool import make_client
 
 logger = logging.getLogger(__name__)
 
@@ -108,8 +109,7 @@ class CoherenceValidator:
     def _get_client(self) -> openai.OpenAI:
         """Lazy-init OpenAI client."""
         if self._client is None:
-            settings = get_settings()
-            self._client = openai.OpenAI(api_key=settings.openai_api_key)
+            self._client = make_client()
         return self._client
 
     def _embedding_similarity(self, text_a: str, text_b: str) -> Optional[float]:

@@ -11,6 +11,7 @@ from typing import List, Dict, Any, Optional
 import openai
 
 from ...config import get_config, get_settings
+from ...key_pool import make_client, make_async_client
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +61,8 @@ Rispondi SOLO in formato JSON valido con questa struttura:
     def __init__(self):
         self.config = get_config()
         self.settings = get_settings()
-        self.client = openai.OpenAI(api_key=self.settings.openai_api_key)
-        self.async_client = openai.AsyncOpenAI(api_key=self.settings.openai_api_key)
+        self.client = make_client()
+        self.async_client = make_async_client()
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("analyst", "gpt-4o")

@@ -9,6 +9,7 @@ from fastapi import APIRouter, Query, HTTPException
 
 from ..services.neo4j_client import Neo4jClient
 from ..config import get_settings
+from ..key_pool import make_client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/search", tags=["Search"])
@@ -36,9 +37,7 @@ def _get_openai_client():
     """Get or initialize OpenAI client for embeddings."""
     global _openai_client
     if _openai_client is None:
-        import openai
-        settings = get_settings()
-        _openai_client = openai.OpenAI(api_key=settings.openai_api_key)
+        _openai_client = make_client()
     return _openai_client
 
 

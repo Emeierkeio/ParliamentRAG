@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 # ─── Maintenance mode ─────────────────────────────────────────────────────────
 # Change to True to block ALL API requests with 503.
-# Restart the backend after changing this value.
-MAINTENANCE_MODE: bool = True
+# Restart the backend after changing this value. MANUTENZIONE SETTA QUI!
+MAINTENANCE_MODE: bool = False
 
 # Project root directory
 # config.py is at: backend/app/config.py
@@ -35,6 +35,11 @@ CONFIG_DIR = PROJECT_ROOT / "config"
 if not CONFIG_DIR.exists():
     # Fallback for local dev: config/ at project root
     CONFIG_DIR = PROJECT_ROOT.parent / "config"
+
+# Locate .env file: prefer backend/.env, fallback to project root .env
+_env_file = PROJECT_ROOT / ".env"
+if not _env_file.exists():
+    _env_file = PROJECT_ROOT.parent / ".env"
 
 
 class Settings(BaseSettings):
@@ -70,7 +75,7 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO", description="Logging level")
 
     model_config = {
-        "env_file": str(PROJECT_ROOT / ".env"),
+        "env_file": str(_env_file),
         "env_file_encoding": "utf-8",
         "extra": "ignore",
     }

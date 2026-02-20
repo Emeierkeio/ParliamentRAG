@@ -12,6 +12,7 @@ from datetime import date
 import openai
 
 from ..neo4j_client import Neo4jClient
+from ...key_pool import make_client
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
@@ -49,7 +50,7 @@ class RetrievalEngine:
         self.settings = get_settings()
 
         # Initialize OpenAI client
-        self.openai_client = openai.OpenAI(api_key=self.settings.openai_api_key)
+        self.openai_client = make_client()
 
     def embed_query(self, query: str) -> List[float]:
         """

@@ -14,6 +14,7 @@ from typing import List, Dict, Any, Optional, TYPE_CHECKING
 import openai
 
 from ...config import get_config, get_settings
+from ...key_pool import make_client
 
 if TYPE_CHECKING:
     from .citation_registry import CitationRegistry
@@ -106,7 +107,7 @@ REGOLE GENERALI:
     def __init__(self):
         self.config = get_config()
         self.settings = get_settings()
-        self.client = openai.OpenAI(api_key=self.settings.openai_api_key)
+        self.client = make_client()
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("integrator", "gpt-4o")

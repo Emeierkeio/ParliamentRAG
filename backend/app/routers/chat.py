@@ -7,6 +7,7 @@ Includes comprehensive timing logs for performance monitoring.
 import json
 import logging
 import asyncio
+import os
 import random
 import time
 from datetime import date, datetime
@@ -27,6 +28,16 @@ from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Chat"])
+
+
+class TaskCancelledError(Exception):
+    """Raised when the user explicitly cancels a running pipeline."""
+
+
+def _raise_if_cancelled(task_id: str, store) -> None:
+    """Synchronous check — raises TaskCancelledError if the task was cancelled."""
+    if store.is_cancelled(task_id):
+        raise TaskCancelledError(f"Task {task_id} was cancelled by the user")
 
 
 class ChatRequest(BaseModel):
@@ -79,9 +90,13 @@ def sse_event(event_type: str, data: Any) -> str:
     return f"data: {json.dumps(payload, default=str)}\n\n"
 
 
-# Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion
-_MAX_CONCURRENT_PIPELINES = 5
+# Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion.
+# Each pipeline opens a ThreadPoolExecutor(10) + several OpenAI calls concurrently.
+# 3 per worker is a safe ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
+_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "3"))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
+_pipeline_waiting: int = 0   # tasks queued (waiting for a slot)
+_pipeline_active: int = 0    # tasks currently running
 
 
 def _get_pipeline_semaphore() -> asyncio.Semaphore:
@@ -89,6 +104,67 @@ def _get_pipeline_semaphore() -> asyncio.Semaphore:
     if _pipeline_semaphore is None:
         _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
     return _pipeline_semaphore
+
+
+async def _acquire_pipeline_slot(
+    semaphore: asyncio.Semaphore,
+    emit_fn,
+    task_id: str,
+    max_wait: int = 300,   # 5-minute hard timeout
+    check_every: int = 10,  # send position update every N seconds
+) -> bool:
+    """
+    Acquire a pipeline slot, sending periodic queue-position updates to the client.
+
+    Returns True if the slot was acquired, False if the max_wait timeout expired.
+    The approach is correct: asyncio.wait_for cancels the acquire() coroutine on
+    timeout (properly removing us from the waiters list), then we re-queue.
+    """
+    global _pipeline_waiting, _pipeline_active
+
+    # Fast path: slot available immediately
+    if not semaphore.locked():
+        await semaphore.acquire()
+        _pipeline_active += 1
+        logger.info(f"[SEMAPHORE] Task {task_id} acquired immediately (active={_pipeline_active})")
+        return True
+
+    # Slow path: queue and wait
+    _pipeline_waiting += 1
+    logger.info(f"[SEMAPHORE] Task {task_id} queued (position={_pipeline_waiting}, active={_pipeline_active})")
+
+    try:
+        await emit_fn("waiting", {
+            "message": f"Sistema occupato — sei in coda (posizione {_pipeline_waiting}). Attendi...",
+            "queue_position": _pipeline_waiting,
+            "active_count": _pipeline_active,
+            "elapsed_seconds": 0,
+        })
+
+        elapsed = 0
+        while elapsed < max_wait:
+            try:
+                await asyncio.wait_for(semaphore.acquire(), timeout=check_every)
+                _pipeline_active += 1
+                logger.info(f"[SEMAPHORE] Task {task_id} acquired after {elapsed}s "
+                            f"(active={_pipeline_active}, still_waiting={_pipeline_waiting - 1})")
+                return True
+            except asyncio.TimeoutError:
+                elapsed += check_every
+                logger.info(f"[SEMAPHORE] Task {task_id} still waiting "
+                            f"({elapsed}s, queue={_pipeline_waiting}, active={_pipeline_active})")
+                await emit_fn("waiting", {
+                    "message": f"Ancora in coda (posizione ~{_pipeline_waiting}) — in attesa da {elapsed}s...",
+                    "queue_position": _pipeline_waiting,
+                    "active_count": _pipeline_active,
+                    "elapsed_seconds": elapsed,
+                })
+
+        logger.warning(f"[SEMAPHORE] Task {task_id} timed out after {max_wait}s")
+        return False
+
+    finally:
+        _pipeline_waiting = max(0, _pipeline_waiting - 1)
 
 
 async def process_chat_background(request: ChatRequest, task_id: str):
@@ -119,19 +195,22 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     logger.info("=" * 60)
 
     semaphore = _get_pipeline_semaphore()
-    if semaphore.locked():
-        logger.info(f"[PIPELINE] Semaphore full, task {task_id} waiting...")
-        await emit("waiting", {"message": "Attualmente troppi utenti stanno utilizzando il sistema, aspetta..."})
-    await semaphore.acquire()
+    acquired = await _acquire_pipeline_slot(semaphore, emit, task_id)
+    if not acquired:
+        await emit("error", {"message": "Il sistema è troppo occupato al momento. Riprova tra qualche minuto."})
+        await store.fail_task(task_id, "Timeout in coda")
+        return
 
     try:
         # === Step 1: Analisi query ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 1, "total": 9, "message": "Analisi query"})
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
         # === Step 2: Commissioni ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 2, "total": 9, "message": "Commissioni"})
 
@@ -144,6 +223,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[TIMING] Step 2 (Commissioni): {step_times['step_2_commissioni']*1000:.1f}ms - {len(relevant_commissions)} found")
 
         # === Step 3: Esperti (Authority) ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 3, "total": 9, "message": "Esperti"})
 
@@ -209,6 +289,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         await emit("experts", {"experts": experts})
 
         # === Step 4: Interventi (Citations) ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 4, "total": 9, "message": "Interventi"})
 
@@ -224,6 +305,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[TIMING] Step 4 (Interventi): {step_times['step_4_citations']*1000:.1f}ms - {len(citations)} citations")
 
         # === Step 5: Statistiche (Balance) ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 5, "total": 9, "message": "Statistiche"})
 
@@ -236,6 +318,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                    f"Bias: {balance.get('bias_score', 0):.2f}")
 
         # === Step 6: Bussola Ideologica (Compass) ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 6, "total": 9, "message": "Bussola Ideologica"})
 
@@ -250,6 +333,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
 
         # === Step 7: Generazione ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 7, "total": 9, "message": "Generazione"})
 
@@ -459,6 +543,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         await emit("citation_details", {"citations": verified_citations})
 
         # === Step 8: Baseline Generation ===
+        _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 8, "total": 9, "message": "Generazione Baseline"})
 
@@ -538,14 +623,21 @@ async def process_chat_background(request: ChatRequest, task_id: str):
 
         await store.complete_task(task_id)
 
+    except TaskCancelledError:
+        total_time = time.time() - pipeline_start
+        logger.info(f"[PIPELINE] Task {task_id} cancelled after {total_time*1000:.1f}ms")
+        await store.cancel_task(task_id)
     except Exception as e:
         total_time = time.time() - pipeline_start
         logger.error(f"[PIPELINE ERROR] Failed after {total_time*1000:.1f}ms: {e}", exc_info=True)
         await emit("error", {"message": str(e)})
         await store.fail_task(task_id, str(e))
     finally:
+        global _pipeline_active
+        _pipeline_active = max(0, _pipeline_active - 1)
         semaphore.release()
-        logger.info(f"[PIPELINE] Semaphore released for task {task_id}")
+        logger.info(f"[PIPELINE] Semaphore released for task {task_id} "
+                    f"(active={_pipeline_active}, waiting={_pipeline_waiting})")
 
 
 async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
@@ -1600,3 +1692,26 @@ async def get_task_status(task_id: str):
         "events": task.events,
         "error_message": task.error_message,
     })
+
+
+@router.delete("/chat/task/{task_id}")
+async def cancel_task(task_id: str):
+    """
+    Cancel a running pipeline task.
+
+    Marks the task as cancelled; the background pipeline checks this flag
+    between pipeline steps and stops early, releasing the semaphore slot.
+    """
+    store = get_task_store()
+    task = await store.get_task(task_id)
+
+    if not task:
+        # Task may have already finished — not an error, just a no-op
+        return JSONResponse({"cancelled": False, "reason": "task_not_found"})
+
+    if task.status in ("completed", "error", "cancelled"):
+        return JSONResponse({"cancelled": False, "reason": task.status})
+
+    await store.cancel_task(task_id)
+    logger.info(f"[CANCEL] Task {task_id} cancellation requested via API")
+    return JSONResponse({"cancelled": True})

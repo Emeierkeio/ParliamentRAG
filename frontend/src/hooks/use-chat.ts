@@ -23,6 +23,7 @@ export function useChat(options: UseChatOptions = {}) {
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
   const abortControllerRef = useRef<AbortController | null>(null);
+  const currentTaskIdRef = useRef<string | null>(null);
   // Mobile reconnection: track query and retry count for silent re-send
   const queryContentRef = useRef<string>("");
   const retryCountRef = useRef(0);
@@ -114,17 +115,22 @@ export function useChat(options: UseChatOptions = {}) {
       setLastCompletedProgress(null);
     }
 
+    // currentStep: 0 = "connecting" — wait for first SSE event before
+    // showing pipeline or waiting view (avoids false "Step 1" display
+    // when the query is actually queued on the backend).
     setProgress({
-      currentStep: 1,
+      currentStep: 0,
       totalSteps: config.ui.progressSteps.length,
-      stepLabel: config.ui.progressSteps[0].label,
-      stepDescription: config.ui.progressSteps[0].description,
+      stepLabel: "Connessione...",
+      stepDescription: "",
       isComplete: false,
+      isWaiting: false,
       stepResults: [],
     });
 
     // Generate a task_id for reconnection support
     const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+    currentTaskIdRef.current = taskId;
     queryContentRef.current = content;
 
     // Reset messages: clear previous conversation and start fresh
@@ -241,7 +247,7 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "waiting":
-                console.log(`[Pipeline] Waiting: ${data.message}`);
+                console.log(`[Pipeline] Waiting: pos=${data.queue_position} active=${data.active_count} elapsed=${data.elapsed_seconds}s`);
                 setProgress({
                   currentStep: 0,
                   totalSteps: config.ui.progressSteps.length,
@@ -250,6 +256,9 @@ export function useChat(options: UseChatOptions = {}) {
                   isComplete: false,
                   isWaiting: true,
                   waitingMessage: data.message,
+                  queuePosition: data.queue_position,
+                  activeCount: data.active_count,
+                  elapsedSeconds: data.elapsed_seconds ?? 0,
                   stepResults: [],
                 });
                 break;
@@ -414,7 +423,7 @@ export function useChat(options: UseChatOptions = {}) {
                 try {
                   compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
-                  console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${compassData.axes?.length || 0} assi`);
+                  console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${Object.keys(compassData.axes || {}).length} assi`);
                   const compassResult = {
                     step: 6,
                     label: "Bussola Ideologica",
@@ -729,12 +738,26 @@ export function useChat(options: UseChatOptions = {}) {
 
   // Cancel current request
   const cancelRequest = useCallback(() => {
+    // 1. Abort the SSE/fetch connection immediately
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
       abortControllerRef.current = null;
     }
-    streamCompletedRef.current = true; // Prevent retry
-    retryCountRef.current = 2; // Prevent retry
+
+    // 2. Tell the backend to stop the pipeline (fire-and-forget)
+    const taskId = currentTaskIdRef.current;
+    if (taskId) {
+      fetch(`${config.api.baseUrl}/chat/task/${taskId}`, { method: "DELETE" }).catch(() => {
+        // Ignore — if the request fails the task will just complete normally
+      });
+      currentTaskIdRef.current = null;
+    }
+
+    // 3. Prevent mobile-reconnect retry
+    streamCompletedRef.current = true;
+    retryCountRef.current = 2;
+
+    // 4. Reset UI
     setIsLoading(false);
     setProgress(null);
     setStreamingContent("");
