@@ -253,7 +253,7 @@ export default function RankingPage() {
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
-            <h1 className="text-base font-semibold whitespace-nowrap">Ranking Autorità</h1>
+            <h1 className="text-base font-semibold whitespace-nowrap">Analisi Autorità</h1>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {activeTopic && !loading && (
@@ -548,7 +548,7 @@ export default function RankingPage() {
                 </div>
                 <div className="space-y-2">
                   <h2 className="text-xl font-semibold text-foreground">
-                    Ranking Autorità dei Deputati
+                    Analisi Autorità dei Deputati
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
                     Cerca un tema politico e scopri quali deputati sono più autorevoli in materia,
