@@ -261,28 +261,28 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
       label: "Commissione",
       value: expert.score_breakdown?.committee || 0,
       description: "Pertinenza commissione",
-      tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees.join(", ") : (expert.committee || "Non assegnata")
+      tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees : (expert.committee ? [expert.committee] : ["Non assegnata"])
     },
     {
       icon: User,
       label: "Professione",
       value: expert.score_breakdown?.profession || 0,
       description: "Background",
-      tooltip: expert.profession || "Non rilevata"
+      tooltip: [expert.profession || "Non rilevata"]
     },
     {
       icon: Layers,
       label: "Istruzione",
       value: expert.score_breakdown?.education || 0,
       description: "Titoli di studio",
-      tooltip: expert.education || "Non rilevata"
+      tooltip: [expert.education || "Non rilevata"]
     },
     {
       icon: Award,
       label: "Ruolo",
       value: expert.score_breakdown?.role || 0,
       description: "Incarichi",
-      tooltip: expert.institutional_role || "Deputato"
+      tooltip: [expert.institutional_role || "Deputato"]
     },
   ];
 
@@ -413,8 +413,19 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                                             {content}
                                         </div>
                                     </TooltipTrigger>
-                                    <TooltipContent side="top" className="max-w-[250px]">
-                                        <p className="font-medium text-xs">{item.tooltip}</p>
+                                    <TooltipContent side="top" className="max-w-[260px]">
+                                        {item.tooltip.length === 1 ? (
+                                            <p className="font-medium text-xs">{item.tooltip[0]}</p>
+                                        ) : (
+                                            <div className="space-y-1.5">
+                                                {item.tooltip.map((t, i) => (
+                                                    <div key={i} className="flex items-start gap-1.5">
+                                                        <span className="text-primary/70 font-bold text-xs shrink-0 mt-px">{i + 1}.</span>
+                                                        <p className="font-medium text-xs leading-snug">{t}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>

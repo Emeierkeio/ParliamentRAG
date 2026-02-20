@@ -99,6 +99,8 @@ export default function RankingPage() {
   const [sortBy, setSortBy] = useState<SortKey>("authority_score");
   const [sortOpen, setSortOpen] = useState(false);
   const [groupsOpen, setGroupsOpen] = useState(false);
+  const [groupSearch, setGroupSearch] = useState("");
+  const [committeePopoverSearch, setCommitteePopoverSearch] = useState("");
 
   // ── Fetch ranking ──
   const fetchRanking = useCallback(async (topicText: string) => {
@@ -281,7 +283,7 @@ export default function RankingPage() {
             </div>
 
             {/* Group filter */}
-            <Popover open={groupsOpen} onOpenChange={setGroupsOpen}>
+            <Popover open={groupsOpen} onOpenChange={(open) => { setGroupsOpen(open); if (!open) setGroupSearch(""); }}>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
                   <Users className="h-3.5 w-3.5" />
@@ -296,7 +298,23 @@ export default function RankingPage() {
               </PopoverTrigger>
               <PopoverContent className="w-64 p-2" align="start">
                 <div className="space-y-1">
-                  {GROUPS.map((g) => {
+                  {/* Search input */}
+                  <div className="relative mb-2">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      value={groupSearch}
+                      onChange={(e) => setGroupSearch(e.target.value)}
+                      placeholder="Cerca gruppo..."
+                      className="pl-8 h-7 text-xs rounded-md"
+                      autoFocus
+                    />
+                    {groupSearch && (
+                      <button onClick={() => setGroupSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2">
+                        <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                      </button>
+                    )}
+                  </div>
+                  {GROUPS.filter((g) => g.label.toLowerCase().includes(groupSearch.toLowerCase())).map((g) => {
                     const selected = selectedGroups.includes(g.value);
                     const groupConfig = config.politicalGroups[g.value as keyof typeof config.politicalGroups];
                     const color = groupConfig?.color || "#6B7280";
@@ -332,7 +350,7 @@ export default function RankingPage() {
 
             {/* Committee filter */}
             {availableCommittees.length > 0 && (
-              <Popover>
+              <Popover onOpenChange={(open) => { if (!open) setCommitteePopoverSearch(""); }}>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
                     <Landmark className="h-3.5 w-3.5" />
@@ -343,30 +361,50 @@ export default function RankingPage() {
                     <ChevronDown className="h-3 w-3" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-80 p-2 max-h-60 overflow-y-auto" align="start">
+                <PopoverContent className="w-80 p-2" align="start">
                   <div className="space-y-1">
-                    {committeeSearch && (
-                      <button
-                        onClick={() => setCommitteeSearch("")}
-                        className="w-full text-left px-2.5 py-1.5 rounded-md text-xs text-destructive hover:bg-destructive/10 transition-colors"
-                      >
-                        ✕ Rimuovi filtro
-                      </button>
-                    )}
-                    {availableCommittees.map((c) => (
-                      <button
-                        key={c}
-                        onClick={() => setCommitteeSearch(committeeSearch === c ? "" : c)}
-                        className={cn(
-                          "w-full text-left px-2.5 py-1.5 rounded-md text-xs transition-colors",
-                          committeeSearch === c
-                            ? "bg-primary/10 text-foreground font-medium"
-                            : "hover:bg-muted text-muted-foreground"
-                        )}
-                      >
-                        {c}
-                      </button>
-                    ))}
+                    {/* Search input */}
+                    <div className="relative mb-2">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                      <Input
+                        value={committeePopoverSearch}
+                        onChange={(e) => setCommitteePopoverSearch(e.target.value)}
+                        placeholder="Cerca commissione..."
+                        className="pl-8 h-7 text-xs rounded-md"
+                        autoFocus
+                      />
+                      {committeePopoverSearch && (
+                        <button onClick={() => setCommitteePopoverSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2">
+                          <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-52 overflow-y-auto space-y-1">
+                      {committeeSearch && !committeePopoverSearch && (
+                        <button
+                          onClick={() => setCommitteeSearch("")}
+                          className="w-full text-left px-2.5 py-1.5 rounded-md text-xs text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          ✕ Rimuovi filtro
+                        </button>
+                      )}
+                      {availableCommittees
+                        .filter((c) => c.toLowerCase().includes(committeePopoverSearch.toLowerCase()))
+                        .map((c) => (
+                          <button
+                            key={c}
+                            onClick={() => setCommitteeSearch(committeeSearch === c ? "" : c)}
+                            className={cn(
+                              "w-full text-left px-2.5 py-1.5 rounded-md text-xs transition-colors",
+                              committeeSearch === c
+                                ? "bg-primary/10 text-foreground font-medium"
+                                : "hover:bg-muted text-muted-foreground"
+                            )}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
