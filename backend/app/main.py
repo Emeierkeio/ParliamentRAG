@@ -21,7 +21,7 @@ from .routers.survey import router as survey_router
 from .routers.evaluation import router as evaluation_router
 from .routers.authority import router as authority_router
 from .routers.compass import router as compass_router
-from .config import get_config, get_settings
+from .config import MAINTENANCE_MODE, get_config, get_settings
 
 
 def setup_logging():
@@ -187,9 +187,8 @@ app.add_middleware(
 
 @app.middleware("http")
 async def maintenance_middleware(request: Request, call_next):
-    """Block all requests with 503 when MAINTENANCE_MODE=true."""
-    settings = get_settings()
-    if settings.maintenance_mode:
+    """Block all requests with 503 when MAINTENANCE_MODE is True."""
+    if MAINTENANCE_MODE:
         return JSONResponse(
             status_code=503,
             content={

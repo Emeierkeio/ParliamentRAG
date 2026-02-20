@@ -20,6 +20,11 @@ from pydantic_settings import BaseSettings
 
 logger = logging.getLogger(__name__)
 
+# ─── Maintenance mode ─────────────────────────────────────────────────────────
+# Change to True to block ALL API requests with 503.
+# Restart the backend after changing this value.
+MAINTENANCE_MODE: bool = True
+
 # Project root directory
 # config.py is at: backend/app/config.py
 # In Docker: /app/app/config.py → .parent.parent = /app/ (backend root)
@@ -59,9 +64,6 @@ class Settings(BaseSettings):
     
     # This system uses OpenAI for all LLM inference.
     
-
-    # Maintenance mode — set to True to block all API requests with 503
-    maintenance_mode: bool = Field(default=False, description="Enable maintenance mode")
 
     # Debug settings
     debug: bool = Field(default=False, description="Enable debug mode")
