@@ -76,7 +76,6 @@ export default function SharedChatPage() {
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}
-        onLoadChat={loadChat}
         isQueryRunning={isLoading}
         isMobile={isMobile}
         isMobileOpen={isMobileOpen}
