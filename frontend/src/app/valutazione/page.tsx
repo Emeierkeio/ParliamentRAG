@@ -17,13 +17,12 @@ import {
 } from "@/components/evaluation/EvaluationCharts";
 import { getDashboardData, getExportCsvUrl } from "@/lib/evaluation-api";
 import type { EvaluationDashboardData, CombinedEvaluation } from "@/types/evaluation";
-import { AB_DIMENSIONS } from "@/types/survey";
-import type { ABRating } from "@/types/survey";
+import { AB_DIMENSIONS, SIMPLE_DIMENSION_LABELS } from "@/types/survey";
+import type { ABRating, SimpleDimension } from "@/types/survey";
 import {
   BarChart3,
   Users,
   Quote,
-  Scale,
   Award,
   FileText,
   Download,
@@ -37,6 +36,7 @@ import {
   ThumbsUp,
   Target,
   Trophy,
+  BarChart2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -209,7 +209,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Summary stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
@@ -224,6 +224,14 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
               {data.total_evaluated}
             </div>
             <div className="text-sm text-muted-foreground">Valutate (A/B blind)</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4 text-center">
+            <div className="text-3xl font-bold text-purple-600">
+              {data.total_simple_rated}
+            </div>
+            <div className="text-sm text-muted-foreground">Valutate (Likert)</div>
           </CardContent>
         </Card>
         <Card>
@@ -255,30 +263,35 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             value={agg.avg_party_coverage}
             ci={agg.ci_party_coverage}
             icon={<Users className="w-4 h-4" />}
+            description="Gruppi parlamentari citati su 10 totali"
           />
           <MetricCard
-            label="Integrita Citazioni"
+            label="Integrità Citazioni"
             value={agg.avg_citation_integrity}
             ci={agg.ci_citation_integrity}
             icon={<Quote className="w-4 h-4" />}
+            description="Citazioni con testo sorgente valido"
           />
           <MetricCard
-            label="Bilanciamento"
-            value={agg.avg_balance_score}
-            ci={agg.ci_balance_score}
-            icon={<Scale className="w-4 h-4" />}
+            label="Fedeltà Testuale"
+            value={agg.avg_verbatim_match}
+            ci={agg.ci_verbatim_match}
+            icon={<BarChart2 className="w-4 h-4" />}
+            description="Citazioni corrispondenti al testo originale"
           />
           <MetricCard
             label="Autorevolezza"
             value={agg.avg_authority_utilization}
             ci={agg.ci_authority_utilization}
             icon={<Award className="w-4 h-4" />}
+            description="Score medio degli esperti citati"
           />
           <MetricCard
             label="Completezza"
             value={agg.avg_response_completeness}
             ci={agg.ci_response_completeness}
             icon={<FileText className="w-4 h-4" />}
+            description="Gruppi menzionati nel testo della risposta"
           />
         </div>
       </div>
@@ -374,6 +387,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       ci: agg.ci_party_coverage,
       description:
         "Percentuale di gruppi parlamentari rappresentati nelle citazioni (target: 100%)",
+      format: "percent" as const,
     },
     {
       label: "Integrita Citazioni (Citation Integrity)",
@@ -381,13 +395,15 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       ci: agg.ci_citation_integrity,
       description:
         "Percentuale di citazioni con estrazione verbatim valida",
+      format: "percent" as const,
     },
     {
-      label: "Bilanciamento Politico (Balance Score)",
-      value: agg.avg_balance_score,
-      ci: agg.ci_balance_score,
+      label: "Verbatim Match",
+      value: agg.avg_verbatim_match,
+      ci: agg.ci_verbatim_match,
       description:
-        "Equilibrio tra maggioranza e opposizione (1 = perfetto bilanciamento)",
+        "Percentuale di citazioni il cui testo e presente verbatim nel chunk sorgente",
+      format: "percent" as const,
     },
     {
       label: "Utilizzo Autorevolezza (Authority Utilization)",
@@ -395,6 +411,15 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       ci: agg.ci_authority_utilization,
       description:
         "Media del punteggio di autorevolezza degli esperti citati",
+      format: "percent" as const,
+    },
+    {
+      label: "Discriminazione Autorevolezza (Authority Discrimination)",
+      value: agg.avg_authority_discrimination,
+      ci: agg.ci_authority_discrimination,
+      description:
+        "Deviazione standard dei punteggi di autorevolezza (valori alti = maggiore selettivita)",
+      format: "decimal" as const,
     },
     {
       label: "Completezza Risposta (Response Completeness)",
@@ -402,6 +427,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       ci: agg.ci_response_completeness,
       description:
         "Percentuale di sezioni per-partito presenti nella risposta",
+      format: "percent" as const,
     },
   ];
 
@@ -419,11 +445,13 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       <Card>
         <CardContent className="p-6">
           <HorizontalBarChart
-            items={metrics.map((m) => ({
-              label: m.label,
-              value: m.value,
-              ci: m.ci,
-            }))}
+            items={metrics
+              .filter((m) => m.format === "percent")
+              .map((m) => ({
+                label: m.label,
+                value: m.value,
+                ci: m.ci,
+              }))}
           />
         </CardContent>
       </Card>
@@ -444,10 +472,14 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
                 </div>
                 <div className="text-right">
                   <div className="text-xl font-bold font-mono">
-                    {(m.value * 100).toFixed(1)}%
+                    {m.format === "decimal"
+                      ? m.value.toFixed(3)
+                      : `${(m.value * 100).toFixed(1)}%`}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    IC 95%: [{(m.ci[0] * 100).toFixed(1)}%, {(m.ci[1] * 100).toFixed(1)}%]
+                    {m.format === "decimal"
+                      ? `IC 95%: [${m.ci[0].toFixed(3)}, ${m.ci[1].toFixed(3)}]`
+                      : `IC 95%: [${(m.ci[0] * 100).toFixed(1)}%, ${(m.ci[1] * 100).toFixed(1)}%]`}
                   </div>
                 </div>
               </div>
@@ -665,7 +697,7 @@ function ChatEvaluationRow({
   const miniMetrics = [
     { label: "Copertura", value: m.party_coverage_score, color: "bg-blue-500" },
     { label: "Citazioni", value: m.citation_integrity_score, color: "bg-emerald-500" },
-    { label: "Bilanciam.", value: m.balance_score, color: "bg-purple-500" },
+    { label: "Verbatim", value: m.verbatim_match_score, color: "bg-purple-500" },
     { label: "Autorevolezza", value: m.authority_utilization, color: "bg-amber-500" },
     { label: "Completezza", value: m.response_completeness, color: "bg-indigo-500" },
   ];
@@ -707,6 +739,15 @@ function ChatEvaluationRow({
                   Valutata A/B
                 </Badge>
               )}
+              {item.human_simple && (
+                <Badge
+                  variant="secondary"
+                  className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                >
+                  <BarChart2 className="w-3 h-3 mr-1" />
+                  Likert
+                </Badge>
+              )}
             </div>
           </div>
           {isExpanded ? (
@@ -727,11 +768,12 @@ function ChatEvaluationRow({
               </h4>
               <div className="space-y-2">
                 {[
-                  { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti` },
-                  { label: "Integrita citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide` },
-                  { label: "Bilanciamento", value: m.balance_score, detail: `Maggioranza ${m.maggioranza_pct.toFixed(0)}% / Opposizione ${m.opposizione_pct.toFixed(0)}%` },
-                  { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti` },
-                  { label: "Completezza", value: m.response_completeness, detail: "" },
+                  { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti`, format: "percent" as const },
+                  { label: "Integrita citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide`, format: "percent" as const },
+                  { label: "Verbatim match", value: m.verbatim_match_score, detail: `${m.verbatim_match_count} corrispondenze`, format: "percent" as const },
+                  { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti`, format: "percent" as const },
+                  { label: "Discriminazione autorevolezza", value: m.authority_discrimination, detail: "std dev", format: "decimal" as const },
+                  { label: "Completezza", value: m.response_completeness, detail: "", format: "percent" as const },
                 ].map((row) => (
                   <div key={row.label} className="flex items-center justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">{row.label}</span>
@@ -740,7 +782,9 @@ function ChatEvaluationRow({
                         <span className="text-xs text-muted-foreground">{row.detail}</span>
                       )}
                       <span className="font-mono font-medium w-16 text-right">
-                        {(row.value * 100).toFixed(1)}%
+                        {row.format === "decimal"
+                          ? row.value.toFixed(3)
+                          : `${(row.value * 100).toFixed(1)}%`}
                       </span>
                     </div>
                   </div>
@@ -766,13 +810,16 @@ function ChatEvaluationRow({
               )}
             </div>
 
-            {/* Human A/B metrics */}
+            {/* Human evaluation metrics */}
             <div>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                Valutazione Umana A/B
+                Valutazione Umana
               </h4>
               {item.human ? (
                 <div className="space-y-3">
+                  <div className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase mb-1">
+                    A/B Blind
+                  </div>
                   {AB_DIMENSIONS.map((dim) => {
                     const rating = (item.human as any)[dim] as ABRating | undefined;
                     if (!rating) return null;
@@ -855,6 +902,45 @@ function ChatEvaluationRow({
                     <div className="mt-2 p-2 bg-amber-50 dark:bg-amber-950/30 rounded text-sm text-amber-800 dark:text-amber-300">
                       <span className="font-medium">Da migliorare: </span>
                       {item.human.feedback_improvement}
+                    </div>
+                  )}
+                </div>
+              ) : item.human_simple ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-purple-600 dark:text-purple-400 uppercase mb-1">
+                    <BarChart2 className="w-3 h-3" />
+                    Likert 1-5
+                  </div>
+                  {(Object.keys(SIMPLE_DIMENSION_LABELS) as SimpleDimension[]).map((dim) => {
+                    const score = item.human_simple![dim] as number;
+                    return (
+                      <div key={dim} className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {SIMPLE_DIMENSION_LABELS[dim]}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-0.5">
+                            {Array.from({ length: 5 }, (_, i) => (
+                              <div
+                                key={i}
+                                className={cn(
+                                  "w-2 h-2 rounded-full",
+                                  i < score
+                                    ? "bg-purple-400"
+                                    : "bg-gray-200 dark:bg-gray-700"
+                                )}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-mono text-xs w-6 text-right">{score}/5</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {item.human_simple.feedback && (
+                    <div className="mt-2 p-2 bg-purple-50 dark:bg-purple-950/30 rounded text-sm text-purple-800 dark:text-purple-300">
+                      <span className="font-medium">Feedback: </span>
+                      {item.human_simple.feedback}
                     </div>
                   )}
                 </div>

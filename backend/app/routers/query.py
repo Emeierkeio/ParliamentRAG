@@ -6,7 +6,6 @@ Supports both synchronous and SSE streaming responses.
 import json
 import logging
 import asyncio
-import random
 from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
@@ -137,7 +136,9 @@ async def process_query_streaming(
 
         # Get unique speakers
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
-        query_embedding = services["retrieval"].embed_query(request.query)
+        query_embedding = await asyncio.get_running_loop().run_in_executor(
+            None, lambda: services["retrieval"].embed_query(request.query)
+        )
 
         # Compute per-speaker authority with detailed breakdowns in parallel
         # to avoid blocking the event loop
@@ -149,7 +150,7 @@ async def process_query_streaming(
         def _compute_single(sid):
             return sid, services["authority"].compute_authority(sid, query_embedding)
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         with ThreadPoolExecutor(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
             futures = [
                 loop.run_in_executor(pool, _compute_single, sid)
@@ -182,7 +183,7 @@ async def process_query_streaming(
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
 
         try:
-            compass_result = await asyncio.get_event_loop().run_in_executor(
+            compass_result = await asyncio.get_running_loop().run_in_executor(
                 None, services["ideology"].compute_2d_text_positions, evidence_dicts
             )
             compass_data = {
@@ -223,7 +224,7 @@ async def process_query_streaming(
             speakers_detail = topic_stats.get("speakers_detail", [])
             speaker_ids_for_enrichment = [s["speaker_id"] for s in speakers_detail if s.get("speaker_id")]
             if speaker_ids_for_enrichment:
-                enrichment_data = await asyncio.get_event_loop().run_in_executor(
+                enrichment_data = await asyncio.get_running_loop().run_in_executor(
                     None, lambda: _batch_fetch_speaker_enrichment(services["neo4j"], speaker_ids_for_enrichment)
                 )
                 for speaker in speakers_detail:
@@ -262,7 +263,7 @@ async def process_query_streaming(
             )
 
         # Step 6: Initial citations (first 20 from retrieval, sent early for UI)
-        citations_data = await asyncio.get_event_loop().run_in_executor(
+        citations_data = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
         )
         logger.info(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
@@ -277,7 +278,7 @@ async def process_query_streaming(
         if extra_citation_ids:
             logger.info(f"[QUERY:CITATIONS] Resolving {len(extra_citation_ids)} extra IDs from DB: {extra_citation_ids[:5]}")
             try:
-                db_rows = await asyncio.get_event_loop().run_in_executor(
+                db_rows = await asyncio.get_running_loop().run_in_executor(
                     None,
                     lambda: services["neo4j"].query(
                         """
@@ -415,7 +416,7 @@ async def process_query_streaming(
 
         # Send citation_details to update the sidebar with ALL cited chunks
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
-        verified_citations = await asyncio.get_event_loop().run_in_executor(
+        verified_citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[QUERY:CITATIONS] Verified: {len(verified_citations)} citations built")
@@ -431,50 +432,8 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
 
-        # Check before baseline (expensive LLM call)
-        if http_request and await http_request.is_disconnected():
-            logger.info("[QUERY] Client disconnected before baseline – aborting")
-            return
-
-        # Signal that text streaming is complete and baseline is starting
-        yield f"data: {json.dumps({'type': 'progress', 'step': 8, 'message': 'Generazione risposta di confronto...'})}\n\n"
-
-        # Step 8: Baseline Generation
-        logger.info("[QUERY:BASELINE] Starting baseline generation...")
-        baseline_text = ""
-        baseline_error = None
-        ab_assignment = None
-
-        # Delay to let OpenAI rate limits recover after generation calls
-        await asyncio.sleep(3)
-
-        try:
-            baseline_result = await services["generation"].generate_baseline(
-                query=request.query,
-                evidence_list=evidence_dicts
-            )
-            logger.info(f"[QUERY:BASELINE] generate_baseline() returned: keys={list(baseline_result.keys())}")
-            baseline_text = baseline_result.get("text", "")
-            logger.info(f"[QUERY:BASELINE] Text: len={len(baseline_text)}, empty={not baseline_text}")
-
-            if baseline_text:
-                ab_assignment = random.choice([
-                    {"A": "system", "B": "baseline"},
-                    {"A": "baseline", "B": "system"}
-                ])
-                logger.info(f"[QUERY:BASELINE] Success: {len(baseline_text)} chars, ab={ab_assignment}")
-            else:
-                baseline_error = "Baseline returned empty text"
-                logger.warning(f"[QUERY:BASELINE] {baseline_error}")
-        except Exception as e:
-            baseline_error = f"{type(e).__name__}: {e}"
-            logger.error(f"[QUERY:BASELINE] Failed: {baseline_error}", exc_info=True)
-
-        # Send baseline as dedicated SSE event
-        yield f"data: {json.dumps({'type': 'baseline', 'baseline_answer': baseline_text, 'ab_assignment': ab_assignment, 'baseline_error': baseline_error}, default=str)}\n\n"
-
-        # Step 9: Complete
-        yield f"data: {json.dumps({'type': 'complete', 'baseline_answer': baseline_text, 'ab_assignment': ab_assignment, 'baseline_error': baseline_error, 'metadata': retrieval_result['metadata']}, default=str)}\n\n"
+        # Complete
+        yield f"data: {json.dumps({'type': 'complete', 'metadata': retrieval_result['metadata']}, default=str)}\n\n"
 
     except Exception as e:
         logger.error(f"Query processing error: {e}")
@@ -517,6 +476,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
            d.profession AS profession,
            d.education AS education,
            d.deputy_card AS camera_profile_url,
+           d.photo AS photo,
            current_committee,
            CASE
                WHEN size(active_roles) > 0 THEN active_roles[0]
@@ -594,7 +554,7 @@ async def _compute_experts(
             top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
     # Fetch all speaker details in parallel
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
         detail_futures = [
             loop.run_in_executor(pool, _fetch_speaker_details, neo4j_client, info[1])
@@ -622,6 +582,7 @@ async def _compute_experts(
             "authority_score": round(top_speaker["authority_score"], 2),
             "relevant_speeches_count": top_speaker["count"],
             "camera_profile_url": speaker_info.get("camera_profile_url"),
+            "photo": speaker_info.get("photo"),
             "profession": speaker_info.get("profession"),
             "education": speaker_info.get("education"),
             "committee": speaker_info.get("current_committee"),
@@ -639,23 +600,23 @@ async def _compute_experts(
     return experts
 
 
-def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
-    """Batch-fetch deputy_card URLs for a list of speaker IDs. Returns {speaker_id: url}."""
+def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, Dict[str, Any]]:
+    """Batch-fetch deputy_card URLs and photos for a list of speaker IDs. Returns {speaker_id: {url, photo}}."""
     if not speaker_ids:
         return {}
     cypher = """
     UNWIND $ids AS sid
     OPTIONAL MATCH (d:Deputy {id: sid})
     OPTIONAL MATCH (m:GovernmentMember {id: sid})
-    WITH sid, coalesce(d.deputy_card, m.deputy_card) AS url
-    WHERE url IS NOT NULL
-    RETURN sid, url
+    WITH sid, coalesce(d.deputy_card, m.deputy_card) AS url, coalesce(d.photo, m.photo) AS photo
+    WHERE url IS NOT NULL OR photo IS NOT NULL
+    RETURN sid, url, photo
     """
-    result_map: Dict[str, str] = {}
+    result_map: Dict[str, Dict[str, Any]] = {}
     with neo4j_client.session() as session:
         result = session.run(cypher, ids=list(set(speaker_ids)))
         for record in result:
-            result_map[record["sid"]] = record["url"]
+            result_map[record["sid"]] = {"url": record["url"], "photo": record["photo"]}
     return result_map
 
 
@@ -676,6 +637,7 @@ def _batch_fetch_speaker_enrichment(neo4j_client: Neo4jClient, speaker_ids: List
     WITH sid, d, collect(c.name)[0] AS current_committee
     RETURN sid,
            d.deputy_card AS camera_profile_url,
+           d.photo AS photo,
            d.profession AS profession,
            d.education AS education,
            current_committee
@@ -687,6 +649,7 @@ def _batch_fetch_speaker_enrichment(neo4j_client: Neo4jClient, speaker_ids: List
         for record in result:
             result_map[record["sid"]] = {
                 "camera_profile_url": record["camera_profile_url"],
+                "photo": record["photo"],
                 "profession": record["profession"],
                 "education": record["education"],
                 "committee": record["current_committee"],
@@ -701,6 +664,7 @@ def _batch_fetch_speaker_enrichment(neo4j_client: Neo4jClient, speaker_ids: List
         WITH sid, m WHERE m IS NOT NULL
         RETURN sid,
                m.deputy_card AS camera_profile_url,
+               m.photo AS photo,
                m.institutional_role AS institutional_role
         """
         with neo4j_client.session() as session:
@@ -708,6 +672,7 @@ def _batch_fetch_speaker_enrichment(neo4j_client: Neo4jClient, speaker_ids: List
             for record in result:
                 result_map[record["sid"]] = {
                     "camera_profile_url": record["camera_profile_url"],
+                    "photo": record["photo"],
                     "profession": None,
                     "education": None,
                     "committee": None,
@@ -755,8 +720,8 @@ def _build_citations_for_frontend(
     coalition_logic = CoalitionLogic()
     citations = []
 
-    # Batch-fetch deputy_card URLs and government roles
-    deputy_card_map: Dict[str, str] = {}
+    # Batch-fetch deputy_card URLs, photos and government roles
+    deputy_card_map: Dict[str, Dict[str, Any]] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20] if e.get("speaker_id")]
@@ -785,6 +750,7 @@ def _build_citations_for_frontend(
         quote_text = e.get("quote_text") or ""
         display_text = (chunk_text or quote_text)[:300]
 
+        _dep_info = deputy_card_map.get(speaker_id) or {}
         cit_data: Dict[str, Any] = {
             "chunk_id": evidence_id,
             "deputy_first_name": first_name,
@@ -798,7 +764,8 @@ def _build_citations_for_frontend(
             "similarity": round(e.get("similarity", 0), 2),
             "debate": e.get("debate_title", ""),
             "intervention_id": e.get("speech_id", ""),
-            "camera_profile_url": deputy_card_map.get(speaker_id),
+            "camera_profile_url": _dep_info.get("url"),
+            "photo": _dep_info.get("photo"),
         }
         if is_government:
             role = gov_role_map.get(speaker_id)
@@ -833,8 +800,8 @@ def _build_verified_citations(
     coalition_logic = CoalitionLogic()
     evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
 
-    # Batch-fetch deputy_card URLs and government roles
-    deputy_card_map: Dict[str, str] = {}
+    # Batch-fetch deputy_card URLs, photos and government roles
+    deputy_card_map: Dict[str, Dict[str, Any]] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = []
@@ -868,6 +835,7 @@ def _build_verified_citations(
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
+        _dep_info = deputy_card_map.get(speaker_id) or {}
         cit_data: Dict[str, Any] = {
             "chunk_id": eid,
             "deputy_first_name": first_name,
@@ -882,7 +850,8 @@ def _build_verified_citations(
             "span_end": cit.get("span_end", 0),
             "debate": evidence.get("debate_title", ""),
             "intervention_id": evidence.get("speech_id", ""),
-            "camera_profile_url": deputy_card_map.get(speaker_id),
+            "camera_profile_url": _dep_info.get("url"),
+            "photo": _dep_info.get("photo"),
             "verified": True,
         }
         if is_government:
@@ -940,7 +909,9 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
 
             # Authority
             speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
-            query_embedding = services["retrieval"].embed_query(request.query)
+            query_embedding = await asyncio.get_running_loop().run_in_executor(
+                None, lambda: services["retrieval"].embed_query(request.query)
+            )
 
             # Compute authority in parallel
             from concurrent.futures import ThreadPoolExecutor as _TPE
@@ -950,7 +921,7 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
             def _compute_single_sync(sid):
                 return sid, services["authority"].compute_authority(sid, query_embedding)
 
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
             with _TPE(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
                 futs = [loop.run_in_executor(pool, _compute_single_sync, sid) for sid in speaker_ids]
                 results = await asyncio.gather(*futs)

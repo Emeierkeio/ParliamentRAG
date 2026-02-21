@@ -297,17 +297,14 @@ class GenerationPipeline:
         for display_text, eid in untracked_links:
             if eid not in tracked_ids and eid in evidence_map:
                 evidence = evidence_map[eid]
-                # Extract quote from display text (strip guillemets if present)
-                quote = display_text.strip()
-                if quote.startswith("«") and quote.endswith("»"):
-                    quote = quote[1:-1]
-                # Strip speaker/party/date suffix after em-dash if present
-                if " — " in quote:
-                    quote = quote.split(" — ")[0].strip()
+                # Use raw quote_text from evidence (verbatim extraction from source),
+                # NOT the display text which has been modified by _format_citation
+                # (parenthetical removal, dangling words, lowercase, etc.).
+                raw_quote = evidence.get("quote_text", "") or evidence.get("chunk_text", "")
 
                 final_result.get("citations", []).append({
                     "evidence_id": eid,
-                    "quote_text": quote,
+                    "quote_text": raw_quote,
                     "speaker_name": evidence.get("speaker_name"),
                     "party": evidence.get("party"),
                     "date": str(evidence.get("date", "")),
@@ -318,7 +315,7 @@ class GenerationPipeline:
                 registry.mark_resolved(eid, success=True)
                 logger.info(
                     f"Recovered untracked citation: {eid} "
-                    f"(quote: '{quote[:60]}...')"
+                    f"(quote: '{raw_quote[:60]}...')"
                 )
 
         if len(tracked_ids) > final_result.get("total_citations", 0):

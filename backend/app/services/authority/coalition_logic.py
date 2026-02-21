@@ -89,6 +89,9 @@ class CoalitionLogic:
         Returns:
             "maggioranza" or "opposizione"
         """
+        if not group_name:
+            return "opposizione"
+
         if group_name in self._coalition_cache:
             return self._coalition_cache[group_name]
 

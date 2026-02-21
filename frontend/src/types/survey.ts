@@ -86,6 +86,9 @@ export interface SurveyResponseCreate {
   citations_accuracy: ABRating;
   balance_perception: ABRating;
   balance_fairness: ABRating;
+  source_relevance: ABRating;
+  source_authority: ABRating;
+  source_coverage: ABRating;
 
   overall_satisfaction_a: number;
   overall_satisfaction_b: number;
@@ -101,6 +104,10 @@ export interface SurveyResponseCreate {
 
   evaluator_role?: string;
   evaluation_context?: string;
+
+  // For evaluation_set A/B flow: frontend-generated assignment stored on ChatHistory
+  ab_assignment?: Record<string, string>; // e.g. { A: "system", B: "baseline" }
+  evaluation_set_topic?: string;
 }
 
 export interface SurveyWithChat {
@@ -129,11 +136,66 @@ export interface SurveyListResponse {
   stats?: SurveyStats;
 }
 
+export interface SimpleRatingResponse {
+  id: string;
+  chat_id: string;
+  timestamp: string;
+  answer_clarity: number;
+  answer_quality: number;
+  balance_perception: number;
+  balance_fairness: number;
+  feedback?: string;
+}
+
+export interface SimpleRatingCreate {
+  chat_id: string;
+  answer_clarity: number;
+  answer_quality: number;
+  balance_perception: number;
+  balance_fairness: number;
+  feedback?: string;
+}
+
+export const SIMPLE_DIMENSIONS = [
+  "answer_clarity",
+  "answer_quality",
+  "balance_perception",
+  "balance_fairness",
+] as const;
+
+export type SimpleDimension = typeof SIMPLE_DIMENSIONS[number];
+
+export const SIMPLE_DIMENSION_LABELS: Record<SimpleDimension, string> = {
+  answer_clarity: "Chiarezza espositiva",
+  answer_quality: "Qualita complessiva percepita",
+  balance_perception: "Bilanciamento percepito",
+  balance_fairness: "Equita rappresentazione",
+};
+
+export interface SimpleRatingFormState {
+  answer_clarity: number;
+  answer_quality: number;
+  balance_perception: number;
+  balance_fairness: number;
+  feedback: string;
+}
+
+export const getInitialSimpleRatingFormState = (): SimpleRatingFormState => ({
+  answer_clarity: 0,
+  answer_quality: 0,
+  balance_perception: 0,
+  balance_fairness: 0,
+  feedback: "",
+});
+
 export interface PendingChat {
   id: string;
   query: string;
   preview: string;
   timestamp: string;
+  evaluation_type: "ab" | "simple";
+  matched_topic?: string;
+  baseline_answer?: string;
 }
 
 export interface PendingChatsResponse {
@@ -150,6 +212,9 @@ export const AB_DIMENSIONS = [
   "citations_accuracy",
   "balance_perception",
   "balance_fairness",
+  "source_relevance",
+  "source_authority",
+  "source_coverage",
 ] as const;
 
 export type ABDimension = typeof AB_DIMENSIONS[number];
@@ -163,6 +228,10 @@ export interface SurveyFormState {
   citations_accuracy: ABRating;
   balance_perception: ABRating;
   balance_fairness: ABRating;
+  // Source authority dimensions (grounded in TREC Expert Finding + DQI literature)
+  source_relevance: ABRating;
+  source_authority: ABRating;
+  source_coverage: ABRating;
   overall_satisfaction_a: number;
   overall_satisfaction_b: number;
   overall_preference: "A" | "B" | "equal" | "";
@@ -217,6 +286,27 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     question: "Equita nella rappresentazione",
     description: "Considera se c'e imparzialita nella presentazione",
   },
+  // Authority dimensions — Autorità Esperti category
+  // Based on: TREC Expert Finding (Craswell et al. 2005), DQI (Steenbergen et al. 2003),
+  // Source Credibility Theory (Hovland et al. 1953; Gaziano & McGrath 1986)
+  {
+    id: "source_relevance",
+    category: "Autorità Esperti",
+    question: "Rilevanza tematica degli esperti",
+    description: "Gli esperti citati sono le voci parlamentari più attive e pertinenti su questo tema?",
+  },
+  {
+    id: "source_authority",
+    category: "Autorità Esperti",
+    question: "Autorevolezza istituzionale",
+    description: "Le figure citate ricoprono ruoli rilevanti (presidenze di commissione, portavoce, governo)?",
+  },
+  {
+    id: "source_coverage",
+    category: "Autorità Esperti",
+    question: "Copertura delle coalizioni",
+    description: "Le principali forze politiche sono rappresentate in modo equilibrato tra maggioranza e opposizione?",
+  },
   {
     id: "overall_satisfaction",
     category: "Valutazione Complessiva",
@@ -240,6 +330,9 @@ export const getInitialSurveyFormState = (): SurveyFormState => ({
   citations_accuracy: getInitialABRating(),
   balance_perception: getInitialABRating(),
   balance_fairness: getInitialABRating(),
+  source_relevance: getInitialABRating(),
+  source_authority: getInitialABRating(),
+  source_coverage: getInitialABRating(),
   overall_satisfaction_a: 0,
   overall_satisfaction_b: 0,
   overall_preference: "",

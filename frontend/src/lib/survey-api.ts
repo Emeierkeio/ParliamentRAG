@@ -10,6 +10,8 @@ import type {
   SurveyQuestion,
   PendingChatsResponse,
   SurveyStats,
+  SimpleRatingResponse,
+  SimpleRatingCreate,
 } from "@/types/survey";
 
 const BASE_URL = `${config.api.baseUrl}/surveys`;
@@ -152,6 +154,38 @@ export async function getPendingChats(): Promise<PendingChatsResponse> {
   const response = await fetch(`${BASE_URL}/chats/pending`);
   if (!response.ok) {
     throw new Error(`Failed to fetch pending chats: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Create a new simple Likert-scale rating
+ */
+export async function createSimpleRating(
+  rating: SimpleRatingCreate
+): Promise<SimpleRatingResponse> {
+  const response = await fetch(`${BASE_URL}/simple`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(rating),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Failed to create simple rating: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+/**
+ * Get the evaluation set topics available for A/B testing
+ */
+export async function getEvaluationSetTopics(): Promise<{ topics: string[] }> {
+  const response = await fetch(`${BASE_URL}/evaluation-set`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch evaluation set: ${response.statusText}`);
   }
   return response.json();
 }

@@ -4,6 +4,7 @@ Main retrieval engine orchestrating dual-channel retrieval.
 Coordinates dense and graph channels, applies authority scoring,
 and returns unified evidence records.
 """
+import asyncio
 import logging
 import time
 from typing import List, Dict, Any, Optional
@@ -183,10 +184,10 @@ class RetrievalEngine:
         date_end: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Perform dual-channel retrieval (async wrapper).
+        Perform dual-channel retrieval (async).
 
-        Note: This is kept for backwards compatibility but the actual
-        work is done synchronously in retrieve_sync().
+        Runs retrieve_sync() in a thread-pool executor so the event loop
+        is never blocked while embedding or querying the DB.
 
         Args:
             query: User query
@@ -198,12 +199,16 @@ class RetrievalEngine:
         Returns:
             Dictionary with evidence list and metadata
         """
-        return self.retrieve_sync(
-            query=query,
-            top_k=top_k,
-            authority_scores=authority_scores,
-            date_start=date_start,
-            date_end=date_end
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(
+            None,
+            lambda: self.retrieve_sync(
+                query=query,
+                top_k=top_k,
+                authority_scores=authority_scores,
+                date_start=date_start,
+                date_end=date_end,
+            ),
         )
 
     def _to_evidence_records(

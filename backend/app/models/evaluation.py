@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Tuple
 from datetime import datetime
 
-from .survey import SurveyResponse, SurveyStats
+from .survey import SurveyResponse, SurveyStats, SimpleRatingResponse
 
 
 class AutomatedMetrics(BaseModel):
@@ -25,17 +25,19 @@ class AutomatedMetrics(BaseModel):
     citations_valid: int
     citations_total: int
 
-    # Balance: 1 - bias_score
-    balance_score: float = Field(..., ge=0, le=1)
-    maggioranza_pct: float = 0
-    opposizione_pct: float = 0
+    # Verbatim Match: citations whose quote_text appears verbatim in source chunk / total
+    verbatim_match_score: float = Field(..., ge=0, le=1)
+    verbatim_match_count: int = 0
+
+    # Response Completeness: sections (## headers) / 10 parties
+    response_completeness: float = Field(..., ge=0, le=1)
 
     # Authority Utilization: mean authority_score of cited experts
     authority_utilization: float = Field(..., ge=0, le=1)
     experts_count: int = 0
 
-    # Response Completeness: sections (## headers) / 10 parties
-    response_completeness: float = Field(..., ge=0, le=1)
+    # Authority Discrimination: std of authority scores (higher = more selective)
+    authority_discrimination: float = Field(..., ge=0)
 
 
 class AggregatedMetrics(BaseModel):
@@ -43,16 +45,18 @@ class AggregatedMetrics(BaseModel):
     total_chats: int
     avg_party_coverage: float
     avg_citation_integrity: float
-    avg_balance_score: float
-    avg_authority_utilization: float
+    avg_verbatim_match: float
     avg_response_completeness: float
+    avg_authority_utilization: float
+    avg_authority_discrimination: float
 
     # 95% Confidence intervals (lower, upper)
     ci_party_coverage: Tuple[float, float]
     ci_citation_integrity: Tuple[float, float]
-    ci_balance_score: Tuple[float, float]
-    ci_authority_utilization: Tuple[float, float]
+    ci_verbatim_match: Tuple[float, float]
     ci_response_completeness: Tuple[float, float]
+    ci_authority_utilization: Tuple[float, float]
+    ci_authority_discrimination: Tuple[float, float]
 
 
 class CombinedEvaluation(BaseModel):
@@ -61,7 +65,8 @@ class CombinedEvaluation(BaseModel):
     chat_query: str
     timestamp: str
     automated: AutomatedMetrics
-    human: Optional[SurveyResponse] = None
+    human: Optional[SurveyResponse] = None         # A/B blind evaluation
+    human_simple: Optional[SimpleRatingResponse] = None  # Simple Likert evaluation
 
 
 class ABComparisonStats(BaseModel):
@@ -89,3 +94,4 @@ class EvaluationDashboardData(BaseModel):
     per_chat: List[CombinedEvaluation]
     total_chats: int
     total_evaluated: int
+    total_simple_rated: int = 0

@@ -110,12 +110,14 @@ async def authority_ranking(request: RankingRequest):
 
     t0 = time.time()
 
-    # 1. Embed the topic
-    query_embedding = retrieval_engine.embed_query(request.topic)
+    # 1. Embed the topic (run in executor — synchronous HTTP call to OpenAI)
+    query_embedding = await asyncio.get_running_loop().run_in_executor(
+        None, lambda: retrieval_engine.embed_query(request.topic)
+    )
     logger.info(f"[RANKING] Embedded topic in {(time.time()-t0)*1000:.0f}ms")
 
     # 2. Get all deputy IDs
-    deputy_ids = await asyncio.get_event_loop().run_in_executor(
+    deputy_ids = await asyncio.get_running_loop().run_in_executor(
         None, _fetch_all_deputy_ids, neo4j_client
     )
     logger.info(f"[RANKING] Found {len(deputy_ids)} deputies")
@@ -126,7 +128,7 @@ async def authority_ranking(request: RankingRequest):
     def _compute_single(sid: str):
         return sid, authority_scorer.compute_authority(sid, query_embedding)
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     with ThreadPoolExecutor(max_workers=min(20, max(1, len(deputy_ids)))) as pool:
         futures = [loop.run_in_executor(pool, _compute_single, sid) for sid in deputy_ids]
         results = await asyncio.gather(*futures)
@@ -135,7 +137,7 @@ async def authority_ranking(request: RankingRequest):
 
     # 4. Fetch deputy details in batch
     t2 = time.time()
-    details_map = await asyncio.get_event_loop().run_in_executor(
+    details_map = await asyncio.get_running_loop().run_in_executor(
         None, _fetch_deputy_details_batch, neo4j_client, deputy_ids
     )
     logger.info(f"[RANKING] Details fetched in {(time.time()-t2)*1000:.0f}ms")

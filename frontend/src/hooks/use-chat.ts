@@ -175,8 +175,6 @@ export function useChat(options: UseChatOptions = {}) {
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: any = null;
-      let baselineAnswer = "";
-      let abAssignment: Record<string, string> | null = null;
       let topicStats: TopicStatistics | undefined;
       let commissioni: any[] = [];
       // Accumulator for step results — survives React state batching race conditions
@@ -196,14 +194,8 @@ export function useChat(options: UseChatOptions = {}) {
                 const jsonStr = line.slice(6).trim();
                 if (!jsonStr) continue;
                 const data = JSON.parse(jsonStr);
-                console.log(`[Pipeline:Buffer] Recovered event: "${data.type}"`, data.type === "complete" ? {
-                  baseline: typeof data.baseline_answer === "string" ? `${data.baseline_answer.length} chars` : "missing",
-                  ab: data.ab_assignment,
-                  error: data.baseline_error || "none",
-                } : "");
+                console.log(`[Pipeline:Buffer] Recovered event: "${data.type}"`);
                 if (data.type === "complete") {
-                  baselineAnswer = data.baseline_answer || "";
-                  abAssignment = data.ab_assignment || null;
                   setProgress((prev) => prev ? { ...prev, isComplete: true } : null);
                   updateLastAssistantMessage({
                     status: "complete",
@@ -212,8 +204,6 @@ export function useChat(options: UseChatOptions = {}) {
                     experts,
                     balanceMetrics,
                     topicStats,
-                    baselineAnswer: baselineAnswer || undefined,
-                    abAssignment: abAssignment || undefined,
                   });
                 }
               } catch (e) {
@@ -475,37 +465,6 @@ export function useChat(options: UseChatOptions = {}) {
                 }
                 break;
 
-              case "baseline":
-                // Dedicated baseline event — arrives before "complete"
-                baselineAnswer = data.baseline_answer || "";
-                abAssignment = data.ab_assignment || null;
-                console.log(`[Pipeline:Baseline] Received dedicated event: type=${typeof data.baseline_answer}, len=${data.baseline_answer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
-                if (data.baseline_answer) {
-                  console.log(`[Pipeline:Baseline] Preview: "${data.baseline_answer.substring(0, 150)}..."`);
-                }
-                console.log(`[Pipeline:Baseline] ab_assignment:`, data.ab_assignment);
-
-                // Mark step 8 (Baseline) as complete in progress stepper
-                setProgress((prev) => {
-                  if (!prev) return null;
-                  const alreadyDone = prev.stepResults.some(r => r.step === 8);
-                  if (alreadyDone) return prev;
-                  return {
-                    ...prev,
-                    currentStep: 9,
-                    stepLabel: config.ui.progressSteps[8]?.label || "Valutazione",
-                    stepDescription: config.ui.progressSteps[8]?.description || "",
-                    stepResults: [...prev.stepResults.filter(r => r.step !== 8), {
-                      step: 8,
-                      label: "Baseline",
-                      result: data.baseline_error
-                        ? "Non disponibile"
-                        : `${(data.baseline_answer?.length || 0)} caratteri generati`,
-                    }]
-                  };
-                });
-                break;
-
               case "chunk":
                 accumulatedContent += (data.data || data.content || "");
                 setStreamingContent(accumulatedContent);
@@ -548,17 +507,7 @@ export function useChat(options: UseChatOptions = {}) {
                   console.log(`[Pipeline:Citations] All ${textCitLinks.length} text citation links matched in sidebar`);
                 }
 
-                // Fallback: pick up baseline from complete event if the
-                // dedicated "baseline" event was missed (backward compat)
-                if (!baselineAnswer && data.baseline_answer) {
-                  baselineAnswer = data.baseline_answer;
-                  abAssignment = data.ab_assignment || null;
-                  console.log(`[Pipeline:Baseline] Recovered from complete event: ${baselineAnswer.length} chars`);
-                }
-                console.log(`[Pipeline:Baseline] baseline_answer: type=${typeof baselineAnswer}, len=${baselineAnswer?.length ?? "N/A"}, error=${data.baseline_error || "none"}`);
-                console.log(`[Pipeline:Baseline] ab_assignment:`, abAssignment);
-
-                // Mark step 9 as complete and finalize progress
+                // Mark step 8 as complete and finalize progress
                 setProgress((prev) => {
                   if (!prev) return null;
                   // Merge accumulator results (source of truth for dedicated events)
@@ -566,17 +515,9 @@ export function useChat(options: UseChatOptions = {}) {
                   for (const r of prev.stepResults) resultsById.set(r.step, r);
                   for (const [step, result] of stepResultsMap) resultsById.set(step, result);
                   const newResults = Array.from(resultsById.values());
-                  // Ensure step 8 is marked complete (fallback if baseline event was missed)
                   if (!newResults.some(r => r.step === 8)) {
                     newResults.push({
                       step: 8,
-                      label: "Baseline",
-                      result: baselineAnswer ? "Completata" : "Non disponibile",
-                    });
-                  }
-                  if (!newResults.some(r => r.step === 9)) {
-                    newResults.push({
-                      step: 9,
                       label: "Valutazione",
                       result: "Completata",
                     });
@@ -593,8 +534,6 @@ export function useChat(options: UseChatOptions = {}) {
                   experts,
                   balanceMetrics,
                   topicStats,
-                  baselineAnswer: baselineAnswer || undefined,
-                  abAssignment: abAssignment || undefined,
                 });
 
                 // Log timing if available
@@ -618,11 +557,7 @@ export function useChat(options: UseChatOptions = {}) {
                     } : null,
                     compass: compassData,
                     topic_stats: topicStats || null,
-                    baseline_answer: baselineAnswer || null,
-                    ab_assignment: abAssignment || null,
                   };
-
-                  console.log(`[Pipeline:Baseline] Saving to history: baseline=${baselineAnswer ? baselineAnswer.length + " chars" : "null"}, ab=${abAssignment ? JSON.stringify(abAssignment) : "null"}`);
 
                   fetch(`${config.api.baseUrl}/history`, {
                     method: "POST",
@@ -798,8 +733,6 @@ export function useChat(options: UseChatOptions = {}) {
       } : undefined,
       compass: historyData.compass,
       topicStats: historyData.topic_stats || undefined,
-      baselineAnswer: historyData.baseline_answer || undefined,
-      abAssignment: historyData.ab_assignment || undefined,
       chatId: historyData.id,
     };
 
@@ -846,8 +779,7 @@ export function useChat(options: UseChatOptions = {}) {
       });
     }
     stepResults.push({ step: 7, label: "Generazione", result: "Sintesi completata" });
-    stepResults.push({ step: 8, label: "Baseline", result: historyData.baseline_answer ? "Completata" : "Non disponibile" });
-    stepResults.push({ step: 9, label: "Valutazione", result: "Completata" });
+    stepResults.push({ step: 8, label: "Valutazione", result: "Completata" });
 
     setLastCompletedProgress({
       currentStep: config.ui.progressSteps.length,

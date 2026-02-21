@@ -44,8 +44,7 @@ export const config = {
       { id: 5, label: "Statistiche", description: "Calcolo metriche di bilanciamento", icon: "BarChart3", whyDescription: "Calcoliamo le percentuali di rappresentazione di maggioranza e opposizione negli interventi trovati. Questo ci permette di misurare e garantire il bilanciamento della risposta." },
       { id: 6, label: "Bussola Ideologica", description: "Analisi di posizionamento politico", icon: "Compass", whyDescription: "Analizziamo il posizionamento ideologico dei gruppi parlamentari sul tema specifico, mappando le posizioni su assi di una bussola ideologica." },
       { id: 7, label: "Generazione", description: "Sintesi della risposta finale", icon: "PenTool", whyDescription: "Generiamo la sintesi finale bilanciata integrando tutti i dati raccolti: interventi, esperti, statistiche e posizionamento ideologico, con citazioni verificate dai discorsi parlamentari." },
-      { id: 8, label: "Baseline", description: "Preparazione risposta di confronto per valutazione A/B", icon: "GitCompare", whyDescription: "Generiamo una risposta di confronto (baseline) per la valutazione A/B automatica. Questo permette di misurare la qualità della risposta principale rispetto a un approccio standard." },
-      { id: 9, label: "Valutazione", description: "Completamento e verifica finale", icon: "CheckCircle2", whyDescription: "Completiamo la verifica finale della risposta, validando le citazioni e salvando il risultato in cronologia per consultazioni future." },
+      { id: 8, label: "Valutazione", description: "Completamento e verifica finale", icon: "CheckCircle2", whyDescription: "Completiamo la verifica finale della risposta, validando le citazioni e salvando il risultato in cronologia per consultazioni future." },
     ],
   },
 

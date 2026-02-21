@@ -46,7 +46,7 @@ async def compass_endpoint(request: CompassRequest):
             evidence_dicts.append(d)
 
         # Step 2: Compute compass positions
-        compass_result = await asyncio.get_event_loop().run_in_executor(
+        compass_result = await asyncio.get_running_loop().run_in_executor(
             None, services["ideology"].compute_2d_text_positions, evidence_dicts
         )
 

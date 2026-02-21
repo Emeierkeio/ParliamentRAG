@@ -21,6 +21,7 @@ export interface Citation {
   debate_id?: string;
   intervention_id?: string;
   camera_profile_url?: string;
+  photo?: string;
   [key: string]: any;
 }
 
@@ -124,9 +125,6 @@ export interface Message {
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
   topicStats?: TopicStatistics;
-  // A/B baseline comparison
-  baselineAnswer?: string;
-  abAssignment?: Record<string, string>; // e.g. {"A": "system", "B": "baseline"}
   // History ID for sharing
   chatId?: string;
 }

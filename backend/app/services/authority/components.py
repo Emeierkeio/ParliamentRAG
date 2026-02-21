@@ -7,6 +7,7 @@ All scores are normalized to [0, 1] using percentile-based normalization.
 import json
 import math
 import logging
+import threading
 from abc import ABC, abstractmethod
 from datetime import date, datetime
 from typing import List, Dict, Any, Optional, Union
@@ -491,6 +492,20 @@ class RoleComponent(AuthorityComponent):
         "vice_president": "Vicepresidente",
         "secretary": "Segretario",
     }
+
+    def __init__(self):
+        super().__init__()
+        # Thread-local storage prevents race conditions when compute() is called
+        # concurrently from multiple threads (via ThreadPoolExecutor in the scorer).
+        self._local = threading.local()
+
+    @property
+    def matched_role_label(self) -> Optional[str]:
+        return getattr(self._local, "_matched_role_label", None)
+
+    @matched_role_label.setter
+    def matched_role_label(self, value: Optional[str]) -> None:
+        self._local._matched_role_label = value
 
     def compute(
         self,

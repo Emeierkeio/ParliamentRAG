@@ -1,8 +1,9 @@
 """
-Survey models for A/B blind evaluation of ParliamentRAG vs Baseline RAG.
+Survey models for A/B blind evaluation of ParliamentRAG vs Baseline RAG,
+and simple Likert-scale evaluation for queries without a predefined baseline.
 
-Users evaluate both responses (blind A/B) on the same dimensions,
-rating each 1-5 and indicating preference per dimension.
+A/B evaluation: users rate both responses (blind) and indicate preference.
+Simple evaluation: users rate only the system response on 4 Likert dimensions.
 """
 
 from pydantic import BaseModel, Field
@@ -81,6 +82,11 @@ class SurveyResponse(BaseModel):
     citation_evaluations_a: List[CitationEvaluation] = Field(default_factory=list, description="Per-citation evaluations for Response A")
     citation_evaluations_b: List[CitationEvaluation] = Field(default_factory=list, description="Per-citation evaluations for Response B")
 
+    # Source authority evaluation — optional (added after initial schema; None for legacy records)
+    source_relevance: Optional[ABRating] = Field(None, description="Rilevanza tematica degli esperti citati")
+    source_authority: Optional[ABRating] = Field(None, description="Autorevolezza istituzionale degli esperti")
+    source_coverage: Optional[ABRating] = Field(None, description="Copertura delle coalizioni")
+
     # Metadata
     evaluator_role: Optional[str] = Field(None, description="Role of evaluator")
     evaluation_context: Optional[str] = Field(None, description="Context of evaluation")
@@ -113,8 +119,63 @@ class SurveyResponseCreate(BaseModel):
     citation_evaluations_a: List[CitationEvaluation] = Field(default_factory=list)
     citation_evaluations_b: List[CitationEvaluation] = Field(default_factory=list)
 
+    # Source authority evaluation (optional)
+    source_relevance: Optional[ABRating] = None
+    source_authority: Optional[ABRating] = None
+    source_coverage: Optional[ABRating] = None
+
     evaluator_role: Optional[str] = None
     evaluation_context: Optional[str] = None
+
+    # A/B assignment (provided by frontend when using evaluation_set baseline)
+    ab_assignment: Optional[Dict[str, str]] = Field(
+        None, description="e.g. {'A': 'system', 'B': 'baseline'} — set if using evaluation_set baseline"
+    )
+    evaluation_set_topic: Optional[str] = Field(
+        None, description="Topic name from evaluation_set.json if this is an evaluation_set A/B"
+    )
+
+
+# ── Simple Likert Evaluation (for queries without a predefined baseline) ──────
+
+# Dimensions for simple Likert evaluation
+SIMPLE_DIMENSIONS = [
+    "answer_clarity",
+    "answer_quality",
+    "balance_perception",
+    "balance_fairness",
+]
+
+SIMPLE_DIMENSION_LABELS = {
+    "answer_clarity": "Chiarezza espositiva",
+    "answer_quality": "Qualità complessiva percepita",
+    "balance_perception": "Bilanciamento percepito",
+    "balance_fairness": "Equità rappresentazione",
+}
+
+
+class SimpleRatingResponse(BaseModel):
+    """Simple Likert-scale evaluation of a single chat response (no baseline needed)."""
+    id: str = Field(default_factory=lambda: str(uuid4()))
+    chat_id: str = Field(..., description="Associated chat history ID")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+    answer_clarity: int = Field(..., ge=1, le=5, description="Chiarezza espositiva (1-5)")
+    answer_quality: int = Field(..., ge=1, le=5, description="Qualità complessiva percepita (1-5)")
+    balance_perception: int = Field(..., ge=1, le=5, description="Bilanciamento percepito (1-5)")
+    balance_fairness: int = Field(..., ge=1, le=5, description="Equità rappresentazione (1-5)")
+
+    feedback: Optional[str] = Field(None, max_length=1000, description="Commento libero opzionale")
+
+
+class SimpleRatingCreate(BaseModel):
+    """Model for creating a new simple Likert rating."""
+    chat_id: str
+    answer_clarity: int = Field(..., ge=1, le=5)
+    answer_quality: int = Field(..., ge=1, le=5)
+    balance_perception: int = Field(..., ge=1, le=5)
+    balance_fairness: int = Field(..., ge=1, le=5)
+    feedback: Optional[str] = None
 
 
 class SurveyWithChat(BaseModel):
@@ -134,7 +195,13 @@ AB_DIMENSIONS = [
     "citations_accuracy",
     "balance_perception",
     "balance_fairness",
+    "source_relevance",
+    "source_authority",
+    "source_coverage",
 ]
+
+# Optional dims added after the initial schema (may be absent in legacy Neo4j records)
+OPTIONAL_AB_DIMS = {"source_relevance", "source_authority", "source_coverage"}
 
 
 class SurveyStats(BaseModel):
@@ -210,6 +277,24 @@ SURVEY_QUESTIONS = [
         "category": "Bilanciamento Politico",
         "question": "Equita nella rappresentazione",
         "description": "Considera se c'e imparzialita nella presentazione"
+    },
+    {
+        "id": "source_relevance",
+        "category": "Autorità Esperti",
+        "question": "Rilevanza tematica degli esperti",
+        "description": "Gli esperti citati sono le voci parlamentari più attive e pertinenti su questo tema?"
+    },
+    {
+        "id": "source_authority",
+        "category": "Autorità Esperti",
+        "question": "Autorevolezza istituzionale",
+        "description": "Le figure citate ricoprono ruoli istituzionali rilevanti (commissioni, presidenze, portavoce)?"
+    },
+    {
+        "id": "source_coverage",
+        "category": "Autorità Esperti",
+        "question": "Copertura delle coalizioni",
+        "description": "Le principali forze politiche sono rappresentate in modo equilibrato?"
     },
     {
         "id": "overall_satisfaction",

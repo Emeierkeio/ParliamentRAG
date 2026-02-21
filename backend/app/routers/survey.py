@@ -1,10 +1,11 @@
 """
-Survey router for A/B blind evaluations of ParliamentRAG vs Baseline RAG.
-Surveys are persisted as SurveyEvaluation nodes in Neo4j.
+Survey router for A/B blind evaluations of ParliamentRAG vs Baseline RAG,
+and simple Likert-scale evaluation for queries without a predefined baseline.
 """
 
 import json
 import logging
+import os
 from typing import List, Optional, Dict
 from datetime import datetime
 from uuid import uuid4
@@ -20,11 +21,17 @@ from app.models.survey import (
     CitationEvaluation,
     SURVEY_QUESTIONS,
     AB_DIMENSIONS,
+    OPTIONAL_AB_DIMS,
+    SimpleRatingResponse,
+    SimpleRatingCreate,
 )
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/surveys", tags=["surveys"])
+
+# Path to evaluation_set.json (backend root)
+_EVAL_SET_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "evaluation_set.json")
 
 
 def _get_client():
@@ -44,15 +51,49 @@ def _get_client():
 
 
 def ensure_survey_constraint():
-    """Create uniqueness constraint on SurveyEvaluation.chat_id if not exists."""
-    try:
-        _get_client().query(
-            "CREATE CONSTRAINT survey_chat_id IF NOT EXISTS "
-            "FOR (s:SurveyEvaluation) REQUIRE s.chat_id IS UNIQUE"
-        )
-    except Exception as e:
-        logger.debug(f"Survey constraint already exists or error: {e}")
+    """Create uniqueness constraints on SurveyEvaluation and SimpleRating nodes."""
+    client = _get_client()
+    for label, prop in [("SurveyEvaluation", "chat_id"), ("SimpleRating", "chat_id")]:
+        try:
+            client.query(
+                f"CREATE CONSTRAINT {label.lower()}_{prop} IF NOT EXISTS "
+                f"FOR (s:{label}) REQUIRE s.{prop} IS UNIQUE"
+            )
+        except Exception as e:
+            logger.debug(f"Constraint {label}.{prop} already exists or error: {e}")
 
+
+# ---------------------------------------------------------------------------
+# Evaluation set helpers
+# ---------------------------------------------------------------------------
+
+def _load_evaluation_set() -> Dict[str, str]:
+    """Load topic → baseline_text mapping from evaluation_set.json."""
+    try:
+        path = os.path.normpath(_EVAL_SET_PATH)
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        logger.warning(f"evaluation_set.json not found at {_EVAL_SET_PATH}")
+        return {}
+    except Exception as e:
+        logger.error(f"Failed to load evaluation_set.json: {e}")
+        return {}
+
+
+def _match_evaluation_set(query: str) -> Optional[tuple]:
+    """Return (topic, baseline_text) if query matches a topic in evaluation_set, else None."""
+    eval_set = _load_evaluation_set()
+    query_lower = query.lower()
+    for topic, baseline in eval_set.items():
+        if topic.lower() in query_lower:
+            return (topic, baseline)
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Survey serialization helpers
+# ---------------------------------------------------------------------------
 
 def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
     """Convert a SurveyResponse to Neo4j node properties."""
@@ -102,15 +143,16 @@ def _neo4j_record_to_dict(r: dict) -> dict:
         "evaluation_context": r.get("evaluation_context") or None,
     }
     # Deserialize A/B dimensions from JSON strings
+    # Optional dims (source_relevance/authority/coverage) return None if absent in legacy records
     for dim in AB_DIMENSIONS:
         raw = r.get(dim)
         if raw:
             try:
                 result[dim] = json.loads(raw)
             except (json.JSONDecodeError, TypeError):
-                result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
+                result[dim] = None if dim in OPTIONAL_AB_DIMS else {"rating_a": 0, "rating_b": 0, "preference": "equal"}
         else:
-            result[dim] = {"rating_a": 0, "rating_b": 0, "preference": "equal"}
+            result[dim] = None if dim in OPTIONAL_AB_DIMS else {"rating_a": 0, "rating_b": 0, "preference": "equal"}
     # Deserialize individual citation evaluations
     for field in ("citation_evaluations_a", "citation_evaluations_b"):
         raw = r.get(field)
@@ -144,7 +186,7 @@ _SURVEY_FIELDS = (
 
 
 def _load_surveys() -> List[dict]:
-    """Load all surveys from Neo4j. Returns list of dicts compatible with SurveyResponse."""
+    """Load all A/B surveys from Neo4j. Returns list of dicts compatible with SurveyResponse."""
     client = _get_client()
     results = client.query(f"""
         MATCH (s:SurveyEvaluation)
@@ -297,58 +339,98 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
 
 @router.get("/questions")
 async def get_survey_questions():
-    """Get the survey questions configuration"""
+    """Get the survey questions configuration."""
     return {"questions": SURVEY_QUESTIONS}
+
+
+@router.get("/evaluation-set")
+async def get_evaluation_set():
+    """Return the list of topics available in evaluation_set.json."""
+    eval_set = _load_evaluation_set()
+    return {"topics": list(eval_set.keys())}
 
 
 @router.get("/stats/summary", response_model=SurveyStats)
 async def get_stats_summary():
-    """Get aggregated survey statistics (de-blinded)"""
+    """Get aggregated A/B survey statistics (de-blinded)."""
     surveys = _load_surveys()
     return _calculate_stats(surveys)
 
 
 @router.get("/chats/evaluated")
 async def get_evaluated_chat_ids():
-    """Get list of chat IDs that have been evaluated"""
+    """Get list of chat IDs that have been evaluated (A/B or simple)."""
     client = _get_client()
-    results = client.query("""
+    ab_results = client.query("""
         MATCH (s:SurveyEvaluation)
         RETURN s.chat_id AS chat_id
     """)
-    return {"chat_ids": [r["chat_id"] for r in results]}
+    simple_results = client.query("""
+        MATCH (r:SimpleRating)
+        RETURN r.chat_id AS chat_id
+    """)
+    ab_ids = [r["chat_id"] for r in ab_results]
+    simple_ids = [r["chat_id"] for r in simple_results]
+    all_ids = list(set(ab_ids + simple_ids))
+    return {"chat_ids": all_ids, "ab_ids": ab_ids, "simple_ids": simple_ids}
 
 
 @router.get("/chats/pending")
 async def get_pending_chats():
-    """Get chats that haven't been evaluated yet (only those with baseline)"""
-
-    logger.info("[PENDING-CHATS] === Fetching pending chats for A/B evaluation ===")
+    """
+    Get all chats that haven't been evaluated yet.
+    Each item includes:
+    - evaluation_type: "ab" if matched to evaluation_set, else "simple"
+    - matched_topic: topic name (only when evaluation_type == "ab")
+    - baseline_answer: baseline text (only when evaluation_type == "ab")
+    """
+    logger.info("[PENDING-CHATS] Fetching pending chats for evaluation")
 
     client = _get_client()
 
-    # Single query: chats with baseline that have no SurveyEvaluation
+    # Fetch all chats with no SurveyEvaluation AND no SimpleRating
     pending_results = client.query("""
         MATCH (c:ChatHistory)
-        WHERE c.baseline_answer IS NOT NULL AND c.baseline_answer <> ''
-          AND NOT EXISTS {
+        WHERE NOT EXISTS {
             MATCH (s:SurveyEvaluation {chat_id: c.id})
-          }
+        }
+        AND NOT EXISTS {
+            MATCH (r:SimpleRating {chat_id: c.id})
+        }
         RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
         ORDER BY c.timestamp DESC
     """)
 
-    pending = [
-        {
+    eval_set = _load_evaluation_set()
+
+    pending = []
+    for r in pending_results:
+        query = r.get("query", "")
+        query_lower = query.lower()
+
+        # Check if query matches any topic in evaluation_set
+        matched_topic = None
+        baseline_answer = None
+        for topic, baseline in eval_set.items():
+            if topic.lower() in query_lower:
+                matched_topic = topic
+                baseline_answer = baseline
+                break
+
+        chat_item = {
             "id": r["id"],
-            "query": r["query"],
+            "query": query,
             "preview": r.get("preview", ""),
             "timestamp": r.get("timestamp", ""),
+            "evaluation_type": "ab" if matched_topic else "simple",
         }
-        for r in pending_results
-    ]
+        if matched_topic:
+            chat_item["matched_topic"] = matched_topic
+            chat_item["baseline_answer"] = baseline_answer
 
-    logger.info(f"[PENDING-CHATS] Pending (not yet evaluated): {len(pending)}")
+        pending.append(chat_item)
+
+    logger.info(f"[PENDING-CHATS] Total pending: {len(pending)}")
     return {"pending": pending, "total": len(pending)}
 
 
@@ -358,7 +440,7 @@ async def list_surveys(
     limit: int = Query(50, ge=1, le=200, description="Maximum surveys to return"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
 ):
-    """List all surveys with optional statistics"""
+    """List all A/B surveys with optional statistics."""
 
     surveys = _load_surveys()
 
@@ -408,7 +490,7 @@ async def list_surveys(
 
 @router.post("", response_model=SurveyResponse)
 async def create_survey(survey_data: SurveyResponseCreate):
-    """Create a new A/B survey response"""
+    """Create a new A/B survey response."""
 
     # Verify chat exists
     chat = _get_chat_by_id(survey_data.chat_id)
@@ -427,11 +509,24 @@ async def create_survey(survey_data: SurveyResponseCreate):
             detail="Survey already exists for this chat. Use PUT to update."
         )
 
-    # Create survey response
+    # If ab_assignment is provided (evaluation_set flow), store it on ChatHistory
+    if survey_data.ab_assignment:
+        client.query("""
+            MATCH (c:ChatHistory {id: $chat_id})
+            SET c.ab_assignment = $ab_assignment,
+                c.evaluation_set_topic = $topic
+        """, {
+            "chat_id": survey_data.chat_id,
+            "ab_assignment": json.dumps(survey_data.ab_assignment, ensure_ascii=False),
+            "topic": survey_data.evaluation_set_topic or "",
+        })
+
+    # Create survey response (exclude extra fields not in SurveyResponse)
+    survey_dict = survey_data.model_dump(exclude={"ab_assignment", "evaluation_set_topic"})
     survey = SurveyResponse(
         id=str(uuid4()),
         timestamp=datetime.now(),
-        **survey_data.model_dump(),
+        **survey_dict,
     )
 
     params = _survey_to_neo4j_params(survey)
@@ -458,13 +553,72 @@ async def create_survey(survey_data: SurveyResponseCreate):
         }})
     """, params)
 
-    logger.info(f"Survey created for chat {survey_data.chat_id}")
+    logger.info(f"A/B survey created for chat {survey_data.chat_id}")
     return survey
+
+
+@router.post("/simple", response_model=SimpleRatingResponse)
+async def create_simple_rating(rating_data: SimpleRatingCreate):
+    """Create a new simple Likert-scale rating for a chat without a baseline."""
+
+    # Verify chat exists
+    chat = _get_chat_by_id(rating_data.chat_id)
+    if not chat:
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    client = _get_client()
+
+    # Check if rating already exists
+    existing = client.query("""
+        MATCH (r:SimpleRating {chat_id: $chat_id})
+        RETURN r.id AS id
+    """, {"chat_id": rating_data.chat_id})
+    if existing:
+        raise HTTPException(
+            status_code=409,
+            detail="Simple rating already exists for this chat."
+        )
+
+    rating = SimpleRatingResponse(
+        id=str(uuid4()),
+        chat_id=rating_data.chat_id,
+        timestamp=datetime.now(),
+        answer_clarity=rating_data.answer_clarity,
+        answer_quality=rating_data.answer_quality,
+        balance_perception=rating_data.balance_perception,
+        balance_fairness=rating_data.balance_fairness,
+        feedback=rating_data.feedback,
+    )
+
+    client.query("""
+        CREATE (r:SimpleRating {
+            id: $id,
+            chat_id: $chat_id,
+            timestamp: $timestamp,
+            answer_clarity: $answer_clarity,
+            answer_quality: $answer_quality,
+            balance_perception: $balance_perception,
+            balance_fairness: $balance_fairness,
+            feedback: $feedback
+        })
+    """, {
+        "id": rating.id,
+        "chat_id": rating.chat_id,
+        "timestamp": rating.timestamp.isoformat(),
+        "answer_clarity": rating.answer_clarity,
+        "answer_quality": rating.answer_quality,
+        "balance_perception": rating.balance_perception,
+        "balance_fairness": rating.balance_fairness,
+        "feedback": rating.feedback or "",
+    })
+
+    logger.info(f"Simple rating created for chat {rating_data.chat_id}")
+    return rating
 
 
 @router.get("/{chat_id}", response_model=SurveyResponse)
 async def get_survey_by_chat(chat_id: str):
-    """Get survey for a specific chat"""
+    """Get A/B survey for a specific chat."""
 
     client = _get_client()
     result = client.query(f"""
@@ -480,7 +634,7 @@ async def get_survey_by_chat(chat_id: str):
 
 @router.put("/{chat_id}", response_model=SurveyResponse)
 async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
-    """Update an existing survey response"""
+    """Update an existing A/B survey response."""
 
     client = _get_client()
     existing = client.query("""
@@ -491,10 +645,11 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
     if not existing:
         raise HTTPException(status_code=404, detail="Survey not found")
 
+    survey_dict = survey_data.model_dump(exclude={"ab_assignment", "evaluation_set_topic"})
     updated = SurveyResponse(
         id=existing[0]["id"],
         timestamp=datetime.now(),
-        **survey_data.model_dump(),
+        **survey_dict,
     )
 
     params = _survey_to_neo4j_params(updated)
@@ -518,13 +673,13 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
             {dim_sets}
     """, params)
 
-    logger.info(f"Survey updated for chat {chat_id}")
+    logger.info(f"A/B survey updated for chat {chat_id}")
     return updated
 
 
 @router.delete("/{chat_id}")
 async def delete_survey(chat_id: str):
-    """Delete a survey"""
+    """Delete an A/B survey."""
 
     client = _get_client()
     result = client.query("""
@@ -536,5 +691,5 @@ async def delete_survey(chat_id: str):
     if not result or result[0]["deleted"] == 0:
         raise HTTPException(status_code=404, detail="Survey not found")
 
-    logger.info(f"Survey deleted for chat {chat_id}")
+    logger.info(f"A/B survey deleted for chat {chat_id}")
     return {"message": "Survey deleted", "chat_id": chat_id}

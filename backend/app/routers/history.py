@@ -222,14 +222,168 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
     }
 
 
+class BaselineExpertsRequest(BaseModel):
+    """Request body for baseline-experts endpoint."""
+    baseline_text: Optional[str] = None
+
+
+@router.post("/history/{chat_id}/baseline-experts")
+async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Dict[str, Any]:
+    """
+    Extract deputies mentioned in the baseline text and compute their authority scores.
+    Used for A/B comparison: shows which deputies the baseline cited, with computed
+    authority scores for side-by-side comparison with the system's expert selection.
+
+    The baseline text is passed in the request body (from evaluation_set.json on the client)
+    since Neo4j may not have it stored for older chats.
+    """
+    import asyncio
+    from concurrent.futures import ThreadPoolExecutor
+    from .query import get_services
+    from ..services.authority.coalition_logic import CoalitionLogic
+    from ..models.evidence import normalize_party_name
+
+    client = _get_client()
+
+    # Get chat query from Neo4j
+    result = client.query("""
+        MATCH (c:ChatHistory {id: $id})
+        RETURN c.query AS query, c.baseline_answer AS baseline_answer
+    """, {"id": chat_id})
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    chat_data = result[0]
+    query_text = chat_data.get("query") or ""
+
+    # Prefer baseline text from request body (always up-to-date from evaluation_set.json),
+    # fall back to what's stored in Neo4j for backwards compatibility
+    baseline_text = body.baseline_text or chat_data.get("baseline_answer") or ""
+
+    if not baseline_text:
+        return {"experts": []}
+
+    # Fetch all deputies with names from Neo4j.
+    # Group name lives on the ParliamentaryGroup node connected via MEMBER_OF_GROUP,
+    # not as a direct property on Deputy.
+    deputies_result = client.query("""
+        MATCH (d:Deputy)
+        WHERE d.first_name IS NOT NULL AND d.last_name IS NOT NULL
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.end_date IS NULL
+        WITH d, collect(g.name)[0] AS group_name
+        RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
+               coalesce(group_name, 'MISTO') AS group_name,
+               d.deputy_card AS camera_profile_url,
+               d.profession AS profession, d.education AS education
+    """)
+
+    # Check which deputy names appear in the baseline text.
+    # Try both "Nome Cognome" and "Cognome Nome" orderings:
+    # Italian parliamentary texts (and NotebookLM) often cite deputies as "Cognome Nome".
+    text_lower = baseline_text.lower()
+    matched_deputies = []
+    for dep in deputies_result:
+        fn = (dep.get("first_name") or "").strip()
+        ln = (dep.get("last_name") or "").strip()
+        if not fn or not ln:
+            continue
+        if f"{fn} {ln}".lower() in text_lower or f"{ln} {fn}".lower() in text_lower:
+            matched_deputies.append(dep)
+
+    logger.info(f"[BASELINE-EXPERTS] Deputies from Neo4j: {len(deputies_result)}, matched: {len(matched_deputies)}")
+    logger.info(f"[BASELINE-EXPERTS] Matched names: {[(d.get('first_name'), d.get('last_name')) for d in matched_deputies]}")
+    if not matched_deputies:
+        # Log a sample of names to diagnose mismatches
+        sample = [(dep.get("first_name"), dep.get("last_name")) for dep in deputies_result[:10]]
+        logger.info(f"[BASELINE-EXPERTS] No match. baseline_text length={len(baseline_text)}, sample deputies={sample}")
+        return {"experts": []}
+
+    matched_ids = [d["id"] for d in matched_deputies]
+
+    # Compute authority scores for matched deputies
+    services = get_services()
+    query_embedding = await asyncio.get_running_loop().run_in_executor(
+        None, lambda: services["retrieval"].embed_query(query_text)
+    )
+
+    def _compute_single(sid):
+        return sid, services["authority"].compute_authority(sid, query_embedding)
+
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor(max_workers=min(10, max(1, len(matched_ids)))) as pool:
+        futures = [loop.run_in_executor(pool, _compute_single, sid) for sid in matched_ids]
+        auth_results = await asyncio.gather(*futures)
+
+    authority_scores = {sid: res["total_score"] for sid, res in auth_results}
+    authority_details = {sid: res for sid, res in auth_results}
+
+    # Fetch committee membership for matched deputies
+    committees_result = client.query("""
+        UNWIND $ids AS sid
+        MATCH (d:Deputy {id: sid})
+        OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+        WHERE mc.end_date IS NULL OR mc.end_date >= date()
+        RETURN sid, collect(c.name)[0] AS current_committee,
+               d.institutional_role AS institutional_role
+    """, {"ids": matched_ids})
+
+    committees_map = {r["sid"]: r for r in committees_result}
+    dep_map = {d["id"]: d for d in matched_deputies}
+
+    coalition_logic = CoalitionLogic()
+    experts = []
+
+    for dep_id in matched_ids:
+        dep = dep_map.get(dep_id)
+        if not dep:
+            continue
+
+        auth = authority_details.get(dep_id, {})
+        components = auth.get("components", {})
+        committee_info = committees_map.get(dep_id, {})
+        coalition = coalition_logic.get_coalition(dep.get("group_name", ""))
+
+        experts.append({
+            "id": dep_id,
+            "first_name": dep.get("first_name", ""),
+            "last_name": dep.get("last_name", ""),
+            "group": normalize_party_name(dep.get("group_name", "")),
+            "coalition": coalition,
+            "authority_score": round(authority_scores.get(dep_id, 0.0), 2),
+            "relevant_speeches_count": 0,
+            "camera_profile_url": dep.get("camera_profile_url"),
+            "profession": dep.get("profession"),
+            "education": dep.get("education"),
+            "committee": committee_info.get("current_committee"),
+            "institutional_role": committee_info.get("institutional_role"),
+            "score_breakdown": {
+                "speeches": round(components.get("interventions", 0), 2),
+                "acts": round(components.get("acts", 0), 2),
+                "committee": round(components.get("committee", 0), 2),
+                "profession": round(components.get("profession", 0), 2),
+                "education": round(components.get("education", 0), 2),
+                "role": round(components.get("role", 0), 2),
+            },
+        })
+
+    experts.sort(key=lambda e: e["authority_score"], reverse=True)
+    return {"experts": experts}
+
+
 @router.delete("/history/{chat_id}")
 async def delete_chat(chat_id: str) -> Dict[str, Any]:
-    """Delete a chat from history and its associated survey."""
+    """Delete a chat from history and its associated survey/rating."""
     client = _get_client()
-    # Delete associated survey if any
+    # Delete associated A/B survey and simple rating if any
     client.query("""
         MATCH (s:SurveyEvaluation {chat_id: $id})
         DELETE s
+    """, {"id": chat_id})
+    client.query("""
+        MATCH (r:SimpleRating {chat_id: $id})
+        DELETE r
     """, {"id": chat_id})
     result = client.query("""
         MATCH (c:ChatHistory {id: $id})
@@ -245,15 +399,16 @@ async def delete_chat(chat_id: str) -> Dict[str, Any]:
 
 @router.delete("/history")
 async def clear_history() -> Dict[str, Any]:
-    """Clear all chat history and associated surveys."""
+    """Clear all chat history and associated surveys/ratings."""
     client = _get_client()
-    # Delete all surveys first
+    # Delete all A/B surveys and simple ratings first
     client.query("MATCH (s:SurveyEvaluation) DELETE s")
+    client.query("MATCH (r:SimpleRating) DELETE r")
     result = client.query("""
         MATCH (c:ChatHistory)
-        WITH c, count(*) AS count
+        WITH c, count(*) AS total
         DELETE c
-        RETURN count
+        RETURN total
     """)
-    count = result[0]["count"] if result else 0
+    count = result[0]["total"] if result else 0
     return {"cleared": True, "count": count}

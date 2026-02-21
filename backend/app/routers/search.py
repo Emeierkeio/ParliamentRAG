@@ -432,6 +432,7 @@ async def search_results(
     end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)"),
     search_type: str = Query("text", description="Search type: text, semantic, hybrid"),
     doc_type: str = Query("all", description="Document type filter: all, speech, act"),
+    sort_by: str = Query("relevance", description="Sort order: relevance, date_desc, date_asc"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Results per page"),
 ) -> Dict[str, Any]:
@@ -492,13 +493,18 @@ async def search_results(
                 seen.add(r["id"])
                 unique_results.append(r)
 
-        # Sort: semantic results first (by score desc), then text results (by date desc)
-        def sort_key(r):
-            if r["score"] is not None:
-                return (0, -r["score"])
-            return (1, r.get("date") or "")
-
-        unique_results.sort(key=sort_key)
+        # Sort results
+        if sort_by == "date_desc":
+            unique_results.sort(key=lambda r: r.get("date") or "", reverse=True)
+        elif sort_by == "date_asc":
+            unique_results.sort(key=lambda r: r.get("date") or "")
+        else:
+            # relevance: semantic results first (by score desc), then text results (by date desc)
+            def sort_key(r):
+                if r["score"] is not None:
+                    return (0, -r["score"])
+                return (1, r.get("date") or "")
+            unique_results.sort(key=sort_key)
 
         total = len(unique_results)
 
