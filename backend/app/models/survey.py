@@ -90,6 +90,8 @@ class SurveyResponse(BaseModel):
     # Metadata
     evaluator_role: Optional[str] = Field(None, description="Role of evaluator")
     evaluation_context: Optional[str] = Field(None, description="Context of evaluation")
+    evaluator_id: Optional[str] = Field(None, description="Unique identifier for the evaluator")
+    ab_assignment: Optional[Dict[str, str]] = Field(None, description="Per-evaluator A/B assignment, e.g. {'A': 'system', 'B': 'baseline'}")
 
 
 class SurveyResponseCreate(BaseModel):
@@ -126,6 +128,9 @@ class SurveyResponseCreate(BaseModel):
 
     evaluator_role: Optional[str] = None
     evaluation_context: Optional[str] = None
+
+    # Evaluator identifier (for multi-evaluator study)
+    evaluator_id: Optional[str] = Field(None, description="Unique identifier for the evaluator (e.g. from ?evaluator= URL param)")
 
     # A/B assignment (provided by frontend when using evaluation_set baseline)
     ab_assignment: Optional[Dict[str, str]] = Field(
@@ -166,6 +171,7 @@ class SimpleRatingResponse(BaseModel):
     balance_fairness: int = Field(..., ge=1, le=5, description="Equità rappresentazione (1-5)")
 
     feedback: Optional[str] = Field(None, max_length=1000, description="Commento libero opzionale")
+    evaluator_id: Optional[str] = Field(None, description="Unique identifier for the evaluator")
 
 
 class SimpleRatingCreate(BaseModel):
@@ -176,6 +182,7 @@ class SimpleRatingCreate(BaseModel):
     balance_perception: int = Field(..., ge=1, le=5)
     balance_fairness: int = Field(..., ge=1, le=5)
     feedback: Optional[str] = None
+    evaluator_id: Optional[str] = Field(None, description="Unique identifier for the evaluator")
 
 
 class SurveyWithChat(BaseModel):

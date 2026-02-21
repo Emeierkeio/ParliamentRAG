@@ -137,10 +137,11 @@ export async function getSurveyStats(): Promise<SurveyStats> {
 }
 
 /**
- * Get list of evaluated chat IDs
+ * Get list of evaluated chat IDs, optionally filtered by evaluator
  */
-export async function getEvaluatedChatIds(): Promise<{ chat_ids: string[] }> {
-  const response = await fetch(`${BASE_URL}/chats/evaluated`);
+export async function getEvaluatedChatIds(evaluatorId?: string): Promise<{ chat_ids: string[] }> {
+  const params = evaluatorId ? `?evaluator_id=${encodeURIComponent(evaluatorId)}` : "";
+  const response = await fetch(`${BASE_URL}/chats/evaluated${params}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch evaluated chat IDs: ${response.statusText}`);
   }
@@ -148,10 +149,11 @@ export async function getEvaluatedChatIds(): Promise<{ chat_ids: string[] }> {
 }
 
 /**
- * Get chats pending evaluation
+ * Get evaluation_set chats pending evaluation for this evaluator
  */
-export async function getPendingChats(): Promise<PendingChatsResponse> {
-  const response = await fetch(`${BASE_URL}/chats/pending`);
+export async function getPendingChats(evaluatorId?: string): Promise<PendingChatsResponse> {
+  const params = evaluatorId ? `?evaluator_id=${encodeURIComponent(evaluatorId)}` : "";
+  const response = await fetch(`${BASE_URL}/chats/pending${params}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch pending chats: ${response.statusText}`);
   }

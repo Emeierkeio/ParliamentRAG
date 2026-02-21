@@ -51,16 +51,13 @@ def _get_client():
 
 
 def ensure_survey_constraint():
-    """Create uniqueness constraints on SurveyEvaluation and SimpleRating nodes."""
+    """Drop old per-chat uniqueness constraints (now multi-evaluator: uniqueness is (chat_id, evaluator_id) enforced in code)."""
     client = _get_client()
-    for label, prop in [("SurveyEvaluation", "chat_id"), ("SimpleRating", "chat_id")]:
+    for label in ["SurveyEvaluation", "SimpleRating"]:
         try:
-            client.query(
-                f"CREATE CONSTRAINT {label.lower()}_{prop} IF NOT EXISTS "
-                f"FOR (s:{label}) REQUIRE s.{prop} IS UNIQUE"
-            )
+            client.query(f"DROP CONSTRAINT {label.lower()}_chat_id IF EXISTS")
         except Exception as e:
-            logger.debug(f"Constraint {label}.{prop} already exists or error: {e}")
+            logger.debug(f"Could not drop constraint {label}.chat_id: {e}")
 
 
 # ---------------------------------------------------------------------------
@@ -109,6 +106,8 @@ def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
         "feedback_improvement": survey.feedback_improvement or "",
         "evaluator_role": survey.evaluator_role or "",
         "evaluation_context": survey.evaluation_context or "",
+        "evaluator_id": survey.evaluator_id or "",
+        "ab_assignment": json.dumps(survey.ab_assignment, ensure_ascii=False) if survey.ab_assignment else "",
     }
     # Serialize each A/B dimension as JSON string
     for dim in AB_DIMENSIONS:
@@ -141,6 +140,8 @@ def _neo4j_record_to_dict(r: dict) -> dict:
         "feedback_improvement": r.get("feedback_improvement") or None,
         "evaluator_role": r.get("evaluator_role") or None,
         "evaluation_context": r.get("evaluation_context") or None,
+        "evaluator_id": r.get("evaluator_id") or None,
+        "ab_assignment": json.loads(r["ab_assignment"]) if r.get("ab_assignment") else None,
     }
     # Deserialize A/B dimensions from JSON strings
     # Optional dims (source_relevance/authority/coverage) return None if absent in legacy records
@@ -179,6 +180,8 @@ _SURVEY_FIELDS = (
     "s.feedback_improvement AS feedback_improvement, "
     "s.evaluator_role AS evaluator_role, "
     "s.evaluation_context AS evaluation_context, "
+    "s.evaluator_id AS evaluator_id, "
+    "s.ab_assignment AS ab_assignment, "
     "s.citation_evaluations_a AS citation_evaluations_a, "
     "s.citation_evaluations_b AS citation_evaluations_b, "
     + ", ".join(f"s.{d} AS {d}" for d in AB_DIMENSIONS)
@@ -263,7 +266,8 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     valid_count = 0
 
     for s in surveys:
-        ab_assignment = _get_ab_assignment(s.get("chat_id", ""))
+        # Prefer per-evaluator ab_assignment stored on SurveyEvaluation; fall back to ChatHistory for legacy records
+        ab_assignment = s.get("ab_assignment") or _get_ab_assignment(s.get("chat_id", ""))
         if not ab_assignment:
             continue
 
@@ -315,7 +319,7 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     baseline_win = round(overall_pref["baseline"] / total_pref * 100, 1)
     tie = round(overall_pref["equal"] / total_pref * 100, 1)
 
-    valid_surveys = [s for s in surveys if _get_ab_assignment(s.get("chat_id", ""))]
+    valid_surveys = [s for s in surveys if s.get("ab_assignment") or _get_ab_assignment(s.get("chat_id", ""))]
     recommendations = sum(1 for s in valid_surveys if s.get("would_recommend", False))
     recommendation_rate = round((recommendations / len(valid_surveys)) * 100, 1) if valid_surveys else 0.0
 
@@ -358,17 +362,21 @@ async def get_stats_summary():
 
 
 @router.get("/chats/evaluated")
-async def get_evaluated_chat_ids():
-    """Get list of chat IDs that have been evaluated (A/B or simple)."""
+async def get_evaluated_chat_ids(evaluator_id: Optional[str] = Query(None)):
+    """Get list of chat IDs that have been evaluated (A/B or simple), optionally filtered by evaluator."""
     client = _get_client()
-    ab_results = client.query("""
-        MATCH (s:SurveyEvaluation)
-        RETURN s.chat_id AS chat_id
-    """)
-    simple_results = client.query("""
-        MATCH (r:SimpleRating)
-        RETURN r.chat_id AS chat_id
-    """)
+    if evaluator_id:
+        ab_results = client.query("""
+            MATCH (s:SurveyEvaluation {evaluator_id: $evaluator_id})
+            RETURN s.chat_id AS chat_id
+        """, {"evaluator_id": evaluator_id})
+        simple_results = client.query("""
+            MATCH (r:SimpleRating {evaluator_id: $evaluator_id})
+            RETURN r.chat_id AS chat_id
+        """, {"evaluator_id": evaluator_id})
+    else:
+        ab_results = client.query("MATCH (s:SurveyEvaluation) RETURN s.chat_id AS chat_id")
+        simple_results = client.query("MATCH (r:SimpleRating) RETURN r.chat_id AS chat_id")
     ab_ids = [r["chat_id"] for r in ab_results]
     simple_ids = [r["chat_id"] for r in simple_results]
     all_ids = list(set(ab_ids + simple_ids))
@@ -376,39 +384,43 @@ async def get_evaluated_chat_ids():
 
 
 @router.get("/chats/pending")
-async def get_pending_chats():
+async def get_pending_chats(evaluator_id: Optional[str] = Query(None)):
     """
-    Get all chats that haven't been evaluated yet.
-    Each item includes:
-    - evaluation_type: "ab" if matched to evaluation_set, else "simple"
-    - matched_topic: topic name (only when evaluation_type == "ab")
-    - baseline_answer: baseline text (only when evaluation_type == "ab")
+    Get evaluation_set chats not yet evaluated by this evaluator.
+    Only chats whose query matches a topic in evaluation_set.json are returned (always A/B type).
+    If evaluator_id is provided, excludes chats already evaluated by that evaluator.
     """
-    logger.info("[PENDING-CHATS] Fetching pending chats for evaluation")
+    logger.info(f"[PENDING-CHATS] Fetching pending chats for evaluator={evaluator_id!r}")
+
+    eval_set = _load_evaluation_set()
+    if not eval_set:
+        return {"pending": [], "total": 0}
 
     client = _get_client()
 
-    # Fetch all chats with no SurveyEvaluation AND no SimpleRating
-    pending_results = client.query("""
-        MATCH (c:ChatHistory)
-        WHERE NOT EXISTS {
-            MATCH (s:SurveyEvaluation {chat_id: c.id})
-        }
-        AND NOT EXISTS {
-            MATCH (r:SimpleRating {chat_id: c.id})
-        }
-        RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
-        ORDER BY c.timestamp DESC
-    """)
-
-    eval_set = _load_evaluation_set()
+    # Fetch chats not yet evaluated by this evaluator (or all chats if no evaluator_id)
+    if evaluator_id:
+        pending_results = client.query("""
+            MATCH (c:ChatHistory)
+            WHERE NOT EXISTS {
+                MATCH (s:SurveyEvaluation {chat_id: c.id, evaluator_id: $evaluator_id})
+            }
+            RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
+            ORDER BY c.timestamp DESC
+        """, {"evaluator_id": evaluator_id})
+    else:
+        pending_results = client.query("""
+            MATCH (c:ChatHistory)
+            RETURN c.id AS id, c.query AS query, c.preview AS preview, c.timestamp AS timestamp
+            ORDER BY c.timestamp DESC
+        """)
 
     pending = []
     for r in pending_results:
         query = r.get("query", "")
         query_lower = query.lower()
 
-        # Check if query matches any topic in evaluation_set
+        # Only include chats matching a topic in evaluation_set (always A/B type)
         matched_topic = None
         baseline_answer = None
         for topic, baseline in eval_set.items():
@@ -417,18 +429,18 @@ async def get_pending_chats():
                 baseline_answer = baseline
                 break
 
-        chat_item = {
+        if not matched_topic:
+            continue
+
+        pending.append({
             "id": r["id"],
             "query": query,
             "preview": r.get("preview", ""),
             "timestamp": r.get("timestamp", ""),
-            "evaluation_type": "ab" if matched_topic else "simple",
-        }
-        if matched_topic:
-            chat_item["matched_topic"] = matched_topic
-            chat_item["baseline_answer"] = baseline_answer
-
-        pending.append(chat_item)
+            "evaluation_type": "ab",
+            "matched_topic": matched_topic,
+            "baseline_answer": baseline_answer,
+        })
 
     logger.info(f"[PENDING-CHATS] Total pending: {len(pending)}")
     return {"pending": pending, "total": len(pending)}
@@ -497,32 +509,31 @@ async def create_survey(survey_data: SurveyResponseCreate):
     if not chat:
         raise HTTPException(status_code=404, detail="Chat not found")
 
-    # Check if survey already exists for this chat
+    # Check if this evaluator already rated this chat
     client = _get_client()
+    evaluator_id = survey_data.evaluator_id or ""
     existing = client.query("""
-        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+        MATCH (s:SurveyEvaluation {chat_id: $chat_id, evaluator_id: $evaluator_id})
         RETURN s.id AS id
-    """, {"chat_id": survey_data.chat_id})
+    """, {"chat_id": survey_data.chat_id, "evaluator_id": evaluator_id})
     if existing:
         raise HTTPException(
             status_code=409,
-            detail="Survey already exists for this chat. Use PUT to update."
+            detail="Survey already exists for this chat and evaluator. Use PUT to update."
         )
 
-    # If ab_assignment is provided (evaluation_set flow), store it on ChatHistory
-    if survey_data.ab_assignment:
+    # If evaluation_set topic is provided, tag the ChatHistory (idempotent, no overwrite of ab_assignment)
+    if survey_data.evaluation_set_topic:
         client.query("""
             MATCH (c:ChatHistory {id: $chat_id})
-            SET c.ab_assignment = $ab_assignment,
-                c.evaluation_set_topic = $topic
+            SET c.evaluation_set_topic = $topic
         """, {
             "chat_id": survey_data.chat_id,
-            "ab_assignment": json.dumps(survey_data.ab_assignment, ensure_ascii=False),
-            "topic": survey_data.evaluation_set_topic or "",
+            "topic": survey_data.evaluation_set_topic,
         })
 
-    # Create survey response (exclude extra fields not in SurveyResponse)
-    survey_dict = survey_data.model_dump(exclude={"ab_assignment", "evaluation_set_topic"})
+    # Create survey response — ab_assignment is stored per-evaluator on SurveyEvaluation, not on ChatHistory
+    survey_dict = survey_data.model_dump(exclude={"evaluation_set_topic"})
     survey = SurveyResponse(
         id=str(uuid4()),
         timestamp=datetime.now(),
@@ -538,6 +549,7 @@ async def create_survey(survey_data: SurveyResponseCreate):
         CREATE (s:SurveyEvaluation {{
             id: $id,
             chat_id: $chat_id,
+            evaluator_id: $evaluator_id,
             timestamp: $timestamp,
             overall_satisfaction_a: $overall_satisfaction_a,
             overall_satisfaction_b: $overall_satisfaction_b,
@@ -547,6 +559,7 @@ async def create_survey(survey_data: SurveyResponseCreate):
             feedback_improvement: $feedback_improvement,
             evaluator_role: $evaluator_role,
             evaluation_context: $evaluation_context,
+            ab_assignment: $ab_assignment,
             citation_evaluations_a: $citation_evaluations_a,
             citation_evaluations_b: $citation_evaluations_b,
             {dim_sets}
@@ -567,16 +580,17 @@ async def create_simple_rating(rating_data: SimpleRatingCreate):
         raise HTTPException(status_code=404, detail="Chat not found")
 
     client = _get_client()
+    evaluator_id = rating_data.evaluator_id or ""
 
-    # Check if rating already exists
+    # Check if this evaluator already rated this chat
     existing = client.query("""
-        MATCH (r:SimpleRating {chat_id: $chat_id})
+        MATCH (r:SimpleRating {chat_id: $chat_id, evaluator_id: $evaluator_id})
         RETURN r.id AS id
-    """, {"chat_id": rating_data.chat_id})
+    """, {"chat_id": rating_data.chat_id, "evaluator_id": evaluator_id})
     if existing:
         raise HTTPException(
             status_code=409,
-            detail="Simple rating already exists for this chat."
+            detail="Simple rating already exists for this chat and evaluator."
         )
 
     rating = SimpleRatingResponse(
@@ -588,12 +602,14 @@ async def create_simple_rating(rating_data: SimpleRatingCreate):
         balance_perception=rating_data.balance_perception,
         balance_fairness=rating_data.balance_fairness,
         feedback=rating_data.feedback,
+        evaluator_id=evaluator_id or None,
     )
 
     client.query("""
         CREATE (r:SimpleRating {
             id: $id,
             chat_id: $chat_id,
+            evaluator_id: $evaluator_id,
             timestamp: $timestamp,
             answer_clarity: $answer_clarity,
             answer_quality: $answer_quality,
@@ -604,6 +620,7 @@ async def create_simple_rating(rating_data: SimpleRatingCreate):
     """, {
         "id": rating.id,
         "chat_id": rating.chat_id,
+        "evaluator_id": evaluator_id,
         "timestamp": rating.timestamp.isoformat(),
         "answer_clarity": rating.answer_clarity,
         "answer_quality": rating.answer_quality,

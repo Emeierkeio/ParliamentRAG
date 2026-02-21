@@ -21,11 +21,9 @@ import {
   PanelLeftClose,
   PanelLeft,
   Github,
-  Network,
   Settings,
   Search,
   X,
-  ClipboardCheck,
   Compass,
   Menu,
   GraduationCap,
@@ -143,18 +141,6 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, isQueryRunning = fal
                 disabled={isQueryRunning}
               />
 
-              {/* Avanzate */}
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Avanzate</p>
-              <NavButton
-                item={{ icon: Network, label: "Esplora Grafo", isActive: pathname === "/explorer", onClick: () => handleNavClick(() => { window.location.href = "/explorer"; }) }}
-                isCollapsed={false}
-                disabled={isQueryRunning}
-              />
-              <NavButton
-                item={{ icon: ClipboardCheck, label: "Valutazione", isActive: pathname === "/valutazione", onClick: () => handleNavClick(() => { window.location.href = "/valutazione"; }) }}
-                isCollapsed={false}
-                disabled={isQueryRunning}
-              />
             </nav>
           </ScrollArea>
 
@@ -262,23 +248,6 @@ export function Sidebar({ isCollapsed, onToggle, onNewChat, isQueryRunning = fal
               disabled={isQueryRunning}
             />
 
-            {/* Avanzate */}
-            {!isCollapsed && (
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Avanzate</p>
-            )}
-            {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
-
-            <NavButton
-              item={{ icon: Network, label: "Esplora Grafo", href: "/explorer", isActive: pathname === "/explorer", onClick: () => window.location.href = "/explorer" }}
-              isCollapsed={isCollapsed}
-              disabled={isQueryRunning}
-            />
-
-            <NavButton
-              item={{ icon: ClipboardCheck, label: "Valutazione", isActive: pathname === "/valutazione", onClick: () => window.location.href = "/valutazione" }}
-              isCollapsed={isCollapsed}
-              disabled={isQueryRunning}
-            />
           </nav>
         </ScrollArea>
 

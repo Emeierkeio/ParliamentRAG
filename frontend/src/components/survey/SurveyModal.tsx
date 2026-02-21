@@ -61,6 +61,7 @@ import {
 interface SurveyModalProps {
   isOpen: boolean;
   onClose: () => void;
+  evaluatorId?: string;
 }
 
 interface ChatDetails {
@@ -172,7 +173,7 @@ function ExpertAuthorityPanel({
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
+export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) {
   const [step, setStep] = useState<SurveyStep>("select");
   const [pendingChats, setPendingChats] = useState<PendingChat[]>([]);
   const [evaluatedIds, setEvaluatedIds] = useState<Set<string>>(new Set());
@@ -249,8 +250,8 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     setError(null);
     try {
       const [pendingRes, evaluatedRes] = await Promise.all([
-        getPendingChats(),
-        getEvaluatedChatIds(),
+        getPendingChats(evaluatorId),
+        getEvaluatedChatIds(evaluatorId),
       ]);
       setPendingChats(pendingRes.pending);
       setEvaluatedIds(new Set(evaluatedRes.chat_ids));
@@ -260,7 +261,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [evaluatorId]);
 
   // Load chat details (system answer text)
   const loadChatDetails = useCallback(async (chatId: string) => {
@@ -495,6 +496,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         // Pass evaluation_set assignment for de-blinding
         ab_assignment: localAbAssignment || undefined,
         evaluation_set_topic: selectedChat.matched_topic || undefined,
+        evaluator_id: evaluatorId || undefined,
       });
 
       setStep("success");
@@ -525,6 +527,7 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
         balance_perception,
         balance_fairness,
         feedback: simpleFormState.feedback || undefined,
+        evaluator_id: evaluatorId || undefined,
       });
       setStep("success");
     } catch (err: any) {
@@ -632,7 +635,11 @@ export function SurveyModal({ isOpen, onClose }: SurveyModalProps) {
             <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900/50 border-b">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Seleziona una conversazione da valutare
+                  {evaluatorId ? (
+                    <>Ciao <span className="font-semibold text-gray-800 dark:text-gray-200">{evaluatorId}</span> — seleziona una conversazione da valutare</>
+                  ) : (
+                    "Seleziona una conversazione da valutare"
+                  )}
                 </p>
                 <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading}>
                   <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
