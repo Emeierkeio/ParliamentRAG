@@ -145,7 +145,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <TabsList>
               <TabsTrigger value="visual">Editor Grafico</TabsTrigger>
               <TabsTrigger value="json">Editor JSON</TabsTrigger>
-              <TabsTrigger value="info">Guida</TabsTrigger>
             </TabsList>
 
             <TabsContent value="visual" className="h-[calc(90vh-220px)] sm:h-[calc(85vh-200px)] overflow-y-auto rounded-md border p-4 bg-muted/10">
@@ -179,51 +178,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 placeholder="Caricamento configurazione..."
                 disabled={isLoading}
               />
-            </TabsContent>
-
-            <TabsContent value="info" className="flex-1 overflow-auto">
-              <ScrollArea className="h-full pr-4">
-                <div className="space-y-4 p-4 text-sm">
-                  <h3 className="font-bold">Struttura della configurazione</h3>
-
-                  <div>
-                    <h4 className="font-semibold text-primary">Retrieval</h4>
-                    <p className="text-muted-foreground">
-                      Parametri per la ricerca: Dense Top-K (quanti chunk recuperare),
-                      soglie di similarità, e pesi del merger che bilanciano rilevanza,
-                      diversità, copertura e autorevolezza.
-                    </p>
-                  </div>
-
-                  <Separator />
-
-                  <div>
-                    <h4 className="font-semibold text-primary">Authority</h4>
-                    <p className="text-muted-foreground">
-                      Pesi per il calcolo dello score di autorevolezza dei deputati.
-                      La somma dei pesi deve essere circa 1.0.
-                      Half-life controlla il decadimento temporale di atti e interventi.
-                    </p>
-                  </div>
-
-                  <Separator />
-
-                  <div>
-                    <h4 className="font-semibold text-primary">Generazione</h4>
-                    <p className="text-muted-foreground">
-                      Modelli OpenAI usati nelle 3 fasi della pipeline (analisi, scrittura, integrazione).
-                      Il toggle &quot;Analisi Trasversale&quot; abilita la sezione convergenze/divergenze.
-                    </p>
-                  </div>
-
-                  <Separator />
-
-                  <div className="text-xs text-muted-foreground">
-                    Le sezioni Compass, Coalizioni e Citation sono di sola lettura
-                    e possono essere modificate solo editando direttamente il file YAML.
-                  </div>
-                </div>
-              </ScrollArea>
             </TabsContent>
           </Tabs>
         </div>

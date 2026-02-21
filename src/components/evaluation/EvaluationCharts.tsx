@@ -287,6 +287,7 @@ interface MetricCardProps {
   ci?: [number, number];
   icon: React.ReactNode;
   format?: "percent" | "decimal" | "count";
+  description?: string;
 }
 
 export function MetricCard({
@@ -295,6 +296,7 @@ export function MetricCard({
   ci,
   icon,
   format = "percent",
+  description,
 }: MetricCardProps) {
   const formattedValue =
     format === "percent"
@@ -309,19 +311,43 @@ export function MetricCard({
     return "text-red-600 dark:text-red-400";
   };
 
+  const getBarColor = (v: number) => {
+    if (v >= 0.8) return "bg-emerald-500";
+    if (v >= 0.6) return "bg-amber-500";
+    return "bg-red-500";
+  };
+
+  const isDegenerate = ci && ci[0] === ci[1];
+
   return (
     <Card>
       <CardContent className="p-4">
-        <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="flex items-center gap-2 text-muted-foreground mb-2">
           {icon}
-          <span className="text-sm">{label}</span>
+          <span className="text-sm font-medium">{label}</span>
         </div>
-        <div className={cn("text-2xl font-bold", getColorClass(value))}>
+        <div className={cn("text-2xl font-bold mb-2", getColorClass(value))}>
           {formattedValue}
         </div>
+        {format === "percent" && (
+          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mb-2">
+            <div
+              className={cn("h-1.5 rounded-full transition-all", getBarColor(value))}
+              style={{ width: `${Math.min(value * 100, 100)}%` }}
+            />
+          </div>
+        )}
+        {description && (
+          <div className="text-xs text-muted-foreground mb-1">{description}</div>
+        )}
         {ci && format === "percent" && (
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className="text-xs text-muted-foreground">
             IC 95%: [{(ci[0] * 100).toFixed(1)}%, {(ci[1] * 100).toFixed(1)}%]
+            {isDegenerate && (
+              <span className="ml-1 text-amber-500" title="Basato su un singolo campione">
+                (n=1)
+              </span>
+            )}
           </div>
         )}
       </CardContent>

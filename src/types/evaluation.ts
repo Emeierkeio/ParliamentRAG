@@ -2,7 +2,7 @@
  * Evaluation types for scientific assessment of ParliamentRAG.
  */
 
-import type { SurveyResponse, SurveyStats } from "./survey";
+import type { SurveyResponse, SurveyStats, SimpleRatingResponse } from "./survey";
 
 export interface AutomatedMetrics {
   chat_id: string;
@@ -16,12 +16,12 @@ export interface AutomatedMetrics {
   citations_valid: number;
   citations_total: number;
 
-  balance_score: number;
-  maggioranza_pct: number;
-  opposizione_pct: number;
+  verbatim_match_score: number;
+  verbatim_match_count: number;
 
   authority_utilization: number;
   experts_count: number;
+  authority_discrimination: number;
 
   response_completeness: number;
 }
@@ -30,14 +30,16 @@ export interface AggregatedMetrics {
   total_chats: number;
   avg_party_coverage: number;
   avg_citation_integrity: number;
-  avg_balance_score: number;
+  avg_verbatim_match: number;
   avg_authority_utilization: number;
+  avg_authority_discrimination: number;
   avg_response_completeness: number;
 
   ci_party_coverage: [number, number];
   ci_citation_integrity: [number, number];
-  ci_balance_score: [number, number];
+  ci_verbatim_match: [number, number];
   ci_authority_utilization: [number, number];
+  ci_authority_discrimination: [number, number];
   ci_response_completeness: [number, number];
 }
 
@@ -47,6 +49,7 @@ export interface CombinedEvaluation {
   timestamp: string;
   automated: AutomatedMetrics;
   human: SurveyResponse | null;
+  human_simple: SimpleRatingResponse | null;
 }
 
 export interface ABComparisonStats {
@@ -68,4 +71,5 @@ export interface EvaluationDashboardData {
   per_chat: CombinedEvaluation[];
   total_chats: number;
   total_evaluated: number;
+  total_simple_rated: number;
 }

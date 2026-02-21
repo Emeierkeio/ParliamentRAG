@@ -15,7 +15,6 @@ import {
   BarChart3,
   Compass,
   PenTool,
-  GitCompare,
   Target,
   Clock,
 } from "lucide-react";
@@ -39,8 +38,7 @@ const STEP_SHORT_LABELS: Record<number, string> = {
   5: "Stats",
   6: "Bussola",
   7: "Testo",
-  8: "Base",
-  9: "Check",
+  8: "Check",
 };
 
 /** Shared step descriptions for tooltips */
@@ -52,8 +50,7 @@ const STEP_DESCRIPTIONS: Record<number, string> = {
   5: "Calcola le percentuali di rappresentazione maggioranza/opposizione",
   6: "Analizza il posizionamento ideologico dei gruppi parlamentari sul tema",
   7: "Genera la sintesi finale bilanciata con citazioni verificate",
-  8: "Genera una risposta di confronto per la valutazione A/B",
-  9: "Completa la verifica finale e salva in cronologia",
+  8: "Completa la verifica finale e salva in cronologia",
 };
 
 /** Render rich step result details based on step type */
@@ -97,9 +94,7 @@ export function ProgressBanner({ progress, className }: ProgressIndicatorProps) 
 
   const statusText = progress.currentStep <= 7
     ? "Completamento scrittura..."
-    : progress.currentStep === 8
-      ? "Generazione risposta di confronto per la valutazione..."
-      : "Finalizzazione...";
+    : "Finalizzazione...";
 
   return (
     <div className={cn(
@@ -340,7 +335,6 @@ const STEP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   BarChart3,
   Compass,
   PenTool,
-  GitCompare,
   CheckCircle2,
 };
 

@@ -235,9 +235,23 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
              {/* Sticky Speaker Metadata Bar */}
              <div className="bg-card z-10 px-6 py-4 flex items-center gap-4 border-b border-border/40 shrink-0 shadow-sm">
                  <div className="flex items-center gap-4 min-w-0 flex-1">
-                    <div 
+                    {citation.photo ? (
+                        <img
+                            src={citation.photo}
+                            alt={`${citation.deputy_first_name} ${citation.deputy_last_name}`}
+                            className="h-12 w-12 shrink-0 rounded-full object-cover shadow-sm border border-border"
+                            style={{ borderColor: `${groupColor}30` }}
+                            onError={(e) => {
+                                const target = e.currentTarget;
+                                target.style.display = "none";
+                                const next = target.nextElementSibling as HTMLElement | null;
+                                if (next) next.style.display = "flex";
+                            }}
+                        />
+                    ) : null}
+                    <div
                         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-background shadow-sm border border-border text-lg font-bold text-muted-foreground/80"
-                        style={{ color: groupColor, borderColor: `${groupColor}30`, backgroundColor: `${groupColor}05` }}
+                        style={{ color: groupColor, borderColor: `${groupColor}30`, backgroundColor: `${groupColor}05`, display: citation.photo ? "none" : "flex" }}
                     >
                         {citation.deputy_first_name?.[0]}{citation.deputy_last_name?.[0]}
                     </div>
