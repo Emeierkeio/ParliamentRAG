@@ -57,6 +57,17 @@ export default function ValutazionePage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [surveyModalOpen, setSurveyModalOpen] = useState(false);
+  const [evaluatorId, setEvaluatorId] = useState<string | undefined>(undefined);
+
+  // Read ?evaluator= from URL and auto-open the modal
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const evaluator = params.get("evaluator");
+    if (evaluator) {
+      setEvaluatorId(evaluator);
+      setSurveyModalOpen(true);
+    }
+  }, []);
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -194,6 +205,7 @@ export default function ValutazionePage() {
           setSurveyModalOpen(false);
           loadData();
         }}
+        evaluatorId={evaluatorId}
       />
     </div>
   );

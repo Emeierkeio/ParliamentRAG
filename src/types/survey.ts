@@ -74,6 +74,7 @@ export interface SurveyResponse {
   // Metadata
   evaluator_role?: string;
   evaluation_context?: string;
+  evaluator_id?: string;
 }
 
 export interface SurveyResponseCreate {
@@ -104,6 +105,7 @@ export interface SurveyResponseCreate {
 
   evaluator_role?: string;
   evaluation_context?: string;
+  evaluator_id?: string;
 
   // For evaluation_set A/B flow: frontend-generated assignment stored on ChatHistory
   ab_assignment?: Record<string, string>; // e.g. { A: "system", B: "baseline" }
@@ -145,6 +147,7 @@ export interface SimpleRatingResponse {
   balance_perception: number;
   balance_fairness: number;
   feedback?: string;
+  evaluator_id?: string;
 }
 
 export interface SimpleRatingCreate {
@@ -154,6 +157,7 @@ export interface SimpleRatingCreate {
   balance_perception: number;
   balance_fairness: number;
   feedback?: string;
+  evaluator_id?: string;
 }
 
 export const SIMPLE_DIMENSIONS = [
