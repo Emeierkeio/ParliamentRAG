@@ -68,14 +68,14 @@ FORMATO:
 - Usa SEMPRE il nome completo del partito (es. "Fratelli d'Italia", "Movimento 5 Stelle", "Partito Democratico"), MAI abbreviazioni
 
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
-Il marcatore [CIT:...] deve essere preceduto da un bridge verbale:
-✅ **Rossi** afferma che [CIT:...]
-✅ **Rossi** critica la riforma, sottolineando come [CIT:...]
-❌ **Rossi** critica la riforma. [CIT:...] ← SBAGLIATO
+Il marcatore {CIT:N} deve essere preceduto da un bridge verbale:
+✅ **Rossi** afferma che {CIT:3}
+✅ **Rossi** critica la riforma, sottolineando come {CIT:7}
+❌ **Rossi** critica la riforma. {CIT:3} ← SBAGLIATO
 
 REGOLE CITAZIONI:
-⚠️ [CIT:...] sono ID tecnici - copiali ESATTAMENTE carattere per carattere
-⚠️ TUTTE le citazioni nell'input DEVONO apparire nell'output
+⚠️ {CIT:N} sono marcatori numerici - copiali ESATTAMENTE (es. {CIT:1}, {CIT:12})
+⚠️ TUTTI i marcatori {CIT:N} nell'input DEVONO apparire nell'output
 ⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
 
 VARIAZIONE OBBLIGATORIA DEI BRIDGE VERBALI:
@@ -150,6 +150,45 @@ REGOLE GENERALI:
 
         return "\n".join(parts) + "\n"
 
+    def _strip_citations(
+        self, sections: List[Dict[str, Any]]
+    ) -> tuple[List[Dict[str, Any]], Dict[str, str]]:
+        """
+        Replace [CIT:long_id] with short numeric {CIT:N} placeholders before LLM call.
+
+        Long IDs like [CIT:leg19_sed569_tit00070.sub00010.int00040_chunk_2] are error-prone
+        for the LLM to copy verbatim. Short numeric placeholders drastically reduce corruption.
+
+        Returns:
+            (stripped_sections, mapping) where mapping is {"1": "leg19_...", "2": ...}
+        """
+        counter = 1
+        mapping: Dict[str, str] = {}
+        stripped = []
+        for section in sections:
+            content = section.get("content", "")
+
+            def replace_cit(m: re.Match) -> str:
+                nonlocal counter
+                cit_id = m.group(1)
+                key = str(counter)
+                mapping[key] = cit_id
+                counter += 1
+                return f"{{CIT:{key}}}"
+
+            new_content = re.sub(r'\[CIT:([^\]]+)\]', replace_cit, content)
+            stripped.append({**section, "content": new_content})
+        return stripped, mapping
+
+    def _restore_citations(self, text: str, mapping: Dict[str, str]) -> str:
+        """Restore short {CIT:N} placeholders back to original [CIT:long_id] format."""
+        def restore(m: re.Match) -> str:
+            key = m.group(1)
+            original_id = mapping.get(key)
+            return f"[CIT:{original_id}]" if original_id else m.group(0)
+
+        return re.sub(r'\{CIT:(\d+)\}', restore, text)
+
     def integrate(
         self,
         query: str,
@@ -167,8 +206,12 @@ REGOLE GENERALI:
         Returns:
             Dictionary with integrated text and metadata
         """
-        # Build sections text
-        sections_text = self._build_sections_text(sections)
+        # Strip long citation IDs to short numeric placeholders before sending to LLM.
+        # This prevents the LLM from corrupting complex IDs during narrative rewriting.
+        stripped_sections, citation_mapping = self._strip_citations(sections)
+
+        # Build sections text using stripped content
+        sections_text = self._build_sections_text(stripped_sections)
         stats_text = self._format_statistics(topic_statistics)
 
         user_prompt = f"""Domanda: {query}
@@ -180,7 +223,7 @@ Sezioni:
 Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento specifico e citano le STATISTICHE fornite sopra) + sezioni per coalizione.
 
 ⚠️ CRITICO:
-1. Copia ESATTAMENTE ogni [CIT:...] carattere per carattere - NON modificare gli ID!
+1. Copia ESATTAMENTE ogni {{CIT:N}} carattere per carattere - NON modificare i numeri!
 2. Ogni citazione DEVE avere un bridge ("afferma che", "sostiene che") O due punti (:) prima della citazione
 3. Preserva **grassetto** e «virgolette»
 """
@@ -192,11 +235,14 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
                     {"role": "system", "content": self.SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.2,
-                max_tokens=2500  # Reduced for concise output
+                temperature=0.0,
+                max_tokens=3500
             )
 
             integrated_text = response.choices[0].message.content
+
+            # Restore original long citation IDs from numeric placeholders
+            integrated_text = self._restore_citations(integrated_text, citation_mapping)
 
             # Collect all citations from sections
             all_citations = []
@@ -393,6 +439,9 @@ Sezioni originali con citazioni:
 
         if missing:
             logger.warning(f"Integrator corrupted {len(missing)} citations: {list(missing)}")
+            for cit_id in missing:
+                sentence = citation_sentences.get(cit_id, "").replace("\n", " ")
+                logger.debug(f"  [CORRUPT] [{cit_id}] context: {sentence[:200]!r}")
 
             # Retry with stricter prompt
             retried = True

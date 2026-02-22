@@ -123,7 +123,15 @@ class DenseChannel:
                 span_end = row.get("span_end", 0)
 
                 if text and span_start is not None and span_end is not None and span_start < span_end:
-                    quote_text = compute_quote_text(text, span_start, span_end)
+                    try:
+                        quote_text = compute_quote_text(text, span_start, span_end)
+                    except ValueError:
+                        logger.warning(
+                            f"Invalid span for chunk {row.get('chunk_id')}: "
+                            f"start={span_start}, end={span_end}, text_len={len(text)}. "
+                            f"Using chunk_text fallback."
+                        )
+                        quote_text = row.get("chunk_text", "") or text
                 else:
                     # Fallback to chunk_text if offsets unavailable or invalid
                     quote_text = row.get("chunk_text", "") or text

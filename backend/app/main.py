@@ -26,53 +26,95 @@ from .config import MAINTENANCE_MODE, get_config, get_settings
 
 def setup_logging():
     """
-    Configure logging to both console and file.
+    Configure logging to console and two rotating log files:
 
-    Log files are saved to backend/logs/ with timestamp-based names.
-    Each execution creates a new log file.
+    - logs/app_TIMESTAMP.log   : INFO+  — log operativo pulito, niente rumore da librerie
+    - logs/debug_TIMESTAMP.log : DEBUG+ — traccia completa per investigazione
+
+    Librerie rumorose (httpx, urllib3, ecc.) vengono silenziati a WARNING
+    in modo che non inquinino né il terminale né i file.
+
+    Moduli sotto investigazione attiva vengono portati a DEBUG esplicitamente
+    così i loro log di dettaglio finiscono nel debug file.
     """
-    # Create logs directory
     log_dir = Path(__file__).parent.parent / "logs"
     log_dir.mkdir(exist_ok=True)
 
-    # Create timestamp-based log filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = log_dir / f"rag_api_{timestamp}.log"
+    app_log_file   = log_dir / f"app_{timestamp}.log"
+    debug_log_file = log_dir / f"debug_{timestamp}.log"
 
-    # Log format
-    log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    formatter = logging.Formatter(log_format)
+    # Formato: livello giustificato a 8 char per allineamento visivo
+    fmt = "%(asctime)s [%(levelname)-8s] %(name)s - %(message)s"
+    formatter = logging.Formatter(fmt, datefmt="%Y-%m-%d %H:%M:%S,%f"[:-3])
 
-    # Root logger
+    # Il root logger deve stare a DEBUG: i singoli handler/logger filtrano il resto
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.DEBUG)
 
-    # Console handler
+    # --- Console: INFO+ (visibile durante lo sviluppo) ---
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
 
-    # File handler (with rotation: max 10MB, keep 5 backups)
-    file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=10 * 1024 * 1024,  # 10 MB
-        backupCount=5,
-        encoding="utf-8"
+    # --- app log: INFO+, 20 MB rotating, 10 backup ---
+    app_handler = RotatingFileHandler(
+        app_log_file,
+        maxBytes=20 * 1024 * 1024,
+        backupCount=10,
+        encoding="utf-8",
     )
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
+    app_handler.setLevel(logging.INFO)
+    app_handler.setFormatter(formatter)
 
-    # Add handlers
+    # --- debug log: DEBUG+, 50 MB rotating, 5 backup ---
+    debug_handler = RotatingFileHandler(
+        debug_log_file,
+        maxBytes=50 * 1024 * 1024,
+        backupCount=5,
+        encoding="utf-8",
+    )
+    debug_handler.setLevel(logging.DEBUG)
+    debug_handler.setFormatter(formatter)
+
     root_logger.addHandler(console_handler)
-    root_logger.addHandler(file_handler)
+    root_logger.addHandler(app_handler)
+    root_logger.addHandler(debug_handler)
 
-    return log_file
+    # ------------------------------------------------------------------
+    # Silenzia librerie di terze parti rumorose (a livello di logger,
+    # quindi il filtro vale per tutti gli handler in modo uniforme)
+    # ------------------------------------------------------------------
+    _NOISY_LIBS = (
+        "httpx",
+        "httpcore",
+        "urllib3",
+        "openai",
+        "neo4j.notifications",
+    )
+    for lib in _NOISY_LIBS:
+        logging.getLogger(lib).setLevel(logging.WARNING)
+
+    # ------------------------------------------------------------------
+    # Moduli sotto investigazione attiva → DEBUG esplicito
+    # I loro log di dettaglio finiscono nel debug file senza spam nel
+    # log operativo (che resta a INFO)
+    # ------------------------------------------------------------------
+    _DEBUG_MODULES = (
+        "app.services.generation.integrator",       # corrupt citations context
+        "app.services.generation.coherence_validator",  # embedding scores raw
+    )
+    for mod in _DEBUG_MODULES:
+        logging.getLogger(mod).setLevel(logging.DEBUG)
+
+    return app_log_file, debug_log_file
 
 
-# Setup logging and get log file path
-log_file_path = setup_logging()
+# Setup logging
+_app_log, _debug_log = setup_logging()
 logger = logging.getLogger(__name__)
-logger.info(f"[STARTUP] Logging to file: {log_file_path}")
+logger.info(f"[STARTUP] App log  : {_app_log}")
+logger.info(f"[STARTUP] Debug log: {_debug_log}")
 
 
 @asynccontextmanager

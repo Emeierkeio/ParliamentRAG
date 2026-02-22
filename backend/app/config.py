@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # ─── Maintenance mode ─────────────────────────────────────────────────────────
 # Change to True to block ALL API requests with 503.
 # Restart the backend after changing this value. MANUTENZIONE SETTA QUI!
-MAINTENANCE_MODE: bool = True
+MAINTENANCE_MODE: bool = False
 
 # Project root directory
 # config.py is at: backend/app/config.py

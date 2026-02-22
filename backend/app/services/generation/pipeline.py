@@ -215,11 +215,22 @@ class GenerationPipeline:
             "average_score": coherence_report["average_score"],
         }
 
+        integrated_text = integrated.get("text", "")
+
         if not coherence_report["all_coherent"]:
             incoherent = self.coherence_validator.get_incoherent_citations(coherence_report)
             logger.warning(f"Coherence issues: {len(incoherent)} incoherent citations")
             for ic in incoherent[:3]:  # Log first 3
                 logger.warning(f"  - {ic.get('evidence_id')}: {ic.get('warning')}")
+
+            # Hard-remove citations with extreme mismatch (likely wrong source cited)
+            HARD_REMOVE_THRESHOLD = 0.25
+            hard_mismatches = [ic for ic in incoherent if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD]
+            if hard_mismatches:
+                logger.warning(f"Hard-removing {len(hard_mismatches)} citations with score < {HARD_REMOVE_THRESHOLD}")
+                for ic in hard_mismatches:
+                    eid = ic.get("evidence_id", "")
+                    integrated_text = re.sub(rf'\[CIT:{re.escape(eid)}\]', '', integrated_text)
 
         # Update registry with coherence scores
         for detail in coherence_report.get("details", []):
@@ -236,7 +247,7 @@ class GenerationPipeline:
             })
 
         final_result = self.surgeon.insert_citations(
-            text=integrated.get("text", ""),
+            text=integrated_text,
             evidence_map=evidence_map,
             query=query
         )

@@ -17,6 +17,7 @@ from ...key_pool import make_client
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
+from .query_rewriter import QueryRewriter
 from ...models.evidence import UnifiedEvidence
 from ...config import get_config, get_settings
 from ..citation.sentence_extractor import compute_chunk_salience
@@ -47,6 +48,7 @@ class RetrievalEngine:
         self.dense_channel = DenseChannel(neo4j_client)
         self.graph_channel = GraphChannel(neo4j_client)
         self.merger = ChannelMerger()
+        self.query_rewriter = QueryRewriter()
         self.config = get_config()
         self.settings = get_settings()
 
@@ -100,9 +102,14 @@ class RetrievalEngine:
 
         start_time = time.time()
 
+        # Rewrite short/ambiguous queries before retrieval.
+        # The rewritten query is used for embedding + graph keyword search;
+        # the original query is kept for logging and UI display.
+        retrieval_query = self.query_rewriter.rewrite(query)
+
         # Generate query embedding
         logger.info(f"Generating embedding for query: {query[:50]}...")
-        query_embedding = self.embed_query(query)
+        query_embedding = self.embed_query(retrieval_query)
 
         # Run both channels IN PARALLEL
         logger.info("Running dense and graph channels in parallel...")
@@ -115,7 +122,7 @@ class RetrievalEngine:
 
         def run_graph():
             return self.graph_channel.retrieve(
-                query=query,
+                query=retrieval_query,
                 query_embedding=query_embedding,
                 date_start=date_start,
                 date_end=date_end
@@ -255,7 +262,7 @@ class RetrievalEngine:
         """Expand to neighboring chunks when they have higher political salience.
 
         For each retrieved chunk with low salience, checks the previous and
-        next chunks via the SUCCESSIVO relationship. If a neighbor has higher
+        next chunks via the NEXT relationship. If a neighbor has higher
         political salience, it replaces the original chunk.
         """
         if not results:
@@ -283,8 +290,8 @@ class RetrievalEngine:
             cypher = """
             UNWIND $chunk_ids AS cid
             MATCH (c:Chunk {id: cid})
-            OPTIONAL MATCH (prev:Chunk)-[:SUCCESSIVO]->(c)
-            OPTIONAL MATCH (c)-[:SUCCESSIVO]->(next:Chunk)
+            OPTIONAL MATCH (prev:Chunk)-[:NEXT]->(c)
+            OPTIONAL MATCH (c)-[:NEXT]->(next:Chunk)
             MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
             RETURN cid,
                    prev.id AS prev_id, prev.text AS prev_text,
@@ -379,6 +386,11 @@ class RetrievalEngine:
 
         for party in missing_parties:
             try:
+                # Normalize party name to match DB storage format:
+                # DB stores uppercase with no spaces around hyphens (e.g. "ITALIA VIVA-IL CENTRO-RENEW EUROPE")
+                # Config uses display names with spaces (e.g. "Italia Viva - Il Centro - Renew Europe")
+                normalized_party = party.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-")
+
                 cypher = """
                 CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
                 YIELD node AS c, score
@@ -415,7 +427,7 @@ class RetrievalEngine:
                     "index_name": index_name,
                     "top_k": 500,  # Search wider to find this party's chunks
                     "query_embedding": query_embedding,
-                    "party_name": party,
+                    "party_name": normalized_party,
                     "limit": chunks_per_party
                 })
 

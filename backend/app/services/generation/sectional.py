@@ -419,8 +419,8 @@ FORMATO OUTPUT:
                     {"role": "system", "content": self.SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.3,
-                max_tokens=500  # Reduced for concise output
+                temperature=0.1,
+                max_tokens=500
             )
 
             content = response.choices[0].message.content
@@ -489,7 +489,7 @@ FORMATO OUTPUT:
         self,
         evidence: List[Dict[str, Any]],
         query: str,
-        max_evidence: int = 10
+        max_evidence: int = 5
     ) -> str:
         """
         Build evidence context with PRE-EXTRACTED citations.

@@ -128,10 +128,11 @@ class GraphChannel:
         # Step 2: Semantic rerank using embeddings
         reranked_acts = self._semantic_rerank(relevant_acts, query_embedding)
 
-        # Step 3: Get chunks from signatories
+        # Step 3: Get chunks from signatories, filtered by chunk-level similarity
         act_uris = [act["uri"] for act in reranked_acts[:50]]  # Limit
         chunks = self._get_chunks_from_signatories(
             act_uris,
+            query_embedding=query_embedding,
             date_start=date_start,
             date_end=date_end
         )
@@ -149,16 +150,20 @@ class GraphChannel:
 
         Matches against eurovoc, title, and description fields.
         """
-        # Build OR conditions for keywords
+        # Build OR conditions for keywords using word-boundary regex.
+        # Using =~ instead of CONTAINS prevents false positives where the keyword
+        # appears as a substring of a larger token (e.g. "SSN" inside a word
+        # containing "ssn", or "ssn" matching acts that only mention "ASN").
+        # (?i) makes the match case-insensitive; \b marks word boundaries.
         conditions = []
         params = {}
         for i, kw in enumerate(keywords):
             param_name = f"kw{i}"
-            params[param_name] = kw.lower()
+            params[param_name] = f"(?i).*\\b{re.escape(kw.lower())}\\b.*"
             conditions.append(f"""
-                toLower(a.eurovoc) CONTAINS ${param_name} OR
-                toLower(a.title) CONTAINS ${param_name} OR
-                toLower(a.description) CONTAINS ${param_name}
+                a.eurovoc =~ ${param_name} OR
+                a.title =~ ${param_name} OR
+                a.description =~ ${param_name}
             """)
 
         where_clause = " OR ".join(conditions)
@@ -222,11 +227,13 @@ class GraphChannel:
     def _get_chunks_from_signatories(
         self,
         act_uris: List[str],
+        query_embedding: List[float],
         date_start: Optional[str] = None,
         date_end: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
-        Get chunks from speeches by act signatories.
+        Get chunks from speeches by act signatories, filtered by chunk-level
+        semantic similarity to the query.
 
         Traverses: Act <- SIGNATORY - Deputy -> SPOKEN_BY <- Speech -> Chunk
         """
@@ -277,7 +284,32 @@ class GraphChannel:
         """
 
         results = self.client.query(cypher, params)
-        return self._process_results(results)
+        processed = self._process_results(results)
+
+        # Filter chunks by semantic similarity to the query.
+        # Signatories may speak on many unrelated topics; this step removes
+        # chunks that are topically irrelevant to the current query.
+        threshold = self.config.retrieval.get("graph_channel", {}).get(
+            "chunk_similarity_threshold", 0.3
+        )
+        filtered = []
+        for chunk in processed:
+            emb = chunk.get("embedding")
+            if emb and len(emb) == len(query_embedding):
+                sim = cosine_similarity(query_embedding, emb)
+                chunk["similarity"] = sim
+                if sim >= threshold:
+                    filtered.append(chunk)
+            else:
+                filtered.append(chunk)  # Keep chunks with missing embeddings
+
+        n_dropped = len(processed) - len(filtered)
+        if n_dropped:
+            logger.debug(
+                f"Graph channel: dropped {n_dropped}/{len(processed)} chunks "
+                f"below chunk_similarity_threshold={threshold}"
+            )
+        return filtered
 
     def _process_results(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Process raw results into evidence format."""
@@ -291,7 +323,15 @@ class GraphChannel:
                 span_end = row.get("span_end", 0)
 
                 if text and span_start is not None and span_end is not None and span_start < span_end:
-                    quote_text = compute_quote_text(text, span_start, span_end)
+                    try:
+                        quote_text = compute_quote_text(text, span_start, span_end)
+                    except ValueError:
+                        logger.warning(
+                            f"Invalid span for chunk {row.get('chunk_id')}: "
+                            f"start={span_start}, end={span_end}, text_len={len(text)}. "
+                            f"Using chunk_text fallback."
+                        )
+                        quote_text = row.get("chunk_text", "") or text
                 else:
                     quote_text = row.get("chunk_text", "") or text
 

@@ -15,6 +15,11 @@ retrieval:
     lexical_keywords_min_match: 1
     semantic_similarity_threshold: 0.4
     max_acts_per_query: 100
+    # Post-traversal chunk-level filter: discard chunks whose embedding
+    # similarity to the query is below this threshold. Prevents off-topic
+    # chunks from being included just because their speaker co-signed a
+    # relevant parliamentary act.
+    chunk_similarity_threshold: 0.3
 
   merger:
     diversity_weight: 0.2      # Penalize same-speaker dominance
@@ -148,11 +153,19 @@ citation:
   # Citation integrity system settings
   integrity:
     # Minimum semantic coherence score (0.0-1.0)
-    # For embedding method: 0.6 recommended (cosine similarity)
+    # For embedding method: 0.35 calibrated for intro_text vs verbatim parliamentary quote pairs
     # For jaccard method: 0.2 recommended (keyword overlap)
-    min_coherence_score: 0.6
+    min_coherence_score: 0.35
     # Coherence validation method: "embedding" (primary) or "jaccard" (fallback)
     coherence_method: "embedding"
+
+# Query rewriting: expand short/ambiguous queries before retrieval
+query_rewriting:
+  enabled: true
+  model: "gpt-4o-mini"
+  # Only rewrite queries with at most this many words.
+  # Longer queries are already descriptive enough.
+  max_query_words: 5
 
 # LLM provider configuration
 llm:

@@ -107,12 +107,7 @@ async def get_history() -> HistoryListResponse:
 async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
     """Save a chat session to history."""
     try:
-        logger.info(f"[HISTORY-SAVE] === Saving chat to history ===")
-        logger.info(f"[HISTORY-SAVE] chat.id={chat.id}")
-        logger.info(f"[HISTORY-SAVE] chat.query='{chat.query[:80]}...'")
-        logger.info(f"[HISTORY-SAVE] chat.answer length={len(chat.answer)}")
-        logger.info(f"[HISTORY-SAVE] chat.baseline_answer: type={type(chat.baseline_answer).__name__}, value={repr(chat.baseline_answer[:200]) if chat.baseline_answer else repr(chat.baseline_answer)}")
-        logger.info(f"[HISTORY-SAVE] chat.ab_assignment: type={type(chat.ab_assignment).__name__}, value={chat.ab_assignment}")
+        logger.debug(f"[HISTORY-SAVE] id={chat.id} query='{chat.query[:80]}...' answer_len={len(chat.answer)} has_ab={chat.ab_assignment is not None}")
 
         clean_text = _strip_markdown(chat.answer)
         chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
@@ -129,7 +124,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         ab_assignment_json = json.dumps(chat.ab_assignment, ensure_ascii=False) if chat.ab_assignment else ""
 
         baseline_value = (chat.baseline_answer or "")[:50000]
-        logger.info(f"[HISTORY-SAVE] Neo4j params: baseline_answer='{baseline_value[:100]}...' (len={len(baseline_value)}), ab_assignment='{ab_assignment_json}'")
+        logger.debug(f"[HISTORY-SAVE] Neo4j params: baseline_len={len(baseline_value)}, ab_assignment='{ab_assignment_json}'")
 
         client.query("""
             CREATE (c:ChatHistory {
@@ -168,10 +163,10 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
             MATCH (c:ChatHistory {id: $id})
             RETURN c.baseline_answer AS baseline_answer, c.ab_assignment AS ab_assignment
         """, {"id": chat.id})
-        if verify:
-            logger.info(f"[HISTORY-SAVE] VERIFICATION: Neo4j baseline_answer='{str(verify[0].get('baseline_answer', ''))[:100]}...', ab_assignment='{verify[0].get('ab_assignment', '')}'")
-        else:
+        if not verify:
             logger.warning(f"[HISTORY-SAVE] VERIFICATION FAILED: Could not find chat {chat.id} after save!")
+        else:
+            logger.debug(f"[HISTORY-SAVE] Verified in Neo4j: ab_assignment='{verify[0].get('ab_assignment', '')}'")
 
         # Keep only last 50 chats
         client.query("""

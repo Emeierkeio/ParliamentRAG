@@ -266,7 +266,7 @@ async def process_query_streaming(
         citations_data = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
         )
-        logger.info(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
+        logger.debug(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
         yield f"data: {json.dumps({'type': 'citations', 'data': citations_data}, default=str)}\n\n"
 
         # === Resolve extra citation IDs via DB lookup ===
@@ -381,19 +381,16 @@ async def process_query_streaming(
                     final_text
                 )
         else:
-            logger.info("[QUERY:CITATIONS] No extra citation IDs to resolve")
+            logger.debug("[QUERY:CITATIONS] No extra citation IDs to resolve")
 
         # === Build complete citation_details ===
         text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
         evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
         evidence_map_for_cit.update(extra_evidence_map)
-        logger.info(f"[QUERY:CITATIONS] Text has {len(text_evidence_ids)} citation links, "
-                     f"evidence_map has {len(evidence_map_for_cit)} entries "
-                     f"(original={len(evidence_dicts)}, extra={len(extra_evidence_map)})")
+        logger.debug(f"[QUERY:CITATIONS] text_links={len(text_evidence_ids)}, evidence_map={len(evidence_map_for_cit)} (original={len(evidence_dicts)}, extra={len(extra_evidence_map)})")
 
         gen_citations = generation_result.get("citations", [])
         tracked_ids = {c.get("evidence_id") for c in gen_citations}
-        logger.info(f"[QUERY:CITATIONS] Pipeline returned {len(gen_citations)} tracked citations")
 
         for eid in text_evidence_ids:
             if eid not in tracked_ids and eid in evidence_map_for_cit:
@@ -412,14 +409,12 @@ async def process_query_streaming(
             elif eid not in tracked_ids:
                 logger.warning(f"[QUERY:CITATIONS] ID in text but NOT in any map: {eid}")
 
-        logger.info(f"[QUERY:CITATIONS] Final: {len(gen_citations)} total citations to send as citation_details")
-
         # Send citation_details to update the sidebar with ALL cited chunks
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
         verified_citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
-        logger.info(f"[QUERY:CITATIONS] Verified: {len(verified_citations)} citations built")
+        logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
         # Step 7: Stream text chunks
