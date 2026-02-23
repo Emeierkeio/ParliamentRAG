@@ -747,10 +747,37 @@ class GenerationPipeline:
 
     def _get_government_evidence(
         self,
-        evidence_list: List[Dict[str, Any]]
+        evidence_list: List[Dict[str, Any]],
+        min_similarity: float = 0.35,
+        max_per_speaker: int = 3,
     ) -> List[Dict[str, Any]]:
-        """Get evidence from government members."""
-        return [
+        """Get evidence from government members, sorted by relevance.
+
+        Applies a minimum similarity threshold to exclude government members
+        whose retrieved chunks are not topically relevant to the query.
+        Graph-channel evidence defaults to 0.5, so only clearly irrelevant
+        dense-channel chunks are filtered out.
+
+        Additionally limits to max_per_speaker chunks per minister so that
+        a single minister cannot dominate the government section.
+        """
+        gov = [
             e for e in evidence_list
             if e.get("speaker_role") == "GovernmentMember"
+            and e.get("similarity", 0.5) >= min_similarity
         ]
+
+        # Surface most relevant chunks first
+        gov.sort(key=lambda e: e.get("similarity", 0.0), reverse=True)
+
+        # Limit per speaker while preserving relevance order
+        speaker_counts: dict = {}
+        filtered = []
+        for e in gov:
+            sid = e.get("speaker_id", "")
+            count = speaker_counts.get(sid, 0)
+            if count < max_per_speaker:
+                filtered.append(e)
+                speaker_counts[sid] = count + 1
+
+        return filtered

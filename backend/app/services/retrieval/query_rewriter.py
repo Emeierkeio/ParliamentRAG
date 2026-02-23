@@ -28,7 +28,6 @@ sistema sanitario riforma sanitaria LEA")
 - Espandi nomi propri di direttive o leggi (es. "Bolkestein" → \
 "direttiva Bolkestein concessioni balneari stabilimenti balneari \
 liberalizzazione servizi")
-- Mantieni la query originale come parte della risposta
 - Massimo 15 parole totali
 - Solo italiano, nessuna spiegazione, solo la query espansa\
 """

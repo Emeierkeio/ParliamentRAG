@@ -44,7 +44,6 @@ ALL_PARTIES = [
     "Misto",
 ]
 
-
 class SectionalWriter:
     """
     Stage 2 of the generation pipeline.
@@ -54,76 +53,102 @@ class SectionalWriter:
     """
 
     SYSTEM_PROMPT = """Sei un redattore parlamentare italiano esperto.
-Scrivi sezioni BREVI e INCISIVE (max 3-4 frasi per sezione).
+Scrivi sezioni ANALITICHE (max 4-5 frasi per sezione).
 
-⚠️ APPROCCIO CITATION-FIRST:
-Ogni evidenza contiene una ★ CITAZIONE DA USARE già selezionata.
-DEVI costruire il testo introduttivo che PREPARI quella citazione.
+⚠️ APPROCCIO CITATION-INTEGRATED:
+Per ogni evidenza trovi un TESTO DISPONIBILE. Leggilo, scegli la parte più
+incisiva e scrivila VERBATIM tra «». Metti [CIT:id] subito dopo la «» di chiusura.
 
-⚠️⚠️ REGOLA CRITICA - NON COPIARE LA CITAZIONE:
-Tu scrivi SOLO il testo introduttivo. Il sistema inserirà automaticamente la citazione.
-NON scrivere MAI il contenuto della citazione tra virgolette «».
-Scrivi SOLO fino a [CIT:id] e BASTA.
+REGOLE FONDAMENTALI — SOLO TESTO VERBATIM:
+La frase tra «» DEVE apparire esattamente nel TESTO DISPONIBILE, parola per parola.
+NON parafrasare. NON modificare nemmeno una parola.
 
-REGOLE FONDAMENTALI:
-1. LEGGI la ★ CITAZIONE per capire il TEMA, ma NON copiarla
-2. Scrivi un'intro che PREPARI quel contenuto, poi metti [CIT:id]
-3. I nomi degli oratori in GRASSETTO: **Nome Cognome**
-4. MASSIMO 1-2 citazioni per sezione
+REGOLA ANTI-DUPLICATI:
+Ogni [CIT:id] deve comparire UNA SOLA VOLTA nel testo. Non riusare lo stesso ID.
 
-PROCESSO DI SCRITTURA:
-1. Leggi la ★ CITAZIONE (es: «il conflitto in Ucraina ci riguarda tutti»)
-2. Capisci il TEMA: parla di Ucraina e responsabilità collettiva
-3. Scrivi intro che prepari quel tema: "ha sottolineato la rilevanza del conflitto per la comunità internazionale, affermando che [CIT:id]."
-4. STOP - non aggiungere altro dopo [CIT:id]
+REGOLA ANTI-ACCUMULAZIONE:
+Mai due citazioni «» consecutive senza testo in mezzo.
+Tra due citazioni ci deve essere ALMENO una frase di analisi.
+SBAGLIATO: «prima citazione» [CIT:a]. «seconda citazione» [CIT:b].
+GIUSTO:    «prima citazione» [CIT:a]. Aggiunge inoltre che «seconda» [CIT:b].
 
-ESEMPIO CORRETTO ✓:
-★ CITAZIONE: «il sistema sanitario è in crisi per mancanza di fondi»
-→ **Mario Rossi** denuncia le difficoltà del sistema sanitario, affermando che [CIT:id].
+REGOLA DI COMPLETEZZA SINTATTICA:
+La citazione tra «» deve essere una frase sintatticamente completa.
+DEVE iniziare con: soggetto esplicito ("il Governo", "l'Italia", nome proprio)
+                   OPPURE verbo principale ("non possiamo", "riteniamo", "serve").
+NON iniziare con: connettori ("quindi", "però", "perché", "che", "e", "ma", "infatti")
+                  preposizioni + dimostrativi ("a questa", "per queste", "per questo")
+                  complementi orfani (parole che completano una frase precedente).
+NON terminare in sospeso senza verbo principale o senza oggetto.
 
-ESEMPIO SBAGLIATO ✗:
-→ **Mario Rossi** denuncia che «il sistema è in crisi» [CIT:id]. ← HAI COPIATO LA CITAZIONE!
+STRUTTURA SEZIONE (3-5 frasi):
+1. TESTO INTRODUTTIVO (1-2 frasi): contestualizza il tema per questo gruppo e anticipa
+   il contenuto della citazione che seguirà. Deve PREPARARE il terreno per la citazione.
+2. CITAZIONE VERBATIM: «frase esatta dal testo» [CIT:id] — deve essere il passaggio più
+   incisivo che DIMOSTRA e RAFFORZA quanto detto nell'introduzione.
+   Formato obbligatorio: **Nome Cognome** [verbo] «citazione» [CIT:id].
+3. POSIZIONAMENTO GENERALE (1-2 frasi): spiega la posizione complessiva del gruppo
+   sul tema della domanda — strategia politica, visione d'insieme, implicazioni.
+   La citazione del punto 2 deve essere coerente con e funzionale a questo posizionamento.
 
-COSTRUZIONI CORRETTE (bridge verbale + soggetto) - VARIA il verbo in base al TONO:
-- Propositivo: "...proponendo che [CIT:id]", "...auspicando che [CIT:id]"
-- Critico: "...denunciando che [CIT:id]", "...contestando il fatto che [CIT:id]"
-- Neutro: "...rilevando come [CIT:id]", "...osservando che [CIT:id]"
-- Affermativo: "...affermando che [CIT:id]", "...dichiarando che [CIT:id]"
+NON passare a un secondo deputato. La citazione riguarda UN SOLO deputato.
+
+REGOLA NOMI:
+Usa il nome di un deputato SOLO nella frase che contiene la sua citazione verbatim «».
+Fuori da quella frase usa "il gruppo", "il partito", "la coalizione", mai un nome proprio.
+SBAGLIATO: **Perego** evidenzia la complessità geopolitica. ← nessuna «» → NON mettere il nome!
+GIUSTO: Il gruppo evidenzia la complessità geopolitica, citando le tensioni nel Mar Rosso.
+
+ESEMPIO:
+TESTO (Rossi): "la flat tax non riduce le tasse ai lavoratori dipendenti già soggetti ad aliquote proporzionali"
+→ [INTRO] La discussione sulla riforma fiscale vede il partito schierarsi contro la flat tax, ritenuta iniqua per i redditi da lavoro dipendente.
+  [CITAZIONE] **Rossi** chiarisce: «la flat tax non riduce le tasse ai lavoratori dipendenti già soggetti ad aliquote proporzionali» [CIT:abc].
+  [POSIZIONAMENTO] Il gruppo sostiene una riforma fiscale progressiva che tuteli i redditi medio-bassi, in netta opposizione alla proposta governativa.
+
+SBAGLIATO — citazione assente:
+→ **Rossi** si è opposto alla flat tax [CIT:abc]. ← MANCA «»!
+
+SBAGLIATO — citazione scollegata dall'intro:
+→ Il partito discute di economia. **Rossi** dichiara «la flat tax...» [CIT:abc]. Il gruppo è preoccupato per l'ambiente. ← l'intro non prepara la citazione!
+
+REGOLA ANTI-META-CITAZIONE:
+Il TESTO DISPONIBILE può contenere citazioni di TERZI riportate dal deputato
+(dichiarazioni di ministri stranieri, portavoce, avversari, media, ecc.).
+Queste appaiono spesso tra «» o " " seguite da "ha dichiarato X", "secondo X", "ha detto X".
+NON citare queste frasi: sono parole di ALTRI, non del deputato.
+Scegli SOLO frasi dette direttamente dal deputato — quelle FUORI dalle virgolette nel testo.
+SBAGLIATO: TESTO contiene «ha dichiarato Peskov: «l'espansione è necessaria»»
+→ NON usare «l'espansione è necessaria» — è la voce del Cremlino, non del deputato!
+
+REGOLA DI PERTINENZA:
+La citazione DEVE rispondere DIRETTAMENTE alla Domanda fornita.
+Se il TESTO DISPONIBILE è un intervento lungo che tocca più argomenti, scegli
+SOLO frasi che parlano dell'argomento specifico della Domanda. Ignora le frasi
+su temi diversi, anche se retoricamente forti.
+ESEMPIO: Domanda su "aiuti militari all'Ucraina" + testo che parla anche di Gaza/Medio Oriente
+→ ignora le frasi su Gaza — scegli SOLO frasi sull'Ucraina.
 
 PROFONDITÀ MINIMA:
 Ogni sezione deve avere ALMENO 2 frasi di analisi sostantiva.
 Non liquidare nessun partito con una sola frase generica.
-Se hai più evidenze, usa le prime 1-2 per citazioni e aggiungi contesto con le altre.
+Usa 1 sola citazione verbatim per sezione; usa le evidenze restanti per costruire
+analisi e contesto con parole tue.
 
 DIVIETO DI FILLER:
-NON scrivere frasi vuote come "ha espresso la propria posizione" o "è intervenuto sul tema".
-Ogni frase DEVE comunicare una posizione CONCRETA (a favore/contro cosa, quale proposta, quale critica).
-Se l'evidenza non contiene una posizione chiara, riporta il fatto specifico citato dall'oratore.
-
-DIVIETO DI CITAZIONI PROCEDURALI:
-NON usare citazioni che contengono SOLO contenuto procedurale o formulaico, come:
-- "il parere è favorevole/contrario"
-- "annuncio il voto favorevole del gruppo"
-- "dichiaro il voto favorevole/contrario"
-- "l'emendamento è approvato/respinto"
-- "ringrazio il Presidente"
-Se la ★ CITAZIONE è procedurale, IGNORA quell'evidenza e usa le successive.
+NON scrivere "ha espresso la propria posizione" o "è intervenuto sul tema".
+Ogni frase DEVE comunicare una posizione CONCRETA.
 
 POSIZIONE DI GRUPPO:
-Prima delle evidenze troverai una "POSIZIONE COMPLESSIVA DEL GRUPPO" con la sintesi
-degli interventi più autorevoli. Usa questa sintesi per:
-1. CAPIRE la direzione generale del gruppo (favorevole, contrario, critico, propositivo)
-2. SCEGLIERE citazioni che siano COERENTI con la posizione complessiva
-3. Se una citazione, letta da sola, potrebbe sembrare opposta alla posizione
-   del gruppo, NON usarla - usa la citazione successiva
-
-REGOLA ANTI-FRAINTENDIMENTO:
-Prima di usare una ★ CITAZIONE, chiediti: "Letto senza contesto, questo frammento
-esprime la stessa posizione del gruppo?" Se la risposta è no, scegli un'altra evidenza.
+Prima delle evidenze trovi la "POSIZIONE COMPLESSIVA DEL GRUPPO".
+Usala per capire la direzione generale e verificare che la citazione scelta
+sia coerente con essa. Se una citazione, letta isolatamente, trasmette il
+CONTRARIO della posizione del gruppo, scegli un'altra evidenza.
 
 STRUTTURA OUTPUT:
 ### [NOME PARTITO]
-[2-4 frasi, ogni citazione è SOLO [CIT:id] senza virgolette]"""
+[1-2 frasi introduttive che preparano la citazione]
+**Nome** [verbo] «citazione verbatim» [CIT:id].
+[1-2 frasi sul posizionamento generale del gruppo sul tema]"""
 
     def __init__(self):
         self.config = get_config()
@@ -141,6 +166,58 @@ STRUTTURA OUTPUT:
 
         brief_config = gen_config.get("position_brief", {})
         self._context_chars = brief_config.get("context_chars", 500)
+
+    @staticmethod
+    def _anonymize_uncited_speakers(
+        content: str,
+        cited_speaker_names: set,
+        all_speaker_names: list
+    ) -> str:
+        """
+        Replace bold **Nome Cognome** references for non-cited speakers.
+
+        The LLM may mention a secondary evidence speaker in bold format even
+        without a verbatim citation. Since no citation verifies their words,
+        replace the bold name with a generic group reference to avoid
+        false attribution (e.g. "Perego evidenzia..." without any «»).
+
+        Only bold names are targeted (**Name**) — plain text references
+        are left untouched since they are less likely to imply direct quotes.
+        """
+        import re
+        result = content
+        for speaker in all_speaker_names:
+            if not speaker or speaker in cited_speaker_names:
+                continue
+            bold_pattern = re.compile(r'\*\*' + re.escape(speaker) + r'\*\*')
+            if bold_pattern.search(result):
+                result = bold_pattern.sub('**Il gruppo**', result)
+                logger.info(f"Anonymized uncited speaker bold reference: {speaker}")
+        return result
+
+    @staticmethod
+    def _enforce_single_citation(content: str) -> str:
+        """
+        Code-level enforcement: keep only the first inline «...» [CIT:id] citation.
+
+        Strips [CIT:id] markers from all subsequent inline citations while
+        preserving the quoted text between «». This guarantees exactly one
+        verifiable citation per section regardless of LLM behaviour.
+
+        Example:
+            Input:  **Rossi** dice «frase A» [CIT:x]. **Bianchi** aggiunge «frase B» [CIT:y].
+            Output: **Rossi** dice «frase A» [CIT:x]. **Bianchi** aggiunge «frase B».
+        """
+        import re
+        pattern = re.compile(r'«([^»]+)»\s*\[CIT:[^\]]+\]')
+        matches = list(pattern.finditer(content))
+        if len(matches) <= 1:
+            return content
+        # Remove [CIT:id] from all matches after the first (reverse order preserves positions)
+        result = content
+        for match in reversed(matches[1:]):
+            result = result[:match.start()] + f'«{match.group(1)}»' + result[match.end():]
+        return result
 
     @staticmethod
     def _truncate_at_boundary(text: str, max_chars: int) -> str:
@@ -380,8 +457,9 @@ STRUTTURA OUTPUT:
                 "has_evidence": False,
             }
 
-        # Build evidence context with pre-extracted citations
-        evidence_context = self._build_evidence_context(evidence, query)
+        # Build evidence context (full quote_text shown to LLM for inline citation)
+        # max_evidence=2: LLM cites 1 verbatim + uses 1 for analysis without citation
+        evidence_context = self._build_evidence_context(evidence, query, max_evidence=2)
 
         # Build claims relevant to this party
         party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
@@ -391,24 +469,31 @@ STRUTTURA OUTPUT:
 Partito: {party}
 {"(Sezione Governo/Esecutivo)" if is_government else ""}
 
-Evidenze disponibili (ordinate per autorità, usa le PRIME 1-2):
+Evidenze disponibili (ordinate per autorità, usa la PRIMA per la citazione verbatim; le altre per l'analisi):
 {evidence_context}
 
-⚠️ ISTRUZIONI CITATION-FIRST CON CONTESTO DI POSIZIONE:
+⚠️ ISTRUZIONI CITATION-INTEGRATED:
 1. LEGGI la POSIZIONE COMPLESSIVA DEL GRUPPO per capire la direzione generale
-2. LEGGI la ★ CITAZIONE per capire il TEMA
-3. VERIFICA che la citazione sia COERENTE con la posizione complessiva
-4. Se la citazione, letta isolatamente, potrebbe trasmettere il CONTRARIO della
-   posizione del gruppo, SALTA a un'altra evidenza
-5. Scrivi SOLO l'introduzione che prepara quel tema
-6. Metti [CIT:ID_COMPLETO] dove andrà la citazione
-7. ⚠️ NON COPIARE MAI il testo della citazione tra «» - il sistema lo inserirà!
+2. Scegli UNA SOLA evidenza per la citazione verbatim (la più autorevole/incisiva)
+3. Scrivila VERBATIM tra «» seguita immediatamente da [CIT:ID_COMPLETO]
+4. Usa le evidenze restanti SOLO per costruire analisi e contesto — senza «» né [CIT:]
+5. Scegli il verbo introduttivo in base al TONO della citazione scelta
+6. ⚠️ RILEVANZA OBBLIGATORIA: la citazione deve rispondere DIRETTAMENTE a "{query}".
+   Se il testo tocca altri argomenti (es. Gaza, Medio Oriente, altri conflitti), scegli
+   ESCLUSIVAMENTE frasi che parlano di "{query}". Non citare temi diversi.
 
-FORMATO OUTPUT:
-**Nome Cognome** [contesto], affermando che [CIT:id].
+FORMATO OUTPUT (rispetta questo ordine):
+1. [1-2 frasi introduttive — prepara il contesto e anticipa la citazione]
+2. **Nome Cognome** [verbo], «frase verbatim dal testo» [CIT:id].
+3. [1-2 frasi — posizionamento generale del gruppo sul tema della domanda]
 
-⚠️ SBAGLIATO: **Rossi** dice che «testo citazione» [CIT:id]. ← NON FARE QUESTO!
-✓ GIUSTO: **Rossi** interviene sul tema, affermando che [CIT:id].
+✓ GIUSTO:
+Il gruppo sostiene la necessità di una riforma fiscale equa, concentrandosi sull'impatto sui lavoratori dipendenti.
+**Rossi** chiarisce che «la flat tax non riduce le tasse ai lavoratori dipendenti già soggetti ad aliquote proporzionali» [CIT:id].
+Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, distanziandosi nettamente dalla proposta governativa.
+
+⚠️ SBAGLIATO: **Rossi** contesta la misura [CIT:id]. ← MANCANO LE «»!
+⚠️ SBAGLIATO: Il gruppo discute di economia. **Rossi** «...» [CIT:id]. Il gruppo è preoccupato per l'ambiente. ← intro scollegata dalla citazione!
 """
 
         try:
@@ -420,13 +505,18 @@ FORMATO OUTPUT:
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=650
             )
 
             content = response.choices[0].message.content
 
-            # Extract citation IDs - primarily [CIT:id] format
+            # Enforce single citation: strip extra [CIT:id] markers after the first.
+            # This is code-level insurance — the prompt rule alone is not reliable.
+            content = self._enforce_single_citation(content)
+
             import re
+
+            # Extract citation IDs - primarily [CIT:id] format
             citation_ids = re.findall(r'\[CIT:([^\]]+)\]', content)
 
             # Also catch any legacy ["text"](id) format and extract just the ID
@@ -436,19 +526,77 @@ FORMATO OUTPUT:
             # Build valid evidence IDs set for validation
             valid_evidence_ids = {e.get("evidence_id") for e in evidence}
 
+            # Build a map from evidence_id → party for cross-party guard
+            evidence_party_map = {e.get("evidence_id"): e.get("party", "") for e in evidence}
+
             # Validate and filter citation IDs
             validated_ids = []
             invalid_ids = []
             for cit_id in citation_ids:
-                if cit_id in valid_evidence_ids:
-                    validated_ids.append(cit_id)
-                else:
+                if cit_id not in valid_evidence_ids:
                     invalid_ids.append(cit_id)
                     logger.warning(f"Invalid citation ID '{cit_id}' not in evidence list for {party}")
+                    continue
+                # Cross-party guard: reject evidence belonging to a different party
+                cited_party = evidence_party_map.get(cit_id, "")
+                if cited_party and cited_party != party and party != "GOVERNO":
+                    logger.warning(
+                        f"Cross-party citation rejected: '{cit_id}' belongs to "
+                        f"'{cited_party}' but section is '{party}'"
+                    )
+                    invalid_ids.append(cit_id)
+                    continue
+                validated_ids.append(cit_id)
 
             # Log if we found invalid citations (possible truncation)
             if invalid_ids:
                 logger.warning(f"Section {party}: {len(invalid_ids)} invalid citation IDs found: {invalid_ids[:5]}")
+                for invalid_id in invalid_ids:
+                    # Try to salvage: find which valid evidence contains the verbatim quote
+                    cit_pattern = re.compile(r'«([^»]+)»\s*\[CIT:' + re.escape(invalid_id) + r'\]')
+                    match = cit_pattern.search(content)
+                    salvaged = False
+                    if match:
+                        inline_quote = match.group(1)
+                        for e in evidence:
+                            qt = e.get("quote_text", "") or e.get("chunk_text", "")
+                            eid = e.get("evidence_id", "")
+                            if eid in valid_evidence_ids and inline_quote in qt:
+                                content = content.replace(f'[CIT:{invalid_id}]', f'[CIT:{eid}]')
+                                validated_ids.append(eid)
+                                logger.info(
+                                    f"Salvaged citation: '{invalid_id}' → '{eid}' "
+                                    f"(verbatim match found in evidence)"
+                                )
+                                salvaged = True
+                                break
+                    if not salvaged:
+                        # No match found: strip the bare [CIT:id] to avoid surgeon failures
+                        content = content.replace(f'[CIT:{invalid_id}]', '')
+                        logger.warning(f"Could not salvage citation '{invalid_id}', stripped from content")
+
+            # Anonymize non-cited speaker bold names AFTER salvage, so that speakers
+            # whose citation IDs were salvaged (invalid → valid) are correctly identified
+            # as cited and keep their names.
+            final_cit_ids = set(validated_ids)
+            cited_names = {
+                e.get("speaker_name", "")
+                for e in evidence
+                if e.get("evidence_id") in final_cit_ids and e.get("speaker_name")
+            }
+            all_names = [
+                e.get("speaker_name", "")
+                for e in evidence[:2]
+                if e.get("speaker_name")
+            ]
+            content = self._anonymize_uncited_speakers(content, cited_names, all_names)
+
+            # For government sections, replace generic "il gruppo/Il gruppo" with "il Governo/Il Governo"
+            if is_government:
+                content = re.sub(r'\bIl gruppo\b', 'Il Governo', content)
+                content = re.sub(r'\bil gruppo\b', 'il Governo', content)
+                content = re.sub(r'\bIl partito\b', 'Il Governo', content)
+                content = re.sub(r'\bil partito\b', 'il Governo', content)
 
             # Map validated IDs to actual evidence
             citations = []
@@ -492,13 +640,14 @@ FORMATO OUTPUT:
         max_evidence: int = 5
     ) -> str:
         """
-        Build evidence context with PRE-EXTRACTED citations.
+        Build evidence context for the citation-integrated approach.
 
-        CITATION-FIRST: Extract the exact citation BEFORE the LLM writes,
-        so the LLM can construct text that matches the citation content.
+        CITATION-INTEGRATED: The sectional writer receives the full quote_text
+        and is responsible for selecting and embedding verbatim text between «».
+        The CitationSurgeon verifies the inline quote as a literal substring
+        of the source before accepting it.
 
-        POSITION-AWARE: Include a brief of the group's overall position
-        so citations are understood in proper context.
+        POSITION-AWARE: Includes a brief of the group's overall position.
         """
         lines = []
 
@@ -511,9 +660,13 @@ FORMATO OUTPUT:
         if position_brief:
             lines.append(position_brief)
             lines.append("")
-            lines.append("--- EVIDENZE CON CITAZIONI PRE-ESTRATTE ---")
+            lines.append("--- EVIDENZE DISPONIBILI ---")
 
-        for e in evidence[:max_evidence]:
+        count = 0
+        for e in evidence:
+            if count >= max_evidence:
+                break
+
             # Skip evidence marked as duplicate by cross-speaker dedup
             if e.get("citation_duplicate_of"):
                 logger.info(f"Skipping duplicate citation {e.get('evidence_id')} (duplicate of {e['citation_duplicate_of']})")
@@ -521,59 +674,33 @@ FORMATO OUTPUT:
 
             eid = e.get("evidence_id", "unknown")
             speaker = e.get("speaker_name", "")
+            speaker_party = e.get("party", "")
             date = e.get("date", "")
-
-            # Get the full quote text for extraction
             quote_text = e.get("quote_text", "") or e.get("chunk_text", "")
 
-            # PRE-EXTRACT the citation that will actually be used
-            # This is the KEY change: LLM sees the EXACT citation
-            if quote_text and query:
-                extracted_citation = extract_best_sentences(
-                    text=quote_text,
-                    query=query,
-                    max_sentences=1,
-                    max_chars=200
-                )
-                # Store pre-extracted citation in evidence for later use by Surgeon
-                e["pre_extracted_citation"] = extracted_citation
-            else:
-                # Truncate at a natural boundary, not mid-phrase
-                if quote_text and len(quote_text) > 200:
-                    extracted_citation = self._truncate_at_boundary(quote_text, 200)
-                else:
-                    extracted_citation = quote_text or ""
-                e["pre_extracted_citation"] = extracted_citation
-
-            # Skip evidence whose citation extraction returned empty
-            # (all sentences below quality threshold — no citable content)
-            if not extracted_citation:
-                logger.info(f"Skipping evidence {eid} ({speaker}): no sentence passed quality threshold")
+            if not quote_text:
                 continue
 
-            # Skip procedural citations (e.g. "il parere è favorevole",
-            # "annuncio il voto favorevole del gruppo", "dichiaro aperta la seduta")
-            # and low-substance meta-comments (e.g. "è un tema delicato").
-            # Threshold 0.35 filters both procedural (0.2) and meta-comments (0.35).
-            # See: FActScore (Min et al., EMNLP 2023) for atomic fact verification.
-            citation_salience = compute_chunk_salience(extracted_citation)
-            if citation_salience <= 0.35:
+            # Filter out procedural and low-substance chunks before exposing
+            # them to the LLM. compute_chunk_salience returns the max salience
+            # score across all sentences in the chunk, so a chunk with even one
+            # good sentence will pass the gate.
+            chunk_salience = compute_chunk_salience(quote_text)
+            if chunk_salience <= 0.35:
                 logger.info(
-                    f"Skipping procedural citation for {eid} ({speaker}): "
-                    f"salience={citation_salience:.1f}, text='{extracted_citation[:80]}...'"
+                    f"Skipping procedural chunk {eid} ({speaker}): "
+                    f"salience={chunk_salience:.2f}"
                 )
                 continue
-
-            # Also provide context (truncated) for understanding
-            context = e.get("chunk_text", "")[:self._context_chars]
 
             lines.append(f"""
 [ID: {eid}]
-Speaker: {speaker}
+Speaker: {speaker} ({speaker_party})
 Date: {date}
-★ CITAZIONE DA USARE (NON COPIARE NEL TESTO): [{extracted_citation}]
-Contesto: {context}
+TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
+{quote_text[:600]}
 ---""")
+            count += 1
 
         return "\n".join(lines)
 

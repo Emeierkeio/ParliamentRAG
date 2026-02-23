@@ -321,6 +321,20 @@ async def update_configuration(update: ConfigUpdateRequest):
     return await get_configuration()
 
 
+@router.post("/reload", response_model=ConfigResponse)
+async def reload_configuration():
+    """
+    Reload configuration from config/default.yaml, discarding any in-memory overrides.
+
+    Use this when the YAML file has been changed and you want the backend
+    to pick up the new values without restarting the process.
+    """
+    config = get_config()
+    config._config = None  # Clear in-memory cache
+    logger.info("Configuration cache cleared — reloading from disk")
+    return await get_configuration()
+
+
 @router.get("/parties")
 async def get_parties():
     """Get list of all parliamentary parties."""

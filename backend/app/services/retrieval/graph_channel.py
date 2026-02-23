@@ -61,26 +61,42 @@ class GraphChannel:
 
         Simple keyword extraction - can be enhanced with NLP.
         """
-        # Remove common Italian stopwords
+        # Remove common Italian stopwords (including articulated prepositions)
         stopwords = {
             "il", "la", "lo", "i", "gli", "le", "un", "una", "uno",
             "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
+            "del", "della", "dello", "dei", "degli", "delle",
+            "al", "alla", "allo", "ai", "agli", "alle",
+            "dal", "dalla", "dallo", "dai", "dagli", "dalle",
+            "nel", "nella", "nello", "nei", "negli", "nelle",
+            "sul", "sulla", "sullo", "sui", "sugli", "sulle",
+            "col", "coi",
             "e", "o", "ma", "che", "chi", "cui", "quale", "quali",
             "come", "dove", "quando", "perché", "quanto",
             "è", "sono", "essere", "stato", "stata", "stati", "state",
             "ha", "hanno", "avere", "aveva", "avevano",
-            "qual", "cosa", "posizione", "partiti", "partito"
+            "si", "non", "più", "anche", "già", "poi", "però", "quindi",
+            "qual", "cosa", "posizione", "partiti", "partito",
+            "query", "originale",
         }
 
         # Tokenize and filter
         words = re.findall(r'\b\w+\b', query.lower())
-        keywords = [w for w in words if w not in stopwords and len(w) > 2]
+        keywords_raw = [w for w in words if w not in stopwords and len(w) > 2]
+
+        # Deduplicate while preserving order
+        seen: set = set()
+        keywords = [w for w in keywords_raw if not (w in seen or seen.add(w))]
 
         # Also include bigrams for compound terms
         bigrams = [f"{words[i]} {words[i+1]}" for i in range(len(words)-1)
                    if words[i] not in stopwords and words[i+1] not in stopwords]
 
-        return keywords + bigrams[:5]  # Limit bigrams
+        # Deduplicate bigrams preserving order
+        seen_bi: set = set()
+        bigrams_dedup = [b for b in bigrams if not (b in seen_bi or seen_bi.add(b))]
+
+        return keywords + bigrams_dedup[:5]  # Limit bigrams
 
     def retrieve(
         self,

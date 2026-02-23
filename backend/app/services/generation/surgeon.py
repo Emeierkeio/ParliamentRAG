@@ -35,7 +35,11 @@ class CitationSurgeon:
     If a citation cannot be verified, it is marked as unsupported.
     """
 
-    # Citation patterns - [CIT:id] is primary, ["text"](id) is legacy fallback
+    # Citation patterns - ordered by priority:
+    # 1. «inline verbatim» [CIT:id]  ← new citation-integrated format
+    # 2. [CIT:id]                     ← bare placeholder (fallback)
+    # 3. ["text"](id)                 ← legacy markdown format
+    CITATION_PATTERN_INLINE = re.compile(r'«([^»]+)»\s*\[CIT:([^\]]+)\]')
     CITATION_PATTERN_CIT = re.compile(r'\[CIT:([^\]]+)\]')
     CITATION_PATTERN_MARKDOWN = re.compile(r'\["([^"]*)"\]\(([^)]+)\)')
 
@@ -141,7 +145,63 @@ class CitationSurgeon:
                     "span_end": evidence.get("span_end"),
                 })
 
-        # Handle [CIT:id] format
+        # Handle «inline verbatim» [CIT:id] format (citation-integrated approach).
+        # The LLM has already chosen and written the quote verbatim between «».
+        # We verify it is a literal substring of the source before accepting it.
+        def replace_inline_format(match):
+            inline_quote = match.group(1)
+            evidence_id = match.group(2)
+            quote_text, evidence = get_citation_data(evidence_id)
+
+            if quote_text is None:
+                return f'«{inline_quote}» [Citazione non disponibile]'
+
+            # Verbatim check: inline_quote must appear literally in the source
+            if inline_quote in quote_text:
+                # Additional check: reject if the extracted text is a third-party
+                # quotation embedded within the deputy's speech (e.g. Peskov quote
+                # cited inside Chiesa's intervention).
+                if self._is_nested_quote(inline_quote, quote_text):
+                    logger.warning(
+                        f"Inline quote is a nested third-party citation for "
+                        f"{evidence_id}, falling back. "
+                        f"Starts with: '{inline_quote[:50]}'"
+                    )
+                    verified_quote = extract_best_sentences(
+                        text=quote_text,
+                        query=getattr(self, '_current_query', ''),
+                        max_sentences=1,
+                        max_chars=400
+                    ) or quote_text[:400]
+                else:
+                    verified_quote = inline_quote
+                    logger.debug(f"Inline quote verified verbatim for {evidence_id}")
+            else:
+                # LLM paraphrased or slightly modified — fall back to heuristic
+                logger.warning(
+                    f"Inline quote not verbatim for {evidence_id}, falling back. "
+                    f"Got: '{inline_quote[:60]}...'"
+                )
+                verified_quote = extract_best_sentences(
+                    text=quote_text,
+                    query=getattr(self, '_current_query', ''),
+                    max_sentences=1,
+                    max_chars=400
+                ) or quote_text[:400]
+
+            track_citation(evidence_id, verified_quote, evidence)
+
+            return self._format_citation(
+                quote=verified_quote,
+                speaker=evidence.get("speaker_name", ""),
+                party=evidence.get("party", ""),
+                date=str(evidence.get("date", "")),
+                evidence_id=evidence_id,
+                pre_extracted=verified_quote,
+                session_number=evidence.get("session_number")
+            )
+
+        # Handle bare [CIT:id] format (fallback when LLM omits «»)
         def replace_cit_format(match):
             evidence_id = match.group(1)
             quote_text, evidence = get_citation_data(evidence_id)
@@ -184,10 +244,13 @@ class CitationSurgeon:
                 session_number=evidence.get("session_number")
             )
 
-        # First replace [CIT:id] format
-        final_text = self.CITATION_PATTERN_CIT.sub(replace_cit_format, text)
+        # 1. Replace «inline» [CIT:id] format first (citation-integrated)
+        final_text = self.CITATION_PATTERN_INLINE.sub(replace_inline_format, text)
 
-        # Then replace ["text"](id) markdown format
+        # 2. Replace bare [CIT:id] format (fallback — LLM forgot the «»)
+        final_text = self.CITATION_PATTERN_CIT.sub(replace_cit_format, final_text)
+
+        # 3. Replace ["text"](id) markdown format (legacy)
         final_text = self.CITATION_PATTERN_MARKDOWN.sub(replace_markdown_format, final_text)
 
         return {
@@ -352,6 +415,11 @@ class CitationSurgeon:
         quote = quote.lstrip('.,;:')
         quote = quote.lstrip()
 
+        # Strip unmatched trailing parenthesis (parsing artifact from source text,
+        # e.g. "...due popoli due Stati)" where the opening "(" is outside the span)
+        if quote.endswith(')') and quote.count('(') < quote.count(')'):
+            quote = quote[:quote.rfind(')')].rstrip()
+
         # Trim trailing dangling words: articles, prepositions, conjunctions,
         # truncated references (e.g. "– n"), etc. that signal a mid-phrase cut.
         # These patterns at the end mean the quote was truncated mid-sentence.
@@ -381,6 +449,34 @@ class CitationSurgeon:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()
 
         return f'[«{quote}»]({evidence_id})'
+
+    @staticmethod
+    def _is_nested_quote(inline_quote: str, source_text: str) -> bool:
+        """Return True if inline_quote is a third-party quotation embedded in source_text.
+
+        Detects two cases:
+        1. The inline_quote itself starts with a quote marker («, ", ") — the LLM
+           copied the nested markers, a clear signal of quote-within-a-quote.
+        2. The inline_quote's start position in source_text falls inside an
+           unclosed «...» or "..."/"..." block.
+        """
+        stripped = inline_quote.lstrip()
+        if stripped.startswith(('«', '\u201c', '"')):
+            return True
+
+        pos = source_text.find(inline_quote)
+        if pos == -1:
+            return False
+
+        text_before = source_text[:pos]
+        # Unclosed «» block at extraction point
+        if text_before.count('«') > text_before.count('»'):
+            return True
+        # Unclosed Unicode double-quote block (" ")
+        if text_before.count('\u201c') > text_before.count('\u201d'):
+            return True
+
+        return False
 
     def _shorten_party_name(self, party: str) -> str:
         """Return readable display name for a party (full name, title case)."""

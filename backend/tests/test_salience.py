@@ -363,9 +363,7 @@ class TestSectionalSalienceFilter:
         ]
 
         context = writer._build_evidence_context(evidence, "riforma")
-        # The procedural citation should be skipped
         assert "proc_1" not in context
-        # The opinion citation should be included
         assert "opinion_1" in context
 
     def test_build_evidence_context_keeps_substantive(self, writer):
@@ -396,7 +394,6 @@ class TestSectionalSalienceFilter:
         ]
 
         context = writer._build_evidence_context(evidence, "cambiamenti climatici")
-        # Vote announcement should be filtered
         assert "vote_1" not in context
 
     def test_build_evidence_context_skips_meta_comment(self, writer):
@@ -421,9 +418,7 @@ class TestSectionalSalienceFilter:
         ]
 
         context = writer._build_evidence_context(evidence, "immigrazione")
-        # Meta-comment should be filtered
         assert "meta_1" not in context
-        # Opinion should be kept
         assert "opinion_1" in context
 
 

@@ -60,12 +60,33 @@ Deputati dei partiti di opposizione (Partito Democratico, Movimento 5 Stelle, Al
 - Esempio: Meloni come Presidente del Consiglio → Governo
 - Esempio: Un deputato di Fratelli d'Italia → Maggioranza
 
+⚠️ FILTRO COMPETENZA - POSIZIONE DEL GOVERNO:
+In "## Posizione del Governo" includi SOLO:
+- Il Presidente del Consiglio (Meloni): sempre ammessa
+- Il/i Ministro/i con delega DIRETTAMENTE competente per il tema della query
+  (es. Ministro della Salute per sanità, Ministro dell'Economia per fisco/bilancio,
+   Ministro della Difesa per questioni militari, Ministro dell'Interno per sicurezza/immigrazione,
+   Ministro della Giustizia per riforma giudiziaria, ecc.)
+Se nelle sezioni ricevute appare un ministro non competente per il tema trattato
+(es. Salvini che commenta la sanità, Nordio che parla di agricoltura), OMETTI quella posizione.
+Se dopo questo filtro non rimane nessun membro del governo pertinente, ometti interamente
+la sezione "## Posizione del Governo".
+
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
-- Integra il nome del partito nel testo: "Per [Partito], **Cognome** sostiene..."
+- Ogni sezione di input è preceduta da un tag [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo
+- Formato OBBLIGATORIO per il primo periodo: "Per [Nome Partito], [testo contestuale]..."
+  Esempio: "Per Italia Viva - Il Centro - Renew Europe, il gruppo sostiene con fermezza..."
 - Cognomi SEMPRE in **grassetto**
 - Ogni partito è un paragrafo separato
 - Usa SEMPRE il nome completo del partito (es. "Fratelli d'Italia", "Movimento 5 Stelle", "Partito Democratico"), MAI abbreviazioni
+
+STRUTTURA OBBLIGATORIA PER OGNI PARTITO (3 parti, preserva tutto il contenuto):
+1. CONTESTUALIZZAZIONE: 1-2 frasi introduttive che preparano la citazione (usa il testo introduttivo dalla sezione input)
+2. CITAZIONE: la frase verbatim con il marcatore {CIT:N} (preserva esattamente dalla sezione input)
+3. POSIZIONAMENTO: 1-2 frasi sul posizionamento generale del gruppo (usa il testo di posizionamento dalla sezione input)
+
+⚠️ NON comprimere le sezioni: mantieni il contenuto completo di ciascuna sezione, solo integra il nome del partito all'inizio.
 
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
 Il marcatore {CIT:N} deve essere preceduto da un bridge verbale:
@@ -102,7 +123,7 @@ Non liquidare partiti di opposizione con una sola frase se quelli di maggioranza
 REGOLE GENERALI:
 1. Posizioni DISTINTE, un paragrafo per partito/ministro
 2. PRESERVA **grassetto** e marcatori [CIT:...]
-3. CONCISO - max 2-3 frasi per posizione"""
+3. Preserva il contenuto completo di ogni sezione (intro + citazione + posizionamento)"""
 
     def __init__(self):
         self.config = get_config()
@@ -236,7 +257,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.0,
-                max_tokens=3500
+                max_tokens=5000
             )
 
             integrated_text = response.choices[0].message.content
@@ -315,7 +336,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
         for party in self.MAGGIORANZA:
             content = self._get_section_by_party(sections, party)
             if content:
-                magg_parts.append(content)
+                magg_parts.append(f"[PARTITO: {party}]\n{content}")
         if magg_parts:
             parts.append("## Posizioni della Maggioranza\n\n" + "\n\n".join(magg_parts))
 
@@ -324,7 +345,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
         for party in self.OPPOSIZIONE:
             content = self._get_section_by_party(sections, party)
             if content:
-                opp_parts.append(content)
+                opp_parts.append(f"[PARTITO: {party}]\n{content}")
         if opp_parts:
             parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
 
