@@ -41,9 +41,26 @@ class CompassConfig(BaseModel):
     unclassified_groups: List[str]
 
 
+class GenerationParameters(BaseModel):
+    """LLM generation parameters."""
+    max_tokens: int
+    temperature: float
+    top_p: float
+
+
+class PositionBriefConfig(BaseModel):
+    """Position brief configuration."""
+    enabled: bool
+    max_chunks: int
+    chars_per_chunk: int
+    context_chars: int
+
+
 class GenerationConfig(BaseModel):
     """Generation pipeline configuration."""
     models: Dict[str, str]
+    parameters: GenerationParameters
+    position_brief: PositionBriefConfig
     require_all_parties: bool
     no_evidence_message: str
 
@@ -95,10 +112,11 @@ async def get_configuration():
         graph_lexical_min_match=graph.get("lexical_keywords_min_match", 1),
         graph_semantic_threshold=graph.get("semantic_similarity_threshold", 0.4),
         merger_weights={
-            "relevance": merger.get("relevance_weight", 0.2),
-            "diversity": merger.get("diversity_weight", 0.2),
-            "coverage": merger.get("coverage_weight", 0.3),
-            "authority": merger.get("authority_weight", 0.3),
+            "relevance": merger.get("relevance_weight", 0.15),
+            "diversity": merger.get("diversity_weight", 0.15),
+            "coverage": merger.get("coverage_weight", 0.25),
+            "authority": merger.get("authority_weight", 0.25),
+            "salience": merger.get("salience_weight", 0.20),
         }
     )
 
@@ -131,9 +149,22 @@ async def get_configuration():
 
     # Generation config
     generation_data = config_data.get("generation", {})
+    gen_params = generation_data.get("parameters", {})
+    gen_pos_brief = generation_data.get("position_brief", {})
 
     generation_config = GenerationConfig(
         models=generation_data.get("models", {}),
+        parameters=GenerationParameters(
+            max_tokens=gen_params.get("max_tokens", 4000),
+            temperature=gen_params.get("temperature", 0.3),
+            top_p=gen_params.get("top_p", 1.0),
+        ),
+        position_brief=PositionBriefConfig(
+            enabled=gen_pos_brief.get("enabled", True),
+            max_chunks=gen_pos_brief.get("max_chunks", 5),
+            chars_per_chunk=gen_pos_brief.get("chars_per_chunk", 200),
+            context_chars=gen_pos_brief.get("context_chars", 500),
+        ),
         require_all_parties=generation_data.get("require_all_parties", True),
         no_evidence_message=generation_data.get(
             "no_evidence_message",
@@ -218,6 +249,8 @@ def _apply_retrieval_update(current: Dict, update: Dict) -> Dict:
             merger["coverage_weight"] = mw["coverage"]
         if "authority" in mw:
             merger["authority_weight"] = mw["authority"]
+        if "salience" in mw:
+            merger["salience_weight"] = mw["salience"]
 
     retrieval["dense_channel"] = dense
     retrieval["graph_channel"] = graph
@@ -251,12 +284,14 @@ def _apply_generation_update(current: Dict, update: Dict) -> Dict:
 
     if "models" in update:
         generation["models"] = _deep_merge(generation.get("models", {}), update["models"])
+    if "parameters" in update:
+        generation["parameters"] = _deep_merge(generation.get("parameters", {}), update["parameters"])
+    if "position_brief" in update:
+        generation["position_brief"] = _deep_merge(generation.get("position_brief", {}), update["position_brief"])
     if "require_all_parties" in update:
         generation["require_all_parties"] = update["require_all_parties"]
     if "no_evidence_message" in update:
         generation["no_evidence_message"] = update["no_evidence_message"]
-    if "enable_synthesis" in update:
-        generation["enable_synthesis"] = update["enable_synthesis"]
 
     current["generation"] = generation
     return current

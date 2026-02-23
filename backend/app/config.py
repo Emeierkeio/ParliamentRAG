@@ -135,10 +135,11 @@ class ConfigLoader:
                     "max_acts_per_query": 100
                 },
                 "merger": {
-                    "diversity_weight": 0.2,
-                    "coverage_weight": 0.3,
-                    "authority_weight": 0.3,
-                    "relevance_weight": 0.2
+                    "diversity_weight": 0.15,
+                    "coverage_weight": 0.25,
+                    "authority_weight": 0.25,
+                    "relevance_weight": 0.15,
+                    "salience_weight": 0.20
                 }
             },
             "authority": {
