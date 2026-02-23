@@ -1,6 +1,7 @@
 /**
  * Tipi per il sistema di chat
  */
+import type { CompassData } from "@/components/chat/CompassCard";
 
 export type MessageRole = "user" | "assistant" | "system";
 
@@ -121,7 +122,7 @@ export interface Message {
   citations?: Citation[];
   experts?: Expert[];
   commissioni?: Array<{ nome: string; score: number; matched_keywords: string[]; categories: string[] }>;
-  compass?: any; // CompassData
+  compass?: CompassData;
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
   topicStats?: TopicStatistics;

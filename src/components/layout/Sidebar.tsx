@@ -38,7 +38,6 @@ import { SettingsModal } from "@/components/settings/SettingsModal";
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
-  onNewChat?: () => void;
   isQueryRunning?: boolean;
   isMobile?: boolean;
   isMobileOpen?: boolean;
@@ -58,7 +57,7 @@ export function MobileMenuButton({ onClick, className }: { onClick: () => void; 
   );
 }
 
-export function Sidebar({ isCollapsed, onToggle, onNewChat, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);

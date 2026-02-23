@@ -10,6 +10,7 @@ import type {
   StepResult,
   TopicStatistics,
 } from "@/types";
+import type { CompassData } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 
 interface UseChatOptions {
@@ -45,7 +46,6 @@ export function useChat(options: UseChatOptions = {}) {
     
     setMessages((prev) => {
        if (prev.some(m => m.id === newMessage.id)) {
-         console.warn("[Pipeline] Duplicate user message skipped:", newMessage.id);
          return prev;
        }
        return [...prev, newMessage];
@@ -73,7 +73,6 @@ export function useChat(options: UseChatOptions = {}) {
     
     setMessages((prev) => {
       if (prev.some(m => m.id === newMessage.id)) {
-        console.warn("[Pipeline] Duplicate assistant message skipped:", newMessage.id);
         return prev;
       }
       return [...prev, newMessage];
@@ -174,7 +173,7 @@ export function useChat(options: UseChatOptions = {}) {
       let citations: Citation[] = [];
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
-      let compassData: any = null;
+      let compassData: CompassData | null = null;
       let topicStats: TopicStatistics | undefined;
       let commissioni: any[] = [];
       // Accumulator for step results — survives React state batching race conditions
@@ -187,14 +186,12 @@ export function useChat(options: UseChatOptions = {}) {
           // Flush TextDecoder remaining bytes + process any buffered data
           buffer += decoder.decode();
           if (buffer.trim()) {
-            console.warn(`[Pipeline:Buffer] Stream ended with ${buffer.length} bytes in buffer — flushing`);
             const remainingLines = buffer.split("\n").filter((l: string) => l.startsWith("data: "));
             for (const line of remainingLines) {
               try {
                 const jsonStr = line.slice(6).trim();
                 if (!jsonStr) continue;
                 const data = JSON.parse(jsonStr);
-                console.log(`[Pipeline:Buffer] Recovered event: "${data.type}"`);
                 if (data.type === "complete") {
                   setProgress((prev) => prev ? { ...prev, isComplete: true } : null);
                   updateLastAssistantMessage({
@@ -233,11 +230,9 @@ export function useChat(options: UseChatOptions = {}) {
             switch (data.type) {
               case "task_id":
                 // Server confirmed the task ID
-                console.log(`[Pipeline] Task ID confirmed: ${data.task_id}`);
                 break;
 
               case "waiting":
-                console.log(`[Pipeline] Waiting: pos=${data.queue_position} active=${data.active_count} elapsed=${data.elapsed_seconds}s`);
                 setProgress({
                   currentStep: 0,
                   totalSteps: config.ui.progressSteps.length,
@@ -257,7 +252,6 @@ export function useChat(options: UseChatOptions = {}) {
                 const stepIndex = data.step - 1;
                 const step = config.ui.progressSteps[stepIndex];
                 const totalSteps = data.total || config.ui.progressSteps.length;
-                console.log(`[Pipeline] Step ${data.step}/${totalSteps}: ${step?.label || data.message}`);
                 setProgress((prev) => {
                   // Only advance forward, never go backwards
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
@@ -300,7 +294,6 @@ export function useChat(options: UseChatOptions = {}) {
                 commissioni = commList;
                 updateLastAssistantMessage({ commissioni: [...commList] });
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
-                console.log(`[Pipeline] Step 2 result: ${commList.length} commissioni`, commNames);
                 // Save to accumulator so it survives React state batching
                 const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
                 const commResult = {
@@ -329,7 +322,6 @@ export function useChat(options: UseChatOptions = {}) {
                   updateLastAssistantMessage({ experts: [...experts] });
                   const magg = experts.filter(e => e.coalition === "maggioranza").length;
                   const opp = experts.filter(e => e.coalition === "opposizione").length;
-                  console.log(`[Pipeline] Step 3 result: ${experts.length} esperti (${magg} magg, ${opp} opp)`);
                   const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
                   const expertsResult = {
                     step: 3,
@@ -347,7 +339,6 @@ export function useChat(options: UseChatOptions = {}) {
                     };
                   });
                 } else {
-                  console.warn("[Pipeline] Step 3: experts payload is not an array", expertsPayload);
                 }
                 break;
 
@@ -356,7 +347,6 @@ export function useChat(options: UseChatOptions = {}) {
                 if (Array.isArray(citationsPayload)) {
                   citations = citationsPayload;
                   updateLastAssistantMessage({ citations: [...citations] });
-                  console.log(`[Pipeline:Citations] Step 4: ${citations.length} interventi ricevuti, chunk_ids:`, citations.map(c => c.chunk_id));
                   const uniqueDeputies = [...new Set(citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`))];
                   const deputyPreview = uniqueDeputies.slice(0, 3).join(", ");
                   const citationsResult = {
@@ -375,7 +365,6 @@ export function useChat(options: UseChatOptions = {}) {
                     };
                   });
                 } else {
-                  console.warn("[Pipeline:Citations] Step 4: payload is not an array", citationsPayload);
                 }
                 break;
 
@@ -385,7 +374,6 @@ export function useChat(options: UseChatOptions = {}) {
                   opposizionePercentage: data.opposizione_percentage,
                   biasScore: data.bias_score,
                 };
-                console.log(`[Pipeline] Step 5: Magg ${data.maggioranza_percentage?.toFixed(1)}% / Opp ${data.opposizione_percentage?.toFixed(1)}% (bias: ${data.bias_score?.toFixed(2)})`);
                 updateLastAssistantMessage({ balanceMetrics });
                 const balanceResult = {
                   step: 5,
@@ -413,7 +401,6 @@ export function useChat(options: UseChatOptions = {}) {
                 try {
                   compassData = data.data || data;
                   updateLastAssistantMessage({ compass: compassData });
-                  console.log(`[Pipeline] Step 6: Compass — ${compassData.groups?.length || 0} gruppi, ${Object.keys(compassData.axes || {}).length} assi`);
                   const compassResult = {
                     step: 6,
                     label: "Bussola Ideologica",
@@ -442,26 +429,13 @@ export function useChat(options: UseChatOptions = {}) {
               case "topic_stats":
                 topicStats = data as TopicStatistics;
                 updateLastAssistantMessage({ topicStats });
-                console.log(`[Pipeline] Topic stats: ${topicStats.intervention_count} interventions, ${topicStats.speaker_count} speakers, ${topicStats.sessions_detail?.length || 0} sessions`);
                 break;
 
               case "citation_details":
                 const citDetailsPayload = data.data || data.citations;
                 if (Array.isArray(citDetailsPayload)) {
-                    const prevChunkIds = citations.map(c => c.chunk_id);
                     citations = citDetailsPayload;
                     updateLastAssistantMessage({ citations: [...citations] });
-                    const newChunkIds = citations.map(c => c.chunk_id);
-                    const added = newChunkIds.filter(id => !prevChunkIds.includes(id));
-                    const removed = prevChunkIds.filter(id => !newChunkIds.includes(id));
-                    console.log(`[Pipeline:Citations] Verified: ${citations.length} citations`, {
-                      chunk_ids: newChunkIds,
-                      speakers: citations.map(c => `${c.deputy_first_name} ${c.deputy_last_name}`),
-                      added: added.length ? added : "none",
-                      removed: removed.length ? removed : "none",
-                    });
-                } else {
-                    console.warn("[Pipeline:Citations] citation_details payload is NOT an array:", citDetailsPayload);
                 }
                 break;
 
@@ -474,7 +448,6 @@ export function useChat(options: UseChatOptions = {}) {
                   if (!prev) return null;
                   const alreadyDone = prev.stepResults.some(r => r.step === 7);
                   if (alreadyDone) return prev;
-                  console.log(`[Pipeline] Step 7: First chunk received (streaming ${accumulatedContent.length} chars)`);
                   // Advance stepper to step 7 and mark it as completing
                   const stepConfig = config.ui.progressSteps[6]; // step 7 (0-indexed)
                   return {
@@ -492,9 +465,6 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
-                console.log(`[Pipeline] === COMPLETE ===`);
-                console.log(`[Pipeline] Content: ${accumulatedContent.length} chars`);
-                console.log(`[Pipeline:Citations] Final: ${citations.length} citations in sidebar`);
 
                 // Extract citation links from generated text for cross-check
                 const textCitLinks = (accumulatedContent.match(/\]\((leg1[89]_[^)]+)\)/g) || [])
@@ -502,9 +472,7 @@ export function useChat(options: UseChatOptions = {}) {
                 const sidebarIds = new Set(citations.map(c => c.chunk_id));
                 const unmatchedLinks = textCitLinks.filter((id: string) => !sidebarIds.has(id));
                 if (unmatchedLinks.length > 0) {
-                  console.warn(`[Pipeline:Citations] MISMATCH: ${unmatchedLinks.length} citation links in text not in sidebar:`, unmatchedLinks);
                 } else if (textCitLinks.length > 0) {
-                  console.log(`[Pipeline:Citations] All ${textCitLinks.length} text citation links matched in sidebar`);
                 }
 
                 // Mark step 8 as complete and finalize progress
@@ -539,7 +507,6 @@ export function useChat(options: UseChatOptions = {}) {
                 // Log timing if available
                 if (data.metadata?.timing) {
                   const timing = data.metadata.timing;
-                  console.log(`[Pipeline] Timing breakdown (ms):`, timing);
                 }
 
                 // Save to history
@@ -566,7 +533,6 @@ export function useChat(options: UseChatOptions = {}) {
                   }).then(async (res) => {
                     if (res.ok) {
                       const savedChat = await res.json();
-                      console.log("[Pipeline] History saved OK, id:", savedChat.id);
                       updateLastAssistantMessage({ chatId: savedChat.id });
                     } else {
                       res.text().then(body => {
@@ -586,10 +552,8 @@ export function useChat(options: UseChatOptions = {}) {
                 throw new Error(data.message);
 
               default:
-                console.log(`[Pipeline] Unknown event: "${data.type}"`, data);
             }
           } catch (parseError) {
-            console.warn(`[Pipeline:Buffer] JSON parse error:`, parseError, `raw: "${line.substring(0, 200)}"`);
           }
         }
       }
@@ -599,13 +563,11 @@ export function useChat(options: UseChatOptions = {}) {
         return;
       }
 
-      console.warn(`[Pipeline] Stream error:`, (error as Error).message);
 
       // If stream didn't complete and we can retry, do a silent re-send
       if (!streamCompletedRef.current && retryCountRef.current < 2) {
         retryCountRef.current++;
         const savedQuery = queryContentRef.current;
-        console.log(`[Pipeline:Retry] Silent retry ${retryCountRef.current}/2 for: "${savedQuery.substring(0, 50)}..."`);
         setIsLoading(false);
         abortControllerRef.current = null;
         // Re-send after a brief delay
@@ -626,7 +588,6 @@ export function useChat(options: UseChatOptions = {}) {
       if (!streamCompletedRef.current && retryCountRef.current < 2) {
         retryCountRef.current++;
         const savedQuery = queryContentRef.current;
-        console.log(`[Pipeline:Retry] Stream ended without complete, silent retry ${retryCountRef.current}/2`);
         setIsLoading(false);
         setStreamingContent("");
         abortControllerRef.current = null;
@@ -662,7 +623,6 @@ export function useChat(options: UseChatOptions = {}) {
       ) {
         retryCountRef.current++;
         const savedQuery = queryContentRef.current;
-        console.log(`[Pipeline:Visibility] Page visible, retrying query: "${savedQuery.substring(0, 50)}..."`);
         sendMessageRef.current?.(savedQuery, true);
       }
     };

@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+// DialogTitle is used as a hidden accessibility label at the top level of ResultDetailDialog
 import { Badge } from "@/components/ui/badge";
 import { config } from "@/config";
 import {
@@ -122,6 +123,7 @@ export function ResultDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogTitle className="sr-only">Dettaglio</DialogTitle>
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -161,9 +163,9 @@ function SpeechDetailContent({
       <DialogHeader>
         <div className="flex items-center gap-2 mb-1">
           <MessageSquareQuote className="h-5 w-5 text-primary shrink-0" />
-          <DialogTitle className="text-lg">
+          <h2 className="text-lg font-semibold leading-none tracking-tight">
             Seduta n. {detail.session_number} del {formatDate(detail.date)}
-          </DialogTitle>
+          </h2>
         </div>
         {detail.debate_title && (
           <p className="text-sm text-muted-foreground pl-7">
@@ -208,10 +210,12 @@ function SpeechDetailContent({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3" />
-            {formatDate(detail.date)}
-          </div>
+          {detail.date && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="h-3 w-3" />
+              {formatDate(detail.date)}
+            </div>
+          )}
           {detail.session_number && (
             <a
               href={`https://www.camera.it/leg19/410?idSeduta=${detail.session_number}&tipo=seduta`}
@@ -270,9 +274,9 @@ function ActDetailContent({
           )}
         </div>
         {detail.act_title && (
-          <DialogTitle className="text-base pl-7">
+          <h2 className="text-base font-semibold leading-none tracking-tight pl-7">
             {detail.act_title}
-          </DialogTitle>
+          </h2>
         )}
       </DialogHeader>
 
@@ -336,12 +340,14 @@ function ActDetailContent({
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2 border-t">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3" />
-            {formatDate(detail.date)}
+        {detail.date && (
+          <div className="flex items-center justify-between pt-2 border-t">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="h-3 w-3" />
+              {formatDate(detail.date)}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Minus, Info, RotateCcw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-interface CompassData {
+export interface CompassData {
     meta: {
         query: string;
         explained_variance_ratio: number[];

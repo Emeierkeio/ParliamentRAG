@@ -7,6 +7,7 @@ import { useLocalHistory } from "@/hooks/use-local-history";
 import { CompassCard } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
+import { TOPICS } from "@/lib/constants";
 import {
   Compass,
   Search,
@@ -61,13 +62,6 @@ interface CompassData {
   groups: any[];
   scatter_sample: any[];
 }
-
-const TOPICS = [
-  "PNRR", "riforma sanitaria", "transizione energetica", "salario minimo",
-  "conflitto in Ucraina", "riforma fiscale", "autonomia differenziata",
-  "riforma della giustizia", "flussi migratori", "scuola e istruzione",
-  "cambiamento climatico", "infrastrutture",
-];
 
 // ── Page ───────────────────────────────────────────────────────
 
