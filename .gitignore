@@ -65,7 +65,7 @@ htmlcov/
 nosetests.xml
 coverage.xml
 *.cover
-*.py,cover
+*.py.cover
 .hypothesis/
 .pytest_cache/
 
@@ -230,3 +230,12 @@ neo4j/
 *.md
 !README.md
 docs/
+
+notebooklm_sources/
+backend/scripts/export_notebooklm.py
+
+# macOS
+**/.DS_Store
+
+# Orphan data files
+backend/data/parliament.db

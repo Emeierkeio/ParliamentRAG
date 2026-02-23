@@ -37,7 +37,7 @@ import {
     ArrowUp,
     ArrowDown,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { config } from "@/config";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import {
@@ -205,8 +205,6 @@ export default function SearchPage() {
         if (mode === 'group') setSelectedDeputies([]);
         if (mode === 'all') { setSelectedDeputies([]); setSelectedGroups([]); }
     };
-
-    const formatDate = (d: string) => d.split('-').reverse().join('/');
 
     const getFilterTags = (data: SearchHistoryData): string[] => {
         const tags: string[] = [];

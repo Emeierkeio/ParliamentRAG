@@ -28,13 +28,10 @@ MAINTENANCE_MODE: bool = False
 # Project root directory
 # config.py is at: backend/app/config.py
 # In Docker: /app/app/config.py → .parent.parent = /app/ (backend root)
-# Locally: .parent.parent.parent = project root (ParliamentRAG/)
-# config/ is at backend/config/ (Docker) or ParliamentRAG/config/ (local)
+# Locally: .parent.parent = backend/
+# config/ is always at backend/config/
 PROJECT_ROOT = Path(__file__).parent.parent  # backend/ or /app/
 CONFIG_DIR = PROJECT_ROOT / "config"
-if not CONFIG_DIR.exists():
-    # Fallback for local dev: config/ at project root
-    CONFIG_DIR = PROJECT_ROOT.parent / "config"
 
 # Locate .env file: prefer backend/.env, fallback to project root .env
 _env_file = PROJECT_ROOT / ".env"

@@ -3,7 +3,6 @@ Stage 1: Claim Analyst
 
 Decomposes the query into atomic claims with evidence requirements.
 """
-import asyncio
 import json
 import logging
 from typing import List, Dict, Any, Optional
@@ -11,7 +10,7 @@ from typing import List, Dict, Any, Optional
 import openai
 
 from ...config import get_config, get_settings
-from ...key_pool import make_client, make_async_client
+from ...key_pool import make_client
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +61,6 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         self.config = get_config()
         self.settings = get_settings()
         self.client = make_client()
-        self.async_client = make_async_client()
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("analyst", "gpt-4o")
@@ -109,56 +107,6 @@ Rispondi SOLO in formato JSON valido con questa struttura:
             logger.error(f"Analyst stage failed: {e}")
             return self._fallback_result(query, e)
 
-    async def analyze_async(
-        self,
-        query: str,
-        evidence_list: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
-        """
-        Async analyze with retry and exponential backoff.
-        Used by baseline pipeline to avoid blocking the event loop.
-        """
-        evidence_summary = self._summarize_evidence(evidence_list)
-        parties_in_evidence = set(e.get("party", "MISTO") for e in evidence_list)
-        user_prompt = self._build_prompt(query, parties_in_evidence, evidence_summary)
-
-        for attempt in range(MAX_RETRIES):
-            try:
-                response = await self.async_client.chat.completions.create(
-                    model=self.model,
-                    messages=[
-                        {"role": "system", "content": self.SYSTEM_PROMPT},
-                        {"role": "user", "content": user_prompt}
-                    ],
-                    temperature=0.3,
-                    max_tokens=2000,
-                    response_format={"type": "json_object"}
-                )
-
-                result = json.loads(response.choices[0].message.content)
-                if "claims" not in result:
-                    result["claims"] = []
-
-                logger.info(f"Analyst (async) identified {len(result.get('claims', []))} claims")
-                return result
-
-            except (openai.RateLimitError, openai.APITimeoutError) as e:
-                delay = RETRY_BASE_DELAY * (2 ** attempt)
-                logger.warning(
-                    f"Analyst async attempt {attempt + 1}/{MAX_RETRIES} failed "
-                    f"({type(e).__name__}), retrying in {delay:.1f}s..."
-                )
-                if attempt < MAX_RETRIES - 1:
-                    await asyncio.sleep(delay)
-                else:
-                    logger.error(f"Analyst async failed after {MAX_RETRIES} retries: {e}")
-                    return self._fallback_result(query, e)
-
-            except Exception as e:
-                logger.error(f"Analyst async stage failed: {e}")
-                return self._fallback_result(query, e)
-
-        return self._fallback_result(query, Exception("Max retries exceeded"))
 
     def _build_prompt(
         self,

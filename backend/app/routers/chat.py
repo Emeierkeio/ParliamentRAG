@@ -17,12 +17,10 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from ..services.neo4j_client import Neo4jClient
-from ..services.retrieval import RetrievalEngine
-from ..services.retrieval.commission_matcher import get_commission_matcher
-from ..services.authority import AuthorityScorer
 from ..services.compass import IdeologyScorer
-from ..services.generation import GenerationPipeline
+from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
+from ..services.deps import get_services
 from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
@@ -46,38 +44,6 @@ class ChatRequest(BaseModel):
     task_id: Optional[str] = Field(default=None)  # Client-provided task ID for reconnection
 
 
-# Global service instances
-_neo4j_client: Optional[Neo4jClient] = None
-_retrieval_engine: Optional[RetrievalEngine] = None
-_authority_scorer: Optional[AuthorityScorer] = None
-_ideology_scorer: Optional[IdeologyScorer] = None
-_generation_pipeline: Optional[GenerationPipeline] = None
-
-
-def get_services():
-    """Get or initialize service instances."""
-    global _neo4j_client, _retrieval_engine, _authority_scorer
-    global _ideology_scorer, _generation_pipeline
-
-    if _neo4j_client is None:
-        settings = get_settings()
-        _neo4j_client = Neo4jClient(
-            uri=settings.neo4j_uri,
-            user=settings.neo4j_user,
-            password=settings.neo4j_password
-        )
-        _retrieval_engine = RetrievalEngine(_neo4j_client)
-        _authority_scorer = AuthorityScorer(_neo4j_client)
-        _ideology_scorer = IdeologyScorer(_neo4j_client)
-        _generation_pipeline = GenerationPipeline()
-
-    return {
-        "neo4j": _neo4j_client,
-        "retrieval": _retrieval_engine,
-        "authority": _authority_scorer,
-        "ideology": _ideology_scorer,
-        "generation": _generation_pipeline,
-    }
 
 
 def sse_event(event_type: str, data: Any) -> str:
@@ -94,6 +60,7 @@ def sse_event(event_type: str, data: Any) -> str:
 # 3 per worker is a safe ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
 _MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "3"))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
+_pipeline_counter_lock: Optional[asyncio.Lock] = None
 _pipeline_waiting: int = 0   # tasks queued (waiting for a slot)
 _pipeline_active: int = 0    # tasks currently running
 
@@ -103,6 +70,13 @@ def _get_pipeline_semaphore() -> asyncio.Semaphore:
     if _pipeline_semaphore is None:
         _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
     return _pipeline_semaphore
+
+
+def _get_counter_lock() -> asyncio.Lock:
+    global _pipeline_counter_lock
+    if _pipeline_counter_lock is None:
+        _pipeline_counter_lock = asyncio.Lock()
+    return _pipeline_counter_lock
 
 
 async def _acquire_pipeline_slot(
@@ -120,16 +94,19 @@ async def _acquire_pipeline_slot(
     timeout (properly removing us from the waiters list), then we re-queue.
     """
     global _pipeline_waiting, _pipeline_active
+    lock = _get_counter_lock()
 
     # Fast path: slot available immediately
     if not semaphore.locked():
         await semaphore.acquire()
-        _pipeline_active += 1
+        async with lock:
+            _pipeline_active += 1
         logger.info(f"[SEMAPHORE] Task {task_id} acquired immediately (active={_pipeline_active})")
         return True
 
     # Slow path: queue and wait
-    _pipeline_waiting += 1
+    async with lock:
+        _pipeline_waiting += 1
     logger.info(f"[SEMAPHORE] Task {task_id} queued (position={_pipeline_waiting}, active={_pipeline_active})")
 
     try:
@@ -144,7 +121,8 @@ async def _acquire_pipeline_slot(
         while elapsed < max_wait:
             try:
                 await asyncio.wait_for(semaphore.acquire(), timeout=check_every)
-                _pipeline_active += 1
+                async with lock:
+                    _pipeline_active += 1
                 logger.info(f"[SEMAPHORE] Task {task_id} acquired after {elapsed}s "
                             f"(active={_pipeline_active}, still_waiting={_pipeline_waiting - 1})")
                 return True
@@ -163,7 +141,8 @@ async def _acquire_pipeline_slot(
         return False
 
     finally:
-        _pipeline_waiting = max(0, _pipeline_waiting - 1)
+        async with lock:
+            _pipeline_waiting = max(0, _pipeline_waiting - 1)
 
 
 async def process_chat_background(request: ChatRequest, task_id: str):
@@ -593,7 +572,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         await store.fail_task(task_id, str(e))
     finally:
         global _pipeline_active
-        _pipeline_active = max(0, _pipeline_active - 1)
+        async with _get_counter_lock():
+            _pipeline_active = max(0, _pipeline_active - 1)
         semaphore.release()
         logger.info(f"[PIPELINE] Semaphore released for task {task_id} "
                     f"(active={_pipeline_active}, waiting={_pipeline_waiting})")

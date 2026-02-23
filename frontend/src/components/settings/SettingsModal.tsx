@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Settings, RefreshCw, Save, AlertCircle } from "lucide-react";
-import { getConfig, updateConfig } from "@/lib/api";
+import { getConfig, reloadConfig, updateConfig } from "@/lib/api";
 import type { SystemConfig, ConfigUpdate } from "@/lib/api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,6 +42,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore nel caricamento della configurazione");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleReload = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+    try {
+      const data = await reloadConfig();
+      setConfigData(data);
+      setJsonContent(JSON.stringify(data, null, 2));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore nel reload della configurazione");
     } finally {
       setIsLoading(false);
     }
@@ -184,7 +199,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         <DialogFooter className="gap-2 sm:gap-0">
           <div className="flex-1 flex justify-start">
-            <Button variant="outline" size="sm" onClick={loadConfig} disabled={isLoading}>
+            <Button variant="outline" size="sm" onClick={handleReload} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Ricarica
             </Button>

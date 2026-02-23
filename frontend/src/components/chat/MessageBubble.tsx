@@ -401,14 +401,6 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                           highlightedChunkId === href && "bg-yellow-400/30 border-yellow-500 text-yellow-800 dark:text-yellow-300"
                         )}
                         onClick={() => {
-                          const availableIds = message.citations?.map(c => c.chunk_id) || [];
-                          const matched = availableIds.includes(href!);
-                          if (matched) {
-                            const cit = message.citations?.find(c => c.chunk_id === href);
-                            console.log(`[Pipeline:Citations] Click OK: ${href} → ${cit?.deputy_first_name} ${cit?.deputy_last_name} (${cit?.group})`);
-                          } else {
-                            console.warn(`[Pipeline:Citations] Click MISS: "${href}" not in sidebar (${availableIds.length} available)`, availableIds);
-                          }
                           setHighlightedChunkId(href);
                         }}
                         title="Clicca per evidenziare la fonte"

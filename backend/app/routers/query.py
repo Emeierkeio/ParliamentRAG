@@ -14,12 +14,9 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from ..services.neo4j_client import Neo4jClient
-from ..services.retrieval import RetrievalEngine
-from ..services.authority import AuthorityScorer
 from ..services.authority.coalition_logic import CoalitionLogic
-from ..services.compass import IdeologyScorer
-from ..services.generation import GenerationPipeline
-from ..config import get_config, get_settings
+from ..services.deps import get_services
+from ..config import get_config
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Query"])
@@ -62,39 +59,6 @@ class QueryResponse(BaseModel):
     compass: Optional[Dict[str, Any]]
     metadata: Dict[str, Any]
 
-
-# Global service instances (initialized on first request)
-_neo4j_client: Optional[Neo4jClient] = None
-_retrieval_engine: Optional[RetrievalEngine] = None
-_authority_scorer: Optional[AuthorityScorer] = None
-_ideology_scorer: Optional[IdeologyScorer] = None
-_generation_pipeline: Optional[GenerationPipeline] = None
-
-
-def get_services():
-    """Get or initialize service instances."""
-    global _neo4j_client, _retrieval_engine, _authority_scorer
-    global _ideology_scorer, _generation_pipeline
-
-    if _neo4j_client is None:
-        settings = get_settings()
-        _neo4j_client = Neo4jClient(
-            uri=settings.neo4j_uri,
-            user=settings.neo4j_user,
-            password=settings.neo4j_password
-        )
-        _retrieval_engine = RetrievalEngine(_neo4j_client)
-        _authority_scorer = AuthorityScorer(_neo4j_client)
-        _ideology_scorer = IdeologyScorer(_neo4j_client)
-        _generation_pipeline = GenerationPipeline()
-
-    return {
-        "neo4j": _neo4j_client,
-        "retrieval": _retrieval_engine,
-        "authority": _authority_scorer,
-        "ideology": _ideology_scorer,
-        "generation": _generation_pipeline,
-    }
 
 
 async def process_query_streaming(

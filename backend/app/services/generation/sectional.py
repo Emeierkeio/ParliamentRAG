@@ -29,21 +29,6 @@ from .position_brief import PositionBriefBuilder
 logger = logging.getLogger(__name__)
 
 
-# All 10 parliamentary groups (must all appear in output)
-# Uses display names (title case) matching normalize_party_name() output
-ALL_PARTIES = [
-    "Fratelli d'Italia",
-    "Partito Democratico - Italia Democratica e Progressista",
-    "Lega - Salvini Premier",
-    "Movimento 5 Stelle",
-    "Forza Italia - Berlusconi Presidente - PPE",
-    "Alleanza Verdi e Sinistra",
-    "Azione - Popolari Europeisti Riformatori - Renew Europe",
-    "Italia Viva - Il Centro - Renew Europe",
-    "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
-    "Misto",
-]
-
 class SectionalWriter:
     """
     Stage 2 of the generation pipeline.
@@ -163,6 +148,8 @@ STRUTTURA OUTPUT:
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
         )
         self._position_brief_builder = PositionBriefBuilder()
+
+        self.all_parties = self.config.get_all_parties()
 
         brief_config = gen_config.get("position_brief", {})
         self._context_chars = brief_config.get("context_chars", 500)
@@ -419,7 +406,7 @@ STRUTTURA OUTPUT:
             task_order.append("GOVERNO")
 
         # Party section tasks
-        for party in ALL_PARTIES:
+        for party in self.all_parties:
             evidence = evidence_by_party.get(party, [])
             tasks.append(self._write_section(
                 query=query,
@@ -703,6 +690,61 @@ TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
             count += 1
 
         return "\n".join(lines)
+
+    async def write_section_without_citation(
+        self,
+        query: str,
+        party: str,
+        evidence: List[Dict[str, Any]],
+        claims: List[Dict[str, Any]],
+    ) -> str:
+        """
+        Rewrite a party paragraph without any verbatim citation.
+
+        Called when a citation is hard-removed with score < REWRITE_THRESHOLD
+        (extreme semantic mismatch). The original section was generated around
+        a citation that no longer exists, leaving disconnected intro/positioning
+        sentences. This method produces a self-contained 2-3 sentence paragraph
+        based on the available evidence.
+
+        Returns the paragraph body (plain text, no ## header, no «» citations).
+        """
+        evidence_context = self._build_evidence_context(evidence, query, max_evidence=2)
+
+        system_prompt = (
+            "Sei un redattore parlamentare italiano esperto.\n"
+            "Scrivi una sezione analitica di 2-3 frasi che riassume la posizione del partito.\n\n"
+            "REGOLE:\n"
+            "- NON usare citazioni verbatim «» né marcatori [CIT:id].\n"
+            "- NON mettere nomi propri in grassetto.\n"
+            "- INIZIA con 'il gruppo' o 'il partito' (minuscolo, nessun header ### o ##).\n"
+            "- Ogni frase deve comunicare una posizione CONCRETA: angolo specifico, proposta, critica.\n"
+            "- Usa le evidenze come base per costruire l'analisi con parole tue.\n"
+            "DIVIETO DI FILLER: NON scrivere 'ha espresso la propria posizione' o simili."
+        )
+
+        user_prompt = (
+            f"Domanda: {query}\n\n"
+            f"Partito: {party}\n\n"
+            f"Evidenze disponibili:\n{evidence_context}\n\n"
+            "Scrivi 2-3 frasi che descrivono la posizione concreta del partito. "
+            "NON includere citazioni verbatim."
+        )
+
+        try:
+            response = await self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.2,
+                max_tokens=300,
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            logger.error(f"write_section_without_citation failed for {party}: {e}")
+            return ""
 
     def write_sections_sync(
         self,

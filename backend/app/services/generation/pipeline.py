@@ -14,12 +14,13 @@ Includes citation integrity system:
 - Final Completeness Check: ensures all citations resolved
 """
 import re
+import asyncio
 import logging
 from typing import List, Dict, Any, Optional, AsyncIterator
 from datetime import datetime
 
 from .analyst import ClaimAnalyst
-from .sectional import SectionalWriter, ALL_PARTIES
+from .sectional import SectionalWriter
 from .integrator import NarrativeIntegrator
 from .surgeon import CitationSurgeon
 from .synthesis import ConvergenceDivergenceAnalyzer
@@ -224,13 +225,65 @@ class GenerationPipeline:
                 logger.warning(f"  - {ic.get('evidence_id')}: {ic.get('warning')}")
 
             # Hard-remove citations with extreme mismatch (likely wrong source cited)
-            HARD_REMOVE_THRESHOLD = 0.25
+            HARD_REMOVE_THRESHOLD = 0.35
+            # For the most extreme mismatches, also rewrite the party paragraph
+            # without any citation so the section remains coherent.
+            REWRITE_THRESHOLD = 0.25
             hard_mismatches = [ic for ic in incoherent if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD]
             if hard_mismatches:
                 logger.warning(f"Hard-removing {len(hard_mismatches)} citations with score < {HARD_REMOVE_THRESHOLD}")
                 for ic in hard_mismatches:
                     eid = ic.get("evidence_id", "")
+                    # Remove «inline quote» [CIT:id] together to prevent bare «» in output.
+                    # Allow punctuation/whitespace between » and [CIT: (LLM may insert . or ,)
+                    integrated_text = re.sub(
+                        rf'«[^»]+»[.,;:!?\s]*\[CIT:{re.escape(eid)}\]',
+                        '',
+                        integrated_text
+                    )
+                    # Also remove bare [CIT:id] if no inline quote preceded it
                     integrated_text = re.sub(rf'\[CIT:{re.escape(eid)}\]', '', integrated_text)
+
+                # Rewrite paragraphs for parties whose citation was extremely incoherent
+                # (score < REWRITE_THRESHOLD). The original section was written around a
+                # citation that is now gone, leaving disconnected intro/positioning sentences.
+                extreme_mismatches = [ic for ic in hard_mismatches if ic.get("score", 1.0) < REWRITE_THRESHOLD]
+                if extreme_mismatches:
+                    rewrite_tasks = {}
+                    for ic in extreme_mismatches:
+                        eid = ic.get("evidence_id", "")
+                        party = evidence_map.get(eid, {}).get("party", "")
+                        if not party or party in rewrite_tasks:
+                            continue
+                        # Only rewrite if the party has no remaining [CIT:] in the text
+                        remaining = re.findall(r'\[CIT:[^\]]+\]', integrated_text)
+                        party_eids = {e.get("evidence_id") for e in evidence_by_party.get(party, [])}
+                        has_other_citations = any(
+                            r in party_eids for r in remaining
+                        )
+                        if has_other_citations:
+                            logger.info(f"Skipping rewrite for '{party}': still has other citations")
+                            continue
+                        party_evidence = evidence_by_party.get(party, [])
+                        if party_evidence:
+                            rewrite_tasks[party] = party_evidence
+
+                    if rewrite_tasks:
+                        logger.info(f"Rewriting {len(rewrite_tasks)} citation-free paragraphs: {list(rewrite_tasks)}")
+                        rewrite_results = await asyncio.gather(*[
+                            self.sectional_writer.write_section_without_citation(
+                                query=query,
+                                party=party,
+                                evidence=ev,
+                                claims=claims,
+                            )
+                            for party, ev in rewrite_tasks.items()
+                        ])
+                        for party, new_body in zip(rewrite_tasks.keys(), rewrite_results):
+                            if new_body:
+                                integrated_text = self._replace_party_paragraph(
+                                    integrated_text, party, new_body
+                                )
 
         # Update registry with coherence scores
         for detail in coherence_report.get("details", []):
@@ -333,13 +386,35 @@ class GenerationPipeline:
             recovered = len(tracked_ids) - final_result.get("total_citations", 0)
             logger.info(f"Recovered {recovered} untracked citations from final text")
 
-        # Check for bare «» citations not wrapped in markdown links
-        bare_citations = re.findall(r'(?<!\[)«[^»]+»(?!\])', final_text)
+        # Check for bare «» citations not wrapped in markdown links and remove them.
+        # These can appear when hard-removed citations leave orphaned quotes (e.g. when
+        # the integrator LLM moves [CIT:id] after a period, separating it from «»).
+        bare_citations = re.findall(r'(?<!\[)«[^»]+»', final_text)
         if bare_citations:
             logger.warning(
                 f"Found {len(bare_citations)} bare citations without markdown links: "
                 f"{[c[:50] for c in bare_citations[:3]]}"
             )
+            final_text = re.sub(r'(?<!\[)«[^»]+»', '', final_text)
+
+        # Clean up verb-phrase artifacts left after removing a quote (bare or hard-removed).
+        # Runs unconditionally because hard-removal (lines 235-241) strips «quote»[CIT:id]
+        # but leaves attribution phrases like "**Lupi** afferma: ." intact — and since
+        # no bare «» remain afterwards, the bare_citations block above never fires.
+        #
+        # Three artifact patterns, applied in order:
+        #
+        # 1. "afferma: ."  → "."  (colon left after quote stripped in sectional)
+        final_text = re.sub(r':\s*\.', '.', final_text)
+        # 2. "afferma che ." → "."  (dangling conjunction left after [CIT:id] stripped)
+        final_text = re.sub(r'\s+(?:che|come|di)\s+\.', '.', final_text)
+        # 3. "afferma ."  → "afferma."  (bare space before period from bare-quote removal)
+        final_text = re.sub(r' \.', '.', final_text)
+        # 4. "**nome** afferma."  → ""  (standalone attribution sentence with no content).
+        #    After steps 1-3 all paths converge on this pattern: bold name + single bridge
+        #    verb + period and nothing else. Safe to strip because a verb immediately
+        #    followed by a period (no object) is never a meaningful sentence here.
+        final_text = re.sub(r'\*\*[^*\n]+\*\*\s+\w+\.', '', final_text)
 
         # Check for unresolved [CIT:id] placeholders
         remaining_placeholders = re.findall(r'\[CIT:([^\]]+)\]', final_text)
@@ -403,137 +478,6 @@ class GenerationPipeline:
         """
         import asyncio
         return asyncio.run(self.generate(query, evidence_list))
-
-    async def generate_baseline(
-        self,
-        query: str,
-        evidence_list: List[Dict[str, Any]],
-    ) -> Dict[str, Any]:
-        """
-        Generate a baseline RAG response WITHOUT authority scoring
-        and WITHOUT citation correction (surgeon/coherence).
-
-        Uses the same evidence but with uniform authority scores (0.5)
-        and skips Stage 4 (Citation Surgeon) and coherence validation.
-
-        Sections are written sequentially (not in parallel) to avoid
-        OpenAI rate limit bursts after the main pipeline.
-        """
-        start_time = datetime.now()
-        logger.info(f"[BASELINE-PIPELINE] === Starting generate_baseline ===")
-        logger.info(f"[BASELINE-PIPELINE] Query: '{query[:100]}...'")
-        logger.info(f"[BASELINE-PIPELINE] Evidence count: {len(evidence_list)}")
-
-        # 1. Neutralize authority scores
-        baseline_evidence = [
-            {**e, "authority_score": 0.5} for e in evidence_list
-        ]
-        logger.info(f"[BASELINE-PIPELINE] Step 1: Neutralized {len(baseline_evidence)} evidence items to authority_score=0.5")
-
-        # 2. Stage 1: Analyst (async to avoid blocking the event loop)
-        logger.info("[BASELINE-PIPELINE] Step 2: Running analyst.analyze_async...")
-        try:
-            claims_result = await self.analyst.analyze_async(query, baseline_evidence)
-            claims = claims_result.get("claims", [])
-            logger.info(f"[BASELINE-PIPELINE] Step 2 done: {len(claims)} claims extracted")
-        except Exception as e:
-            logger.error(f"[BASELINE-PIPELINE] Step 2 FAILED: {type(e).__name__}: {e}", exc_info=True)
-            raise
-
-        # 3. Stage 2: Sectional Writer — SEQUENTIAL to avoid RPM burst
-        # The main pipeline already consumed ~13 API calls; running 11
-        # more in parallel here would exceed the 60 RPM rate limit.
-        evidence_by_party = self._group_evidence_by_party(baseline_evidence)
-        government_evidence = self._get_government_evidence(baseline_evidence)
-
-        sections = []
-        all_parties = list(evidence_by_party.keys())
-        logger.info(f"[BASELINE-PIPELINE] Step 3: Writing sections for {len(all_parties)} parties, gov_evidence={'yes' if government_evidence else 'no'}")
-
-        # Government section first (if evidence exists)
-        if government_evidence:
-            logger.info(f"[BASELINE-PIPELINE] Step 3: Writing GOVERNO section ({len(government_evidence)} evidence)...")
-            try:
-                section = await self.sectional_writer._write_section(
-                    query=query,
-                    party="GOVERNO",
-                    evidence=government_evidence,
-                    claims=claims,
-                    is_government=True
-                )
-                sections.append(section)
-                logger.info(f"[BASELINE-PIPELINE] Step 3: GOVERNO section done: {len(section.get('text', ''))} chars")
-            except Exception as e:
-                logger.error(f"[BASELINE-PIPELINE] Step 3: GOVERNO section FAILED: {type(e).__name__}: {e}", exc_info=True)
-                raise
-
-        # Party sections sequentially
-        for i, party in enumerate(all_parties):
-            evidence = evidence_by_party.get(party, [])
-            logger.info(f"[BASELINE-PIPELINE] Step 3: Writing party {i+1}/{len(all_parties)}: '{party}' ({len(evidence)} evidence)...")
-            try:
-                section = await self.sectional_writer._write_section(
-                    query=query,
-                    party=party,
-                    evidence=evidence,
-                    claims=claims,
-                    is_government=False
-                )
-                sections.append(section)
-                logger.info(f"[BASELINE-PIPELINE] Step 3: '{party}' section done: {len(section.get('text', ''))} chars")
-            except Exception as e:
-                logger.error(f"[BASELINE-PIPELINE] Step 3: '{party}' section FAILED: {type(e).__name__}: {e}", exc_info=True)
-                raise
-
-        logger.info(f"[BASELINE-PIPELINE] Step 3 complete: {len(sections)} total sections")
-
-        # 4. Stage 3: Integrator WITHOUT guard (simple integrate)
-        # Pass topic_statistics for a fair A/B comparison
-        logger.info("[BASELINE-PIPELINE] Step 4: Running integrator.integrate...")
-        topic_statistics = self._compute_topic_statistics(baseline_evidence)
-        try:
-            integrated = self.integrator.integrate(
-                query, sections, topic_statistics=topic_statistics
-            )
-            logger.info(f"[BASELINE-PIPELINE] Step 4 done: integrated keys={list(integrated.keys())}, text_len={len(integrated.get('text', ''))}")
-        except Exception as e:
-            logger.error(f"[BASELINE-PIPELINE] Step 4 FAILED: {type(e).__name__}: {e}", exc_info=True)
-            raise
-
-        # 5. Remove unresolved [CIT:id] placeholders and clean up artifacts
-        text = integrated.get("text", "")
-        logger.info(f"[BASELINE-PIPELINE] Step 5: Cleaning text (pre-clean len={len(text)})")
-        # Remove placeholders, including any space before punctuation
-        text = re.sub(r'\s*\[CIT:[^\]]+\]', '', text)
-        # Clean up double spaces
-        text = re.sub(r'  +', ' ', text)
-        # Clean up space before punctuation left by removals
-        text = re.sub(r'\s+([.,:;!?)])', r'\1', text)
-        # Clean up empty lines
-        text = re.sub(r'\n\s*\n\s*\n', '\n\n', text)
-        logger.info(f"[BASELINE-PIPELINE] Step 5: Cleaned text (post-clean len={len(text)})")
-
-        duration_ms = (datetime.now() - start_time).total_seconds() * 1000
-
-        logger.info(
-            f"Baseline generation complete: {len(text)} chars, "
-            f"{len(sections)} sections, {duration_ms:.1f}ms"
-        )
-
-        return {
-            "text": text,
-            "citations": [],
-            "sections": [
-                {"party": s["party"], "has_evidence": s.get("has_evidence", False)}
-                for s in sections
-            ],
-            "metadata": {
-                "pipeline": "baseline",
-                "duration_ms": duration_ms,
-                "claims_count": len(claims),
-                "sections_count": len(sections),
-            }
-        }
 
     def _compute_topic_statistics(
         self,
@@ -663,6 +607,26 @@ class GenerationPipeline:
             "sessions_detail": sessions_detail,
         }
 
+    def _replace_party_paragraph(self, text: str, party: str, new_body: str) -> str:
+        """
+        Replace the body of a party's paragraph in the integrated text.
+
+        Party paragraphs follow the integrator's mandatory format:
+            "Per [Full Party Name], [body text]"
+        and end before the next paragraph ("Per ") or section header ("##").
+
+        Only the body is replaced; the "Per [Party], " prefix is preserved so
+        the output keeps the correct paragraph structure.
+        """
+        party_escaped = re.escape(party)
+        pattern = rf'(Per {party_escaped},\s+).*?(?=\n\nPer |\n\n##|\Z)'
+        new_text, n = re.subn(pattern, rf'\g<1>{new_body}', text, flags=re.DOTALL)
+        if n == 0:
+            logger.warning(f"Could not locate paragraph for '{party}' in integrated text — skipping rewrite")
+        else:
+            logger.info(f"Rewrote citation-free paragraph for '{party}'")
+        return new_text
+
     def _group_evidence_by_party(
         self,
         evidence_list: List[Dict[str, Any]]
@@ -672,7 +636,8 @@ class GenerationPipeline:
         IMPORTANT: Excludes government members (GovernmentMember) as they have
         their own separate section.
         """
-        by_party: Dict[str, List[Dict[str, Any]]] = {party: [] for party in ALL_PARTIES}
+        all_parties = get_config().get_all_parties()
+        by_party: Dict[str, List[Dict[str, Any]]] = {party: [] for party in all_parties}
 
         for evidence in evidence_list:
             # Skip government members - they go in the GOVERNO section
@@ -685,7 +650,7 @@ class GenerationPipeline:
             if party not in by_party:
                 # Try to find a matching party
                 matched = False
-                for known_party in ALL_PARTIES:
+                for known_party in all_parties:
                     if party in known_party or known_party in party:
                         by_party[known_party].append(evidence)
                         matched = True

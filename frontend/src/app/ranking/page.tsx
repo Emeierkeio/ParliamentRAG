@@ -7,6 +7,7 @@ import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
+import { TOPICS } from "@/lib/constants";
 import type { Expert } from "@/types";
 import {
   Crown,
@@ -72,13 +73,6 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
   { value: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", shortLabel: "Azione" },
   { value: "ITALIA VIVA-IL CENTRO-RENEW EUROPE", label: "Italia Viva", shortLabel: "IV" },
   { value: "MISTO", label: "Misto", shortLabel: "Misto" },
-];
-
-const TOPICS = [
-  "PNRR", "riforma sanitaria", "transizione energetica", "salario minimo",
-  "conflitto in Ucraina", "riforma fiscale", "autonomia differenziata",
-  "riforma della giustizia", "flussi migratori", "scuola e istruzione",
-  "cambiamento climatico", "infrastrutture",
 ];
 
 // ── Page ───────────────────────────────────────────────────────

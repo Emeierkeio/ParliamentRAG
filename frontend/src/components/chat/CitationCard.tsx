@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink } from "lucide-react";
 import { config } from "@/config";
 import type { Citation } from "@/types";
-import { Quote, Calendar, MapPin, User, ExternalLink, Link as LinkIcon } from "lucide-react";
 
 function getCameraUrl(id: string | undefined): string | null {
   if (!id) return null;

@@ -9,6 +9,7 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import type { Message, ProcessingProgress } from "@/types";
 import { Atom, ArrowRight, History } from "lucide-react";
+import { TOPICS } from "@/lib/constants";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -165,18 +166,9 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         </p>
 
         <div className="flex flex-wrap justify-center gap-2">
-          <TopicPill topic="PNRR" onClick={onSendMessage} />
-          <TopicPill topic="riforma sanitaria" onClick={onSendMessage} />
-          <TopicPill topic="transizione energetica" onClick={onSendMessage} />
-          <TopicPill topic="salario minimo" onClick={onSendMessage} />
-          <TopicPill topic="conflitto in Ucraina" onClick={onSendMessage} />
-          <TopicPill topic="riforma fiscale" onClick={onSendMessage} />
-          <TopicPill topic="autonomia differenziata" onClick={onSendMessage} />
-          <TopicPill topic="riforma della giustizia" onClick={onSendMessage} />
-          <TopicPill topic="flussi migratori" onClick={onSendMessage} />
-          <TopicPill topic="scuola e istruzione" onClick={onSendMessage} />
-          <TopicPill topic="cambiamento climatico" onClick={onSendMessage} />
-          <TopicPill topic="infrastrutture" onClick={onSendMessage} />
+          {TOPICS.map((topic) => (
+            <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
+          ))}
         </div>
       </div>
     </div>

@@ -20,8 +20,6 @@ import {
   MessageSquare,
   Shield,
   TrendingUp,
-  Thermometer,
-  Hash,
   BookOpen,
   Info,
 } from "lucide-react";
@@ -371,10 +369,6 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
   };
 
-  const updateParam = (key: keyof typeof data.parameters, value: number) => {
-    onChange({ ...data, parameters: { ...data.parameters, [key]: value } });
-  };
-
   const updatePositionBrief = (key: keyof typeof data.position_brief, value: number | boolean) => {
     onChange({ ...data, position_brief: { ...data.position_brief, [key]: value } });
   };
@@ -409,64 +403,6 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               </select>
             </div>
           ))}
-        </div>
-
-        <Separator />
-
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Parametri LLM</span>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-1">
-                <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Hash className="h-3 w-3" />
-                  Max Tokens
-                </Label>
-                <InfoPopover text="Numero massimo di token generati per risposta LLM. Valori più alti producono risposte più lunghe ma aumentano costo e latenza. 4000 è adeguato per sezioni partito dettagliate." />
-              </div>
-              <Input
-                type="number"
-                min={100}
-                max={16000}
-                step={100}
-                value={data.parameters.max_tokens}
-                onChange={(e) => updateParam("max_tokens", parseInt(e.target.value) || 4000)}
-                className="h-8"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-1">
-                <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                  <Thermometer className="h-3 w-3" />
-                  Temperature
-                </Label>
-                <InfoPopover text="Controlla la casualità dell'output LLM. 0 = completamente deterministico, 2 = molto creativo/casuale. Per analisi politica si raccomanda 0.2–0.4 per output precisi e riproducibili." />
-              </div>
-              <Input
-                type="number"
-                min={0}
-                max={2}
-                step={0.05}
-                value={data.parameters.temperature}
-                onChange={(e) => updateParam("temperature", parseFloat(e.target.value) || 0.3)}
-                className="h-8"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <LabelWithInfo info="Nucleus sampling: a ogni passo il modello considera solo i token la cui probabilità cumulativa è ≤ Top-P. 1.0 = nessuna restrizione. Valori minori (es. 0.9) escludono le scelte meno probabili.">
-                Top-P
-              </LabelWithInfo>
-              <Input
-                type="number"
-                min={0}
-                max={1}
-                step={0.05}
-                value={data.parameters.top_p}
-                onChange={(e) => updateParam("top_p", parseFloat(e.target.value) || 1.0)}
-                className="h-8"
-              />
-            </div>
-          </div>
         </div>
 
         <Separator />

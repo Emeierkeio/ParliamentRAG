@@ -133,6 +133,10 @@ REGOLE GENERALI:
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("integrator", "gpt-4o")
 
+        coalitions = self.config.coalitions
+        self.MAGGIORANZA = coalitions.get("maggioranza", [])
+        self.OPPOSIZIONE = coalitions.get("opposizione", [])
+
     def _format_statistics(self, topic_statistics: Optional[Dict[str, Any]]) -> str:
         """Format topic statistics for the integrator prompt."""
         if not topic_statistics:
@@ -298,23 +302,6 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
                 "error": str(e),
             }
 
-    # Coalition membership
-    MAGGIORANZA = [
-        "Fratelli d'Italia",
-        "Lega - Salvini Premier",
-        "Forza Italia - Berlusconi Presidente - PPE",
-        "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
-    ]
-
-    OPPOSIZIONE = [
-        "Partito Democratico - Italia Democratica e Progressista",
-        "Movimento 5 Stelle",
-        "Alleanza Verdi e Sinistra",
-        "Azione - Popolari Europeisti Riformatori - Renew Europe",
-        "Italia Viva - Il Centro - Renew Europe",
-        "Misto",
-    ]
-
     def _get_section_by_party(self, sections: List[Dict[str, Any]], party: str) -> str:
         """Get content for a specific party from sections."""
         for section in sections:
@@ -353,8 +340,6 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
 
     def _simple_concatenation(self, sections: List[Dict[str, Any]]) -> str:
         """Simple fallback concatenation without LLM integration, grouped by coalition."""
-        import re
-
         def strip_party_header(content: str) -> str:
             """Remove party header lines (## PARTY_NAME)."""
             return re.sub(r'^##\s+[A-Z][^\n]*\n+', '', content, flags=re.MULTILINE)
