@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   Scale,
   Search,
@@ -22,33 +23,57 @@ import {
   Thermometer,
   Hash,
   BookOpen,
+  Info,
 } from "lucide-react";
 import type { SystemConfig } from "@/lib/api";
 
 // ─── Shared helpers ──────────────────────────────────────────
 
-const WEIGHT_LABELS: Record<string, { label: string; icon: React.ComponentType<{ className?: string }> }> = {
-  profession: { label: "Professione", icon: Briefcase },
-  education: { label: "Istruzione", icon: GraduationCap },
-  committee: { label: "Commissioni", icon: Users },
-  acts: { label: "Atti", icon: FileText },
-  interventions: { label: "Interventi", icon: MessageSquare },
-  role: { label: "Ruolo", icon: Shield },
+const WEIGHT_LABELS: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; description: string }> = {
+  profession: { label: "Professione", icon: Briefcase, description: "Contributo della professione pre-parlamentare all'authority score. Un parlamentare con background medico o giuridico ha expertise specifica." },
+  education: { label: "Istruzione", icon: GraduationCap, description: "Contributo del titolo di studio all'authority score. Lauree specialistiche e dottorati incrementano il peso." },
+  committee: { label: "Commissioni", icon: Users, description: "Contributo dell'appartenenza a commissioni parlamentari tematicamente rilevanti alla query. Più alta è la pertinenza, maggiore il peso." },
+  acts: { label: "Atti", icon: FileText, description: "Contributo al numero di atti parlamentari presentati (leggi, mozioni, interrogazioni), ponderati per recency tramite decadimento temporale." },
+  interventions: { label: "Interventi", icon: MessageSquare, description: "Contributo al numero di interventi in aula ponderati per recency. Parlamentari attivi e recenti ottengono score più alti." },
+  role: { label: "Ruolo", icon: Shield, description: "Contributo del ruolo istituzionale (Presidente, Ministro, Capogruppo, ecc.). Ruoli apicali ricevono un boost di autorevolezza." },
 };
 
 const MERGER_LABELS: Record<string, { label: string; description: string }> = {
-  relevance: { label: "Rilevanza", description: "Score di similarità base" },
-  diversity: { label: "Diversità", description: "Penalizza dominanza stesso speaker" },
-  coverage: { label: "Copertura", description: "Premia copertura partiti" },
-  authority: { label: "Autorità", description: "Pesa l'autorevolezza" },
-  salience: { label: "Salienza", description: "Preferisce testi politicamente sostanziali" },
+  relevance: { label: "Rilevanza", description: "Peso del punteggio di similarità coseno tra l'embedding della query e quello del chunk. È il segnale di pertinenza base." },
+  diversity: { label: "Diversità", description: "Penalizza i chunk dello stesso speaker per evitare che un singolo parlamentare domini i risultati, garantendo varietà di voci." },
+  coverage: { label: "Copertura", description: "Premia la rappresentazione di più gruppi parlamentari nel ranking finale, favorendo la visione multi-partito." },
+  authority: { label: "Autorità", description: "Ripondera i chunk in base all'authority score del parlamentare che ha pronunciato il discorso (expertise, ruolo, atti presentati)." },
+  salience: { label: "Salienza", description: "Preferisce testi politicamente sostanziali rispetto a testi procedurali (es. 'Grazie Presidente, ha facoltà di parlare')." },
 };
+
+// ─── InfoPopover ─────────────────────────────────────────────
+
+function InfoPopover({ text }: { text: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="text-muted-foreground/60 hover:text-primary transition-colors focus:outline-none"
+        >
+          <Info className="h-3.5 w-3.5" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 text-xs leading-relaxed" side="top" align="start">
+        {text}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+// ─── WeightSlider ─────────────────────────────────────────────
 
 function WeightSlider({
   label,
   value,
   onChange,
   icon: Icon,
+  info,
   step = 0.05,
   min = 0,
   max = 1,
@@ -57,6 +82,7 @@ function WeightSlider({
   value: number;
   onChange: (v: number) => void;
   icon?: React.ComponentType<{ className?: string }>;
+  info?: string;
   step?: number;
   min?: number;
   max?: number;
@@ -64,7 +90,10 @@ function WeightSlider({
   return (
     <div className="flex items-center gap-3">
       {Icon && <Icon className="h-4 w-4 text-muted-foreground shrink-0" />}
-      <Label className="w-28 text-sm shrink-0">{label}</Label>
+      <div className="w-28 flex items-center gap-1 shrink-0">
+        <Label className="text-sm">{label}</Label>
+        {info && <InfoPopover text={info} />}
+      </div>
       <input
         type="range"
         min={min}
@@ -100,6 +129,17 @@ function WeightSumBadge({ weights }: { weights: Record<string, number> }) {
   );
 }
 
+// ─── LabelWithInfo ────────────────────────────────────────────
+
+function LabelWithInfo({ children, info }: { children: React.ReactNode; info: string }) {
+  return (
+    <div className="flex items-center gap-1">
+      <Label className="text-xs text-muted-foreground">{children}</Label>
+      <InfoPopover text={info} />
+    </div>
+  );
+}
+
 // ─── Retrieval Editor ────────────────────────────────────────
 
 interface RetrievalEditorProps {
@@ -128,7 +168,9 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Dense Top-K</Label>
+            <LabelWithInfo info="Numero massimo di chunk recuperati dal canale denso (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo.">
+              Dense Top-K
+            </LabelWithInfo>
             <Input
               type="number"
               min={10}
@@ -139,7 +181,9 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Soglia Similarità Dense</Label>
+            <LabelWithInfo info="Soglia minima di cosine similarity per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Abbassarla aumenta il recall ma può introdurre rumore.">
+              Soglia Similarità Dense
+            </LabelWithInfo>
             <Input
               type="number"
               step={0.05}
@@ -151,7 +195,9 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Graph Min Match Lessicale</Label>
+            <LabelWithInfo info="Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword.">
+              Graph Min Match Lessicale
+            </LabelWithInfo>
             <Input
               type="number"
               min={1}
@@ -162,7 +208,9 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Soglia Semantica Graph</Label>
+            <LabelWithInfo info="Soglia di similarità semantica per il matching EuroVoc nel canale grafo. Controlla quanto strettamente il concetto EuroVoc deve corrispondere semanticamente alla query.">
+              Soglia Semantica Graph
+            </LabelWithInfo>
             <Input
               type="number"
               step={0.05}
@@ -189,6 +237,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
                 key={key}
                 label={meta?.label || key}
                 value={value}
+                info={meta?.description}
                 onChange={(v) => updateMergerWeight(key, v)}
                 icon={key === "authority" ? Scale : key === "coverage" ? Users : key === "diversity" ? Sparkles : key === "salience" ? TrendingUp : Target}
               />
@@ -238,6 +287,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
               key={key}
               label={meta?.label || key}
               value={value}
+              info={meta?.description}
               onChange={(v) => updateWeight(key, v)}
               icon={meta?.icon}
             />
@@ -248,10 +298,13 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-              <Clock className="h-3 w-3" />
-              Half-life Atti (giorni)
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <Clock className="h-3 w-3" />
+                Half-life Atti (giorni)
+              </Label>
+              <InfoPopover text="Vita media in giorni per il decadimento temporale degli atti parlamentari. Un atto presentato 'half_life' giorni fa vale la metà di uno odierno. Valori bassi privilegiano l'attività recente." />
+            </div>
             <Input
               type="number"
               min={30}
@@ -262,10 +315,13 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-              <Clock className="h-3 w-3" />
-              Half-life Interventi (giorni)
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <Clock className="h-3 w-3" />
+                Half-life Interventi (giorni)
+              </Label>
+              <InfoPopover text="Vita media in giorni per il decadimento temporale degli interventi in aula. Interventi recenti pesano di più nell'authority score rispetto a quelli lontani nel tempo." />
+            </div>
             <Input
               type="number"
               min={30}
@@ -276,7 +332,9 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
             />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Max Contributo Componente</Label>
+            <LabelWithInfo info="Contributo massimo (cap) che una singola componente può apportare all'authority score finale. Previene che un solo fattore (es. numero di interventi) domini completamente il punteggio.">
+              Max Contributo Componente
+            </LabelWithInfo>
             <Input
               type="number"
               step={0.05}
@@ -301,6 +359,12 @@ interface GenerationEditorProps {
 }
 
 const MODEL_OPTIONS = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
+
+const MODEL_INFO: Record<string, string> = {
+  analyst: "Stadio 1: decompone la query in claim tematici per partito. Usa gpt-4o-mini per efficienza, è un task strutturato e ripetitivo.",
+  writer: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa.",
+  integrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
+};
 
 export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
   const updateModel = (stage: string, model: string) => {
@@ -328,9 +392,12 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
         <div className="space-y-3">
           {Object.entries(data.models).map(([stage, model]) => (
             <div key={stage} className="flex items-center gap-3">
-              <Label className="w-28 text-sm capitalize shrink-0">
-                {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
-              </Label>
+              <div className="w-28 flex items-center gap-1 shrink-0">
+                <Label className="text-sm">
+                  {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
+                </Label>
+                {MODEL_INFO[stage] && <InfoPopover text={MODEL_INFO[stage]} />}
+              </div>
               <select
                 value={model}
                 onChange={(e) => updateModel(stage, e.target.value)}
@@ -350,10 +417,13 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           <span className="text-sm font-medium">Parametri LLM</span>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Hash className="h-3 w-3" />
-                Max Tokens
-              </Label>
+              <div className="flex items-center gap-1">
+                <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Hash className="h-3 w-3" />
+                  Max Tokens
+                </Label>
+                <InfoPopover text="Numero massimo di token generati per risposta LLM. Valori più alti producono risposte più lunghe ma aumentano costo e latenza. 4000 è adeguato per sezioni partito dettagliate." />
+              </div>
               <Input
                 type="number"
                 min={100}
@@ -365,10 +435,13 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Thermometer className="h-3 w-3" />
-                Temperature
-              </Label>
+              <div className="flex items-center gap-1">
+                <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Thermometer className="h-3 w-3" />
+                  Temperature
+                </Label>
+                <InfoPopover text="Controlla la casualità dell'output LLM. 0 = completamente deterministico, 2 = molto creativo/casuale. Per analisi politica si raccomanda 0.2–0.4 per output precisi e riproducibili." />
+              </div>
               <Input
                 type="number"
                 min={0}
@@ -380,7 +453,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Top-P</Label>
+              <LabelWithInfo info="Nucleus sampling: a ogni passo il modello considera solo i token la cui probabilità cumulativa è ≤ Top-P. 1.0 = nessuna restrizione. Valori minori (es. 0.9) escludono le scelte meno probabili.">
+                Top-P
+              </LabelWithInfo>
               <Input
                 type="number"
                 min={0}
@@ -398,10 +473,11 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5">
               <BookOpen className="h-4 w-4 text-muted-foreground" />
-              Position Brief
-            </span>
+              <span className="text-sm font-medium">Position Brief</span>
+              <InfoPopover text="Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate." />
+            </div>
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -414,7 +490,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Max Chunks Brief</Label>
+              <LabelWithInfo info="Numero di chunk inclusi nel brief di posizione. Un numero maggiore fornisce più contesto allo scrittore ma aumenta i token in input.">
+                Max Chunks Brief
+              </LabelWithInfo>
               <Input
                 type="number"
                 min={1}
@@ -426,7 +504,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Chars/Chunk</Label>
+              <LabelWithInfo info="Numero massimo di caratteri per chunk nel position brief. Tronca i chunk lunghi per mantenere il brief compatto e non sovraccaricare il contesto LLM.">
+                Chars/Chunk
+              </LabelWithInfo>
               <Input
                 type="number"
                 min={50}
@@ -439,7 +519,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Context Chars</Label>
+              <LabelWithInfo info="Caratteri di contesto mostrati per ogni elemento di evidenza nel brief (testo circostante la citazione). Più contesto aiuta lo scrittore a capire il tono e il significato dell'intervento.">
+                Context Chars
+              </LabelWithInfo>
               <Input
                 type="number"
                 min={100}
