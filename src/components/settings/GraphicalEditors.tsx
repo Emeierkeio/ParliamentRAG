@@ -18,6 +18,10 @@ import {
   FileText,
   MessageSquare,
   Shield,
+  TrendingUp,
+  Thermometer,
+  Hash,
+  BookOpen,
 } from "lucide-react";
 import type { SystemConfig } from "@/lib/api";
 
@@ -37,6 +41,7 @@ const MERGER_LABELS: Record<string, { label: string; description: string }> = {
   diversity: { label: "Diversità", description: "Penalizza dominanza stesso speaker" },
   coverage: { label: "Copertura", description: "Premia copertura partiti" },
   authority: { label: "Autorità", description: "Pesa l'autorevolezza" },
+  salience: { label: "Salienza", description: "Preferisce testi politicamente sostanziali" },
 };
 
 function WeightSlider({
@@ -185,7 +190,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
                 label={meta?.label || key}
                 value={value}
                 onChange={(v) => updateMergerWeight(key, v)}
-                icon={key === "authority" ? Scale : key === "coverage" ? Users : key === "diversity" ? Sparkles : Target}
+                icon={key === "authority" ? Scale : key === "coverage" ? Users : key === "diversity" ? Sparkles : key === "salience" ? TrendingUp : Target}
               />
             );
           })}
@@ -302,6 +307,14 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
   };
 
+  const updateParam = (key: keyof typeof data.parameters, value: number) => {
+    onChange({ ...data, parameters: { ...data.parameters, [key]: value } });
+  };
+
+  const updatePositionBrief = (key: keyof typeof data.position_brief, value: number | boolean) => {
+    onChange({ ...data, position_brief: { ...data.position_brief, [key]: value } });
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -309,25 +322,137 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           <Zap className="h-4 w-4 text-primary" />
           Generazione
         </CardTitle>
-        <CardDescription>Modelli LLM per la pipeline di generazione a 3 stadi</CardDescription>
+        <CardDescription>Modelli LLM per la pipeline di generazione a 4 stadi</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
-        {Object.entries(data.models).map(([stage, model]) => (
-          <div key={stage} className="flex items-center gap-3">
-            <Label className="w-28 text-sm capitalize shrink-0">
-              {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
-            </Label>
-            <select
-              value={model}
-              onChange={(e) => updateModel(stage, e.target.value)}
-              className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {MODEL_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>{opt}</option>
-              ))}
-            </select>
+      <CardContent className="space-y-4">
+        <div className="space-y-3">
+          {Object.entries(data.models).map(([stage, model]) => (
+            <div key={stage} className="flex items-center gap-3">
+              <Label className="w-28 text-sm capitalize shrink-0">
+                {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
+              </Label>
+              <select
+                value={model}
+                onChange={(e) => updateModel(stage, e.target.value)}
+                className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {MODEL_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <span className="text-sm font-medium">Parametri LLM</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <Hash className="h-3 w-3" />
+                Max Tokens
+              </Label>
+              <Input
+                type="number"
+                min={100}
+                max={16000}
+                step={100}
+                value={data.parameters.max_tokens}
+                onChange={(e) => updateParam("max_tokens", parseInt(e.target.value) || 4000)}
+                className="h-8"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <Thermometer className="h-3 w-3" />
+                Temperature
+              </Label>
+              <Input
+                type="number"
+                min={0}
+                max={2}
+                step={0.05}
+                value={data.parameters.temperature}
+                onChange={(e) => updateParam("temperature", parseFloat(e.target.value) || 0.3)}
+                className="h-8"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Top-P</Label>
+              <Input
+                type="number"
+                min={0}
+                max={1}
+                step={0.05}
+                value={data.parameters.top_p}
+                onChange={(e) => updateParam("top_p", parseFloat(e.target.value) || 1.0)}
+                className="h-8"
+              />
+            </div>
           </div>
-        ))}
+        </div>
+
+        <Separator />
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+              Position Brief
+            </span>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.position_brief.enabled}
+                onChange={(e) => updatePositionBrief("enabled", e.target.checked)}
+                className="h-4 w-4 rounded border-input accent-primary"
+              />
+              <span className="text-xs text-muted-foreground">Abilitato</span>
+            </label>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Max Chunks Brief</Label>
+              <Input
+                type="number"
+                min={1}
+                max={20}
+                value={data.position_brief.max_chunks}
+                onChange={(e) => updatePositionBrief("max_chunks", parseInt(e.target.value) || 5)}
+                className="h-8"
+                disabled={!data.position_brief.enabled}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Chars/Chunk</Label>
+              <Input
+                type="number"
+                min={50}
+                max={1000}
+                step={50}
+                value={data.position_brief.chars_per_chunk}
+                onChange={(e) => updatePositionBrief("chars_per_chunk", parseInt(e.target.value) || 200)}
+                className="h-8"
+                disabled={!data.position_brief.enabled}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">Context Chars</Label>
+              <Input
+                type="number"
+                min={100}
+                max={2000}
+                step={100}
+                value={data.position_brief.context_chars}
+                onChange={(e) => updatePositionBrief("context_chars", parseInt(e.target.value) || 500)}
+                className="h-8"
+                disabled={!data.position_brief.enabled}
+              />
+            </div>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

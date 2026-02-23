@@ -37,6 +37,17 @@ export interface SystemConfig {
   };
   generation: {
     models: Record<string, string>;
+    parameters: {
+      max_tokens: number;
+      temperature: number;
+      top_p: number;
+    };
+    position_brief: {
+      enabled: boolean;
+      max_chunks: number;
+      chars_per_chunk: number;
+      context_chars: number;
+    };
     require_all_parties: boolean;
     no_evidence_message: string;
   };
