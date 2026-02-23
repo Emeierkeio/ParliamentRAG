@@ -173,7 +173,7 @@ export function useChat(options: UseChatOptions = {}) {
       let citations: Citation[] = [];
       let experts: Expert[] = [];
       let balanceMetrics: BalanceMetrics | undefined;
-      let compassData: CompassData | null = null;
+      let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
       let commissioni: any[] = [];
       // Accumulator for step results — survives React state batching race conditions
@@ -400,6 +400,7 @@ export function useChat(options: UseChatOptions = {}) {
               case "compass":
                 try {
                   compassData = data.data || data;
+                  if (!compassData) break;
                   updateLastAssistantMessage({ compass: compassData });
                   const compassResult = {
                     step: 6,
