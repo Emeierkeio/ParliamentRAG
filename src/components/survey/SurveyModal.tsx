@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import ReactMarkdown from "react-markdown";
 import {
   Dialog,
   DialogContent,
@@ -553,30 +552,43 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     }
   };
 
-  // Strip only citation markers; keep all markdown structure for rendering.
-  const cleanCitations = (text: string): string =>
-    text
+  // Render both responses as plain text with identical styling.
+  // Strips citation markers and markdown syntax so both panels look the same
+  // regardless of whether the source has markdown or is plain text.
+  const renderContent = (text: string) => {
+    const cleaned = text
       .replace(/\[«([^»]+)»\]\([^)]+\)/g, '"$1"') // [«quote»](url) → "quote"
       .replace(/\(leg\d+_[^)]+\)/g, "")            // remove (legXX_...) refs
       .replace(/\[CIT:[^\]]+\]/g, "")              // remove [CIT:...] markers
-      .replace(/«([^»]+)»/g, '"$1"');              // bare «quote» → "quote"
+      .replace(/«([^»]+)»/g, '"$1"')               // bare «quote» → "quote"
+      // Ensure heading lines are on their own paragraph (add surrounding newlines)
+      .replace(/^(#{1,6}\s+.+)$/gm, "\n$1\n")
+      .replace(/^#{1,6}\s+/gm, "")                 // strip ## prefix, keep text
+      .replace(/\*\*([^*]+)\*\*/g, "$1")           // **bold** → plain
+      .replace(/\*([^*]+)\*/g, "$1")               // *italic* → plain
+      .replace(/^[-*]\s+/gm, "• ");                // - list → bullet
 
-  const mdComponents: React.ComponentProps<typeof ReactMarkdown>["components"] = {
-    h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 text-foreground">{children}</h1>,
-    h2: ({ children }) => <h2 className="text-base font-bold mt-3 mb-1 text-foreground">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-1 text-foreground">{children}</h3>,
-    p:  ({ children }) => <p  className="text-sm leading-relaxed mb-2 text-foreground">{children}</p>,
-    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-    ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
-    ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
-    li: ({ children }) => <li className="text-sm leading-relaxed">{children}</li>,
+    const lines = cleaned.split("\n");
+    const elements: React.ReactNode[] = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i].trim();
+      if (!line) {
+        // Collapse multiple blank lines into a single spacer
+        if (elements.length > 0 && elements[elements.length - 1] !== null) {
+          elements.push(<div key={`sp-${i}`} className="h-2" />);
+        }
+      } else {
+        elements.push(
+          <p key={i} className="text-sm text-foreground leading-relaxed mb-1">
+            {line}
+          </p>
+        );
+      }
+      i++;
+    }
+    return <>{elements}</>;
   };
-
-  const renderContent = (text: string) => (
-    <ReactMarkdown components={mdComponents}>
-      {cleanCitations(text)}
-    </ReactMarkdown>
-  );
 
   // Determine dialog title based on step
   const dialogTitle = () => {
