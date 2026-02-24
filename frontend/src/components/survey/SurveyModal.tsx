@@ -285,13 +285,13 @@ function ComparativeSlider({ ratingA, ratingB, onChange, disabled }: Comparative
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseInt(e.target.value);
-    const mapped = SLIDER_STEP_MAP[v.toString() as keyof typeof SLIDER_STEP_MAP];
+    const mapped = SLIDER_STEP_MAP[v];
     if (!mapped) return;
     const pref: "A" | "B" | "equal" = v < 0 ? "A" : v > 0 ? "B" : "equal";
     onChange(mapped.rating_a, mapped.rating_b, pref);
   };
 
-  const currentLabel = step !== undefined ? (SLIDER_STEP_MAP[step.toString() as keyof typeof SLIDER_STEP_MAP]?.label ?? "Sposta lo slider") : "Sposta lo slider";
+  const currentLabel = step !== undefined ? (SLIDER_STEP_MAP[step]?.label ?? "Sposta lo slider") : "Sposta lo slider";
   const isSet = step !== undefined;
 
   return (
