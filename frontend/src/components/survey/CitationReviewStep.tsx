@@ -285,9 +285,7 @@ export function CitationReviewStep({
                   className={cn(
                     "w-7 h-7 rounded-full text-xs font-medium transition-all flex items-center justify-center flex-shrink-0",
                     idx === currentIndex
-                      ? activeResponse === "A"
-                        ? "bg-blue-600 text-white ring-2 ring-blue-300"
-                        : "bg-amber-600 text-white ring-2 ring-amber-300"
+                      ? "bg-blue-600 text-white ring-2 ring-blue-300"
                       : isComplete
                       ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
                       : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
