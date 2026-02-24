@@ -110,6 +110,9 @@ export interface SurveyResponseCreate {
   // For evaluation_set A/B flow: frontend-generated assignment stored on ChatHistory
   ab_assignment?: Record<string, string>; // e.g. { A: "system", B: "baseline" }
   evaluation_set_topic?: string;
+
+  // Baseline authority: mean authority score of experts found in baseline response
+  baseline_authority_avg?: number;
 }
 
 export interface SurveyWithChat {

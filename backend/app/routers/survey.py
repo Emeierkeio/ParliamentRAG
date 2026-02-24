@@ -108,6 +108,7 @@ def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
         "evaluation_context": survey.evaluation_context or "",
         "evaluator_id": survey.evaluator_id or "",
         "ab_assignment": json.dumps(survey.ab_assignment, ensure_ascii=False) if survey.ab_assignment else "",
+        "baseline_authority_avg": survey.baseline_authority_avg if survey.baseline_authority_avg is not None else -1.0,
     }
     # Serialize each A/B dimension as JSON string
     for dim in AB_DIMENSIONS:
@@ -142,6 +143,7 @@ def _neo4j_record_to_dict(r: dict) -> dict:
         "evaluation_context": r.get("evaluation_context") or None,
         "evaluator_id": r.get("evaluator_id") or None,
         "ab_assignment": json.loads(r["ab_assignment"]) if r.get("ab_assignment") else None,
+        "baseline_authority_avg": r.get("baseline_authority_avg") if r.get("baseline_authority_avg") and r.get("baseline_authority_avg") >= 0 else None,
     }
     # Deserialize A/B dimensions from JSON strings
     # Optional dims (source_relevance/authority/coverage) return None if absent in legacy records
@@ -182,6 +184,7 @@ _SURVEY_FIELDS = (
     "s.evaluation_context AS evaluation_context, "
     "s.evaluator_id AS evaluator_id, "
     "s.ab_assignment AS ab_assignment, "
+    "s.baseline_authority_avg AS baseline_authority_avg, "
     "s.citation_evaluations_a AS citation_evaluations_a, "
     "s.citation_evaluations_b AS citation_evaluations_b, "
     + ", ".join(f"s.{d} AS {d}" for d in AB_DIMENSIONS)

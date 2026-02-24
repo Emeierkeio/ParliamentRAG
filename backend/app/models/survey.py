@@ -93,6 +93,9 @@ class SurveyResponse(BaseModel):
     evaluator_id: Optional[str] = Field(None, description="Unique identifier for the evaluator")
     ab_assignment: Optional[Dict[str, str]] = Field(None, description="Per-evaluator A/B assignment, e.g. {'A': 'system', 'B': 'baseline'}")
 
+    # Baseline authority: mean authority_score of experts in baseline response (computed at survey time)
+    baseline_authority_avg: Optional[float] = Field(None, description="Mean authority score of baseline experts")
+
 
 class SurveyResponseCreate(BaseModel):
     """Model for creating a new A/B survey response."""
@@ -138,6 +141,11 @@ class SurveyResponseCreate(BaseModel):
     )
     evaluation_set_topic: Optional[str] = Field(
         None, description="Topic name from evaluation_set.json if this is an evaluation_set A/B"
+    )
+
+    # Baseline authority: mean authority_score of experts extracted from baseline text (computed by frontend)
+    baseline_authority_avg: Optional[float] = Field(
+        None, description="Mean authority score of experts found in the baseline response"
     )
 
 

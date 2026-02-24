@@ -58,6 +58,14 @@ class AggregatedMetrics(BaseModel):
     ci_authority_utilization: Tuple[float, float]
     ci_authority_discrimination: Tuple[float, float]
 
+    # Baseline comparison metrics (computed from evaluation_set.json)
+    avg_baseline_party_coverage: Optional[float] = None
+    avg_baseline_response_completeness: Optional[float] = None
+    avg_baseline_authority: Optional[float] = None
+    ci_baseline_party_coverage: Optional[Tuple[float, float]] = None
+    ci_baseline_response_completeness: Optional[Tuple[float, float]] = None
+    ci_baseline_authority: Optional[Tuple[float, float]] = None
+
 
 class CombinedEvaluation(BaseModel):
     """Combined human + automated evaluation for a single chat."""

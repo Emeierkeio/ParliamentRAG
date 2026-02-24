@@ -276,6 +276,8 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             ci={agg.ci_party_coverage}
             icon={<Users className="w-4 h-4" />}
             description="Gruppi parlamentari citati su 10 totali"
+            baselineValue={agg.avg_baseline_party_coverage ?? undefined}
+            baselineCi={agg.ci_baseline_party_coverage ?? undefined}
           />
           <MetricCard
             label="Integrità Citazioni"
@@ -297,6 +299,8 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             ci={agg.ci_authority_utilization}
             icon={<Award className="w-4 h-4" />}
             description="Score medio degli esperti citati"
+            baselineValue={agg.avg_baseline_authority ?? undefined}
+            baselineCi={agg.ci_baseline_authority ?? undefined}
           />
           <MetricCard
             label="Completezza"
@@ -304,6 +308,8 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             ci={agg.ci_response_completeness}
             icon={<FileText className="w-4 h-4" />}
             description="Gruppi menzionati nel testo della risposta"
+            baselineValue={agg.avg_baseline_response_completeness ?? undefined}
+            baselineCi={agg.ci_baseline_response_completeness ?? undefined}
           />
         </div>
       </div>
@@ -400,6 +406,8 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       description:
         "Percentuale di gruppi parlamentari rappresentati nelle citazioni (target: 100%)",
       format: "percent" as const,
+      baselineValue: agg.avg_baseline_party_coverage ?? undefined,
+      baselineCi: agg.ci_baseline_party_coverage ?? undefined,
     },
     {
       label: "Integrita Citazioni (Citation Integrity)",
@@ -408,6 +416,8 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       description:
         "Percentuale di citazioni con estrazione verbatim valida",
       format: "percent" as const,
+      baselineValue: undefined,
+      baselineCi: undefined,
     },
     {
       label: "Verbatim Match",
@@ -416,14 +426,18 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       description:
         "Percentuale di citazioni il cui testo e presente verbatim nel chunk sorgente",
       format: "percent" as const,
+      baselineValue: undefined,
+      baselineCi: undefined,
     },
     {
-      label: "Utilizzo Autorevolezza (Authority Utilization)",
+      label: "Autorevolezza (Authority Utilization)",
       value: agg.avg_authority_utilization,
       ci: agg.ci_authority_utilization,
       description:
         "Media del punteggio di autorevolezza degli esperti citati",
       format: "percent" as const,
+      baselineValue: agg.avg_baseline_authority ?? undefined,
+      baselineCi: agg.ci_baseline_authority ?? undefined,
     },
     {
       label: "Discriminazione Autorevolezza (Authority Discrimination)",
@@ -432,6 +446,8 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       description:
         "Deviazione standard dei punteggi di autorevolezza (valori alti = maggiore selettivita)",
       format: "decimal" as const,
+      baselineValue: undefined,
+      baselineCi: undefined,
     },
     {
       label: "Completezza Risposta (Response Completeness)",
@@ -440,8 +456,13 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
       description:
         "Percentuale di sezioni per-partito presenti nella risposta",
       format: "percent" as const,
+      baselineValue: agg.avg_baseline_response_completeness ?? undefined,
+      baselineCi: agg.ci_baseline_response_completeness ?? undefined,
     },
   ];
+
+  // Metrics that can be compared to baseline
+  const comparableMetrics = metrics.filter(m => m.baselineValue != null);
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -454,8 +475,12 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
         </p>
       </div>
 
+      {/* Sistema-only bar chart */}
       <Card>
-        <CardContent className="p-6">
+        <CardHeader>
+          <CardTitle className="text-sm text-muted-foreground font-medium">ParliamentRAG — tutte le metriche</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6 pt-0">
           <HorizontalBarChart
             items={metrics
               .filter((m) => m.format === "percent")
@@ -468,13 +493,41 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
         </CardContent>
       </Card>
 
+      {/* Sistema vs Baseline comparison for metrics that have baseline data */}
+      {comparableMetrics.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-500" />
+              ParliamentRAG vs Baseline — Metriche Confrontabili
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 pt-0">
+            <ABComparisonChart
+              items={comparableMetrics
+                .filter(m => m.format === "percent")
+                .map(m => ({
+                  label: m.label,
+                  systemValue: m.value,
+                  baselineValue: m.baselineValue ?? 0,
+                }))}
+              maxValue={1}
+            />
+            <p className="text-xs text-muted-foreground mt-3">
+              * Autorevolezza baseline calcolata dagli esperti estratti dal testo della risposta baseline durante le valutazioni A/B.
+              Completezza baseline calcolata dal numero di partiti menzionati nel testo della risposta baseline.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Detailed cards */}
       <div className="space-y-4">
         {metrics.map((m) => (
           <Card key={m.label}>
             <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div>
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <div className="flex-1">
                   <p className="font-medium text-gray-900 dark:text-gray-100">
                     {m.label}
                   </p>
@@ -482,12 +535,29 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
                     {m.description}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <div className="text-xl font-bold font-mono">
                     {m.format === "decimal"
                       ? m.value.toFixed(3)
                       : `${(m.value * 100).toFixed(1)}%`}
                   </div>
+                  {m.baselineValue != null && (
+                    <div className="text-xs text-amber-600 dark:text-amber-400 font-mono">
+                      Baseline: {m.format === "decimal"
+                        ? m.baselineValue.toFixed(3)
+                        : `${(m.baselineValue * 100).toFixed(1)}%`}
+                      <span className={cn(
+                        "ml-1 font-semibold",
+                        m.value - m.baselineValue > 0.005 ? "text-emerald-600" :
+                        m.value - m.baselineValue < -0.005 ? "text-red-500" : "text-gray-400"
+                      )}>
+                        {m.value - m.baselineValue > 0.005 ? "▲" : m.value - m.baselineValue < -0.005 ? "▼" : "≈"}
+                        {m.format === "percent"
+                          ? ` ${(m.value - m.baselineValue) >= 0 ? "+" : ""}${((m.value - m.baselineValue) * 100).toFixed(1)}pp`
+                          : ` ${(m.value - m.baselineValue) >= 0 ? "+" : ""}${(m.value - m.baselineValue).toFixed(3)}`}
+                      </span>
+                    </div>
+                  )}
                   <div className="text-xs text-muted-foreground">
                     {m.format === "decimal"
                       ? `IC 95%: [${m.ci[0].toFixed(3)}, ${m.ci[1].toFixed(3)}]`
@@ -495,6 +565,30 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
                   </div>
                 </div>
               </div>
+              {m.format === "percent" && (
+                <div className="space-y-1 mt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-blue-500 w-16 shrink-0">Sistema</span>
+                    <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className={cn("h-full rounded-full", m.value >= 0.8 ? "bg-emerald-500" : m.value >= 0.6 ? "bg-amber-500" : "bg-red-500")}
+                        style={{ width: `${Math.min(m.value * 100, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                  {m.baselineValue != null && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-amber-500 w-16 shrink-0">Baseline</span>
+                      <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-amber-400"
+                          style={{ width: `${Math.min(m.baselineValue * 100, 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
