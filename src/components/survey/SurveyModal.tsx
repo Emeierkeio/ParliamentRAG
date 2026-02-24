@@ -134,6 +134,11 @@ function ExpertAuthorityPanel({
           coalitionOrder.map((coalition) => {
             const group = byCoalition[coalition];
             if (!group || group.length === 0) return null;
+            // Sort within coalition: alphabetically by group name, then by authority_score desc
+            group.sort((a, b) => {
+              const gCmp = (a.group || "").localeCompare(b.group || "", "it");
+              return gCmp !== 0 ? gCmp : b.authority_score - a.authority_score;
+            });
             const coalLabel =
               coalition === "maggioranza" ? "Maggioranza" :
               coalition === "opposizione" ? "Opposizione" :
