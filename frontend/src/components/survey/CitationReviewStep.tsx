@@ -48,8 +48,6 @@ interface CitationReviewStepProps {
   isSubmitting: boolean;
 }
 
-type ActiveResponse = "A" | "B";
-
 const ISSUE_ICONS: Record<string, React.ReactNode> = {
   none: <Check className="w-3.5 h-3.5" />,
   out_of_context: <AlertTriangle className="w-3.5 h-3.5" />,
@@ -165,16 +163,14 @@ export function CitationReviewStep({
   onBack,
   isSubmitting,
 }: CitationReviewStepProps) {
-  const [activeResponse, setActiveResponse] = useState<ActiveResponse>("A");
   const [currentIndexA, setCurrentIndexA] = useState(0);
-  const [currentIndexB, setCurrentIndexB] = useState(0);
 
-  const citations = activeResponse === "A" ? citationsA : citationsB;
-  const evaluations = activeResponse === "A" ? evaluationsA : evaluationsB;
-  const responseText = activeResponse === "A" ? responseTextA : responseTextB;
-  const currentIndex = activeResponse === "A" ? currentIndexA : currentIndexB;
-  const setCurrentIndex = activeResponse === "A" ? setCurrentIndexA : setCurrentIndexB;
-  const onUpdateEvaluation = activeResponse === "A" ? onUpdateEvaluationA : onUpdateEvaluationB;
+  const citations = citationsA;
+  const evaluations = evaluationsA;
+  const responseText = responseTextA;
+  const currentIndex = currentIndexA;
+  const setCurrentIndex = setCurrentIndexA;
+  const onUpdateEvaluation = onUpdateEvaluationA;
 
   const currentCitation = citations[currentIndex];
   const currentEvaluation = evaluations[currentIndex];
@@ -186,11 +182,10 @@ export function CitationReviewStep({
   }, [responseText, currentCitation]);
 
   const completedA = evaluationsA.filter(isCitationEvalComplete).length;
-  const completedB = evaluationsB.filter(isCitationEvalComplete).length;
-  const totalCitations = citationsA.length + citationsB.length;
-  const totalCompleted = completedA + completedB;
+  const totalCitations = citationsA.length;
+  const totalCompleted = completedA;
 
-  const hasCitations = citationsA.length > 0 || citationsB.length > 0;
+  const hasCitations = citationsA.length > 0;
 
   const updateField = <K extends keyof CitationEvaluation>(
     field: K,
@@ -249,39 +244,12 @@ export function CitationReviewStep({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header with response toggle and progress */}
+      {/* Header with progress */}
       <div className="px-4 py-3 border-b bg-white dark:bg-gray-950">
         <div className="flex items-center justify-between mb-3">
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant={activeResponse === "A" ? "default" : "outline"}
-              onClick={() => setActiveResponse("A")}
-              className={cn(
-                "h-8",
-                activeResponse === "A" && "bg-blue-600 hover:bg-blue-700"
-              )}
-            >
-              Risposta A
-              <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0">
-                {completedA}/{citationsA.length}
-              </Badge>
-            </Button>
-            <Button
-              size="sm"
-              variant={activeResponse === "B" ? "default" : "outline"}
-              onClick={() => setActiveResponse("B")}
-              className={cn(
-                "h-8",
-                activeResponse === "B" && "bg-amber-600 hover:bg-amber-700"
-              )}
-            >
-              Risposta B
-              <Badge variant="secondary" className="ml-2 text-xs px-1.5 py-0">
-                {completedB}/{citationsB.length}
-              </Badge>
-            </Button>
-          </div>
+          <Badge className="h-8 px-3 bg-blue-600 text-white text-sm">
+            Risposta A
+          </Badge>
           <span className="text-sm text-gray-500">
             Totale: {totalCompleted}/{totalCitations}
           </span>
@@ -570,16 +538,13 @@ export function CitationReviewStep({
                 onClick={() => {
                   if (currentIndex > 0) {
                     setCurrentIndex(currentIndex - 1);
-                  } else if (activeResponse === "B" && citationsA.length > 0) {
-                    setActiveResponse("A");
-                    setCurrentIndexA(citationsA.length - 1);
                   } else {
                     onBack();
                   }
                 }}
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
-                {currentIndex === 0 && activeResponse === "A" ? "Indietro" : "Precedente"}
+                {currentIndex === 0 ? "Indietro" : "Precedente"}
               </Button>
 
               <div className="flex gap-2">
@@ -594,17 +559,6 @@ export function CitationReviewStep({
                     onClick={() => setCurrentIndex(currentIndex + 1)}
                   >
                     Prossima
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </Button>
-                ) : activeResponse === "A" && citationsB.length > 0 ? (
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      setActiveResponse("B");
-                      setCurrentIndexB(0);
-                    }}
-                  >
-                    Vai a Risposta B
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 ) : (

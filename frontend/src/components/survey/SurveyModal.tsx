@@ -190,6 +190,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
   const [baselineExperts, setBaselineExperts] = useState<Expert[]>([]);
   const [isLoadingBaselineExperts, setIsLoadingBaselineExperts] = useState(false);
+  const [sampledCitationsA, setSampledCitationsA] = useState<Citation[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
@@ -313,6 +314,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setSimpleFormState(getInitialSimpleRatingFormState());
       setLocalAbAssignment(null);
       setCurrentCategory(0);
+      setSampledCitationsA([]);
     }
   }, [isOpen, loadData]);
 
@@ -428,31 +430,20 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     }
   };
 
-  // Citations
-  const getCitationsA = (): Citation[] => {
-    if (!chatDetails || !localAbAssignment) return [];
-    return localAbAssignment["A"] === "system" ? (chatDetails.citations || []) : [];
-  };
-
-  const getCitationsB = (): Citation[] => {
-    if (!chatDetails || !localAbAssignment) return [];
-    return localAbAssignment["B"] === "system" ? (chatDetails.citations || []) : [];
-  };
-
   const handleGoToCitations = () => {
     if (!isFormComplete()) return;
-    const citA = getCitationsA();
-    const citB = getCitationsB();
-    if (formState.citation_evaluations_a.length === 0 && citA.length > 0) {
+    // Always use system citations (chatDetails.citations), ignoring A/B assignment.
+    // Sample up to 3 random citations to keep the evaluation short.
+    const allSystemCitations: Citation[] = chatDetails?.citations ?? [];
+    const sampled = allSystemCitations.length <= 3
+      ? allSystemCitations
+      : [...allSystemCitations].sort(() => Math.random() - 0.5).slice(0, 3);
+    setSampledCitationsA(sampled);
+    if (formState.citation_evaluations_a.length === 0 && sampled.length > 0) {
       setFormState(prev => ({
         ...prev,
-        citation_evaluations_a: citA.map(c => getInitialCitationEvaluation(c.chunk_id)),
-      }));
-    }
-    if (formState.citation_evaluations_b.length === 0 && citB.length > 0) {
-      setFormState(prev => ({
-        ...prev,
-        citation_evaluations_b: citB.map(c => getInitialCitationEvaluation(c.chunk_id)),
+        citation_evaluations_a: sampled.map(c => getInitialCitationEvaluation(c.chunk_id)),
+        citation_evaluations_b: [],
       }));
     }
     setStep("citations");
@@ -1075,16 +1066,6 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
                 <ScrollArea className="flex-1 min-h-0 px-4 py-4">
                   <div className="space-y-5">
-                    {categories[currentCategory].name === "Autorità Esperti" && (
-                      <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-700 dark:text-indigo-300 space-y-1">
-                        <p className="font-semibold flex items-center gap-1.5">
-                          <UserCheck className="w-3.5 h-3.5" />
-                          Valutazione autorità delle fonti
-                        </p>
-                        <p>A sinistra trovi il pannello degli esperti del sistema avanzato con score di autorità (selezione strutturata). A destra i deputati <em>citati nel testo baseline</em>, con il loro score di autorità calcolato a posteriori per confronto.</p>
-                        <p className="text-indigo-500 dark:text-indigo-400 italic">Framework: TREC Expert Finding · DQI · Source Credibility Theory</p>
-                      </div>
-                    )}
                     {categories[currentCategory].name !== "Valutazione Complessiva" ? (
                       categories[currentCategory].questions.map((question) => {
                         const dim = question.id as ABDimension;
@@ -1375,8 +1356,8 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
         {step === "citations" && (
           <div className="flex flex-col h-[80vh]">
             <CitationReviewStep
-              citationsA={getCitationsA()}
-              citationsB={getCitationsB()}
+              citationsA={sampledCitationsA}
+              citationsB={[]}
               responseTextA={getResponseA()}
               responseTextB={getResponseB()}
               evaluationsA={formState.citation_evaluations_a}

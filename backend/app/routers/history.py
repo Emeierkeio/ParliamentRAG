@@ -279,6 +279,8 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
     # Italian parliamentary texts (and NotebookLM) often cite deputies as "Cognome Nome".
     text_lower = baseline_text.lower()
     matched_deputies = []
+    matched_ids_set: set = set()
+
     for dep in deputies_result:
         fn = (dep.get("first_name") or "").strip()
         ln = (dep.get("last_name") or "").strip()
@@ -286,6 +288,57 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
             continue
         if f"{fn} {ln}".lower() in text_lower or f"{ln} {fn}".lower() in text_lower:
             matched_deputies.append(dep)
+            matched_ids_set.add(dep["id"])
+
+    # Second pass: last-name-only match (word boundary) for deputies not yet matched.
+    # Handles patterns like "Caiata (Fratelli d'Italia, 30/11/2022)" where only the
+    # surname appears in the text.
+    # Build a map of lower-case last name → list of candidates (excluding already matched).
+    ln_to_candidates: dict = {}
+    for dep in deputies_result:
+        if dep["id"] in matched_ids_set:
+            continue
+        ln = (dep.get("last_name") or "").strip()
+        if not ln:
+            continue
+        ln_lower = ln.lower()
+        ln_to_candidates.setdefault(ln_lower, []).append(dep)
+
+    def _group_name_in_context(group_name: str, context: str) -> bool:
+        """Return True if a meaningful part of group_name appears in the context window."""
+        # Split group name into significant tokens (≥4 chars, skip connectors)
+        _skip = {"della", "delle", "degli", "del", "dei", "the", "per", "con", "and"}
+        tokens = [t for t in re.split(r'[\s\-–/|]+', group_name.lower()) if len(t) >= 4 and t not in _skip]
+        if not tokens:
+            return False
+        # Match if at least half of the significant tokens are found in context
+        found = sum(1 for t in tokens if t in context)
+        return found >= max(1, len(tokens) // 2)
+
+    for ln_lower, candidates in ln_to_candidates.items():
+        # Check that the last name appears as a whole word in the text
+        if not re.search(r'\b' + re.escape(ln_lower) + r'\b', text_lower):
+            continue
+
+        if len(candidates) == 1:
+            # Unambiguous last name → accept directly
+            dep = candidates[0]
+            matched_deputies.append(dep)
+            matched_ids_set.add(dep["id"])
+        else:
+            # Multiple deputies share this last name → use group context to disambiguate.
+            # For each occurrence of the last name, inspect a ±200-char window for group name.
+            for match in re.finditer(r'\b' + re.escape(ln_lower) + r'\b', text_lower):
+                start = max(0, match.start() - 80)
+                end = min(len(text_lower), match.end() + 200)
+                context_window = text_lower[start:end]
+                for dep in candidates:
+                    if dep["id"] in matched_ids_set:
+                        continue
+                    group_name = (dep.get("group_name") or "").strip()
+                    if group_name and _group_name_in_context(group_name, context_window):
+                        matched_deputies.append(dep)
+                        matched_ids_set.add(dep["id"])
 
     logger.info(f"[BASELINE-EXPERTS] Deputies from Neo4j: {len(deputies_result)}, matched: {len(matched_deputies)}")
     logger.info(f"[BASELINE-EXPERTS] Matched names: {[(d.get('first_name'), d.get('last_name')) for d in matched_deputies]}")
