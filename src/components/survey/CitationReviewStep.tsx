@@ -266,7 +266,7 @@ export function CitationReviewStep({
 
       {citations.length === 0 ? (
         <div className="flex-1 flex items-center justify-center text-gray-500">
-          <p className="text-sm">Nessuna citazione nella Risposta {activeResponse}</p>
+          <p className="text-sm">Nessuna citazione da valutare</p>
         </div>
       ) : (
         <>
