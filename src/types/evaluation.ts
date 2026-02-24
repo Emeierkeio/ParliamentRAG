@@ -41,6 +41,14 @@ export interface AggregatedMetrics {
   ci_authority_utilization: [number, number];
   ci_authority_discrimination: [number, number];
   ci_response_completeness: [number, number];
+
+  // Baseline comparison (optional, computed from evaluation_set.json)
+  avg_baseline_party_coverage?: number;
+  avg_baseline_response_completeness?: number;
+  avg_baseline_authority?: number;
+  ci_baseline_party_coverage?: [number, number];
+  ci_baseline_response_completeness?: [number, number];
+  ci_baseline_authority?: [number, number];
 }
 
 export interface CombinedEvaluation {

@@ -288,6 +288,8 @@ interface MetricCardProps {
   icon: React.ReactNode;
   format?: "percent" | "decimal" | "count";
   description?: string;
+  baselineValue?: number;
+  baselineCi?: [number, number];
 }
 
 export function MetricCard({
@@ -297,6 +299,8 @@ export function MetricCard({
   icon,
   format = "percent",
   description,
+  baselineValue,
+  baselineCi,
 }: MetricCardProps) {
   const formattedValue =
     format === "percent"
@@ -318,6 +322,8 @@ export function MetricCard({
   };
 
   const isDegenerate = ci && ci[0] === ci[1];
+  const hasBaseline = baselineValue != null;
+  const delta = hasBaseline ? value - baselineValue! : 0;
 
   return (
     <Card>
@@ -326,15 +332,50 @@ export function MetricCard({
           {icon}
           <span className="text-sm font-medium">{label}</span>
         </div>
-        <div className={cn("text-2xl font-bold mb-2", getColorClass(value))}>
+        <div className={cn("text-2xl font-bold mb-1", getColorClass(value))}>
           {formattedValue}
         </div>
+        {hasBaseline && (
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-xs text-muted-foreground">Baseline:</span>
+            <span className="text-xs font-mono text-amber-600 dark:text-amber-400">
+              {format === "percent" ? `${(baselineValue! * 100).toFixed(1)}%` : baselineValue!.toFixed(3)}
+            </span>
+            <span className={cn(
+              "text-xs font-semibold ml-0.5",
+              delta > 0.005 ? "text-emerald-600 dark:text-emerald-400" :
+              delta < -0.005 ? "text-red-500 dark:text-red-400" :
+              "text-gray-400"
+            )}>
+              {delta > 0.005 ? "▲" : delta < -0.005 ? "▼" : "≈"}
+              {format === "percent"
+                ? ` ${delta >= 0 ? "+" : ""}${(delta * 100).toFixed(1)}pp`
+                : ` ${delta >= 0 ? "+" : ""}${delta.toFixed(3)}`}
+            </span>
+          </div>
+        )}
         {format === "percent" && (
-          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 mb-2">
-            <div
-              className={cn("h-1.5 rounded-full transition-all", getBarColor(value))}
-              style={{ width: `${Math.min(value * 100, 100)}%` }}
-            />
+          <div className="space-y-1 mb-1">
+            <div className="flex items-center gap-1">
+              <span className="text-[10px] text-blue-500 w-14 shrink-0">Sistema</span>
+              <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
+                <div
+                  className={cn("h-1.5 rounded-full transition-all", getBarColor(value))}
+                  style={{ width: `${Math.min(value * 100, 100)}%` }}
+                />
+              </div>
+            </div>
+            {hasBaseline && (
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-amber-500 w-14 shrink-0">Baseline</span>
+                <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
+                  <div
+                    className="h-1.5 rounded-full bg-amber-400 transition-all"
+                    style={{ width: `${Math.min(baselineValue! * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         )}
         {description && (
@@ -348,6 +389,11 @@ export function MetricCard({
                 (n=1)
               </span>
             )}
+          </div>
+        )}
+        {hasBaseline && baselineCi && format === "percent" && (
+          <div className="text-xs text-muted-foreground">
+            Baseline IC 95%: [{(baselineCi[0] * 100).toFixed(1)}%, {(baselineCi[1] * 100).toFixed(1)}%]
           </div>
         )}
       </CardContent>

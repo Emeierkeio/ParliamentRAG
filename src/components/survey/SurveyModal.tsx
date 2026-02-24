@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -85,93 +85,269 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Valutazione Complessiva": <Star className="w-4 h-4" />,
 };
 
-// ─── Expert authority panel ──────────────────────────────────────────────────
+// ─── Known political groups ordered by coalition ──────────────────────────────
 
-function ExpertAuthorityPanel({
-  experts,
-  label,
-  labelColor,
-  isSystem,
-  isLoading = false,
-  scrollRef,
-  onScroll,
+const POLITICAL_GROUPS_ORDERED = [
+  // Maggioranza
+  { key: "FRATELLI D'ITALIA", label: "Fratelli d'Italia", coalition: "maggioranza" },
+  { key: "LEGA - SALVINI PREMIER", label: "Lega - Salvini Premier", coalition: "maggioranza" },
+  { key: "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE", label: "Forza Italia", coalition: "maggioranza" },
+  { key: "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE", label: "Noi Moderati", coalition: "maggioranza" },
+  // Opposizione
+  { key: "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA", label: "Partito Democratico", coalition: "opposizione" },
+  { key: "MOVIMENTO 5 STELLE", label: "Movimento 5 Stelle", coalition: "opposizione" },
+  { key: "ALLEANZA VERDI E SINISTRA", label: "Alleanza Verdi e Sinistra", coalition: "opposizione" },
+  { key: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", coalition: "opposizione" },
+  { key: "ITALIA VIVA-IL CENTRO-RENEW EUROPE", label: "Italia Viva", coalition: "opposizione" },
+  { key: "MISTO", label: "Gruppo Misto", coalition: "altro" },
+];
+
+/** Pick the best expert (highest authority_score) per political group. */
+function pickOnePerGroup(experts: Expert[]): Record<string, Expert> {
+  const result: Record<string, Expert> = {};
+  for (const e of experts) {
+    const g = (e.group || "MISTO").toUpperCase();
+    if (!result[g] || e.authority_score > result[g].authority_score) {
+      result[g] = e;
+    }
+  }
+  return result;
+}
+
+// ─── Group-by-group authority comparison panel ───────────────────────────────
+
+function AuthorityGroupComparisonPanel({
+  expertsA,
+  expertsB,
+  isLoadingA,
+  isLoadingB,
 }: {
-  experts: Expert[];
-  label: string;
-  labelColor: string;
-  isSystem: boolean;
-  isLoading?: boolean;
-  scrollRef?: React.RefObject<HTMLDivElement | null>;
-  onScroll?: React.UIEventHandler<HTMLDivElement>;
+  expertsA: Expert[];
+  expertsB: Expert[];
+  isLoadingA: boolean;
+  isLoadingB: boolean;
 }) {
-  const byCoalition = experts.reduce<Record<string, Expert[]>>((acc, e) => {
-    const key = e.coalition || "altro";
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(e);
-    return acc;
-  }, {});
+  const byGroupA = pickOnePerGroup(expertsA);
+  const byGroupB = pickOnePerGroup(expertsB);
 
-  const coalitionOrder = ["maggioranza", "opposizione", "governo", "altro"];
-  const isBlue = labelColor.includes("blue");
+  if (isLoadingA || isLoadingB) {
+    return (
+      <div className="flex flex-col items-center justify-center h-40 text-gray-400 gap-2">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+        <p className="text-xs">Ricerca deputati nel testo...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col h-full min-h-0">
-      <div className={`px-3 py-2 border-b shrink-0 ${labelColor}`}>
-        <div className="flex items-center justify-center">
-          <span className={`font-semibold text-sm ${isBlue ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300"}`}>
-            {label}
+    <div className="flex flex-col h-full min-h-0 overflow-y-auto px-2 py-2 space-y-1">
+      {/* Header row */}
+      <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center px-1 mb-1 shrink-0">
+        <div className="text-center">
+          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+            Risposta A
+          </span>
+        </div>
+        <div className="w-20 text-center">
+          <span className="text-xs text-gray-400 font-medium">Gruppo</span>
+        </div>
+        <div className="text-center">
+          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
+            Risposta B
           </span>
         </div>
       </div>
 
-      <div ref={scrollRef} onScroll={onScroll} className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-40 text-gray-400 gap-2">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
-            <p className="text-xs">Ricerca deputati nel testo...</p>
-          </div>
-        ) : experts.length > 0 ? (
-          coalitionOrder.map((coalition) => {
-            const group = byCoalition[coalition];
-            if (!group || group.length === 0) return null;
-            // Sort within coalition: alphabetically by group name, then by authority_score desc
-            group.sort((a, b) => {
-              const gCmp = (a.group || "").localeCompare(b.group || "", "it");
-              return gCmp !== 0 ? gCmp : b.authority_score - a.authority_score;
-            });
-            const coalLabel =
-              coalition === "maggioranza" ? "Maggioranza" :
-              coalition === "opposizione" ? "Opposizione" :
-              coalition === "governo" ? "Governo" : "Altro";
-            const coalColor =
-              coalition === "maggioranza" ? "text-red-600 dark:text-red-400" :
-              coalition === "opposizione" ? "text-blue-600 dark:text-blue-400" :
-              coalition === "governo" ? "text-purple-600 dark:text-purple-400" :
-              "text-gray-500";
-            return (
-              <div key={coalition}>
-                <p className={`text-xs font-bold uppercase tracking-wider mb-2 ${coalColor}`}>{coalLabel}</p>
-                <div className="space-y-2">
-                  {group.map((e) => <ExpertCard key={e.id} expert={e} />)}
+      {POLITICAL_GROUPS_ORDERED.map(({ key, label, coalition }) => {
+        const expertA = byGroupA[key] || byGroupA[key.toLowerCase()] || null;
+        const expertB = byGroupB[key] || byGroupB[key.toLowerCase()] || null;
+
+        const coalColor =
+          coalition === "maggioranza" ? "text-red-500" :
+          coalition === "opposizione" ? "text-blue-500" : "text-gray-400";
+
+        return (
+          <div key={key} className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center border-b border-gray-100 dark:border-gray-800 pb-1 last:border-0">
+            {/* Expert A */}
+            <div className="flex flex-col items-end">
+              {expertA ? (
+                <AuthorityExpertMini expert={expertA} side="A" />
+              ) : (
+                <div className="text-xs text-gray-400 italic text-right px-1 py-1.5">
+                  Citazione non disponibile
                 </div>
-              </div>
-            );
-          })
-        ) : isSystem ? (
-          <div className="flex flex-col items-center justify-center h-40 text-gray-400">
-            <UserCheck className="w-8 h-8 mb-2 opacity-40" />
-            <p className="text-sm text-center">Nessun dato esperto disponibile.</p>
+              )}
+            </div>
+
+            {/* Group label */}
+            <div className="w-20 flex flex-col items-center gap-0.5 shrink-0">
+              <span className={`text-[10px] font-bold uppercase tracking-wide ${coalColor}`}>
+                {label}
+              </span>
+            </div>
+
+            {/* Expert B */}
+            <div className="flex flex-col items-start">
+              {expertB ? (
+                <AuthorityExpertMini expert={expertB} side="B" />
+              ) : (
+                <div className="text-xs text-gray-400 italic text-left px-1 py-1.5">
+                  Citazione non disponibile
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <div className="flex flex-col gap-3 items-center justify-center h-full text-gray-400 text-center px-4">
-            <UserCheck className="w-10 h-10 opacity-30" />
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Nessun deputato trovato nel testo</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-              Non sono stati identificati nomi di parlamentari nel testo della risposta baseline.
-            </p>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Compact expert display for the group comparison panel. */
+function AuthorityExpertMini({ expert, side }: { expert: Expert; side: "A" | "B" }) {
+  const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
+  const groupColor = groupConfig?.color || "#6B7280";
+  const isA = side === "A";
+
+  return (
+    <div className={cn(
+      "flex items-center gap-1.5 py-1 px-1.5 rounded-lg w-full",
+      isA ? "flex-row-reverse text-right" : "flex-row text-left"
+    )}>
+      {expert.photo ? (
+        <img
+          src={expert.photo}
+          alt={`${expert.first_name} ${expert.last_name}`}
+          className="h-8 w-8 shrink-0 rounded-full object-cover"
+        />
+      ) : (
+        <div
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+          style={{ backgroundColor: groupColor }}
+        >
+          {expert.first_name[0]}{expert.last_name[0]}
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-foreground leading-tight truncate">
+          {expert.first_name} {expert.last_name}
+        </p>
+        <div className={cn("flex items-center gap-1 mt-0.5", isA ? "flex-row-reverse" : "flex-row")}>
+          <div className="h-1 w-10 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className={cn("h-full rounded-full", expert.authority_score >= 0.7 ? "bg-emerald-500" : expert.authority_score >= 0.4 ? "bg-amber-500" : "bg-gray-400")}
+              style={{ width: `${expert.authority_score * 100}%` }}
+            />
           </div>
-        )}
+          <span className="text-[10px] text-muted-foreground font-mono">{(expert.authority_score * 100).toFixed(0)}</span>
+        </div>
       </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Comparative Slider (A ←→ B) ─────────────────────────────────────────────
+
+/**
+ * A 7-step comparative slider replacing dual star ratings for authority questions.
+ * Steps: -3(A▶▶▶) -2(A▶▶) -1(A▶) 0(=) +1(◀B) +2(◀◀B) +3(◀◀◀B)
+ * Maps to (rating_a, rating_b) pairs.
+ */
+const SLIDER_STEP_MAP: Record<number, { rating_a: number; rating_b: number; label: string }> = {
+  "-3": { rating_a: 5, rating_b: 2, label: "A molto meglio" },
+  "-2": { rating_a: 4, rating_b: 2, label: "A meglio" },
+  "-1": { rating_a: 4, rating_b: 3, label: "A leggermente meglio" },
+   "0": { rating_a: 3, rating_b: 3, label: "Equivalenti" },
+   "1": { rating_a: 3, rating_b: 4, label: "B leggermente meglio" },
+   "2": { rating_a: 2, rating_b: 4, label: "B meglio" },
+   "3": { rating_a: 2, rating_b: 5, label: "B molto meglio" },
+};
+
+function ratingsToSliderStep(rating_a: number, rating_b: number): number {
+  if (rating_a === 0 || rating_b === 0) return 0; // unset → neutral
+  const delta = rating_b - rating_a;
+  if (delta >= 3) return 3;
+  if (delta <= -3) return -3;
+  return delta;
+}
+
+interface ComparativeSliderProps {
+  ratingA: number;
+  ratingB: number;
+  onChange: (rating_a: number, rating_b: number, preference: "A" | "B" | "equal") => void;
+  disabled?: boolean;
+}
+
+function ComparativeSlider({ ratingA, ratingB, onChange, disabled }: ComparativeSliderProps) {
+  const step = ratingA === 0 && ratingB === 0 ? undefined : ratingsToSliderStep(ratingA, ratingB);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseInt(e.target.value);
+    const mapped = SLIDER_STEP_MAP[v.toString() as keyof typeof SLIDER_STEP_MAP];
+    if (!mapped) return;
+    const pref: "A" | "B" | "equal" = v < 0 ? "A" : v > 0 ? "B" : "equal";
+    onChange(mapped.rating_a, mapped.rating_b, pref);
+  };
+
+  const currentLabel = step !== undefined ? (SLIDER_STEP_MAP[step.toString() as keyof typeof SLIDER_STEP_MAP]?.label ?? "Sposta lo slider") : "Sposta lo slider";
+  const isSet = step !== undefined;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs font-semibold">
+        <span className="text-blue-600 dark:text-blue-400">A migliore</span>
+        <span className={cn(
+          "text-xs px-2 py-0.5 rounded-full font-medium",
+          !isSet ? "text-gray-400 bg-gray-100 dark:bg-gray-800" :
+          step! < 0 ? "text-blue-700 bg-blue-100 dark:bg-blue-900/40" :
+          step! > 0 ? "text-amber-700 bg-amber-100 dark:bg-amber-900/40" :
+          "text-gray-600 bg-gray-100 dark:bg-gray-800"
+        )}>
+          {currentLabel}
+        </span>
+        <span className="text-amber-600 dark:text-amber-400">B migliore</span>
+      </div>
+      <div className="relative">
+        <input
+          type="range"
+          min={-3}
+          max={3}
+          step={1}
+          value={step ?? 0}
+          onChange={handleChange}
+          disabled={disabled}
+          className={cn(
+            "w-full h-2 rounded-full appearance-none cursor-pointer",
+            "bg-gradient-to-r from-blue-400 via-gray-200 to-amber-400",
+            "dark:from-blue-600 dark:via-gray-700 dark:to-amber-600",
+            "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5",
+            "[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white",
+            "[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:shadow-md",
+            !isSet ? "[&::-webkit-slider-thumb]:border-gray-300" :
+            step! < 0 ? "[&::-webkit-slider-thumb]:border-blue-500" :
+            step! > 0 ? "[&::-webkit-slider-thumb]:border-amber-500" :
+            "[&::-webkit-slider-thumb]:border-gray-400",
+            disabled && "opacity-50 cursor-not-allowed"
+          )}
+        />
+        {/* Tick marks */}
+        <div className="flex justify-between px-1 mt-0.5">
+          {[-3,-2,-1,0,1,2,3].map((v) => (
+            <div
+              key={v}
+              className={cn(
+                "h-1 w-0.5 rounded",
+                step === v ? (v < 0 ? "bg-blue-500" : v > 0 ? "bg-amber-500" : "bg-gray-500") : "bg-gray-300 dark:bg-gray-600"
+              )}
+            />
+          ))}
+        </div>
+      </div>
+      {!isSet && (
+        <p className="text-xs text-center text-gray-400 italic">Trascina lo slider per indicare quale risposta ha esperti più autorevoli</p>
+      )}
     </div>
   );
 }
@@ -204,22 +380,6 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
   const [mobileSimpleTab, setMobileSimpleTab] = useState<"response" | "form">("response");
   const [mobileABTab, setMobileABTab] = useState<"A" | "B" | "valuta">("A");
 
-  // Synchronized scrolling for the two expert panels
-  const scrollRefA = useRef<HTMLDivElement>(null);
-  const scrollRefB = useRef<HTMLDivElement>(null);
-  const isSyncing = useRef(false);
-  const handleScrollA = useCallback<React.UIEventHandler<HTMLDivElement>>(() => {
-    if (isSyncing.current || !scrollRefA.current || !scrollRefB.current) return;
-    isSyncing.current = true;
-    scrollRefB.current.scrollTop = scrollRefA.current.scrollTop;
-    isSyncing.current = false;
-  }, []);
-  const handleScrollB = useCallback<React.UIEventHandler<HTMLDivElement>>(() => {
-    if (isSyncing.current || !scrollRefA.current || !scrollRefB.current) return;
-    isSyncing.current = true;
-    scrollRefA.current.scrollTop = scrollRefB.current.scrollTop;
-    isSyncing.current = false;
-  }, []);
 
   // Group A/B questions by category (exclude overall_satisfaction - handled separately)
   const categories = SURVEY_QUESTIONS.filter(q => q.id !== "overall_satisfaction").reduce((acc, q) => {
@@ -469,6 +629,12 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
         ce => ce.relevance > 0 && ce.faithfulness > 0 && ce.informativeness > 0 && ce.attribution !== ""
       );
 
+      // Compute baseline authority avg from baseline experts
+      const baselineExpertList = baselineExperts.filter(e => e.authority_score > 0);
+      const baselineAuthAvg = baselineExpertList.length > 0
+        ? baselineExpertList.reduce((sum, e) => sum + e.authority_score, 0) / baselineExpertList.length
+        : undefined;
+
       await createSurvey({
         chat_id: selectedChat.id,
         answer_quality: formState.answer_quality,
@@ -493,6 +659,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
         ab_assignment: localAbAssignment || undefined,
         evaluation_set_topic: selectedChat.matched_topic || undefined,
         evaluator_id: evaluatorId || undefined,
+        baseline_authority_avg: baselineAuthAvg,
       });
 
       setStep("success");
@@ -859,22 +1026,34 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                         categories[currentCategory].questions.map((question) => {
                           const dim = question.id as ABDimension;
                           const rating = formState[dim];
+                          const isAuthority = categories[currentCategory].name === "Autorità Esperti";
                           return (
                             <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
                               <div>
                                 <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{question.question}</p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{question.description}</p>
                               </div>
-                              <div className="space-y-2.5">
-                                <div className="flex flex-col gap-1">
-                                  <span className="text-xs font-semibold text-blue-600">Risposta A</span>
-                                  <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
+                              {isAuthority ? (
+                                <ComparativeSlider
+                                  ratingA={rating.rating_a}
+                                  ratingB={rating.rating_b}
+                                  onChange={(ra, rb, pref) => setFormState(prev => ({
+                                    ...prev,
+                                    [dim]: { rating_a: ra, rating_b: rb, preference: pref },
+                                  }))}
+                                />
+                              ) : (
+                                <div className="space-y-2.5">
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-xs font-semibold text-blue-600">Risposta A</span>
+                                    <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
+                                  </div>
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-xs font-semibold text-amber-600">Risposta B</span>
+                                    <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
+                                  </div>
                                 </div>
-                                <div className="flex flex-col gap-1">
-                                  <span className="text-xs font-semibold text-amber-600">Risposta B</span>
-                                  <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
-                                </div>
-                              </div>
+                              )}
                             </div>
                           );
                         })
@@ -999,30 +1178,12 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                 </div>
                 <div className="flex flex-1 min-h-0 overflow-hidden">
                   {categories[currentCategory]?.name === "Autorità Esperti" ? (
-                    <>
-                      <div className="flex w-1/2 border-r flex-col min-h-0">
-                        <ExpertAuthorityPanel
-                          experts={localAbAssignment?.["A"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
-                          label="Risposta A"
-                          labelColor="bg-blue-100 dark:bg-blue-900/30"
-                          isSystem={localAbAssignment?.["A"] === "system"}
-                          isLoading={(localAbAssignment?.["A"] === "system" ? isLoadingDetails : isLoadingBaselineExperts)}
-                          scrollRef={scrollRefA}
-                          onScroll={handleScrollA}
-                        />
-                      </div>
-                      <div className="flex w-1/2 flex-col min-h-0">
-                        <ExpertAuthorityPanel
-                          experts={localAbAssignment?.["B"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
-                          label="Risposta B"
-                          labelColor="bg-amber-100 dark:bg-amber-900/30"
-                          isSystem={localAbAssignment?.["B"] === "system"}
-                          isLoading={(localAbAssignment?.["B"] === "system" ? isLoadingDetails : isLoadingBaselineExperts)}
-                          scrollRef={scrollRefB}
-                          onScroll={handleScrollB}
-                        />
-                      </div>
-                    </>
+                    <AuthorityGroupComparisonPanel
+                      expertsA={localAbAssignment?.["A"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
+                      expertsB={localAbAssignment?.["B"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
+                      isLoadingA={localAbAssignment?.["A"] === "system" ? isLoadingDetails : isLoadingBaselineExperts}
+                      isLoadingB={localAbAssignment?.["B"] === "system" ? isLoadingDetails : isLoadingBaselineExperts}
+                    />
                   ) : (
                     <>
                       <div className="flex w-1/2 border-r flex-col min-h-0">
@@ -1091,20 +1252,34 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                       categories[currentCategory].questions.map((question) => {
                         const dim = question.id as ABDimension;
                         const rating = formState[dim];
+                        const isAuthority = categories[currentCategory].name === "Autorità Esperti";
                         return (
                           <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
                             <div>
                               <p className="font-medium text-gray-900 dark:text-gray-100">{question.question}</p>
                               <p className="text-sm text-gray-500 dark:text-gray-400">{question.description}</p>
                             </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
-                              <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
-                              <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
-                            </div>
+                            {isAuthority ? (
+                              <ComparativeSlider
+                                ratingA={rating.rating_a}
+                                ratingB={rating.rating_b}
+                                onChange={(ra, rb, pref) => setFormState(prev => ({
+                                  ...prev,
+                                  [dim]: { rating_a: ra, rating_b: rb, preference: pref },
+                                }))}
+                              />
+                            ) : (
+                              <>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
+                                  <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
+                                  <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
+                                </div>
+                              </>
+                            )}
                           </div>
                         );
                       })
