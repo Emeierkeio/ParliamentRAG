@@ -271,6 +271,7 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
         RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
                coalesce(group_name, 'MISTO') AS group_name,
                d.deputy_card AS camera_profile_url,
+               d.photo AS photo,
                d.profession AS profession, d.education AS education
     """)
 
@@ -395,12 +396,14 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
 
         experts.append({
             "id": dep_id,
-            "first_name": dep.get("first_name", ""),
-            "last_name": dep.get("last_name", ""),
+            # Normalize names to Title Case (DB stores them in UPPERCASE)
+            "first_name": (dep.get("first_name") or "").title(),
+            "last_name": (dep.get("last_name") or "").title(),
             "group": normalize_party_name(dep.get("group_name", "")),
             "coalition": coalition,
             "authority_score": round(authority_scores.get(dep_id, 0.0), 2),
             "relevant_speeches_count": 0,
+            "photo": dep.get("photo"),
             "camera_profile_url": dep.get("camera_profile_url"),
             "profession": dep.get("profession"),
             "education": dep.get("education"),
