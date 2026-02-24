@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   Dialog,
   DialogContent,
@@ -552,27 +553,30 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     }
   };
 
-  // Render plain text — strips all markdown formatting and citation markers
-  // so both response A and B are visually identical in style
-  const renderContent = (text: string) => {
-    const cleaned = text
-      .replace(/\[«([^»]+)»\]\([^)]+\)/g, '"$1"')  // [«quote»](url) → "quote"  (must run before url stripping)
-      .replace(/\(leg\d+_[^)]+\)/g, "")            // remove remaining (legXX_...) citation refs
-      .replace(/\[CIT:[^\]]+\]/g, "")               // remove [CIT:...] markers
-      .replace(/«([^»]+)»/g, '"$1"')               // bare «quote» → "quote"
-      .replace(/\*\*([^*]+)\*\*/g, "$1")            // **bold** → plain
-      .replace(/^#{1,6}\s+/gm, "")                  // ## headings → plain text
-      .replace(/^[-*]\s+/gm, "");                   // - list items → plain
+  // Strip only citation markers; keep all markdown structure for rendering.
+  const cleanCitations = (text: string): string =>
+    text
+      .replace(/\[«([^»]+)»\]\([^)]+\)/g, '"$1"') // [«quote»](url) → "quote"
+      .replace(/\(leg\d+_[^)]+\)/g, "")            // remove (legXX_...) refs
+      .replace(/\[CIT:[^\]]+\]/g, "")              // remove [CIT:...] markers
+      .replace(/«([^»]+)»/g, '"$1"');              // bare «quote» → "quote"
 
-    return cleaned.split("\n").map((line, i) => {
-      if (!line.trim()) return <br key={i} />;
-      return (
-        <p key={i} className="text-sm text-foreground leading-relaxed mb-1.5">
-          {line.trim()}
-        </p>
-      );
-    });
+  const mdComponents: React.ComponentProps<typeof ReactMarkdown>["components"] = {
+    h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1 text-foreground">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-base font-bold mt-3 mb-1 text-foreground">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-1 text-foreground">{children}</h3>,
+    p:  ({ children }) => <p  className="text-sm leading-relaxed mb-2 text-foreground">{children}</p>,
+    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+    ul: ({ children }) => <ul className="list-disc pl-4 mb-2 space-y-0.5">{children}</ul>,
+    ol: ({ children }) => <ol className="list-decimal pl-4 mb-2 space-y-0.5">{children}</ol>,
+    li: ({ children }) => <li className="text-sm leading-relaxed">{children}</li>,
   };
+
+  const renderContent = (text: string) => (
+    <ReactMarkdown components={mdComponents}>
+      {cleanCitations(text)}
+    </ReactMarkdown>
+  );
 
   // Determine dialog title based on step
   const dialogTitle = () => {
