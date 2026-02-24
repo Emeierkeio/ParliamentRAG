@@ -398,7 +398,15 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
 function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
   const agg = data.automated_aggregate;
 
-  const metrics = [
+  const metrics: Array<{
+    label: string;
+    value: number;
+    ci: [number, number];
+    description: string;
+    format: "percent" | "decimal";
+    baselineValue: number | undefined;
+    baselineCi: [number, number] | undefined;
+  }> = [
     {
       label: "Copertura Partitica (Party Coverage)",
       value: agg.avg_party_coverage,
