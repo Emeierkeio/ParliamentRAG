@@ -6,6 +6,7 @@ Supports both synchronous and SSE streaming responses.
 import json
 import logging
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
@@ -369,6 +370,99 @@ async def process_query_streaming(
         )
         logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
+
+        # === Update experts: filter to cited parties and prefer cited speakers ===
+        # The initial experts event (sent before generation) included the top-authority
+        # speaker per party from the retrieved pool.  After generation we know which
+        # parties were actually cited, and which specific speaker was cited per party.
+        # We replace the initial experts with a citation-aligned list:
+        #   - Only parties that have at least one citation are shown (fixes "Misto with
+        #     no citations still showing Della Vedova"-type confusion).
+        #   - For each cited party we prefer the highest-authority CITED speaker.
+        #     If the pre-selected expert was cited, we keep them; otherwise we build
+        #     a fresh expert entry for the cited speaker (fixes "Italia Viva cites Del
+        #     Barba but shows Giachetti" confusion).
+        if gen_citations:
+            # party → speaker_id with highest authority among cited speakers
+            cited_party_best: Dict[str, str] = {}
+            for cit in gen_citations:
+                eid = cit.get("evidence_id", "")
+                ev = evidence_map_for_cit.get(eid, {})
+                speaker_id = ev.get("speaker_id", "") or cit.get("speaker_id", "")
+                party = (cit.get("party") or ev.get("party", "")).strip()
+                speaker_role = ev.get("speaker_role", "Deputy")
+                if not speaker_id or not party or speaker_role == "GovernmentMember":
+                    continue
+                score = authority_scores.get(speaker_id, 0)
+                cur = cited_party_best.get(party)
+                if cur is None or score > authority_scores.get(cur, 0):
+                    cited_party_best[party] = speaker_id
+
+            if cited_party_best:
+                expert_by_group = {e["group"]: e for e in experts}
+                final_experts: List[Dict[str, Any]] = []
+                speakers_to_fetch: List[tuple] = []  # (party, speaker_id)
+
+                for party, best_sid in cited_party_best.items():
+                    existing = expert_by_group.get(party)
+                    if existing and existing["id"] == best_sid:
+                        final_experts.append(existing)
+                    else:
+                        speakers_to_fetch.append((party, best_sid))
+
+                if speakers_to_fetch:
+                    loop = asyncio.get_running_loop()
+                    with ThreadPoolExecutor(max_workers=min(10, len(speakers_to_fetch))) as pool:
+                        fetch_futs = [
+                            loop.run_in_executor(pool, _fetch_speaker_details, services["neo4j"], sid)
+                            for _, sid in speakers_to_fetch
+                        ]
+                        fetched_sp = await asyncio.gather(*fetch_futs)
+
+                    coalition_logic_obj = CoalitionLogic()
+                    for (party, sid), sp_info in zip(speakers_to_fetch, fetched_sp):
+                        details = authority_details.get(sid, {})
+                        components = details.get("components", {})
+                        score = authority_scores.get(sid, 0)
+                        first_name = sp_info.get("first_name") or ""
+                        last_name = sp_info.get("last_name") or ""
+                        if not first_name and not last_name:
+                            for cit in gen_citations:
+                                eid = cit.get("evidence_id", "")
+                                ev = evidence_map_for_cit.get(eid, {})
+                                if ev.get("speaker_id") == sid:
+                                    parts = (cit.get("speaker_name") or ev.get("speaker_name", "")).split(" ", 1)
+                                    first_name = parts[0] if parts else ""
+                                    last_name = parts[1] if len(parts) > 1 else ""
+                                    break
+                        final_experts.append({
+                            "id": sid,
+                            "first_name": first_name,
+                            "last_name": last_name,
+                            "group": party,
+                            "coalition": coalition_logic_obj.get_coalition(party),
+                            "authority_score": round(score, 2),
+                            "relevant_speeches_count": 0,
+                            "camera_profile_url": sp_info.get("camera_profile_url"),
+                            "photo": sp_info.get("photo"),
+                            "profession": sp_info.get("profession"),
+                            "education": sp_info.get("education"),
+                            "committee": sp_info.get("current_committee"),
+                            "institutional_role": details.get("institutional_role") or sp_info.get("institutional_role"),
+                            "score_breakdown": {
+                                "speeches": round(components.get("interventions", 0), 2),
+                                "acts": round(components.get("acts", 0), 2),
+                                "committee": round(components.get("committee", 0), 2),
+                                "profession": round(components.get("profession", 0), 2),
+                                "education": round(components.get("education", 0), 2),
+                                "role": round(components.get("role", 0), 2),
+                            },
+                        })
+
+                final_experts.sort(key=lambda e: e["authority_score"], reverse=True)
+                experts = final_experts
+                logger.info(f"[QUERY:EXPERTS] Updated experts after generation: {len(experts)} (from {len(cited_party_best)} cited parties)")
+                yield f"data: {json.dumps({'type': 'experts', 'data': final_experts}, default=str)}\n\n"
 
         # Step 7: Stream text chunks
         chunk_size = 100
