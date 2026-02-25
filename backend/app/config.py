@@ -150,7 +150,7 @@ class ConfigLoader:
                 },
                 "time_decay": {
                     "acts_half_life_days": 365,
-                    "speeches_half_life_days": 180
+                    "speeches_half_life_days": 365
                 },
                 "normalization": "percentile",
                 "max_component_contribution": 0.8

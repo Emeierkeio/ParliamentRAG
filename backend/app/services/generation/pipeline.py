@@ -239,9 +239,6 @@ class GenerationPipeline:
 
             # Hard-remove citations with extreme mismatch (likely wrong source cited)
             HARD_REMOVE_THRESHOLD = 0.35
-            # For the most extreme mismatches, also rewrite the party paragraph
-            # without any citation so the section remains coherent.
-            REWRITE_THRESHOLD = 0.25
             hard_mismatches = [ic for ic in incoherent if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD]
             if hard_mismatches:
                 logger.warning(f"Hard-removing {len(hard_mismatches)} citations with score < {HARD_REMOVE_THRESHOLD}")
@@ -257,13 +254,12 @@ class GenerationPipeline:
                     # Also remove bare [CIT:id] if no inline quote preceded it
                     integrated_text = re.sub(rf'\[CIT:{re.escape(eid)}\]', '', integrated_text)
 
-                # Rewrite paragraphs for parties whose citation was extremely incoherent
-                # (score < REWRITE_THRESHOLD). The original section was written around a
-                # citation that is now gone, leaving disconnected intro/positioning sentences.
-                extreme_mismatches = [ic for ic in hard_mismatches if ic.get("score", 1.0) < REWRITE_THRESHOLD]
-                if extreme_mismatches:
+                # Rewrite paragraphs for every party whose only citation was hard-removed.
+                # Any hard-removal leaves a disconnected intro/positioning sentence, regardless
+                # of whether the score was 0.34 or 0.19 — so we rewrite for all of them.
+                if hard_mismatches:
                     rewrite_tasks = {}
-                    for ic in extreme_mismatches:
+                    for ic in hard_mismatches:
                         eid = ic.get("evidence_id", "")
                         party = evidence_map.get(eid, {}).get("party", "")
                         if not party or party in rewrite_tasks:
@@ -292,11 +288,21 @@ class GenerationPipeline:
                             )
                             for party, ev in rewrite_tasks.items()
                         ])
+                        failed_rewrites: Dict[str, str] = {}
                         for party, new_body in zip(rewrite_tasks.keys(), rewrite_results):
                             if new_body:
+                                before = integrated_text
                                 integrated_text = self._replace_party_paragraph(
                                     integrated_text, party, new_body
                                 )
+                                if integrated_text == before:
+                                    # _replace_party_paragraph couldn't locate the paragraph;
+                                    # queue for fallback injection into the coalition block.
+                                    failed_rewrites[party] = new_body
+                        if failed_rewrites:
+                            integrated_text = self._inject_rewritten_paragraphs(
+                                integrated_text, failed_rewrites
+                            )
 
         # Update registry with coherence scores
         for detail in coherence_report.get("details", []):
@@ -640,6 +646,61 @@ class GenerationPipeline:
             logger.info(f"Rewrote citation-free paragraph for '{party}'")
         return new_text
 
+    def _inject_rewritten_paragraphs(
+        self,
+        text: str,
+        rewritten: Dict[str, str],
+    ) -> str:
+        """
+        Fallback injection for parties whose paragraph could not be located by
+        _replace_party_paragraph (e.g. the integrator used a non-standard format).
+
+        Appends each rewritten body as a fresh «Per {party}, {body}» paragraph
+        inside the correct coalition block, mirroring the logic used by
+        _inject_missing_party_paragraphs.
+        """
+        config = get_config()
+        MAGGIORANZA = config.coalitions.get("maggioranza", [])
+
+        magg_injections: list = []
+        opp_injections: list = []
+
+        for party, body in rewritten.items():
+            para = f"Per {party}, {body}"
+            if party in MAGGIORANZA:
+                magg_injections.append(para)
+            else:
+                opp_injections.append(para)
+            logger.info(f"Fallback injection: appending rewritten paragraph for '{party}'")
+
+        if magg_injections:
+            magg_header = "## Posizioni della Maggioranza"
+            inject_block = "\n\n".join(magg_injections)
+            if magg_header in text:
+                pos = text.find(magg_header)
+                next_sec = text.find("\n\n##", pos + len(magg_header))
+                if next_sec > 0:
+                    text = text[:next_sec] + "\n\n" + inject_block + text[next_sec:]
+                else:
+                    text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{magg_header}\n\n{inject_block}"
+
+        if opp_injections:
+            opp_header = "## Posizioni dell\u2019Opposizione"
+            opp_header_alt = "## Posizioni dell'Opposizione"
+            inject_block = "\n\n".join(opp_injections)
+            header_in_text = (
+                opp_header if opp_header in text
+                else (opp_header_alt if opp_header_alt in text else None)
+            )
+            if header_in_text:
+                text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{opp_header_alt}\n\n{inject_block}"
+
+        return text
+
     def _group_evidence_by_party(
         self,
         evidence_list: List[Dict[str, Any]]
@@ -901,33 +962,73 @@ class GenerationPipeline:
         min_similarity: float = 0.35,
         max_per_speaker: int = 3,
     ) -> List[Dict[str, Any]]:
-        """Get evidence from government members, sorted by relevance.
+        """Get evidence from government members, ranked by speaker authority.
 
         Applies a minimum similarity threshold to exclude government members
         whose retrieved chunks are not topically relevant to the query.
-        Graph-channel evidence defaults to 0.5, so only clearly irrelevant
-        dense-channel chunks are filtered out.
 
-        Additionally limits to max_per_speaker chunks per minister so that
-        a single minister cannot dominate the government section.
+        Uses speaker-first interleaving (same logic as _group_evidence_by_party)
+        so the most authoritative minister's best chunk is always at position #1.
+        This ensures the sectional writer cites the minister with greatest
+        institutional relevance rather than the one with the highest chunk similarity.
         """
+        from collections import defaultdict
+
         gov = [
             e for e in evidence_list
             if e.get("speaker_role") == "GovernmentMember"
             and e.get("similarity", 0.5) >= min_similarity
         ]
 
-        # Surface most relevant chunks first
-        gov.sort(key=lambda e: e.get("similarity", 0.0), reverse=True)
+        if not gov:
+            return []
 
-        # Limit per speaker while preserving relevance order
-        speaker_counts: dict = {}
-        filtered = []
+        # Ensure salience is computed for all chunks
         for e in gov:
-            sid = e.get("speaker_id", "")
-            count = speaker_counts.get(sid, 0)
-            if count < max_per_speaker:
-                filtered.append(e)
-                speaker_counts[sid] = count + 1
+            if e.get("salience") is None:
+                text = e.get("chunk_text") or e.get("quote_text", "")
+                e["salience"] = compute_chunk_salience(text)
+
+        # Group by speaker
+        speaker_chunks: dict = defaultdict(list)
+        for e in gov:
+            speaker_chunks[e.get("speaker_id", "")].append(e)
+
+        # Sort each speaker's chunks by chunk quality (similarity + salience)
+        def _chunk_quality(e):
+            return 0.75 * e.get("similarity", 0.0) + 0.25 * (e.get("salience") or 0.0)
+
+        for sid in speaker_chunks:
+            speaker_chunks[sid].sort(key=_chunk_quality, reverse=True)
+
+        # Rank speakers: authority_score (primary) + best chunk quality (secondary)
+        def _speaker_rank(sid):
+            auth = speaker_chunks[sid][0].get("authority_score", 0.0)
+            best = _chunk_quality(speaker_chunks[sid][0])
+            return 0.70 * auth + 0.30 * best
+
+        sorted_speakers = sorted(speaker_chunks.keys(), key=_speaker_rank, reverse=True)
+
+        if sorted_speakers:
+            top_sid = sorted_speakers[0]
+            top_auth = speaker_chunks[top_sid][0].get("authority_score", 0.0)
+            top_name = speaker_chunks[top_sid][0].get("speaker_name", top_sid)
+            logger.info(
+                f"[GOV RANKING] top speaker = {top_name} "
+                f"(auth={top_auth:.2f}, rank={_speaker_rank(top_sid):.3f}), "
+                f"total_ministers={len(sorted_speakers)}"
+            )
+
+        # Interleave: best from minister #1, best from #2, then 2nd-best #1, etc.
+        # Respects max_per_speaker limit per minister.
+        max_depth = max(len(v) for v in speaker_chunks.values())
+        filtered = []
+        for depth in range(max_depth):
+            if depth >= max_per_speaker:
+                break
+            for sid in sorted_speakers:
+                evs = speaker_chunks[sid]
+                if depth < len(evs):
+                    filtered.append(evs[depth])
 
         return filtered

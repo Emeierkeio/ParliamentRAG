@@ -74,7 +74,9 @@ la sezione "## Posizione del Governo".
 
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
-- Ogni sezione di input è preceduta da un tag [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo
+- Le sezioni di input sono raggruppate in tag [BLOCCO: GOVERNO/MAGGIORANZA/OPPOSIZIONE] e [PARTITO: Nome Partito]
+  ⚠️ QUESTI TAG SONO SOLO PER L'INPUT — NON copiarli nell'output. Scrivi tu i tuoi header ## ...
+- Ogni sezione di partito inizia con [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo nell'output
 - Formato OBBLIGATORIO per il primo periodo: "Per [Nome Partito], [testo contestuale]..."
   Esempio: "Per Italia Viva - Il Centro - Renew Europe, il gruppo sostiene con fermezza..."
 - Cognomi SEMPRE in **grassetto**
@@ -310,13 +312,18 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
         return ""
 
     def _build_sections_text(self, sections: List[Dict[str, Any]]) -> str:
-        """Build text from all sections, grouped by coalition."""
+        """Build text from all sections, grouped by coalition.
+
+        Uses [BLOCCO: ...] markers instead of ## markdown headers to prevent
+        the integrator LLM from confusing INPUT structure with the OUTPUT
+        headers it must generate, which causes duplicate section headers.
+        """
         parts = []
 
         # Government first if present
         gov_content = self._get_section_by_party(sections, "GOVERNO")
         if gov_content:
-            parts.append("## Posizione del Governo\n\n" + gov_content)
+            parts.append("[BLOCCO: GOVERNO]\n" + gov_content)
 
         # Maggioranza sections
         magg_parts = []
@@ -325,7 +332,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
             if content:
                 magg_parts.append(f"[PARTITO: {party}]\n{content}")
         if magg_parts:
-            parts.append("## Posizioni della Maggioranza\n\n" + "\n\n".join(magg_parts))
+            parts.append("[BLOCCO: MAGGIORANZA]\n" + "\n\n".join(magg_parts))
 
         # Opposizione sections
         opp_parts = []
@@ -334,7 +341,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
             if content:
                 opp_parts.append(f"[PARTITO: {party}]\n{content}")
         if opp_parts:
-            parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
+            parts.append("[BLOCCO: OPPOSIZIONE]\n" + "\n\n".join(opp_parts))
 
         return "\n\n---\n\n".join(parts)
 
@@ -356,7 +363,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
         for party in self.MAGGIORANZA:
             content = self._get_section_by_party(sections, party)
             if content:
-                magg_parts.append(strip_party_header(content))
+                magg_parts.append(f"Per {party}, " + strip_party_header(content))
         if magg_parts:
             parts.append("## Posizioni della Maggioranza\n\n" + "\n\n".join(magg_parts))
 
@@ -365,7 +372,7 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
         for party in self.OPPOSIZIONE:
             content = self._get_section_by_party(sections, party)
             if content:
-                opp_parts.append(strip_party_header(content))
+                opp_parts.append(f"Per {party}, " + strip_party_header(content))
         if opp_parts:
             parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
 

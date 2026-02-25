@@ -1023,6 +1023,29 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("citation_details", {"citations": verified_citations})
         await asyncio.sleep(0)  # Flush
 
+        # === Patch experts: re-emit if the cited speaker differs from the top-ranked one ===
+        # The pre-generation ranking may pick a different speaker than who the writer
+        # actually cites. Correct the expert panel to always show the cited speaker.
+        try:
+            patched_experts = await _patch_experts_for_cited_speakers(
+                experts=experts,
+                gen_citations=gen_citations,
+                evidence_dicts=evidence_dicts + list(extra_evidence_map.values()),
+                authority_scores=authority_scores,
+                authority_details=authority_details,
+                neo4j_client=services["neo4j"],
+            )
+            if patched_experts is not None:
+                logger.info(
+                    f"[EXPERTS] Post-generation patch: {sum(1 for a, b in zip(experts, patched_experts) if a.get('id') != b.get('id'))} "
+                    f"expert(s) corrected to match cited speakers"
+                )
+                experts = patched_experts
+                yield sse_event("experts", {"experts": experts})
+                await asyncio.sleep(0)  # Flush
+        except Exception as _patch_err:
+            logger.warning(f"[EXPERTS] Post-generation patch failed (non-critical): {_patch_err}")
+
         # === Step 8: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             step_start = time.time()
@@ -1198,6 +1221,115 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
             return data
 
     return {}
+
+
+async def _patch_experts_for_cited_speakers(
+    experts: List[Dict[str, Any]],
+    gen_citations: List[Dict[str, Any]],
+    evidence_dicts: List[Dict[str, Any]],
+    authority_scores: Dict[str, float],
+    authority_details: Dict[str, Dict[str, Any]],
+    neo4j_client,
+) -> Optional[List[Dict[str, Any]]]:
+    """
+    Post-generation expert correction.
+
+    The pre-generation ranking picks the top-authority speaker per party.
+    After generation, the writer may have cited a different speaker whose
+    evidence produced a stronger verbatim quote.  When that happens, update
+    the affected expert entries to show the actually-cited speaker.
+
+    Returns the corrected experts list if any entries changed, else None.
+    """
+    from ..services.authority.coalition_logic import CoalitionLogic
+    from concurrent.futures import ThreadPoolExecutor
+
+    coalition_logic = CoalitionLogic()
+
+    # evidence_id → evidence dict (needs speaker_id)
+    eid_to_ev: Dict[str, Dict[str, Any]] = {
+        e["evidence_id"]: e
+        for e in evidence_dicts
+        if e.get("evidence_id") and e.get("speaker_id")
+    }
+
+    # First cited speaker per party (from generation result citations)
+    party_to_cited: Dict[str, Dict[str, Any]] = {}
+    for cit in gen_citations:
+        party = cit.get("party", "")
+        if not party or party in party_to_cited:
+            continue
+        ev = eid_to_ev.get(cit.get("evidence_id", ""))
+        if ev and ev.get("speaker_id"):
+            party_to_cited[party] = ev
+
+    # Index current experts by party
+    party_to_idx: Dict[str, int] = {e.get("group", ""): i for i, e in enumerate(experts)}
+
+    # Find mismatches
+    to_update = []  # (expert_idx, cited_ev)
+    for party, cited_ev in party_to_cited.items():
+        idx = party_to_idx.get(party)
+        if idx is None:
+            continue
+        if experts[idx].get("id") != cited_ev["speaker_id"]:
+            to_update.append((idx, cited_ev))
+            logger.info(
+                f"[EXPERTS_PATCH] {party}: "
+                f"top_ranked={experts[idx].get('last_name')} "
+                f"→ cited={cited_ev.get('speaker_name')}"
+            )
+
+    if not to_update:
+        return None
+
+    # Fetch details for all updated speakers in parallel
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor(max_workers=min(10, len(to_update))) as pool:
+        futures = [
+            loop.run_in_executor(pool, _fetch_speaker_details, neo4j_client, cited_ev["speaker_id"])
+            for _, cited_ev in to_update
+        ]
+        speaker_details_list = await asyncio.gather(*futures)
+
+    updated = list(experts)
+    for (idx, cited_ev), speaker_info in zip(to_update, speaker_details_list):
+        sid = cited_ev["speaker_id"]
+        party = cited_ev.get("party", "")
+        name_parts = cited_ev.get("speaker_name", "").split(" ", 1)
+        first_name = name_parts[0] if name_parts else ""
+        last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+        details = authority_details.get(sid, {})
+        components = details.get("components", {})
+        coalition = coalition_logic.get_coalition(party)
+        relevant_count = sum(1 for e in evidence_dicts if e.get("speaker_id") == sid)
+
+        updated[idx] = {
+            "id": sid,
+            "first_name": first_name,
+            "last_name": last_name,
+            "group": party,
+            "coalition": coalition,
+            "authority_score": round(authority_scores.get(sid, 0.5), 2),
+            "relevant_speeches_count": relevant_count,
+            "photo": speaker_info.get("photo"),
+            "camera_profile_url": speaker_info.get("camera_profile_url"),
+            "profession": speaker_info.get("profession"),
+            "education": speaker_info.get("education"),
+            "committee": speaker_info.get("current_committee"),
+            "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
+            "score_breakdown": {
+                "speeches": round(components.get("interventions", 0), 2),
+                "acts": round(components.get("acts", 0), 2),
+                "committee": round(components.get("committee", 0), 2),
+                "profession": round(components.get("profession", 0), 2),
+                "education": round(components.get("education", 0), 2),
+                "role": round(components.get("role", 0), 2),
+            },
+        }
+
+    return updated
 
 
 async def _compute_experts_for_frontend(

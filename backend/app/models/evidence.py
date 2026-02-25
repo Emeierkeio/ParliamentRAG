@@ -77,6 +77,9 @@ class UnifiedEvidence(BaseModel):
     coalition: Literal["maggioranza", "opposizione", "governo"] = Field(
         description="Coalition membership"
     )
+    # Group-change transparency: True when the speaker has since moved to a different group
+    party_changed: bool = Field(default=False, description="Whether speaker changed group after this speech")
+    current_party: Optional[str] = Field(default=None, description="Current group name if party_changed is True")
     date: date_type = Field(description="Date of the intervention")
 
     # TEXT FIELDS - CLEARLY DISTINGUISHED

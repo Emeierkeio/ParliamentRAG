@@ -1,10 +1,9 @@
 """
 Stage 4: Citation Surgeon
 
-CRITICAL: Inserts EXACT verbatim citations with verification.
-NO FUZZY MATCHING - offset-based extraction ONLY.
-
-Citation validity = offset validity + successful extraction.
+Inserts verbatim citations with verification.
+Primary path: «inline» [CIT:id] format — quote verified as literal substring of source.
+Fallback: extract_best_sentences (semantic) when verbatim check fails.
 
 CITATION-FIRST APPROACH:
 If pre_extracted_citation is available in evidence (from Stage 2),
@@ -52,7 +51,6 @@ class CitationSurgeon:
             "format",
             "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
         )
-        self.verify_on_insert = citation_config.get("verify_on_insert", True)
 
     def insert_citations(
         self,
@@ -117,18 +115,6 @@ class CitationSurgeon:
                     })
                     return None, None
 
-            # Verify citation if enabled and text is available
-            if self.verify_on_insert:
-                text = evidence.get("text", "")
-                span_start = evidence.get("span_start", 0)
-                span_end = evidence.get("span_end", 0)
-
-                if text and span_end > span_start:
-                    if not self._verify_citation(quote_text, text, span_start, span_end):
-                        logger.warning(f"Citation verification failed for {evidence_id}, using chunk_text")
-                        # Don't fail - use chunk_text as fallback
-                        quote_text = evidence.get("chunk_text", "")[:300]
-
             return quote_text, evidence
 
         def track_citation(evidence_id: str, quote_text: str, evidence: Dict[str, Any]):
@@ -163,6 +149,14 @@ class CitationSurgeon:
                 f"llm_chose='{inline_quote[:80]}...'"
             )
 
+            # Normalize first-letter case: the LLM lowercases the first letter
+            # when the citation follows a verb ("afferma che «citazione»").
+            # Try the capitalized variant so "noi non..." matches "Noi non...".
+            if inline_quote and inline_quote[0].islower():
+                capitalized = inline_quote[0].upper() + inline_quote[1:]
+                if capitalized in quote_text:
+                    inline_quote = capitalized
+
             # Verbatim check: inline_quote must appear literally in the source
             if inline_quote in quote_text:
                 # Additional check: reject if the extracted text is a third-party
@@ -181,16 +175,14 @@ class CitationSurgeon:
                         max_chars=400
                     ) or quote_text[:400]
                 else:
-                    # Expand leftward if the LLM started mid-sentence.
-                    # Pass the full speech text + span_start so we can expand
-                    # even when pos==0 (chunk itself starts mid-sentence).
-                    full_speech_text = evidence.get("text", "") if evidence else ""
-                    span_start = evidence.get("span_start", 0) if evidence else 0
+                    # Expand leftward to the nearest sentence boundary within
+                    # the chunk text (Case 1 only). Do NOT pass full_text/span_start:
+                    # sp.text stores preprocessed text while span_start is a raw
+                    # offset, so cross-chunk expansion (Case 2) produces duplicated
+                    # text when the quote starts at pos==0.
                     verified_quote = self._expand_to_sentence_start(
                         inline_quote,
                         quote_text,
-                        full_text=full_speech_text,
-                        span_start=span_start,
                     )
                     if verified_quote != inline_quote:
                         logger.info(
@@ -200,6 +192,17 @@ class CitationSurgeon:
                         )
                     else:
                         logger.debug(f"Inline quote at sentence boundary for {evidence_id}")
+
+                    # If the verified quote is a rhetorical question, append the
+                    # answer sentence to prevent semantic inversion out of context.
+                    if verified_quote.rstrip().endswith('?'):
+                        expanded = self._expand_rhetorical_answer(verified_quote, quote_text)
+                        if expanded != verified_quote:
+                            logger.info(
+                                f"[CITATION_DEBUG] Expanded rhetorical question for {evidence_id}: "
+                                f"result='{expanded[:120]}...'"
+                            )
+                            verified_quote = expanded
             else:
                 # LLM paraphrased or slightly modified — fall back to heuristic
                 logger.warning(
@@ -321,37 +324,6 @@ class CitationSurgeon:
 
         return text[span_start:span_end]
 
-    def _verify_citation(
-        self,
-        quote_text: str,
-        text: str,
-        span_start: int,
-        span_end: int
-    ) -> bool:
-        """
-        Verify citation by re-extracting from source.
-
-        DOES NOT compare with chunk_text - that would be incorrect.
-        Citation validity = offset validity + identical re-extraction.
-
-        Args:
-            quote_text: Quote text to verify
-            text: Speech text
-            span_start: Start offset
-            span_end: End offset
-
-        Returns:
-            True if citation is valid
-        """
-        try:
-            re_extracted = self._extract_quote(text, span_start, span_end)
-            if re_extracted is None:
-                return False
-            return re_extracted == quote_text
-        except Exception as e:
-            logger.error(f"Citation verification error: {e}")
-            return False
-
     def _format_citation(
         self,
         quote: str,
@@ -402,12 +374,6 @@ class CitationSurgeon:
                 f"salience={citation_salience:.1f}, attempting re-extraction"
             )
             query = getattr(self, '_current_query', '')
-            # Try original full quote text (before pre-extraction)
-            original_quote = quote  # Save for fallback
-            if pre_extracted:
-                # We had a pre-extracted version; get the full text to try again
-                # The full quote should be in the evidence_map
-                pass  # quote variable already has the pre-extracted text
             if query and len(quote) > 30:
                 re_extracted = extract_best_sentences(
                     text=quote,
@@ -570,6 +536,56 @@ class CitationSurgeon:
         return prefix + inline_quote
 
     @staticmethod
+    def _expand_rhetorical_answer(quote: str, source_text: str, max_answer_chars: int = 120) -> str:
+        """
+        If quote is a rhetorical question, append the answer sentence from source_text.
+
+        Prevents semantic inversion when a question like "Can we suspend aid?"
+        is cited without its answer "No, weapons are indispensable...".
+
+        Args:
+            quote: The verified quote ending with '?'.
+            source_text: The full chunk text to search for the answer.
+            max_answer_chars: Maximum characters to append from the answer sentence.
+
+        Returns:
+            The expanded quote including the answer, or the original if not found.
+        """
+        pos = source_text.find(quote)
+        if pos < 0:
+            return quote
+
+        after_pos = pos + len(quote)
+        remaining = source_text[after_pos:]
+
+        # Skip whitespace after the question mark
+        stripped = remaining.lstrip()
+        if not stripped:
+            return quote
+
+        # Find the end of the answer sentence (first . ! ? or max_answer_chars)
+        end = 0
+        for i, ch in enumerate(stripped):
+            if ch in '.!?':
+                end = i + 1
+                break
+        else:
+            end = min(len(stripped), max_answer_chars)
+
+        if end == 0:
+            end = min(len(stripped), max_answer_chars)
+
+        answer = stripped[:end].rstrip()
+        if not answer:
+            return quote
+
+        # Only append if answer is non-trivial (more than a couple of words)
+        if len(answer.split()) < 3:
+            return quote
+
+        return quote + " " + answer
+
+    @staticmethod
     def _is_nested_quote(inline_quote: str, source_text: str) -> bool:
         """Return True if inline_quote is a third-party quotation embedded in source_text.
 
@@ -596,11 +612,6 @@ class CitationSurgeon:
             return True
 
         return False
-
-    def _shorten_party_name(self, party: str) -> str:
-        """Return readable display name for a party (full name, title case)."""
-        from ...models.evidence import normalize_party_name
-        return normalize_party_name(party)
 
     def extract_unsupported_claims(
         self,

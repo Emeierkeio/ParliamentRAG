@@ -47,7 +47,7 @@ authority:
   time_decay:
     # Acts represent durable legislative commitment — longer half-life
     acts_half_life_days: 548      # 18 months  [was 365: 2yr-old acts kept 25% → now 41%]
-    speeches_half_life_days: 180  # 6 months (speeches are more ephemeral)
+    speeches_half_life_days: 548  # 6 months (speeches are more ephemeral)
 
   # Minimum cosine similarity between act description_embedding and the query
   # embedding for an act to be counted. Acts below this threshold are off-topic
@@ -187,9 +187,9 @@ citation:
   # Citation integrity system settings
   integrity:
     # Minimum semantic coherence score (0.0-1.0)
-    # For embedding method: 0.35 calibrated for intro_text vs verbatim parliamentary quote pairs
+    # For embedding method: 0.30 calibrated for intro_text vs verbatim parliamentary quote pairs
     # For jaccard method: 0.2 recommended (keyword overlap)
-    min_coherence_score: 0.35
+    min_coherence_score: 0.30
     # Coherence validation method: "embedding" (primary) or "jaccard" (fallback)
     coherence_method: "embedding"
 

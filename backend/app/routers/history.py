@@ -9,6 +9,7 @@ import re
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from uuid import uuid4
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -35,7 +36,7 @@ class ChatHistoryItem(BaseModel):
     query: str
     answer: str
     preview: str = ""
-    timestamp: datetime = Field(default_factory=datetime.now)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(tz=ZoneInfo("Europe/Rome")))
 
     citations: List[Dict[str, Any]] = []
     experts: List[Dict[str, Any]] = []
@@ -286,10 +287,15 @@ async def _compute_experts_from_matched(
     query_text: str,
     matched_deputies: List[Dict],
     client: Any,
+    authority_cache: Optional[Dict[str, Dict]] = None,
 ) -> List[Dict]:
     """
     Compute authority scores for a list of pre-matched deputies and return expert dicts.
     Shared by get_baseline_experts and precalculate_baseline_experts.
+
+    authority_cache: optional {speaker_id: expert_dict} from a previously computed
+    run (e.g. stored in the chat's experts field). When provided, skips the heavy
+    Neo4j authority computation for speakers already in the cache.
     """
     import asyncio
     from concurrent.futures import ThreadPoolExecutor
@@ -301,33 +307,64 @@ async def _compute_experts_from_matched(
         return []
 
     matched_ids = [d["id"] for d in matched_deputies]
+    cache = authority_cache or {}
+
+    # Only run full authority computation for speakers NOT already in the cache.
+    ids_to_compute = [sid for sid in matched_ids if sid not in cache]
 
     services = get_services()
-    query_embedding = await asyncio.get_running_loop().run_in_executor(
-        None, lambda: services["retrieval"].embed_query(query_text)
-    )
+    authority_scores: Dict[str, float] = {}
+    authority_details: Dict[str, Dict] = {}
 
-    def _compute_single(sid):
-        return sid, services["authority"].compute_authority(sid, query_embedding)
+    if ids_to_compute:
+        query_embedding = await asyncio.get_running_loop().run_in_executor(
+            None, lambda: services["retrieval"].embed_query(query_text)
+        )
 
-    loop = asyncio.get_running_loop()
-    with ThreadPoolExecutor(max_workers=min(10, max(1, len(matched_ids)))) as pool:
-        futures = [loop.run_in_executor(pool, _compute_single, sid) for sid in matched_ids]
-        auth_results = await asyncio.gather(*futures)
+        def _compute_single(sid):
+            return sid, services["authority"].compute_authority(sid, query_embedding)
 
-    authority_scores = {sid: res["total_score"] for sid, res in auth_results}
-    authority_details = {sid: res for sid, res in auth_results}
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor(max_workers=min(10, max(1, len(ids_to_compute)))) as pool:
+            futures = [loop.run_in_executor(pool, _compute_single, sid) for sid in ids_to_compute]
+            auth_results = await asyncio.gather(*futures)
 
-    committees_result = client.query("""
-        UNWIND $ids AS sid
-        MATCH (d:Deputy {id: sid})
-        OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
-        WHERE mc.end_date IS NULL OR mc.end_date >= date()
-        RETURN sid, collect(c.name)[0] AS current_committee,
-               d.institutional_role AS institutional_role
-    """, {"ids": matched_ids})
+        for sid, res in auth_results:
+            authority_scores[sid] = res["total_score"]
+            authority_details[sid] = res
 
-    committees_map = {r["sid"]: r for r in committees_result}
+    # Populate scores for cached speakers (avoids full Neo4j authority recomputation)
+    for sid, cached in cache.items():
+        if sid not in authority_scores:
+            authority_scores[sid] = cached.get("authority_score", 0.0)
+            # Reconstruct authority_details-compatible dict from stored score_breakdown
+            sb = cached.get("score_breakdown", {})
+            authority_details[sid] = {
+                "total_score": cached.get("authority_score", 0.0),
+                "institutional_role": cached.get("institutional_role"),
+                "components": {
+                    "interventions": sb.get("speeches", 0),
+                    "acts": sb.get("acts", 0),
+                    "committee": sb.get("committee", 0),
+                    "profession": sb.get("profession", 0),
+                    "education": sb.get("education", 0),
+                },
+            }
+
+    # For speakers served from cache, committee info is already stored — skip Neo4j
+    # for those and only query for speakers that needed fresh computation.
+    committees_map: Dict[str, Dict] = {}
+    if ids_to_compute:
+        committees_result = client.query("""
+            UNWIND $ids AS sid
+            MATCH (d:Deputy {id: sid})
+            OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+            WHERE mc.end_date IS NULL OR mc.end_date >= date()
+            RETURN sid, collect(c.name)[0] AS current_committee,
+                   d.institutional_role AS institutional_role
+        """, {"ids": ids_to_compute})
+        committees_map = {r["sid"]: r for r in committees_result}
+
     dep_map = {d["id"]: d for d in matched_deputies}
     coalition_logic = CoalitionLogic()
     experts = []
@@ -339,6 +376,8 @@ async def _compute_experts_from_matched(
         auth = authority_details.get(dep_id, {})
         components = auth.get("components", {})
         committee_info = committees_map.get(dep_id, {})
+        # For cached speakers, use stored committee/role info
+        cached_expert = cache.get(dep_id, {})
         coalition = coalition_logic.get_coalition(dep.get("group_name", ""))
         experts.append({
             "id": dep_id,
@@ -352,8 +391,12 @@ async def _compute_experts_from_matched(
             "camera_profile_url": dep.get("camera_profile_url"),
             "profession": dep.get("profession"),
             "education": dep.get("education"),
-            "committee": committee_info.get("current_committee"),
-            "institutional_role": committee_info.get("institutional_role"),
+            "committee": committee_info.get("current_committee") or cached_expert.get("committee"),
+            "institutional_role": (
+                auth.get("institutional_role")
+                or committee_info.get("institutional_role")
+                or cached_expert.get("institutional_role")
+            ),
             "score_breakdown": {
                 "speeches": round(components.get("interventions", 0), 2),
                 "acts": round(components.get("acts", 0), 2),
@@ -380,7 +423,7 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
 
     result = client.query("""
         MATCH (c:ChatHistory {id: $id})
-        RETURN c.query AS query, c.baseline_answer AS baseline_answer
+        RETURN c.query AS query, c.baseline_answer AS baseline_answer, c.experts AS experts_json
     """, {"id": chat_id})
 
     if not result:
@@ -392,6 +435,19 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
 
     if not baseline_text:
         return {"experts": []}
+
+    # Build authority cache from already-computed experts stored in this chat.
+    # This avoids re-running heavy Neo4j authority queries for speakers whose
+    # scores were already computed during the main pipeline execution.
+    authority_cache: Dict[str, Dict] = {}
+    experts_json_raw = chat_data.get("experts_json")
+    if experts_json_raw:
+        try:
+            stored = json.loads(experts_json_raw) if isinstance(experts_json_raw, str) else experts_json_raw
+            authority_cache = {e["id"]: e for e in stored if e.get("id")}
+            logger.info(f"[BASELINE-EXPERTS] Authority cache loaded: {len(authority_cache)} speakers from chat experts")
+        except Exception:
+            pass
 
     deputies_result = client.query("""
         MATCH (d:Deputy)
@@ -407,11 +463,15 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
     """)
 
     matched = _match_deputies_in_text(baseline_text, deputies_result)
-    logger.info(f"[BASELINE-EXPERTS] Matched {len(matched)}/{len(deputies_result)} deputies")
+    cached_count = sum(1 for m in matched if m["id"] in authority_cache)
+    logger.info(
+        f"[BASELINE-EXPERTS] Matched {len(matched)}/{len(deputies_result)} deputies "
+        f"({cached_count} from cache, {len(matched) - cached_count} need computation)"
+    )
     if not matched:
         return {"experts": []}
 
-    experts = await _compute_experts_from_matched(query_text, matched, client)
+    experts = await _compute_experts_from_matched(query_text, matched, client, authority_cache)
     return {"experts": experts}
 
 

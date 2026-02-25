@@ -12,7 +12,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from ..neo4j_client import Neo4jClient
-from ...models.evidence import UnifiedEvidence, compute_quote_text, normalize_speaker_name, normalize_party_name
+from ...models.evidence import normalize_speaker_name, normalize_party_name
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
@@ -69,11 +69,11 @@ class DenseChannel:
         WHERE score >= $threshold
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-        // Partito storico: gruppo del deputato ALLA DATA del discorso.
-        // Non si filtra su mg.end_date >= date() per includere anche i deputati
-        // che hanno successivamente cambiato gruppo parlamentare.
+        // Partito corrente del deputato: solo se la membership è ancora attiva oggi.
+        // Se il deputato ha cambiato gruppo (mg.end_date < date()), il chunk viene
+        // attribuito al nuovo gruppo o scartato — mai al gruppo precedente.
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         // Partito attuale: gruppo corrente (membership ancora aperta).
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
         WHERE mg_now.end_date IS NULL
@@ -128,21 +128,13 @@ class DenseChannel:
                 span_start = row.get("span_start", 0)
                 span_end = row.get("span_end", 0)
 
-                if text and span_start is not None and span_end is not None and span_start < span_end:
-                    try:
-                        quote_text = compute_quote_text(text, span_start, span_end)
-                    except ValueError:
-                        logger.warning(
-                            f"Invalid span for chunk {row.get('chunk_id')}: "
-                            f"start={span_start}, end={span_end}, text_len={len(text)}. "
-                            f"Using chunk_text fallback."
-                        )
-                        quote_text = row.get("chunk_text", "") or text
-                else:
-                    # Fallback to chunk_text if offsets unavailable or invalid
-                    quote_text = row.get("chunk_text", "") or text
-                    if not quote_text:
-                        logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
+                # Use chunk_text directly as the citation source.
+                # start_char_raw/end_char_raw are offsets in raw text but sp.text
+                # stores preprocessed text, so offset extraction would yield
+                # wrong characters. chunk_text is always correct.
+                quote_text = row.get("chunk_text", "") or text
+                if not quote_text:
+                    logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
 
                 # Determine coalition using the historical party (group at speech time).
                 # current_party is the group the speaker belongs to TODAY — used only

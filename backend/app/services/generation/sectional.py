@@ -133,14 +133,23 @@ NON usare frasi che:
 - Introducono il tema senza valutarlo ("oggi parliamo di salario minimo")
 - Riportano fatti o dati senza giudizio politico
 - Sono premesse retoriche a una posizione non visibile nel testo
+- Sono DOMANDE RETORICHE senza la risposta inclusa: una domanda come
+  "possiamo permetterci di sospendere gli aiuti?" SEMBRA contraria al sostegno,
+  ma è in realtà un'interrogativa retorica con risposta "No". Isolata, INVERTE
+  il significato. Non usarla MAI da sola come citazione.
+  → Se vuoi usare una domanda retorica, includi OBBLIGATORIAMENTE la risposta:
+    «possiamo permetterci di sospendere gli aiuti? No, le armi sono indispensabili»
+  → Oppure scegli un'affermazione diretta dallo stesso testo.
 ESEMPI di citazioni VALIDE (contengono posizione esplicita):
 ✓ "non siamo obbligati ad introdurre un salario minimo legale" → posizione chiara CONTRO
 ✓ "serve una soglia di dignità di 9 euro lordi" → posizione chiara PRO
 ✓ "è indispensabile ma bisogna trovare risorse" → posizione CONDIZIONALE esplicita
+✓ "possiamo sospendere gli aiuti? No, le armi sono indispensabili" → domanda + risposta
 ESEMPI di citazioni NON VALIDE (nessuna posizione esplicita):
 ✗ "siamo qui oggi a parlare del salario minimo, cioè del livello minimo di retribuzione"
 ✗ "cooperative che sfruttano i lavoratori immigrati, che non vengono pagati"
 ✗ "in molti casi salari più alti di una ipotetica soglia" (frammento senza soggetto)
+✗ "possiamo permetterci di sospendere gli aiuti militari?" (domanda retorica senza risposta)
 Se il TESTO DISPONIBILE non contiene frasi con posizione esplicita, usa le evidenze
 restanti per costruire il posizionamento con parole tue (senza «» né [CIT:]).
 
@@ -524,150 +533,186 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
 ⚠️ SBAGLIATO: Il gruppo discute di economia. **Rossi** «...» [CIT:id]. Il gruppo è preoccupato per l'ambiente. ← intro scollegata dalla citazione!
 """
 
-        try:
-            # Async call for true parallel execution
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": self.SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=0.1,
-                max_tokens=800
-            )
+        import re
 
-            content = response.choices[0].message.content
+        # Determine if there is citeable evidence before entering the retry loop.
+        # A section with available, non-duplicate, substantive evidence MUST produce
+        # a citation — if it doesn't, we retry once with an explicit reminder.
+        has_citeable_evidence = any(
+            not e.get("citation_duplicate_of")
+            and compute_chunk_salience(e.get("quote_text", "") or e.get("chunk_text", "")) > 0.35
+            for e in evidence[:3]
+        )
 
-            # Enforce single citation: strip extra [CIT:id] markers after the first.
-            # This is code-level insurance — the prompt rule alone is not reliable.
-            content = self._enforce_single_citation(content)
+        content = ""
+        validated_ids: List[str] = []
+        citations: List[Dict[str, Any]] = []
 
-            import re
+        for attempt in range(2):
+            # On retry, prepend an explicit reminder that the previous output lacked «».
+            if attempt == 0:
+                attempt_prompt = user_prompt
+            else:
+                attempt_prompt = (
+                    "⚠️ SECONDO TENTATIVO: il tuo output precedente NON conteneva nessuna "
+                    "citazione verbatim «» con [CIT:id], nonostante le evidenze disponibili.\n"
+                    "Devi OBBLIGATORIAMENTE includere:\n"
+                    "  **Nome Cognome** [verbo] «frase esatta copiata dal TESTO DISPONIBILE» [CIT:ID_COMPLETO]\n"
+                    "Scegli la frase più incisiva dalla prima evidenza e copiala parola per parola.\n\n"
+                ) + user_prompt
 
-            # Extract citation IDs - primarily [CIT:id] format
-            citation_ids = re.findall(r'\[CIT:([^\]]+)\]', content)
+            try:
+                # Async call for true parallel execution
+                response = await self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": self.SYSTEM_PROMPT},
+                        {"role": "user", "content": attempt_prompt}
+                    ],
+                    temperature=0.1,
+                    max_tokens=800
+                )
 
-            # Also catch any legacy ["text"](id) format and extract just the ID
-            legacy_ids = re.findall(r'\]\(([^)]+)\)', content)
-            citation_ids.extend(legacy_ids)
+                content = response.choices[0].message.content
 
-            # Build valid evidence IDs set for validation
-            valid_evidence_ids = {e.get("evidence_id") for e in evidence}
+                # Enforce single citation: strip extra [CIT:id] markers after the first.
+                # This is code-level insurance — the prompt rule alone is not reliable.
+                content = self._enforce_single_citation(content)
 
-            # Build a map from evidence_id → party for cross-party guard
-            evidence_party_map = {e.get("evidence_id"): e.get("party", "") for e in evidence}
+                # Extract citation IDs - primarily [CIT:id] format
+                citation_ids = re.findall(r'\[CIT:([^\]]+)\]', content)
 
-            # Validate and filter citation IDs
-            validated_ids = []
-            invalid_ids = []
-            for cit_id in citation_ids:
-                if cit_id not in valid_evidence_ids:
-                    invalid_ids.append(cit_id)
-                    logger.warning(f"Invalid citation ID '{cit_id}' not in evidence list for {party}")
-                    continue
-                # Cross-party guard: reject evidence belonging to a different party
-                cited_party = evidence_party_map.get(cit_id, "")
-                if cited_party and cited_party != party and party != "GOVERNO":
-                    logger.warning(
-                        f"Cross-party citation rejected: '{cit_id}' belongs to "
-                        f"'{cited_party}' but section is '{party}'"
-                    )
-                    invalid_ids.append(cit_id)
-                    continue
-                validated_ids.append(cit_id)
+                # Also catch any legacy ["text"](id) format and extract just the ID
+                legacy_ids = re.findall(r'\]\(([^)]+)\)', content)
+                citation_ids.extend(legacy_ids)
 
-            # Log if we found invalid citations (possible truncation)
-            if invalid_ids:
-                logger.warning(f"Section {party}: {len(invalid_ids)} invalid citation IDs found: {invalid_ids[:5]}")
-                for invalid_id in invalid_ids:
-                    # Try to salvage: find which valid evidence contains the verbatim quote
-                    cit_pattern = re.compile(r'«([^»]+)»\s*\[CIT:' + re.escape(invalid_id) + r'\]')
-                    match = cit_pattern.search(content)
-                    salvaged = False
-                    if match:
-                        inline_quote = match.group(1)
-                        # Normalize whitespace for robust matching (LLM may insert extra spaces/newlines)
-                        inline_norm = " ".join(inline_quote.split())
-                        for e in evidence:
-                            qt = e.get("quote_text", "") or e.get("chunk_text", "")
-                            qt_norm = " ".join(qt.split())
-                            eid = e.get("evidence_id", "")
-                            if eid in valid_evidence_ids and inline_norm in qt_norm:
-                                content = content.replace(f'[CIT:{invalid_id}]', f'[CIT:{eid}]')
-                                validated_ids.append(eid)
-                                logger.info(
-                                    f"Salvaged citation: '{invalid_id}' → '{eid}' "
-                                    f"(verbatim match found in evidence)"
-                                )
-                                salvaged = True
-                                break
-                    if not salvaged:
-                        # Strip the entire «quote» [CIT:id] pair to avoid leaving a bare «»
-                        # that the pipeline would later have to clean up, causing attribution
-                        # verbs ("afferma:", "propone che") to become orphaned sentences.
+                # Build valid evidence IDs set for validation
+                valid_evidence_ids = {e.get("evidence_id") for e in evidence}
+
+                # Build a map from evidence_id → party for cross-party guard
+                evidence_party_map = {e.get("evidence_id"): e.get("party", "") for e in evidence}
+
+                # Validate and filter citation IDs
+                validated_ids = []
+                invalid_ids = []
+                for cit_id in citation_ids:
+                    if cit_id not in valid_evidence_ids:
+                        invalid_ids.append(cit_id)
+                        logger.warning(f"Invalid citation ID '{cit_id}' not in evidence list for {party}")
+                        continue
+                    # Cross-party guard: reject evidence belonging to a different party
+                    cited_party = evidence_party_map.get(cit_id, "")
+                    if cited_party and cited_party != party and party != "GOVERNO":
+                        logger.warning(
+                            f"Cross-party citation rejected: '{cit_id}' belongs to "
+                            f"'{cited_party}' but section is '{party}'"
+                        )
+                        invalid_ids.append(cit_id)
+                        continue
+                    validated_ids.append(cit_id)
+
+                # Log if we found invalid citations (possible truncation)
+                if invalid_ids:
+                    logger.warning(f"Section {party}: {len(invalid_ids)} invalid citation IDs found: {invalid_ids[:5]}")
+                    for invalid_id in invalid_ids:
+                        # Try to salvage: find which valid evidence contains the verbatim quote
+                        cit_pattern = re.compile(r'«([^»]+)»\s*\[CIT:' + re.escape(invalid_id) + r'\]')
+                        match = cit_pattern.search(content)
+                        salvaged = False
                         if match:
-                            content = cit_pattern.sub('', content)
-                        else:
-                            content = content.replace(f'[CIT:{invalid_id}]', '')
-                        logger.warning(f"Could not salvage citation '{invalid_id}', stripped from content")
+                            inline_quote = match.group(1)
+                            # Normalize whitespace for robust matching (LLM may insert extra spaces/newlines)
+                            inline_norm = " ".join(inline_quote.split())
+                            for e in evidence:
+                                qt = e.get("quote_text", "") or e.get("chunk_text", "")
+                                qt_norm = " ".join(qt.split())
+                                eid = e.get("evidence_id", "")
+                                if eid in valid_evidence_ids and inline_norm in qt_norm:
+                                    content = content.replace(f'[CIT:{invalid_id}]', f'[CIT:{eid}]')
+                                    validated_ids.append(eid)
+                                    logger.info(
+                                        f"Salvaged citation: '{invalid_id}' → '{eid}' "
+                                        f"(verbatim match found in evidence)"
+                                    )
+                                    salvaged = True
+                                    break
+                        if not salvaged:
+                            # Strip the entire «quote» [CIT:id] pair to avoid leaving a bare «»
+                            # that the pipeline would later have to clean up, causing attribution
+                            # verbs ("afferma:", "propone che") to become orphaned sentences.
+                            if match:
+                                content = cit_pattern.sub('', content)
+                            else:
+                                content = content.replace(f'[CIT:{invalid_id}]', '')
+                            logger.warning(f"Could not salvage citation '{invalid_id}', stripped from content")
 
-            # Anonymize non-cited speaker bold names AFTER salvage, so that speakers
-            # whose citation IDs were salvaged (invalid → valid) are correctly identified
-            # as cited and keep their names.
-            final_cit_ids = set(validated_ids)
-            cited_names = {
-                e.get("speaker_name", "")
-                for e in evidence
-                if e.get("evidence_id") in final_cit_ids and e.get("speaker_name")
-            }
-            all_names = [
-                e.get("speaker_name", "")
-                for e in evidence[:2]
-                if e.get("speaker_name")
-            ]
-            content = self._anonymize_uncited_speakers(content, cited_names, all_names)
-
-            # For government sections, replace generic "il gruppo/Il gruppo" with "il Governo/Il Governo"
-            if is_government:
-                content = re.sub(r'\bIl gruppo\b', 'Il Governo', content)
-                content = re.sub(r'\bil gruppo\b', 'il Governo', content)
-                content = re.sub(r'\bIl partito\b', 'Il Governo', content)
-                content = re.sub(r'\bil partito\b', 'il Governo', content)
-
-            # Map validated IDs to actual evidence
-            citations = []
-            seen_ids = set()
-            for cit_id in validated_ids:
-                if cit_id in seen_ids:
+                # Retry if no citation was produced but citeable evidence was available.
+                if not validated_ids and has_citeable_evidence and attempt == 0:
+                    logger.warning(
+                        f"Section {party}: no citation on attempt 1 despite available evidence, retrying..."
+                    )
                     continue
-                seen_ids.add(cit_id)
-                for e in evidence:
-                    if e.get("evidence_id") == cit_id:
-                        citations.append({
-                            "citation_id": cit_id,
-                            "evidence_id": e.get("evidence_id"),
-                            "speaker_name": e.get("speaker_name"),
-                            "party": e.get("party"),
-                            "date": str(e.get("date", "")),
-                        })
-                        break
 
-            return {
-                "party": party,
-                "content": content,
-                "citations": citations,
-                "has_evidence": True,
-            }
+            except Exception as e:
+                logger.error(f"Section writing failed for {party} (attempt {attempt + 1}): {e}")
+                return {
+                    "party": party,
+                    "content": f"## {party}\n\n[Errore nella generazione della sezione]",
+                    "citations": [],
+                    "has_evidence": False,
+                    "error": str(e),
+                }
 
-        except Exception as e:
-            logger.error(f"Section writing failed for {party}: {e}")
-            return {
-                "party": party,
-                "content": f"## {party}\n\n[Errore nella generazione della sezione]",
-                "citations": [],
-                "has_evidence": False,
-                "error": str(e),
-            }
+            # Citation produced (or last attempt exhausted) — exit the retry loop.
+            break
+
+        # Anonymize non-cited speaker bold names AFTER salvage, so that speakers
+        # whose citation IDs were salvaged (invalid → valid) are correctly identified
+        # as cited and keep their names.
+        final_cit_ids = set(validated_ids)
+        cited_names = {
+            e.get("speaker_name", "")
+            for e in evidence
+            if e.get("evidence_id") in final_cit_ids and e.get("speaker_name")
+        }
+        all_names = [
+            e.get("speaker_name", "")
+            for e in evidence[:2]
+            if e.get("speaker_name")
+        ]
+        content = self._anonymize_uncited_speakers(content, cited_names, all_names)
+
+        # For government sections, replace generic "il gruppo/Il gruppo" with "il Governo/Il Governo"
+        if is_government:
+            content = re.sub(r'\bIl gruppo\b', 'Il Governo', content)
+            content = re.sub(r'\bil gruppo\b', 'il Governo', content)
+            content = re.sub(r'\bIl partito\b', 'Il Governo', content)
+            content = re.sub(r'\bil partito\b', 'il Governo', content)
+
+        # Map validated IDs to actual evidence
+        citations = []
+        seen_ids = set()
+        for cit_id in validated_ids:
+            if cit_id in seen_ids:
+                continue
+            seen_ids.add(cit_id)
+            for e in evidence:
+                if e.get("evidence_id") == cit_id:
+                    citations.append({
+                        "citation_id": cit_id,
+                        "evidence_id": e.get("evidence_id"),
+                        "speaker_name": e.get("speaker_name"),
+                        "party": e.get("party"),
+                        "date": str(e.get("date", "")),
+                    })
+                    break
+
+        return {
+            "party": party,
+            "content": content,
+            "citations": citations,
+            "has_evidence": True,
+        }
 
     def _build_evidence_context(
         self,
@@ -755,8 +800,16 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                         "non di chi viene citato."
                     )
 
+            similarity = e.get("similarity", 0.0)
+            relevance_label = (
+                " ← ALTA PERTINENZA — PREFERIRE per la citazione"
+                if similarity >= 0.65 else
+                " ← MEDIA PERTINENZA — usa solo se più pertinente delle altre"
+                if similarity >= 0.45 else
+                " ← BASSA PERTINENZA — usa solo per analisi, NON per la citazione"
+            )
             lines.append(f"""
-[ID: {eid}]
+[ID: {eid} | Pertinenza query: {similarity:.2f}{relevance_label}]
 Speaker: {speaker} ({speaker_party}){group_change_note}{rs_warning}
 Date: {date}
 TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):

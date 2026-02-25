@@ -15,7 +15,7 @@ from datetime import datetime
 import numpy as np
 
 from ..neo4j_client import Neo4jClient
-from ...models.evidence import compute_quote_text, normalize_speaker_name, normalize_party_name
+from ...models.evidence import normalize_speaker_name, normalize_party_name
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
@@ -278,8 +278,7 @@ class GraphChannel:
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         WHERE {date_clause}
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
-        AND (mg.end_date IS NULL OR mg.end_date >= date())
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
@@ -338,18 +337,11 @@ class GraphChannel:
                 span_start = row.get("span_start", 0)
                 span_end = row.get("span_end", 0)
 
-                if text and span_start is not None and span_end is not None and span_start < span_end:
-                    try:
-                        quote_text = compute_quote_text(text, span_start, span_end)
-                    except ValueError:
-                        logger.warning(
-                            f"Invalid span for chunk {row.get('chunk_id')}: "
-                            f"start={span_start}, end={span_end}, text_len={len(text)}. "
-                            f"Using chunk_text fallback."
-                        )
-                        quote_text = row.get("chunk_text", "") or text
-                else:
-                    quote_text = row.get("chunk_text", "") or text
+                # Use chunk_text directly as the citation source.
+                # start_char_raw/end_char_raw are offsets in raw text but sp.text
+                # stores preprocessed text, so offset extraction would yield
+                # wrong characters. chunk_text is always correct.
+                quote_text = row.get("chunk_text", "") or text
 
                 # If party is NULL the speaker's current group doesn't cover
                 # this session date (e.g. they switched group after the debate).
