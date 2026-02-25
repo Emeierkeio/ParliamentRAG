@@ -37,6 +37,13 @@ class AutomatedMetrics(BaseModel):
     # Authority Discrimination: std of authority scores (higher = more selective)
     authority_discrimination: float = Field(..., ge=0)
 
+    # Per-group authority breakdown (system)
+    authority_by_group: Dict[str, float] = {}
+
+    # Per-chat baseline authority comparison
+    baseline_authority: Optional[float] = None
+    baseline_authority_by_group: Optional[Dict[str, float]] = None
+
 
 class AggregatedMetrics(BaseModel):
     """Aggregated automated metrics across all evaluated chats."""
@@ -63,6 +70,9 @@ class AggregatedMetrics(BaseModel):
     ci_baseline_citation_fidelity: Optional[Tuple[float, float]] = None
     ci_baseline_response_completeness: Optional[Tuple[float, float]] = None
     ci_baseline_authority: Optional[Tuple[float, float]] = None
+
+    # Aggregate baseline authority per parliamentary group (average across chats that have it)
+    avg_baseline_authority_by_group: Optional[Dict[str, float]] = None
 
 
 class CombinedEvaluation(BaseModel):

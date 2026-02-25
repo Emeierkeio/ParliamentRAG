@@ -46,8 +46,8 @@ authority:
 
   time_decay:
     # Acts represent durable legislative commitment — longer half-life
-    acts_half_life_days: 548      # 18 months  [was 365: 2yr-old acts kept 25% → now 41%]
-    speeches_half_life_days: 548  # 6 months (speeches are more ephemeral)
+    acts_half_life_days: 548      # 18 months
+    speeches_half_life_days: 548  # 18 months
 
   # Minimum cosine similarity between act description_embedding and the query
   # embedding for an act to be counted. Acts below this threshold are off-topic

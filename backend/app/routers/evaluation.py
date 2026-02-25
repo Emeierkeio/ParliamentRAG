@@ -25,7 +25,7 @@ from app.models.evaluation import (
     EvaluationDashboardData,
 )
 from app.models.survey import SurveyResponse, SurveyStats, AB_DIMENSIONS, SimpleRatingResponse
-from app.routers.survey import _load_surveys, _calculate_stats, _load_evaluation_set
+from app.routers.survey import _load_surveys, _calculate_stats
 
 logger = logging.getLogger(__name__)
 
@@ -158,6 +158,97 @@ def _build_expert_score_lookup(chats: List[dict]) -> dict:
     return lookup
 
 
+def _build_expert_full_lookup(chats: List[dict]) -> dict:
+    """Build a (first_name_lower, last_name_lower) → {score, party} lookup from stored chat experts."""
+    lookup = {}
+    for chat in chats:
+        for expert in chat.get("experts", []):
+            fn = (expert.get("first_name") or "").strip().lower()
+            ln = (expert.get("last_name") or "").strip().lower()
+            score = expert.get("authority_score") or expert.get("total_score") or 0
+            party = expert.get("party") or expert.get("group") or ""
+            if fn and ln and score:
+                key = (fn, ln)
+                if key not in lookup or score > lookup[key]["score"]:
+                    lookup[key] = {"score": score, "party": party}
+    return lookup
+
+
+def _compute_baseline_authority_full(
+    baseline_text: str,
+    expert_full_lookup: dict,
+) -> tuple:
+    """
+    Match deputies in baseline_text using the full expert lookup.
+    Returns (overall_avg, {party: avg_score}) or (None, None) if no matches.
+
+    Matching strategy (in order, stops at first match per expert):
+    1. Full "fn ln" or "ln fn" substring match.
+    2. ln as a whole word (works for single-word surnames).
+    3. Last word of ln as whole word (handles compound surnames like "Elena Boschi" → "Boschi").
+    4. fn as whole word (last resort for short texts citing just a first name, rare).
+    """
+    if not baseline_text or not expert_full_lookup:
+        return None, None
+    text_lower = baseline_text.lower()
+    party_scores: dict = {}
+    all_matched_scores: list = []
+
+    for (fn, ln), info in expert_full_lookup.items():
+        score = info["score"]
+        party = info["party"]
+        matched = False
+
+        if f"{fn} {ln}" in text_lower or f"{ln} {fn}" in text_lower:
+            matched = True
+        elif len(ln) >= 4 and re.search(r'\b' + re.escape(ln) + r'\b', text_lower):
+            matched = True
+        elif " " in ln:
+            # Compound surname: try just the last word (e.g. "elena boschi" → "boschi")
+            last_word = ln.rsplit(" ", 1)[-1]
+            if len(last_word) >= 4 and re.search(r'\b' + re.escape(last_word) + r'\b', text_lower):
+                matched = True
+
+        if matched:
+            all_matched_scores.append(score)
+            if party:
+                party_scores.setdefault(party, []).append(score)
+
+    if not all_matched_scores:
+        return None, None
+
+    overall = round(sum(all_matched_scores) / len(all_matched_scores), 4)
+    by_group = {p: round(sum(s) / len(s), 4) for p, s in party_scores.items()} or None
+    return overall, by_group
+
+
+def _compute_baseline_authority_from_precomputed(
+    baseline_experts: List[dict],
+) -> tuple:
+    """
+    Compute baseline authority from pre-computed experts (query-specific scores).
+    These experts already have authority scores computed with the specific query embedding,
+    so they are directly comparable to the system's per-chat authority_by_group.
+    Returns (overall_avg, {party: avg_score}) or (None, None) if no data.
+    """
+    if not baseline_experts:
+        return None, None
+    party_scores: dict = {}
+    all_scores: list = []
+    for e in baseline_experts:
+        score = e.get("authority_score", 0) or 0
+        party = e.get("group", "") or e.get("party", "")
+        if score > 0:
+            all_scores.append(score)
+            if party:
+                party_scores.setdefault(party, []).append(score)
+    if not all_scores:
+        return None, None
+    overall = round(sum(all_scores) / len(all_scores), 4)
+    by_group = {p: round(sum(s) / len(s), 4) for p, s in party_scores.items()} or None
+    return overall, by_group
+
+
 def _compute_baseline_authority_for_text(baseline_text: str, expert_lookup: dict) -> Optional[float]:
     """
     Estimate the average authority score of deputies mentioned in a baseline text.
@@ -197,12 +288,24 @@ def _fetch_chunk_texts(chunk_ids: List[str]) -> dict:
     return {r["cid"]: r.get("text", "") for r in results}
 
 
-def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetrics:
+def _compute_automated_metrics(
+    chat: dict,
+    chunk_texts: dict,
+    expert_full_lookup: Optional[dict] = None,
+    baseline_precomputed_experts: Optional[List[dict]] = None,
+    authority_spread_std: Optional[float] = None,
+) -> AutomatedMetrics:
     """Compute automated metrics from a single chat's stored data.
 
     Args:
-        chat: Chat data dict (id, query, answer, citations, experts).
+        chat: Chat data dict (id, query, answer, citations, experts, baseline_answer).
         chunk_texts: Pre-fetched {chunk_id: text} mapping for verbatim match.
+        expert_full_lookup: Optional full expert lookup for baseline per-group authority (fallback).
+        baseline_precomputed_experts: Optional pre-computed baseline experts with query-specific
+            authority scores (preferred over expert_full_lookup for accurate comparison).
+        authority_spread_std: Optional pre-computed std dev of ALL deputies' scores for this topic
+            (from compute_topic_authority_spread.py). When present, used directly as
+            authority_discrimination instead of the cited-experts std dev.
     """
     chat_id = chat["id"]
     citations = chat.get("citations", [])
@@ -249,8 +352,61 @@ def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetric
     ]
     avg_auth = sum(auth_scores) / len(auth_scores) if auth_scores else 0.0
 
-    # 5. Authority Discrimination: std of authority_scores (higher = more selective)
-    if len(auth_scores) >= 2:
+    # 4b. Per-group authority breakdown (system) — from the authority scores of deputies
+    # ACTUALLY CITED in the answer, not the top-retrieved expert per party.
+    # Strategy:
+    #   1. Build a (first_name, last_name) → score lookup from this chat's query-specific experts.
+    #   2. Also build a party → (fn, ln, score) lookup for the stored top expert per party.
+    #   3. For each citation, look up the cited deputy's score by name.
+    #   4. Fallback to the stored top expert for that party (query-specific, NOT global max).
+    #      This ensures authority_by_group is always based on query-specific scores and
+    #      stays consistent with the survey panel which also uses chatData.experts.
+    expert_name_lookup: dict = {}
+    party_top_expert: dict = {}  # party → (fn, ln, score) for query-specific fallback
+    for e in experts:
+        fn = (e.get("first_name") or "").strip().lower()
+        ln = (e.get("last_name") or "").strip().lower()
+        score = e.get("authority_score", 0) or e.get("total_score", 0)
+        party = e.get("group") or e.get("party") or ""
+        if fn and ln and score:
+            expert_name_lookup[(fn, ln)] = score
+            if party and party not in party_top_expert:
+                party_top_expert[party] = (fn, ln, score)
+
+    group_cited_deputies: dict = {}  # {party: {(fn, ln): score}}
+    for cit in citations:
+        g = cit.get("group", "") or cit.get("party", "")
+        if not g:
+            continue
+        fn = (cit.get("deputy_first_name") or "").strip().lower()
+        ln = (cit.get("deputy_last_name") or "").strip().lower()
+        if not fn and not ln:
+            continue
+        score = expert_name_lookup.get((fn, ln))
+        if score is None:
+            # Fallback: use the stored top expert for this party (query-specific).
+            # Never use expert_full_lookup here — it carries scores from other queries,
+            # which would make authority_by_group inconsistent with the survey panel.
+            top = party_top_expert.get(g)
+            if top:
+                fn, ln, score = top
+        if score:
+            group_cited_deputies.setdefault(g, {})[(fn, ln)] = score
+
+    authority_by_group = {
+        p: round(sum(scores.values()) / len(scores), 4)
+        for p, scores in group_cited_deputies.items()
+        if scores
+    }
+
+    # 5. Authority Discrimination (Authority Spread):
+    # Prefer pre-computed std across ALL deputies for this topic (from
+    # compute_topic_authority_spread.py), which gives a meaningful signal about
+    # how much authority scores vary across the full parliament on that topic.
+    # Falls back to cited-experts std when no pre-computed data is available.
+    if authority_spread_std is not None:
+        auth_discrimination = authority_spread_std
+    elif len(auth_scores) >= 2:
         mean_a = avg_auth
         variance_a = sum((x - mean_a) ** 2 for x in auth_scores) / len(auth_scores)
         auth_discrimination = math.sqrt(variance_a)
@@ -260,6 +416,23 @@ def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetric
     # 6. Response Completeness: how many of the 10 groups are mentioned in the answer text
     parties_in_text = _count_parties_in_text(answer)
     completeness = min(parties_in_text / ALL_PARTIES, 1.0)
+
+    # 7. Baseline authority (per-chat, per-group)
+    # Prefer pre-computed baseline experts (query-specific scores) for an accurate
+    # apples-to-apples comparison with the system's authority_by_group.
+    # Fall back to expert_full_lookup text-matching only when no pre-computed data exists.
+    baseline_authority = None
+    baseline_authority_by_group = None
+    if baseline_precomputed_experts:
+        baseline_authority, baseline_authority_by_group = _compute_baseline_authority_from_precomputed(
+            baseline_precomputed_experts
+        )
+    else:
+        baseline_text = chat.get("baseline_answer", "")
+        if baseline_text and expert_full_lookup:
+            baseline_authority, baseline_authority_by_group = _compute_baseline_authority_full(
+                baseline_text, expert_full_lookup
+            )
 
     return AutomatedMetrics(
         chat_id=chat_id,
@@ -274,6 +447,9 @@ def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetric
         experts_count=len(experts),
         authority_discrimination=round(auth_discrimination, 4),
         response_completeness=round(completeness, 4),
+        authority_by_group=authority_by_group,
+        baseline_authority=baseline_authority,
+        baseline_authority_by_group=baseline_authority_by_group,
     )
 
 
@@ -408,11 +584,50 @@ async def get_dashboard():
                 all_chunk_ids.append(cid)
     chunk_texts = _fetch_chunk_texts(list(set(all_chunk_ids)))
 
+    # Build full expert lookup for baseline per-group authority (fallback only)
+    expert_full_lookup = _build_expert_full_lookup(chats)
+
+    # Load pre-computed baseline experts from evaluation_set.json (query-specific scores).
+    # These are used instead of expert_full_lookup to get comparable authority scores.
+    from app.routers.survey import _load_evaluation_set_raw as _load_eval_set_raw_inner
+    _eval_set_raw_for_experts = _load_eval_set_raw_inner()
+    # Build {topic_lower: baseline_experts} and {topic_lower: authority_spread_std} for fast lookup
+    _topic_to_baseline_experts: dict = {}
+    _topic_to_authority_spread_std: dict = {}
+    for _topic, _entry in _eval_set_raw_for_experts.items():
+        if isinstance(_entry, dict):
+            _experts = _entry.get("baseline_experts", [])
+            if _experts:
+                _topic_to_baseline_experts[_topic.lower()] = _experts
+            _spread = _entry.get("authority_spread")
+            if _spread and _spread.get("std") is not None:
+                _topic_to_authority_spread_std[_topic.lower()] = _spread["std"]
+
+    def _find_baseline_experts(query: str) -> Optional[List[dict]]:
+        q = query.lower()
+        for topic_l, experts in _topic_to_baseline_experts.items():
+            if topic_l in q or q in topic_l:
+                return experts
+        return None
+
+    def _find_authority_spread_std(query: str) -> Optional[float]:
+        q = query.lower()
+        for topic_l, std in _topic_to_authority_spread_std.items():
+            if topic_l in q or q in topic_l:
+                return std
+        return None
+
     # Compute automated metrics for each chat
     metrics_map = {}
     for chat in chats:
         try:
-            metrics_map[chat["id"]] = _compute_automated_metrics(chat, chunk_texts)
+            bl_experts = _find_baseline_experts(chat.get("query", ""))
+            spread_std = _find_authority_spread_std(chat.get("query", ""))
+            metrics_map[chat["id"]] = _compute_automated_metrics(
+                chat, chunk_texts, expert_full_lookup,
+                baseline_precomputed_experts=bl_experts,
+                authority_spread_std=spread_std,
+            )
         except Exception as e:
             logger.warning(f"Failed to compute metrics for chat {chat['id']}: {e}")
 
@@ -458,9 +673,8 @@ async def get_dashboard():
     # scripts/enrich_evaluation_set.py) which provide citation-based party coverage
     # and citation fidelity comparable to the system metrics.
     # Fall back to text-based detection for completeness / authority.
-    from app.routers.survey import _load_evaluation_set_raw
-    eval_set_raw = _load_evaluation_set_raw()
-    eval_set = _load_evaluation_set()
+    # Reuse the already-loaded eval set (avoids a second file read).
+    eval_set_raw = _eval_set_raw_for_experts
 
     baseline_party_coverage_list: List[float] = []
     baseline_citation_fidelity_list: List[float] = []
@@ -483,13 +697,24 @@ async def get_dashboard():
             parties_in_bl = _count_parties_in_text(baseline_text)
             baseline_completeness_list.append(min(parties_in_bl / ALL_PARTIES, 1.0))
 
-    # Baseline authority: match deputy names in baseline text against authority scores
-    expert_lookup = _build_expert_score_lookup(chats)
+    # Baseline authority: prefer pre-computed query-specific experts from evaluation_set.json.
+    # Fall back to text-matching with expert_full_lookup only when no pre-computed data exists.
     baseline_authority_list: List[float] = []
-    for baseline_text in eval_set.values():
-        score = _compute_baseline_authority_for_text(baseline_text, expert_lookup)
-        if score is not None:
-            baseline_authority_list.append(score)
+    all_group_baseline_from_set: dict = {}
+    for entry in eval_set_raw.values():
+        if isinstance(entry, str):
+            entry = {"baseline_answer": entry}
+        bl_experts = entry.get("baseline_experts", [])
+        if bl_experts:
+            overall, by_group = _compute_baseline_authority_from_precomputed(bl_experts)
+        else:
+            baseline_text = entry.get("baseline_answer", "")
+            overall, by_group = _compute_baseline_authority_full(baseline_text, expert_full_lookup)
+        if overall is not None:
+            baseline_authority_list.append(overall)
+        if by_group:
+            for party, score in by_group.items():
+                all_group_baseline_from_set.setdefault(party, []).append(score)
 
     # Also include any surveys that explicitly stored baseline_authority_avg
     for s in surveys:
@@ -498,6 +723,21 @@ async def get_dashboard():
             baseline_authority_list.append(baa)
 
     all_metrics = list(metrics_map.values())
+
+    # Compute avg_baseline_authority_by_group:
+    # prefer per-chat breakdown (chats with stored baseline_answer), fall back to eval_set
+    all_group_baseline_from_chats: dict = {}
+    for m in all_metrics:
+        if m.baseline_authority_by_group:
+            for party, score in m.baseline_authority_by_group.items():
+                all_group_baseline_from_chats.setdefault(party, []).append(score)
+
+    merged_group_baseline = all_group_baseline_from_chats if all_group_baseline_from_chats else all_group_baseline_from_set
+    avg_baseline_by_group = (
+        {p: round(sum(s) / len(s), 4) for p, s in merged_group_baseline.items()}
+        if merged_group_baseline else None
+    )
+
     automated_aggregate = _compute_aggregated(
         all_metrics,
         baseline_party_coverage_list or None,
@@ -505,6 +745,7 @@ async def get_dashboard():
         baseline_completeness_list or None,
         baseline_authority_list or None,
     )
+    automated_aggregate.avg_baseline_authority_by_group = avg_baseline_by_group
     human_aggregate = _calculate_stats(surveys) if surveys else None
 
     # Compute A/B comparison stats from human aggregate

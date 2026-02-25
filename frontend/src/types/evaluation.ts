@@ -22,6 +22,13 @@ export interface AutomatedMetrics {
   authority_discrimination: number;
 
   response_completeness: number;
+
+  // Per-group authority breakdown (system)
+  authority_by_group: Record<string, number>;
+
+  // Per-chat baseline authority comparison
+  baseline_authority?: number;
+  baseline_authority_by_group?: Record<string, number>;
 }
 
 export interface AggregatedMetrics {
@@ -47,6 +54,9 @@ export interface AggregatedMetrics {
   ci_baseline_citation_fidelity?: [number, number];
   ci_baseline_response_completeness?: [number, number];
   ci_baseline_authority?: [number, number];
+
+  // Aggregate per-group baseline authority (averaged across chats that have per-chat baseline)
+  avg_baseline_authority_by_group?: Record<string, number>;
 }
 
 export interface CombinedEvaluation {

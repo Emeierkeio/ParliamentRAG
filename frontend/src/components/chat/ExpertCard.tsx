@@ -142,7 +142,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                     />
                   </div>
                   <span className="text-xs font-medium text-muted-foreground min-w-[24px] text-right">
-                    {(expert.authority_score * 100).toFixed(0)}
+                    {Math.round(expert.authority_score * 100)}
                   </span>
                 </div>
               </div>
@@ -227,7 +227,7 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
                    </div>
                    <div className="flex flex-col items-end leading-none">
                         <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Autorità</span>
-                        <span className="text-sm font-bold">{(expert.authority_score * 100).toFixed(0)}</span>
+                        <span className="text-sm font-bold">{Math.round(expert.authority_score * 100)}</span>
                    </div>
              </div>
         </div>
@@ -366,7 +366,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
           <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50">
              <div className="flex justify-between items-end mb-3">
                 <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Autorità parlamentare sul tema</span>
-                <span className="text-2xl sm:text-3xl font-bold text-primary">{(expert.authority_score * 100).toFixed(0)}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-primary">{Math.round(expert.authority_score * 100)}</span>
              </div>
              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
                 <div 

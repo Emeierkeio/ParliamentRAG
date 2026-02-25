@@ -636,15 +636,34 @@ class GenerationPipeline:
 
         Only the body is replaced; the "Per [Party], " prefix is preserved so
         the output keeps the correct paragraph structure.
+
+        Falls back to a loose match when the integrator used a non-standard
+        opening (e.g. "Il {party} critica..." instead of "Per {party}, ...").
         """
         party_escaped = re.escape(party)
+        # Strict match: canonical "Per {party}," format
         pattern = rf'(Per {party_escaped},\s+).*?(?=\n\nPer |\n\n##|\Z)'
         new_text, n = re.subn(pattern, rf'\g<1>{new_body}', text, flags=re.DOTALL)
-        if n == 0:
-            logger.warning(f"Could not locate paragraph for '{party}' in integrated text — skipping rewrite")
-        else:
+        if n > 0:
             logger.info(f"Rewrote citation-free paragraph for '{party}'")
-        return new_text
+            return new_text
+
+        # Loose match: integrator may have opened with "Il {party} ..." or similar.
+        # Split on double-newlines and find the paragraph whose first sentence
+        # contains the party name; replace the whole paragraph.
+        parts = text.split('\n\n')
+        for i, part in enumerate(parts):
+            stripped = part.lstrip()
+            if stripped.startswith('##'):
+                continue
+            first_sentence = stripped.split('.')[0]
+            if party in first_sentence:
+                parts[i] = f"Per {party}, {new_body}"
+                logger.info(f"Rewrote citation-free paragraph for '{party}' (loose match)")
+                return '\n\n'.join(parts)
+
+        logger.warning(f"Could not locate paragraph for '{party}' in integrated text — skipping rewrite")
+        return text
 
     def _inject_rewritten_paragraphs(
         self,

@@ -530,9 +530,10 @@ class ActsComponent(AuthorityComponent):
             f"total_weighted={total_weight:.2f} threshold={relevance_threshold}"
         )
 
-        # Log scale — ceiling at 500 to avoid saturation for hyper-active deputies.
+        # Log scale — ceiling at 20 (calibrated on ~30 relevant acts, decay≈0.7, relevance≈0.4).
+        # 500 was a theoretical max never reached in practice, compressing all scores to 0–25%.
         if total_weight > 0:
-            score = math.log(1 + total_weight) / math.log(1 + 500)
+            score = math.log(1 + total_weight) / math.log(1 + 20)
             score = min(score, 1.0)
         else:
             score = 0.0
@@ -616,8 +617,10 @@ class InterventionsComponent(AuthorityComponent):
             f"weighted={total_weight:.2f} threshold={relevance_threshold}"
         )
 
+        # Log scale — ceiling at 20 (calibrated on ~30 relevant speeches, decay≈0.6, relevance≈0.4).
+        # 500 was a theoretical max never reached in practice, compressing all scores to 0–25%.
         if total_weight > 0:
-            score = math.log(1 + total_weight) / math.log(1 + 500)
+            score = math.log(1 + total_weight) / math.log(1 + 20)
             score = min(score, 1.0)
         else:
             score = 0.0
