@@ -131,7 +131,7 @@ generation:
   
   models:
     analyst: "gpt-4o-mini"  # Stage 1: Claim decomposition
-    writer: "gpt-4o-mini"        # Stage 2: Sectional writing
+    writer: "gpt-4o"        # Stage 2: Sectional writing
     integrator: "gpt-4o"    # Stage 3: Narrative integration
     # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
 
