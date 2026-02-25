@@ -408,8 +408,8 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
   if (progress.isWaiting) {
     const pos = progress.queuePosition;
     const active = progress.activeCount ?? 0;
-    const displaySlots = Math.min(active, 4);
-    const extraActive = active > 4 ? active - 4 : 0;
+    const displaySlots = Math.min(active, 5);
+    const extraActive = active > 5 ? active - 5 : 0;
 
     const formatElapsed = (s: number) =>
       s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
