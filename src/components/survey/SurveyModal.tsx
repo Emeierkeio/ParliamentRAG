@@ -780,7 +780,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setStep("form");
       // Load system response details first (we need the answer text to extract system experts).
       // Baseline experts: use pre-computed cache if available, otherwise fall back to API.
-      let chatData: { answer?: string } | null = null;
+      let chatData: { answer?: string; experts?: Expert[] } | null = null;
       if (chat.baseline_experts && chat.baseline_experts.length > 0) {
         setBaselineExperts(chat.baseline_experts as Expert[]);
         chatData = await loadChatDetails(chat.id);
@@ -790,8 +790,13 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
           loadBaselineExperts(chat.id, chat.baseline_answer || ""),
         ]);
       }
-      // Extract experts actually mentioned in the system response text.
-      if (chatData?.answer) {
+      // System experts: use the experts already computed and stored by the pipeline.
+      // These are the authoritative speakers the system cited — no text-matching or
+      // authority recomputation needed.
+      if (chatData?.experts && chatData.experts.length > 0) {
+        setSystemExperts(chatData.experts as Expert[]);
+      } else if (chatData?.answer) {
+        // Fallback: text-match + authority computation for older chats without stored experts.
         await loadSystemExperts(chat.id, chatData.answer);
       }
     } else {
