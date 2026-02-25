@@ -20,4 +20,10 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p logs data
 
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WORKERS:-4}
+# Single worker + single pipeline slot = at most one query running at a time.
+# WORKERS and MAX_CONCURRENT_PIPELINES can be overridden at runtime via env vars
+# if more throughput is needed, but the defaults enforce strict serialisation.
+ENV WORKERS=1
+ENV MAX_CONCURRENT_PIPELINES=1
+
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WORKERS}

@@ -136,6 +136,15 @@ def process_topic(
     }
 
 
+def _save(data: dict) -> None:
+    """Atomically write *data* to EVAL_SET_PATH via a temp file."""
+    tmp = EVAL_SET_PATH.with_suffix(".tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    tmp.replace(EVAL_SET_PATH)
+    logger.info(f"Saved {EVAL_SET_PATH}")
+
+
 def main() -> None:
     dry_run = "--dry-run" in sys.argv
 
@@ -164,11 +173,20 @@ def main() -> None:
         logger.error("No deputies found in Neo4j — aborting.")
         sys.exit(1)
 
-    enriched: dict = {}
-    for topic, entry in data.items():
+    # Pre-populate enriched with all existing entries so that intermediate
+    # saves always contain the full file (processed + still-to-process).
+    enriched: dict = dict(data)
+
+    topics = list(data.items())
+    total = sum(
+        1 for _, e in topics
+        if not topic_filter or topic_filter.lower() in _.lower()
+    )
+    processed = 0
+
+    for topic, entry in topics:
         # Apply optional single-topic filter (useful for smoke-testing)
         if topic_filter and topic_filter.lower() not in topic.lower():
-            enriched[topic] = entry
             continue
 
         # Normalise old-format entries (plain string → dict)
@@ -176,11 +194,11 @@ def main() -> None:
             entry = {"baseline_answer": entry}
         elif not isinstance(entry, dict):
             logger.warning(f"[{topic}] Unexpected entry type {type(entry)}, skipping.")
-            enriched[topic] = entry
             continue
 
+        processed += 1
         logger.info(f"\n{'─'*60}")
-        logger.info(f"Topic: {topic}")
+        logger.info(f"Topic ({processed}/{total}): {topic}")
         logger.info(f"{'─'*60}")
 
         try:
@@ -190,6 +208,9 @@ def main() -> None:
         except Exception as exc:
             logger.error(f"[{topic}] Processing failed: {exc}", exc_info=True)
             enriched[topic] = entry
+
+        if not dry_run:
+            _save(enriched)
 
     if dry_run:
         logger.info("\n── DRY-RUN SUMMARY (not writing to disk) ──")
@@ -207,10 +228,7 @@ def main() -> None:
                 print(f"    [{g[:35]:35s}]  std={s['std']:.4f}  mean={s['mean']:.4f}  n={s['n']}")
         return
 
-    with open(EVAL_SET_PATH, "w", encoding="utf-8") as f:
-        json.dump(enriched, f, indent=2, ensure_ascii=False)
-
-    logger.info(f"\nSaved enriched evaluation_set to {EVAL_SET_PATH}")
+    logger.info(f"\nAll {processed} topic(s) processed and saved to {EVAL_SET_PATH}")
 
     # Print summary table
     logger.info("\n── SUMMARY ──")
