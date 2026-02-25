@@ -8,7 +8,7 @@ import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import type { Message, ProcessingProgress } from "@/types";
-import { Atom, ArrowRight, History } from "lucide-react";
+import { Landmark, ArrowRight, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
 
 interface ChatAreaProps {
@@ -143,28 +143,27 @@ interface WelcomeScreenProps {
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   return (
-    <div className="flex flex-col items-center justify-center pt-8 sm:pt-16 pb-12 text-center px-2">
+    <div className="flex flex-col items-center justify-center pt-12 sm:pt-20 pb-12 text-center px-4">
 
-      {/* Action-oriented Hero */}
-      <div className="mb-6 sm:mb-10 max-w-xl space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-1.5 text-xs font-medium text-primary mb-2">
-          <Atom className="w-3.5 h-3.5" />
-          Camera dei Deputati - XIX Legislatura
+      {/* Hero */}
+      <div className="mb-8 sm:mb-10 max-w-lg space-y-3">
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary mb-2">
+          <Landmark className="w-3.5 h-3.5" />
+          Camera dei Deputati · XIX Legislatura
         </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground leading-tight">
-          Cerca un tema e scopri cosa ne pensano i gruppi parlamentari
+          Cosa pensa il Parlamento su ogni tema?
         </h1>
-        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-          Scrivi un tema nella barra in alto oppure scegli uno dei temi qui sotto.
+        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+          Dichiarazioni dei parlamentari <span className="text-foreground font-medium">più autorevoli</span> su ogni tema, bilanciate tra maggioranza e opposizione con citazioni verificabili.
         </p>
       </div>
 
       {/* Topic pills */}
       <div className="w-full max-w-2xl">
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/60 mb-4">
+        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/50 mb-3">
           Temi di tendenza
         </p>
-
         <div className="flex flex-wrap justify-center gap-2">
           {TOPICS.map((topic) => (
             <TopicPill key={topic} topic={topic} onClick={onSendMessage} />

@@ -269,29 +269,24 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Metriche Automatiche
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
           <MetricCard
-            label="Copertura Partitica"
+            label="Gruppi con Citazione"
             value={agg.avg_party_coverage}
             ci={agg.ci_party_coverage}
             icon={<Users className="w-4 h-4" />}
-            description="Gruppi parlamentari citati su 10 totali"
+            description="Gruppi parlamentari con almeno una citazione verificabile su 10 totali"
             baselineValue={agg.avg_baseline_party_coverage ?? undefined}
             baselineCi={agg.ci_baseline_party_coverage ?? undefined}
           />
           <MetricCard
-            label="Integrità Citazioni"
-            value={agg.avg_citation_integrity}
-            ci={agg.ci_citation_integrity}
-            icon={<Quote className="w-4 h-4" />}
-            description="Citazioni con testo sorgente valido"
-          />
-          <MetricCard
-            label="Fedeltà Testuale"
+            label="Fedeltà Citazioni"
             value={agg.avg_verbatim_match}
             ci={agg.ci_verbatim_match}
-            icon={<BarChart2 className="w-4 h-4" />}
-            description="Citazioni corrispondenti al testo originale"
+            icon={<Quote className="w-4 h-4" />}
+            description="Citazioni verificate verbatim sul testo sorgente"
+            baselineValue={agg.avg_baseline_citation_fidelity ?? undefined}
+            baselineCi={agg.ci_baseline_citation_fidelity ?? undefined}
           />
           <MetricCard
             label="Autorevolezza"
@@ -408,34 +403,24 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
     baselineCi: [number, number] | undefined;
   }> = [
     {
-      label: "Copertura Partitica (Party Coverage)",
+      label: "Gruppi con Citazione",
       value: agg.avg_party_coverage,
       ci: agg.ci_party_coverage,
       description:
-        "Percentuale di gruppi parlamentari rappresentati nelle citazioni (target: 100%)",
+        "Percentuale di gruppi parlamentari con almeno una citazione verificabile nella risposta (target: 100%)",
       format: "percent" as const,
       baselineValue: agg.avg_baseline_party_coverage ?? undefined,
       baselineCi: agg.ci_baseline_party_coverage ?? undefined,
     },
     {
-      label: "Integrita Citazioni (Citation Integrity)",
-      value: agg.avg_citation_integrity,
-      ci: agg.ci_citation_integrity,
-      description:
-        "Percentuale di citazioni con estrazione verbatim valida",
-      format: "percent" as const,
-      baselineValue: undefined,
-      baselineCi: undefined,
-    },
-    {
-      label: "Verbatim Match",
+      label: "Fedeltà Citazioni (Citation Fidelity)",
       value: agg.avg_verbatim_match,
       ci: agg.ci_verbatim_match,
       description:
-        "Percentuale di citazioni il cui testo e presente verbatim nel chunk sorgente",
+        "Percentuale di citazioni verificate verbatim sul testo sorgente",
       format: "percent" as const,
-      baselineValue: undefined,
-      baselineCi: undefined,
+      baselineValue: agg.avg_baseline_citation_fidelity ?? undefined,
+      baselineCi: agg.ci_baseline_citation_fidelity ?? undefined,
     },
     {
       label: "Autorevolezza (Authority Utilization)",
@@ -810,8 +795,7 @@ function ChatEvaluationRow({
 
   const miniMetrics = [
     { label: "Copertura", value: m.party_coverage_score, color: "bg-blue-500" },
-    { label: "Citazioni", value: m.citation_integrity_score, color: "bg-emerald-500" },
-    { label: "Verbatim", value: m.verbatim_match_score, color: "bg-purple-500" },
+    { label: "Fedeltà", value: m.verbatim_match_score, color: "bg-emerald-500" },
     { label: "Autorevolezza", value: m.authority_utilization, color: "bg-amber-500" },
     { label: "Completezza", value: m.response_completeness, color: "bg-indigo-500" },
   ];
@@ -883,8 +867,7 @@ function ChatEvaluationRow({
               <div className="space-y-2">
                 {[
                   { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti`, format: "percent" as const },
-                  { label: "Integrita citazioni", value: m.citation_integrity_score, detail: `${m.citations_valid}/${m.citations_total} valide`, format: "percent" as const },
-                  { label: "Verbatim match", value: m.verbatim_match_score, detail: `${m.verbatim_match_count} corrispondenze`, format: "percent" as const },
+                  { label: "Fedeltà citazioni", value: m.verbatim_match_score, detail: `${m.verbatim_match_count}/${m.citations_total} verificate`, format: "percent" as const },
                   { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti`, format: "percent" as const },
                   { label: "Discriminazione autorevolezza", value: m.authority_discrimination, detail: "std dev", format: "decimal" as const },
                   { label: "Completezza", value: m.response_completeness, detail: "", format: "percent" as const },

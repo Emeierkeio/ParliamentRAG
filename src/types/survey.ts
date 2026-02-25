@@ -195,6 +195,14 @@ export const getInitialSimpleRatingFormState = (): SimpleRatingFormState => ({
   feedback: "",
 });
 
+export interface BaselineCitation {
+  speaker: string;
+  group: string;
+  date: string;
+  quote: string;
+  verbatim_verified: boolean;
+}
+
 export interface PendingChat {
   id: string;
   query: string;
@@ -203,6 +211,8 @@ export interface PendingChat {
   evaluation_type: "ab" | "simple";
   matched_topic?: string;
   baseline_answer?: string;
+  baseline_experts?: any[];
+  baseline_citations?: BaselineCitation[];
 }
 
 export interface PendingChatsResponse {

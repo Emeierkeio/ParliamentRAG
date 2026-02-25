@@ -549,6 +549,48 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
       // Add visual separator only when content is visible above
       message.content && "mt-6 border-t border-border pt-6"
     )}>
+      {/* Experts — shown first to explain the curation logic behind the response */}
+      {hasExperts && (
+        <CollapsibleSection
+          icon={Users}
+          title="Fonti selezionate per autorità"
+          count={message.experts!.length}
+          defaultOpen={true}
+          infoTooltip="Prima di recuperare le citazioni, il sistema identifica i parlamentari più autorevoli sul tema. L'autorità è calcolata su 6 fattori: interventi in aula, atti legislativi, commissione di appartenenza, professione, titolo di studio e ruolo istituzionale."
+        >
+            <div className="pt-1 px-1 pb-2">
+              <p className="text-[11px] text-muted-foreground/70 leading-relaxed mb-4">
+                Questi parlamentari sono stati identificati come le voci più competenti sul tema e usati come fonti prioritarie per costruire la risposta.
+              </p>
+              {message.experts && (
+               <div className="space-y-6">
+                 {(() => {
+                    const groupedExperts = message.experts!.reduce((acc, expert) => {
+                         if (!acc[expert.group]) acc[expert.group] = [];
+                         acc[expert.group].push(expert);
+                         return acc;
+                    }, {} as Record<string, typeof message.experts>);
+
+                    return Object.entries(groupedExperts).map(([group, experts]) => (
+                        <div key={group}>
+                             <div className="flex items-center gap-3 mb-3 px-1">
+                                <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest whitespace-nowrap">{group}</span>
+                                <div className="h-px flex-1 bg-border/40"></div>
+                             </div>
+                             <div className="grid gap-2 w-full">
+                                 {experts!.map(expert => (
+                                     <ExpertRow key={expert.id} expert={expert} />
+                                 ))}
+                             </div>
+                        </div>
+                    ));
+                 })()}
+               </div>
+              )}
+            </div>
+        </CollapsibleSection>
+      )}
+
       {/* High Quality Variants Analysis */}
       {hasHQMetaData && (
         <CollapsibleSection
@@ -599,44 +641,31 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
         </CollapsibleSection>
       )}
 
-      {/* Balance metrics */}
-      {hasBalance && <BalanceSection metrics={message.balanceMetrics!} />}
-
-      {/* Experts */}
-      {hasExperts && (
+      {/* Citations */}
+      {hasCitations && (
         <CollapsibleSection
-          icon={Users}
-          title="Esperti"
-          count={message.experts!.length}
-          infoTooltip="Gli esperti sono calcolati tramite un authority score basato su: interventi in aula, atti presentati, appartenenza alle commissioni pertinenti, professione, titolo di studio e ruolo istituzionale."
+          icon={Quote}
+          title="Citazioni"
+          count={message.citations!.length}
+          defaultOpen={true}
+          forceOpen={!!highlightedChunkId}
+          infoTooltip="Interventi parlamentari recuperati dal database tramite ricerca semantica ibrida (vettoriale + full-text), provenienti dai parlamentari selezionati per autorità sul tema."
         >
-            {message.experts && (
-               <div className="space-y-6 pt-2">
-                 {(() => {
-                    const groupedExperts = message.experts!.reduce((acc, expert) => {
-                         if (!acc[expert.group]) acc[expert.group] = [];
-                         acc[expert.group].push(expert);
-                         return acc;
-                    }, {} as Record<string, typeof message.experts>);
-
-                    return Object.entries(groupedExperts).map(([group, experts]) => (
-                        <div key={group}>
-                             <div className="flex items-center gap-3 mb-3 px-1">
-                                <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest whitespace-nowrap">{group}</span>
-                                <div className="h-px flex-1 bg-border/40"></div>
-                             </div>
-                             <div className="grid gap-2 w-full">
-                                 {experts!.map(expert => (
-                                     <ExpertRow key={expert.id} expert={expert} />
-                                 ))}
-                             </div>
-                        </div>
-                    ));
-                 })()}
-               </div>
-            )}
+          <div className="grid gap-2 w-full min-w-0">
+            {Array.from(new Map(message.citations!.map(c => [c.chunk_id, c])).values()).map((citation, index) => (
+              <CitationCard
+                key={citation.chunk_id}
+                citation={citation}
+                index={index}
+                isHighlighted={highlightedChunkId === citation.chunk_id}
+              />
+            ))}
+          </div>
         </CollapsibleSection>
       )}
+
+      {/* Balance metrics */}
+      {hasBalance && <BalanceSection metrics={message.balanceMetrics!} />}
 
       {/* Compass */}
       {message.compass && (
@@ -651,29 +680,6 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
         </CollapsibleSection>
       )}
 
-      {/* Citations */}
-      {hasCitations && (
-        <CollapsibleSection
-          icon={Quote}
-          title="Citazioni"
-          count={message.citations!.length}
-          defaultOpen={true}
-          forceOpen={!!highlightedChunkId}
-          infoTooltip="Interventi parlamentari recuperati dal database tramite ricerca semantica ibrida (vettoriale + full-text) e filtrati per rilevanza al tema."
-        >
-          <div className="grid gap-2 w-full min-w-0">
-            {/* Deduplicate citations by chunk_id to prevent key errors */}
-            {Array.from(new Map(message.citations!.map(c => [c.chunk_id, c])).values()).map((citation, index) => (
-              <CitationCard
-                key={citation.chunk_id}
-                citation={citation}
-                index={index}
-                isHighlighted={highlightedChunkId === citation.chunk_id}
-              />
-            ))}
-          </div>
-        </CollapsibleSection>
-      )}
     </div>
   );
 }
