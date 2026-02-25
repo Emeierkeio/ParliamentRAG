@@ -678,7 +678,13 @@ class GenerationPipeline:
             if evidence.get("speaker_role") == "GovernmentMember":
                 continue
 
-            party = evidence.get("party", "Misto")
+            # Use current party if the speaker has changed group, so that only
+            # current members appear under their current group.
+            party = (
+                evidence.get("current_party")
+                if evidence.get("party_changed") and evidence.get("current_party")
+                else evidence.get("party", "Misto")
+            )
 
             # Handle potential party name variations
             if party not in by_party:

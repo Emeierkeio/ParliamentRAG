@@ -484,12 +484,13 @@ class RetrievalEngine:
                 WHERE score >= 0.15
                 MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
                 MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-                // Partito storico: non si filtra su mg.end_date >= date() per
-                // includere anche deputati che hanno cambiato gruppo in seguito.
+                // Solo membri ATTUALI del partito: la membership deve essere
+                // attiva sia alla data del discorso che oggi.
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
                 WHERE toLower(g.name) = toLower($party_name)
                 AND mg.start_date <= s.date
                 AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+                AND (mg.end_date IS NULL OR mg.end_date >= date())
                 // Partito attuale (per calcolo party_changed in _process_results)
                 OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
                 WHERE mg_now.end_date IS NULL

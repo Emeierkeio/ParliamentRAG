@@ -1217,7 +1217,12 @@ async def _compute_experts_for_frontend(
         # GovernmentMember should not be considered as experts
         if evidence.speaker_role == "GovernmentMember":
             continue
-        party = evidence.party
+        # Use current party if the speaker has changed group (same logic as pipeline.py).
+        party = (
+            evidence.current_party
+            if evidence.party_changed and evidence.current_party
+            else evidence.party
+        )
         speaker_id = evidence.speaker_id
         speaker_name = evidence.speaker_name
 
@@ -1228,20 +1233,26 @@ async def _compute_experts_for_frontend(
             party_speakers[party][speaker_id] = {
                 "speaker_name": speaker_name,
                 "authority_score": authority_scores.get(speaker_id, 0.5),
+                "best_similarity": evidence.similarity if hasattr(evidence, "similarity") else 0.0,
                 "count": 0,
                 "party": party,
             }
+        else:
+            # Track best chunk similarity for this speaker (used in ranking formula)
+            sim = evidence.similarity if hasattr(evidence, "similarity") else 0.0
+            if sim > party_speakers[party][speaker_id]["best_similarity"]:
+                party_speakers[party][speaker_id]["best_similarity"] = sim
 
         party_speakers[party][speaker_id]["count"] += 1
 
-    # Collect top speakers per party
+    # Collect top speakers per party using the same formula as _group_evidence_by_party:
+    # 0.70 * authority + 0.30 * best_chunk_similarity → survey shows the cited speaker.
     top_speakers_info = []
     for party, speakers in party_speakers.items():
         if speakers:
-            top_speaker_id = max(
-                speakers.keys(),
-                key=lambda s: speakers[s]["authority_score"]
-            )
+            def _combined_score(s, _speakers=speakers):
+                return 0.70 * _speakers[s]["authority_score"] + 0.30 * _speakers[s]["best_similarity"]
+            top_speaker_id = max(speakers.keys(), key=_combined_score)
             top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
     # Fetch all speaker details in parallel
