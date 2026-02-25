@@ -113,6 +113,15 @@ class UnifiedEvidence(BaseModel):
         exclude=True  # Don't include in JSON responses (too large)
     )
 
+    # Full speech text — excluded from API responses but needed by CitationSurgeon
+    # to expand mid-sentence chunk boundaries back to the sentence start.
+    text: str = Field(
+        default="",
+        description="Full speech text (speech.text). Used by CitationSurgeon for "
+                    "sentence-boundary expansion when chunk starts mid-sentence.",
+        exclude=True  # Don't include in JSON responses (too large)
+    )
+
     @field_validator("span_end")
     @classmethod
     def validate_span_order(cls, v: int, info) -> int:

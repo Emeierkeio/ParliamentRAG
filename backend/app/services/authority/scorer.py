@@ -190,6 +190,16 @@ class AuthorityScorer:
         # Ensure total is in [0, 1]
         total_score = max(0.0, min(1.0, total_score))
 
+        # Debug: log component breakdown per speaker
+        name = f"{speaker_data.get('first_name', '')} {speaker_data.get('last_name', '')}".strip()
+        component_summary = "  ".join(
+            f"{k}={v:.2f}(w={self.weights[k]:.2f})"
+            for k, v in component_scores.items()
+        )
+        logger.debug(
+            f"AuthorityScorer [{name or speaker_id}] total={total_score:.3f} | {component_summary}"
+        )
+
         # Extract matched institutional role label from role component
         role_component = self.components.get("role")
         institutional_role = getattr(role_component, "matched_role_label", None)
@@ -219,6 +229,311 @@ class AuthorityScorer:
             result = self.compute_authority(speaker_id, query_embedding, reference_date)
             scores[speaker_id] = result["total_score"]
         return scores
+
+    def compute_all_authority(
+        self,
+        speaker_ids: List[str],
+        query_embedding: List[float],
+        reference_date: Optional[date] = None,
+    ) -> Dict[str, Dict[str, Any]]:
+        """
+        Compute authority scores for ALL speakers using 2 batch DB queries.
+
+        Replaces the previous pattern of N individual compute_authority() calls with:
+          1. _fetch_all_speakers_data_batch() — 2 Neo4j queries (Deputies + GovernmentMembers)
+             instead of N, using UNWIND + CALL subqueries and a 4-year date filter.
+          2. Parallel CPU-side component scoring via ThreadPoolExecutor.
+
+        Returns {speaker_id: full_authority_result_dict} for every requested speaker.
+        """
+        import time as _time
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        if reference_date is None:
+            reference_date = date.today()
+
+        if not speaker_ids:
+            return {}
+
+        _t0 = _time.perf_counter()
+
+        # --- Step 1: parallel per-speaker DB fetch ---
+        # UNWIND+CALL batch queries execute CALL iterations sequentially in Neo4j,
+        # giving ~0.8s/speaker × 48 = 39s. Parallel individual queries let Neo4j
+        # process up to max_workers speakers simultaneously → ~5-10s total.
+        all_data: Dict[str, Any] = {}
+        with ThreadPoolExecutor(max_workers=min(20, max(1, len(speaker_ids)))) as db_pool:
+            db_futures = {
+                db_pool.submit(self._fetch_speaker_data, sid, reference_date): sid
+                for sid in speaker_ids
+            }
+            for fut in as_completed(db_futures):
+                sid = db_futures[fut]
+                try:
+                    data = fut.result()
+                    if data:
+                        all_data[sid] = data
+                except Exception as exc:
+                    logger.warning(f"DB fetch failed for {sid}: {exc}")
+
+        _t_db = _time.perf_counter()
+        logger.info(
+            f"[AUTHORITY] DB parallel fetch: {len(all_data)}/{len(speaker_ids)} speakers "
+            f"in {(_t_db - _t0)*1000:.0f}ms"
+        )
+
+        # Default result for speakers not found in DB
+        results: Dict[str, Dict[str, Any]] = {
+            sid: {
+                "speaker_id": sid,
+                "total_score": 0.5,
+                "components": {},
+                "coalition": "unknown",
+            }
+            for sid in speaker_ids
+            if sid not in all_data
+        }
+
+        # --- Step 2: parallel CPU-side component scoring ---
+        def _score_speaker(sid: str) -> tuple:
+            speaker_data = dict(all_data[sid])  # shallow copy, avoids cross-thread mutation
+            current_group = speaker_data.get("current_group", "MISTO")
+            memberships = speaker_data.get("group_memberships") or []
+
+            speaker_data["acts"] = self.coalition_logic.filter_activities_by_coalition(
+                speaker_data.get("acts") or [], memberships, reference_date, current_group
+            )
+            speaker_data["interventions"] = self.coalition_logic.filter_activities_by_coalition(
+                speaker_data.get("interventions") or [], memberships, reference_date, current_group
+            )
+
+            component_scores = {}
+            for name, component in self.components.items():
+                component_scores[name] = component.compute(
+                    speaker_data, query_embedding, reference_date
+                )
+
+            total_score = max(
+                0.0,
+                min(1.0, sum(self.weights[n] * s for n, s in component_scores.items())),
+            )
+
+            name_str = (
+                f"{speaker_data.get('first_name', '')} {speaker_data.get('last_name', '')}".strip()
+            )
+            component_summary = "  ".join(
+                f"{k}={v:.2f}(w={self.weights[k]:.2f})" for k, v in component_scores.items()
+            )
+            logger.debug(
+                f"AuthorityScorer [{name_str or sid}] total={total_score:.3f} | {component_summary}"
+            )
+
+            role_component = self.components.get("role")
+            institutional_role = getattr(role_component, "matched_role_label", None)
+
+            return sid, {
+                "speaker_id": sid,
+                "total_score": total_score,
+                "components": component_scores,
+                "coalition": self.coalition_logic.get_coalition(current_group),
+                "current_group": current_group,
+                "institutional_role": institutional_role,
+            }
+
+        # Cap CPU-scoring workers at 4: the DB pool above already used 20 threads,
+        # and compute_all_authority runs inside asyncio's run_in_executor, so
+        # K concurrent requests would create K×n_workers threads for scoring.
+        n_workers = min(4, max(1, len(all_data)))
+        with ThreadPoolExecutor(max_workers=n_workers) as pool:
+            futures = {pool.submit(_score_speaker, sid): sid for sid in all_data}
+            for future in as_completed(futures):
+                sid = futures[future]
+                try:
+                    _, result = future.result()
+                    results[sid] = result
+                except Exception as exc:
+                    logger.error(f"Authority scoring failed for {sid}: {exc}")
+                    results[sid] = {
+                        "speaker_id": sid,
+                        "total_score": 0.5,
+                        "components": {},
+                        "coalition": "unknown",
+                    }
+
+        _t_cpu = _time.perf_counter()
+        logger.info(
+            f"[AUTHORITY] CPU scoring: {len(results)} speakers "
+            f"in {(_t_cpu - _t_db)*1000:.0f}ms | "
+            f"total {(_t_cpu - _t0)*1000:.0f}ms"
+        )
+
+        return results
+
+    def _fetch_all_speakers_data_batch(
+        self,
+        speaker_ids: List[str],
+        reference_date: date,
+    ) -> Dict[str, Dict[str, Any]]:
+        """
+        Fetch data for all speakers in 2 DB queries (Deputies + GovernmentMembers).
+
+        Uses UNWIND + CALL subqueries (Neo4j 4.1+) to collapse N individual
+        round-trips into a single batch query per node type.
+
+        A 4-year date filter on interventions and acts dramatically reduces the
+        amount of embedding data transferred from Neo4j (e.g. 500 speeches → ~150).
+        """
+        result: Dict[str, Dict[str, Any]] = {}
+
+        # ---- Deputies --------------------------------------------------------
+        cypher_deputies = """
+        UNWIND $speaker_ids AS target_id
+        CALL {
+            WITH target_id
+            MATCH (d:Deputy {id: target_id})
+
+            OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+            WITH d, target_id, collect(
+                CASE WHEN g IS NOT NULL
+                     THEN {group: g.name, start_date: mg.start_date, end_date: mg.end_date}
+                END
+            ) AS group_memberships
+
+            OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
+            WITH d, target_id, group_memberships, collect(
+                CASE WHEN c IS NOT NULL
+                     THEN {committee_name: c.name, committee_embedding: c.embedding,
+                           start_date: mc.start_date, end_date: mc.end_date}
+                END
+            ) AS committee_memberships
+
+            OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
+            WITH d, target_id, group_memberships, committee_memberships, collect(
+                CASE WHEN cp IS NOT NULL
+                     THEN {role_type: 'president', committee_name: cp.name,
+                           committee_embedding: cp.embedding,
+                           start_date: rp.start_date, end_date: rp.end_date}
+                END
+            ) AS president_roles
+
+            OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
+            WITH d, target_id, group_memberships, committee_memberships, president_roles, collect(
+                CASE WHEN cv IS NOT NULL
+                     THEN {role_type: 'vice_president', committee_name: cv.name,
+                           committee_embedding: cv.embedding,
+                           start_date: rv.start_date, end_date: rv.end_date}
+                END
+            ) AS vice_president_roles
+
+            OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
+            WITH d, target_id, group_memberships, committee_memberships,
+                 president_roles, vice_president_roles, collect(
+                CASE WHEN cs IS NOT NULL
+                     THEN {role_type: 'secretary', committee_name: cs.name,
+                           committee_embedding: cs.embedding,
+                           start_date: rs.start_date, end_date: rs.end_date}
+                END
+            ) AS secretary_roles
+
+            WITH d, target_id, group_memberships, committee_memberships,
+                 president_roles + vice_president_roles + secretary_roles AS institutional_roles
+
+            OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
+            WHERE a.presentation_date IS NULL OR a.presentation_date >= date() - duration({years: 4})
+            WITH d, target_id, group_memberships, committee_memberships, institutional_roles, collect(
+                CASE WHEN a IS NOT NULL
+                     THEN {uri: a.uri, date: a.presentation_date,
+                           signatory_type: type(ar),
+                           description_embedding: a.description_embedding}
+                END
+            ) AS acts
+
+            OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
+            OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+            WHERE s.date >= date() - duration({years: 4})
+            WITH d, target_id, group_memberships, committee_memberships,
+                 institutional_roles, acts, collect(
+                CASE WHEN i IS NOT NULL
+                     THEN {speech_id: i.id, date: s.date, text_embedding: i.text_embedding}
+                END
+            ) AS interventions
+
+            RETURN target_id AS tid,
+                   d.id AS speaker_id,
+                   d.first_name AS first_name,
+                   d.last_name AS last_name,
+                   d.profession_embedding AS profession_embedding,
+                   d.education_embedding AS education_embedding,
+                   group_memberships,
+                   committee_memberships,
+                   institutional_roles,
+                   acts,
+                   interventions
+        }
+        RETURN tid, speaker_id, first_name, last_name,
+               profession_embedding, education_embedding,
+               group_memberships, committee_memberships,
+               institutional_roles, acts, interventions
+        """
+
+        with self.client.session() as session:
+            for record in session.run(cypher_deputies, speaker_ids=speaker_ids):
+                data = dict(record)
+                speaker_id = data.get("speaker_id")
+                if not speaker_id:
+                    continue
+
+                current_group = "MISTO"
+                for membership in (data.get("group_memberships") or []):
+                    if not membership:
+                        continue
+                    start = parse_neo4j_date(membership.get("start_date"))
+                    end = parse_neo4j_date(membership.get("end_date"))
+                    if start and start <= reference_date:
+                        if not end or end >= reference_date:
+                            current_group = membership.get("group", "MISTO")
+                            break
+
+                data["current_group"] = current_group
+                result[speaker_id] = data
+
+        # ---- GovernmentMembers (IDs not found as Deputies) -------------------
+        missing = [sid for sid in speaker_ids if sid not in result]
+        if missing:
+            cypher_gov = """
+            UNWIND $speaker_ids AS target_id
+            MATCH (m:GovernmentMember {id: target_id})
+            OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(m)
+            OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+            WHERE s.date >= date() - duration({years: 4})
+            WITH m, target_id, collect(
+                CASE WHEN i IS NOT NULL
+                     THEN {speech_id: i.id, date: s.date}
+                END
+            ) AS interventions
+            RETURN m.id AS speaker_id,
+                   m.first_name AS first_name,
+                   m.last_name AS last_name,
+                   m.institutional_role AS government_position,
+                   interventions
+            """
+
+            with self.client.session() as session:
+                for record in session.run(cypher_gov, speaker_ids=missing):
+                    data = dict(record)
+                    speaker_id = data.get("speaker_id")
+                    if not speaker_id:
+                        continue
+                    data.update({
+                        "group_memberships": [],
+                        "committee_memberships": [],
+                        "institutional_roles": [],
+                        "acts": [],
+                        "current_group": "GOVERNO",
+                    })
+                    result[speaker_id] = data
+
+        return result
 
     def normalize_scores_percentile(
         self,
@@ -306,17 +621,21 @@ class AuthorityScorer:
         WITH d, group_memberships, committee_memberships,
              president_roles + vice_president_roles + secretary_roles AS institutional_roles
 
-        OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
+        OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
         WITH d, group_memberships, committee_memberships, institutional_roles, collect({
             uri: a.uri,
-            date: a.presentation_date
+            date: a.presentation_date,
+            signatory_type: type(ar),
+            description_embedding: a.description_embedding
         }) AS acts
 
         OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
         OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+        WHERE s.date >= date() - duration({years: 4})
         WITH d, group_memberships, committee_memberships, institutional_roles, acts, collect({
             speech_id: i.id,
-            date: s.date
+            date: s.date,
+            text_embedding: i.text_embedding
         }) AS interventions
 
         RETURN d.id AS speaker_id,

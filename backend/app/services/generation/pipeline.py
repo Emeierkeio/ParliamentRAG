@@ -27,6 +27,7 @@ from .synthesis import ConvergenceDivergenceAnalyzer
 from .citation_registry import CitationRegistry
 from .coherence_validator import CoherenceValidator
 from ...config import get_config
+from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -189,6 +190,18 @@ class GenerationPipeline:
 
         logger.info(f"Stage 3 complete: Narrative integrated, "
                     f"{integrated.get('citations_repaired', 0)} citations repaired")
+
+        # === Post-Integration: Party Name Completeness Check ===
+        # The Integrator LLM occasionally drops a party's "Per [Party Name]," prefix
+        # or uses an abbreviation.  Detect and inject the original section content
+        # as a fallback paragraph so the metric is not penalised unfairly.
+        integrated_text_after_guard = integrated.get("text", "")
+        integrated_text_after_guard, injected_parties = self._inject_missing_party_paragraphs(
+            integrated_text_after_guard, sections
+        )
+        if injected_parties:
+            integrated["text"] = integrated_text_after_guard
+            pipeline_metadata["stages"]["party_injection"] = {"injected_parties": injected_parties}
 
         # === Post-Integration: Balance Check (Coverage-based Fairness) ===
         balance_info = self._check_coalition_balance(integrated.get("text", ""))
@@ -631,11 +644,32 @@ class GenerationPipeline:
         self,
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, List[Dict[str, Any]]]:
-        """Group evidence by parliamentary party, sorted by authority score (descending).
+        """Group evidence by parliamentary party.
+
+        SORTING STRATEGY — "most authoritative speaker first":
+        The goal is that per ogni gruppo parlamentare risponda la persona più
+        autorevole.  A pure linear score mix lets high-sim chunks from a
+        lower-authority speaker crowd out the capogruppo.  We prevent this
+        with a two-step speaker-first interleaving:
+
+        1. Group chunks by speaker within each party.
+        2. For each speaker compute best_chunk_score =
+               0.75 * similarity + 0.25 * salience
+        3. Rank speakers by:
+               0.70 * authority_score + 0.30 * best_chunk_score
+           → the most authoritative speaker with any relevant chunk is #1.
+        4. Interleave: best chunk from speaker #1, best chunk from speaker #2,
+           then 2nd-best chunk from speaker #1, etc.
+
+        Result: position #1 always belongs to the highest-authority speaker,
+        position #2 to a different speaker, giving the sectional writer (and
+        the semantic dedup) a genuinely diverse pair to work with.
 
         IMPORTANT: Excludes government members (GovernmentMember) as they have
         their own separate section.
         """
+        from collections import defaultdict
+
         all_parties = get_config().get_all_parties()
         by_party: Dict[str, List[Dict[str, Any]]] = {party: [] for party in all_parties}
 
@@ -660,12 +694,61 @@ class GenerationPipeline:
             else:
                 by_party[party].append(evidence)
 
-        # Sort each party's evidence by authority score (highest first)
+        # Speaker-first interleaving sort (see docstring for rationale)
         for party in by_party:
-            by_party[party].sort(
-                key=lambda e: e.get("authority_score", 0.0),
-                reverse=True
-            )
+            chunks = by_party[party]
+            if not chunks:
+                continue
+
+            # Step 1: ensure salience computed for all chunks
+            for e in chunks:
+                if e.get("salience") is None:
+                    text = e.get("chunk_text") or e.get("quote_text", "")
+                    e["salience"] = compute_chunk_salience(text)
+
+            # Step 2: group chunks by speaker
+            speaker_chunks: Dict[str, list] = defaultdict(list)
+            for e in chunks:
+                speaker_chunks[e.get("speaker_id", "")].append(e)
+
+            # Step 3: sort each speaker's chunks by chunk quality
+            def _chunk_quality(e):
+                return 0.75 * e.get("similarity", 0.0) + 0.25 * (e.get("salience") or 0.0)
+
+            for sid in speaker_chunks:
+                speaker_chunks[sid].sort(key=_chunk_quality, reverse=True)
+
+            # Step 4: rank speakers by authority (primary) + best chunk quality (secondary)
+            def _speaker_rank(sid):
+                auth = speaker_chunks[sid][0].get("authority_score", 0.0)
+                best = _chunk_quality(speaker_chunks[sid][0])
+                return 0.70 * auth + 0.30 * best
+
+            sorted_speakers = sorted(speaker_chunks.keys(), key=_speaker_rank, reverse=True)
+
+            if sorted_speakers and len(speaker_chunks) > 1:
+                top_sid = sorted_speakers[0]
+                top_auth = speaker_chunks[top_sid][0].get("authority_score", 0.0)
+                top_best = _chunk_quality(speaker_chunks[top_sid][0])
+                logger.info(
+                    f"[PARTY RANKING] {party}: top speaker = "
+                    f"{speaker_chunks[top_sid][0].get('speaker_name', top_sid)} "
+                    f"(auth={top_auth:.2f}, best_chunk={top_best:.3f}, "
+                    f"rank_score={_speaker_rank(top_sid):.3f}), "
+                    f"total_speakers={len(sorted_speakers)}"
+                )
+
+            # Step 5: interleave: best from speaker#1, best from speaker#2, ...
+            #                     then 2nd-best from speaker#1, 2nd-best speaker#2, ...
+            max_depth = max(len(v) for v in speaker_chunks.values())
+            interleaved = []
+            for depth in range(max_depth):
+                for sid in sorted_speakers:
+                    evs = speaker_chunks[sid]
+                    if depth < len(evs):
+                        interleaved.append(evs[depth])
+
+            by_party[party] = interleaved
 
         return by_party
 
@@ -709,6 +792,102 @@ class GenerationPipeline:
             "ratio": round(ratio, 2),
             "balance_warning": ratio > 2.0 or (1 / ratio if ratio > 0 else 0) > 2.0,
         }
+
+    # Short identifiers used to detect each party's name inside the generated text.
+    # We use the first significant segment (before " - " or " (") as a reliable
+    # distinguishing substring.  Checked case-insensitively.
+    _PARTY_SHORT_NAMES = {
+        "Fratelli d'Italia": "fratelli d'italia",
+        "Lega - Salvini Premier": "lega",
+        "Forza Italia - Berlusconi Presidente - PPE": "forza italia",
+        "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": "noi moderati",
+        "Partito Democratico - Italia Democratica e Progressista": "partito democratico",
+        "Movimento 5 Stelle": "movimento 5 stelle",
+        "Alleanza Verdi e Sinistra": "alleanza verdi",
+        "Azione - Popolari Europeisti Riformatori - Renew Europe": "azione",
+        "Italia Viva - Il Centro - Renew Europe": "italia viva",
+        "Misto": "misto",
+    }
+
+    def _inject_missing_party_paragraphs(
+        self,
+        text: str,
+        sections: List[Dict[str, Any]],
+    ) -> tuple:
+        """Check that every party with evidence is named in the integrated text.
+
+        The Integrator LLM occasionally drops the mandatory "Per [Party Name],"
+        prefix or uses an abbreviation.  When detected, the original section
+        content (already carrying restored [CIT:id] markers) is appended to the
+        correct coalition block so the output and the completeness metric are
+        not penalised for a pure formatting failure.
+
+        Returns:
+            (possibly_modified_text, list_of_injected_party_names)
+        """
+        config = get_config()
+        MAGGIORANZA = config.coalitions.get("maggioranza", [])
+        OPPOSIZIONE = config.coalitions.get("opposizione", [])
+
+        text_lower = text.lower()
+        magg_injections: List[str] = []
+        opp_injections: List[str] = []
+        injected: List[str] = []
+
+        for section in sections:
+            party = section.get("party", "")
+            if party == "GOVERNO" or not section.get("has_evidence"):
+                continue
+
+            short = self._PARTY_SHORT_NAMES.get(party, party.split(" - ")[0]).lower()
+            if short in text_lower:
+                continue
+
+            content = section.get("content", "")
+            if not content:
+                continue
+
+            # Strip any leading ## headers the sectional writer may have added
+            content = re.sub(r'^##\s+[^\n]*\n+', '', content.strip(), flags=re.MULTILINE)
+            injected_para = f"Per {party}, {content}"
+
+            if party in MAGGIORANZA:
+                magg_injections.append(injected_para)
+            elif party in OPPOSIZIONE:
+                opp_injections.append(injected_para)
+
+            injected.append(party)
+            logger.warning(f"Party injection: '{party}' missing from integrated text — injecting original section")
+
+        if not injected:
+            return text, []
+
+        # Append injected paragraphs inside the appropriate coalition section.
+        if magg_injections:
+            magg_header = "## Posizioni della Maggioranza"
+            inject_block = "\n\n".join(magg_injections)
+            if magg_header in text:
+                # Insert before the next top-level section (## …) or at end of text
+                magg_pos = text.find(magg_header)
+                next_section = text.find("\n\n##", magg_pos + len(magg_header))
+                if next_section > 0:
+                    text = text[:next_section] + "\n\n" + inject_block + text[next_section:]
+                else:
+                    text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{magg_header}\n\n{inject_block}"
+
+        if opp_injections:
+            opp_header = "## Posizioni dell\u2019Opposizione"
+            opp_header_alt = "## Posizioni dell'Opposizione"
+            inject_block = "\n\n".join(opp_injections)
+            header_in_text = opp_header if opp_header in text else (opp_header_alt if opp_header_alt in text else None)
+            if header_in_text:
+                text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{opp_header_alt}\n\n{inject_block}"
+
+        return text, injected
 
     def _get_government_evidence(
         self,

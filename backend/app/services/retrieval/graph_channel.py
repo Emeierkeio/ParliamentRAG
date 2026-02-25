@@ -399,6 +399,7 @@ class GraphChannel:
                     "date": date_obj,
                     "chunk_text": row.get("chunk_text", ""),
                     "quote_text": quote_text,
+                    "text": text,  # Full speech text — needed by surgeon for sentence expansion
                     "span_start": span_start or 0,
                     "span_end": span_end or 0,
                     "debate_title": row.get("debate_title"),

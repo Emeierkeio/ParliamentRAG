@@ -20,12 +20,10 @@ class AutomatedMetrics(BaseModel):
     parties_total: int = 10
     party_breakdown: Dict[str, int] = {}
 
-    # Citation Integrity: citations with valid quote_text / total
-    citation_integrity_score: float = Field(..., ge=0, le=1)
-    citations_valid: int
     citations_total: int
 
-    # Verbatim Match: citations whose quote_text appears verbatim in source chunk / total
+    # Citation Fidelity: citations whose text appears verbatim in source chunk / total citations
+    # (combines integrity check + verbatim match into a single end-to-end metric)
     verbatim_match_score: float = Field(..., ge=0, le=1)
     verbatim_match_count: int = 0
 
@@ -44,7 +42,6 @@ class AggregatedMetrics(BaseModel):
     """Aggregated automated metrics across all evaluated chats."""
     total_chats: int
     avg_party_coverage: float
-    avg_citation_integrity: float
     avg_verbatim_match: float
     avg_response_completeness: float
     avg_authority_utilization: float
@@ -52,7 +49,6 @@ class AggregatedMetrics(BaseModel):
 
     # 95% Confidence intervals (lower, upper)
     ci_party_coverage: Tuple[float, float]
-    ci_citation_integrity: Tuple[float, float]
     ci_verbatim_match: Tuple[float, float]
     ci_response_completeness: Tuple[float, float]
     ci_authority_utilization: Tuple[float, float]
@@ -60,9 +56,11 @@ class AggregatedMetrics(BaseModel):
 
     # Baseline comparison metrics (computed from evaluation_set.json)
     avg_baseline_party_coverage: Optional[float] = None
+    avg_baseline_citation_fidelity: Optional[float] = None
     avg_baseline_response_completeness: Optional[float] = None
     avg_baseline_authority: Optional[float] = None
     ci_baseline_party_coverage: Optional[Tuple[float, float]] = None
+    ci_baseline_citation_fidelity: Optional[Tuple[float, float]] = None
     ci_baseline_response_completeness: Optional[Tuple[float, float]] = None
     ci_baseline_authority: Optional[Tuple[float, float]] = None
 

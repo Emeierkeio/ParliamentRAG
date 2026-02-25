@@ -22,24 +22,44 @@ retrieval:
     chunk_similarity_threshold: 0.3
 
   merger:
+    # NOTE: authority_weight is minimal because authority is computed POST-retrieval
+    # (the merger runs before AuthorityScorer). Real authority ranking happens
+    # in pipeline.py _group_evidence_by_party (speaker-first interleaving).
+    # The freed weight is redistributed to relevance and salience.
     diversity_weight: 0.15     # Penalize same-speaker dominance
-    coverage_weight: 0.25      # Reward party coverage
-    authority_weight: 0.25     # Authority-aware reweighting
-    relevance_weight: 0.15     # Base similarity score
-    salience_weight: 0.20      # Prefer politically substantive chunks over procedural text
+    coverage_weight: 0.20      # Reward party coverage
+    authority_weight: 0.05     # Token value — scorer not yet available at merge time
+    relevance_weight: 0.35     # Primary signal: embedding similarity to query
+    salience_weight: 0.25      # Prefer politically substantive chunks over procedural text
 
 authority:
   weights:
-    profession: 0.10
-    education: 0.10
-    committee: 0.20
-    acts: 0.25
-    interventions: 0.30
-    role: 0.05
+    # Semantic signals (topic-specific, highest quality):
+    profession: 0.15   # Cosine sim query ↔ profession embedding  [was 0.10]
+    education: 0.10    # Cosine sim query ↔ education embedding
+    committee: 0.25    # Cosine sim query ↔ committee embedding    [was 0.20]
+    # Activity signals (count-based, not topic-filtered):
+    acts: 0.20         # Weighted act count (time-decayed)         [was 0.25]
+    interventions: 0.25 # Weighted speech count (time-decayed)     [was 0.30]
+    # Structural signal:
+    role: 0.05         # Institutional role (president/VP/secretary)
 
   time_decay:
-    acts_half_life_days: 365
-    speeches_half_life_days: 180
+    # Acts represent durable legislative commitment — longer half-life
+    acts_half_life_days: 548      # 18 months  [was 365: 2yr-old acts kept 25% → now 41%]
+    speeches_half_life_days: 180  # 6 months (speeches are more ephemeral)
+
+  # Minimum cosine similarity between act description_embedding and the query
+  # embedding for an act to be counted. Acts below this threshold are off-topic
+  # and do not contribute to the authority score.
+  # text-embedding-3-small typical range for related content: 0.25–0.60
+  acts_relevance_threshold: 0.25
+
+  # Minimum cosine similarity between speech text_embedding and the query
+  # embedding for a speech to be counted.
+  # Speech embeddings are computed by build/precalculate_embeddings.py Phase 5
+  # (first 2000 chars of preprocessed speech text).
+  interventions_relevance_threshold: 0.25
 
   normalization: "percentile"
   # Cap individual component contributions

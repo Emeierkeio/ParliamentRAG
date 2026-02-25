@@ -168,9 +168,11 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         else:
             logger.debug(f"[HISTORY-SAVE] Verified in Neo4j: ab_assignment='{verify[0].get('ab_assignment', '')}'")
 
-        # Keep only last 50 chats
+        # Keep only last 50 chats — skip chats that have associated survey evaluations
         client.query("""
             MATCH (c:ChatHistory)
+            WHERE NOT EXISTS { MATCH (s:SurveyEvaluation {chat_id: c.id}) }
+              AND NOT EXISTS { MATCH (r:SimpleRating {chat_id: c.id}) }
             WITH c ORDER BY c.timestamp DESC
             SKIP 50
             DELETE c
@@ -222,62 +224,11 @@ class BaselineExpertsRequest(BaseModel):
     baseline_text: Optional[str] = None
 
 
-@router.post("/history/{chat_id}/baseline-experts")
-async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Dict[str, Any]:
+def _match_deputies_in_text(baseline_text: str, deputies_result: List[Dict]) -> List[Dict]:
     """
-    Extract deputies mentioned in the baseline text and compute their authority scores.
-    Used for A/B comparison: shows which deputies the baseline cited, with computed
-    authority scores for side-by-side comparison with the system's expert selection.
-
-    The baseline text is passed in the request body (from evaluation_set.json on the client)
-    since Neo4j may not have it stored for older chats.
+    Match deputies mentioned in a text. Returns list of matched deputy dicts.
+    Tries full name match first, then last-name-only word boundary match with group disambiguation.
     """
-    import asyncio
-    from concurrent.futures import ThreadPoolExecutor
-    from .query import get_services
-    from ..services.authority.coalition_logic import CoalitionLogic
-    from ..models.evidence import normalize_party_name
-
-    client = _get_client()
-
-    # Get chat query from Neo4j
-    result = client.query("""
-        MATCH (c:ChatHistory {id: $id})
-        RETURN c.query AS query, c.baseline_answer AS baseline_answer
-    """, {"id": chat_id})
-
-    if not result:
-        raise HTTPException(status_code=404, detail="Chat not found")
-
-    chat_data = result[0]
-    query_text = chat_data.get("query") or ""
-
-    # Prefer baseline text from request body (always up-to-date from evaluation_set.json),
-    # fall back to what's stored in Neo4j for backwards compatibility
-    baseline_text = body.baseline_text or chat_data.get("baseline_answer") or ""
-
-    if not baseline_text:
-        return {"experts": []}
-
-    # Fetch all deputies with names from Neo4j.
-    # Group name lives on the ParliamentaryGroup node connected via MEMBER_OF_GROUP,
-    # not as a direct property on Deputy.
-    deputies_result = client.query("""
-        MATCH (d:Deputy)
-        WHERE d.first_name IS NOT NULL AND d.last_name IS NOT NULL
-        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-        WHERE mg.end_date IS NULL
-        WITH d, collect(g.name)[0] AS group_name
-        RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
-               coalesce(group_name, 'MISTO') AS group_name,
-               d.deputy_card AS camera_profile_url,
-               d.photo AS photo,
-               d.profession AS profession, d.education AS education
-    """)
-
-    # Check which deputy names appear in the baseline text.
-    # Try both "Nome Cognome" and "Cognome Nome" orderings:
-    # Italian parliamentary texts (and NotebookLM) often cite deputies as "Cognome Nome".
     text_lower = baseline_text.lower()
     matched_deputies = []
     matched_ids_set: set = set()
@@ -291,10 +242,14 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
             matched_deputies.append(dep)
             matched_ids_set.add(dep["id"])
 
-    # Second pass: last-name-only match (word boundary) for deputies not yet matched.
-    # Handles patterns like "Caiata (Fratelli d'Italia, 30/11/2022)" where only the
-    # surname appears in the text.
-    # Build a map of lower-case last name → list of candidates (excluding already matched).
+    def _group_name_in_context(group_name: str, context: str) -> bool:
+        _skip = {"della", "delle", "degli", "del", "dei", "the", "per", "con", "and"}
+        tokens = [t for t in re.split(r'[\s\-–/|]+', group_name.lower()) if len(t) >= 4 and t not in _skip]
+        if not tokens:
+            return False
+        found = sum(1 for t in tokens if t in context)
+        return found >= max(1, len(tokens) // 2)
+
     ln_to_candidates: dict = {}
     for dep in deputies_result:
         if dep["id"] in matched_ids_set:
@@ -302,33 +257,16 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
         ln = (dep.get("last_name") or "").strip()
         if not ln:
             continue
-        ln_lower = ln.lower()
-        ln_to_candidates.setdefault(ln_lower, []).append(dep)
-
-    def _group_name_in_context(group_name: str, context: str) -> bool:
-        """Return True if a meaningful part of group_name appears in the context window."""
-        # Split group name into significant tokens (≥4 chars, skip connectors)
-        _skip = {"della", "delle", "degli", "del", "dei", "the", "per", "con", "and"}
-        tokens = [t for t in re.split(r'[\s\-–/|]+', group_name.lower()) if len(t) >= 4 and t not in _skip]
-        if not tokens:
-            return False
-        # Match if at least half of the significant tokens are found in context
-        found = sum(1 for t in tokens if t in context)
-        return found >= max(1, len(tokens) // 2)
+        ln_to_candidates.setdefault(ln.lower(), []).append(dep)
 
     for ln_lower, candidates in ln_to_candidates.items():
-        # Check that the last name appears as a whole word in the text
         if not re.search(r'\b' + re.escape(ln_lower) + r'\b', text_lower):
             continue
-
         if len(candidates) == 1:
-            # Unambiguous last name → accept directly
             dep = candidates[0]
             matched_deputies.append(dep)
             matched_ids_set.add(dep["id"])
         else:
-            # Multiple deputies share this last name → use group context to disambiguate.
-            # For each occurrence of the last name, inspect a ±200-char window for group name.
             for match in re.finditer(r'\b' + re.escape(ln_lower) + r'\b', text_lower):
                 start = max(0, match.start() - 80)
                 end = min(len(text_lower), match.end() + 200)
@@ -341,17 +279,29 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
                         matched_deputies.append(dep)
                         matched_ids_set.add(dep["id"])
 
-    logger.info(f"[BASELINE-EXPERTS] Deputies from Neo4j: {len(deputies_result)}, matched: {len(matched_deputies)}")
-    logger.info(f"[BASELINE-EXPERTS] Matched names: {[(d.get('first_name'), d.get('last_name')) for d in matched_deputies]}")
+    return matched_deputies
+
+
+async def _compute_experts_from_matched(
+    query_text: str,
+    matched_deputies: List[Dict],
+    client: Any,
+) -> List[Dict]:
+    """
+    Compute authority scores for a list of pre-matched deputies and return expert dicts.
+    Shared by get_baseline_experts and precalculate_baseline_experts.
+    """
+    import asyncio
+    from concurrent.futures import ThreadPoolExecutor
+    from .query import get_services
+    from ..services.authority.coalition_logic import CoalitionLogic
+    from ..models.evidence import normalize_party_name
+
     if not matched_deputies:
-        # Log a sample of names to diagnose mismatches
-        sample = [(dep.get("first_name"), dep.get("last_name")) for dep in deputies_result[:10]]
-        logger.info(f"[BASELINE-EXPERTS] No match. baseline_text length={len(baseline_text)}, sample deputies={sample}")
-        return {"experts": []}
+        return []
 
     matched_ids = [d["id"] for d in matched_deputies]
 
-    # Compute authority scores for matched deputies
     services = get_services()
     query_embedding = await asyncio.get_running_loop().run_in_executor(
         None, lambda: services["retrieval"].embed_query(query_text)
@@ -368,7 +318,6 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
     authority_scores = {sid: res["total_score"] for sid, res in auth_results}
     authority_details = {sid: res for sid, res in auth_results}
 
-    # Fetch committee membership for matched deputies
     committees_result = client.query("""
         UNWIND $ids AS sid
         MATCH (d:Deputy {id: sid})
@@ -380,7 +329,6 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
 
     committees_map = {r["sid"]: r for r in committees_result}
     dep_map = {d["id"]: d for d in matched_deputies}
-
     coalition_logic = CoalitionLogic()
     experts = []
 
@@ -388,15 +336,12 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
         dep = dep_map.get(dep_id)
         if not dep:
             continue
-
         auth = authority_details.get(dep_id, {})
         components = auth.get("components", {})
         committee_info = committees_map.get(dep_id, {})
         coalition = coalition_logic.get_coalition(dep.get("group_name", ""))
-
         experts.append({
             "id": dep_id,
-            # Normalize names to Title Case (DB stores them in UPPERCASE)
             "first_name": (dep.get("first_name") or "").title(),
             "last_name": (dep.get("last_name") or "").title(),
             "group": normalize_party_name(dep.get("group_name", "")),
@@ -420,7 +365,134 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
         })
 
     experts.sort(key=lambda e: e["authority_score"], reverse=True)
+    return experts
+
+
+@router.post("/history/{chat_id}/baseline-experts")
+async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Dict[str, Any]:
+    """
+    Extract deputies mentioned in the baseline text and compute their authority scores.
+    The baseline text is passed in the request body (from evaluation_set.json on the client).
+    If pre-computed experts are already cached in evaluation_set.json, this endpoint is
+    no longer called by the frontend.
+    """
+    client = _get_client()
+
+    result = client.query("""
+        MATCH (c:ChatHistory {id: $id})
+        RETURN c.query AS query, c.baseline_answer AS baseline_answer
+    """, {"id": chat_id})
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    chat_data = result[0]
+    query_text = chat_data.get("query") or ""
+    baseline_text = body.baseline_text or chat_data.get("baseline_answer") or ""
+
+    if not baseline_text:
+        return {"experts": []}
+
+    deputies_result = client.query("""
+        MATCH (d:Deputy)
+        WHERE d.first_name IS NOT NULL AND d.last_name IS NOT NULL
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.end_date IS NULL
+        WITH d, collect(g.name)[0] AS group_name
+        RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
+               coalesce(group_name, 'MISTO') AS group_name,
+               d.deputy_card AS camera_profile_url,
+               d.photo AS photo,
+               d.profession AS profession, d.education AS education
+    """)
+
+    matched = _match_deputies_in_text(baseline_text, deputies_result)
+    logger.info(f"[BASELINE-EXPERTS] Matched {len(matched)}/{len(deputies_result)} deputies")
+    if not matched:
+        return {"experts": []}
+
+    experts = await _compute_experts_from_matched(query_text, matched, client)
     return {"experts": experts}
+
+
+@router.post("/history/precalculate-baseline-experts")
+async def precalculate_baseline_experts() -> Dict[str, Any]:
+    """
+    Pre-compute baseline experts for all topics in evaluation_set.json and cache them
+    in the JSON file itself. After running this, the frontend no longer needs to call
+    /baseline-experts at evaluation time — experts are served directly via /chats/pending.
+
+    Uses each topic name as the query embedding context.
+    Skips topics that already have cached experts.
+    """
+    import os
+
+    eval_set_path = os.path.normpath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "evaluation_set.json")
+    )
+
+    try:
+        with open(eval_set_path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="evaluation_set.json not found")
+
+    client = _get_client()
+
+    # Fetch all deputies once (shared across all topics for efficiency)
+    deputies_result = client.query("""
+        MATCH (d:Deputy)
+        WHERE d.first_name IS NOT NULL AND d.last_name IS NOT NULL
+        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.end_date IS NULL
+        WITH d, collect(g.name)[0] AS group_name
+        RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
+               coalesce(group_name, 'MISTO') AS group_name,
+               d.deputy_card AS camera_profile_url,
+               d.photo AS photo,
+               d.profession AS profession, d.education AS education
+    """)
+    logger.info(f"[PRECALC] Loaded {len(deputies_result)} deputies from Neo4j")
+
+    enriched: Dict[str, Any] = {}
+    skipped = 0
+    computed = 0
+
+    for topic, val in raw.items():
+        # Support both old format (str) and new format (dict)
+        if isinstance(val, dict):
+            baseline_text = val.get("baseline_answer", "")
+            existing_experts = val.get("baseline_experts", [])
+        else:
+            baseline_text = val
+            existing_experts = []
+
+        # Skip if already computed
+        if existing_experts:
+            enriched[topic] = {"baseline_answer": baseline_text, "baseline_experts": existing_experts}
+            skipped += 1
+            logger.info(f"[PRECALC] SKIP '{topic}' (already has {len(existing_experts)} experts)")
+            continue
+
+        if not baseline_text:
+            enriched[topic] = {"baseline_answer": "", "baseline_experts": []}
+            continue
+
+        logger.info(f"[PRECALC] Computing experts for topic: '{topic}'")
+        matched = _match_deputies_in_text(baseline_text, deputies_result)
+        logger.info(f"[PRECALC] '{topic}': matched {len(matched)} deputies")
+
+        experts = await _compute_experts_from_matched(topic, matched, client)
+        enriched[topic] = {"baseline_answer": baseline_text, "baseline_experts": experts}
+        computed += 1
+        logger.info(f"[PRECALC] '{topic}': computed {len(experts)} experts with authority scores")
+
+    # Write back enriched JSON
+    with open(eval_set_path, "w", encoding="utf-8") as f:
+        json.dump(enriched, f, ensure_ascii=False, indent=2)
+
+    logger.info(f"[PRECALC] Done. computed={computed}, skipped={skipped}, topics={len(enriched)}")
+    return {"ok": True, "computed": computed, "skipped": skipped, "total": len(enriched)}
 
 
 @router.delete("/history/{chat_id}")

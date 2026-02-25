@@ -85,12 +85,15 @@ async def process_query_streaming(
         )
 
         evidence_list = retrieval_result["evidence"]
-        # Include embedding (excluded by default via Field(exclude=True)) for compass PCA
+        # Include fields excluded from JSON responses (exclude=True) for internal pipeline use.
+        # embedding: compass PCA; text: CitationSurgeon sentence-boundary expansion
         evidence_dicts = []
         for e in evidence_list:
             d = e.model_dump()
             if e.embedding is not None:
                 d["embedding"] = e.embedding
+            if e.text:
+                d["text"] = e.text
             evidence_dicts.append(d)
 
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
@@ -104,27 +107,13 @@ async def process_query_streaming(
             None, lambda: services["retrieval"].embed_query(request.query)
         )
 
-        # Compute per-speaker authority with detailed breakdowns in parallel
-        # to avoid blocking the event loop
-        from concurrent.futures import ThreadPoolExecutor
-
-        authority_scores = {}
-        authority_details = {}
-
-        def _compute_single(sid):
-            return sid, services["authority"].compute_authority(sid, query_embedding)
-
-        loop = asyncio.get_running_loop()
-        with ThreadPoolExecutor(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
-            futures = [
-                loop.run_in_executor(pool, _compute_single, sid)
-                for sid in speaker_ids
-            ]
-            results = await asyncio.gather(*futures)
-
-        for sid, result in results:
-            authority_scores[sid] = result["total_score"]
-            authority_details[sid] = result
+        # Batch authority: 2 DB queries for all speakers + parallel CPU scoring
+        authority_all = await asyncio.get_running_loop().run_in_executor(
+            None,
+            lambda: services["authority"].compute_all_authority(speaker_ids, query_embedding),
+        )
+        authority_scores = {sid: r["total_score"] for sid, r in authority_all.items()}
+        authority_details = authority_all
 
         # Inject authority scores into evidence dicts so generation can sort by authority
         for ed in evidence_dicts:
@@ -872,21 +861,20 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                 None, lambda: services["retrieval"].embed_query(request.query)
             )
 
-            # Compute authority in parallel
-            from concurrent.futures import ThreadPoolExecutor as _TPE
-            authority_scores = {}
-            authority_details = {}
+            # Batch authority: 2 DB queries for all speakers + parallel CPU scoring
+            authority_all = await asyncio.get_running_loop().run_in_executor(
+                None,
+                lambda: services["authority"].compute_all_authority(speaker_ids, query_embedding),
+            )
+            authority_scores = {sid: r["total_score"] for sid, r in authority_all.items()}
+            authority_details = authority_all
 
-            def _compute_single_sync(sid):
-                return sid, services["authority"].compute_authority(sid, query_embedding)
-
-            loop = asyncio.get_running_loop()
-            with _TPE(max_workers=min(10, max(1, len(speaker_ids)))) as pool:
-                futs = [loop.run_in_executor(pool, _compute_single_sync, sid) for sid in speaker_ids]
-                results = await asyncio.gather(*futs)
-            for sid, result in results:
-                authority_scores[sid] = result["total_score"]
-                authority_details[sid] = result
+            # Write computed authority scores back into evidence_dicts so that
+            # the generation pipeline can use real scores for per-party citation ranking.
+            for ed in evidence_dicts:
+                sid = ed.get("speaker_id", "")
+                if sid in authority_scores:
+                    ed["authority_score"] = authority_scores[sid]
 
             # Experts
             experts = await _compute_experts(

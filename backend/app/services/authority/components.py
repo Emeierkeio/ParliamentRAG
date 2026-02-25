@@ -219,7 +219,9 @@ class ProfessionComponent(AuthorityComponent):
         profession_embedding = parse_embedding(speaker_data.get("profession_embedding"))
 
         if not profession_embedding:
-            return 0.5  # Neutral default for missing data
+            # No profession data recorded → no evidence of expertise → 0 contribution.
+            # Returning 0.5 was misleading (UI showed "Non rilevata" at 50%).
+            return 0.0
 
         similarity = cosine_similarity(query_embedding, profession_embedding)
         # Map from [-1, 1] to [0, 1]
@@ -244,7 +246,8 @@ class EducationComponent(AuthorityComponent):
         education_embedding = parse_embedding(speaker_data.get("education_embedding"))
 
         if not education_embedding:
-            return 0.5  # Neutral default for missing data
+            # No education data recorded → no evidence of academic expertise → 0 contribution.
+            return 0.0
 
         similarity = cosine_similarity(query_embedding, education_embedding)
         # Map from [-1, 1] to [0, 1]
@@ -260,11 +263,23 @@ class CommitteeComponent(AuthorityComponent):
     Computes score based on:
     - Temporal membership validity
     - Topic relevance of committee to query
+
+    Relevance is computed in two stages:
+    1. PRIMARY: cosine similarity between query and the committee's YAML topic keywords
+       (cached per committee name after first API call).  The keyword text is far
+       richer than the committee name alone, giving much better discrimination for
+       short queries like "Salario minimo" vs "XI COMMISSIONE (LAVORO PUBBLICO E PRIVATO)".
+    2. FALLBACK: cosine similarity with the committee name embedding stored in Neo4j
+       (used for committees not listed in commissioni_topics.yaml).
     """
+
+    # Class-level caches shared across all instances (process lifetime)
+    _keyword_embedding_cache: Dict[str, Optional[List[float]]] = {}
+    _yaml_cache: Optional[Dict[str, Any]] = None
+    _cache_lock = threading.Lock()
 
     def __init__(self):
         super().__init__()
-        self._topic_matcher = None
 
     def compute(
         self,
@@ -277,8 +292,7 @@ class CommitteeComponent(AuthorityComponent):
         if not memberships:
             return 0.0
 
-        total_relevance = 0.0
-        active_committees = 0
+        committee_scores: List[tuple] = []  # (name, relevance)
 
         for membership in memberships:
             # Check temporal validity - parse dates from Neo4j
@@ -291,75 +305,165 @@ class CommitteeComponent(AuthorityComponent):
             if membership_end and membership_end < reference_date:
                 continue
 
-            # Committee is active at reference_date
-            active_committees += 1
+            # Committee is active at reference_date — compute topic relevance
+            committee_name = membership.get("committee_name", "unknown")
+            topic_relevance = self._compute_topic_relevance(membership, query_embedding)
+            committee_scores.append((committee_name, topic_relevance))
 
-            # Compute topic relevance
-            committee_name = membership.get("committee_name", "")
-            topic_relevance = self._compute_topic_relevance(
-                committee_name, query_embedding
+            logger.debug(
+                f"CommitteeComponent: {committee_name!r} relevance={topic_relevance:.4f}"
             )
-            total_relevance += topic_relevance
 
-        if active_committees == 0:
+        if not committee_scores:
             return 0.0
 
-        # Average relevance across active committees
-        score = total_relevance / active_committees
+        # Use MAX relevance — the best-matching committee defines authority.
+        # Averaging would penalise deputies who happen to sit on many committees,
+        # giving a lower score even though their membership in the relevant
+        # committee is just as valid.
+        best_name, score = max(committee_scores, key=lambda x: x[1])
+        logger.debug(
+            f"CommitteeComponent: best={best_name!r} score={score:.4f} "
+            f"(max of {len(committee_scores)} active committees)"
+        )
 
         return self.cap_score(score)
 
-    def _compute_topic_relevance(
-        self,
-        commissione_nome: str,
-        query_embedding: List[float]
-    ) -> float:
-        """Compute topic relevance between commission and query."""
-        # Load commission topics from config
+    def _load_yaml(self) -> Dict[str, Any]:
+        """Load and cache commissioni_topics.yaml at the class level."""
+        if CommitteeComponent._yaml_cache is not None:
+            return CommitteeComponent._yaml_cache
+
         import yaml
         import os
-
         config_path = os.path.join(
             os.path.dirname(__file__),
             "../../../config/commissioni_topics.yaml"
         )
-
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
-                topics_config = yaml.safe_load(f)
+                data = yaml.safe_load(f)
+            with self._cache_lock:
+                CommitteeComponent._yaml_cache = data
+            return data
         except FileNotFoundError:
             logger.warning(f"Commission topics config not found: {config_path}")
-            return 0.5
+            with self._cache_lock:
+                CommitteeComponent._yaml_cache = {}
+            return {}
 
+    def _compute_topic_relevance(
+        self,
+        membership: Dict[str, Any],
+        query_embedding: List[float]
+    ) -> float:
+        """Compute topic relevance between committee and query.
+
+        PRIMARY path: embed the committee's YAML keyword text and compare with
+        the query embedding.  Keywords like "lavoro occupazione contratti sindacati"
+        are far more discriminative than the committee name alone, especially for
+        short queries ("Salario minimo" vs "XI COMMISSIONE (LAVORO PUBBLICO E PRIVATO)").
+
+        FALLBACK: if the committee is not in the YAML, use the stored Neo4j embedding
+        of the committee name.
+        """
+        committee_name = membership.get("committee_name", "")
+
+        # --- PRIMARY: YAML keyword embedding ---
+        topics_config = self._load_yaml()
         commissioni = topics_config.get("commissioni", {})
-        commission_data = commissioni.get(commissione_nome, {})
+        commission_data = commissioni.get(committee_name, {})
 
         if not commission_data:
-            # Try partial match
+            # Try partial name match (handles minor name variations)
             for name, data in commissioni.items():
-                if commissione_nome in name or name in commissione_nome:
+                if committee_name in name or name in committee_name:
                     commission_data = data
+                    committee_name = name  # use canonical name for cache key
                     break
 
-        if not commission_data:
-            return 0.3  # Low score for unknown commission
+        if commission_data:
+            keywords = commission_data.get("keywords", [])
+            if keywords:
+                kw_embedding = self._get_cached_keyword_embedding(committee_name, keywords)
+                if kw_embedding:
+                    similarity = cosine_similarity(query_embedding, kw_embedding)
+                    return max(0.0, similarity)
+                # API unavailable but committee is in YAML → moderate default
+                return 0.4
 
-        keywords = commission_data.get("keywords", [])
+        # --- FALLBACK: committee name embedding stored in Neo4j ---
+        committee_embedding = parse_embedding(membership.get("committee_embedding"))
+        if committee_embedding:
+            similarity = cosine_similarity(query_embedding, committee_embedding)
+            return max(0.0, similarity)
 
-        # Simple keyword relevance (semantic matching would need embeddings)
-        # For now, return moderate relevance for any matched commission
-        return 0.6 if keywords else 0.3
+        return 0.2  # Unknown committee, no embedding
+
+    def _get_cached_keyword_embedding(
+        self,
+        committee_name: str,
+        keywords: List[str]
+    ) -> Optional[List[float]]:
+        """Return (possibly cached) embedding for the committee's keyword text.
+
+        Uses the same model as query embeddings (text-embedding-3-small) so that
+        cosine similarity is semantically meaningful.  Result is stored in a
+        class-level dict to survive across multiple authority computations.
+        """
+        if committee_name in self._keyword_embedding_cache:
+            return self._keyword_embedding_cache[committee_name]
+
+        keyword_text = " ".join(keywords)
+        embedding: Optional[List[float]] = None
+        try:
+            from ...key_pool import make_client
+            llm_config = self.config.load_config().get("llm", {})
+            model = llm_config.get("embedding_model", "text-embedding-3-small")
+            client = make_client()
+            response = client.embeddings.create(input=keyword_text, model=model)
+            embedding = response.data[0].embedding
+            logger.debug(
+                f"Cached keyword embedding for '{committee_name}' "
+                f"({len(keywords)} keywords, model={model})"
+            )
+        except Exception as exc:
+            logger.warning(
+                f"Could not embed keywords for committee '{committee_name}': {exc}"
+            )
+
+        with self._cache_lock:
+            self._keyword_embedding_cache[committee_name] = embedding
+
+        return embedding
 
 
 class ActsComponent(AuthorityComponent):
     """
     Parliamentary acts component.
 
-    Computes score based on:
-    - Count of relevant acts
-    - Time decay (more recent = higher weight)
-    - Coalition validity (via filtered activities)
+    Contribution per act:
+        role_weight × time_decay × topic_relevance
+
+    Where:
+    - role_weight:    1.0 for PRIMARY_SIGNATORY, 0.3 for CO_SIGNATORY
+    - time_decay:     exponential decay (half_life = acts_half_life_days)
+    - topic_relevance: cosine similarity(query, act.description_embedding)
+                      if the similarity is >= acts_relevance_threshold;
+                      0.5 (neutral) for acts without an embedding.
+
+    Acts whose description similarity is below the threshold are skipped
+    entirely — they are not topically relevant to the query.
+
+    Normalization: log scale with ceiling at ~500 weighted units.
     """
+
+    # Co-signatory counts much less than primary proposer.
+    PRIMARY_WEIGHT = 1.0
+    CO_SIGNATORY_WEIGHT = 0.3
+
+    # Neutral relevance applied to acts that have no description_embedding.
+    NO_EMBEDDING_RELEVANCE = 0.5
 
     def compute(
         self,
@@ -374,28 +478,61 @@ class ActsComponent(AuthorityComponent):
 
         authority_config = self.config.load_config().get("authority", {})
         time_decay_config = authority_config.get("time_decay", {})
-        half_life = time_decay_config.get("acts_half_life_days", 365)
+        half_life = time_decay_config.get("acts_half_life_days", 548)
+        relevance_threshold = authority_config.get("acts_relevance_threshold", 0.25)
 
         total_weight = 0.0
+        primary_count = 0
+        co_count = 0
+        relevant_count = 0
+        skipped_count = 0
+        no_emb_count = 0
 
         for act in acts:
             act_date = parse_neo4j_date(act.get("date"))
-            if not act_date:
+            if not act_date or act_date > reference_date:
                 continue
 
-            if act_date > reference_date:
-                continue
+            # --- Semantic relevance filter ---
+            desc_embedding = parse_embedding(act.get("description_embedding"))
+            if desc_embedding:
+                similarity = cosine_similarity(query_embedding, desc_embedding)
+                if similarity < relevance_threshold:
+                    skipped_count += 1
+                    continue
+                topic_relevance = similarity
+            else:
+                # No embedding available — count with neutral relevance so
+                # older/un-embedded acts don't silently vanish from the score.
+                topic_relevance = self.NO_EMBEDDING_RELEVANCE
+                no_emb_count += 1
 
-            # Compute time decay
+            # --- Signatory weight ---
+            signatory_type = act.get("signatory_type", "PRIMARY_SIGNATORY")
+            role_weight = (
+                self.PRIMARY_WEIGHT
+                if signatory_type == "PRIMARY_SIGNATORY"
+                else self.CO_SIGNATORY_WEIGHT
+            )
+            if signatory_type == "PRIMARY_SIGNATORY":
+                primary_count += 1
+            else:
+                co_count += 1
+            relevant_count += 1
+
             days_ago = (reference_date - act_date).days
             decay = time_decay(days_ago, half_life)
+            total_weight += role_weight * decay * topic_relevance
 
-            # Add weighted contribution
-            total_weight += decay
+        logger.debug(
+            f"ActsComponent: relevant={relevant_count} skipped={skipped_count} "
+            f"no_emb={no_emb_count} primary={primary_count} co={co_count} "
+            f"total_weighted={total_weight:.2f} threshold={relevance_threshold}"
+        )
 
-        # Log scale to prevent hyper-active deputies from dominating
+        # Log scale — ceiling at 500 to avoid saturation for hyper-active deputies.
         if total_weight > 0:
-            score = math.log(1 + total_weight) / math.log(1 + 100)  # Normalize assuming max ~100 weighted acts
+            score = math.log(1 + total_weight) / math.log(1 + 500)
             score = min(score, 1.0)
         else:
             score = 0.0
@@ -407,11 +544,24 @@ class InterventionsComponent(AuthorityComponent):
     """
     Parliamentary interventions component.
 
-    Computes score based on:
-    - Count of relevant interventions
-    - Time decay (more recent = higher weight)
-    - Coalition validity (via filtered activities)
+    Contribution per speech:
+        time_decay × topic_relevance
+
+    Where:
+    - time_decay:      exponential decay (half_life = speeches_half_life_days)
+    - topic_relevance: cosine similarity(query, speech.text_embedding)
+                       if similarity >= interventions_relevance_threshold;
+                       0.5 (neutral) for speeches without a text_embedding.
+
+    Speech.text_embedding is computed by build/precalculate_embeddings.py Phase 5
+    (first 2000 chars of the preprocessed speech text, via text-embedding-3-small).
+
+    Speeches below the relevance threshold are skipped entirely.
+    Normalization: log scale with ceiling at ~500 weighted units.
     """
+
+    # Neutral relevance applied to speeches that have no text_embedding yet.
+    NO_EMBEDDING_RELEVANCE = 0.5
 
     def compute(
         self,
@@ -427,27 +577,47 @@ class InterventionsComponent(AuthorityComponent):
         authority_config = self.config.load_config().get("authority", {})
         time_decay_config = authority_config.get("time_decay", {})
         half_life = time_decay_config.get("speeches_half_life_days", 180)
+        relevance_threshold = authority_config.get("interventions_relevance_threshold", 0.25)
 
         total_weight = 0.0
+        dated_count = 0
+        relevant_count = 0
+        skipped_count = 0
+        no_emb_count = 0
 
         for intervention in interventions:
             intervention_date = parse_neo4j_date(intervention.get("date"))
-            if not intervention_date:
+            if not intervention_date or intervention_date > reference_date:
                 continue
 
-            if intervention_date > reference_date:
-                continue
+            dated_count += 1
 
-            # Compute time decay
+            # --- Semantic relevance filter ---
+            text_emb = parse_embedding(intervention.get("text_embedding"))
+            if text_emb:
+                similarity = cosine_similarity(query_embedding, text_emb)
+                if similarity < relevance_threshold:
+                    skipped_count += 1
+                    continue
+                topic_relevance = similarity
+            else:
+                # Embedding not yet computed — neutral relevance (legacy speeches).
+                topic_relevance = self.NO_EMBEDDING_RELEVANCE
+                no_emb_count += 1
+
+            relevant_count += 1
             days_ago = (reference_date - intervention_date).days
             decay = time_decay(days_ago, half_life)
+            total_weight += decay * topic_relevance
 
-            # Add weighted contribution
-            total_weight += decay
+        logger.debug(
+            f"InterventionsComponent: total={len(interventions)} dated={dated_count} "
+            f"relevant={relevant_count} skipped={skipped_count} no_emb={no_emb_count} "
+            f"weighted={total_weight:.2f} threshold={relevance_threshold}"
+        )
 
-        # Log scale to prevent hyper-active deputies from dominating
         if total_weight > 0:
-            score = math.log(1 + total_weight) / math.log(1 + 500)  # Normalize assuming max ~500 weighted interventions
+            score = math.log(1 + total_weight) / math.log(1 + 500)
             score = min(score, 1.0)
         else:
             score = 0.0

@@ -64,8 +64,8 @@ def ensure_survey_constraint():
 # Evaluation set helpers
 # ---------------------------------------------------------------------------
 
-def _load_evaluation_set() -> Dict[str, str]:
-    """Load topic → baseline_text mapping from evaluation_set.json."""
+def _load_evaluation_set_raw() -> dict:
+    """Load raw evaluation_set.json (values may be str or dict)."""
     try:
         path = os.path.normpath(_EVAL_SET_PATH)
         with open(path, "r", encoding="utf-8") as f:
@@ -76,6 +76,30 @@ def _load_evaluation_set() -> Dict[str, str]:
     except Exception as e:
         logger.error(f"Failed to load evaluation_set.json: {e}")
         return {}
+
+
+def _load_evaluation_set() -> Dict[str, str]:
+    """Load topic → baseline_text mapping (handles both old str and new dict values)."""
+    raw = _load_evaluation_set_raw()
+    result: Dict[str, str] = {}
+    for topic, value in raw.items():
+        if isinstance(value, dict):
+            result[topic] = value.get("baseline_answer", "")
+        else:
+            result[topic] = value
+    return result
+
+
+def _load_evaluation_set_full() -> Dict[str, dict]:
+    """Load topic → {baseline_answer, baseline_experts} (normalises old str entries)."""
+    raw = _load_evaluation_set_raw()
+    result: Dict[str, dict] = {}
+    for topic, value in raw.items():
+        if isinstance(value, dict):
+            result[topic] = value
+        else:
+            result[topic] = {"baseline_answer": value, "baseline_experts": []}
+    return result
 
 
 def _match_evaluation_set(query: str) -> Optional[tuple]:
@@ -395,8 +419,8 @@ async def get_pending_chats(evaluator_id: Optional[str] = Query(None)):
     """
     logger.info(f"[PENDING-CHATS] Fetching pending chats for evaluator={evaluator_id!r}")
 
-    eval_set = _load_evaluation_set()
-    if not eval_set:
+    eval_set_full = _load_evaluation_set_full()
+    if not eval_set_full:
         return {"pending": [], "total": 0}
 
     client = _get_client()
@@ -425,15 +449,27 @@ async def get_pending_chats(evaluator_id: Optional[str] = Query(None)):
 
         # Only include chats matching a topic in evaluation_set (always A/B type)
         matched_topic = None
-        baseline_answer = None
-        for topic, baseline in eval_set.items():
+        topic_data: dict = {}
+        for topic, data in eval_set_full.items():
             if topic.lower() in query_lower:
                 matched_topic = topic
-                baseline_answer = baseline
+                topic_data = data
                 break
 
         if not matched_topic:
             continue
+
+        baseline_citations = []
+        baseline_metrics = topic_data.get("baseline_metrics", {})
+        if isinstance(baseline_metrics, dict):
+            for cit in baseline_metrics.get("citations", []):
+                baseline_citations.append({
+                    "speaker": cit.get("speaker", ""),
+                    "group": cit.get("group", ""),
+                    "date": cit.get("date", ""),
+                    "quote": cit.get("quote", ""),
+                    "verbatim_verified": cit.get("verbatim_verified", False),
+                })
 
         pending.append({
             "id": r["id"],
@@ -442,7 +478,9 @@ async def get_pending_chats(evaluator_id: Optional[str] = Query(None)):
             "timestamp": r.get("timestamp", ""),
             "evaluation_type": "ab",
             "matched_topic": matched_topic,
-            "baseline_answer": baseline_answer,
+            "baseline_answer": topic_data.get("baseline_answer", ""),
+            "baseline_experts": topic_data.get("baseline_experts", []),
+            "baseline_citations": baseline_citations,
         })
 
     logger.info(f"[PENDING-CHATS] Total pending: {len(pending)}")
@@ -563,6 +601,7 @@ async def create_survey(survey_data: SurveyResponseCreate):
             evaluator_role: $evaluator_role,
             evaluation_context: $evaluation_context,
             ab_assignment: $ab_assignment,
+            baseline_authority_avg: $baseline_authority_avg,
             citation_evaluations_a: $citation_evaluations_a,
             citation_evaluations_b: $citation_evaluations_b,
             {dim_sets}
@@ -688,6 +727,7 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
             s.feedback_improvement = $feedback_improvement,
             s.evaluator_role = $evaluator_role,
             s.evaluation_context = $evaluation_context,
+            s.baseline_authority_avg = $baseline_authority_avg,
             s.citation_evaluations_a = $citation_evaluations_a,
             s.citation_evaluations_b = $citation_evaluations_b,
             {dim_sets}

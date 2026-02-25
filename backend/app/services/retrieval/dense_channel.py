@@ -69,9 +69,14 @@ class DenseChannel:
         WHERE score >= $threshold
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+        // Partito storico: gruppo del deputato ALLA DATA del discorso.
+        // Non si filtra su mg.end_date >= date() per includere anche i deputati
+        // che hanno successivamente cambiato gruppo parlamentare.
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
-        AND (mg.end_date IS NULL OR mg.end_date >= date())
+        // Partito attuale: gruppo corrente (membership ancora aperta).
+        OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
+        WHERE mg_now.end_date IS NULL
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
@@ -85,6 +90,7 @@ class DenseChannel:
                speaker.last_name AS speaker_last_name,
                CASE WHEN 'GovernmentMember' IN labels(speaker) THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
                g.name AS party,
+               g_now.name AS current_party,
                s.id AS session_id,
                s.date AS session_date,
                s.number AS session_number,
@@ -138,25 +144,34 @@ class DenseChannel:
                     if not quote_text:
                         logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
 
-                # Determine coalition
-                # If party is NULL the speaker's current group doesn't cover
-                # this session date (e.g. they switched group after the debate).
-                # Skip the result — the deputy should only be cited for speeches
-                # made while in their current group.
-                party = row.get("party")
+                # Determine coalition using the historical party (group at speech time).
+                # current_party is the group the speaker belongs to TODAY — used only
+                # to compute party_changed, never for attribution or coalition assignment.
+                party = row.get("party")           # storico (alla data del discorso)
+                current_party_raw = row.get("current_party")  # attuale
                 speaker_role = row.get("speaker_type", "Deputy")
+
                 if party is None and speaker_role != "GovernmentMember":
+                    # Chunk privo di attribuzione storica (dati mancanti nel DB): salta.
                     logger.debug(
-                        f"Skipping chunk {row.get('chunk_id')}: speaker "
-                        f"{row.get('speaker_last_name')} has no current group "
-                        f"covering session date {row.get('session_date')}"
+                        f"Skipping chunk {row.get('chunk_id')}: no historical group found "
+                        f"for speaker {row.get('speaker_last_name')} at {row.get('session_date')}"
                     )
                     continue
+
                 if speaker_role == "GovernmentMember":
                     party = party or "GOVERNO"
                     coalition = "governo"
+                    party_changed = False
+                    current_party_display = None
                 else:
                     coalition = config.get_coalition(party) if party else "opposizione"
+                    historical_display = normalize_party_name(party)
+                    current_party_display = normalize_party_name(current_party_raw) if current_party_raw else None
+                    # Cambiamento se il gruppo attuale è diverso da quello storico
+                    party_changed = bool(
+                        current_party_display and current_party_display != historical_display
+                    )
 
                 # Parse date - handles both Neo4j Date objects and string formats
                 session_date = row.get("session_date")
@@ -184,9 +199,13 @@ class DenseChannel:
                     "speaker_role": row.get("speaker_type", "Deputy"),
                     "party": normalize_party_name(party),
                     "coalition": coalition,
+                    # Trasparenza cambio gruppo: se True, current_party mostra il gruppo attuale
+                    "party_changed": party_changed,
+                    "current_party": current_party_display if party_changed else None,
                     "date": date_obj,
                     "chunk_text": row.get("chunk_text", ""),
                     "quote_text": quote_text,
+                    "text": text,  # Full speech text — needed by surgeon for sentence expansion
                     "span_start": span_start or 0,
                     "span_end": span_end or 0,
                     "debate_title": row.get("debate_title"),

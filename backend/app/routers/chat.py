@@ -254,6 +254,15 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                 authority_scores[sid] = result["total_score"]
                 authority_details[sid] = result
 
+        # Write computed authority scores back into evidence_dicts so that the
+        # generation pipeline can use real scores for per-party citation ranking.
+        # (evidence_dicts are built from model_dump() before scoring, so
+        # authority_score is 0.0 by default until this back-fill.)
+        for d in evidence_dicts:
+            sid = d.get("speaker_id", "")
+            if sid in authority_scores:
+                d["authority_score"] = authority_scores[sid]
+
         authority_time = time.time() - authority_start
         step_times["step_3_authority"] = time.time() - step_start
         logger.info(f"[TIMING] Authority scoring: {authority_time*1000:.1f}ms")
@@ -716,6 +725,13 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
             for sid, result in results:
                 authority_scores[sid] = result["total_score"]
                 authority_details[sid] = result
+
+        # Write computed authority scores back into evidence_dicts so that the
+        # generation pipeline can use real scores for per-party citation ranking.
+        for d in evidence_dicts:
+            sid = d.get("speaker_id", "")
+            if sid in authority_scores:
+                d["authority_score"] = authority_scores[sid]
 
         authority_time = time.time() - authority_start
         step_times["step_3_authority"] = time.time() - step_start
@@ -1346,6 +1362,10 @@ def _build_citations_for_frontend(
             "intervention_id": e.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),
         }
+        # Trasparenza cambio gruppo: mostra sempre se il deputato ha cambiato partito
+        if e.get("party_changed") and e.get("current_party"):
+            cit_data["party_changed"] = True
+            cit_data["current_party"] = e["current_party"]
         if is_government:
             role = gov_role_map.get(speaker_id)
             if not role and neo4j_client:
@@ -1498,6 +1518,12 @@ def _build_verified_citations(
             "camera_profile_url": deputy_card_map.get(speaker_id),
             "verified": True,
         }
+        # Trasparenza cambio gruppo: leggi da evidence (già popolato da _process_results)
+        party_changed = evidence.get("party_changed") or cit.get("party_changed", False)
+        current_party = evidence.get("current_party") or cit.get("current_party")
+        if party_changed and current_party:
+            cit_data["party_changed"] = True
+            cit_data["current_party"] = current_party
         if is_government:
             role = gov_role_map.get(speaker_id)
             if not role and neo4j_client:

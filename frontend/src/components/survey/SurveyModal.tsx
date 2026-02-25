@@ -31,7 +31,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import type { Expert } from "@/types/chat";
-import { ExpertCard } from "@/components/chat/ExpertCard";
+import { ExpertModal } from "@/components/chat/ExpertCard";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import { StarRating } from "./StarRating";
@@ -46,6 +46,7 @@ import {
   type PendingChat,
   type ABDimension,
   type SimpleRatingFormState,
+  type BaselineCitation,
   getInitialSurveyFormState,
   getInitialSimpleRatingFormState,
   getInitialCitationEvaluation,
@@ -78,11 +79,19 @@ interface ChatDetails {
 type SurveyStep = "select" | "form" | "simple_form" | "citations" | "success";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  "Qualita Risposta": <MessageSquare className="w-4 h-4" />,
-  "Citazioni": <Quote className="w-4 h-4" />,
-  "Bilanciamento Politico": <Scale className="w-4 h-4" />,
-  "Autorità Esperti": <UserCheck className="w-4 h-4" />,
-  "Valutazione Complessiva": <Star className="w-4 h-4" />,
+  "Qualita Risposta": <MessageSquare className="w-3.5 h-3.5" />,
+  "Citazioni": <Quote className="w-3.5 h-3.5" />,
+  "Bilanciamento Politico": <Scale className="w-3.5 h-3.5" />,
+  "Autorità Esperti": <UserCheck className="w-3.5 h-3.5" />,
+  "Valutazione Complessiva": <Star className="w-3.5 h-3.5" />,
+};
+
+const CATEGORY_SHORT_LABELS: Record<string, string> = {
+  "Qualita Risposta": "Qualità",
+  "Citazioni": "Citazioni",
+  "Bilanciamento Politico": "Bilanciamento",
+  "Autorità Esperti": "Autorità",
+  "Valutazione Complessiva": "Complessiva",
 };
 
 // ─── Known political groups ordered by coalition ──────────────────────────────
@@ -102,11 +111,39 @@ const POLITICAL_GROUPS_ORDERED = [
   { key: "MISTO", label: "Gruppo Misto", coalition: "altro" },
 ];
 
+/**
+ * Resolve an expert's raw group name to the canonical key used in POLITICAL_GROUPS_ORDERED.
+ * Handles DB variations like extra suffixes or slightly different punctuation.
+ */
+function resolveGroupKey(groupName: string): string {
+  const upper = (groupName || "MISTO").toUpperCase().trim();
+  // 1. Exact match
+  for (const { key } of POLITICAL_GROUPS_ORDERED) {
+    if (upper === key) return key;
+  }
+  // 2. The expert's group starts with the canonical key (expert has extra suffix)
+  for (const { key } of POLITICAL_GROUPS_ORDERED) {
+    if (upper.startsWith(key)) return key;
+  }
+  // 3. The canonical key starts with the expert's group (expert has abbreviated name)
+  for (const { key } of POLITICAL_GROUPS_ORDERED) {
+    if (key.startsWith(upper)) return key;
+  }
+  // 4. Prefix match: strip everything after the first dash or parenthesis
+  for (const { key } of POLITICAL_GROUPS_ORDERED) {
+    const keyPrefix = key.split(/[-\(]/)[0].trim();
+    if (keyPrefix.length >= 4 && upper.startsWith(keyPrefix)) return key;
+    const expertPrefix = upper.split(/[-\(]/)[0].trim();
+    if (expertPrefix.length >= 4 && key.startsWith(expertPrefix)) return key;
+  }
+  return upper;
+}
+
 /** Pick the best expert (highest authority_score) per political group. */
 function pickOnePerGroup(experts: Expert[]): Record<string, Expert> {
   const result: Record<string, Expert> = {};
   for (const e of experts) {
-    const g = (e.group || "MISTO").toUpperCase();
+    const g = resolveGroupKey(e.group || "MISTO");
     if (!result[g] || e.authority_score > result[g].authority_score) {
       result[g] = e;
     }
@@ -121,125 +158,246 @@ function AuthorityGroupComparisonPanel({
   expertsB,
   isLoadingA,
   isLoadingB,
+  groupRatings,
+  onGroupRatingChange,
 }: {
   expertsA: Expert[];
   expertsB: Expert[];
   isLoadingA: boolean;
   isLoadingB: boolean;
+  groupRatings: Record<string, number>;
+  onGroupRatingChange: (group: string, value: number) => void;
 }) {
+  const [expertModal, setExpertModal] = useState<Expert | null>(null);
+
   const byGroupA = pickOnePerGroup(expertsA);
   const byGroupB = pickOnePerGroup(expertsB);
 
+  // Canonical authority scores: same deputy → same score across A and B (use max)
+  const canonicalScores: Record<string, number> = {};
+  [...expertsA, ...expertsB].forEach(e => {
+    const nameKey = `${e.first_name} ${e.last_name}`.toLowerCase();
+    if (!canonicalScores[nameKey] || e.authority_score > canonicalScores[nameKey]) {
+      canonicalScores[nameKey] = e.authority_score;
+    }
+  });
+  const getScore = (e: Expert) =>
+    canonicalScores[`${e.first_name} ${e.last_name}`.toLowerCase()] ?? e.authority_score;
+
   if (isLoadingA || isLoadingB) {
     return (
-      <div className="flex flex-col items-center justify-center h-40 text-gray-400 gap-2">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
-        <p className="text-xs">Ricerca deputati nel testo...</p>
+      <div className="flex flex-1 w-full flex-col items-center justify-center text-gray-400 gap-3 min-h-0">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
+        <p className="text-xs text-gray-500">Ricerca deputati nel testo...</p>
       </div>
     );
   }
 
+  // Compute progress
+  const groupsWithExperts = POLITICAL_GROUPS_ORDERED.filter(
+    ({ key }) => byGroupA[key] || byGroupB[key]
+  );
+  const ratedCount = groupsWithExperts.filter(({ key }) => groupRatings[key] !== undefined).length;
+  const allRated = ratedCount === groupsWithExperts.length && groupsWithExperts.length > 0;
+
   return (
-    <div className="flex flex-col h-full min-h-0 overflow-y-auto px-2 py-2 space-y-1">
-      {/* Header row */}
-      <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center px-1 mb-1 shrink-0">
+    <div className="flex flex-col h-full min-h-0">
+      {/* ── Instruction header (fixed, non-scrollable) ── */}
+      <div className="px-3 py-2.5 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 border-b shrink-0">
+        <div className="flex items-start gap-2.5">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-indigo-900 dark:text-indigo-100 leading-tight mb-0.5">
+              Confronta gli esperti per gruppo politico
+            </p>
+            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 leading-snug">
+              Leggi gli esperti citati in{" "}
+              <span className="font-semibold text-blue-600 dark:text-blue-400">A</span> e{" "}
+              <span className="font-semibold text-amber-600 dark:text-amber-400">B</span>, poi usa i pulsanti
+              sotto ogni riga per indicare quale risposta ha scelto l'esperto più autorevole.
+            </p>
+          </div>
+          {/* Progress badge */}
+          <div className={cn(
+            "shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-bold whitespace-nowrap",
+            allRated
+              ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+              : "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300"
+          )}>
+            {allRated
+              ? <><Check className="w-3 h-3" /> Completo</>
+              : <>{ratedCount}/{groupsWithExperts.length} gruppi</>
+            }
+          </div>
+        </div>
+      </div>
+
+      {/* ── Column labels ── */}
+      <div className="grid grid-cols-2 gap-1 px-3 pt-2 pb-1 shrink-0 border-b bg-white dark:bg-gray-950">
         <div className="text-center">
-          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-3 py-0.5 rounded-full">
             Risposta A
           </span>
         </div>
-        <div className="w-20 text-center">
-          <span className="text-xs text-gray-400 font-medium">Gruppo</span>
-        </div>
         <div className="text-center">
-          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 px-3 py-0.5 rounded-full">
             Risposta B
           </span>
         </div>
       </div>
 
-      {POLITICAL_GROUPS_ORDERED.map(({ key, label, coalition }) => {
-        const expertA = byGroupA[key] || byGroupA[key.toLowerCase()] || null;
-        const expertB = byGroupB[key] || byGroupB[key.toLowerCase()] || null;
+      {/* ── Scrollable group list ── */}
+      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+        {expertModal && (
+          <ExpertModal
+            expert={expertModal}
+            isOpen={!!expertModal}
+            onClose={() => setExpertModal(null)}
+          />
+        )}
 
-        const coalColor =
-          coalition === "maggioranza" ? "text-red-500" :
-          coalition === "opposizione" ? "text-blue-500" : "text-gray-400";
+        {POLITICAL_GROUPS_ORDERED.map(({ key, label, coalition }) => {
+          const expertA = byGroupA[key] || byGroupA[key.toLowerCase()] || null;
+          const expertB = byGroupB[key] || byGroupB[key.toLowerCase()] || null;
+          const hasAny = expertA || expertB;
 
-        return (
-          <div key={key} className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center border-b border-gray-100 dark:border-gray-800 pb-1 last:border-0">
-            {/* Expert A */}
-            <div className="flex flex-col items-end">
-              {expertA ? (
-                <AuthorityExpertMini expert={expertA} side="A" />
-              ) : (
-                <div className="text-xs text-gray-400 italic text-right px-1 py-1.5">
-                  Citazione non disponibile
+          const coalColor =
+            coalition === "maggioranza" ? "text-red-600" :
+            coalition === "opposizione" ? "text-blue-600" : "text-gray-500";
+
+          const coalBg =
+            coalition === "maggioranza" ? "bg-red-50/60 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30" :
+            coalition === "opposizione" ? "bg-blue-50/60 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30" :
+            "bg-gray-50/60 dark:bg-gray-900/20 border border-gray-100 dark:border-gray-800/30";
+
+          if (!hasAny) return null;
+
+          return (
+            <div key={key} className={cn("rounded-xl mb-2", coalBg)}>
+              {/* Group badge */}
+              <div className="flex justify-center pt-2 pb-0.5">
+                <span className={cn("text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full", coalColor,
+                  coalition === "maggioranza" ? "bg-red-100 dark:bg-red-900/40" :
+                  coalition === "opposizione" ? "bg-blue-100 dark:bg-blue-900/40" : "bg-gray-100 dark:bg-gray-800/40"
+                )}>
+                  {label}
+                </span>
+              </div>
+
+              {/* Expert row */}
+              <div className="grid grid-cols-[1fr_1fr] gap-1 px-2 pt-1">
+                {/* Expert A */}
+                <div className="min-w-0 overflow-hidden">
+                  {expertA ? (
+                    <AuthorityExpertMini expert={expertA} side="A" score={getScore(expertA)} onExpertClick={setExpertModal} />
+                  ) : (
+                    <div className="flex items-center justify-end h-full px-2 py-3">
+                      <span className="text-xs text-gray-400 italic">— non citato</span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            {/* Group label */}
-            <div className="w-20 flex flex-col items-center gap-0.5 shrink-0">
-              <span className={`text-[10px] font-bold uppercase tracking-wide ${coalColor}`}>
-                {label}
-              </span>
-            </div>
-
-            {/* Expert B */}
-            <div className="flex flex-col items-start">
-              {expertB ? (
-                <AuthorityExpertMini expert={expertB} side="B" />
-              ) : (
-                <div className="text-xs text-gray-400 italic text-left px-1 py-1.5">
-                  Citazione non disponibile
+                {/* Expert B */}
+                <div className="min-w-0 overflow-hidden">
+                  {expertB ? (
+                    <AuthorityExpertMini expert={expertB} side="B" score={getScore(expertB)} onExpertClick={setExpertModal} />
+                  ) : (
+                    <div className="flex items-center justify-start h-full px-2 py-3">
+                      <span className="text-xs text-gray-400 italic">non citato —</span>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+
+              {/* Per-group preference toggle — required */}
+              <div className="mx-2 mb-2 rounded-lg overflow-hidden">
+                <MiniGroupSlider
+                  value={groupRatings[key]}
+                  onChange={(v) => onGroupRatingChange(key, v)}
+                />
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 /** Compact expert display for the group comparison panel. */
-function AuthorityExpertMini({ expert, side }: { expert: Expert; side: "A" | "B" }) {
+function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
+  expert: Expert;
+  side: "A" | "B";
+  score: number;
+  onExpertClick?: (expert: Expert) => void;
+}) {
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
   const isA = side === "A";
 
+  const primaryCommittee = expert.committees?.[0] || expert.committee || null;
+  const pct = Math.round(score * 100);
+  const barColor = score >= 0.7 ? "bg-emerald-500" : score >= 0.4 ? "bg-amber-500" : "bg-gray-400";
+
   return (
-    <div className={cn(
-      "flex items-center gap-1.5 py-1 px-1.5 rounded-lg w-full",
-      isA ? "flex-row-reverse text-right" : "flex-row text-left"
-    )}>
+    <div
+      className={cn(
+        "flex items-start gap-2 py-2 px-2 rounded-xl w-full transition-colors",
+        isA ? "flex-row-reverse text-right" : "flex-row text-left",
+        onExpertClick && "cursor-pointer hover:bg-white/80 dark:hover:bg-gray-800/60 hover:shadow-sm"
+      )}
+      onClick={() => onExpertClick?.({ ...expert, authority_score: score })}
+    >
+      {/* Avatar */}
       {expert.photo ? (
         <img
           src={expert.photo}
           alt={`${expert.first_name} ${expert.last_name}`}
-          className="h-8 w-8 shrink-0 rounded-full object-cover"
+          className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm"
         />
       ) : (
         <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ring-2 ring-white dark:ring-gray-800 shadow-sm"
           style={{ backgroundColor: groupColor }}
         >
           {expert.first_name[0]}{expert.last_name[0]}
         </div>
       )}
+
+      {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-foreground leading-tight truncate">
+        {/* Name */}
+        <p className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-snug truncate">
           {expert.first_name} {expert.last_name}
         </p>
-        <div className={cn("flex items-center gap-1 mt-0.5", isA ? "flex-row-reverse" : "flex-row")}>
-          <div className="h-1 w-10 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className={cn("h-full rounded-full", expert.authority_score >= 0.7 ? "bg-emerald-500" : expert.authority_score >= 0.4 ? "bg-amber-500" : "bg-gray-400")}
-              style={{ width: `${expert.authority_score * 100}%` }}
-            />
+
+        {/* Score row */}
+        <div className={cn("flex items-center gap-1.5 mt-1", isA ? "flex-row-reverse" : "flex-row")}>
+          <div className="h-1.5 flex-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden max-w-[80px]">
+            <div className={cn("h-full rounded-full", barColor)} style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-[10px] text-muted-foreground font-mono">{(expert.authority_score * 100).toFixed(0)}</span>
+          <span className={cn(
+            "text-xs font-bold tabular-nums shrink-0",
+            score >= 0.7 ? "text-emerald-600" : score >= 0.4 ? "text-amber-600" : "text-gray-500"
+          )}>{pct}</span>
+        </div>
+
+        {/* Authority signals */}
+        <div className={cn("mt-1 flex flex-col gap-0.5", isA ? "items-end" : "items-start")}>
+          {expert.institutional_role && (
+            <span className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 bg-violet-100 dark:bg-violet-900/40 px-1.5 py-0.5 rounded-md leading-none truncate max-w-full inline-block">
+              {expert.institutional_role}
+            </span>
+          )}
+          {primaryCommittee && (
+            <span className="text-[11px] text-indigo-600 dark:text-indigo-400 leading-snug truncate max-w-full block font-medium">
+              {primaryCommittee.length > 32 ? primaryCommittee.slice(0, 31) + "…" : primaryCommittee}
+            </span>
+          )}
+          {expert.profession && (
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug truncate max-w-full block italic">
+              {expert.profession.length > 36 ? expert.profession.slice(0, 35) + "…" : expert.profession}
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -248,111 +406,182 @@ function AuthorityExpertMini({ expert, side }: { expert: Expert; side: "A" | "B"
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ─── Comparative Slider (A ←→ B) ─────────────────────────────────────────────
+// ─── Mini per-group A/B preference toggle ─────────────────────────────────────
 
-/**
- * A 7-step comparative slider replacing dual star ratings for authority questions.
- * Steps: -3(A▶▶▶) -2(A▶▶) -1(A▶) 0(=) +1(◀B) +2(◀◀B) +3(◀◀◀B)
- * Maps to (rating_a, rating_b) pairs.
- */
-const SLIDER_STEP_MAP: Record<number, { rating_a: number; rating_b: number; label: string }> = {
-  "-3": { rating_a: 5, rating_b: 2, label: "A molto meglio" },
-  "-2": { rating_a: 4, rating_b: 2, label: "A meglio" },
-  "-1": { rating_a: 4, rating_b: 3, label: "A leggermente meglio" },
-   "0": { rating_a: 3, rating_b: 3, label: "Equivalenti" },
-   "1": { rating_a: 3, rating_b: 4, label: "B leggermente meglio" },
-   "2": { rating_a: 2, rating_b: 4, label: "B meglio" },
-   "3": { rating_a: 2, rating_b: 5, label: "B molto meglio" },
-};
+// -1 = A migliore, 0 = Equivalenti, 1 = B migliore
+function MiniGroupSlider({
+  value,
+  onChange,
+}: {
+  value: number | undefined;
+  onChange: (v: number) => void;
+}) {
+  const options = [
+    { v: -1, label: "A migliore", activeClass: "bg-blue-500 text-white border-blue-600 shadow-sm" },
+    { v:  0, label: "Pari",       activeClass: "bg-gray-500 text-white border-gray-600 shadow-sm" },
+    { v:  1, label: "B migliore", activeClass: "bg-amber-500 text-white border-amber-600 shadow-sm" },
+  ] as const;
 
-function ratingsToSliderStep(rating_a: number, rating_b: number): number {
-  if (rating_a === 0 || rating_b === 0) return 0; // unset → neutral
-  const delta = rating_b - rating_a;
-  if (delta >= 3) return 3;
-  if (delta <= -3) return -3;
-  return delta;
-}
-
-interface ComparativeSliderProps {
-  ratingA: number;
-  ratingB: number;
-  onChange: (rating_a: number, rating_b: number, preference: "A" | "B" | "equal") => void;
-  disabled?: boolean;
-}
-
-function ComparativeSlider({ ratingA, ratingB, onChange, disabled }: ComparativeSliderProps) {
-  const step = ratingA === 0 && ratingB === 0 ? undefined : ratingsToSliderStep(ratingA, ratingB);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = parseInt(e.target.value);
-    const mapped = SLIDER_STEP_MAP[v];
-    if (!mapped) return;
-    const pref: "A" | "B" | "equal" = v < 0 ? "A" : v > 0 ? "B" : "equal";
-    onChange(mapped.rating_a, mapped.rating_b, pref);
-  };
-
-  const currentLabel = step !== undefined ? (SLIDER_STEP_MAP[step]?.label ?? "Sposta lo slider") : "Sposta lo slider";
-  const isSet = step !== undefined;
+  const isUnanswered = value === undefined;
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold">
-        <span className="text-blue-600 dark:text-blue-400">A migliore</span>
-        <span className={cn(
-          "text-xs px-2 py-0.5 rounded-full font-medium",
-          !isSet ? "text-gray-400 bg-gray-100 dark:bg-gray-800" :
-          step! < 0 ? "text-blue-700 bg-blue-100 dark:bg-blue-900/40" :
-          step! > 0 ? "text-amber-700 bg-amber-100 dark:bg-amber-900/40" :
-          "text-gray-600 bg-gray-100 dark:bg-gray-800"
-        )}>
-          {currentLabel}
-        </span>
-        <span className="text-amber-600 dark:text-amber-400">B migliore</span>
-      </div>
-      <div className="relative">
-        <input
-          type="range"
-          min={-3}
-          max={3}
-          step={1}
-          value={step ?? 0}
-          onChange={handleChange}
-          disabled={disabled}
-          className={cn(
-            "w-full h-2 rounded-full appearance-none cursor-pointer",
-            "bg-gradient-to-r from-blue-400 via-gray-200 to-amber-400",
-            "dark:from-blue-600 dark:via-gray-700 dark:to-amber-600",
-            "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5",
-            "[&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white",
-            "[&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:shadow-md",
-            !isSet ? "[&::-webkit-slider-thumb]:border-gray-300" :
-            step! < 0 ? "[&::-webkit-slider-thumb]:border-blue-500" :
-            step! > 0 ? "[&::-webkit-slider-thumb]:border-amber-500" :
-            "[&::-webkit-slider-thumb]:border-gray-400",
-            disabled && "opacity-50 cursor-not-allowed"
-          )}
-        />
-        {/* Tick marks */}
-        <div className="flex justify-between px-1 mt-0.5">
-          {[-3,-2,-1,0,1,2,3].map((v) => (
-            <div
-              key={v}
+    <div className={cn(
+      "w-full px-2 pt-2 pb-2 border-t border-dashed transition-colors",
+      isUnanswered
+        ? "border-orange-300 dark:border-orange-700 bg-orange-50/60 dark:bg-orange-950/20"
+        : "border-gray-200 dark:border-gray-700"
+    )}>
+      <p className={cn(
+        "text-[10px] font-semibold text-center mb-1.5 leading-tight",
+        isUnanswered ? "text-orange-600 dark:text-orange-400" : "text-gray-400 dark:text-gray-500"
+      )}>
+        {isUnanswered ? "↓ Quale risposta cita esperti più autorevoli?" : "Valutazione assegnata:"}
+      </p>
+      <div className="flex items-stretch gap-1.5">
+        {options.map((opt) => {
+          const isActive = value === opt.v;
+          return (
+            <button
+              key={opt.v}
+              type="button"
+              onClick={() => onChange(opt.v)}
               className={cn(
-                "h-1 w-0.5 rounded",
-                step === v ? (v < 0 ? "bg-blue-500" : v > 0 ? "bg-amber-500" : "bg-gray-500") : "bg-gray-300 dark:bg-gray-600"
+                "flex-1 py-2 rounded-lg border text-xs font-semibold text-center",
+                "transition-all duration-150 cursor-pointer select-none",
+                isActive
+                  ? opt.activeClass
+                  : "bg-white border-gray-200 text-gray-500 hover:border-gray-400 hover:bg-gray-50 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
               )}
-            />
-          ))}
-        </div>
+            >
+              {opt.label}
+            </button>
+          );
+        })}
       </div>
-      {!isSet && (
-        <p className="text-xs text-center text-gray-400 italic">Trascina lo slider per indicare quale risposta ha esperti più autorevoli</p>
-      )}
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─── Per-category instruction text ────────────────────────────────────────────
+const CATEGORY_INSTRUCTIONS: Record<string, { title: string; description: string }> = {
+  "Qualita Risposta": {
+    title: "Come valutare la qualità",
+    description: "Assegna da 1 a 5 stelle sia alla Risposta A che alla Risposta B. Il punteggio riflette la qualità percepita di quella risposta per questa dimensione specifica.",
+  },
+  "Citazioni": {
+    title: "Come valutare le citazioni",
+    description: "Confronta le citazioni parlamentari: considera se supportano la risposta, se l'attribuzione a deputato, data e commissione è corretta.",
+  },
+  "Bilanciamento Politico": {
+    title: "Come valutare il bilanciamento",
+    description: "Considera se ciascuna risposta dà voce in modo equo alle diverse posizioni politiche tra maggioranza e opposizione.",
+  },
+  "Autorità Esperti": {
+    title: "Questa sezione richiede due azioni",
+    description: "",
+  },
+  "Valutazione Complessiva": {
+    title: "Valutazione finale",
+    description: "Esprimi un giudizio complessivo su ciascuna risposta. Indica poi se consiglieresti questo sistema ai tuoi colleghi.",
+  },
+};
+
+
+// ─── Section splitting ────────────────────────────────────────────────────────
+
+interface TextSection {
+  heading: string;
+  content: string;
+}
+
+/** Normalize a heading string for comparison (lowercase, trim, normalise apostrophes). */
+function normH(h: string): string {
+  return h.toLowerCase().trim().replace(/['\u2019\u2018\u02bc]/g, "'").replace(/\s+/g, " ");
+}
+
+/** Known canonical section titles in display order. */
+const CANONICAL_TITLES = [
+  "Introduzione",
+  "Posizione del Governo",
+  "Posizioni della Maggioranza",
+  "Posizioni dell\u2019Opposizione",
+  "Analisi Trasversale",
+];
+const CANONICAL_NORMS = CANONICAL_TITLES.map(normH);
+
+/**
+ * Split a response text into sections by the known canonical titles.
+ * Works regardless of whether the title is formatted as `## Title`, `**Title**`,
+ * or plain text on its own line — because the user confirmed titles are always
+ * the same fixed set.
+ */
+function parseIntoSections(text: string): TextSection[] {
+  const sections: TextSection[] = [];
+  const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+
+  let currentHeading = "Introduzione"; // default first section
+  let currentContent: string[] = [];
+  let foundFirst = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    // Strip any markdown prefix to get the bare title candidate
+    const bare = trimmed.replace(/^#{1,6}\s+/, "").replace(/^\*\*(.+)\*\*$/, "$1").trim();
+    const isKnownTitle = CANONICAL_NORMS.includes(normH(bare));
+
+    if (isKnownTitle) {
+      if (foundFirst) {
+        // Save previous section
+        sections.push({ heading: currentHeading, content: currentContent.join("\n").trim() });
+      }
+      // Resolve display heading from canonical list (preserves correct apostrophe)
+      const canonical = CANONICAL_TITLES[CANONICAL_NORMS.indexOf(normH(bare))];
+      currentHeading = canonical ?? bare;
+      currentContent = [];
+      foundFirst = true;
+    } else {
+      if (!foundFirst && trimmed) foundFirst = true; // pre-heading content → treat as intro
+      currentContent.push(line);
+    }
+  }
+  if (currentContent.join("\n").trim() || foundFirst) {
+    sections.push({ heading: currentHeading, content: currentContent.join("\n").trim() });
+  }
+  return sections;
+}
+
+/**
+ * Align two section arrays side-by-side by heading name.
+ * Rows follow canonical order; missing sections show a placeholder.
+ */
+function alignSections(
+  sectionsA: TextSection[],
+  sectionsB: TextSection[],
+): Array<{ a: TextSection | null; b: TextSection | null; heading: string }> {
+  const mapA = new Map(sectionsA.map((s) => [normH(s.heading), s]));
+  const mapB = new Map(sectionsB.map((s) => [normH(s.heading), s]));
+
+  const seen = new Set<string>();
+  const rows: Array<{ a: TextSection | null; b: TextSection | null; heading: string }> = [];
+
+  const add = (k: string, display: string) => {
+    if (seen.has(k)) return;
+    seen.add(k);
+    rows.push({ a: mapA.get(k) ?? null, b: mapB.get(k) ?? null, heading: display });
+  };
+
+  // Canonical order first
+  CANONICAL_TITLES.forEach((t) => {
+    const k = normH(t);
+    if (mapA.has(k) || mapB.has(k)) add(k, t);
+  });
+  // Any extra sections not in canonical list
+  [...sectionsA, ...sectionsB].forEach((s) => add(normH(s.heading), s.heading));
+
+  return rows;
+}
 
 export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) {
   const [step, setStep] = useState<SurveyStep>("select");
@@ -371,7 +600,10 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
   const [baselineExperts, setBaselineExperts] = useState<Expert[]>([]);
   const [isLoadingBaselineExperts, setIsLoadingBaselineExperts] = useState(false);
+  const [systemExperts, setSystemExperts] = useState<Expert[]>([]);
+  const [isLoadingSystemExperts, setIsLoadingSystemExperts] = useState(false);
   const [sampledCitationsA, setSampledCitationsA] = useState<Citation[]>([]);
+  const [groupAuthorityRatings, setGroupAuthorityRatings] = useState<Record<string, number>>({});
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
@@ -410,6 +642,27 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       : (selectedChat.baseline_answer || "");
   };
 
+  // Get citation data for a given assignment slot ("system" | "baseline")
+  const getCitationsForAssignment = (
+    slot: string,
+  ): { quote: string; verbatim_verified?: boolean }[] => {
+    if (slot === "baseline") {
+      return (selectedChat?.baseline_citations ?? []).map((c: BaselineCitation) => ({
+        quote: c.quote,
+        verbatim_verified: c.verbatim_verified,
+      }));
+    }
+    // system: citations are verified by design (surgeon.py validates before including them)
+    return (chatDetails?.citations ?? [])
+      .map((c) => ({ quote: c.quote_text ?? "", verbatim_verified: true }))
+      .filter((c) => c.quote.length > 0);
+  };
+
+  const getCitationsA = () =>
+    localAbAssignment ? getCitationsForAssignment(localAbAssignment["A"]) : [];
+  const getCitationsB = () =>
+    localAbAssignment ? getCitationsForAssignment(localAbAssignment["B"]) : [];
+
   // Load pending chats
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -437,11 +690,35 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       if (!res.ok) throw new Error("Failed to load chat details");
       const data = await res.json();
       setChatDetails(data);
+      return data;
     } catch (err) {
       console.error(err);
       setError("Errore nel caricamento dei dettagli");
+      return null;
     } finally {
       setIsLoadingDetails(false);
+    }
+  }, []);
+
+  // Load system experts: deputies actually mentioned in the system response text.
+  // Reuses the same baseline-experts endpoint for consistency.
+  const loadSystemExperts = useCallback(async (chatId: string, answerText: string) => {
+    setIsLoadingSystemExperts(true);
+    setSystemExperts([]);
+    try {
+      const res = await fetch(`${config.api.baseUrl}/history/${chatId}/baseline-experts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ baseline_text: answerText }),
+      });
+      if (!res.ok) throw new Error("Failed to load system experts");
+      const data = await res.json();
+      setSystemExperts(data.experts ?? []);
+    } catch (err) {
+      console.error("Failed to load system experts:", err);
+      setSystemExperts([]);
+    } finally {
+      setIsLoadingSystemExperts(false);
     }
   }, []);
 
@@ -475,6 +752,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setSelectedChat(null);
       setChatDetails(null);
       setBaselineExperts([]);
+      setSystemExperts([]);
       setFormState(getInitialSurveyFormState());
       setSimpleFormState(getInitialSimpleRatingFormState());
       setLocalAbAssignment(null);
@@ -498,14 +776,24 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setCurrentCategory(0);
       setMobileABTab("A");
       setBaselineExperts([]);
+      setSystemExperts([]);
       setStep("form");
-      // Load system answer and baseline experts in parallel.
-      // Pass the baseline text from the chat object (sourced from evaluation_set.json)
-      // so the endpoint can always find deputy names regardless of Neo4j state.
-      await Promise.all([
-        loadChatDetails(chat.id),
-        loadBaselineExperts(chat.id, chat.baseline_answer || ""),
-      ]);
+      // Load system response details first (we need the answer text to extract system experts).
+      // Baseline experts: use pre-computed cache if available, otherwise fall back to API.
+      let chatData: { answer?: string } | null = null;
+      if (chat.baseline_experts && chat.baseline_experts.length > 0) {
+        setBaselineExperts(chat.baseline_experts as Expert[]);
+        chatData = await loadChatDetails(chat.id);
+      } else {
+        [chatData] = await Promise.all([
+          loadChatDetails(chat.id),
+          loadBaselineExperts(chat.id, chat.baseline_answer || ""),
+        ]);
+      }
+      // Extract experts actually mentioned in the system response text.
+      if (chatData?.answer) {
+        await loadSystemExperts(chat.id, chatData.answer);
+      }
     } else {
       // Simple Likert rating
       setSimpleFormState(getInitialSimpleRatingFormState());
@@ -556,10 +844,24 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       return formState.overall_satisfaction_a > 0 &&
              formState.overall_satisfaction_b > 0;
     }
-    return cat.questions.every((q) => {
+    const ratingsComplete = cat.questions.every((q) => {
       const rating = formState[q.id as ABDimension];
       return isABRatingComplete(rating);
     });
+    if (cat.name === "Autorità Esperti") {
+      const expA = localAbAssignment?.["A"] === "system" ? (systemExperts) : baselineExperts;
+      const expB = localAbAssignment?.["B"] === "system" ? (systemExperts) : baselineExperts;
+      const byGroupA = pickOnePerGroup(expA);
+      const byGroupB = pickOnePerGroup(expB);
+      const groupsWithExperts = POLITICAL_GROUPS_ORDERED
+        .filter(({ key }) => byGroupA[key] || byGroupB[key])
+        .map(({ key }) => key);
+      const groupRatingsComplete = groupsWithExperts.every(
+        (key) => groupAuthorityRatings[key] !== undefined
+      );
+      return ratingsComplete && groupRatingsComplete;
+    }
+    return ratingsComplete;
   };
 
   const isFormComplete = () => {
@@ -719,38 +1021,143 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     }
   };
 
-  // Render both responses as plain text with identical styling.
-  // Strips citation markers and markdown syntax so both panels look the same
-  // regardless of whether the source has markdown or is plain text.
-  const renderContent = (text: string) => {
-    const cleaned = text
-      .replace(/\[«([^»]+)»\]\([^)]+\)/g, '"$1"') // [«quote»](url) → "quote"
-      .replace(/\(leg\d+_[^)]+\)/g, "")            // remove (legXX_...) refs
-      .replace(/\[CIT:[^\]]+\]/g, "")              // remove [CIT:...] markers
-      .replace(/«([^»]+)»/g, '"$1"')               // bare «quote» → "quote"
-      // Ensure heading lines are on their own paragraph (add surrounding newlines)
-      .replace(/^(#{1,6}\s+.+)$/gm, "\n$1\n")
-      .replace(/^#{1,6}\s+/gm, "")                 // strip ## prefix, keep text
-      .replace(/\*\*([^*]+)\*\*/g, "$1")           // **bold** → plain
-      .replace(/\*([^*]+)\*/g, "$1")               // *italic* → plain
-      .replace(/^[-*]\s+/gm, "• ");                // - list → bullet
+  // Render inline markdown: bold names + citation highlighting.
+  const renderInline = (
+    text: string,
+    verifiedSet: Set<string>,
+    unverifiedSet: Set<string>,
+    hasCitationData: boolean,
+    allVerbatim?: boolean,
+  ): React.ReactNode => {
+    const parts: React.ReactNode[] = [];
+    // Match: **bold**, [«quote»](url), «quote»[CIT:id], or bare «quote»
+    const pattern = /\*\*([^*]+)\*\*|\[«([^»]+)»\]\([^)]+\)|«([^»]+)»(?:\s*\[CIT:[^\]]+\])?/g;
+    let lastIndex = 0;
+    let key = 0;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>);
+      }
+      if (match[1] !== undefined) {
+        // **bold** → deputy name
+        parts.push(
+          <strong key={key++} className="font-semibold text-gray-900 dark:text-gray-100">
+            {match[1]}
+          </strong>
+        );
+      } else {
+        // citation (group 2 = link form, group 3 = bare/CIT form)
+        const quote = match[2] ?? match[3];
+        const isVerified = allVerbatim || verifiedSet.has(quote.toLowerCase().trim());
+        const isUnverified = !allVerbatim && unverifiedSet.has(quote.toLowerCase().trim());
+        if (isVerified) {
+          parts.push(
+            <span
+              key={key++}
+              className="underline decoration-green-500 decoration-2 underline-offset-2"
+              title="Verbatim: testo identico al verbale parlamentare"
+            >
+              «{quote}»
+            </span>
+          );
+        } else if (isUnverified) {
+          parts.push(
+            <span
+              key={key++}
+              className="underline decoration-amber-400 decoration-2 underline-offset-2"
+              title="Parafrasi: attribuita al deputato, ma rielaborata — non corrisponde parola per parola al verbale"
+            >
+              «{quote}»
+            </span>
+          );
+        } else if (hasCitationData) {
+          parts.push(
+            <span
+              key={key++}
+              className="underline decoration-blue-400 decoration-1 underline-offset-2"
+              title="Citazione"
+            >
+              «{quote}»
+            </span>
+          );
+        } else {
+          parts.push(<span key={key++}>«{quote}»</span>);
+        }
+      }
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push(<span key={key++}>{text.slice(lastIndex)}</span>);
+    }
+    return parts.length === 1 ? parts[0] : <>{parts}</>;
+  };
 
-    const lines = cleaned.split("\n");
+  // Render a response text with rich inline formatting.
+  // side: "a" = blue headings, "b" = amber headings (omit for neutral)
+  // citations: list of {quote, verbatim_verified}
+  // allVerbatim: if true, every «quote» in the text is rendered green without text matching
+  //              (used for system responses, which are all verified by design)
+  const renderContent = (
+    text: string,
+    citations?: { quote: string; verbatim_verified?: boolean }[],
+    side?: "a" | "b",
+    allVerbatim?: boolean,
+  ) => {
+    // Normalize keys to lowercase+trim so case differences (e.g. "Siamo" vs "siamo") don't break lookups
+    const normQ = (s: string) => s.toLowerCase().trim();
+    const verifiedSet = new Set(
+      citations?.filter((c) => c.verbatim_verified === true).map((c) => normQ(c.quote)) ?? []
+    );
+    const unverifiedSet = new Set(
+      citations?.filter((c) => c.verbatim_verified === false).map((c) => normQ(c.quote)) ?? []
+    );
+    const hasCitationData = (citations?.length ?? 0) > 0;
+
+    const headingClass = side === "a"
+      ? "text-[11px] font-bold uppercase tracking-wide text-blue-600 dark:text-blue-400 mt-4 mb-2 pb-1 border-b border-blue-100 dark:border-blue-900/30 first:mt-0"
+      : side === "b"
+      ? "text-[11px] font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400 mt-4 mb-2 pb-1 border-b border-amber-100 dark:border-amber-900/30 first:mt-0"
+      : "text-[11px] font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mt-4 mb-2 pb-1 border-b border-gray-200 dark:border-gray-700 first:mt-0";
+
+    // Normalise line endings; remove technical refs
+    const lines = text
+      .replace(/\r\n/g, "\n").replace(/\r/g, "\n")
+      .replace(/\(leg\d+_[^)]+\)/g, "")
+      .replace(/^[-*]\s+/gm, "• ")
+      .split("\n");
+
     const elements: React.ReactNode[] = [];
     let i = 0;
     while (i < lines.length) {
-      const line = lines[i].trim();
-      if (!line) {
-        // Collapse multiple blank lines into a single spacer
-        if (elements.length > 0 && elements[elements.length - 1] !== null) {
+      const raw = lines[i];
+      const trimmed = raw.trim();
+
+      if (!trimmed) {
+        if (elements.length > 0) {
           elements.push(<div key={`sp-${i}`} className="h-2" />);
         }
       } else {
-        elements.push(
-          <p key={i} className="text-sm text-foreground leading-relaxed mb-1">
-            {line}
-          </p>
-        );
+        // Detect ## heading OR standalone **bold** heading line
+        const hashMatch = trimmed.match(/^#{1,6}\s+(.+)/);
+        const boldMatch = !hashMatch ? trimmed.match(/^\*\*([^*]+)\*\*\s*$/) : null;
+        const headingText = hashMatch?.[1]?.trim() ?? boldMatch?.[1]?.trim() ?? null;
+
+        if (headingText) {
+          elements.push(
+            <p key={i} className={headingClass}>
+              {headingText}
+            </p>
+          );
+        } else {
+          // Strip single-star italic markers but preserve double-star bold markers
+          const cleaned = trimmed.replace(/(?<!\*)\*(?!\*)([^*]+?)(?<!\*)\*(?!\*)/g, "$1");
+          elements.push(
+            <p key={i} className="text-sm text-foreground leading-relaxed mb-1">
+              {renderInline(cleaned, verifiedSet, unverifiedSet, hasCitationData, allVerbatim)}
+            </p>
+          );
+        }
       }
       i++;
     }
@@ -762,7 +1169,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     switch (step) {
       case "simple_form": return "Valutazione Risposta";
       case "citations": return "Valutazione Citazioni";
-      default: return "Valutazione A/B Blind";
+      default: return "Valutazione A/B";
     }
   };
 
@@ -965,17 +1372,40 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
               {/* Response tabs content */}
               {(mobileABTab === "A" || mobileABTab === "B") && (
-                <ScrollArea className="flex-1 min-h-0 px-4 py-4">
-                  {isLoadingDetails ? (
-                    <div className="flex items-center justify-center h-40">
-                      <Loader2 className={cn("w-6 h-6 animate-spin", mobileABTab === "A" ? "text-blue-500" : "text-amber-500")} />
-                    </div>
-                  ) : (
-                    <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                      {mobileABTab === "A" ? renderContent(getResponseA()) : renderContent(getResponseB())}
-                    </div>
-                  )}
-                </ScrollArea>
+                <div className="flex flex-col flex-1 min-h-0">
+                  {/* Legend */}
+                  <div className="flex flex-wrap items-center gap-1.5 px-3 py-2 bg-white dark:bg-gray-950 border-b shrink-0">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Legenda</span>
+                    <span className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded-full border border-gray-200 dark:border-gray-700 text-[10px]">
+                      <strong className="font-bold text-gray-900 dark:text-gray-100">Deputato</strong>
+                    </span>
+                    <span title="Testo identico al verbale parlamentare" className="inline-flex items-center gap-1 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded-full border border-green-200 dark:border-green-800 text-[10px]">
+                      <span className="underline decoration-green-500 decoration-2 underline-offset-2 text-gray-700 dark:text-gray-200">«cit»</span>
+                      <span className="font-semibold text-green-700 dark:text-green-400">✓ verbatim</span>
+                    </span>
+                    <span title="Attribuita al deputato, ma il testo è rielaborato — non corrisponde parola per parola al verbale" className="inline-flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-1.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-800 text-[10px]">
+                      <span className="underline decoration-amber-400 decoration-2 underline-offset-2 text-gray-700 dark:text-gray-200">«cit»</span>
+                      <span className="font-semibold text-amber-700 dark:text-amber-400">~ parafrasi</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 px-1.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800 text-[10px]">
+                      <span className="underline decoration-blue-400 decoration-1 underline-offset-2 text-gray-700 dark:text-gray-200">«cit»</span>
+                      <span className="font-semibold text-blue-700 dark:text-blue-400">citata</span>
+                    </span>
+                  </div>
+                  <ScrollArea className="flex-1 min-h-0 px-4 py-4">
+                    {isLoadingDetails ? (
+                      <div className="flex items-center justify-center h-40">
+                        <Loader2 className={cn("w-6 h-6 animate-spin", mobileABTab === "A" ? "text-blue-500" : "text-amber-500")} />
+                      </div>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                        {mobileABTab === "A"
+                          ? renderContent(getResponseA(), getCitationsA(), undefined, localAbAssignment?.["A"] === "system")
+                          : renderContent(getResponseB(), getCitationsB(), undefined, localAbAssignment?.["B"] === "system")}
+                      </div>
+                    )}
+                  </ScrollArea>
+                </div>
               )}
 
               {/* Valuta tab content */}
@@ -1013,47 +1443,47 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
                   <ScrollArea className="flex-1 min-h-0 px-4 py-4">
                     <div className="space-y-4">
-                      {categories[currentCategory].name === "Autorità Esperti" && (
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-700 dark:text-indigo-300">
-                          <p className="font-semibold flex items-center gap-1.5 mb-1">
-                            <UserCheck className="w-3.5 h-3.5" />
-                            Valutazione autorità delle fonti
+                      {/* Category instruction box — uniform across all categories (mobile) */}
+                      <div className="p-3 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950/30 dark:to-blue-950/30 rounded-lg border border-slate-200 dark:border-slate-700">
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mb-1.5">
+                          {CATEGORY_ICONS[categories[currentCategory].name]}
+                          {CATEGORY_INSTRUCTIONS[categories[currentCategory].name]?.title ?? categories[currentCategory].name}
+                        </p>
+                        {categories[currentCategory].name === "Autorità Esperti" ? (
+                          <>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                              Dai un voto stelle alle 3 dimensioni di autorità per ciascuna risposta.
+                            </p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-500 mt-1.5 leading-snug">
+                              💡 Torna sulle schede <strong>Risposta A</strong> e <strong>Risposta B</strong> per confrontare gli esperti citati.
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+                            {CATEGORY_INSTRUCTIONS[categories[currentCategory].name]?.description}
                           </p>
-                          <p>Valuta la qualità e l'autorità delle fonti esperte citate nelle due risposte.</p>
-                        </div>
-                      )}
+                        )}
+                      </div>
                       {categories[currentCategory].name !== "Valutazione Complessiva" ? (
                         categories[currentCategory].questions.map((question) => {
                           const dim = question.id as ABDimension;
                           const rating = formState[dim];
-                          const isAuthority = categories[currentCategory].name === "Autorità Esperti";
                           return (
-                            <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
+                            <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
                               <div>
-                                <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{question.question}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{question.description}</p>
+                                <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">{question.question}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{question.description}</p>
                               </div>
-                              {isAuthority ? (
-                                <ComparativeSlider
-                                  ratingA={rating.rating_a}
-                                  ratingB={rating.rating_b}
-                                  onChange={(ra, rb, pref) => setFormState(prev => ({
-                                    ...prev,
-                                    [dim]: { rating_a: ra, rating_b: rb, preference: pref },
-                                  }))}
-                                />
-                              ) : (
-                                <div className="space-y-2.5">
-                                  <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-semibold text-blue-600">Risposta A</span>
-                                    <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
-                                  </div>
-                                  <div className="flex flex-col gap-1">
-                                    <span className="text-xs font-semibold text-amber-600">Risposta B</span>
-                                    <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
-                                  </div>
+                              <div className="space-y-2">
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-xs font-semibold text-blue-600">Risposta A</span>
+                                  <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
                                 </div>
-                              )}
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-xs font-semibold text-amber-600">Risposta B</span>
+                                  <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
+                                </div>
+                              </div>
                             </div>
                           );
                         })
@@ -1169,127 +1599,186 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                   <p className="text-sm font-medium text-blue-900 dark:text-blue-100 line-clamp-2">
                     <span className="text-blue-600 dark:text-blue-400">Domanda:</span> {selectedChat.query}
                   </p>
-                  {selectedChat.matched_topic && (
-                    <p className="text-xs text-blue-500 mt-0.5">Confronto su: {selectedChat.matched_topic}</p>
-                  )}
-                  <p className="text-xs text-gray-500 mt-1">
-                    Confronta le due risposte. Non sai quale sia il sistema avanzato e quale la baseline.
-                  </p>
                 </div>
                 <div className="flex flex-1 min-h-0 overflow-hidden">
                   {categories[currentCategory]?.name === "Autorità Esperti" ? (
                     <AuthorityGroupComparisonPanel
-                      expertsA={localAbAssignment?.["A"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
-                      expertsB={localAbAssignment?.["B"] === "system" ? (chatDetails?.experts ?? []) : baselineExperts}
-                      isLoadingA={localAbAssignment?.["A"] === "system" ? isLoadingDetails : isLoadingBaselineExperts}
-                      isLoadingB={localAbAssignment?.["B"] === "system" ? isLoadingDetails : isLoadingBaselineExperts}
+                      expertsA={localAbAssignment?.["A"] === "system" ? (systemExperts) : baselineExperts}
+                      expertsB={localAbAssignment?.["B"] === "system" ? (systemExperts) : baselineExperts}
+                      isLoadingA={localAbAssignment?.["A"] === "system" ? isLoadingSystemExperts : isLoadingBaselineExperts}
+                      isLoadingB={localAbAssignment?.["B"] === "system" ? isLoadingSystemExperts : isLoadingBaselineExperts}
+                      groupRatings={groupAuthorityRatings}
+                      onGroupRatingChange={(group, value) => setGroupAuthorityRatings(prev => ({ ...prev, [group]: value }))}
                     />
                   ) : (
-                    <>
-                      <div className="flex w-1/2 border-r flex-col min-h-0">
-                        <div className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 border-b text-center shrink-0">
+                    <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+                      {/* Legend */}
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-3 py-2.5 bg-white dark:bg-gray-950 border-b shrink-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Legenda</span>
+                        {/* Green: verbatim */}
+                        <span className="inline-flex flex-col bg-green-50 dark:bg-green-900/20 px-2.5 py-1 rounded-lg border border-green-200 dark:border-green-800 text-[11px]">
+                          <span className="flex items-center gap-1.5">
+                            <span className="underline decoration-green-500 decoration-2 underline-offset-2 text-gray-700 dark:text-gray-200">«citazione»</span>
+                            <span className="font-semibold text-green-700 dark:text-green-400">✓ verbatim</span>
+                          </span>
+                          <span className="text-green-600/70 dark:text-green-500/70 text-[10px] leading-tight mt-0.5">
+                            testo identico al verbale parlamentare
+                          </span>
+                        </span>
+                        {/* Amber: paraphrased */}
+                        <span className="inline-flex flex-col bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-800 text-[11px]">
+                          <span className="flex items-center gap-1.5">
+                            <span className="underline decoration-amber-400 decoration-2 underline-offset-2 text-gray-700 dark:text-gray-200">«citazione»</span>
+                            <span className="font-semibold text-amber-700 dark:text-amber-400">~ parafrasata</span>
+                          </span>
+                          <span className="text-amber-600/70 dark:text-amber-500/70 text-[10px] leading-tight mt-0.5">
+                            attribuita al deputato, ma non riscontrabile parola per parola nei verbali (rielaborazione o parafrasi)
+                          </span>
+                        </span>
+                      </div>
+
+                      {/* Sticky column headers */}
+                      <div className="grid grid-cols-2 shrink-0 border-b">
+                        <div className="px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-center border-r">
                           <span className="font-semibold text-blue-700 dark:text-blue-300 text-sm">Risposta A</span>
                         </div>
-                        <ScrollArea className="flex-1 px-3 py-3">
-                          {isLoadingDetails ? (
-                            <div className="flex items-center justify-center h-40">
-                              <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-                            </div>
-                          ) : (
-                            <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                              {renderContent(getResponseA())}
-                            </div>
-                          )}
-                        </ScrollArea>
-                      </div>
-                      <div className="flex w-1/2 flex-col min-h-0">
-                        <div className="px-3 py-2 bg-amber-100 dark:bg-amber-900/30 border-b text-center shrink-0">
+                        <div className="px-3 py-2 bg-amber-50 dark:bg-amber-900/20 text-center">
                           <span className="font-semibold text-amber-700 dark:text-amber-300 text-sm">Risposta B</span>
                         </div>
-                        <ScrollArea className="flex-1 px-3 py-3">
-                          {isLoadingDetails ? (
-                            <div className="flex items-center justify-center h-40">
-                              <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
-                            </div>
-                          ) : (
-                            <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                              {renderContent(getResponseB())}
-                            </div>
-                          )}
-                        </ScrollArea>
                       </div>
-                    </>
+
+                      {/* Section-aligned columns — sections match by canonical title */}
+                      {isLoadingDetails ? (
+                        <div className="flex items-center justify-center flex-1">
+                          <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                        </div>
+                      ) : (
+                        <div className="flex-1 overflow-y-auto">
+                          {(() => {
+                            const citA = getCitationsA();
+                            const citB = getCitationsB();
+                            const aligned = alignSections(
+                              parseIntoSections(getResponseA()),
+                              parseIntoSections(getResponseB()),
+                            );
+                            return aligned.map(({ a, b, heading }) => (
+                              <div key={heading} className="border-b last:border-b-0">
+                                {/* Shared section heading */}
+                                <div className="grid grid-cols-2 bg-gray-50 dark:bg-gray-900/40 border-b border-gray-100 dark:border-gray-800">
+                                  <div className="px-3 py-1.5 border-r border-gray-100 dark:border-gray-800">
+                                    <p className="text-[11px] font-bold uppercase tracking-wide text-blue-600 dark:text-blue-400">{heading}</p>
+                                  </div>
+                                  <div className="px-3 py-1.5">
+                                    <p className="text-[11px] font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400">{heading}</p>
+                                  </div>
+                                </div>
+                                {/* Section content */}
+                                <div className="grid grid-cols-2">
+                                  <div className="px-4 py-3 border-r border-gray-100 dark:border-gray-800">
+                                    {a
+                                      ? renderContent(a.content, citA, "a", localAbAssignment?.["A"] === "system")
+                                      : <p className="text-sm text-gray-400 italic">—</p>}
+                                  </div>
+                                  <div className="px-4 py-3">
+                                    {b
+                                      ? renderContent(b.content, citB, "b", localAbAssignment?.["B"] === "system")
+                                      : <p className="text-sm text-gray-400 italic">—</p>}
+                                  </div>
+                                </div>
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
 
               {/* Right Panel: A/B Survey Form */}
               <div className="md:w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden">
-                {/* Category tabs (desktop: full names with icons, no overflow) */}
-                <div className="px-4 py-3 border-b bg-white dark:bg-gray-950 flex gap-2 overflow-x-auto">
+                {/* Category tabs — short labels + icons to avoid overflow */}
+                <div className="px-3 py-2 border-b bg-white dark:bg-gray-950 flex gap-1 overflow-x-auto shrink-0">
                   {categories.map((cat, idx) => (
                     <button
                       key={cat.name}
                       onClick={() => setCurrentCategory(idx)}
                       className={cn(
-                        "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap",
+                        "flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap",
                         currentCategory === idx
-                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 shadow-sm"
                           : "text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800",
                         isCategoryComplete(idx) && "ring-2 ring-emerald-400 ring-offset-1"
                       )}
                     >
                       {CATEGORY_ICONS[cat.name]}
-                      {cat.name}
-                      {isCategoryComplete(idx) && <Check className="w-3.5 h-3.5 text-emerald-500" />}
+                      {CATEGORY_SHORT_LABELS[cat.name] ?? cat.name}
+                      {isCategoryComplete(idx) && <Check className="w-3 h-3 text-emerald-500" />}
                     </button>
                   ))}
                 </div>
 
                 <ScrollArea className="flex-1 min-h-0 px-4 py-4">
                   <div className="space-y-5">
+                    {/* Category instruction box — uniform across all categories */}
+                    <div className="p-3.5 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950/30 dark:to-blue-950/30 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <p className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5 mb-1.5">
+                        {CATEGORY_ICONS[categories[currentCategory].name]}
+                        {CATEGORY_INSTRUCTIONS[categories[currentCategory].name]?.title ?? categories[currentCategory].name}
+                      </p>
+                      {categories[currentCategory].name === "Autorità Esperti" ? (
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-[10px] font-bold mt-0.5">1</span>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+                              <span className="font-semibold text-slate-700 dark:text-slate-300">Pannello sinistro:</span> per ogni gruppo politico, clicca quale risposta ha citato l'esperto più autorevole.
+                            </p>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-[10px] font-bold mt-0.5">2</span>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+                              <span className="font-semibold text-slate-700 dark:text-slate-300">Qui sotto:</span> assegna un voto stelle alle 3 dimensioni globali di autorità.
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
+                          {CATEGORY_INSTRUCTIONS[categories[currentCategory].name]?.description}
+                        </p>
+                      )}
+                    </div>
                     {categories[currentCategory].name !== "Valutazione Complessiva" ? (
                       categories[currentCategory].questions.map((question) => {
                         const dim = question.id as ABDimension;
                         const rating = formState[dim];
-                        const isAuthority = categories[currentCategory].name === "Autorità Esperti";
                         return (
-                          <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
+                          <div key={question.id} className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
                             <div>
-                              <p className="font-medium text-gray-900 dark:text-gray-100">{question.question}</p>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">{question.description}</p>
+                              <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">{question.question}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-snug">{question.description}</p>
                             </div>
-                            {isAuthority ? (
-                              <ComparativeSlider
-                                ratingA={rating.rating_a}
-                                ratingB={rating.rating_b}
-                                onChange={(ra, rb, pref) => setFormState(prev => ({
-                                  ...prev,
-                                  [dim]: { rating_a: ra, rating_b: rb, preference: pref },
-                                }))}
-                              />
-                            ) : (
-                              <>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
-                                  <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
-                                </div>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
-                                  <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
-                                </div>
-                              </>
-                            )}
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs font-semibold text-blue-600 w-20 shrink-0">Risposta A</span>
+                                <StarRating value={rating.rating_a} onChange={(val) => handleABRatingChange(dim, "rating_a", val)} size="md" />
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs font-semibold text-amber-600 w-20 shrink-0">Risposta B</span>
+                                <StarRating value={rating.rating_b} onChange={(val) => handleABRatingChange(dim, "rating_b", val)} size="md" />
+                              </div>
+                            </div>
                           </div>
                         );
                       })
                     ) : (
                       <>
-                        <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
-                          <p className="font-medium text-gray-900 dark:text-gray-100">Soddisfazione complessiva</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Valutazione generale dell'esperienza</p>
+                        <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
+                          <div>
+                            <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">Soddisfazione complessiva</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Valutazione generale dell'esperienza</p>
+                          </div>
                           <div className="flex items-center gap-3">
-                            <span className="text-sm font-semibold text-blue-600 w-24">Risposta A</span>
+                            <span className="text-xs font-semibold text-blue-600 w-20 shrink-0">Risposta A</span>
                             <StarRating value={formState.overall_satisfaction_a}
                               onChange={(val) => setFormState(prev => ({
                                 ...prev,
@@ -1298,7 +1787,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                               }))} size="md" />
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="text-sm font-semibold text-amber-600 w-24">Risposta B</span>
+                            <span className="text-xs font-semibold text-amber-600 w-20 shrink-0">Risposta B</span>
                             <StarRating value={formState.overall_satisfaction_b}
                               onChange={(val) => setFormState(prev => ({
                                 ...prev,
@@ -1310,8 +1799,8 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
 
                         <Separator className="my-4" />
 
-                        <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-lg border">
-                          <p className="font-medium text-gray-900 dark:text-gray-100">
+                        <div className="space-y-3 p-4 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
+                          <p className="font-semibold text-sm text-gray-900 dark:text-gray-100">
                             Consiglieresti questo tipo di sistema ai tuoi colleghi?
                           </p>
                           <div className="flex gap-3">
@@ -1331,7 +1820,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                           </div>
                         </div>
 
-                        <div className="space-y-4 p-4 bg-white dark:bg-gray-950 rounded-lg border">
+                        <div className="space-y-4 p-4 bg-white dark:bg-gray-950 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
                           <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-900 dark:text-gray-100">Cosa ha funzionato bene? (opzionale)</label>
                             <Textarea placeholder="Descrivi gli aspetti positivi..." value={formState.feedback_positive}

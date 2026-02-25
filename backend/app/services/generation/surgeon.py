@@ -156,6 +156,13 @@ class CitationSurgeon:
             if quote_text is None:
                 return f'«{inline_quote}» [Citazione non disponibile]'
 
+            # Debug log: full chunk vs LLM-chosen citation
+            logger.info(
+                f"[CITATION_DEBUG] {evidence_id} | "
+                f"chunk_start='{quote_text[:80]}...' | "
+                f"llm_chose='{inline_quote[:80]}...'"
+            )
+
             # Verbatim check: inline_quote must appear literally in the source
             if inline_quote in quote_text:
                 # Additional check: reject if the extracted text is a third-party
@@ -174,8 +181,25 @@ class CitationSurgeon:
                         max_chars=400
                     ) or quote_text[:400]
                 else:
-                    verified_quote = inline_quote
-                    logger.debug(f"Inline quote verified verbatim for {evidence_id}")
+                    # Expand leftward if the LLM started mid-sentence.
+                    # Pass the full speech text + span_start so we can expand
+                    # even when pos==0 (chunk itself starts mid-sentence).
+                    full_speech_text = evidence.get("text", "") if evidence else ""
+                    span_start = evidence.get("span_start", 0) if evidence else 0
+                    verified_quote = self._expand_to_sentence_start(
+                        inline_quote,
+                        quote_text,
+                        full_text=full_speech_text,
+                        span_start=span_start,
+                    )
+                    if verified_quote != inline_quote:
+                        logger.info(
+                            f"[CITATION_DEBUG] Expanded mid-sentence quote for {evidence_id}: "
+                            f"added {len(verified_quote) - len(inline_quote)} chars | "
+                            f"result='{verified_quote[:100]}...'"
+                        )
+                    else:
+                        logger.debug(f"Inline quote at sentence boundary for {evidence_id}")
             else:
                 # LLM paraphrased or slightly modified — fall back to heuristic
                 logger.warning(
@@ -449,6 +473,101 @@ class CitationSurgeon:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()
 
         return f'[«{quote}»]({evidence_id})'
+
+    @staticmethod
+    def _expand_to_sentence_start(
+        inline_quote: str,
+        source_text: str,
+        max_expansion: int = 160,
+        full_text: str = "",
+        span_start: int = 0,
+    ) -> str:
+        """
+        If inline_quote starts mid-sentence, expand it leftward to the nearest
+        sentence boundary.
+
+        Two cases:
+        1. pos > 0: the inline_quote starts mid-sentence *within* source_text.
+           Scan leftward inside source_text to find the sentence start.
+        2. pos == 0: source_text itself starts mid-sentence (chunk boundary cuts
+           a sentence). Use full_text + span_start to prepend the missing prefix
+           from the actual speech text before the chunk boundary.
+
+        Args:
+            inline_quote: The verbatim text the LLM selected.
+            source_text: The quote_text from evidence (may start mid-sentence).
+            max_expansion: Max characters to prepend (avoid over-expansion).
+            full_text: Full speech text (for the pos==0 case).
+            span_start: Byte offset where source_text starts inside full_text.
+
+        Returns:
+            The (possibly expanded) quote string.
+        """
+        pos = source_text.find(inline_quote)
+        if pos < 0:
+            return inline_quote
+
+        # --- Case 1: pos > 0 — mid-sentence within source_text ---
+        if pos > 0:
+            char_before = source_text[pos - 1]
+
+            # Already at a sentence boundary → no expansion needed
+            if char_before in '.!?\n»':
+                return inline_quote
+            if char_before == ' ' and pos >= 2 and source_text[pos - 2] in '.!?':
+                return inline_quote
+
+            # Scan left for nearest sentence boundary
+            sentence_start = pos
+            while sentence_start > 0 and source_text[sentence_start - 1] not in '.!?\n':
+                sentence_start -= 1
+
+            # Skip leading whitespace after the boundary punctuation
+            while sentence_start < pos and source_text[sentence_start] in ' \t':
+                sentence_start += 1
+
+            if sentence_start >= pos:
+                return inline_quote
+
+            expansion_len = pos - sentence_start
+            if expansion_len > max_expansion:
+                return inline_quote
+
+            return source_text[sentence_start: pos + len(inline_quote)]
+
+        # --- Case 2: pos == 0 — source_text starts mid-sentence ---
+        # The chunk boundary (span_start) cut the sentence; expand using full_text.
+        if not full_text or span_start <= 0:
+            return inline_quote
+
+        # Confirm inline_quote really starts at span_start in full_text
+        abs_pos = span_start
+        char_before_chunk = full_text[abs_pos - 1] if abs_pos > 0 else ''
+
+        # Already at a sentence boundary in the full text → no expansion needed
+        if char_before_chunk in '.!?\n»':
+            return inline_quote
+        if char_before_chunk == ' ' and abs_pos >= 2 and full_text[abs_pos - 2] in '.!?':
+            return inline_quote
+
+        # Scan left in full_text for the nearest sentence boundary
+        sentence_start = abs_pos
+        while sentence_start > 0 and full_text[sentence_start - 1] not in '.!?\n':
+            sentence_start -= 1
+
+        # Skip leading whitespace
+        while sentence_start < abs_pos and full_text[sentence_start] in ' \t':
+            sentence_start += 1
+
+        if sentence_start >= abs_pos:
+            return inline_quote
+
+        expansion_len = abs_pos - sentence_start
+        if expansion_len > max_expansion:
+            return inline_quote
+
+        prefix = full_text[sentence_start:abs_pos]
+        return prefix + inline_quote
 
     @staticmethod
     def _is_nested_quote(inline_quote: str, source_text: str) -> bool:

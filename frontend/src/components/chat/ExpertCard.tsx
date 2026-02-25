@@ -121,22 +121,30 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
               </p>
 
               {/* Authority score preview */}
-              <div className="flex items-center gap-2 mt-2">
-                <Award className={cn("h-3.5 w-3.5 shrink-0", scoreLevelConfig[scoreLevel].color)} />
-                <div className="flex-1 h-1.5 rounded-full bg-gray-200">
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-all",
-                      scoreLevel === "high" && "bg-green-500",
-                      scoreLevel === "medium" && "bg-amber-500",
-                      scoreLevel === "low" && "bg-gray-400"
-                    )}
-                    style={{ width: `${expert.authority_score * 100}%` }}
-                  />
+              <div className="mt-2 space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">Autorità sul tema</span>
+                  <span className={cn("text-[10px] font-semibold", scoreLevelConfig[scoreLevel].color)}>
+                    {scoreLevelConfig[scoreLevel].label}
+                  </span>
                 </div>
-                <span className="text-xs font-medium text-muted-foreground min-w-[24px] text-right">
-                  {(expert.authority_score * 100).toFixed(0)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <Award className={cn("h-3.5 w-3.5 shrink-0", scoreLevelConfig[scoreLevel].color)} />
+                  <div className="flex-1 h-1.5 rounded-full bg-gray-200">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        scoreLevel === "high" && "bg-green-500",
+                        scoreLevel === "medium" && "bg-amber-500",
+                        scoreLevel === "low" && "bg-gray-400"
+                      )}
+                      style={{ width: `${expert.authority_score * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground min-w-[24px] text-right">
+                    {(expert.authority_score * 100).toFixed(0)}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -212,13 +220,13 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
              {/* Score */}
              <div className="flex items-center gap-3 shrink-0">
                    <div className="hidden sm:block w-20 h-1.5 rounded-full bg-muted-foreground/10 overflow-hidden">
-                        <div 
+                        <div
                             className="h-full bg-primary"
                             style={{ width: `${expert.authority_score * 100}%` }}
                         />
                    </div>
                    <div className="flex flex-col items-end leading-none">
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Score</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Autorità</span>
                         <span className="text-sm font-bold">{(expert.authority_score * 100).toFixed(0)}</span>
                    </div>
              </div>
@@ -246,42 +254,42 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
   const scoreBreakdown = [
     {
       icon: MessageSquare,
-      label: "Interventi",
+      label: "Interventi in aula",
       value: expert.score_breakdown?.speeches || 0,
-      description: "Volume e pertinenza",
+      description: "Ha parlato di questo tema",
     },
     {
       icon: Target,
-      label: "Atti",
+      label: "Atti legislativi",
       value: expert.score_breakdown?.acts || 0,
-      description: "Atti presentati",
+      description: "Ha presentato atti sul tema",
     },
     {
       icon: Network,
       label: "Commissione",
       value: expert.score_breakdown?.committee || 0,
-      description: "Pertinenza commissione",
+      description: "Commissione pertinente",
       tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees : (expert.committee ? [expert.committee] : ["Non assegnata"])
     },
     {
       icon: User,
       label: "Professione",
       value: expert.score_breakdown?.profession || 0,
-      description: "Background",
+      description: "Background professionale",
       tooltip: [expert.profession || "Non rilevata"]
     },
     {
       icon: Layers,
-      label: "Istruzione",
+      label: "Formazione",
       value: expert.score_breakdown?.education || 0,
       description: "Titoli di studio",
       tooltip: [expert.education || "Non rilevata"]
     },
     {
       icon: Award,
-      label: "Ruolo",
+      label: "Ruolo istituzionale",
       value: expert.score_breakdown?.role || 0,
-      description: "Incarichi",
+      description: "Incarichi ricoperti",
       tooltip: [expert.institutional_role || "Deputato"]
     },
   ];
@@ -296,10 +304,10 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
              <div className="p-2 bg-primary/10 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-primary" />
              </div>
-            Scheda Autorità
+            Perché è una fonte autorevole?
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
-            Analisi del profilo e dell'autorevolezza sul tema specifico.
+            L'autorità sul tema è calcolata su 6 criteri istituzionali e parlamentari.
           </DialogDescription>
         </DialogHeader>
 
@@ -357,7 +365,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
           {/* Main Score */}
           <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50">
              <div className="flex justify-between items-end mb-3">
-                <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Authority Score</span>
+                <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Autorità parlamentare sul tema</span>
                 <span className="text-2xl sm:text-3xl font-bold text-primary">{(expert.authority_score * 100).toFixed(0)}</span>
              </div>
              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
@@ -372,7 +380,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
 
           {/* Grid Breakdown */}
           <div>
-            <h4 className="text-sm font-medium text-foreground mb-4">Dettagli Punteggio</h4>
+            <h4 className="text-sm font-medium text-foreground mb-4">Criteri di autorità sul tema</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {scoreBreakdown.map((item) => {
                     const isAtti = item.label === "Atti";
@@ -443,7 +451,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                   <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-4 h-4 text-primary shrink-0" />
-                          <h4 className="text-xs sm:text-sm font-semibold truncate">Atti che hanno contribuito allo score</h4>
+                          <h4 className="text-xs sm:text-sm font-semibold truncate">Atti che dimostrano l'autorità sul tema</h4>
                       </div>
                       <button 
                         onClick={() => setSelectedDetail(null)}

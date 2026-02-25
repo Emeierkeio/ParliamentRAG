@@ -34,6 +34,20 @@ router = APIRouter(prefix="/api/evaluation", tags=["evaluation"])
 # 10 parliamentary groups in the system
 ALL_PARTIES = 10
 
+# Known parliamentary groups — Governo is excluded from party coverage count
+KNOWN_PARTIES = {
+    "Fratelli d'Italia",
+    "Lega - Salvini Premier",
+    "Forza Italia - Berlusconi Presidente - PPE",
+    "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+    "Partito Democratico - Italia Democratica e Progressista",
+    "Movimento 5 Stelle",
+    "Alleanza Verdi e Sinistra",
+    "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "Italia Viva - Il Centro - Renew Europe",
+    "Misto",
+}
+
 # Keyword sets for each group — at least one keyword must appear in the answer text
 PARTY_KEYWORDS: List[List[str]] = [
     ["Fratelli d'Italia", "Fratelli d'Italia", "FdI"],
@@ -65,12 +79,24 @@ def _normalize_for_verbatim(text: str) -> str:
     return text
 
 
+def _normalize_apostrophes(text: str) -> str:
+    """Normalise all apostrophe/quote variants to a plain ASCII apostrophe.
+
+    LLM outputs often use typographic apostrophes (U+2019 '\u2019', U+2018 '\u2018')
+    or prime signs (U+02BC) while the PARTY_KEYWORDS list uses straight apostrophes.
+    NFKC normalisation doesn't collapse these, so we do it explicitly.
+    """
+    for char in ("\u2019", "\u2018", "\u02BC", "\u0060", "\u00B4"):
+        text = text.replace(char, "'")
+    return text
+
+
 def _count_parties_in_text(answer: str) -> int:
     """Count how many of the 10 known parliamentary groups are mentioned in the answer text."""
-    answer_lower = answer.lower()
+    answer_norm = _normalize_apostrophes(unicodedata.normalize("NFKC", answer)).lower()
     count = 0
     for keywords in PARTY_KEYWORDS:
-        if any(kw.lower() in answer_lower for kw in keywords):
+        if any(_normalize_apostrophes(kw).lower() in answer_norm for kw in keywords):
             count += 1
     return count
 
@@ -137,6 +163,12 @@ def _compute_baseline_authority_for_text(baseline_text: str, expert_lookup: dict
     Estimate the average authority score of deputies mentioned in a baseline text.
     Uses the pre-computed expert score lookup from existing chat data.
     Returns None if no deputies could be matched.
+
+    Matching strategy (in order):
+    1. Full "first_name last_name" or "last_name first_name" substring match.
+    2. Surname-only word-boundary match (fallback, because Italian parliamentary text
+       typically uses only surnames: "onorevole Rossi", "il deputato Bianchi").
+       Surnames shorter than 4 characters are excluded to avoid false positives.
     """
     if not baseline_text or not expert_lookup:
         return None
@@ -144,6 +176,8 @@ def _compute_baseline_authority_for_text(baseline_text: str, expert_lookup: dict
     matched_scores = []
     for (fn, ln), score in expert_lookup.items():
         if f"{fn} {ln}" in text_lower or f"{ln} {fn}" in text_lower:
+            matched_scores.append(score)
+        elif len(ln) >= 4 and re.search(r'\b' + re.escape(ln) + r'\b', text_lower):
             matched_scores.append(score)
     if not matched_scores:
         return None
@@ -175,49 +209,37 @@ def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetric
     experts = chat.get("experts", [])
     answer = chat.get("answer", "")
 
-    # 1. Party Coverage
+    # 1. Party Coverage — only count known parliamentary groups (excludes "Governo")
     parties_found = set()
     party_breakdown = {}
     for cit in citations:
         group = cit.get("group", "") or cit.get("party", "")
-        if group:
+        if group and group in KNOWN_PARTIES:
             parties_found.add(group)
             party_breakdown[group] = party_breakdown.get(group, 0) + 1
     parties_represented = len(parties_found)
     party_coverage = min(parties_represented / ALL_PARTIES, 1.0) if ALL_PARTIES > 0 else 0
 
-    # 2. Citation Integrity: citations with non-empty quote_text
+    # 2. Citation Fidelity: verbatim_count / citations_total
+    # Unified metric: a citation passes only if it has text AND that text appears verbatim
+    # in the source chunk.  Denominator is citations_total so missing quote_text also fails.
     citations_total = len(citations)
-    citations_valid = sum(1 for c in citations if c.get("quote_text"))
-    citation_integrity = citations_valid / max(citations_total, 1)
-
-    # 3. Verbatim Match: the chunk referenced by each citation exists in Neo4j and its
-    # text matches what was stored at retrieval time.
-    #
-    # We use full_text (= c.text stored verbatim during retrieval and saved in history)
-    # rather than quote_text.  quote_text = compute_quote_text(speech_text, offsets)
-    # which is word-boundary-aligned and can start/end at slightly different positions
-    # than c.text, making a substring check unreliable.
-    # full_text = c.text exactly, so normalize(full_text) ≈ normalize(c.text from Neo4j)
-    # and the check trivially succeeds for any valid, unchanged citation.
-    # Fallback to quote_text for older history entries that lack full_text.
     verbatim_count = 0
-    if citations_valid > 0:
-        for cit in citations:
-            chunk_id = cit.get("evidence_id") or cit.get("chunk_id", "")
-            if not chunk_id:
-                continue
-            stored_text = cit.get("full_text", "") or cit.get("quote_text", "")
-            if not stored_text:
-                continue
-            chunk_text = chunk_texts.get(chunk_id, "")
-            if not chunk_text:
-                continue
-            norm_stored = _normalize_for_verbatim(stored_text)
-            norm_chunk = _normalize_for_verbatim(chunk_text)
-            if norm_stored == norm_chunk or norm_stored in norm_chunk or norm_chunk in norm_stored:
-                verbatim_count += 1
-    verbatim_match_score = verbatim_count / max(citations_valid, 1) if citations_valid > 0 else 0.0
+    for cit in citations:
+        chunk_id = cit.get("evidence_id") or cit.get("chunk_id", "")
+        if not chunk_id:
+            continue
+        stored_text = cit.get("full_text", "") or cit.get("quote_text", "")
+        if not stored_text:
+            continue
+        chunk_text = chunk_texts.get(chunk_id, "")
+        if not chunk_text:
+            continue
+        norm_stored = _normalize_for_verbatim(stored_text)
+        norm_chunk = _normalize_for_verbatim(chunk_text)
+        if norm_stored == norm_chunk or norm_stored in norm_chunk or norm_chunk in norm_stored:
+            verbatim_count += 1
+    verbatim_match_score = verbatim_count / max(citations_total, 1) if citations_total > 0 else 0.0
 
     # 4. Authority Utilization: mean authority_score of cited experts
     auth_scores = [
@@ -245,8 +267,6 @@ def _compute_automated_metrics(chat: dict, chunk_texts: dict) -> AutomatedMetric
         parties_represented=parties_represented,
         parties_total=ALL_PARTIES,
         party_breakdown=party_breakdown,
-        citation_integrity_score=round(citation_integrity, 4),
-        citations_valid=citations_valid,
         citations_total=citations_total,
         verbatim_match_score=round(verbatim_match_score, 4),
         verbatim_match_count=verbatim_count,
@@ -296,6 +316,7 @@ def _compute_ci_unbounded(values: List[float]) -> Tuple[float, float]:
 def _compute_aggregated(
     metrics_list: List[AutomatedMetrics],
     baseline_party_coverage_list: Optional[List[float]] = None,
+    baseline_citation_fidelity_list: Optional[List[float]] = None,
     baseline_completeness_list: Optional[List[float]] = None,
     baseline_authority_list: Optional[List[float]] = None,
 ) -> AggregatedMetrics:
@@ -304,16 +325,15 @@ def _compute_aggregated(
     if n == 0:
         return AggregatedMetrics(
             total_chats=0,
-            avg_party_coverage=0, avg_citation_integrity=0,
+            avg_party_coverage=0,
             avg_verbatim_match=0, avg_response_completeness=0,
             avg_authority_utilization=0, avg_authority_discrimination=0,
-            ci_party_coverage=(0, 0), ci_citation_integrity=(0, 0),
+            ci_party_coverage=(0, 0),
             ci_verbatim_match=(0, 0), ci_response_completeness=(0, 0),
             ci_authority_utilization=(0, 0), ci_authority_discrimination=(0, 0),
         )
 
     pc = [m.party_coverage_score for m in metrics_list]
-    ci_vals = [m.citation_integrity_score for m in metrics_list]
     vm = [m.verbatim_match_score for m in metrics_list]
     au = [m.authority_utilization for m in metrics_list]
     ad = [m.authority_discrimination for m in metrics_list]
@@ -322,24 +342,27 @@ def _compute_aggregated(
     result = AggregatedMetrics(
         total_chats=n,
         avg_party_coverage=round(sum(pc) / n, 4),
-        avg_citation_integrity=round(sum(ci_vals) / n, 4),
         avg_verbatim_match=round(sum(vm) / n, 4),
         avg_authority_utilization=round(sum(au) / n, 4),
         avg_authority_discrimination=round(sum(ad) / n, 4),
         avg_response_completeness=round(sum(rc) / n, 4),
         ci_party_coverage=_compute_ci(pc),
-        ci_citation_integrity=_compute_ci(ci_vals),
         ci_verbatim_match=_compute_ci(vm),
         ci_authority_utilization=_compute_ci(au),
         ci_authority_discrimination=_compute_ci_unbounded(ad),
         ci_response_completeness=_compute_ci(rc),
     )
 
-    # Baseline comparison metrics (optional)
+    # Baseline comparison metrics (optional, pre-computed by enrich_evaluation_set.py)
     if baseline_party_coverage_list and len(baseline_party_coverage_list) > 0:
         bpc_n = len(baseline_party_coverage_list)
         result.avg_baseline_party_coverage = round(sum(baseline_party_coverage_list) / bpc_n, 4)
         result.ci_baseline_party_coverage = _compute_ci(baseline_party_coverage_list)
+
+    if baseline_citation_fidelity_list and len(baseline_citation_fidelity_list) > 0:
+        bcf_n = len(baseline_citation_fidelity_list)
+        result.avg_baseline_citation_fidelity = round(sum(baseline_citation_fidelity_list) / bcf_n, 4)
+        result.ci_baseline_citation_fidelity = _compute_ci(baseline_citation_fidelity_list)
 
     if baseline_completeness_list and len(baseline_completeness_list) > 0:
         bn = len(baseline_completeness_list)
@@ -364,7 +387,8 @@ def _load_simple_ratings() -> List[dict]:
                r.answer_quality AS answer_quality,
                r.balance_perception AS balance_perception,
                r.balance_fairness AS balance_fairness,
-               r.feedback AS feedback
+               r.feedback AS feedback,
+               r.evaluator_id AS evaluator_id
     """)
     return [dict(r) for r in results]
 
@@ -430,24 +454,38 @@ async def get_dashboard():
             human_simple=simple_map.get(cid),
         ))
 
-    # Baseline metrics: compute from evaluation_set.json baseline answers.
-    # These are the canonical baseline texts (GPT-4o answers).
+    # Baseline metrics: prefer pre-computed baseline_metrics (written by
+    # scripts/enrich_evaluation_set.py) which provide citation-based party coverage
+    # and citation fidelity comparable to the system metrics.
+    # Fall back to text-based detection for completeness / authority.
+    from app.routers.survey import _load_evaluation_set_raw
+    eval_set_raw = _load_evaluation_set_raw()
     eval_set = _load_evaluation_set()
-    baseline_party_coverage_list = []
-    baseline_completeness_list = []
-    for baseline_text in eval_set.values():
+
+    baseline_party_coverage_list: List[float] = []
+    baseline_citation_fidelity_list: List[float] = []
+    baseline_completeness_list: List[float] = []
+
+    for entry in eval_set_raw.values():
+        if isinstance(entry, str):
+            entry = {"baseline_answer": entry}
+        bm = entry.get("baseline_metrics")
+        if bm:
+            # Citation-based party coverage (from enrich_evaluation_set.py)
+            if bm.get("baseline_party_coverage") is not None:
+                baseline_party_coverage_list.append(bm["baseline_party_coverage"])
+            if bm.get("baseline_citation_fidelity") is not None:
+                baseline_citation_fidelity_list.append(bm["baseline_citation_fidelity"])
+
+        # Text-based completeness (both sides text-based → comparable)
+        baseline_text = entry.get("baseline_answer", "") if isinstance(entry, dict) else entry
         if baseline_text:
             parties_in_bl = _count_parties_in_text(baseline_text)
-            score = min(parties_in_bl / ALL_PARTIES, 1.0)
-            # Both party coverage and completeness use text-based party detection for the baseline
-            baseline_party_coverage_list.append(score)
-            baseline_completeness_list.append(score)
+            baseline_completeness_list.append(min(parties_in_bl / ALL_PARTIES, 1.0))
 
-    # Baseline authority: compute from evaluation_set.json by matching deputy names in
-    # each baseline text against pre-computed authority scores from existing chat experts.
-    # This avoids async query-embedding computation while still producing a meaningful proxy.
+    # Baseline authority: match deputy names in baseline text against authority scores
     expert_lookup = _build_expert_score_lookup(chats)
-    baseline_authority_list = []
+    baseline_authority_list: List[float] = []
     for baseline_text in eval_set.values():
         score = _compute_baseline_authority_for_text(baseline_text, expert_lookup)
         if score is not None:
@@ -459,9 +497,14 @@ async def get_dashboard():
         if baa is not None and baa >= 0:
             baseline_authority_list.append(baa)
 
-    # Aggregated metrics
     all_metrics = list(metrics_map.values())
-    automated_aggregate = _compute_aggregated(all_metrics, baseline_party_coverage_list, baseline_completeness_list, baseline_authority_list)
+    automated_aggregate = _compute_aggregated(
+        all_metrics,
+        baseline_party_coverage_list or None,
+        baseline_citation_fidelity_list or None,
+        baseline_completeness_list or None,
+        baseline_authority_list or None,
+    )
     human_aggregate = _calculate_stats(surveys) if surveys else None
 
     # Compute A/B comparison stats from human aggregate
@@ -566,9 +609,9 @@ async def export_csv():
     writer.writerow([
         "chat_id", "query", "timestamp",
         # Automated metrics
-        "party_coverage", "citation_integrity", "verbatim_match",
+        "party_coverage", "citation_fidelity",
         "authority_utilization", "authority_discrimination", "response_completeness",
-        "parties_represented", "citations_valid", "citations_total",
+        "parties_represented", "citations_total",
         "verbatim_count", "experts_count",
         # Human A/B metrics (de-blinded)
         *dim_headers,
@@ -632,13 +675,11 @@ async def export_csv():
             chat.get("query", ""),
             chat.get("timestamp", ""),
             m.party_coverage_score,
-            m.citation_integrity_score,
             m.verbatim_match_score,
             m.authority_utilization,
             m.authority_discrimination,
             m.response_completeness,
             m.parties_represented,
-            m.citations_valid,
             m.citations_total,
             m.verbatim_match_count,
             m.experts_count,

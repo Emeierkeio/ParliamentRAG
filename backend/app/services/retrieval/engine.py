@@ -239,6 +239,7 @@ class RetrievalEngine:
                     date=r.get("date", date.today()),
                     chunk_text=r.get("chunk_text", ""),
                     quote_text=r.get("quote_text", ""),
+                    text=r.get("text", ""),  # Full speech text for sentence expansion
                     span_start=r.get("span_start", 0),
                     span_end=r.get("span_end", 0),
                     debate_title=r.get("debate_title"),
@@ -254,6 +255,12 @@ class RetrievalEngine:
 
         return evidence_list
 
+    # Threshold below which span_start is considered "early in speech"
+    # (i.e., the chunk is likely an introduction, not a position statement).
+    # Speeches where the first meaningful position appears after ~500 chars
+    # are common in Italian parliamentary debate.
+    _EARLY_SPEECH_SPAN_THRESHOLD = 600
+
     def _expand_neighbors(
         self,
         results: List[Dict[str, Any]],
@@ -264,6 +271,12 @@ class RetrievalEngine:
         For each retrieved chunk with low salience, checks the previous and
         next chunks via the NEXT relationship. If a neighbor has higher
         political salience, it replaces the original chunk.
+
+        EARLY-SPEECH EXPANSION: chunks whose span_start is below
+        _EARLY_SPEECH_SPAN_THRESHOLD are also considered for next-chunk
+        expansion even if their salience is above the threshold, because
+        early chunks tend to be introductory (topic contextualisation) and
+        the position statement is typically in the following chunk.
         """
         if not results:
             return results
@@ -273,18 +286,33 @@ class RetrievalEngine:
             text = r.get("chunk_text") or r.get("quote_text", "")
             r["salience"] = compute_chunk_salience(text)
 
-        # Only expand chunks with low salience
+        # Candidates for expansion:
+        # 1. Low-salience chunks (original logic)
+        # 2. Early-in-speech chunks (new: span_start < threshold)
+        #    Early chunks are introductory even when salience is medium-high
+        #    because they mention the topic ("parliamo di salario minimo") which
+        #    triggers opinion patterns but contain no actual position statement.
         low_salience = [r for r in results if r.get("salience", 0) < salience_threshold]
-        if not low_salience:
-            logger.info("Neighbor expansion: all chunks above salience threshold, skipping")
+        early_speech = [
+            r for r in results
+            if r.get("span_start", 9999) < self._EARLY_SPEECH_SPAN_THRESHOLD
+            and r not in low_salience  # avoid duplicates in the candidate set
+        ]
+        candidates = low_salience + early_speech
+
+        if not candidates:
+            logger.info("Neighbor expansion: all chunks above salience threshold and not early-speech, skipping")
             return results
 
         # Collect chunk IDs to expand
-        chunk_ids = [r.get("evidence_id") for r in low_salience if r.get("evidence_id")]
+        chunk_ids = [r.get("evidence_id") for r in candidates if r.get("evidence_id")]
         if not chunk_ids:
             return results
 
-        logger.info(f"Neighbor expansion: checking neighbors for {len(chunk_ids)} low-salience chunks")
+        logger.info(
+            f"Neighbor expansion: checking neighbors for {len(chunk_ids)} chunks "
+            f"({len(low_salience)} low-salience, {len(early_speech)} early-speech)"
+        )
 
         try:
             cypher = """
@@ -313,57 +341,116 @@ class RetrievalEngine:
         # Existing evidence IDs to avoid duplicates
         existing_ids = {r.get("evidence_id") for r in results}
 
+        # Track early-speech IDs for special handling
+        early_speech_ids = {r.get("evidence_id") for r in early_speech}
+
         replaced = 0
+        appended = 0
         for r in results:
             eid = r.get("evidence_id")
-            if eid not in neighbor_map or r.get("salience", 0) >= salience_threshold:
+            if eid not in neighbor_map:
+                continue
+
+            is_low_salience = r.get("salience", 0) < salience_threshold
+            is_early_speech = eid in early_speech_ids
+
+            if not is_low_salience and not is_early_speech:
                 continue
 
             row = neighbor_map[eid]
             current_salience = r.get("salience", 0)
-            best_replacement = None
-            best_salience = current_salience
 
-            # Check previous chunk
-            if row.get("prev_text") and row.get("prev_id") not in existing_ids:
-                prev_salience = compute_chunk_salience(row["prev_text"])
-                if prev_salience > best_salience:
-                    best_salience = prev_salience
-                    best_replacement = ("prev", row)
+            if is_low_salience:
+                # Original logic: replace if a neighbor has higher salience
+                best_replacement = None
+                best_salience = current_salience
 
-            # Check next chunk
-            if row.get("next_text") and row.get("next_id") not in existing_ids:
-                next_salience = compute_chunk_salience(row["next_text"])
-                if next_salience > best_salience:
-                    best_salience = next_salience
-                    best_replacement = ("next", row)
+                if row.get("prev_text") and row.get("prev_id") not in existing_ids:
+                    prev_salience = compute_chunk_salience(row["prev_text"])
+                    if prev_salience > best_salience:
+                        best_salience = prev_salience
+                        best_replacement = ("prev", row)
 
-            if best_replacement:
-                direction, nrow = best_replacement
-                prefix = "prev" if direction == "prev" else "next"
-                new_id = nrow.get(f"{prefix}_id")
-                new_text = nrow.get(f"{prefix}_text")
-                new_start = nrow.get(f"{prefix}_start", 0)
-                new_end = nrow.get(f"{prefix}_end", 0)
-                speech_text = nrow.get("speech_text", "")
+                if row.get("next_text") and row.get("next_id") not in existing_ids:
+                    next_salience = compute_chunk_salience(row["next_text"])
+                    if next_salience > best_salience:
+                        best_salience = next_salience
+                        best_replacement = ("next", row)
 
-                # Compute quote_text from speech offsets
+                if best_replacement:
+                    direction, nrow = best_replacement
+                    prefix = "prev" if direction == "prev" else "next"
+                    new_id = nrow.get(f"{prefix}_id")
+                    new_text = nrow.get(f"{prefix}_text")
+                    new_start = nrow.get(f"{prefix}_start", 0)
+                    new_end = nrow.get(f"{prefix}_end", 0)
+                    speech_text = nrow.get("speech_text", "")
+
+                    from ...models.evidence import compute_quote_text
+                    if speech_text and new_start is not None and new_end is not None and new_start < new_end:
+                        new_quote = compute_quote_text(speech_text, new_start, new_end)
+                    else:
+                        new_quote = new_text
+
+                    r["evidence_id"] = new_id
+                    r["chunk_text"] = new_text
+                    r["quote_text"] = new_quote
+                    r["span_start"] = new_start or 0
+                    r["span_end"] = new_end or 0
+                    r["salience"] = best_salience
+                    existing_ids.add(new_id)
+                    replaced += 1
+
+            elif is_early_speech:
+                # Early-speech logic: APPEND the next chunk as additional evidence
+                # rather than replacing, so the original chunk is still retrievable
+                # (it may contain relevant keyword matches).
+                # Only append if the next chunk has meaningfully higher salience.
+                next_id = row.get("next_id")
+                next_text = row.get("next_text")
+                if not next_text or not next_id or next_id in existing_ids:
+                    continue
+
+                next_salience = compute_chunk_salience(next_text)
+                # Append only if next chunk is more opinionated than current
+                if next_salience <= current_salience:
+                    continue
+
+                next_start = row.get("next_start", 0)
+                next_end = row.get("next_end", 0)
+                speech_text = row.get("speech_text", "")
+
                 from ...models.evidence import compute_quote_text
-                if speech_text and new_start is not None and new_end is not None and new_start < new_end:
-                    new_quote = compute_quote_text(speech_text, new_start, new_end)
+                if speech_text and next_start is not None and next_end is not None and next_start < next_end:
+                    next_quote = compute_quote_text(speech_text, next_start, next_end)
                 else:
-                    new_quote = new_text
+                    next_quote = next_text
 
-                r["evidence_id"] = new_id
-                r["chunk_text"] = new_text
-                r["quote_text"] = new_quote
-                r["span_start"] = new_start or 0
-                r["span_end"] = new_end or 0
-                r["salience"] = best_salience
-                existing_ids.add(new_id)
-                replaced += 1
+                # Clone the parent evidence record with the next chunk's data,
+                # keeping speaker/party/date/authority metadata.
+                neighbor_evidence = dict(r)
+                neighbor_evidence["evidence_id"] = next_id
+                neighbor_evidence["chunk_text"] = next_text
+                neighbor_evidence["quote_text"] = next_quote
+                neighbor_evidence["span_start"] = next_start or 0
+                neighbor_evidence["span_end"] = next_end or 0
+                neighbor_evidence["salience"] = next_salience
+                neighbor_evidence["retrieval_channel"] = "neighbor_expansion"
+                # Give a slight similarity boost to surface it near its parent
+                neighbor_evidence["similarity"] = r.get("similarity", 0.0) * 0.95
 
-        logger.info(f"Neighbor expansion: replaced {replaced}/{len(low_salience)} low-salience chunks")
+                results.append(neighbor_evidence)
+                existing_ids.add(next_id)
+                appended += 1
+                logger.info(
+                    f"Early-speech expansion: appended next chunk {next_id} "
+                    f"(parent={eid}, salience {current_salience:.2f}→{next_salience:.2f})"
+                )
+
+        logger.info(
+            f"Neighbor expansion: replaced {replaced}/{len(low_salience)} low-salience chunks, "
+            f"appended {appended}/{len(early_speech)} early-speech next chunks"
+        )
         return results
 
     def _coverage_fill(
@@ -394,14 +481,18 @@ class RetrievalEngine:
                 cypher = """
                 CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
                 YIELD node AS c, score
-                WHERE score >= 0.25
+                WHERE score >= 0.15
                 MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
                 MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                // Partito storico: non si filtra su mg.end_date >= date() per
+                // includere anche deputati che hanno cambiato gruppo in seguito.
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
                 WHERE toLower(g.name) = toLower($party_name)
                 AND mg.start_date <= s.date
                 AND (mg.end_date IS NULL OR mg.end_date >= s.date)
-                AND (mg.end_date IS NULL OR mg.end_date >= date())
+                // Partito attuale (per calcolo party_changed in _process_results)
+                OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
+                WHERE mg_now.end_date IS NULL
                 RETURN c.id AS chunk_id,
                        c.text AS chunk_text,
                        c.embedding AS embedding,
@@ -414,6 +505,7 @@ class RetrievalEngine:
                        speaker.last_name AS speaker_last_name,
                        CASE WHEN 'GovernmentMember' IN labels(speaker) THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
                        g.name AS party,
+                       g_now.name AS current_party,
                        s.id AS session_id,
                        s.date AS session_date,
                        s.number AS session_number,

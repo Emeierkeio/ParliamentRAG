@@ -25,6 +25,7 @@ from ...key_pool import make_client, make_async_client
 from ..citation import extract_best_sentences
 from ..citation.sentence_extractor import compute_chunk_salience
 from .position_brief import PositionBriefBuilder
+from .reported_speech import annotate_evidence_with_reported_speech
 
 logger = logging.getLogger(__name__)
 
@@ -96,14 +97,25 @@ SBAGLIATO — citazione assente:
 SBAGLIATO — citazione scollegata dall'intro:
 → Il partito discute di economia. **Rossi** dichiara «la flat tax...» [CIT:abc]. Il gruppo è preoccupato per l'ambiente. ← l'intro non prepara la citazione!
 
-REGOLA ANTI-META-CITAZIONE:
-Il TESTO DISPONIBILE può contenere citazioni di TERZI riportate dal deputato
-(dichiarazioni di ministri stranieri, portavoce, avversari, media, ecc.).
-Queste appaiono spesso tra «» o " " seguite da "ha dichiarato X", "secondo X", "ha detto X".
-NON citare queste frasi: sono parole di ALTRI, non del deputato.
-Scegli SOLO frasi dette direttamente dal deputato — quelle FUORI dalle virgolette nel testo.
-SBAGLIATO: TESTO contiene «ha dichiarato Peskov: «l'espansione è necessaria»»
-→ NON usare «l'espansione è necessaria» — è la voce del Cremlino, non del deputato!
+REGOLA ANTI-META-CITAZIONE (DISCORSO RIPORTATO):
+Il TESTO DISPONIBILE può contenere frasi in cui il deputato RIPORTA le parole di
+un ALTRO soggetto (avversari parlamentari, ministri, media, portavoce stranieri, ecc.)
+per contestarle, confutarle o rispondervi.
+Segnali tipici: "ieri/oggi la collega X ha dichiarato che...", "secondo X...",
+"come ha detto Y...", "X ha affermato che...", "X sostiene che...".
+⚠️ Le parole riportate SONO DELL'ALTRA PERSONA, non del deputato che parla.
+NON usarle come citazione della posizione del gruppo.
+Scegli SOLO frasi dette IN PRIMA PERSONA dal deputato — quelle FUORI dalle
+virgolette di attribuzione nel testo, che esprimono la sua risposta/posizione.
+ESEMPI:
+✗ SBAGLIATO — TESTO: "ieri la collega Gribaudo ha dichiarato che per il centrodestra
+  vengono prima i corrotti, vengono prima gli evasori e i lavoratori vengono per ultimi"
+  → NON usare «vengono prima i corrotti» — sono parole di Gribaudo, non di Nisini!
+  → Cerca invece la risposta di Nisini: "noi riteniamo che...", "non è così perché...", ecc.
+✗ SBAGLIATO — TESTO contiene: «ha dichiarato Peskov: «l'espansione è necessaria»»
+  → NON usare «l'espansione è necessaria» — è la voce del Cremlino, non del deputato.
+⚠️ Se il TESTO DISPONIBILE è contrassegnato con "⚠️ DISCORSO RIPORTATO RILEVATO", presta
+  attenzione massima: il rischio di inversione di posizione è elevato.
 
 REGOLA DI PERTINENZA:
 La citazione DEVE rispondere DIRETTAMENTE alla Domanda fornita.
@@ -112,6 +124,25 @@ SOLO frasi che parlano dell'argomento specifico della Domanda. Ignora le frasi
 su temi diversi, anche se retoricamente forti.
 ESEMPIO: Domanda su "aiuti militari all'Ucraina" + testo che parla anche di Gaza/Medio Oriente
 → ignora le frasi su Gaza — scegli SOLO frasi sull'Ucraina.
+
+REGOLA DI POSIZIONAMENTO ESPLICITO:
+La citazione DEVE contenere un verbo o un'espressione che comunichi una posizione
+ESPLICITA del gruppo (favorevole, contraria o condizionale) rispetto alla Domanda.
+NON usare frasi che:
+- Descrivono il problema senza prendere posizione ("il lavoro povero è aumentato")
+- Introducono il tema senza valutarlo ("oggi parliamo di salario minimo")
+- Riportano fatti o dati senza giudizio politico
+- Sono premesse retoriche a una posizione non visibile nel testo
+ESEMPI di citazioni VALIDE (contengono posizione esplicita):
+✓ "non siamo obbligati ad introdurre un salario minimo legale" → posizione chiara CONTRO
+✓ "serve una soglia di dignità di 9 euro lordi" → posizione chiara PRO
+✓ "è indispensabile ma bisogna trovare risorse" → posizione CONDIZIONALE esplicita
+ESEMPI di citazioni NON VALIDE (nessuna posizione esplicita):
+✗ "siamo qui oggi a parlare del salario minimo, cioè del livello minimo di retribuzione"
+✗ "cooperative che sfruttano i lavoratori immigrati, che non vengono pagati"
+✗ "in molti casi salari più alti di una ipotetica soglia" (frammento senza soggetto)
+Se il TESTO DISPONIBILE non contiene frasi con posizione esplicita, usa le evidenze
+restanti per costruire il posizionamento con parole tue (senza «» né [CIT:]).
 
 PROFONDITÀ MINIMA:
 Ogni sezione deve avere ALMENO 2 frasi di analisi sostantiva.
@@ -390,6 +421,12 @@ STRUTTURA OUTPUT:
             all_evidence.extend(party_evidence)
         self._deduplicate_citations_across_speakers(all_evidence, query)
 
+        # Annotate all evidence with reported-speech detection.
+        # Must run AFTER dedup so that duplicate chunks already know their
+        # status; the annotation is used by _build_evidence_context to add
+        # visible warnings for the LLM.
+        annotate_evidence_with_reported_speech(all_evidence)
+
         # Build all tasks for parallel execution
         tasks = []
         task_order = []  # Track order: government first, then parties
@@ -445,8 +482,8 @@ STRUTTURA OUTPUT:
             }
 
         # Build evidence context (full quote_text shown to LLM for inline citation)
-        # max_evidence=2: LLM cites 1 verbatim + uses 1 for analysis without citation
-        evidence_context = self._build_evidence_context(evidence, query, max_evidence=2)
+        # max_evidence=3: LLM cites 1 verbatim + uses 2 for analysis without citation
+        evidence_context = self._build_evidence_context(evidence, query, max_evidence=3)
 
         # Build claims relevant to this party
         party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
@@ -465,9 +502,13 @@ Evidenze disponibili (ordinate per autorità, usa la PRIMA per la citazione verb
 3. Scrivila VERBATIM tra «» seguita immediatamente da [CIT:ID_COMPLETO]
 4. Usa le evidenze restanti SOLO per costruire analisi e contesto — senza «» né [CIT:]
 5. Scegli il verbo introduttivo in base al TONO della citazione scelta
-6. ⚠️ RILEVANZA OBBLIGATORIA: la citazione deve rispondere DIRETTAMENTE a "{query}".
-   Se il testo tocca altri argomenti (es. Gaza, Medio Oriente, altri conflitti), scegli
-   ESCLUSIVAMENTE frasi che parlano di "{query}". Non citare temi diversi.
+6. ⚠️ RILEVANZA + POSIZIONAMENTO OBBLIGATORI: la citazione deve (a) rispondere DIRETTAMENTE
+   a "{query}" E (b) esprimere una posizione ESPLICITA del gruppo (favorevole/contraria/condizionale).
+   NON usare frasi descrittive, introduttive o retoriche senza posizione.
+   Se il testo tocca altri argomenti, scegli ESCLUSIVAMENTE frasi su "{query}".
+   ⚠️ COERENZA CON L'ORIENTAMENTO: la citazione DEVE essere coerente con l'Orientamento
+   stimato indicato nella POSIZIONE COMPLESSIVA DEL GRUPPO. Una citazione che sembra
+   contraddire l'orientamento del gruppo è quasi sempre una premessa retorica, NON la posizione.
 
 FORMATO OUTPUT (rispetta questo ordine):
 1. [1-2 frasi introduttive — prepara il contesto e anticipa la citazione]
@@ -492,7 +533,7 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.1,
-                max_tokens=650
+                max_tokens=800
             )
 
             content = response.choices[0].message.content
@@ -545,10 +586,13 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                     salvaged = False
                     if match:
                         inline_quote = match.group(1)
+                        # Normalize whitespace for robust matching (LLM may insert extra spaces/newlines)
+                        inline_norm = " ".join(inline_quote.split())
                         for e in evidence:
                             qt = e.get("quote_text", "") or e.get("chunk_text", "")
+                            qt_norm = " ".join(qt.split())
                             eid = e.get("evidence_id", "")
-                            if eid in valid_evidence_ids and inline_quote in qt:
+                            if eid in valid_evidence_ids and inline_norm in qt_norm:
                                 content = content.replace(f'[CIT:{invalid_id}]', f'[CIT:{eid}]')
                                 validated_ids.append(eid)
                                 logger.info(
@@ -558,8 +602,13 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                                 salvaged = True
                                 break
                     if not salvaged:
-                        # No match found: strip the bare [CIT:id] to avoid surgeon failures
-                        content = content.replace(f'[CIT:{invalid_id}]', '')
+                        # Strip the entire «quote» [CIT:id] pair to avoid leaving a bare «»
+                        # that the pipeline would later have to clean up, causing attribution
+                        # verbs ("afferma:", "propone che") to become orphaned sentences.
+                        if match:
+                            content = cit_pattern.sub('', content)
+                        else:
+                            content = content.replace(f'[CIT:{invalid_id}]', '')
                         logger.warning(f"Could not salvage citation '{invalid_id}', stripped from content")
 
             # Anonymize non-cited speaker bold names AFTER salvage, so that speakers
@@ -680,12 +729,38 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                 )
                 continue
 
+            # Nota cambio gruppo: visibile all'LLM per qualsiasi tipo di trasferimento
+            party_changed = e.get("party_changed", False)
+            current_party = e.get("current_party")
+            group_change_note = ""
+            if party_changed and current_party:
+                group_change_note = f"\n⚠️ CAMBIO GRUPPO: al momento del discorso era in {speaker_party}, ora è in {current_party}. Aggiungi nel testo: «(allora in {speaker_party})» dopo il nome del deputato."
+
+            # Reported-speech warning — injected directly into the evidence
+            # block so the LLM sees it immediately before the text.
+            rs_info = e.get("reported_speech", {})
+            rs_warning = ""
+            if rs_info.get("has_reported_speech"):
+                if rs_info.get("opening_is_reported"):
+                    rs_warning = (
+                        "\n⚠️ DISCORSO RIPORTATO RILEVATO: questo testo INIZIA con il deputato "
+                        "che cita le parole di un'ALTRA persona (avversario, collega, media). "
+                        "NON usare le parole riportate come posizione del gruppo. "
+                        "Cerca la risposta/posizione del deputato più avanti nel testo."
+                    )
+                else:
+                    rs_warning = (
+                        "\n⚠️ DISCORSO RIPORTATO RILEVATO: questo testo contiene citazioni "
+                        "di ALTRI soggetti. Verifica che la frase scelta sia del deputato, "
+                        "non di chi viene citato."
+                    )
+
             lines.append(f"""
 [ID: {eid}]
-Speaker: {speaker} ({speaker_party})
+Speaker: {speaker} ({speaker_party}){group_change_note}{rs_warning}
 Date: {date}
 TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
-{quote_text[:600]}
+{quote_text[:1000]}
 ---""")
             count += 1
 

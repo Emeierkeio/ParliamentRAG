@@ -27,6 +27,7 @@ import openai
 
 from ...config import get_settings
 from ...key_pool import make_client
+from .reported_speech import detect_reported_speech
 
 logger = logging.getLogger(__name__)
 
@@ -150,10 +151,90 @@ class CoherenceValidator:
         union_size = len(tokens_a | tokens_b)
         return len(overlap) / union_size if union_size > 0 else 0.0
 
+    # Patterns that signal the INTRO is framing a party as PRO
+    _INTRO_PRO_SIGNALS = re.compile(
+        r'\b(?:si\s+esprime?\s+a\s+favore|sostien[ei]\s+la\s+necessità|è\s+favorevole|'
+        r'appoggia|sostien[ei]|propone|auspica|chiede|ritiene\s+necessario|difende\s+la\s+proposta|'
+        r'supporta|promuove|plaude|approva)\b',
+        re.IGNORECASE,
+    )
+
+    # Patterns that signal the INTRO is framing a party as AGAINST
+    _INTRO_AGAINST_SIGNALS = re.compile(
+        r'\b(?:si\s+oppone|è\s+contrario|contesta|critica|respinge|rifiuta|denuncia|'
+        r'condanna|stigmatizza|boccia|rigetta|controbatte|contrasta)\b',
+        re.IGNORECASE,
+    )
+
+    def _stance_alignment_check(
+        self,
+        intro_text: str,
+        quote_text: str,
+        evidence: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Check whether the INTRO's attributed stance matches the evidence.
+
+        When the evidence chunk contains reported speech (speaker quoting an
+        opponent), the semantic embedding similarity will still be high
+        (both texts are topically related) but the stance may be inverted.
+
+        This check applies a penalty when:
+        1. The intro attributes a PRO stance to the party, AND
+        2. The evidence chunk shows strong reported-speech signals (the
+           quoted content belongs to an opponent, not the speaker).
+
+        Returns a dict with:
+        - has_stance_issue: bool
+        - penalty: float to subtract from the coherence score
+        - reason: str
+        """
+        result = {
+            "has_stance_issue": False,
+            "penalty": 0.0,
+            "reason": "",
+        }
+
+        if not intro_text or not quote_text:
+            return result
+
+        # Use pre-annotated info if available (from evidence dict), else run detection
+        if evidence is not None:
+            rs_info = evidence.get("reported_speech") or detect_reported_speech(quote_text)
+        else:
+            rs_info = detect_reported_speech(quote_text)
+
+        if not rs_info.get("has_reported_speech"):
+            return result
+
+        # Evidence contains reported speech — check if intro claims a PRO stance
+        intro_is_pro = bool(self._INTRO_PRO_SIGNALS.search(intro_text))
+        intro_is_against = bool(self._INTRO_AGAINST_SIGNALS.search(intro_text))
+
+        if intro_is_pro and not intro_is_against:
+            # Intro says PRO, but quote is reported speech → possible inversion
+            penalty = 0.30 if rs_info.get("opening_is_reported") else 0.15
+            result["has_stance_issue"] = True
+            result["penalty"] = penalty
+            result["reason"] = (
+                f"Intro attributes PRO stance but evidence contains reported speech "
+                f"(confidence={rs_info['confidence']:.2f}, "
+                f"opening={rs_info['opening_is_reported']}). "
+                f"Score penalty: -{penalty:.2f}"
+            )
+            logger.warning(
+                f"[STANCE_CHECK] Possible stance inversion: intro=PRO but evidence "
+                f"has reported speech (confidence={rs_info['confidence']:.2f}). "
+                f"Penalty: -{penalty:.2f}. Intro: '{intro_text[:80]}'"
+            )
+
+        return result
+
     def validate_coherence(
         self,
         intro_text: str,
-        quote_text: str
+        quote_text: str,
+        evidence: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Validate semantic coherence between intro and quote.
@@ -180,7 +261,8 @@ class CoherenceValidator:
                 "method": "none",
                 "warning": "Empty text - cannot validate",
                 "overlap_keywords": [],
-                "sentiment_mismatch": False
+                "sentiment_mismatch": False,
+                "stance_issue": False,
             }
 
         # Check sentiment mismatch (always, regardless of method)
@@ -219,6 +301,14 @@ class CoherenceValidator:
                 set(self._tokenize(quote_text))
             )[:10]
 
+        # Fix 4 — Stance alignment check (reported speech penalty)
+        # Applied AFTER base similarity so that a topically-similar but
+        # directionally-inverted citation is penalised even when embedding
+        # similarity is above threshold.
+        stance_result = self._stance_alignment_check(intro_text, quote_text, evidence)
+        if stance_result["has_stance_issue"]:
+            score = max(0.0, score - stance_result["penalty"])
+
         # Determine threshold based on method
         if method_used == "embedding":
             threshold = self.min_coherence_score  # 0.6 for embedding
@@ -236,10 +326,14 @@ class CoherenceValidator:
             "overlap_keywords": overlap_keywords,
             "intro_sentiment": intro_sentiment,
             "quote_sentiment": quote_sentiment,
-            "sentiment_mismatch": sentiment_mismatch
+            "sentiment_mismatch": sentiment_mismatch,
+            "stance_issue": stance_result["has_stance_issue"],
+            "stance_penalty": stance_result["penalty"],
         }
 
-        if sentiment_mismatch:
+        if stance_result["has_stance_issue"]:
+            result["warning"] = stance_result["reason"]
+        elif sentiment_mismatch:
             result["warning"] = (
                 f"Sentiment mismatch: intro={intro_sentiment}, "
                 f"quote={quote_sentiment}"
@@ -338,7 +432,10 @@ class CoherenceValidator:
             parts = full_match.split(f"[CIT:{evidence_id}]")
             intro = parts[0].strip() if parts else ""
 
-            validation = self.validate_coherence(intro, quote_text)
+            # Pass evidence dict so _stance_alignment_check can use pre-annotated
+            # reported_speech info (set by annotate_evidence_with_reported_speech
+            # in write_sections) instead of re-running detection from scratch.
+            validation = self.validate_coherence(intro, quote_text, evidence=evidence)
             validation["evidence_id"] = evidence_id
             validation["intro_text"] = intro[:100] + "..." if len(intro) > 100 else intro
             validation["quote_preview"] = quote_text[:100] + "..." if len(quote_text) > 100 else quote_text
