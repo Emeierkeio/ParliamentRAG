@@ -337,6 +337,9 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
   const primaryCommittee = expert.committees?.[0] || expert.committee || null;
   const pct = Math.round(score * 100);
   const barColor = score >= 0.7 ? "bg-emerald-500" : score >= 0.4 ? "bg-amber-500" : "bg-gray-400";
+  const toTitleCase = (s: string) =>
+    s.replace(/\S+/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
+  const displayName = `${toTitleCase(expert.first_name || "")} ${toTitleCase(expert.last_name || "")}`.trim();
 
   return (
     <div
@@ -351,7 +354,7 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
       {expert.photo ? (
         <img
           src={expert.photo}
-          alt={`${expert.first_name} ${expert.last_name}`}
+          alt={displayName}
           className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm"
         />
       ) : (
@@ -367,7 +370,7 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
       <div className="flex-1 min-w-0">
         {/* Name */}
         <p className="text-sm font-bold text-gray-900 dark:text-gray-100 leading-snug truncate">
-          {expert.first_name} {expert.last_name}
+          {displayName}
         </p>
 
         {/* Score row */}
@@ -780,7 +783,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setStep("form");
       // Load system response details first (we need the answer text to extract system experts).
       // Baseline experts: use pre-computed cache if available, otherwise fall back to API.
-      let chatData: { answer?: string; experts?: Expert[] } | null = null;
+      let chatData: { answer?: string; experts?: Expert[]; citations?: any[] } | null = null;
       if (chat.baseline_experts && chat.baseline_experts.length > 0) {
         setBaselineExperts(chat.baseline_experts as Expert[]);
         chatData = await loadChatDetails(chat.id);
@@ -790,11 +793,66 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
           loadBaselineExperts(chat.id, chat.baseline_answer || ""),
         ]);
       }
-      // System experts: use the experts already computed and stored by the pipeline.
-      // These are the authoritative speakers the system cited — no text-matching or
-      // authority recomputation needed.
+      // System experts: match cited deputies (from chatData.citations) to stored experts
+      // by name so the authority panel shows the authority of the deputy ACTUALLY CITED,
+      // not the top-retrieved expert for that party.
       if (chatData?.experts && chatData.experts.length > 0) {
-        setSystemExperts(chatData.experts as Expert[]);
+        // Build "firstname_lastname" → Expert lookup from query-specific stored experts.
+        const expertByName = new Map<string, Expert>();
+        for (const e of chatData.experts as Expert[]) {
+          const key = `${(e.first_name || "").toLowerCase()}_${(e.last_name || "").toLowerCase()}`;
+          if (key !== "_") expertByName.set(key, e);
+        }
+
+        // Match each unique cited deputy to a stored expert by name.
+        const citedExperts: Expert[] = [];
+        const seenKeys = new Set<string>();
+        for (const cit of (chatData.citations ?? []) as any[]) {
+          const key = `${(cit.deputy_first_name || "").toLowerCase()}_${(cit.deputy_last_name || "").toLowerCase()}`;
+          if (key !== "_" && !seenKeys.has(key)) {
+            seenKeys.add(key);
+            const expert = expertByName.get(key);
+            if (expert) citedExperts.push(expert);
+          }
+        }
+
+        // For cited groups that have no matched expert (cited deputy not in chatData.experts),
+        // add the stored top expert for that group as a proxy. This keeps the survey panel
+        // consistent with the detail view, which also falls back to the stored top expert.
+        const coveredGroupKeys = new Set(
+          citedExperts.map((e) => resolveGroupKey(e.group || "MISTO"))
+        );
+        const supplementaryExperts: Expert[] = [];
+        const uniqueCitedGroupKeys = new Set(
+          (chatData.citations ?? [])
+            .map((c: any) => resolveGroupKey(c.group || c.party || "MISTO"))
+            .filter((k: string) => k !== "" && k !== "GOVERNO")
+        );
+        for (const groupKey of uniqueCitedGroupKeys) {
+          if (!coveredGroupKeys.has(groupKey)) {
+            const proxy = (chatData.experts as Expert[])
+              .filter((e) => resolveGroupKey(e.group || "MISTO") === groupKey)
+              .sort((a, b) => b.authority_score - a.authority_score)[0];
+            if (proxy) supplementaryExperts.push(proxy);
+          }
+        }
+
+        const allSystemExperts = [...citedExperts, ...supplementaryExperts];
+        if (allSystemExperts.length > 0) {
+          setSystemExperts(allSystemExperts);
+        } else {
+          // Final fallback: use any expert from cited parties.
+          const citedGroups = new Set(
+            (chatData.citations ?? [])
+              .map((c: any) => c.group || c.party || "")
+              .filter(Boolean)
+          );
+          setSystemExperts(
+            citedGroups.size > 0
+              ? (chatData.experts as Expert[]).filter((e) => citedGroups.has(e.group))
+              : (chatData.experts as Expert[])
+          );
+        }
       } else if (chatData?.answer) {
         // Fallback: text-match + authority computation for older chats without stored experts.
         await loadSystemExperts(chat.id, chatData.answer);

@@ -290,6 +290,8 @@ interface MetricCardProps {
   description?: string;
   baselineValue?: number;
   baselineCi?: [number, number];
+  /** Use a neutral blue color scheme — for metrics where higher/lower isn't inherently good or bad */
+  isNeutral?: boolean;
 }
 
 export function MetricCard({
@@ -301,6 +303,7 @@ export function MetricCard({
   description,
   baselineValue,
   baselineCi,
+  isNeutral = false,
 }: MetricCardProps) {
   const formattedValue =
     format === "percent"
@@ -310,12 +313,14 @@ export function MetricCard({
       : value.toFixed(3);
 
   const getColorClass = (v: number) => {
+    if (isNeutral) return "text-blue-600 dark:text-blue-400";
     if (v >= 0.8) return "text-emerald-600 dark:text-emerald-400";
     if (v >= 0.6) return "text-amber-600 dark:text-amber-400";
     return "text-red-600 dark:text-red-400";
   };
 
   const getBarColor = (v: number) => {
+    if (isNeutral) return "bg-blue-500";
     if (v >= 0.8) return "bg-emerald-500";
     if (v >= 0.6) return "bg-amber-500";
     return "bg-red-500";

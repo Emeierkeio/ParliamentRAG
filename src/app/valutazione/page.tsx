@@ -37,6 +37,8 @@ import {
   Target,
   Trophy,
   BarChart2,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -269,7 +271,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
           Metriche Automatiche
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           <MetricCard
             label="Gruppi con Citazione"
             value={agg.avg_party_coverage}
@@ -289,13 +291,21 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
             baselineCi={agg.ci_baseline_citation_fidelity ?? undefined}
           />
           <MetricCard
-            label="Autorevolezza"
+            label="Autorevolezza (media)"
             value={agg.avg_authority_utilization}
             ci={agg.ci_authority_utilization}
             icon={<Award className="w-4 h-4" />}
             description="Score medio degli esperti citati"
             baselineValue={agg.avg_baseline_authority ?? undefined}
             baselineCi={agg.ci_baseline_authority ?? undefined}
+          />
+          <MetricCard
+            label="Autorevolezza (dev. std)"
+            value={agg.avg_authority_discrimination}
+            ci={agg.ci_authority_discrimination}
+            icon={<BarChart2 className="w-4 h-4" />}
+            description="Deviazione standard media dei punteggi tra deputati (per tema)"
+            isNeutral
           />
           <MetricCard
             label="Completezza"
@@ -752,6 +762,8 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
 
 function DetailsTab({ data }: { data: EvaluationDashboardData }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const avgBaselineAuthority = data.automated_aggregate.avg_baseline_authority ?? undefined;
+  const avgBaselineAuthorityByGroup = data.automated_aggregate.avg_baseline_authority_by_group ?? undefined;
 
   return (
     <div className="max-w-5xl mx-auto space-y-4">
@@ -769,6 +781,8 @@ function DetailsTab({ data }: { data: EvaluationDashboardData }) {
           <ChatEvaluationRow
             key={item.chat_id}
             item={item}
+            avgBaselineAuthority={avgBaselineAuthority}
+            avgBaselineAuthorityByGroup={avgBaselineAuthorityByGroup}
             isExpanded={expandedId === item.chat_id}
             onToggle={() =>
               setExpandedId(
@@ -782,16 +796,129 @@ function DetailsTab({ data }: { data: EvaluationDashboardData }) {
   );
 }
 
+const PARTY_SHORT_NAMES: Record<string, string> = {
+  "Fratelli d'Italia": "FdI",
+  "Lega - Salvini Premier": "Lega",
+  "Forza Italia - Berlusconi Presidente - PPE": "Forza Italia",
+  "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": "Noi Moderati",
+  "Partito Democratico - Italia Democratica e Progressista": "PD",
+  "Movimento 5 Stelle": "M5S",
+  "Alleanza Verdi e Sinistra": "AVS",
+  "Azione - Popolari Europeisti Riformatori - Renew Europe": "Azione",
+  "Italia Viva - Il Centro - Renew Europe": "Italia Viva",
+  "Misto": "Misto",
+};
+
+function shortParty(name: string): string {
+  return PARTY_SHORT_NAMES[name] ?? name.split(" - ")[0].split(" (")[0];
+}
+
+function AuthorityByGroupChart({
+  systemByGroup,
+  baselineByGroup,
+  isAggregateBaseline,
+}: {
+  systemByGroup: Record<string, number>;
+  baselineByGroup?: Record<string, number>;
+  isAggregateBaseline?: boolean;
+}) {
+  const hasBaseline = baselineByGroup && Object.keys(baselineByGroup).length > 0;
+
+  // Merge all parties
+  const allParties = Array.from(
+    new Set([...Object.keys(systemByGroup), ...(hasBaseline ? Object.keys(baselineByGroup!) : [])])
+  ).sort((a, b) => (systemByGroup[b] ?? 0) - (systemByGroup[a] ?? 0));
+
+  if (allParties.length === 0) return null;
+
+  const maxVal = Math.max(
+    ...Object.values(systemByGroup),
+    ...(hasBaseline ? Object.values(baselineByGroup!) : []),
+    0.01
+  );
+
+  return (
+    <div className="mt-4">
+      <div className="flex items-center justify-between mb-2">
+        <h5 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">
+          Autorevolezza per gruppo ({Object.keys(systemByGroup).length} gruppi)
+        </h5>
+        {hasBaseline && (
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-500" />Sistema</span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-300 dark:bg-gray-600" />
+              Baseline{isAggregateBaseline ? " (media)" : ""}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="space-y-1.5">
+        {allParties.map((party) => {
+          const sysVal = systemByGroup[party] ?? 0;
+          const basVal = hasBaseline ? (baselineByGroup![party] ?? 0) : undefined;
+          const sysPct = (sysVal / maxVal) * 100;
+          const basPct = basVal !== undefined ? (basVal / maxVal) * 100 : undefined;
+          return (
+            <div key={party} className="flex items-center gap-2 text-xs">
+              <span className="w-20 shrink-0 text-gray-600 dark:text-gray-400 truncate" title={party}>
+                {shortParty(party)}
+              </span>
+              <div className="flex-1 space-y-0.5">
+                {/* System bar */}
+                <div className="flex items-center gap-1.5">
+                  <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-500 rounded-full transition-all"
+                      style={{ width: `${sysPct}%` }}
+                    />
+                  </div>
+                  <span className="font-mono w-9 text-right text-gray-700 dark:text-gray-300">
+                    {Math.round(sysVal * 100)}%
+                  </span>
+                </div>
+                {/* Baseline bar */}
+                {basPct !== undefined && basVal !== undefined && (
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gray-300 dark:bg-gray-600 rounded-full transition-all"
+                        style={{ width: `${basPct}%` }}
+                      />
+                    </div>
+                    <span className="font-mono w-9 text-right text-muted-foreground">
+                      {Math.round(basVal * 100)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ChatEvaluationRow({
   item,
+  avgBaselineAuthority,
+  avgBaselineAuthorityByGroup,
   isExpanded,
   onToggle,
 }: {
   item: CombinedEvaluation;
+  avgBaselineAuthority?: number;
+  avgBaselineAuthorityByGroup?: Record<string, number>;
   isExpanded: boolean;
   onToggle: () => void;
 }) {
   const m = item.automated;
+  // Per-chat baseline takes priority; fall back to aggregate baseline
+  const effectiveBaseline = m.baseline_authority ?? avgBaselineAuthority;
+  const isAggregateBaseline = m.baseline_authority == null && avgBaselineAuthority != null;
+  // Per-group baseline: use per-chat value if available, otherwise aggregate fallback
+  const effectiveBaselineByGroup = m.baseline_authority_by_group ?? avgBaselineAuthorityByGroup;
 
   const miniMetrics = [
     { label: "Copertura", value: m.party_coverage_score, color: "bg-blue-500" },
@@ -829,6 +956,29 @@ function ChatEvaluationRow({
                 {formatDate(item.timestamp)}
               </span>
               <MiniMetricBars values={miniMetrics} />
+              {effectiveBaseline != null && (() => {
+                const delta = m.authority_utilization - effectiveBaseline;
+                const pct = effectiveBaseline > 0
+                  ? Math.round((m.authority_utilization / effectiveBaseline) * 100)
+                  : null;
+                const isUp = delta >= 0;
+                return (
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs gap-0.5",
+                      isUp
+                        ? "border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-400"
+                        : "border-red-300 text-red-600 dark:border-red-700 dark:text-red-400"
+                    )}
+                  >
+                    {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                    {pct !== null
+                      ? `Auth ${isUp ? "↑" : "↓"} ${pct}%${isAggregateBaseline ? " (media)" : ""}`
+                      : `${isUp ? "+" : ""}${(delta * 100).toFixed(1)}pp`}
+                  </Badge>
+                );
+              })()}
               {item.human && (
                 <Badge
                   variant="secondary"
@@ -865,28 +1015,89 @@ function ChatEvaluationRow({
                 Metriche Automatiche
               </h4>
               <div className="space-y-2">
-                {[
-                  { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti`, format: "percent" as const },
-                  { label: "Fedeltà citazioni", value: m.verbatim_match_score, detail: `${m.verbatim_match_count}/${m.citations_total} verificate`, format: "percent" as const },
-                  { label: "Autorevolezza", value: m.authority_utilization, detail: `${m.experts_count} esperti`, format: "percent" as const },
-                  { label: "Discriminazione autorevolezza", value: m.authority_discrimination, detail: "std dev", format: "decimal" as const },
-                  { label: "Completezza", value: m.response_completeness, detail: "", format: "percent" as const },
-                ].map((row) => (
-                  <div key={row.label} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600 dark:text-gray-400">{row.label}</span>
+                {/* Standard rows (non-authority) */}
+                {(() => {
+                  const coveredParties = new Set(Object.keys(m.party_breakdown));
+                  const missingParties = Object.keys(PARTY_SHORT_NAMES).filter(
+                    (p) => !coveredParties.has(p)
+                  );
+                  const rows: { label: string; value: number; detail: string; format: "percent" | "decimal"; missing?: string[] }[] = [
+                    { label: "Copertura partitica", value: m.party_coverage_score, detail: `${m.parties_represented}/${m.parties_total} partiti`, format: "percent", missing: missingParties },
+                    { label: "Fedeltà citazioni", value: m.verbatim_match_score, detail: `${m.verbatim_match_count}/${m.citations_total} verificate`, format: "percent" },
+                    { label: "Discriminazione autorevolezza", value: m.authority_discrimination, detail: "std dev", format: "decimal" },
+                    { label: "Completezza", value: m.response_completeness, detail: "", format: "percent" },
+                  ];
+                  return rows.map((row) => (
+                    <div key={row.label}>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600 dark:text-gray-400">{row.label}</span>
+                        <div className="flex items-center gap-2">
+                          {row.detail && (
+                            <span className="text-xs text-muted-foreground">{row.detail}</span>
+                          )}
+                          <span className="font-mono font-medium w-16 text-right">
+                            {row.format === "decimal"
+                              ? row.value.toFixed(3)
+                              : `${(row.value * 100).toFixed(1)}%`}
+                          </span>
+                        </div>
+                      </div>
+                      {row.missing && row.missing.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1 ml-0">
+                          <span className="text-xs text-muted-foreground mr-0.5">Mancanti:</span>
+                          {row.missing.map((p) => (
+                            <span
+                              key={p}
+                              className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800"
+                            >
+                              {shortParty(p)}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ));
+                })()}
+
+                {/* Authority row with system vs baseline */}
+                <div className="flex items-start justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400 shrink-0">Autorevolezza</span>
+                  <div className="flex flex-col items-end gap-0.5">
                     <div className="flex items-center gap-2">
-                      {row.detail && (
-                        <span className="text-xs text-muted-foreground">{row.detail}</span>
+                      <span className="text-xs text-muted-foreground">{m.experts_count} esp</span>
+                      {effectiveBaseline != null && (
+                        <span className="text-xs text-muted-foreground">
+                          · base{isAggregateBaseline ? " (media)" : ""} {(effectiveBaseline * 100).toFixed(1)}%
+                        </span>
                       )}
                       <span className="font-mono font-medium w-16 text-right">
-                        {row.format === "decimal"
-                          ? row.value.toFixed(3)
-                          : `${(row.value * 100).toFixed(1)}%`}
+                        {(m.authority_utilization * 100).toFixed(1)}%
                       </span>
                     </div>
+                    {effectiveBaseline != null && (() => {
+                      const delta = m.authority_utilization - effectiveBaseline;
+                      const isUp = delta >= 0;
+                      return (
+                        <span className={cn(
+                          "text-xs font-medium",
+                          isUp ? "text-emerald-600 dark:text-emerald-400" : "text-red-500 dark:text-red-400"
+                        )}>
+                          {isUp ? "+" : ""}{(delta * 100).toFixed(1)}pp vs baseline{isAggregateBaseline ? " (media)" : ""}
+                        </span>
+                      );
+                    })()}
                   </div>
-                ))}
+                </div>
               </div>
+
+              {/* Per-group authority chart */}
+              {Object.keys(m.authority_by_group).length > 0 && (
+                <AuthorityByGroupChart
+                  systemByGroup={m.authority_by_group}
+                  baselineByGroup={effectiveBaselineByGroup}
+                  isAggregateBaseline={isAggregateBaseline}
+                />
+              )}
 
               {/* Party breakdown */}
               {Object.keys(m.party_breakdown).length > 0 && (
@@ -899,7 +1110,7 @@ function ChatEvaluationRow({
                       .sort(([, a], [, b]) => b - a)
                       .map(([party, count]) => (
                         <Badge key={party} variant="outline" className="text-xs">
-                          {party}: {count}
+                          {shortParty(party)}: {count}
                         </Badge>
                       ))}
                   </div>
