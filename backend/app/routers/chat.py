@@ -57,8 +57,8 @@ def sse_event(event_type: str, data: Any) -> str:
 
 # Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion.
 # Each pipeline opens a ThreadPoolExecutor(10) + several OpenAI calls concurrently.
-# 3 per worker is a safe ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
-_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "3"))
+# 5 per worker is the default ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
+_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "5"))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
 _pipeline_counter_lock: Optional[asyncio.Lock] = None
 _pipeline_waiting: int = 0   # tasks queued (waiting for a slot)
