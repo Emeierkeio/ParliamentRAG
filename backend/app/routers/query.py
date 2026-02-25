@@ -6,6 +6,7 @@ Supports both synchronous and SSE streaming responses.
 import json
 import logging
 import asyncio
+import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
@@ -21,6 +22,42 @@ from ..config import get_config
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Query"])
+
+# ---------------------------------------------------------------------------
+# Pipeline concurrency limiter
+# Shared across all requests in the same process.  With WORKERS=1 (Dockerfile
+# default) this enforces a single active pipeline across the entire server.
+# ---------------------------------------------------------------------------
+_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "1"))
+_pipeline_semaphore: Optional[asyncio.Semaphore] = None
+
+
+def _get_pipeline_semaphore() -> asyncio.Semaphore:
+    global _pipeline_semaphore
+    if _pipeline_semaphore is None:
+        _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
+    return _pipeline_semaphore
+
+
+async def _rate_limited_query(
+    request: "QueryRequest",
+    http_request: Optional[Request] = None,
+) -> "AsyncGenerator[str, None]":
+    """Wrapper that acquires the pipeline semaphore before delegating to
+    process_query_streaming, ensuring at most _MAX_CONCURRENT_PIPELINES
+    pipelines run concurrently inside a single worker process."""
+    semaphore = _get_pipeline_semaphore()
+    # Notify the client immediately if it will have to wait.
+    if semaphore._value == 0:
+        yield (
+            f"data: {json.dumps({'type': 'waiting', 'message': 'Il sistema sta elaborando un altra richiesta. Attendi...'})}\n\n"
+        )
+    await semaphore.acquire()
+    try:
+        async for event in process_query_streaming(request, http_request):
+            yield event
+    finally:
+        semaphore.release()
 
 
 class QueryRequest(BaseModel):
@@ -925,7 +962,7 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
     """
     if request.stream:
         return StreamingResponse(
-            process_query_streaming(request, http_request),
+            _rate_limited_query(request, http_request),
             media_type="text/event-stream",
             headers={
                 "Cache-Control": "no-cache",
