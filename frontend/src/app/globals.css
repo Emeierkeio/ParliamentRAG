@@ -279,3 +279,8 @@ input[type="range"].weight-slider::-moz-range-thumb {
     font-size: 16px !important;
   }
 }
+
+@keyframes slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(300%); }
+}
