@@ -477,92 +477,98 @@
       ]
     },
     "authority_spread": {
-      "std": 0.101366,
-      "mean": 0.435377,
-      "p25": 0.36544,
-      "median": 0.430745,
-      "p75": 0.516105,
-      "n": 387
+      "std": 0.101386,
+      "mean": 0.435232,
+      "p25": 0.365414,
+      "median": 0.430705,
+      "p75": 0.516055,
+      "n": 387,
+      "min_score": 0.074032,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.639648,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307863_19",
+      "max_name": "MARCO PELLEGRINI"
     },
     "authority_spread_by_group": {
-      "FRATELLI D'ITALIA": {
-        "std": 0.068523,
-        "mean": 0.381068,
-        "p25": 0.344284,
-        "median": 0.37282,
-        "p75": 0.42101,
-        "n": 102
-      },
       "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
-        "std": 0.069037,
-        "mean": 0.404086,
-        "p25": 0.362943,
-        "median": 0.402944,
-        "p75": 0.43567,
+        "std": 0.069026,
+        "mean": 0.404029,
+        "p25": 0.362904,
+        "median": 0.402907,
+        "p75": 0.435628,
         "n": 50
       },
+      "FRATELLI D'ITALIA": {
+        "std": 0.068484,
+        "mean": 0.380801,
+        "p25": 0.344258,
+        "median": 0.371794,
+        "p75": 0.420981,
+        "n": 102
+      },
       "LEGA - SALVINI PREMIER": {
-        "std": 0.07597,
-        "mean": 0.414457,
-        "p25": 0.366389,
-        "median": 0.415073,
-        "p75": 0.480661,
+        "std": 0.075989,
+        "mean": 0.414376,
+        "p25": 0.366363,
+        "median": 0.415032,
+        "p75": 0.480617,
         "n": 56
       },
       "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
-        "std": 0.076268,
-        "mean": 0.488778,
-        "p25": 0.453925,
-        "median": 0.501606,
-        "p75": 0.548873,
+        "std": 0.0764,
+        "mean": 0.488561,
+        "p25": 0.453898,
+        "median": 0.50158,
+        "p75": 0.548833,
         "n": 70
       },
       "MOVIMENTO 5 STELLE": {
-        "std": 0.079675,
-        "mean": 0.516067,
-        "p25": 0.490859,
-        "median": 0.526704,
-        "p75": 0.568166,
+        "std": 0.079645,
+        "mean": 0.515989,
+        "p25": 0.490828,
+        "median": 0.526667,
+        "p75": 0.567497,
         "n": 49
       },
       "MISTO": {
-        "std": 0.144802,
-        "mean": 0.329527,
-        "p25": 0.20726,
-        "median": 0.317837,
-        "p75": 0.423148,
+        "std": 0.144796,
+        "mean": 0.329497,
+        "p25": 0.207242,
+        "median": 0.317804,
+        "p75": 0.423112,
         "n": 25
       },
       "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
         "std": 0.071179,
-        "mean": 0.549392,
-        "p25": 0.535724,
-        "median": 0.587383,
-        "p75": 0.59719,
+        "mean": 0.549367,
+        "p25": 0.535691,
+        "median": 0.587356,
+        "p75": 0.597179,
         "n": 6
       },
-      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
-        "std": 0.03965,
-        "mean": 0.566066,
-        "p25": 0.543825,
-        "median": 0.5508,
-        "p75": 0.589254,
-        "n": 10
-      },
       "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
-        "std": 0.0936,
-        "mean": 0.453156,
-        "p25": 0.418347,
-        "median": 0.464845,
-        "p75": 0.531591,
+        "std": 0.093539,
+        "mean": 0.453062,
+        "p25": 0.418299,
+        "median": 0.464799,
+        "p75": 0.531544,
         "n": 9
       },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.039653,
+        "mean": 0.566035,
+        "p25": 0.543791,
+        "median": 0.55077,
+        "p75": 0.589241,
+        "n": 10
+      },
       "ALLEANZA VERDI E SINISTRA": {
-        "std": 0.05247,
-        "mean": 0.543265,
-        "p25": 0.509828,
-        "median": 0.535299,
-        "p75": 0.583938,
+        "std": 0.052488,
+        "mean": 0.543215,
+        "p25": 0.509824,
+        "median": 0.535275,
+        "p75": 0.583903,
         "n": 10
       }
     }
