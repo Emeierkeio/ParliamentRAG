@@ -197,6 +197,67 @@
   }
 }
 
+/* Range input (weight sliders) — cross-browser track styling */
+input[type="range"].weight-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary)) var(--slider-fill, 50%),
+    hsl(var(--muted)) var(--slider-fill, 50%),
+    hsl(var(--muted)) 100%
+  );
+}
+
+input[type="range"].weight-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary)) var(--slider-fill, 50%),
+    hsl(var(--muted)) var(--slider-fill, 50%),
+    hsl(var(--muted)) 100%
+  );
+}
+
+input[type="range"].weight-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+  margin-top: -4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+input[type="range"].weight-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    to right,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary)) var(--slider-fill, 50%),
+    hsl(var(--muted)) var(--slider-fill, 50%),
+    hsl(var(--muted)) 100%
+  );
+}
+
+input[type="range"].weight-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
 /* Mobile touch optimizations */
 @media (pointer: coarse) {
   /* Prevent text selection on tap for interactive elements */

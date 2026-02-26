@@ -179,9 +179,9 @@ function WeightSlider({
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(parseFloat(e.target.value))}
-          className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-primary disabled:cursor-not-allowed"
+          className="weight-slider w-full cursor-pointer disabled:cursor-not-allowed"
           style={{
-            background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${percent}%, hsl(var(--muted)) ${percent}%, hsl(var(--muted)) 100%)`,
+            ['--slider-fill' as string]: `${percent}%`,
           }}
         />
       </div>
