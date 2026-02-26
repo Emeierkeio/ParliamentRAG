@@ -244,9 +244,10 @@ interface ExpertModalProps {
   expert: Expert;
   isOpen: boolean;
   onClose: () => void;
+  hideScore?: boolean;
 }
 
-export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
+export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: ExpertModalProps) {
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
   const groupLabel = groupConfig?.label || expert.group;
@@ -363,18 +364,20 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
           </div>
 
           {/* Main Score */}
+          {!hideScore && (
           <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50">
              <div className="flex justify-between items-end mb-3">
                 <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Autorità parlamentare sul tema</span>
                 <span className="text-2xl sm:text-3xl font-bold text-primary">{Math.round(expert.authority_score * 100)}</span>
              </div>
              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
-                <div 
-                    className="h-full bg-primary rounded-full transition-all duration-1000 ease-out" 
+                <div
+                    className="h-full bg-primary rounded-full transition-all duration-1000 ease-out"
                     style={{ width: `${expert.authority_score * 100}%` }}
                 />
              </div>
           </div>
+          )}
 
           <Separator className="bg-border/40" />
 
@@ -401,14 +404,16 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                             </div>
                             <div className="flex items-end justify-between gap-2 mb-1">
                                 <span className="text-xs text-muted-foreground">{item.description}</span>
-                                <span className="text-sm font-bold">{(item.value * 100).toFixed(0)}%</span>
+                                {!hideScore && <span className="text-sm font-bold">{(item.value * 100).toFixed(0)}%</span>}
                             </div>
+                            {!hideScore && (
                              <div className="h-1.5 w-full rounded-full bg-muted">
                                 <div
                                     className="h-full rounded-full bg-primary/60"
                                     style={{ width: `${item.value * 100}%` }}
                                 />
                             </div>
+                            )}
                         </div>
                     );
 

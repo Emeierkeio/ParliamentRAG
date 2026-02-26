@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -27,8 +26,8 @@ import {
   Star,
   RefreshCw,
   CheckCircle2,
-  BarChart2,
   UserCheck,
+  BookOpen,
 } from "lucide-react";
 import type { Expert } from "@/types/chat";
 import { ExpertModal } from "@/components/chat/ExpertCard";
@@ -63,6 +62,7 @@ interface SurveyModalProps {
   isOpen: boolean;
   onClose: () => void;
   evaluatorId?: string;
+  fullScreen?: boolean;
 }
 
 interface ChatDetails {
@@ -77,6 +77,9 @@ interface ChatDetails {
 }
 
 type SurveyStep = "select" | "form" | "simple_form" | "citations" | "success";
+
+const toTitleCase = (s: string) =>
+  s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "Qualita Risposta": <MessageSquare className="w-3.5 h-3.5" />,
@@ -170,8 +173,8 @@ function AuthorityGroupComparisonPanel({
 }) {
   const [expertModal, setExpertModal] = useState<Expert | null>(null);
 
-  const byGroupA = pickOnePerGroup(expertsA);
-  const byGroupB = pickOnePerGroup(expertsB);
+  const byGroupA = useMemo(() => pickOnePerGroup(expertsA), [expertsA]);
+  const byGroupB = useMemo(() => pickOnePerGroup(expertsB), [expertsB]);
 
   // Canonical authority scores: same deputy → same score across A and B (use max)
   const canonicalScores: Record<string, number> = {};
@@ -184,6 +187,26 @@ function AuthorityGroupComparisonPanel({
   const getScore = (e: Expert) =>
     canonicalScores[`${e.first_name} ${e.last_name}`.toLowerCase()] ?? e.authority_score;
 
+  // Auto-set rating for groups that don't need manual evaluation.
+  // No guard: re-runs on each data change so async-loaded experts are corrected.
+  const isSamePerson = (a: Expert | null, b: Expert | null) =>
+    !!a && !!b && a.id === b.id;
+
+  useEffect(() => {
+    POLITICAL_GROUPS_ORDERED.forEach(({ key }) => {
+      const eA = byGroupA[key] ?? null;
+      const eB = byGroupB[key] ?? null;
+      if (isSamePerson(eA, eB)) {
+        onGroupRatingChange(key, 0);   // same deputy → Pari
+      } else if (eA && !eB) {
+        onGroupRatingChange(key, -1);  // only A cited → A migliore
+      } else if (!eA && eB) {
+        onGroupRatingChange(key, 1);   // only B cited → B migliore
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [byGroupA, byGroupB]);
+
   if (isLoadingA || isLoadingB) {
     return (
       <div className="flex flex-1 w-full flex-col items-center justify-center text-gray-400 gap-3 min-h-0">
@@ -193,27 +216,34 @@ function AuthorityGroupComparisonPanel({
     );
   }
 
-  // Compute progress
-  const groupsWithExperts = POLITICAL_GROUPS_ORDERED.filter(
-    ({ key }) => byGroupA[key] || byGroupB[key]
-  );
-  const ratedCount = groupsWithExperts.filter(({ key }) => groupRatings[key] !== undefined).length;
-  const allRated = ratedCount === groupsWithExperts.length && groupsWithExperts.length > 0;
+  // Classify groups: active (need manual rating) vs auto (no evaluator action needed)
+  const activeGroups = POLITICAL_GROUPS_ORDERED.filter(({ key }) => {
+    const eA = byGroupA[key] ?? null;
+    const eB = byGroupB[key] ?? null;
+    return eA && eB && !isSamePerson(eA, eB);
+  });
+  const autoGroups = POLITICAL_GROUPS_ORDERED.filter(({ key }) => {
+    const eA = byGroupA[key] ?? null;
+    const eB = byGroupB[key] ?? null;
+    if (!eA && !eB) return false;
+    return isSamePerson(eA, eB) || !eA || !eB;
+  });
+
+  // Progress only on groups requiring manual rating
+  const ratedCount = activeGroups.filter(({ key }) => groupRatings[key] !== undefined).length;
+  const allRated = ratedCount === activeGroups.length && activeGroups.length > 0;
 
   return (
     <div className="flex flex-col h-full min-h-0">
       {/* ── Instruction header (fixed, non-scrollable) ── */}
-      <div className="px-3 py-2.5 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 border-b shrink-0">
-        <div className="flex items-start gap-2.5">
+      <div className="px-3 py-2.5 bg-gray-50 dark:bg-gray-900/50 border-b shrink-0">
+        <div className="flex items-center gap-2.5">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-indigo-900 dark:text-indigo-100 leading-tight mb-0.5">
+            <p className="text-xs font-semibold text-gray-800 dark:text-gray-100 leading-tight mb-0.5">
               Confronta gli esperti per gruppo politico
             </p>
-            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 leading-snug">
-              Leggi gli esperti citati in{" "}
-              <span className="font-semibold text-blue-600 dark:text-blue-400">A</span> e{" "}
-              <span className="font-semibold text-amber-600 dark:text-amber-400">B</span>, poi usa i pulsanti
-              sotto ogni riga per indicare quale risposta ha scelto l'esperto più autorevole.
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug">
+              Leggi i deputati citati in A e B, poi indica quale risposta ha scelto l'esperto più autorevole.
             </p>
           </div>
           {/* Progress badge */}
@@ -221,11 +251,11 @@ function AuthorityGroupComparisonPanel({
             "shrink-0 flex items-center gap-1 px-2 py-1 rounded-full text-[11px] font-bold whitespace-nowrap",
             allRated
               ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
-              : "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300"
+              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
           )}>
             {allRated
               ? <><Check className="w-3 h-3" /> Completo</>
-              : <>{ratedCount}/{groupsWithExperts.length} gruppi</>
+              : <>{ratedCount}/{activeGroups.length} gruppi</>
             }
           </div>
         </div>
@@ -234,12 +264,12 @@ function AuthorityGroupComparisonPanel({
       {/* ── Column labels ── */}
       <div className="grid grid-cols-2 gap-1 px-3 pt-2 pb-1 shrink-0 border-b bg-white dark:bg-gray-950">
         <div className="text-center">
-          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 px-3 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 px-3 py-0.5 rounded-full border border-blue-200 dark:border-blue-800/50">
             Risposta A
           </span>
         </div>
         <div className="text-center">
-          <span className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 px-3 py-0.5 rounded-full">
+          <span className="text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 px-3 py-0.5 rounded-full border border-gray-200 dark:border-gray-700">
             Risposta B
           </span>
         </div>
@@ -252,63 +282,29 @@ function AuthorityGroupComparisonPanel({
             expert={expertModal}
             isOpen={!!expertModal}
             onClose={() => setExpertModal(null)}
+            hideScore
           />
         )}
 
-        {POLITICAL_GROUPS_ORDERED.map(({ key, label, coalition }) => {
-          const expertA = byGroupA[key] || byGroupA[key.toLowerCase()] || null;
-          const expertB = byGroupB[key] || byGroupB[key.toLowerCase()] || null;
-          const hasAny = expertA || expertB;
-
-          const coalColor =
-            coalition === "maggioranza" ? "text-red-600" :
-            coalition === "opposizione" ? "text-blue-600" : "text-gray-500";
-
-          const coalBg =
-            coalition === "maggioranza" ? "bg-red-50/60 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30" :
-            coalition === "opposizione" ? "bg-blue-50/60 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30" :
-            "bg-gray-50/60 dark:bg-gray-900/20 border border-gray-100 dark:border-gray-800/30";
-
-          if (!hasAny) return null;
-
+        {/* ── Active groups: both sides have different experts ── */}
+        {activeGroups.map(({ key, label }) => {
+          const expertA = byGroupA[key] ?? null;
+          const expertB = byGroupB[key] ?? null;
           return (
-            <div key={key} className={cn("rounded-xl mb-2", coalBg)}>
-              {/* Group badge */}
+            <div key={key} className="rounded-xl mb-2 bg-white dark:bg-gray-900/40 border border-gray-100 dark:border-gray-800/40">
               <div className="flex justify-center pt-2 pb-0.5">
-                <span className={cn("text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full", coalColor,
-                  coalition === "maggioranza" ? "bg-red-100 dark:bg-red-900/40" :
-                  coalition === "opposizione" ? "bg-blue-100 dark:bg-blue-900/40" : "bg-gray-100 dark:bg-gray-800/40"
-                )}>
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800">
                   {label}
                 </span>
               </div>
-
-              {/* Expert row */}
               <div className="grid grid-cols-[1fr_1fr] gap-1 px-2 pt-1">
-                {/* Expert A */}
                 <div className="min-w-0 overflow-hidden">
-                  {expertA ? (
-                    <AuthorityExpertMini expert={expertA} side="A" score={getScore(expertA)} onExpertClick={setExpertModal} />
-                  ) : (
-                    <div className="flex items-center justify-end h-full px-2 py-3">
-                      <span className="text-xs text-gray-400 italic">— non citato</span>
-                    </div>
-                  )}
+                  <AuthorityExpertMini expert={expertA!} side="A" score={getScore(expertA!)} onExpertClick={setExpertModal} />
                 </div>
-
-                {/* Expert B */}
                 <div className="min-w-0 overflow-hidden">
-                  {expertB ? (
-                    <AuthorityExpertMini expert={expertB} side="B" score={getScore(expertB)} onExpertClick={setExpertModal} />
-                  ) : (
-                    <div className="flex items-center justify-start h-full px-2 py-3">
-                      <span className="text-xs text-gray-400 italic">non citato —</span>
-                    </div>
-                  )}
+                  <AuthorityExpertMini expert={expertB!} side="B" score={getScore(expertB!)} onExpertClick={setExpertModal} />
                 </div>
               </div>
-
-              {/* Per-group preference toggle — required */}
               <div className="mx-2 mb-2 rounded-lg overflow-hidden">
                 <MiniGroupSlider
                   value={groupRatings[key]}
@@ -318,6 +314,57 @@ function AuthorityGroupComparisonPanel({
             </div>
           );
         })}
+
+        {/* ── Auto-assigned groups: no evaluator action needed ── */}
+        {autoGroups.length > 0 && (
+          <>
+            <div className="flex items-center gap-2 py-1 px-1">
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+              <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                Assegnati automaticamente
+              </span>
+              <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
+            </div>
+
+            {autoGroups.map(({ key, label }) => {
+              const expertA = byGroupA[key] ?? null;
+              const expertB = byGroupB[key] ?? null;
+              const same = isSamePerson(expertA, expertB);
+              const autoBadge = same
+                ? "= Stesso deputato"
+                : expertA
+                  ? "✓ Punto a A"
+                  : "✓ Punto a B";
+              const badgeColor = same
+                ? "bg-gray-100 text-gray-400 dark:bg-gray-800/50 dark:text-gray-500"
+                : expertA
+                  ? "bg-blue-50 text-blue-400 dark:bg-blue-900/20 dark:text-blue-400"
+                  : "bg-indigo-50 text-indigo-400 dark:bg-indigo-900/20 dark:text-indigo-400";
+
+              return (
+                <div key={key} className="rounded-xl mb-2 bg-gray-50 dark:bg-gray-900/20 border border-gray-100 dark:border-gray-800/20 opacity-60">
+                  <div className="flex justify-center items-center gap-1.5 pt-2 pb-0.5">
+                    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800/50">
+                      {label}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-[1fr_1fr] gap-1 px-2 pt-1 pb-2">
+                    <div className="min-w-0 overflow-hidden">
+                      {expertA
+                        ? <AuthorityExpertMini expert={expertA} side="A" score={getScore(expertA)} />
+                        : <ExpertAbsent side="A" />}
+                    </div>
+                    <div className="min-w-0 overflow-hidden">
+                      {expertB
+                        ? <AuthorityExpertMini expert={expertB} side="B" score={getScore(expertB)} />
+                        : <ExpertAbsent side="B" />}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
     </div>
   );
@@ -335,10 +382,6 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
   const isA = side === "A";
 
   const primaryCommittee = expert.committees?.[0] || expert.committee || null;
-  const pct = Math.round(score * 100);
-  const barColor = score >= 0.7 ? "bg-emerald-500" : score >= 0.4 ? "bg-amber-500" : "bg-gray-400";
-  const toTitleCase = (s: string) =>
-    s.replace(/\S+/g, (w) => w[0].toUpperCase() + w.slice(1).toLowerCase());
   const displayName = `${toTitleCase(expert.first_name || "")} ${toTitleCase(expert.last_name || "")}`.trim();
 
   return (
@@ -373,36 +416,41 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
           {displayName}
         </p>
 
-        {/* Score row */}
-        <div className={cn("flex items-center gap-1.5 mt-1", isA ? "flex-row-reverse" : "flex-row")}>
-          <div className="h-1.5 flex-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden max-w-[80px]">
-            <div className={cn("h-full rounded-full", barColor)} style={{ width: `${pct}%` }} />
-          </div>
-          <span className={cn(
-            "text-xs font-bold tabular-nums shrink-0",
-            score >= 0.7 ? "text-emerald-600" : score >= 0.4 ? "text-amber-600" : "text-gray-500"
-          )}>{pct}</span>
-        </div>
-
         {/* Authority signals */}
         <div className={cn("mt-1 flex flex-col gap-0.5", isA ? "items-end" : "items-start")}>
           {expert.institutional_role && (
-            <span className="text-[11px] font-semibold text-violet-700 dark:text-violet-300 bg-violet-100 dark:bg-violet-900/40 px-1.5 py-0.5 rounded-md leading-none truncate max-w-full inline-block">
+            <span className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 leading-none truncate max-w-full inline-block">
               {expert.institutional_role}
             </span>
           )}
           {primaryCommittee && (
-            <span className="text-[11px] text-indigo-600 dark:text-indigo-400 leading-snug truncate max-w-full block font-medium">
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug truncate max-w-full block">
               {primaryCommittee.length > 32 ? primaryCommittee.slice(0, 31) + "…" : primaryCommittee}
             </span>
           )}
           {expert.profession && (
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 leading-snug truncate max-w-full block italic">
+            <span className="text-[11px] text-gray-400 dark:text-gray-500 leading-snug truncate max-w-full block italic">
               {expert.profession.length > 36 ? expert.profession.slice(0, 35) + "…" : expert.profession}
             </span>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Placeholder shown when no expert was cited for a given side. */
+function ExpertAbsent({ side }: { side: "A" | "B" }) {
+  const isA = side === "A";
+  return (
+    <div className={cn(
+      "flex items-center justify-center py-3 px-2 rounded-xl w-full h-full",
+      "border border-dashed border-gray-200 dark:border-gray-700",
+      isA ? "text-right" : "text-left",
+    )}>
+      <span className="text-[11px] text-gray-400 dark:text-gray-600 italic">
+        Nessun esperto citato
+      </span>
     </div>
   );
 }
@@ -420,9 +468,9 @@ function MiniGroupSlider({
   onChange: (v: number) => void;
 }) {
   const options = [
-    { v: -1, label: "A migliore", activeClass: "bg-blue-500 text-white border-blue-600 shadow-sm" },
-    { v:  0, label: "Pari",       activeClass: "bg-gray-500 text-white border-gray-600 shadow-sm" },
-    { v:  1, label: "B migliore", activeClass: "bg-amber-500 text-white border-amber-600 shadow-sm" },
+    { v: -1, label: "A migliore", activeClass: "bg-blue-500 text-white border-blue-500 shadow-sm" },
+    { v:  0, label: "Pari",       activeClass: "bg-gray-600 text-white border-gray-600 shadow-sm" },
+    { v:  1, label: "B migliore", activeClass: "bg-indigo-500 text-white border-indigo-500 shadow-sm" },
   ] as const;
 
   const isUnanswered = value === undefined;
@@ -431,14 +479,11 @@ function MiniGroupSlider({
     <div className={cn(
       "w-full px-2 pt-2 pb-2 border-t border-dashed transition-colors",
       isUnanswered
-        ? "border-orange-300 dark:border-orange-700 bg-orange-50/60 dark:bg-orange-950/20"
+        ? "border-gray-300 dark:border-gray-600"
         : "border-gray-200 dark:border-gray-700"
     )}>
-      <p className={cn(
-        "text-[10px] font-semibold text-center mb-1.5 leading-tight",
-        isUnanswered ? "text-orange-600 dark:text-orange-400" : "text-gray-400 dark:text-gray-500"
-      )}>
-        {isUnanswered ? "↓ Quale risposta cita esperti più autorevoli?" : "Valutazione assegnata:"}
+      <p className="text-[10px] text-center mb-1.5 leading-tight text-gray-400 dark:text-gray-500">
+        {isUnanswered ? "Qual è il deputato più autorevole su questo tema?" : "Valutazione assegnata:"}
       </p>
       <div className="flex items-stretch gap-1.5">
         {options.map((opt) => {
@@ -586,7 +631,7 @@ function alignSections(
   return rows;
 }
 
-export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) {
+export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: SurveyModalProps) {
   const [step, setStep] = useState<SurveyStep>("select");
   const [pendingChats, setPendingChats] = useState<PendingChat[]>([]);
   const [evaluatedIds, setEvaluatedIds] = useState<Set<string>>(new Set());
@@ -614,6 +659,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
   const [error, setError] = useState<string | null>(null);
   const [mobileSimpleTab, setMobileSimpleTab] = useState<"response" | "form">("response");
   const [mobileABTab, setMobileABTab] = useState<"A" | "B" | "valuta">("A");
+  const [hasConfirmedReading, setHasConfirmedReading] = useState(false);
 
 
   // Group A/B questions by category (exclude overall_satisfaction - handled separately)
@@ -778,6 +824,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
       setFormState(getInitialSurveyFormState());
       setCurrentCategory(0);
       setMobileABTab("A");
+      setHasConfirmedReading(false);
       setBaselineExperts([]);
       setSystemExperts([]);
       setStep("form");
@@ -1070,20 +1117,6 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
     return answer_clarity > 0 && answer_quality > 0 && balance_perception > 0 && balance_fairness > 0;
   };
 
-  // Format date
-  const formatDate = (dateStr: string) => {
-    try {
-      return new Date(dateStr).toLocaleDateString("it-IT", {
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch {
-      return dateStr;
-    }
-  };
-
   // Render inline markdown: bold names + citation highlighting.
   const renderInline = (
     text: string,
@@ -1239,12 +1272,17 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
+        showCloseButton={!fullScreen}
         className={cn(
           "p-0 gap-0 overflow-hidden flex flex-col",
-          (step === "form" || step === "citations") && "sm:!max-w-[95vw]"
+          fullScreen
+            ? "!fixed !top-0 !left-0 !translate-x-0 !translate-y-0 !w-screen !max-w-none !h-screen !max-h-none !rounded-none !border-0 !m-0"
+            : (step === "form" || step === "citations") && "sm:!max-w-[95vw]"
         )}
         style={
-          step === "form"
+          fullScreen
+            ? undefined
+            : step === "form"
             ? { width: "1600px", maxWidth: "95vw", height: "95vh", maxHeight: "95vh" }
             : step === "simple_form"
             ? { width: "900px", maxWidth: "95vw", height: "90vh", maxHeight: "90vh" }
@@ -1253,128 +1291,206 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
             : { maxWidth: "42rem", maxHeight: "90vh" }
         }
       >
-        <DialogHeader className="px-6 py-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30">
-          <DialogTitle className="flex items-center gap-2 text-lg">
-            <ClipboardCheck className="w-5 h-5 text-blue-600" />
-            {dialogTitle()}
-          </DialogTitle>
-          {step === "form" && (
-            <div className="flex items-center gap-3 mt-2">
-              <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
-                  style={{ width: `${completionPercentage()}%` }}
-                />
+        <DialogHeader className={cn(
+          "border-b shrink-0",
+          fullScreen && step === "select"
+            ? "px-8 py-4 bg-gradient-to-r from-blue-700 to-indigo-800"
+            : "px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30"
+        )}>
+          {fullScreen && step === "select" ? (
+            /* ── Full-screen select: branded navbar ── */
+            <div className="flex items-center justify-between">
+              {/* Logo + brand */}
+              <DialogTitle className="flex items-center gap-3 text-white">
+                <svg viewBox="56 184 400 224" className="w-10 h-6 shrink-0" aria-hidden="true">
+                  <path d="M 80 384 A 176 176 0 0 1 432 384" fill="none" stroke="white" strokeWidth="32" strokeLinecap="round" opacity="0.4"/>
+                  <path d="M 136 384 A 120 120 0 0 1 376 384" fill="none" stroke="white" strokeWidth="32" strokeLinecap="round" opacity="0.65"/>
+                  <path d="M 192 384 A 64 64 0 0 1 320 384" fill="none" stroke="white" strokeWidth="32" strokeLinecap="round" opacity="0.9"/>
+                </svg>
+                <span className="text-lg font-bold tracking-tight">ParliamentRAG</span>
+                <span className="text-white/30 font-light text-xl select-none">·</span>
+                <span className="text-sm font-normal text-blue-200">Valutazione Sistema</span>
+              </DialogTitle>
+              {/* Greeting */}
+              <div className="flex flex-col items-end gap-0.5">
+                {evaluatorId && (
+                  <p className="text-sm text-blue-200">
+                    Valutatore: <span className="font-semibold text-white">{toTitleCase(evaluatorId)}</span>
+                  </p>
+                )}
+                <p className="text-xs text-blue-300">I dati parlamentari sono aggiornati al <strong className="text-blue-100">04/02/2026</strong></p>
               </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                {completionPercentage()}%
-              </span>
             </div>
-          )}
-          {step === "citations" && (
-            <p className="text-sm text-gray-500 mt-1">
-              Valuta ogni citazione singolarmente (opzionale - puoi saltare)
-            </p>
+          ) : (
+            /* ── Normal modal header ── */
+            <>
+              <DialogTitle className="flex items-center gap-2 text-lg">
+                <ClipboardCheck className="w-5 h-5 text-blue-600" />
+                {dialogTitle()}
+              </DialogTitle>
+              {step === "form" && (
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
+                      style={{ width: `${completionPercentage()}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                    {completionPercentage()}%
+                  </span>
+                </div>
+              )}
+              {step === "citations" && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Valuta ogni citazione singolarmente (opzionale - puoi saltare)
+                </p>
+              )}
+            </>
           )}
         </DialogHeader>
 
         {/* Step: Select Chat */}
         {step === "select" && (
-          <div className="flex flex-col h-[60vh]">
-            <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900/50 border-b">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {evaluatorId ? (
-                    <>Ciao <span className="font-semibold text-gray-800 dark:text-gray-200">{evaluatorId}</span> — seleziona una conversazione da valutare</>
-                  ) : (
-                    "Seleziona una conversazione da valutare"
-                  )}
-                </p>
-                <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading}>
-                  <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
-                  Aggiorna
-                </Button>
+          <div className={cn("flex flex-col", fullScreen ? "flex-1 min-h-0" : "h-[60vh]")}>
+            {/* Greeting / refresh bar — hidden in fullScreen (greeting already in header) */}
+            {!fullScreen && (
+              <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900/50 border-b">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {evaluatorId ? (
+                      <>Ciao <span className="font-semibold text-gray-800 dark:text-gray-200">{toTitleCase(evaluatorId)}</span> — seleziona una conversazione da valutare</>
+                    ) : (
+                      "Seleziona una conversazione da valutare"
+                    )}
+                  </p>
+                  <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading}>
+                    <RefreshCw className={cn("w-4 h-4 mr-1", isLoading && "animate-spin")} />
+                    Aggiorna
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
-            <ScrollArea className="flex-1 px-6 py-4">
-              {isLoading ? (
-                <div className="flex items-center justify-center h-40">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            {/* How-to instructions — fullScreen: rich card grid; normal: compact strip */}
+            {fullScreen ? (
+              <div className="shrink-0 border-b bg-gray-50 dark:bg-gray-900/40 px-8 py-5">
+                <div className="grid grid-cols-3 gap-4">
+                    {/* Step 1 */}
+                    <div className="flex gap-3 p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-bold">1</span>
+                      <div>
+                        <p className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-0.5">Seleziona</p>
+                        <p className="text-xs text-blue-700 dark:text-blue-300 leading-snug">Scegli una delle conversazioni da valutare dalla lista</p>
+                      </div>
+                    </div>
+                    {/* Step 2 */}
+                    <div className="flex gap-3 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white text-sm font-bold">2</span>
+                      <div>
+                        <p className="text-sm font-semibold text-amber-900 dark:text-amber-100 mb-0.5">Leggi A, poi B</p>
+                        <p className="text-xs text-amber-700 dark:text-amber-300 leading-snug">Leggi entrambe le risposte con attenzione, nell'ordine indicato</p>
+                      </div>
+                    </div>
+                    {/* Step 3 */}
+                    <div className="flex gap-3 p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white text-sm font-bold">3</span>
+                      <div>
+                        <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100 mb-0.5">Valuta</p>
+                        <p className="text-xs text-indigo-700 dark:text-indigo-300 leading-snug">Esprimi un giudizio su ogni dimensione. Puoi rileggere le risposte in qualsiasi momento.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              ) : error ? (
-                <div className="flex flex-col items-center justify-center h-40 text-red-500">
-                  <AlertCircle className="w-8 h-8 mb-2" />
-                  <p>{error}</p>
-                </div>
-              ) : pendingChats.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-40 text-gray-500">
-                  {evaluatedIds.size > 0 ? (
-                    <>
-                      <CheckCircle2 className="w-12 h-12 mb-3 text-emerald-500" />
-                      <p className="text-lg font-medium">Tutte le conversazioni sono state valutate!</p>
-                      <p className="text-sm mt-1">Grazie per il tuo contributo.</p>
-                    </>
-                  ) : (
-                    <>
-                      <AlertCircle className="w-12 h-12 mb-3 text-gray-400" />
-                      <p className="text-lg font-medium">Nessuna conversazione disponibile</p>
-                      <p className="text-sm mt-1 text-center max-w-xs">
-                        Non ci sono ancora conversazioni da valutare. Usa la chat per generarne.
-                      </p>
-                    </>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {pendingChats.map((chat) => (
-                    <Card
-                      key={chat.id}
-                      className={cn(
-                        "cursor-pointer transition-all duration-200 hover:shadow-md",
-                        chat.evaluation_type === "ab"
-                          ? "hover:border-blue-300 dark:hover:border-blue-700"
-                          : "hover:border-purple-300 dark:hover:border-purple-700"
-                      )}
-                      onClick={() => handleSelectChat(chat)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
-                              {chat.query}
-                            </p>
-                            {chat.preview && (
-                              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                                {chat.preview}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex flex-col items-end gap-2 shrink-0">
-                            <Badge variant="outline" className="text-xs whitespace-nowrap">
-                              {formatDate(chat.timestamp)}
-                            </Badge>
-                            {chat.evaluation_type === "ab" ? (
-                              <Badge className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200">
-                                A/B
-                                {chat.matched_topic && <span className="ml-1 opacity-70">· {chat.matched_topic}</span>}
-                              </Badge>
-                            ) : (
-                              <Badge className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200">
-                                <BarChart2 className="w-3 h-3 mr-1" />
-                                Likert
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+            ) : (
+              <div className="px-6 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-b">
+                <p className="text-[11px] font-bold text-blue-600 dark:text-blue-300 uppercase tracking-wide mb-2">Come funziona la valutazione</p>
+                <div className="flex gap-4">
+                  {[
+                    { n: "1", label: "Seleziona una conversazione" },
+                    { n: "2", label: "Leggi Risposta A, poi Risposta B" },
+                    { n: "3", label: "Valuta — puoi rileggere in ogni momento" },
+                  ].map(({ n, label }) => (
+                    <div key={n} className="flex items-start gap-2 flex-1">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-[10px] font-bold mt-0.5">{n}</span>
+                      <p className="text-[11px] text-blue-700 dark:text-blue-200 leading-snug">{label}</p>
+                    </div>
                   ))}
                 </div>
-              )}
+              </div>
+            )}
+
+            <ScrollArea className="flex-1 px-6 py-4">
+              <div>
+                {fullScreen && (
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Conversazioni da valutare
+                    </p>
+                    <Button variant="ghost" size="sm" onClick={loadData} disabled={isLoading} className="h-7 text-xs">
+                      <RefreshCw className={cn("w-3.5 h-3.5 mr-1", isLoading && "animate-spin")} />
+                      Aggiorna
+                    </Button>
+                  </div>
+                )}
+                {isLoading ? (
+                  <div className="flex items-center justify-center h-40">
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  </div>
+                ) : error ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-red-500">
+                    <AlertCircle className="w-8 h-8 mb-2" />
+                    <p>{error}</p>
+                  </div>
+                ) : pendingChats.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-40 text-gray-500">
+                    {evaluatedIds.size > 0 ? (
+                      <>
+                        <CheckCircle2 className="w-12 h-12 mb-3 text-emerald-500" />
+                        <p className="text-lg font-medium">Tutte le conversazioni sono state valutate!</p>
+                        <p className="text-sm mt-1">Grazie per il tuo contributo.</p>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-12 h-12 mb-3 text-gray-400" />
+                        <p className="text-lg font-medium">Nessuna conversazione disponibile</p>
+                        <p className="text-sm mt-1 text-center max-w-xs">
+                          Non ci sono ancora conversazioni da valutare. Usa la chat per generarne.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    {pendingChats.map((chat, idx) => (
+                      <Card
+                        key={chat.id}
+                        className={cn(
+                          "cursor-pointer transition-all duration-200 hover:shadow-sm",
+                          chat.evaluation_type === "ab"
+                            ? "hover:border-blue-300 dark:hover:border-blue-700"
+                            : "hover:border-purple-300 dark:hover:border-purple-700"
+                        )}
+                        onClick={() => handleSelectChat(chat)}
+                      >
+                        <CardContent className="px-3 py-1.5">
+                          <div className="flex items-center gap-2.5">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-[11px] font-bold text-gray-500 dark:text-gray-400">
+                              {idx + 1}
+                            </span>
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 leading-snug">
+                              {chat.query}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
             </ScrollArea>
 
-            <div className="px-6 py-4 border-t bg-gray-50 dark:bg-gray-900/50">
+            <div className="border-t bg-gray-50 dark:bg-gray-900/50 px-6 py-3">
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <span>
                   {pendingChats.filter(c => c.evaluation_type === "ab").length} A/B
@@ -1382,7 +1498,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                   {pendingChats.filter(c => c.evaluation_type === "simple").length} Likert
                   {" da valutare"}
                 </span>
-                <span>{evaluatedIds.size} gia valutate</span>
+                <span>{evaluatedIds.size} già valutate</span>
               </div>
             </div>
           </div>
@@ -1625,20 +1741,26 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                 <div className="flex items-center justify-between">
                   <Button variant="ghost" size="sm"
                     onClick={() => {
-                      if (mobileABTab !== "valuta") {
+                      if (mobileABTab === "A") {
                         setStep("select");
-                      } else if (currentCategory === 0) {
+                      } else if (mobileABTab === "B") {
                         setMobileABTab("A");
+                      } else if (currentCategory === 0) {
+                        setMobileABTab("B");
                       } else {
                         goToPrevCategory();
                       }
                     }}>
                     <ChevronLeft className="w-4 h-4 mr-1" />
-                    {mobileABTab !== "valuta" ? "Indietro" : currentCategory === 0 ? "Risposte" : "Precedente"}
+                    {mobileABTab === "A" ? "Indietro" : mobileABTab === "B" ? "Risposta A" : currentCategory === 0 ? "Risposta B" : "Precedente"}
                   </Button>
-                  {mobileABTab !== "valuta" ? (
+                  {mobileABTab === "A" ? (
+                    <Button size="sm" onClick={() => setMobileABTab("B")}>
+                      Risposta B <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  ) : mobileABTab === "B" ? (
                     <Button size="sm" onClick={() => setMobileABTab("valuta")}>
-                      Valuta <ChevronRight className="w-4 h-4 ml-1" />
+                      Inizia a valutare <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   ) : currentCategory < categories.length - 1 ? (
                     <Button size="sm" onClick={goToNextCategory} disabled={!isCategoryComplete(currentCategory)}>
@@ -1759,9 +1881,37 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
               </div>
 
               {/* Right Panel: A/B Survey Form */}
-              <div className="md:w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden">
+              <div className="md:w-2/5 flex flex-col bg-gray-50 dark:bg-gray-900/30 min-h-0 overflow-hidden relative">
+                {/* Reading phase overlay */}
+                {!hasConfirmedReading && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white dark:bg-gray-950 px-8 py-6 text-center gap-6">
+                    <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
+                      <BookOpen className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Prima leggi entrambe le risposte</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-xs mx-auto">
+                        Nel pannello a sinistra trovi la{" "}
+                        <span className="font-semibold text-blue-600">Risposta A</span> e la{" "}
+                        <span className="font-semibold text-amber-600">Risposta B</span> affiancate.
+                        Leggile entrambe prima di iniziare a valutare.
+                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 leading-relaxed">
+                        Potrai rileggere le risposte in qualsiasi momento durante la valutazione.
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => setHasConfirmedReading(true)}
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 gap-2 px-6"
+                      size="lg"
+                    >
+                      Ho letto entrambe — inizia a valutare
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
                 {/* Category tabs — short labels + icons to avoid overflow */}
-                <div className="px-3 py-2 border-b bg-white dark:bg-gray-950 flex gap-1 overflow-x-auto shrink-0">
+                <div className="px-3 py-2 border-b bg-white dark:bg-gray-950 flex gap-1 overflow-x-auto shrink-0 items-center">
                   {categories.map((cat, idx) => (
                     <button
                       key={cat.name}
@@ -1794,7 +1944,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId }: SurveyModalProps) 
                           <div className="flex items-start gap-2">
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-[10px] font-bold mt-0.5">1</span>
                             <p className="text-xs text-slate-600 dark:text-slate-400 leading-snug">
-                              <span className="font-semibold text-slate-700 dark:text-slate-300">Pannello sinistro:</span> per ogni gruppo politico, clicca quale risposta ha citato l'esperto più autorevole.
+                              <span className="font-semibold text-slate-700 dark:text-slate-300">Pannello sinistro:</span> per ogni gruppo politico, clicca quale risposta ha citato l'esperto più autorevole secondo te.
                             </p>
                           </div>
                           <div className="flex items-start gap-2">

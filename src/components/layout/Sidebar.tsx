@@ -31,6 +31,7 @@ import {
   Building2,
   BarChart3,
   Users,
+  CalendarDays,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -155,6 +156,10 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
           {/* Bottom */}
           <div className="p-3 pb-6">
+            <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
+              <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+              <span>Dati aggiornati al <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+            </div>
             <NavButton
               item={{ icon: Settings, label: "Impostazioni", onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
               isCollapsed={false}
@@ -262,6 +267,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
         {/* Bottom Navigation */}
         <div className="p-3 pb-6">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
+              <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+              <span>Dati aggiornati al <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+            </div>
+          )}
           <nav className="flex flex-col gap-1">
             <NavButton
                 item={{ icon: Settings, label: "Impostazioni", onClick: () => setSettingsOpen(true) }}
@@ -496,7 +507,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">Dati aggiornati al:</span>
-            <span className="font-medium">Gennaio 2025</span>
+            <span className="font-medium">4 febbraio 2026</span>
           </div>
         </div>
       </DialogContent>
