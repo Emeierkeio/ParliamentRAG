@@ -615,49 +615,30 @@ export default function RankingPage() {
             </div>
           )}
 
-          {/* ── Loading skeleton ── */}
+          {/* ── Loading ── */}
           {loading && (
-            <div className="px-4 sm:px-6 py-4 max-w-6xl mx-auto w-full">
-              {/* Loading banner */}
-              <div className="flex items-center gap-3 mb-5 px-4 py-3 rounded-xl bg-primary/5 border border-primary/10">
-                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">Calcolo autorità in corso…</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Sto analizzando interventi, atti e ruoli parlamentari per il topic selezionato</p>
-                </div>
-                {/* Indeterminate progress bar */}
-                <div className="w-24 h-1.5 rounded-full bg-muted overflow-hidden shrink-0">
-                  <div className="h-full w-1/2 rounded-full bg-primary animate-[slide_1.4s_ease-in-out_infinite]" />
-                </div>
+            <div className="flex flex-col items-center justify-center h-full px-4 gap-6">
+              <div className="h-20 w-20 rounded-2xl bg-primary/5 flex items-center justify-center">
+                <Loader2 className="h-10 w-10 text-primary/40 animate-spin" />
               </div>
-              {/* Skeleton header */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="space-y-2">
-                  <div className="h-5 w-48 bg-muted rounded animate-pulse" />
-                  <div className="h-3 w-32 bg-muted/60 rounded animate-pulse" />
-                </div>
-              </div>
-              {/* Skeleton table header */}
-              <div className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 border-b border-border/30">
-                <span>#</span>
-                <span>Deputato</span>
-                <span>Gruppo</span>
-                <span>Coalizione</span>
-                <span className="text-right">Score</span>
+              <div className="text-center space-y-2">
+                <p className="text-sm font-medium text-foreground">Calcolo autorità in corso...</p>
+                <p className="text-xs text-muted-foreground">
+                  Analisi interventi, atti e ruoli parlamentari per &quot;{activeTopic}&quot;
+                </p>
               </div>
               {/* Skeleton rows */}
-              <div className="space-y-1 mt-1">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <div className="h-5 w-8 bg-muted/60 rounded animate-pulse" />
-                    <div className="h-9 w-9 bg-muted rounded-full animate-pulse shrink-0" />
+              <div className="w-full max-w-2xl mx-auto space-y-2">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted/20 border border-border/30 animate-pulse">
+                    <div className="h-5 w-6 bg-muted/60 rounded shrink-0" />
+                    <div className="h-9 w-9 bg-muted rounded-full shrink-0" />
                     <div className="flex-1 space-y-1.5">
-                      <div className="h-4 w-36 bg-muted rounded animate-pulse" />
-                      <div className="h-3 w-20 bg-muted/50 rounded animate-pulse" />
+                      <div className="h-4 w-36 bg-muted rounded" />
+                      <div className="h-3 w-24 bg-muted/50 rounded" />
                     </div>
-                    <div className="hidden sm:block h-3 w-16 bg-muted/50 rounded animate-pulse" />
-                    <div className="hidden sm:block h-3 w-14 bg-muted/40 rounded animate-pulse" />
-                    <div className="h-5 w-10 bg-muted rounded animate-pulse" />
+                    <div className="hidden sm:block h-3 w-20 bg-muted/40 rounded" />
+                    <div className="h-5 w-12 bg-muted/60 rounded" />
                   </div>
                 ))}
               </div>
