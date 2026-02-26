@@ -407,12 +407,18 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
 
   if (progress.isWaiting) {
     const pos = progress.queuePosition;
+    const ahead = progress.aheadCount;
     const active = progress.activeCount ?? 0;
-    const displaySlots = Math.min(active, 5);
-    const extraActive = active > 5 ? active - 5 : 0;
 
     const formatElapsed = (s: number) =>
       s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
+
+    // Estimated wait: ~45s per slot ahead (rough average pipeline time)
+    const estimatedSec = ahead != null && ahead > 0 ? ahead * 45 : null;
+    const formatEstimate = (s: number) =>
+      s < 60 ? `~${s}s` : `~${Math.ceil(s / 60)} min`;
+
+    const isNext = ahead === 0;
 
     return (
       <div className={cn(
@@ -420,83 +426,167 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         className
       )}>
 
-        {/* Pulsing clock icon */}
-        <div className="relative mb-7">
-          <div className="absolute -inset-4 rounded-full bg-amber-400/15 animate-ping" />
-          <div className="absolute -inset-2 rounded-full bg-amber-400/10 animate-pulse" />
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 shadow-sm">
-            <Clock className="h-8 w-8" />
-          </div>
+        {/* Icon */}
+        <div className="relative mb-6">
+          {isNext ? (
+            <>
+              <div className="absolute -inset-3 rounded-full bg-green-400/20 animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50 border border-green-200 text-green-600 shadow-sm">
+                <Clock className="h-8 w-8" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="absolute -inset-4 rounded-full bg-amber-400/10 animate-ping" style={{ animationDuration: "2s" }} />
+              <div className="absolute -inset-2 rounded-full bg-amber-400/8 animate-pulse" />
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 shadow-sm">
+                <Clock className="h-8 w-8" />
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Title */}
-        <h2 className="text-lg font-semibold text-foreground mb-1.5">
-          Sistema al completo
-        </h2>
-        <p className="text-sm text-muted-foreground max-w-xs mb-7">
-          {pos !== undefined
-            ? <>Sei il <span className="font-semibold text-amber-600">#{pos}</span> in lista d&apos;attesa. Verrai elaborato automaticamente appena si libera uno slot.</>
-            : "La tua richiesta è in coda. Verrai elaborato non appena si libera un posto."
-          }
-        </p>
+        {/* Primary message */}
+        {isNext ? (
+          <>
+            <h2 className="text-lg font-semibold text-green-700 mb-1">
+              Sei il prossimo!
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xs mb-6">
+              Un posto si sta liberando. La tua richiesta partirà tra pochi secondi.
+            </p>
+          </>
+        ) : ahead != null ? (
+          <>
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              Sistema al completo
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xs mb-6">
+              {ahead === 1
+                ? <>C&apos;è <span className="font-semibold text-amber-600">1 persona</span> davanti a te.</>
+                : <>Ci sono <span className="font-semibold text-amber-600">{ahead} persone</span> davanti a te.</>
+              }
+              {" "}Verrai elaborato automaticamente.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2 className="text-lg font-semibold text-foreground mb-1">
+              Sistema al completo
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xs mb-6">
+              La tua richiesta è in coda. Verrai elaborato non appena si libera un posto.
+            </p>
+          </>
+        )}
 
-        {/* Visual queue */}
-        <div className="flex items-end gap-3 mb-7">
-          {/* Active slots */}
-          {displaySlots > 0 && (
-            <div className="flex items-end gap-2">
-              {Array.from({ length: displaySlots }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center gap-1.5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
-                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                  </div>
-                  <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide">In corso</span>
+        {/* Queue visualizer: people ahead → arrow → YOU */}
+        {(ahead != null || active > 0) && (
+          <div className="flex items-center gap-2 mb-6">
+            {/* Ahead slots (max 5 shown) */}
+            {ahead != null && ahead > 0 && (() => {
+              const show = Math.min(ahead, 5);
+              const extra = ahead > 5 ? ahead - 5 : 0;
+              return (
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: show }).map((_, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60">
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                      </div>
+                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">Attesa</span>
+                    </div>
+                  ))}
+                  {extra > 0 && (
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60 text-muted-foreground text-xs font-semibold">
+                        +{extra}
+                      </div>
+                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">Attesa</span>
+                    </div>
+                  )}
+                  {/* Arrow */}
+                  <svg width="16" height="10" viewBox="0 0 20 12" className="mx-1 text-muted-foreground/30 fill-current shrink-0">
+                    <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
+                  </svg>
                 </div>
-              ))}
-              {extraActive > 0 && (
-                <div className="flex flex-col items-center gap-1.5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted border border-border text-muted-foreground text-xs font-semibold">
-                    +{extraActive}
-                  </div>
-                  <span className="text-[9px] font-medium text-muted-foreground uppercase tracking-wide">In corso</span>
+              );
+            })()}
+
+            {/* Active processing slots */}
+            {active > 0 && (() => {
+              const showActive = Math.min(active, 3);
+              const extraActive = active > 3 ? active - 3 : 0;
+              return (
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: showActive }).map((_, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      </div>
+                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">In corso</span>
+                    </div>
+                  ))}
+                  {extraActive > 0 && (
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
+                        +{extraActive}
+                      </div>
+                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">In corso</span>
+                    </div>
+                  )}
+                  {/* Arrow to user */}
+                  <svg width="16" height="10" viewBox="0 0 20 12" className="mx-1 text-muted-foreground/30 fill-current shrink-0">
+                    <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
+                  </svg>
                 </div>
-              )}
-            </div>
-          )}
+              );
+            })()}
 
-          {/* Arrow divider */}
-          {active > 0 && (
-            <div className="flex flex-col items-center gap-1.5 pb-4">
-              <svg width="20" height="12" viewBox="0 0 20 12" className="text-muted-foreground/30 fill-current">
-                <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
-              </svg>
-            </div>
-          )}
-
-          {/* User's waiting slot — pulsing amber */}
-          <div className="flex flex-col items-center gap-1.5">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-xl bg-amber-400/30 animate-pulse" />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 border-2 border-amber-400 ring-4 ring-amber-400/20">
+            {/* User slot */}
+            <div className="flex flex-col items-center gap-1">
+              <div className={cn(
+                "relative flex h-10 w-10 items-center justify-center rounded-xl border-2 ring-4",
+                isNext
+                  ? "bg-green-50 border-green-400 ring-green-400/20"
+                  : "bg-amber-50 border-amber-400 ring-amber-400/20"
+              )}>
+                {!isNext && <div className="absolute inset-0 rounded-xl bg-amber-400/20 animate-pulse" />}
                 {pos !== undefined ? (
-                  <span className="text-sm font-bold text-amber-700">#{pos}</span>
+                  <span className={cn("relative text-xs font-bold", isNext ? "text-green-700" : "text-amber-700")}>
+                    #{pos}
+                  </span>
                 ) : (
-                  <Clock className="h-5 w-5 text-amber-600" />
+                  <Clock className="h-4 w-4 text-amber-600" />
                 )}
               </div>
+              <span className={cn(
+                "text-[8px] font-semibold uppercase tracking-wide",
+                isNext ? "text-green-600" : "text-amber-600"
+              )}>Tu</span>
             </div>
-            <span className="text-[9px] font-semibold text-amber-600 uppercase tracking-wide">Tu</span>
           </div>
-        </div>
+        )}
 
-        {/* Elapsed time */}
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-5">
-          <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-          <span>In attesa da <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
+        {/* Stats row */}
+        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-5">
+          <div className="flex items-center gap-1.5">
+            <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span>In attesa da <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
+          </div>
+          {estimatedSec != null && (
+            <>
+              <div className="h-3 w-px bg-border" />
+              <div className="flex items-center gap-1.5">
+                <Clock className="h-3 w-3" />
+                <span>Stima: <span className="font-semibold tabular-nums">{formatEstimate(estimatedSec)}</span></span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Reassuring note */}
-        <p className="text-xs text-muted-foreground/60 max-w-xs leading-relaxed mb-10">
+        <p className="text-xs text-muted-foreground/50 max-w-xs leading-relaxed mb-10">
           Non chiudere la pagina — la richiesta è registrata e verrà eseguita automaticamente.
         </p>
 

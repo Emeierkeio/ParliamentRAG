@@ -475,6 +475,96 @@
           "deputy_last_name": "DELLA VEDOVA"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.101366,
+      "mean": 0.435377,
+      "p25": 0.36544,
+      "median": 0.430745,
+      "p75": 0.516105,
+      "n": 387
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.068523,
+        "mean": 0.381068,
+        "p25": 0.344284,
+        "median": 0.37282,
+        "p75": 0.42101,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.069037,
+        "mean": 0.404086,
+        "p25": 0.362943,
+        "median": 0.402944,
+        "p75": 0.43567,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.07597,
+        "mean": 0.414457,
+        "p25": 0.366389,
+        "median": 0.415073,
+        "p75": 0.480661,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.076268,
+        "mean": 0.488778,
+        "p25": 0.453925,
+        "median": 0.501606,
+        "p75": 0.548873,
+        "n": 70
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.079675,
+        "mean": 0.516067,
+        "p25": 0.490859,
+        "median": 0.526704,
+        "p75": 0.568166,
+        "n": 49
+      },
+      "MISTO": {
+        "std": 0.144802,
+        "mean": 0.329527,
+        "p25": 0.20726,
+        "median": 0.317837,
+        "p75": 0.423148,
+        "n": 25
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.071179,
+        "mean": 0.549392,
+        "p25": 0.535724,
+        "median": 0.587383,
+        "p75": 0.59719,
+        "n": 6
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.03965,
+        "mean": 0.566066,
+        "p25": 0.543825,
+        "median": 0.5508,
+        "p75": 0.589254,
+        "n": 10
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.0936,
+        "mean": 0.453156,
+        "p25": 0.418347,
+        "median": 0.464845,
+        "p75": 0.531591,
+        "n": 9
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.05247,
+        "mean": 0.543265,
+        "p25": 0.509828,
+        "median": 0.535299,
+        "p75": 0.583938,
+        "n": 10
+      }
     }
   },
   "Autonomia Differenziata": {

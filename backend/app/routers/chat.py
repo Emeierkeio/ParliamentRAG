@@ -61,8 +61,8 @@ def sse_event(event_type: str, data: Any) -> str:
 _MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "5"))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
 _pipeline_counter_lock: Optional[asyncio.Lock] = None
-_pipeline_waiting: int = 0   # tasks queued (waiting for a slot)
-_pipeline_active: int = 0    # tasks currently running
+_waiting_queue: list[str] = []  # ordered list of waiting task_ids (front = next to run)
+_pipeline_active: int = 0       # tasks currently running
 
 
 def _get_pipeline_semaphore() -> asyncio.Semaphore:
@@ -92,8 +92,11 @@ async def _acquire_pipeline_slot(
     Returns True if the slot was acquired, False if the max_wait timeout expired.
     The approach is correct: asyncio.wait_for cancels the acquire() coroutine on
     timeout (properly removing us from the waiters list), then we re-queue.
+
+    Position tracking uses an ordered list so each task knows its exact rank even
+    as tasks ahead of it complete and leave the queue.
     """
-    global _pipeline_waiting, _pipeline_active
+    global _waiting_queue, _pipeline_active
     lock = _get_counter_lock()
 
     # Fast path: slot available immediately
@@ -104,16 +107,27 @@ async def _acquire_pipeline_slot(
         logger.info(f"[SEMAPHORE] Task {task_id} acquired immediately (active={_pipeline_active})")
         return True
 
-    # Slow path: queue and wait
+    # Slow path: add to ordered waiting queue
     async with lock:
-        _pipeline_waiting += 1
-    logger.info(f"[SEMAPHORE] Task {task_id} queued (position={_pipeline_waiting}, active={_pipeline_active})")
+        _waiting_queue.append(task_id)
+        position = len(_waiting_queue)   # 1-indexed position in queue
+        ahead = position - 1             # people ahead of this task
+        active_now = _pipeline_active
+    logger.info(f"[SEMAPHORE] Task {task_id} queued (position={position}, ahead={ahead}, active={active_now})")
+
+    def _current_position() -> tuple[int, int]:
+        """Return (position, ahead) for this task. Must be called under lock."""
+        try:
+            pos = _waiting_queue.index(task_id) + 1
+        except ValueError:
+            pos = 1
+        return pos, pos - 1
 
     try:
         await emit_fn("waiting", {
-            "message": f"Sistema occupato — sei in coda (posizione {_pipeline_waiting}). Attendi...",
-            "queue_position": _pipeline_waiting,
-            "active_count": _pipeline_active,
+            "queue_position": position,
+            "ahead_count": ahead,
+            "active_count": active_now,
             "elapsed_seconds": 0,
         })
 
@@ -124,16 +138,19 @@ async def _acquire_pipeline_slot(
                 async with lock:
                     _pipeline_active += 1
                 logger.info(f"[SEMAPHORE] Task {task_id} acquired after {elapsed}s "
-                            f"(active={_pipeline_active}, still_waiting={_pipeline_waiting - 1})")
+                            f"(active={_pipeline_active}, still_waiting={len(_waiting_queue) - 1})")
                 return True
             except asyncio.TimeoutError:
                 elapsed += check_every
+                async with lock:
+                    position, ahead = _current_position()
+                    active_now = _pipeline_active
                 logger.info(f"[SEMAPHORE] Task {task_id} still waiting "
-                            f"({elapsed}s, queue={_pipeline_waiting}, active={_pipeline_active})")
+                            f"({elapsed}s, position={position}, ahead={ahead}, active={active_now})")
                 await emit_fn("waiting", {
-                    "message": f"Ancora in coda (posizione ~{_pipeline_waiting}) — in attesa da {elapsed}s...",
-                    "queue_position": _pipeline_waiting,
-                    "active_count": _pipeline_active,
+                    "queue_position": position,
+                    "ahead_count": ahead,
+                    "active_count": active_now,
                     "elapsed_seconds": elapsed,
                 })
 
@@ -142,7 +159,10 @@ async def _acquire_pipeline_slot(
 
     finally:
         async with lock:
-            _pipeline_waiting = max(0, _pipeline_waiting - 1)
+            try:
+                _waiting_queue.remove(task_id)
+            except ValueError:
+                pass
 
 
 async def process_chat_background(request: ChatRequest, task_id: str):
@@ -585,7 +605,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             _pipeline_active = max(0, _pipeline_active - 1)
         semaphore.release()
         logger.info(f"[PIPELINE] Semaphore released for task {task_id} "
-                    f"(active={_pipeline_active}, waiting={_pipeline_waiting})")
+                    f"(active={_pipeline_active}, waiting={len(_waiting_queue)})")
 
 
 async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:

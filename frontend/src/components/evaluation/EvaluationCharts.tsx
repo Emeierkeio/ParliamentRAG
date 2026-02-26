@@ -519,9 +519,9 @@ interface WinRateChartProps {
 }
 
 export function WinRateChart({ systemWinRate, baselineWinRate, tieRate, totalEvaluations }: WinRateChartProps) {
-  const sysW = Math.round(systemWinRate * 100);
-  const baseW = Math.round(baselineWinRate * 100);
-  const tieW = Math.round(tieRate * 100);
+  const sysW = Math.round(systemWinRate);
+  const baseW = Math.round(baselineWinRate);
+  const tieW = Math.round(tieRate);
 
   return (
     <div className="space-y-4">

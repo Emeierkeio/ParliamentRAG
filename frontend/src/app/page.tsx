@@ -40,6 +40,7 @@ export default function Home() {
         isCollapsed={isCollapsed}
         onToggle={toggle}
         isQueryRunning={isLoading}
+        isQueuing={progress?.isWaiting}
         isMobile={isMobile}
         isMobileOpen={isMobileOpen}
         onCloseMobile={closeMobile}

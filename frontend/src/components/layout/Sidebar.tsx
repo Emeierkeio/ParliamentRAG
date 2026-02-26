@@ -39,6 +39,7 @@ interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
   isQueryRunning?: boolean;
+  isQueuing?: boolean;
   isMobile?: boolean;
   isMobileOpen?: boolean;
   onCloseMobile?: () => void;
@@ -57,7 +58,7 @@ export function MobileMenuButton({ onClick, className }: { onClick: () => void; 
   );
 }
 
-export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
+export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueuing = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -66,6 +67,15 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isMobil
     action();
     if (isMobile && onCloseMobile) {
       onCloseMobile();
+    }
+  };
+
+  // When queuing, open tools in new tab to preserve queue position
+  const navTo = (path: string) => {
+    if (isQueuing) {
+      window.open(path, "_blank");
+    } else {
+      window.location.href = path;
     }
   };
 
@@ -125,19 +135,19 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isMobil
               {/* Strumenti */}
               <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Strumenti</p>
               <NavButton
-                item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => { window.location.href = "/search"; }) }}
+                item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
                 isCollapsed={false}
-                disabled={isQueryRunning}
+                disabled={isQueryRunning && !isQueuing}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Analisi Autorità", isActive: pathname === "/ranking", onClick: () => handleNavClick(() => { window.location.href = "/ranking"; }) }}
+                item={{ icon: BarChart3, label: "Analisi Autorità", isActive: pathname === "/ranking", onClick: () => handleNavClick(() => navTo("/ranking")) }}
                 isCollapsed={false}
-                disabled={isQueryRunning}
+                disabled={isQueryRunning && !isQueuing}
               />
               <NavButton
-                item={{ icon: Compass, label: "Compasso Ideologico", isActive: pathname === "/compass", onClick: () => handleNavClick(() => { window.location.href = "/compass"; }) }}
+                item={{ icon: Compass, label: "Compasso Ideologico", isActive: pathname === "/compass", onClick: () => handleNavClick(() => navTo("/compass")) }}
                 isCollapsed={false}
-                disabled={isQueryRunning}
+                disabled={isQueryRunning && !isQueuing}
               />
 
             </nav>
@@ -230,21 +240,21 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isMobil
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
             <NavButton
-              item={{ icon: Search, label: "Ricerca Atti", href: "/search", isActive: pathname === "/search", onClick: () => window.location.href = "/search" }}
+              item={{ icon: Search, label: "Ricerca Atti", href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
               isCollapsed={isCollapsed}
-              disabled={isQueryRunning}
+              disabled={isQueryRunning && !isQueuing}
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Analisi Autorità", href: "/ranking", isActive: pathname === "/ranking", onClick: () => window.location.href = "/ranking" }}
+              item={{ icon: BarChart3, label: "Analisi Autorità", href: "/ranking", isActive: pathname === "/ranking", onClick: () => navTo("/ranking") }}
               isCollapsed={isCollapsed}
-              disabled={isQueryRunning}
+              disabled={isQueryRunning && !isQueuing}
             />
 
             <NavButton
-              item={{ icon: Compass, label: "Compasso Ideologico", href: "/compass", isActive: pathname === "/compass", onClick: () => window.location.href = "/compass" }}
+              item={{ icon: Compass, label: "Compasso Ideologico", href: "/compass", isActive: pathname === "/compass", onClick: () => navTo("/compass") }}
               isCollapsed={isCollapsed}
-              disabled={isQueryRunning}
+              disabled={isQueryRunning && !isQueuing}
             />
 
           </nav>

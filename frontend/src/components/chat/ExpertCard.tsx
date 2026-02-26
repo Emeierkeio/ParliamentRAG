@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, toTitleCase } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -75,7 +75,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
             {expert.photo ? (
               <img
                 src={expert.photo}
-                alt={`${expert.first_name} ${expert.last_name}`}
+                alt={`${toTitleCase(expert.first_name)} ${toTitleCase(expert.last_name)}`}
                 className="h-11 w-11 shrink-0 rounded-full object-cover shadow-sm"
               />
             ) : (
@@ -99,11 +99,11 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
                     className="text-sm font-semibold text-foreground leading-tight hover:underline hover:text-primary transition-colors block"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {expert.first_name} {expert.last_name}
+                    {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </a>
               ) : (
                   <p className="text-sm font-semibold text-foreground leading-tight">
-                    {expert.first_name} {expert.last_name}
+                    {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </p>
               )}
 
@@ -181,7 +181,7 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
         {expert.photo ? (
           <img
             src={expert.photo}
-            alt={`${expert.first_name} ${expert.last_name}`}
+            alt={`${toTitleCase(expert.first_name)} ${toTitleCase(expert.last_name)}`}
             className="h-9 w-9 shrink-0 rounded-full object-cover shadow-sm"
           />
         ) : (
@@ -204,10 +204,10 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
                              className="hover:underline hover:text-primary relative z-10" 
                              onClick={(e) => e.stopPropagation()}
                            >
-                              {expert.first_name} {expert.last_name}
+                              {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                            </a>
                        ) : (
-                          <span>{expert.first_name} {expert.last_name}</span>
+                          <span>{toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}</span>
                        )}
                   </div>
                   {expert.institutional_role && (
@@ -317,7 +317,7 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
             {expert.photo ? (
               <img
                 src={expert.photo}
-                alt={`${expert.first_name} ${expert.last_name}`}
+                alt={`${toTitleCase(expert.first_name)} ${toTitleCase(expert.last_name)}`}
                 className="h-12 w-12 sm:h-16 sm:w-16 shrink-0 rounded-xl sm:rounded-2xl object-cover shadow-lg"
               />
             ) : (
@@ -337,11 +337,11 @@ export function ExpertModal({ expert, isOpen, onClose }: ExpertModalProps) {
                     rel="noopener noreferrer"
                     className="text-xl sm:text-2xl font-bold text-foreground hover:underline hover:text-primary transition-colors block truncate"
                   >
-                    {expert.first_name} {expert.last_name}
+                    {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </a>
               ) : (
                   <h3 className="text-xl sm:text-2xl font-bold text-foreground truncate">
-                    {expert.first_name} {expert.last_name}
+                    {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </h3>
               )}
               <div className="flex flex-wrap items-center gap-2">

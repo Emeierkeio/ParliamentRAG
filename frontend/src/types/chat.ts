@@ -162,6 +162,7 @@ export interface ProcessingProgress {
   isWaiting?: boolean;
   waitingMessage?: string;
   queuePosition?: number;   // position in queue (1 = next)
+  aheadCount?: number;      // number of people ahead of this user (= position - 1)
   activeCount?: number;     // pipelines currently running
   elapsedSeconds?: number;  // seconds spent waiting so far
 }

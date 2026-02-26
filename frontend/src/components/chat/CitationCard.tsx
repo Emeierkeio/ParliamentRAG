@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn, toTitleCase } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -87,11 +87,11 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                           className="text-sm font-semibold text-foreground truncate flex-1 min-w-0 hover:underline hover:text-primary transition-colors"
                           onClick={(e) => e.stopPropagation()} 
                       >
-                          {citation.deputy_first_name} {citation.deputy_last_name}
+                          {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                       </a>
                   ) : (
                       <span className="text-sm font-semibold text-foreground break-words flex-1 min-w-0 hover:underline hover:text-primary transition-colors">
-                          {citation.deputy_first_name} {citation.deputy_last_name}
+                          {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                       </span>
                   )}
                   <Badge
@@ -238,7 +238,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                     {citation.photo ? (
                         <img
                             src={citation.photo}
-                            alt={`${citation.deputy_first_name} ${citation.deputy_last_name}`}
+                            alt={`${toTitleCase(citation.deputy_first_name || "")} ${toTitleCase(citation.deputy_last_name || "")}`}
                             className="h-12 w-12 shrink-0 rounded-full object-cover shadow-sm border border-border"
                             style={{ borderColor: `${groupColor}30` }}
                             onError={(e) => {
@@ -263,11 +263,11 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                 rel="noopener noreferrer"
                                 className="font-bold text-foreground text-lg leading-tight truncate hover:underline hover:text-primary transition-colors"
                             >
-                                {citation.deputy_first_name} {citation.deputy_last_name}
+                                {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                             </a>
                         ) : (
                             <div className="font-bold text-foreground text-lg leading-tight truncate">
-                                {citation.deputy_first_name} {citation.deputy_last_name}
+                                {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                             </div>
                         )}
                         <div className="flex items-center gap-2 mt-1">

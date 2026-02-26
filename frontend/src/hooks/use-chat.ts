@@ -242,6 +242,7 @@ export function useChat(options: UseChatOptions = {}) {
                   isWaiting: true,
                   waitingMessage: data.message,
                   queuePosition: data.queue_position,
+                  aheadCount: data.ahead_count,
                   activeCount: data.active_count,
                   elapsedSeconds: data.elapsed_seconds ?? 0,
                   stepResults: [],
