@@ -1488,6 +1488,102 @@
           "deputy_last_name": "MAGI"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.075022,
+      "mean": 0.276811,
+      "p25": 0.238136,
+      "median": 0.267073,
+      "p75": 0.306862,
+      "n": 387,
+      "min_score": 0.072946,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d307889_19",
+      "min_name": "MASSIMO RUSPANDINI",
+      "max_score": 0.580829,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308896_19",
+      "max_name": "ANDREA QUARTINI"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.044406,
+        "mean": 0.26153,
+        "p25": 0.238848,
+        "median": 0.265923,
+        "p75": 0.279834,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.04977,
+        "mean": 0.246522,
+        "p25": 0.228675,
+        "median": 0.246166,
+        "p75": 0.269923,
+        "n": 102
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.077122,
+        "mean": 0.292861,
+        "p25": 0.243082,
+        "median": 0.296116,
+        "p75": 0.328211,
+        "n": 70
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.055239,
+        "mean": 0.274175,
+        "p25": 0.255298,
+        "median": 0.2823,
+        "p75": 0.299655,
+        "n": 56
+      },
+      "MISTO": {
+        "std": 0.070888,
+        "mean": 0.219731,
+        "p25": 0.170296,
+        "median": 0.201419,
+        "p75": 0.245998,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.089051,
+        "mean": 0.319775,
+        "p25": 0.260585,
+        "median": 0.298636,
+        "p75": 0.361554,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.064321,
+        "mean": 0.360534,
+        "p25": 0.308676,
+        "median": 0.379215,
+        "p75": 0.419235,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.068859,
+        "mean": 0.246423,
+        "p25": 0.186684,
+        "median": 0.250101,
+        "p75": 0.321098,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.052613,
+        "mean": 0.359841,
+        "p25": 0.32172,
+        "median": 0.371177,
+        "p75": 0.386028,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.092406,
+        "mean": 0.390828,
+        "p25": 0.326659,
+        "median": 0.381725,
+        "p75": 0.474345,
+        "n": 10
+      }
     }
   },
   "Bolkestein": {
@@ -1966,6 +2062,102 @@
           "deputy_last_name": "DELLA VEDOVA"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.038525,
+      "mean": 0.19786,
+      "p25": 0.198107,
+      "median": 0.20653,
+      "p75": 0.217227,
+      "n": 387,
+      "min_score": 0.052737,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d302838_19",
+      "min_name": "MICHELA VITTORIA BRAMBILLA",
+      "max_score": 0.301252,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d300469_19",
+      "max_name": "LUANA ZANELLA"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.03383,
+        "mean": 0.197682,
+        "p25": 0.198217,
+        "median": 0.203204,
+        "p75": 0.210927,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.038438,
+        "mean": 0.200011,
+        "p25": 0.202996,
+        "median": 0.211782,
+        "p75": 0.218723,
+        "n": 56
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.031597,
+        "mean": 0.202503,
+        "p25": 0.199139,
+        "median": 0.206895,
+        "p75": 0.219754,
+        "n": 50
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.039764,
+        "mean": 0.202341,
+        "p25": 0.205084,
+        "median": 0.213798,
+        "p75": 0.223687,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.044044,
+        "mean": 0.177836,
+        "p25": 0.160678,
+        "median": 0.19659,
+        "p75": 0.208166,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.039204,
+        "mean": 0.194556,
+        "p25": 0.195667,
+        "median": 0.206055,
+        "p75": 0.216543,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.031793,
+        "mean": 0.200142,
+        "p25": 0.20733,
+        "median": 0.211648,
+        "p75": 0.213185,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.053248,
+        "mean": 0.16304,
+        "p25": 0.124508,
+        "median": 0.198229,
+        "p75": 0.204338,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.017505,
+        "mean": 0.221486,
+        "p25": 0.209279,
+        "median": 0.218899,
+        "p75": 0.228898,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.0504,
+        "mean": 0.205632,
+        "p25": 0.170511,
+        "median": 0.208808,
+        "p75": 0.239252,
+        "n": 10
+      }
     }
   },
   "Educazione affettiva e sessuale nelle scuole": {
@@ -2444,6 +2636,102 @@
           "deputy_last_name": "MAGI"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.107783,
+      "mean": 0.4916,
+      "p25": 0.413292,
+      "median": 0.50345,
+      "p75": 0.589889,
+      "n": 387,
+      "min_score": 0.07963,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.662946,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308840_19",
+      "max_name": "ANTONIO CASO"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.076059,
+        "mean": 0.435615,
+        "p25": 0.397025,
+        "median": 0.431026,
+        "p75": 0.480241,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.08932,
+        "mean": 0.450006,
+        "p25": 0.384126,
+        "median": 0.445074,
+        "p75": 0.509308,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.087303,
+        "mean": 0.477245,
+        "p25": 0.41303,
+        "median": 0.49255,
+        "p75": 0.538693,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.07475,
+        "mean": 0.560969,
+        "p25": 0.521053,
+        "median": 0.586654,
+        "p75": 0.612747,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.159695,
+        "mean": 0.378712,
+        "p25": 0.229558,
+        "median": 0.373946,
+        "p75": 0.495797,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.070178,
+        "mean": 0.572723,
+        "p25": 0.531218,
+        "median": 0.596003,
+        "p75": 0.615897,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.087638,
+        "mean": 0.568106,
+        "p25": 0.538778,
+        "median": 0.607636,
+        "p75": 0.621415,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.090852,
+        "mean": 0.51179,
+        "p25": 0.472393,
+        "median": 0.506193,
+        "p75": 0.600743,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.029647,
+        "mean": 0.608589,
+        "p25": 0.593181,
+        "median": 0.611251,
+        "p75": 0.624091,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.070393,
+        "mean": 0.569079,
+        "p25": 0.515712,
+        "median": 0.568738,
+        "p75": 0.635171,
+        "n": 10
+      }
     }
   },
   "Gestione dei Flussi Migratori": {
@@ -2601,6 +2889,102 @@
           "deputy_last_name": null
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.098897,
+      "mean": 0.528693,
+      "p25": 0.483703,
+      "median": 0.541387,
+      "p75": 0.611714,
+      "n": 387,
+      "min_score": 0.077855,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.657182,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306176_19",
+      "max_name": "MATTEO MAURI"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.070764,
+        "mean": 0.490839,
+        "p25": 0.458231,
+        "median": 0.499946,
+        "p75": 0.537255,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.084604,
+        "mean": 0.506571,
+        "p25": 0.457795,
+        "median": 0.519222,
+        "p75": 0.567868,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.082109,
+        "mean": 0.521632,
+        "p25": 0.486709,
+        "median": 0.535033,
+        "p75": 0.584332,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.070997,
+        "mean": 0.579363,
+        "p25": 0.552823,
+        "median": 0.603758,
+        "p75": 0.628795,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.171471,
+        "mean": 0.401557,
+        "p25": 0.293535,
+        "median": 0.393989,
+        "p75": 0.562318,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.064264,
+        "mean": 0.58993,
+        "p25": 0.555823,
+        "median": 0.616746,
+        "p75": 0.631659,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.084069,
+        "mean": 0.584316,
+        "p25": 0.561026,
+        "median": 0.623364,
+        "p75": 0.644471,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.092591,
+        "mean": 0.54795,
+        "p25": 0.532285,
+        "median": 0.553004,
+        "p75": 0.63494,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.008513,
+        "mean": 0.62754,
+        "p25": 0.623749,
+        "median": 0.625976,
+        "p75": 0.633238,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.065516,
+        "mean": 0.57849,
+        "p25": 0.537354,
+        "median": 0.580912,
+        "p75": 0.634075,
+        "n": 10
+      }
     }
   },
   "Legge di Bilancio": {
@@ -3079,6 +3463,102 @@
           "deputy_last_name": "STEGER"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.103637,
+      "mean": 0.533823,
+      "p25": 0.478911,
+      "median": 0.546279,
+      "p75": 0.615859,
+      "n": 387,
+      "min_score": 0.082409,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.713498,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307790_19",
+      "max_name": "GIANMAURO DELL'OLIO"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.091757,
+        "mean": 0.507525,
+        "p25": 0.459351,
+        "median": 0.502675,
+        "p75": 0.577337,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.079016,
+        "mean": 0.49669,
+        "p25": 0.455967,
+        "median": 0.507892,
+        "p75": 0.54736,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.094193,
+        "mean": 0.528121,
+        "p25": 0.469701,
+        "median": 0.544794,
+        "p75": 0.595286,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.073074,
+        "mean": 0.584644,
+        "p25": 0.549108,
+        "median": 0.611053,
+        "p75": 0.628566,
+        "n": 70
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.068115,
+        "mean": 0.594042,
+        "p25": 0.553096,
+        "median": 0.613941,
+        "p75": 0.636242,
+        "n": 49
+      },
+      "MISTO": {
+        "std": 0.17572,
+        "mean": 0.409962,
+        "p25": 0.261119,
+        "median": 0.410581,
+        "p75": 0.590847,
+        "n": 25
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.081839,
+        "mean": 0.598843,
+        "p25": 0.569683,
+        "median": 0.623709,
+        "p75": 0.64076,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.100902,
+        "mean": 0.552378,
+        "p25": 0.528086,
+        "median": 0.546152,
+        "p75": 0.626779,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.025415,
+        "mean": 0.631252,
+        "p25": 0.621307,
+        "median": 0.62228,
+        "p75": 0.641217,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.050282,
+        "mean": 0.581693,
+        "p25": 0.538264,
+        "median": 0.580095,
+        "p75": 0.629421,
+        "n": 10
+      }
     }
   },
   "Politiche sull'Intelligenza Artificiale": {
@@ -3545,6 +4025,102 @@
           "deputy_last_name": "STEGER"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.097402,
+      "mean": 0.530471,
+      "p25": 0.483049,
+      "median": 0.542745,
+      "p75": 0.613302,
+      "n": 387,
+      "min_score": 0.080059,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.649793,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306176_19",
+      "max_name": "MATTEO MAURI"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.088934,
+        "mean": 0.508194,
+        "p25": 0.438778,
+        "median": 0.52096,
+        "p75": 0.576014,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.070523,
+        "mean": 0.492322,
+        "p25": 0.449665,
+        "median": 0.49748,
+        "p75": 0.538088,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.08384,
+        "mean": 0.522084,
+        "p25": 0.471473,
+        "median": 0.540945,
+        "p75": 0.591288,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.06324,
+        "mean": 0.58502,
+        "p25": 0.562782,
+        "median": 0.612559,
+        "p75": 0.625655,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.169807,
+        "mean": 0.406466,
+        "p25": 0.270799,
+        "median": 0.406145,
+        "p75": 0.584038,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.058985,
+        "mean": 0.588888,
+        "p25": 0.559899,
+        "median": 0.612049,
+        "p75": 0.626287,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.077892,
+        "mean": 0.578059,
+        "p25": 0.565458,
+        "median": 0.618783,
+        "p75": 0.628545,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.079829,
+        "mean": 0.55058,
+        "p25": 0.517997,
+        "median": 0.541659,
+        "p75": 0.621831,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.012246,
+        "mean": 0.62881,
+        "p25": 0.617855,
+        "median": 0.631779,
+        "p75": 0.63878,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.061501,
+        "mean": 0.574859,
+        "p25": 0.538865,
+        "median": 0.583162,
+        "p75": 0.629738,
+        "n": 10
+      }
     }
   },
   "Riarmo europeo": {
@@ -4023,6 +4599,102 @@
           "deputy_last_name": "STEGER"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.096058,
+      "mean": 0.530093,
+      "p25": 0.482895,
+      "median": 0.548262,
+      "p75": 0.606978,
+      "n": 387,
+      "min_score": 0.078542,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.666985,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306349_19",
+      "max_name": "STEFANO CANDIANI"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.069134,
+        "mean": 0.495071,
+        "p25": 0.45747,
+        "median": 0.50106,
+        "p75": 0.541905,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.085342,
+        "mean": 0.507955,
+        "p25": 0.445603,
+        "median": 0.522301,
+        "p75": 0.567568,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.083476,
+        "mean": 0.522871,
+        "p25": 0.482618,
+        "median": 0.536417,
+        "p75": 0.577768,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.059161,
+        "mean": 0.582447,
+        "p25": 0.561224,
+        "median": 0.604981,
+        "p75": 0.617221,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.169762,
+        "mean": 0.402998,
+        "p25": 0.281571,
+        "median": 0.409276,
+        "p75": 0.573272,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.062285,
+        "mean": 0.585445,
+        "p25": 0.56811,
+        "median": 0.606526,
+        "p75": 0.62255,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.077564,
+        "mean": 0.569781,
+        "p25": 0.566847,
+        "median": 0.613371,
+        "p75": 0.615265,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.085534,
+        "mean": 0.552628,
+        "p25": 0.516104,
+        "median": 0.569427,
+        "p75": 0.62236,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.014209,
+        "mean": 0.632402,
+        "p25": 0.618722,
+        "median": 0.63078,
+        "p75": 0.639963,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.059005,
+        "mean": 0.572082,
+        "p25": 0.529811,
+        "median": 0.579041,
+        "p75": 0.620654,
+        "n": 10
+      }
     }
   },
   "Riforma del Premierato": {
@@ -4411,6 +5083,102 @@
           "deputy_last_name": "FARAONE"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.097757,
+      "mean": 0.548015,
+      "p25": 0.501234,
+      "median": 0.571963,
+      "p75": 0.624741,
+      "n": 387,
+      "min_score": 0.084354,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.664097,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307394_19",
+      "max_name": "DAVIDE AIELLO"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.089797,
+        "mean": 0.53262,
+        "p25": 0.474776,
+        "median": 0.541948,
+        "p75": 0.609768,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.075106,
+        "mean": 0.51869,
+        "p25": 0.472852,
+        "median": 0.531527,
+        "p75": 0.57193,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.090592,
+        "mean": 0.542094,
+        "p25": 0.486451,
+        "median": 0.557679,
+        "p75": 0.623169,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.0632,
+        "mean": 0.597054,
+        "p25": 0.583926,
+        "median": 0.621031,
+        "p75": 0.635914,
+        "n": 70
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.062782,
+        "mean": 0.598208,
+        "p25": 0.579868,
+        "median": 0.621494,
+        "p75": 0.638801,
+        "n": 49
+      },
+      "MISTO": {
+        "std": 0.172169,
+        "mean": 0.419506,
+        "p25": 0.270183,
+        "median": 0.439726,
+        "p75": 0.599004,
+        "n": 25
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.079548,
+        "mean": 0.588326,
+        "p25": 0.563829,
+        "median": 0.636379,
+        "p75": 0.639102,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.086943,
+        "mean": 0.552505,
+        "p25": 0.52607,
+        "median": 0.546799,
+        "p75": 0.634132,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.014846,
+        "mean": 0.633792,
+        "p25": 0.623383,
+        "median": 0.630041,
+        "p75": 0.643046,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.064073,
+        "mean": 0.575297,
+        "p25": 0.522563,
+        "median": 0.580126,
+        "p75": 0.63511,
+        "n": 10
+      }
     }
   },
   "Riforma della Giustizia": {
@@ -4889,6 +5657,102 @@
           "deputy_last_name": "DELLA VEDOVA"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.101579,
+      "mean": 0.552107,
+      "p25": 0.500646,
+      "median": 0.569869,
+      "p75": 0.627105,
+      "n": 387,
+      "min_score": 0.090059,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.714537,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d301541_19",
+      "max_name": "ENRICO COSTA"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.099532,
+        "mean": 0.534034,
+        "p25": 0.467384,
+        "median": 0.538282,
+        "p75": 0.612628,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.079699,
+        "mean": 0.523604,
+        "p25": 0.470646,
+        "median": 0.534482,
+        "p75": 0.577872,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.095279,
+        "mean": 0.543127,
+        "p25": 0.48971,
+        "median": 0.567626,
+        "p75": 0.61137,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.066111,
+        "mean": 0.600643,
+        "p25": 0.569366,
+        "median": 0.619352,
+        "p75": 0.637804,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.172817,
+        "mean": 0.422378,
+        "p25": 0.269902,
+        "median": 0.444301,
+        "p75": 0.599994,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.066196,
+        "mean": 0.60311,
+        "p25": 0.565303,
+        "median": 0.614984,
+        "p75": 0.640644,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.057187,
+        "mean": 0.597596,
+        "p25": 0.568468,
+        "median": 0.628923,
+        "p75": 0.632483,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.089649,
+        "mean": 0.568724,
+        "p25": 0.536992,
+        "median": 0.546561,
+        "p75": 0.63565,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.025654,
+        "mean": 0.641928,
+        "p25": 0.627211,
+        "median": 0.631028,
+        "p75": 0.644733,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.071973,
+        "mean": 0.586065,
+        "p25": 0.531006,
+        "median": 0.583601,
+        "p75": 0.647963,
+        "n": 10
+      }
     }
   },
   "Ritorno al Nucleare": {
@@ -5322,6 +6186,102 @@
           "deputy_last_name": "DEL BARBA"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.102356,
+      "mean": 0.478353,
+      "p25": 0.407067,
+      "median": 0.486612,
+      "p75": 0.569364,
+      "n": 387,
+      "min_score": 0.076961,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.616046,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d300447_19",
+      "max_name": "MAURIZIO ENZO LUPI"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.078715,
+        "mean": 0.441195,
+        "p25": 0.384952,
+        "median": 0.445812,
+        "p75": 0.508208,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.06915,
+        "mean": 0.429253,
+        "p25": 0.391028,
+        "median": 0.442399,
+        "p75": 0.469986,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.079789,
+        "mean": 0.455443,
+        "p25": 0.40966,
+        "median": 0.462917,
+        "p75": 0.519995,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.071868,
+        "mean": 0.542237,
+        "p25": 0.51134,
+        "median": 0.56591,
+        "p75": 0.594543,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.157318,
+        "mean": 0.367317,
+        "p25": 0.254743,
+        "median": 0.351887,
+        "p75": 0.484096,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.068487,
+        "mean": 0.557507,
+        "p25": 0.525323,
+        "median": 0.589371,
+        "p75": 0.602285,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.07782,
+        "mean": 0.556234,
+        "p25": 0.535424,
+        "median": 0.60196,
+        "p75": 0.608266,
+        "n": 6
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.009355,
+        "mean": 0.60148,
+        "p25": 0.599069,
+        "median": 0.604934,
+        "p75": 0.606946,
+        "n": 10
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.119122,
+        "mean": 0.491477,
+        "p25": 0.457629,
+        "median": 0.50571,
+        "p75": 0.584268,
+        "n": 9
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.057622,
+        "mean": 0.554137,
+        "p25": 0.51442,
+        "median": 0.562416,
+        "p75": 0.60555,
+        "n": 10
+      }
     }
   },
   "Salario minimo": {
@@ -5800,6 +6760,102 @@
           "deputy_last_name": "MAGI"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.066773,
+      "mean": 0.240989,
+      "p25": 0.216339,
+      "median": 0.232518,
+      "p75": 0.265061,
+      "n": 387,
+      "min_score": 0.045261,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d308917_19",
+      "min_name": "CHIARA COLOSIMO",
+      "max_score": 0.552966,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d302069_19",
+      "max_name": "ARTURO SCOTTO"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.05028,
+        "mean": 0.224127,
+        "p25": 0.214071,
+        "median": 0.221721,
+        "p75": 0.233187,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.046157,
+        "mean": 0.225619,
+        "p25": 0.215295,
+        "median": 0.22714,
+        "p75": 0.238043,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.050704,
+        "mean": 0.222372,
+        "p25": 0.220598,
+        "median": 0.230515,
+        "p75": 0.239538,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.072037,
+        "mean": 0.258976,
+        "p25": 0.23099,
+        "median": 0.253996,
+        "p75": 0.281621,
+        "n": 70
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.078939,
+        "mean": 0.284245,
+        "p25": 0.242891,
+        "median": 0.280927,
+        "p75": 0.312245,
+        "n": 49
+      },
+      "MISTO": {
+        "std": 0.067791,
+        "mean": 0.210682,
+        "p25": 0.167472,
+        "median": 0.209847,
+        "p75": 0.254309,
+        "n": 25
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.040715,
+        "mean": 0.247504,
+        "p25": 0.230272,
+        "median": 0.255185,
+        "p75": 0.277639,
+        "n": 6
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.027983,
+        "mean": 0.283386,
+        "p25": 0.262517,
+        "median": 0.280491,
+        "p75": 0.297794,
+        "n": 10
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.059872,
+        "mean": 0.195873,
+        "p25": 0.159811,
+        "median": 0.218928,
+        "p75": 0.244699,
+        "n": 9
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.087617,
+        "mean": 0.326304,
+        "p25": 0.261396,
+        "median": 0.310947,
+        "p75": 0.366334,
+        "n": 10
+      }
     }
   },
   "Sgravi sul costo del lavoro": {
@@ -6233,6 +7289,102 @@
           "deputy_last_name": "MAGI"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.100127,
+      "mean": 0.53511,
+      "p25": 0.48794,
+      "median": 0.553909,
+      "p75": 0.614937,
+      "n": 387,
+      "min_score": 0.081386,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+      "min_name": "RAFFAELE FITTO",
+      "max_score": 0.681744,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308001_19",
+      "max_name": "VALENTINA BARZOTTI"
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.094431,
+        "mean": 0.516311,
+        "p25": 0.462202,
+        "median": 0.524378,
+        "p75": 0.581363,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.074303,
+        "mean": 0.50033,
+        "p25": 0.462974,
+        "median": 0.511642,
+        "p75": 0.558117,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.090163,
+        "mean": 0.528216,
+        "p25": 0.477852,
+        "median": 0.546845,
+        "p75": 0.59863,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.067777,
+        "mean": 0.586366,
+        "p25": 0.571728,
+        "median": 0.609471,
+        "p75": 0.627087,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.173912,
+        "mean": 0.409469,
+        "p25": 0.263261,
+        "median": 0.405687,
+        "p75": 0.590986,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.064085,
+        "mean": 0.591198,
+        "p25": 0.553017,
+        "median": 0.617793,
+        "p75": 0.630923,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.077115,
+        "mean": 0.582767,
+        "p25": 0.559645,
+        "median": 0.620854,
+        "p75": 0.628403,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.086509,
+        "mean": 0.547427,
+        "p25": 0.534658,
+        "median": 0.558675,
+        "p75": 0.620857,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.008202,
+        "mean": 0.623975,
+        "p25": 0.617389,
+        "median": 0.624338,
+        "p75": 0.627565,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.068652,
+        "mean": 0.574406,
+        "p25": 0.518636,
+        "median": 0.577344,
+        "p75": 0.632163,
+        "n": 10
+      }
     }
   },
   "Golden Power": {
@@ -6666,6 +7818,102 @@
           "deputy_last_name": "DELLA VEDOVA"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.03507,
+      "mean": 0.157732,
+      "p25": 0.160878,
+      "median": 0.168664,
+      "p75": 0.176004,
+      "n": 387,
+      "min_score": 0.028425,
+      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d302838_19",
+      "min_name": "MICHELA VITTORIA BRAMBILLA",
+      "max_score": 0.232703,
+      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d301577_19",
+      "max_name": "BENEDETTO DELLA VEDOVA"
+    },
+    "authority_spread_by_group": {
+      "FRATELLI D'ITALIA": {
+        "std": 0.030509,
+        "mean": 0.163515,
+        "p25": 0.164472,
+        "median": 0.171364,
+        "p75": 0.178675,
+        "n": 102
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.028708,
+        "mean": 0.16273,
+        "p25": 0.16253,
+        "median": 0.169537,
+        "p75": 0.174901,
+        "n": 50
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.037745,
+        "mean": 0.158099,
+        "p25": 0.163695,
+        "median": 0.16919,
+        "p75": 0.179274,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.03432,
+        "mean": 0.156339,
+        "p25": 0.161791,
+        "median": 0.167581,
+        "p75": 0.174649,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.035687,
+        "mean": 0.152227,
+        "p25": 0.147088,
+        "median": 0.151428,
+        "p75": 0.169479,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.037302,
+        "mean": 0.152758,
+        "p25": 0.158105,
+        "median": 0.167646,
+        "p75": 0.174871,
+        "n": 49
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.049459,
+        "mean": 0.129218,
+        "p25": 0.096211,
+        "median": 0.153517,
+        "p75": 0.169266,
+        "n": 9
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.026593,
+        "mean": 0.158244,
+        "p25": 0.165937,
+        "median": 0.167938,
+        "p75": 0.169708,
+        "n": 6
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.006753,
+        "mean": 0.174564,
+        "p25": 0.170694,
+        "median": 0.174372,
+        "p75": 0.180397,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.050145,
+        "mean": 0.128103,
+        "p25": 0.091343,
+        "median": 0.130935,
+        "p75": 0.176457,
+        "n": 10
+      }
     }
   }
 }
