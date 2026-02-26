@@ -21,6 +21,8 @@ class RetrievalConfig(BaseModel):
     dense_similarity_threshold: float
     graph_lexical_min_match: int
     graph_semantic_threshold: float
+    graph_chunk_similarity_threshold: float
+    graph_max_acts_per_query: int
     merger_weights: Dict[str, float]
 
 
@@ -29,6 +31,8 @@ class AuthorityConfig(BaseModel):
     weights: Dict[str, float]
     time_decay_acts_half_life: int
     time_decay_speeches_half_life: int
+    acts_relevance_threshold: float
+    interventions_relevance_threshold: float
     normalization: str
     max_component_contribution: float
 
@@ -62,7 +66,15 @@ class GenerationConfig(BaseModel):
     parameters: GenerationParameters
     position_brief: PositionBriefConfig
     require_all_parties: bool
+    enable_synthesis: bool
     no_evidence_message: str
+
+
+class QueryRewritingConfig(BaseModel):
+    """Query rewriting configuration."""
+    enabled: bool
+    model: str
+    max_query_words: int
 
 
 class CoalitionsConfig(BaseModel):
@@ -86,6 +98,7 @@ class ConfigResponse(BaseModel):
     generation: GenerationConfig
     coalitions: CoalitionsConfig
     citation: CitationConfig
+    query_rewriting: QueryRewritingConfig
     all_parties: List[str]
 
 
@@ -111,6 +124,8 @@ async def get_configuration():
         dense_similarity_threshold=dense.get("similarity_threshold", 0.3),
         graph_lexical_min_match=graph.get("lexical_keywords_min_match", 1),
         graph_semantic_threshold=graph.get("semantic_similarity_threshold", 0.4),
+        graph_chunk_similarity_threshold=graph.get("chunk_similarity_threshold", 0.3),
+        graph_max_acts_per_query=graph.get("max_acts_per_query", 100),
         merger_weights={
             "relevance": merger.get("relevance_weight", 0.15),
             "diversity": merger.get("diversity_weight", 0.15),
@@ -128,6 +143,8 @@ async def get_configuration():
         weights=authority_data.get("weights", {}),
         time_decay_acts_half_life=time_decay.get("acts_half_life_days", 365),
         time_decay_speeches_half_life=time_decay.get("speeches_half_life_days", 180),
+        acts_relevance_threshold=authority_data.get("acts_relevance_threshold", 0.25),
+        interventions_relevance_threshold=authority_data.get("interventions_relevance_threshold", 0.25),
         normalization=authority_data.get("normalization", "percentile"),
         max_component_contribution=authority_data.get("max_component_contribution", 0.8),
     )
@@ -166,10 +183,19 @@ async def get_configuration():
             context_chars=gen_pos_brief.get("context_chars", 500),
         ),
         require_all_parties=generation_data.get("require_all_parties", True),
+        enable_synthesis=generation_data.get("enable_synthesis", True),
         no_evidence_message=generation_data.get(
             "no_evidence_message",
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
         ),
+    )
+
+    # Query rewriting config
+    qr_data = config_data.get("query_rewriting", {})
+    query_rewriting_config = QueryRewritingConfig(
+        enabled=qr_data.get("enabled", True),
+        model=qr_data.get("model", "gpt-4o-mini"),
+        max_query_words=qr_data.get("max_query_words", 5),
     )
 
     # Coalitions config
@@ -199,6 +225,7 @@ async def get_configuration():
         generation=generation_config,
         coalitions=coalitions_config,
         citation=citation_config,
+        query_rewriting=query_rewriting_config,
         all_parties=all_parties,
     )
 
@@ -208,6 +235,7 @@ class ConfigUpdateRequest(BaseModel):
     retrieval: Optional[Dict[str, Any]] = None
     authority: Optional[Dict[str, Any]] = None
     generation: Optional[Dict[str, Any]] = None
+    query_rewriting: Optional[Dict[str, Any]] = None
 
     class Config:
         extra = "forbid"
@@ -239,6 +267,10 @@ def _apply_retrieval_update(current: Dict, update: Dict) -> Dict:
         graph["lexical_keywords_min_match"] = update["graph_lexical_min_match"]
     if "graph_semantic_threshold" in update:
         graph["semantic_similarity_threshold"] = update["graph_semantic_threshold"]
+    if "graph_chunk_similarity_threshold" in update:
+        graph["chunk_similarity_threshold"] = update["graph_chunk_similarity_threshold"]
+    if "graph_max_acts_per_query" in update:
+        graph["max_acts_per_query"] = update["graph_max_acts_per_query"]
     if "merger_weights" in update:
         mw = update["merger_weights"]
         if "relevance" in mw:
@@ -269,6 +301,10 @@ def _apply_authority_update(current: Dict, update: Dict) -> Dict:
         authority.setdefault("time_decay", {})["acts_half_life_days"] = update["time_decay_acts_half_life"]
     if "time_decay_speeches_half_life" in update:
         authority.setdefault("time_decay", {})["speeches_half_life_days"] = update["time_decay_speeches_half_life"]
+    if "acts_relevance_threshold" in update:
+        authority["acts_relevance_threshold"] = update["acts_relevance_threshold"]
+    if "interventions_relevance_threshold" in update:
+        authority["interventions_relevance_threshold"] = update["interventions_relevance_threshold"]
     if "normalization" in update:
         authority["normalization"] = update["normalization"]
     if "max_component_contribution" in update:
@@ -290,10 +326,27 @@ def _apply_generation_update(current: Dict, update: Dict) -> Dict:
         generation["position_brief"] = _deep_merge(generation.get("position_brief", {}), update["position_brief"])
     if "require_all_parties" in update:
         generation["require_all_parties"] = update["require_all_parties"]
+    if "enable_synthesis" in update:
+        generation["enable_synthesis"] = update["enable_synthesis"]
     if "no_evidence_message" in update:
         generation["no_evidence_message"] = update["no_evidence_message"]
 
     current["generation"] = generation
+    return current
+
+
+def _apply_query_rewriting_update(current: Dict, update: Dict) -> Dict:
+    """Map flat API field names back to nested YAML structure."""
+    qr = current.get("query_rewriting", {})
+
+    if "enabled" in update:
+        qr["enabled"] = update["enabled"]
+    if "model" in update:
+        qr["model"] = update["model"]
+    if "max_query_words" in update:
+        qr["max_query_words"] = update["max_query_words"]
+
+    current["query_rewriting"] = qr
     return current
 
 
@@ -314,6 +367,8 @@ async def update_configuration(update: ConfigUpdateRequest):
         current = _apply_authority_update(current, update.authority)
     if update.generation is not None:
         current = _apply_generation_update(current, update.generation)
+    if update.query_rewriting is not None:
+        current = _apply_query_rewriting_update(current, update.query_rewriting)
 
     config.save_config(current)
     logger.info("Configuration updated via API")

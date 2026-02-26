@@ -1065,6 +1065,47 @@ function ChatEvaluationRow({
                 </div>
               </div>
 
+              {/* Global authority spread stats */}
+              {m.authority_spread_stats && (
+                <div className="mt-3 rounded-lg bg-muted/40 border border-border/50 px-3 py-2.5 text-xs space-y-1.5">
+                  <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+                    Distribuzione autorità — tutti i {m.authority_spread_stats.n} deputati
+                  </p>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Media</span>
+                      <span className="font-mono font-medium">{(m.authority_spread_stats.mean * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Dev. std</span>
+                      <span className="font-mono font-medium">{(m.authority_spread_stats.std * 100).toFixed(1)}%</span>
+                    </div>
+                    {m.authority_spread_stats.min_name && (
+                      <div className="flex justify-between gap-2 col-span-2">
+                        <span className="text-muted-foreground shrink-0">Min</span>
+                        <span className="font-medium text-right truncate">
+                          {m.authority_spread_stats.min_name}
+                          <span className="font-mono text-muted-foreground ml-1">
+                            ({(m.authority_spread_stats.min_score! * 100).toFixed(1)}%)
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                    {m.authority_spread_stats.max_name && (
+                      <div className="flex justify-between gap-2 col-span-2">
+                        <span className="text-muted-foreground shrink-0">Max</span>
+                        <span className="font-medium text-right truncate">
+                          {m.authority_spread_stats.max_name}
+                          <span className="font-mono text-muted-foreground ml-1">
+                            ({(m.authority_spread_stats.max_score! * 100).toFixed(1)}%)
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Per-group authority chart */}
               {Object.keys(m.authority_by_group).length > 0 && (
                 <AuthorityByGroupChart

@@ -64,6 +64,22 @@ def _fetch_all_deputy_ids(client: Neo4jClient) -> List[str]:
     return ids
 
 
+def _fetch_deputy_names(client: Neo4jClient, ids: List[str]) -> Dict[str, str]:
+    """Fetch full names for a list of deputy IDs. Returns {id: 'FirstName LastName'}."""
+    if not ids:
+        return {}
+    results = client.query(
+        "MATCH (d:Deputy) WHERE d.id IN $ids "
+        "RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name",
+        {"ids": ids},
+    )
+    return {
+        r["id"]: f"{r.get('first_name', '')} {r.get('last_name', '')}".strip()
+        for r in results
+        if r.get("id")
+    }
+
+
 def _compute_stats(scores: List[float]) -> Dict[str, Any]:
     """Compute population std, mean, and percentiles for a list of scores."""
     n = len(scores)
@@ -97,6 +113,7 @@ def _compute_stats(scores: List[float]) -> Dict[str, Any]:
 def process_topic(
     authority_scorer: AuthorityScorer,
     retrieval: RetrievalEngine,
+    client: Neo4jClient,
     all_deputy_ids: List[str],
     topic: str,
 ) -> Dict[str, Any]:
@@ -114,21 +131,44 @@ def process_topic(
     # Collect scores and group memberships from the returned result dicts
     scores_list: List[float] = []
     group_scores: Dict[str, List[float]] = {}
+    min_sid: Optional[str] = None
+    max_sid: Optional[str] = None
+    min_score: float = float("inf")
+    max_score: float = float("-inf")
 
-    for _sid, result in all_scores.items():
+    for sid, result in all_scores.items():
         score = result.get("total_score", 0.0)
         group = result.get("current_group", "")
         scores_list.append(score)
         if group:
             group_scores.setdefault(group, []).append(score)
+        if score < min_score:
+            min_score = score
+            min_sid = sid
+        if score > max_score:
+            max_score = score
+            max_sid = sid
 
     spread = _compute_stats(scores_list)
     spread_by_group = {g: _compute_stats(s) for g, s in group_scores.items() if s}
+
+    # Fetch names for min/max deputies
+    ids_to_fetch = [sid for sid in [min_sid, max_sid] if sid is not None]
+    name_map = _fetch_deputy_names(client, ids_to_fetch)
+
+    spread["min_score"] = round(min_score, 6) if min_sid else None
+    spread["min_id"] = min_sid
+    spread["min_name"] = name_map.get(min_sid, min_sid) if min_sid else None
+    spread["max_score"] = round(max_score, 6) if max_sid else None
+    spread["max_id"] = max_sid
+    spread["max_name"] = name_map.get(max_sid, max_sid) if max_sid else None
 
     logger.info(
         f"  Spread: std={spread['std']:.4f}  mean={spread['mean']:.4f}  "
         f"n={spread['n']}  groups={len(spread_by_group)}"
     )
+    logger.info(f"  Min: {spread['min_name']} ({spread['min_score']:.4f})")
+    logger.info(f"  Max: {spread['max_name']} ({spread['max_score']:.4f})")
 
     return {
         "authority_spread": spread,
@@ -202,7 +242,7 @@ def main() -> None:
         logger.info(f"{'─'*60}")
 
         try:
-            spread_data = process_topic(authority_scorer, retrieval, all_deputy_ids, topic)
+            spread_data = process_topic(authority_scorer, retrieval, client, all_deputy_ids, topic)
             # Merge spread data into existing entry (preserving baseline_answer, experts, metrics)
             enriched[topic] = {**entry, **spread_data}
         except Exception as exc:
@@ -222,6 +262,10 @@ def main() -> None:
             print(
                 f"  std={spread.get('std', 'N/A')}  mean={spread.get('mean', 'N/A')}  "
                 f"n={spread.get('n', 'N/A')}"
+            )
+            print(
+                f"  min={spread.get('min_score', 'N/A')} ({spread.get('min_name', '?')})  "
+                f"max={spread.get('max_score', 'N/A')} ({spread.get('max_name', '?')})"
             )
             by_group = entry.get("authority_spread_by_group", {})
             for g, s in sorted(by_group.items()):

@@ -4,7 +4,7 @@ Designed for scientific evaluation in thesis/paper context.
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Any
 from datetime import datetime
 
 from .survey import SurveyResponse, SurveyStats, SimpleRatingResponse
@@ -43,6 +43,9 @@ class AutomatedMetrics(BaseModel):
     # Per-chat baseline authority comparison
     baseline_authority: Optional[float] = None
     baseline_authority_by_group: Optional[Dict[str, float]] = None
+
+    # Global authority spread across all deputies for this topic (from evaluation_set.json)
+    authority_spread_stats: Optional[Dict[str, Any]] = None
 
 
 class AggregatedMetrics(BaseModel):

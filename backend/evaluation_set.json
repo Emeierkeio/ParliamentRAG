@@ -998,6 +998,96 @@
           "deputy_last_name": "FARAONE"
         }
       ]
+    },
+    "authority_spread": {
+      "std": 0.100851,
+      "mean": 0.528579,
+      "p25": 0.475855,
+      "median": 0.539561,
+      "p75": 0.616043,
+      "n": 387
+    },
+    "authority_spread_by_group": {
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "std": 0.087853,
+        "mean": 0.501604,
+        "p25": 0.435901,
+        "median": 0.505431,
+        "p75": 0.566369,
+        "n": 50
+      },
+      "FRATELLI D'ITALIA": {
+        "std": 0.072097,
+        "mean": 0.486962,
+        "p25": 0.445066,
+        "median": 0.495879,
+        "p75": 0.530224,
+        "n": 102
+      },
+      "LEGA - SALVINI PREMIER": {
+        "std": 0.086872,
+        "mean": 0.521296,
+        "p25": 0.471573,
+        "median": 0.539897,
+        "p75": 0.586855,
+        "n": 56
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "std": 0.069515,
+        "mean": 0.584716,
+        "p25": 0.547507,
+        "median": 0.610911,
+        "p75": 0.630866,
+        "n": 70
+      },
+      "MISTO": {
+        "std": 0.16936,
+        "mean": 0.405542,
+        "p25": 0.266637,
+        "median": 0.398722,
+        "p75": 0.584464,
+        "n": 25
+      },
+      "MOVIMENTO 5 STELLE": {
+        "std": 0.066159,
+        "mean": 0.592725,
+        "p25": 0.55611,
+        "median": 0.61735,
+        "p75": 0.635634,
+        "n": 49
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "std": 0.079596,
+        "mean": 0.583258,
+        "p25": 0.561351,
+        "median": 0.628794,
+        "p75": 0.636818,
+        "n": 6
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
+        "std": 0.093095,
+        "mean": 0.545429,
+        "p25": 0.511712,
+        "median": 0.537746,
+        "p75": 0.624511,
+        "n": 9
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "std": 0.013115,
+        "mean": 0.627741,
+        "p25": 0.620069,
+        "median": 0.627967,
+        "p75": 0.636457,
+        "n": 10
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "std": 0.06777,
+        "mean": 0.581913,
+        "p25": 0.536342,
+        "median": 0.586165,
+        "p75": 0.636414,
+        "n": 10
+      }
     }
   },
   "Bioetica": {

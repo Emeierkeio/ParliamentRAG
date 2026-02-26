@@ -294,6 +294,7 @@ def _compute_automated_metrics(
     expert_full_lookup: Optional[dict] = None,
     baseline_precomputed_experts: Optional[List[dict]] = None,
     authority_spread_std: Optional[float] = None,
+    authority_spread_stats: Optional[dict] = None,
 ) -> AutomatedMetrics:
     """Compute automated metrics from a single chat's stored data.
 
@@ -450,6 +451,7 @@ def _compute_automated_metrics(
         authority_by_group=authority_by_group,
         baseline_authority=baseline_authority,
         baseline_authority_by_group=baseline_authority_by_group,
+        authority_spread_stats=authority_spread_stats,
     )
 
 
@@ -591,9 +593,11 @@ async def get_dashboard():
     # These are used instead of expert_full_lookup to get comparable authority scores.
     from app.routers.survey import _load_evaluation_set_raw as _load_eval_set_raw_inner
     _eval_set_raw_for_experts = _load_eval_set_raw_inner()
-    # Build {topic_lower: baseline_experts} and {topic_lower: authority_spread_std} for fast lookup
+    # Build {topic_lower: baseline_experts}, {topic_lower: authority_spread_std},
+    # and {topic_lower: authority_spread_dict} for fast lookup
     _topic_to_baseline_experts: dict = {}
     _topic_to_authority_spread_std: dict = {}
+    _topic_to_authority_spread: dict = {}
     for _topic, _entry in _eval_set_raw_for_experts.items():
         if isinstance(_entry, dict):
             _experts = _entry.get("baseline_experts", [])
@@ -602,6 +606,7 @@ async def get_dashboard():
             _spread = _entry.get("authority_spread")
             if _spread and _spread.get("std") is not None:
                 _topic_to_authority_spread_std[_topic.lower()] = _spread["std"]
+                _topic_to_authority_spread[_topic.lower()] = _spread
 
     def _find_baseline_experts(query: str) -> Optional[List[dict]]:
         q = query.lower()
@@ -617,16 +622,25 @@ async def get_dashboard():
                 return std
         return None
 
+    def _find_authority_spread(query: str) -> Optional[dict]:
+        q = query.lower()
+        for topic_l, spread in _topic_to_authority_spread.items():
+            if topic_l in q or q in topic_l:
+                return spread
+        return None
+
     # Compute automated metrics for each chat
     metrics_map = {}
     for chat in chats:
         try:
             bl_experts = _find_baseline_experts(chat.get("query", ""))
             spread_std = _find_authority_spread_std(chat.get("query", ""))
+            spread_stats = _find_authority_spread(chat.get("query", ""))
             metrics_map[chat["id"]] = _compute_automated_metrics(
                 chat, chunk_texts, expert_full_lookup,
                 baseline_precomputed_experts=bl_experts,
                 authority_spread_std=spread_std,
+                authority_spread_stats=spread_stats,
             )
         except Exception as e:
             logger.warning(f"Failed to compute metrics for chat {chat['id']}: {e}")

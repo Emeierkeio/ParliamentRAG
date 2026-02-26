@@ -29,6 +29,22 @@ export interface AutomatedMetrics {
   // Per-chat baseline authority comparison
   baseline_authority?: number;
   baseline_authority_by_group?: Record<string, number>;
+
+  // Global authority spread across all deputies for this topic
+  authority_spread_stats?: {
+    std: number;
+    mean: number;
+    p25: number;
+    median: number;
+    p75: number;
+    n: number;
+    min_score?: number;
+    min_id?: string;
+    min_name?: string;
+    max_score?: number;
+    max_id?: string;
+    max_name?: string;
+  };
 }
 
 export interface AggregatedMetrics {
