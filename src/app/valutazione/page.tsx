@@ -37,8 +37,6 @@ import {
   Target,
   Trophy,
   BarChart2,
-  TrendingUp,
-  TrendingDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -956,29 +954,6 @@ function ChatEvaluationRow({
                 {formatDate(item.timestamp)}
               </span>
               <MiniMetricBars values={miniMetrics} />
-              {effectiveBaseline != null && (() => {
-                const delta = m.authority_utilization - effectiveBaseline;
-                const pct = effectiveBaseline > 0
-                  ? Math.round((m.authority_utilization / effectiveBaseline) * 100)
-                  : null;
-                const isUp = delta >= 0;
-                return (
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-xs gap-0.5",
-                      isUp
-                        ? "border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-400"
-                        : "border-red-300 text-red-600 dark:border-red-700 dark:text-red-400"
-                    )}
-                  >
-                    {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                    {pct !== null
-                      ? `Auth ${isUp ? "↑" : "↓"} ${pct}%${isAggregateBaseline ? " (media)" : ""}`
-                      : `${isUp ? "+" : ""}${(delta * 100).toFixed(1)}pp`}
-                  </Badge>
-                );
-              })()}
               {item.human && (
                 <Badge
                   variant="secondary"
