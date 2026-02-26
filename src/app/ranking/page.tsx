@@ -24,6 +24,7 @@ import {
   ChevronRight,
   History,
   Clock,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -617,6 +618,18 @@ export default function RankingPage() {
           {/* ── Loading skeleton ── */}
           {loading && (
             <div className="px-4 sm:px-6 py-4 max-w-6xl mx-auto w-full">
+              {/* Loading banner */}
+              <div className="flex items-center gap-3 mb-5 px-4 py-3 rounded-xl bg-primary/5 border border-primary/10">
+                <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground">Calcolo autorità in corso…</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Sto analizzando interventi, atti e ruoli parlamentari per il topic selezionato</p>
+                </div>
+                {/* Indeterminate progress bar */}
+                <div className="w-24 h-1.5 rounded-full bg-muted overflow-hidden shrink-0">
+                  <div className="h-full w-1/2 rounded-full bg-primary animate-[slide_1.4s_ease-in-out_infinite]" />
+                </div>
+              </div>
               {/* Skeleton header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="space-y-2">
