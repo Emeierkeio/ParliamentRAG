@@ -7,7 +7,7 @@ services:
       - "7689:7687"    # Bolt Protocol
       - "7476:7473"    # HTTPS
     environment:
-      - NEO4J_AUTH=neo4j/thesis2026
+      - NEO4J_AUTH=neo4j/your_password_here
       - NEO4J_PLUGINS=["apoc", "graph-data-science"]
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*,gds.*
       - NEO4J_dbms_security_procedures_allowlist=apoc.*,gds.*

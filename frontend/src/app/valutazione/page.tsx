@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { SurveyModal } from "@/components/survey/SurveyModal";
@@ -57,7 +57,8 @@ export default function ValutazionePage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [surveyModalOpen, setSurveyModalOpen] = useState(false);
-  const [evaluatorId, setEvaluatorId] = useState<string | undefined>(undefined);
+  // null = not yet determined, undefined = no evaluator, string = evaluator present
+  const [evaluatorId, setEvaluatorId] = useState<string | null | undefined>(null);
 
   // Read ?evaluator= from URL and auto-open the modal
   useEffect(() => {
@@ -66,6 +67,8 @@ export default function ValutazionePage() {
     if (evaluator) {
       setEvaluatorId(evaluator);
       setSurveyModalOpen(true);
+    } else {
+      setEvaluatorId(undefined);
     }
   }, []);
 
@@ -83,13 +86,33 @@ export default function ValutazionePage() {
     }
   }, []);
 
+  // Skip dashboard data loading in evaluator-only mode
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    if (evaluatorId === undefined) {
+      loadData();
+    }
+  }, [loadData, evaluatorId]);
 
   const handleExportCsv = () => {
     window.open(getExportCsvUrl(), "_blank");
   };
+
+  // Not yet determined — avoid flash of dashboard
+  if (evaluatorId === null) return null;
+
+  // Evaluator-only mode: show just the survey modal, no dashboard
+  if (evaluatorId) {
+    return (
+      <div className="h-screen bg-gray-100 dark:bg-zinc-900">
+        <SurveyModal
+          isOpen={true}
+          onClose={() => {}}
+          evaluatorId={evaluatorId}
+          fullScreen
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
@@ -121,10 +144,6 @@ export default function ValutazionePage() {
               >
                 <Download className="w-4 h-4" />
                 <span className="hidden md:inline ml-1">Esporta CSV</span>
-              </Button>
-              <Button size="sm" onClick={() => setSurveyModalOpen(true)} className="h-8 px-2 md:px-3">
-                <ClipboardCheck className="w-4 h-4" />
-                <span className="hidden sm:inline ml-1">Nuova Valutazione</span>
               </Button>
             </div>
           </div>
@@ -205,7 +224,7 @@ export default function ValutazionePage() {
           setSurveyModalOpen(false);
           loadData();
         }}
-        evaluatorId={evaluatorId}
+        evaluatorId={evaluatorId ?? undefined}
       />
     </div>
   );
