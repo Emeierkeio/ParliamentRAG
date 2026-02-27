@@ -5,7 +5,7 @@ import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
 // Change to true to show the maintenance page. Restart Next.js after changing. MANUTENZIONE SETTA QUI!
-const MAINTENANCE_MODE = false;
+const MAINTENANCE_MODE = true;
 
 function MaintenancePage() {
   return (
