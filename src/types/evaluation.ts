@@ -94,6 +94,8 @@ export interface ABComparisonStats {
   system_avg_overall: number;
   baseline_avg_overall: number;
   per_dimension_preference: Record<string, Record<string, number>>;
+  // Per-group authority preference (de-blinded): party_key → {system: N, equal: N, baseline: N}
+  group_authority_preference?: Record<string, Record<string, number>>;
 }
 
 export interface EvaluationDashboardData {

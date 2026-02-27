@@ -37,6 +37,7 @@ import {
   Target,
   Trophy,
   BarChart2,
+  UserCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -749,6 +750,75 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
           })}
         </CardContent>
       </Card>
+
+      {/* Per-group authority preference */}
+      {ab.group_authority_preference && Object.keys(ab.group_authority_preference).length > 0 && (() => {
+        const GROUP_LABELS: Record<string, string> = {
+          "FRATELLI D'ITALIA": "Fratelli d'Italia",
+          "LEGA - SALVINI PREMIER": "Lega",
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": "Forza Italia",
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": "Noi Moderati",
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": "Partito Democratico",
+          "MOVIMENTO 5 STELLE": "Movimento 5 Stelle",
+          "ALLEANZA VERDI E SINISTRA": "All. Verdi e Sinistra",
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione",
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva",
+          "MISTO": "Gruppo Misto",
+        };
+        const entries = Object.entries(ab.group_authority_preference!)
+          .map(([key, counts]) => {
+            const sys = counts.system || 0;
+            const eq = counts.equal || 0;
+            const bas = counts.baseline || 0;
+            const total = sys + eq + bas;
+            return { key, sys, eq, bas, total };
+          })
+          .filter(e => e.total > 0)
+          .sort((a, b) => (b.sys / b.total) - (a.sys / a.total));
+
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <UserCheck className="w-5 h-5 text-indigo-500" />
+                Autorità Esperti per Gruppo Politico
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Quale risposta ha citato l'esperto più autorevole, per gruppo?
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {entries.map(({ key, sys, eq, bas, total }) => {
+                const sysPct = (sys / total) * 100;
+                const eqPct = (eq / total) * 100;
+                const basPct = (bas / total) * 100;
+                const label = GROUP_LABELS[key] || key;
+                return (
+                  <div key={key} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-700 dark:text-gray-300 font-medium">{label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {sys}S / {eq}= / {bas}B
+                      </span>
+                    </div>
+                    <div className="flex items-center h-6 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                      {sysPct > 0 && (
+                        <div className="h-full bg-blue-500" style={{ width: `${sysPct}%` }} />
+                      )}
+                      {eqPct > 0 && (
+                        <div className="h-full bg-gray-300 dark:bg-gray-600" style={{ width: `${eqPct}%` }} />
+                      )}
+                      {basPct > 0 && (
+                        <div className="h-full bg-amber-400" style={{ width: `${basPct}%` }} />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        );
+      })()}
 
       {/* Overall satisfaction comparison */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
