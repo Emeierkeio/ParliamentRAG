@@ -611,26 +611,24 @@ async def create_survey(survey_data: SurveyResponseCreate):
     dim_sets = ", ".join(f"{d}: ${d}" for d in AB_DIMENSIONS)
 
     client.query(f"""
-        CREATE (s:SurveyEvaluation {{
-            id: $id,
-            chat_id: $chat_id,
-            evaluator_id: $evaluator_id,
-            timestamp: $timestamp,
-            overall_satisfaction_a: $overall_satisfaction_a,
-            overall_satisfaction_b: $overall_satisfaction_b,
-            overall_preference: $overall_preference,
-            would_recommend: $would_recommend,
-            feedback_positive: $feedback_positive,
-            feedback_improvement: $feedback_improvement,
-            evaluator_role: $evaluator_role,
-            evaluation_context: $evaluation_context,
-            ab_assignment: $ab_assignment,
-            baseline_authority_avg: $baseline_authority_avg,
-            group_authority_votes: $group_authority_votes,
-            citation_evaluations_a: $citation_evaluations_a,
-            citation_evaluations_b: $citation_evaluations_b,
-            {dim_sets}
-        }})
+        MERGE (s:SurveyEvaluation {{chat_id: $chat_id}})
+        SET s.id = $id,
+            s.evaluator_id = $evaluator_id,
+            s.timestamp = $timestamp,
+            s.overall_satisfaction_a = $overall_satisfaction_a,
+            s.overall_satisfaction_b = $overall_satisfaction_b,
+            s.overall_preference = $overall_preference,
+            s.would_recommend = $would_recommend,
+            s.feedback_positive = $feedback_positive,
+            s.feedback_improvement = $feedback_improvement,
+            s.evaluator_role = $evaluator_role,
+            s.evaluation_context = $evaluation_context,
+            s.ab_assignment = $ab_assignment,
+            s.baseline_authority_avg = $baseline_authority_avg,
+            s.group_authority_votes = $group_authority_votes,
+            s.citation_evaluations_a = $citation_evaluations_a,
+            s.citation_evaluations_b = $citation_evaluations_b,
+            {", ".join(f"s.{d} = ${d}" for d in AB_DIMENSIONS)}
     """, params)
 
     logger.info(f"A/B survey created for chat {survey_data.chat_id}")
