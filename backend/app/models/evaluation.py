@@ -104,6 +104,9 @@ class ABComparisonStats(BaseModel):
 
     per_dimension_preference: Dict[str, Dict[str, int]]  # dim -> {system: N, baseline: N, equal: N}
 
+    # Per-group authority preference (de-blinded): party_key → {system: N, equal: N, baseline: N}
+    group_authority_preference: Optional[Dict[str, Dict[str, int]]] = None
+
 
 class EvaluationDashboardData(BaseModel):
     """Full dashboard payload combining automated and human evaluation."""

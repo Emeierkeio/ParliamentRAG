@@ -335,6 +335,26 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
         overall_p = _deblind_preference(s.get("overall_preference", "equal"), ab_assignment)
         overall_pref[overall_p] += 1
 
+    # Aggregate per-group authority votes (de-blinded)
+    group_auth_pref: Dict[str, Dict[str, int]] = {}
+    for s in surveys:
+        ab_assign = s.get("ab_assignment") or _get_ab_assignment(s.get("chat_id", ""))
+        if not ab_assign:
+            continue
+        is_a_sys = ab_assign.get("A") == "system"
+        votes = s.get("group_authority_votes")
+        if not isinstance(votes, dict):
+            continue
+        for gkey, vote in votes.items():
+            if gkey not in group_auth_pref:
+                group_auth_pref[gkey] = {"system": 0, "equal": 0, "baseline": 0}
+            if vote == 0:
+                group_auth_pref[gkey]["equal"] += 1
+            elif vote == -1:  # A is better
+                group_auth_pref[gkey]["system" if is_a_sys else "baseline"] += 1
+            elif vote == 1:   # B is better
+                group_auth_pref[gkey]["baseline" if is_a_sys else "system"] += 1
+
     if valid_count == 0:
         return empty_stats
 
@@ -363,6 +383,7 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
         baseline_win_rate=baseline_win,
         tie_rate=tie,
         per_dimension_preference=per_dim_pref,
+        group_authority_preference=group_auth_pref if group_auth_pref else None,
         recommendation_rate=recommendation_rate,
     )
 

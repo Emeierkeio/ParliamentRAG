@@ -775,6 +775,7 @@ async def get_dashboard():
             system_avg_overall=human_aggregate.system_avg_overall,
             baseline_avg_overall=human_aggregate.baseline_avg_overall,
             per_dimension_preference=human_aggregate.per_dimension_preference,
+            group_authority_preference=human_aggregate.group_authority_preference,
         )
 
     return EvaluationDashboardData(
