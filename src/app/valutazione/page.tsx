@@ -107,7 +107,7 @@ export default function ValutazionePage() {
       <div className="h-screen bg-gray-100 dark:bg-zinc-900">
         <SurveyModal
           isOpen={true}
-          onClose={() => {}}
+          onClose={() => window.location.reload()}
           evaluatorId={evaluatorId}
           fullScreen
         />
