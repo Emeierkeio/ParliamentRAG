@@ -1,0 +1,615 @@
+% ============================================================
+%  Chapter 4 – System Architecture
+% ============================================================
+
+\section{System Architecture}
+
+\subsection{Design Principles and Requirements}
+\label{sec:design-principles}
+
+The architecture of the system was conceived around a set of normative requirements that
+distinguish it from general-purpose question-answering systems. These requirements reflect
+both the domain specificity of parliamentary discourse and the democratic accountability
+imperatives that motivate the research.
+
+\paragraph{Balanced political representation.}
+Parliamentary debate is inherently multi-stakeholder. A system that privileges the majority
+coalition or the most vocally active deputies would reproduce the very asymmetries that
+limit journalistic and civic access to legislative information. The architecture therefore
+treats proportional coverage across parliamentary groups as a first-class design
+constraint, embedded not only in the retrieval stage but also in the generation and
+evaluation pipelines. Coverage is measured quantitatively and enforced algorithmically at
+multiple stages of the processing pipeline, preventing any single ideological faction from
+dominating the synthesised response.
+
+\paragraph{Multi-view answer generation.}
+Rather than producing a single, consensus-seeking response, the system is designed to make
+political divergence explicit. This principle, which may be termed \textit{deliberative
+transparency}, requires the generation module to preserve and articulate positions that are
+in tension, attributing claims to their sources and refraining from premature synthesis.
+The architectural implication is that generation cannot be a monolithic operation: it
+requires a decomposition into party-specific narrative units before any integrative step is
+attempted.
+
+\paragraph{Citation faithfulness.}
+The evidentiary chain between a generated claim and its source in parliamentary record must
+be verifiable and exact. The system adopts an \textit{offset-based citation model}, in
+which each quotation is extracted from its source text using byte-level character positions
+stored at ingestion time. This design choice makes it structurally impossible for the
+system to generate citations that are paraphrases or semantic approximations: the quoted
+string is always a contiguous substring of the original parliamentary speech. Faithfulness
+is not treated as a post-hoc evaluation criterion but as an architectural invariant.
+
+\paragraph{Query-dependent authority modeling.}
+The notion of expert authority cannot be defined context-independently. A deputy with
+extensive legislative activity on labour law is not necessarily authoritative when the
+query concerns environmental regulation. The system therefore computes authority scores
+as a function of both the speaker's profile and the semantic content of the incoming query.
+This requires that authority computations be deferred to query time and that they operate
+on a shared embedding space that couples query meaning with speaker expertise signals.
+
+\paragraph{Interpretability.}
+Downstream users of the system---journalists, researchers, parliamentary monitors---require
+not only an answer but an understanding of how that answer was formed. The architecture
+accordingly exposes the ideological positioning of speakers, the authority basis for
+citation choices, and the provenance of every quoted passage. Interpretability is thus a
+structural property of the output format, not an optional add-on.
+
+\paragraph{Modularity.}
+Each functional concern---retrieval, authority scoring, ideological projection, generation,
+citation validation---is encapsulated in a distinct component with well-defined interfaces.
+This modularity serves multiple purposes: it enables independent evaluation of each stage,
+facilitates targeted improvement without global refactoring, and allows the system to be
+extended with new components without disrupting existing ones.
+
+
+\subsection{High-Level Overview}
+\label{sec:high-level-overview}
+
+The system is organised as a \textit{layered architecture} comprising three principal
+tiers---presentation, application, and data---supplemented by a set of external services
+that provide semantic intelligence. This stratification reflects a deliberate separation
+between concerns of interaction, processing, and persistence, and it ensures that changes
+in any one tier do not propagate unpredictably into the others.
+
+At the highest level, a user submits a natural language query about parliamentary activity.
+The query traverses the application layer, where it triggers a cascade of retrieval,
+scoring, ideological analysis, and generation operations. The result is a structured
+multi-view response, grounded in cited parliamentary speeches, which is then rendered in
+the presentation layer together with interpretive visualisations of the underlying evidence.
+
+\subsubsection{Presentation Layer}
+
+The presentation layer is responsible for mediating between the complexity of the
+underlying analytical pipeline and the cognitive needs of the end user. Its primary
+function is not merely to display a textual answer but to render the epistemic structure of
+that answer---to make visible the sources of claims, the identities and affiliations of
+cited speakers, their positions in the ideological space, and the degree of consensus or
+divergence among parliamentary groups.
+
+Multi-view answers are presented with per-party attribution, allowing the user to navigate
+political positions in a structured manner rather than consuming a homogenised synthesis.
+Each cited passage is displayed alongside metadata identifying the speaker, their
+parliamentary group, the session date, and a unique identifier that enables traceability
+to the original parliamentary record. An ideological compass visualisation provides a
+data-driven, two-dimensional representation of the positioning of the evidence fragments
+relative to the query, offering a geometric perspective on the political landscape
+underlying the generated answer.
+
+The presentation layer additionally exposes an evaluation interface that allows operators
+to assess system performance on a predefined set of queries, comparing the system's
+responses against a curated baseline using both automated metrics and human preference
+surveys. This evaluation component is architecturally integrated with the main pipeline
+rather than isolated as a separate tool.
+
+\subsubsection{Application Layer}
+
+The application layer constitutes the computational core of the system and is itself
+organised into five cooperating modules.
+
+The \textit{retrieval engine} is responsible for selecting the evidence fragments from the
+parliamentary corpus that are most relevant to the incoming query. It operates across two
+complementary channels---one based on dense vector similarity, the other on structured
+graph traversal---and combines their outputs through a multi-factor scoring function that
+jointly considers semantic relevance, speaker authority, political diversity, and opinion
+salience. The engine includes a query rewriting sub-module that expands short queries
+before embedding, and a neighbourhood expansion mechanism that enlarges retrieved fragments
+to preserve discourse context.
+
+The \textit{authority scoring module} computes, for each candidate speaker in the retrieved
+evidence, a composite authority score that reflects the speaker's expertise relative to the
+query's semantic domain. The score is the weighted sum of six components corresponding to
+professional background, educational history, committee membership, legislative
+co-signatorship, speech-level topical engagement, and institutional role. All components
+are normalised to a common scale and computed using the query embedding as a semantic
+reference, making authority a dynamic, context-sensitive quantity.
+
+The \textit{ideological modeling module} projects the retrieved evidence fragments onto a
+two-dimensional space derived from the principal axes of variance in the set's semantic
+embeddings. The resulting compass representation captures ideological proximity and
+divergence among parliamentary groups in a data-driven, query-specific manner, without
+relying on fixed party labels as the primary analytic unit.
+
+The \textit{multi-stage generation module} orchestrates a sequential pipeline of
+large language model calls that progressively transform the retrieved evidence into a
+structured multi-view answer. Each stage has a distinct functional role: decomposing the
+query into atomic claims, generating party-specific narrative sections, integrating those
+sections into a coherent discourse, and enforcing verbatim citation insertion. The
+sequential design reflects the observation that a single-pass generation cannot
+simultaneously satisfy the competing constraints of factual attribution, political
+balance, and narrative coherence.
+
+The \textit{citation validation module} operates as a cross-cutting concern that enforces
+the faithfulness invariant across all stages of the pipeline. It maintains a registry of
+citation expectations, audits the output of each generation stage, and triggers repair
+mechanisms when citations are lost or corrupted during integration.
+
+\subsubsection{Data Layer}
+
+The data layer is built around a \textit{property graph database} that models the entities
+and relationships of the parliamentary domain. The graph structure is not incidental: it
+enables the efficient traversal of relationships---between deputies, their committees, the
+acts they co-signed, the sessions in which they spoke, and the parties they represent at
+any given point in time---that are essential to both retrieval and authority scoring.
+
+Parliamentary speeches are stored in their full textual form, with a separate collection of
+\textit{chunks} derived from each speech by a fixed-length sliding-window procedure. Each
+chunk carries a dense vector embedding in a high-dimensional semantic space, enabling
+approximate nearest-neighbour retrieval. Crucially, each chunk also stores the exact
+byte-level character offsets of its boundaries within the original speech text, forming
+the foundation of the citation faithfulness mechanism.
+
+Speaker metadata is stored as node attributes, including pre-computed embeddings of
+professional and educational descriptions, which allow authority components to be computed
+efficiently at query time without re-embedding static profile information. Parliamentary
+acts are stored with their thematic descriptions and pre-computed embeddings, supporting
+the semantic evaluation of a deputy's legislative engagement relative to a given query
+topic.
+
+The graph is supplemented by vector indices that allow semantic retrieval to be performed
+natively within the same infrastructure, avoiding the need for a separate vector store and
+preserving the ability to combine structured graph traversal with unstructured semantic
+search in a single query operation.
+
+\subsubsection{External Services}
+
+The system integrates two categories of external services: language model providers and
+institutional data sources.
+
+Large language models are invoked exclusively within the generation module and serve as the
+primary mechanism for natural language synthesis. The system uses a state-of-the-art
+generative model---specifically GPT-4o---across all generation stages, with a uniformly
+low temperature setting to favour factual fidelity over creative elaboration. The choice
+of a single model across all stages simplifies dependency management and ensures
+consistency in output style.
+
+The embedding service---text-embedding-3-small, a 1536-dimensional dense encoder---is the
+shared representation backbone of the entire system. Every semantic similarity computation
+in the pipeline, from retrieval scoring to authority component evaluation to ideological
+projection, operates on embeddings produced by this model. Its consistent use across all
+modalities ensures that the semantic space is coherent and that comparisons between query
+embeddings, chunk embeddings, and speaker profile embeddings are geometrically meaningful.
+
+Institutional data sources supply the raw parliamentary record and the structured metadata
+that the system ingests. These sources are discussed in detail in the following subsection.
+
+
+\subsection{Data Acquisition and Preprocessing}
+\label{sec:data-acquisition}
+
+\subsubsection{Institutional Data Sources}
+
+The primary data source is the official open data infrastructure of the Italian Parliament,
+which publishes machine-readable records of parliamentary sessions, including full
+transcripts of plenary and committee debates, structured information on legislative acts
+and their signatories, deputy biographical data, and committee membership records with
+associated temporal validity intervals. These records are provided under an open licence
+and updated incrementally as parliamentary activity progresses.
+
+The transcripts represent the evidential core of the system. Each transcript is associated
+with a session date, a debate identifier, and a phase marker that captures the structural
+organisation of parliamentary proceedings. Deputy profiles contain professional and
+educational history in free-text form, which must be embedded before they can be used
+in authority computations. Legislative acts carry thematic descriptors that are similarly
+embedded to support semantic matching.
+
+A secondary thematic resource is a curated ontology of committee topics, which maps each
+parliamentary committee to a set of domain-specific keywords representing its areas of
+competence. This mapping supplements the structural committee membership data with
+semantic content, enabling authority scoring to assess the topical relevance of a
+deputy's committee roles with greater precision than committee name alone would permit.
+
+\subsubsection{Text Preprocessing and Alignment Map}
+
+The raw parliamentary transcripts require substantial preprocessing before they are suitable
+for indexing. The primary challenge is that transcripts contain a mixture of substantive
+speech content and procedural markers---presiding officers' announcements, voting
+declarations, quorum calls, formal greetings, and other parliamentary formalities---that
+carry no informational value relative to policy queries. These procedural elements are
+identified and removed through a combination of structural heuristics and textual pattern
+matching, leaving a cleaned representation that preserves the substantive content of each
+deputy's interventions.
+
+Text normalisation is applied to resolve encoding inconsistencies, Unicode variation forms,
+and whitespace irregularities that arise from the heterogeneity of source document
+formats. The normalisation procedure produces a canonical representation of each speech
+that is consistent across the corpus.
+
+A critical design decision concerns the relationship between the cleaned representation used
+for indexing and retrieval, and the original raw text used for citation extraction. Rather
+than discarding the raw text after preprocessing, the system maintains an
+\textit{alignment map} for each speech that records, for every position in the cleaned
+text, the corresponding byte offset in the original source. This bidirectional mapping
+allows the system to retrieve evidence fragments using the processed text while extracting
+citations directly from the verbatim original. The alignment map is the architectural
+mechanism that makes citation faithfulness a structural guarantee: no post-hoc
+string-matching or semantic verification of quoted passages is necessary, because the
+quoted string is retrieved deterministically from a stored offset pair.
+
+\subsubsection{Chunking Strategy}
+
+Individual parliamentary speeches can span many thousands of characters, rendering the full
+text unsuitable as a retrieval unit for two reasons. First, a single embedding of the
+entire speech would suppress the topical heterogeneity that characterises lengthy
+parliamentary interventions, in which a deputy may address several distinct policy areas in
+sequence. Second, the granularity of citations would be insufficient: a passage-level
+quotation is more informative and verifiable than a speech-level reference.
+
+The system therefore adopts a \textit{sentence-aware sliding window} approach to
+segmentation. Speeches are divided into overlapping chunks of approximately fixed character
+length, with boundaries adjusted to coincide with sentence boundaries so that no chunk
+begins or ends mid-sentence. The overlap between consecutive chunks---set to a fraction of
+the maximum chunk length---ensures that passages occurring near chunk boundaries are
+represented in at least two retrieval units, mitigating the risk that relevant content is
+artificially split across non-retrievable gaps.
+
+Each chunk is assigned a dense embedding computed over its textual content, and its
+start and end offsets within the original speech are stored explicitly. A directed
+\textit{next-chunk} relationship connects consecutive chunks within the same speech,
+enabling the retrieval engine to expand a retrieved chunk by appending its immediate
+successor when discourse context requires it.
+
+The choice of chunk length involves a trade-off between retrieval precision and context
+preservation. Shorter chunks are more likely to contain a single coherent statement, but
+they may lack the context needed for an LLM to interpret the statement correctly.
+Longer chunks preserve more context but dilute the embedding signal, reducing retrieval
+precision. The adopted parameters represent an empirically motivated balance between these
+competing considerations, validated through retrieval quality experiments on the
+evaluation set.
+
+\subsubsection{Build and Update Pipeline}
+
+The construction of the knowledge graph and its associated vector indices is decomposed
+into a \textit{build phase} and an \textit{incremental update phase}, each with distinct
+operational characteristics.
+
+The full build phase ingests the complete parliamentary corpus from scratch, constructing
+all graph nodes and relationships, computing and storing all embeddings, and creating the
+vector indices. This phase is computationally intensive---the embedding computation alone
+requires a large number of API calls to the embedding service---and is therefore executed
+offline, prior to any runtime query processing. Authority component embeddings for
+speaker profiles and legislative act descriptions are precomputed and stored during this
+phase, ensuring that query-time authority scoring can proceed without incurring additional
+embedding latency.
+
+The incremental update phase processes new sessions and acts as they become available from
+the institutional data sources. Because parliamentary records are published with a delay
+following each session, the update frequency is bounded by the publication schedule of the
+source. Incremental updates add new nodes and relationships without modifying existing
+ones, preserving the consistency of the graph while extending its temporal coverage.
+
+An important architectural decision is the strict separation between the ingestion and
+runtime components. The ingestion pipeline has write access to the graph database and is
+responsible for all data transformations; the runtime query pipeline has only read access.
+This separation prevents accidental data corruption during query processing and allows the
+ingestion pipeline to be run independently---or even by a different operational role---
+without affecting system availability.
+
+
+\subsection{Data Model and Knowledge Graph Schema}
+\label{sec:data-model}
+
+\subsubsection{Node Types}
+
+The knowledge graph is structured around a set of entity types that correspond to the
+principal actors and artefacts of parliamentary life.
+
+\textit{Deputy} nodes represent elected members of parliament and carry biographical
+attributes---name, profession, educational history---alongside pre-computed embeddings of
+the free-text professional and educational fields. These embeddings are the primary
+mechanism through which expertise signals are integrated into authority scoring.
+
+\textit{GovernmentMember} nodes share the structural role of the Deputy type but represent
+members of the executive branch---ministers, vice-ministers, and undersecretaries---who
+intervene in parliamentary proceedings in an institutional rather than representative
+capacity. Their authority is modeled through a role-based component that reflects the
+institutional weight of their position.
+
+\textit{ParliamentaryGroup} nodes encode the political formations to which deputies belong,
+and their composition changes over time as deputies switch allegiances. Because group
+membership is inherently temporal, the relationship between a deputy and their group
+carries explicit start and end date attributes, enabling the system to resolve party
+affiliation at any historical reference point.
+
+\textit{Speech} nodes represent individual parliamentary interventions, each linked to a
+specific session phase and attributed to a single speaker. The speech carries the full
+preprocessed text of the intervention and is the parent entity from which chunk nodes are
+derived.
+
+\textit{Chunk} nodes are the primary retrieval unit. Each chunk stores its textual content
+in the form used for display, its dense vector embedding, and the byte-level offsets that
+map its boundaries back to the original speech text. The chunk is thus simultaneously an
+index unit, a preview representation, and a citation anchor.
+
+\textit{ParliamentaryAct} nodes encode legislative proposals, amendments, and motions.
+Each act carries a thematic description and pre-computed semantic embeddings that allow
+its topical domain to be compared against query embeddings during authority scoring.
+Signatorship relationships connect acts to the deputies who co-sponsored them, with a
+role attribute distinguishing primary from co-sponsors.
+
+\textit{Session}, \textit{Debate}, and \textit{Phase} nodes form a hierarchical schema
+that captures the structural organisation of parliamentary proceedings. A session
+encompasses one or more debates; each debate is subdivided into phases; each phase
+contains the speeches delivered within that procedural context. This hierarchy enables
+structured retrieval queries that filter evidence by temporal or procedural criteria.
+
+\textit{Committee} nodes represent parliamentary committees and serve as the bridge between
+deputy membership records and the thematic keyword ontology. Their authority relevance is
+determined not only by name but by the domain-specific keywords associated with each
+committee, which are embedded and compared against query embeddings to produce fine-grained
+topical relevance scores.
+
+\subsubsection{Relationship Types}
+
+The graph schema captures several distinct categories of relationship.
+
+Biographical relationships connect deputies to their committees, parties, and institutional
+roles, all with temporal validity attributes. The temporality of these relationships is
+essential: a deputy who chaired a finance committee in a previous legislature cannot be
+credited with that role when answering queries in the current legislative context unless
+the query explicitly concerns historical events. Without a graph model that supports
+temporal relationship attributes, this kind of validity-aware reasoning would require
+either materialising multiple copies of the graph for different time slices or performing
+expensive post-hoc filtering.
+
+Discursive relationships connect speakers to their interventions and interventions to the
+parliamentary session structure. These relationships enable the retrieval engine to
+traverse from a retrieved chunk to its parent speech, from the speech to its speaker, and
+from the speaker to their group affiliation---all in a single structured query.
+
+Legislative relationships connect deputies to the parliamentary acts they have sponsored.
+The distinction between primary and co-signatorship is preserved in the relationship type,
+reflecting the fact that primary sponsors have a stronger claim to topical authority than
+co-signatories.
+
+Structural relationships among chunk nodes---specifically the directed \textit{next-chunk}
+edge---model discourse continuity within a speech, enabling the neighbourhood expansion
+logic described in the processing pipeline.
+
+The graph formalism is appropriate for this domain because the informational value of the
+data is encoded not only in entity attributes but in the structure of connections among
+entities. A relational schema could represent individual entities efficiently but would
+require expensive multi-table joins to answer the traversal queries that are central to
+both retrieval and authority scoring. The graph model makes these traversals native and
+efficient, while the integration of vector indices within the same infrastructure allows
+semantic and structural retrieval to be combined without data movement between systems.
+
+\subsubsection{Indexing Strategy}
+
+Three categories of index support the retrieval operations of the runtime pipeline.
+
+A \textit{vector index} is maintained over the chunk embedding attribute, enabling
+approximate nearest-neighbour search in the dense embedding space. This index is the
+primary mechanism for semantic retrieval: given a query embedding, the index returns the
+set of chunk nodes whose embeddings have the highest cosine similarity to the query. The
+vector index is constructed and updated as part of the ingestion pipeline and is queried
+directly by the dense retrieval channel at runtime.
+
+\textit{Property indexes} support exact and range lookups on structured attributes such as
+session date, speaker identifier, and group name. These indexes are invoked by the graph
+traversal channel and by the temporal validity filtering operations in authority scoring.
+They also underpin the efficient resolution of cited speaker identities at generation time.
+
+A \textit{full-text index} over thematic descriptions and act titles enables keyword-based
+matching in the graph channel, complementing the semantic search with lexical precision
+for proper nouns and domain-specific terms that may not be well-represented in the
+embedding space.
+
+The combination of these three index types---vector, property, and full-text---within a
+single graph infrastructure supports \textit{hybrid retrieval}, in which semantic and
+structural constraints are applied jointly. This hybrid strategy is central to the system's
+ability to retrieve evidence that is both semantically relevant and structurally grounded
+in the parliamentary record.
+
+
+\subsection{Processing Pipeline}
+\label{sec:processing-pipeline}
+
+The runtime processing pipeline transforms a natural language query into a structured,
+multi-view, citation-grounded answer through a sequence of nine interdependent stages.
+Each stage has a well-defined input-output contract, and the pipeline is designed so that
+the invariants established in early stages---in particular, the set of retrieved evidence
+fragments and their authority scores---are preserved and propagated faithfully through the
+later stages.
+
+\paragraph{Stage 1: Query Embedding.}
+The incoming query is first subjected to a rewriting step that expands underspecified or
+short queries into a more descriptive form, while leaving sufficiently detailed queries
+unchanged. The rewritten query is then encoded into a dense vector representation using
+the shared embedding model. This query embedding serves as the universal semantic
+reference for all subsequent stages: it is used in vector similarity search, in every
+component of authority scoring, in ideological projection, and in the citation validation
+step. The consistency of the embedding space across all these uses is what makes it
+possible to define authority as a function of query semantics rather than as a fixed
+property of the speaker.
+
+\paragraph{Stage 2: Dual-Channel Retrieval.}
+Evidence is collected through two complementary retrieval channels that are executed in
+parallel and subsequently merged.
+
+The \textit{dense channel} queries the vector index with the query embedding to retrieve
+a large candidate pool of chunks---typically on the order of several hundred---with cosine
+similarity above a minimum threshold. This channel is effective at capturing thematically
+relevant passages regardless of the specific lexical forms used in either the query or
+the source text.
+
+The \textit{graph channel} performs a structured traversal of the knowledge graph,
+identifying legislative acts whose thematic embeddings are semantically similar to the
+query, and then traversing from those acts to the speeches delivered by their signatories.
+This channel introduces a structural prior that favours speakers who have demonstrated
+legislative commitment to the query's domain---not merely those who happen to have used
+topically similar language in debate.
+
+The two channels produce overlapping but complementary sets of evidence fragments, and
+their union is substantially more diverse than either channel alone.
+
+\paragraph{Stage 3: Re-ranking and Merging.}
+The combined candidate pool is scored by a multi-factor function that simultaneously
+considers five dimensions: semantic relevance (the cosine similarity of the chunk embedding
+to the query), speaker authority (computed in Stage 4 and applied retroactively in the
+final merge), political diversity (a penalty for over-representing any single
+parliamentary group), opinion salience (an estimate of the informational density and
+attitudinal specificity of the passage), and coverage balance (a correction term that
+rewards fragments from underrepresented groups).
+
+A \textit{salience expansion} mechanism detects chunks that are rhetorically weak---for
+instance, brief procedural acknowledgements near the beginning of a speech---and expands
+them by appending the immediately following chunk, which typically contains the substantive
+content of the intervention. This expansion uses the \textit{next-chunk} graph
+relationship and is applied before final scoring.
+
+If the merged pool still under-represents certain parliamentary groups after initial
+scoring, a \textit{coverage fill} operation executes targeted vector queries constrained
+to the underrepresented groups, ensuring that the final evidence set provides adequate
+representation across the ideological spectrum before generation begins.
+
+\paragraph{Stage 4: Authority Scoring.}
+For each speaker appearing in the retained evidence set, the authority scoring module
+computes a composite score reflecting the speaker's domain expertise relative to the
+query. The score integrates six components, each normalised to the unit interval.
+
+The \textit{profession} and \textit{education} components assess the semantic proximity
+between the speaker's professional and educational background---encoded as pre-stored
+embeddings---and the query embedding. A speaker whose declared expertise is closely
+aligned with the query domain receives a higher score on these components.
+
+The \textit{committee} component evaluates the topical relevance of the speaker's current
+and past committee memberships, using a keyword-enriched thematic ontology rather than
+raw committee names. Only memberships that are temporally valid at the query reference
+date are considered. The component takes the maximum relevance across all active
+memberships, reflecting the principle that a speaker's most relevant committee defines
+their authority on that topic.
+
+The \textit{acts} component aggregates the speaker's legislative activity by summing the
+relevance-weighted, time-discounted contributions of each parliamentary act they have
+co-signed, with primary signatorship weighted more heavily than co-signatorship. Acts
+whose thematic embeddings are insufficiently similar to the query are excluded entirely,
+ensuring that prolific but off-topic legislative activity does not inflate the score.
+
+The \textit{interventions} component applies the same aggregation logic to the speaker's
+speech history, using the embeddings of individual speeches as the relevance signal and a
+shorter time-decay half-life that reflects the greater temporal sensitivity of verbal
+interventions relative to legislative commitments.
+
+The \textit{role} component assigns a fixed base weight to speakers occupying formal
+institutional roles---committee presidents, vice-presidents, secretaries, and government
+members---with an optional bonus when the institutional role is semantically aligned with
+the query. This component ensures that institutional authority is reflected even in cases
+where the other evidence-based components are uninformative.
+
+The final authority score is the weighted sum of the six components, with weights that
+reflect their relative diagnostic value: interventions and acts carry the highest weights,
+given that they represent direct topical engagement, while profession, education, and role
+carry lower weights as background priors. The composite score is percentile-normalised
+across the full deputy population, making it comparable across queries.
+
+\paragraph{Stage 5: Coverage Enforcement.}
+Before generation proceeds, the system audits the retained evidence set to verify that
+each parliamentary group is represented by at least one high-quality fragment. If any
+group falls below the coverage threshold, the system selects the best available representative
+for that group and ensures it is included in the generation context. The enforcement is
+not merely a retrieval correction but a generative constraint: the generation module is
+subsequently instructed to produce a dedicated narrative section for each group present
+in the evidence, preventing the LLM from implicitly silencing groups whose evidence is
+sparse but present.
+
+\paragraph{Stage 6: Ideological Projection.}
+The retained evidence fragments are projected into a two-dimensional ideological space
+using a weighted variant of principal component analysis (PCA) applied to their dense
+embeddings. The first two principal components capture the dominant axes of semantic
+variation among the fragments, which---in the context of parliamentary debate---typically
+correspond to ideological dimensions interpretable as left-right positioning and a secondary
+axis of salience or issue framing.
+
+Each fragment is assigned a two-dimensional coordinate, and these coordinates are
+aggregated per parliamentary group using kernel density estimation to produce a smooth
+positional estimate. The resulting compass representation is not a fixed ideological map
+derived from external political science classifications; it is an \textit{empirical,
+query-specific} projection that reflects the actual distribution of argumentative
+positions in the retrieved evidence. This approach allows the system to capture
+issue-specific realignments---cases in which the standard left-right ordering breaks down
+for particular policy domains---that would be invisible to a model based on fixed party
+positions.
+
+The stability of the projection is assessed through the ratio of variance explained by the
+second principal component relative to the first. When this ratio falls below a threshold,
+the system collapses to a one-dimensional representation, signaling to the presentation
+layer that the evidence does not support a well-defined second axis.
+
+\paragraph{Stage 7: Multi-Stage Generation.}
+Generation is structured as a four-step pipeline of large language model invocations, each
+with a distinct functional scope.
+
+In the first step, a \textit{claim analyst} receives the query and the full evidence set
+and produces a decomposition of the query into atomic claims---the elementary
+propositional questions that a complete answer would need to address. This decomposition
+serves as a shared scaffold for the subsequent steps, ensuring that all party-specific
+sections address the same epistemic agenda rather than pursuing divergent narrative threads.
+
+In the second step, a \textit{sectional writer} produces, for each parliamentary group, a
+prose narrative that addresses the claim set using the evidence attributable to that group.
+Each section is generated independently, with the LLM constrained to cite only evidence
+fragments from the corresponding group. Citations are embedded as structured placeholders
+within the generated text, registering the identifier of the source chunk at the point of
+use. The citation registry accumulates all citation expectations across all sections,
+forming the authoritative record against which subsequent stages are validated.
+
+In the third step, a \textit{narrative integrator} receives all party-specific sections and
+synthesises them into a coherent unified discourse that preserves the internal logic and
+attribution of each section. The integrator is explicitly instructed to retain all citation
+placeholders; a guard mechanism verifies that the citation count in the integrated output
+matches the registry, and a repair procedure injects missing section content as fallback
+paragraphs when the integrator inadvertently drops citations during synthesis.
+
+The fourth step---the \textit{citation surgeon}---is not a generative operation but a
+deterministic extraction procedure. It traverses the integrated text, resolves each
+citation placeholder by retrieving the corresponding chunk's offset pair from the data
+layer, and extracts the verbatim quoted string directly from the raw speech text. The
+extracted string is formatted according to the system's citation template and inserted in
+place of the placeholder. Because extraction is offset-based, this step is guaranteed to
+produce a literal substring of the original source, independent of any semantic
+interpretation.
+
+\paragraph{Stage 8: Deterministic Citation Insertion.}
+The citation surgeon constitutes the final enforcement point of the faithfulness invariant.
+Its operation is deliberately non-generative: the surgeon does not ask the LLM to produce
+a representative quotation; it computes a quotation by extracting a contiguous character
+span from the authoritative source. When the sectional writer has embedded an inline
+quotation as part of a citation placeholder---indicating the approximate span of the
+intended quotation---the surgeon verifies that this inline string is a literal substring
+of the source before accepting it as the citation text. If verification fails, the surgeon
+falls back to a semantically-guided sentence extraction that selects the most query-relevant
+sentences within the chunk's boundaries, again producing a verbatim extraction rather than
+a paraphrase. The final output carries, for each citation, the extracted quote, the
+speaker's name, party affiliation, session date, and a unique evidence identifier that
+enables independent verification.
+
+\paragraph{Stage 9: Multi-View Structured Answer.}
+The final output of the pipeline is a structured document in which the generated narrative
+is decomposed into labelled per-party sections, each accompanied by its verified citations.
+The document is supplemented by the ideological compass analysis produced in Stage 6, the
+authority profiles of the cited speakers, and summary metadata about the coverage of
+parliamentary groups in the evidence base. This structured format is designed to support
+both direct reading---in which the user reads the synthesised narrative---and analytical
+use---in which the user interrogates the underlying evidence and positioning data to form
+their own interpretation of the parliamentary debate.

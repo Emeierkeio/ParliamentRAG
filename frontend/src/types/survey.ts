@@ -113,6 +113,9 @@ export interface SurveyResponseCreate {
 
   // Baseline authority: mean authority score of experts found in baseline response
   baseline_authority_avg?: number;
+
+  // Per-group authority votes: group_key → -1 (A better), 0 (equal/same), 1 (B better)
+  group_authority_votes?: Record<string, number>;
 }
 
 export interface SurveyWithChat {

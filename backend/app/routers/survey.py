@@ -133,6 +133,7 @@ def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
         "evaluator_id": survey.evaluator_id or "",
         "ab_assignment": json.dumps(survey.ab_assignment, ensure_ascii=False) if survey.ab_assignment else "",
         "baseline_authority_avg": survey.baseline_authority_avg if survey.baseline_authority_avg is not None else -1.0,
+        "group_authority_votes": json.dumps(survey.group_authority_votes, ensure_ascii=False) if survey.group_authority_votes else "",
     }
     # Serialize each A/B dimension as JSON string
     for dim in AB_DIMENSIONS:
@@ -168,6 +169,7 @@ def _neo4j_record_to_dict(r: dict) -> dict:
         "evaluator_id": r.get("evaluator_id") or None,
         "ab_assignment": json.loads(r["ab_assignment"]) if r.get("ab_assignment") else None,
         "baseline_authority_avg": r.get("baseline_authority_avg") if r.get("baseline_authority_avg") and r.get("baseline_authority_avg") >= 0 else None,
+        "group_authority_votes": json.loads(r["group_authority_votes"]) if r.get("group_authority_votes") else None,
     }
     # Deserialize A/B dimensions from JSON strings
     # Optional dims (source_relevance/authority/coverage) return None if absent in legacy records
@@ -209,6 +211,7 @@ _SURVEY_FIELDS = (
     "s.evaluator_id AS evaluator_id, "
     "s.ab_assignment AS ab_assignment, "
     "s.baseline_authority_avg AS baseline_authority_avg, "
+    "s.group_authority_votes AS group_authority_votes, "
     "s.citation_evaluations_a AS citation_evaluations_a, "
     "s.citation_evaluations_b AS citation_evaluations_b, "
     + ", ".join(f"s.{d} AS {d}" for d in AB_DIMENSIONS)
@@ -602,6 +605,7 @@ async def create_survey(survey_data: SurveyResponseCreate):
             evaluation_context: $evaluation_context,
             ab_assignment: $ab_assignment,
             baseline_authority_avg: $baseline_authority_avg,
+            group_authority_votes: $group_authority_votes,
             citation_evaluations_a: $citation_evaluations_a,
             citation_evaluations_b: $citation_evaluations_b,
             {dim_sets}
@@ -728,6 +732,7 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
             s.evaluator_role = $evaluator_role,
             s.evaluation_context = $evaluation_context,
             s.baseline_authority_avg = $baseline_authority_avg,
+            s.group_authority_votes = $group_authority_votes,
             s.citation_evaluations_a = $citation_evaluations_a,
             s.citation_evaluations_b = $citation_evaluations_b,
             {dim_sets}

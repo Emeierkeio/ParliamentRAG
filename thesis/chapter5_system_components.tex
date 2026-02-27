@@ -1,0 +1,661 @@
+% ============================================================
+%  Chapter 5 – System Components
+% ============================================================
+
+\section{System Components}
+\label{sec:system-components}
+
+The four principal components examined in this chapter---dual-channel retrieval, query-dependent
+authority scoring, the multi-stage generation pipeline, and the citation integrity system---are
+each responsible for a distinct class of computational and inferential tasks. Their interaction
+is not merely sequential: authority scores inform retrieval ranking, retrieval outputs constrain
+generation scope, and the citation integrity system operates as a transversal invariant that
+binds every generative operation to its evidential basis. The chapter analyses each component in
+terms of its formal design objectives, its algorithmic mechanisms, and the trade-offs that shaped
+its architecture.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Dual-Channel Retrieval}
+\label{sec:dual-channel-retrieval}
+
+\subsubsection{Problem Definition}
+
+Let $\mathcal{C} = \{c_1, c_2, \ldots, c_N\}$ denote the corpus of evidence fragments, where
+each chunk $c_i$ is a contiguous textual passage extracted from a parliamentary speech and
+characterised by a dense vector embedding $\mathbf{e}_i \in \mathbb{R}^d$, a speaker identity
+$\sigma(c_i)$, and a parliamentary group affiliation $\gamma(c_i)$. Given a natural language
+query $q$ with embedding $\mathbf{q} = \phi(q) \in \mathbb{R}^d$, the retrieval problem
+is to select a subset $\mathcal{R} \subseteq \mathcal{C}$ of fixed maximum cardinality that
+satisfies three partially competing requirements.
+
+The first requirement is \textit{semantic relevance}: the selected fragments should carry
+informational content that is pertinent to the query's topic. The second is \textit{political
+coverage}: the selected set should include substantive evidence from each of the principal
+parliamentary groups $G = \{g_1, \ldots, g_M\}$, reflecting the multi-stakeholder nature of
+legislative debate. Formally, for a coverage threshold $\kappa$, the constraint reads
+$|\{c_i \in \mathcal{R} : \gamma(c_i) = g_j\}| \geq \kappa$ for each group $g_j \in G$ that
+has produced topically relevant material. The third requirement is \textit{authority
+concentration}: among fragments from the same group, the set should prefer those attributed to
+speakers with demonstrated expertise on the query's domain.
+
+These three requirements cannot be simultaneously optimised by any single retrieval mechanism.
+Semantic relevance maximisation without coverage constraints tends to concentrate retrieved
+fragments among the most voluminous speakers, reproducing in the retrieval stage the very
+asymmetries that the system is designed to counteract. Coverage enforcement without relevance
+weighting degrades the quality of the evidentiary base. Authority concentration applied
+uniformly across groups introduces a different form of bias: it can suppress minority voices
+within a group even when their passages are more directly pertinent to the query.
+
+The dual-channel architecture addresses this tension by separating the retrieval function into
+two complementary mechanisms that operate on different information sources---semantic content
+and structural metadata---and whose outputs are subsequently merged through a ranking function
+that integrates all three requirements.
+
+\subsubsection{Dense Channel: Vector Similarity Search}
+
+The dense retrieval channel operates on the assumption that semantic proximity in the shared
+embedding space is a reliable proxy for topical relevance. Given the query embedding
+$\mathbf{q}$, the channel assigns to each chunk $c_i$ a relevance score defined as the cosine
+similarity between the two embeddings:
+
+\begin{equation}
+    R(c_i, q) = \frac{\mathbf{e}_i \cdot \mathbf{q}}{\|\mathbf{e}_i\| \cdot \|\mathbf{q}\|}.
+\end{equation}
+
+The channel retrieves the $K_\text{dense}$ chunks with the highest values of $R(c_i, q)$,
+subject to a minimum similarity threshold $\tau_\text{dense}$ below which a fragment is
+considered topically unrelated regardless of its rank. This threshold-gating prevents the set
+from being populated by weakly relevant material when the corpus contains few genuinely pertinent
+passages.
+
+The cosine metric has several properties that make it appropriate for this domain. It is
+invariant to the magnitude of the embedding vectors, which means that the length of a passage---and
+consequently the total information it encodes---does not inflate its retrieval score. It is
+also symmetric in the embedding space, so that the same geometric intuition applies whether the
+query is short and underspecified or long and detailed, provided both are mapped to the same
+embedding space by the shared encoder.
+
+The primary limitation of this channel is its sensitivity to the distributional properties of
+the training corpus of the embedding model. In parliamentary discourse, certain topics are
+debated far more frequently by the majority coalition than by opposition groups, simply as a
+consequence of agenda-setting power. A purely density-based retrieval mechanism will therefore
+tend to over-represent majority speakers on most policy topics: their speeches are more numerous,
+and the cumulative effect of multiple high-similarity fragments from the same group displaces
+minority voices from the top-$K$ set before any diversity constraint is applied. A second
+limitation is that the dense channel has no access to the relational structure of the parliamentary
+record: it cannot distinguish between a deputy who has spoken tangentially about a topic and one
+who has introduced and actively sponsored legislation in the same domain.
+
+\subsubsection{Graph Channel: Structural Traversal}
+
+The graph retrieval channel addresses both limitations of the dense channel by exploiting the
+relational metadata of the parliamentary knowledge graph. Its operating principle is that
+\textit{demonstrated legislative commitment} to a policy domain is a stronger signal of
+authoritativeness than incidental discursive proximity, and that this commitment is encoded in
+the structural relationships between deputies, parliamentary acts, and committee memberships---none
+of which is directly accessible through embedding similarity.
+
+The channel proceeds in two traversal steps. In the first step, it identifies the set of
+parliamentary acts $\mathcal{A}_q \subseteq \mathcal{A}$ whose pre-stored thematic embeddings
+$\{\mathbf{a}_k\}$ are sufficiently similar to the query embedding:
+
+\begin{equation}
+    \mathcal{A}_q = \left\{ a_k \in \mathcal{A} : \frac{\mathbf{a}_k \cdot \mathbf{q}}{\|\mathbf{a}_k\| \cdot \|\mathbf{q}\|} \geq \tau_\text{graph} \right\}.
+\end{equation}
+
+In the second step, the graph is traversed from each act in $\mathcal{A}_q$ along signatorship
+relationships to the set of deputies who co-sponsored it, and from those deputies to the speeches
+they delivered in parliamentary sessions. The resulting evidence fragments are retrieved as the
+graph channel's output.
+
+This traversal embeds a structural prior that is absent from the dense channel: it rewards
+deputies whose legislative activity---as opposed merely to their verbal contributions---places
+them in proximity to the query's domain. A deputy who has sponsored multiple acts on environmental
+regulation is structurally positioned as an authority on such matters regardless of whether their
+debate contributions happen to be topically dense; conversely, a deputy who has spoken frequently
+about the environment without ever sponsoring relevant legislation receives no structural bonus.
+
+The complementarity of the two channels is not incidental. The dense channel is effective at
+capturing topically relevant contributions that arise from debate but are not associated with
+formal legislative activity---for instance, opposition critiques, expert testimonies solicited
+during committee hearings, or speeches that address the consequences of legislation sponsored
+by other parties. The graph channel introduces evidence from speakers who are structurally
+committed to the domain but whose verbal contributions may rank below the density threshold due
+to lexical variation or the relative frequency of their topic in the overall corpus. The union
+of the two outputs is therefore substantively more diverse in terms of both ideological
+representation and evidential type than either channel alone.
+
+\subsubsection{Channel Merging and Ranking}
+\label{sec:channel-merging}
+
+The combined candidate pool $\mathcal{R}_0 = \mathcal{R}_\text{dense} \cup \mathcal{R}_\text{graph}$
+is scored by a multi-factor ranking function that transforms the raw retrieval outputs into an
+ordered evidence set suitable for generation. The ranking function integrates five dimensions of
+evaluation into a composite score:
+
+\begin{equation}
+    S(c_i) = w_R \cdot R(c_i, q) + w_A \cdot A(\sigma(c_i), q) + w_D \cdot D(c_i, \mathcal{R}_0)
+             + w_\Sigma \cdot \Sigma(c_i) + w_B \cdot B(c_i, \mathcal{R}_0),
+\end{equation}
+
+where $R(c_i, q)$ is the semantic relevance score defined above, $A(\sigma(c_i), q)$ is the
+authority score of the speaker attributed to $c_i$ (computed by the authority scoring module
+described in the following section), $D(c_i, \mathcal{R}_0)$ is a diversity penalty,
+$\Sigma(c_i)$ is a salience estimate, and $B(c_i, \mathcal{R}_0)$ is a coverage balance term.
+The weights $\{w_R, w_A, w_D, w_\Sigma, w_B\}$ are fixed hyperparameters of the ranking
+function.
+
+The \textit{diversity penalty} $D(c_i, \mathcal{R}_0)$ is a decreasing function of the number
+of fragments already selected from the same parliamentary group as $c_i$. Its effect is to
+suppress the score of fragments from over-represented groups without eliminating them from
+consideration entirely: a high-authority, highly relevant fragment from a dominant group is not
+excluded, but it must clear a higher effective threshold than an equivalent fragment from a
+group with fewer representatives in the current selection.
+
+The \textit{salience estimate} $\Sigma(c_i)$ reflects the attitudinal specificity and
+informational density of the passage. Chunks consisting predominantly of procedural formulae,
+formal acknowledgements, or parliamentary preambles carry low salience, as they convey no
+substantive policy position. When such a chunk is retrieved---typically because it shares
+lexical proximity with query terms that also appear in procedural contexts---a
+\textit{neighbourhood expansion} mechanism replaces or augments it with the immediately succeeding
+chunk in the speech, exploiting the directional continuity relation between consecutive
+fragments. This expansion is predicated on the empirical observation that procedurally weak
+openings in parliamentary speeches are almost invariably followed by their substantive content.
+
+The \textit{coverage balance term} $B(c_i, \mathcal{R}_0)$ provides a corrective bonus to
+fragments from groups that are under-represented in the current candidate pool relative to the
+coverage threshold $\kappa$. If the final ranked selection still fails to meet the coverage
+constraint after exhausting the primary candidate pool, targeted supplementary queries are
+executed, restricted by group affiliation, to fill the remaining coverage gaps. These
+supplementary queries inherit the same similarity threshold but operate on a narrower scope,
+ensuring that the resulting additions are at least minimally relevant to the query even if they
+cannot be ranked competitively against the primary candidates.
+
+The trade-off embedded in this ranking design is between optimality in expectation and robustness
+to distributional imbalances in the corpus. A ranking function that optimises only the first
+three terms---relevance, authority, and diversity---will produce excellent results when the corpus
+is uniformly distributed across parliamentary groups but will degrade systematically when some
+groups are structurally underrepresented. The salience and coverage terms are not improvements
+in the Pareto sense; they trade marginal retrieval precision for guaranteed political coverage,
+a trade-off that is explicitly demanded by the system's first design principle.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Query-Dependent Authority Scoring}
+\label{sec:authority-scoring}
+
+\subsubsection{Positioning and Design Rationale}
+
+Authority is a fundamentally relational concept: a speaker is authoritative with respect to
+a topic, not in the abstract. This observation has direct algorithmic consequences. Static
+authority measures---such as citation counts, aggregate legislative productivity, or tenure
+length---can at best capture a form of institutional prestige that is orthogonal to the
+question of domain expertise. A senator with twenty years of legislative experience on fiscal
+policy is not, by virtue of that record alone, an authority on public health; yet a static
+prestige measure would score them identically across both domains.
+
+The system therefore models authority as a function of two arguments: the speaker's profile
+$s$ and the query embedding $\mathbf{q}$. The composite authority score
+$A(s, q) \in [0, 1]$ is the weighted sum of six components, each independently normalised to
+the unit interval:
+
+\begin{equation}
+    A(s, q) = \sum_{k=1}^{6} w_k \cdot f_k(s, q), \quad \sum_{k=1}^{6} w_k = 1,
+    \label{eq:authority}
+\end{equation}
+
+where each $f_k(s, q) \in [0, 1]$ captures a distinct dimension of the relationship between
+the speaker's profile and the query's semantic domain. The weights $\{w_k\}$ are fixed
+hyperparameters that encode the relative diagnostic value of each dimension.
+
+The multi-factor design reflects the observation that no single dimension of expertise is
+individually sufficient. Legislative activity is a strong signal of domain engagement but can
+be inflated by co-signatorship on peripheral acts. Committee membership provides a structural
+indicator of institutional assignment but does not capture self-directed specialisation outside
+formal roles. Professional and educational background are the most stable signals but are also
+the most distal from current parliamentary activity. The synthesis of six complementary signals
+produces a score that is more robust to manipulation and more stable across queries than any
+single-factor measure.
+
+\subsubsection{Component Definitions}
+
+\paragraph{Professional alignment.}
+The profession component assesses the semantic proximity between the speaker's declared
+professional background and the query domain. Each speaker $s$ is associated with a
+pre-computed embedding $\mathbf{p}_s \in \mathbb{R}^d$ of their professional description.
+The component is defined as:
+
+\begin{equation}
+    f_\text{prof}(s, q) = \max\!\left(0,\; \frac{\mathbf{p}_s \cdot \mathbf{q}}{\|\mathbf{p}_s\| \cdot \|\mathbf{q}\|}\right),
+\end{equation}
+
+where the ReLU clipping ensures that negative cosine similarities---which arise when the
+professional background is semantically opposite to the query domain---are mapped to zero
+rather than contributing negatively to the composite score. This choice reflects a conservative
+principle: anti-expertise is not modeled as negative authority, only as the absence of a
+positive signal.
+
+\paragraph{Educational alignment.}
+The education component is structurally identical to the profession component but operates on
+a separately pre-stored embedding $\mathbf{u}_s \in \mathbb{R}^d$ of the speaker's educational
+history:
+
+\begin{equation}
+    f_\text{educ}(s, q) = \max\!\left(0,\; \frac{\mathbf{u}_s \cdot \mathbf{q}}{\|\mathbf{u}_s\| \cdot \|\mathbf{q}\|}\right).
+\end{equation}
+
+Professional and educational backgrounds are treated as separate components rather than
+concatenated into a single profile embedding because they carry distinct epistemological status:
+educational formation reflects foundational disciplinary competence acquired prior to
+parliamentary activity, whereas professional background reflects applied expertise developed
+through practice. A physician who later became a businessman and then entered parliament
+presents a mixed signal that concatenation would obscure.
+
+\paragraph{Committee membership.}
+The committee component evaluates the topical relevance of the speaker's formally assigned
+parliamentary roles. Each committee $m$ in the system's thematic ontology is associated with
+a set of domain-specific keywords whose joint embedding $\mathbf{k}_m \in \mathbb{R}^d$ serves
+as a semantic descriptor of the committee's area of competence. The component selects the
+maximally relevant active committee membership:
+
+\begin{equation}
+    f_\text{comm}(s, q) = \max_{m \in \mathcal{M}_s(t)}\; \max\!\left(0,\; \frac{\mathbf{k}_m \cdot \mathbf{q}}{\|\mathbf{k}_m\| \cdot \|\mathbf{q}\|}\right),
+\end{equation}
+
+where $\mathcal{M}_s(t)$ denotes the set of committees to which speaker $s$ holds a valid
+membership at the reference time $t$ of the query. The max-over-memberships aggregation reflects
+the principle that authority on a given topic is determined by the speaker's most relevant
+institutional assignment, not by the average relevance of all their roles.
+
+\paragraph{Parliamentary acts.}
+The acts component aggregates the speaker's legislative activity by weighting each sponsored
+act according to its topical relevance to the query and its temporal proximity to the reference
+date:
+
+\begin{equation}
+    f_\text{acts}(s, q) = \sigma\!\left(\sum_{a \in \mathcal{A}_s} \rho_a \cdot \delta_a \cdot e^{-\lambda_\text{acts}(t - t_a)} \cdot \max\!\left(0,\; \frac{\mathbf{a} \cdot \mathbf{q}}{\|\mathbf{a}\| \cdot \|\mathbf{q}\|}\right)\right),
+\end{equation}
+
+where $\mathcal{A}_s$ is the set of acts co-signed by speaker $s$, $\rho_a \in (0, 1]$ is a
+role coefficient that distinguishes primary sponsorship from co-signatorship, $\delta_a$ is a
+relevance gate that sets the contribution to zero when the act's topical similarity to the
+query falls below a minimum threshold, $\lambda_\text{acts}$ is the decay rate parameter for
+legislative activity, and $\sigma(\cdot)$ is the logistic function, applied to map the unbounded
+sum onto the unit interval. The threshold gate $\delta_a$ is essential to prevent a prolific
+legislator whose acts span many domains from accumulating a high score through sheer volume
+of off-topic activity.
+
+\paragraph{Previous speeches.}
+The interventions component applies the same aggregation logic to the speaker's speech history:
+
+\begin{equation}
+    f_\text{spch}(s, q) = \sigma\!\left(\sum_{v \in \mathcal{V}_s} \delta_v \cdot e^{-\lambda_\text{spch}(t - t_v)} \cdot \max\!\left(0,\; \frac{\mathbf{v} \cdot \mathbf{q}}{\|\mathbf{v}\| \cdot \|\mathbf{q}\|}\right)\right),
+\end{equation}
+
+where $\mathcal{V}_s$ is the set of speeches attributed to speaker $s$, $\mathbf{v}$ is the
+pre-stored embedding of each speech, and $\lambda_\text{spch}$ is a decay rate that is set
+strictly greater than $\lambda_\text{acts}$. The higher decay rate for speeches reflects the
+greater temporal sensitivity of verbal interventions: parliamentary debates are responses to
+current legislative and political events, and a speech that was highly pertinent two years ago
+may be irrelevant or even misleading when applied to the current query context.
+
+\paragraph{Institutional role.}
+The role component assigns a baseline authority weight to speakers who occupy formal
+institutional positions:
+
+\begin{equation}
+    f_\text{role}(s, q) = \alpha_r + \beta_r \cdot \max\!\left(0,\; \frac{\mathbf{r}_s \cdot \mathbf{q}}{\|\mathbf{r}_s\| \cdot \|\mathbf{q}\|}\right),
+\end{equation}
+
+where $\alpha_r \in [0, 1]$ is a fixed base weight determined by the institutional tier of the
+role (committee president, vice-president, secretary, government member), $\beta_r$ is a scaling
+coefficient for the semantic alignment bonus, and $\mathbf{r}_s$ is an embedding of the
+speaker's role title. The base weight ensures that institutional authority is not wholly
+contingent on the semantic alignment of a role title with the query---a minister of health
+commands institutional authority on healthcare matters even if the alignment between the title
+embedding and a highly technical query is imperfect.
+
+\subsubsection{Temporal Decay}
+
+The exponential decay factors in the acts and interventions components model the depreciation
+of authority evidence over time. The general form is:
+
+\begin{equation}
+    \delta(t, t_0) = e^{-\lambda (t - t_0)},
+\end{equation}
+
+where $t$ is the reference date of the query, $t_0$ is the date of the parliamentary act or
+speech, and $\lambda > 0$ is the decay rate parameter. The half-life of the decay function,
+the time after which a piece of evidence retains half its original weight, is:
+
+\begin{equation}
+    h = \frac{\ln 2}{\lambda}.
+\end{equation}
+
+The choice of half-life is governed by the epistemological interpretation of what constitutes
+relevant prior activity in each domain. Legislative commitments---acts and their signatorship
+records---have a longer effective half-life because they reflect strategic policy positions
+that tend to persist across multiple sessions and because the formal record of sponsorship
+remains part of the deputy's political identity long after the act is voted upon. Verbal
+interventions, by contrast, are responses to the current parliamentary agenda: a deputy may
+speak urgently about a topic in one session that has been superseded by subsequent legislative
+developments in the next.
+
+Beyond the pragmatic differentiation between the two signal types, the temporal decay mechanism
+serves a normative function: it prevents the authority score from being dominated by deputies
+whose parliamentary prominence peaks during a period that predates the query by several
+legislative cycles. In a parliament whose composition evolves over time---with deputies entering
+and leaving, parties forming and dissolving, policy coalitions shifting---an authority measure
+that does not discount historical activity is epistemically misleading.
+
+\subsubsection{Coalition Logic}
+
+Parliamentary group affiliation in the Italian legislature is not a static property. Deputies
+may switch their group membership during a legislature, and the composition of coalition
+alliances changes between legislative terms. This temporal dynamics of affiliation has direct
+consequences for authority scoring: a deputy's authority score should be interpreted within the
+context of their current political alignment, not their historical one.
+
+The system resolves group affiliation at query time by querying the temporal validity attributes
+of the membership relationship between a deputy and their parliamentary group. Formally, the
+active group $g_s(t)$ of speaker $s$ at reference time $t$ is the unique group $g$ such that
+the membership relation $(s, g)$ is valid at $t$---that is, $t_\text{start}(s, g) \leq t \leq
+t_\text{end}(s, g)$. This resolution ensures that the authority score is associated with the
+correct political identity of the speaker at the time the query is processed.
+
+The coalition logic has a subtler implication for the aggregation of authority across groups.
+When the system assigns the top-authority speaker for each parliamentary group to the expert
+panel displayed alongside the answer, it must use the query-time group affiliation of each
+speaker. A deputy who was affiliated with a centre-right group during a previous legislature
+but has since joined a centrist formation should be credited to the current formation, not the
+historical one. Failure to enforce this temporal validity condition would introduce a systematic
+historical bias: the authority panel would reflect the political landscape of past legislatures
+rather than the current session, misrepresenting the ideological positions of parliamentary
+groups as they exist at the time of the query.
+
+\subsubsection{Normalisation}
+
+The six component scores are each independently normalised to $[0, 1]$ before being combined
+by the weighted sum in Equation~\ref{eq:authority}. The normalisation is percentile-based
+rather than range-based. For each component $f_k$ and each query, the raw scores of all speakers
+in the population are ranked, and each speaker's normalised score is set to their percentile rank:
+
+\begin{equation}
+    \tilde{f}_k(s) = \frac{|\{s' \in \mathcal{S} : f_k(s', q) \leq f_k(s, q)\}|}{|\mathcal{S}|},
+\end{equation}
+
+where $\mathcal{S}$ is the full population of speakers in the corpus.
+
+The choice of percentile normalisation over linear min-max scaling is motivated by the
+distributional properties of the individual components. Several of them---most notably the
+acts and interventions components---exhibit heavy-tailed distributions across the speaker
+population: a small number of highly active deputies account for a disproportionate share of
+the total legislative and discursive activity. Linear normalisation under such distributions
+would compress the scores of the vast majority of deputies into a narrow range near zero,
+rendering the composite score effectively determined by the outliers. Percentile normalisation
+spreads the scores uniformly across the unit interval by construction, ensuring that the
+composite score reflects relative standing within the population rather than raw magnitude.
+
+A secondary benefit of percentile normalisation is query-independent comparability: because
+the normalisation is applied over the full population for each query, scores from different
+queries are expressed in the same distributional frame and can be compared meaningfully in
+evaluation contexts. This property is essential for the evaluation pipeline, which must compare
+the authority profiles of system-cited experts across a diverse set of evaluation queries.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Four-Stage Generation Pipeline}
+\label{sec:generation-pipeline}
+
+\subsubsection{Problem Definition}
+
+Multi-view generation under parliamentary constraints can be formalised as the problem of
+producing, from a query $q$ and a set of evidence fragments $\mathcal{R}$, a structured
+response $\mathcal{O}$ that satisfies three simultaneous constraints.
+
+The \textit{party coverage constraint} requires that, for each parliamentary group $g_j \in G$
+represented in $\mathcal{R}$, the output $\mathcal{O}$ contains at least one section $s_{g_j}$
+that articulates the position of group $g_j$ based exclusively on evidence attributed to its
+members: $\forall g_j \in G,\; \exists\, s_{g_j} \subset \mathcal{O}$ such that every
+evidentiary claim in $s_{g_j}$ is supported by some $c_i \in \mathcal{R}$ with
+$\gamma(c_i) = g_j$.
+
+The \textit{citation grounding constraint} requires that every claim in $\mathcal{O}$ that is
+attributed to a specific speaker be supported by a verbatim quotation extracted from the
+corresponding source evidence: $\forall$ attributed claim $x \in \mathcal{O}$, $\exists\, c_i
+\in \mathcal{R}$ such that the quoted string $x_\text{quote}$ is a contiguous substring of the
+raw text of $c_i$.
+
+The \textit{coherence constraint} requires that the sections of $\mathcal{O}$, despite being
+generated independently per group, be integrated into a discourse that is logically coherent
+and free of internal contradiction at the meta-level---that is, the integrating discourse does
+not misrepresent the positions of any group or introduce claims not supported by any evidence
+in $\mathcal{R}$.
+
+These three constraints are mutually incompatible for single-pass generation. A single
+large-language-model invocation that receives the full evidence set and is asked to produce a
+multi-view answer satisfying all three simultaneously faces an attention allocation problem: the
+model cannot reliably maintain separate evidentiary chains for each group while simultaneously
+enforcing citation placeholders and producing a coherent integrative discourse. Empirically,
+single-pass generation tends to produce one of two failure modes: either the model merges the
+positions of different groups into an unattributed synthesis that violates the coverage
+constraint, or it produces correctly attributed sections that are individually faithful but
+mutually incoherent when read as a unified document. The four-stage decomposition resolves
+this tension by assigning each constraint to the stage best suited to enforce it.
+
+\subsubsection{Stage 1: Claim Analyst}
+
+The first stage receives the query $q$ and the full evidence set $\mathcal{R}$ and produces a
+decomposition of the query into a set of \textit{atomic claims} $\mathcal{K} = \{k_1, \ldots,
+k_L\}$, where each $k_l$ is an elementary propositional question that a complete answer to $q$
+would need to address.
+
+The purpose of this decomposition is to establish a shared epistemic scaffold that governs all
+subsequent generation stages. Without a common claim structure, the party-specific sections
+produced in Stage 2 would pursue independent narrative threads, making the integration step in
+Stage 3 structurally harder: the integrator would need to simultaneously discover the shared
+argumentative agenda and weave the sections together, which are tasks that are individually
+demanding and jointly prone to failure. By externalising the claim structure as an explicit
+intermediate representation, the pipeline separates the \textit{question of what to address}
+from the \textit{question of how each party addresses it}.
+
+The decomposition also serves a coverage verification function. A claim that is addressed by
+some parties but absent from the section of another signals either a genuine gap in that party's
+evidential record or a failure of the sectional writer to engage with the shared agenda. The
+claim structure makes this distinction tractable: it becomes possible to audit, for each group
+section, which claims are addressed and which are missing, and to intervene algorithmically if
+the omission is due to generation failure rather than genuine absence of evidence.
+
+\subsubsection{Stage 2: Sectional Writer}
+
+The second stage generates, for each parliamentary group $g_j \in G$, an independent
+narrative section $s_{g_j}$ that addresses the claim set $\mathcal{K}$ using only the evidence
+fragments in $\mathcal{R}_{g_j} = \{c_i \in \mathcal{R} : \gamma(c_i) = g_j\}$.
+
+The group-scoped evidence restriction is the primary mechanism for enforcing the party coverage
+constraint and for preventing cross-group confabulation. If a single invocation were provided
+with the full evidence set, the generator would have no structural obligation to distinguish
+between evidence from different groups; it could, and empirically does, produce attributions
+that blend positions across groups or assign evidence to the wrong speaker. By presenting each
+invocation with only the evidence from a single group, the attribution problem is made
+unambiguous: every claim the generator produces must be supported by the evidence before it,
+and every piece of that evidence belongs to the same political formation.
+
+Within each section, citations are not inserted as verbatim quotations but as structured
+\textit{citation placeholders}. Each placeholder encodes the identifier of the source chunk
+whose content the generator intends to cite, together with an inline approximation of the
+intended quotation extracted from the evidence text. This representation serves two purposes.
+It defers the verbatim extraction to the deterministic Stage 4, which can perform it without
+LLM involvement, and it provides a traceable record of \textit{which} evidence the generator
+considered relevant for \textit{which} claim. The collection of all placeholders across all
+sections constitutes the \textit{citation registry}, which is the authoritative record of
+citation expectations against which later stages are audited.
+
+\subsubsection{Stage 3: Narrative Integrator}
+
+The third stage receives the collection of party-specific sections $\{s_{g_1}, \ldots,
+s_{g_M}\}$ and synthesises them into a unified discourse $\mathcal{O}_\text{int}$ that
+reads as a coherent document while preserving the attribution and evidential basis of each
+section.
+
+The coherence constraint is inherently in tension with the structural autonomy of the sectional
+writing stage. Sections generated independently may use different terminological conventions,
+address the same claim at different levels of abstraction, or organise their arguments in
+incompatible narrative orders. The integrator must resolve these surface inconsistencies without
+altering the substantive content of any section and without suppressing the citation placeholders
+that bind each claim to its source.
+
+The citation preservation requirement is enforced through a verification mechanism that audits
+the placeholder count in $\mathcal{O}_\text{int}$ against the citation registry established in
+Stage 2. If the count in the integrated output is lower than the registry count, citations have
+been dropped during synthesis. In such cases, a repair procedure reinjests the content of the
+affected sections as fallback paragraphs appended to the integrated discourse, ensuring that no
+evidence binding established in Stage 2 is silently invalidated by the integration process.
+
+The integrator operates under an explicit instruction to avoid producing claims that are not
+grounded in any section---that is, it is not permitted to use the synthesis step as an
+opportunity to introduce new propositional content unsupported by the sectional evidence. This
+constraint is not enforceable deterministically, but it is systematically reinforced by the
+citation verification mechanism: any new claim inserted during integration would either carry
+no citation placeholder or would be paired with a placeholder that does not appear in the
+registry, and both cases are detectable.
+
+\subsubsection{Stage 4: Citation Surgeon}
+
+The fourth stage is not a generative operation but a deterministic extraction procedure. Its
+function is to resolve each citation placeholder in $\mathcal{O}_\text{int}$ into a verified
+verbatim quotation drawn from the raw parliamentary record, replacing the structured placeholder
+with the extracted text.
+
+For each placeholder, the surgeon retrieves from the data layer the byte-level character
+offsets $(b_\text{start}, b_\text{end})$ associated with the source chunk identified in the
+placeholder. It then extracts the contiguous character span
+$\text{raw}[b_\text{start} : b_\text{end}]$ from the unmodified original speech text, using
+the alignment map to translate between the cleaned representation used by the embedding and
+retrieval stages and the authoritative original source used for citation.
+
+The inline approximation embedded in the placeholder by the sectional writer is treated as a
+candidate quotation that must pass a faithfulness verification before acceptance. The surgeon
+checks whether the inline string is a literal substring of the extracted raw span. If the check
+passes, the inline string is used as the citation text, which may be a meaningful sub-span of
+the full chunk. If the check fails---which can occur when the generator has paraphrased or
+truncated the source passage during section writing---the surgeon falls back to a
+semantically-guided extraction that scores individual sentences within the chunk span by
+their cosine similarity to the query embedding and selects the highest-scoring sentence as the
+citation text. In both cases, the resulting quotation is a verbatim substring of the original
+source document.
+
+This stage embodies the \textit{citation faithfulness invariant} as a computational guarantee
+rather than a normative aspiration. The guarantee is possible precisely because citation text is
+never produced by a generative language model: the model may select which evidence to cite, but
+the text of the citation is always determined by a deterministic lookup into the archived source.
+The structural consequence is that no failure mode of the generative stages can produce a
+citation that is a paraphrase, a confabulation, or a semantically approximate substitution for
+the original; the worst failure is a dropped citation, which the registry verification mechanism
+in Stage 3 is designed to detect and repair.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Citation Integrity System}
+\label{sec:citation-integrity}
+
+The citation integrity system is a cross-cutting component that operates in parallel with the
+generation pipeline rather than after it. Its function is to maintain the binding between
+textual claims and their evidential sources throughout the multi-stage process, preventing
+the progressive loss of attribution information that characterises monolithic generation
+approaches and providing the structural substrate for the faithfulness guarantee described in
+the previous section.
+
+\subsubsection{Citation Registry}
+
+The citation registry is a persistent data structure that accumulates citation expectations
+as the generation pipeline progresses. It is initialised at the beginning of Stage 2 and
+populated incrementally as each party-specific section is produced. For each citation
+placeholder $p_l$ emitted by the sectional writer, the registry records the triple
+$(p_l,\, \text{id}(c_{i(l)}),\, \mathbf{q})$, where $p_l$ is the placeholder identifier,
+$\text{id}(c_{i(l)})$ is the unique identifier of the source chunk referenced in the
+placeholder, and $\mathbf{q}$ is the query embedding, which will be used in the fallback
+extraction step if the inline approximation fails verification.
+
+The registry is \textit{append-only} during Stage 2: entries are added but never deleted.
+This design ensures that the complete history of citation expectations established during
+sectional writing is preserved regardless of what subsequent stages do to the text. The
+verification step in Stage 3 consults this registry to detect placeholder deletion, and the
+extraction step in Stage 4 uses it to resolve each placeholder to its source coordinates.
+
+The registry serves an additional auditing function during evaluation: by comparing the
+registered citation expectations with the citations that survive to the final output, it
+is possible to compute a citation retention rate that quantifies the faithfulness of the
+generation pipeline as a whole. This rate is one of the automated metrics used in the
+evaluation framework described in the following chapter.
+
+\subsubsection{Citation-First Architecture}
+
+The design philosophy of the citation integrity system inverts the conventional relationship
+between generation and attribution. In standard retrieval-augmented generation, the language
+model produces text first and citations are appended or verified afterwards---a post-hoc
+attribution model in which the generator is free to produce any claim and citations are
+sought to support it. This model is structurally susceptible to confabulation: a confident
+generator may produce plausible-sounding claims for which no supporting evidence exists, and
+the post-hoc attribution step may then match those claims to superficially related but
+actually unsupportive passages.
+
+The citation-first architecture reverses this logic. The evidence fragments are fixed before
+any generation begins; the generator is constrained to write \textit{around} the evidence,
+inserting placeholders at the point of citation rather than generating text and then
+annotating it. The consequence is that every claim in the output is, by construction, linked
+to an evidence fragment that existed in the retrieved set before the generation stage was
+invoked. The generator cannot introduce evidentiary claims that lack a corresponding source
+entry in the citation registry, because the registry is populated from the evidence presented
+to the generator and any placeholder that does not correspond to an existing evidence fragment
+will be rejected during the extraction stage.
+
+This inversion is not merely a procedural constraint; it has a semantic consequence for the
+generation task itself. When the sectional writer is presented with a set of evidence
+fragments and instructed to produce a narrative that cites them, it is performing a task closer
+to \textit{guided selection and arrangement} than to \textit{open-ended synthesis}. The
+generator must decide which evidence is most relevant to each atomic claim, in what order to
+present it, and how to connect citations into a coherent argument---but it cannot decide what
+the evidence says. This narrowing of the generation task reduces the surface area for
+hallucination and keeps the epistemic authority of the output grounded in the original
+parliamentary record.
+
+\subsubsection{Coherence Validation}
+
+The citation integrity system includes a semantic validation layer that operates on the final
+output to verify that the relationship between each cited passage and its surrounding claim is
+coherent---that is, that the claim is genuinely supported by the cited text and not merely
+proximate to it.
+
+For each citation in the final output, the validation layer computes the cosine similarity
+between the embedding of the surrounding claim context and the embedding of the cited passage:
+
+\begin{equation}
+    \text{coh}(x, c_i) = \frac{\phi(x) \cdot \mathbf{e}_i}{\|\phi(x)\| \cdot \|\mathbf{e}_i\|},
+\end{equation}
+
+where $\phi(x)$ is the embedding of the claim context $x$ and $\mathbf{e}_i$ is the embedding
+of the cited chunk. A coherence score below a minimum threshold $\tau_\text{coh}$ indicates
+that the citation is semantically mismatched with its enclosing claim---a situation that can
+arise when the integrator reorganises sections in a way that displaces a citation from the
+claim it was originally intended to support.
+
+Mismatched citations detected by the validation layer are flagged in the output metadata rather
+than silently corrected, for two reasons. First, the correct resolution of a mismatch---whether
+to reassign the citation, to delete the claim, or to reorder the surrounding text---requires
+a judgment about argumentative intent that cannot be made deterministically. Second, making
+the mismatch visible in the metadata preserves the transparency of the system's output: a
+downstream user who examines the citation provenance can identify cases where the system
+flagged a coherence concern and evaluate the cited passage independently. Opacity in citation
+quality is a more serious failure mode for a system designed to support journalistic and civic
+accountability than a conservative flagging of borderline cases.
+
+The combination of the citation registry, the citation-first generation architecture, and the
+coherence validation layer constitutes a three-layered defence of the citation faithfulness
+invariant. The registry prevents citation loss by maintaining a complete record of expectations.
+The citation-first architecture prevents confabulation by structuring generation around
+pre-existing evidence. The coherence validation prevents semantic displacement by verifying that
+cited evidence is genuinely relevant to the claims it accompanies. No single layer is sufficient
+alone; together, they provide structural guarantees that are substantially stronger than any
+post-hoc verification approach applied to a monolithic generation process.

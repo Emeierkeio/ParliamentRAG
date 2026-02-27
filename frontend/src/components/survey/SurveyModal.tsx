@@ -1072,6 +1072,8 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
         evaluation_set_topic: selectedChat.matched_topic || undefined,
         evaluator_id: evaluatorId || undefined,
         baseline_authority_avg: baselineAuthAvg,
+        // Per-group authority votes from the Autorità panel
+        group_authority_votes: Object.keys(groupAuthorityRatings).length > 0 ? groupAuthorityRatings : undefined,
       });
 
       setStep("success");

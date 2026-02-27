@@ -96,6 +96,9 @@ class SurveyResponse(BaseModel):
     # Baseline authority: mean authority_score of experts in baseline response (computed at survey time)
     baseline_authority_avg: Optional[float] = Field(None, description="Mean authority score of baseline experts")
 
+    # Per-group authority votes: group_key → -1 (A better), 0 (equal/same), 1 (B better)
+    group_authority_votes: Optional[Dict[str, int]] = Field(None, description="Per-political-group authority vote: -1=A, 0=equal, 1=B")
+
 
 class SurveyResponseCreate(BaseModel):
     """Model for creating a new A/B survey response."""
@@ -146,6 +149,11 @@ class SurveyResponseCreate(BaseModel):
     # Baseline authority: mean authority_score of experts extracted from baseline text (computed by frontend)
     baseline_authority_avg: Optional[float] = Field(
         None, description="Mean authority score of experts found in the baseline response"
+    )
+
+    # Per-group authority votes: group_key → -1 (A better), 0 (equal/same), 1 (B better)
+    group_authority_votes: Optional[Dict[str, int]] = Field(
+        None, description="Per-political-group authority vote: -1=A, 0=equal, 1=B"
     )
 
 
