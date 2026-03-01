@@ -611,9 +611,8 @@ async def create_survey(survey_data: SurveyResponseCreate):
     dim_sets = ", ".join(f"{d}: ${d}" for d in AB_DIMENSIONS)
 
     client.query(f"""
-        MERGE (s:SurveyEvaluation {{chat_id: $chat_id}})
+        CREATE (s:SurveyEvaluation {{chat_id: $chat_id, evaluator_id: $evaluator_id}})
         SET s.id = $id,
-            s.evaluator_id = $evaluator_id,
             s.timestamp = $timestamp,
             s.overall_satisfaction_a = $overall_satisfaction_a,
             s.overall_satisfaction_b = $overall_satisfaction_b,
@@ -699,14 +698,22 @@ async def create_simple_rating(rating_data: SimpleRatingCreate):
 
 
 @router.get("/{chat_id}", response_model=SurveyResponse)
-async def get_survey_by_chat(chat_id: str):
-    """Get A/B survey for a specific chat."""
+async def get_survey_by_chat(chat_id: str, evaluator_id: Optional[str] = Query(None)):
+    """Get A/B survey for a specific chat. If evaluator_id is provided, returns that evaluator's response."""
 
     client = _get_client()
-    result = client.query(f"""
-        MATCH (s:SurveyEvaluation {{chat_id: $chat_id}})
-        RETURN {_SURVEY_FIELDS}
-    """, {"chat_id": chat_id})
+    if evaluator_id:
+        result = client.query(f"""
+            MATCH (s:SurveyEvaluation {{chat_id: $chat_id, evaluator_id: $evaluator_id}})
+            RETURN {_SURVEY_FIELDS}
+        """, {"chat_id": chat_id, "evaluator_id": evaluator_id})
+    else:
+        result = client.query(f"""
+            MATCH (s:SurveyEvaluation {{chat_id: $chat_id}})
+            RETURN {_SURVEY_FIELDS}
+            ORDER BY s.timestamp DESC
+            LIMIT 1
+        """, {"chat_id": chat_id})
 
     if not result:
         raise HTTPException(status_code=404, detail="Survey not found")
@@ -719,10 +726,11 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
     """Update an existing A/B survey response."""
 
     client = _get_client()
+    evaluator_id = survey_data.evaluator_id or ""
     existing = client.query("""
-        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+        MATCH (s:SurveyEvaluation {chat_id: $chat_id, evaluator_id: $evaluator_id})
         RETURN s.id AS id
-    """, {"chat_id": chat_id})
+    """, {"chat_id": chat_id, "evaluator_id": evaluator_id})
 
     if not existing:
         raise HTTPException(status_code=404, detail="Survey not found")
@@ -736,11 +744,12 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
 
     params = _survey_to_neo4j_params(updated)
     params["match_chat_id"] = chat_id
+    params["match_evaluator_id"] = evaluator_id
 
     dim_sets = ", ".join(f"s.{d} = ${d}" for d in AB_DIMENSIONS)
 
     client.query(f"""
-        MATCH (s:SurveyEvaluation {{chat_id: $match_chat_id}})
+        MATCH (s:SurveyEvaluation {{chat_id: $match_chat_id, evaluator_id: $match_evaluator_id}})
         SET s.timestamp = $timestamp,
             s.overall_satisfaction_a = $overall_satisfaction_a,
             s.overall_satisfaction_b = $overall_satisfaction_b,
@@ -762,18 +771,25 @@ async def update_survey(chat_id: str, survey_data: SurveyResponseCreate):
 
 
 @router.delete("/{chat_id}")
-async def delete_survey(chat_id: str):
-    """Delete an A/B survey."""
+async def delete_survey(chat_id: str, evaluator_id: Optional[str] = Query(None)):
+    """Delete an A/B survey. If evaluator_id is provided, deletes only that evaluator's response."""
 
     client = _get_client()
-    result = client.query("""
-        MATCH (s:SurveyEvaluation {chat_id: $chat_id})
-        DELETE s
-        RETURN count(*) AS deleted
-    """, {"chat_id": chat_id})
+    if evaluator_id:
+        result = client.query("""
+            MATCH (s:SurveyEvaluation {chat_id: $chat_id, evaluator_id: $evaluator_id})
+            DELETE s
+            RETURN count(*) AS deleted
+        """, {"chat_id": chat_id, "evaluator_id": evaluator_id})
+    else:
+        result = client.query("""
+            MATCH (s:SurveyEvaluation {chat_id: $chat_id})
+            DELETE s
+            RETURN count(*) AS deleted
+        """, {"chat_id": chat_id})
 
     if not result or result[0]["deleted"] == 0:
         raise HTTPException(status_code=404, detail="Survey not found")
 
-    logger.info(f"A/B survey deleted for chat {chat_id}")
+    logger.info(f"A/B survey deleted for chat {chat_id}" + (f" evaluator {evaluator_id}" if evaluator_id else " (all evaluators)"))
     return {"message": "Survey deleted", "chat_id": chat_id}
