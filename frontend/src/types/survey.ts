@@ -52,7 +52,6 @@ export interface SurveyResponse {
   answer_clarity: ABRating;
   answer_completeness: ABRating;
   citations_relevance: ABRating;
-  citations_accuracy: ABRating;
   balance_perception: ABRating;
   balance_fairness: ABRating;
 
@@ -84,7 +83,6 @@ export interface SurveyResponseCreate {
   answer_clarity: ABRating;
   answer_completeness: ABRating;
   citations_relevance: ABRating;
-  citations_accuracy: ABRating;
   balance_perception: ABRating;
   balance_fairness: ABRating;
   source_relevance: ABRating;
@@ -229,7 +227,6 @@ export const AB_DIMENSIONS = [
   "answer_clarity",
   "answer_completeness",
   "citations_relevance",
-  "citations_accuracy",
   "balance_perception",
   "balance_fairness",
   "source_relevance",
@@ -245,7 +242,6 @@ export interface SurveyFormState {
   answer_clarity: ABRating;
   answer_completeness: ABRating;
   citations_relevance: ABRating;
-  citations_accuracy: ABRating;
   balance_perception: ABRating;
   balance_fairness: ABRating;
   // Source authority dimensions (grounded in TREC Expert Finding + DQI literature)
@@ -287,12 +283,6 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     category: "Citazioni",
     question: "Pertinenza delle citazioni parlamentari",
     description: "Valuta se le citazioni supportano effettivamente la risposta",
-  },
-  {
-    id: "citations_accuracy",
-    category: "Citazioni",
-    question: "Accuratezza delle attribuzioni",
-    description: "Considera se deputato, data e contesto sono corretti",
   },
   {
     id: "balance_perception",
@@ -347,7 +337,6 @@ export const getInitialSurveyFormState = (): SurveyFormState => ({
   answer_clarity: getInitialABRating(),
   answer_completeness: getInitialABRating(),
   citations_relevance: getInitialABRating(),
-  citations_accuracy: getInitialABRating(),
   balance_perception: getInitialABRating(),
   balance_fairness: getInitialABRating(),
   source_relevance: getInitialABRating(),

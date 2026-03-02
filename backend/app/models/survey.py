@@ -63,7 +63,6 @@ class SurveyResponse(BaseModel):
     answer_clarity: ABRating
     answer_completeness: ABRating
     citations_relevance: ABRating
-    citations_accuracy: ABRating
     balance_perception: ABRating
     balance_fairness: ABRating
 
@@ -109,7 +108,6 @@ class SurveyResponseCreate(BaseModel):
     answer_clarity: ABRating
     answer_completeness: ABRating
     citations_relevance: ABRating
-    citations_accuracy: ABRating
     balance_perception: ABRating
     balance_fairness: ABRating
 
@@ -215,7 +213,6 @@ AB_DIMENSIONS = [
     "answer_clarity",
     "answer_completeness",
     "citations_relevance",
-    "citations_accuracy",
     "balance_perception",
     "balance_fairness",
     "source_relevance",
@@ -285,12 +282,6 @@ SURVEY_QUESTIONS = [
         "category": "Citazioni",
         "question": "Pertinenza delle citazioni parlamentari",
         "description": "Valuta se le citazioni supportano effettivamente la risposta"
-    },
-    {
-        "id": "citations_accuracy",
-        "category": "Citazioni",
-        "question": "Accuratezza delle attribuzioni",
-        "description": "Considera se deputato, data e contesto sono corretti"
     },
     {
         "id": "balance_perception",

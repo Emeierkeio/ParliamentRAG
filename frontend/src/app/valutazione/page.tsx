@@ -46,7 +46,6 @@ const DIMENSION_LABELS: Record<string, string> = {
   answer_clarity: "Chiarezza",
   answer_completeness: "Completezza",
   citations_relevance: "Pertinenza citazioni",
-  citations_accuracy: "Accuratezza citazioni",
   balance_perception: "Bilanciamento percepito",
   balance_fairness: "Equita",
 };

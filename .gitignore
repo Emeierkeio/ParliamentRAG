@@ -239,3 +239,7 @@ backend/scripts/export_notebooklm.py
 
 # Orphan data files
 backend/data/parliament.db
+
+*.txt
+package-lock.json
+package.json
