@@ -1053,7 +1053,6 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
         answer_clarity: formState.answer_clarity,
         answer_completeness: formState.answer_completeness,
         citations_relevance: formState.citations_relevance,
-        citations_accuracy: formState.citations_accuracy,
         balance_perception: formState.balance_perception,
         balance_fairness: formState.balance_fairness,
         source_relevance: formState.source_relevance,
