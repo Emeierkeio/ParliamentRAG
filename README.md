@@ -287,4 +287,4 @@ If you use this system or build upon this work, please cite:
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+APACHE 2.0 — see [LICENSE](LICENSE).
