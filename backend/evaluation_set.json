@@ -2735,8 +2735,297 @@
     }
   },
   "Gestione dei Flussi Migratori": {
-    "baseline_answer": "## Introduzione\n\nL'analisi si basa sui resoconti stenografici della Camera dei Deputati relativi a molteplici provvedimenti, tra cui i disegni di legge di conversione dei decreti-legge n. 1/2023, n. 20/2023 e n. 37/2025. Il dibattito ha coinvolto oltre sessanta deputati intervenuti in centinaia di sedute parlamentari, tra cui le sedute n. 48, n. 95 e n. 554, svoltesi nel periodo compreso tra novembre 2022 e dicembre 2025. I documenti esaminati coprono sia le discussioni sulle informative urgenti del Governo, sia la ratifica di protocolli internazionali in materia di asilo e controllo delle frontiere. Posizione del Governo Per il Governo, Giorgia Meloni chiarisce che la gestione delle frontiere meridionali richiede una forte collaborazione comunitaria e partnership strategiche con le nazioni africane per fermare tempestivamente i trafficanti. La Presidente del Consiglio (Fratelli d'Italia, 13/12/2022) afferma che «Il fianco Sud della sfida migratoria non è meno importante del fianco Est».\n\n## Posizioni della Maggioranza\n\nPer Fratelli d'Italia, Sara Kelany ribadisce che le priorità dell'esecutivo si fondano sul rigido controllo degli ingressi e sugli accordi per trasferire le procedure di accoglienza al di fuori dei confini nazionali. La deputata (Fratelli d'Italia, 19/03/2025) afferma che le scelte del Governo convergono nella «lotta senza quartiere ai trafficanti di esseri umani; difesa delle frontiere; esternalizzazione della gestione dei flussi verso Paesi terzi».\n\nPer la Lega - Salvini Premier, Igor Giancarlo Iezzi denuncia il ricorso abusivo agli strumenti di tutela umanitaria, inquadrandoli come meccanismi che incentivano la permanenza irregolare di chi non possiede i requisiti per l'asilo. Il legislatore (Lega - Salvini Premier, 04/05/2023) afferma che «La protezione speciale allargata, invece, è un regalo del Partito Democratico, una vera e propria sanatoria, utile solo a regalare un permesso a chi non ha nessun diritto di stare qui».\n\nPer Forza Italia - Berlusconi Presidente - PPE, Paolo Emilio Russo auspica un sistema normativo incentrato sulle espulsioni rapide per chi delinque e sull'apertura parallela di canali per i lavoratori stranieri regolari. Il parlamentare (Forza Italia - Berlusconi Presidente - PPE, 16/10/2024) afferma che «La corretta gestione dei flussi migratori, consentendo l'immigrazione ai lavoratori regolari, riconoscendo asilo agli aventi diritto e respingendo, tramite rimpatri celeri, gli irregolari è di fondamentale importanza».\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, Alessandro Colucci propone di considerare le iniziative di solidarietà per i veri profughi come strettamente complementari alla ferma opposizione verso gli sbarchi illegali. Il deputato (Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, 28/11/2023) afferma che è prioritario «accogliere i migranti che scappano da guerre, da persecuzioni, da fame, e contrastare l'immigrazione clandestina».\n\n## Posizioni dell'Opposizione\n\nPer il Partito Democratico - Italia Democratica e Progressista, Laura Boldrini contesta le recenti normative governative poiché smantellano i modelli di inclusione locale per sostituirli con strutture detentive inadeguate. La deputata (Partito Democratico - Italia Democratica e Progressista, 04/05/2023) afferma che «I richiedenti asilo non potranno essere più inseriti nei circuiti della rete SAI - costituita da piccoli centri che favoriscono l'integrazione, anche perché non hanno l'impatto pesante, incisivo e invasivo sul territorio - e potranno, invece, essere trattenuti nei centri di detenzione, negli hotspot e addirittura nei CPR».\n\nPer il Movimento 5 Stelle, Raffaele Bruno rileva la stringente necessità di coinvolgere le istituzioni continentali per superare le risposte puramente emergenziali e pianificare ingressi sicuri. Il parlamentare (Movimento 5 Stelle, 29/11/2023) afferma che risulta essenziale «promuovere canali d'ingresso legali attraverso una progressiva programmazione di flussi di lavoratori a livello europeo».\n\nPer Alleanza Verdi e Sinistra, Devis Dori evidenzia il totale dissenso verso le intese internazionali di contenimento che violano i diritti fondamentali, esigendo un approccio strutturale incentrato sulla tutela della vita. L'onorevole (Alleanza Verdi e Sinistra, 02/05/2023) afferma che «Servono corridoi umanitari, garanzia dell'accesso alla procedura di asilo e all'accoglienza, abbandono delle politiche di esternalizzazione e dei loro scellerati risultati».\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, Giulia Pastorella argomenta che le procedure basate sulle quote occasionali siano inadeguate a soddisfare il reale fabbisogno del mercato del lavoro italiano. La deputata (Azione - Popolari Europeisti Riformatori - Renew Europe, 14/05/2025) afferma che «È necessaria una gestione seria e pragmatica di questi flussi migratori, ampliando i canali regolari, non basta il solito decreto flussi con il click day».\n\nPer Italia Viva - Il Centro - Renew Europe, Roberto Giachetti osserva come i provvedimenti dell'esecutivo contengano gravi forzature lesive della privacy e delle garanzie costituzionali per i cittadini stranieri sottoposti a controlli. L'esponente (Italia Viva - Il Centro - Renew Europe, 26/11/2024) afferma che «questo testo, con l'articolo 12, permette di accedere immediatamente ai dispositivi elettronici».\n\nPer il gruppo Misto, Dieter Steger precisa che le espulsioni dei soggetti non aventi diritto sono condivisibili solo se integrate in un coerente sistema europeo di governo degli ingressi e di cooperazione tra Stati. Il legislatore (Misto, 15/05/2025) afferma che «Comprendiamo e condividiamo l'esigenza di rafforzare i rimpatri, di contrastare gli abusi di diritto d'asilo, di impedire che l'illegalità diventi la scorciatoia per entrare in Europa».",
-    "baseline_experts": [],
+    "baseline_answer": "## Introduzione\n\nL'analisi si basa sui resoconti stenografici della Camera dei Deputati relativi a molteplici provvedimenti, tra cui i disegni di legge di conversione dei decreti-legge n. 1/2023, n. 20/2023 e n. 37/2025. Il dibattito ha coinvolto oltre sessanta deputati intervenuti in centinaia di sedute parlamentari, tra cui le sedute n. 48, n. 95 e n. 554, svoltesi nel periodo compreso tra novembre 2022 e dicembre 2025. I documenti esaminati coprono sia le discussioni sulle informative urgenti del Governo, sia la ratifica di protocolli internazionali in materia di asilo e controllo delle frontiere. Posizione del Governo Per il Governo, Giorgia Meloni chiarisce che la gestione delle frontiere meridionali richiede una forte collaborazione comunitaria e partnership strategiche con le nazioni africane per fermare tempestivamente i trafficanti. La Presidente del Consiglio (Fratelli d'Italia, 13/12/2022) afferma che «Il fianco Sud della sfida migratoria non è meno importante del fianco Est».\n\n## Posizioni della Maggioranza\n\nPer Fratelli d'Italia, Sara Kelany ribadisce che le priorità dell'esecutivo si fondano sul rigido controllo degli ingressi e sugli accordi per trasferire le procedure di accoglienza al di fuori dei confini nazionali. Sara Kelany (Fratelli d'Italia, 19/03/2025) afferma che le scelte del Governo convergono nella «lotta senza quartiere ai trafficanti di esseri umani; difesa delle frontiere; esternalizzazione della gestione dei flussi verso Paesi terzi».\n\nPer la Lega - Salvini Premier, Igor Giancarlo Iezzi denuncia il ricorso abusivo agli strumenti di tutela umanitaria, inquadrandoli come meccanismi che incentivano la permanenza irregolare di chi non possiede i requisiti per l'asilo. Igor Giancarlo Iezzi (Lega - Salvini Premier, 04/05/2023) afferma che «La protezione speciale allargata, invece, è un regalo del Partito Democratico, una vera e propria sanatoria, utile solo a regalare un permesso a chi non ha nessun diritto di stare qui».\n\nPer Forza Italia - Berlusconi Presidente - PPE, Paolo Emilio Russo auspica un sistema normativo incentrato sulle espulsioni rapide per chi delinque e sull'apertura parallela di canali per i lavoratori stranieri regolari. Paolo Emilio Russo (Forza Italia - Berlusconi Presidente - PPE, 16/10/2024) afferma che «La corretta gestione dei flussi migratori, consentendo l'immigrazione ai lavoratori regolari, riconoscendo asilo agli aventi diritto e respingendo, tramite rimpatri celeri, gli irregolari è di fondamentale importanza».\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, Alessandro Colucci propone di considerare le iniziative di solidarietà per i veri profughi come strettamente complementari alla ferma opposizione verso gli sbarchi illegali. Alessandro Colucci (Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, 28/11/2023) afferma che è prioritario «accogliere i migranti che scappano da guerre, da persecuzioni, da fame, e contrastare l'immigrazione clandestina».\n\n## Posizioni dell'Opposizione\n\nPer il Partito Democratico - Italia Democratica e Progressista, Laura Boldrini contesta le recenti normative governative poiché smantellano i modelli di inclusione locale per sostituirli con strutture detentive inadeguate. Laura Boldrini (Partito Democratico - Italia Democratica e Progressista, 04/05/2023) afferma che «I richiedenti asilo non potranno essere più inseriti nei circuiti della rete SAI - costituita da piccoli centri che favoriscono l'integrazione, anche perché non hanno l'impatto pesante, incisivo e invasivo sul territorio - e potranno, invece, essere trattenuti nei centri di detenzione, negli hotspot e addirittura nei CPR».\n\nPer il Movimento 5 Stelle, Raffaele Bruno rileva la stringente necessità di coinvolgere le istituzioni continentali per superare le risposte puramente emergenziali e pianificare ingressi sicuri. Raffaele Bruno (Movimento 5 Stelle, 29/11/2023) afferma che risulta essenziale «promuovere canali d'ingresso legali attraverso una progressiva programmazione di flussi di lavoratori a livello europeo».\n\nPer Alleanza Verdi e Sinistra, Devis Dori evidenzia il totale dissenso verso le intese internazionali di contenimento che violano i diritti fondamentali, esigendo un approccio strutturale incentrato sulla tutela della vita. L'onorevole (Alleanza Verdi e Sinistra, 02/05/2023) afferma che «Servono corridoi umanitari, garanzia dell'accesso alla procedura di asilo e all'accoglienza, abbandono delle politiche di esternalizzazione e dei loro scellerati risultati».\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, Giulia Pastorella argomenta che le procedure basate sulle quote occasionali siano inadeguate a soddisfare il reale fabbisogno del mercato del lavoro italiano. Giulia Pastorella (Azione - Popolari Europeisti Riformatori - Renew Europe, 14/05/2025) afferma che «È necessaria una gestione seria e pragmatica di questi flussi migratori, ampliando i canali regolari, non basta il solito decreto flussi con il click day».\n\nPer Italia Viva - Il Centro - Renew Europe, Roberto Giachetti osserva come i provvedimenti dell'esecutivo contengano gravi forzature lesive della privacy e delle garanzie costituzionali per i cittadini stranieri sottoposti a controlli. Roberto Giachetti (Italia Viva - Il Centro - Renew Europe, 26/11/2024) afferma che «questo testo, con l'articolo 12, permette di accedere immediatamente ai dispositivi elettronici».\n\nPer il gruppo Misto, Dieter Steger precisa che le espulsioni dei soggetti non aventi diritto sono condivisibili solo se integrate in un coerente sistema europeo di governo degli ingressi e di cooperazione tra Stati. Dieter Steger (Misto, 15/05/2025) afferma che «Comprendiamo e condividiamo l'esigenza di rafforzare i rimpatri, di contrastare gli abusi di diritto d'asilo, di impedire che l'illegalità diventi la scorciatoia per entrare in Europa».",
+    "baseline_experts": [
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d308899_19",
+        "first_name": "PAOLO EMILIO",
+        "last_name": "RUSSO",
+        "group": "Forza Italia - Berlusconi Presidente - PPE",
+        "coalition": "maggioranza",
+        "authority_score": 0.645917,
+        "components": {
+          "profession": 0.637833,
+          "education": 0.630667,
+          "committee": 0.457685,
+          "acts": 0.788771,
+          "interventions": 0.8,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.79,
+          "committee": 0.46,
+          "profession": 0.64,
+          "education": 0.63,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Giornalista parlamentare",
+        "education": "Laurea in scienze politiche e delle relazioni internazionali, Master in Scienze elettorali e del governo",
+        "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SULLA SCOMPARSA DI EMANUELA ORLANDI E DI MIRELLA GREGORI",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308899",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308899.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d300480_19",
+        "first_name": "ROBERTO",
+        "last_name": "GIACHETTI",
+        "group": "Italia Viva - Il Centro - Renew Europe",
+        "coalition": "opposizione",
+        "authority_score": 0.628055,
+        "components": {
+          "profession": 0.662187,
+          "education": 0.597003,
+          "committee": 0.376106,
+          "acts": 0.8,
+          "interventions": 0.8,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.8,
+          "committee": 0.38,
+          "profession": 0.66,
+          "education": 0.6,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Giornalista professionista",
+        "education": "Diploma di liceo scientifico",
+        "committee": "VII COMMISSIONE (CULTURA, SCIENZA E ISTRUZIONE)",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-300480",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300480.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d308895_19",
+        "first_name": "GIULIA",
+        "last_name": "PASTORELLA",
+        "group": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+        "coalition": "opposizione",
+        "authority_score": 0.625463,
+        "components": {
+          "profession": 0.662418,
+          "education": 0.605619,
+          "committee": 0.362153,
+          "acts": 0.8,
+          "interventions": 0.8,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.8,
+          "committee": 0.36,
+          "profession": 0.66,
+          "education": 0.61,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Direttrice delle pubbliche relazioni",
+        "education": "Laurea in lettere e filosofia a Oxford, Dottorato di ricerca alla London School of Economics, Master in politica europea a Sciences Po e London School of Economics",
+        "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SULLA SCOMPARSA DI EMANUELA ORLANDI E DI MIRELLA GREGORI",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308895",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308895.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d305757_19",
+        "first_name": "LAURA",
+        "last_name": "BOLDRINI",
+        "group": "Partito Democratico - Italia Democratica e Progressista",
+        "coalition": "opposizione",
+        "authority_score": 0.620022,
+        "components": {
+          "profession": 0.654492,
+          "education": 0.62857,
+          "committee": 0.335964,
+          "acts": 0.8,
+          "interventions": 0.8,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.8,
+          "committee": 0.34,
+          "profession": 0.65,
+          "education": 0.63,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Funzionaria Agenzie ONU; Parlamentare",
+        "education": "Laurea in giurisprudenza",
+        "committee": "COMITATO PERMANENTE SUI DIRITTI UMANI NEL MONDO",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-305757",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305757.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d308904_19",
+        "first_name": "SARA",
+        "last_name": "KELANY",
+        "group": "Fratelli d'Italia",
+        "coalition": "maggioranza",
+        "authority_score": 0.616746,
+        "components": {
+          "profession": 0.663996,
+          "education": 0.62857,
+          "committee": 0.457685,
+          "acts": 0.62642,
+          "interventions": 0.798338,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.63,
+          "committee": 0.46,
+          "profession": 0.66,
+          "education": 0.63,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Avvocato",
+        "education": "Laurea in giurisprudenza",
+        "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SUL FENOMENO DELLE MAFIE E SULLE ALTRE ASSOCIAZIONI CRIMINALI, ANCHE STRANIERE",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308904",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308904.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d307641_19",
+        "first_name": "IGOR GIANCARLO",
+        "last_name": "IEZZI",
+        "group": "Lega - Salvini Premier",
+        "coalition": "maggioranza",
+        "authority_score": 0.615293,
+        "components": {
+          "profession": 0.661412,
+          "education": 0.597003,
+          "committee": 0.457685,
+          "acts": 0.8,
+          "interventions": 0.667839,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.67,
+          "acts": 0.8,
+          "committee": 0.46,
+          "profession": 0.66,
+          "education": 0.6,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Giornalista",
+        "education": "Diploma di liceo scientifico",
+        "committee": "GIUNTA PER IL REGOLAMENTO",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307641",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307641.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d307902_19",
+        "first_name": "DIETER",
+        "last_name": "STEGER",
+        "group": "Misto",
+        "coalition": "opposizione",
+        "authority_score": 0.56051,
+        "components": {
+          "profession": 0.672891,
+          "education": 0.62857,
+          "committee": 0.273513,
+          "acts": 0.616536,
+          "interventions": 0.760137,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.76,
+          "acts": 0.62,
+          "committee": 0.27,
+          "profession": 0.67,
+          "education": 0.63,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": "Dirigente d'azienda",
+        "education": "Laurea in giurisprudenza",
+        "committee": "V COMMISSIONE (BILANCIO, TESORO E PROGRAMMAZIONE)",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307902",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307902.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d307603_19",
+        "first_name": "ALESSANDRO",
+        "last_name": "COLUCCI",
+        "group": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+        "coalition": "maggioranza",
+        "authority_score": 0.553002,
+        "components": {
+          "profession": 0.0,
+          "education": 0.635809,
+          "committee": 0.457685,
+          "acts": 0.8,
+          "interventions": 0.8,
+          "role": 0.3
+        },
+        "score_breakdown": {
+          "speeches": 0.8,
+          "acts": 0.8,
+          "committee": 0.46,
+          "profession": 0.0,
+          "education": 0.64,
+          "role": 0.3
+        },
+        "institutional_role": null,
+        "profession": null,
+        "education": "Laurea in economia aziendale",
+        "committee": "COMITATO CONSULTIVO SULLA CONDOTTA DEI DEPUTATI",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307603",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307603.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      },
+      {
+        "id": "http://dati.camera.it/ocd/deputato.rdf/d307193_19",
+        "first_name": "RAFFAELE",
+        "last_name": "BRUNO",
+        "group": "Movimento 5 Stelle",
+        "coalition": "opposizione",
+        "authority_score": 0.41114,
+        "components": {
+          "profession": 0.0,
+          "education": 0.643126,
+          "committee": 0.346286,
+          "acts": 0.8,
+          "interventions": 0.321023,
+          "role": 0.4
+        },
+        "score_breakdown": {
+          "speeches": 0.32,
+          "acts": 0.8,
+          "committee": 0.35,
+          "profession": 0.0,
+          "education": 0.64,
+          "role": 0.4
+        },
+        "institutional_role": "Segretario XIV COMMISSIONE (POLITICHE DELL'UNIONE EUROPEA)",
+        "profession": null,
+        "education": "Autore e regista teatrale, biologo",
+        "committee": "XIV COMMISSIONE (POLITICHE DELL'UNIONE EUROPEA)",
+        "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307193",
+        "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307193.jpg",
+        "relevant_speeches_count": 1,
+        "intervention_count": 1
+      }
+    ],
     "baseline_metrics": {
       "baseline_party_coverage": 1.0,
       "baseline_citation_fidelity": 1.0,
@@ -2769,6 +3058,78 @@
           "deputy_last_name": null
         },
         {
+          "speaker": "Sara Kelany",
+          "group": "Fratelli d'Italia",
+          "group_canonical": "Fratelli d'Italia",
+          "date": "19/03/2025",
+          "quote": "lotta senza quartiere ai trafficanti di esseri umani; difesa delle frontiere; esternalizzazione della gestione dei flussi verso Paesi terzi",
+          "chunk_id": "leg19_sed450_tit00020.sub00010.int00540_chunk_3",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d308904_19",
+          "deputy_first_name": "SARA",
+          "deputy_last_name": "KELANY"
+        },
+        {
+          "speaker": "Igor Giancarlo Iezzi",
+          "group": "Lega - Salvini Premier",
+          "group_canonical": "Lega - Salvini Premier",
+          "date": "04/05/2023",
+          "quote": "La protezione speciale allargata, invece, è un regalo del Partito Democratico, una vera e propria sanatoria, utile solo a regalare un permesso a chi non ha nessun diritto di stare qui",
+          "chunk_id": "leg19_sed97_tit00060.sub00010.int00220_chunk_4",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d307641_19",
+          "deputy_first_name": "IGOR GIANCARLO",
+          "deputy_last_name": "IEZZI"
+        },
+        {
+          "speaker": "Paolo Emilio Russo",
+          "group": "Forza Italia - Berlusconi Presidente - PPE",
+          "group_canonical": "Forza Italia - Berlusconi Presidente - PPE",
+          "date": "16/10/2024",
+          "quote": "La corretta gestione dei flussi migratori, consentendo l'immigrazione ai lavoratori regolari, riconoscendo asilo agli aventi diritto e respingendo, tramite rimpatri celeri, gli irregolari è di fondamentale importanza",
+          "chunk_id": "leg19_sed366_tit00090.sub00020.int00020_chunk_1",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d308899_19",
+          "deputy_first_name": "PAOLO EMILIO",
+          "deputy_last_name": "RUSSO"
+        },
+        {
+          "speaker": "Alessandro Colucci",
+          "group": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+          "group_canonical": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+          "date": "28/11/2023",
+          "quote": "accogliere i migranti che scappano da guerre, da persecuzioni, da fame, e contrastare l'immigrazione clandestina",
+          "chunk_id": "leg19_sed204_tit00050.sub00010.int00080_chunk_0",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d307603_19",
+          "deputy_first_name": "ALESSANDRO",
+          "deputy_last_name": "COLUCCI"
+        },
+        {
+          "speaker": "Laura Boldrini",
+          "group": "Partito Democratico - Italia Democratica e Progressista",
+          "group_canonical": "Partito Democratico - Italia Democratica e Progressista",
+          "date": "04/05/2023",
+          "quote": "I richiedenti asilo non potranno essere più inseriti nei circuiti della rete SAI - costituita da piccoli centri che favoriscono l'integrazione, anche perché non hanno l'impatto pesante, incisivo e invasivo sul territorio - e potranno, invece, essere trattenuti nei centri di detenzione, negli hotspot e addirittura nei CPR",
+          "chunk_id": "leg19_sed97_tit00040.sub00010.int00540_chunk_3",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d305757_19",
+          "deputy_first_name": "LAURA",
+          "deputy_last_name": "BOLDRINI"
+        },
+        {
+          "speaker": "Raffaele Bruno",
+          "group": "Movimento 5 Stelle",
+          "group_canonical": "Movimento 5 Stelle",
+          "date": "29/11/2023",
+          "quote": "promuovere canali d'ingresso legali attraverso una progressiva programmazione di flussi di lavoratori a livello europeo",
+          "chunk_id": "leg19_sed205_tit00100.sub00010.int00060_chunk_12",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d307193_19",
+          "deputy_first_name": "RAFFAELE",
+          "deputy_last_name": "BRUNO"
+        },
+        {
           "speaker": "L'onorevole",
           "group": "Alleanza Verdi e Sinistra",
           "group_canonical": "Alleanza Verdi e Sinistra",
@@ -2781,210 +3142,42 @@
           "deputy_last_name": null
         },
         {
-          "speaker": "L'esponente",
-          "group": "Italia Viva - Il Centro - Renew Europe",
-          "group_canonical": "Italia Viva - Il Centro - Renew Europe",
-          "date": "26/11/2024",
-          "quote": "questo testo, con l'articolo 12, permette di accedere immediatamente ai dispositivi elettronici",
-          "chunk_id": "leg19_sed387_tit00020.sub00010.int00040_chunk_13",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "La deputata",
-          "group": "Fratelli d'Italia",
-          "group_canonical": "Fratelli d'Italia",
-          "date": "19/03/2025",
-          "quote": "lotta senza quartiere ai trafficanti di esseri umani; difesa delle frontiere; esternalizzazione della gestione dei flussi verso Paesi terzi",
-          "chunk_id": "leg19_sed450_tit00020.sub00010.int00540_chunk_3",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "Il legislatore",
-          "group": "Lega - Salvini Premier",
-          "group_canonical": "Lega - Salvini Premier",
-          "date": "04/05/2023",
-          "quote": "La protezione speciale allargata, invece, è un regalo del Partito Democratico, una vera e propria sanatoria, utile solo a regalare un permesso a chi non ha nessun diritto di stare qui",
-          "chunk_id": "leg19_sed97_tit00060.sub00010.int00220_chunk_4",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "Il parlamentare",
-          "group": "Forza Italia - Berlusconi Presidente - PPE",
-          "group_canonical": "Forza Italia - Berlusconi Presidente - PPE",
-          "date": "16/10/2024",
-          "quote": "La corretta gestione dei flussi migratori, consentendo l'immigrazione ai lavoratori regolari, riconoscendo asilo agli aventi diritto e respingendo, tramite rimpatri celeri, gli irregolari è di fondamentale importanza",
-          "chunk_id": "leg19_sed366_tit00090.sub00020.int00020_chunk_1",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "Il deputato",
-          "group": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
-          "group_canonical": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
-          "date": "28/11/2023",
-          "quote": "accogliere i migranti che scappano da guerre, da persecuzioni, da fame, e contrastare l'immigrazione clandestina",
-          "chunk_id": "leg19_sed204_tit00050.sub00010.int00080_chunk_0",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "La deputata",
-          "group": "Partito Democratico - Italia Democratica e Progressista",
-          "group_canonical": "Partito Democratico - Italia Democratica e Progressista",
-          "date": "04/05/2023",
-          "quote": "I richiedenti asilo non potranno essere più inseriti nei circuiti della rete SAI - costituita da piccoli centri che favoriscono l'integrazione, anche perché non hanno l'impatto pesante, incisivo e invasivo sul territorio - e potranno, invece, essere trattenuti nei centri di detenzione, negli hotspot e addirittura nei CPR",
-          "chunk_id": "leg19_sed97_tit00040.sub00010.int00540_chunk_3",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "Il parlamentare",
-          "group": "Movimento 5 Stelle",
-          "group_canonical": "Movimento 5 Stelle",
-          "date": "29/11/2023",
-          "quote": "promuovere canali d'ingresso legali attraverso una progressiva programmazione di flussi di lavoratori a livello europeo",
-          "chunk_id": "leg19_sed205_tit00100.sub00010.int00060_chunk_12",
-          "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
-        },
-        {
-          "speaker": "La deputata",
+          "speaker": "Giulia Pastorella",
           "group": "Azione - Popolari Europeisti Riformatori - Renew Europe",
           "group_canonical": "Azione - Popolari Europeisti Riformatori - Renew Europe",
           "date": "14/05/2025",
           "quote": "È necessaria una gestione seria e pragmatica di questi flussi migratori, ampliando i canali regolari, non basta il solito decreto flussi con il click day",
           "chunk_id": "leg19_sed480_tit00050.sub00010.int00040_chunk_5",
           "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d308895_19",
+          "deputy_first_name": "GIULIA",
+          "deputy_last_name": "PASTORELLA"
         },
         {
-          "speaker": "Il legislatore",
+          "speaker": "Roberto Giachetti",
+          "group": "Italia Viva - Il Centro - Renew Europe",
+          "group_canonical": "Italia Viva - Il Centro - Renew Europe",
+          "date": "26/11/2024",
+          "quote": "questo testo, con l'articolo 12, permette di accedere immediatamente ai dispositivi elettronici",
+          "chunk_id": "leg19_sed387_tit00020.sub00010.int00040_chunk_13",
+          "verbatim_verified": true,
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d300480_19",
+          "deputy_first_name": "ROBERTO",
+          "deputy_last_name": "GIACHETTI"
+        },
+        {
+          "speaker": "Dieter Steger",
           "group": "Misto",
           "group_canonical": "Misto",
           "date": "15/05/2025",
           "quote": "Comprendiamo e condividiamo l'esigenza di rafforzare i rimpatri, di contrastare gli abusi di diritto d'asilo, di impedire che l'illegalità diventi la scorciatoia per entrare in Europa",
           "chunk_id": "leg19_sed481_tit00050.sub00020.int00040_chunk_0",
           "verbatim_verified": true,
-          "speaker_id": null,
-          "deputy_first_name": null,
-          "deputy_last_name": null
+          "speaker_id": "http://dati.camera.it/ocd/deputato.rdf/d307902_19",
+          "deputy_first_name": "DIETER",
+          "deputy_last_name": "STEGER"
         }
       ]
-    },
-    "authority_spread": {
-      "std": 0.098897,
-      "mean": 0.528693,
-      "p25": 0.483703,
-      "median": 0.541387,
-      "p75": 0.611714,
-      "n": 387,
-      "min_score": 0.077855,
-      "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
-      "min_name": "RAFFAELE FITTO",
-      "max_score": 0.657182,
-      "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306176_19",
-      "max_name": "MATTEO MAURI"
-    },
-    "authority_spread_by_group": {
-      "FRATELLI D'ITALIA": {
-        "std": 0.070764,
-        "mean": 0.490839,
-        "p25": 0.458231,
-        "median": 0.499946,
-        "p75": 0.537255,
-        "n": 102
-      },
-      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
-        "std": 0.084604,
-        "mean": 0.506571,
-        "p25": 0.457795,
-        "median": 0.519222,
-        "p75": 0.567868,
-        "n": 50
-      },
-      "LEGA - SALVINI PREMIER": {
-        "std": 0.082109,
-        "mean": 0.521632,
-        "p25": 0.486709,
-        "median": 0.535033,
-        "p75": 0.584332,
-        "n": 56
-      },
-      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
-        "std": 0.070997,
-        "mean": 0.579363,
-        "p25": 0.552823,
-        "median": 0.603758,
-        "p75": 0.628795,
-        "n": 70
-      },
-      "MISTO": {
-        "std": 0.171471,
-        "mean": 0.401557,
-        "p25": 0.293535,
-        "median": 0.393989,
-        "p75": 0.562318,
-        "n": 25
-      },
-      "MOVIMENTO 5 STELLE": {
-        "std": 0.064264,
-        "mean": 0.58993,
-        "p25": 0.555823,
-        "median": 0.616746,
-        "p75": 0.631659,
-        "n": 49
-      },
-      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
-        "std": 0.084069,
-        "mean": 0.584316,
-        "p25": 0.561026,
-        "median": 0.623364,
-        "p75": 0.644471,
-        "n": 6
-      },
-      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": {
-        "std": 0.092591,
-        "mean": 0.54795,
-        "p25": 0.532285,
-        "median": 0.553004,
-        "p75": 0.63494,
-        "n": 9
-      },
-      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
-        "std": 0.008513,
-        "mean": 0.62754,
-        "p25": 0.623749,
-        "median": 0.625976,
-        "p75": 0.633238,
-        "n": 10
-      },
-      "ALLEANZA VERDI E SINISTRA": {
-        "std": 0.065516,
-        "mean": 0.57849,
-        "p25": 0.537354,
-        "median": 0.580912,
-        "p75": 0.634075,
-        "n": 10
-      }
     }
   },
   "Legge di Bilancio": {

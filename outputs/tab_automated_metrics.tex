@@ -1,0 +1,17 @@
+\begin{table}[htbp]
+\centering
+\caption{Automated metrics: ParliamentRAG vs.\ NotebookLM.}
+\label{tab:automated_metrics}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Metric & ParliamentRAG ($\mu \pm \sigma$) [95\% CI] & NotebookLM ($\mu$) [95\% CI] & $\Delta$ \\
+\midrule
+Groups with Citation (GC) & 0.97 $\pm$ 0.07 [0.93, 1.00] & 0.95 [0.91, 0.98] & +0.02 \\
+Completeness & 0.99 $\pm$ 0.04 [0.97, 1.00] & 1.00 [1.00, 1.00] & -0.01 \\
+Citation Faithfulness (CF) & 1.00 $\pm$ 0.00 [1.00, 1.00] & 0.95 [0.91, 0.99] & +0.05 \\
+Mean Authority (MA) & 0.53 $\pm$ 0.16 [0.45, 0.62] & 0.52 [0.49, 0.55] & +0.02 \\
+Authority Std Dev (ASD) & 0.05 $\pm$ 0.02 [0.04, 0.06] & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}

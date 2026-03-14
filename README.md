@@ -1,8 +1,36 @@
-# ParliamentRAG
+# Who Speaks Matters: Authority-Aware Multi-View Parliamentary RAG
 
-A multi-perspective retrieval-augmented generation (RAG) system for Italian parliamentary records. The system retrieves evidence from parliamentary speeches and acts, computes query-dependent speaker authority, discovers ideological axes via PCA, and generates structured multi-party responses with deterministic verbatim citations.
+> **Thesis repository** — Università degli Studi di Milano-Bicocca
+> Master's Degree in Data Science, A.Y. 2024–2025
+> Author: Mirko Tritella · Supervisor: Prof. Matteo Luigi Palmonari · Co-supervisor: Dott. Riccardo Pozzi
 
-For the academic overview, see [thesis.md](thesis.md).
+---
+
+## Abstract
+
+Citizens seeking balanced information on political issues face a fundamental challenge: parliamentary proceedings are voluminous, fragmented, and difficult to navigate without bias. Large Language Models offer quick summaries of parliamentary debates but risk favouring dominant actors, providing out-of-context quotes, and failing to represent all points of view.
+
+This work addresses the challenge with a primary objective: to treat equally both *what is said* and *who is saying it*, presenting citizens with multiple viewpoints on parliamentary debate. The system combines a **Topic-Aware Speaker Authority Score** — that dynamically estimates speaker credibility given the topic — with a **multi-view representation** of political positions, built upon a Retrieval-Augmented Generation (RAG) system applied to Italian parliamentary transcripts (XIX Legislature, Camera dei Deputati).
+
+The system is evaluated against Google NotebookLM on 15 policy topics through a two-level protocol combining automated metrics with a blind A/B evaluation by 6 domain experts. ParliamentRAG outperforms NotebookLM on parliamentary group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%). Human evaluators rate the system higher on source and balance dimensions (Cohen's *d* up to 0.35), while overall satisfaction is essentially at parity (4.24 vs. 4.27 out of 5).
+
+The full thesis is available at [`Who_Speaks_Matters__Authority_Aware_Multi_View_Parliamentary_RAG.pdf`](Who_Speaks_Matters__Authority_Aware_Multi_View_Parliamentary_RAG.pdf).
+
+---
+
+## System Overview
+
+ParliamentRAG is composed of four interconnected modules:
+
+1. **Topic-Dependent Authority Scoring** — estimates speaker credibility from six weighted components (profession, education, committee memberships, legislative acts, speech interventions, institutional role) with a coalition-crossing invalidation mechanism and exponential temporal decay.
+
+2. **Dual-Channel Retrieval** — combines dense semantic search (vector similarity over 1536-dimensional embeddings) with knowledge graph traversal to identify speeches relevant to the query and representative of all ten parliamentary groups.
+
+3. **Offset-Based Citation Module** — extracts citations deterministically from character-level spans in source transcripts, providing fully verifiable verbatim quotes with zero hallucination.
+
+4. **Four-Stage Generation Pipeline** — Claim Analyst → Sectional Writer → Narrative Integrator → Citation Surgeon — implements a citation-first principle to ensure semantic correspondence between the generated narrative and the quoted evidence.
+
+An additional **Ideological Compass** module discovers latent political axes from retrieved evidence via weighted PCA, enabling visual positioning of parliamentary groups on the debate.
 
 ---
 
@@ -41,7 +69,7 @@ For the academic overview, see [thesis.md](thesis.md).
 - Python 3.13+
 - Node.js 20+ and npm
 - OpenAI API key(s)
-- A populated Neo4j database (corpus ingestion is a separate offline step)
+- A populated Neo4j database (corpus ingestion is a separate offline step; see §4.3 of the thesis for data acquisition and preprocessing details)
 
 ---
 
@@ -211,29 +239,18 @@ ParliamentRAG/
 │   └── package.json
 ├── neo4j/                          # Neo4j data and plugin volumes
 ├── docker-compose.yml              # Neo4j service definition
-├── thesis.md                       # Academic system overview
-└── thesis_knowledge/               # Detailed thesis documentation
-    ├── SYSTEM_OVERVIEW.md
-    ├── ARCHITECTURE.md
-    ├── DATA_PIPELINE.md
-    ├── IDEOLOGICAL_SCORING.md
-    ├── RETRIEVAL_STRATEGY.md
-    ├── GENERATION_LOGIC.md
-    ├── EXPERIMENTS.md
-    ├── DESIGN_DECISIONS.md
-    ├── LIMITATIONS_AND_FUTURE_WORK.md
-    └── GLOSSARY.md
+└── Who_Speaks_Matters__Authority_Aware_Multi_View_Parliamentary_RAG.pdf
 ```
 
 ---
 
 ## Evaluation
 
-The evaluation framework compares system responses against a NotebookLM baseline on predefined topics from `backend/evaluation_set.json`.
+The evaluation framework compares system responses against a NotebookLM baseline on 15 predefined policy topics from `backend/evaluation_set.json`.
 
 **Automated metrics** (available at `/api/evaluation/dashboard`): party coverage, citation relevance, coalition balance, authority distribution.
 
-**Human A/B survey** (available in the frontend at `/valutazione?evaluator=`): blind comparative rating of system vs. baseline on 7 dimensions.
+**Human A/B survey** (available in the frontend at `/valutazione?evaluator=`): blind comparative rating of system vs. baseline on 9 dimensions by 6 domain experts. Rating scale: 1–5 (Likert). Statistical analysis: Mann-Whitney U test, Cohen's *d* effect size, Krippendorff's *α* inter-rater agreement.
 
 ---
 
@@ -249,6 +266,22 @@ The evaluation framework compares system responses against a NotebookLM baseline
 | Data validation | Pydantic v2 | ≥2.5 |
 | Frontend | Next.js + React | 16.1.4 / 19.2.3 |
 | Graph visualization | react-force-graph-2d | ≥1.29 |
+
+---
+
+## Citation
+
+If you use this system or build upon this work, please cite:
+
+```bibtex
+@mastersthesis{tritella2025parliamentrag,
+  author  = {Tritella, Mirko},
+  title   = {Who Speaks Matters: Authority-Aware Multi-View Parliamentary {RAG}},
+  school  = {Università degli Studi di Milano-Bicocca},
+  year    = {2025},
+  type    = {Master's Thesis in Data Science}
+}
+```
 
 ---
 

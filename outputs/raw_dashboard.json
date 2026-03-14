@@ -1,0 +1,2589 @@
+{
+  "automated_aggregate": {
+    "total_chats": 15,
+    "avg_party_coverage": 0.9667,
+    "avg_verbatim_match": 1.0,
+    "avg_response_completeness": 0.9867,
+    "avg_authority_utilization": 0.533,
+    "avg_authority_discrimination": 0.0838,
+    "ci_party_coverage": [
+      0.9293,
+      1.0
+    ],
+    "ci_verbatim_match": [
+      1.0,
+      1.0
+    ],
+    "ci_response_completeness": [
+      0.9685,
+      1.0
+    ],
+    "ci_authority_utilization": [
+      0.4505,
+      0.6155
+    ],
+    "ci_authority_discrimination": [
+      0.0698,
+      0.0979
+    ],
+    "avg_baseline_party_coverage": 0.9467,
+    "avg_baseline_citation_fidelity": 0.9458,
+    "avg_baseline_response_completeness": 1.0,
+    "avg_baseline_authority": 0.5172,
+    "ci_baseline_party_coverage": [
+      0.9083,
+      0.985
+    ],
+    "ci_baseline_citation_fidelity": [
+      0.9059,
+      0.9857
+    ],
+    "ci_baseline_response_completeness": [
+      1.0,
+      1.0
+    ],
+    "ci_baseline_authority": [
+      0.4862,
+      0.5481
+    ],
+    "avg_baseline_authority_by_group": {
+      "Italia Viva - Il Centro - Renew Europe": 0.5034,
+      "Alleanza Verdi e Sinistra": 0.5247,
+      "Forza Italia - Berlusconi Presidente - PPE": 0.5102,
+      "Movimento 5 Stelle": 0.5104,
+      "Partito Democratico - Italia Democratica e Progressista": 0.532,
+      "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.5399,
+      "Misto": 0.4989,
+      "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.4799,
+      "Lega - Salvini Premier": 0.523,
+      "Fratelli d'Italia": 0.4818
+    }
+  },
+  "human_aggregate": {
+    "total_surveys": 67,
+    "system_avg_per_dimension": {
+      "answer_quality": 4.04,
+      "answer_clarity": 4.27,
+      "answer_completeness": 4.12,
+      "citations_relevance": 4.37,
+      "balance_perception": 4.66,
+      "balance_fairness": 4.67,
+      "source_relevance": 4.07,
+      "source_authority": 4.21,
+      "source_coverage": 4.64
+    },
+    "baseline_avg_per_dimension": {
+      "answer_quality": 4.3,
+      "answer_clarity": 4.51,
+      "answer_completeness": 4.09,
+      "citations_relevance": 4.36,
+      "balance_perception": 4.48,
+      "balance_fairness": 4.66,
+      "source_relevance": 3.84,
+      "source_authority": 4.0,
+      "source_coverage": 4.39
+    },
+    "system_avg_overall": 4.24,
+    "baseline_avg_overall": 4.27,
+    "system_win_rate": 31.3,
+    "baseline_win_rate": 26.9,
+    "tie_rate": 41.8,
+    "per_dimension_preference": {
+      "answer_quality": {
+        "system": 20,
+        "baseline": 30,
+        "equal": 17
+      },
+      "answer_clarity": {
+        "system": 15,
+        "baseline": 20,
+        "equal": 32
+      },
+      "answer_completeness": {
+        "system": 16,
+        "baseline": 14,
+        "equal": 37
+      },
+      "citations_relevance": {
+        "system": 16,
+        "baseline": 15,
+        "equal": 36
+      },
+      "balance_perception": {
+        "system": 14,
+        "baseline": 5,
+        "equal": 48
+      },
+      "balance_fairness": {
+        "system": 8,
+        "baseline": 7,
+        "equal": 52
+      },
+      "source_relevance": {
+        "system": 22,
+        "baseline": 13,
+        "equal": 32
+      },
+      "source_authority": {
+        "system": 20,
+        "baseline": 9,
+        "equal": 38
+      },
+      "source_coverage": {
+        "system": 17,
+        "baseline": 3,
+        "equal": 47
+      }
+    },
+    "group_authority_preference": {
+      "LEGA - SALVINI PREMIER": {
+        "system": 17,
+        "equal": 43,
+        "baseline": 6
+      },
+      "MOVIMENTO 5 STELLE": {
+        "system": 17,
+        "equal": 32,
+        "baseline": 17
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "system": 26,
+        "equal": 29,
+        "baseline": 11
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "system": 9,
+        "equal": 47,
+        "baseline": 11
+      },
+      "MISTO": {
+        "system": 14,
+        "equal": 50,
+        "baseline": 2
+      },
+      "FRATELLI D'ITALIA": {
+        "system": 24,
+        "equal": 36,
+        "baseline": 7
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "system": 15,
+        "equal": 46,
+        "baseline": 5
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": {
+        "system": 19,
+        "equal": 36,
+        "baseline": 12
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "system": 30,
+        "equal": 25,
+        "baseline": 11
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "system": 13,
+        "equal": 46,
+        "baseline": 7
+      }
+    },
+    "recommendation_rate": 71.6
+  },
+  "ab_comparison": {
+    "total_evaluations": 67,
+    "system_win_rate": 31.3,
+    "baseline_win_rate": 26.9,
+    "tie_rate": 41.8,
+    "system_avg_ratings": {
+      "answer_quality": 4.04,
+      "answer_clarity": 4.27,
+      "answer_completeness": 4.12,
+      "citations_relevance": 4.37,
+      "balance_perception": 4.66,
+      "balance_fairness": 4.67,
+      "source_relevance": 4.07,
+      "source_authority": 4.21,
+      "source_coverage": 4.64
+    },
+    "baseline_avg_ratings": {
+      "answer_quality": 4.3,
+      "answer_clarity": 4.51,
+      "answer_completeness": 4.09,
+      "citations_relevance": 4.36,
+      "balance_perception": 4.48,
+      "balance_fairness": 4.66,
+      "source_relevance": 3.84,
+      "source_authority": 4.0,
+      "source_coverage": 4.39
+    },
+    "system_avg_overall": 4.24,
+    "baseline_avg_overall": 4.27,
+    "per_dimension_preference": {
+      "answer_quality": {
+        "system": 20,
+        "baseline": 30,
+        "equal": 17
+      },
+      "answer_clarity": {
+        "system": 15,
+        "baseline": 20,
+        "equal": 32
+      },
+      "answer_completeness": {
+        "system": 16,
+        "baseline": 14,
+        "equal": 37
+      },
+      "citations_relevance": {
+        "system": 16,
+        "baseline": 15,
+        "equal": 36
+      },
+      "balance_perception": {
+        "system": 14,
+        "baseline": 5,
+        "equal": 48
+      },
+      "balance_fairness": {
+        "system": 8,
+        "baseline": 7,
+        "equal": 52
+      },
+      "source_relevance": {
+        "system": 22,
+        "baseline": 13,
+        "equal": 32
+      },
+      "source_authority": {
+        "system": 20,
+        "baseline": 9,
+        "equal": 38
+      },
+      "source_coverage": {
+        "system": 17,
+        "baseline": 3,
+        "equal": 47
+      }
+    },
+    "group_authority_preference": {
+      "LEGA - SALVINI PREMIER": {
+        "system": 17,
+        "equal": 43,
+        "baseline": 6
+      },
+      "MOVIMENTO 5 STELLE": {
+        "system": 17,
+        "equal": 32,
+        "baseline": 17
+      },
+      "ALLEANZA VERDI E SINISTRA": {
+        "system": 26,
+        "equal": 29,
+        "baseline": 11
+      },
+      "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": {
+        "system": 9,
+        "equal": 47,
+        "baseline": 11
+      },
+      "MISTO": {
+        "system": 14,
+        "equal": 50,
+        "baseline": 2
+      },
+      "FRATELLI D'ITALIA": {
+        "system": 24,
+        "equal": 36,
+        "baseline": 7
+      },
+      "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": {
+        "system": 15,
+        "equal": 46,
+        "baseline": 5
+      },
+      "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": {
+        "system": 19,
+        "equal": 36,
+        "baseline": 12
+      },
+      "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": {
+        "system": 30,
+        "equal": 25,
+        "baseline": 11
+      },
+      "ITALIA VIVA-IL CENTRO-RENEW EUROPE": {
+        "system": 13,
+        "equal": 46,
+        "baseline": 7
+      }
+    }
+  },
+  "per_chat": [
+    {
+      "chat_id": "e1d94357-756c-4285-9bd4-67a3bb22459c",
+      "chat_query": "Educazione affettiva e sessuale nelle scuole",
+      "timestamp": "2026-02-26T00:46:47.241469+01:00",
+      "automated": {
+        "chat_id": "e1d94357-756c-4285-9bd4-67a3bb22459c",
+        "party_coverage_score": 0.9,
+        "parties_represented": 9,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 10,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 10,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.6156,
+        "experts_count": 9,
+        "authority_discrimination": 0.1078,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.46,
+          "Lega - Salvini Premier": 0.6,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.64,
+          "Partito Democratico - Italia Democratica e Progressista": 0.65,
+          "Movimento 5 Stelle": 0.66,
+          "Alleanza Verdi e Sinistra": 0.64,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.61,
+          "Italia Viva - Il Centro - Renew Europe": 0.66,
+          "Misto": 0.62
+        },
+        "baseline_authority": 0.6063,
+        "baseline_authority_by_group": {
+          "Italia Viva - Il Centro - Renew Europe": 0.6552,
+          "Alleanza Verdi e Sinistra": 0.6521,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.641,
+          "Movimento 5 Stelle": 0.6306,
+          "Partito Democratico - Italia Democratica e Progressista": 0.6294,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6275,
+          "Misto": 0.6182,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.6007,
+          "Lega - Salvini Premier": 0.564,
+          "Fratelli d'Italia": 0.4447
+        },
+        "authority_spread_stats": {
+          "std": 0.107783,
+          "mean": 0.4916,
+          "p25": 0.413292,
+          "median": 0.50345,
+          "p75": 0.589889,
+          "n": 387,
+          "min_score": 0.07963,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.662946,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308840_19",
+          "max_name": "ANTONIO CASO"
+        }
+      },
+      "human": {
+        "id": "c8e1c47a-6f12-4978-a18f-a35f9d49735a",
+        "chat_id": "e1d94357-756c-4285-9bd4-67a3bb22459c",
+        "timestamp": "2026-03-01T17:28:57.663649",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 3,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 3,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "B",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 3,
+          "rating_b": 3,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 3,
+          "rating_b": 3,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Christian",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.6063419000000001,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": -1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "FRATELLI D'ITALIA": 1,
+          "LEGA - SALVINI PREMIER": -1,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 1,
+          "MOVIMENTO 5 STELLE": -1,
+          "ALLEANZA VERDI E SINISTRA": 0,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "9eaa20f9-c0fb-429b-9dde-c86ca8ddca80",
+      "chat_query": "Aiuti militari all'Ucraina",
+      "timestamp": "2026-02-26T00:44:02.054637+01:00",
+      "automated": {
+        "chat_id": "9eaa20f9-c0fb-429b-9dde-c86ca8ddca80",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.557,
+        "experts_count": 10,
+        "authority_discrimination": 0.1014,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.53,
+          "Lega - Salvini Premier": 0.52,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.54,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.55,
+          "Partito Democratico - Italia Democratica e Progressista": 0.59,
+          "Movimento 5 Stelle": 0.64,
+          "Alleanza Verdi e Sinistra": 0.44,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.63,
+          "Italia Viva - Il Centro - Renew Europe": 0.52,
+          "Misto": 0.61
+        },
+        "baseline_authority": 0.5538,
+        "baseline_authority_by_group": {
+          "Movimento 5 Stelle": 0.6396,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6318,
+          "Alleanza Verdi e Sinistra": 0.6166,
+          "Misto": 0.612,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.5317,
+          "Italia Viva - Il Centro - Renew Europe": 0.5201,
+          "Lega - Salvini Premier": 0.5153,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.5139,
+          "Fratelli d'Italia": 0.502,
+          "Partito Democratico - Italia Democratica e Progressista": 0.455
+        },
+        "authority_spread_stats": {
+          "std": 0.101386,
+          "mean": 0.435232,
+          "p25": 0.365414,
+          "median": 0.430705,
+          "p75": 0.516055,
+          "n": 387,
+          "min_score": 0.074032,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.639648,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307863_19",
+          "max_name": "MARCO PELLEGRINI"
+        }
+      },
+      "human": {
+        "id": "9a9382ce-c17b-416f-b530-f5f67da82f9d",
+        "chat_id": "9eaa20f9-c0fb-429b-9dde-c86ca8ddca80",
+        "timestamp": "2026-02-27T13:46:08.922865",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 5,
+        "overall_satisfaction_b": 5,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.5538109999999999,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "FRATELLI D'ITALIA": 1,
+          "LEGA - SALVINI PREMIER": -1,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "MOVIMENTO 5 STELLE": 0,
+          "ALLEANZA VERDI E SINISTRA": -1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "7ce50f50-4f90-405a-ab7d-269f70abf04d",
+      "chat_query": "Autonomia Differenziata",
+      "timestamp": "2026-02-26T00:44:01.598262+01:00",
+      "automated": {
+        "chat_id": "7ce50f50-4f90-405a-ab7d-269f70abf04d",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.624,
+        "experts_count": 10,
+        "authority_discrimination": 0.1008,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.57,
+          "Lega - Salvini Premier": 0.61,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.66,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.62,
+          "Partito Democratico - Italia Democratica e Progressista": 0.63,
+          "Movimento 5 Stelle": 0.64,
+          "Alleanza Verdi e Sinistra": 0.66,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.64,
+          "Italia Viva - Il Centro - Renew Europe": 0.63,
+          "Misto": 0.58
+        },
+        "baseline_authority": 0.5983,
+        "baseline_authority_by_group": {
+          "Italia Viva - Il Centro - Renew Europe": 0.6404,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6389,
+          "Alleanza Verdi e Sinistra": 0.6372,
+          "Partito Democratico - Italia Democratica e Progressista": 0.6287,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.6208,
+          "Fratelli d'Italia": 0.5711,
+          "Lega - Salvini Premier": 0.564,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.5468,
+          "Movimento 5 Stelle": 0.5365
+        },
+        "authority_spread_stats": {
+          "std": 0.100849,
+          "mean": 0.528568,
+          "p25": 0.475855,
+          "median": 0.539561,
+          "p75": 0.616043,
+          "n": 387,
+          "min_score": 0.081349,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.664426,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d300469_19",
+          "max_name": "LUANA ZANELLA"
+        }
+      },
+      "human": {
+        "id": "774d40e5-ca32-4dc7-a0ea-1f948cd1b0ea",
+        "chat_id": "7ce50f50-4f90-405a-ab7d-269f70abf04d",
+        "timestamp": "2026-02-27T13:53:19.066058",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 5,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "A",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [
+          {
+            "evidence_id": "leg19_sed360_tit00040.sub00020.int00020_chunk_0",
+            "relevance": 4,
+            "faithfulness": 4,
+            "informativeness": 2,
+            "attribution": "correct",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed285_tit00030.sub00010.int00140_chunk_5",
+            "relevance": 4,
+            "faithfulness": 4,
+            "informativeness": 3,
+            "attribution": "correct",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed383_tit00110.sub00020.int00100_chunk_7",
+            "relevance": 4,
+            "faithfulness": 4,
+            "informativeness": 5,
+            "attribution": "correct",
+            "issues": []
+          }
+        ],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.5982744444444444,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": -1,
+          "MISTO": -1,
+          "FRATELLI D'ITALIA": 0,
+          "LEGA - SALVINI PREMIER": -1,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "MOVIMENTO 5 STELLE": 1,
+          "ALLEANZA VERDI E SINISTRA": -1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "5339b5d7-b631-4acd-a200-d638499c9eb8",
+      "chat_query": "Bioetica",
+      "timestamp": "2026-02-26T00:41:58.080389+01:00",
+      "automated": {
+        "chat_id": "5339b5d7-b631-4acd-a200-d638499c9eb8",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.423,
+        "experts_count": 10,
+        "authority_discrimination": 0.075,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.42,
+          "Lega - Salvini Premier": 0.46,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.29,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.32,
+          "Partito Democratico - Italia Democratica e Progressista": 0.44,
+          "Movimento 5 Stelle": 0.51,
+          "Alleanza Verdi e Sinistra": 0.51,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.45,
+          "Italia Viva - Il Centro - Renew Europe": 0.43,
+          "Misto": 0.4
+        },
+        "baseline_authority": 0.3865,
+        "baseline_authority_by_group": {
+          "Movimento 5 Stelle": 0.5818,
+          "Lega - Salvini Premier": 0.461,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.4128,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.3841,
+          "Misto": 0.3819,
+          "Partito Democratico - Italia Democratica e Progressista": 0.3246,
+          "Fratelli d'Italia": 0.2962,
+          "Alleanza Verdi e Sinistra": 0.25
+        },
+        "authority_spread_stats": {
+          "std": 0.075022,
+          "mean": 0.276811,
+          "p25": 0.238136,
+          "median": 0.267073,
+          "p75": 0.306862,
+          "n": 387,
+          "min_score": 0.072946,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d307889_19",
+          "min_name": "MASSIMO RUSPANDINI",
+          "max_score": 0.580829,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308896_19",
+          "max_name": "ANDREA QUARTINI"
+        }
+      },
+      "human": {
+        "id": "7f6cddef-96c9-4550-8858-69525c854360",
+        "chat_id": "5339b5d7-b631-4acd-a200-d638499c9eb8",
+        "timestamp": "2026-02-27T13:55:29.768768",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.386535625,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 1,
+          "MISTO": -1,
+          "FRATELLI D'ITALIA": 1,
+          "LEGA - SALVINI PREMIER": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 1,
+          "MOVIMENTO 5 STELLE": 1,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "8b2eb029-867a-4401-838c-ac7c33cc6a59",
+      "chat_query": "Bolkestein",
+      "timestamp": "2026-02-26T00:41:57.701875+01:00",
+      "automated": {
+        "chat_id": "8b2eb029-867a-4401-838c-ac7c33cc6a59",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.225,
+        "experts_count": 10,
+        "authority_discrimination": 0.0385,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.23,
+          "Lega - Salvini Premier": 0.22,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.24,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.2,
+          "Partito Democratico - Italia Democratica e Progressista": 0.24,
+          "Movimento 5 Stelle": 0.22,
+          "Alleanza Verdi e Sinistra": 0.3,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.22,
+          "Italia Viva - Il Centro - Renew Europe": 0.13,
+          "Misto": 0.25
+        },
+        "baseline_authority": 0.2228,
+        "baseline_authority_by_group": {
+          "Alleanza Verdi e Sinistra": 0.3013,
+          "Misto": 0.2519,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.2433,
+          "Partito Democratico - Italia Democratica e Progressista": 0.243,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.2219,
+          "Lega - Salvini Premier": 0.2193,
+          "Movimento 5 Stelle": 0.2171,
+          "Fratelli d'Italia": 0.2011,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.1982,
+          "Italia Viva - Il Centro - Renew Europe": 0.1305
+        },
+        "authority_spread_stats": {
+          "std": 0.038525,
+          "mean": 0.19786,
+          "p25": 0.198107,
+          "median": 0.20653,
+          "p75": 0.217227,
+          "n": 387,
+          "min_score": 0.052737,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d302838_19",
+          "min_name": "MICHELA VITTORIA BRAMBILLA",
+          "max_score": 0.301252,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d300469_19",
+          "max_name": "LUANA ZANELLA"
+        }
+      },
+      "human": {
+        "id": "2af4512a-fa6d-4844-84e2-1d100590274c",
+        "chat_id": "8b2eb029-867a-4401-838c-ac7c33cc6a59",
+        "timestamp": "2026-02-27T13:56:43.535699",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "citations_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 5,
+        "overall_preference": "B",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.22276669999999998,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "FRATELLI D'ITALIA": 1,
+          "LEGA - SALVINI PREMIER": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 0,
+          "MOVIMENTO 5 STELLE": 0,
+          "ALLEANZA VERDI E SINISTRA": 0,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "354f14f2-bbae-432b-be42-8e1a90e3ec5d",
+      "chat_query": "Gestione dei Flussi Migratori",
+      "timestamp": "2026-02-26T00:39:28.544905+01:00",
+      "automated": {
+        "chat_id": "354f14f2-bbae-432b-be42-8e1a90e3ec5d",
+        "party_coverage_score": 0.8,
+        "parties_represented": 8,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 9,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 9,
+        "response_completeness": 0.9,
+        "authority_utilization": 0.6225,
+        "experts_count": 8,
+        "authority_discrimination": 0.0331,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.62,
+          "Lega - Salvini Premier": 0.62,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.65,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.63,
+          "Partito Democratico - Italia Democratica e Progressista": 0.65,
+          "Alleanza Verdi e Sinistra": 0.54,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.63,
+          "Misto": 0.64
+        },
+        "baseline_authority": 0.5862,
+        "baseline_authority_by_group": {
+          "Forza Italia - Berlusconi Presidente - PPE": 0.6459,
+          "Italia Viva - Il Centro - Renew Europe": 0.6281,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6255,
+          "Partito Democratico - Italia Democratica e Progressista": 0.62,
+          "Fratelli d'Italia": 0.6167,
+          "Lega - Salvini Premier": 0.6153,
+          "Misto": 0.5605,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.553,
+          "Movimento 5 Stelle": 0.4111
+        },
+        "authority_spread_stats": null
+      },
+      "human": {
+        "id": "af1c05c2-b3f5-408a-b7e3-75e0a7c81be3",
+        "chat_id": "354f14f2-bbae-432b-be42-8e1a90e3ec5d",
+        "timestamp": "2026-03-02T14:01:24.038998",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 5,
+        "overall_preference": "B",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.5800000000000001,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 1,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": -1,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 0,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0,
+          "MOVIMENTO 5 STELLE": 1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "a0d72128-a774-4139-8f11-3458957f0632",
+      "chat_query": "Politiche sull'Intelligenza Artificiale",
+      "timestamp": "2026-02-26T00:37:00.976950+01:00",
+      "automated": {
+        "chat_id": "a0d72128-a774-4139-8f11-3458957f0632",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 10,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 10,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.604,
+        "experts_count": 10,
+        "authority_discrimination": 0.0974,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.59,
+          "Lega - Salvini Premier": 0.63,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.56,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.62,
+          "Partito Democratico - Italia Democratica e Progressista": 0.63,
+          "Movimento 5 Stelle": 0.64,
+          "Alleanza Verdi e Sinistra": 0.63,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.61,
+          "Italia Viva - Il Centro - Renew Europe": 0.55,
+          "Misto": 0.58
+        },
+        "baseline_authority": 0.5766,
+        "baseline_authority_by_group": {
+          "Partito Democratico - Italia Democratica e Progressista": 0.6428,
+          "Lega - Salvini Premier": 0.6259,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.6218,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6099,
+          "Misto": 0.5841,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.5552,
+          "Italia Viva - Il Centro - Renew Europe": 0.5489,
+          "Alleanza Verdi e Sinistra": 0.5393,
+          "Fratelli d'Italia": 0.5378,
+          "Movimento 5 Stelle": 0.5002
+        },
+        "authority_spread_stats": {
+          "std": 0.097402,
+          "mean": 0.530471,
+          "p25": 0.483049,
+          "median": 0.542745,
+          "p75": 0.613302,
+          "n": 387,
+          "min_score": 0.080059,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.649793,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306176_19",
+          "max_name": "MATTEO MAURI"
+        }
+      },
+      "human": {
+        "id": "f82128ae-071e-426e-a019-02af98b2652c",
+        "chat_id": "a0d72128-a774-4139-8f11-3458957f0632",
+        "timestamp": "2026-03-02T14:02:54.881327",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.5766034999999999,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 0,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 0,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0,
+          "MOVIMENTO 5 STELLE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "86517a8c-73a7-4b73-a144-6d910cfeac01",
+      "chat_query": "Legge di Bilancio",
+      "timestamp": "2026-02-26T00:37:00.517888+01:00",
+      "automated": {
+        "chat_id": "86517a8c-73a7-4b73-a144-6d910cfeac01",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.655,
+        "experts_count": 10,
+        "authority_discrimination": 0.1036,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.65,
+          "Lega - Salvini Premier": 0.7,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.61,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.63,
+          "Partito Democratico - Italia Democratica e Progressista": 0.7,
+          "Movimento 5 Stelle": 0.71,
+          "Alleanza Verdi e Sinistra": 0.63,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.69,
+          "Italia Viva - Il Centro - Renew Europe": 0.55,
+          "Misto": 0.68
+        },
+        "baseline_authority": 0.6136,
+        "baseline_authority_by_group": {
+          "Movimento 5 Stelle": 0.7135,
+          "Misto": 0.6811,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6515,
+          "Fratelli d'Italia": 0.6508,
+          "Lega - Salvini Premier": 0.6299,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.6268,
+          "Partito Democratico - Italia Democratica e Progressista": 0.6136,
+          "Italia Viva - Il Centro - Renew Europe": 0.5523,
+          "Alleanza Verdi e Sinistra": 0.5377,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.4793
+        },
+        "authority_spread_stats": {
+          "std": 0.103637,
+          "mean": 0.533823,
+          "p25": 0.478911,
+          "median": 0.546279,
+          "p75": 0.615859,
+          "n": 387,
+          "min_score": 0.082409,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.713498,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307790_19",
+          "max_name": "GIANMAURO DELL'OLIO"
+        }
+      },
+      "human": {
+        "id": "8391a82d-e6be-4ddb-9568-61088fd23ddf",
+        "chat_id": "86517a8c-73a7-4b73-a144-6d910cfeac01",
+        "timestamp": "2026-03-02T10:30:18.001661",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 3,
+          "rating_b": 4,
+          "preference": "B"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 5,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "A",
+        "would_recommend": true,
+        "feedback_positive": "Vengono riassunti esaustivamente i dibattiti avvenuti nell'ambito dell'istruttoria preliminare all'esame della legge di bilancio. ",
+        "feedback_improvement": "Il riassunto potrebbe essere più sintetico e avvalersi di bullet points per sottolineare i concetti chiave",
+        "citation_evaluations_a": [
+          {
+            "evidence_id": "leg19_sed362_tit00040.sub00010.int00310_chunk_3",
+            "relevance": 4,
+            "faithfulness": 5,
+            "informativeness": 2,
+            "attribution": "correct",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed8_tit00050.sub00010.int00240_chunk_8",
+            "relevance": 5,
+            "faithfulness": 4,
+            "informativeness": 4,
+            "attribution": "correct",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed330_tit00040.sub00010.int00080_chunk_14",
+            "relevance": 4,
+            "faithfulness": 4,
+            "informativeness": 2,
+            "attribution": "correct",
+            "issues": []
+          }
+        ],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 3,
+          "rating_b": 4,
+          "preference": "B"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Edoardo",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.6136480999999999,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": -1,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 1,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "MOVIMENTO 5 STELLE": 1,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": -1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "79267909-7fe0-46c9-9bb5-dff80a508e7a",
+      "chat_query": "Riarmo europeo",
+      "timestamp": "2026-02-26T00:34:01.838340+01:00",
+      "automated": {
+        "chat_id": "79267909-7fe0-46c9-9bb5-dff80a508e7a",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.637,
+        "experts_count": 10,
+        "authority_discrimination": 0.0961,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.61,
+          "Lega - Salvini Premier": 0.63,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.67,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.65,
+          "Partito Democratico - Italia Democratica e Progressista": 0.66,
+          "Movimento 5 Stelle": 0.65,
+          "Alleanza Verdi e Sinistra": 0.66,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.66,
+          "Italia Viva - Il Centro - Renew Europe": 0.61,
+          "Misto": 0.57
+        },
+        "baseline_authority": 0.5894,
+        "baseline_authority_by_group": {
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6578,
+          "Alleanza Verdi e Sinistra": 0.6568,
+          "Movimento 5 Stelle": 0.6517,
+          "Lega - Salvini Premier": 0.6318,
+          "Fratelli d'Italia": 0.5971,
+          "Partito Democratico - Italia Democratica e Progressista": 0.5838,
+          "Misto": 0.5733,
+          "Italia Viva - Il Centro - Renew Europe": 0.5514,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.5035,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.4865
+        },
+        "authority_spread_stats": {
+          "std": 0.096058,
+          "mean": 0.530093,
+          "p25": 0.482895,
+          "median": 0.548262,
+          "p75": 0.606978,
+          "n": 387,
+          "min_score": 0.078542,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.666985,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d306349_19",
+          "max_name": "STEFANO CANDIANI"
+        }
+      },
+      "human": {
+        "id": "88258a7a-5692-4f25-a682-87e6f383b46b",
+        "chat_id": "79267909-7fe0-46c9-9bb5-dff80a508e7a",
+        "timestamp": "2026-03-02T14:04:27.475776",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_completeness": {
+          "rating_a": 3,
+          "rating_b": 3,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_authority": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.5893719000000001,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 0,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 1,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "ALLEANZA VERDI E SINISTRA": 0,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0,
+          "MOVIMENTO 5 STELLE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "40ac1206-7f60-4e00-a662-28d76de6c816",
+      "chat_query": "Riforma del Premierato",
+      "timestamp": "2026-02-26T00:30:04.176538+01:00",
+      "automated": {
+        "chat_id": "40ac1206-7f60-4e00-a662-28d76de6c816",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.628,
+        "experts_count": 10,
+        "authority_discrimination": 0.0978,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.59,
+          "Lega - Salvini Premier": 0.65,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.64,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.65,
+          "Partito Democratico - Italia Democratica e Progressista": 0.64,
+          "Movimento 5 Stelle": 0.54,
+          "Alleanza Verdi e Sinistra": 0.65,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.63,
+          "Italia Viva - Il Centro - Renew Europe": 0.65,
+          "Misto": 0.64
+        },
+        "baseline_authority": 0.6296,
+        "baseline_authority_by_group": {
+          "Alleanza Verdi e Sinistra": 0.6501,
+          "Movimento 5 Stelle": 0.6444,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.6412,
+          "Italia Viva - Il Centro - Renew Europe": 0.6395,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6258,
+          "Lega - Salvini Premier": 0.6256,
+          "Partito Democratico - Italia Democratica e Progressista": 0.619,
+          "Fratelli d'Italia": 0.5912
+        },
+        "authority_spread_stats": {
+          "std": 0.097757,
+          "mean": 0.548015,
+          "p25": 0.501234,
+          "median": 0.571963,
+          "p75": 0.624741,
+          "n": 387,
+          "min_score": 0.084354,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.664097,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d307394_19",
+          "max_name": "DAVIDE AIELLO"
+        }
+      },
+      "human": {
+        "id": "23570d84-7400-4981-9131-28b157bdaa0b",
+        "chat_id": "40ac1206-7f60-4e00-a662-28d76de6c816",
+        "timestamp": "2026-03-02T10:36:15.638594",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_completeness": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 5,
+        "overall_satisfaction_b": 3,
+        "overall_preference": "A",
+        "would_recommend": true,
+        "feedback_positive": "Il dibattito istruttorio preliminare all'esame della riforma è riassunto esaustivamente, rappresentando la posizione delle principali forze politiche.",
+        "feedback_improvement": "Avvalersi di bullet point per dare immediata indicazione dei concetti chiave al lettore. ",
+        "citation_evaluations_a": [
+          {
+            "evidence_id": "leg19_sed341_tit00030.sub00010.int00080_chunk_7",
+            "relevance": 3,
+            "faithfulness": 1,
+            "informativeness": 2,
+            "attribution": "unverifiable",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed90_tit00040.sub00010.int00020_chunk_1",
+            "relevance": 2,
+            "faithfulness": 5,
+            "informativeness": 1,
+            "attribution": "unverifiable",
+            "issues": []
+          },
+          {
+            "evidence_id": "leg19_sed91_tit00060.sub00020.int00100_chunk_0",
+            "relevance": 4,
+            "faithfulness": 5,
+            "informativeness": 4,
+            "attribution": "unverifiable",
+            "issues": []
+          }
+        ],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Edoardo",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.6296116250000001,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 1,
+          "LEGA - SALVINI PREMIER": -1,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "MOVIMENTO 5 STELLE": 0,
+          "ALLEANZA VERDI E SINISTRA": 0,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "d86d036f-68a0-4e6f-a687-fe608b0b9e69",
+      "chat_query": "Golden Power",
+      "timestamp": "2026-02-26T00:23:31.070020+01:00",
+      "automated": {
+        "chat_id": "d86d036f-68a0-4e6f-a687-fe608b0b9e69",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.157,
+        "experts_count": 10,
+        "authority_discrimination": 0.0351,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.19,
+          "Lega - Salvini Premier": 0.18,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.17,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.17,
+          "Partito Democratico - Italia Democratica e Progressista": 0.16,
+          "Movimento 5 Stelle": 0.09,
+          "Alleanza Verdi e Sinistra": 0.1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.18,
+          "Italia Viva - Il Centro - Renew Europe": 0.1,
+          "Misto": 0.23
+        },
+        "baseline_authority": 0.1595,
+        "baseline_authority_by_group": {
+          "Misto": 0.2328,
+          "Fratelli d'Italia": 0.1818,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.172,
+          "Partito Democratico - Italia Democratica e Progressista": 0.1716,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.1698,
+          "Lega - Salvini Premier": 0.1655,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.1539,
+          "Italia Viva - Il Centro - Renew Europe": 0.0995,
+          "Movimento 5 Stelle": 0.0885
+        },
+        "authority_spread_stats": {
+          "std": 0.03507,
+          "mean": 0.157732,
+          "p25": 0.160878,
+          "median": 0.168664,
+          "p75": 0.176004,
+          "n": 387,
+          "min_score": 0.028425,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d302838_19",
+          "min_name": "MICHELA VITTORIA BRAMBILLA",
+          "max_score": 0.232703,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d301577_19",
+          "max_name": "BENEDETTO DELLA VEDOVA"
+        }
+      },
+      "human": {
+        "id": "2a738d1c-7e8f-4019-8666-f5b0bc3ec1b7",
+        "chat_id": "d86d036f-68a0-4e6f-a687-fe608b0b9e69",
+        "timestamp": "2026-03-02T14:08:45.811316",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.15949188888888888,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": -1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 1,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 1,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 1,
+          "MOVIMENTO 5 STELLE": 0
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "4be7c060-fd7d-471e-91df-8d5c9bb67a2b",
+      "chat_query": "Ritorno al Nucleare",
+      "timestamp": "2026-02-26T00:21:43.772318+01:00",
+      "automated": {
+        "chat_id": "4be7c060-fd7d-471e-91df-8d5c9bb67a2b",
+        "party_coverage_score": 0.8,
+        "parties_represented": 8,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1
+        },
+        "citations_total": 9,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 9,
+        "response_completeness": 0.9,
+        "authority_utilization": 0.5637,
+        "experts_count": 8,
+        "authority_discrimination": 0.1024,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.51,
+          "Lega - Salvini Premier": 0.5,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.56,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.61,
+          "Partito Democratico - Italia Democratica e Progressista": 0.59,
+          "Alleanza Verdi e Sinistra": 0.61,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.61,
+          "Italia Viva - Il Centro - Renew Europe": 0.52
+        },
+        "baseline_authority": 0.532,
+        "baseline_authority_by_group": {
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.5984,
+          "Partito Democratico - Italia Democratica e Progressista": 0.5878,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.559,
+          "Alleanza Verdi e Sinistra": 0.523,
+          "Italia Viva - Il Centro - Renew Europe": 0.515,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.5058,
+          "Movimento 5 Stelle": 0.5019,
+          "Lega - Salvini Premier": 0.5017,
+          "Fratelli d'Italia": 0.4959
+        },
+        "authority_spread_stats": {
+          "std": 0.102356,
+          "mean": 0.478353,
+          "p25": 0.407067,
+          "median": 0.486612,
+          "p75": 0.569364,
+          "n": 387,
+          "min_score": 0.076961,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.616046,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d300447_19",
+          "max_name": "MAURIZIO ENZO LUPI"
+        }
+      },
+      "human": {
+        "id": "8de7f976-810d-4209-b7f8-4c63fbb070b7",
+        "chat_id": "4be7c060-fd7d-471e-91df-8d5c9bb67a2b",
+        "timestamp": "2026-03-02T14:10:08.044596",
+        "answer_quality": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 5,
+          "rating_b": 3,
+          "preference": "A"
+        },
+        "citations_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.5320451111111111,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 0,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 0,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": -1,
+          "MOVIMENTO 5 STELLE": -1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "84e59005-83f5-4610-a630-a29f6d0fb8c5",
+      "chat_query": "Riforma della Giustizia",
+      "timestamp": "2026-02-26T00:21:43.415073+01:00",
+      "automated": {
+        "chat_id": "84e59005-83f5-4610-a630-a29f6d0fb8c5",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.664,
+        "experts_count": 10,
+        "authority_discrimination": 0.1016,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.65,
+          "Lega - Salvini Premier": 0.7,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.68,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.63,
+          "Partito Democratico - Italia Democratica e Progressista": 0.7,
+          "Movimento 5 Stelle": 0.61,
+          "Alleanza Verdi e Sinistra": 0.7,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.7,
+          "Italia Viva - Il Centro - Renew Europe": 0.63,
+          "Misto": 0.64
+        },
+        "baseline_authority": 0.653,
+        "baseline_authority_by_group": {
+          "Movimento 5 Stelle": 0.7125,
+          "Lega - Salvini Premier": 0.7002,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6982,
+          "Partito Democratico - Italia Democratica e Progressista": 0.6863,
+          "Alleanza Verdi e Sinistra": 0.6563,
+          "Italia Viva - Il Centro - Renew Europe": 0.6528,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.6514,
+          "Misto": 0.6305,
+          "Fratelli d'Italia": 0.6013,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.5407
+        },
+        "authority_spread_stats": {
+          "std": 0.101579,
+          "mean": 0.552107,
+          "p25": 0.500646,
+          "median": 0.569869,
+          "p75": 0.627105,
+          "n": 387,
+          "min_score": 0.090059,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.714537,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d301541_19",
+          "max_name": "ENRICO COSTA"
+        }
+      },
+      "human": {
+        "id": "565c9dc4-11ca-450f-9498-72e60b930dce",
+        "chat_id": "84e59005-83f5-4610-a630-a29f6d0fb8c5",
+        "timestamp": "2026-03-02T14:11:35.113514",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_clarity": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 5,
+        "overall_satisfaction_b": 5,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.6530438000000001,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": -1,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 0,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "ALLEANZA VERDI E SINISTRA": 0,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0,
+          "MOVIMENTO 5 STELLE": -1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "65c0bab0-ef55-4d43-9aa1-8b669d2dbd3a",
+      "chat_query": "Sgravi sul costo del lavoro",
+      "timestamp": "2026-02-26T00:21:26.416719+01:00",
+      "automated": {
+        "chat_id": "65c0bab0-ef55-4d43-9aa1-8b669d2dbd3a",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.624,
+        "experts_count": 10,
+        "authority_discrimination": 0.1001,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.6,
+          "Lega - Salvini Premier": 0.64,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.67,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.62,
+          "Partito Democratico - Italia Democratica e Progressista": 0.65,
+          "Movimento 5 Stelle": 0.54,
+          "Alleanza Verdi e Sinistra": 0.65,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.62,
+          "Italia Viva - Il Centro - Renew Europe": 0.62,
+          "Misto": 0.63
+        },
+        "baseline_authority": 0.6228,
+        "baseline_authority_by_group": {
+          "Movimento 5 Stelle": 0.6763,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.6731,
+          "Misto": 0.6293,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.6281,
+          "Lega - Salvini Premier": 0.625,
+          "Partito Democratico - Italia Democratica e Progressista": 0.6208,
+          "Italia Viva - Il Centro - Renew Europe": 0.6188,
+          "Fratelli d'Italia": 0.5991,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.5347
+        },
+        "authority_spread_stats": {
+          "std": 0.100127,
+          "mean": 0.53511,
+          "p25": 0.48794,
+          "median": 0.553909,
+          "p75": 0.614937,
+          "n": 387,
+          "min_score": 0.081386,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d301551_19",
+          "min_name": "RAFFAELE FITTO",
+          "max_score": 0.681744,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d308001_19",
+          "max_name": "VALENTINA BARZOTTI"
+        }
+      },
+      "human": {
+        "id": "a9a8b00b-95a1-4aee-be75-2ffab62f9041",
+        "chat_id": "65c0bab0-ef55-4d43-9aa1-8b669d2dbd3a",
+        "timestamp": "2026-03-02T14:13:02.803211",
+        "answer_quality": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_clarity": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_completeness": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 4,
+          "preference": "A"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 4,
+        "overall_preference": "equal",
+        "would_recommend": true,
+        "feedback_positive": null,
+        "feedback_improvement": null,
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "source_coverage": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "system",
+          "B": "baseline"
+        },
+        "baseline_authority_avg": 0.622794111111111,
+        "group_authority_votes": {
+          "FRATELLI D'ITALIA": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 0,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 0,
+          "LEGA - SALVINI PREMIER": 0,
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": -1,
+          "ALLEANZA VERDI E SINISTRA": -1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0,
+          "MOVIMENTO 5 STELLE": -1
+        }
+      },
+      "human_simple": null
+    },
+    {
+      "chat_id": "52bba6ab-3ff6-42e9-9f66-e75d0fddb990",
+      "chat_query": "Salario minimo",
+      "timestamp": "2026-02-26T00:21:26.199096+01:00",
+      "automated": {
+        "chat_id": "52bba6ab-3ff6-42e9-9f66-e75d0fddb990",
+        "party_coverage_score": 1.0,
+        "parties_represented": 10,
+        "parties_total": 10,
+        "party_breakdown": {
+          "Fratelli d'Italia": 1,
+          "Lega - Salvini Premier": 1,
+          "Forza Italia - Berlusconi Presidente - PPE": 1,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 1,
+          "Partito Democratico - Italia Democratica e Progressista": 1,
+          "Movimento 5 Stelle": 1,
+          "Alleanza Verdi e Sinistra": 1,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 1,
+          "Italia Viva - Il Centro - Renew Europe": 1,
+          "Misto": 1
+        },
+        "citations_total": 11,
+        "verbatim_match_score": 1.0,
+        "verbatim_match_count": 11,
+        "response_completeness": 1.0,
+        "authority_utilization": 0.395,
+        "experts_count": 10,
+        "authority_discrimination": 0.0668,
+        "authority_by_group": {
+          "Fratelli d'Italia": 0.34,
+          "Lega - Salvini Premier": 0.4,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.41,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.19,
+          "Partito Democratico - Italia Democratica e Progressista": 0.55,
+          "Movimento 5 Stelle": 0.51,
+          "Alleanza Verdi e Sinistra": 0.53,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.33,
+          "Italia Viva - Il Centro - Renew Europe": 0.3,
+          "Misto": 0.39
+        },
+        "baseline_authority": 0.3255,
+        "baseline_authority_by_group": {
+          "Partito Democratico - Italia Democratica e Progressista": 0.5537,
+          "Forza Italia - Berlusconi Presidente - PPE": 0.4148,
+          "Lega - Salvini Premier": 0.4006,
+          "Fratelli d'Italia": 0.3396,
+          "Azione - Popolari Europeisti Riformatori - Renew Europe": 0.3292,
+          "Italia Viva - Il Centro - Renew Europe": 0.2952,
+          "Alleanza Verdi e Sinistra": 0.2762,
+          "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare": 0.2645,
+          "Misto": 0.2313,
+          "Movimento 5 Stelle": 0.15
+        },
+        "authority_spread_stats": {
+          "std": 0.066773,
+          "mean": 0.240989,
+          "p25": 0.216339,
+          "median": 0.232518,
+          "p75": 0.265061,
+          "n": 387,
+          "min_score": 0.045261,
+          "min_id": "http://dati.camera.it/ocd/deputato.rdf/d308917_19",
+          "min_name": "CHIARA COLOSIMO",
+          "max_score": 0.552966,
+          "max_id": "http://dati.camera.it/ocd/deputato.rdf/d302069_19",
+          "max_name": "ARTURO SCOTTO"
+        }
+      },
+      "human": {
+        "id": "96657f64-716b-485b-ab24-274b8b9d64df",
+        "chat_id": "52bba6ab-3ff6-42e9-9f66-e75d0fddb990",
+        "timestamp": "2026-02-27T13:39:55.428329",
+        "answer_quality": {
+          "rating_a": 3,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_clarity": {
+          "rating_a": 3,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "answer_completeness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "citations_relevance": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "balance_perception": {
+          "rating_a": 4,
+          "rating_b": 5,
+          "preference": "B"
+        },
+        "balance_fairness": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "overall_satisfaction_a": 4,
+        "overall_satisfaction_b": 5,
+        "overall_preference": "B",
+        "would_recommend": true,
+        "feedback_positive": "L'accuratezza delle informazioni e le citazioni espresse per comprendere opinioni e posizionamento politico.",
+        "feedback_improvement": "Rendere più chiare, in termini di citazioni delle mozioni, proposte di legge e ulteriori informazioni, le introduzioni.",
+        "citation_evaluations_a": [],
+        "citation_evaluations_b": [],
+        "source_relevance": {
+          "rating_a": 3,
+          "rating_b": 3,
+          "preference": "equal"
+        },
+        "source_authority": {
+          "rating_a": 4,
+          "rating_b": 4,
+          "preference": "equal"
+        },
+        "source_coverage": {
+          "rating_a": 5,
+          "rating_b": 5,
+          "preference": "equal"
+        },
+        "evaluator_role": null,
+        "evaluation_context": null,
+        "evaluator_id": "Luca",
+        "ab_assignment": {
+          "A": "baseline",
+          "B": "system"
+        },
+        "baseline_authority_avg": 0.32550460000000003,
+        "group_authority_votes": {
+          "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": 0,
+          "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": 1,
+          "ITALIA VIVA-IL CENTRO-RENEW EUROPE": 0,
+          "MISTO": 1,
+          "FRATELLI D'ITALIA": 1,
+          "LEGA - SALVINI PREMIER": 0,
+          "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA": 0,
+          "MOVIMENTO 5 STELLE": -1,
+          "ALLEANZA VERDI E SINISTRA": 1,
+          "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": 0
+        }
+      },
+      "human_simple": null
+    }
+  ],
+  "total_chats": 15,
+  "total_evaluated": 15,
+  "total_simple_rated": 0
+}
