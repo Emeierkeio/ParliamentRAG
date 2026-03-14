@@ -3,6 +3,8 @@
 > **Thesis repository** — Università degli Studi di Milano-Bicocca
 > Master's Degree in Data Science, A.Y. 2024–2025
 > Author: Mirko Tritella · Supervisor: Prof. Matteo Luigi Palmonari · Co-supervisor: Dott. Riccardo Pozzi
+>
+> **Live demo**: [parliamentrag.it](https://www.parliamentrag.it/)
 
 ---
 
