@@ -229,6 +229,8 @@ site/
 neo4j/
 *.md
 !README.md
+!.planning/**/*.md
+!.planning/*.md
 docs/
 
 notebooklm_sources/
