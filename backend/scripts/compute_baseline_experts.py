@@ -46,7 +46,7 @@ from typing import Optional, List, Dict, Any, Tuple
 # Add backend/ to sys.path so app.* imports work when called from any directory
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.config import get_settings
+from app.services.deps import get_neo4j_client
 from app.services.neo4j_client import Neo4jClient
 from app.services.authority.scorer import AuthorityScorer
 from app.services.authority.coalition_logic import CoalitionLogic
@@ -690,9 +690,8 @@ def main() -> None:
     with open(EVAL_SET_PATH, encoding="utf-8") as f:
         data: dict = json.load(f)
 
-    settings = get_settings()
-    logger.info(f"Connecting to Neo4j at {settings.neo4j_uri}")
-    client = Neo4jClient(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
+    client = get_neo4j_client()
+    logger.info("Using shared Neo4j client from deps")
 
     authority_scorer = AuthorityScorer(client)
     coalition_logic = CoalitionLogic()

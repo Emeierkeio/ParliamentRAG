@@ -33,7 +33,7 @@ from typing import Optional
 # Add backend/ to path so app.* imports work
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.config import get_settings
+from app.services.deps import get_neo4j_client
 from app.services.neo4j_client import Neo4jClient
 
 logging.basicConfig(
@@ -348,9 +348,8 @@ def main():
     with open(EVAL_SET_PATH, encoding="utf-8") as f:
         data: dict = json.load(f)
 
-    settings = get_settings()
-    logger.info(f"Connecting to Neo4j at {settings.neo4j_uri}")
-    client = Neo4jClient(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
+    client = get_neo4j_client()
+    logger.info("Using shared Neo4j client from deps")
 
     enriched_data = {}
     for topic, entry in data.items():
