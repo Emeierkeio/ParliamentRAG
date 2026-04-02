@@ -85,8 +85,6 @@ class CitationInfo(BaseModel):
     speaker_name: str
     party: str
     date: str
-    span_start: int
-    span_end: int
 
 
 class QueryResponse(BaseModel):
@@ -281,8 +279,6 @@ async def process_query_streaming(
                             AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                         RETURN c.id AS chunk_id,
                                c.text AS chunk_text,
-                               c.start_char_raw AS span_start,
-                               c.end_char_raw AS span_end,
                                i.id AS speech_id,
                                i.text AS text,
                                speaker.id AS speaker_id,
@@ -335,8 +331,6 @@ async def process_query_streaming(
                         "party": party,
                         "coalition": coalition,
                         "date": date_obj,
-                        "span_start": row.get("span_start", 0),
-                        "span_end": row.get("span_end", 0),
                         "debate_title": row.get("debate_title", ""),
                         "session_id": row.get("session_id", ""),
                     }
@@ -392,8 +386,6 @@ async def process_query_streaming(
                     "speaker_name": ev.get("speaker_name", ""),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
-                    "span_start": ev.get("span_start", 0),
-                    "span_end": ev.get("span_end", 0),
                 })
                 tracked_ids.add(eid)
                 logger.info(f"[QUERY:CITATIONS] Recovered from text: {eid}")
@@ -925,8 +917,6 @@ def _build_verified_citations(
             "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),
-            "span_start": cit.get("span_start", 0),
-            "span_end": cit.get("span_end", 0),
             "debate": evidence.get("debate_title", ""),
             "intervention_id": evidence.get("speech_id", ""),
             "camera_profile_url": _dep_info.get("url"),
@@ -1030,8 +1020,6 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                     speaker_name=c.get("speaker_name", ""),
                     party=c.get("party", ""),
                     date=c.get("date", ""),
-                    span_start=c.get("span_start", 0),
-                    span_end=c.get("span_end", 0),
                 )
                 for i, c in enumerate(gen_result.get("citations", []))
             ]

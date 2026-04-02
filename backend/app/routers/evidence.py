@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from ..services.neo4j_client import Neo4jClient
 from ..services.deps import get_neo4j_client
-from ..models.evidence import compute_quote_text, verify_citation_integrity
+from ..models.evidence import normalize_party_name
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/evidence", tags=["Evidence"])
@@ -98,9 +98,7 @@ async def get_evidence(
 
         data = dict(record)
 
-        # Use chunk_text as the verbatim citation source.
-        # start_char_raw/end_char_raw were removed in Phase 1 schema — chunk_text
-        # is the correct source for all citation display.
+        # Use chunk_text as the verbatim citation source (Phase 2 schema).
         text = data.get("text", "")
         quote_text = data.get("chunk_text", "")
         citation_verified = bool(quote_text)
@@ -168,8 +166,7 @@ async def verify_evidence(
         text = data.get("text", "")
         chunk_text = data.get("chunk_text", "")
 
-        # Use chunk_text as the citation source.
-        # start_char_raw/end_char_raw were removed in Phase 1 schema.
+        # Use chunk_text as the citation source (Phase 2 schema).
         quote_text = chunk_text
         is_valid = bool(quote_text)
 

@@ -84,17 +84,13 @@ class UnifiedEvidence(BaseModel):
 
     # TEXT FIELDS - CLEARLY DISTINGUISHED
     chunk_text: str = Field(
-        description="chunk.text - used for retrieval/preview ONLY. "
-                    "May be preprocessed. NOT valid for citation."
+        description="chunk.text - used for retrieval/preview. "
+                    "Also the verbatim citation source."
     )
     quote_text: str = Field(
-        description="VERBATIM extraction from speech.text[span_start:span_end]. "
+        description="Verbatim citation source (equals chunk_text). "
                     "This is the ONLY valid citation source."
     )
-
-    # Offset metadata for verification
-    span_start: int = Field(ge=0, description="Start offset in text")
-    span_end: int = Field(gt=0, description="End offset in text")
 
     # Context
     debate_title: Optional[str] = Field(default=None, description="Debate title")
@@ -125,14 +121,6 @@ class UnifiedEvidence(BaseModel):
         exclude=True  # Don't include in JSON responses (too large)
     )
 
-    @field_validator("span_end")
-    @classmethod
-    def validate_span_order(cls, v: int, info) -> int:
-        """Ensure span_end > span_start."""
-        if "span_start" in info.data and v <= info.data["span_start"]:
-            raise ValueError("span_end must be greater than span_start")
-        return v
-
     class Config:
         json_schema_extra = {
             "example": {
@@ -147,8 +135,6 @@ class UnifiedEvidence(BaseModel):
                 "date": "2023-05-15",
                 "chunk_text": "Preview text for retrieval...",
                 "quote_text": "Exact verbatim quote from text",
-                "span_start": 1523,
-                "span_end": 1687,
                 "debate_title": "Discussione DL immigrazione",
                 "session_number": 123,
                 "similarity": 0.85,
@@ -164,7 +150,7 @@ class UnifiedEvidence(BaseModel):
         }
 
 
-def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:
+def compute_quote_text(speech_text: str, start: int, end: int) -> str:
     """
     Extract quote using offsets, with automatic clamping and word-boundary alignment.
 
@@ -174,9 +160,9 @@ def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:
     3. Extends end forward to the nearest word boundary (space or end of text)
 
     Args:
-        speech_text: The raw speech text
-        span_start: Start offset (inclusive)
-        span_end: End offset (exclusive)
+        speech_text: The speech text
+        start: Start offset (inclusive)
+        end: End offset (exclusive)
 
     Returns:
         Extracted quote aligned to word boundaries
@@ -191,45 +177,45 @@ def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:
         return ""
 
     # Clamp offsets to valid bounds
-    span_start = max(0, span_start)
-    span_end = min(text_len, span_end)
+    start = max(0, start)
+    end = min(text_len, end)
 
     # Validate after clamping
-    if span_start >= span_end:
+    if start >= end:
         raise ValueError(
-            f"Invalid span after clamping: start={span_start}, end={span_end}"
+            f"Invalid offsets after clamping: start={start}, end={end}"
         )
 
     # Extend start backward to word boundary (find previous space or start of text)
-    while span_start > 0 and speech_text[span_start] != ' ' and speech_text[span_start - 1] != ' ':
-        span_start -= 1
+    while start > 0 and speech_text[start] != ' ' and speech_text[start - 1] != ' ':
+        start -= 1
 
     # Skip leading space if we landed on one
-    if span_start < text_len and speech_text[span_start] == ' ':
-        span_start += 1
+    if start < text_len and speech_text[start] == ' ':
+        start += 1
 
     # Extend end forward to word boundary (find next space or end of text)
-    while span_end < text_len and speech_text[span_end - 1] != ' ' and speech_text[span_end] != ' ':
-        span_end += 1
+    while end < text_len and speech_text[end - 1] != ' ' and speech_text[end] != ' ':
+        end += 1
 
     # Strip trailing space if we landed before one
-    while span_end > span_start and speech_text[span_end - 1] == ' ':
-        span_end -= 1
+    while end > start and speech_text[end - 1] == ' ':
+        end -= 1
 
-    return speech_text[span_start:span_end]
+    return speech_text[start:end]
 
 
 def verify_citation_integrity(
     quote_or_evidence,
     speech_text: str,
-    span_start: Optional[int] = None,
-    span_end: Optional[int] = None
+    start: Optional[int] = None,
+    end: Optional[int] = None
 ) -> bool:
     """
-    Verify citation is valid by re-extracting from source.
+    Verify citation is valid.
 
-    CRITICAL: This DOES NOT compare with chunk_text - that would be incorrect.
-    Verification is done by re-extraction only.
+    With UnifiedEvidence: checks that quote_text is a non-empty substring of speech_text.
+    With individual params (legacy): checks that speech_text[start:end] matches quote_text.
 
     Can be called in two ways:
     1. verify_citation_integrity(evidence, text) - with UnifiedEvidence object
@@ -237,26 +223,27 @@ def verify_citation_integrity(
 
     Args:
         quote_or_evidence: Either an UnifiedEvidence object or a quote string
-        speech_text: The raw speech text
-        span_start: Start offset (required if quote_or_evidence is a string)
-        span_end: End offset (required if quote_or_evidence is a string)
+        speech_text: The speech text
+        start: Start offset (only used with individual string params)
+        end: End offset (only used with individual string params)
 
     Returns:
-        True if re-extraction matches stored/provided quote_text
+        True if the citation is valid
     """
     try:
-        # Check if first argument is an UnifiedEvidence object
         if isinstance(quote_or_evidence, UnifiedEvidence):
             evidence = quote_or_evidence
-            re_extracted = speech_text[evidence.span_start:evidence.span_end]
-            return re_extracted == evidence.quote_text
+            # Verify that quote_text is a non-empty substring of the speech text
+            return bool(evidence.quote_text) and evidence.quote_text in speech_text
         else:
-            # Individual parameters provided
-            if span_start is None or span_end is None:
-                raise ValueError("span_start and span_end required when quote is a string")
+            # Individual parameters provided (legacy path)
+            if start is not None and end is not None:
+                quote_text = quote_or_evidence
+                re_extracted = speech_text[start:end]
+                return re_extracted == quote_text
+            # No offsets: verify quote_text is a substring
             quote_text = quote_or_evidence
-            re_extracted = speech_text[span_start:span_end]
-            return re_extracted == quote_text
+            return bool(quote_text) and quote_text in speech_text
     except (IndexError, ValueError):
         return False
 

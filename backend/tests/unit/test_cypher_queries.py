@@ -119,24 +119,39 @@ def test_scorer_no_dead_properties():
 # ---------------------------------------------------------------------------
 
 def test_unified_evidence_no_span_fields():
-    """UnifiedEvidence Pydantic model must not have span_start or span_end fields."""
-    from app.models.evidence import UnifiedEvidence
+    """UnifiedEvidence Pydantic model source must not define span_start or span_end fields."""
+    source = _read_source("models/evidence.py")
 
-    assert "span_start" not in UnifiedEvidence.model_fields, (
-        "UnifiedEvidence still has span_start field — remove it"
+    # Check that no field declaration (Field(...)) uses these names as field names.
+    # The source can still contain the words in function parameter names (compute_quote_text),
+    # but the Pydantic model class body must not have them as class-level annotations.
+    import re
+    # Find the UnifiedEvidence class body (between class def and next top-level def/class)
+    class_match = re.search(
+        r'class UnifiedEvidence\(BaseModel\):(.*?)(?=\ndef |\nclass )',
+        source,
+        re.DOTALL
     )
-    assert "span_end" not in UnifiedEvidence.model_fields, (
-        "UnifiedEvidence still has span_end field — remove it"
+    assert class_match is not None, "Could not find UnifiedEvidence class in evidence.py"
+    class_body = class_match.group(1)
+
+    assert "span_start" not in class_body, (
+        "UnifiedEvidence class body still contains span_start — remove the field"
+    )
+    assert "span_end" not in class_body, (
+        "UnifiedEvidence class body still contains span_end — remove the field"
     )
 
 
 def test_citation_info_no_span_fields():
-    """CitationInfo Pydantic model in query.py must not have span_start or span_end fields."""
-    from app.routers.query import CitationInfo
+    """CitationInfo Pydantic model source in query.py must not define span_start or span_end fields."""
+    source = _read_source("routers/query.py")
 
-    assert "span_start" not in CitationInfo.model_fields, (
-        "CitationInfo in query.py still has span_start field — remove it"
+    # Find the CitationInfo class definition and check it has no span fields
+    # We verify by checking that the source file has no span field definitions
+    assert "span_start" not in source, (
+        "routers/query.py still references span_start (CitationInfo or elsewhere)"
     )
-    assert "span_end" not in CitationInfo.model_fields, (
-        "CitationInfo in query.py still has span_end field — remove it"
+    assert "span_end" not in source, (
+        "routers/query.py still references span_end (CitationInfo or elsewhere)"
     )

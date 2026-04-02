@@ -424,8 +424,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                             AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                         RETURN c.id AS chunk_id,
                                c.text AS chunk_text,
-                               c.start_char_raw AS span_start,
-                               c.end_char_raw AS span_end,
                                i.id AS speech_id,
                                i.text AS text,
                                speaker.id AS speaker_id,
@@ -472,8 +470,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                         "party": party,
                         "coalition": config.get_coalition(party),
                         "date": date_obj,
-                        "span_start": row.get("span_start", 0),
-                        "span_end": row.get("span_end", 0),
                         "debate_title": row.get("debate_title", ""),
                         "session_id": row.get("session_id", ""),
                     }
@@ -538,8 +534,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     "speaker_name": ev.get("speaker_name", ""),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
-                    "span_start": ev.get("span_start", 0),
-                    "span_end": ev.get("span_end", 0),
                 })
                 tracked_ids.add(eid)
                 logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
@@ -907,8 +901,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                             AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                         RETURN c.id AS chunk_id,
                                c.text AS chunk_text,
-                               c.start_char_raw AS span_start,
-                               c.end_char_raw AS span_end,
                                i.id AS speech_id,
                                i.text AS text,
                                speaker.id AS speaker_id,
@@ -955,8 +947,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                         "party": party,
                         "coalition": config.get_coalition(party),
                         "date": date_obj,
-                        "span_start": row.get("span_start", 0),
-                        "span_end": row.get("span_end", 0),
                         "debate_title": row.get("debate_title", ""),
                         "session_id": row.get("session_id", ""),
                     }
@@ -1026,8 +1016,6 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     "speaker_name": ev.get("speaker_name", ""),
                     "party": ev.get("party", ""),
                     "date": str(ev.get("date", "")),
-                    "span_start": ev.get("span_start", 0),
-                    "span_end": ev.get("span_end", 0),
                 })
                 tracked_ids.add(eid)
                 logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
@@ -1674,8 +1662,6 @@ def _build_verified_citations(
             "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),
-            "span_start": cit.get("span_start", 0),
-            "span_end": cit.get("span_end", 0),
             "debate": evidence.get("debate_title", ""),
             "intervention_id": evidence.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),

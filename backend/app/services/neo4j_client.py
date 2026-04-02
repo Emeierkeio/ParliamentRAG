@@ -156,11 +156,11 @@ class Neo4jClient:
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
-               c.start_char_raw AS span_start,
-               c.end_char_raw AS span_end,
                c.index AS chunk_index,
                i.id AS speech_id,
                i.text AS text,
+               i.speakingRole AS speaking_role,
+               f.phaseType AS phase_type,
                speaker.id AS speaker_id,
                speaker.first_name AS speaker_first_name,
                speaker.last_name AS speaker_last_name,
