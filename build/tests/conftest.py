@@ -13,6 +13,10 @@ def pytest_configure(config):
         "markers",
         "integration: requires a running Neo4j instance (run with: pytest -m integration)",
     )
+    config.addinivalue_line(
+        "markers",
+        "slow: requires external models/resources (run with: pytest -m slow)",
+    )
 
 
 # ---------------------------------------------------------------------------
