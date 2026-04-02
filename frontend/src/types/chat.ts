@@ -1,5 +1,5 @@
 /**
- * Tipi per il sistema di chat
+ * Chat system types
  */
 import type { CompassData } from "@/components/chat/CompassCard";
 
@@ -23,7 +23,12 @@ export interface Citation {
   intervention_id?: string;
   camera_profile_url?: string;
   photo?: string;
-  [key: string]: any;
+  speaker_id?: string;
+  vote_count?: number;
+  committee?: string;
+  session_number?: number;
+  debate_title?: string;
+  institutional_role?: string | null;
 }
 
 export interface Expert {
@@ -149,7 +154,40 @@ export interface StepResult {
   step: number;
   label: string;
   result?: string;
-  details?: any;
+  details?: StepResultDetails;
+}
+
+/**
+ * Polymorphic step result details — each step type has its own shape.
+ * Using a union keeps types nominal while remaining assignable from call sites.
+ */
+export type StepResultDetails =
+  | { commissioni: Array<{ nome?: string; name?: string; score?: number; matched_keywords?: string[]; categories?: string[] }> }
+  | { experts: number; maggioranza: number; opposizione: number }
+  | { citations: number }
+  | { maggioranzaPercentage: number; opposizionePercentage: number; biasScore: number }
+  | { groups: number | undefined; axes?: unknown }
+  | { axes?: unknown; groups?: number }
+  | Record<string, unknown>;
+
+export interface ChatHistoryItem {
+  id: string;
+  query: string;
+  answer: string;
+  timestamp: string;
+  preview?: string;
+  experts?: Expert[];
+  citations?: Citation[];
+  steps?: StepResult[];
+  balance?: {
+    maggioranza_percentage: number;
+    opposizione_percentage: number;
+    bias_score: number;
+  };
+  compass?: CompassData;
+  commissioni?: Array<{ nome: string; score: number; matched_keywords: string[]; categories: string[] }>;
+  hq_variants?: HQVariant[];
+  topic_stats?: TopicStatistics;
 }
 
 export interface ProcessingProgress {

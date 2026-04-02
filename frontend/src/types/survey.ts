@@ -1,6 +1,7 @@
 /**
  * Survey types for A/B blind evaluation of ParliamentRAG vs Baseline RAG.
  */
+import type { Expert } from "./chat";
 
 export interface SurveyQuestion {
   id: string;
@@ -212,7 +213,7 @@ export interface PendingChat {
   evaluation_type: "ab" | "simple";
   matched_topic?: string;
   baseline_answer?: string;
-  baseline_experts?: any[];
+  baseline_experts?: Expert[];
   baseline_citations?: BaselineCitation[];
 }
 

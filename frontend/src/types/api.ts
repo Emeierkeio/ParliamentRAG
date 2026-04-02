@@ -1,5 +1,5 @@
 /**
- * Tipi per le API
+ * API types
  */
 
 import type { Citation, Expert, BalanceMetrics, ProcessingProgress } from "./chat";
