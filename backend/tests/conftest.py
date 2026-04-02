@@ -38,7 +38,7 @@ def client(mock_neo4j):
     Uses patch on app.services.deps._neo4j_client to inject the mock before
     the app is started. The TestClient context manager handles startup/shutdown.
     """
-    with patch("app.services.deps._neo4j_client", mock_neo4j):
+    with patch("app.services.deps.get_neo4j_client", return_value=mock_neo4j):
         from app.main import app
         with TestClient(app, raise_server_exceptions=False) as test_client:
             yield test_client

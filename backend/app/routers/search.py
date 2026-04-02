@@ -5,32 +5,17 @@ Supports text search and semantic (vector) search across Speech chunks and Parli
 import logging
 from typing import Optional, List, Dict, Any
 
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException
 
 from ..services.neo4j_client import Neo4jClient
-from ..config import get_settings
+from ..services.deps import get_neo4j_client
 from ..key_pool import make_client
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/search", tags=["Search"])
 
-# Global client instance
-_neo4j_client: Optional[Neo4jClient] = None
 _openai_client = None
 _act_index_ensured = False
-
-
-def get_client() -> Neo4jClient:
-    """Get or initialize Neo4j client."""
-    global _neo4j_client
-    if _neo4j_client is None:
-        settings = get_settings()
-        _neo4j_client = Neo4jClient(
-            uri=settings.neo4j_uri,
-            user=settings.neo4j_user,
-            password=settings.neo4j_password
-        )
-    return _neo4j_client
 
 
 def _get_openai_client():
@@ -56,7 +41,7 @@ def _ensure_act_vector_index():
     global _act_index_ensured
     if _act_index_ensured:
         return
-    client = get_client()
+    client = get_neo4j_client()
     try:
         with client.session() as session:
             session.run("""
@@ -435,6 +420,7 @@ async def search_results(
     sort_by: str = Query("relevance", description="Sort order: relevance, date_desc, date_asc"),
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Results per page"),
+    client: Neo4jClient = Depends(get_neo4j_client),
 ) -> Dict[str, Any]:
     """
     Search parliamentary records (Speech chunks + ParliamentaryAct).
@@ -445,7 +431,6 @@ async def search_results(
 
     Returns paginated results with total count.
     """
-    client = get_client()
     all_results: List[Dict[str, Any]] = []
 
     # Fetch enough results to allow proper pagination
@@ -531,11 +516,11 @@ async def search_results(
 async def list_deputies(
     q: Optional[str] = Query(None, description="Filter by name"),
     limit: int = Query(50, ge=1, le=200),
+    client: Neo4jClient = Depends(get_neo4j_client),
 ) -> List[Dict[str, Any]]:
     """
     List deputies, optionally filtered by name.
     """
-    client = get_client()
 
     try:
         if q:
@@ -581,11 +566,12 @@ async def list_deputies(
 
 
 @router.get("/groups")
-async def list_groups() -> List[Dict[str, Any]]:
+async def list_groups(
+    client: Neo4jClient = Depends(get_neo4j_client),
+) -> List[Dict[str, Any]]:
     """
     List all parliamentary groups.
     """
-    client = get_client()
 
     try:
         cypher = """
@@ -615,12 +601,14 @@ async def list_groups() -> List[Dict[str, Any]]:
 
 
 @router.get("/speech/{chunk_id}")
-async def get_speech_detail(chunk_id: str) -> Dict[str, Any]:
+async def get_speech_detail(
+    chunk_id: str,
+    client: Neo4jClient = Depends(get_neo4j_client),
+) -> Dict[str, Any]:
     """
     Get full speech/intervention detail by chunk ID.
     Returns the complete intervention text and all metadata.
     """
-    client = get_client()
 
     try:
         cypher = """
@@ -671,12 +659,14 @@ async def get_speech_detail(chunk_id: str) -> Dict[str, Any]:
 
 
 @router.get("/act/{act_uri:path}")
-async def get_act_detail(act_uri: str) -> Dict[str, Any]:
+async def get_act_detail(
+    act_uri: str,
+    client: Neo4jClient = Depends(get_neo4j_client),
+) -> Dict[str, Any]:
     """
     Get full parliamentary act detail by URI.
     Returns the complete description and all metadata.
     """
-    client = get_client()
 
     try:
         cypher = """

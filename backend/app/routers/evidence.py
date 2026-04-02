@@ -6,12 +6,12 @@ Provides exact quote extraction with verification.
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, Depends, HTTPException, Path
 from pydantic import BaseModel
 
 from ..services.neo4j_client import Neo4jClient
+from ..services.deps import get_neo4j_client
 from ..models.evidence import compute_quote_text, verify_citation_integrity
-from ..config import get_settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/evidence", tags=["Evidence"])
@@ -33,12 +33,8 @@ class EvidenceResponse(BaseModel):
 
     # Text content
     chunk_text: str  # Preview text
-    quote_text: str  # EXACT verbatim quote
+    quote_text: str  # Verbatim citation source (chunk_text)
     text: Optional[str] = None  # Full intervention text (optional)
-
-    # Offsets
-    span_start: int
-    span_end: int
 
     # Context
     date: str
@@ -49,26 +45,10 @@ class EvidenceResponse(BaseModel):
     citation_verified: bool
 
 
-# Service instance
-_neo4j_client: Optional[Neo4jClient] = None
-
-
-def get_neo4j():
-    """Get or initialize Neo4j client."""
-    global _neo4j_client
-    if _neo4j_client is None:
-        settings = get_settings()
-        _neo4j_client = Neo4jClient(
-            uri=settings.neo4j_uri,
-            user=settings.neo4j_user,
-            password=settings.neo4j_password
-        )
-    return _neo4j_client
-
-
 @router.get("/{evidence_id}", response_model=EvidenceResponse)
 async def get_evidence(
-    evidence_id: str = Path(..., description="Evidence/Chunk ID")
+    evidence_id: str = Path(..., description="Evidence/Chunk ID"),
+    client: Neo4jClient = Depends(get_neo4j_client),
 ):
     """
     Get full evidence details by ID.
@@ -76,7 +56,6 @@ async def get_evidence(
     Returns the exact verbatim quote extracted via offsets,
     with verification status.
     """
-    client = get_neo4j()
 
     # Query for full evidence details
     cypher = """
@@ -94,8 +73,6 @@ async def get_evidence(
 
     RETURN c.id AS chunk_id,
            c.text AS chunk_text,
-           c.start_char_raw AS span_start,
-           c.end_char_raw AS span_end,
            i.id AS speech_id,
            i.text AS text,
            speaker.id AS speaker_id,
@@ -121,20 +98,12 @@ async def get_evidence(
 
         data = dict(record)
 
-        # Extract exact quote using offsets
+        # Use chunk_text as the verbatim citation source.
+        # start_char_raw/end_char_raw were removed in Phase 1 schema — chunk_text
+        # is the correct source for all citation display.
         text = data.get("text", "")
-        span_start = data.get("span_start", 0)
-        span_end = data.get("span_end", 0)
-
-        try:
-            quote_text = compute_quote_text(text, span_start, span_end)
-            citation_verified = verify_citation_integrity(
-                quote_text, text, span_start, span_end
-            )
-        except ValueError as e:
-            logger.error(f"Quote extraction failed for {evidence_id}: {e}")
-            quote_text = data.get("chunk_text", "")[:200]  # Fallback to chunk preview
-            citation_verified = False
+        quote_text = data.get("chunk_text", "")
+        citation_verified = bool(quote_text)
 
         # Determine coalition
         from ..services.authority.coalition_logic import CoalitionLogic
@@ -160,8 +129,6 @@ async def get_evidence(
             chunk_text=data.get("chunk_text", ""),
             quote_text=quote_text,
             text=text if len(text) < 10000 else None,  # Omit if too large
-            span_start=span_start,
-            span_end=span_end,
             date=str(data.get("date", "")),
             debate_title=data.get("debate_title"),
             session_number=data.get("session_number", 0),
@@ -171,21 +138,19 @@ async def get_evidence(
 
 @router.get("/{evidence_id}/verify")
 async def verify_evidence(
-    evidence_id: str = Path(..., description="Evidence/Chunk ID")
+    evidence_id: str = Path(..., description="Evidence/Chunk ID"),
+    client: Neo4jClient = Depends(get_neo4j_client),
 ):
     """
     Verify citation integrity for an evidence piece.
 
     Returns verification status and details.
     """
-    client = get_neo4j()
 
     cypher = """
     MATCH (c:Chunk {id: $evidence_id})
     MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
     RETURN c.text AS chunk_text,
-           c.start_char_raw AS span_start,
-           c.end_char_raw AS span_end,
            i.text AS text
     """
 
@@ -201,26 +166,18 @@ async def verify_evidence(
 
         data = dict(record)
         text = data.get("text", "")
-        span_start = data.get("span_start", 0)
-        span_end = data.get("span_end", 0)
+        chunk_text = data.get("chunk_text", "")
 
-        # Verify
-        try:
-            quote_text = compute_quote_text(text, span_start, span_end)
-            is_valid = True
-            error = None
-        except ValueError as e:
-            quote_text = None
-            is_valid = False
-            error = str(e)
+        # Use chunk_text as the citation source.
+        # start_char_raw/end_char_raw were removed in Phase 1 schema.
+        quote_text = chunk_text
+        is_valid = bool(quote_text)
 
         return {
             "evidence_id": evidence_id,
             "is_valid": is_valid,
-            "span_start": span_start,
-            "span_end": span_end,
             "text_length": len(text),
             "quote_text": quote_text,
             "quote_length": len(quote_text) if quote_text else 0,
-            "error": error,
+            "error": None,
         }
