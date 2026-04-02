@@ -13,6 +13,16 @@ import type {
 } from "@/types";
 import type { CompassData } from "@/components/chat/CompassCard";
 import type { CommissionItem } from "@/types/sse";
+
+/**
+ * Parsed SSE event from the backend streaming pipeline.
+ * Uses a permissive index signature because chat.py and query.py emit
+ * overlapping event types with different payload keys (e.g. chunk uses
+ * "content" in chat.py vs "data" in query.py). Full type definitions
+ * are in types/sse.ts for reference; runtime access uses this flexible shape.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SSEData = { type: string; [key: string]: any };
 import { config } from "@/config";
 
 interface UseChatOptions {
@@ -174,7 +184,7 @@ export function useChat(options: UseChatOptions = {}) {
               try {
                 const jsonStr = line.slice(6).trim();
                 if (!jsonStr) continue;
-                const data = JSON.parse(jsonStr);
+                const data = JSON.parse(jsonStr) as SSEData;
                 if (data.type === "complete") {
                   setProgress((prev) => prev ? { ...prev, isComplete: true } : null);
                   updateLastAssistantMessage({
@@ -208,7 +218,7 @@ export function useChat(options: UseChatOptions = {}) {
             const jsonStr = line.slice(6).trim();
             if (!jsonStr) continue;
 
-            const data = JSON.parse(jsonStr);
+            const data = JSON.parse(jsonStr) as SSEData;
 
             switch (data.type) {
               case "task_id":
@@ -410,12 +420,12 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "topic_stats":
-                topicStats = data as TopicStatistics;
+                topicStats = data as unknown as TopicStatistics;
                 updateLastAssistantMessage({ topicStats });
                 break;
 
               case "citation_details":
-                const citDetailsPayload = data.data || data.citations;
+                const citDetailsPayload = "citations" in data ? data.citations : undefined;
                 if (Array.isArray(citDetailsPayload)) {
                     citations = citDetailsPayload;
                     updateLastAssistantMessage({ citations: [...citations] });
@@ -423,7 +433,7 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "chunk":
-                accumulatedContent += (data.data || data.content || "");
+                accumulatedContent += ("content" in data ? data.content : "data" in data ? data.data : "");
                 setStreamingContent(accumulatedContent);
                 updateLastAssistantMessage({ content: accumulatedContent });
 
