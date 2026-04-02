@@ -80,8 +80,6 @@ class DenseChannel:
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
-               c.start_char_raw AS span_start,
-               c.end_char_raw AS span_end,
                c.index AS chunk_index,
                i.id AS speech_id,
                i.text AS text,
@@ -125,13 +123,7 @@ class DenseChannel:
             try:
                 # Extract quote using offsets - CRITICAL for citation integrity
                 text = row.get("text", "")
-                span_start = row.get("span_start", 0)
-                span_end = row.get("span_end", 0)
-
                 # Use chunk_text directly as the citation source.
-                # start_char_raw/end_char_raw are offsets in raw text but sp.text
-                # stores preprocessed text, so offset extraction would yield
-                # wrong characters. chunk_text is always correct.
                 quote_text = row.get("chunk_text", "") or text
                 if not quote_text:
                     logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
@@ -198,8 +190,6 @@ class DenseChannel:
                     "chunk_text": row.get("chunk_text", ""),
                     "quote_text": quote_text,
                     "text": text,  # Full speech text — needed by surgeon for sentence expansion
-                    "span_start": span_start or 0,
-                    "span_end": span_end or 0,
                     "debate_title": row.get("debate_title"),
                     "session_number": row.get("session_number", 0),
                     "similarity": row.get("similarity", 0.0),

@@ -155,3 +155,29 @@ def test_citation_info_no_span_fields():
     assert "span_end" not in source, (
         "routers/query.py still references span_end (CitationInfo or elsewhere)"
     )
+
+
+# ---------------------------------------------------------------------------
+# Retrieval layer dead-property tests (gap closure from verification)
+# ---------------------------------------------------------------------------
+
+def test_dense_channel_no_dead_properties():
+    """dense_channel.py must not reference start_char_raw, end_char_raw, span_start, or span_end."""
+    source = _read_source("services/retrieval/dense_channel.py")
+    assert "start_char_raw" not in source, (
+        "dense_channel.py still references dead property start_char_raw"
+    )
+    assert "end_char_raw" not in source, (
+        "dense_channel.py still references dead property end_char_raw"
+    )
+
+
+def test_engine_no_dead_properties():
+    """engine.py must not reference start_char_raw or end_char_raw."""
+    source = _read_source("services/retrieval/engine.py")
+    assert "start_char_raw" not in source, (
+        "engine.py still references dead property start_char_raw"
+    )
+    assert "end_char_raw" not in source, (
+        "engine.py still references dead property end_char_raw"
+    )
