@@ -106,7 +106,7 @@ out/
 dist/
 
 # Build outputs
-build/
+# build/ — NOT ignored (contains our build pipeline scripts)
 *.tsbuildinfo
 
 # Vercel
