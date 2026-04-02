@@ -36,25 +36,6 @@ export function useChat(options: UseChatOptions = {}) {
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
-  // Add user message
-  const addUserMessage = useCallback((content: string): Message => {
-    const newMessage: Message = {
-      id: generateId(),
-      role: "user",
-      content,
-      timestamp: new Date(),
-      status: "complete",
-    };
-    
-    setMessages((prev) => {
-       if (prev.some(m => m.id === newMessage.id)) {
-         return prev;
-       }
-       return [...prev, newMessage];
-    });
-    return newMessage;
-  }, []);
-
   // Add assistant message
   const addAssistantMessage = useCallback((
     content: string,
@@ -177,10 +158,10 @@ export function useChat(options: UseChatOptions = {}) {
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
-      let commissioni: CommissionItem[] = [];
+      let committeeMatches: CommissionItem[] = [];
       // Accumulator for step results — survives React state batching race conditions
       const stepResultsMap = new Map<number, StepResult>();
-      let buffer = ""; // Buffer per messaggi SSE parziali
+      let buffer = ""; // Buffer for partial SSE messages
 
       while (true) {
         const { done, value } = await reader.read();
@@ -213,10 +194,10 @@ export function useChat(options: UseChatOptions = {}) {
           break;
         }
 
-        // Aggiungi al buffer e processa solo messaggi completi
+        // Append to buffer and process only complete messages
         buffer += decoder.decode(value, { stream: true });
         const messages = buffer.split("\n\n");
-        buffer = messages.pop() || ""; // Mantieni l'ultimo (potenzialmente incompleto)
+        buffer = messages.pop() || ""; // Keep the last (potentially incomplete) chunk
 
         const lines = messages
           .flatMap((msg) => msg.split("\n"))
@@ -293,27 +274,27 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "commissioni":
-                const commList = data.commissioni || [];
-                commissioni = commList;
-                updateLastAssistantMessage({ commissioni: [...commList] });
-                const commNames = commList.map((c: CommissionItem) => c.nome || c.name || "").slice(0, 3);
+                const committeeList = data.commissioni || [];
+                committeeMatches = committeeList;
+                updateLastAssistantMessage({ committeeMatches: [...committeeList] });
+                const committeeNames = committeeList.map((c: CommissionItem) => c.nome || c.name || "").slice(0, 3);
                 // Save to accumulator so it survives React state batching
-                const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
-                const commResult = {
+                const topCommittee = committeeList.length > 0 ? (committeeList[0].nome || committeeList[0].name || String(committeeList[0])) : null;
+                const committeeResult = {
                   step: 2,
                   label: "Commissione",
-                  result: topComm
-                    ? `Trovata commissione competente: ${topComm}`
+                  result: topCommittee
+                    ? `Trovata commissione competente: ${topCommittee}`
                     : "Nessuna commissione pertinente",
-                  details: { commissioni: commList }
+                  details: { commissioni: committeeList }
                 };
-                stepResultsMap.set(2, commResult);
+                stepResultsMap.set(2, committeeResult);
                 setProgress((prev) => {
                   if (!prev) return null;
                   const filtered = prev.stepResults.filter(r => r.step !== 2);
                   return {
                     ...prev,
-                    stepResults: [...filtered, commResult]
+                    stepResults: [...filtered, committeeResult]
                   };
                 });
                 break;
@@ -323,14 +304,14 @@ export function useChat(options: UseChatOptions = {}) {
                 if (Array.isArray(expertsPayload)) {
                   experts = expertsPayload;
                   updateLastAssistantMessage({ experts: [...experts] });
-                  const magg = experts.filter(e => e.coalition === "maggioranza").length;
-                  const opp = experts.filter(e => e.coalition === "opposizione").length;
+                  const majorityCount = experts.filter(e => e.coalition === "maggioranza").length;
+                  const oppositionCount = experts.filter(e => e.coalition === "opposizione").length;
                   const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
                   const expertsResult = {
                     step: 3,
                     label: "Esperti",
-                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${magg} maggioranza, ${opp} opposizione)`,
-                    details: { experts: experts.length, maggioranza: magg, opposizione: opp }
+                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${majorityCount} maggioranza, ${oppositionCount} opposizione)`,
+                    details: { experts: experts.length, maggioranza: majorityCount, opposizione: oppositionCount }
                   };
                   stepResultsMap.set(3, expertsResult);
                   setProgress((prev) => {
@@ -341,7 +322,6 @@ export function useChat(options: UseChatOptions = {}) {
                       stepResults: [...filtered, expertsResult]
                     };
                   });
-                } else {
                 }
                 break;
 
@@ -367,14 +347,13 @@ export function useChat(options: UseChatOptions = {}) {
                       stepResults: [...filtered, citationsResult]
                     };
                   });
-                } else {
                 }
                 break;
 
               case "balance":
                 balanceMetrics = {
-                  maggioranzaPercentage: data.maggioranza_percentage,
-                  opposizionePercentage: data.opposizione_percentage,
+                  majorityPercentage: data.maggioranza_percentage,
+                  oppositionPercentage: data.opposizione_percentage,
                   biasScore: data.bias_score,
                 };
                 updateLastAssistantMessage({ balanceMetrics });
@@ -470,15 +449,6 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "complete":
 
-                // Extract citation links from generated text for cross-check
-                const textCitLinks = (accumulatedContent.match(/\]\((leg1[89]_[^)]+)\)/g) || [])
-                  .map((m: string) => m.slice(2, -1));
-                const sidebarIds = new Set(citations.map(c => c.chunk_id));
-                const unmatchedLinks = textCitLinks.filter((id: string) => !sidebarIds.has(id));
-                if (unmatchedLinks.length > 0) {
-                } else if (textCitLinks.length > 0) {
-                }
-
                 // Mark step 8 as complete and finalize progress
                 setProgress((prev) => {
                   if (!prev) return null;
@@ -508,11 +478,6 @@ export function useChat(options: UseChatOptions = {}) {
                   topicStats,
                 });
 
-                // Log timing if available
-                if (data.metadata?.timing) {
-                  const timing = data.metadata.timing;
-                }
-
                 // Save to history
                 try {
                   const historyPayload = {
@@ -520,10 +485,10 @@ export function useChat(options: UseChatOptions = {}) {
                     answer: accumulatedContent,
                     citations,
                     experts,
-                    commissioni,
+                    commissioni: committeeMatches,
                     balance: balanceMetrics ? {
-                      maggioranza_percentage: balanceMetrics.maggioranzaPercentage,
-                      opposizione_percentage: balanceMetrics.opposizionePercentage,
+                      maggioranza_percentage: balanceMetrics.majorityPercentage,
+                      opposizione_percentage: balanceMetrics.oppositionPercentage,
                       bias_score: balanceMetrics.biasScore,
                     } : null,
                     compass: compassData,
@@ -610,7 +575,7 @@ export function useChat(options: UseChatOptions = {}) {
       setStreamingContent("");
       abortControllerRef.current = null;
     }
-  }, [isLoading, addUserMessage, updateLastAssistantMessage, options]);
+  }, [isLoading, updateLastAssistantMessage, options]);
 
   // Keep a ref to sendMessage for silent retry from catch/finally
   sendMessageRef.current = sendMessage;
@@ -691,8 +656,8 @@ export function useChat(options: UseChatOptions = {}) {
       citations: historyData.citations,
       experts: historyData.experts,
       balanceMetrics: historyData.balance ? {
-          maggioranzaPercentage: historyData.balance.maggioranza_percentage,
-          opposizionePercentage: historyData.balance.opposizione_percentage,
+          majorityPercentage: historyData.balance.maggioranza_percentage,
+          oppositionPercentage: historyData.balance.opposizione_percentage,
           biasScore: historyData.balance.bias_score
       } : undefined,
       compass: historyData.compass,

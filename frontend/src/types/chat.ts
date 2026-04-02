@@ -1,5 +1,5 @@
 /**
- * Chat system types
+ * Types for the chat system
  */
 import type { CompassData } from "@/components/chat/CompassCard";
 
@@ -123,10 +123,10 @@ export interface Message {
   content: string;
   timestamp: Date;
   status: MessageStatus;
-  // Metadati opzionali per le risposte dell'assistente
+  // Optional metadata for assistant responses
   citations?: Citation[];
   experts?: Expert[];
-  commissioni?: Array<{ nome: string; score: number; matched_keywords: string[]; categories: string[] }>;
+  committeeMatches?: Array<{ nome: string; score: number; matched_keywords: string[]; categories: string[] }>;
   compass?: CompassData;
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
@@ -136,9 +136,9 @@ export interface Message {
 }
 
 export interface BalanceMetrics {
-  maggioranzaPercentage: number;
-  opposizionePercentage: number;
-  biasScore: number; // -1 = tutto opposizione, 0 = bilanciato, 1 = tutto maggioranza
+  majorityPercentage: number;
+  oppositionPercentage: number;
+  biasScore: number; // -1 = all opposition, 0 = balanced, 1 = all majority
 }
 
 export interface Conversation {

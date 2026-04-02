@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server";
 
 /**
- * API Route per la chat RAG
+ * API Route for the RAG chat
  *
- * Proxy verso il backend FastAPI Python che gestisce:
- * 1. Authority calculation e chunk retrieval
- * 2. Generazione risposta con GPT-4o
+ * Proxy to the FastAPI Python backend that handles:
+ * 1. Authority calculation and chunk retrieval
+ * 2. Response generation with GPT-4o
  */
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Proxy verso il backend FastAPI
+    // Proxy to the FastAPI backend
     const backendResponse = await fetch(`${BACKEND_URL}/api/query`, {
       method: "POST",
       headers: {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       throw new Error(`Backend error: ${backendResponse.status}`);
     }
 
-    // Stream diretto dal backend
+    // Direct stream from the backend
     const reader = backendResponse.body?.getReader();
     if (!reader) {
       throw new Error("No response body");
@@ -45,20 +45,20 @@ export async function POST(request: NextRequest) {
       async start(controller) {
         const decoder = new TextDecoder();
         const encoder = new TextEncoder();
-        let buffer = ""; // Buffer per messaggi parziali
+        let buffer = ""; // Buffer for partial messages
 
         try {
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
 
-            // Decodifica e aggiungi al buffer
+            // Decode and append to buffer
             buffer += decoder.decode(value, { stream: true });
 
-            // Processa solo messaggi completi (terminano con \n\n)
+            // Process only complete messages (terminated with \n\n)
             const messages = buffer.split("\n\n");
 
-            // L'ultimo elemento potrebbe essere incompleto, mantienilo nel buffer
+            // Last element may be incomplete — keep it in the buffer
             buffer = messages.pop() || "";
 
             for (const message of messages) {
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
                 if (line.startsWith("data:")) {
                   const data = line.substring(5).trim();
                   if (data) {
-                    // Passa direttamente il JSON che già contiene il tipo
+                    // Pass the JSON directly — it already contains the type field
                     controller.enqueue(encoder.encode(`data: ${data}\n\n`));
                   }
                 }
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          // Processa eventuali dati rimasti nel buffer
+          // Process any remaining data in the buffer
           if (buffer.trim()) {
             const lines = buffer.split("\n");
             for (const line of lines) {
@@ -106,127 +106,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Backend connection error:", error);
 
-    // Fallback: usa mock data se il backend non è disponibile
+    // Fallback: use mock data when backend is unavailable
     return fallbackMockResponse(query);
   }
 }
 
 /**
- * Formatta gli eventi dal backend per il frontend
- */
-function formatEventForFrontend(event: Record<string, unknown>): Record<string, unknown> | null {
-  // Gestisci i diversi tipi di eventi dal backend
-
-  // Progress event
-  if (event.step !== undefined) {
-    return { type: "progress", step: event.step, total: event.total, message: event.message };
-  }
-
-  // Query type
-  if (event.type !== undefined) {
-    return { type: "query_type", queryType: event.type };
-  }
-
-  // Chunk (streaming text)
-  if (event.content !== undefined) {
-    return { type: "chunk", content: event.content };
-  }
-
-  // Experts
-  if (event.experts !== undefined) {
-    return {
-      type: "experts",
-      experts: (event.experts as Array<Record<string, unknown>>).map(formatExpert)
-    };
-  }
-
-  // Citations
-  if (event.citations !== undefined) {
-    return {
-      type: "citations",
-      citations: (event.citations as Array<Record<string, unknown>>).map(formatCitation)
-    };
-  }
-
-  // Commissioni
-  if (event.commissioni !== undefined) {
-    return { type: "commissioni", commissioni: event.commissioni };
-  }
-
-  // Balance metrics
-  if (event.maggioranza_percentage !== undefined) {
-    return {
-      type: "balance",
-      metrics: {
-        maggioranzaPercentage: event.maggioranza_percentage,
-        opposizionePercentage: event.opposizione_percentage,
-        biasScore: event.bias_score,
-      }
-    };
-  }
-
-  // Complete
-  if (event.message_id !== undefined) {
-    return { type: "complete", messageId: event.message_id, processingTime: event.processing_time_ms };
-  }
-
-  // Error
-  if (event.message !== undefined && !event.step) {
-    return { type: "error", message: event.message };
-  }
-
-  return null;
-}
-
-/**
- * Formatta un expert dal backend per il frontend
- * Backend now uses English field names, pass through directly
- */
-function formatExpert(expert: Record<string, unknown>) {
-  return {
-    id: expert.id,
-    first_name: expert.first_name || expert.nome,
-    last_name: expert.last_name || expert.cognome,
-    group: expert.group || expert.gruppo,
-    coalition: expert.coalition || expert.coalizione,
-    authority_score: expert.authority_score,
-    camera_profile_url: expert.camera_profile_url || expert.scheda_camera,
-    profession: expert.profession || expert.professione,
-    education: expert.education || expert.istruzione,
-    committee: expert.committee || expert.commissione,
-    institutional_role: expert.institutional_role || expert.ruolo_istituzionale,
-    score_breakdown: expert.score_breakdown,
-    relevant_speeches_count: expert.relevant_speeches_count || expert.n_interventi_rilevanti,
-    acts_detail: expert.acts_detail || expert.atti_dettaglio,
-  };
-}
-
-/**
- * Formatta una citation dal backend per il frontend
- * Backend now uses English field names, pass through directly
- */
-function formatCitation(citation: Record<string, unknown>) {
-  return {
-    chunk_id: citation.chunk_id,
-    deputy_first_name: citation.deputy_first_name || citation.deputato_nome,
-    deputy_last_name: citation.deputy_last_name || citation.deputato_cognome,
-    group: citation.group || citation.gruppo,
-    coalition: citation.coalition || citation.coalizione,
-    date: citation.date || citation.data,
-    debate: citation.debate || citation.dibattito,
-    debate_id: citation.debate_id || citation.dibattito_id,
-    intervention_id: citation.intervention_id || citation.intervento_id,
-    text: citation.text || citation.testo,
-    quote_text: citation.quote_text,
-    full_text: citation.full_text,
-    similarity: citation.similarity,
-    camera_profile_url: citation.camera_profile_url || citation.scheda_camera,
-    institutional_role: citation.institutional_role,
-  };
-}
-
-/**
- * Fallback con mock data quando il backend non è disponibile
+ * Fallback with mock data when the backend is unavailable
  */
 function fallbackMockResponse(query: string) {
   const encoder = new TextEncoder();
@@ -238,10 +124,10 @@ function fallbackMockResponse(query: string) {
       };
 
       try {
-        // Avvisa che stiamo usando il fallback
+        // Notify that we are using the fallback
         sendEvent("warning", { message: "Backend non disponibile. Usando dati di esempio." });
 
-        // Simula i 6 step del pipeline RAG
+        // Simulate the 6 steps of the RAG pipeline
         const steps = [
           { delay: 300, step: 1 },
           { delay: 400, step: 2 },
@@ -256,7 +142,7 @@ function fallbackMockResponse(query: string) {
           sendEvent("progress", { step });
         }
 
-        // Simula streaming della risposta
+        // Simulate streaming the response
         const mockContent = `## Risposta di esempio
 
 Il backend ParliamentRAG non è attualmente disponibile.
@@ -280,11 +166,11 @@ Il sistema analizzerà i dibattiti parlamentari della XIX legislatura.`;
           sendEvent("chunk", { content: chunk + " " });
         }
 
-        // Completa
+        // Complete
         sendEvent("complete", { messageId: `mock_${Date.now()}` });
 
       } catch (error) {
-        sendEvent("error", { message: "Errore durante l'elaborazione" });
+        sendEvent("error", { message: "Error during processing" });
       } finally {
         controller.close();
       }

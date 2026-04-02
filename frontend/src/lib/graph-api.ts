@@ -29,7 +29,7 @@ export async function getGraphStats() {
 
 export async function executeCypherQuery(cypher: string) {
   if (isWriteQuery(cypher)) {
-    throw new Error("Operazione di scrittura non consentita. Il Graph Explorer è in modalità sola lettura.");
+    throw new Error("Write operations are not allowed. The Graph Explorer is read-only.");
   }
 
   const response = await fetch(`${config.api.baseUrl}/graph/query`, {

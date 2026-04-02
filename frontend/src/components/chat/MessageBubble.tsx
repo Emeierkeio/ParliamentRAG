@@ -805,13 +805,13 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-blue-400">Maggioranza</span>
                 <span className="text-muted-foreground">
-                  {Math.round(metrics.maggioranzaPercentage)}%
+                  {Math.round(metrics.majorityPercentage)}%
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted">
                 <div
                   className="h-full rounded-full transition-all bg-blue-500"
-                  style={{ width: `${metrics.maggioranzaPercentage}%` }}
+                  style={{ width: `${metrics.majorityPercentage}%` }}
                 />
               </div>
             </div>
@@ -821,13 +821,13 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
               <div className="flex items-center justify-between text-xs">
                 <span className="text-red-400">Opposizione</span>
                 <span className="text-muted-foreground">
-                  {Math.round(metrics.opposizionePercentage)}%
+                  {Math.round(metrics.oppositionPercentage)}%
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted">
                 <div
                   className="h-full rounded-full transition-all bg-red-500"
-                  style={{ width: `${metrics.opposizionePercentage}%` }}
+                  style={{ width: `${metrics.oppositionPercentage}%` }}
                 />
               </div>
             </div>

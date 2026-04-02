@@ -51,7 +51,7 @@ type SortKey =
   | "education"
   | "role";
 
-type CoalitionFilter = "all" | "maggioranza" | "opposizione";
+type CoalitionFilter = "all" | "majority" | "opposition";
 
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "authority_score", label: "Authority Score" },
@@ -182,7 +182,9 @@ export default function RankingPage() {
     let list = [...deputies];
 
     if (coalitionFilter !== "all") {
-      list = list.filter((d) => d.coalition === coalitionFilter);
+      // Map local filter values to backend wire values
+      const wireCoalition = coalitionFilter === "majority" ? "maggioranza" : "opposizione";
+      list = list.filter((d) => d.coalition === wireCoalition);
     }
 
     if (selectedGroups.length > 0) {
@@ -304,7 +306,7 @@ export default function RankingPage() {
           <div className="flex flex-wrap items-center gap-2 max-w-6xl">
             {/* Coalition toggle */}
             <div className="flex rounded-lg border border-border overflow-hidden text-xs font-medium">
-              {(["all", "maggioranza", "opposizione"] as CoalitionFilter[]).map((c) => (
+              {(["all", "majority", "opposition"] as CoalitionFilter[]).map((c) => (
                 <button
                   key={c}
                   onClick={() => setCoalitionFilter(c)}
@@ -315,7 +317,7 @@ export default function RankingPage() {
                       : "bg-background hover:bg-muted text-muted-foreground"
                   )}
                 >
-                  {c === "all" ? "Tutti" : c === "maggioranza" ? "Maggioranza" : "Opposizione"}
+                  {c === "all" ? "Tutti" : c === "majority" ? "Maggioranza" : "Opposizione"}
                 </button>
               ))}
             </div>

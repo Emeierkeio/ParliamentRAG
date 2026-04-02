@@ -297,7 +297,7 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
     question: "Equita nella rappresentazione",
     description: "Considera se c'e imparzialita nella presentazione",
   },
-  // Authority dimensions — Autorità Esperti category
+  // Authority dimensions — Expert Authority category
   // Based on: TREC Expert Finding (Craswell et al. 2005), DQI (Steenbergen et al. 2003),
   // Source Credibility Theory (Hovland et al. 1953; Gaziano & McGrath 1986)
   {

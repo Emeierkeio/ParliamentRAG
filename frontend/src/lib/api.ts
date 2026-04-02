@@ -79,7 +79,7 @@ function mapRawToConfig(raw: unknown): SystemConfig {
 export async function getConfig(): Promise<SystemConfig> {
   const response = await fetch(`${config.api.baseUrl}/config`);
   if (!response.ok) {
-    throw new Error(`Errore nel caricamento config: ${response.statusText}`);
+    throw new Error(`Failed to load config: ${response.statusText}`);
   }
   return mapRawToConfig(await response.json());
 }

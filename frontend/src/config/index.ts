@@ -1,6 +1,6 @@
 /**
- * Configurazione centralizzata dell'applicazione
- * Modifica questi valori per personalizzare il comportamento del frontend
+ * Centralized application configuration
+ * Modify these values to customize frontend behaviour
  */
 
 export const config = {
