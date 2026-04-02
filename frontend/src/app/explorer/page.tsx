@@ -27,13 +27,28 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getGraphSchema, getGraphStats, executeCypherQuery, isWriteQuery } from "@/lib/graph-api";
 import { GraphVisualizer } from "@/components/graph/GraphVisualizer";
 
+interface GraphSchema {
+  labels: string[];
+  relationship_types: string[];
+  property_keys?: string[];
+  [key: string]: unknown;
+}
+
+interface GraphStats {
+  total_nodes?: number;
+  total_relationships?: number;
+  [key: string]: unknown;
+}
+
+type GraphQueryResultRow = Record<string, unknown>;
+
 export default function ExplorerPage() {
     const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
 
-    const [schema, setSchema] = useState<any>(null);
-    const [stats, setStats] = useState<any>(null);
+    const [schema, setSchema] = useState<GraphSchema | null>(null);
+    const [stats, setStats] = useState<GraphStats | null>(null);
     const [query, setQuery] = useState("MATCH (n:Deputy) RETURN n.first_name, n.last_name LIMIT 10");
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<GraphQueryResultRow[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [history, setHistory] = useState<string[]>([]);
@@ -274,7 +289,7 @@ export default function ExplorerPage() {
                                                             <tbody>
                                                                 {results.map((row, i) => (
                                                                     <tr key={i} className="border-b last:border-0 hover:bg-muted/5">
-                                                                        {Object.values(row).map((val: any, j) => (
+                                                                        {Object.values(row).map((val: unknown, j) => (
                                                                             <td key={j} className="p-2 md:p-3 max-w-[200px] md:max-w-[300px] truncate border-r last:border-0 border-border/50 text-xs md:text-sm">
                                                                                 {typeof val === 'object' ? JSON.stringify(val) : String(val)}
                                                                             </td>

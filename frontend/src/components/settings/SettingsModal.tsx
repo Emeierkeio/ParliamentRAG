@@ -118,9 +118,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     setError(null);
     setSuccess(false);
     try {
-      let parsed: any;
+      let parsed: SystemConfig;
       try {
-        parsed = JSON.parse(jsonContent);
+        parsed = JSON.parse(jsonContent) as SystemConfig;
       } catch {
         throw new Error("Formato JSON non valido. Correggi gli errori di sintassi.");
       }

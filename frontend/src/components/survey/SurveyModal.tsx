@@ -29,7 +29,8 @@ import {
   UserCheck,
   BookOpen,
 } from "lucide-react";
-import type { Expert } from "@/types/chat";
+import type { Expert, Citation } from "@/types/chat";
+import type { CompassData } from "@/components/chat/CompassCard";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
@@ -50,7 +51,6 @@ import {
   getInitialSimpleRatingFormState,
   getInitialCitationEvaluation,
 } from "@/types/survey";
-import type { Citation } from "@/types/chat";
 import {
   getPendingChats,
   createSurvey,
@@ -69,10 +69,14 @@ interface ChatDetails {
   id: string;
   query: string;
   answer: string;
-  citations: any[];
+  citations: Citation[];
   experts: Expert[];
-  balance: any;
-  compass: any;
+  balance: {
+    maggioranza_percentage: number;
+    opposizione_percentage: number;
+    bias_score: number;
+  } | null;
+  compass: CompassData | null;
   timestamp: string;
 }
 
@@ -830,7 +834,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
       setStep("form");
       // Load system response details first (we need the answer text to extract system experts).
       // Baseline experts: use pre-computed cache if available, otherwise fall back to API.
-      let chatData: { answer?: string; experts?: Expert[]; citations?: any[] } | null = null;
+      let chatData: { answer?: string; experts?: Expert[]; citations?: Citation[] } | null = null;
       if (chat.baseline_experts && chat.baseline_experts.length > 0) {
         setBaselineExperts(chat.baseline_experts as Expert[]);
         chatData = await loadChatDetails(chat.id);
@@ -854,7 +858,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
         // Match each unique cited deputy to a stored expert by name.
         const citedExperts: Expert[] = [];
         const seenKeys = new Set<string>();
-        for (const cit of (chatData.citations ?? []) as any[]) {
+        for (const cit of (chatData.citations ?? []) as Citation[]) {
           const key = `${(cit.deputy_first_name || "").toLowerCase()}_${(cit.deputy_last_name || "").toLowerCase()}`;
           if (key !== "_" && !seenKeys.has(key)) {
             seenKeys.add(key);
@@ -872,7 +876,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
         const supplementaryExperts: Expert[] = [];
         const uniqueCitedGroupKeys = new Set(
           (chatData.citations ?? [])
-            .map((c: any) => resolveGroupKey(c.group || c.party || "MISTO"))
+            .map((c: Citation) => resolveGroupKey(c.group || "MISTO"))
             .filter((k: string) => k !== "" && k !== "GOVERNO")
         );
         for (const groupKey of uniqueCitedGroupKeys) {
@@ -891,7 +895,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
           // Final fallback: use any expert from cited parties.
           const citedGroups = new Set(
             (chatData.citations ?? [])
-              .map((c: any) => c.group || c.party || "")
+              .map((c: Citation) => c.group || "")
               .filter(Boolean)
           );
           setSystemExperts(
@@ -1076,8 +1080,8 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
       });
 
       setStep("success");
-    } catch (err: any) {
-      setError(err.message || "Errore nell'invio della valutazione");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Errore nell'invio della valutazione");
     } finally {
       setIsSubmitting(false);
     }
@@ -1106,8 +1110,8 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
         evaluator_id: evaluatorId || undefined,
       });
       setStep("success");
-    } catch (err: any) {
-      setError(err.message || "Errore nell'invio della valutazione");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Errore nell'invio della valutazione");
     } finally {
       setIsSubmitting(false);
     }

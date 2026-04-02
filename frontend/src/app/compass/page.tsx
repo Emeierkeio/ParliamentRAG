@@ -5,6 +5,7 @@ import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { CompassCard } from "@/components/chat/CompassCard";
+import type { CompassData } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
 import { TOPICS } from "@/lib/constants";
@@ -50,18 +51,6 @@ interface AxisDef {
   negative_side?: AxisSide;
 }
 
-interface CompassData {
-  meta: {
-    query: string;
-    explained_variance_ratio: number[];
-    dimensionality?: number;
-    is_stable: boolean;
-    warnings?: string[];
-  };
-  axes: { x: AxisDef; y: AxisDef };
-  groups: any[];
-  scatter_sample: any[];
-}
 
 // ── Page ───────────────────────────────────────────────────────
 
@@ -96,8 +85,8 @@ export default function CompassPage() {
       setCompassData(data);
       setComputationTime(ct);
       compassHistory.addEntry(topicText, { compassData: data, computationTime: ct });
-    } catch (e: any) {
-      setError(e.message || "Errore sconosciuto");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Errore sconosciuto");
       setCompassData(null);
     } finally {
       setLoading(false);
@@ -399,7 +388,7 @@ export default function CompassPage() {
               {/* Compass visualization - fills remaining space */}
               <div className="flex-1 min-h-0 p-3 sm:p-4">
                 <div className="h-full w-full mx-auto">
-                  <CompassCard data={compassData as any} />
+                  <CompassCard data={compassData} />
                 </div>
               </div>
 

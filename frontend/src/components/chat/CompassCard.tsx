@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export interface CompassData {
             radius_y: number;
             rotation: number;
         };
-        stats: any;
+        stats: Record<string, number>;
         core_evidence_ids: string[];
     }>;
     scatter_sample: Array<{
@@ -163,7 +163,7 @@ export function CompassCard({ data }: CompassCardProps) {
       return side === 'pos' ? "Dimensione (+)" : "Dimensione (-)";
   };
 
-  const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: any }) => (
+  const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: React.CSSProperties }) => (
       <div className={cn("absolute max-w-[40%] text-center text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/90 dark:bg-black/90 px-2 py-1 rounded border shadow-sm z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
            {getAxisLabel(axis, side)}
       </div>

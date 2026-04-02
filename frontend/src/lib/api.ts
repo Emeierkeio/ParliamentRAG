@@ -42,33 +42,37 @@ export interface SystemConfig {
   };
 }
 
-function mapRawToConfig(raw: any): SystemConfig {
+function mapRawToConfig(raw: unknown): SystemConfig {
+  const r = raw as Record<string, Record<string, unknown>>;
+  const retrieval = r.retrieval as SystemConfig["retrieval"] & Record<string, unknown>;
+  const authority = r.authority as SystemConfig["authority"] & Record<string, unknown>;
+  const generation = r.generation as SystemConfig["generation"] & Record<string, unknown>;
   return {
     retrieval: {
-      dense_top_k: raw.retrieval.dense_top_k,
-      dense_similarity_threshold: raw.retrieval.dense_similarity_threshold,
-      graph_lexical_min_match: raw.retrieval.graph_lexical_min_match,
-      graph_semantic_threshold: raw.retrieval.graph_semantic_threshold,
-      graph_chunk_similarity_threshold: raw.retrieval.graph_chunk_similarity_threshold ?? 0.3,
-      graph_max_acts_per_query: raw.retrieval.graph_max_acts_per_query ?? 100,
-      merger_weights: raw.retrieval.merger_weights,
+      dense_top_k: retrieval.dense_top_k,
+      dense_similarity_threshold: retrieval.dense_similarity_threshold,
+      graph_lexical_min_match: retrieval.graph_lexical_min_match,
+      graph_semantic_threshold: retrieval.graph_semantic_threshold,
+      graph_chunk_similarity_threshold: (retrieval.graph_chunk_similarity_threshold as number | undefined) ?? 0.3,
+      graph_max_acts_per_query: (retrieval.graph_max_acts_per_query as number | undefined) ?? 100,
+      merger_weights: retrieval.merger_weights as Record<string, number>,
     },
     authority: {
-      weights: raw.authority.weights,
-      time_decay_acts_half_life: raw.authority.time_decay_acts_half_life,
-      time_decay_speeches_half_life: raw.authority.time_decay_speeches_half_life,
-      acts_relevance_threshold: raw.authority.acts_relevance_threshold ?? 0.25,
-      interventions_relevance_threshold: raw.authority.interventions_relevance_threshold ?? 0.25,
-      max_component_contribution: raw.authority.max_component_contribution,
+      weights: authority.weights as Record<string, number>,
+      time_decay_acts_half_life: authority.time_decay_acts_half_life,
+      time_decay_speeches_half_life: authority.time_decay_speeches_half_life,
+      acts_relevance_threshold: (authority.acts_relevance_threshold as number | undefined) ?? 0.25,
+      interventions_relevance_threshold: (authority.interventions_relevance_threshold as number | undefined) ?? 0.25,
+      max_component_contribution: authority.max_component_contribution,
     },
     generation: {
-      models: raw.generation.models,
-      parameters: raw.generation.parameters ?? { max_tokens: 4000, temperature: 0.3, top_p: 1.0 },
-      enable_synthesis: raw.generation.enable_synthesis ?? true,
-      position_brief: raw.generation.position_brief,
-      no_evidence_message: raw.generation.no_evidence_message,
+      models: generation.models as Record<string, string>,
+      parameters: (generation.parameters as SystemConfig["generation"]["parameters"]) ?? { max_tokens: 4000, temperature: 0.3, top_p: 1.0 },
+      enable_synthesis: (generation.enable_synthesis as boolean | undefined) ?? true,
+      position_brief: generation.position_brief as SystemConfig["generation"]["position_brief"],
+      no_evidence_message: generation.no_evidence_message as string,
     },
-    query_rewriting: raw.query_rewriting ?? { enabled: true, model: "gpt-4o-mini", max_query_words: 5 },
+    query_rewriting: (r.query_rewriting as SystemConfig["query_rewriting"] | undefined) ?? { enabled: true, model: "gpt-4o-mini", max_query_words: 5 },
   };
 }
 

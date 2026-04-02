@@ -1,30 +1,52 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type MutableRefObject } from "react";
 import { useTheme } from "next-themes";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Maximize2, Minimize2, ZoomIn, ZoomOut, RefreshCcw } from "lucide-react";
+import type { ForceGraphMethods, NodeObject } from "react-force-graph-2d";
 
 // Dynamically import ForceGraph2D with no SSR as it relies on window/canvas
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
 });
 
+/** Raw record from a Cypher query row value */
+type GraphRecord = Record<string, unknown>;
+
+interface GraphNode {
+  id: string | number;
+  label: string;
+  caption: string;
+  val: number;
+  color: string;
+  properties: Record<string, string | number | boolean | null>;
+  x?: number;
+  y?: number;
+}
+
+interface GraphLink {
+  id: string | number;
+  source: string | number;
+  target: string | number;
+  type?: string;
+}
+
 interface GraphVisualizerProps {
-  data: any[];
+  data: GraphRecord[];
 }
 
 export function GraphVisualizer({ data }: GraphVisualizerProps) {
-  const [graphData, setGraphData] = useState<{ nodes: any[]; links: any[] }>({
+  const [graphData, setGraphData] = useState<{ nodes: GraphNode[]; links: GraphLink[] }>({
     nodes: [],
     links: [],
   });
-  const fgRef = useRef<any>(null);
+  const fgRef = useRef<ForceGraphMethods | undefined>(undefined) as MutableRefObject<ForceGraphMethods | undefined>;
   const { theme } = useTheme();
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedNode, setSelectedNode] = useState<any>(null);
+  const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
 
   useEffect(() => {
     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -42,106 +64,114 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
     const nodes = new Map();
     const links = new Map();
 
-    const processItem = (item: any) => {
-        if (!item) return;
+    /** Extract a string property from an unknown record, returning undefined if not a string. */
+    const strProp = (obj: Record<string, unknown>, ...keys: string[]): string | undefined => {
+        for (const k of keys) {
+            const v = obj[k];
+            if (typeof v === "string" && v) return v;
+        }
+        return undefined;
+    };
 
-        if (typeof item === 'object') {
-            // If it has 'start', 'end', 'type' -> likely a relationship
-            if ('start' in item && 'end' in item && 'type' in item) {
-                 const linkId = item.id || `${item.start}-${item.type}-${item.end}`;
-                 if (!links.has(linkId)) {
-                     links.set(linkId, {
-                        id: linkId,
-                        source: item.start,
-                        target: item.end,
-                        type: item.type,
-                        ...item
-                     });
-                 }
-                if (!nodes.has(item.start)) nodes.set(item.start, { id: item.start, label: "Unknown", caption: "?", color: "#888", properties: {} });
-                if (!nodes.has(item.end)) nodes.set(item.end, { id: item.end, label: "Unknown", caption: "?", color: "#888", properties: {} });
-                 return;
-            }
+    const processItem = (item: GraphRecord) => {
+        if (!item || typeof item !== 'object') return;
 
-            // Neo4j node structure: { id, labels, properties }
-            const id = item.id || item.elementId;
-            if (id !== undefined) {
-                if (!nodes.has(id)) {
-                    // Get label from labels array
-                    let label = "Node";
-                    if (item.labels && Array.isArray(item.labels) && item.labels.length > 0) {
-                        label = item.labels[0];
-                    }
+        // If it has 'start', 'end', 'type' -> likely a relationship
+        if ('start' in item && 'end' in item && 'type' in item) {
+             const linkId = item.id ?? `${String(item.start)}-${String(item.type)}-${String(item.end)}`;
+             if (!links.has(linkId)) {
+                 links.set(linkId, {
+                    id: linkId,
+                    source: item.start,
+                    target: item.end,
+                    type: item.type,
+                 });
+             }
+            if (!nodes.has(item.start)) nodes.set(item.start, { id: item.start, label: "Unknown", caption: "?", color: "#888", properties: {} });
+            if (!nodes.has(item.end)) nodes.set(item.end, { id: item.end, label: "Unknown", caption: "?", color: "#888", properties: {} });
+             return;
+        }
 
-                    // Properties are nested in item.properties
-                    const props = item.properties || item;
-
-                    // Build caption based on node label type
-                    let caption = "";
-                    const firstName = props.first_name || props.nome;
-                    const lastName = props.last_name || props.cognome;
-                    const title = props.title || props.titolo;
-                    const name = props.name;
-                    const text = props.text || props.testo;
-                    const number = props.number || props.numero;
-                    const date = props.date || props.data;
-
-                    // Label-specific caption logic
-                    switch (label) {
-                        case "Deputy":
-                        case "Deputato":
-                        case "GovernmentMember":
-                        case "MembroGoverno":
-                            caption = firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || "?";
-                            break;
-                        case "Session":
-                        case "Seduta":
-                            caption = number ? `Seduta ${number}` : (date ? `${date}` : "Session");
-                            break;
-                        case "Debate":
-                        case "Dibattito":
-                            caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Debate";
-                            break;
-                        case "Phase":
-                        case "Fase":
-                            caption = title ? (title.length > 25 ? title.substring(0, 25) + "..." : title) : "Phase";
-                            break;
-                        case "Speech":
-                        case "Intervento":
-                            caption = text ? (text.length > 25 ? text.substring(0, 25) + "..." : text) : "Speech";
-                            break;
-                        case "Chunk":
-                            caption = text ? (text.length > 20 ? text.substring(0, 20) + "..." : text) : "Chunk";
-                            break;
-                        case "ParliamentaryGroup":
-                        case "GruppoParlamentare":
-                            caption = name || props.acronym || props.sigla || "Group";
-                            break;
-                        case "Committee":
-                        case "Commissione":
-                            caption = name ? (name.length > 25 ? name.substring(0, 25) + "..." : name) : "Committee";
-                            break;
-                        case "ParliamentaryAct":
-                        case "AttoParlamentare":
-                            caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Act";
-                            break;
-                        default:
-                            // Generic fallback
-                            if (firstName && lastName) caption = `${firstName} ${lastName}`;
-                            else if (name) caption = name;
-                            else if (title) caption = title.length > 25 ? title.substring(0, 25) + "..." : title;
-                            else caption = String(id).split('/').pop()?.substring(0, 12) || "Node";
-                    }
-
-                    nodes.set(id, {
-                        id: id,
-                        label: label,
-                        caption: caption,
-                        val: 1,
-                        color: getNodeColor(label),
-                        properties: props
-                    });
+        // Neo4j node structure: { id, labels, properties }
+        const id = item.id ?? item.elementId;
+        if (id !== undefined) {
+            if (!nodes.has(id)) {
+                // Get label from labels array
+                let label = "Node";
+                if (Array.isArray(item.labels) && item.labels.length > 0) {
+                    label = String(item.labels[0]);
                 }
+
+                // Properties are nested in item.properties or the item itself
+                const props = (typeof item.properties === 'object' && item.properties !== null
+                    ? item.properties
+                    : item) as Record<string, unknown>;
+
+                // Build caption based on node label type
+                let caption = "";
+                const firstName = strProp(props, "first_name", "nome");
+                const lastName = strProp(props, "last_name", "cognome");
+                const title = strProp(props, "title", "titolo");
+                const name = strProp(props, "name");
+                const text = strProp(props, "text", "testo");
+                const number = strProp(props, "number", "numero");
+                const date = strProp(props, "date", "data");
+
+                // Label-specific caption logic
+                switch (label) {
+                    case "Deputy":
+                    case "Deputato":
+                    case "GovernmentMember":
+                    case "MembroGoverno":
+                        caption = firstName && lastName ? `${firstName} ${lastName}` : firstName ?? lastName ?? "?";
+                        break;
+                    case "Session":
+                    case "Seduta":
+                        caption = number ? `Seduta ${number}` : (date ? `${date}` : "Session");
+                        break;
+                    case "Debate":
+                    case "Dibattito":
+                        caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Debate";
+                        break;
+                    case "Phase":
+                    case "Fase":
+                        caption = title ? (title.length > 25 ? title.substring(0, 25) + "..." : title) : "Phase";
+                        break;
+                    case "Speech":
+                    case "Intervento":
+                        caption = text ? (text.length > 25 ? text.substring(0, 25) + "..." : text) : "Speech";
+                        break;
+                    case "Chunk":
+                        caption = text ? (text.length > 20 ? text.substring(0, 20) + "..." : text) : "Chunk";
+                        break;
+                    case "ParliamentaryGroup":
+                    case "GruppoParlamentare":
+                        caption = name ?? strProp(props, "acronym", "sigla") ?? "Group";
+                        break;
+                    case "Committee":
+                    case "Commissione":
+                        caption = name ? (name.length > 25 ? name.substring(0, 25) + "..." : name) : "Committee";
+                        break;
+                    case "ParliamentaryAct":
+                    case "AttoParlamentare":
+                        caption = title ? (title.length > 30 ? title.substring(0, 30) + "..." : title) : "Act";
+                        break;
+                    default:
+                        // Generic fallback
+                        if (firstName && lastName) caption = `${firstName} ${lastName}`;
+                        else if (name) caption = name;
+                        else if (title) caption = title.length > 25 ? title.substring(0, 25) + "..." : title;
+                        else caption = String(id).split('/').pop()?.substring(0, 12) ?? "Node";
+                }
+
+                nodes.set(id, {
+                    id: id,
+                    label: label,
+                    caption: caption,
+                    val: 1,
+                    color: getNodeColor(label),
+                    properties: props
+                });
             }
         }
     }
@@ -149,9 +179,11 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
     data.forEach(row => {
         Object.values(row).forEach(val => {
              if (Array.isArray(val)) {
-                 val.forEach(processItem);
-             } else {
-                 processItem(val);
+                 val.forEach((item: unknown) => {
+                     if (item !== null && typeof item === 'object') processItem(item as GraphRecord);
+                 });
+             } else if (val !== null && typeof val === 'object') {
+                 processItem(val as GraphRecord);
              }
         });
     });
@@ -202,8 +234,8 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
         fgRef.current?.zoomToFit(400, 20);
     };
 
-    const handleNodeClick = (node: any) => {
-      setSelectedNode(node);
+    const handleNodeClick = (node: NodeObject) => {
+      setSelectedNode(node as GraphNode);
       // Optional: Zoom to node
       // fgRef.current?.centerAt(node.x, node.y, 1000);
       // fgRef.current?.zoom(4, 1000);
@@ -245,15 +277,16 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
             linkLabel="type"
 
             // Custom node rendering with label
-            nodeCanvasObject={(node: any, ctx, globalScale) => {
-                const label = node.caption || '';
+            nodeCanvasObject={(node: NodeObject, ctx: CanvasRenderingContext2D, globalScale: number) => {
+                const gn = node as GraphNode;
+                const label = gn.caption || '';
                 const fontSize = 12 / globalScale;
                 const nodeR = 6;
 
                 // Draw node circle
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, nodeR, 0, 2 * Math.PI);
-                ctx.fillStyle = node.color || '#3b82f6';
+                ctx.arc(node.x ?? 0, node.y ?? 0, nodeR, 0, 2 * Math.PI);
+                ctx.fillStyle = gn.color || '#3b82f6';
                 ctx.fill();
 
                 // Draw border
@@ -267,12 +300,12 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
                     ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                    ctx.fillText(label, node.x, node.y + nodeR + 2);
+                    ctx.fillText(label, node.x ?? 0, (node.y ?? 0) + nodeR + 2);
                 }
             }}
-            nodePointerAreaPaint={(node: any, color, ctx) => {
+            nodePointerAreaPaint={(node: NodeObject, color: string, ctx: CanvasRenderingContext2D) => {
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI);
+                ctx.arc(node.x ?? 0, node.y ?? 0, 8, 0, 2 * Math.PI);
                 ctx.fillStyle = color;
                 ctx.fill();
             }}

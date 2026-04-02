@@ -28,11 +28,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { config } from "@/config";
+import type { ChatHistoryItem } from "@/types";
 
 interface HistoryModalProps {
   open: boolean;
   onClose: () => void;
-  onLoadChat?: (chat: any) => void;
+  onLoadChat?: (chat: ChatHistoryItem) => void;
 }
 
 function useIsMobile() {
@@ -48,7 +49,7 @@ function useIsMobile() {
 
 export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
   const isMobile = useIsMobile();
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<ChatHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [deleteConfirmationId, setDeleteConfirmationId] = useState<string | null>(null);

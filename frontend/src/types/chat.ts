@@ -154,21 +154,8 @@ export interface StepResult {
   step: number;
   label: string;
   result?: string;
-  details?: StepResultDetails;
+  details?: Record<string, unknown>;
 }
-
-/**
- * Polymorphic step result details — each step type has its own shape.
- * Using a union keeps types nominal while remaining assignable from call sites.
- */
-export type StepResultDetails =
-  | { commissioni: Array<{ nome?: string; name?: string; score?: number; matched_keywords?: string[]; categories?: string[] }> }
-  | { experts: number; maggioranza: number; opposizione: number }
-  | { citations: number }
-  | { maggioranzaPercentage: number; opposizionePercentage: number; biasScore: number }
-  | { groups: number | undefined; axes?: unknown }
-  | { axes?: unknown; groups?: number }
-  | Record<string, unknown>;
 
 export interface ChatHistoryItem {
   id: string;

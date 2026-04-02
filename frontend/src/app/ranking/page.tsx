@@ -123,16 +123,16 @@ export default function RankingPage() {
       });
       if (!res.ok) throw new Error("Errore nel calcolo del ranking");
       const data = await res.json();
-      const mapped: RankingDeputy[] = data.deputies.map((d: any) => ({
+      const mapped: RankingDeputy[] = data.deputies.map((d: RankingDeputy) => ({
         ...d,
-        relevant_speeches_count: 0,
+        relevant_speeches_count: d.relevant_speeches_count ?? 0,
       }));
       const ct = data.computation_time_ms || 0;
       setDeputies(mapped);
       setComputationTime(ct);
       rankingHistory.addEntry(topicText, { deputies: mapped, computationTime: ct });
-    } catch (e: any) {
-      setError(e.message || "Errore sconosciuto");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Errore sconosciuto");
       setDeputies([]);
     } finally {
       setLoading(false);

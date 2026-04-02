@@ -54,10 +54,12 @@ const STEP_DESCRIPTIONS: Record<number, string> = {
 };
 
 /** Render rich step result details based on step type */
-function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: any }) {
+function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: Record<string, unknown> }) {
   // Step 2: Commissioni — show commission name
   if (step === 2) {
-    const topCommName = details?.commissioni?.[0]?.nome || details?.commissioni?.[0]?.name;
+    const commList = Array.isArray(details?.commissioni) ? details.commissioni as Array<Record<string, unknown>> : [];
+    const topComm = commList[0];
+    const topCommName = topComm ? (typeof topComm.nome === "string" ? topComm.nome : typeof topComm.name === "string" ? topComm.name : undefined) : undefined;
     if (topCommName) {
       return (
         <p className="text-[11px] text-primary font-medium mt-1">

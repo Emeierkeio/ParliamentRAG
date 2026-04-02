@@ -9,8 +9,10 @@ import type {
   ProcessingProgress,
   StepResult,
   TopicStatistics,
+  ChatHistoryItem,
 } from "@/types";
 import type { CompassData } from "@/components/chat/CompassCard";
+import type { CommissionItem } from "@/types/sse";
 import { config } from "@/config";
 
 interface UseChatOptions {
@@ -175,9 +177,9 @@ export function useChat(options: UseChatOptions = {}) {
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
-      let commissioni: any[] = [];
+      let commissioni: CommissionItem[] = [];
       // Accumulator for step results — survives React state batching race conditions
-      const stepResultsMap = new Map<number, { step: number; label: string; result: string; details?: any }>();
+      const stepResultsMap = new Map<number, StepResult>();
       let buffer = ""; // Buffer per messaggi SSE parziali
 
       while (true) {
@@ -258,7 +260,7 @@ export function useChat(options: UseChatOptions = {}) {
                   const newStep = Math.max(prev?.currentStep || 0, data.step);
                   const newStepConfig = config.ui.progressSteps[newStep - 1];
                   // Build results: start from accumulator (source of truth) + any existing results
-                  const resultsById = new Map<number, { step: number; label: string; result?: string; details?: any }>();
+                  const resultsById = new Map<number, StepResult>();
                   // Copy existing results
                   for (const r of (prev?.stepResults || [])) {
                     resultsById.set(r.step, r);
@@ -294,7 +296,7 @@ export function useChat(options: UseChatOptions = {}) {
                 const commList = data.commissioni || [];
                 commissioni = commList;
                 updateLastAssistantMessage({ commissioni: [...commList] });
-                const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
+                const commNames = commList.map((c: CommissionItem) => c.nome || c.name || "").slice(0, 3);
                 // Save to accumulator so it survives React state batching
                 const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
                 const commResult = {
@@ -376,11 +378,11 @@ export function useChat(options: UseChatOptions = {}) {
                   biasScore: data.bias_score,
                 };
                 updateLastAssistantMessage({ balanceMetrics });
-                const balanceResult = {
+                const balanceResult: StepResult = {
                   step: 5,
                   label: "Statistiche",
                   result: `Maggioranza ${data.maggioranza_percentage?.toFixed(0)}% / Opposizione ${data.opposizione_percentage?.toFixed(0)}%`,
-                  details: balanceMetrics
+                  details: balanceMetrics as unknown as Record<string, unknown>
                 };
                 stepResultsMap.set(5, balanceResult);
                 setProgress((prev) => {
@@ -481,7 +483,7 @@ export function useChat(options: UseChatOptions = {}) {
                 setProgress((prev) => {
                   if (!prev) return null;
                   // Merge accumulator results (source of truth for dedicated events)
-                  const resultsById = new Map<number, any>();
+                  const resultsById = new Map<number, StepResult>();
                   for (const r of prev.stepResults) resultsById.set(r.step, r);
                   for (const [step, result] of stepResultsMap) resultsById.set(step, result);
                   const newResults = Array.from(resultsById.values());
@@ -666,7 +668,7 @@ export function useChat(options: UseChatOptions = {}) {
   }, []);
 
   // Load a chat from history
-  const loadChat = useCallback((historyData: any) => {
+  const loadChat = useCallback((historyData: ChatHistoryItem) => {
     // Clear current state
     setIsLoading(false);
     setProgress(null);
@@ -701,11 +703,11 @@ export function useChat(options: UseChatOptions = {}) {
     setMessages([userMsg, assistantMsg]);
 
     // Rebuild a synthetic completed progress from available data
-    const stepResults: { step: number; label: string; result: string; details?: any }[] = [];
+    const stepResults: StepResult[] = [];
     stepResults.push({ step: 1, label: "Analisi query", result: "Completata" });
 
     if (historyData.citations?.length) {
-      const uniqueDeputies = [...new Set(historyData.citations.map((c: any) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
+      const uniqueDeputies = [...new Set(historyData.citations.map((c: Citation) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
       stepResults.push({
         step: 4,
         label: "Interventi",
@@ -714,9 +716,9 @@ export function useChat(options: UseChatOptions = {}) {
       });
     }
     if (historyData.experts?.length) {
-      const magg = historyData.experts.filter((e: any) => e.coalition === "maggioranza").length;
-      const opp = historyData.experts.filter((e: any) => e.coalition === "opposizione").length;
-      const topExperts = historyData.experts.slice(0, 3).map((e: any) => `${e.first_name} ${e.last_name}`).join(", ");
+      const magg = historyData.experts.filter((e: Expert) => e.coalition === "maggioranza").length;
+      const opp = historyData.experts.filter((e: Expert) => e.coalition === "opposizione").length;
+      const topExperts = historyData.experts.slice(0, 3).map((e: Expert) => `${e.first_name} ${e.last_name}`).join(", ");
       stepResults.push({
         step: 3,
         label: "Esperti",

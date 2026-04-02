@@ -14,7 +14,7 @@ import { CitationCard } from "./CitationCard";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
 import { CompassCard } from "./CompassCard";
 import { TopicStatsModal } from "./TopicStatsModal";
-import type { Message } from "@/types";
+import type { Message, HQVariant } from "@/types";
 import { config } from "@/config";
 import {
   User,
@@ -838,7 +838,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
   );
 }
 
-function VariantCard({ variant }: { variant: any }) {
+function VariantCard({ variant }: { variant: HQVariant }) {
   return (
     <div className="relative group">
       <div className="absolute top-2 right-2 flex items-center gap-2 z-10">

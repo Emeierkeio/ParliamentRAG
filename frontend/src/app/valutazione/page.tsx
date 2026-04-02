@@ -1233,7 +1233,8 @@ function ChatEvaluationRow({
                     A/B Blind
                   </div>
                   {AB_DIMENSIONS.map((dim) => {
-                    const rating = (item.human as any)[dim] as ABRating | undefined;
+                    const human = item.human as unknown as Record<string, ABRating | undefined>;
+                    const rating = human[dim];
                     if (!rating) return null;
                     return (
                       <div key={dim} className="text-sm">
