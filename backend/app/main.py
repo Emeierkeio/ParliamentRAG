@@ -22,6 +22,7 @@ from .routers.evaluation import router as evaluation_router
 from .routers.authority import router as authority_router
 from .routers.compass import router as compass_router
 from .config import MAINTENANCE_MODE, get_config, get_settings
+from .services.deps import get_neo4j_client
 
 
 def setup_logging():
@@ -146,6 +147,11 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Shutting down Multi-View RAG API...")
+    try:
+        get_neo4j_client().close()
+        logger.info("Neo4j client closed.")
+    except Exception as e:
+        logger.warning(f"Error closing Neo4j client: {e}")
 
 
 async def _warmup_neo4j_index(settings):
