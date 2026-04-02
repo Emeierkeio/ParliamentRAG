@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from ..services.neo4j_client import Neo4jClient
 from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
+from ..services.experts import compute_experts, patch_experts_for_cited_speakers
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -157,7 +158,7 @@ async def process_query_streaming(
             ed["authority_score"] = authority_scores.get(sid, 0.0)
 
         # Compute experts with full details for frontend
-        experts = await _compute_experts(
+        experts = await compute_experts(
             evidence_list, authority_scores, authority_details, services["neo4j"]
         )
 
@@ -400,98 +401,26 @@ async def process_query_streaming(
         logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
-        # === Update experts: filter to cited parties and prefer cited speakers ===
-        # The initial experts event (sent before generation) included the top-authority
-        # speaker per party from the retrieved pool.  After generation we know which
-        # parties were actually cited, and which specific speaker was cited per party.
-        # We replace the initial experts with a citation-aligned list:
-        #   - Only parties that have at least one citation are shown (fixes "Misto with
-        #     no citations still showing Della Vedova"-type confusion).
-        #   - For each cited party we prefer the highest-authority CITED speaker.
-        #     If the pre-selected expert was cited, we keep them; otherwise we build
-        #     a fresh expert entry for the cited speaker (fixes "Italia Viva cites Del
-        #     Barba but shows Giachetti" confusion).
-        if gen_citations:
-            # party → speaker_id with highest authority among cited speakers
-            cited_party_best: Dict[str, str] = {}
-            for cit in gen_citations:
-                eid = cit.get("evidence_id", "")
-                ev = evidence_map_for_cit.get(eid, {})
-                speaker_id = ev.get("speaker_id", "") or cit.get("speaker_id", "")
-                party = (cit.get("party") or ev.get("party", "")).strip()
-                speaker_role = ev.get("speaker_role", "Deputy")
-                if not speaker_id or not party or speaker_role == "GovernmentMember":
-                    continue
-                score = authority_scores.get(speaker_id, 0)
-                cur = cited_party_best.get(party)
-                if cur is None or score > authority_scores.get(cur, 0):
-                    cited_party_best[party] = speaker_id
-
-            if cited_party_best:
-                expert_by_group = {e["group"]: e for e in experts}
-                final_experts: List[Dict[str, Any]] = []
-                speakers_to_fetch: List[tuple] = []  # (party, speaker_id)
-
-                for party, best_sid in cited_party_best.items():
-                    existing = expert_by_group.get(party)
-                    if existing and existing["id"] == best_sid:
-                        final_experts.append(existing)
-                    else:
-                        speakers_to_fetch.append((party, best_sid))
-
-                if speakers_to_fetch:
-                    loop = asyncio.get_running_loop()
-                    with ThreadPoolExecutor(max_workers=min(10, len(speakers_to_fetch))) as pool:
-                        fetch_futs = [
-                            loop.run_in_executor(pool, _fetch_speaker_details, services["neo4j"], sid)
-                            for _, sid in speakers_to_fetch
-                        ]
-                        fetched_sp = await asyncio.gather(*fetch_futs)
-
-                    coalition_logic_obj = CoalitionLogic()
-                    for (party, sid), sp_info in zip(speakers_to_fetch, fetched_sp):
-                        details = authority_details.get(sid, {})
-                        components = details.get("components", {})
-                        score = authority_scores.get(sid, 0)
-                        first_name = sp_info.get("first_name") or ""
-                        last_name = sp_info.get("last_name") or ""
-                        if not first_name and not last_name:
-                            for cit in gen_citations:
-                                eid = cit.get("evidence_id", "")
-                                ev = evidence_map_for_cit.get(eid, {})
-                                if ev.get("speaker_id") == sid:
-                                    parts = (cit.get("speaker_name") or ev.get("speaker_name", "")).split(" ", 1)
-                                    first_name = parts[0] if parts else ""
-                                    last_name = parts[1] if len(parts) > 1 else ""
-                                    break
-                        final_experts.append({
-                            "id": sid,
-                            "first_name": first_name,
-                            "last_name": last_name,
-                            "group": party,
-                            "coalition": coalition_logic_obj.get_coalition(party),
-                            "authority_score": round(score, 2),
-                            "relevant_speeches_count": 0,
-                            "camera_profile_url": sp_info.get("camera_profile_url"),
-                            "photo": sp_info.get("photo"),
-                            "profession": sp_info.get("profession"),
-                            "education": sp_info.get("education"),
-                            "committee": sp_info.get("current_committee"),
-                            "institutional_role": details.get("institutional_role") or sp_info.get("institutional_role"),
-                            "score_breakdown": {
-                                "speeches": round(components.get("interventions", 0), 2),
-                                "acts": round(components.get("acts", 0), 2),
-                                "committee": round(components.get("committee", 0), 2),
-                                "profession": round(components.get("profession", 0), 2),
-                                "education": round(components.get("education", 0), 2),
-                                "role": round(components.get("role", 0), 2),
-                            },
-                        })
-
-                final_experts.sort(key=lambda e: e["authority_score"], reverse=True)
-                experts = final_experts
-                logger.info(f"[QUERY:EXPERTS] Updated experts after generation: {len(experts)} (from {len(cited_party_best)} cited parties)")
-                yield f"data: {json.dumps({'type': 'experts', 'data': final_experts}, default=str)}\n\n"
+        # === Update experts: replace any top-ranked speaker with the actually cited one ===
+        try:
+            all_evidence_for_patch = evidence_dicts + list(extra_evidence_map.values())
+            patched_experts = await patch_experts_for_cited_speakers(
+                experts=experts,
+                gen_citations=gen_citations,
+                evidence_dicts=all_evidence_for_patch,
+                authority_scores=authority_scores,
+                authority_details=authority_details,
+                neo4j_client=services["neo4j"],
+            )
+            if patched_experts is not None:
+                logger.info(
+                    "[QUERY:EXPERTS] Post-generation patch: %d expert(s) corrected to match cited speakers",
+                    sum(1 for a, b in zip(experts, patched_experts) if a.get("id") != b.get("id")),
+                )
+                experts = patched_experts
+                yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
+        except Exception as _patch_err:
+            logger.warning("[QUERY:EXPERTS] Post-generation patch failed (non-critical): %s", _patch_err)
 
         # Step 7: Stream text chunks
         chunk_size = 100
@@ -509,166 +438,6 @@ async def process_query_streaming(
     except Exception as e:
         logger.error(f"Query processing error: {e}")
         yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
-
-
-def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[str, Any]:
-    """Fetch detailed speaker information from Neo4j."""
-    cypher = """
-    MATCH (d:Deputy {id: $speaker_id})
-    OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
-    WHERE mc.end_date IS NULL OR mc.end_date >= date()
-    WITH d, collect(c.name)[0] AS current_committee
-
-    CALL {
-        WITH d
-        OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
-        RETURN collect(DISTINCT {role: 'Presidente ' + cp.name, active: rp.end_date IS NULL OR rp.end_date >= date()}) AS president_roles
-    }
-    CALL {
-        WITH d
-        OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
-        RETURN collect(DISTINCT {role: 'Vicepresidente ' + cv.name, active: rv.end_date IS NULL OR rv.end_date >= date()}) AS vice_roles
-    }
-    CALL {
-        WITH d
-        OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
-        RETURN collect(DISTINCT {role: 'Segretario ' + cs.name, active: rs.end_date IS NULL OR rs.end_date >= date()}) AS secretary_roles
-    }
-    WITH d, current_committee, president_roles + vice_roles + secretary_roles AS all_roles
-
-    // Prefer active roles, fall back to any role
-    WITH d, current_committee, all_roles,
-         [r IN all_roles WHERE r.active | r.role] AS active_roles,
-         [r IN all_roles | r.role] AS any_roles
-
-    RETURN d.id AS id,
-           d.first_name AS first_name,
-           d.last_name AS last_name,
-           d.profession AS profession,
-           d.education AS education,
-           d.deputy_card AS camera_profile_url,
-           d.photo AS photo,
-           current_committee,
-           CASE
-               WHEN size(active_roles) > 0 THEN active_roles[0]
-               WHEN size(any_roles) > 0 THEN any_roles[0]
-               ELSE null
-           END AS institutional_role
-    """
-    with neo4j_client.session() as session:
-        result = session.run(cypher, speaker_id=speaker_id)
-        record = result.single()
-        if record:
-            return dict(record)
-
-    # Try GovernmentMember
-    cypher_gov = """
-    MATCH (m:GovernmentMember {id: $speaker_id})
-    RETURN m.id AS id,
-           m.first_name AS first_name,
-           m.last_name AS last_name,
-           m.institutional_role AS institutional_role,
-           m.deputy_card AS camera_profile_url
-    """
-    with neo4j_client.session() as session:
-        result = session.run(cypher_gov, speaker_id=speaker_id)
-        record = result.single()
-        if record:
-            data = dict(record)
-            data["profession"] = None
-            data["education"] = None
-            data["current_committee"] = None
-            return data
-
-    return {}
-
-
-async def _compute_experts(
-    evidence_list: List[Any],
-    authority_scores: Dict[str, float],
-    authority_details: Dict[str, Dict[str, Any]],
-    neo4j_client: Neo4jClient
-) -> List[Dict[str, Any]]:
-    """Compute experts in frontend-expected format with full details."""
-    from concurrent.futures import ThreadPoolExecutor
-    coalition_logic = CoalitionLogic()
-    party_speakers: Dict[str, Dict[str, Dict]] = {}
-
-    for evidence in evidence_list:
-        if evidence.speaker_role == "GovernmentMember":
-            continue
-        party = evidence.party
-        speaker_id = evidence.speaker_id
-        speaker_name = evidence.speaker_name
-
-        if party not in party_speakers:
-            party_speakers[party] = {}
-
-        if speaker_id not in party_speakers[party]:
-            party_speakers[party][speaker_id] = {
-                "speaker_name": speaker_name,
-                "authority_score": authority_scores.get(speaker_id, 0.5),
-                "count": 0,
-                "party": party,
-            }
-
-        party_speakers[party][speaker_id]["count"] += 1
-
-    # Collect top speakers per party
-    top_speakers_info = []
-    for party, speakers in party_speakers.items():
-        if speakers:
-            top_speaker_id = max(
-                speakers.keys(),
-                key=lambda s: speakers[s]["authority_score"]
-            )
-            top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
-
-    # Fetch all speaker details in parallel
-    loop = asyncio.get_running_loop()
-    with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
-        detail_futures = [
-            loop.run_in_executor(pool, _fetch_speaker_details, neo4j_client, info[1])
-            for info in top_speakers_info
-        ]
-        speaker_details_list = await asyncio.gather(*detail_futures)
-
-    experts = []
-    for (party, top_speaker_id, top_speaker), speaker_info in zip(top_speakers_info, speaker_details_list):
-        coalition = coalition_logic.get_coalition(party)
-
-        name_parts = top_speaker["speaker_name"].split(" ", 1)
-        first_name = name_parts[0] if name_parts else ""
-        last_name = name_parts[1] if len(name_parts) > 1 else ""
-
-        details = authority_details.get(top_speaker_id, {})
-        components = details.get("components", {})
-
-        experts.append({
-            "id": top_speaker_id,
-            "first_name": first_name,
-            "last_name": last_name,
-            "group": party,
-            "coalition": coalition,
-            "authority_score": round(top_speaker["authority_score"], 2),
-            "relevant_speeches_count": top_speaker["count"],
-            "camera_profile_url": speaker_info.get("camera_profile_url"),
-            "photo": speaker_info.get("photo"),
-            "profession": speaker_info.get("profession"),
-            "education": speaker_info.get("education"),
-            "committee": speaker_info.get("current_committee"),
-            "institutional_role": details.get("institutional_role") or speaker_info.get("institutional_role"),
-            "score_breakdown": {
-                "speeches": round(components.get("interventions", 0), 2),
-                "acts": round(components.get("acts", 0), 2),
-                "committee": round(components.get("committee", 0), 2),
-                "profession": round(components.get("profession", 0), 2),
-                "education": round(components.get("education", 0), 2),
-                "role": round(components.get("role", 0), 2),
-            },
-        })
-
-    return experts
 
 
 def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, Dict[str, Any]]:
@@ -998,7 +767,7 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                     ed["authority_score"] = authority_scores[sid]
 
             # Experts
-            experts = await _compute_experts(
+            experts = await compute_experts(
                 evidence_list, authority_scores, authority_details, services["neo4j"]
             )
 

@@ -25,7 +25,7 @@ from app.models.evaluation import (
     EvaluationDashboardData,
 )
 from app.models.survey import SurveyResponse, SurveyStats, AB_DIMENSIONS, SimpleRatingResponse
-from app.routers.survey import _load_surveys, _calculate_stats
+from app.services.survey_helpers import load_surveys as _load_surveys, calculate_stats as _calculate_stats
 
 logger = logging.getLogger(__name__)
 
@@ -591,7 +591,7 @@ async def get_dashboard():
 
     # Load pre-computed baseline experts from evaluation_set.json (query-specific scores).
     # These are used instead of expert_full_lookup to get comparable authority scores.
-    from app.routers.survey import _load_evaluation_set_raw as _load_eval_set_raw_inner
+    from app.services.survey_helpers import load_evaluation_set_raw as _load_eval_set_raw_inner
     _eval_set_raw_for_experts = _load_eval_set_raw_inner()
     # Build {topic_lower: baseline_experts}, {topic_lower: authority_spread_std},
     # and {topic_lower: authority_spread_dict} for fast lookup
@@ -846,7 +846,7 @@ async def export_csv():
     output = io.StringIO()
     writer = csv.writer(output)
 
-    from app.routers.survey import _get_ab_assignment, _deblind_preference
+    from app.services.survey_helpers import _get_ab_assignment, _deblind_preference
 
     # A/B dimension headers
     dim_headers = []

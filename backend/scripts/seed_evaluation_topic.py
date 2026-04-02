@@ -31,7 +31,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.services.deps import get_services
-from app.routers.chat import _compute_experts_for_frontend
+from app.services.experts import compute_experts
 
 logging.basicConfig(
     level=logging.INFO,
@@ -90,7 +90,7 @@ async def compute_experts(query: str, services: dict) -> list:
     logger.info(f"[{query}] Scored {len(authority_scores)} speakers")
 
     logger.info(f"[{query}] Computing experts...")
-    experts = await _compute_experts_for_frontend(
+    experts = await compute_experts(
         evidence_list, authority_scores, authority_details, services["neo4j"]
     )
     logger.info(f"[{query}] {len(experts)} experts found")
