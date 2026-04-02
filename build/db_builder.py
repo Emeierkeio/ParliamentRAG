@@ -24,6 +24,7 @@ from neo4j.time import Date as Neo4jDate
 
 from build_config import BuildConfig
 from chunker import chunk_speech
+from ner import enrich_chunks_with_ner, load_ner_model
 
 # ---------------------------------------------------------------------------
 # App-config import (optional — roles won't load if missing)
@@ -181,6 +182,21 @@ class DatabaseBuilder:
     def __init__(self, driver, config: Optional[BuildConfig] = None) -> None:
         self._driver = driver
         self._config = config or BuildConfig()
+        self._nlp = None  # Lazy-loaded spaCy NER model
+
+    def _get_nlp(self):
+        """Lazy-load the spaCy NER model.
+
+        Returns the model on success, or None if it is not installed.
+        Uses a sentinel value (False) to avoid retrying after a failed load.
+        """
+        if self._nlp is None:
+            try:
+                self._nlp = load_ner_model()
+            except OSError:
+                print("WARNING: spaCy model it_core_news_lg not installed. Skipping NER.")
+                self._nlp = False  # Sentinel to avoid retrying
+        return self._nlp if self._nlp is not False else None
 
     # ------------------------------------------------------------------
     # Schema setup
@@ -314,6 +330,15 @@ class DatabaseBuilder:
                     chunk["speechId"] = speech["id"]
                 all_chunks.extend(chunks)
 
+            # NER enrichment (adds lawRefs and personRefs to each chunk dict)
+            nlp = self._get_nlp()
+            if nlp:
+                enrich_chunks_with_ner(all_chunks, nlp)
+            else:
+                for chunk in all_chunks:
+                    chunk["lawRefs"] = []
+                    chunk["personRefs"] = []
+
             self._batch_write(neo_session, self._create_speeches, speeches)
             self._batch_write(neo_session, self._create_chunks, all_chunks)
 
@@ -417,7 +442,10 @@ class DatabaseBuilder:
         tx.run("""
             UNWIND $batch AS row
             MERGE (c:Chunk {id: row.id})
-            SET c.text = row.text, c.index = row.index
+            SET c.text = row.text,
+                c.index = row.index,
+                c.lawRefs = row.lawRefs,
+                c.personRefs = row.personRefs
             WITH c, row
             MATCH (sp:Speech {id: row.speechId})
             MERGE (sp)-[:HAS_CHUNK]->(c)

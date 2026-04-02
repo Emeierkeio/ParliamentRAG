@@ -225,6 +225,7 @@ def do_build(
 
         # 5. Ingest stenografici
         logger.info("Step 5: Ingesting stenografici")
+        logger.info("  NER enrichment will run on chunks (requires it_core_news_lg)")
         xml_files = sorted(glob.glob(os.path.join(XML_DIR, "stenografico_leg19_*.xml")))
         logger.info("  Found %d XML files", len(xml_files))
         for i, xml_path in enumerate(xml_files, 1):

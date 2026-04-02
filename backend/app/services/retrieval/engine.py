@@ -113,6 +113,15 @@ class RetrievalEngine:
         logger.info(f"Generating embedding for query: {query[:50]}...")
         query_embedding = self.embed_query(retrieval_query)
 
+        # Detect law patterns in query for entity-filtered retrieval
+        entity_filter: Dict[str, list] = {}
+        law_matches = re.findall(
+            r'(?:D\.?L(?:gs)?\.?|decreto|legge)\s+(?:n\.\s*)?\d+(?:/\d{2,4})?',
+            retrieval_query, re.I
+        )
+        if law_matches:
+            entity_filter["laws"] = law_matches
+
         # Run all three channels IN PARALLEL
         logger.info("Running dense, sparse, and graph channels in parallel...")
 
@@ -133,7 +142,8 @@ class RetrievalEngine:
                 query=retrieval_query,
                 query_embedding=query_embedding,
                 date_start=date_start,
-                date_end=date_end
+                date_end=date_end,
+                entity_filter=entity_filter if entity_filter else None,
             )
 
         with ThreadPoolExecutor(max_workers=3) as executor:

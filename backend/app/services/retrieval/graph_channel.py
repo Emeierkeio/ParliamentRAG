@@ -104,7 +104,8 @@ class GraphChannel:
         query_embedding: List[float],
         top_k: Optional[int] = None,
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        entity_filter: Optional[Dict[str, list]] = None,
     ) -> List[Dict[str, Any]]:
         """
         Retrieve evidence through graph traversal.
@@ -113,6 +114,7 @@ class GraphChannel:
         1. Find relevant ParliamentaryAct via hybrid matching
         2. Get signatories (PRIMARY_SIGNATORY, CO_SIGNATORY)
         3. Traverse to their speeches and chunks
+        4. Optionally merge entity-filtered chunks (lawRefs / personRefs)
 
         Args:
             query: User query text
@@ -120,6 +122,9 @@ class GraphChannel:
             top_k: Number of results to return
             date_start: Optional start date filter
             date_end: Optional end date filter
+            entity_filter: Optional dict with "laws" and/or "persons" keys containing
+                           search terms to match against Chunk.lawRefs / Chunk.personRefs.
+                           Example: {"laws": ["decreto 231"], "persons": ["Rossi"]}
 
         Returns:
             List of evidence candidates
@@ -152,6 +157,23 @@ class GraphChannel:
             date_start=date_start,
             date_end=date_end
         )
+
+        # Step 4: Optional entity-filtered retrieval (lawRefs / personRefs)
+        if entity_filter:
+            entity_chunks = self._get_chunks_by_entity(
+                entity_filter,
+                query_embedding=query_embedding,
+                date_start=date_start,
+                date_end=date_end,
+            )
+            if entity_chunks:
+                # Merge: add entity-filtered chunks not already present
+                existing_ids = {c.get("evidence_id") for c in chunks}
+                new_chunks = [c for c in entity_chunks if c.get("evidence_id") not in existing_ids]
+                chunks.extend(new_chunks)
+                logger.info(
+                    f"Graph channel: entity filter added {len(new_chunks)} extra chunks"
+                )
 
         logger.info(f"Graph channel: retrieved {len(chunks)} chunks from {len(act_uris)} acts")
         return chunks
