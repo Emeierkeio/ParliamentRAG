@@ -7,6 +7,14 @@ import tempfile
 import pytest
 
 
+def pytest_configure(config):
+    """Register custom markers so pytest does not warn about unknown marks."""
+    config.addinivalue_line(
+        "markers",
+        "integration: requires a running Neo4j instance (run with: pytest -m integration)",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Minimal valid XML for a full stenografico session
 # ---------------------------------------------------------------------------
