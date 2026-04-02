@@ -141,7 +141,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 disabled={false}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Analisi Autorità", isActive: pathname === "/ranking", onClick: () => handleNavClick(() => navTo("/ranking")) }}
+                item={{ icon: BarChart3, label: "Analisi Autorità", isActive: pathname === "/rankings", onClick: () => handleNavClick(() => navTo("/rankings")) }}
                 isCollapsed={false}
                 disabled={false}
               />
@@ -251,7 +251,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Analisi Autorità", href: "/ranking", isActive: pathname === "/ranking", onClick: () => navTo("/ranking") }}
+              item={{ icon: BarChart3, label: "Analisi Autorità", href: "/rankings", isActive: pathname === "/rankings", onClick: () => navTo("/rankings") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
