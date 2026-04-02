@@ -138,16 +138,17 @@ class TestRRFScoring:
         """A result ranked 1st in a channel scores higher than one ranked 5th."""
         from app.services.retrieval.merger import ChannelMerger
 
-        # First result in dense at rank 1, second result at rank 2
+        # First result at rank 1, second result at rank 2 — different speakers
         dense = [
-            _make_result("high_rank", channel="dense"),  # rank 1
-            _make_result("low_rank", channel="dense"),   # rank 2
+            _make_result("high_rank", speaker_id="spk_a", channel="dense"),  # rank 1
+            _make_result("low_rank", speaker_id="spk_b", channel="dense"),   # rank 2
         ]
         sparse = []
         graph = []
 
         merger = ChannelMerger()
-        results = merger.merge(dense, sparse, graph, top_k=10)
+        # top_k large enough to avoid diversity cutoff for just 2 different speakers
+        results = merger.merge(dense, sparse, graph, top_k=100)
 
         high = next((r for r in results if r["evidence_id"] == "high_rank"), None)
         low = next((r for r in results if r["evidence_id"] == "low_rank"), None)

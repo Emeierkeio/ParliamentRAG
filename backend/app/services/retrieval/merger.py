@@ -1,11 +1,10 @@
 """
-Channel merger for dual-channel retrieval.
+Channel merger for triple-channel retrieval using Reciprocal Rank Fusion (RRF).
 
-Merges results from dense and graph channels with:
-- Relevance weighting
-- Diversity (penalize same-speaker dominance)
-- Party coverage
-- Authority-aware reweighting
+Merges results from dense, sparse, and graph channels with:
+- Rank-based fusion (RRF) instead of weighted similarity scores
+- Diversity selection (penalize same-speaker dominance)
+- Party coverage logging
 """
 import logging
 from typing import List, Dict, Any, Set, Optional
@@ -19,13 +18,12 @@ logger = logging.getLogger(__name__)
 
 class ChannelMerger:
     """
-    Merges results from multiple retrieval channels.
+    Merges results from dense, sparse, and graph retrieval channels.
 
-    Ensures:
-    - High relevance scores are preserved
-    - Speaker diversity (no single speaker dominance)
-    - Party coverage (all parties represented if possible)
-    - Authority-aware reweighting (optional)
+    Uses Reciprocal Rank Fusion (RRF) to combine channel rankings:
+        rrf_score = sum(weight / (k + rank))  for each channel the item appears in
+
+    Then applies greedy diversity selection to ensure no single speaker/party dominates.
     """
 
     def __init__(self):
@@ -34,153 +32,112 @@ class ChannelMerger:
     def merge(
         self,
         dense_results: List[Dict[str, Any]],
+        sparse_results: List[Dict[str, Any]],
         graph_results: List[Dict[str, Any]],
         authority_scores: Optional[Dict[str, float]] = None,
         top_k: int = 100
     ) -> List[Dict[str, Any]]:
         """
-        Merge results from dense and graph channels.
+        Merge results from dense, sparse, and graph channels using RRF.
 
         Args:
-            dense_results: Results from dense channel
-            graph_results: Results from graph channel
-            authority_scores: Optional speaker authority scores
+            dense_results: Results from dense (vector) channel
+            sparse_results: Results from sparse (BM25) channel
+            graph_results: Results from graph (structure) channel
+            authority_scores: Optional speaker authority scores (unused by RRF,
+                              kept for API compatibility)
             top_k: Number of final results
 
         Returns:
             Merged and reranked results
         """
-        merger_config = self.config.retrieval.get("merger", {})
-
-        # Get weights
-        relevance_weight = merger_config.get("relevance_weight", 0.15)
-        diversity_weight = merger_config.get("diversity_weight", 0.15)
-        coverage_weight = merger_config.get("coverage_weight", 0.25)
-        authority_weight = merger_config.get("authority_weight", 0.25)
-        salience_weight = merger_config.get("salience_weight", 0.20)
-
         logger.info(
-            f"Merging {len(dense_results)} dense + {len(graph_results)} graph results"
+            f"Merging {len(dense_results)} dense + {len(sparse_results)} sparse "
+            f"+ {len(graph_results)} graph results (RRF)"
         )
 
-        # Combine and deduplicate by evidence_id
-        all_results = self._deduplicate(dense_results, graph_results)
-        logger.info(f"After deduplication: {len(all_results)} unique results")
+        # Compute RRF scores across all three channels
+        scored_results = self._compute_rrf(dense_results, sparse_results, graph_results)
+        logger.info(f"After RRF deduplication: {len(scored_results)} unique results")
 
-        # Compute final scores
-        scored_results = self._compute_scores(
-            all_results,
-            authority_scores,
-            relevance_weight,
-            diversity_weight,
-            coverage_weight,
-            authority_weight,
-            salience_weight
+        # Sort by RRF score descending before diversity selection
+        sorted_results = sorted(
+            scored_results, key=lambda x: x.get("final_score", 0), reverse=True
         )
 
-        # Sort and select top_k with diversity
-        final_results = self._select_diverse(scored_results, top_k)
+        # Apply greedy diversity selection
+        final_results = self._select_diverse(sorted_results, top_k)
 
-        # Log coverage stats
+        # Log coverage statistics
         self._log_coverage(final_results)
 
         return final_results
 
-    def _deduplicate(
+    def _compute_rrf(
         self,
         dense_results: List[Dict[str, Any]],
-        graph_results: List[Dict[str, Any]]
+        sparse_results: List[Dict[str, Any]],
+        graph_results: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
         """
-        Deduplicate results by evidence_id, keeping higher similarity.
+        Compute Reciprocal Rank Fusion scores for all results.
+
+        For each evidence_id present in one or more channels:
+            rrf_score = sum(weight / (k + rank))
+
+        Results are deduplicated: if the same evidence_id appears in multiple
+        channels, the best metadata (from the channel with highest contribution)
+        is kept and the scores are combined.
         """
-        seen: Dict[str, Dict[str, Any]] = {}
+        rrf_config = self.config.retrieval.get("rrf", {})
+        k = rrf_config.get("k", 60)
+        dense_weight = rrf_config.get("dense_weight", 1.0)
+        sparse_weight = rrf_config.get("sparse_weight", 0.8)
+        graph_weight = rrf_config.get("graph_weight", 0.5)
 
-        for result in dense_results:
-            eid = result.get("evidence_id", "")
-            if eid and (eid not in seen or result.get("similarity", 0) > seen[eid].get("similarity", 0)):
-                seen[eid] = result
+        # evidence_id -> accumulated rrf score
+        rrf_scores: Dict[str, float] = defaultdict(float)
+        # evidence_id -> best metadata dict (from first-seen channel)
+        result_lookup: Dict[str, Dict[str, Any]] = {}
 
-        for result in graph_results:
-            eid = result.get("evidence_id", "")
-            if eid and eid not in seen:
-                seen[eid] = result
+        def _process_channel(results: List[Dict[str, Any]], weight: float) -> None:
+            for rank, result in enumerate(results, start=1):
+                eid = result.get("evidence_id", "")
+                if not eid:
+                    continue
+                contribution = weight / (k + rank)
+                rrf_scores[eid] += contribution
+                # Keep first-seen metadata (dense preferred over sparse/graph)
+                if eid not in result_lookup:
+                    result_lookup[eid] = result
 
-        return list(seen.values())
+        # Process in priority order: dense > sparse > graph
+        _process_channel(dense_results, dense_weight)
+        _process_channel(sparse_results, sparse_weight)
+        _process_channel(graph_results, graph_weight)
 
-    def _compute_scores(
-        self,
-        results: List[Dict[str, Any]],
-        authority_scores: Optional[Dict[str, float]],
-        relevance_weight: float,
-        diversity_weight: float,
-        coverage_weight: float,
-        authority_weight: float,
-        salience_weight: float = 0.20
-    ) -> List[Dict[str, Any]]:
-        """
-        Compute final scores for all results.
-        """
-        # Count occurrences per speaker and party
-        speaker_counts: Dict[str, int] = defaultdict(int)
-        party_counts: Dict[str, int] = defaultdict(int)
+        # Build final list with RRF scores attached
+        combined = []
+        for eid, rrf_score in rrf_scores.items():
+            result = dict(result_lookup[eid])  # Copy to avoid mutating originals
 
-        for r in results:
-            speaker_counts[r.get("speaker_id", "")] += 1
-            party_counts[r.get("party", "")] += 1
-
-        # Normalize counts
-        max_speaker_count = max(speaker_counts.values()) if speaker_counts else 1
-        max_party_count = max(party_counts.values()) if party_counts else 1
-
-        # All parties
-        all_parties = set(self.config.get_all_parties())
-
-        for result in results:
-            # Base relevance score
-            relevance = result.get("similarity", 0.5)
-
-            # Diversity penalty (reduce score for over-represented speakers)
-            speaker_id = result.get("speaker_id", "")
-            speaker_freq = speaker_counts.get(speaker_id, 1) / max_speaker_count
-            diversity = 1.0 - (0.5 * speaker_freq)  # Soft penalty
-
-            # Coverage bonus (increase score for under-represented parties)
-            party = result.get("party", "MISTO")
-            party_freq = party_counts.get(party, 1) / max_party_count
-            coverage = 1.0 - (0.5 * party_freq)  # Soft bonus for rare parties
-
-            # Authority score
-            authority = 0.5  # Default
-            if authority_scores and speaker_id in authority_scores:
-                authority = authority_scores[speaker_id]
-
-            # Political salience score
+            # Compute political salience (used for diagnostics / downstream)
             salience = result.get("salience")
             if salience is None:
                 text = result.get("chunk_text") or result.get("quote_text", "")
                 salience = compute_chunk_salience(text)
                 result["salience"] = salience
 
-            # Final score
-            final_score = (
-                relevance_weight * relevance +
-                diversity_weight * diversity +
-                coverage_weight * coverage +
-                authority_weight * authority +
-                salience_weight * salience
-            )
-
-            result["final_score"] = final_score
+            result["rrf_score"] = rrf_score
+            result["final_score"] = rrf_score  # _select_diverse reads final_score
+            result["similarity"] = rrf_score   # Unify similarity for downstream use
             result["score_components"] = {
-                "relevance": relevance,
-                "diversity": diversity,
-                "coverage": coverage,
-                "authority": authority,
-                "salience": salience
+                "rrf_score": rrf_score,
+                "salience": salience,
             }
+            combined.append(result)
 
-        return results
+        return combined
 
     def _select_diverse(
         self,
@@ -190,30 +147,29 @@ class ChannelMerger:
         """
         Select top_k results while ensuring diversity.
 
-        Uses a greedy approach that balances score with diversity.
+        Uses a greedy approach that balances score with speaker/party diversity.
+        Input must already be sorted by final_score descending.
         """
-        # Sort by final score
-        sorted_results = sorted(results, key=lambda x: x.get("final_score", 0), reverse=True)
-
         selected: List[Dict[str, Any]] = []
         speaker_selected: Dict[str, int] = defaultdict(int)
         party_selected: Dict[str, int] = defaultdict(int)
 
-        max_per_speaker = top_k // 10  # Limit per speaker
-        max_per_party = top_k // 3  # Softer limit per party
+        max_per_speaker = max(1, top_k // 10)  # Limit per speaker
+        max_per_party = max(1, top_k // 3)     # Softer limit per party
 
-        for result in sorted_results:
+        for result in results:
             if len(selected) >= top_k:
                 break
 
             speaker_id = result.get("speaker_id", "")
             party = result.get("party", "")
 
-            # Check limits
+            # Enforce per-speaker limit
             if speaker_selected[speaker_id] >= max_per_speaker:
                 continue
+
+            # Enforce per-party limit (allow override for very high-scoring items)
             if party_selected[party] >= max_per_party:
-                # Still allow if score is very high
                 if result.get("final_score", 0) < 0.8:
                     continue
 
@@ -223,11 +179,11 @@ class ChannelMerger:
 
         return selected
 
-    def _log_coverage(self, results: List[Dict[str, Any]]):
+    def _log_coverage(self, results: List[Dict[str, Any]]) -> None:
         """Log coverage statistics."""
         parties_covered: Set[str] = set()
         speakers_covered: Set[str] = set()
-        channels = defaultdict(int)
+        channels: Dict[str, int] = defaultdict(int)
 
         for r in results:
             parties_covered.add(r.get("party", ""))

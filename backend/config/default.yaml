@@ -21,6 +21,16 @@ retrieval:
     # relevant parliamentary act.
     chunk_similarity_threshold: 0.3
 
+  sparse_channel:
+    top_k: 100
+    index_name: "chunk_fulltext"
+
+  rrf:
+    k: 60              # Rank smoothing constant (standard default)
+    dense_weight: 1.0  # Dense channel weight (highest — primary signal)
+    sparse_weight: 0.8 # Sparse BM25 channel weight
+    graph_weight: 0.5  # Graph channel weight (lowest — structural signal)
+
   merger:
     # NOTE: authority_weight is minimal because authority is computed POST-retrieval
     # (the merger runs before AuthorityScorer). Real authority ranking happens
