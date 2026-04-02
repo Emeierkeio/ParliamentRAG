@@ -6,6 +6,7 @@ and returns unified evidence records.
 """
 import asyncio
 import logging
+import re
 import time
 from typing import List, Dict, Any, Optional
 from datetime import date
@@ -381,8 +382,7 @@ class RetrievalEngine:
                 replaced += 1
 
         logger.info(
-            f"Neighbor expansion: replaced {replaced}/{len(low_salience)} low-salience chunks, "
-            f"appended {appended}/{len(early_speech)} early-speech next chunks"
+            f"Neighbor expansion: replaced {replaced}/{len(low_salience)} low-salience chunks"
         )
         return results
 

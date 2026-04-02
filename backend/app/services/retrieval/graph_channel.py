@@ -262,6 +262,86 @@ class GraphChannel:
 
         return sorted(scored_acts, key=lambda x: x["similarity"], reverse=True)
 
+    def _get_chunks_by_entity(
+        self,
+        entity_filter: Dict[str, list],
+        query_embedding: List[float],
+        date_start: Optional[str] = None,
+        date_end: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve chunks that match entity references (lawRefs / personRefs).
+
+        Uses Chunk.lawRefs and Chunk.personRefs arrays populated by NER at build time.
+        Safe degradation: if chunks don't have these properties yet (pre-rebuild),
+        the WHERE clause returns empty results.
+        """
+        where_parts: list[str] = []
+        params: dict = {}
+
+        if entity_filter.get("laws"):
+            # Match any chunk whose lawRefs contain a term matching the query law pattern
+            law_conditions = []
+            for i, term in enumerate(entity_filter["laws"]):
+                param_key = f"law_{i}"
+                law_conditions.append(
+                    f"ANY(ref IN c.lawRefs WHERE toLower(ref) CONTAINS toLower(${param_key}))"
+                )
+                params[param_key] = term
+            where_parts.append(f"({' OR '.join(law_conditions)})")
+
+        if entity_filter.get("persons"):
+            person_conditions = []
+            for i, term in enumerate(entity_filter["persons"]):
+                param_key = f"person_{i}"
+                person_conditions.append(
+                    f"ANY(ref IN c.personRefs WHERE toLower(ref) CONTAINS toLower(${param_key}))"
+                )
+                params[param_key] = term
+            where_parts.append(f"({' OR '.join(person_conditions)})")
+
+        if not where_parts:
+            return []
+
+        entity_clause = " OR ".join(where_parts)
+
+        # Date filter
+        date_conditions = []
+        if date_start:
+            date_conditions.append("s.date >= $date_start")
+            params["date_start"] = date_start
+        if date_end:
+            date_conditions.append("s.date <= $date_end")
+            params["date_end"] = date_end
+        date_clause = " AND ".join(date_conditions) if date_conditions else "1=1"
+
+        cypher = f"""
+        MATCH (c:Chunk)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
+        WHERE ({entity_clause})
+        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+        WHERE {date_clause}
+        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
+        RETURN c.id AS chunk_id,
+               c.text AS chunk_text,
+               c.embedding AS embedding,
+               i.id AS speech_id,
+               i.text AS text,
+               speaker.id AS speaker_id,
+               speaker.first_name AS speaker_first_name,
+               speaker.last_name AS speaker_last_name,
+               CASE WHEN 'GovernmentMember' IN labels(speaker) THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
+               g.name AS party,
+               s.id AS session_id,
+               s.date AS session_date,
+               s.number AS session_number,
+               d.title AS debate_title
+        LIMIT 100
+        """
+
+        results = self.client.query(cypher, params)
+        return self._process_results(results)
+
     def _get_chunks_from_signatories(
         self,
         act_uris: List[str],
