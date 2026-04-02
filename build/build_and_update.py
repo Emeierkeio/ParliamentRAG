@@ -247,6 +247,10 @@ def do_build(
         logger.info("Step 8: Creating vector index")
         builder.create_vector_index()
 
+        # 8b. Full-text index for BM25 sparse retrieval
+        logger.info("Step 8b: Creating full-text index")
+        builder.create_fulltext_index()
+
         # 9. Embeddings
         if skip_embeddings:
             logger.info("Step 9: Skipping embeddings (--skip-embeddings)")
@@ -323,6 +327,10 @@ def do_update(
         # 5. Roles
         logger.info("Step 5: Updating roles")
         builder.load_roles()
+
+        # 5b. Full-text index for BM25 sparse retrieval (idempotent: IF NOT EXISTS)
+        logger.info("Step 5b: Ensuring full-text index exists")
+        builder.create_fulltext_index()
 
         # 6. Embeddings
         if skip_embeddings:

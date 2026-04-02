@@ -17,6 +17,7 @@ from ...key_pool import make_client
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
+from .sparse_channel import SparseChannel
 from .query_rewriter import QueryRewriter
 from ...models.evidence import UnifiedEvidence
 from ...config import get_config, get_settings
@@ -47,6 +48,7 @@ class RetrievalEngine:
         self.client = neo4j_client
         self.dense_channel = DenseChannel(neo4j_client)
         self.graph_channel = GraphChannel(neo4j_client)
+        self.sparse_channel = SparseChannel(neo4j_client)
         self.merger = ChannelMerger()
         self.query_rewriter = QueryRewriter()
         self.config = get_config()
@@ -84,9 +86,9 @@ class RetrievalEngine:
         date_end: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Perform dual-channel retrieval (synchronous version).
+        Perform triple-channel retrieval (synchronous version).
 
-        OPTIMIZED: Dense and Graph channels run IN PARALLEL using ThreadPoolExecutor.
+        OPTIMIZED: Dense, Sparse, and Graph channels run IN PARALLEL using ThreadPoolExecutor.
 
         Args:
             query: User query
@@ -111,13 +113,19 @@ class RetrievalEngine:
         logger.info(f"Generating embedding for query: {query[:50]}...")
         query_embedding = self.embed_query(retrieval_query)
 
-        # Run both channels IN PARALLEL
-        logger.info("Running dense and graph channels in parallel...")
+        # Run all three channels IN PARALLEL
+        logger.info("Running dense, sparse, and graph channels in parallel...")
 
         def run_dense():
             return self.dense_channel.retrieve(
                 query_embedding=query_embedding,
                 top_k=top_k * 2  # Over-retrieve for merging
+            )
+
+        def run_sparse():
+            return self.sparse_channel.retrieve(
+                query_text=retrieval_query,
+                top_k=top_k
             )
 
         def run_graph():
@@ -128,19 +136,25 @@ class RetrievalEngine:
                 date_end=date_end
             )
 
-        with ThreadPoolExecutor(max_workers=2) as executor:
+        with ThreadPoolExecutor(max_workers=3) as executor:
             dense_future = executor.submit(run_dense)
+            sparse_future = executor.submit(run_sparse)
             graph_future = executor.submit(run_graph)
 
             dense_results = dense_future.result()
+            sparse_results = sparse_future.result()
             graph_results = graph_future.result()
 
-        logger.info(f"Channels complete: dense={len(dense_results)}, graph={len(graph_results)}")
+        logger.info(
+            f"Channels complete: dense={len(dense_results)}, "
+            f"sparse={len(sparse_results)}, graph={len(graph_results)}"
+        )
 
-        # Merge channels
-        logger.info("Merging channels...")
+        # Merge channels using RRF
+        logger.info("Merging channels (RRF)...")
         merged_results = self.merger.merge(
             dense_results=dense_results,
+            sparse_results=sparse_results,
             graph_results=graph_results,
             authority_scores=authority_scores,
             top_k=top_k

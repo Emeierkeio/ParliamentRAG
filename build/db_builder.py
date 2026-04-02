@@ -249,7 +249,7 @@ class DatabaseBuilder:
             "CREATE CONSTRAINT IF NOT EXISTS FOR (com:Committee) REQUIRE com.name IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (gm:GovernmentMember) REQUIRE gm.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (v:Vote) REQUIRE v.id IS UNIQUE",
-            "CREATE CONSTRAINT IF NOT EXISTS FOR (a:ParliamentaryAct) REQUIRE a.number IS UNIQUE",
+            "CREATE CONSTRAINT IF NOT EXISTS FOR (a:ParliamentaryAct) REQUIRE a.uri IS UNIQUE",
         ]
         with self._driver.session() as neo_session:
             for cypher in constraints:
@@ -260,9 +260,13 @@ class DatabaseBuilder:
         print("Constraints created.")
 
     def create_indexes(self) -> None:
-        """Create property indexes for common query patterns."""
+        """Create property indexes for common query patterns.
+
+        Note: Speech.text is intentionally NOT indexed — text values can exceed
+        Neo4j RANGE index size limits (55KB+). Full-text search uses a separate
+        vector index created by create_vector_index.py.
+        """
         indexes = [
-            "CREATE INDEX IF NOT EXISTS FOR (sp:Speech) ON (sp.text)",
             "CREATE INDEX IF NOT EXISTS FOR (dep:Deputy) ON (dep.name)",
             "CREATE INDEX IF NOT EXISTS FOR (s:Session) ON (s.number)",
         ]
@@ -442,11 +446,20 @@ class DatabaseBuilder:
 
     @staticmethod
     def _create_act_links(tx, batch: list) -> None:
+        # uri is the canonical merge key for ParliamentaryAct.
+        # Placeholder acts (from XML argomenti) get a synthetic URI derived from
+        # actType and actCode. SPARQL-enriched acts (from ingest_atti_parlamentari)
+        # use the real dati.camera.it URI — they will overwrite the placeholder via
+        # MERGE on the same synthetic URI if the number matches, OR exist as
+        # separate nodes if the real URI differs (fine — the DISCUSSES edge already
+        # points to the placeholder, which carries the act number for retrieval).
         tx.run("""
             UNWIND $batch AS row
             MATCH (d:Debate {id: row.debateId})
-            MERGE (a:ParliamentaryAct {number: row.actCode})
-            ON CREATE SET a.type = row.actType, a.isPlaceholder = true
+            MERGE (a:ParliamentaryAct {uri: 'placeholder:' + row.actType + ':' + row.actCode})
+            ON CREATE SET a.type = row.actType,
+                          a.number = row.actCode,
+                          a.isPlaceholder = true
             MERGE (d)-[:DISCUSSES]->(a)
         """, batch=batch)
 
@@ -934,6 +947,25 @@ class DatabaseBuilder:
                 }}
             """))
         print("Vector index created.")
+
+    def create_fulltext_index(self) -> None:
+        """Create full-text index on Chunk.text for BM25 sparse retrieval."""
+        with self._driver.session() as neo_session:
+            try:
+                neo_session.execute_write(lambda tx: tx.run("""
+                    CREATE FULLTEXT INDEX chunk_fulltext IF NOT EXISTS
+                    FOR (n:Chunk) ON EACH [n.text]
+                    OPTIONS {indexConfig: {`fulltext.analyzer`: 'italian'}}
+                """))
+                print("Full-text index created (italian analyzer).")
+            except Exception as e:
+                # Fallback if italian analyzer not available in this Neo4j instance
+                print(f"Italian analyzer failed ({e}), trying standard analyzer...")
+                neo_session.execute_write(lambda tx: tx.run("""
+                    CREATE FULLTEXT INDEX chunk_fulltext IF NOT EXISTS
+                    FOR (n:Chunk) ON EACH [n.text]
+                """))
+                print("Full-text index created (standard analyzer).")
 
     def get_existing_session_numbers(self) -> set[int]:
         """Return set of session numbers already persisted in Neo4j."""
