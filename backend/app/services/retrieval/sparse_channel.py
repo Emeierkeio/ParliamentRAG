@@ -44,6 +44,7 @@ class SparseChannel:
         self,
         query_text: str,
         top_k: Optional[int] = None,
+        chambers: list[str] | None = None,
     ) -> List[Dict[str, Any]]:
         """
         Perform BM25 full-text search via Neo4j Lucene index.
@@ -56,6 +57,7 @@ class SparseChannel:
             List of evidence candidates with metadata.
             Returns [] if index does not exist or query fails.
         """
+        chambers = chambers or ["camera", "senato"]
         retrieval_config = self.config.retrieval.get("sparse_channel", {})
         top_k = top_k or retrieval_config.get("top_k", 100)
         index_name = retrieval_config.get("index_name", "chunk_fulltext")
@@ -72,6 +74,7 @@ class SparseChannel:
         LIMIT $top_k
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+        WHERE s.chamber IN $chambers
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
@@ -101,6 +104,7 @@ class SparseChannel:
                     "index_name": index_name,
                     "query_text": escaped_query,
                     "top_k": top_k,
+                    "chambers": chambers,
                 }
             )
             logger.info(f"Sparse channel: retrieved {len(results)} chunks")

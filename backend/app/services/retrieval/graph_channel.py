@@ -106,6 +106,7 @@ class GraphChannel:
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
         entity_filter: Optional[Dict[str, list]] = None,
+        chambers: list[str] | None = None,
     ) -> List[Dict[str, Any]]:
         """
         Retrieve evidence through graph traversal.
@@ -129,6 +130,7 @@ class GraphChannel:
         Returns:
             List of evidence candidates
         """
+        chambers = chambers or ["camera", "senato"]
         graph_config = self.config.retrieval.get("graph_channel", {})
         top_k = top_k or graph_config.get("max_acts_per_query", 100)
 
@@ -155,7 +157,8 @@ class GraphChannel:
             act_uris,
             query_embedding=query_embedding,
             date_start=date_start,
-            date_end=date_end
+            date_end=date_end,
+            chambers=chambers,
         )
 
         # Step 4: Optional entity-filtered retrieval (lawRefs / personRefs)
@@ -165,6 +168,7 @@ class GraphChannel:
                 query_embedding=query_embedding,
                 date_start=date_start,
                 date_end=date_end,
+                chambers=chambers,
             )
             if entity_chunks:
                 # Merge: add entity-filtered chunks not already present
@@ -268,6 +272,7 @@ class GraphChannel:
         query_embedding: List[float],
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
+        chambers: list[str] | None = None,
     ) -> List[Dict[str, Any]]:
         """
         Retrieve chunks that match entity references (lawRefs / personRefs).
@@ -305,21 +310,23 @@ class GraphChannel:
 
         entity_clause = " OR ".join(where_parts)
 
-        # Date filter
-        date_conditions = []
+        # Chamber and date filters
+        chambers = chambers or ["camera", "senato"]
+        params["chambers"] = chambers
+        session_conditions = ["s.chamber IN $chambers"]
         if date_start:
-            date_conditions.append("s.date >= $date_start")
+            session_conditions.append("s.date >= $date_start")
             params["date_start"] = date_start
         if date_end:
-            date_conditions.append("s.date <= $date_end")
+            session_conditions.append("s.date <= $date_end")
             params["date_end"] = date_end
-        date_clause = " AND ".join(date_conditions) if date_conditions else "1=1"
+        session_clause = " AND ".join(session_conditions)
 
         cypher = f"""
         MATCH (c:Chunk)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         WHERE ({entity_clause})
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-        WHERE {date_clause}
+        WHERE {session_clause}
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         RETURN c.id AS chunk_id,
@@ -347,7 +354,8 @@ class GraphChannel:
         act_uris: List[str],
         query_embedding: List[float],
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        chambers: list[str] | None = None,
     ) -> List[Dict[str, Any]]:
         """
         Get chunks from speeches by act signatories, filtered by chunk-level
@@ -358,18 +366,19 @@ class GraphChannel:
         if not act_uris:
             return []
 
-        # Build date filter
-        date_conditions = []
-        params = {"act_uris": act_uris}
+        # Build chamber and date filters
+        chambers = chambers or ["camera", "senato"]
+        params = {"act_uris": act_uris, "chambers": chambers}
+        session_conditions = ["s.chamber IN $chambers"]
 
         if date_start:
-            date_conditions.append("s.date >= $date_start")
+            session_conditions.append("s.date >= $date_start")
             params["date_start"] = date_start
         if date_end:
-            date_conditions.append("s.date <= $date_end")
+            session_conditions.append("s.date <= $date_end")
             params["date_end"] = date_end
 
-        date_clause = " AND ".join(date_conditions) if date_conditions else "1=1"
+        date_clause = " AND ".join(session_conditions)
 
         cypher = f"""
         MATCH (speaker)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
