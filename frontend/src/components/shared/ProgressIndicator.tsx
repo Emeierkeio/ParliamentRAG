@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { config } from "@/config";
 import type { ProcessingProgress } from "@/types";
@@ -29,32 +30,8 @@ interface ProgressIndicatorProps {
   className?: string;
 }
 
-/** Short labels for mobile display (max ~5 chars) */
-const STEP_SHORT_LABELS: Record<number, string> = {
-  1: "Query",
-  2: "Comm.",
-  3: "Esperti",
-  4: "Interv.",
-  5: "Stats",
-  6: "Bussola",
-  7: "Testo",
-  8: "Check",
-};
-
-/** Shared step descriptions for tooltips */
-const STEP_DESCRIPTIONS: Record<number, string> = {
-  1: "Classifica la domanda dell'utente per identificare il tema principale",
-  2: "Identifica la commissione parlamentare più pertinente al tema",
-  3: "Seleziona i parlamentari con maggiore autorità sul tema per ciascuna coalizione",
-  4: "Recupera gli interventi parlamentari più rilevanti dal database vettoriale",
-  5: "Calcola le percentuali di rappresentazione maggioranza/opposizione",
-  6: "Analizza il posizionamento ideologico dei gruppi parlamentari sul tema",
-  7: "Genera la sintesi finale bilanciata con citazioni verificate",
-  8: "Completa la verifica finale e salva in cronologia",
-};
-
 /** Render rich step result details based on step type */
-function StepResultDetails({ step, result, details }: { step: number; result?: string; details?: Record<string, unknown> }) {
+function StepResultDetails({ step, result, details, tPi }: { step: number; result?: string; details?: Record<string, unknown>; tPi: ReturnType<typeof useTranslations> }) {
   // Step 2: Commissioni — show commission name
   if (step === 2) {
     const commList = Array.isArray(details?.commissioni) ? details.commissioni as Array<Record<string, unknown>> : [];
@@ -63,7 +40,7 @@ function StepResultDetails({ step, result, details }: { step: number; result?: s
     if (topCommName) {
       return (
         <p className="text-[11px] text-primary font-medium mt-1">
-          Commissione: {topCommName}
+          {tPi('stepResultCommissione')}: {topCommName}
         </p>
       );
     }
@@ -79,7 +56,7 @@ function StepResultDetails({ step, result, details }: { step: number; result?: s
   // Default: show result string
   return (
     <p className="text-[11px] text-primary font-medium mt-1">
-      Risultato: {result || "Completato"}
+      {tPi('stepResultResult')}: {result || tPi('stepResultCompleted')}
     </p>
   );
 }
@@ -89,14 +66,15 @@ function StepResultDetails({ step, result, details }: { step: number; result?: s
  * Rendered separately in ChatArea as a sticky element.
  */
 export function ProgressBanner({ progress, className }: ProgressIndicatorProps) {
+  const tPi = useTranslations('ProgressIndicator');
   if (!progress) return null;
 
   const textIsVisible = progress.stepResults?.some(r => r.step === 7);
   if (!textIsVisible || progress.isComplete) return null;
 
   const statusText = progress.currentStep <= 7
-    ? "Completamento scrittura..."
-    : "Finalizzazione...";
+    ? tPi('writingCompletion')
+    : tPi('waiting');
 
   return (
     <div className={cn(
@@ -108,9 +86,16 @@ export function ProgressBanner({ progress, className }: ProgressIndicatorProps) 
 }
 
 export function ProgressIndicator({ progress, className }: ProgressIndicatorProps) {
+  const tPi = useTranslations('ProgressIndicator');
+  const tPs = useTranslations('ProgressSteps');
+
   if (!progress || progress.isComplete) return null;
 
   const steps = config.ui.progressSteps;
+
+  const getStepLabel = (id: number) => tPs(`step${id}.label` as Parameters<typeof tPs>[0]);
+  const getStepDescription = (id: number) => tPs(`step${id}.description` as Parameters<typeof tPs>[0]);
+  const getStepShortLabel = (id: number) => tPi(`shortLabels.${id}` as Parameters<typeof tPi>[0]);
 
   const getStepResult = (stepNumber: number) => {
     return progress.stepResults?.find(r => r.step === stepNumber);
@@ -143,15 +128,15 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
                   />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[250px]">
-                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="font-semibold text-xs">{getStepLabel(step.id)}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                    {getStepDescription(step.id)}
                   </p>
                   {isComplete && (
-                    <StepResultDetails step={stepNumber} result={getStepResult(stepNumber)?.result} details={getStepResult(stepNumber)?.details} />
+                    <StepResultDetails step={stepNumber} result={getStepResult(stepNumber)?.result} details={getStepResult(stepNumber)?.details} tPi={tPi} />
                   )}
                   {isActive && (
-                    <p className="text-[11px] text-primary/70 font-medium mt-1 italic">In corso...</p>
+                    <p className="text-[11px] text-primary/70 font-medium mt-1 italic">{tPi('inProgress')}</p>
                   )}
                 </TooltipContent>
               </Tooltip>
@@ -209,22 +194,22 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
                         isPending && "text-muted-foreground opacity-40"
                       )}
                     >
-                      <span className="lg:hidden">{STEP_SHORT_LABELS[stepNumber] || step.label}</span>
-                      <span className="hidden lg:inline">{step.label}</span>
+                      <span className="lg:hidden">{getStepShortLabel(step.id)}</span>
+                      <span className="hidden lg:inline">{getStepLabel(step.id)}</span>
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
-                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="font-semibold text-xs">{getStepLabel(step.id)}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                    {getStepDescription(step.id)}
                   </p>
                   {isComplete && (
-                    <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
+                    <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} tPi={tPi} />
                   )}
                   {isActive && (
                     <p className="text-[11px] text-primary/70 font-medium mt-1 italic">
-                      In corso...
+                      {tPi('inProgress')}
                     </p>
                   )}
                 </TooltipContent>
@@ -243,9 +228,16 @@ export function ProgressIndicator({ progress, className }: ProgressIndicatorProp
  * A connecting line runs behind the circles.
  */
 export function CompletedProgressStepper({ progress, className }: ProgressIndicatorProps) {
+  const tPi = useTranslations('ProgressIndicator');
+  const tPs = useTranslations('ProgressSteps');
+
   if (!progress) return null;
 
   const steps = config.ui.progressSteps;
+
+  const getStepLabel = (id: number) => tPs(`step${id}.label` as Parameters<typeof tPs>[0]);
+  const getStepDescription = (id: number) => tPs(`step${id}.description` as Parameters<typeof tPs>[0]);
+  const getStepShortLabel = (id: number) => tPi(`shortLabels.${id}` as Parameters<typeof tPi>[0]);
 
   const getStepResult = (stepNumber: number) => {
     return progress.stepResults?.find(r => r.step === stepNumber);
@@ -265,11 +257,11 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
                   <div className="h-1.5 rounded-full bg-primary flex-1 min-w-0 cursor-pointer" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[250px]">
-                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="font-semibold text-xs">{getStepLabel(step.id)}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                    {getStepDescription(step.id)}
                   </p>
-                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
+                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} tPi={tPi} />
                 </TooltipContent>
               </Tooltip>
             );
@@ -281,7 +273,7 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
               key={step.id}
               className="text-[8px] leading-tight text-center text-primary/70 font-medium truncate flex-1 min-w-0 px-px"
             >
-              {STEP_SHORT_LABELS[step.id] || step.label}
+              {getStepShortLabel(step.id)}
             </span>
           ))}
         </div>
@@ -307,17 +299,17 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
                       <Check className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-[10px] leading-tight text-center text-primary font-medium truncate w-full px-0.5">
-                      <span className="lg:hidden">{STEP_SHORT_LABELS[step.id] || step.label}</span>
-                      <span className="hidden lg:inline">{step.label}</span>
+                      <span className="lg:hidden">{getStepShortLabel(step.id)}</span>
+                      <span className="hidden lg:inline">{getStepLabel(step.id)}</span>
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-[280px]">
-                  <p className="font-semibold text-xs">{step.label}</p>
+                  <p className="font-semibold text-xs">{getStepLabel(step.id)}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {STEP_DESCRIPTIONS[stepNumber] || step.description}
+                    {getStepDescription(step.id)}
                   </p>
-                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} />
+                  <StepResultDetails step={stepNumber} result={stepResult?.result} details={stepResult?.details} tPi={tPi} />
                 </TooltipContent>
               </Tooltip>
             );
@@ -340,39 +332,17 @@ const STEP_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   CheckCircle2,
 };
 
-/** Feature cards shown to users while they wait in queue */
-const SYSTEM_TOUR_FEATURES = [
-  {
-    icon: Search,
-    title: "Ricerca semantica",
-    desc: "Trova interventi per concetto, non solo per parola chiave esatta.",
-  },
-  {
-    icon: Users,
-    title: "Esperti per tema",
-    desc: "Identifica i parlamentari con più autorità su ogni argomento.",
-  },
-  {
-    icon: Compass,
-    title: "Compasso ideologico",
-    desc: "Visualizza il posizionamento dei gruppi parlamentari su qualsiasi tema.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Citazioni verificate",
-    desc: "Ogni affermazione è collegata al discorso originale in aula.",
-  },
-  {
-    icon: BarChart3,
-    title: "Bilancio maggioranza/opposizione",
-    desc: "Controlla se la risposta è bilanciata tra i due schieramenti.",
-  },
-  {
-    icon: Landmark,
-    title: "Commissioni parlamentari",
-    desc: "Scopri quale commissione è competente per ogni tema trattato.",
-  },
-] satisfies Array<{ icon: React.ComponentType<{ className?: string }>; title: string; desc: string }>;
+/** Map step icon names to Lucide components (moved up) */
+type SystemTourFeature = { icon: React.ComponentType<{ className?: string }>; titleKey: string; descKey: string };
+
+const SYSTEM_TOUR_FEATURES_CONFIG: SystemTourFeature[] = [
+  { icon: Search, titleKey: "tourSemanticSearch", descKey: "tourSemanticSearchDesc" },
+  { icon: Users, titleKey: "tourExpertsPerTopic", descKey: "tourExpertsPerTopicDesc" },
+  { icon: Compass, titleKey: "tourIdeologicalCompass", descKey: "tourIdeologicalCompassDesc" },
+  { icon: MessageSquare, titleKey: "tourVerifiedCitations", descKey: "tourVerifiedCitationsDesc" },
+  { icon: BarChart3, titleKey: "tourBalance", descKey: "tourBalanceDesc" },
+  { icon: Landmark, titleKey: "tourCommittees", descKey: "tourCommitteesDesc" },
+];
 
 interface ProgressFullPageProps {
   progress: ProcessingProgress;
@@ -385,6 +355,13 @@ interface ProgressFullPageProps {
  * Uses the entire available space to explain what each step does and why.
  */
 export function ProgressFullPage({ progress, query, className }: ProgressFullPageProps) {
+  const tPi = useTranslations('ProgressIndicator');
+  const tPs = useTranslations('ProgressSteps');
+
+  const getStepLabel = (id: number) => tPs(`step${id}.label` as Parameters<typeof tPs>[0]);
+  const getStepDescription = (id: number) => tPs(`step${id}.description` as Parameters<typeof tPs>[0]);
+  const getStepWhyDescription = (id: number) => tPs(`step${id}.whyDescription` as Parameters<typeof tPs>[0]);
+
   // Client-side elapsed counter: starts from backend value, increments every second
   const [localElapsed, setLocalElapsed] = useState(progress.elapsedSeconds ?? 0);
 
@@ -452,32 +429,32 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {isNext ? (
           <>
             <h2 className="text-lg font-semibold text-green-700 mb-1">
-              Sei il prossimo!
+              {tPi('youreNext')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              Un posto si sta liberando. La tua richiesta partirà tra pochi secondi.
+              {tPi('youreNextDesc')}
             </p>
           </>
         ) : ahead != null ? (
           <>
             <h2 className="text-lg font-semibold text-foreground mb-1">
-              Sistema al completo
+              {tPi('systemFull')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
               {ahead === 1
-                ? <>C&apos;è <span className="font-semibold text-amber-600">1 persona</span> davanti a te.</>
-                : <>Ci sono <span className="font-semibold text-amber-600">{ahead} persone</span> davanti a te.</>
+                ? <><span className="font-semibold text-amber-600">{tPi('systemFullOneAhead', { ahead })}</span></>
+                : <><span className="font-semibold text-amber-600">{tPi('systemFullManyAhead', { ahead })}</span></>
               }
-              {" "}Verrai elaborato automaticamente.
+              {" "}{tPi('systemFullWillProcess')}
             </p>
           </>
         ) : (
           <>
             <h2 className="text-lg font-semibold text-foreground mb-1">
-              Sistema al completo
+              {tPi('systemFull')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              La tua richiesta è in coda. Verrai elaborato non appena si libera un posto.
+              {tPi('systemFullQueued')}
             </p>
           </>
         )}
@@ -496,7 +473,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60">
                         <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                       </div>
-                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">Attesa</span>
+                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">{tPi('waitingSlot')}</span>
                     </div>
                   ))}
                   {extra > 0 && (
@@ -504,7 +481,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60 text-muted-foreground text-xs font-semibold">
                         +{extra}
                       </div>
-                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">Attesa</span>
+                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">{tPi('waitingSlot')}</span>
                     </div>
                   )}
                   {/* Arrow */}
@@ -526,7 +503,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
                       </div>
-                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">In corso</span>
+                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">{tPi('processingSlot')}</span>
                     </div>
                   ))}
                   {extraActive > 0 && (
@@ -534,7 +511,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
                         +{extraActive}
                       </div>
-                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">In corso</span>
+                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">{tPi('processingSlot')}</span>
                     </div>
                   )}
                   {/* Arrow to user */}
@@ -565,7 +542,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
               <span className={cn(
                 "text-[8px] font-semibold uppercase tracking-wide",
                 isNext ? "text-green-600" : "text-amber-600"
-              )}>Tu</span>
+              )}>{tPi('you')}</span>
             </div>
           </div>
         )}
@@ -574,14 +551,14 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         <div className="flex items-center gap-4 text-xs text-muted-foreground mb-5">
           <div className="flex items-center gap-1.5">
             <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-            <span>In attesa da <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
+            <span>{tPi('waitingFor')} <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
           </div>
           {estimatedSec != null && (
             <>
               <div className="h-3 w-px bg-border" />
               <div className="flex items-center gap-1.5">
                 <Clock className="h-3 w-3" />
-                <span>Stima: <span className="font-semibold tabular-nums">{formatEstimate(estimatedSec)}</span></span>
+                <span>{tPi('estimate')}: <span className="font-semibold tabular-nums">{formatEstimate(estimatedSec)}</span></span>
               </div>
             </>
           )}
@@ -589,28 +566,28 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
 
         {/* Reassuring note */}
         <p className="text-xs text-muted-foreground/50 max-w-xs leading-relaxed mb-10">
-          Non chiudere la pagina — la richiesta è registrata e verrà eseguita automaticamente.
+          {tPi('dontClose')}
         </p>
 
         {/* System tour while waiting */}
         <div className="w-full max-w-lg border-t border-border/30 pt-7">
           <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/50 mb-4 text-center">
-            Nel frattempo, scopri cosa puoi fare
+            {tPi('discoverWhileWaiting')}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {SYSTEM_TOUR_FEATURES.map((feat) => {
+            {SYSTEM_TOUR_FEATURES_CONFIG.map((feat) => {
               const Icon = feat.icon;
               return (
                 <div
-                  key={feat.title}
+                  key={feat.titleKey}
                   className="flex flex-col gap-2 rounded-xl bg-muted/40 border border-border/40 px-3 py-3 text-left hover:bg-muted/70 transition-colors"
                 >
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="h-3.5 w-3.5" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-foreground leading-tight">{feat.title}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{feat.desc}</p>
+                    <p className="text-xs font-semibold text-foreground leading-tight">{tPi(feat.titleKey as Parameters<typeof tPi>[0])}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{tPi(feat.descKey as Parameters<typeof tPi>[0])}</p>
                   </div>
                 </div>
               );
@@ -640,7 +617,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {/* Mobile progress dots */}
         <div className="w-full mb-5">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] text-muted-foreground">Analisi in corso</span>
+            <span className="text-[11px] text-muted-foreground">{tPi('analysisInProgress')}</span>
             <span className="text-[11px] font-medium text-primary">
               {progress.currentStep} / {steps.length}
             </span>
@@ -685,24 +662,24 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                 Step {progress.currentStep}
               </p>
               <h2 className="text-lg font-semibold text-foreground">
-                {currentStepConfig.label}
+                {getStepLabel(currentStepConfig.id)}
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {currentStepConfig.description}
+                {getStepDescription(currentStepConfig.id)}
               </p>
             </div>
 
             {/* Why */}
             <div className="bg-muted/40 rounded-xl px-4 py-3 text-left">
               <p className="text-[13px] text-muted-foreground leading-relaxed">
-                {currentStepConfig.whyDescription}
+                {getStepWhyDescription(currentStepConfig.id)}
               </p>
             </div>
 
             {/* Loading */}
             <div className="flex items-center justify-center gap-2 text-sm text-primary/70">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>In corso...</span>
+              <span>{tPi('inProgress')}</span>
             </div>
           </div>
         )}
@@ -711,7 +688,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {progress.stepResults && progress.stepResults.length > 0 && (
           <div className="w-full mt-5 pt-4 border-t border-border/30">
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60 mb-2">
-              Risultati ottenuti
+              {tPi('resultsObtained')}
             </p>
             <div className="space-y-1.5">
               {progress.stepResults.map((sr) => (
@@ -734,11 +711,11 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
           <div className="flex items-center gap-1.5 mb-1.5">
             <Target className="h-3 w-3 text-primary/60" />
             <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60">
-              Obiettivo finale
+              {tPi('finalObjective')}
             </p>
           </div>
           <p className="text-[13px] text-muted-foreground leading-relaxed">
-            Generare un&apos;analisi bilanciata delle posizioni di tutti i gruppi parlamentari, con citazioni verificate dai discorsi in aula.
+            {tPi('objectiveText')}
           </p>
         </div>
       </div>
@@ -747,7 +724,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
       {/* LEFT SIDEBAR: Step list + Objective */}
       <div className="hidden md:block w-64 lg:w-72 shrink-0">
         <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-4">
-          Pipeline di analisi
+          {tPi('analysisPipeline')}
         </p>
 
         {/* Vertical step list */}
@@ -796,7 +773,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                       isPending && "text-muted-foreground"
                     )}
                   >
-                    {step.label}
+                    {getStepLabel(step.id)}
                   </p>
                   {isComplete && getStepResult(stepNumber)?.result && (
                     <p className="text-[11px] text-muted-foreground truncate mt-0.5">
@@ -814,11 +791,11 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
           <div className="flex items-center gap-2 mb-2">
             <Target className="h-3.5 w-3.5 text-primary/60" />
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60">
-              Obiettivo
+              {tPi('objective')}
             </p>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Generare un&apos;analisi bilanciata delle posizioni di tutti i gruppi parlamentari, con citazioni verificate dai discorsi in aula.
+            {tPi('objectiveText')}
           </p>
         </div>
       </div>
@@ -828,7 +805,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {/* Progress bar */}
         <div className="w-full max-w-lg mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">Progresso</span>
+            <span className="text-xs text-muted-foreground">{tPi('progress')}</span>
             <span className="text-xs font-medium text-primary">
               {progress.currentStep} / {steps.length}
             </span>
@@ -861,24 +838,24 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
                 Step {progress.currentStep}
               </p>
               <h2 className="text-xl lg:text-2xl font-semibold text-foreground">
-                {currentStepConfig.label}
+                {getStepLabel(currentStepConfig.id)}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                {currentStepConfig.description}
+                {getStepDescription(currentStepConfig.id)}
               </p>
             </div>
 
             {/* Why description */}
             <div className="bg-muted/40 rounded-xl px-6 py-4 text-left">
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {currentStepConfig.whyDescription}
+                {getStepWhyDescription(currentStepConfig.id)}
               </p>
             </div>
 
             {/* Loading indicator */}
             <div className="flex items-center justify-center gap-2 text-sm text-primary/70">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>In corso...</span>
+              <span>{tPi('inProgress')}</span>
             </div>
           </div>
         )}
@@ -887,7 +864,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {progress.stepResults && progress.stepResults.length > 0 && (
           <div className="w-full max-w-lg mt-8 pt-6 border-t border-border/30">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">
-              Risultati ottenuti
+              {tPi('resultsObtained')}
             </p>
             <div className="space-y-2">
               {progress.stepResults.map((sr) => (

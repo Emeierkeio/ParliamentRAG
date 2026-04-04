@@ -68,7 +68,7 @@ export function ChatInput({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={placeholder || config.ui.chat.placeholder}
+            placeholder={placeholder}
             disabled={disabled}
             rows={1}
             className={cn(

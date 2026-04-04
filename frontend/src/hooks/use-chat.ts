@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useTranslations } from 'next-intl';
 import type {
   Message,
   Citation,
@@ -30,6 +31,7 @@ interface UseChatOptions {
 }
 
 export function useChat(options: UseChatOptions = {}) {
+  const t = useTranslations('Chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
@@ -113,7 +115,7 @@ export function useChat(options: UseChatOptions = {}) {
     setProgress({
       currentStep: 0,
       totalSteps: config.ui.progressSteps.length,
-      stepLabel: "Connessione...",
+      stepLabel: t('connecting'),
       stepDescription: "",
       isComplete: false,
       isWaiting: false,
@@ -231,8 +233,8 @@ export function useChat(options: UseChatOptions = {}) {
                 setProgress({
                   currentStep: 0,
                   totalSteps: config.ui.progressSteps.length,
-                  stepLabel: "In attesa...",
-                  stepDescription: data.message || "Attualmente troppi utenti stanno utilizzando il sistema, aspetta...",
+                  stepLabel: t('waiting'),
+                  stepDescription: data.message || t('tooManyUsers'),
                   isComplete: false,
                   isWaiting: true,
                   waitingMessage: data.message,
@@ -244,9 +246,7 @@ export function useChat(options: UseChatOptions = {}) {
                 });
                 break;
 
-              case "progress":
-                const stepIndex = data.step - 1;
-                const step = config.ui.progressSteps[stepIndex];
+              case "progress": {
                 const totalSteps = data.total || config.ui.progressSteps.length;
                 setProgress((prev) => {
                   // Only advance forward, never go backwards
@@ -259,31 +259,31 @@ export function useChat(options: UseChatOptions = {}) {
                     resultsById.set(r.step, r);
                   }
                   // Overlay accumulator (always wins — it has the real data)
-                  for (const [step, result] of stepResultsMap) {
-                    resultsById.set(step, result);
+                  for (const [stepNum, result] of stepResultsMap) {
+                    resultsById.set(stepNum, result);
                   }
                   // Fill generic placeholders only for steps WITHOUT dedicated SSE events
                   const stepsWithDedicatedEvents = new Set([2, 3, 4, 5, 6]);
                   for (let s = 1; s < newStep; s++) {
                     if (!resultsById.has(s) && !stepsWithDedicatedEvents.has(s)) {
-                      const stepCfg = config.ui.progressSteps[s - 1];
                       resultsById.set(s, {
                         step: s,
-                        label: stepCfg?.label || `Step ${s}`,
-                        result: stepCfg?.description || "Completato",
+                        label: `Step ${s}`,
+                        result: t('completato'),
                       });
                     }
                   }
                   return {
                     currentStep: newStep,
                     totalSteps: data.total || config.ui.progressSteps.length,
-                    stepLabel: newStepConfig?.label || data.message || "",
-                    stepDescription: newStepConfig?.description || "",
+                    stepLabel: data.message || "",
+                    stepDescription: "",
                     isComplete: false,
                     stepResults: Array.from(resultsById.values()),
                   };
                 });
                 break;
+              }
 
               case "commissioni":
                 const committeeList = data.commissioni || [];
@@ -294,10 +294,10 @@ export function useChat(options: UseChatOptions = {}) {
                 const topCommittee = committeeList.length > 0 ? (committeeList[0].nome || committeeList[0].name || String(committeeList[0])) : null;
                 const committeeResult = {
                   step: 2,
-                  label: "Commissione",
+                  label: t('commissione'),
                   result: topCommittee
-                    ? `Trovata commissione competente: ${topCommittee}`
-                    : "Nessuna commissione pertinente",
+                    ? `${t('foundCommittee')}: ${topCommittee}`
+                    : t('noCommittee'),
                   details: { commissioni: committeeList }
                 };
                 stepResultsMap.set(2, committeeResult);
@@ -321,8 +321,8 @@ export function useChat(options: UseChatOptions = {}) {
                   const topExperts = experts.slice(0, 3).map(e => `${e.first_name} ${e.last_name}`).join(", ");
                   const expertsResult = {
                     step: 3,
-                    label: "Esperti",
-                    result: `${experts.length} esperti: ${topExperts}${experts.length > 3 ? "..." : ""} (${majorityCount} maggioranza, ${oppositionCount} opposizione)`,
+                    label: t('esperti'),
+                    result: `${experts.length} ${t('esperti')}: ${topExperts}${experts.length > 3 ? "..." : ""} (${majorityCount} maggioranza, ${oppositionCount} opposizione)`,
                     details: { experts: experts.length, maggioranza: majorityCount, opposizione: oppositionCount }
                   };
                   stepResultsMap.set(3, expertsResult);
@@ -346,8 +346,8 @@ export function useChat(options: UseChatOptions = {}) {
                   const deputyPreview = uniqueDeputies.slice(0, 3).join(", ");
                   const citationsResult = {
                     step: 4,
-                    label: "Interventi",
-                    result: `${citations.length} interventi di ${deputyPreview}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
+                    label: t('interventi'),
+                    result: `${citations.length} ${t('interventi')} di ${deputyPreview}${uniqueDeputies.length > 3 ? ` ${t('andOthers')} ${uniqueDeputies.length - 3}` : ""}`,
                     details: { citations: citations.length }
                   };
                   stepResultsMap.set(4, citationsResult);
@@ -371,7 +371,7 @@ export function useChat(options: UseChatOptions = {}) {
                 updateLastAssistantMessage({ balanceMetrics });
                 const balanceResult: StepResult = {
                   step: 5,
-                  label: "Statistiche",
+                  label: t('statistiche'),
                   result: `Maggioranza ${data.maggioranza_percentage?.toFixed(0)}% / Opposizione ${data.opposizione_percentage?.toFixed(0)}%`,
                   details: balanceMetrics as unknown as Record<string, unknown>
                 };
@@ -380,12 +380,11 @@ export function useChat(options: UseChatOptions = {}) {
                   if (!prev) return null;
                   // Advance stepper to at least step 6 (balance = step 5 complete)
                   const nextStep = Math.max(prev.currentStep, 6);
-                  const stepConfig = config.ui.progressSteps[nextStep - 1];
                   return {
                     ...prev,
                     currentStep: nextStep,
-                    stepLabel: stepConfig?.label || prev.stepLabel,
-                    stepDescription: stepConfig?.description || prev.stepDescription,
+                    stepLabel: prev.stepLabel,
+                    stepDescription: prev.stepDescription,
                     stepResults: [...prev.stepResults.filter(r => r.step !== 5), balanceResult]
                   };
                 });
@@ -398,8 +397,8 @@ export function useChat(options: UseChatOptions = {}) {
                   updateLastAssistantMessage({ compass: compassData });
                   const compassResult = {
                     step: 6,
-                    label: "Bussola Ideologica",
-                    result: `${compassData.groups?.length || 0} gruppi posizionati su ${Object.keys(compassData.axes || {}).length} assi tematici`,
+                    label: t('bussola'),
+                    result: `${compassData.groups?.length || 0} ${t('groupsPositioned')}, ${Object.keys(compassData.axes || {}).length} ${t('thematicAxes')}`,
                     details: { axes: compassData.axes, groups: compassData.groups?.length }
                   };
                   stepResultsMap.set(6, compassResult);
@@ -407,12 +406,11 @@ export function useChat(options: UseChatOptions = {}) {
                     if (!prev) return null;
                     // Advance stepper to at least step 7 (compass = step 6 complete)
                     const nextStep = Math.max(prev.currentStep, 7);
-                    const stepConfig = config.ui.progressSteps[nextStep - 1];
                     return {
                       ...prev,
                       currentStep: nextStep,
-                      stepLabel: stepConfig?.label || prev.stepLabel,
-                      stepDescription: stepConfig?.description || prev.stepDescription,
+                      stepLabel: prev.stepLabel,
+                      stepDescription: prev.stepDescription,
                       stepResults: [...prev.stepResults.filter(r => r.step !== 6), compassResult]
                     };
                   });
@@ -444,16 +442,15 @@ export function useChat(options: UseChatOptions = {}) {
                   const alreadyDone = prev.stepResults.some(r => r.step === 7);
                   if (alreadyDone) return prev;
                   // Advance stepper to step 7 and mark it as completing
-                  const stepConfig = config.ui.progressSteps[6]; // step 7 (0-indexed)
                   return {
                     ...prev,
                     currentStep: 7,
-                    stepLabel: stepConfig?.label || "Generazione",
-                    stepDescription: "Scrittura in corso...",
+                    stepLabel: t('generazione'),
+                    stepDescription: t('scrittura'),
                     stepResults: [...prev.stepResults, {
                       step: 7,
-                      label: "Generazione",
-                      result: "Sintesi completata"
+                      label: t('generazione'),
+                      result: t('sintesiCompletata')
                     }]
                   };
                 });
@@ -472,8 +469,8 @@ export function useChat(options: UseChatOptions = {}) {
                   if (!newResults.some(r => r.step === 8)) {
                     newResults.push({
                       step: 8,
-                      label: "Valutazione",
-                      result: "Completata",
+                      label: t('valutazione'),
+                      result: t('completata'),
                     });
                   }
                   return { ...prev, isComplete: true, stepResults: newResults };
@@ -557,10 +554,10 @@ export function useChat(options: UseChatOptions = {}) {
       }
 
       // Max retries exhausted — show error
-      const errorMessage = error instanceof Error ? error.message : "Errore sconosciuto";
+      const errorMessage = error instanceof Error ? error.message : t('errorUnknown');
       updateLastAssistantMessage({
         status: "error",
-        content: `Mi dispiace, si è verificato un errore: ${errorMessage}`,
+        content: `${t('errorOccurred')}: ${errorMessage}`,
       });
       options.onError?.(error instanceof Error ? error : new Error(errorMessage));
     } finally {
@@ -681,14 +678,14 @@ export function useChat(options: UseChatOptions = {}) {
 
     // Rebuild a synthetic completed progress from available data
     const stepResults: StepResult[] = [];
-    stepResults.push({ step: 1, label: "Analisi query", result: "Completata" });
+    stepResults.push({ step: 1, label: t('analisiQuery'), result: t('queryCompletata') });
 
     if (historyData.citations?.length) {
       const uniqueDeputies = [...new Set(historyData.citations.map((c: Citation) => `${c.deputy_first_name} ${c.deputy_last_name}`))];
       stepResults.push({
         step: 4,
-        label: "Interventi",
-        result: `${historyData.citations.length} interventi di ${uniqueDeputies.slice(0, 3).join(", ")}${uniqueDeputies.length > 3 ? ` e altri ${uniqueDeputies.length - 3}` : ""}`,
+        label: t('interventi'),
+        result: `${historyData.citations.length} ${t('interventi')} di ${uniqueDeputies.slice(0, 3).join(", ")}${uniqueDeputies.length > 3 ? ` ${t('andOthers')} ${uniqueDeputies.length - 3}` : ""}`,
         details: { citations: historyData.citations.length },
       });
     }
@@ -698,15 +695,15 @@ export function useChat(options: UseChatOptions = {}) {
       const topExperts = historyData.experts.slice(0, 3).map((e: Expert) => `${e.first_name} ${e.last_name}`).join(", ");
       stepResults.push({
         step: 3,
-        label: "Esperti",
-        result: `${historyData.experts.length} esperti: ${topExperts}${historyData.experts.length > 3 ? "..." : ""} (${magg} maggioranza, ${opp} opposizione)`,
+        label: t('esperti'),
+        result: `${historyData.experts.length} ${t('esperti')}: ${topExperts}${historyData.experts.length > 3 ? "..." : ""} (${magg} maggioranza, ${opp} opposizione)`,
         details: { experts: historyData.experts.length, maggioranza: magg, opposizione: opp },
       });
     }
     if (historyData.balance) {
       stepResults.push({
         step: 5,
-        label: "Statistiche",
+        label: t('statistiche'),
         result: `Maggioranza ${historyData.balance.maggioranza_percentage?.toFixed(0)}% / Opposizione ${historyData.balance.opposizione_percentage?.toFixed(0)}%`,
         details: historyData.balance,
       });
@@ -714,23 +711,23 @@ export function useChat(options: UseChatOptions = {}) {
     if (historyData.compass) {
       stepResults.push({
         step: 6,
-        label: "Bussola Ideologica",
-        result: `${historyData.compass.groups?.length || 0} gruppi posizionati`,
+        label: t('bussola'),
+        result: `${historyData.compass.groups?.length || 0} ${t('groupsPositioned')}`,
         details: { groups: historyData.compass.groups?.length },
       });
     }
-    stepResults.push({ step: 7, label: "Generazione", result: "Sintesi completata" });
-    stepResults.push({ step: 8, label: "Valutazione", result: "Completata" });
+    stepResults.push({ step: 7, label: t('generazione'), result: t('sintesiCompletata') });
+    stepResults.push({ step: 8, label: t('valutazione'), result: t('completata') });
 
     setLastCompletedProgress({
       currentStep: config.ui.progressSteps.length,
       totalSteps: config.ui.progressSteps.length,
-      stepLabel: "Completato",
+      stepLabel: t('completato'),
       stepDescription: "",
       isComplete: true,
       stepResults,
     });
-  }, []);
+  }, [t]);
 
   return {
     messages,

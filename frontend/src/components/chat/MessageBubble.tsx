@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -110,6 +111,7 @@ function extractSpeakersBySection(
 
 /** Tooltip showing speakers grouped by parliamentary group (or role for government members) */
 function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: SpeakerInfo[]; iconSize: string; sectionTitle?: string }) {
+  const t = useTranslations('MessageBubble');
   const isGovernoSection = sectionTitle?.toLowerCase().includes("governo");
 
   if (isGovernoSection) {
@@ -122,7 +124,7 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
           </span>
         </TooltipTrigger>
         <TooltipContent side="right" className="max-w-[350px]">
-          <p className="font-semibold text-xs mb-1.5">Membri del Governo in questa sezione</p>
+          <p className="font-semibold text-xs mb-1.5">{t('governoSection')}</p>
           <div className="space-y-1">
             {speakers.map((s) => (
               <div key={s.name} className="text-[11px]">
@@ -139,7 +141,7 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
   // Regular section: group speakers by parliamentary group
   const grouped: Record<string, string[]> = {};
   for (const s of speakers) {
-    const label = s.group || "Altro";
+    const label = s.group || t('altro');
     if (!grouped[label]) grouped[label] = [];
     grouped[label].push(s.name);
   }
@@ -153,7 +155,7 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
         </span>
       </TooltipTrigger>
       <TooltipContent side="right" className="max-w-[350px]">
-        <p className="font-semibold text-xs mb-1.5">Deputati in questa sezione</p>
+        <p className="font-semibold text-xs mb-1.5">{t('deputiesSection')}</p>
         <div className="space-y-1.5">
           {groups.map(([group, names]) => (
             <div key={group}>
@@ -170,6 +172,7 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
 /** Share button that copies the chat URL to clipboard */
 function ShareButton({ chatId }: { chatId: string }) {
   const [copied, setCopied] = useState(false);
+  const t = useTranslations('MessageBubble');
 
   const handleShare = async () => {
     const url = `${window.location.origin}/chat/${chatId}`;
@@ -203,12 +206,12 @@ function ShareButton({ chatId }: { chatId: string }) {
       {copied ? (
         <>
           <CheckIcon className="h-4 w-4" />
-          <span className="hidden sm:inline">Link copiato negli appunti</span>
+          <span className="hidden sm:inline">{t('linkCopied')}</span>
         </>
       ) : (
         <>
           <Share2 className="h-4 w-4" />
-          <span className="hidden sm:inline">Condividi</span>
+          <span className="hidden sm:inline">{t('share')}</span>
         </>
       )}
     </button>
@@ -228,6 +231,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
   const isError = message.status === "error";
   const [highlightedChunkId, setHighlightedChunkId] = useState<string | null>(null);
   const [statsModalView, setStatsModalView] = useState<"interventions" | "speakers" | "sessions" | null>(null);
+  const t = useTranslations('MessageBubble');
 
   if (isUser) {
     return (
@@ -240,7 +244,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <User className="h-3 w-3" />
-          <span>Tu</span>
+          <span>{t('you')}</span>
           <span>•</span>
           <span>
             {message.timestamp.toLocaleTimeString("it-IT", {
@@ -251,7 +255,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
         </div>
         <div className="flex items-center gap-2 mt-1.5 text-sm text-muted-foreground/70">
           <Landmark className="h-4 w-4" />
-          <span className="font-medium">Camera dei Deputati — XIX Legislatura</span>
+          <span className="font-medium">{t('chamberTitle')}</span>
         </div>
         {progressSlot}
       </div>
@@ -267,7 +271,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
             <div className="flex items-center gap-2 text-destructive mb-2">
               <AlertCircle className="h-4 w-4" />
               <span className="font-medium">
-                Errore nella generazione della risposta
+                {t('errorTitle')}
               </span>
             </div>
             {message.content && (
@@ -375,7 +379,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                       <span
                         className="inline cursor-pointer rounded px-1 py-0.5 bg-primary/5 text-primary/90 font-medium hover:bg-primary/15 border-b-2 border-primary/40 hover:border-primary/60 transition-all duration-150"
                         onClick={() => setStatsModalView(view)}
-                        title="Clicca per vedere il dettaglio"
+                        title={t('clickForDetail')}
                       >
                         {children}
                       </span>
@@ -403,7 +407,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                         onClick={() => {
                           setHighlightedChunkId(href);
                         }}
-                        title="Clicca per evidenziare la fonte"
+                        title={t('clickHighlight')}
                       >
                         {children}
                       </span>
@@ -533,6 +537,7 @@ interface AssistantMetadataProps {
 }
 
 function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataProps) {
+  const t = useTranslations('MessageBubble');
   const hasCitations = message.citations && message.citations.length > 0;
   const hasExperts = message.experts && message.experts.length > 0;
   const hasBalance = message.balanceMetrics;
@@ -553,14 +558,14 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
       {hasExperts && (
         <CollapsibleSection
           icon={Users}
-          title="Fonti selezionate per autorità"
+          title={t('expertsTitle')}
           count={message.experts!.length}
           defaultOpen={true}
-          infoTooltip="Prima di recuperare le citazioni, il sistema identifica i parlamentari più autorevoli sul tema. L'autorità è calcolata su 6 fattori: interventi in aula, atti legislativi, commissione di appartenenza, professione, titolo di studio e ruolo istituzionale."
+          infoTooltip={t('expertsTooltip')}
         >
             <div className="pt-1 px-1 pb-2">
               <p className="text-[11px] text-muted-foreground/70 leading-relaxed mb-4">
-                Questi parlamentari sono stati identificati come le voci più competenti sul tema e usati come fonti prioritarie per costruire la risposta.
+                {t('expertsSectionDesc')}
               </p>
               {message.experts && (
                <div className="space-y-6">
@@ -595,16 +600,16 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
       {hasHQMetaData && (
         <CollapsibleSection
           icon={Sparkles}
-          title="Analisi High Quality (Best-of-N)"
+          title={t('hqTitle')}
           count={message.hqMetadata!.variants.length}
           defaultOpen={false}
-          infoTooltip="Vengono generate 3 varianti della risposta a temperature diverse, poi un giudice LLM seleziona la migliore per qualità e bilanciamento."
+          infoTooltip={t('hqTooltip')}
         >
           <div className="pt-2 px-1">
             <div className="bg-primary/5 border border-primary/10 rounded-lg p-4 mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <Trophy className="h-4 w-4 text-primary" />
-                <span className="text-sm font-semibold">Motivazione della scelta</span>
+                <span className="text-sm font-semibold">{t('hqJudgeReason')}</span>
               </div>
               <p className="text-xs text-muted-foreground italic leading-relaxed">
                 "{message.hqMetadata!.judge_reason}"
@@ -613,9 +618,9 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
 
             <Tabs defaultValue="winner" className="w-full">
               <TabsList className="grid w-full grid-cols-3 h-9">
-                <TabsTrigger value="winner" className="text-xs">🏆 Vincitore</TabsTrigger>
-                <TabsTrigger value="var0" className="text-xs">Variante A</TabsTrigger>
-                <TabsTrigger value="var1" className="text-xs">Variante B</TabsTrigger>
+                <TabsTrigger value="winner" className="text-xs">🏆 {t('winnerTab')}</TabsTrigger>
+                <TabsTrigger value="var0" className="text-xs">{t('variantA')}</TabsTrigger>
+                <TabsTrigger value="var1" className="text-xs">{t('variantB')}</TabsTrigger>
               </TabsList>
               
               {(() => {
@@ -645,11 +650,11 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
       {hasCitations && (
         <CollapsibleSection
           icon={Quote}
-          title="Citazioni"
+          title={t('citationsTitle')}
           count={message.citations!.length}
           defaultOpen={true}
           forceOpen={!!highlightedChunkId}
-          infoTooltip="Interventi parlamentari recuperati dal database tramite ricerca semantica ibrida (vettoriale + full-text), provenienti dai parlamentari selezionati per autorità sul tema."
+          infoTooltip={t('citationsTooltip')}
         >
           <div className="grid gap-2 w-full min-w-0">
             {Array.from(new Map(message.citations!.map(c => [c.chunk_id, c])).values()).map((citation, index) => (
@@ -671,10 +676,10 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
       {message.compass && (
         <CollapsibleSection
             icon={Compass}
-            title="Bussola Ideologica"
+            title={t('compassTitle')}
             count={message.compass?.groups?.length ?? 0}
             defaultOpen={true}
-            infoTooltip="Mappa 2D del posizionamento ideologico dei gruppi parlamentari sul tema, calcolata analizzando i contenuti degli interventi lungo assi tematici estratti automaticamente."
+            infoTooltip={t('compassTooltip')}
         >
              <CompassCard data={message.compass} />
         </CollapsibleSection>
@@ -754,6 +759,7 @@ interface BalanceSectionProps {
 }
 
 function BalanceSection({ metrics }: BalanceSectionProps) {
+  const t = useTranslations('MessageBubble');
   const [isOpen, setIsOpen] = useState(false);
 
   // biasScore: -1 = tutto opposizione, 0 = bilanciato, 1 = tutto maggioranza
@@ -769,7 +775,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
         >
           <div className="flex items-center gap-2">
             <PieChart className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Bilanciamento</span>
+            <span className="text-sm font-medium">{t('balanceTitle')}</span>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <span className="inline-flex cursor-help">
@@ -777,7 +783,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
                 </span>
               </TooltipTrigger>
               <TooltipContent side="right" className="max-w-[300px]">
-                <p className="text-[11px]">Percentuale di rappresentazione delle citazioni usate nella risposta tra maggioranza e opposizione. Un punteggio alto indica una risposta bilanciata.</p>
+                <p className="text-[11px]">{t('balanceTooltip')}</p>
               </TooltipContent>
             </Tooltip>
             <Badge
@@ -803,7 +809,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
             {/* Maggioranza */}
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-blue-400">Maggioranza</span>
+                <span className="text-blue-400">{t('maggioranza')}</span>
                 <span className="text-muted-foreground">
                   {Math.round(metrics.majorityPercentage)}%
                 </span>
@@ -819,7 +825,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
             {/* Opposizione */}
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-red-400">Opposizione</span>
+                <span className="text-red-400">{t('opposizione')}</span>
                 <span className="text-muted-foreground">
                   {Math.round(metrics.oppositionPercentage)}%
                 </span>

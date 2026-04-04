@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -63,6 +64,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const t = useTranslations('Sidebar');
 
   const handleNavClick = (action: () => void) => {
     action();
@@ -127,26 +129,26 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             <nav className="flex flex-col gap-1">
               {/* Primary */}
               <NavButton
-                item={{ icon: MessageSquare, label: "Ricerca Topic", isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
+                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
                 isCollapsed={false}
                 variant="primary"
                 disabled={isQueryRunning}
               />
 
               {/* Strumenti */}
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Strumenti</p>
+              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
               <NavButton
-                item={{ icon: Search, label: "Ricerca Atti", isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
+                item={{ icon: Search, label: t('actsSearch'), isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
                 isCollapsed={false}
                 disabled={false}
               />
               <NavButton
-                item={{ icon: BarChart3, label: "Analisi Autorità", isActive: pathname === "/rankings", onClick: () => handleNavClick(() => navTo("/rankings")) }}
+                item={{ icon: BarChart3, label: t('authorityAnalysis'), isActive: pathname === "/rankings", onClick: () => handleNavClick(() => navTo("/rankings")) }}
                 isCollapsed={false}
                 disabled={false}
               />
               <NavButton
-                item={{ icon: Compass, label: "Compasso Ideologico", isActive: pathname === "/compass", onClick: () => handleNavClick(() => navTo("/compass")) }}
+                item={{ icon: Compass, label: t('ideologicalCompass'), isActive: pathname === "/compass", onClick: () => handleNavClick(() => navTo("/compass")) }}
                 isCollapsed={false}
                 disabled={false}
               />
@@ -158,14 +160,14 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <div className="p-3 pb-6">
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>Dati aggiornati al <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
             </div>
             <NavButton
-              item={{ icon: Settings, label: "Impostazioni", onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
+              item={{ icon: Settings, label: t('settings'), onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
               isCollapsed={false}
             />
             <NavButton
-              item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
+              item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
               isCollapsed={false}
             />
             <CreditsRow isCollapsed={false} />
@@ -232,7 +234,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <nav className="flex flex-col gap-1">
             {/* Primary */}
             <NavButton
-              item={{ icon: MessageSquare, label: "Ricerca Topic", href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
+              item={{ icon: MessageSquare, label: t('topicSearch'), href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
               isCollapsed={isCollapsed}
               variant="primary"
               disabled={isQueryRunning}
@@ -240,24 +242,24 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             {/* Strumenti */}
             {!isCollapsed && (
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">Strumenti</p>
+              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
             <NavButton
-              item={{ icon: Search, label: "Ricerca Atti", href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
+              item={{ icon: Search, label: t('actsSearch'), href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
 
             <NavButton
-              item={{ icon: BarChart3, label: "Analisi Autorità", href: "/rankings", isActive: pathname === "/rankings", onClick: () => navTo("/rankings") }}
+              item={{ icon: BarChart3, label: t('authorityAnalysis'), href: "/rankings", isActive: pathname === "/rankings", onClick: () => navTo("/rankings") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
 
             <NavButton
-              item={{ icon: Compass, label: "Compasso Ideologico", href: "/compass", isActive: pathname === "/compass", onClick: () => navTo("/compass") }}
+              item={{ icon: Compass, label: t('ideologicalCompass'), href: "/compass", isActive: pathname === "/compass", onClick: () => navTo("/compass") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
@@ -270,16 +272,16 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           {!isCollapsed && (
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>Dati aggiornati al <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
             </div>
           )}
           <nav className="flex flex-col gap-1">
             <NavButton
-                item={{ icon: Settings, label: "Impostazioni", onClick: () => setSettingsOpen(true) }}
+                item={{ icon: Settings, label: t('settings'), onClick: () => setSettingsOpen(true) }}
                 isCollapsed={isCollapsed}
             />
             <NavButton
-                item={{ icon: Github, label: "Documentazione", onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
+                item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />
 
@@ -300,7 +302,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                         <PanelLeft className="h-5 w-5" />
                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="right">Espandi menu</TooltipContent>
+                    <TooltipContent side="right">{t('expandMenu')}</TooltipContent>
                 </Tooltip>
               </div>
             )}
@@ -319,32 +321,33 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 }
 
 function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
+  const t = useTranslations('Sidebar');
   const content = (
     <div className="space-y-3 text-sm">
       <div className="flex items-center gap-2">
         <GraduationCap className="h-4 w-4 text-primary" />
-        <span className="font-medium">Tesi di Laurea Magistrale</span>
+        <span className="font-medium">{t('thesisTitle')}</span>
       </div>
       <p className="text-muted-foreground text-xs leading-relaxed">
-        Sistema RAG per l&apos;analisi bilanciata dei dibattiti parlamentari italiani.
+        {t('ragDescription')}
       </p>
       <Separator />
       <div className="space-y-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <BookOpen className="h-3.5 w-3.5" />
-          <span>Autore: <strong className="text-foreground">Mirko Tritella</strong></span>
+          <span>{t('author')}: <strong className="text-foreground">Mirko Tritella</strong></span>
         </div>
         <div className="flex items-center gap-2">
           <Building2 className="h-3.5 w-3.5" />
-          <span>Università degli Studi di Milano Bicocca</span>
+          <span>{t('university')}</span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-3.5 w-3.5" />
-          <span>Relatore: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
+          <span>{t('supervisor')}: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-3.5 w-3.5" />
-          <span>Correlatore: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
+          <span>{t('cosupervisor')}: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
         </div>
       </div>
     </div>
@@ -376,7 +379,7 @@ function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
           className="w-full justify-start gap-2.5 h-8 mb-0.5 text-[13px] text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
         >
           <GraduationCap className="h-4 w-4 shrink-0" />
-          <span className="truncate">Crediti</span>
+          <span className="truncate">{t('credits')}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent side="top" align="start" className="w-[260px] p-4">
@@ -456,6 +459,7 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
 
 // Info Modal
 function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useTranslations('Sidebar');
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-md">
@@ -465,7 +469,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
             {config.app.name}
           </DialogTitle>
           <DialogDescription>
-            Versione {config.app.version}
+            {t('version')} {config.app.version}
           </DialogDescription>
         </DialogHeader>
 
@@ -506,8 +510,8 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
           <Separator />
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Dati aggiornati al:</span>
-            <span className="font-medium">4 febbraio 2026</span>
+            <span className="text-muted-foreground">{t('dataUpdatedAt')}:</span>
+            <span className="font-medium">{t('dataDate')}</span>
           </div>
         </div>
       </DialogContent>

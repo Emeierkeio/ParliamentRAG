@@ -3,21 +3,22 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
 // Change to true to show the maintenance page. Restart Next.js after changing. MANUTENZIONE SETTA QUI!
 const MAINTENANCE_MODE = false;
 
-function MaintenancePage() {
+async function MaintenancePage() {
+  const t = await getTranslations('Maintenance');
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-900 px-6">
       <div className="max-w-md text-center space-y-6">
         <div className="text-6xl">🔧</div>
-        <h1 className="text-3xl font-semibold tracking-tight">Sistema in manutenzione</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{t('title')}</h1>
         <p className="text-gray-500 text-base leading-relaxed">
-          Stiamo effettuando operazioni di manutenzione per migliorare il servizio.
-          Torneremo online a breve.
+          {t('description')}
         </p>
         <p className="text-gray-400 text-sm">ParliamentRAG</p>
       </div>
