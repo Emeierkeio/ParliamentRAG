@@ -143,10 +143,12 @@ export function useChat(options: UseChatOptions = {}) {
     setMessages([userMessage, assistantMessage]);
 
     try {
+      const locale = document.cookie.split('; ').find(c => c.startsWith('NEXT_LOCALE='))?.split('=')[1] || 'it';
       const response = await fetch(`${config.api.baseUrl}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept-Language": locale,
         },
         body: JSON.stringify({ query: content, task_id: taskId }),
         signal: abortControllerRef.current.signal,

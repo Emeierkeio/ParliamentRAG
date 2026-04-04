@@ -12,7 +12,7 @@ import time
 from datetime import date, datetime
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -22,6 +22,7 @@ from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
+from ..services.translation import translate_citation_batch
 from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
@@ -43,6 +44,7 @@ class ChatRequest(BaseModel):
     query: str = Field(..., min_length=3, max_length=4000)
     mode: str = Field(default="standard")  # "standard" or "high_quality"
     task_id: Optional[str] = Field(default=None)  # Client-provided task ID for reconnection
+    locale: str = Field(default="it")  # Language for citation translation
 
 
 
@@ -546,6 +548,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
+        if request.locale != "it":
+            verified_citations = await translate_citation_batch(verified_citations, target_lang=request.locale)
         await emit("citation_details", {"citations": verified_citations})
 
         # === Step 8: Valutazione (if high_quality mode) ===
@@ -1029,6 +1033,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
+        if request.locale != "it":
+            verified_citations = await translate_citation_batch(verified_citations, target_lang=request.locale)
         yield sse_event("citation_details", {"citations": verified_citations})
         await asyncio.sleep(0)  # Flush
 
@@ -1412,7 +1418,7 @@ def _build_verified_citations(
 
 
 @router.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(request: ChatRequest, http_request: Request):
     """
     Main chat endpoint with SSE streaming.
 
@@ -1420,6 +1426,10 @@ async def chat_endpoint(request: ChatRequest):
     disconnects (e.g. mobile browser going to background).
     The client can poll GET /api/chat/task/{task_id} to recover results.
     """
+    # Read locale from Accept-Language header and inject into request
+    accept_lang = http_request.headers.get("accept-language", "it")
+    request.locale = "en" if "en" in accept_lang else "it"
+
     store = get_task_store()
 
     # Cleanup expired tasks periodically

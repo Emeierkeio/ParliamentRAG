@@ -19,6 +19,7 @@ from ..services.neo4j_client import Neo4jClient
 from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
+from ..services.translation import translate_citation_batch
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -107,6 +108,11 @@ async def process_query_streaming(
 
     Yields SSE events as the pipeline progresses.
     """
+    request_locale = "it"
+    if http_request:
+        accept_lang = http_request.headers.get("accept-language", "it")
+        request_locale = "en" if "en" in accept_lang else "it"
+
     services = get_services()
 
     try:
@@ -399,6 +405,8 @@ async def process_query_streaming(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
+        if request_locale != "it":
+            verified_citations = await translate_citation_batch(verified_citations, target_lang=request_locale)
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
         # === Update experts: replace any top-ranked speaker with the actually cited one ===

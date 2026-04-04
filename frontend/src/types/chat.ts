@@ -29,6 +29,9 @@ export interface Citation {
   session_number?: number;
   debate_title?: string;
   institutional_role?: string | null;
+  translated_text?: string;
+  translated_full_text?: string;
+  is_translated?: boolean;
 }
 
 export interface Expert {
