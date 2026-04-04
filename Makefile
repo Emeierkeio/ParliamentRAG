@@ -249,7 +249,7 @@ NEO4J_LOCAL  := bolt://localhost:7689
 NEO4J_USER   ?= neo4j
 NEO4J_PASS   ?= thesis2026
 
-.PHONY: db-populate db-update db-download-csv db-install
+.PHONY: db-populate db-update db-senate db-download-csv db-install
 
 db-install: venv ## Install build dependencies (pandas, regex, etc.)
 	@$(PIP) install -r $(BUILD_DIR)/requirements-build.txt -q
@@ -277,6 +277,11 @@ db-all: db-install ## One-shot full DB: download CSVs + build + chunk + embed + 
 	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
 	@# 4. Full build: nuke → ingest → chunk → vector index → embeddings
 	@$(PYTHON) $(BUILD_SCRIPT) build \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "$(CYAN)Building Senate data (additive)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) build-senate \
 		--neo4j-uri $(NEO4J_LOCAL) \
 		--neo4j-user $(NEO4J_USER) \
 		--neo4j-password $(NEO4J_PASS)
@@ -328,6 +333,22 @@ db-update: db-install ## Incremental update (start Neo4j if needed, download new
 		--neo4j-user $(NEO4J_USER) \
 		--neo4j-password $(NEO4J_PASS)
 	@printf "\n$(BOLD)$(GREEN)Database updated!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
+
+db-senate: db-install ## Build Senate data (additive, Camera data preserved)
+	@printf "$(BOLD)$(CYAN)Senate database build (additive)...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) build-senate \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Senate data built!$(RESET)\n"
 
 # ============================================================================
 #  Graph Enrichment (SPARQL)

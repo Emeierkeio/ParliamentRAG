@@ -46,6 +46,8 @@ from db_builder import DatabaseBuilder
 from csv_loader import GOVERNMENT_GROUPS, parse_date_to_neo4j
 from download import download_new_xmls, get_last_xml_id
 from ingest_atti_parlamentari import AttiParlamentariIngester
+from senate_parser import SenateStenograficoParser
+from download_senate import download_senate_xmls
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -65,6 +67,7 @@ DEFAULT_NEO4J_PASSWORD = "thesis2026"
 
 DATA_DIR = os.path.join(BASE_DIR, "data")
 XML_DIR = os.path.join(DATA_DIR, "xml")
+SENATE_XML_DIR = os.path.join(DATA_DIR, "senate_xml")
 CONFIG_PATH = os.path.join(SCRIPTS_DIR, "config.yaml")
 
 
@@ -346,6 +349,54 @@ def do_update(
 
 
 # ---------------------------------------------------------------------------
+# BUILD-SENATE mode
+# ---------------------------------------------------------------------------
+
+
+def do_build_senate(
+    uri: str,
+    user: str,
+    password: str,
+    skip_download: bool = False,
+    skip_embeddings: bool = False,
+) -> None:
+    """Build Senate portion of the database (additive — no nuke)."""
+    config = load_config(CONFIG_PATH)
+    driver = GraphDatabase.driver(uri, auth=(user, password))
+    builder = DatabaseBuilder(driver, config)
+    parser = SenateStenograficoParser(config)
+    try:
+        # 1. Download Senate AKN files
+        if skip_download:
+            logger.info("Skipping Senate XML download")
+        else:
+            logger.info("Downloading Senate AKN files")
+            os.makedirs(SENATE_XML_DIR, exist_ok=True)
+            count = download_senate_xmls(SENATE_XML_DIR)
+            logger.info("Downloaded %d new Senate files", count)
+
+        # 2. Ingest Senate stenografici
+        logger.info("Ingesting Senate stenografici")
+        akn_files = sorted(glob.glob(os.path.join(SENATE_XML_DIR, "resaula_leg19_*.akn")))
+        logger.info("Found %d AKN files", len(akn_files))
+        for i, akn_path in enumerate(akn_files, 1):
+            logger.info("[%d/%d] %s", i, len(akn_files), os.path.basename(akn_path))
+            parsed = parser.parse_xml_file(akn_path)
+            builder.ingest_session(parsed)
+
+        # 3. Embeddings for new Senate chunks
+        if skip_embeddings:
+            logger.info("Skipping Senate embeddings")
+        else:
+            logger.info("Pre-calculating Senate embeddings")
+            run_subprocess("precalculate_embeddings.py", uri, user, password)
+
+        logger.info("Senate build complete!")
+    finally:
+        driver.close()
+
+
+# ---------------------------------------------------------------------------
 # CLI entry point
 # ---------------------------------------------------------------------------
 
@@ -358,8 +409,8 @@ def main() -> None:
     )
     arg_parser.add_argument(
         "mode",
-        choices=["build", "update"],
-        help="build = rebuild from scratch; update = incremental update",
+        choices=["build", "update", "build-senate"],
+        help="build = rebuild from scratch; update = incremental update; build-senate = additive Senate ingestion",
     )
     arg_parser.add_argument(
         "--neo4j-uri",
@@ -388,6 +439,14 @@ def main() -> None:
             args.neo4j_password,
             args.skip_download,
             args.skip_atti,
+            args.skip_embeddings,
+        )
+    elif args.mode == "build-senate":
+        do_build_senate(
+            args.neo4j_uri,
+            args.neo4j_user,
+            args.neo4j_password,
+            args.skip_download,
             args.skip_embeddings,
         )
     else:
