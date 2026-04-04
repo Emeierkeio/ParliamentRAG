@@ -106,13 +106,18 @@ def _sparql_get(query: str, timeout: int = SPARQL_TIMEOUT) -> list[dict]:
     Uses urllib (stdlib) to avoid additional dependencies.
     Returns an empty list on any network/HTTP/parse error — never raises.
     """
-    params = urllib.parse.urlencode({
+    # Use POST to avoid URL length limits on complex SPARQL queries
+    post_data = urllib.parse.urlencode({
         "query": query,
         "format": "application/sparql-results+json",
-    })
-    url = f"{SPARQL_ENDPOINT}?{params}"
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        SPARQL_ENDPOINT,
+        data=post_data,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
     try:
-        with urllib.request.urlopen(url, timeout=timeout) as resp:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
             raw = resp.read()
             data = json.loads(raw)
             return data.get("results", {}).get("bindings", [])
