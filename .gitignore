@@ -241,7 +241,22 @@ backend/scripts/export_notebooklm.py
 
 # Orphan data files
 backend/data/parliament.db
+data/
 
 *.txt
 package-lock.json
 package.json
+
+# ===========================================
+# Research / Thesis artifacts
+# ===========================================
+outputs/
+thesis/
+*.tex
+*.pdf
+*.csv
+
+# ===========================================
+# GSD / Planning
+# ===========================================
+.planning/
