@@ -737,6 +737,134 @@ class DatabaseBuilder:
             """, name=row["name"], nodeId=row["nodeId"],
                 startDate=row["startDate"])
 
+    # ------------------------------------------------------------------
+    # Senate CSV loaders
+    # ------------------------------------------------------------------
+
+    def load_senators(self, data_path: str) -> None:
+        """Load Senator Deputy nodes from senatori_xix.csv.
+
+        Senators are modelled as Deputy nodes with chamber='senato'.
+        The id field is the senatore URI (e.g. http://dati.senato.it/senatore/17542).
+        """
+        csv_path = os.path.join(data_path, "senatori_xix.csv")
+        if not os.path.exists(csv_path):
+            print(f"  Skipping senators — {csv_path} not found")
+            return
+
+        sen_df = pd.read_csv(csv_path)
+
+        rows: list[dict] = []
+        for _, r in sen_df.iterrows():
+            rows.append({
+                "id": r["senatore"],
+                "firstName": r.get("nome"),
+                "lastName": r.get("cognome"),
+                "gender": r.get("gender"),
+                "photo": r.get("foto"),
+                "deputyCard": str(r.get("schedaCamera", "")),
+                "termOfOfficeStart": format_date_ddmmyyyy(r.get("mandatoStart")),
+                "chamber": "senato",
+            })
+
+        with self._driver.session() as neo_session:
+            self._batch_write(neo_session, self._upsert_senators, rows)
+        print(f"Loaded {len(rows)} Senator Deputy nodes.")
+
+    @staticmethod
+    def _upsert_senators(tx, batch: list) -> None:
+        tx.run("""
+            UNWIND $batch AS row
+            MERGE (d:Deputy {id: row.id})
+            SET d.first_name = row.firstName,
+                d.last_name = row.lastName,
+                d.gender = row.gender,
+                d.photo = row.photo,
+                d.deputy_card = row.deputyCard,
+                d.term_of_office_start = row.termOfOfficeStart,
+                d.chamber = row.chamber
+        """, batch=batch)
+
+    def load_senator_groups(self, data_path: str) -> None:
+        """Load ParliamentaryGroup nodes and MEMBER_OF_GROUP rels for senators."""
+        csv_path = os.path.join(data_path, "senatori_xix_gruppi.csv")
+        if not os.path.exists(csv_path):
+            print(f"  Skipping senator groups — {csv_path} not found")
+            return
+
+        grp_df = pd.read_csv(csv_path)
+
+        with_end: list[dict] = []
+        without_end: list[dict] = []
+
+        for _, r in grp_df.iterrows():
+            name = str(r.get("gruppoLabel", "")).strip()
+            if not name:
+                continue
+            acronym = str(r.get("gruppoBreve", "")).strip() or None
+
+            start_date = parse_date_to_neo4j(r.get("gruppoStart"))
+            end_date = parse_date_to_neo4j(r.get("gruppoEnd"))
+
+            row = {
+                "name": name,
+                "acronym": acronym,
+                "nodeId": r["senatore"],
+                "nodeLabel": "Deputy",
+                "startDate": start_date,
+            }
+            if end_date:
+                row["endDate"] = end_date
+                with_end.append(row)
+            else:
+                without_end.append(row)
+
+        with self._driver.session() as neo_session:
+            if with_end:
+                self._batch_write(neo_session, self._upsert_group_membership_with_end, with_end)
+            if without_end:
+                self._batch_write(neo_session, self._upsert_group_membership_no_end, without_end)
+        print("Senator ParliamentaryGroup nodes and MEMBER_OF_GROUP relationships loaded.")
+
+    def load_senator_committees(self, data_path: str) -> None:
+        """Load Committee nodes and MEMBER_OF_COMMITTEE rels for senators."""
+        csv_path = os.path.join(data_path, "senatori_xix_commissioni.csv")
+        if not os.path.exists(csv_path):
+            print(f"  Skipping senator committees — {csv_path} not found")
+            return
+
+        com_df = pd.read_csv(csv_path)
+
+        with_end: list[dict] = []
+        without_end: list[dict] = []
+
+        for _, r in com_df.iterrows():
+            name = clean_generic_label(r.get("organoLabel"))
+            if not name:
+                continue
+
+            start_date = parse_date_to_neo4j(r.get("membroStart"))
+            end_date = parse_date_to_neo4j(r.get("membroEnd"))
+
+            row = {
+                "name": name,
+                "nodeId": r["senatore"],
+                "nodeLabel": "Deputy",
+                "startDate": start_date,
+            }
+            if end_date:
+                row["endDate"] = end_date
+                with_end.append(row)
+            else:
+                without_end.append(row)
+
+        with self._driver.session() as neo_session:
+            if with_end:
+                self._batch_write(neo_session, self._upsert_committee_membership_with_end, with_end)
+            if without_end:
+                self._batch_write(neo_session, self._upsert_committee_membership_no_end, without_end)
+        print("Senator Committee nodes and MEMBER_OF_COMMITTEE relationships loaded.")
+
     def load_government_members(self) -> None:
         """Create GovernmentMember nodes and link them to ParliamentaryGroups.
 

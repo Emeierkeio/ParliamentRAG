@@ -249,7 +249,7 @@ NEO4J_LOCAL  := bolt://localhost:7689
 NEO4J_USER   ?= neo4j
 NEO4J_PASS   ?= thesis2026
 
-.PHONY: db-populate db-update db-senate db-download-csv db-install
+.PHONY: db-populate db-update db-senate db-download-csv db-download-senators-csv db-install
 
 db-install: venv ## Install build dependencies (pandas, regex, etc.)
 	@$(PIP) install -r $(BUILD_DIR)/requirements-build.txt -q
@@ -257,6 +257,9 @@ db-install: venv ## Install build dependencies (pandas, regex, etc.)
 
 db-download-csv: db-install ## Download deputy CSVs from dati.camera.it
 	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
+
+db-download-senators-csv: db-install ## Download senator CSVs from dati.senato.it
+	@$(PYTHON) $(BUILD_DIR)/download_senators_csv.py
 
 db-all: db-install ## One-shot full DB: download CSVs + build + chunk + embed + vector index
 	@printf "$(BOLD)$(CYAN)Full database build (one-shot)...$(RESET)\n"

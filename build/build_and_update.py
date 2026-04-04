@@ -48,6 +48,7 @@ from download import download_new_xmls, get_last_xml_id
 from ingest_atti_parlamentari import AttiParlamentariIngester
 from senate_parser import SenateStenograficoParser
 from download_senate import download_senate_xmls
+from download_senators_csv import main as download_senators_csv_main
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -366,7 +367,21 @@ def do_build_senate(
     builder = DatabaseBuilder(driver, config)
     parser = SenateStenograficoParser(config)
     try:
-        # 1. Download Senate AKN files
+        # 1. Download senator biographical CSVs
+        if skip_download:
+            logger.info("Skipping senator CSV download")
+        else:
+            logger.info("Downloading senator biographical data from dati.senato.it")
+            download_senators_csv_main()
+
+        # 2. Load senator CSVs (Deputy nodes with chamber='senato')
+        logger.info("Loading senator CSV data")
+        builder.create_constraints()
+        builder.load_senators(DATA_DIR)
+        builder.load_senator_groups(DATA_DIR)
+        builder.load_senator_committees(DATA_DIR)
+
+        # 3. Download Senate AKN files
         if skip_download:
             logger.info("Skipping Senate XML download")
         else:
@@ -375,7 +390,7 @@ def do_build_senate(
             count = download_senate_xmls(SENATE_XML_DIR)
             logger.info("Downloaded %d new Senate files", count)
 
-        # 2. Ingest Senate stenografici
+        # 4. Ingest Senate stenografici
         logger.info("Ingesting Senate stenografici")
         akn_files = sorted(glob.glob(os.path.join(SENATE_XML_DIR, "resaula_leg19_*.akn")))
         logger.info("Found %d AKN files", len(akn_files))
@@ -384,7 +399,7 @@ def do_build_senate(
             parsed = parser.parse_xml_file(akn_path)
             builder.ingest_session(parsed)
 
-        # 3. Embeddings for new Senate chunks
+        # 5. Embeddings for new Senate chunks
         if skip_embeddings:
             logger.info("Skipping Senate embeddings")
         else:
