@@ -158,14 +158,23 @@ class SparqlIngester:
             deputies = deputies[:limit_deputies]
             logger.info("Limited to %d deputies (test mode)", limit_deputies)
 
+        # Check which deputies already have votes — skip them to allow resume
+        already_done = self._get_deputies_with_votes()
+        logger.info("Deputies already enriched with votes: %d", len(already_done))
+
         total_written = 0
         total_skipped = 0
+        deputies_skipped_resume = 0
 
         for i, deputy in enumerate(deputies):
             neo4j_id = deputy["id"]
             person_id = _extract_person_id_from_neo4j_id(neo4j_id)
             if not person_id:
                 logger.warning("  [%d/%d] SKIP — cannot extract person_id from %s", i + 1, len(deputies), neo4j_id)
+                continue
+
+            if neo4j_id in already_done:
+                deputies_skipped_resume += 1
                 continue
 
             dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_19"
@@ -175,6 +184,9 @@ class SparqlIngester:
             total_skipped += skipped
             logger.info("  [%d/%d] → written=%d skipped=%d (total: %d written, %d skipped)",
                         i + 1, len(deputies), written, skipped, total_written, total_skipped)
+
+        if deputies_skipped_resume:
+            logger.info("Resumed: skipped %d deputies already enriched", deputies_skipped_resume)
 
         logger.info(
             "Vote ingestion complete: deputies=%d, votes_written=%d, votes_skipped=%d",
@@ -330,6 +342,14 @@ WHERE {{
         with self._driver.session() as neo_session:
             result = neo_session.run("MATCH (d:Deputy) RETURN d.id AS id")
             return [{"id": record["id"]} for record in result if record["id"]]
+
+    def _get_deputies_with_votes(self) -> set[str]:
+        """Return set of Deputy.id values that already have VOTED relationships."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (d:Deputy)-[:VOTED]->() RETURN DISTINCT d.id AS id"
+            )
+            return {record["id"] for record in result if record["id"]}
 
     def _ingest_deputy_votes(
         self,
