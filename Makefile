@@ -283,11 +283,18 @@ db-all: db-install ## One-shot full DB: download CSVs + build + chunk + embed + 
 		--neo4j-uri $(NEO4J_LOCAL) \
 		--neo4j-user $(NEO4J_USER) \
 		--neo4j-password $(NEO4J_PASS)
+	@# 5. Senate: download senators + AKN files + ingest (additive, no nuke)
 	@printf "$(CYAN)Building Senate data (additive)...$(RESET)\n"
 	@$(PYTHON) $(BUILD_SCRIPT) build-senate \
 		--neo4j-uri $(NEO4J_LOCAL) \
 		--neo4j-user $(NEO4J_USER) \
 		--neo4j-password $(NEO4J_PASS)
+	@# 6. SPARQL enrichment: individual vote records from dati.camera.it
+	@printf "$(CYAN)Enriching with SPARQL data (individual votes + committee roles)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) || printf "$(CYAN)SPARQL enrichment had issues (non-blocking, data may be partial)$(RESET)\n"
 	@printf "\n$(BOLD)$(GREEN)Database ready!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
 	@printf "  Then run $(CYAN)make compute-baseline$(RESET) with the backend up to pre-calc baseline experts.\n"
 

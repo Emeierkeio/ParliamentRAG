@@ -292,13 +292,14 @@ class SparqlIngester:
         """Fetch one page of vote records for a deputy from the SPARQL endpoint."""
         query = f"""
 PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 SELECT ?voto ?votazione ?tipo
 WHERE {{
   ?voto a ocd:voto ;
         ocd:rif_deputato <{dep_sparql_uri}> ;
         ocd:rif_votazione ?votazione ;
-        ocd:tipo ?tipo .
+        dc:type ?tipo .
 }}
 LIMIT {SPARQL_PAGE_SIZE}
 OFFSET {offset}
