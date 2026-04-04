@@ -1,0 +1,19 @@
+{
+  "Common": {
+    "appName": "ParliamentRAG"
+  },
+  "LanguageSelector": {
+    "switchTo": "Switch to English"
+  },
+  "TranslationBanner": {
+    "message": "Le citazioni sono tradotte automaticamente dall'italiano. Passa il mouse per vedere l'originale.",
+    "dontShowAgain": "Non mostrare piu"
+  },
+  "CitationCard": {
+    "originalLabel": "Originale",
+    "goToIntervention": "Vai all'intervento originale",
+    "parliamentaryContext": "Contesto Parlamentare",
+    "intervention": "Intervento",
+    "goToCamera": "Vai all'intervento sul sito della Camera"
+  }
+}

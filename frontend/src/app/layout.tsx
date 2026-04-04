@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getLocale } from 'next-intl/server';
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -79,22 +81,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="it" className="light" suppressHydrationWarning>
+    <html lang={locale} className="light" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         {MAINTENANCE_MODE ? (
           <MaintenancePage />
         ) : (
-          <TooltipProvider delayDuration={0}>
-            {children}
-          </TooltipProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <TooltipProvider delayDuration={0}>
+              {children}
+            </TooltipProvider>
+          </NextIntlClientProvider>
         )}
       </body>
     </html>

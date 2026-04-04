@@ -1,0 +1,19 @@
+{
+  "Common": {
+    "appName": "ParliamentRAG"
+  },
+  "LanguageSelector": {
+    "switchTo": "Passa all'italiano"
+  },
+  "TranslationBanner": {
+    "message": "Citations are automatically translated from Italian. Hover to see the original.",
+    "dontShowAgain": "Don't show again"
+  },
+  "CitationCard": {
+    "originalLabel": "Original",
+    "goToIntervention": "Go to original speech",
+    "parliamentaryContext": "Parliamentary Context",
+    "intervention": "Speech",
+    "goToCamera": "Go to speech on Camera dei Deputati website"
+  }
+}
