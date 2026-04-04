@@ -153,8 +153,10 @@ class SparqlIngester:
             Stats dict: {"deputies_processed": N, "votes_written": N, "votes_skipped": N}
         """
         deputies = self._fetch_all_deputies()
+        logger.info("Found %d deputies in Neo4j", len(deputies))
         if limit_deputies > 0:
             deputies = deputies[:limit_deputies]
+            logger.info("Limited to %d deputies (test mode)", limit_deputies)
 
         total_written = 0
         total_skipped = 0
@@ -163,19 +165,16 @@ class SparqlIngester:
             neo4j_id = deputy["id"]
             person_id = _extract_person_id_from_neo4j_id(neo4j_id)
             if not person_id:
-                logger.warning("Cannot extract person_id from Deputy.id=%s", neo4j_id)
+                logger.warning("  [%d/%d] SKIP — cannot extract person_id from %s", i + 1, len(deputies), neo4j_id)
                 continue
 
             dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_19"
+            logger.info("  [%d/%d] Querying votes for person %s ...", i + 1, len(deputies), person_id)
             written, skipped = self._ingest_deputy_votes(neo4j_id, person_id, dep_sparql_uri)
             total_written += written
             total_skipped += skipped
-
-            if (i + 1) % 50 == 0:
-                logger.info(
-                    "Progress: %d/%d deputies — votes written=%d skipped=%d",
-                    i + 1, len(deputies), total_written, total_skipped,
-                )
+            logger.info("  [%d/%d] → written=%d skipped=%d (total: %d written, %d skipped)",
+                        i + 1, len(deputies), written, skipped, total_written, total_skipped)
 
         logger.info(
             "Vote ingestion complete: deputies=%d, votes_written=%d, votes_skipped=%d",
@@ -194,6 +193,7 @@ class SparqlIngester:
             Stats dict: {"deputies_processed": N, "roles_written": N}
         """
         deputies = self._fetch_all_deputies()
+        logger.info("Found %d deputies in Neo4j", len(deputies))
         total_roles = 0
 
         for i, deputy in enumerate(deputies):
@@ -213,12 +213,8 @@ class SparqlIngester:
 
             roles_written = self._write_committee_roles(batch)
             total_roles += roles_written
-
-            if (i + 1) % 50 == 0:
-                logger.info(
-                    "Progress: %d/%d deputies — roles_written=%d",
-                    i + 1, len(deputies), total_roles,
-                )
+            logger.info("  [%d/%d] person %s → %d roles (total: %d)",
+                        i + 1, len(deputies), person_id, roles_written, total_roles)
 
         logger.info(
             "Committee role ingestion complete: deputies=%d, roles_written=%d",
@@ -348,19 +344,25 @@ WHERE {{
         written = 0
         skipped = 0
         offset = 0
+        page = 0
 
         while True:
+            page += 1
             bindings = self._get_deputy_votes_page(dep_sparql_uri, offset=offset)
             if not bindings:
+                if page == 1:
+                    logger.debug("    No vote records found in SPARQL")
                 break
 
             batch = self._prepare_vote_batch(bindings, neo4j_id, person_id)
-            skipped += len(bindings) - len(batch)  # bindings without valid votazione URI
+            parse_skipped = len(bindings) - len(batch)
+            skipped += parse_skipped
 
             if batch:
                 w, s = self._write_votes(batch)
                 written += w
                 skipped += s
+                logger.debug("    Page %d: %d SPARQL rows → %d written, %d skipped", page, len(bindings), w, s + parse_skipped)
 
             if len(bindings) < SPARQL_PAGE_SIZE:
                 break
