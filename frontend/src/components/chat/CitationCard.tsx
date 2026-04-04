@@ -50,7 +50,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
   const t = useTranslations("CitationCard");
 
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
+  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
 
   const displayText = citation.translated_text ?? citation.text ?? citation.quote_text ?? "";
@@ -158,7 +158,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                           rel="noopener noreferrer"
                           className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
                           onClick={(e) => e.stopPropagation()}
-                          title="Vai all'intervento originale"
+                          title={t("goToIntervention")}
                        >
                           <LinkIcon className="h-3 w-3" />
                        </a>
@@ -218,7 +218,7 @@ interface CitationModalProps {
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const t = useTranslations("CitationCard");
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
+  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
   const displayFullText = citation.translated_full_text ?? citation.full_text ?? citation.text ?? "";
   const originalFullText = citation.is_translated ? (citation.full_text ?? citation.text ?? "") : null;
@@ -267,7 +267,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
           <DialogTitle className="flex items-center gap-2 text-lg">
              <Quote className="h-5 w-5 text-primary fill-primary/10" />
-             <span>Intervento</span>
+             <span>{t("intervention")}</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -344,7 +344,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         <div className="bg-muted/30 rounded-xl p-4 border border-border/50 text-sm leading-relaxed text-muted-foreground">
                             <div className="flex items-center gap-2 mb-2 text-primary font-medium text-xs uppercase tracking-wider">
                                 <MapPin className="w-3 h-3" />
-                                Contesto Parlamentare
+                                {t("parliamentaryContext")}
                             </div>
                             {contextUrl ? (
                                 <a 

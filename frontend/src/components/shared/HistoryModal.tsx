@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { config } from "@/config";
 import type { ChatHistoryItem } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface HistoryModalProps {
   open: boolean;
@@ -49,6 +50,7 @@ function useIsMobile() {
 
 export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
   const isMobile = useIsMobile();
+  const t = useTranslations("HistoryModal");
   const [history, setHistory] = useState<ChatHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -64,7 +66,7 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
       setHistory(data.history || []);
     } catch (err) {
       console.error(err);
-      setError("Errore nel caricamento della cronologia");
+      setError(t("loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +87,7 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
       }
     } catch (err) {
       console.error(err);
-      setError("Impossibile caricare la chat");
+      setError(t("loadChatError"));
     } finally {
       setIsLoading(false);
     }
@@ -198,7 +200,7 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
   const emptyState = isLoading && history.length === 0 ? (
     <div className="flex flex-col items-center justify-center gap-3 py-10">
       <Loader2 className="h-6 w-6 text-primary animate-spin" />
-      <span className="text-sm text-muted-foreground">Caricamento cronologia...</span>
+      <span className="text-sm text-muted-foreground">{t("loading")}</span>
     </div>
   ) : error ? (
     <div className="flex flex-col items-center justify-center gap-3 px-6 py-10">
@@ -213,8 +215,8 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
         <Inbox className="h-6 w-6 text-muted-foreground" />
       </div>
       <div className="text-center space-y-1">
-        <p className="text-sm font-medium text-foreground">Nessuna conversazione</p>
-        <p className="text-xs text-muted-foreground">Le tue chat appariranno qui</p>
+        <p className="text-sm font-medium text-foreground">{t("noConversations")}</p>
+        <p className="text-xs text-muted-foreground">{t("noConversationsDesc")}</p>
       </div>
     </div>
   ) : null;
@@ -228,7 +230,7 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
             <div className="flex items-center justify-between">
               <SheetTitle className="flex items-center gap-2 text-lg">
                 <History className="h-5 w-5 text-primary" />
-                Cronologia Chat
+                {t("title")}
               </SheetTitle>
               <SheetClose asChild>
                 <button className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
@@ -239,9 +241,9 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
             <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">
                 <MessageCircle className="h-3 w-3" />
-                {history.length} conversazion{history.length === 1 ? "e" : "i"}
+                {history.length} {history.length === 1 ? t("oneConversation") : t("manyConversations")}
               </span>
-              <span className="text-muted-foreground/50">Le tue conversazioni precedenti</span>
+              <span className="text-muted-foreground/50">{t("previousConversations")}</span>
             </div>
           </SheetHeader>
           {/* Mobile: overflow-y-auto nativo, identico al filter sheet */}
@@ -260,12 +262,12 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
           <DialogTitle className="flex items-center gap-2 text-lg">
             <History className="h-5 w-5 text-primary" />
-            <span>Cronologia Chat</span>
+            <span>{t("title")}</span>
           </DialogTitle>
           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <MessageCircle className="h-3 w-3" />
-              {history.length} conversazion{history.length === 1 ? "e" : "i"}
+              {history.length} {history.length === 1 ? t("oneConversation") : t("manyConversations")}
             </span>
             <span className="text-muted-foreground/50">Le tue conversazioni precedenti</span>
           </div>
