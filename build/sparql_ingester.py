@@ -46,7 +46,7 @@ OUTCOME_MAP: dict[str, str] = {
 
 BATCH_SIZE = 500          # Neo4j write batch size
 SPARQL_PAGE_SIZE = 1000   # HTTP pagination page size
-SPARQL_TIMEOUT = 30       # seconds
+SPARQL_TIMEOUT = 150      # seconds — dati.camera.it vote queries can be slow
 
 # ---------------------------------------------------------------------------
 # Regex patterns

@@ -73,9 +73,11 @@ def download_senate_xmls(xml_dir: str) -> int:
         logger.error("Failed to fetch Senate listing page: %s", exc)
         return 0
 
-    # Extract BGT IDs from show-doc href links
+    # Extract BGT IDs from show-doc href links.
+    # HTML attribute values encode ampersands as &amp;, so the pattern must
+    # match the entity-encoded form rather than a literal '&'.
     bgt_ids = re.findall(
-        r'show-doc\?leg=19&tipodoc=Resaula&id=(\d+)', html
+        r'show-doc\?leg=19&amp;tipodoc=Resaula&amp;id=(\d+)', html
     )
     if not bgt_ids:
         logger.warning("No BGT IDs found on listing page — HTML may have changed")
