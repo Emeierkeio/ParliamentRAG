@@ -34,6 +34,12 @@ export function useChat(options: UseChatOptions = {}) {
   const t = useTranslations('Chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [chamber, setChamber] = useState<"camera" | "senato" | "both">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("parliamentRAG.chamber") as "camera" | "senato" | "both") || "both";
+    }
+    return "both";
+  });
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
@@ -44,6 +50,11 @@ export function useChat(options: UseChatOptions = {}) {
   const retryCountRef = useRef(0);
   const streamCompletedRef = useRef(false);
   const sendMessageRef = useRef<((content: string, isRetry?: boolean) => Promise<void>) | null>(null);
+
+  // Persist chamber selection to localStorage
+  useEffect(() => {
+    localStorage.setItem("parliamentRAG.chamber", chamber);
+  }, [chamber]);
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -152,7 +163,7 @@ export function useChat(options: UseChatOptions = {}) {
           "Content-Type": "application/json",
           "Accept-Language": locale,
         },
-        body: JSON.stringify({ query: content, task_id: taskId }),
+        body: JSON.stringify({ query: content, task_id: taskId, chamber }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -735,6 +746,8 @@ export function useChat(options: UseChatOptions = {}) {
     progress,
     lastCompletedProgress,
     streamingContent,
+    chamber,
+    setChamber,
     sendMessage,
     cancelRequest,
     clearMessages,

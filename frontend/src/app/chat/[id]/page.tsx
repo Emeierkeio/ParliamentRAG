@@ -17,6 +17,8 @@ export default function SharedChatPage() {
     isLoading,
     progress,
     lastCompletedProgress,
+    chamber,
+    setChamber,
     sendMessage,
     cancelRequest,
     loadChat,
@@ -90,6 +92,8 @@ export default function SharedChatPage() {
           onSendMessage={sendMessage}
           onCancelRequest={cancelRequest}
           mobileMenuButton={<MobileMenuButton onClick={toggle} />}
+          chamber={chamber}
+          onChamberChange={setChamber}
         />
       </main>
     </div>

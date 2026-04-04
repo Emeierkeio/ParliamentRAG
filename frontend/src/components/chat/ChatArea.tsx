@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
+import { ChamberSelector } from "./ChamberSelector";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
@@ -22,6 +23,8 @@ interface ChatAreaProps {
   onOpenHistory?: () => void;
   className?: string;
   mobileMenuButton?: React.ReactNode;
+  chamber: "camera" | "senato" | "both";
+  onChamberChange: (value: "camera" | "senato" | "both") => void;
 }
 
 export function ChatArea({
@@ -34,6 +37,8 @@ export function ChatArea({
   onOpenHistory,
   className,
   mobileMenuButton,
+  chamber,
+  onChamberChange,
 }: ChatAreaProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -78,6 +83,9 @@ export function ChatArea({
                 <History className="h-4 w-4" />
               </Button>
             )}
+          </div>
+          <div className="mt-2 flex justify-end">
+            <ChamberSelector value={chamber} onChange={onChamberChange} />
           </div>
         </div>
       </div>

@@ -13,6 +13,8 @@ export default function Home() {
     isLoading,
     progress,
     lastCompletedProgress,
+    chamber,
+    setChamber,
     sendMessage,
     cancelRequest,
     loadChat,
@@ -58,6 +60,8 @@ export default function Home() {
           onCancelRequest={cancelRequest}
           onOpenHistory={() => setHistoryOpen(true)}
           mobileMenuButton={<MobileMenuButton onClick={toggle} />}
+          chamber={chamber}
+          onChamberChange={setChamber}
         />
       </main>
     </div>
