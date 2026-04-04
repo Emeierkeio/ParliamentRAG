@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink, Globe } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 import { config } from "@/config";
 import type { Citation } from "@/types";
 
@@ -41,10 +47,14 @@ interface CitationCardProps {
 export function CitationCard({ citation, index, className, isHighlighted }: CitationCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("CitationCard");
 
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+
+  const displayText = citation.translated_text ?? citation.text ?? citation.quote_text ?? "";
+  const originalText = citation.is_translated ? (citation.text ?? citation.quote_text ?? "") : null;
 
   // Auto-scroll when highlighted
   useEffect(() => {
@@ -113,21 +123,48 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
               </div>
 
               {/* Extracted text preview */}
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
-                &ldquo;{citation.text || citation.quote_text || ""}&rdquo;
-                {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
-                     <a 
-                        href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
-                        onClick={(e) => e.stopPropagation()}
-                        title="Vai all'intervento originale"
-                     >
-                        <LinkIcon className="h-3 w-3" />
-                     </a>
-                )}
-              </p>
+              {originalText ? (
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words cursor-help">
+                      &ldquo;{displayText}&rdquo;
+                      <Globe className="inline h-3 w-3 ml-1 text-muted-foreground/50" />
+                      {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
+                           <a
+                              href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                              title={t("goToIntervention")}
+                           >
+                              <LinkIcon className="h-3 w-3" />
+                           </a>
+                      )}
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-[400px] p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground/70 mb-1 uppercase tracking-wider">{t("originalLabel")}</p>
+                    <p className="text-xs leading-relaxed italic">{originalText}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
+                  &ldquo;{displayText}&rdquo;
+                  {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
+                       <a
+                          href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                          title="Vai all'intervento originale"
+                       >
+                          <LinkIcon className="h-3 w-3" />
+                       </a>
+                  )}
+                </p>
+              )}
 
               {/* Metadata */}
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground font-medium max-w-full">
@@ -179,10 +216,13 @@ interface CitationModalProps {
 }
 
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
+  const t = useTranslations("CitationCard");
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const displayText = citation.full_text || citation.text || "";
+  const displayFullText = citation.translated_full_text ?? citation.full_text ?? citation.text ?? "";
+  const originalFullText = citation.is_translated ? (citation.full_text ?? citation.text ?? "") : null;
+  const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
   const interventionUrl = getCameraUrl(citation.intervention_id || citation.intervention_id);
@@ -340,19 +380,33 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         ) : (
                             displayText
                         )}
-                        
+                        {citation.is_translated && (
+                            <Globe className="inline h-4 w-4 ml-2 text-muted-foreground/40 align-middle" />
+                        )}
+
                         {interventionUrl && (
-                            <a 
+                            <a
                                 href={interventionUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center ml-2 text-primary/40 hover:text-primary transition-colors align-middle"
-                                title="Vai all'intervento sul sito della Camera"
+                                title={t("goToCamera")}
                             >
                                 <LinkIcon className="w-4 h-4" />
                             </a>
                         )}
                     </div>
+
+                    {/* Original Italian text section (shown when translation is active) */}
+                    {originalFullText && (
+                        <div className="mt-6 pt-6 border-t border-border/40">
+                            <p className="text-[10px] font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                <Globe className="h-3 w-3" />
+                                {t("originalLabel")}
+                            </p>
+                            <p className="text-sm leading-relaxed italic text-muted-foreground/80 font-serif">{originalFullText}</p>
+                        </div>
+                    )}
                 </div>
              </ScrollArea>
         </div>

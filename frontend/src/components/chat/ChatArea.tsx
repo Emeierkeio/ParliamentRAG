@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
+import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
 import { Landmark, ArrowRight, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
@@ -49,6 +50,8 @@ export function ChatArea({
   }, [messages.length, isLoading]); // Removed 'progress' to avoid jitter, used length to detect new msg
 
   const hasMessages = messages.length > 0;
+  const lastAssistantMessage = messages.findLast((m) => m.role === "assistant");
+  const hasCitations = (lastAssistantMessage?.citations?.length ?? 0) > 0;
 
   return (
     <div className={cn("flex h-full flex-col bg-background", className)}>
@@ -94,6 +97,7 @@ export function ChatArea({
           </div>
         ) : (
           <div className="mx-auto max-w-3xl px-4 pb-12 overflow-x-hidden">
+            <TranslationBanner hasCitations={hasCitations} />
             {!hasMessages ? (
               <WelcomeScreen onSendMessage={onSendMessage} />
             ) : (
