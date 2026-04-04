@@ -84,7 +84,8 @@ class RetrievalEngine:
         top_k: int = 100,
         authority_scores: Optional[Dict[str, float]] = None,
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        chambers: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Perform triple-channel retrieval (synchronous version).
@@ -129,13 +130,15 @@ class RetrievalEngine:
         def run_dense():
             return self.dense_channel.retrieve(
                 query_embedding=query_embedding,
-                top_k=top_k * 2  # Over-retrieve for merging
+                top_k=top_k * 2,  # Over-retrieve for merging
+                chambers=chambers,
             )
 
         def run_sparse():
             return self.sparse_channel.retrieve(
                 query_text=retrieval_query,
-                top_k=top_k
+                top_k=top_k,
+                chambers=chambers,
             )
 
         def run_graph():
@@ -145,6 +148,7 @@ class RetrievalEngine:
                 date_start=date_start,
                 date_end=date_end,
                 entity_filter=entity_filter if entity_filter else None,
+                chambers=chambers,
             )
 
         with ThreadPoolExecutor(max_workers=3) as executor:
@@ -213,7 +217,8 @@ class RetrievalEngine:
         top_k: int = 100,
         authority_scores: Optional[Dict[str, float]] = None,
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        chambers: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Perform dual-channel retrieval (async).
@@ -240,6 +245,7 @@ class RetrievalEngine:
                 authority_scores=authority_scores,
                 date_start=date_start,
                 date_end=date_end,
+                chambers=chambers,
             ),
         )
 

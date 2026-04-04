@@ -69,6 +69,7 @@ class QueryRequest(BaseModel):
     date_start: Optional[str] = Field(default=None, description="Start date filter (YYYY-MM-DD)")
     date_end: Optional[str] = Field(default=None, description="End date filter (YYYY-MM-DD)")
     stream: bool = Field(default=True, description="Enable SSE streaming")
+    chamber: str = Field(default="both", description="Filter: 'camera' | 'senato' | 'both'")
 
 
 class ExpertInfo(BaseModel):
@@ -120,11 +121,13 @@ async def process_query_streaming(
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Avvio retrieval...'})}\n\n"
 
         # Step 2: Retrieval
+        _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
             date_start=request.date_start,
-            date_end=request.date_end
+            date_end=request.date_end,
+            chambers=_chambers,
         )
 
         evidence_list = retrieval_result["evidence"]
@@ -743,11 +746,13 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
 
         try:
             # Retrieval
+            _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
             retrieval_result = await services["retrieval"].retrieve(
                 query=request.query,
                 top_k=request.top_k,
                 date_start=request.date_start,
-                date_end=request.date_end
+                date_end=request.date_end,
+                chambers=_chambers,
             )
 
             evidence_list = retrieval_result["evidence"]
