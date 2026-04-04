@@ -256,6 +256,12 @@
     "oneIntervention": "speech",
     "manyInterventions": "speeches"
   },
+  "ChamberSelector": {
+    "camera": "Chamber of Deputies",
+    "senato": "Senate",
+    "both": "Both",
+    "label": "Parliamentary Chamber"
+  },
   "HistoryModal": {
     "title": "Chat History",
     "previousConversations": "Your previous conversations",

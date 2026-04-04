@@ -256,6 +256,12 @@
     "oneIntervention": "intervento",
     "manyInterventions": "interventi"
   },
+  "ChamberSelector": {
+    "camera": "Camera",
+    "senato": "Senato",
+    "both": "Entrambi",
+    "label": "Ramo del Parlamento"
+  },
   "HistoryModal": {
     "title": "Cronologia Chat",
     "previousConversations": "Le tue conversazioni precedenti",
