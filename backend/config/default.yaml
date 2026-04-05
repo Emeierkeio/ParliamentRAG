@@ -30,6 +30,7 @@ retrieval:
     dense_weight: 1.0  # Dense channel weight (highest — primary signal)
     sparse_weight: 0.8 # Sparse BM25 channel weight
     graph_weight: 0.5  # Graph channel weight (lowest — structural signal)
+    ner_weight: 0.9    # NER entity channel — high weight for precision queries
 
   merger:
     # NOTE: authority_weight is minimal because authority is computed POST-retrieval

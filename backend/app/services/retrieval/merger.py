@@ -34,16 +34,18 @@ class ChannelMerger:
         dense_results: List[Dict[str, Any]],
         sparse_results: List[Dict[str, Any]],
         graph_results: List[Dict[str, Any]],
+        ner_results: Optional[List[Dict[str, Any]]] = None,
         authority_scores: Optional[Dict[str, float]] = None,
         top_k: int = 100
     ) -> List[Dict[str, Any]]:
         """
-        Merge results from dense, sparse, and graph channels using RRF.
+        Merge results from dense, sparse, graph, and optional NER channels using RRF.
 
         Args:
             dense_results: Results from dense (vector) channel
             sparse_results: Results from sparse (BM25) channel
             graph_results: Results from graph (structure) channel
+            ner_results: Optional results from NER entity channel
             authority_scores: Optional speaker authority scores (unused by RRF,
                               kept for API compatibility)
             top_k: Number of final results
@@ -51,13 +53,16 @@ class ChannelMerger:
         Returns:
             Merged and reranked results
         """
+        ner_count = len(ner_results) if ner_results else 0
         logger.info(
             f"Merging {len(dense_results)} dense + {len(sparse_results)} sparse "
-            f"+ {len(graph_results)} graph results (RRF)"
+            f"+ {len(graph_results)} graph"
+            + (f" + {ner_count} NER" if ner_results else "")
+            + " results (RRF)"
         )
 
-        # Compute RRF scores across all three channels
-        scored_results = self._compute_rrf(dense_results, sparse_results, graph_results)
+        # Compute RRF scores across all channels
+        scored_results = self._compute_rrf(dense_results, sparse_results, graph_results, ner_results)
         logger.info(f"After RRF deduplication: {len(scored_results)} unique results")
 
         # Sort by RRF score descending before diversity selection
@@ -78,6 +83,7 @@ class ChannelMerger:
         dense_results: List[Dict[str, Any]],
         sparse_results: List[Dict[str, Any]],
         graph_results: List[Dict[str, Any]],
+        ner_results: Optional[List[Dict[str, Any]]] = None,
     ) -> List[Dict[str, Any]]:
         """
         Compute Reciprocal Rank Fusion scores for all results.
@@ -94,6 +100,7 @@ class ChannelMerger:
         dense_weight = rrf_config.get("dense_weight", 1.0)
         sparse_weight = rrf_config.get("sparse_weight", 0.8)
         graph_weight = rrf_config.get("graph_weight", 0.5)
+        ner_weight = rrf_config.get("ner_weight", 0.9)
 
         # evidence_id -> accumulated rrf score
         rrf_scores: Dict[str, float] = defaultdict(float)
@@ -107,14 +114,16 @@ class ChannelMerger:
                     continue
                 contribution = weight / (k + rank)
                 rrf_scores[eid] += contribution
-                # Keep first-seen metadata (dense preferred over sparse/graph)
+                # Keep first-seen metadata (dense preferred over sparse/graph/ner)
                 if eid not in result_lookup:
                     result_lookup[eid] = result
 
-        # Process in priority order: dense > sparse > graph
+        # Process in priority order: dense > sparse > graph > ner
         _process_channel(dense_results, dense_weight)
         _process_channel(sparse_results, sparse_weight)
         _process_channel(graph_results, graph_weight)
+        if ner_results:
+            _process_channel(ner_results, ner_weight)
 
         # Build final list with RRF scores attached
         combined = []

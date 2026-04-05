@@ -18,6 +18,7 @@ from ...key_pool import make_client
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
+from .ner_channel import NERChannel
 from .sparse_channel import SparseChannel
 from .query_rewriter import QueryRewriter
 from ...models.evidence import UnifiedEvidence
@@ -50,6 +51,7 @@ class RetrievalEngine:
         self.dense_channel = DenseChannel(neo4j_client)
         self.graph_channel = GraphChannel(neo4j_client)
         self.sparse_channel = SparseChannel(neo4j_client)
+        self.ner_channel = NERChannel(neo4j_client)
         self.merger = ChannelMerger()
         self.query_rewriter = QueryRewriter()
         self.config = get_config()
@@ -124,25 +126,47 @@ class RetrievalEngine:
         if law_matches:
             entity_filter["laws"] = law_matches
 
-        # Run all three channels IN PARALLEL
-        logger.info("Running dense, sparse, and graph channels in parallel...")
+        # Detect person names (capitalized words of 3+ chars, excluding common Italian stopwords)
+        _stopwords = {"nel", "del", "per", "con", "che", "sul", "dal", "alla", "della", "delle"}
+        person_matches = [w for w in retrieval_query.split()
+                          if w[0].isupper() and len(w) >= 3 and w.lower() not in _stopwords]
+        if person_matches:
+            entity_filter.setdefault("persons", []).extend(person_matches)
+
+        # Run all channels IN PARALLEL (4 channels when entity_filter is non-empty)
+        has_ner = bool(entity_filter)
+        max_workers = 4 if has_ner else 3
+        logger.info(
+            "Running dense, sparse, graph%s channels in parallel...",
+            ", and NER" if has_ner else "",
+        )
+
+        dense_start = time.time()
+        sparse_start = time.time()
+        graph_start = time.time()
+        ner_start = time.time()
 
         def run_dense():
-            return self.dense_channel.retrieve(
+            t0 = time.time()
+            result = self.dense_channel.retrieve(
                 query_embedding=query_embedding,
                 top_k=top_k * 2,  # Over-retrieve for merging
                 chambers=chambers,
             )
+            return result, (time.time() - t0) * 1000
 
         def run_sparse():
-            return self.sparse_channel.retrieve(
+            t0 = time.time()
+            result = self.sparse_channel.retrieve(
                 query_text=retrieval_query,
                 top_k=top_k,
                 chambers=chambers,
             )
+            return result, (time.time() - t0) * 1000
 
         def run_graph():
-            return self.graph_channel.retrieve(
+            t0 = time.time()
+            result = self.graph_channel.retrieve(
                 query=retrieval_query,
                 query_embedding=query_embedding,
                 date_start=date_start,
@@ -150,19 +174,42 @@ class RetrievalEngine:
                 entity_filter=entity_filter if entity_filter else None,
                 chambers=chambers,
             )
+            return result, (time.time() - t0) * 1000
 
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        def run_ner():
+            t0 = time.time()
+            result = self.ner_channel.retrieve(
+                entity_filter=entity_filter,
+                top_k=50,
+                chambers=chambers,
+            )
+            return result, (time.time() - t0) * 1000
+
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             dense_future = executor.submit(run_dense)
             sparse_future = executor.submit(run_sparse)
             graph_future = executor.submit(run_graph)
+            if has_ner:
+                ner_future = executor.submit(run_ner)
 
-            dense_results = dense_future.result()
-            sparse_results = sparse_future.result()
-            graph_results = graph_future.result()
+            dense_results, dense_ms = dense_future.result()
+            sparse_results, sparse_ms = sparse_future.result()
+            graph_results, graph_ms = graph_future.result()
+            if has_ner:
+                ner_results, ner_ms = ner_future.result()
+            else:
+                ner_results, ner_ms = [], 0.0
 
         logger.info(
             f"Channels complete: dense={len(dense_results)}, "
             f"sparse={len(sparse_results)}, graph={len(graph_results)}"
+            + (f", ner={len(ner_results)}" if has_ner else "")
+        )
+
+        logger.debug(
+            "Retrieval timing breakdown: dense=%.1fms sparse=%.1fms graph=%.1fms ner=%.1fms total=%.1fms",
+            dense_ms, sparse_ms, graph_ms, ner_ms,
+            dense_ms + sparse_ms + graph_ms + ner_ms,
         )
 
         # Merge channels using RRF
@@ -171,6 +218,7 @@ class RetrievalEngine:
             dense_results=dense_results,
             sparse_results=sparse_results,
             graph_results=graph_results,
+            ner_results=ner_results if has_ner else None,
             authority_scores=authority_scores,
             top_k=top_k
         )
