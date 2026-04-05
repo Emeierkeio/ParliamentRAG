@@ -22,7 +22,7 @@ from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
-from ..services.translation import translate_citation_batch
+from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
@@ -259,9 +259,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[AUTHORITY] Computing scores for {len(speaker_ids)} unique speakers...")
         authority_start = time.time()
 
-        query_embedding = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: services["retrieval"].embed_query(request.query)
-        )
+        # Reuse query_embedding from retrieval result — no duplicate embed call
+        query_embedding = retrieval_result["query_embedding"]
 
         authority_scores = {}
         authority_details = {}
@@ -343,6 +342,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
                    f"axes_keys={list(compass_data.get('axes', {}).keys())}")
+        if request.locale != "it":
+            compass_data = await translate_compass_axes(compass_data, target_lang=request.locale)
         await emit("compass", compass_data)
         step_times["step_6_compass"] = time.time() - step_start
         logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
@@ -510,6 +511,10 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     _strip_extra,
                     final_text
                 )
+
+        # Translate response text if needed
+        if request.locale != "it":
+            final_text = await translate_response_text(final_text, target_lang=request.locale)
 
         # Stream text content in chunks
         chunk_size = 50
@@ -725,9 +730,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[AUTHORITY] Computing scores for {len(speaker_ids)} unique speakers...")
         authority_start = time.time()
 
-        query_embedding = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: services["retrieval"].embed_query(request.query)
-        )
+        # Reuse query_embedding from retrieval result — no duplicate embed call
+        query_embedding = retrieval_result["query_embedding"]
 
         authority_scores = {}
         authority_details = {}  # Store detailed breakdowns
@@ -817,6 +821,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
                    f"axes_keys={list(compass_data.get('axes', {}).keys())}")
+        if request.locale != "it":
+            compass_data = await translate_compass_axes(compass_data, target_lang=request.locale)
         yield sse_event("compass", compass_data)
         await asyncio.sleep(0)  # Flush
         step_times["step_6_compass"] = time.time() - step_start
@@ -994,6 +1000,10 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     _strip_extra,
                     final_text
                 )
+
+        # Translate response text if needed
+        if request.locale != "it":
+            final_text = await translate_response_text(final_text, target_lang=request.locale)
 
         # Stream text content in chunks
         chunk_size = 50  # Characters per chunk
@@ -1435,6 +1445,7 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
     # Read locale from Accept-Language header and inject into request
     accept_lang = http_request.headers.get("accept-language", "it")
     request.locale = "en" if "en" in accept_lang else "it"
+    logger.info(f"[CHAT] Accept-Language: {accept_lang!r}, resolved locale: {request.locale}")
 
     store = get_task_store()
 

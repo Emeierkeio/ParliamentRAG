@@ -19,7 +19,7 @@ from ..services.neo4j_client import Neo4jClient
 from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
-from ..services.translation import translate_citation_batch
+from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -144,20 +144,27 @@ async def process_query_streaming(
 
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
 
-        # Step 3: Authority scoring
-        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Calcolo authority scores...'})}\n\n"
+        # Step 3+4: Authority scoring and Compass in PARALLEL
+        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Calcolo authority scores e compass...'})}\n\n"
+
+        # Reuse query_embedding already computed during retrieval — no duplicate embed call
+        query_embedding = retrieval_result["query_embedding"]
 
         # Get unique speakers
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
-        query_embedding = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: services["retrieval"].embed_query(request.query)
-        )
 
-        # Batch authority: 2 DB queries for all speakers + parallel CPU scoring
-        authority_all = await asyncio.get_running_loop().run_in_executor(
+        # Launch authority and compass concurrently — they have no mutual dependency
+        authority_task = asyncio.get_running_loop().run_in_executor(
             None,
             lambda: services["authority"].compute_all_authority(speaker_ids, query_embedding),
         )
+        compass_task = asyncio.get_running_loop().run_in_executor(
+            None, services["ideology"].compute_2d_text_positions, evidence_dicts
+        )
+
+        authority_all, compass_result = await asyncio.gather(authority_task, compass_task)
+
+        # Process authority results
         authority_scores = {sid: r["total_score"] for sid, r in authority_all.items()}
         authority_details = authority_all
 
@@ -166,25 +173,15 @@ async def process_query_streaming(
             sid = ed.get("speaker_id", "")
             ed["authority_score"] = authority_scores.get(sid, 0.0)
 
-        # Compute experts with full details for frontend
+        # Compute experts with full details for frontend (depends on authority_scores)
         experts = await compute_experts(
             evidence_list, authority_scores, authority_details, services["neo4j"]
         )
 
         yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
 
-        # Check if client disconnected before compass
-        if http_request and await http_request.is_disconnected():
-            logger.info("[QUERY] Client disconnected before compass – aborting")
-            return
-
-        # Step 4: Compass analysis (2D text-based positioning)
-        yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
-
+        # Process compass results
         try:
-            compass_result = await asyncio.get_running_loop().run_in_executor(
-                None, services["ideology"].compute_2d_text_positions, evidence_dicts
-            )
             compass_data = {
                 "meta": compass_result.get("meta", {}),
                 "axes": compass_result.get("axes", {}),
@@ -197,6 +194,8 @@ async def process_query_streaming(
                 f"dimensionality={compass_data.get('meta', {}).get('dimensionality')}, "
                 f"is_stable={compass_data.get('meta', {}).get('is_stable')}"
             )
+            if request_locale != "it":
+                compass_data = await translate_compass_axes(compass_data, target_lang=request_locale)
             yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
         except Exception as _compass_err:
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
@@ -432,6 +431,10 @@ async def process_query_streaming(
                 yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
         except Exception as _patch_err:
             logger.warning("[QUERY:EXPERTS] Post-generation patch failed (non-critical): %s", _patch_err)
+
+        # Translate response text if needed
+        if request_locale != "it":
+            final_text = await translate_response_text(final_text, target_lang=request_locale)
 
         # Step 7: Stream text chunks
         chunk_size = 100
@@ -758,11 +761,9 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
             evidence_list = retrieval_result["evidence"]
             evidence_dicts = [e.model_dump() for e in evidence_list]
 
-            # Authority
+            # Authority — reuse query_embedding from retrieval result (no duplicate embed call)
             speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
-            query_embedding = await asyncio.get_running_loop().run_in_executor(
-                None, lambda: services["retrieval"].embed_query(request.query)
-            )
+            query_embedding = retrieval_result["query_embedding"]
 
             # Batch authority: 2 DB queries for all speakers + parallel CPU scoring
             authority_all = await asyncio.get_running_loop().run_in_executor(

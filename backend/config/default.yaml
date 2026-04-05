@@ -140,9 +140,9 @@ generation:
   # OpenAI models for 4-stage pipeline
   
   models:
-    analyst: "gpt-4o"  # Stage 1: Claim decomposition
-    writer: "gpt-4o"        # Stage 2: Sectional writing
-    integrator: "gpt-4o"    # Stage 3: Narrative integration
+    analyst: "gpt-4.1-mini"    # Stage 1: Claim decomposition — was gpt-4o (~12x cost reduction)
+    writer: "gpt-4.1-mini"     # Stage 2: Sectional writing — was gpt-4o (~12x cost reduction)
+    integrator: "gpt-4.1-mini" # Stage 3: Narrative integration — was gpt-4o (~12x cost reduction)
     # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
 
   parameters:
