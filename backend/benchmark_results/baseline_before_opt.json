@@ -1,0 +1,6 @@
+{
+  "status": "deferred",
+  "reason": "services unavailable: Neo4j import chain broken in anaconda Python 3.12 environment due to NumPy 2.x incompatibility (known issue, see STATE.md). Run via Docker or a compatible environment.",
+  "timestamp": "2026-04-05T20:32:10.723753+00:00",
+  "note": "Benchmark should be run via: docker compose exec backend python scripts/benchmark_pipeline.py --output benchmark_results/baseline_before_opt.json"
+}

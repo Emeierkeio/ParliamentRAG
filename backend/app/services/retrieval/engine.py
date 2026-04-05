@@ -202,6 +202,7 @@ class RetrievalEngine:
 
         return {
             "evidence": evidence_list,
+            "query_embedding": query_embedding,
             "metadata": {
                 "dense_channel_count": len(dense_results),
                 "graph_channel_count": len(graph_results),
