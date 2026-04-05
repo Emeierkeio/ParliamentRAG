@@ -100,33 +100,66 @@ def _extract_person_id_from_neo4j_id(neo4j_id: str) -> Optional[str]:
 # SPARQL HTTP helper
 # ---------------------------------------------------------------------------
 
-def _sparql_get(query: str, timeout: int = SPARQL_TIMEOUT) -> list[dict]:
+def _sparql_get(query: str, timeout: int = SPARQL_TIMEOUT, max_retries: int = 3) -> list[dict]:
     """Execute a SPARQL SELECT query and return the bindings list.
 
     Uses urllib (stdlib) to avoid additional dependencies.
-    Returns an empty list on any network/HTTP/parse error — never raises.
+    Retries with exponential backoff on transient failures (rate limiting, empty responses).
+    Returns an empty list on persistent failure — never raises.
     """
-    # Use POST to avoid URL length limits on complex SPARQL queries
+    import time as _time
+
     post_data = urllib.parse.urlencode({
         "query": query,
         "format": "application/sparql-results+json",
     }).encode("utf-8")
-    req = urllib.request.Request(
-        SPARQL_ENDPOINT,
-        data=post_data,
-        headers={"Content-Type": "application/x-www-form-urlencoded"},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            raw = resp.read()
-            data = json.loads(raw)
-            return data.get("results", {}).get("bindings", [])
-    except (urllib.error.URLError, urllib.error.HTTPError) as exc:
-        logger.warning("SPARQL request failed: %s", exc)
-        return []
-    except Exception as exc:
-        logger.warning("Unexpected error during SPARQL request: %s", exc)
-        return []
+
+    for attempt in range(1, max_retries + 1):
+        req = urllib.request.Request(
+            SPARQL_ENDPOINT,
+            data=post_data,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "Mozilla/5.0 ParliamentRAG",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                raw = resp.read()
+                if not raw or not raw.strip():
+                    raise ValueError("Empty response body")
+                data = json.loads(raw)
+                # Success — add a small delay to be polite to the endpoint
+                _time.sleep(0.5)
+                return data.get("results", {}).get("bindings", [])
+        except (urllib.error.URLError, urllib.error.HTTPError) as exc:
+            if attempt < max_retries:
+                wait = 5 * attempt  # 5s, 10s, 15s
+                logger.warning("SPARQL request failed (attempt %d/%d, retrying in %ds): %s",
+                               attempt, max_retries, wait, exc)
+                _time.sleep(wait)
+            else:
+                logger.warning("SPARQL request failed after %d attempts: %s", max_retries, exc)
+                return []
+        except (json.JSONDecodeError, ValueError) as exc:
+            if attempt < max_retries:
+                wait = 10 * attempt  # 10s, 20s, 30s — longer for rate limiting
+                logger.warning("SPARQL response not JSON (attempt %d/%d, retrying in %ds): %s",
+                               attempt, max_retries, wait, exc)
+                _time.sleep(wait)
+            else:
+                logger.warning("SPARQL response not JSON after %d attempts: %s", max_retries, exc)
+                return []
+        except Exception as exc:
+            if attempt < max_retries:
+                wait = 10 * attempt
+                logger.warning("Unexpected SPARQL error (attempt %d/%d, retrying in %ds): %s",
+                               attempt, max_retries, wait, exc)
+                _time.sleep(wait)
+            else:
+                logger.warning("Unexpected SPARQL error after %d attempts: %s", max_retries, exc)
+                return []
+    return []  # Should not reach here
 
 
 # ---------------------------------------------------------------------------
