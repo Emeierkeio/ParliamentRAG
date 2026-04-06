@@ -11,7 +11,8 @@ import { NextRequest } from "next/server";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:8000";
 
 export async function POST(request: NextRequest) {
-  const { query, task_id } = await request.json();
+  const body = await request.json();
+  const { query, task_id, chamber } = body;
 
   if (!query || typeof query !== "string") {
     return new Response(
@@ -20,6 +21,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Forward Accept-Language from the client request
+  const acceptLanguage = request.headers.get("accept-language") || "it";
+
   try {
     // Proxy to the FastAPI backend
     const backendResponse = await fetch(`${BACKEND_URL}/api/query`, {
@@ -27,8 +31,9 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
+        "Accept-Language": acceptLanguage,
       },
-      body: JSON.stringify({ query, task_id }),
+      body: JSON.stringify({ query, task_id, chamber: chamber || "both" }),
     });
 
     if (!backendResponse.ok) {

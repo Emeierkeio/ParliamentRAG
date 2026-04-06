@@ -119,9 +119,11 @@ async def process_query_streaming(
     services = get_services()
     run_log = PipelineRunLogger(query=request.query, chamber=request.chamber)
 
+    _en = request_locale == "en"
+
     try:
         # Step 1: Retrieval
-        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Analisi query e retrieval...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Analisi query e retrieval...'})}\n\n"
 
         run_log.start_stage("retrieval")
         _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
@@ -162,11 +164,15 @@ async def process_query_streaming(
             run_log.warn(f"Low party coverage: {len(parties_found)}/10 parties in retrieval")
 
         # Step 1 complete → send result with concrete data
-        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze da {len(parties_found)} gruppi parlamentari'})}\n\n"
+        _ev_msg = (f'Found {len(evidence_list)} evidence from {len(parties_found)} parliamentary groups'
+                   if _en else f'Trovate {len(evidence_list)} evidenze da {len(parties_found)} gruppi parlamentari')
+        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': _ev_msg})}\n\n"
 
         # Step 2: Authority + Compass (parallel)
         _unique_speakers = set(e.speaker_id for e in evidence_list if e.speaker_id)
-        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': f'{len(evidence_list)} evidenze da {len(parties_found)} gruppi, {len(_unique_speakers)} deputati'})}\n\n"
+        _auth_msg = (f'{len(evidence_list)} evidence from {len(parties_found)} groups, {len(_unique_speakers)} deputies'
+                     if _en else f'{len(evidence_list)} evidenze da {len(parties_found)} gruppi, {len(_unique_speakers)} deputati')
+        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': _auth_msg})}\n\n"
 
         run_log.start_stage("authority_compass")
         # Reuse query_embedding already computed during retrieval — no duplicate embed call
@@ -224,7 +230,9 @@ async def process_query_streaming(
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
 
         # Step 7: advance to generation
-        yield f"data: {json.dumps({'type': 'progress', 'step': 7, 'message': f'{len(authority_all)} deputati valutati per autorità sul tema'})}\n\n"
+        _gen_msg = (f'{len(authority_all)} deputies evaluated for topic authority'
+                    if _en else f'{len(authority_all)} deputati valutati per autorità sul tema')
+        yield f"data: {json.dumps({'type': 'progress', 'step': 7, 'message': _gen_msg})}\n\n"
 
         # Check if client disconnected before generation
         if http_request and await http_request.is_disconnected():
