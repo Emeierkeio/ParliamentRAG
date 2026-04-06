@@ -60,115 +60,7 @@ def sse_event(event_type: str, data: Any) -> str:
     return f"data: {json.dumps(payload, default=str)}\n\n"
 
 
-# Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion.
-# Each pipeline opens a ThreadPoolExecutor(10) + several OpenAI calls concurrently.
-# 5 per worker is the default ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
-_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_CHAT_PIPELINES",
-                                                os.environ.get("MAX_CONCURRENT_PIPELINES", "5")))
-_pipeline_semaphore: Optional[asyncio.Semaphore] = None
-_pipeline_counter_lock: Optional[asyncio.Lock] = None
-_waiting_queue: list[str] = []  # ordered list of waiting task_ids (front = next to run)
-_pipeline_active: int = 0       # tasks currently running
-
-
-def _get_pipeline_semaphore() -> asyncio.Semaphore:
-    global _pipeline_semaphore
-    if _pipeline_semaphore is None:
-        _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
-    return _pipeline_semaphore
-
-
-def _get_counter_lock() -> asyncio.Lock:
-    global _pipeline_counter_lock
-    if _pipeline_counter_lock is None:
-        _pipeline_counter_lock = asyncio.Lock()
-    return _pipeline_counter_lock
-
-
-async def _acquire_pipeline_slot(
-    semaphore: asyncio.Semaphore,
-    emit_fn,
-    task_id: str,
-    max_wait: int = 300,   # 5-minute hard timeout
-    check_every: int = 10,  # send position update every N seconds
-) -> bool:
-    """
-    Acquire a pipeline slot, sending periodic queue-position updates to the client.
-
-    Returns True if the slot was acquired, False if the max_wait timeout expired.
-    The approach is correct: asyncio.wait_for cancels the acquire() coroutine on
-    timeout (properly removing us from the waiters list), then we re-queue.
-
-    Position tracking uses an ordered list so each task knows its exact rank even
-    as tasks ahead of it complete and leave the queue.
-    """
-    global _waiting_queue, _pipeline_active
-    lock = _get_counter_lock()
-
-    # Fast path: slot available immediately
-    if not semaphore.locked():
-        await semaphore.acquire()
-        async with lock:
-            _pipeline_active += 1
-        logger.info(f"[SEMAPHORE] Task {task_id} acquired immediately (active={_pipeline_active})")
-        return True
-
-    # Slow path: add to ordered waiting queue
-    async with lock:
-        _waiting_queue.append(task_id)
-        position = len(_waiting_queue)   # 1-indexed position in queue
-        ahead = position - 1             # people ahead of this task
-        active_now = _pipeline_active
-    logger.info(f"[SEMAPHORE] Task {task_id} queued (position={position}, ahead={ahead}, active={active_now})")
-
-    def _current_position() -> tuple[int, int]:
-        """Return (position, ahead) for this task. Must be called under lock."""
-        try:
-            pos = _waiting_queue.index(task_id) + 1
-        except ValueError:
-            pos = 1
-        return pos, pos - 1
-
-    try:
-        await emit_fn("waiting", {
-            "queue_position": position,
-            "ahead_count": ahead,
-            "active_count": active_now,
-            "elapsed_seconds": 0,
-        })
-
-        elapsed = 0
-        while elapsed < max_wait:
-            try:
-                await asyncio.wait_for(semaphore.acquire(), timeout=check_every)
-                async with lock:
-                    _pipeline_active += 1
-                logger.info(f"[SEMAPHORE] Task {task_id} acquired after {elapsed}s "
-                            f"(active={_pipeline_active}, still_waiting={len(_waiting_queue) - 1})")
-                return True
-            except asyncio.TimeoutError:
-                elapsed += check_every
-                async with lock:
-                    position, ahead = _current_position()
-                    active_now = _pipeline_active
-                logger.info(f"[SEMAPHORE] Task {task_id} still waiting "
-                            f"({elapsed}s, position={position}, ahead={ahead}, active={active_now})")
-                await emit_fn("waiting", {
-                    "queue_position": position,
-                    "ahead_count": ahead,
-                    "active_count": active_now,
-                    "elapsed_seconds": elapsed,
-                })
-
-        logger.warning(f"[SEMAPHORE] Task {task_id} timed out after {max_wait}s")
-        return False
-
-    finally:
-        async with lock:
-            try:
-                _waiting_queue.remove(task_id)
-            except ValueError:
-                pass
+from ..services.pipeline_queue import get_pipeline_queue
 
 
 async def process_chat_background(request: ChatRequest, task_id: str):
@@ -202,11 +94,13 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     def _t(it: str, en: str) -> str:
         return en if _en else it
 
-    semaphore = _get_pipeline_semaphore()
-    acquired = await _acquire_pipeline_slot(semaphore, emit, task_id)
+    queue = get_pipeline_queue()
+    acquired = await queue.acquire(task_id, emit)
     if not acquired:
-        await emit("error", {"message": "Il sistema è troppo occupato al momento. Riprova tra qualche minuto."})
-        await store.fail_task(task_id, "Timeout in coda")
+        msg = _t("Il sistema è troppo occupato al momento. Riprova tra qualche minuto.",
+                 "The system is too busy right now. Please try again in a few minutes.")
+        await emit("error", {"message": msg})
+        await store.fail_task(task_id, "Queue timeout")
         return
 
     try:
@@ -624,12 +518,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         await emit("error", {"message": str(e)})
         await store.fail_task(task_id, str(e))
     finally:
-        global _pipeline_active
-        async with _get_counter_lock():
-            _pipeline_active = max(0, _pipeline_active - 1)
-        semaphore.release()
-        logger.info(f"[PIPELINE] Semaphore released for task {task_id} "
-                    f"(active={_pipeline_active}, waiting={len(_waiting_queue)})")
+        queue.release(task_id)
 
 
 async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
@@ -1547,7 +1436,7 @@ async def cancel_task(task_id: str):
     Cancel a running pipeline task.
 
     Marks the task as cancelled; the background pipeline checks this flag
-    between pipeline steps and stops early, releasing the semaphore slot.
+    between pipeline steps and stops early, releasing the pipeline queue slot.
     """
     store = get_task_store()
     task = await store.get_task(task_id)
