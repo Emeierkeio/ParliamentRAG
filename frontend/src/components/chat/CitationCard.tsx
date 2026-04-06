@@ -220,8 +220,9 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const displayFullText = citation.translated_full_text ?? citation.full_text ?? citation.text ?? "";
-  const originalFullText = citation.is_translated ? (citation.full_text ?? citation.text ?? "") : null;
+  const hasTranslatedFull = citation.is_translated && citation.translated_full_text && citation.translated_full_text.length > 0;
+  const displayFullText = hasTranslatedFull ? citation.translated_full_text : (citation.full_text ?? citation.text ?? "");
+  const originalFullText = hasTranslatedFull ? (citation.full_text ?? citation.text ?? "") : null;
   const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
