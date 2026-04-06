@@ -194,8 +194,12 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     logger.info("=" * 60)
     logger.info(f"[PIPELINE START] Task: {task_id}")
     logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
-    logger.info(f"[PIPELINE START] Mode: {request.mode}")
+    logger.info(f"[PIPELINE START] Mode: {request.mode}, Locale: {request.locale}")
     logger.info("=" * 60)
+
+    _en = request.locale == "en"
+    def _t(it: str, en: str) -> str:
+        return en if _en else it
 
     semaphore = _get_pipeline_semaphore()
     acquired = await _acquire_pipeline_slot(semaphore, emit, task_id)
@@ -208,14 +212,14 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 1: Analisi query ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 1, "total": 8, "message": "Analisi query"})
+        await emit("progress", {"step": 1, "total": 8, "message": _t("Analisi query", "Query analysis")})
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
         # === Step 2: Commissioni ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 2, "total": 8, "message": "Commissioni"})
+        await emit("progress", {"step": 2, "total": 8, "message": _t("Commissioni", "Committees")})
 
         commission_matcher = get_commission_matcher()
         relevant_commissions = commission_matcher.find_relevant_commissions(
@@ -228,7 +232,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 3: Esperti (Authority) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 3, "total": 8, "message": "Esperti"})
+        await emit("progress", {"step": 3, "total": 8, "message": _t("Esperti", "Authoritative sources")})
 
         logger.info("[RETRIEVAL] Starting dual-channel retrieval...")
         retrieval_start = time.time()
@@ -306,7 +310,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 4: Interventi (Citations) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 4, "total": 8, "message": "Interventi"})
+        await emit("progress", {"step": 4, "total": 8, "message": _t("Interventi", "Speeches")})
 
         citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
@@ -322,7 +326,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 5: Statistiche (Balance) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 5, "total": 8, "message": "Statistiche"})
+        await emit("progress", {"step": 5, "total": 8, "message": _t("Statistiche", "Statistics")})
 
         balance = _compute_balance_metrics(evidence_dicts)
         await emit("balance", balance)
@@ -335,7 +339,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 6: Bussola Ideologica (Compass) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 6, "total": 8, "message": "Bussola Ideologica"})
+        await emit("progress", {"step": 6, "total": 8, "message": _t("Bussola Ideologica", "Ideological Compass")})
 
         compass_data = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
@@ -352,7 +356,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 7: Generazione ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 7, "total": 8, "message": "Generazione"})
+        await emit("progress", {"step": 7, "total": 8, "message": _t("Generazione", "Generation")})
 
         gen_config = get_config().load_config().get("generation", {})
         gen_mode = gen_config.get("mode", "pipeline")
@@ -576,7 +580,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         if request.mode == "high_quality":
             _raise_if_cancelled(task_id, store)
             step_start = time.time()
-            await emit("progress", {"step": 8, "total": 8, "message": "Valutazione"})
+            await emit("progress", {"step": 8, "total": 8, "message": _t("Valutazione", "Evaluation")})
             await emit("hq_variants", {
                 "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
             })
@@ -668,20 +672,24 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
     logger.info("=" * 60)
     logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
-    logger.info(f"[PIPELINE START] Mode: {request.mode}")
+    logger.info(f"[PIPELINE START] Mode: {request.mode}, Locale: {request.locale}")
     logger.info("=" * 60)
+
+    _en = request.locale == "en"
+    def _t(it: str, en: str) -> str:
+        return en if _en else it
 
     try:
         # === Step 1: Analisi query ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 1, "total": 8, "message": "Analisi query"})
+        yield sse_event("progress", {"step": 1, "total": 8, "message": _t("Analisi query", "Query analysis")})
         await asyncio.sleep(0)  # Flush immediately
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
         # === Step 2: Commissioni ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 2, "total": 8, "message": "Commissioni"})
+        yield sse_event("progress", {"step": 2, "total": 8, "message": _t("Commissioni", "Committees")})
         await asyncio.sleep(0)  # Flush
 
         # Find relevant commissions based on query keywords
@@ -699,7 +707,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 3: Esperti (Authority) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 3, "total": 8, "message": "Esperti"})
+        yield sse_event("progress", {"step": 3, "total": 8, "message": _t("Esperti", "Authoritative sources")})
         await asyncio.sleep(0)  # Flush before long retrieval operation
 
         # Retrieval - use sync wrapper to run in thread pool
@@ -792,7 +800,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 4: Interventi (Citations) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 4, "total": 8, "message": "Interventi"})
+        yield sse_event("progress", {"step": 4, "total": 8, "message": _t("Interventi", "Speeches")})
         await asyncio.sleep(0)  # Flush
 
         # Build citations list for frontend (run in executor to avoid blocking)
@@ -810,7 +818,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 5: Statistiche (Balance) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 5, "total": 8, "message": "Statistiche"})
+        yield sse_event("progress", {"step": 5, "total": 8, "message": _t("Statistiche", "Statistics")})
         await asyncio.sleep(0)  # Flush
 
         balance = _compute_balance_metrics(evidence_dicts)
@@ -824,7 +832,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 6: Bussola Ideologica (Compass) ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 6, "total": 8, "message": "Bussola Ideologica"})
+        yield sse_event("progress", {"step": 6, "total": 8, "message": _t("Bussola Ideologica", "Ideological Compass")})
         await asyncio.sleep(0)  # Flush
 
         compass_data = await asyncio.get_running_loop().run_in_executor(
@@ -842,7 +850,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
 
         # === Step 7: Generazione ===
         step_start = time.time()
-        yield sse_event("progress", {"step": 7, "total": 8, "message": "Generazione"})
+        yield sse_event("progress", {"step": 7, "total": 8, "message": _t("Generazione", "Generation")})
         await asyncio.sleep(0)  # Flush before long generation operation
 
         gen_config = get_config().load_config().get("generation", {})
@@ -1102,7 +1110,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         # === Step 8: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             step_start = time.time()
-            yield sse_event("progress", {"step": 8, "total": 8, "message": "Valutazione"})
+            yield sse_event("progress", {"step": 8, "total": 8, "message": _t("Valutazione", "Evaluation")})
             yield sse_event("hq_variants", {
                 "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
             })

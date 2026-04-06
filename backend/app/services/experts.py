@@ -147,9 +147,21 @@ async def compute_experts(
     coalition_logic = CoalitionLogic()
     party_speakers: Dict[str, Dict[str, Any]] = {}
 
+    gov_speakers: Dict[str, Dict[str, Any]] = {}
+
     for evidence in evidence_list:
-        # GovernmentMember should not appear in the experts panel
+        # GovernmentMember goes to "Governo" group, not their party
         if evidence.speaker_role == "GovernmentMember":
+            speaker_id = evidence.speaker_id
+            if speaker_id not in gov_speakers:
+                gov_speakers[speaker_id] = {
+                    "speaker_name": evidence.speaker_name,
+                    "authority_score": authority_scores.get(speaker_id, 0.5),
+                    "best_similarity": evidence.similarity if hasattr(evidence, "similarity") else 0.0,
+                    "count": 0,
+                    "party": "Governo",
+                }
+            gov_speakers[speaker_id]["count"] += 1
             continue
 
         # Use current party if the speaker has changed group (same logic as pipeline.py)
@@ -179,6 +191,11 @@ async def compute_experts(
                 party_speakers[party][speaker_id]["best_similarity"] = sim
 
         party_speakers[party][speaker_id]["count"] += 1
+
+    # Add top government speaker (by topic similarity, not authority)
+    if gov_speakers:
+        top_gov_id = max(gov_speakers.keys(), key=lambda s: gov_speakers[s]["best_similarity"])
+        party_speakers["Governo"] = {top_gov_id: gov_speakers[top_gov_id]}
 
     # Select top speaker per party using the ranking formula
     top_speakers_info = []
