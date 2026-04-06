@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from "react";
+import { UrlParamSync } from "@/components/layout/UrlParamSync";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -99,6 +101,9 @@ export default async function RootLayout({
           <MaintenancePage />
         ) : (
           <NextIntlClientProvider messages={messages} locale={locale}>
+            <Suspense fallback={null}>
+              <UrlParamSync />
+            </Suspense>
             <TooltipProvider delayDuration={0}>
               {children}
             </TooltipProvider>

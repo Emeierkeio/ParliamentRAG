@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useParams } from "next/navigation";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
@@ -8,7 +8,7 @@ import { useSidebar, useChat } from "@/hooks";
 import { config } from "@/config";
 import { Loader2 } from "lucide-react";
 
-export default function SharedChatPage() {
+function SharedChatContent() {
   const params = useParams();
   const chatId = params.id as string;
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
@@ -97,5 +97,13 @@ export default function SharedChatPage() {
         />
       </main>
     </div>
+  );
+}
+
+export default function SharedChatPage() {
+  return (
+    <Suspense fallback={null}>
+      <SharedChatContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import type {
   Message,
@@ -32,14 +33,38 @@ interface UseChatOptions {
 
 export function useChat(options: UseChatOptions = {}) {
   const t = useTranslations('Chat');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [chamber, setChamber] = useState<"camera" | "senato" | "both">("both");
+  const [chamber, setChamberInternal] = useState<"camera" | "senato" | "both">("both");
 
-  // Hydrate chamber from localStorage after mount to avoid SSR mismatch
+  // Update URL params when chamber changes
+  const setChamber = useCallback((value: "camera" | "senato" | "both") => {
+    setChamberInternal(value);
+    localStorage.setItem("parliamentRAG.chamber", value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === "both") {
+      params.delete("chamber");
+    } else {
+      params.set("chamber", value);
+    }
+    const qs = params.toString();
+    router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+  }, [searchParams, router, pathname]);
+
+  // Hydrate chamber from URL params → localStorage fallback
   useEffect(() => {
+    const urlChamber = searchParams.get("chamber") as "camera" | "senato" | "both" | null;
     const saved = localStorage.getItem("parliamentRAG.chamber") as "camera" | "senato" | "both" | null;
-    if (saved) setChamber(saved);
+    if (urlChamber && ["camera", "senato", "both"].includes(urlChamber)) {
+      setChamberInternal(urlChamber);
+      localStorage.setItem("parliamentRAG.chamber", urlChamber);
+    } else if (saved) {
+      setChamberInternal(saved);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
@@ -52,10 +77,7 @@ export function useChat(options: UseChatOptions = {}) {
   const streamCompletedRef = useRef(false);
   const sendMessageRef = useRef<((content: string, isRetry?: boolean) => Promise<void>) | null>(null);
 
-  // Persist chamber selection to localStorage
-  useEffect(() => {
-    localStorage.setItem("parliamentRAG.chamber", chamber);
-  }, [chamber]);
+  // Chamber persistence handled by setChamber callback above
 
   // Generate unique ID
   const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;

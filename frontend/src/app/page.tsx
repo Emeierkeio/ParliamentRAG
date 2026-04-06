@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
 import { HistoryModal } from "@/components/shared/HistoryModal";
 import { useSidebar, useChat } from "@/hooks";
 
-export default function Home() {
+function HomeContent() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const {
     messages,
@@ -65,5 +65,13 @@ export default function Home() {
         />
       </main>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
   );
 }

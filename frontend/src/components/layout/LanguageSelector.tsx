@@ -1,17 +1,31 @@
 "use client";
 
 import { useLocale, useTranslations } from 'next-intl';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function LanguageSelector() {
   const locale = useLocale();
   const t = useTranslations('LanguageSelector');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSwitch = () => {
     const nextLocale = locale === 'it' ? 'en' : 'it';
+    // Set cookie for next-intl server-side resolution
     document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
+    // Update URL param
+    const params = new URLSearchParams(searchParams.toString());
+    if (nextLocale === 'it') {
+      params.delete('lang');
+    } else {
+      params.set('lang', nextLocale);
+    }
+    const qs = params.toString();
+    // Use window.location to trigger full reload (next-intl needs server re-render)
+    window.location.href = `${pathname}${qs ? `?${qs}` : ""}`;
   };
 
   return (
