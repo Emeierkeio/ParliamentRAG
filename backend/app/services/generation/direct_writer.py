@@ -170,7 +170,7 @@ class DirectWriter:
 
 ## Introduzione
 
-2-3 frasi con dati concreti: nome del provvedimento, numero di interventi, numero di deputati coinvolti, arco temporale, numeri delle sedute citate.
+2-3 frasi con dati concreti: nome del provvedimento, numero di interventi, numero di deputati coinvolti, arco temporale, numeri delle sedute.
 
 ## Posizione del Governo
 
@@ -178,29 +178,35 @@ Se presente: 1 paragrafo con citazione del ministro competente.
 
 ## Posizioni della Maggioranza
 
-Per ogni partito di maggioranza con evidenze:
-Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] che «[CITAZIONE ESATTA TRA GUILLEMETS]». [1-2 frasi di posizionamento].
+Per ogni partito con evidenze, un paragrafo fluido. Esempio:
+
+Per Fratelli d'Italia, il gruppo esprime critiche nei confronti del PNRR sottolineando le difficoltà burocratiche. **Deidda** critica il fatto che «ecco i progetti del PNRR, questo bellissimo PNRR che è passato in una giornata e mezzo con la fiducia». Il partito chiede una revisione che tenga conto delle specificità territoriali.
 
 ## Posizioni dell'Opposizione
 
-Per ogni partito di opposizione con evidenze:
-Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] che «[CITAZIONE ESATTA TRA GUILLEMETS]». [1-2 frasi di posizionamento].
+Stesso formato dei partiti di maggioranza.
 
-## REGOLE
+## REGOLE DI SCRITTURA
 
-1. CITAZIONI VERBATIM: Il testo tra «» DEVE essere copiato ESATTAMENTE dalla CITAZIONE DA USARE fornita. Copia parola per parola, non modificare nulla.
+1. CITAZIONE VERBATIM: Copia ESATTAMENTE il testo dalla CITAZIONE DA USARE. Non modificare nulla. Il testo va tra «guillemets».
 
-2. UN SOLO SPEAKER PER PARTITO: Usa solo lo speaker indicato come principale.
+2. INTEGRAZIONE FLUIDA della citazione: la frase che introduce la citazione deve essere coerente con il contenuto citato.
+   - Se la citazione è una domanda retorica, USA verbi come "si domanda", "chiede", "si interroga" — NON "afferma che".
+   - Se la citazione è un'affermazione, usa "sostiene che", "dichiara che", "afferma che".
+   - Se la citazione è una critica, usa "critica il fatto che", "denuncia che".
+   - Il verbo introduttivo deve essere COERENTE con il contenuto della citazione.
 
-3. COGNOMI IN GRASSETTO: Il cognome dello speaker citato va sempre in **grassetto**.
+3. COGNOMI: Il cognome va in **grassetto**, senza nome di battesimo. Solo il cognome.
 
-4. VERBI PONTE UNICI: Ogni citazione usa un verbo introduttivo diverso (afferma, dichiara, sostiene, sottolinea, evidenzia, rileva, osserva, denuncia, critica, puntualizza). MAI ripetere lo stesso verbo.
+4. VERBI TUTTI DIVERSI: Ogni sezione usa un verbo introduttivo diverso. Mai ripetere lo stesso verbo nel documento.
 
-5. PARTITI SENZA EVIDENZE: Se un partito è marcato "NESSUNA EVIDENZA", scrivi: "Per [Partito], nel corpus analizzato non risultano interventi rilevanti su questo tema."
+5. NOMI DEI PARTITI: Usa il nome completo solo la prima volta. NON ripetere "partito di maggioranza" o "partito di opposizione" — è ridondante perché sono già sotto l'header della sezione.
 
-6. NON INVENTARE: Non aggiungere informazioni non presenti nelle evidenze.
+6. PARTITI SENZA EVIDENZE: "Per [Partito], nel corpus analizzato non risultano interventi rilevanti su questo tema."
 
-7. LUNGHEZZA: Ogni sezione partito deve avere 3-5 frasi. Bilanciare maggioranza e opposizione."""
+7. LUNGHEZZA: 3-5 frasi per partito. Bilanciare maggioranza e opposizione.
+
+8. NON INVENTARE: Nessuna informazione non presente nelle evidenze."""
 
     # ── User prompt builder ────────────────────────────────────────────
 
@@ -290,9 +296,17 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         if rs and rs.get("has_reported_speech"):
             lines.append("⚠️ ATTENZIONE: Contiene discorso riportato")
 
-        # Add the exact quote to use
-        quote = sel["selected_quote"]
-        lines.append(f"\nCITAZIONE DA USARE (copiare ESATTAMENTE):\n«{quote}»\n")
+        # Add candidate quotes — LLM picks the best one
+        candidates = sel.get("candidate_quotes", [])
+        if len(candidates) == 1:
+            lines.append(f"\nCITAZIONE DA USARE (copiare ESATTAMENTE):\n«{candidates[0]}»\n")
+        elif candidates:
+            lines.append("\nSCEGLI UNA di queste citazioni (copiare ESATTAMENTE):")
+            for i, q in enumerate(candidates, 1):
+                lines.append(f"  {i}. «{q}»")
+            lines.append("")
+        else:
+            lines.append("\nNessuna citazione disponibile.\n")
 
         return "\n".join(lines)
 
@@ -321,12 +335,13 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
                         best = alt
                         break
 
-            # Extract the best quote from the chunk text
-            quote = self._extract_best_quote(best)
+            # Extract candidate quotes for the LLM to choose from
+            candidates = self._extract_candidate_quotes(best)
 
             selections[party] = {
                 "evidence": best,
-                "selected_quote": quote,
+                "candidate_quotes": candidates,
+                "selected_quote": candidates[0] if candidates else "",
             }
 
             logger.debug(
@@ -359,7 +374,7 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
             reverse=True,
         )
         best = gov_sorted[0]
-        quote = self._extract_best_quote(best)
+        candidates = self._extract_candidate_quotes(best)
 
         logger.info(
             "[DIRECT] Gov speaker: %s (similarity=%.2f, role=%s)",
@@ -370,46 +385,48 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
 
         return {
             "evidence": best,
-            "selected_quote": quote,
+            "candidate_quotes": candidates,
+            "selected_quote": candidates[0] if candidates else "",
         }
 
-    def _extract_best_quote(self, evidence: Dict[str, Any]) -> str:
-        """Extract the most relevant verbatim quote from a chunk.
+    def _extract_candidate_quotes(self, evidence: Dict[str, Any]) -> List[str]:
+        """Extract up to 3 candidate quote sentences from a chunk.
 
-        Selects a 1-3 sentence span that is substantive (not procedural).
+        Filters out procedural text, keeps only declarative/substantive
+        sentences under 200 chars each. The LLM picks the best one.
         """
         text = evidence.get("chunk_text", "") or evidence.get("quote_text", "")
         if not text:
-            return ""
+            return []
 
         # Split into sentences
-        sentences = re.split(r'(?<=[.!?])\s+', text.strip())
+        sentences = re.split(r'(?<=[.!?»])\s+', text.strip())
         if not sentences:
-            return text[:500]
+            return [text[:200]]
 
-        # Filter out procedural sentences (very short, or "Presidente," openers)
-        substantive = []
+        # Filter: remove procedural, too short, too long
+        candidates = []
         for s in sentences:
             s = s.strip()
-            if len(s) < 20:
+            if len(s) < 30 or len(s) > 250:
                 continue
-            if s.lower().startswith(("presidente,", "grazie,", "onorevol")):
+            low = s.lower()
+            # Skip procedural openers
+            if low.startswith(("presidente,", "grazie,", "onorevol",
+                              "signor presidente", "colleghi,")):
                 continue
-            substantive.append(s)
+            # Skip pure procedural phrases
+            if any(w in low for w in ("ordine del giorno", "metto in votazione",
+                                       "è così esaurit", "passiamo al")):
+                continue
+            candidates.append(s)
 
-        if not substantive:
-            substantive = sentences
+        if not candidates:
+            # Fallback: take best sentence regardless
+            candidates = [s.strip() for s in sentences if len(s.strip()) > 30]
 
-        # Take 1-2 best sentences (up to ~400 chars total)
-        quote_parts = []
-        total_len = 0
-        for s in substantive:
-            if total_len + len(s) > 500 and quote_parts:
-                break
-            quote_parts.append(s)
-            total_len += len(s)
-
-        return " ".join(quote_parts)
+        # Return top 3 candidates (first ones tend to be most relevant in a chunk)
+        return candidates[:3]
 
     # ── Citation verification (Python, no LLM) ────────────────────────
 
@@ -449,23 +466,38 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
             best_overlap = 0
 
             for key, sel in selections.items():
-                source = sel["selected_quote"]
-                norm_source = " ".join(source.split()).lower()
+                # Check against ALL candidate quotes, not just the first
+                all_sources = sel.get("candidate_quotes", [])
+                if not all_sources and sel.get("selected_quote"):
+                    all_sources = [sel["selected_quote"]]
+                # Also check the full chunk text
+                chunk_text = sel["evidence"].get("chunk_text", "")
 
-                # Check if the quote is a substring of the source (or vice versa)
-                if norm_quoted in norm_source or norm_source in norm_quoted:
-                    overlap = min(len(norm_quoted), len(norm_source))
-                    if overlap > best_overlap:
-                        best_overlap = overlap
+                for source in all_sources:
+                    norm_source = " ".join(source.split()).lower()
+                    if norm_quoted in norm_source or norm_source in norm_quoted:
+                        overlap = min(len(norm_quoted), len(norm_source))
+                        if overlap > best_overlap:
+                            best_overlap = overlap
+                            best_sel = sel
+
+                # Also match against full chunk text (LLM may quote different part)
+                if not best_sel and chunk_text:
+                    norm_chunk = " ".join(chunk_text.split()).lower()
+                    if norm_quoted in norm_chunk:
                         best_sel = sel
+                        best_overlap = len(norm_quoted)
 
             if not best_sel:
-                # Try fuzzy: first 40 chars match
+                # Fuzzy: first 40 chars
                 for key, sel in selections.items():
-                    source = sel["selected_quote"]
-                    norm_source = " ".join(source.split()).lower()
-                    if norm_quoted[:40] in norm_source or norm_source[:40] in norm_quoted:
-                        best_sel = sel
+                    all_sources = sel.get("candidate_quotes", [sel.get("selected_quote", "")])
+                    for source in all_sources:
+                        norm_source = " ".join(source.split()).lower()
+                        if norm_quoted[:40] in norm_source or norm_source[:40] in norm_quoted:
+                            best_sel = sel
+                            break
+                    if best_sel:
                         break
 
             if best_sel:
