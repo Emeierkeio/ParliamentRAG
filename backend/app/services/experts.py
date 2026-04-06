@@ -306,6 +306,7 @@ async def patch_experts_for_cited_speakers(
     }
 
     # First cited speaker per party (from generation citations)
+    # Skip GovernmentMember — they belong in "Governo", not in party sections
     party_to_cited: Dict[str, Dict[str, Any]] = {}
     for cit in gen_citations:
         party = cit.get("party", "")
@@ -313,6 +314,9 @@ async def patch_experts_for_cited_speakers(
             continue
         ev = eid_to_ev.get(cit.get("evidence_id", ""))
         if ev and ev.get("speaker_id"):
+            # Don't let GovernmentMember speakers overwrite party experts
+            if ev.get("speaker_role") == "GovernmentMember":
+                continue
             party_to_cited[party] = ev
 
     # Index current experts by party

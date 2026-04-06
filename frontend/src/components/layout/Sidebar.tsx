@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
@@ -64,7 +64,22 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
   const t = useTranslations('Sidebar');
+
+  // Fetch last data update date from backend
+  useEffect(() => {
+    fetch("/api/config/last-update")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.last_update) {
+          // Format YYYY-MM-DD to DD/MM/YYYY
+          const [y, m, d] = data.last_update.split("-");
+          setLastUpdate(`${d}/${m}/${y}`);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleNavClick = (action: () => void) => {
     action();
@@ -160,7 +175,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <div className="p-3 pb-6">
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">{lastUpdate || "..."}</strong></span>
             </div>
             <NavButton
               item={{ icon: Settings, label: t('settings'), onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
@@ -272,7 +287,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           {!isCollapsed && (
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">04/02/2026</strong></span>
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">{lastUpdate || "..."}</strong></span>
             </div>
           )}
           <nav className="flex flex-col gap-1">

@@ -403,3 +403,22 @@ async def get_coalitions():
     config = get_config()
     config_data = config.load_config()
     return config_data.get("coalitions", {})
+
+
+@router.get("/last-update")
+async def get_last_update():
+    """Get the date of the most recent Session in the database."""
+    from ..services.deps import get_neo4j_client
+    client = get_neo4j_client()
+    try:
+        result = client.query(
+            "MATCH (s:Session) RETURN max(s.date) AS last_date"
+        )
+        if result and result[0].get("last_date"):
+            d = result[0]["last_date"]
+            if hasattr(d, "to_native"):
+                d = d.to_native()
+            return {"last_update": str(d)}
+    except Exception as e:
+        logger.warning("Failed to get last update date: %s", e)
+    return {"last_update": None}
