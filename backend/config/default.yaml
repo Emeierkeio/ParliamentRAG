@@ -138,7 +138,12 @@ compass:
   scatter_random_seed: 42        # Fixed seed for reproducibility
 
 generation:
-  # OpenAI models for 4-stage pipeline
+  # Generation mode: "pipeline" (4-stage) or "direct" (single-prompt)
+  # "direct" uses a single LLM call with pre-selected evidence — faster and cheaper
+  # "pipeline" uses Analyst → Sectional → Integrator → Surgeon — more control but 3x LLM calls
+  mode: "direct"
+
+  # OpenAI models for generation
   
   models:
     analyst: "gpt-4.1-mini"    # Stage 1: Claim decomposition — was gpt-4o (~12x cost reduction)

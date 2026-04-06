@@ -21,6 +21,7 @@ from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.pipeline_logger import PipelineRunLogger
+from ..services.generation.direct_writer import DirectWriter
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -229,10 +230,22 @@ async def process_query_streaming(
         yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
 
         run_log.start_stage("generation")
-        generation_result = await services["generation"].generate(
-            query=request.query,
-            evidence_list=evidence_dicts
-        )
+        gen_config = get_config().load_config().get("generation", {})
+        gen_mode = gen_config.get("mode", "pipeline")
+
+        if gen_mode == "direct":
+            logger.info("[QUERY] Using DirectWriter (single-prompt mode)")
+            writer = DirectWriter()
+            generation_result = await writer.generate(
+                query=request.query,
+                evidence_list=evidence_dicts,
+            )
+        else:
+            logger.info("[QUERY] Using 4-stage pipeline mode")
+            generation_result = await services["generation"].generate(
+                query=request.query,
+                evidence_list=evidence_dicts,
+            )
         gen_citations = generation_result.get("citations", [])
         extra_citation_ids = generation_result.get("extra_citation_ids", [])
         run_log.end_stage("generation",
