@@ -234,11 +234,12 @@ async def process_query_streaming(
         gen_mode = gen_config.get("mode", "pipeline")
 
         if gen_mode == "direct":
-            logger.info("[QUERY] Using DirectWriter (single-prompt mode)")
+            logger.info("[QUERY] Using DirectWriter (single-prompt mode, locale=%s)", request_locale)
             writer = DirectWriter()
             generation_result = await writer.generate(
                 query=request.query,
                 evidence_list=evidence_dicts,
+                locale=request_locale,
             )
         else:
             logger.info("[QUERY] Using 4-stage pipeline mode")

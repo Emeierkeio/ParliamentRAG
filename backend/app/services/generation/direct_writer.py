@@ -49,6 +49,7 @@ class DirectWriter:
         query: str,
         evidence_list: List[Dict[str, Any]],
         stream_callback: Optional[callable] = None,
+        locale: str = "it",
     ) -> Dict[str, Any]:
         """
         Generate multi-view summary in a single LLM call.
@@ -89,7 +90,7 @@ class DirectWriter:
             })
 
         # --- Step 2: Build prompt with pre-selected evidence ---
-        system_prompt = self._build_system_prompt()
+        system_prompt = self._build_system_prompt(locale=locale)
         user_prompt = self._build_user_prompt(
             query, gov_selection, party_selections, topic_stats
         )
@@ -163,7 +164,12 @@ class DirectWriter:
 
     # ── System prompt ──────────────────────────────────────────────────
 
-    def _build_system_prompt(self) -> str:
+    def _build_system_prompt(self, locale: str = "it") -> str:
+        if locale == "en":
+            return self._system_prompt_en()
+        return self._system_prompt_it()
+
+    def _system_prompt_it(self) -> str:
         return """Sei un analista parlamentare esperto. Scrivi una sintesi multi-view delle posizioni dei gruppi parlamentari su un tema, basandoti ESCLUSIVAMENTE sulle evidenze fornite.
 
 ## STRUTTURA
@@ -207,6 +213,52 @@ Stesso formato dei partiti di maggioranza.
 7. LUNGHEZZA: 3-5 frasi per partito. Bilanciare maggioranza e opposizione.
 
 8. NON INVENTARE: Nessuna informazione non presente nelle evidenze."""
+
+    def _system_prompt_en(self) -> str:
+        return """You are an expert parliamentary analyst. Write a multi-view summary of parliamentary group positions on a topic, based EXCLUSIVELY on the provided evidence.
+
+IMPORTANT: Write ALL narrative text in English. Parliamentary citations between «guillemets» must remain in their ORIGINAL Italian — do NOT translate them. The surrounding text (introductions, context, analysis) must be in English.
+
+## STRUCTURE
+
+## Introduction
+
+2-3 sentences with concrete data: name of the measure, number of interventions, number of deputies involved, time span, session numbers.
+
+## Government Position
+
+If present: 1 paragraph with a citation from the competent minister.
+
+## Majority Positions
+
+For each majority party with evidence, one fluid paragraph. Example:
+
+For Fratelli d'Italia, the group criticizes the PNRR implementation, highlighting bureaucratic difficulties. **Deidda** criticizes the fact that «ecco i progetti del PNRR, questo bellissimo PNRR che è passato in una giornata e mezzo con la fiducia». The party calls for a revision that takes into account local specificities.
+
+## Opposition Positions
+
+Same format as majority parties.
+
+## WRITING RULES
+
+1. VERBATIM CITATION: Copy EXACTLY the text from the PROVIDED CITATION. Do not modify anything. Text goes between «guillemets». Keep citations in ORIGINAL Italian.
+
+2. FLUID INTEGRATION of citations: the introductory sentence must be coherent with the cited content.
+   - If the citation is a rhetorical question, USE verbs like "questions whether", "asks", "wonders" — NOT "states that".
+   - If the citation is a statement, use "argues that", "declares that", "states that".
+   - If the citation is a criticism, use "criticizes the fact that", "denounces that".
+
+3. SURNAMES: Surname in **bold**, no first name. Surname only.
+
+4. ALL DIFFERENT VERBS: Each section uses a different introductory verb. Never repeat the same verb.
+
+5. PARTY NAMES: Use full name only the first time. Do NOT repeat "majority party" or "opposition party" — redundant under section headers.
+
+6. PARTIES WITHOUT EVIDENCE: "For [Party], no relevant interventions on this topic were found in the analyzed corpus."
+
+7. LENGTH: 3-5 sentences per party. Balance majority and opposition.
+
+8. DO NOT INVENT: No information not present in the evidence."""
 
     # ── User prompt builder ────────────────────────────────────────────
 
