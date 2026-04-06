@@ -66,6 +66,15 @@ class DirectWriter:
         party_selections = self._select_per_party(evidence_by_party)
         gov_selection = self._select_government(government_evidence)
 
+        # Debug: log evidence distribution
+        parties_with_ev = {p: len(v) for p, v in evidence_by_party.items() if v}
+        logger.info(
+            "[DIRECT] Evidence distribution: %d gov, %d party chunks across %s",
+            len(government_evidence),
+            sum(len(v) for v in evidence_by_party.values()),
+            parties_with_ev or "NO PARTIES",
+        )
+
         if stream_callback:
             await stream_callback({
                 "type": "progress",
@@ -465,8 +474,13 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         all_parties = self.config.get_all_parties()
         by_party: Dict[str, List[Dict[str, Any]]] = {p: [] for p in all_parties}
 
+        gov_count = 0
         for evidence in evidence_list:
-            if evidence.get("speaker_role") == "GovernmentMember":
+            # Use coalition field (more reliable than speaker_role label which
+            # may be wrong in some DB builds where all speakers are GovernmentMember)
+            coalition = evidence.get("coalition", "")
+            if coalition == "governo":
+                gov_count += 1
                 continue
             party = (
                 evidence.get("current_party")
@@ -481,9 +495,16 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
                         matched = True
                         break
                 if not matched:
+                    logger.warning("[DIRECT] Unmatched party '%s' → Misto", party)
                     by_party["Misto"].append(evidence)
             else:
                 by_party[party].append(evidence)
+
+        logger.info(
+            "[DIRECT] _group_evidence_by_party: %d total, %d gov filtered, parties: %s",
+            len(evidence_list), gov_count,
+            {p: len(v) for p, v in by_party.items() if v},
+        )
 
         # Speaker-first interleaving sort
         for party in by_party:
@@ -529,7 +550,7 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         self, evidence_list: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         """Extract government member evidence."""
-        return [e for e in evidence_list if e.get("speaker_role") == "GovernmentMember"]
+        return [e for e in evidence_list if e.get("coalition") == "governo"]
 
     def _compute_topic_statistics(
         self, evidence_list: List[Dict[str, Any]]
