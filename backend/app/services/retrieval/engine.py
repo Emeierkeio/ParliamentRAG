@@ -461,10 +461,10 @@ class RetrievalEngine:
 
         for party in missing_parties:
             try:
-                # Normalize party name to match DB storage format:
-                # DB stores uppercase with no spaces around hyphens (e.g. "ITALIA VIVA-IL CENTRO-RENEW EUROPE")
-                # Config uses display names with spaces (e.g. "Italia Viva - Il Centro - Renew Europe")
-                normalized_party = party.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-")
+                # DB group names are UPPERCASE with inconsistent hyphen spacing.
+                # Extract the first distinctive word(s) for CONTAINS matching.
+                # E.g. "Azione - Popolari..." → match any group containing "AZIONE"
+                normalized_party = party
 
                 cypher = """
                 CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
@@ -475,7 +475,8 @@ class RetrievalEngine:
                 // Solo membri ATTUALI del partito: la membership deve essere
                 // attiva sia alla data del discorso che oggi.
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-                WHERE toLower(g.name) = toLower($party_name)
+                WHERE (toLower(g.name) = toLower($party_name)
+                       OR toLower(g.name) CONTAINS toLower($party_prefix))
                 AND mg.start_date <= s.date
                 AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                 AND (mg.end_date IS NULL OR mg.end_date >= date())
@@ -502,11 +503,14 @@ class RetrievalEngine:
                 LIMIT $limit
                 """
 
+                # Extract prefix for fuzzy CONTAINS match (e.g. "Azione" from "Azione - Popolari...")
+                party_prefix = normalized_party.split(" - ")[0].strip()
                 results = self.client.query(cypher, {
                     "index_name": index_name,
                     "top_k": 500,  # Search wider to find this party's chunks
                     "query_embedding": query_embedding,
                     "party_name": normalized_party,
+                    "party_prefix": party_prefix,
                     "limit": chunks_per_party
                 })
 
