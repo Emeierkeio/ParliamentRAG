@@ -23,6 +23,7 @@ from ..services.task_store import get_task_store
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
+from ..services.generation.direct_writer import DirectWriter
 from ..config import get_config, get_settings
 
 logger = logging.getLogger(__name__)
@@ -353,12 +354,23 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         step_start = time.time()
         await emit("progress", {"step": 7, "total": 8, "message": "Generazione"})
 
-        logger.info("[GENERATION] Starting 4-stage generation pipeline...")
+        gen_config = get_config().load_config().get("generation", {})
+        gen_mode = gen_config.get("mode", "pipeline")
         generation_start = time.time()
 
-        generation_result = await services["generation"].generate(
-            query=request.query, evidence_list=evidence_dicts
-        )
+        if gen_mode == "direct":
+            logger.info("[GENERATION] Using DirectWriter (locale=%s)", request.locale)
+            writer = DirectWriter()
+            generation_result = await writer.generate(
+                query=request.query,
+                evidence_list=evidence_dicts,
+                locale=request.locale,
+            )
+        else:
+            logger.info("[GENERATION] Starting 4-stage generation pipeline...")
+            generation_result = await services["generation"].generate(
+                query=request.query, evidence_list=evidence_dicts
+            )
 
         generation_time = time.time() - generation_start
         logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
@@ -833,17 +845,27 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         yield sse_event("progress", {"step": 7, "total": 8, "message": "Generazione"})
         await asyncio.sleep(0)  # Flush before long generation operation
 
-        logger.info("[GENERATION] Starting 4-stage generation pipeline...")
+        gen_config = get_config().load_config().get("generation", {})
+        gen_mode = gen_config.get("mode", "pipeline")
         generation_start = time.time()
 
-        # Generation is truly async (uses async for internally)
-        generation_result = await services["generation"].generate(
-            query=request.query,
-            evidence_list=evidence_dicts
-        )
+        if gen_mode == "direct":
+            logger.info("[GENERATION] Using DirectWriter (locale=%s)", request.locale)
+            writer = DirectWriter()
+            generation_result = await writer.generate(
+                query=request.query,
+                evidence_list=evidence_dicts,
+                locale=request.locale,
+            )
+        else:
+            logger.info("[GENERATION] Starting 4-stage generation pipeline...")
+            generation_result = await services["generation"].generate(
+                query=request.query,
+                evidence_list=evidence_dicts
+            )
 
         generation_time = time.time() - generation_start
-        logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
+        logger.info(f"[TIMING] Generation: {generation_time*1000:.1f}ms (mode={gen_mode})")
 
         final_text = generation_result.get("text", "")
 
