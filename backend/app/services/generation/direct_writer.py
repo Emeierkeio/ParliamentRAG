@@ -127,6 +127,8 @@ class DirectWriter:
         elapsed_llm = time.perf_counter() - start
 
         logger.info("[DIRECT] LLM response: %d chars in %.1fs", len(raw_text), elapsed_llm)
+        # Log first 500 chars to debug citation format
+        logger.info("[DIRECT] Text sample: %s", raw_text[:500].replace('\n', '\\n'))
 
         if stream_callback:
             await stream_callback({
@@ -164,49 +166,41 @@ class DirectWriter:
     def _build_system_prompt(self) -> str:
         return """Sei un analista parlamentare esperto. Scrivi una sintesi multi-view delle posizioni dei gruppi parlamentari su un tema, basandoti ESCLUSIVAMENTE sulle evidenze fornite.
 
-## FORMATO OUTPUT
+## STRUTTURA
 
-```
 ## Introduzione
 
-[2-3 frasi con dati concreti: nome del provvedimento, numero di interventi, numero di deputati coinvolti, arco temporale, numeri delle sedute citate]
+2-3 frasi con dati concreti: nome del provvedimento, numero di interventi, numero di deputati coinvolti, arco temporale, numeri delle sedute citate.
 
 ## Posizione del Governo
 
-[Se presente: 1 paragrafo con citazione del ministro competente]
+Se presente: 1 paragrafo con citazione del ministro competente.
 
 ## Posizioni della Maggioranza
 
-Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] «[CITAZIONE ESATTA]». [1-2 frasi di posizionamento].
-
-[Ripetere per ogni partito di maggioranza con evidenze]
+Per ogni partito di maggioranza con evidenze:
+Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] che «[CITAZIONE ESATTA TRA GUILLEMETS]». [1-2 frasi di posizionamento].
 
 ## Posizioni dell'Opposizione
 
-Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] «[CITAZIONE ESATTA]». [1-2 frasi di posizionamento].
+Per ogni partito di opposizione con evidenze:
+Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico] che «[CITAZIONE ESATTA TRA GUILLEMETS]». [1-2 frasi di posizionamento].
 
-[Ripetere per ogni partito di opposizione con evidenze]
-```
+## REGOLE
 
-## REGOLE CRITICHE
+1. CITAZIONI VERBATIM: Il testo tra «» DEVE essere copiato ESATTAMENTE dalla CITAZIONE DA USARE fornita. Copia parola per parola, non modificare nulla.
 
-1. **CITAZIONI VERBATIM**: Il testo tra «» DEVE essere copiato ESATTAMENTE dall'evidenza fornita. Non modificare, riassumere o parafrasare. Copia parola per parola.
+2. UN SOLO SPEAKER PER PARTITO: Usa solo lo speaker indicato come principale.
 
-2. **FORMATO CITAZIONE**: Scrivi `[«testo esatto»](CHUNK_ID)` dove CHUNK_ID è l'ID fornito. Esempio: `[«sono oltre 447.000 gli interventi finanziati»](leg19_sed569_chunk_3)`
+3. COGNOMI IN GRASSETTO: Il cognome dello speaker citato va sempre in **grassetto**.
 
-3. **UN SOLO SPEAKER PER PARTITO**: Usa solo lo speaker indicato come principale per ogni partito.
+4. VERBI PONTE UNICI: Ogni citazione usa un verbo introduttivo diverso (afferma, dichiara, sostiene, sottolinea, evidenzia, rileva, osserva, denuncia, critica, puntualizza). MAI ripetere lo stesso verbo.
 
-4. **COGNOMI IN GRASSETTO**: Il cognome dello speaker citato va sempre in **grassetto**.
+5. PARTITI SENZA EVIDENZE: Se un partito è marcato "NESSUNA EVIDENZA", scrivi: "Per [Partito], nel corpus analizzato non risultano interventi rilevanti su questo tema."
 
-5. **VERBI PONTE UNICI**: Ogni citazione usa un verbo introduttivo diverso (afferma, dichiara, sostiene, sottolinea, evidenzia, rileva, osserva, denuncia, critica, puntualizza, lamenta, chiede conto). MAI ripetere lo stesso verbo nel documento.
+6. NON INVENTARE: Non aggiungere informazioni non presenti nelle evidenze.
 
-6. **PARTITI SENZA EVIDENZE**: Se un partito è marcato "NESSUNA EVIDENZA", scrivi: "Per [Partito], nel corpus analizzato non risultano interventi rilevanti su questo tema."
-
-7. **NON INVENTARE**: Non aggiungere informazioni non presenti nelle evidenze. Non attribuire posizioni non supportate dal testo citato.
-
-8. **REPORTED SPEECH**: Se l'evidenza è marcata come "discorso riportato" (il deputato cita le parole di un altro), NON usarla come posizione del gruppo.
-
-9. **LUNGHEZZA**: Ogni sezione partito deve avere 3-5 frasi. Bilanciare maggioranza e opposizione in lunghezza complessiva."""
+7. LUNGHEZZA: Ogni sezione partito deve avere 3-5 frasi. Bilanciare maggioranza e opposizione."""
 
     # ── User prompt builder ────────────────────────────────────────────
 
@@ -412,64 +406,86 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         party_selections: Dict[str, Optional[Dict[str, Any]]],
         evidence_list: List[Dict[str, Any]],
     ) -> tuple:
-        """Verify citations in LLM output are verbatim and build citation list.
+        """Match «guillemets» quotes in LLM output to pre-selected evidence chunks.
+
+        The LLM writes «verbatim quote» and Python matches each to its chunk_id,
+        converting to markdown links: [«quote»](chunk_id).
 
         Returns (final_text, citations_list, extra_citation_ids).
         """
-        # Build evidence map
-        evidence_map = {e.get("evidence_id"): e for e in evidence_list if e.get("evidence_id")}
+        # Build lookup: all pre-selected evidence keyed by normalized quote substring
+        selections = {}
+        if gov_selection:
+            selections["__gov__"] = gov_selection
+        for party, sel in party_selections.items():
+            if sel:
+                selections[party] = sel
 
-        # Find all [«...»](chunk_id) patterns in the text
-        citation_pattern = r'\[«([^»]+)»\]\(([^)]+)\)'
         citations = []
-        extra_ids = []
 
-        for match in re.finditer(citation_pattern, text):
-            quoted_text = match.group(1)
-            chunk_id = match.group(2)
+        # Find all «...» in text
+        guillemet_pattern = r'«([^»]+)»'
 
-            ev = evidence_map.get(chunk_id)
-            if not ev:
-                logger.warning("[DIRECT] Citation ID not in evidence: %s", chunk_id)
-                extra_ids.append(chunk_id)
-                continue
+        def _replace_quote(match):
+            quoted = match.group(1)
+            norm_quoted = " ".join(quoted.split()).lower()
 
-            # Verify verbatim — check if quoted text is a substring of chunk_text
-            source_text = ev.get("chunk_text", "") or ev.get("quote_text", "")
-            # Normalize whitespace for comparison
-            norm_quote = " ".join(quoted_text.split())
-            norm_source = " ".join(source_text.split())
+            # Find which pre-selected evidence this quote came from
+            best_sel = None
+            best_overlap = 0
 
-            if norm_quote.lower() not in norm_source.lower():
-                logger.warning(
-                    "[DIRECT] Citation not verbatim for %s — quote: %.50s... source: %.50s...",
-                    chunk_id, norm_quote, norm_source,
-                )
-                # Try to find the closest match — the LLM may have truncated
-                # Keep it anyway but log the mismatch
+            for key, sel in selections.items():
+                source = sel["selected_quote"]
+                norm_source = " ".join(source.split()).lower()
+
+                # Check if the quote is a substring of the source (or vice versa)
+                if norm_quoted in norm_source or norm_source in norm_quoted:
+                    overlap = min(len(norm_quoted), len(norm_source))
+                    if overlap > best_overlap:
+                        best_overlap = overlap
+                        best_sel = sel
+
+            if not best_sel:
+                # Try fuzzy: first 40 chars match
+                for key, sel in selections.items():
+                    source = sel["selected_quote"]
+                    norm_source = " ".join(source.split()).lower()
+                    if norm_quoted[:40] in norm_source or norm_source[:40] in norm_quoted:
+                        best_sel = sel
+                        break
+
+            if best_sel:
+                ev = best_sel["evidence"]
+                chunk_id = ev.get("evidence_id", "")
+
+                session_date = ev.get("date", "")
+                if hasattr(session_date, "strftime"):
+                    session_date = session_date.strftime("%Y-%m-%d")
+                elif hasattr(session_date, "to_native"):
+                    session_date = str(session_date.to_native())
+
+                # Avoid duplicate citations
+                if not any(c["evidence_id"] == chunk_id for c in citations):
+                    citations.append({
+                        "evidence_id": chunk_id,
+                        "quote_text": quoted,
+                        "speaker_name": ev.get("speaker_name", ""),
+                        "party": ev.get("party", ""),
+                        "date": str(session_date),
+                    })
+
+                logger.info("[DIRECT] ✓ Matched citation: %s → %s", quoted[:50], chunk_id)
+                # Convert to markdown link for frontend
+                return f"[«{quoted}»]({chunk_id})"
             else:
-                logger.info("[DIRECT] ✓ Verified verbatim: %s", chunk_id)
+                logger.warning("[DIRECT] ✗ Unmatched quote: %s", quoted[:60])
+                return f"«{quoted}»"
 
-            session_date = ev.get("date", "")
-            if hasattr(session_date, "strftime"):
-                session_date = session_date.strftime("%Y-%m-%d")
-            elif hasattr(session_date, "to_native"):
-                session_date = str(session_date.to_native())
+        text = re.sub(guillemet_pattern, _replace_quote, text)
 
-            citations.append({
-                "evidence_id": chunk_id,
-                "quote_text": quoted_text,
-                "speaker_name": ev.get("speaker_name", ""),
-                "party": ev.get("party", ""),
-                "date": str(session_date),
-            })
+        logger.info("[DIRECT] Citations resolved: %d matched", len(citations))
 
-        logger.info(
-            "[DIRECT] Citations resolved: %d verified, %d extra IDs",
-            len(citations), len(extra_ids),
-        )
-
-        return text, citations, extra_ids
+        return text, citations, []
 
     # ── Evidence grouping (reused from pipeline) ──────────────────────
 
