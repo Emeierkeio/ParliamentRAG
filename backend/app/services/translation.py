@@ -71,9 +71,114 @@ async def translate_citation_batch(
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+async def translate_response_text(
+    text: str,
+    target_lang: str = "en",
+) -> str:
+    """Translate the generated Italian markdown response text to *target_lang*.
+
+    Preserves markdown formatting, citation links ``[text](leg19_...)``,
+    and proper nouns (party names, people names, session numbers).
+    On failure returns the original text unchanged.
+    """
+    if target_lang == "it" or not text:
+        return text
+
+    client = make_async_client()
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a professional translator from Italian to English.\n"
+                        "Translate the following Italian parliamentary markdown text to English.\n"
+                        "RULES:\n"
+                        "- Preserve ALL markdown formatting (##, **, «», bullet points, etc.)\n"
+                        "- Preserve ALL citation links exactly as-is: e.g. [some text](leg19_abc) — do NOT modify the link target inside parentheses\n"
+                        "- Preserve proper nouns: party names, people names, place names, dates, session numbers\n"
+                        "- Maintain formal parliamentary register\n"
+                        "- Return ONLY the translated text, nothing else"
+                    ),
+                },
+                {"role": "user", "content": text},
+            ],
+            temperature=0,
+        )
+        translated = response.choices[0].message.content
+        return translated if translated else text
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Response text translation failed; returning original. Error: %s", exc)
+        return text
+
+
+async def translate_compass_axes(
+    compass_data: dict,
+    target_lang: str = "en",
+) -> dict:
+    """Translate compass axis labels to *target_lang*.
+
+    The *compass_data* dict has an ``axes`` dict with keys like ``"x"`` and
+    ``"y"``, each containing ``positive_label`` and ``negative_label`` strings.
+    On failure returns the original data unchanged.
+    """
+    if target_lang == "it" or not compass_data:
+        return compass_data
+
+    axes = compass_data.get("axes")
+    if not axes:
+        return compass_data
+
+    # Collect all labels to translate in one call
+    labels_to_translate = {}
+    for axis_key, axis_val in axes.items():
+        if isinstance(axis_val, dict):
+            for label_key in ("positive_label", "negative_label"):
+                val = axis_val.get(label_key, "")
+                if val:
+                    labels_to_translate[f"{axis_key}.{label_key}"] = val
+
+    if not labels_to_translate:
+        return compass_data
+
+    client = make_async_client()
+    try:
+        prompt = (
+            "Translate these Italian political compass axis labels to English.\n"
+            "Preserve proper nouns. Return ONLY valid JSON with the same keys.\n\n"
+            + json.dumps(labels_to_translate, ensure_ascii=False)
+        )
+        response = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0,
+        )
+        raw = response.choices[0].message.content
+        translated = json.loads(raw)
+
+        # Apply translations back
+        result = {**compass_data, "axes": {**axes}}
+        for compound_key, translated_val in translated.items():
+            parts = compound_key.split(".", 1)
+            if len(parts) == 2:
+                axis_key, label_key = parts
+                if axis_key in result["axes"] and isinstance(result["axes"][axis_key], dict):
+                    result["axes"][axis_key] = {**result["axes"][axis_key], label_key: translated_val}
+        return result
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Compass axes translation failed; returning original. Error: %s", exc)
+        return compass_data
+
+
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+
 async def _translate_one(citation: dict, client) -> dict:
     """Translate a single citation dict.
 
+    Translates text and full_text separately to handle long speeches.
     Returns the original citation unchanged on any exception.
     """
     text = citation.get("text", "")
@@ -82,20 +187,42 @@ async def _translate_one(citation: dict, client) -> dict:
     if not text and not full_text:
         return citation
 
-    prompt = TRANSLATION_PROMPT.format(text=text, full_text=full_text)
+    translated_text = ""
+    translated_full_text = ""
 
     try:
-        response = await client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0,
-        )
-        raw = response.choices[0].message.content
-        result = json.loads(raw)
+        # Translate short text (preview)
+        if text:
+            resp = await client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{
+                    "role": "system",
+                    "content": "Translate the following Italian parliamentary text to English. "
+                               "Preserve proper nouns (names, parties, dates). Return ONLY the translation."
+                }, {"role": "user", "content": text}],
+                temperature=0,
+            )
+            translated_text = resp.choices[0].message.content or text
+
+        # Translate full speech text (may be long)
+        if full_text:
+            resp = await client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{
+                    "role": "system",
+                    "content": "Translate the following Italian parliamentary speech to English. "
+                               "Preserve proper nouns (names, parties, dates, session numbers). "
+                               "Return ONLY the translation."
+                }, {"role": "user", "content": full_text}],
+                temperature=0,
+                max_tokens=4000,
+            )
+            translated_full_text = resp.choices[0].message.content or full_text
+
         return {
             **citation,
-            "translated_text": result.get("text", ""),
-            "translated_full_text": result.get("full_text", ""),
+            "translated_text": translated_text,
+            "translated_full_text": translated_full_text,
             "is_translated": True,
         }
     except Exception as exc:  # noqa: BLE001
