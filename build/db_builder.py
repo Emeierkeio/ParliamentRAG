@@ -409,7 +409,9 @@ class DatabaseBuilder:
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:Debate {id: row.id})
-            SET d.title = row.title
+            SET d.title = row.title,
+                d.originalId = row.originalId,
+                d.order = row.order
             WITH d, row
             MATCH (s:Session {id: row.sessionId})
             MERGE (s)-[:HAS_DEBATE]->(d)
@@ -420,7 +422,10 @@ class DatabaseBuilder:
         tx.run("""
             UNWIND $batch AS row
             MERGE (p:Phase {id: row.id})
-            SET p.title = row.title, p.phaseType = row.phaseType
+            SET p.title = row.title,
+                p.phaseType = row.phaseType,
+                p.originalId = row.originalId,
+                p.order = row.order
             WITH p, row
             MATCH (d:Debate {id: row.debateId})
             MERGE (d)-[:HAS_PHASE]->(p)
@@ -431,7 +436,10 @@ class DatabaseBuilder:
         tx.run("""
             UNWIND $batch AS row
             MERGE (sp:Speech {id: row.id})
-            SET sp.text = row.text, sp.speakingRole = row.speakingRole
+            SET sp.text = row.text,
+                sp.speakingRole = row.speakingRole,
+                sp.deputatoId = row.deputatoId,
+                sp.cognomeNome = row.cognome_nome
             WITH sp, row
             MATCH (p:Phase {id: row.phaseId})
             MERGE (p)-[:CONTAINS_SPEECH]->(sp)
