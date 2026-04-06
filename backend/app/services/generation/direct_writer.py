@@ -482,17 +482,10 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
 
         gov_count = 0
         for evidence in evidence_list:
-            # A speaker is "governo" only if coalition=governo AND party is
-            # literally "GOVERNO" (or empty/None). Many GovernmentMember-labeled
-            # speakers in Neo4j are actually deputies with a party — they should
-            # go in their party section, not the governo section.
-            coalition = evidence.get("coalition", "")
-            party_name = evidence.get("party", "") or ""
-            is_governo = (
-                coalition == "governo"
-                and party_name.upper() in ("GOVERNO", "")
-            )
-            if is_governo:
+            # GovernmentMember label = minister/premier → governo section
+            # Deputy label = regular parliamentarian → party section
+            # These are mutually exclusive labels in Neo4j
+            if evidence.get("speaker_role") == "GovernmentMember":
                 gov_count += 1
                 continue
             party = (
@@ -562,12 +555,8 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
     def _get_government_evidence(
         self, evidence_list: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
-        """Extract government member evidence (only actual governo, not deputies with party)."""
-        return [
-            e for e in evidence_list
-            if e.get("coalition") == "governo"
-            and (e.get("party", "") or "").upper() in ("GOVERNO", "")
-        ]
+        """Extract government member evidence (GovernmentMember label in Neo4j)."""
+        return [e for e in evidence_list if e.get("speaker_role") == "GovernmentMember"]
 
     def _compute_topic_statistics(
         self, evidence_list: List[Dict[str, Any]]
