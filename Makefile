@@ -137,6 +137,9 @@ frontend-lint: ## Lint frontend code
 
 dev: ## Run locally (Neo4j locale + backend + frontend)
 	@printf "$(BOLD)Starting ParliamentRAG stack...$(RESET)\n"
+	@# Kill any existing backend/frontend processes on our ports
+	@-lsof -ti:$(BACKEND_PORT) | xargs kill -9 2>/dev/null || true
+	@-lsof -ti:$(FRONTEND_PORT) | xargs kill -9 2>/dev/null || true
 	@# Stop conflicting Neo4j containers on same ports
 	@for cid in $$(docker ps -q --filter "publish=7475" --filter "publish=7689"); do \
 		cname=$$(docker inspect --format '{{.Name}}' $$cid | tr -d '/'); \
