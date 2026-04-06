@@ -128,12 +128,13 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str,
     logger.info("Step 4: Linking Speech→Deputy by numeric ID...")
 
     with driver.session() as session:
+        # Build full URI: 'http://dati.camera.it/ocd/persona.rdf/p' + deputatoId
         result = session.execute_write(
             lambda tx: tx.run("""
                 MATCH (sp:Speech)
                 WHERE sp.deputatoId IS NOT NULL AND sp.deputatoId <> ''
-                MATCH (dep:Deputy)
-                WHERE dep.id ENDS WITH ('p' + sp.deputatoId)
+                WITH sp, 'http://dati.camera.it/ocd/persona.rdf/p' + sp.deputatoId AS uri
+                MATCH (dep:Deputy {id: uri})
                 MERGE (sp)-[:SPOKEN_BY]->(dep)
                 RETURN count(*) AS n
             """).single()
