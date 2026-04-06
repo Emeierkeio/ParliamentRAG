@@ -74,6 +74,12 @@ class DirectWriter:
             sum(len(v) for v in evidence_by_party.values()),
             parties_with_ev or "NO PARTIES",
         )
+        # Debug: sample first 5 evidence dicts to see actual field values
+        for i, e in enumerate(evidence_list[:5]):
+            logger.info(
+                "[DIRECT] Evidence[%d]: coalition=%s, speaker_role=%s, party=%s, speaker=%s",
+                i, e.get("coalition"), e.get("speaker_role"), e.get("party"), e.get("speaker_name"),
+            )
 
         if stream_callback:
             await stream_callback({
@@ -476,10 +482,17 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
 
         gov_count = 0
         for evidence in evidence_list:
-            # Use coalition field (more reliable than speaker_role label which
-            # may be wrong in some DB builds where all speakers are GovernmentMember)
+            # A speaker is "governo" only if coalition=governo AND party is
+            # literally "GOVERNO" (or empty/None). Many GovernmentMember-labeled
+            # speakers in Neo4j are actually deputies with a party — they should
+            # go in their party section, not the governo section.
             coalition = evidence.get("coalition", "")
-            if coalition == "governo":
+            party_name = evidence.get("party", "") or ""
+            is_governo = (
+                coalition == "governo"
+                and party_name.upper() in ("GOVERNO", "")
+            )
+            if is_governo:
                 gov_count += 1
                 continue
             party = (
@@ -549,8 +562,12 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
     def _get_government_evidence(
         self, evidence_list: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
-        """Extract government member evidence."""
-        return [e for e in evidence_list if e.get("coalition") == "governo"]
+        """Extract government member evidence (only actual governo, not deputies with party)."""
+        return [
+            e for e in evidence_list
+            if e.get("coalition") == "governo"
+            and (e.get("party", "") or "").upper() in ("GOVERNO", "")
+        ]
 
     def _compute_topic_statistics(
         self, evidence_list: List[Dict[str, Any]]
