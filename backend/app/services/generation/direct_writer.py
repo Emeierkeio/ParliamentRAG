@@ -236,7 +236,7 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         # Government evidence
         parts.append("## GOVERNO")
         if gov_selection:
-            parts.append(self._format_evidence_block(gov_selection))
+            parts.append(self._format_evidence_block(gov_selection, is_gov=True))
         else:
             parts.append("NESSUNA EVIDENZA da ministri competenti sul tema.\n")
 
@@ -269,19 +269,21 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
 
         return "\n".join(parts)
 
-    def _format_evidence_block(self, sel: Dict[str, Any]) -> str:
+    def _format_evidence_block(self, sel: Dict[str, Any], is_gov: bool = False) -> str:
         """Format a pre-selected evidence block for the prompt."""
         e = sel["evidence"]
         lines = [
             f"- Speaker: {e.get('speaker_name', 'Sconosciuto')}",
-            f"- Partito: {e.get('party', '')}",
+        ]
+        if not is_gov:
+            lines.append(f"- Partito: {e.get('party', '')}")
+        else:
+            lines.append(f"- Ruolo: Membro del Governo")
+        lines.extend([
             f"- Data: {e.get('date', '')}",
             f"- Seduta: {e.get('session_number', '')}",
             f"- Dibattito: {e.get('debate_title', '')}",
-            f"- CHUNK_ID: {e.get('evidence_id', '')}",
-            f"- Authority score: {e.get('authority_score', 0):.2f}",
-            f"- Similarity: {e.get('similarity', 0):.2f}",
-        ]
+        ])
 
         # Add reported speech warning
         rs = e.get("reported_speech", {})
@@ -341,18 +343,30 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
     def _select_government(
         self, gov_evidence: List[Dict[str, Any]]
     ) -> Optional[Dict[str, Any]]:
-        """Select best government speaker."""
+        """Select the most topic-relevant government speaker (minister).
+
+        Government members are selected by topic relevance (similarity),
+        NOT by party authority. They represent the government as a whole,
+        not their original party.
+        """
         if not gov_evidence:
             return None
 
-        # Sort by authority
+        # Sort by similarity to query (topic relevance) — NOT authority
         gov_sorted = sorted(
             gov_evidence,
-            key=lambda e: e.get("authority_score", 0),
+            key=lambda e: e.get("similarity", 0),
             reverse=True,
         )
         best = gov_sorted[0]
         quote = self._extract_best_quote(best)
+
+        logger.info(
+            "[DIRECT] Gov speaker: %s (similarity=%.2f, role=%s)",
+            best.get("speaker_name", "?"),
+            best.get("similarity", 0),
+            best.get("debate_title", ""),
+        )
 
         return {
             "evidence": best,
