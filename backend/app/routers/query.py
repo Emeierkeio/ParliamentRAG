@@ -20,6 +20,7 @@ from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
 from ..services.experts import compute_experts, patch_experts_for_cited_speakers
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
+from ..services.pipeline_logger import PipelineRunLogger
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -115,12 +116,13 @@ async def process_query_streaming(
         request_locale = "en" if "en" in accept_lang else "it"
 
     services = get_services()
+    run_log = PipelineRunLogger(query=request.query, chamber=request.chamber)
 
     try:
-        # Step 1: Progress - Starting
+        # Step 1: Retrieval
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Avvio retrieval...'})}\n\n"
 
-        # Step 2: Retrieval
+        run_log.start_stage("retrieval")
         _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
@@ -142,11 +144,28 @@ async def process_query_streaming(
                 d["text"] = e.text
             evidence_dicts.append(d)
 
+        # Count per-channel contributions
+        channel_counts = {}
+        for e in evidence_dicts:
+            ch = e.get("source_channel", "unknown")
+            channel_counts[ch] = channel_counts.get(ch, 0) + 1
+
+        # Count party coverage
+        parties_found = set(e.get("party", "") for e in evidence_dicts if e.get("party"))
+        run_log.end_stage("retrieval",
+                          evidence_count=len(evidence_list),
+                          channels=channel_counts,
+                          parties_covered=len(parties_found))
+
+        if len(parties_found) < 5:
+            run_log.warn(f"Low party coverage: {len(parties_found)}/10 parties in retrieval")
+
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
 
-        # Step 3+4: Authority scoring and Compass in PARALLEL
+        # Step 2: Authority + Compass (parallel)
         yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Calcolo authority scores e compass...'})}\n\n"
 
+        run_log.start_stage("authority_compass")
         # Reuse query_embedding already computed during retrieval — no duplicate embed call
         query_embedding = retrieval_result["query_embedding"]
 
@@ -163,6 +182,7 @@ async def process_query_streaming(
         )
 
         authority_all, compass_result = await asyncio.gather(authority_task, compass_task)
+        run_log.end_stage("authority_compass", speakers_scored=len(authority_all))
 
         # Process authority results
         authority_scores = {sid: r["total_score"] for sid, r in authority_all.items()}
@@ -205,15 +225,22 @@ async def process_query_streaming(
             logger.info("[QUERY] Client disconnected before generation – aborting")
             return
 
-        # Step 5: Generation
+        # Step 3: Generation
         yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
 
+        run_log.start_stage("generation")
         generation_result = await services["generation"].generate(
             query=request.query,
             evidence_list=evidence_dicts
         )
-        logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
-                     f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
+        gen_citations = generation_result.get("citations", [])
+        extra_citation_ids = generation_result.get("extra_citation_ids", [])
+        run_log.end_stage("generation",
+                          citations_bound=len(gen_citations),
+                          extra_citation_ids=len(extra_citation_ids))
+
+        if len(gen_citations) == 0:
+            run_log.warn("Generation produced 0 citations")
 
         # === Send topic statistics for frontend clickable intro stats ===
         topic_stats = generation_result.get("topic_statistics")
@@ -260,7 +287,8 @@ async def process_query_streaming(
                 f"{len(ts_payload['sessions_detail'])} sessions"
             )
 
-        # Step 6: Initial citations (first 20 from retrieval, sent early for UI)
+        # Step 4: Citation resolution
+        run_log.start_stage("citation_resolution")
         citations_data = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
         )
@@ -270,7 +298,6 @@ async def process_query_streaming(
         # === Resolve extra citation IDs via DB lookup ===
         import re as _re
         final_text = generation_result.get("text", "")
-        extra_citation_ids = generation_result.get("extra_citation_ids", [])
         extra_evidence_map: Dict[str, Dict[str, Any]] = {}
 
         if extra_citation_ids:
@@ -383,7 +410,6 @@ async def process_query_streaming(
         evidence_map_for_cit.update(extra_evidence_map)
         logger.debug(f"[QUERY:CITATIONS] text_links={len(text_evidence_ids)}, evidence_map={len(evidence_map_for_cit)} (original={len(evidence_dicts)}, extra={len(extra_evidence_map)})")
 
-        gen_citations = generation_result.get("citations", [])
         tracked_ids = {c.get("evidence_id") for c in gen_citations}
 
         for eid in text_evidence_ids:
@@ -406,7 +432,10 @@ async def process_query_streaming(
         verified_citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
-        logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
+        run_log.end_stage("citation_resolution",
+                          verified_citations=len(verified_citations),
+                          text_links=len(text_evidence_ids),
+                          extra_resolved=len(extra_evidence_map))
         if request_locale != "it":
             verified_citations = await translate_citation_batch(verified_citations, target_lang=request_locale)
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
@@ -446,10 +475,16 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
 
+        # Save pipeline run log and print summary
+        run_log.save()
+        logger.info(run_log.summary_line())
+
         # Complete
         yield f"data: {json.dumps({'type': 'complete', 'metadata': retrieval_result['metadata']}, default=str)}\n\n"
 
     except Exception as e:
+        run_log.error(str(e))
+        run_log.save()
         logger.error(f"Query processing error: {e}")
         yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
 
