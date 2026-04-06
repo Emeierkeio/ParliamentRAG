@@ -63,7 +63,8 @@ def sse_event(event_type: str, data: Any) -> str:
 # Limit concurrent pipeline executions to prevent thread pool and Neo4j connection exhaustion.
 # Each pipeline opens a ThreadPoolExecutor(10) + several OpenAI calls concurrently.
 # 5 per worker is the default ceiling; adjust with _MAX_CONCURRENT_PIPELINES env var.
-_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "5"))
+_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_CHAT_PIPELINES",
+                                                os.environ.get("MAX_CONCURRENT_PIPELINES", "5")))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
 _pipeline_counter_lock: Optional[asyncio.Lock] = None
 _waiting_queue: list[str] = []  # ordered list of waiting task_ids (front = next to run)
@@ -653,7 +654,11 @@ async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
         except asyncio.TimeoutError:
             # Send keepalive comment to prevent proxy timeouts
             yield ": keepalive\n\n"
-        except Exception:
+        except asyncio.CancelledError:
+            logger.info("[SSE] Stream cancelled for task %s", task_id)
+            break
+        except Exception as e:
+            logger.error("[SSE] Stream error for task %s: %s", task_id, e)
             break
 
 
@@ -1487,7 +1492,13 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
     await store.create_task(task_id)
 
     # Launch pipeline in background (runs independently of this response)
-    asyncio.create_task(process_chat_background(request, task_id))
+    def _on_task_done(t: asyncio.Task) -> None:
+        if t.cancelled():
+            logger.warning("[CHAT] Background task %s cancelled", task_id)
+        elif exc := t.exception():
+            logger.error("[CHAT] Background task %s failed: %s", task_id, exc, exc_info=exc)
+    bg_task = asyncio.create_task(process_chat_background(request, task_id))
+    bg_task.add_done_callback(_on_task_done)
 
     # Stream events from the background task to the client
     async def stream_with_task_id():

@@ -32,14 +32,15 @@ router = APIRouter(prefix="/api", tags=["Query"])
 # Shared across all requests in the same process.  With WORKERS=1 (Dockerfile
 # default) this enforces a single active pipeline across the entire server.
 # ---------------------------------------------------------------------------
-_MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "1"))
+_MAX_CONCURRENT_QUERY_PIPELINES = int(os.environ.get("MAX_CONCURRENT_QUERY_PIPELINES",
+                                                       os.environ.get("MAX_CONCURRENT_PIPELINES", "1")))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
 
 
 def _get_pipeline_semaphore() -> asyncio.Semaphore:
     global _pipeline_semaphore
     if _pipeline_semaphore is None:
-        _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_PIPELINES)
+        _pipeline_semaphore = asyncio.Semaphore(_MAX_CONCURRENT_QUERY_PIPELINES)
     return _pipeline_semaphore
 
 
@@ -48,14 +49,18 @@ async def _rate_limited_query(
     http_request: Optional[Request] = None,
 ) -> "AsyncGenerator[str, None]":
     """Wrapper that acquires the pipeline semaphore before delegating to
-    process_query_streaming, ensuring at most _MAX_CONCURRENT_PIPELINES
-    pipelines run concurrently inside a single worker process."""
+    process_query_streaming, ensuring at most N pipelines run concurrently."""
     semaphore = _get_pipeline_semaphore()
-    # Notify the client immediately if it will have to wait.
-    if semaphore._value == 0:
-        yield (
-            f"data: {json.dumps({'type': 'waiting', 'message': 'Il sistema sta elaborando un altra richiesta. Attendi...'})}\n\n"
-        )
+    # Notify the client if it will have to wait (use public API, not _value)
+    if semaphore.locked():
+        locale = "it"
+        if http_request:
+            accept_lang = http_request.headers.get("accept-language", "it")
+            locale = "en" if "en" in accept_lang else "it"
+        msg = ("The system is processing another request. Please wait..."
+               if locale == "en"
+               else "Il sistema sta elaborando un'altra richiesta. Attendi...")
+        yield f"data: {json.dumps({'type': 'waiting', 'message': msg})}\n\n"
     await semaphore.acquire()
     try:
         async for event in process_query_streaming(request, http_request):

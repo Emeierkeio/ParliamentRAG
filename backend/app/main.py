@@ -3,6 +3,7 @@ Multi-View RAG API for Italian Parliamentary Data.
 
 FastAPI application entry point.
 """
+import asyncio
 import sys
 import logging
 from datetime import datetime
@@ -144,7 +145,22 @@ async def lifespan(app: FastAPI):
     from .routers.survey import ensure_survey_constraint
     ensure_survey_constraint()
 
+    # Start periodic task store cleanup (every 60s)
+    async def _periodic_cleanup():
+        from .services.task_store import get_task_store
+        import asyncio as _aio
+        while True:
+            await _aio.sleep(60)
+            try:
+                store = get_task_store()
+                await store.cleanup_expired()
+            except Exception:
+                pass
+    cleanup_task = asyncio.create_task(_periodic_cleanup())
+
     yield
+
+    cleanup_task.cancel()
 
     # Shutdown
     logger.info("Shutting down Multi-View RAG API...")
