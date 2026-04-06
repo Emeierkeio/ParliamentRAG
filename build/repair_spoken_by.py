@@ -51,7 +51,7 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str, xml_dir: str
 
     for i, xml_path in enumerate(camera_xmls):
         try:
-            result = parser.parse(xml_path)
+            result = parser.parse_xml_file(xml_path)
             for speech in result.get("speeches", []):
                 sid = speech.get("id")
                 if sid:
@@ -76,7 +76,7 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str, xml_dir: str
     senate_parser = SenateStenograficoParser()
     for i, xml_path in enumerate(senate_xmls):
         try:
-            result = senate_parser.parse(xml_path)
+            result = senate_parser.parse_xml_file(xml_path)
             for speech in result.get("speeches", []):
                 sid = speech.get("id")
                 if sid:
