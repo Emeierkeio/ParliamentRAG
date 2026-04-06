@@ -121,7 +121,7 @@ async def process_query_streaming(
 
     try:
         # Step 1: Retrieval
-        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Avvio retrieval...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Analisi query e retrieval...'})}\n\n"
 
         run_log.start_stage("retrieval")
         _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
@@ -161,10 +161,12 @@ async def process_query_streaming(
         if len(parties_found) < 5:
             run_log.warn(f"Low party coverage: {len(parties_found)}/10 parties in retrieval")
 
-        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
+        # Step 1 complete → send result with concrete data
+        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze da {len(parties_found)} gruppi parlamentari'})}\n\n"
 
         # Step 2: Authority + Compass (parallel)
-        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Calcolo authority scores e compass...'})}\n\n"
+        _unique_speakers = set(e.speaker_id for e in evidence_list if e.speaker_id)
+        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': f'{len(evidence_list)} evidenze da {len(parties_found)} gruppi, {len(_unique_speakers)} deputati'})}\n\n"
 
         run_log.start_stage("authority_compass")
         # Reuse query_embedding already computed during retrieval — no duplicate embed call
@@ -221,13 +223,13 @@ async def process_query_streaming(
         except Exception as _compass_err:
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
 
+        # Step 7: advance to generation
+        yield f"data: {json.dumps({'type': 'progress', 'step': 7, 'message': f'{len(authority_all)} deputati valutati per autorità sul tema'})}\n\n"
+
         # Check if client disconnected before generation
         if http_request and await http_request.is_disconnected():
             logger.info("[QUERY] Client disconnected before generation – aborting")
             return
-
-        # Step 3: Generation
-        yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
 
         run_log.start_stage("generation")
         gen_config = get_config().load_config().get("generation", {})

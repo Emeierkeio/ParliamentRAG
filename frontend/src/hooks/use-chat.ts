@@ -34,12 +34,13 @@ export function useChat(options: UseChatOptions = {}) {
   const t = useTranslations('Chat');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [chamber, setChamber] = useState<"camera" | "senato" | "both">(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("parliamentRAG.chamber") as "camera" | "senato" | "both") || "both";
-    }
-    return "both";
-  });
+  const [chamber, setChamber] = useState<"camera" | "senato" | "both">("both");
+
+  // Hydrate chamber from localStorage after mount to avoid SSR mismatch
+  useEffect(() => {
+    const saved = localStorage.getItem("parliamentRAG.chamber") as "camera" | "senato" | "both" | null;
+    if (saved) setChamber(saved);
+  }, []);
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
   const [lastCompletedProgress, setLastCompletedProgress] = useState<ProcessingProgress | null>(null);
   const [streamingContent, setStreamingContent] = useState("");
@@ -273,9 +274,21 @@ export function useChat(options: UseChatOptions = {}) {
                   for (const [stepNum, result] of stepResultsMap) {
                     resultsById.set(stepNum, result);
                   }
-                  // Fill generic placeholders only for steps WITHOUT dedicated SSE events
+                  // When step N arrives, mark step N-1 as complete with the message
+                  // (the message describes what the previous step achieved)
+                  const prevStep = newStep - 1;
+                  if (prevStep >= 1 && !resultsById.has(prevStep)) {
+                    resultsById.set(prevStep, {
+                      step: prevStep,
+                      label: config.ui.progressSteps[prevStep - 1]?.id
+                        ? `Step ${prevStep}`
+                        : `Step ${prevStep}`,
+                      result: data.message || t('completato'),
+                    });
+                  }
+                  // Also fill any remaining gaps
                   const stepsWithDedicatedEvents = new Set([2, 3, 4, 5, 6]);
-                  for (let s = 1; s < newStep; s++) {
+                  for (let s = 1; s < prevStep; s++) {
                     if (!resultsById.has(s) && !stepsWithDedicatedEvents.has(s)) {
                       resultsById.set(s, {
                         step: s,

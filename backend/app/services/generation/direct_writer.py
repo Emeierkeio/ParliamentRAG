@@ -397,12 +397,12 @@ Same format as majority parties.
             }
 
             logger.debug(
-                "[DIRECT] %s → %s (auth=%.2f, sim=%.2f, %d chars quote)",
+                "[DIRECT] %s → %s (auth=%.2f, sim=%.2f, %d candidates)",
                 party,
                 best.get("speaker_name", "?"),
                 best.get("authority_score", 0),
                 best.get("similarity", 0),
-                len(quote),
+                len(candidates),
             )
 
         return selections
