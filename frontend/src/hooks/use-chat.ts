@@ -558,6 +558,10 @@ export function useChat(options: UseChatOptions = {}) {
                     if (res.ok) {
                       const savedChat = await res.json();
                       updateLastAssistantMessage({ chatId: savedChat.id });
+                      // Update URL to include chat ID (enables sharing/bookmarking)
+                      const params = new URLSearchParams(searchParams.toString());
+                      const newPath = `/chat/${savedChat.id}${params.toString() ? `?${params}` : ""}`;
+                      router.replace(newPath, { scroll: false });
                     } else {
                       res.text().then(body => {
                         console.error("[Pipeline] History save failed:", res.status, body);

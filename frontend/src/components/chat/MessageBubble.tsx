@@ -395,6 +395,14 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   );
 
                   if (isCitationLink) {
+                    // Find original Italian text for tooltip (when viewing in English)
+                    const matchedCitation = message.citations?.find(
+                      (c) => c.chunk_id === href
+                    );
+                    const originalQuote = matchedCitation?.is_translated
+                      ? matchedCitation.quote_text || matchedCitation.text
+                      : null;
+
                     return (
                       <span
                         className={cn(
@@ -407,9 +415,12 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                         onClick={() => {
                           setHighlightedChunkId(href);
                         }}
-                        title={t('clickHighlight')}
+                        title={originalQuote ? `Original: ${originalQuote}` : t('clickHighlight')}
                       >
                         {children}
+                        {originalQuote && (
+                          <span className="inline-block ml-1 text-[10px] text-muted-foreground/60 align-super">🌐</span>
+                        )}
                       </span>
                     );
                   }
