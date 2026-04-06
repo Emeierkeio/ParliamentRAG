@@ -189,6 +189,20 @@ coalitions:
     - "Italia Viva - Il Centro - Renew Europe"
     - "Misto"
 
+# Map historical/variant group names to their canonical coalition party name.
+# Parliamentary groups change names during a legislature (splits, merges).
+# DB stores the name at time of membership; this maps them to current names.
+group_aliases:
+  # Azione split from Italia Viva mid-legislature
+  "AZIONE - ITALIA VIVA - RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+  "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+  # Italia Viva name variants (hyphen spacing)
+  "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva - Il Centro - Renew Europe"
+  # Noi Moderati short name
+  "NOI MODERATI": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
+  "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
+  "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
+
 # Citation extraction settings
 citation:
   # ONLY offset-based extraction allowed

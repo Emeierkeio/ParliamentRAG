@@ -510,11 +510,14 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
         all_parties = self.config.get_all_parties()
         by_party: Dict[str, List[Dict[str, Any]]] = {p: [] for p in all_parties}
 
+        # Load group aliases for historical/variant name resolution
+        config_data = self.config.load_config()
+        aliases_raw = config_data.get("group_aliases", {})
+        # Build case-insensitive alias lookup
+        aliases = {k.upper(): v for k, v in aliases_raw.items()}
+
         gov_count = 0
         for evidence in evidence_list:
-            # GovernmentMember label = minister/premier → governo section
-            # Deputy label = regular parliamentarian → party section
-            # These are mutually exclusive labels in Neo4j
             if evidence.get("speaker_role") == "GovernmentMember":
                 gov_count += 1
                 continue
@@ -523,10 +526,16 @@ Per [Nome Completo Partito], [1-2 frasi di contesto]. **[Cognome]** [verbo unico
                 if evidence.get("party_changed") and evidence.get("current_party")
                 else evidence.get("party", "Misto")
             )
+            # Resolve aliases (historical/variant group names → canonical)
+            canonical = aliases.get(party.upper()) if party else None
+            if canonical:
+                party = canonical
+
             if party not in by_party:
+                # Try case-insensitive match
                 matched = False
                 for known in all_parties:
-                    if party in known or known in party:
+                    if party.upper() == known.upper():
                         by_party[known].append(evidence)
                         matched = True
                         break
