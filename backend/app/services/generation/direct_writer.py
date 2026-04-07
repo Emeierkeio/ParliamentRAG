@@ -138,7 +138,31 @@ class DirectWriter:
                 "message": "Verifying citations...",
             })
 
-        # --- Step 4: Post-process — verify citations, build metadata ---
+        # --- Step 4: Post-process — inject stats links + verify citations ---
+        # Replace stats numbers with markdown links BEFORE citation resolution
+        # This is more reliable than frontend regex because we know exact values
+        int_count = topic_stats.get("intervention_count", 0)
+        spk_count = topic_stats.get("speaker_count", 0)
+        if int_count:
+            # Match any variant the LLM might produce for the intervention count
+            raw_text = re.sub(
+                rf'\b{int_count}\s+(?:intervent\w+(?:\s+ons)?|interventi(?:\s+analizzat\w+)?(?:\s+ons)?)',
+                f'[{int_count} interventions](#stats-interventions)',
+                raw_text, count=1, flags=re.IGNORECASE,
+            )
+        if spk_count:
+            raw_text = re.sub(
+                rf'\b{spk_count}\s+(?:deputat\w+|parlamentar\w+|deputies|deputy)',
+                f'[{spk_count} deputies](#stats-speakers)',
+                raw_text, count=1, flags=re.IGNORECASE,
+            )
+        # Session numbers: "N. 27, 87, 89, ..."
+        raw_text = re.sub(
+            r'(N\.\s*\d+(?:,\s*\d+)*(?:,?\s+(?:e|and)\s+\d+)?)',
+            r'[\1](#stats-sessions)',
+            raw_text, count=1,
+        )
+
         text, citations, extra_ids = self._resolve_citations(
             raw_text, gov_selection, party_selections, evidence_list
         )

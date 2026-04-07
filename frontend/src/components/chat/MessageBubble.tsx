@@ -512,18 +512,20 @@ function injectStatsLinks(content: string): string {
 
   let result = intro;
 
-  // Pattern for "N interventi/interventions" (IT + EN + LLM artifact "interventi ons")
-  // Single regex handles all variants in one pass to avoid double-replacement
-  result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(?:intervent[io](?:\s+analizzat[oi])?(?:\s+ons)?|interventions?)\*{0,2}/gi,
-    (_, num) => `[${num} interventions](#stats-interventions)`
-  );
-
-  // Pattern for "N deputati/deputies/parliamentarians" (IT + EN)
-  result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(deputat[oi]|parlamentar[ie]|deput(?:y|ies)|parliamentarians?)\*{0,2}/gi,
-    "[$1 $2](#stats-speakers)"
-  );
+  // Stats links (interventions, deputies) are injected server-side by DirectWriter.
+  // Only apply frontend regex as fallback for old pipeline mode or cached responses.
+  if (!result.includes("#stats-interventions")) {
+    result = result.replace(
+      /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(?:intervent[io](?:\s+analizzat[oi])?|interventions?)\*{0,2}/gi,
+      (_, num) => `[${num} interventions](#stats-interventions)`
+    );
+  }
+  if (!result.includes("#stats-speakers")) {
+    result = result.replace(
+      /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(deputat[oi]|parlamentar[ie]|deput(?:y|ies)|parliamentarians?)\*{0,2}/gi,
+      "[$1 $2](#stats-speakers)"
+    );
+  }
 
   // Pattern for session numbers: "N. 8, 15, 26, 69, 73 e altre 30" or "N. 8, 15, 26, 69, 73 e 80"
   // Handles optional bold markers around the whole expression
