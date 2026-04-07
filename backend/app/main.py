@@ -139,11 +139,21 @@ async def lifespan(app: FastAPI):
     # Warm up Neo4j vector index to avoid cold start latency
     await _warmup_neo4j_index(settings)
 
-    # Ensure Neo4j constraints exist
+    # Ensure Neo4j constraints exist (retry up to 30s if Neo4j is still starting)
     from .routers.history import ensure_constraint
-    ensure_constraint()
     from .routers.survey import ensure_survey_constraint
-    ensure_survey_constraint()
+    for attempt in range(6):
+        try:
+            ensure_constraint()
+            ensure_survey_constraint()
+            break
+        except Exception as e:
+            if attempt < 5:
+                logger.warning(f"[STARTUP] Neo4j not ready (attempt {attempt + 1}/6): {e}")
+                await asyncio.sleep(5)
+            else:
+                logger.error("[STARTUP] Neo4j still unavailable after 30s — constraints not created")
+                # Don't crash — constraints will be created on first use
 
     # Start periodic task store cleanup (every 60s)
     async def _periodic_cleanup():
