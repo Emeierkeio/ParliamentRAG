@@ -739,6 +739,24 @@ def _build_verified_citations(
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
         gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
+    # Batch fetch full speech text for citations (chunk_text is short, speech text is the full speech)
+    speech_text_map: Dict[str, str] = {}
+    if neo4j_client:
+        speech_ids = list({evidence_map.get(c.get("evidence_id", ""), {}).get("speech_id", "")
+                          for c in generation_citations} - {""})
+        if speech_ids:
+            try:
+                with neo4j_client.session() as sess:
+                    rows = sess.run(
+                        "UNWIND $ids AS sid MATCH (sp:Speech {id: sid}) RETURN sp.id AS id, sp.text AS text",
+                        ids=speech_ids
+                    )
+                    for row in rows:
+                        if row["text"]:
+                            speech_text_map[row["id"]] = row["text"]
+            except Exception as e:
+                logger.warning("[CITATIONS] Failed to fetch speech texts: %s", e)
+
     verified = []
     for cit in generation_citations:
         eid = cit.get("evidence_id", "")
@@ -767,7 +785,7 @@ def _build_verified_citations(
             "deputy_last_name": last_name,
             "text": cit.get("quote_text", "") or evidence.get("chunk_text", ""),
             "quote_text": cit.get("quote_text", ""),
-            "full_text": evidence.get("text", "") or evidence.get("chunk_text", ""),
+            "full_text": speech_text_map.get(evidence.get("speech_id", ""), "") or evidence.get("text", "") or evidence.get("chunk_text", ""),
             "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),
