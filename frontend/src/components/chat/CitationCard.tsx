@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink, Globe } from "lucide-react";
+import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink, Globe, Languages, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -220,9 +221,47 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const hasTranslatedFull = !!(citation.is_translated && citation.translated_full_text && citation.translated_full_text.length > 0);
-  const displayFullText = hasTranslatedFull ? citation.translated_full_text! : (citation.full_text ?? citation.text ?? "");
-  const originalFullText = hasTranslatedFull ? (citation.full_text ?? citation.text ?? "") : null;
+  // On-demand translation state for the full speech text
+  const [translatedFull, setTranslatedFull] = useState<string | null>(null);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showTranslated, setShowTranslated] = useState(false);
+
+  // Use pre-translated full_text if available, otherwise use on-demand translation
+  const preTranslatedFull = citation.translated_full_text && citation.translated_full_text.length > 0
+    ? citation.translated_full_text : null;
+  const hasTranslation = !!(preTranslatedFull || translatedFull);
+  const displayFullText = (showTranslated && (preTranslatedFull || translatedFull))
+    ? (preTranslatedFull || translatedFull)!
+    : (citation.full_text ?? citation.text ?? "");
+  const originalFullText = (showTranslated && hasTranslation)
+    ? (citation.full_text ?? citation.text ?? "") : null;
+
+  const handleTranslate = async () => {
+    if (preTranslatedFull) {
+      setShowTranslated(true);
+      return;
+    }
+    const textToTranslate = citation.full_text ?? citation.text ?? "";
+    if (!textToTranslate) return;
+
+    setIsTranslating(true);
+    try {
+      const resp = await fetch("/api/config/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textToTranslate }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        setTranslatedFull(data.translated || textToTranslate);
+        setShowTranslated(true);
+      }
+    } catch {
+      // Silently fail — show original
+    } finally {
+      setIsTranslating(false);
+    }
+  };
   const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
@@ -398,14 +437,41 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         )}
                     </div>
 
-                    {/* Original Italian text section (shown when translation is active) */}
-                    {originalFullText && (
+                    {/* Translate button + original text section */}
+                    {citation.is_translated && (
                         <div className="mt-6 pt-6 border-t border-border/40">
-                            <p className="text-[10px] font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                                <Globe className="h-3 w-3" />
-                                {t("originalLabel")}
-                            </p>
-                            <p className="text-sm leading-relaxed italic text-muted-foreground/80 font-serif">{originalFullText}</p>
+                            <div className="flex items-center gap-2 mb-3">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        if (showTranslated) {
+                                            setShowTranslated(false);
+                                        } else {
+                                            handleTranslate();
+                                        }
+                                    }}
+                                    disabled={isTranslating}
+                                    className="text-xs h-7 gap-1.5"
+                                >
+                                    {isTranslating ? (
+                                        <><Loader2 className="h-3 w-3 animate-spin" /> Translating...</>
+                                    ) : showTranslated ? (
+                                        <><Globe className="h-3 w-3" /> Show original</>
+                                    ) : (
+                                        <><Languages className="h-3 w-3" /> Translate</>
+                                    )}
+                                </Button>
+                            </div>
+                            {originalFullText && (
+                                <>
+                                    <p className="text-[10px] font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                        <Globe className="h-3 w-3" />
+                                        {t("originalLabel")}
+                                    </p>
+                                    <p className="text-sm leading-relaxed italic text-muted-foreground/80 font-serif">{originalFullText}</p>
+                                </>
+                            )}
                         </div>
                     )}
                 </div>

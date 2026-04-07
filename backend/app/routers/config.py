@@ -422,3 +422,26 @@ async def get_last_update():
     except Exception as e:
         logger.warning("Failed to get last update date: %s", e)
     return {"last_update": None}
+
+
+class TranslateRequest(BaseModel):
+    text: str
+    target_lang: str = "en"
+
+
+@router.post("/translate")
+async def translate_text(req: TranslateRequest):
+    """On-demand translation of a text string."""
+    from ..services.translation import _translate_text
+    from ..key_pool import make_async_client
+
+    if not req.text or req.target_lang == "it":
+        return {"translated": req.text}
+
+    client = make_async_client()
+    try:
+        translated = await _translate_text(client, req.text, max_tokens=4000)
+        return {"translated": translated}
+    except Exception as e:
+        logger.warning("On-demand translation failed: %s", e)
+        return {"translated": req.text}
