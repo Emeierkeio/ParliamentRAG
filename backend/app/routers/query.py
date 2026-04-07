@@ -760,7 +760,7 @@ def _build_verified_citations(
             "deputy_last_name": last_name,
             "text": cit.get("quote_text", "") or evidence.get("chunk_text", ""),
             "quote_text": cit.get("quote_text", ""),
-            "full_text": evidence.get("chunk_text", ""),
+            "full_text": evidence.get("text", "") or evidence.get("chunk_text", ""),
             "group": group,
             "coalition": coalition,
             "date": str(cit.get("date", "")),

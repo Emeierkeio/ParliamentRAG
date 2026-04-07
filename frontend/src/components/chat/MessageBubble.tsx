@@ -512,17 +512,17 @@ function injectStatsLinks(content: string): string {
 
   let result = intro;
 
-  // Pattern for "N interventi" / "N intervento" (also handles "analizzati" suffix)
+  // Pattern for "N interventi/interventions" (IT + EN)
   // Handles optional bold markers: **N interventi**, **N** interventi, or plain
   result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(intervent[oi](?:\s+analizzat[oi])?)\*{0,2}/g,
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(intervent[oi](?:\s+analizzat[oi])?|interventions?)\*{0,2}/gi,
     "[$1 $2](#stats-interventions)"
   );
 
-  // Pattern for "N deputati" or "N parlamentari" (legacy)
+  // Pattern for "N deputati/deputies/parliamentarians" (IT + EN)
   // Handles optional bold markers: **N deputati**, **N** deputati, or plain
   result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(deputat[oi]|parlamentar[ie])\*{0,2}/g,
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(deputat[oi]|parlamentar[ie]|deput(?:y|ies)|parliamentarians?)\*{0,2}/gi,
     "[$1 $2](#stats-speakers)"
   );
 
