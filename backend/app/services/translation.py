@@ -199,28 +199,24 @@ async def _translate_text(client, text: str, max_tokens: int = 2000) -> str:
 
 
 async def _translate_one(citation: dict, client) -> dict:
-    """Translate a single citation dict.
+    """Translate a single citation's short text (preview).
 
-    Translates text and full_text in PARALLEL to minimize latency.
-    Returns the original citation unchanged on any exception.
+    Only translates 'text' (the short preview, ~100-300 chars).
+    full_text (entire speech, up to 11k chars) is NOT translated eagerly —
+    it would take 5-10s per citation and hit rate limits. The frontend
+    shows the original Italian in the modal with an ORIGINAL label.
     """
     text = citation.get("text", "")
-    full_text = citation.get("full_text", "")
 
-    if not text and not full_text:
+    if not text:
         return citation
 
     try:
-        # Parallel translation of short text + full speech
-        tasks = []
-        tasks.append(_translate_text(client, text))
-        tasks.append(_translate_text(client, full_text, max_tokens=4000))
-        translated_text, translated_full_text = await asyncio.gather(*tasks)
+        translated_text = await _translate_text(client, text)
 
         return {
             **citation,
             "translated_text": translated_text,
-            "translated_full_text": translated_full_text,
             "is_translated": True,
         }
     except Exception as exc:  # noqa: BLE001
