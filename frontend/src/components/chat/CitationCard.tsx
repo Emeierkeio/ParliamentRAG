@@ -223,13 +223,6 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const hasTranslatedFull = !!(citation.is_translated && citation.translated_full_text && citation.translated_full_text.length > 0);
   const displayFullText = hasTranslatedFull ? citation.translated_full_text! : (citation.full_text ?? citation.text ?? "");
   const originalFullText = hasTranslatedFull ? (citation.full_text ?? citation.text ?? "") : null;
-  // Debug: log citation translation state when modal opens
-  if (isOpen && citation.is_translated) {
-    console.log("[CitationCard] is_translated:", citation.is_translated,
-      "translated_full_text:", citation.translated_full_text?.length ?? 0,
-      "hasTranslatedFull:", hasTranslatedFull,
-      "full_text:", citation.full_text?.length ?? 0);
-  }
   const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
