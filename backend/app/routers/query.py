@@ -466,7 +466,14 @@ async def process_query_streaming(
                           text_links=len(text_evidence_ids),
                           extra_resolved=len(extra_evidence_map))
         if request_locale != "it":
+            logger.info("[QUERY:TRANSLATE] Translating %d citations (locale=%s)", len(verified_citations), request_locale)
+            for i, vc in enumerate(verified_citations[:2]):
+                logger.info("[QUERY:TRANSLATE] Before[%d]: text=%d chars, full_text=%d chars",
+                            i, len(vc.get("text", "")), len(vc.get("full_text", "")))
             verified_citations = await translate_citation_batch(verified_citations, target_lang=request_locale)
+            for i, vc in enumerate(verified_citations[:2]):
+                logger.info("[QUERY:TRANSLATE] After[%d]: translated_text=%d, translated_full_text=%d, is_translated=%s",
+                            i, len(vc.get("translated_text", "")), len(vc.get("translated_full_text", "")), vc.get("is_translated"))
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
         # === Update experts: replace any top-ranked speaker with the actually cited one ===

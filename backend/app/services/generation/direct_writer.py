@@ -92,7 +92,7 @@ class DirectWriter:
         # --- Step 2: Build prompt with pre-selected evidence ---
         system_prompt = self._build_system_prompt(locale=locale)
         user_prompt = self._build_user_prompt(
-            query, gov_selection, party_selections, topic_stats
+            query, gov_selection, party_selections, topic_stats, locale=locale
         )
 
         if stream_callback:
@@ -267,6 +267,7 @@ Same format as majority parties.
         gov_selection: Optional[Dict[str, Any]],
         party_selections: Dict[str, Optional[Dict[str, Any]]],
         topic_stats: Dict[str, Any],
+        locale: str = "it",
     ) -> str:
         config_data = self.config.load_config()
         coalitions = config_data.get("coalitions", {})
@@ -275,19 +276,20 @@ Same format as majority parties.
 
         parts = [f"## Query\n{query}\n"]
 
-        # Topic statistics for introduction
-        parts.append("## Statistiche")
-        parts.append(f"- Interventi analizzati: {topic_stats.get('intervention_count', 0)}")
-        parts.append(f"- Deputati coinvolti: {topic_stats.get('speaker_count', 0)}")
+        # Topic statistics for introduction (bilingual labels)
+        _en = (locale == "en")
+        parts.append("## " + ("Statistics" if _en else "Statistiche"))
+        parts.append(f"- {'Interventions analyzed' if _en else 'Interventi analizzati'}: {topic_stats.get('intervention_count', 0)}")
+        parts.append(f"- {'Deputies involved' if _en else 'Deputati coinvolti'}: {topic_stats.get('speaker_count', 0)}")
         if topic_stats.get("first_date"):
-            parts.append(f"- Periodo: {topic_stats['first_date']} — {topic_stats.get('last_date', '')}")
+            parts.append(f"- {'Period' if _en else 'Periodo'}: {topic_stats['first_date']} — {topic_stats.get('last_date', '')}")
         if topic_stats.get("debate_title"):
-            parts.append(f"- Provvedimento principale: {topic_stats['debate_title']}")
+            parts.append(f"- {'Main measure' if _en else 'Provvedimento principale'}: {topic_stats['debate_title']}")
         sessions = topic_stats.get("sessions_detail", [])
         if sessions:
             nums = [str(s.get("session_number", "")) for s in sessions[:10] if s.get("session_number")]
             if nums:
-                parts.append(f"- Sedute: N. {', '.join(nums)}")
+                parts.append(f"- {'Sessions' if _en else 'Sedute'}: N. {', '.join(nums)}")
         parts.append("")
 
         # Government evidence
