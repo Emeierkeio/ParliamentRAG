@@ -220,9 +220,16 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
   const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const hasTranslatedFull = citation.is_translated && citation.translated_full_text && citation.translated_full_text.length > 0;
-  const displayFullText = hasTranslatedFull ? citation.translated_full_text : (citation.full_text ?? citation.text ?? "");
+  const hasTranslatedFull = !!(citation.is_translated && citation.translated_full_text && citation.translated_full_text.length > 0);
+  const displayFullText = hasTranslatedFull ? citation.translated_full_text! : (citation.full_text ?? citation.text ?? "");
   const originalFullText = hasTranslatedFull ? (citation.full_text ?? citation.text ?? "") : null;
+  // Debug: log citation translation state when modal opens
+  if (isOpen && citation.is_translated) {
+    console.log("[CitationCard] is_translated:", citation.is_translated,
+      "translated_full_text:", citation.translated_full_text?.length ?? 0,
+      "hasTranslatedFull:", hasTranslatedFull,
+      "full_text:", citation.full_text?.length ?? 0);
+  }
   const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);

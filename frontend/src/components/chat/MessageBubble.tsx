@@ -513,10 +513,16 @@ function injectStatsLinks(content: string): string {
   let result = intro;
 
   // Pattern for "N interventi/interventions" (IT + EN)
-  // Also catches LLM artifacts like "interventi ons" (partial translation)
+  // Also catches LLM artifact "interventi ons" (partial IT→EN translation)
+  // The replacement uses a function to normalize the display text
   result = result.replace(
-    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}(intervent(?:i|o|ions?)(?:\s+(?:analizzat[oi]|ons))?)\*{0,2}(?:\s+ons)?/gi,
-    "[$1 $2](#stats-interventions)"
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}intervent[io](?:\s+analizzat[oi])?\*{0,2}(?:\s+ons\b)?/gi,
+    (match, num) => `[${num} interventions](#stats-interventions)`
+  );
+  // Also match clean English "N interventions"
+  result = result.replace(
+    /\*{0,2}(\d+)\*{0,2}\s+\*{0,2}interventions?\*{0,2}/gi,
+    (match, num) => `[${num} interventions](#stats-interventions)`
   );
 
   // Pattern for "N deputati/deputies/parliamentarians" (IT + EN)
