@@ -142,17 +142,18 @@ async def lifespan(app: FastAPI):
     # Ensure Neo4j constraints exist (retry up to 30s if Neo4j is still starting)
     from .routers.history import ensure_constraint
     from .routers.survey import ensure_survey_constraint
-    for attempt in range(6):
+    for attempt in range(12):
         try:
             ensure_constraint()
             ensure_survey_constraint()
+            logger.info("[STARTUP] Neo4j constraints verified")
             break
         except Exception as e:
-            if attempt < 5:
-                logger.warning(f"[STARTUP] Neo4j not ready (attempt {attempt + 1}/6): {e}")
+            if attempt < 11:
+                logger.warning(f"[STARTUP] Neo4j not ready (attempt {attempt + 1}/12): retrying in 5s...")
                 await asyncio.sleep(5)
             else:
-                logger.error("[STARTUP] Neo4j still unavailable after 30s — constraints not created")
+                logger.error("[STARTUP] Neo4j still unavailable after 60s — constraints not created")
                 # Don't crash — constraints will be created on first use
 
     # Start periodic task store cleanup (every 60s)

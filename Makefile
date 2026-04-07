@@ -150,10 +150,10 @@ dev: ## Run locally (Neo4j locale + backend + frontend)
 	done
 	@docker compose up -d neo4j
 	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
-	@for i in $$(seq 1 30); do \
-		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+	@for i in $$(seq 1 60); do \
+		$(BACKEND_DIR)/venv/bin/python3 -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
 		printf "."; \
-		sleep 3; \
+		sleep 2; \
 	done
 	@printf "\n$(GREEN)[1/3]$(RESET) Neo4j ready — UI: http://localhost:7475\n"
 	@cd $(BACKEND_DIR) && $(UVICORN) app.main:app \
