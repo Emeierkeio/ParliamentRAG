@@ -175,10 +175,33 @@ async def translate_compass_axes(
 # Internal helpers
 # ---------------------------------------------------------------------------
 
+_TRANSLATE_SYS = (
+    "Translate the following Italian parliamentary text to English. "
+    "Preserve proper nouns (names, parties, dates, session numbers). "
+    "Return ONLY the translation."
+)
+
+
+async def _translate_text(client, text: str, max_tokens: int = 2000) -> str:
+    """Translate a single text string. Returns original on failure."""
+    if not text:
+        return ""
+    resp = await client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": _TRANSLATE_SYS},
+            {"role": "user", "content": text},
+        ],
+        temperature=0,
+        max_tokens=max_tokens,
+    )
+    return resp.choices[0].message.content or text
+
+
 async def _translate_one(citation: dict, client) -> dict:
     """Translate a single citation dict.
 
-    Translates text and full_text separately to handle long speeches.
+    Translates text and full_text in PARALLEL to minimize latency.
     Returns the original citation unchanged on any exception.
     """
     text = citation.get("text", "")
@@ -187,37 +210,12 @@ async def _translate_one(citation: dict, client) -> dict:
     if not text and not full_text:
         return citation
 
-    translated_text = ""
-    translated_full_text = ""
-
     try:
-        # Translate short text (preview)
-        if text:
-            resp = await client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{
-                    "role": "system",
-                    "content": "Translate the following Italian parliamentary text to English. "
-                               "Preserve proper nouns (names, parties, dates). Return ONLY the translation."
-                }, {"role": "user", "content": text}],
-                temperature=0,
-            )
-            translated_text = resp.choices[0].message.content or text
-
-        # Translate full speech text (may be long)
-        if full_text:
-            resp = await client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[{
-                    "role": "system",
-                    "content": "Translate the following Italian parliamentary speech to English. "
-                               "Preserve proper nouns (names, parties, dates, session numbers). "
-                               "Return ONLY the translation."
-                }, {"role": "user", "content": full_text}],
-                temperature=0,
-                max_tokens=4000,
-            )
-            translated_full_text = resp.choices[0].message.content or full_text
+        # Parallel translation of short text + full speech
+        tasks = []
+        tasks.append(_translate_text(client, text))
+        tasks.append(_translate_text(client, full_text, max_tokens=4000))
+        translated_text, translated_full_text = await asyncio.gather(*tasks)
 
         return {
             **citation,
