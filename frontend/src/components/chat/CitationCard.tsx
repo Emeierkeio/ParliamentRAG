@@ -273,15 +273,16 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const hasSpecificQuote = quoteText && citation.full_text &&
     quoteText.length < citation.full_text.length * 0.8; // Quote should be notably shorter than full text
 
-  let parts: string[] = [displayText];
+  // Use the active display text for highlighting (translated or original)
+  const textForHighlight = displayFullText;
+  let parts: string[] = [textForHighlight];
   let highlightText = quoteText;
 
-  if (hasSpecificQuote && citation.full_text) {
-    // Try to find and highlight the specific quote within the full text
+  // Only highlight in original Italian text (quotes won't match in translated text)
+  if (hasSpecificQuote && !showTranslated && citation.full_text) {
     if (citation.full_text.includes(quoteText)) {
       parts = citation.full_text.split(quoteText);
     } else {
-      // Try normalized matching
       const normalize = (s: string) => s.replace(/\s+/g, ' ').trim();
       const normalizedQuote = normalize(quoteText);
       const normalizedFull = normalize(citation.full_text);
@@ -293,7 +294,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
           const regex = new RegExp(pattern, 'i');
           parts = citation.full_text.split(regex);
         } catch {
-          // Keep parts as [displayText]
+          // Keep parts as [textForHighlight]
         }
       }
     }
