@@ -393,6 +393,31 @@ enrich-sparql-test: db-install ## Test SPARQL enrichment with 5 deputies only
 		--limit-deputies 5
 
 # ============================================================================
+#  AI Summary Generation
+# ============================================================================
+
+.PHONY: generate-summaries db-full
+
+generate-summaries: db-install ## Generate AI summaries for timeline (resumable)
+	@printf "$(BOLD)$(CYAN)Generating AI summaries for timeline...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/generate_summaries.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) \
+		$(if $(DRY_RUN),--dry-run,)
+	@printf "\n$(BOLD)$(GREEN)Summary generation complete!$(RESET)\n"
+
+db-full: db-all generate-summaries ## Full DB build + AI summaries (one-shot)
+
+# ============================================================================
 #  Backend Scripts
 # ============================================================================
 
