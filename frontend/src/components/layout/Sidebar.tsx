@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
+import { LanguageSelector } from "@/components/layout/LanguageSelector";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -120,7 +121,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <div className="flex h-16 items-center justify-between px-4">
             <div
               className="flex items-center gap-3 cursor-pointer"
-              onClick={() => handleNavClick(() => { window.location.href = "/"; })}
+              onClick={() => handleNavClick(() => { window.location.href = "/home"; })}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
@@ -144,7 +145,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             <nav className="flex flex-col gap-1">
               {/* Primary */}
               <NavButton
-                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
+                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/home", onClick: () => handleNavClick(() => { window.location.href = "/home"; }) }}
                 isCollapsed={false}
                 variant="primary"
                 disabled={isQueryRunning}
@@ -158,7 +159,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 disabled={false}
               />
               <NavButton
-                item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), isActive: pathname === "/timeline", onClick: () => handleNavClick(() => navTo("/timeline")) }}
+                item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), isActive: pathname === "/timeline" || pathname.startsWith("/transcript"), onClick: () => handleNavClick(() => navTo("/timeline")) }}
                 isCollapsed={false}
                 disabled={false}
               />
@@ -178,6 +179,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
           {/* Bottom */}
           <div className="p-3 pb-6">
+            <div className="px-1 mb-2">
+              <LanguageSelector />
+            </div>
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
               <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">{lastUpdate || "..."}</strong></span>
@@ -221,7 +225,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             {/* Logo Area */}
             <div
               className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
-              onClick={() => window.location.href = "/"}
+              onClick={() => window.location.href = "/home"}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
@@ -254,7 +258,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <nav className="flex flex-col gap-1">
             {/* Primary */}
             <NavButton
-              item={{ icon: MessageSquare, label: t('topicSearch'), href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
+              item={{ icon: MessageSquare, label: t('topicSearch'), href: "/home", isActive: pathname === "/home", onClick: () => window.location.href = "/home" }}
               isCollapsed={isCollapsed}
               variant="primary"
               disabled={isQueryRunning}
@@ -273,7 +277,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             />
 
             <NavButton
-              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline" || pathname.startsWith("/transcript"), onClick: () => navTo("/timeline") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
@@ -295,6 +299,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
         {/* Bottom Navigation */}
         <div className="p-3 pb-6">
+          <div className={cn("mb-2", isCollapsed ? "flex justify-center" : "px-1")}>
+            <LanguageSelector />
+          </div>
           {!isCollapsed && (
             <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
               <CalendarDays className="h-3.5 w-3.5 shrink-0" />
@@ -522,7 +529,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div className="space-y-2">
             <h4 className="text-sm font-medium">Tecnologie</h4>
             <div className="flex flex-wrap gap-2">
-              {["Next.js", "FastAPI", "Neo4j", "OpenAI", "LangChain"].map((tech) => (
+              {["Next.js", "FastAPI", "Neo4j", "OpenAI"].map((tech) => (
                 <span
                   key={tech}
                   className="px-2 py-1 text-xs bg-muted rounded-md text-muted-foreground"
