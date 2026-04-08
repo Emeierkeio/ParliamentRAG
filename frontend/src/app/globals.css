@@ -279,3 +279,14 @@ input[type="range"].weight-slider::-moz-range-thumb {
     font-size: 16px !important;
   }
 }
+
+/* Transcript citation highlight pulse */
+@keyframes highlight-pulse {
+  0%   { background-color: hsl(var(--primary) / 0.2); }
+  50%  { background-color: hsl(var(--primary) / 0.3); }
+  100% { background-color: transparent; }
+}
+.highlight-pulse {
+  animation: highlight-pulse 2s ease-out forwards;
+  border-radius: var(--radius);
+}
