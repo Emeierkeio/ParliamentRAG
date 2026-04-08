@@ -256,11 +256,195 @@
     "oneIntervention": "speech",
     "manyInterventions": "speeches"
   },
+  "WelcomeScreen": {
+    "badge": "Camera dei Deputati · XIX Legislature",
+    "title": "What does Parliament think about every topic?",
+    "subtitle": "Statements from the <bold>most authoritative</bold> parliamentarians on each topic, balanced between majority and opposition with verifiable citations.",
+    "trendingTopics": "Trending topics",
+    "searchPlaceholder": "Search a topic...",
+    "topics": {
+      "PNRR": "PNRR",
+      "riforma sanitaria": "Healthcare Reform",
+      "transizione energetica": "Energy Transition",
+      "salario minimo": "Minimum Wage",
+      "conflitto in Ucraina": "Conflict in Ukraine",
+      "riforma fiscale": "Tax Reform",
+      "autonomia differenziata": "Differentiated Autonomy",
+      "riforma della giustizia": "Justice Reform",
+      "flussi migratori": "Migration Flows",
+      "scuola e istruzione": "Education",
+      "cambiamento climatico": "Climate Change",
+      "infrastrutture": "Infrastructure"
+    },
+    "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?"
+  },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",
     "senato": "Senate",
     "both": "Both",
     "label": "Parliamentary Chamber"
+  },
+  "Settings": {
+    "title": "System Configuration",
+    "unsavedChanges": "Unsaved changes",
+    "description": "Changes take effect immediately but are temporary — restart the server or Reload to restore YAML file values.",
+    "error": "Error",
+    "saved": "Saved",
+    "savedMessage": "Settings applied successfully.",
+    "visualEditor": "Visual Editor",
+    "jsonEditor": "JSON Editor",
+    "configFile": "config.json",
+    "applyJson": "Apply JSON",
+    "loadingConfig": "Loading configuration...",
+    "reloadYaml": "Reload from YAML",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "loadError": "Error loading configuration",
+    "reloadError": "Error reloading configuration",
+    "invalidJson": "Invalid JSON format. Fix the syntax errors.",
+    "saveError": "Error saving"
+  },
+  "GraphicalEditors": {
+    "weightLabels": {
+      "profession": {
+        "label": "Profession",
+        "description": "Contribution of pre-parliamentary profession to the authority score. A parliamentarian with a medical or legal background has specific expertise for sector queries."
+      },
+      "education": {
+        "label": "Education",
+        "description": "Contribution of academic qualifications to the authority score. Specialized degrees and PhDs in relevant fields increase the weight."
+      },
+      "committee": {
+        "label": "Committees",
+        "description": "Contribution of membership in thematically relevant parliamentary committees relative to the query. The higher the semantic relevance, the greater the weight."
+      },
+      "acts": {
+        "label": "Acts",
+        "description": "Contribution of the number of parliamentary acts submitted (laws, motions, questions), weighted by recency via exponential time decay."
+      },
+      "interventions": {
+        "label": "Speeches",
+        "description": "Contribution of the number of floor speeches weighted by recency. Active and recent parliamentarians get higher scores than inactive ones."
+      },
+      "role": {
+        "label": "Role",
+        "description": "Contribution of institutional role (President, Minister, Group Leader, Undersecretary, etc.). Top roles receive an authority boost."
+      }
+    },
+    "mergerLabels": {
+      "relevance": {
+        "label": "Relevance",
+        "description": "Weight of the cosine similarity between query embedding and chunk embedding. This is the primary signal of thematic relevance."
+      },
+      "diversity": {
+        "label": "Diversity",
+        "description": "Penalizes chunks from the same speaker to prevent a single parliamentarian from dominating results, ensuring variety of voices."
+      },
+      "coverage": {
+        "label": "Coverage",
+        "description": "Rewards representation of multiple parliamentary groups in the final ranking, favoring multi-party perspectives."
+      },
+      "authority": {
+        "label": "Authority",
+        "description": "Re-weights chunks based on the parliamentarian's authority score (expertise, role, acts). Note: the actual authority ranking happens post-merge."
+      },
+      "salience": {
+        "label": "Salience",
+        "description": "Prefers politically substantive texts over procedural ones (e.g., 'Thank you, Mr. President, you may speak')."
+      }
+    },
+    "modelInfo": {
+      "analyst": "Stage 1: decomposes the query into thematic claims per party. Structured and repetitive task — gpt-4o-mini is sufficient and cost-effective.",
+      "writer": "Stage 2: writes sections for each parliamentary group from retrieved chunks. Requires high narrative quality and ideological coherence.",
+      "integrator": "Stage 3: integrates sections into a coherent and balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use LLM."
+    },
+    "retrieval": {
+      "title": "Information Retrieval",
+      "description": "Parameters for the two search channels and the result merger",
+      "denseChannel": "Dense Channel — Embedding",
+      "topKResults": "Top-K Results",
+      "topKResultsInfo": "Maximum number of chunks retrieved by semantic similarity (embedding). Higher values increase recall but also increase latency and computational cost.",
+      "similarityThreshold": "Similarity Threshold",
+      "similarityThresholdInfo": "Minimum cosine similarity threshold for the dense channel. Chunks with lower similarity are discarded before ranking. Typical range: 0.20–0.45.",
+      "graphChannel": "Graph Channel — EuroVoc",
+      "minLexicalMatch": "Min Lexical Match",
+      "minLexicalMatchInfo": "Minimum number of EuroVoc keywords that must match lexically to include a parliamentary act in the graph search. Value 1 = one keyword is enough.",
+      "semanticThreshold": "EuroVoc Semantic Threshold",
+      "semanticThresholdInfo": "Semantic similarity threshold for EuroVoc matching. Controls how closely the EuroVoc concept must semantically match the query. Typical range: 0.35–0.55.",
+      "graphChunkThreshold": "Graph Chunk Threshold",
+      "graphChunkThresholdInfo": "Minimum similarity threshold for chunks retrieved via graph traversal. Prevents inclusion of off-topic chunks retrieved only through co-signature of relevant acts.",
+      "maxActsPerQuery": "Max Acts per Query",
+      "maxActsPerQueryInfo": "Maximum number of parliamentary acts to retrieve per query via the graph channel. Limits the computational load of Neo4j graph traversal.",
+      "mergerWeights": "Merger Weights",
+      "weightsSumNote": "Weights must sum to 1.00"
+    },
+    "authority": {
+      "title": "Authority Score",
+      "description": "Weights and thresholds for calculating parliamentarian authority scores",
+      "componentWeights": "Component Weights",
+      "timeDecay": "Time Decay",
+      "halfLifeActs": "Acts Half-life",
+      "halfLifeActsInfo": "Half-life in days for temporal decay of parliamentary acts. An act submitted 'half_life' days ago is worth half of a current one. Low values favor recent activity.",
+      "halfLifeInterventions": "Speeches Half-life",
+      "halfLifeInterventionsInfo": "Half-life in days for temporal decay of floor speeches. Recent speeches weigh more than older ones.",
+      "days": "days",
+      "relevanceThresholds": "Relevance Thresholds",
+      "relevanceThresholdsDescription": "Minimum cosine similarity between the act/speech embedding and the query. Items below the threshold are excluded from the count, regardless of quantity.",
+      "actsRelevanceThreshold": "Acts Relevance Threshold",
+      "actsRelevanceThresholdInfo": "Minimum cosine similarity between the act description and the query to count it toward authority. Irrelevant acts do not contribute to the score. Typical range: 0.20–0.35.",
+      "interventionsRelevanceThreshold": "Speeches Relevance Threshold",
+      "interventionsRelevanceThresholdInfo": "Minimum cosine similarity between the speech embedding and the query to count it. Off-topic speeches do not increase the parliamentarian's score. Typical range: 0.20–0.35.",
+      "advanced": "Advanced Parameters",
+      "maxComponentContribution": "Max Component Contribution",
+      "maxComponentContributionInfo": "Maximum contribution (cap) that a single component can make to the final authority score. Prevents a single factor (e.g., number of speeches) from completely dominating the score."
+    },
+    "generation": {
+      "title": "Generation",
+      "description": "LLM models and parameters for the 4-stage generation pipeline",
+      "llmModels": "LLM Models — 4-Stage Pipeline",
+      "analyst": "Analyst",
+      "writer": "Writer",
+      "integrator": "Integrator",
+      "llmParameters": "LLM Parameters",
+      "maxTokenOutput": "Max Token Output",
+      "maxTokenOutputInfo": "Maximum number of tokens generated per response. Increase for longer responses, decrease to contain costs.",
+      "temperature": "Temperature",
+      "temperatureInfo": "Model creativity/randomness. 0 = deterministic and precise, 1 = creative and variable. For analytical texts, 0.2–0.4 is optimal.",
+      "topP": "Top-P (nucleus)",
+      "topPInfo": "Nucleus sampling: considers only tokens with cumulative probability up to Top-P. 1.0 = no filtering. Lower to 0.9–0.95 for more focused output.",
+      "tokenUnit": "tokens",
+      "chunkUnit": "chunks",
+      "charUnit": "chars",
+      "positionBrief": "Position Brief",
+      "enabled": "Enabled",
+      "enabledInfo": "Provides the writer with a summary of the parliamentary group's overall position (top N chunks) before writing the section. Improves ideological coherence of selected citations.",
+      "maxChunksBrief": "Max Brief Chunks",
+      "maxChunksBriefInfo": "Number of chunks included in the position brief. More chunks provide more context but increase input tokens and latency.",
+      "charsPerChunk": "Chars/Chunk",
+      "charsPerChunkInfo": "Maximum characters per chunk in the brief. Truncates long chunks to keep the brief compact.",
+      "contextChars": "Context Chars",
+      "contextCharsInfo": "Context characters shown for each evidence in the brief (text surrounding the citation). Helps the writer understand the tone of the speech.",
+      "generationBehavior": "Generation Behavior",
+      "crossSynthesis": "Cross-Party Synthesis",
+      "crossSynthesisInfo": "Enables the 'Cross-Party Analysis' section (Stage 3.5): identifies cross-party patterns, convergences and divergences between parliamentary groups. Increases response length and cost.",
+      "noEvidenceMessage": "No Evidence Message",
+      "noEvidenceMessageInfo": "Text shown in the parliamentary group section when no relevant speeches are present in the corpus for that query."
+    },
+    "queryRewriting": {
+      "title": "Query Rewriting",
+      "description": "Automatic expansion of short queries before retrieval",
+      "configuration": "Configuration",
+      "enabled": "Enabled",
+      "enabledInfo": "When enabled, short queries are reformulated and enriched with related terms before being sent to retrieval. Improves recall for ambiguous or overly concise queries.",
+      "model": "Model",
+      "modelInfo": "LLM model used to rewrite queries. gpt-4o-mini is recommended: fast, cost-effective and sufficient for this structured task.",
+      "maxWords": "Max Words per Rewrite",
+      "maxWordsInfo": "Maximum word threshold: queries with a word count equal to or less than this are rewritten. Already descriptive (longer) queries are passed directly to retrieval.",
+      "wordsUnit": "words",
+      "keywordUnit": "keyword",
+      "actsUnit": "acts"
+    }
   },
   "HistoryModal": {
     "title": "Chat History",
@@ -272,5 +456,34 @@
     "noConversationsDesc": "Your chats will appear here",
     "oneConversation": "conversation",
     "manyConversations": "conversations"
+  },
+  "Timeline": {
+    "pageTitle": "Parliamentary Timeline",
+    "browseDescription": "Browse parliamentary sessions, debates, and speaker positions",
+    "searchPlaceholder": "Search debates, topics, speakers...",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month",
+    "last3Months": "Last 3 months",
+    "clearFilters": "Clear filters",
+    "debateCount": "{count} debates",
+    "voteCount": "{count} votes",
+    "speechCount": "{count} speeches",
+    "summaryNotYetGenerated": "Summary not yet generated",
+    "shortDebateNoSummary": "Not enough speeches to generate a summary.",
+    "askAboutThis": "Ask about this",
+    "askQuestionTemplate": "What positions were expressed in the debate on {debateTitle} on {date}?",
+    "speakersHeading": "Speakers",
+    "speakerSummaryLoading": "Loading summary...",
+    "speakerSummaryUnavailable": "Summary unavailable",
+    "votesLabel": "Votes: {count} roll calls",
+    "noSessionsFound": "No sessions found",
+    "noSessionsBody": "Try adjusting your search or filters.",
+    "backToTop": "Back to top",
+    "loadingMore": "Loading more sessions...",
+    "errorHeading": "Unable to load sessions",
+    "errorBody": "An error occurred while loading the parliamentary timeline. Please refresh the page.",
+    "parliamentaryTimeline": "Parliamentary Timeline"
   }
 }

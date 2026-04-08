@@ -256,11 +256,195 @@
     "oneIntervention": "intervento",
     "manyInterventions": "interventi"
   },
+  "WelcomeScreen": {
+    "badge": "Camera dei Deputati · XIX Legislatura",
+    "title": "Cosa pensa il Parlamento su ogni tema?",
+    "subtitle": "Dichiarazioni dei parlamentari <bold>più autorevoli</bold> su ogni tema, bilanciate tra maggioranza e opposizione con citazioni verificabili.",
+    "trendingTopics": "Temi di tendenza",
+    "searchPlaceholder": "Cerca un tema...",
+    "topics": {
+      "PNRR": "PNRR",
+      "riforma sanitaria": "Riforma Sanitaria",
+      "transizione energetica": "Transizione Energetica",
+      "salario minimo": "Salario Minimo",
+      "conflitto in Ucraina": "Conflitto In Ucraina",
+      "riforma fiscale": "Riforma Fiscale",
+      "autonomia differenziata": "Autonomia Differenziata",
+      "riforma della giustizia": "Riforma Della Giustizia",
+      "flussi migratori": "Flussi Migratori",
+      "scuola e istruzione": "Scuola E Istruzione",
+      "cambiamento climatico": "Cambiamento Climatico",
+      "infrastrutture": "Infrastrutture"
+    },
+    "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?"
+  },
   "ChamberSelector": {
     "camera": "Camera",
     "senato": "Senato",
     "both": "Entrambi",
     "label": "Ramo del Parlamento"
+  },
+  "Settings": {
+    "title": "Configurazione Sistema",
+    "unsavedChanges": "Modifiche non salvate",
+    "description": "Le modifiche sono attive immediatamente ma temporanee — riavviare il server o fare Ricarica per tornare ai valori del file YAML.",
+    "error": "Errore",
+    "saved": "Salvato",
+    "savedMessage": "Impostazioni applicate correttamente.",
+    "visualEditor": "Editor Grafico",
+    "jsonEditor": "Editor JSON",
+    "configFile": "config.json",
+    "applyJson": "Applica JSON",
+    "loadingConfig": "Caricamento configurazione...",
+    "reloadYaml": "Ricarica da YAML",
+    "cancel": "Annulla",
+    "saving": "Salvataggio...",
+    "saveChanges": "Salva Modifiche",
+    "loadError": "Errore nel caricamento della configurazione",
+    "reloadError": "Errore nel reload della configurazione",
+    "invalidJson": "Formato JSON non valido. Correggi gli errori di sintassi.",
+    "saveError": "Errore nel salvataggio"
+  },
+  "GraphicalEditors": {
+    "weightLabels": {
+      "profession": {
+        "label": "Professione",
+        "description": "Contributo della professione pre-parlamentare all'authority score. Un parlamentare con background medico o giuridico ha expertise specifica per query di settore."
+      },
+      "education": {
+        "label": "Istruzione",
+        "description": "Contributo del titolo di studio all'authority score. Lauree specialistiche e dottorati in materia rilevante incrementano il peso."
+      },
+      "committee": {
+        "label": "Commissioni",
+        "description": "Contributo dell'appartenenza a commissioni parlamentari tematicamente rilevanti rispetto alla query. Più alta è la pertinenza semantica, maggiore il peso."
+      },
+      "acts": {
+        "label": "Atti",
+        "description": "Contributo al numero di atti parlamentari presentati (leggi, mozioni, interrogazioni), ponderati per recency tramite decadimento temporale esponenziale."
+      },
+      "interventions": {
+        "label": "Interventi",
+        "description": "Contributo al numero di interventi in aula ponderati per recency. Parlamentari attivi e recenti ottengono score più alti rispetto a quelli inattivi."
+      },
+      "role": {
+        "label": "Ruolo",
+        "description": "Contributo del ruolo istituzionale (Presidente, Ministro, Capogruppo, Sottosegretario, ecc.). Ruoli apicali ricevono un boost di autorevolezza."
+      }
+    },
+    "mergerLabels": {
+      "relevance": {
+        "label": "Rilevanza",
+        "description": "Peso della similarità coseno tra embedding query ed embedding chunk. È il segnale primario di pertinenza tematica."
+      },
+      "diversity": {
+        "label": "Diversità",
+        "description": "Penalizza chunk dello stesso speaker per evitare che un singolo parlamentare domini i risultati, garantendo varietà di voci."
+      },
+      "coverage": {
+        "label": "Copertura",
+        "description": "Premia la rappresentazione di più gruppi parlamentari nel ranking finale, favorendo la visione multi-partito."
+      },
+      "authority": {
+        "label": "Autorità",
+        "description": "Ripondera i chunk in base all'authority score del parlamentare (expertise, ruolo, atti). Nota: la vera authority ranking avviene post-merge."
+      },
+      "salience": {
+        "label": "Salienza",
+        "description": "Preferisce testi politicamente sostanziali rispetto a testi procedurali (es. 'Grazie Presidente, ha facoltà di parlare')."
+      }
+    },
+    "modelInfo": {
+      "analyst": "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4o-mini è sufficiente ed economico.",
+      "writer": "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e coerenza ideologica.",
+      "integrator": "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM."
+    },
+    "retrieval": {
+      "title": "Recupero Informazioni",
+      "description": "Parametri dei due canali di ricerca e del merger dei risultati",
+      "denseChannel": "Canale Denso — Embedding",
+      "topKResults": "Top-K Risultati",
+      "topKResultsInfo": "Numero massimo di chunk recuperati per similarità semantica (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo computazionale.",
+      "similarityThreshold": "Soglia Similarità",
+      "similarityThresholdInfo": "Soglia minima di similarità coseno per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Range tipico: 0.20–0.45.",
+      "graphChannel": "Canale Grafo — EuroVoc",
+      "minLexicalMatch": "Min Match Lessicale",
+      "minLexicalMatchInfo": "Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword.",
+      "semanticThreshold": "Soglia Semantica EuroVoc",
+      "semanticThresholdInfo": "Soglia di similarità semantica per il matching EuroVoc. Controlla quanto strettamente il concetto EuroVoc deve corrispondere semanticamente alla query. Range tipico: 0.35–0.55.",
+      "graphChunkThreshold": "Soglia Chunk Grafo",
+      "graphChunkThresholdInfo": "Soglia minima di similarità per i chunk recuperati tramite traversata del grafo. Previene l'inclusione di chunk off-topic recuperati solo per co-firma di atti rilevanti.",
+      "maxActsPerQuery": "Max Atti per Query",
+      "maxActsPerQueryInfo": "Numero massimo di atti parlamentari da recuperare per query tramite il canale grafo. Limita il carico computazionale della traversata del grafo Neo4j.",
+      "mergerWeights": "Pesi Fusione — Merger",
+      "weightsSumNote": "I pesi devono sommare a 1.00"
+    },
+    "authority": {
+      "title": "Authority Score",
+      "description": "Pesi e soglie per il calcolo dello score di autorevolezza dei parlamentari",
+      "componentWeights": "Pesi Componenti",
+      "timeDecay": "Decadimento Temporale",
+      "halfLifeActs": "Half-life Atti",
+      "halfLifeActsInfo": "Vita media in giorni per il decadimento temporale degli atti parlamentari. Un atto presentato 'half_life' giorni fa vale la metà di uno odierno. Valori bassi privilegiano l'attività recente.",
+      "halfLifeInterventions": "Half-life Interventi",
+      "halfLifeInterventionsInfo": "Vita media in giorni per il decadimento temporale degli interventi in aula. Interventi recenti pesano di più rispetto a quelli lontani nel tempo.",
+      "days": "giorni",
+      "relevanceThresholds": "Soglie di Rilevanza",
+      "relevanceThresholdsDescription": "Similarità coseno minima tra l'embedding dell'atto/intervento e la query. Elementi sotto soglia vengono esclusi dal conteggio, indipendentemente dalla quantità.",
+      "actsRelevanceThreshold": "Soglia Rilevanza Atti",
+      "actsRelevanceThresholdInfo": "Similarità coseno minima tra la descrizione dell'atto e la query per conteggiarlo nell'authority. Atti irrilevanti al topic non contribuiscono al punteggio. Range tipico: 0.20–0.35.",
+      "interventionsRelevanceThreshold": "Soglia Rilevanza Interventi",
+      "interventionsRelevanceThresholdInfo": "Similarità coseno minima tra l'embedding dell'intervento e la query per conteggiarlo. Interventi off-topic non incrementano il punteggio del parlamentare. Range tipico: 0.20–0.35.",
+      "advanced": "Parametri Avanzati",
+      "maxComponentContribution": "Max Contributo Componente",
+      "maxComponentContributionInfo": "Contributo massimo (cap) che una singola componente può apportare all'authority score finale. Previene che un solo fattore (es. numero di interventi) domini completamente il punteggio."
+    },
+    "generation": {
+      "title": "Generazione",
+      "description": "Modelli LLM e parametri della pipeline di generazione a 4 stadi",
+      "llmModels": "Modelli LLM — Pipeline 4 Stadi",
+      "analyst": "Analista",
+      "writer": "Scrittore",
+      "integrator": "Integratore",
+      "llmParameters": "Parametri LLM",
+      "maxTokenOutput": "Max Token Output",
+      "maxTokenOutputInfo": "Numero massimo di token generati per risposta. Aumentare per risposte più lunghe, ridurre per contenere i costi.",
+      "temperature": "Temperatura",
+      "temperatureInfo": "Creatività/randomicità del modello. 0 = deterministico e preciso, 1 = creativo e variabile. Per testi analitici 0.2–0.4 è ottimale.",
+      "topP": "Top-P (nucleus)",
+      "topPInfo": "Nucleus sampling: considera solo i token con probabilità cumulativa fino a Top-P. 1.0 = nessun filtraggio. Abbassare a 0.9–0.95 per output più focalizzati.",
+      "tokenUnit": "token",
+      "chunkUnit": "chunk",
+      "charUnit": "char",
+      "positionBrief": "Position Brief",
+      "enabled": "Abilitato",
+      "enabledInfo": "Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate.",
+      "maxChunksBrief": "Max Chunks Brief",
+      "maxChunksBriefInfo": "Numero di chunk inclusi nel brief di posizione. Più chunk forniscono più contesto ma aumentano i token in input e la latenza.",
+      "charsPerChunk": "Chars/Chunk",
+      "charsPerChunkInfo": "Numero massimo di caratteri per chunk nel brief. Tronca i chunk lunghi per mantenere il brief compatto.",
+      "contextChars": "Context Chars",
+      "contextCharsInfo": "Caratteri di contesto mostrati per ogni evidenza nel brief (testo circostante la citazione). Aiuta lo scrittore a capire il tono dell'intervento.",
+      "generationBehavior": "Comportamento Generazione",
+      "crossSynthesis": "Sintesi Trasversale",
+      "crossSynthesisInfo": "Abilita la sezione 'Analisi Trasversale' (Stadio 3.5): identifica pattern cross-party, convergenze e divergenze tra i gruppi parlamentari. Aumenta la lunghezza e il costo della risposta.",
+      "noEvidenceMessage": "Messaggio Assenza Evidenze",
+      "noEvidenceMessageInfo": "Testo mostrato nella sezione del gruppo parlamentare quando non sono presenti interventi rilevanti nel corpus per quella query."
+    },
+    "queryRewriting": {
+      "title": "Riscrittura Query",
+      "description": "Espansione automatica delle query brevi prima del retrieval",
+      "configuration": "Configurazione",
+      "enabled": "Abilitata",
+      "enabledInfo": "Se abilitata, le query brevi vengono riformulate e arricchite con termini correlati prima di essere inviate al retrieval. Migliora il recall per query ambigue o troppo sintetiche.",
+      "model": "Modello",
+      "modelInfo": "Modello LLM usato per riscrivere le query. gpt-4o-mini è raccomandato: è veloce, economico e sufficiente per questo task strutturato.",
+      "maxWords": "Max Parole per Riscrittura",
+      "maxWordsInfo": "Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval.",
+      "wordsUnit": "parole",
+      "keywordUnit": "keyword",
+      "actsUnit": "atti"
+    }
   },
   "HistoryModal": {
     "title": "Cronologia Chat",
@@ -272,5 +456,34 @@
     "noConversationsDesc": "Le tue chat appariranno qui",
     "oneConversation": "conversazione",
     "manyConversations": "conversazioni"
+  },
+  "Timeline": {
+    "pageTitle": "Cronologia Parlamentare",
+    "browseDescription": "Esplora le sessioni parlamentari, i dibattiti e le posizioni dei relatori",
+    "searchPlaceholder": "Cerca dibattiti, argomenti, relatori...",
+    "dateFrom": "Da",
+    "dateTo": "A",
+    "lastWeek": "Ultima settimana",
+    "lastMonth": "Ultimo mese",
+    "last3Months": "Ultimi 3 mesi",
+    "clearFilters": "Cancella filtri",
+    "debateCount": "{count} dibattiti",
+    "voteCount": "{count} votazioni",
+    "speechCount": "{count} interventi",
+    "summaryNotYetGenerated": "Riepilogo non ancora generato",
+    "shortDebateNoSummary": "Interventi insufficienti per generare un riepilogo.",
+    "askAboutThis": "Chiedi informazioni",
+    "askQuestionTemplate": "Quali posizioni sono state espresse nel dibattito su {debateTitle} del {date}?",
+    "speakersHeading": "Relatori",
+    "speakerSummaryLoading": "Caricamento riepilogo...",
+    "speakerSummaryUnavailable": "Riepilogo non disponibile",
+    "votesLabel": "Votazioni: {count} scrutini",
+    "noSessionsFound": "Nessuna sessione trovata",
+    "noSessionsBody": "Prova a modificare la ricerca o i filtri.",
+    "backToTop": "Torna in cima",
+    "loadingMore": "Caricamento altre sessioni...",
+    "errorHeading": "Impossibile caricare le sessioni",
+    "errorBody": "Si e' verificato un errore durante il caricamento della cronologia parlamentare. Aggiorna la pagina.",
+    "parliamentaryTimeline": "Cronologia Parlamentare"
   }
 }
