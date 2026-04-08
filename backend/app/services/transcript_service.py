@@ -1,0 +1,226 @@
+"""
+Transcript service — Neo4j queries for the debate transcript viewer API.
+
+Provides three async functions consumed by the transcript router:
+  - get_transcript_speeches(): all speeches for a debate in chronological order
+  - get_speech_text():          full text of a single speech (lazy-loaded)
+  - get_debate_suggestions():   LLM-generated starter questions from debate recap
+
+All functions accept a Neo4jClient instance (injected by FastAPI Depends).
+get_transcript_speeches and get_debate_suggestions also accept a locale string
+("it" or "en") to select the correct recap field.
+
+Pitfall notes:
+  - Neo4j returns dates as neo4j.time.Date objects -> convert with str(record["date"])
+  - Speakers can be Deputy OR GovernmentMember nodes -> use coalesce(dep, gov) pattern
+  - ORDER BY p.id, sp.id gives chronological ordering within the debate structure
+"""
+from __future__ import annotations
+
+from app.config import get_settings
+from app.models.transcript import (
+    SpeechTextResponse,
+    SuggestionsResponse,
+    TranscriptResponse,
+    TranscriptSpeechRow,
+)
+from app.services.neo4j_client import Neo4jClient
+
+_FALLBACK_QUESTIONS_IT = [
+    "Chi sono i principali oratori?",
+    "Quali temi sono stati discussi?",
+    "Quali posizioni politiche sono emerse?",
+    "Ci sono stati voti o decisioni?",
+]
+
+_FALLBACK_QUESTIONS_EN = [
+    "Who are the main speakers?",
+    "What topics were discussed?",
+    "What political positions emerged?",
+    "Were there any votes or decisions?",
+]
+
+
+async def get_transcript_speeches(
+    neo4j: Neo4jClient,
+    debate_id: str,
+    locale: str,
+) -> TranscriptResponse:
+    """
+    Return all speeches for a debate in chronological phase/speech order.
+
+    Two queries:
+      1. Debate metadata: title, session date/id/chamber.
+      2. All speeches with speaker metadata (Deputy or GovernmentMember via coalesce).
+
+    Returns an empty response (speeches=[]) if the debate is not found.
+    """
+    recap_field = "recapEn" if locale == "en" else "recapIt"
+
+    # --- Debate metadata + session info ---
+    meta_row = neo4j.query_single(
+        f"""
+        MATCH (d:Debate {{id: $debate_id}})<-[:HAS_DEBATE]-(s:Session)
+        RETURN d.title AS title,
+               d.{recap_field} AS recap,
+               toString(s.date) AS session_date,
+               s.id AS session_id,
+               s.chamber AS chamber
+        """,
+        {"debate_id": debate_id},
+    )
+
+    if not meta_row:
+        return TranscriptResponse(
+            debate_id=debate_id,
+            debate_title="",
+            session_date="",
+            session_id="",
+            chamber="",
+            speeches=[],
+        )
+
+    # --- All speeches in chronological order ---
+    speech_rows = neo4j.query(
+        """
+        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
+              -[:CONTAINS_SPEECH]->(sp:Speech)
+        OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
+        OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gov:GovernmentMember)
+        WITH coalesce(dep, gov) AS spk,
+             (dep IS NULL AND gov IS NOT NULL) AS isGov,
+             p, sp
+        WHERE spk IS NOT NULL
+        OPTIONAL MATCH (spk)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WITH spk, isGov, p, sp, head(collect(g.name)) AS party
+        RETURN sp.id AS speech_id,
+               p.id AS phase_id,
+               p.title AS phase_title,
+               spk.id AS speaker_id,
+               spk.first_name AS first_name,
+               spk.last_name AS last_name,
+               party,
+               sp.speakingRole AS speaking_role,
+               isGov AS is_government_member
+        ORDER BY p.id, sp.id
+        """,
+        {"debate_id": debate_id},
+    )
+
+    speeches = [
+        TranscriptSpeechRow(
+            speech_id=r["speech_id"],
+            phase_id=r["phase_id"],
+            phase_title=r["phase_title"] or "",
+            speaker_id=r["speaker_id"],
+            first_name=r["first_name"] or "",
+            last_name=r["last_name"] or "",
+            party=r["party"],
+            speaking_role=r["speaking_role"],
+            is_government_member=bool(r["is_government_member"]),
+        )
+        for r in speech_rows
+    ]
+
+    return TranscriptResponse(
+        debate_id=debate_id,
+        debate_title=meta_row["title"] or "",
+        session_date=str(meta_row["session_date"]),
+        session_id=meta_row["session_id"] or "",
+        chamber=meta_row["chamber"] or "",
+        speeches=speeches,
+    )
+
+
+async def get_speech_text(
+    neo4j: Neo4jClient,
+    debate_id: str,
+    speech_id: str,
+) -> SpeechTextResponse:
+    """
+    Return the full text of a single speech.
+
+    Used by the accordion expand handler to lazy-load speech content.
+    Returns empty text if the speech is not found.
+    """
+    row = neo4j.query_single(
+        """
+        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(:Phase)
+              -[:CONTAINS_SPEECH]->(sp:Speech {id: $speech_id})
+        RETURN sp.id AS speech_id, sp.text AS text
+        """,
+        {"debate_id": debate_id, "speech_id": speech_id},
+    )
+
+    if not row:
+        return SpeechTextResponse(speech_id=speech_id, text="")
+
+    return SpeechTextResponse(
+        speech_id=row["speech_id"],
+        text=row["text"] or "",
+    )
+
+
+async def get_debate_suggestions(
+    neo4j: Neo4jClient,
+    debate_id: str,
+    locale: str,
+) -> SuggestionsResponse:
+    """
+    Return 3-4 starter questions for the debate chatbot.
+
+    If the debate has a recap, calls gpt-4.1-mini to generate locale-aware
+    questions. Falls back to hardcoded questions on LLM error or missing recap.
+    """
+    recap_field = "recapEn" if locale == "en" else "recapIt"
+    fallback = _FALLBACK_QUESTIONS_EN if locale == "en" else _FALLBACK_QUESTIONS_IT
+
+    row = neo4j.query_single(
+        f"""
+        MATCH (d:Debate {{id: $debate_id}})
+        RETURN d.{recap_field} AS recap, d.recapIt AS recapIt, d.title AS title
+        """,
+        {"debate_id": debate_id},
+    )
+
+    # Use Italian recap as universal fallback when locale-specific recap is absent
+    recap_text: str | None = None
+    if row:
+        recap_text = row.get("recap") or row.get("recapIt")
+
+    if not recap_text:
+        return SuggestionsResponse(questions=fallback)
+
+    # Generate questions via LLM
+    try:
+        from openai import AsyncOpenAI
+
+        settings = get_settings()
+        client = AsyncOpenAI(api_key=settings.openai_api_key)
+
+        lang_instruction = "Italian" if locale == "it" else "English"
+        system_prompt = (
+            f"Given this parliamentary debate summary, generate exactly 4 short questions "
+            f"(each under 80 characters) in {lang_instruction} that a user might want to ask "
+            f"about this debate. Return only the questions, one per line, no numbering."
+        )
+
+        response = await client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": recap_text},
+            ],
+            max_tokens=200,
+            temperature=0.7,
+        )
+
+        raw = response.choices[0].message.content or ""
+        questions = [line.strip() for line in raw.splitlines() if line.strip()]
+        if questions:
+            return SuggestionsResponse(questions=questions[:4])
+
+    except Exception:
+        pass  # Fall through to hardcoded fallback
+
+    return SuggestionsResponse(questions=fallback)
