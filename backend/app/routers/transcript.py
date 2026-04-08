@@ -8,12 +8,15 @@ Endpoints:
   GET /api/transcript/{debate_id}/speeches           -> all speeches in chronological order
   GET /api/transcript/{debate_id}/speech/{speech_id} -> single speech text (lazy load)
   GET /api/transcript/{debate_id}/suggestions        -> starter questions for chatbot
+  POST /api/transcript/{debate_id}/chat            -> debate-scoped SSE chatbot
 """
 from fastapi import APIRouter, Depends, Request
+from fastapi.responses import StreamingResponse
 
 from app.models.transcript import (
     SpeechTextResponse,
     SuggestionsResponse,
+    TranscriptChatRequest,
     TranscriptResponse,
 )
 from app.services.deps import get_neo4j_client
@@ -64,4 +67,31 @@ async def get_suggestions(
         neo4j=neo4j,
         debate_id=debate_id,
         locale=locale,
+    )
+
+
+@router.post("/{debate_id}/chat")
+async def debate_chat(
+    debate_id: str,
+    body: TranscriptChatRequest,
+    request: Request,
+    neo4j: Neo4jClient = Depends(get_neo4j_client),
+):
+    """Debate-scoped chatbot with SSE streaming. No persistence — session-only."""
+    locale = request.headers.get("Accept-Language", "it")[:2]
+    history = [{"role": m.role, "content": m.content} for m in body.history]
+    return StreamingResponse(
+        transcript_service.debate_chat_streaming(
+            debate_id=debate_id,
+            query=body.query,
+            history=history,
+            locale=locale,
+            neo4j=neo4j,
+        ),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
     )
