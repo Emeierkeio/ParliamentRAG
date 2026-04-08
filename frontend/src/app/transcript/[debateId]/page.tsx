@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -9,6 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TranscriptPanel } from "@/components/transcript/TranscriptPanel";
+import { TranscriptSearch } from "@/components/transcript/TranscriptSearch";
+import { TranscriptMiniMap } from "@/components/transcript/TranscriptMiniMap";
+import { TranscriptChatbot } from "@/components/transcript/TranscriptChatbot";
+import { SelectionAskButton } from "@/components/transcript/SelectionAskButton";
+import { useTranscriptChat } from "@/hooks/use-transcript-chat";
 import { getTranscriptSpeeches } from "@/lib/transcript-api";
 import type { TranscriptResponse } from "@/types/transcript";
 
@@ -22,6 +27,16 @@ export default function TranscriptPage() {
   const debateId = params.debateId as string;
   const t = useTranslations("Transcript");
   const [state, setState] = useState<PageState>({ status: "loading" });
+
+  // Chat state — single hook instance, shared by desktop panel and mobile sheet
+  const { messages, isLoading, sendMessage, stopGenerating } = useTranscriptChat(debateId);
+  const [prefillText, setPrefillText] = useState<string | null>(null);
+  const [targetSpeechId, setTargetSpeechId] = useState<string | null>(null);
+  const transcriptContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleCitationClick = useCallback((speechId: string) => {
+    setTargetSpeechId(speechId);
+  }, []);
 
   useEffect(() => {
     getTranscriptSpeeches(debateId)
@@ -76,21 +91,40 @@ export default function TranscriptPage() {
         </nav>
       </div>
 
-      {/* Two-panel layout — chatbot panel placeholder for Plan 06 */}
+      {/* Two-panel layout: left = transcript, right = chatbot (handles desktop/mobile internally) */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Transcript panel (60% desktop) */}
-        <div className="flex-1 lg:w-3/5 overflow-y-auto scrollbar-thin">
-          <TranscriptPanel
-            debateId={debateId}
-            speeches={data.speeches}
-          />
+        {/* Left: transcript panel with search and mini-map */}
+        <div className="flex flex-1 lg:w-3/5">
+          <div ref={transcriptContainerRef} className="flex-1 overflow-y-auto scrollbar-thin">
+            <TranscriptSearch containerRef={transcriptContainerRef} />
+            <TranscriptPanel
+              debateId={debateId}
+              speeches={data.speeches}
+              targetSpeechId={targetSpeechId}
+              onTargetConsumed={() => setTargetSpeechId(null)}
+            />
+          </div>
+          <TranscriptMiniMap speeches={data.speeches} />
         </div>
 
-        {/* Chatbot panel placeholder (40% desktop) — will be implemented in Plan 06 */}
-        <div className="hidden lg:flex lg:w-2/5 border-l bg-card flex-col items-center justify-center">
-          <p className="text-sm text-muted-foreground">{t("chatTitle")}</p>
-        </div>
+        {/* Right: chatbot — single instance, handles desktop panel (hidden lg:flex) and mobile FAB/sheet (lg:hidden) internally */}
+        <TranscriptChatbot
+          debateId={debateId}
+          messages={messages}
+          isLoading={isLoading}
+          sendMessage={sendMessage}
+          stopGenerating={stopGenerating}
+          onCitationClick={handleCitationClick}
+          prefillText={prefillText}
+          onPrefillConsumed={() => setPrefillText(null)}
+        />
       </div>
+
+      {/* Floating ask button on text selection — pre-fills chatbot input */}
+      <SelectionAskButton
+        containerRef={transcriptContainerRef}
+        onAsk={(text) => setPrefillText(text)}
+      />
     </div>
   );
 }

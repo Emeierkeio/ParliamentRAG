@@ -3,7 +3,7 @@
 import { useState, useEffect, useId } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BookOpen } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,7 @@ export function DebateDetail({
   sessionDate,
 }: DebateDetailProps) {
   const t = useTranslations("Timeline");
+  const tTr = useTranslations("Transcript");
   const router = useRouter();
   const votesId = useId();
   const [detail, setDetail] = useState<DetailState>({ status: "idle" });
@@ -77,7 +78,9 @@ export function DebateDetail({
         <p className="text-sm">{data.recap}</p>
       ) : (
         <p className="text-xs text-muted-foreground italic">
-          {t("shortDebateNoSummary")}
+          {data.phases.reduce((sum, p) => sum + p.speech_count, 0) < 3
+            ? t("shortDebateNoSummary")
+            : t("summaryNotYetGenerated")}
         </p>
       )}
 
@@ -152,12 +155,24 @@ export function DebateDetail({
             {t("speakersHeading")}
           </h4>
           <div>
-            {data.speakers.map((speaker) => (
-              <SpeakerRow key={speaker.id} speaker={speaker} debateId={debateId} />
+            {data.speakers.map((speaker, idx) => (
+              <SpeakerRow key={`${speaker.id}-${idx}`} speaker={speaker} debateId={debateId} />
             ))}
           </div>
         </div>
       )}
+
+      {/* 5.5 Read transcript button */}
+      <div className="mt-3">
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => router.push(`/transcript/${encodeURIComponent(debateId)}`)}
+        >
+          <BookOpen className="mr-1 h-3.5 w-3.5" />
+          {tTr("readTranscript")}
+        </Button>
+      </div>
 
       {/* 6. Ask about this button */}
       <div className="mt-4">
@@ -166,7 +181,7 @@ export function DebateDetail({
           size="sm"
           onClick={() =>
             router.push(
-              "/?q=" +
+              "/home?q=" +
                 encodeURIComponent(
                   t("askQuestionTemplate", {
                     debateTitle: data.title,
