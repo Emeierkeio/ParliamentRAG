@@ -158,6 +158,11 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 disabled={false}
               />
               <NavButton
+                item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), isActive: pathname === "/timeline", onClick: () => handleNavClick(() => navTo("/timeline")) }}
+                isCollapsed={false}
+                disabled={false}
+              />
+              <NavButton
                 item={{ icon: BarChart3, label: t('authorityAnalysis'), isActive: pathname === "/rankings", onClick: () => handleNavClick(() => navTo("/rankings")) }}
                 isCollapsed={false}
                 disabled={false}
@@ -263,6 +268,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             <NavButton
               item={{ icon: Search, label: t('actsSearch'), href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
