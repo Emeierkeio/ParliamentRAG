@@ -5,6 +5,7 @@ Provides response shapes for the three transcript endpoints:
   - GET /api/transcript/{debate_id}/speeches        -> TranscriptResponse
   - GET /api/transcript/{debate_id}/speech/{id}     -> SpeechTextResponse
   - GET /api/transcript/{debate_id}/suggestions     -> SuggestionsResponse
+  - POST /api/transcript/{debate_id}/chat           -> SSE streaming response
 """
 from __future__ import annotations
 
@@ -49,3 +50,17 @@ class SuggestionsResponse(BaseModel):
     """Starter questions for the debate chatbot."""
 
     questions: list[str]
+
+
+class TranscriptChatMessage(BaseModel):
+    """A single turn in the transcript chat conversation."""
+
+    role: str    # "user" or "assistant"
+    content: str
+
+
+class TranscriptChatRequest(BaseModel):
+    """Request body for POST /api/transcript/{debateId}/chat."""
+
+    query: str
+    history: list[TranscriptChatMessage] = []

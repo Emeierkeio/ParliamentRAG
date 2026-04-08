@@ -1,10 +1,11 @@
 """
 Transcript service — Neo4j queries for the debate transcript viewer API.
 
-Provides three async functions consumed by the transcript router:
+Provides four async functions consumed by the transcript router:
   - get_transcript_speeches(): all speeches for a debate in chronological order
   - get_speech_text():          full text of a single speech (lazy-loaded)
   - get_debate_suggestions():   LLM-generated starter questions from debate recap
+  - debate_chat_streaming():    debate-scoped RAG chatbot as SSE async generator
 
 All functions accept a Neo4jClient instance (injected by FastAPI Depends).
 get_transcript_speeches and get_debate_suggestions also accept a locale string
@@ -17,6 +18,10 @@ Pitfall notes:
 """
 from __future__ import annotations
 
+import json
+import logging
+from typing import AsyncGenerator
+
 from app.config import get_settings
 from app.models.transcript import (
     SpeechTextResponse,
@@ -25,6 +30,8 @@ from app.models.transcript import (
     TranscriptSpeechRow,
 )
 from app.services.neo4j_client import Neo4jClient
+
+logger = logging.getLogger(__name__)
 
 _FALLBACK_QUESTIONS_IT = [
     "Chi sono i principali oratori?",
@@ -224,3 +231,136 @@ async def get_debate_suggestions(
         pass  # Fall through to hardcoded fallback
 
     return SuggestionsResponse(questions=fallback)
+
+
+async def debate_chat_streaming(
+    debate_id: str,
+    query: str,
+    history: list[dict],
+    locale: str,
+    neo4j: Neo4jClient,
+) -> AsyncGenerator[str, None]:
+    """
+    Debate-scoped RAG chatbot as an async SSE generator.
+
+    Embeds the user query, retrieves chunks only from the specified debate's
+    speeches via vector index with debate_id filter, generates a streaming
+    answer with citation references, and yields SSE events.
+
+    SSE event types: progress, citations, chunk, done, error.
+
+    Does NOT use _pipeline_semaphore from query.py — operates independently.
+    """
+    try:
+        # Step 1: Embed query
+        yield f"data: {json.dumps({'type': 'progress', 'message': 'Embedding query...'})}\n\n"
+
+        settings = get_settings()
+        from openai import AsyncOpenAI
+        client = AsyncOpenAI(api_key=settings.openai_api_key)
+
+        embed_resp = await client.embeddings.create(
+            model="text-embedding-3-small",
+            input=query,
+        )
+        query_embedding = embed_resp.data[0].embedding
+
+        # Step 2: Retrieve debate-scoped chunks via vector index
+        yield f"data: {json.dumps({'type': 'progress', 'message': 'Searching debate content...'})}\n\n"
+
+        chunks = neo4j.query("""
+            CALL db.index.vector.queryNodes('chunk_embedding_index', $top_k, $embedding)
+            YIELD node AS c, score
+            WHERE score >= $threshold
+            MATCH (c)<-[:HAS_CHUNK]-(sp:Speech)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(d:Debate {id: $debate_id})
+            MATCH (sp)-[:SPOKEN_BY]->(spk)
+            WHERE spk:Deputy OR spk:GovernmentMember
+            OPTIONAL MATCH (spk)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+            WITH c, sp, spk, score, head(collect(g.name)) AS party
+            RETURN c.id AS chunk_id,
+                   c.text AS chunk_text,
+                   sp.id AS speech_id,
+                   spk.id AS speaker_id,
+                   spk.first_name + ' ' + spk.last_name AS speaker_name,
+                   party,
+                   score
+            ORDER BY score DESC
+            LIMIT $limit
+        """, {
+            "embedding": query_embedding,
+            "top_k": 100,
+            "threshold": 0.3,
+            "debate_id": debate_id,
+            "limit": 15,
+        })
+
+        # Step 3: Handle no results
+        if not chunks:
+            yield f"data: {json.dumps({'type': 'chunk', 'content': 'No relevant content found in this debate for your question.'})}\n\n"
+            yield f"data: {json.dumps({'type': 'done'})}\n\n"
+            return
+
+        # Step 4: Build citations — deduplicate by speech_id
+        seen_speeches: dict[str, int] = {}
+        citations: list[dict] = []
+        for chunk in chunks:
+            sid = chunk["speech_id"]
+            if sid not in seen_speeches:
+                idx = len(citations) + 1
+                citation = {
+                    "index": idx,
+                    "speech_id": sid,
+                    "speaker_name": chunk["speaker_name"] or "",
+                    "party": chunk["party"],
+                    "chunk_text": (chunk["chunk_text"] or "")[:200],
+                }
+                citations.append(citation)
+                seen_speeches[sid] = idx
+
+        # Step 5: Yield citations event before text generation
+        yield f"data: {json.dumps({'type': 'citations', 'citations': citations})}\n\n"
+
+        # Step 6: Build LLM context and generate streaming response
+        context_parts = []
+        for chunk in chunks:
+            ref = seen_speeches.get(chunk["speech_id"], "?")
+            context_parts.append(
+                f"[{ref}] {chunk['speaker_name']} ({chunk['party'] or 'N/A'}): {chunk['chunk_text']}"
+            )
+        context_text = "\n\n".join(context_parts)
+
+        lang = "Italian" if locale == "it" else "English"
+        system_prompt = (
+            f"You are an expert assistant analyzing a specific parliamentary debate transcript.\n"
+            f"Answer the user's question based ONLY on the provided speech excerpts.\n"
+            f"Use citation references like [1], [2] to indicate which speech your answer draws from.\n"
+            f"Respond in {lang}.\n"
+            f"If the provided excerpts don't contain enough information, say so honestly.\n\n"
+            f"Speech excerpts:\n{context_text}"
+        )
+
+        messages_for_llm = [{"role": "system", "content": system_prompt}]
+        for h in history:
+            messages_for_llm.append({"role": h.get("role", "user"), "content": h.get("content", "")})
+        messages_for_llm.append({"role": "user", "content": query})
+
+        yield f"data: {json.dumps({'type': 'progress', 'message': 'Generating answer...'})}\n\n"
+
+        stream = await client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=messages_for_llm,
+            max_tokens=1500,
+            temperature=0.3,
+            stream=True,
+        )
+
+        async for event in stream:
+            delta = event.choices[0].delta
+            if delta.content:
+                yield f"data: {json.dumps({'type': 'chunk', 'content': delta.content})}\n\n"
+
+        yield f"data: {json.dumps({'type': 'done'})}\n\n"
+
+    except Exception:
+        logger.exception("Error in debate_chat_streaming for debate_id=%s", debate_id)
+        yield f"data: {json.dumps({'type': 'error', 'message': 'An error occurred while processing your question.'})}\n\n"
