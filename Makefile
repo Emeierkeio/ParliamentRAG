@@ -252,7 +252,7 @@ NEO4J_LOCAL  := bolt://localhost:7689
 NEO4J_USER   ?= neo4j
 NEO4J_PASS   ?= thesis2026
 
-.PHONY: db-populate db-update db-senate db-download-csv db-download-senators-csv db-install
+.PHONY: db-populate db-update db-senate db-update-senate db-update-all db-download-leg18 db-ingest-leg18 db-download-csv db-download-senators-csv db-install
 
 db-install: venv ## Install build dependencies (pandas, regex, etc.)
 	@$(PIP) install -r $(BUILD_DIR)/requirements-build.txt -q
@@ -346,6 +346,38 @@ db-update: db-install ## Incremental update (start Neo4j if needed, download new
 		--neo4j-user $(NEO4J_USER) \
 		--neo4j-password $(NEO4J_PASS)
 	@printf "\n$(BOLD)$(GREEN)Database updated!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
+
+db-update-senate: db-install ## Incremental Senate update (new AKNs + senator CSVs + relink)
+	@printf "$(BOLD)$(CYAN)Updating Senate data...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) update-senate \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Senate data updated!$(RESET)\n"
+
+db-update-all: db-update db-update-senate enrich-sparql generate-summaries ## Update everything: Camera + Senato + SPARQL votes + AI summaries
+
+db-download-leg18: db-install ## Download all XVIII legislature raw data (Camera + Senato + CSVs, no DB writes)
+	@printf "$(BOLD)$(CYAN)Downloading XVIII legislature data...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/download_historical.py --legislature 18
+	@printf "\n$(BOLD)$(GREEN)XVIII legislature download complete!$(RESET)\n"
+
+db-ingest-leg18: db-install ## Ingest XVIII (leg18) Camera+Senate data additively (no nuke); requires raw data on disk (make db-download-leg18)
+	@printf "$(BOLD)$(CYAN)Ingesting XVIII (leg18) data additively...$(RESET)\n"
+	@docker compose up -d neo4j
+	@$(PYTHON) $(BUILD_SCRIPT) update --legislature 18 --skip-download \
+		--neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS)
+	@$(PYTHON) $(BUILD_SCRIPT) update-senate --legislature 18 --skip-download \
+		--neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)XVIII ingest complete!$(RESET)\n"
 
 db-senate: db-install ## Build Senate data (additive, Camera data preserved)
 	@printf "$(BOLD)$(CYAN)Senate database build (additive)...$(RESET)\n"

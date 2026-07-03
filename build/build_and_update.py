@@ -196,6 +196,7 @@ def do_build(
     skip_download: bool = False,
     skip_atti: bool = False,
     skip_embeddings: bool = False,
+    legislature: int = 19,
 ) -> None:
     """Rebuild the database from scratch (nuke + full ingestion)."""
     config = load_config(CONFIG_PATH)
@@ -222,15 +223,15 @@ def do_build(
 
         # 4. Load CSVs (deputies, groups, committees, government members)
         logger.info("Step 4: Loading CSV data")
-        builder.load_deputies(DATA_DIR)
-        builder.load_groups(DATA_DIR)
-        builder.load_committees(DATA_DIR)
-        builder.load_government_members_from_path(DATA_DIR)
+        builder.load_deputies(DATA_DIR, legislature=legislature)
+        builder.load_groups(DATA_DIR, legislature=legislature)
+        builder.load_committees(DATA_DIR, legislature=legislature)
+        builder.load_government_members_from_path(DATA_DIR, legislature=legislature)
 
         # 5. Ingest stenografici
         logger.info("Step 5: Ingesting stenografici")
         logger.info("  NER enrichment will run on chunks (requires it_core_news_lg)")
-        xml_files = sorted(glob.glob(os.path.join(XML_DIR, "stenografico_leg19_*.xml")))
+        xml_files = sorted(glob.glob(os.path.join(XML_DIR, f"stenografico_leg{legislature}_*.xml")))
         logger.info("  Found %d XML files", len(xml_files))
         for i, xml_path in enumerate(xml_files, 1):
             logger.info("  [%d/%d] %s", i, len(xml_files), os.path.basename(xml_path))
@@ -279,6 +280,7 @@ def do_update(
     skip_download: bool = False,
     skip_atti: bool = False,
     skip_embeddings: bool = False,
+    legislature: int = 19,
 ) -> None:
     """Incremental update: new XMLs, refreshed CSVs, new atti parlamentari."""
     config = load_config(CONFIG_PATH)
@@ -290,10 +292,10 @@ def do_update(
         # 1. Refresh CSV data
         logger.info("Step 1: Refreshing CSV data")
         builder.create_constraints()
-        builder.load_deputies(DATA_DIR)
-        builder.load_groups(DATA_DIR)
-        builder.load_committees(DATA_DIR)
-        builder.load_government_members_from_path(DATA_DIR)
+        builder.load_deputies(DATA_DIR, legislature=legislature)
+        builder.load_groups(DATA_DIR, legislature=legislature)
+        builder.load_committees(DATA_DIR, legislature=legislature)
+        builder.load_government_members_from_path(DATA_DIR, legislature=legislature)
 
         # 2. Download new XMLs
         if skip_download:
@@ -304,11 +306,11 @@ def do_update(
 
         # 3. Ingest new stenografici only
         logger.info("Step 3: Ingesting new stenografici")
-        existing = builder.get_existing_session_numbers()
-        xml_files = sorted(glob.glob(os.path.join(XML_DIR, "stenografico_leg19_*.xml")))
+        existing = builder.get_existing_session_numbers(chamber="camera", legislature=legislature)
+        xml_files = sorted(glob.glob(os.path.join(XML_DIR, f"stenografico_leg{legislature}_*.xml")))
         new_files = []
         for f in xml_files:
-            match = re.search(r'stenografico_leg19_(\d+)\.xml$', f)
+            match = re.search(rf'stenografico_leg{legislature}_(\d+)\.xml$', f)
             if match:
                 num = int(match.group(1))
                 if num not in existing:
@@ -360,12 +362,13 @@ def do_build_senate(
     password: str,
     skip_download: bool = False,
     skip_embeddings: bool = False,
+    legislature: int = 19,
 ) -> None:
     """Build Senate portion of the database (additive — no nuke)."""
     config = load_config(CONFIG_PATH)
     driver = GraphDatabase.driver(uri, auth=(user, password))
     builder = DatabaseBuilder(driver, config)
-    parser = SenateStenograficoParser(config)
+    parser = SenateStenograficoParser(config, legislature=legislature)
     try:
         # 1. Download senator biographical CSVs
         if skip_download:
@@ -377,9 +380,9 @@ def do_build_senate(
         # 2. Load senator CSVs (Deputy nodes with chamber='senato')
         logger.info("Loading senator CSV data")
         builder.create_constraints()
-        builder.load_senators(DATA_DIR)
-        builder.load_senator_groups(DATA_DIR)
-        builder.load_senator_committees(DATA_DIR)
+        builder.load_senators(DATA_DIR, legislature=legislature)
+        builder.load_senator_groups(DATA_DIR, legislature=legislature)
+        builder.load_senator_committees(DATA_DIR, legislature=legislature)
 
         # 3. Download Senate AKN files
         if skip_download:
@@ -392,12 +395,16 @@ def do_build_senate(
 
         # 4. Ingest Senate stenografici
         logger.info("Ingesting Senate stenografici")
-        akn_files = sorted(glob.glob(os.path.join(SENATE_XML_DIR, "resaula_leg19_*.akn")))
+        akn_files = sorted(glob.glob(os.path.join(SENATE_XML_DIR, f"resaula_leg{legislature}_*.akn")))
         logger.info("Found %d AKN files", len(akn_files))
         for i, akn_path in enumerate(akn_files, 1):
             logger.info("[%d/%d] %s", i, len(akn_files), os.path.basename(akn_path))
             parsed = parser.parse_xml_file(akn_path)
             builder.ingest_session(parsed)
+
+        # 4b. Link any orphan Senate speeches to senators/government members
+        logger.info("Relinking Senate speeches to speakers")
+        builder.relink_senate_speeches()
 
         # 5. Embeddings for new Senate chunks
         if skip_embeddings:
@@ -407,6 +414,79 @@ def do_build_senate(
             run_subprocess("precalculate_embeddings.py", uri, user, password)
 
         logger.info("Senate build complete!")
+    finally:
+        driver.close()
+
+
+# ---------------------------------------------------------------------------
+# UPDATE-SENATE mode
+# ---------------------------------------------------------------------------
+
+
+def do_update_senate(
+    uri: str,
+    user: str,
+    password: str,
+    skip_download: bool = False,
+    skip_embeddings: bool = False,
+    legislature: int = 19,
+) -> None:
+    """Incremental Senate update: new AKNs, refreshed senator CSVs, relink."""
+    config = load_config(CONFIG_PATH)
+    driver = GraphDatabase.driver(uri, auth=(user, password))
+    builder = DatabaseBuilder(driver, config)
+    parser = SenateStenograficoParser(config, legislature=legislature)
+    try:
+        # 1. Refresh senator biographical CSVs and load them
+        if skip_download:
+            logger.info("Step 1: Skipping senator CSV download (--skip-download)")
+        else:
+            logger.info("Step 1: Refreshing senator biographical data")
+            download_senators_csv_main()
+        builder.create_constraints()
+        builder.load_senators(DATA_DIR, legislature=legislature)
+        builder.load_senator_groups(DATA_DIR, legislature=legislature)
+        builder.load_senator_committees(DATA_DIR, legislature=legislature)
+
+        # 2. Download new Senate AKN files
+        if skip_download:
+            logger.info("Step 2: Skipping Senate AKN download (--skip-download)")
+        else:
+            logger.info("Step 2: Downloading Senate AKN files")
+            os.makedirs(SENATE_XML_DIR, exist_ok=True)
+            count = download_senate_xmls(SENATE_XML_DIR)
+            logger.info("Downloaded %d new Senate files", count)
+
+        # 3. Ingest only sessions not yet in Neo4j
+        logger.info("Step 3: Ingesting new Senate stenografici")
+        existing = builder.get_existing_session_numbers(chamber="senato", legislature=legislature)
+        akn_files = sorted(glob.glob(os.path.join(SENATE_XML_DIR, f"resaula_leg{legislature}_*.akn")))
+        new_files = []
+        for f in akn_files:
+            match = re.search(rf'resaula_leg{legislature}_(\d+)\.akn$', f)
+            if match and int(match.group(1)) not in existing:
+                new_files.append(f)
+        if new_files:
+            logger.info("  Found %d new AKN files to ingest", len(new_files))
+            for i, akn_path in enumerate(new_files, 1):
+                logger.info("  [%d/%d] %s", i, len(new_files), os.path.basename(akn_path))
+                parsed = parser.parse_xml_file(akn_path)
+                builder.ingest_session(parsed)
+        else:
+            logger.info("  No new Senate stenografici found.")
+
+        # 4. Link orphan Senate speeches (covers legacy ingests too)
+        logger.info("Step 4: Relinking Senate speeches to speakers")
+        builder.relink_senate_speeches()
+
+        # 5. Embeddings for new chunks
+        if skip_embeddings:
+            logger.info("Step 5: Skipping embeddings (--skip-embeddings)")
+        else:
+            logger.info("Step 5: Pre-calculating embeddings (incremental)")
+            run_subprocess("precalculate_embeddings.py", uri, user, password)
+
+        logger.info("Senate update complete!")
     finally:
         driver.close()
 
@@ -424,8 +504,12 @@ def main() -> None:
     )
     arg_parser.add_argument(
         "mode",
-        choices=["build", "update", "build-senate"],
-        help="build = rebuild from scratch; update = incremental update; build-senate = additive Senate ingestion",
+        choices=["build", "update", "build-senate", "update-senate"],
+        help=(
+            "build = rebuild from scratch; update = incremental Camera update; "
+            "build-senate = additive Senate ingestion; "
+            "update-senate = incremental Senate update"
+        ),
     )
     arg_parser.add_argument(
         "--neo4j-uri",
@@ -443,6 +527,10 @@ def main() -> None:
     arg_parser.add_argument(
         "--skip-embeddings", action="store_true", help="Skip embedding pre-calculation"
     )
+    arg_parser.add_argument(
+        "--legislature", type=int, default=19,
+        help="Legislature number to build/update (default: 19)",
+    )
 
     args = arg_parser.parse_args()
     start_time = time.time()
@@ -455,6 +543,7 @@ def main() -> None:
             args.skip_download,
             args.skip_atti,
             args.skip_embeddings,
+            legislature=args.legislature,
         )
     elif args.mode == "build-senate":
         do_build_senate(
@@ -463,6 +552,16 @@ def main() -> None:
             args.neo4j_password,
             args.skip_download,
             args.skip_embeddings,
+            legislature=args.legislature,
+        )
+    elif args.mode == "update-senate":
+        do_update_senate(
+            args.neo4j_uri,
+            args.neo4j_user,
+            args.neo4j_password,
+            args.skip_download,
+            args.skip_embeddings,
+            legislature=args.legislature,
         )
     else:
         do_update(
@@ -472,6 +571,7 @@ def main() -> None:
             args.skip_download,
             args.skip_atti,
             args.skip_embeddings,
+            legislature=args.legislature,
         )
 
     total = time.time() - start_time
