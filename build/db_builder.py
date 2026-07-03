@@ -27,6 +27,14 @@ from chunker import chunk_speech
 from ner import enrich_chunks_with_ner, load_ner_model
 
 # ---------------------------------------------------------------------------
+# Legislature mapping: legislature number → roman suffix used in CSV/XML names
+# Intentionally not imported from download_deputies_csv.py to keep build/
+# scripts standalone (no cross-script coupling — see Phase 01-04 decision).
+# ---------------------------------------------------------------------------
+
+ROMAN_MAP = {17: "xvii", 18: "xviii", 19: "xix", 20: "xx"}
+
+# ---------------------------------------------------------------------------
 # App-config import (optional — roles won't load if missing)
 # ---------------------------------------------------------------------------
 try:
@@ -506,12 +514,19 @@ class DatabaseBuilder:
         For each speech with a deputatoId, match the Deputy by that URI.
         Falls back to GovernmentMember match by cognomeNome if no Deputy found.
         """
-        # Primary path: match Deputy by URI (deputatoId is the XML nominativo id attribute)
+        # Primary path: match Deputy by id. Camera XMLs carry a bare numeric
+        # nominativo id ("303089") while Deputy.id is the full persona URI;
+        # Senate AKNs carry the full senatore URI directly.
         tx.run("""
             UNWIND $batch AS row
             WITH row WHERE row.deputatoId IS NOT NULL
             MATCH (sp:Speech {id: row.id})
-            OPTIONAL MATCH (dep:Deputy {id: row.deputatoId})
+            WITH sp, row,
+                 CASE WHEN row.deputatoId STARTS WITH 'http'
+                      THEN row.deputatoId
+                      ELSE 'http://dati.camera.it/ocd/persona.rdf/p' + row.deputatoId
+                 END AS depUri
+            OPTIONAL MATCH (dep:Deputy {id: depUri})
             WITH sp, dep, row WHERE dep IS NOT NULL
             MERGE (sp)-[:SPOKEN_BY]->(dep)
         """, batch=batch)
@@ -1131,10 +1146,101 @@ class DatabaseBuilder:
                 """))
                 print("Full-text index created (standard analyzer).")
 
-    def get_existing_session_numbers(self) -> set[int]:
-        """Return set of session numbers already persisted in Neo4j."""
+    def get_existing_session_numbers(self, chamber: str | None = None, legislature: int = 19) -> set[int]:
+        """Return set of session numbers already persisted in Neo4j for a chamber+legislature.
+
+        Session numbers restart per legislature, so BOTH chamber and legislature must
+        scope the query — otherwise a leg18 update sees leg19 numbers as already ingested.
+        """
+        query = "MATCH (s:Session) WHERE s.legislature = $legislature RETURN s.number AS number"
+        params: dict = {"legislature": legislature}
+        if chamber is not None:
+            query = (
+                "MATCH (s:Session) "
+                "WHERE coalesce(s.chamber, 'camera') = $chamber "
+                "AND s.legislature = $legislature "
+                "RETURN s.number AS number"
+            )
+            params = {"chamber": chamber, "legislature": legislature}
         with self._driver.session() as neo_session:
             records = neo_session.execute_read(
-                lambda tx: list(tx.run("MATCH (s:Session) RETURN s.number AS number"))
+                lambda tx: list(tx.run(query, **params))
             )
         return {r['number'] for r in records}
+
+    def relink_senate_speeches(self) -> dict[str, int]:
+        """Create missing SPOKEN_BY rels for Senate speeches.
+
+        Handles three cases:
+        1. Legacy speeches whose deputatoId is the short form 'sen_XXXX'
+           (older parser output) — rewritten to the full senatore URI.
+        2. Speeches with a senatore-URI deputatoId not yet linked.
+        3. Speeches with only a surname in cognomeNome — linked to the
+           unique matching senator, or GovernmentMember as fallback.
+
+        Returns counts per phase for logging.
+        """
+        counts: dict[str, int] = {}
+        with self._driver.session() as neo_session:
+            # 1. Normalize legacy short-form ids to full URIs
+            result = neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE sp.deputatoId STARTS WITH 'sen_'
+                SET sp.deputatoId = 'http://dati.senato.it/senatore/'
+                    + substring(sp.deputatoId, 4)
+                RETURN count(sp) AS c
+            """).single())
+            counts["normalized_ids"] = result["c"]
+
+            # 2. Link by senatore URI
+            result = neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE sp.deputatoId STARTS WITH 'http://dati.senato.it/senatore/'
+                  AND NOT (sp)-[:SPOKEN_BY]->()
+                MATCH (d:Deputy {id: sp.deputatoId})
+                MERGE (sp)-[:SPOKEN_BY]->(d)
+                RETURN count(sp) AS c
+            """).single())
+            counts["linked_by_uri"] = result["c"]
+
+            # 3a. Fallback: unique senator surname match
+            result = neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE sp.id STARTS WITH 'sen_'
+                  AND NOT (sp)-[:SPOKEN_BY]->()
+                  AND sp.cognomeNome IS NOT NULL AND sp.cognomeNome <> ''
+                MATCH (d:Deputy {chamber: 'senato'})
+                WHERE toUpper(d.last_name) = toUpper(trim(sp.cognomeNome))
+                WITH sp, collect(d) AS matches
+                WHERE size(matches) = 1
+                WITH sp, matches[0] AS d
+                MERGE (sp)-[:SPOKEN_BY]->(d)
+                RETURN count(sp) AS c
+            """).single())
+            counts["linked_by_surname"] = result["c"]
+
+            # 3b. Fallback: government member by surname
+            result = neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE sp.id STARTS WITH 'sen_'
+                  AND NOT (sp)-[:SPOKEN_BY]->()
+                  AND sp.cognomeNome IS NOT NULL AND sp.cognomeNome <> ''
+                MATCH (gm:GovernmentMember)
+                WHERE toUpper(gm.last_name) = toUpper(trim(sp.cognomeNome))
+                WITH sp, collect(gm) AS matches
+                WHERE size(matches) = 1
+                WITH sp, matches[0] AS gm
+                MERGE (sp)-[:SPOKEN_BY]->(gm)
+                RETURN count(sp) AS c
+            """).single())
+            counts["linked_gov_by_surname"] = result["c"]
+
+            result = neo_session.execute_read(lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE sp.id STARTS WITH 'sen_' AND NOT (sp)-[:SPOKEN_BY]->()
+                RETURN count(sp) AS c
+            """).single())
+            counts["still_orphan"] = result["c"]
+
+        print(f"Senate speech relink: {counts}")
+        return counts
