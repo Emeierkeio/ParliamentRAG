@@ -39,6 +39,7 @@ export function useChat(options: UseChatOptions = {}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [chamber, setChamberInternal] = useState<"camera" | "senato" | "both">("both");
+  const [legislature, setLegislatureInternal] = useState<18 | 19>(19);
 
   // Update URL params when chamber changes
   const setChamber = useCallback((value: "camera" | "senato" | "both") => {
@@ -54,6 +55,20 @@ export function useChat(options: UseChatOptions = {}) {
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   }, [searchParams, router, pathname]);
 
+  // Update URL params when legislature changes
+  const setLegislature = useCallback((value: 18 | 19) => {
+    setLegislatureInternal(value);
+    localStorage.setItem("parliamentRAG.legislature", String(value));
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === 19) {
+      params.delete("legislature");
+    } else {
+      params.set("legislature", String(value));
+    }
+    const qs = params.toString();
+    router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+  }, [searchParams, router, pathname]);
+
   // Hydrate chamber from URL params → localStorage fallback
   useEffect(() => {
     const urlChamber = searchParams.get("chamber") as "camera" | "senato" | "both" | null;
@@ -63,6 +78,15 @@ export function useChat(options: UseChatOptions = {}) {
       localStorage.setItem("parliamentRAG.chamber", urlChamber);
     } else if (saved) {
       setChamberInternal(saved);
+    }
+    // Hydrate legislature from URL params → localStorage fallback
+    const urlLeg = searchParams.get("legislature");
+    const savedLeg = localStorage.getItem("parliamentRAG.legislature");
+    if (urlLeg && ["18", "19"].includes(urlLeg)) {
+      setLegislatureInternal(Number(urlLeg) as 18 | 19);
+      localStorage.setItem("parliamentRAG.legislature", urlLeg);
+    } else if (savedLeg && ["18", "19"].includes(savedLeg)) {
+      setLegislatureInternal(Number(savedLeg) as 18 | 19);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -186,7 +210,7 @@ export function useChat(options: UseChatOptions = {}) {
           "Content-Type": "application/json",
           "Accept-Language": locale,
         },
-        body: JSON.stringify({ query: content, task_id: taskId, chamber }),
+        body: JSON.stringify({ query: content, task_id: taskId, chamber, legislature }),
         signal: abortControllerRef.current.signal,
       });
 
@@ -787,6 +811,8 @@ export function useChat(options: UseChatOptions = {}) {
     streamingContent,
     chamber,
     setChamber,
+    legislature,
+    setLegislature,
     sendMessage,
     cancelRequest,
     clearMessages,
