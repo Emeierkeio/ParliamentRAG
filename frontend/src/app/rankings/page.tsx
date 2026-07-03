@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
@@ -16,9 +17,6 @@ import {
   X,
   Users,
   ChevronDown,
-  Trophy,
-  Medal,
-  Award,
   RotateCcw,
   Landmark,
   ChevronRight,
@@ -53,16 +51,6 @@ type SortKey =
 
 type CoalitionFilter = "all" | "majority" | "opposition";
 
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "authority_score", label: "Authority Score" },
-  { value: "speeches", label: "Interventi" },
-  { value: "acts", label: "Atti" },
-  { value: "committee", label: "Commissione" },
-  { value: "profession", label: "Professione" },
-  { value: "education", label: "Istruzione" },
-  { value: "role", label: "Ruolo" },
-];
-
 const GROUPS: { value: string; label: string; shortLabel: string }[] = [
   { value: "FRATELLI D'ITALIA", label: "Fratelli d'Italia", shortLabel: "FdI" },
   { value: "LEGA - SALVINI PREMIER", label: "Lega - Salvini Premier", shortLabel: "Lega" },
@@ -79,6 +67,7 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
 // ── Page ───────────────────────────────────────────────────────
 
 export default function RankingPage() {
+  const t = useTranslations("RankingsPage");
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const rankingHistory = useLocalHistory<{ deputies: RankingDeputy[]; computationTime: number }>(
     "parliamentrag-ranking-history"
@@ -103,6 +92,16 @@ export default function RankingPage() {
   const [groupSearch, setGroupSearch] = useState("");
   const [committeePopoverSearch, setCommitteePopoverSearch] = useState("");
 
+  const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+    { value: "authority_score", label: "Authority Score" },
+    { value: "speeches", label: t("sortSpeeches") },
+    { value: "acts", label: t("sortActs") },
+    { value: "committee", label: t("sortCommittee") },
+    { value: "profession", label: t("sortProfession") },
+    { value: "education", label: t("sortEducation") },
+    { value: "role", label: t("sortRole") },
+  ];
+
   // ── Fetch ranking ──
   const fetchRanking = useCallback(async (topicText: string) => {
     if (!topicText.trim()) return;
@@ -121,7 +120,7 @@ export default function RankingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic: topicText }),
       });
-      if (!res.ok) throw new Error("Errore nel calcolo del ranking");
+      if (!res.ok) throw new Error(t("errorFetch"));
       const data = await res.json();
       const mapped: RankingDeputy[] = data.deputies.map((d: RankingDeputy) => ({
         ...d,
@@ -132,12 +131,12 @@ export default function RankingPage() {
       setComputationTime(ct);
       rankingHistory.addEntry(topicText, { deputies: mapped, computationTime: ct });
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Errore sconosciuto");
+      setError(e instanceof Error ? e.message : t("errorUnknown"));
       setDeputies([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const restoreRankingEntry = useCallback(
     (entry: { topic: string; data: { deputies: RankingDeputy[]; computationTime: number } }) => {
@@ -250,7 +249,7 @@ export default function RankingPage() {
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
-            <h1 className="text-base font-semibold whitespace-nowrap">Analisi Autorità</h1>
+            <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("headerTitle")}</h1>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {activeTopic && !loading && (
@@ -265,14 +264,14 @@ export default function RankingPage() {
               )}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title="Cronologia">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title={t("historyTitle")}>
                     <History className="h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-2" align="end">
-                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
+                  <p className="text-[11px] uppercase tracking-[0.2em] px-2 py-1 text-muted-foreground mb-1">{t("historyHeading")}</p>
                   {rankingHistory.entries.length === 0 ? (
-                    <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
+                    <p className="text-xs text-center py-4 text-muted-foreground">{t("historyEmpty")}</p>
                   ) : (
                     <div className="space-y-0.5">
                       {rankingHistory.entries.map((entry) => (
@@ -287,7 +286,7 @@ export default function RankingPage() {
                           <button
                             className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
                             onClick={() => rankingHistory.removeEntry(entry.id)}
-                            title="Rimuovi"
+                            title={t("historyRemove")}
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -317,7 +316,7 @@ export default function RankingPage() {
                       : "bg-background hover:bg-muted text-muted-foreground"
                   )}
                 >
-                  {c === "all" ? "Tutti" : c === "majority" ? "Maggioranza" : "Opposizione"}
+                  {c === "all" ? t("coalitionAll") : c === "majority" ? t("coalitionMajority") : t("coalitionOpposition")}
                 </button>
               ))}
             </div>
@@ -328,7 +327,7 @@ export default function RankingPage() {
               <Input
                 value={nameSearch}
                 onChange={(e) => setNameSearch(e.target.value)}
-                placeholder="Cerca deputato..."
+                placeholder={t("nameSearchPlaceholder")}
                 className="pl-8 h-8 text-xs rounded-lg"
               />
               {nameSearch && (
@@ -343,7 +342,7 @@ export default function RankingPage() {
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
                   <Users className="h-3.5 w-3.5" />
-                  Gruppo
+                  {t("groupFilter")}
                   {selectedGroups.length > 0 && (
                     <Badge className="ml-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] bg-primary text-primary-foreground">
                       {selectedGroups.length}
@@ -360,7 +359,7 @@ export default function RankingPage() {
                     <Input
                       value={groupSearch}
                       onChange={(e) => setGroupSearch(e.target.value)}
-                      placeholder="Cerca gruppo..."
+                      placeholder={t("groupSearchPlaceholder")}
                       className="pl-8 h-7 text-xs rounded-md"
                       autoFocus
                     />
@@ -397,7 +396,7 @@ export default function RankingPage() {
                       onClick={() => setSelectedGroups([])}
                       className="w-full text-center text-xs text-destructive hover:underline pt-1 border-t border-border mt-1"
                     >
-                      Rimuovi filtri
+                      {t("groupClearFilters")}
                     </button>
                   )}
                 </div>
@@ -410,7 +409,7 @@ export default function RankingPage() {
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
                     <Landmark className="h-3.5 w-3.5" />
-                    Commissione
+                    {t("committeeFilter")}
                     {committeeSearch && (
                       <Badge className="ml-1 h-4 px-1 text-[10px] bg-primary text-primary-foreground">1</Badge>
                     )}
@@ -425,7 +424,7 @@ export default function RankingPage() {
                       <Input
                         value={committeePopoverSearch}
                         onChange={(e) => setCommitteePopoverSearch(e.target.value)}
-                        placeholder="Cerca commissione..."
+                        placeholder={t("committeeSearchPlaceholder")}
                         className="pl-8 h-7 text-xs rounded-md"
                         autoFocus
                       />
@@ -441,7 +440,7 @@ export default function RankingPage() {
                           onClick={() => setCommitteeSearch("")}
                           className="w-full text-left px-2.5 py-1.5 rounded-md text-xs text-destructive hover:bg-destructive/10 transition-colors"
                         >
-                          ✕ Rimuovi filtro
+                          ✕ {t("committeeRemoveFilter")}
                         </button>
                       )}
                       {availableCommittees
@@ -471,7 +470,7 @@ export default function RankingPage() {
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5 ml-auto">
                   <ArrowUpDown className="h-3.5 w-3.5" />
-                  {SORT_OPTIONS.find((s) => s.value === sortBy)?.label || "Ordina"}
+                  {SORT_OPTIONS.find((s) => s.value === sortBy)?.label || t("sortDefault")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-48 p-2" align="end">
@@ -505,7 +504,7 @@ export default function RankingPage() {
                 }}
                 className="text-xs text-destructive hover:underline whitespace-nowrap"
               >
-                Pulisci filtri
+                {t("clearAllFilters")}
               </button>
             )}
           </div>
@@ -536,69 +535,68 @@ export default function RankingPage() {
 
         {/* ── Content area ── */}
         <div className="flex-1 overflow-y-auto">
-          {/* ── Stato vuoto — dashboard style ── */}
+          {/* ── Empty state ── */}
           {!hasResults && !loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 pb-16">
               <div className="text-center space-y-6 max-w-lg">
-                <div className="mx-auto h-16 w-16 rounded-2xl bg-primary/8 flex items-center justify-center">
-                  <Crown className="h-8 w-8 text-primary/60" />
+                <div className="mx-auto h-14 w-14 rounded-full border border-border flex items-center justify-center">
+                  <Crown className="h-6 w-6 text-primary/60" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-xl font-semibold text-foreground">
-                    Analisi Autorità dei Deputati
+                  <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+                    {t("emptyStateHeading")}
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-                    Cerca un tema politico e scopri quali deputati sono più autorevoli in materia,
-                    sulla base di interventi, atti, commissioni, professione, istruzione e ruolo istituzionale.
+                    {t("emptyStateDescription")}
                   </p>
                 </div>
 
-                {/* Search bar — stile coerente con pagina Ricerca */}
+                {/* Search bar */}
                 <div className="w-full max-w-md mx-auto pt-2">
                   <form onSubmit={(e) => { e.preventDefault(); fetchRanking(topic); }} className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="Cerca un tema..."
-                      className="h-14 text-lg pl-12 pr-24 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
+                      placeholder={t("topicPlaceholder")}
+                      className="h-14 text-lg pl-12 pr-24 rounded-md"
                     />
                     <Button
                       type="submit"
                       disabled={!topic.trim()}
                       className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-4"
                     >
-                      Cerca
+                      {t("searchButton")}
                     </Button>
                   </form>
                 </div>
 
-                {/* Come funziona */}
+                {/* How it works */}
                 <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto pt-2">
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <Search className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Cerca un tema</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step1")}</span>
                   </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <ArrowUpDown className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Classifica generata</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step2")}</span>
                   </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <Users className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Filtra e esplora</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step3")}</span>
                   </div>
                 </div>
 
                 {/* Topic chips */}
                 <div className="pt-3">
-                  <p className="text-xs font-medium text-muted-foreground mb-3">
-                    Oppure prova con un tema suggerito
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                    {t("suggestedTopicsLabel")}
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
                     {TOPICS.slice(0, 8).map((t) => (
                       <button
                         key={t}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground hover:bg-primary/5 hover:shadow-sm"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                         onClick={() => handleTopicClick(t)}
                       >
                         <span className="capitalize">{t}</span>
@@ -620,19 +618,19 @@ export default function RankingPage() {
           {/* ── Loading ── */}
           {loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 gap-6">
-              <div className="h-20 w-20 rounded-2xl bg-primary/5 flex items-center justify-center">
-                <Loader2 className="h-10 w-10 text-primary/40 animate-spin" />
+              <div className="h-16 w-16 rounded-full border border-border flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-primary/40 animate-spin" />
               </div>
               <div className="text-center space-y-2">
-                <p className="text-sm font-medium text-foreground">Calcolo autorità in corso...</p>
+                <p className="text-sm font-medium text-foreground">{t("loadingTitle")}</p>
                 <p className="text-xs text-muted-foreground">
-                  Analisi interventi, atti e ruoli parlamentari per &quot;{activeTopic}&quot;
+                  {t("loadingSubtitle", { topic: activeTopic })}
                 </p>
               </div>
               {/* Skeleton rows */}
               <div className="w-full max-w-2xl mx-auto space-y-2">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted/20 border border-border/30 animate-pulse">
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-border animate-pulse">
                     <div className="h-5 w-6 bg-muted/60 rounded shrink-0" />
                     <div className="h-9 w-9 bg-muted rounded-full shrink-0" />
                     <div className="flex-1 space-y-1.5">
@@ -647,40 +645,40 @@ export default function RankingPage() {
             </div>
           )}
 
-          {/* ── Tabella risultati ── */}
+          {/* ── Results table ── */}
           {hasResults && !loading && (
             <div className="px-4 sm:px-6 py-4 max-w-6xl mx-auto w-full">
               {/* Results info */}
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs text-muted-foreground">
                   {filteredDeputies.length === deputies.length
-                    ? `${deputies.length} deputati classificati`
-                    : `${filteredDeputies.length} di ${deputies.length} deputati`}
+                    ? t("resultsAll", { count: deputies.length })
+                    : t("resultsFiltered", { filtered: filteredDeputies.length, total: deputies.length })}
                   {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
                 </p>
                 <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1.5 sm:hidden">
                   <RotateCcw className="h-3 w-3" />
-                  Nuova ricerca
+                  {t("newSearch")}
                 </Button>
               </div>
 
               {/* Table header (desktop) */}
-              <div className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 px-4 py-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground/50 border-b border-border/30">
-                <span>#</span>
-                <span>Deputato</span>
-                <span>Gruppo</span>
-                <span>Coalizione</span>
-                <span className="text-right">Score</span>
+              <div className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
+                <span>{t("colRank")}</span>
+                <span>{t("colDeputy")}</span>
+                <span>{t("colGroup")}</span>
+                <span>{t("colCoalition")}</span>
+                <span className="text-right">{t("colScore")}</span>
               </div>
 
               {/* Rows */}
               {filteredDeputies.length === 0 ? (
                 <div className="text-center py-16 text-muted-foreground">
                   <Users className="h-8 w-8 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm">Nessun deputato corrisponde ai filtri selezionati.</p>
+                  <p className="text-sm">{t("noResultsFiltered")}</p>
                 </div>
               ) : (
-                <div className="divide-y divide-border/30">
+                <div className="divide-y divide-border">
                   {filteredDeputies.map((deputy, index) => (
                     <RankingRow
                       key={deputy.id}
@@ -710,6 +708,7 @@ interface RankingRowProps {
 }
 
 function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
+  const t = useTranslations("RankingsPage");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const groupConfig =
@@ -732,24 +731,23 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
   const barColorClass =
     scoreLevel === "high" ? "bg-green-500" : scoreLevel === "medium" ? "bg-amber-500" : "bg-gray-400";
 
-  const rankIcon =
-    index === 0 ? <Trophy className="h-5 w-5 text-amber-500" /> :
-    index === 1 ? <Medal className="h-4.5 w-4.5 text-gray-400" /> :
-    index === 2 ? <Award className="h-4.5 w-4.5 text-amber-700" /> :
-    null;
-
   return (
     <>
       {/* Desktop row */}
       <div
-        className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 items-center px-4 py-2.5 rounded-lg hover:bg-muted/40 transition-colors cursor-pointer group"
+        className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 items-center px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer group"
         onClick={() => setIsModalOpen(true)}
       >
         {/* Rank */}
         <div className="flex justify-center">
-          {rankIcon || (
-            <span className="text-sm font-semibold text-muted-foreground/50">{index + 1}</span>
-          )}
+          <span
+            className={cn(
+              "[font-family:var(--font-display)] text-lg tabular-nums leading-none",
+              index < 3 ? "text-primary" : "text-muted-foreground/60"
+            )}
+          >
+            {index + 1}
+          </span>
         </div>
 
         {/* Deputy */}
@@ -768,7 +766,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
               {deputy.first_name[0]}{deputy.last_name[0]}
             </div>
           )}
-          <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+          <p className="[font-family:var(--font-display)] text-[15px] font-medium tracking-tight text-foreground truncate group-hover:text-primary transition-colors">
             {deputy.first_name} {deputy.last_name}
           </p>
         </div>
@@ -784,7 +782,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
 
         {/* Coalition */}
         <span className="text-xs text-muted-foreground capitalize">
-          {deputy.coalition === "maggioranza" ? "Maggioranza" : "Opposizione"}
+          {deputy.coalition === "maggioranza" ? t("coalitionMajority") : t("coalitionOpposition")}
         </span>
 
         {/* Score */}
@@ -795,7 +793,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
               style={{ width: `${displayScore * 100}%` }}
             />
           </div>
-          <span className="text-sm font-bold text-foreground min-w-[28px] text-right tabular-nums">
+          <span className="[font-family:var(--font-display)] text-base font-medium text-foreground min-w-[28px] text-right tabular-nums">
             {(displayScore * 100).toFixed(0)}
           </span>
         </div>
@@ -807,9 +805,14 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
         onClick={() => setIsModalOpen(true)}
       >
         <div className="shrink-0 w-8 flex justify-center">
-          {rankIcon || (
-            <span className="text-xs font-bold text-muted-foreground/50">{index + 1}</span>
-          )}
+          <span
+            className={cn(
+              "[font-family:var(--font-display)] text-base tabular-nums leading-none",
+              index < 3 ? "text-primary" : "text-muted-foreground/60"
+            )}
+          >
+            {index + 1}
+          </span>
         </div>
         {deputy.photo ? (
           <img
@@ -833,7 +836,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
             {groupLabel.length > 22 ? groupLabel.substring(0, 22) + "…" : groupLabel}
           </p>
         </div>
-        <span className="text-base font-bold text-foreground tabular-nums">
+        <span className="[font-family:var(--font-display)] text-lg font-medium text-foreground tabular-nums">
           {(displayScore * 100).toFixed(0)}
         </span>
       </div>

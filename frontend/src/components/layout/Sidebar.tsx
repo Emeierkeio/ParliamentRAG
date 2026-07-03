@@ -126,7 +126,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
               </div>
-              <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
+              <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight text-sidebar-foreground">
                 {config.app.name}
               </span>
             </div>
@@ -152,7 +152,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               />
 
               {/* Strumenti */}
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
               <NavButton
                 item={{ icon: Search, label: t('actsSearch'), isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
                 isCollapsed={false}
@@ -232,7 +232,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">
-                  <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
+                  <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight text-sidebar-foreground">
                     {config.app.name}
                   </span>
                 </div>
@@ -266,7 +266,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             {/* Strumenti */}
             {!isCollapsed && (
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
@@ -445,22 +445,25 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       variant="ghost"
       disabled={disabled}
       className={cn(
-        "w-full justify-start transition-all duration-200",
+        "w-full justify-start transition-all duration-200 rounded-none",
         // Primary: full-size nav item
         isPrimary && "gap-3 h-10 mb-1",
         // Default (strumenti): compact
         !isPrimary && "gap-2.5 h-8 mb-0.5 text-[13px]",
         // Default State
         "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
-        // Active State
-        item.isActive && !isPrimary && "bg-sidebar-accent/60 text-sidebar-foreground font-medium",
+        // Editorial active state: left rule instead of a filled pill
+        !isCollapsed && "border-l-2 border-transparent",
+        item.isActive && !isCollapsed && "border-sidebar-primary",
+        item.isActive && !isPrimary && "bg-sidebar-accent/30 text-sidebar-foreground font-medium",
         // Primary Variant - subtle highlight, no heavy box
         isPrimary && "text-sidebar-foreground font-semibold hover:bg-sidebar-accent/50",
-        isPrimary && item.isActive && "bg-sidebar-accent/40",
+        isPrimary && item.isActive && "bg-sidebar-accent/30",
         // Collapsed Logic
         isCollapsed && "justify-center px-0 mx-auto",
         isCollapsed && isPrimary && "w-10 h-10",
         isCollapsed && !isPrimary && "w-9 h-9",
+        isCollapsed && item.isActive && "bg-sidebar-accent/60",
         // Disabled State
         disabled && "opacity-40 pointer-events-none"
       )}

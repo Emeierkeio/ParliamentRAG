@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { TranscriptPanel } from "@/components/transcript/TranscriptPanel";
@@ -34,8 +33,16 @@ export default function TranscriptPage() {
   const [targetSpeechId, setTargetSpeechId] = useState<string | null>(null);
   const transcriptContainerRef = useRef<HTMLDivElement | null>(null);
 
+  const [searchOpenIds, setSearchOpenIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const handleCitationClick = useCallback((speechId: string) => {
     setTargetSpeechId(speechId);
+  }, []);
+
+  const handleSearchResults = useCallback((speechIds: string[], query: string) => {
+    setSearchOpenIds(speechIds);
+    setSearchQuery(query);
   }, []);
 
   useEffect(() => {
@@ -73,22 +80,28 @@ export default function TranscriptPage() {
   return (
     <div className="flex flex-1 flex-col h-screen overflow-hidden">
       {/* Page header */}
-      <div className="shrink-0 border-b px-6 py-4">
-        <div className="flex items-center gap-3">
-          <h1 className="text-lg font-semibold">{data.debate_title}</h1>
-          <Badge variant="outline" className="text-xs">{data.session_date}</Badge>
-          <Badge variant="secondary" className="text-xs capitalize">{data.chamber}</Badge>
-        </div>
+      <div className="shrink-0 border-b px-6 py-3">
         {/* Breadcrumb */}
-        <nav className="mt-1 text-xs text-muted-foreground" aria-label="Breadcrumb">
+        <nav
+          className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5"
+          aria-label="Breadcrumb"
+        >
           <Link href="/timeline" className="hover:text-primary transition-colors">
             {t("breadcrumbTimeline")}
           </Link>
-          <span className="mx-1">&gt;</span>
+          <span className="mx-1.5">/</span>
           <span>{t("breadcrumbSession", { date: data.session_date })}</span>
-          <span className="mx-1">&gt;</span>
-          <span className="text-foreground">{data.debate_title}</span>
         </nav>
+        <div className="flex items-start gap-3">
+          <h1 className="[font-family:var(--font-display)] text-lg sm:text-xl font-medium tracking-tight leading-snug line-clamp-2 flex-1">
+            {data.debate_title}
+          </h1>
+          <div className="flex items-baseline gap-1.5 shrink-0 pt-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+            <span className="tabular-nums">{data.session_date}</span>
+            <span className="text-muted-foreground/40">·</span>
+            <span>{data.chamber}</span>
+          </div>
+        </div>
       </div>
 
       {/* Two-panel layout: left = transcript, right = chatbot (handles desktop/mobile internally) */}
@@ -96,12 +109,17 @@ export default function TranscriptPage() {
         {/* Left: transcript panel with search and mini-map */}
         <div className="flex flex-1 lg:w-3/5">
           <div ref={transcriptContainerRef} className="flex-1 overflow-y-auto scrollbar-thin">
-            <TranscriptSearch containerRef={transcriptContainerRef} />
+            <TranscriptSearch
+              debateId={debateId}
+              onSearchResults={handleSearchResults}
+            />
             <TranscriptPanel
               debateId={debateId}
               speeches={data.speeches}
               targetSpeechId={targetSpeechId}
               onTargetConsumed={() => setTargetSpeechId(null)}
+              searchOpenIds={searchOpenIds}
+              searchQuery={searchQuery}
             />
           </div>
           <TranscriptMiniMap speeches={data.speeches} />

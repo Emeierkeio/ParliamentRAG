@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown, Link2, Shield } from "lucide-react";
+import { ChevronRight, Link2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,31 @@ interface SpeechRowProps {
   speech: SpeechData;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
+  highlightQuery?: string;
+}
+
+/** Highlight search query matches in text */
+function HighlightedText({ text, query }: { text: string; query?: string }) {
+  if (!query || query.length < 2) {
+    return <>{text}</>;
+  }
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+  const qLower = query.toLowerCase();
+  return (
+    <>
+      {parts.map((part, i) => {
+        const isMatch = part.length === query.length && part.toLowerCase() === qLower;
+        return isMatch ? (
+          <mark key={i} className="bg-yellow-300 dark:bg-yellow-800/60 rounded-sm px-0.5">
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        );
+      })}
+    </>
+  );
 }
 
 type TextState =
@@ -30,10 +55,22 @@ type TextState =
   | { status: "loaded"; text: string }
   | { status: "error" };
 
-export function SpeechRow({ debateId, speech, isOpen, onOpenChange }: SpeechRowProps) {
+export function SpeechRow({ debateId, speech, isOpen, onOpenChange, highlightQuery }: SpeechRowProps) {
   const t = useTranslations("Transcript");
   const [textState, setTextState] = useState<TextState>({ status: "idle" });
   const [copyTooltip, setCopyTooltip] = useState(false);
+
+  // Auto-fetch text when opened programmatically (search, deep-link, citation)
+  const prevIsOpen = useRef(isOpen);
+  useEffect(() => {
+    if (isOpen && !prevIsOpen.current && textState.status === "idle") {
+      setTextState({ status: "loading" });
+      getSpeechText(debateId, speech.speech_id)
+        .then((data) => setTextState({ status: "loaded", text: data.text }))
+        .catch(() => setTextState({ status: "error" }));
+    }
+    prevIsOpen.current = isOpen;
+  }, [isOpen, textState.status, debateId, speech.speech_id]);
 
   const handleOpenChange = async (open: boolean) => {
     onOpenChange(open);
@@ -65,43 +102,58 @@ export function SpeechRow({ debateId, speech, isOpen, onOpenChange }: SpeechRowP
     setTimeout(() => setCopyTooltip(false), 2000);
   };
 
+  const fullName = `${speech.first_name} ${speech.last_name}`;
+
   return (
     <Collapsible
       id={`speech-${speech.speech_id}`}
       open={isOpen}
       onOpenChange={handleOpenChange}
     >
-      <CollapsibleTrigger className="flex w-full items-center gap-2 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors text-left group">
-        <ChevronDown
+      <CollapsibleTrigger
+        className={cn(
+          "flex w-full items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-colors group",
+          "hover:bg-muted/50",
+          isOpen && "bg-muted/30"
+        )}
+      >
+        <ChevronRight
           className={cn(
-            "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
-            isOpen && "rotate-180"
+            "h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform duration-200",
+            isOpen && "rotate-90"
           )}
         />
-        <span className="text-sm font-semibold truncate">
-          {speech.first_name} {speech.last_name}
-        </span>
-        {speech.party && (
-          <Badge variant="outline" className="text-[10px] shrink-0">{speech.party}</Badge>
-        )}
-        {speech.speaking_role && (
-          <Badge variant="secondary" className="text-[10px] shrink-0">{speech.speaking_role}</Badge>
-        )}
-        {speech.is_government_member && (
-          <Badge variant="default" className="text-[10px] gap-0.5 shrink-0">
-            <Shield className="h-3 w-3" />
-            {t("governmentBadge")}
-          </Badge>
-        )}
-        <span className="ml-auto text-xs text-muted-foreground shrink-0">
-          {speech.phase_title}
-        </span>
+
+        {/* Speaker info — two-line layout */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold truncate">{fullName}</span>
+            {speech.is_government_member && (
+              <Shield className="h-3 w-3 shrink-0 text-primary" />
+            )}
+          </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            {speech.party && (
+              <span className="text-[11px] text-muted-foreground truncate max-w-[200px]">
+                {speech.party}
+              </span>
+            )}
+            {speech.party && speech.speaking_role && (
+              <span className="text-muted-foreground/40 text-[11px]">·</span>
+            )}
+            {speech.speaking_role && (
+              <span className="text-[11px] text-muted-foreground font-medium">
+                {speech.speaking_role}
+              </span>
+            )}
+          </div>
+        </div>
       </CollapsibleTrigger>
 
       <CollapsibleContent>
-        <div className="pl-9 pr-3 pb-3 relative">
+        <div className="ml-8 mr-3 mb-1 pl-3 border-l-2 border-border/40 relative">
           {textState.status === "loading" && (
-            <div className="space-y-2 py-2">
+            <div className="space-y-2 py-3">
               <Skeleton className="h-3.5 w-full" />
               <Skeleton className="h-3.5 w-full" />
               <Skeleton className="h-3.5 w-3/4" />
@@ -110,24 +162,23 @@ export function SpeechRow({ debateId, speech, isOpen, onOpenChange }: SpeechRowP
           {textState.status === "error" && (
             <button
               onClick={handleRetry}
-              className="text-sm text-destructive py-2 hover:underline"
+              className="text-sm text-destructive py-3 hover:underline"
             >
               {t("speechError")}
             </button>
           )}
           {textState.status === "loaded" && (
             <>
-              <p className="text-[15px] leading-[1.6] whitespace-pre-wrap">
-                {textState.text}
+              <p className="[font-family:var(--font-display)] text-[15px] leading-relaxed whitespace-pre-wrap py-2 text-foreground/90">
+                <HighlightedText text={textState.text} query={highlightQuery} />
               </p>
-              {/* Copy link button */}
-              <div className="absolute top-0 right-0">
+              <div className="absolute top-1 right-0">
                 <Tooltip open={copyTooltip}>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7"
+                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={handleCopyLink}
                       aria-label={t("copyLink")}
                     >

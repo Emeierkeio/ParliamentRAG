@@ -10,6 +10,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 import { getSpeakerSummary } from "@/lib/timeline-api";
 import type { SpeakerInfo, SpeakerSummaryResponse } from "@/types/timeline";
 
@@ -43,95 +44,115 @@ export function SpeakerRow({ speaker, debateId }: SpeakerRowProps) {
     }
   };
 
-  const visiblePhases = speaker.phases.slice(0, 2);
-  const extraPhases = speaker.phases.length - 2;
+  const fullName = `${speaker.first_name} ${speaker.last_name}`;
 
   return (
     <Collapsible open={open} onOpenChange={handleOpenChange}>
       <CollapsibleTrigger
-        className="flex w-full items-center gap-2 py-2 border-b border-muted last:border-0 text-left"
+        className={cn(
+          "group flex w-full items-start gap-3 py-3 px-3 -mx-3 rounded-lg text-left transition-colors",
+          "hover:bg-muted/50",
+          open && "bg-muted/30"
+        )}
         aria-expanded={open}
         aria-controls={contentId}
       >
-        {/* Speaker name link */}
-        <a
-          href={`/ranking?speaker=${speaker.id}`}
-          className="text-sm font-semibold underline-offset-4 hover:underline shrink-0"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {speaker.first_name} {speaker.last_name}
-        </a>
+        {/* Left: speaker info */}
+        <div className="flex-1 min-w-0 space-y-1">
+          {/* Row 1: Name + party */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-semibold leading-tight">
+              {fullName}
+            </span>
+            {speaker.party && (
+              <Badge
+                variant="outline"
+                className="text-[10px] px-1.5 py-0 font-medium shrink-0"
+              >
+                {speaker.party}
+              </Badge>
+            )}
+            {speaker.is_government_member && (
+              <Badge
+                variant="default"
+                className="text-[10px] px-1.5 py-0 gap-0.5 shrink-0"
+              >
+                <Shield className="h-2.5 w-2.5" />
+              </Badge>
+            )}
+          </div>
 
-        {/* Party badge */}
-        {speaker.party && (
-          <Badge variant="outline">{speaker.party}</Badge>
-        )}
-
-        {/* Role badge */}
-        {speaker.speaking_role && (
-          <Badge variant="secondary" className="text-xs">
-            {speaker.speaking_role}
-          </Badge>
-        )}
-
-        {/* Government member shield */}
-        {speaker.is_government_member && (
-          <Badge variant="default" className="text-xs gap-1">
-            <Shield className="h-3.5 w-3.5" />
-          </Badge>
-        )}
-
-        {/* Speech count */}
-        <span className="text-xs text-muted-foreground">
-          {t("speechCount", { count: speaker.speech_count })}
-        </span>
-
-        {/* Phase tags */}
-        <div className="flex flex-wrap gap-1">
-          {visiblePhases.map((phase, i) => (
-            <Badge key={i} variant="outline" className="text-xs">
-              {phase}
-            </Badge>
-          ))}
-          {extraPhases > 0 && (
-            <Badge variant="outline" className="text-xs">
-              +{extraPhases} more
-            </Badge>
-          )}
+          {/* Row 2: Role + speech count */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            {speaker.speaking_role && (
+              <>
+                <span className="font-medium">{speaker.speaking_role}</span>
+                <span className="text-muted-foreground/40">·</span>
+              </>
+            )}
+            <span>{t("speechCount", { count: speaker.speech_count })}</span>
+          </div>
         </div>
 
-        {/* Chevron right-aligned */}
+        {/* Right: chevron */}
         <ChevronDown
-          className={`ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+          className={cn(
+            "h-4 w-4 shrink-0 text-muted-foreground/40 transition-transform duration-200 mt-1",
+            open && "rotate-180"
+          )}
         />
       </CollapsibleTrigger>
 
       <CollapsibleContent
         id={contentId}
         role="region"
-        aria-label={`${speaker.first_name} ${speaker.last_name} summary`}
+        aria-label={`${fullName} speeches`}
       >
-        <div className="bg-muted/20 rounded p-3 mt-1 ml-4 text-sm">
+        <div className="ml-3 pl-3 border-l-2 border-border/40 pb-2 space-y-3">
+          {/* Loading */}
           {summary.status === "loading" && (
-            <span className="text-muted-foreground">
-              <Loader2 className="h-3 w-3 animate-spin inline mr-2" />
-              {t("speakerSummaryLoading")}
-            </span>
+            <div className="flex items-center gap-2 py-3 text-sm text-muted-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <span>{t("speakerSummaryLoading")}</span>
+            </div>
           )}
-          {summary.status === "loaded" && summary.data.summary && (
-            <p>{summary.data.summary}</p>
-          )}
-          {summary.status === "loaded" && !summary.data.summary && (
-            <p className="text-xs text-muted-foreground">
-              {t("speakerSummaryUnavailable")}
-            </p>
-          )}
+
+          {/* Error */}
           {summary.status === "error" && (
-            <p className="text-xs text-muted-foreground">
+            <p className="py-2 text-xs text-muted-foreground">
               {t("speakerSummaryUnavailable")}
             </p>
+          )}
+
+          {/* Loaded: show full speech texts */}
+          {summary.status === "loaded" && (
+            <>
+              {summary.data.speeches.length > 0 ? (
+                summary.data.speeches.map((speech, idx) => (
+                  <div key={speech.id} className="space-y-1">
+                    {/* Phase label + speech number */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                        {t("speechLabel", { n: idx + 1 })}
+                      </span>
+                      {speech.phase_title && (
+                        <span className="text-[10px] text-muted-foreground/50 truncate max-w-[300px]">
+                          {speech.phase_title}
+                        </span>
+                      )}
+                    </div>
+                    {/* Full speech text */}
+                    <p className="[font-family:var(--font-display)] text-[15px] leading-relaxed text-foreground/85 whitespace-pre-line">
+                      {speech.text}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="py-2 text-xs text-muted-foreground">
+                  {t("speakerSummaryUnavailable")}
+                </p>
+              )}
+            </>
           )}
         </div>
       </CollapsibleContent>

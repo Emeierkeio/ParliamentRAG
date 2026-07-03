@@ -3,15 +3,14 @@
 import { useState, useId } from "react";
 import React from "react";
 import { useTranslations } from "next-intl";
-import { ChevronDown } from "lucide-react";
+import { ChevronRight, MessageSquare, Vote, Mic } from "lucide-react";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 import { DebateDetail } from "./DebateDetail";
 import type { TimelineSession } from "@/types/timeline";
 
@@ -26,7 +25,7 @@ function highlightText(text: string, term: string): React.ReactNode {
   const parts = text.split(new RegExp(`(${escaped})`, "gi"));
   return parts.map((part, i) =>
     part.toLowerCase() === term.toLowerCase() ? (
-      <mark key={i} className="bg-primary/10 text-primary">
+      <mark key={i} className="bg-primary/10 text-primary rounded-sm px-0.5">
         {part}
       </mark>
     ) : (
@@ -44,36 +43,51 @@ interface DebateRowProps {
 function DebateRow({ debate, sessionDate, searchTerm }: DebateRowProps) {
   const [open, setOpen] = useState(false);
   const contentId = useId();
+  const hasSpeeches = debate.speech_count > 0;
+
+  // Non-expandable row for procedural items with 0 speeches
+  if (!hasSpeeches) {
+    return (
+      <div className="flex w-full items-center gap-2.5 py-2.5 px-3 -mx-3">
+        <span className="h-3.5 w-3.5 shrink-0" /> {/* spacer to align with expandable rows */}
+        <span className="text-sm flex-1 leading-snug text-muted-foreground/60">
+          {debate.title.trim()
+            ? (searchTerm ? highlightText(debate.title, searchTerm) : debate.title)
+            : "(untitled)"}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger
-        className="flex w-full items-center gap-2 py-2 text-left"
+        className="group flex w-full items-center gap-2.5 py-2.5 px-3 -mx-3 rounded-lg text-left hover:bg-muted/50 transition-colors"
         aria-expanded={open}
         aria-controls={contentId}
       >
-        <span className="text-sm font-semibold flex-1">
-          {searchTerm
-            ? highlightText(debate.title, searchTerm)
-            : debate.title}
-        </span>
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-            open ? "rotate-180" : ""
-          }`}
+        <ChevronRight
+          className={cn(
+            "h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform duration-200",
+            open && "rotate-90"
+          )}
         />
+        <span className="text-sm flex-1 leading-snug">
+          {searchTerm ? highlightText(debate.title, searchTerm) : debate.title}
+        </span>
+        <span className="text-[11px] text-muted-foreground/50 tabular-nums shrink-0">
+          {debate.speech_count}
+        </span>
       </CollapsibleTrigger>
-      <CollapsibleContent
-        id={contentId}
-        role="region"
-        aria-label={debate.title}
-      >
+      <CollapsibleContent id={contentId} role="region" aria-label={debate.title}>
         {open && (
-          <DebateDetail
-            debateId={debate.id}
-            debateTitle={debate.title}
-            sessionDate={sessionDate}
-          />
+          <div className="ml-6 pl-3 border-l border-border/50">
+            <DebateDetail
+              debateId={debate.id}
+              debateTitle={debate.title}
+              sessionDate={sessionDate}
+            />
+          </div>
         )}
       </CollapsibleContent>
     </Collapsible>
@@ -91,92 +105,107 @@ export function SessionCard({ session, searchTerm }: SessionCardProps) {
     day: "numeric",
   });
 
-  const previewDebates = session.debates.slice(0, 3);
-  const extraDebates = session.debates.length - 3;
+  const titledDebates = session.debates.filter(d => d.title.trim());
+  const previewDebates = titledDebates.slice(0, 3);
+  const extraDebates = titledDebates.length - 3;
 
   return (
-    <Card className="shadow-sm">
+    <div className="border-b border-border">
       <Collapsible open={open} onOpenChange={setOpen}>
-        {/* Collapsed header / trigger */}
+        {/* Header */}
         <CollapsibleTrigger
-          className="w-full text-left"
+          className="w-full text-left group"
           aria-expanded={open}
           aria-controls={contentId}
         >
-          <CardHeader className="px-6 py-4">
-            <div className="flex items-center gap-3">
-              <span className="text-base font-semibold">
-                {formattedDate} — #{session.number}
+          <div className="py-4">
+            <div className="flex items-baseline gap-2.5">
+              <span className="[font-family:var(--font-display)] text-lg text-primary/40 tabular-nums leading-none">
+                {session.number}
               </span>
-              <Badge variant="secondary" className="capitalize">
+              <h3 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight text-foreground leading-none">
+                {formattedDate}
+              </h3>
+              <span
+                className={cn(
+                  "text-[10px] uppercase tracking-[0.2em] font-medium",
+                  session.chamber === "senato" ? "text-chart-5" : "text-primary"
+                )}
+              >
                 {session.chamber}
-              </Badge>
-              <ChevronDown
-                className={`ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
-                  open ? "rotate-180" : ""
-                }`}
+              </span>
+              <ChevronRight
+                className={cn(
+                  "ml-auto h-4 w-4 shrink-0 self-center text-muted-foreground/40 transition-transform duration-200",
+                  open && "rotate-90"
+                )}
               />
             </div>
-          </CardHeader>
+          </div>
         </CollapsibleTrigger>
 
-        {/* Always-visible card content */}
-        <CardContent className="px-6 pb-4">
+        {/* Body — always visible */}
+        <div className="pb-4">
           {/* AI recap */}
           {session.recap ? (
-            <p className="text-sm">
-              {searchTerm
-                ? highlightText(session.recap, searchTerm)
-                : session.recap}
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              {searchTerm ? highlightText(session.recap, searchTerm) : session.recap}
             </p>
           ) : (
-            <em className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground/60 italic">
               {t("summaryNotYetGenerated")}
-            </em>
+            </p>
           )}
 
-          {/* Stats row */}
-          <div className="flex flex-wrap gap-4 mt-3 text-xs font-semibold text-muted-foreground">
-            <span>{t("debateCount", { count: session.debate_count })}</span>
-            <span>{t("voteCount", { count: session.vote_count })}</span>
-            <span>{t("speechCount", { count: session.speech_count })}</span>
+          {/* Stats row — icon pills */}
+          <div className="flex flex-wrap gap-3 mt-3">
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <MessageSquare className="h-3 w-3" />
+              {session.debate_count}
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Vote className="h-3 w-3" />
+              {session.vote_count}
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Mic className="h-3 w-3" />
+              {session.speech_count}
+            </span>
           </div>
 
-          {/* Debate title list preview (collapsed view) */}
-          {!open && (
-            <div className="mt-3 space-y-0.5">
+          {/* Debate preview (collapsed) */}
+          {!open && previewDebates.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-border/40 space-y-1">
               {previewDebates.map((d) => (
-                <p key={d.id} className="text-xs text-muted-foreground truncate">
+                <p key={d.id} className="text-xs text-muted-foreground/70 truncate leading-relaxed">
                   {searchTerm ? highlightText(d.title, searchTerm) : d.title}
                 </p>
               ))}
               {extraDebates > 0 && (
-                <p className="text-xs text-muted-foreground">
-                  + {extraDebates} more
+                <p className="text-xs text-primary/60 font-medium">
+                  + {extraDebates} {t("debateCount", { count: extraDebates }).split(" ").pop()}
                 </p>
               )}
             </div>
           )}
-        </CardContent>
+        </div>
 
         {/* Expanded debate list */}
-        <CollapsibleContent
-          id={contentId}
-          role="region"
-          aria-label={`${formattedDate} debates`}
-        >
-          <div className="pl-4 border-l-2 border-muted mx-6 mt-0 mb-4 space-y-1">
-            {session.debates.map((debate) => (
-              <DebateRow
-                key={debate.id}
-                debate={debate}
-                sessionDate={session.date}
-                searchTerm={searchTerm}
-              />
-            ))}
+        <CollapsibleContent id={contentId} role="region" aria-label={`${formattedDate} debates`}>
+          <div className="pb-4 pt-1 border-t border-border/40">
+            <div className="space-y-0.5">
+              {session.debates.map((debate) => (
+                <DebateRow
+                  key={debate.id}
+                  debate={debate}
+                  sessionDate={session.date}
+                  searchTerm={searchTerm}
+                />
+              ))}
+            </div>
           </div>
         </CollapsibleContent>
       </Collapsible>
-    </Card>
+    </div>
   );
 }

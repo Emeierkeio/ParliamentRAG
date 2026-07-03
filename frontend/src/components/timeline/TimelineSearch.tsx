@@ -2,10 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Search, X } from "lucide-react";
+import { Search, X, Calendar } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { TimelineFilters } from "@/types/timeline";
 
 interface TimelineSearchProps {
@@ -62,24 +63,30 @@ export function TimelineSearch({
     onClear();
   }, [onClear]);
 
+  const presets: { key: Preset; days: number; label: string }[] = [
+    { key: "week", days: 7, label: t("lastWeek") },
+    { key: "month", days: 30, label: t("lastMonth") },
+    { key: "3months", days: 90, label: t("last3Months") },
+  ];
+
   return (
-    <div className="space-y-3" role="search" aria-label={t("pageTitle")}>
-      {/* Keyword search row */}
+    <div className="space-y-2.5" role="search" aria-label={t("pageTitle")}>
+      {/* Search input */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60 pointer-events-none" />
         <Input
           type="text"
           placeholder={t("searchPlaceholder")}
           value={filters.search}
           onChange={(e) => onFiltersChange({ search: e.target.value })}
-          className="pl-9 pr-9"
+          className="pl-9 pr-9 h-10 bg-muted/40 border-transparent focus-visible:bg-background focus-visible:border-border transition-colors"
           aria-label={t("searchPlaceholder")}
         />
         {filters.search && (
           <button
             type="button"
             onClick={() => onFiltersChange({ search: "" })}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Clear search"
           >
             <X className="h-4 w-4" />
@@ -87,68 +94,59 @@ export function TimelineSearch({
         )}
       </div>
 
-      {/* Preset buttons row */}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant={activePreset === "week" ? "secondary" : "outline"}
-          size="sm"
-          onClick={() => applyPreset("week", 7)}
-          aria-pressed={activePreset === "week"}
-        >
-          {t("lastWeek")}
-        </Button>
-        <Button
-          variant={activePreset === "month" ? "secondary" : "outline"}
-          size="sm"
-          onClick={() => applyPreset("month", 30)}
-          aria-pressed={activePreset === "month"}
-        >
-          {t("lastMonth")}
-        </Button>
-        <Button
-          variant={activePreset === "3months" ? "secondary" : "outline"}
-          size="sm"
-          onClick={() => applyPreset("3months", 90)}
-          aria-pressed={activePreset === "3months"}
-        >
-          {t("last3Months")}
-        </Button>
-        {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={handleClear}>
-            {t("clearFilters")}
-          </Button>
-        )}
-      </div>
+      {/* Presets + date range in a single row */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        {/* Preset pills */}
+        {presets.map(({ key, days, label }) => (
+          <button
+            key={key}
+            onClick={() => applyPreset(key, days)}
+            aria-pressed={activePreset === key}
+            className={cn(
+              "h-7 px-3 rounded-full text-xs font-medium transition-all duration-150",
+              activePreset === key
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            {label}
+          </button>
+        ))}
 
-      {/* Date range row */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">
-            {t("dateFrom")}
-          </label>
+        {/* Separator */}
+        <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
+
+        {/* Compact date range */}
+        <div className="flex items-center gap-1.5">
+          <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 hidden sm:block" />
           <input
             type="date"
             value={filters.fromDate}
             onChange={(e) => handleFromDate(e.target.value)}
-            className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:border-ring"
+            className="h-7 rounded-full border-0 bg-muted/60 px-3 text-xs text-muted-foreground hover:bg-muted focus:bg-background focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateFrom")}
           />
-        </div>
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">
-            {t("dateTo")}
-          </label>
+          <span className="text-[10px] text-muted-foreground/50">—</span>
           <input
             type="date"
             value={filters.toDate}
             onChange={(e) => handleToDate(e.target.value)}
-            className="h-9 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:border-ring"
+            className="h-7 rounded-full border-0 bg-muted/60 px-3 text-xs text-muted-foreground hover:bg-muted focus:bg-background focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateTo")}
           />
         </div>
+
+        {/* Clear all */}
+        {hasActiveFilters && (
+          <button
+            onClick={handleClear}
+            className="h-7 px-3 rounded-full text-xs font-medium text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors ml-auto"
+          >
+            {t("clearFilters")}
+          </button>
+        )}
       </div>
 
-      {/* Screen reader announcement region */}
       <div aria-live="polite" className="sr-only" />
     </div>
   );

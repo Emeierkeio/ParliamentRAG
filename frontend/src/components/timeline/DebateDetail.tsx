@@ -3,7 +3,7 @@
 import { useState, useEffect, useId } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ export function DebateDetail({
 
   if (detail.status === "loading" || detail.status === "idle") {
     return (
-      <div className="bg-muted/30 rounded-md p-4 mt-2 space-y-2">
+      <div className="py-4 mt-2 space-y-2">
         <Skeleton className="h-3 w-full" />
         <Skeleton className="h-3 w-full" />
         <Skeleton className="h-3 w-1/2" />
@@ -61,7 +61,7 @@ export function DebateDetail({
 
   if (detail.status === "error") {
     return (
-      <div className="bg-muted/30 rounded-md p-4 mt-2">
+      <div className="py-4 mt-2">
         <p className="text-sm text-muted-foreground">
           Unable to load debate details
         </p>
@@ -72,7 +72,7 @@ export function DebateDetail({
   const { data } = detail;
 
   return (
-    <div className="bg-muted/30 rounded-md p-4 mt-2">
+    <div className="py-4 mt-2">
       {/* 1. Debate recap */}
       {data.recap ? (
         <p className="text-sm">{data.recap}</p>
@@ -151,7 +151,7 @@ export function DebateDetail({
       {/* 5. Speakers section */}
       {data.speakers.length > 0 && (
         <div className="mt-4">
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+          <h4 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
             {t("speakersHeading")}
           </h4>
           <div>
@@ -174,27 +174,6 @@ export function DebateDetail({
         </Button>
       </div>
 
-      {/* 6. Ask about this button */}
-      <div className="mt-4">
-        <Button
-          variant="default"
-          size="sm"
-          onClick={() =>
-            router.push(
-              "/home?q=" +
-                encodeURIComponent(
-                  t("askQuestionTemplate", {
-                    debateTitle: data.title,
-                    date: sessionDate,
-                  }),
-                ),
-            )
-          }
-        >
-          {t("askAboutThis")}
-          <ArrowRight className="ml-1 h-3.5 w-3.5" />
-        </Button>
-      </div>
     </div>
   );
 }
