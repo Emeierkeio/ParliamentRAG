@@ -47,6 +47,7 @@ class ChatRequest(BaseModel):
     task_id: Optional[str] = Field(default=None)  # Client-provided task ID for reconnection
     locale: str = Field(default="it")  # Language for citation translation
     chamber: str = Field(default="both", description="Filter: 'camera' | 'senato' | 'both'")
+    legislature: int = Field(default=19, description="Legislature number: 18 | 19")
 
 
 
@@ -135,7 +136,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
 
         def _do_retrieval():
-            return services["retrieval"].retrieve_sync(query=request.query, top_k=100, chambers=chambers)
+            return services["retrieval"].retrieve_sync(query=request.query, top_k=100, chambers=chambers, legislature=request.legislature)
 
         retrieval_result = await asyncio.get_running_loop().run_in_executor(None, _do_retrieval)
         retrieval_time = time.time() - retrieval_start
@@ -615,6 +616,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                 query=request.query,
                 top_k=100,
                 chambers=_chambers,
+                legislature=request.legislature,
             )
 
         retrieval_result = await asyncio.get_running_loop().run_in_executor(

@@ -77,6 +77,7 @@ class QueryRequest(BaseModel):
     date_end: Optional[str] = Field(default=None, description="End date filter (YYYY-MM-DD)")
     stream: bool = Field(default=True, description="Enable SSE streaming")
     chamber: str = Field(default="both", description="Filter: 'camera' | 'senato' | 'both'")
+    legislature: int = Field(default=19, description="Legislature number: 18 | 19")
 
 
 class ExpertInfo(BaseModel):
@@ -132,12 +133,14 @@ async def process_query_streaming(
 
         run_log.start_stage("retrieval")
         _chambers = ["camera", "senato"] if request.chamber == "both" else [request.chamber]
+        _legislature = request.legislature
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
             date_start=request.date_start,
             date_end=request.date_end,
             chambers=_chambers,
+            legislature=_legislature,
         )
 
         evidence_list = retrieval_result["evidence"]
