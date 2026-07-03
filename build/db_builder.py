@@ -547,9 +547,10 @@ class DatabaseBuilder:
     # CSV loaders
     # ------------------------------------------------------------------
 
-    def _build_gov_uri_map(self, data_path: str) -> dict[str, str]:
+    def _build_gov_uri_map(self, data_path: str, legislature: int = 19) -> dict[str, str]:
         """Build map of Deputy CSV URI -> GovernmentMember ID for gov deputies."""
-        dep_df = pd.read_csv(os.path.join(data_path, "deputati_xix.csv"))
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        dep_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}.csv"))
         gov_uri_map: dict[str, str] = {}
         for full_name in GOVERNMENT_GROUPS:
             parts = full_name.split()
@@ -565,9 +566,10 @@ class DatabaseBuilder:
                 gov_uri_map[dep_uri] = gov_id
         return gov_uri_map
 
-    def load_deputies(self, data_path: str) -> None:
-        """Load Deputy nodes from deputati_xix.csv using UNWIND batch writes."""
-        dep_df = pd.read_csv(os.path.join(data_path, "deputati_xix.csv"))
+    def load_deputies(self, data_path: str, legislature: int = 19) -> None:
+        """Load Deputy nodes from deputati_{roman}.csv using UNWIND batch writes."""
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        dep_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}.csv"))
 
         # Build set of (last_name, first_name) for GovernmentMember exclusion
         gov_names: set[tuple[str, str]] = set()
@@ -625,10 +627,11 @@ class DatabaseBuilder:
                 d.term_of_office_start = row.termOfOfficeStart
         """, batch=batch)
 
-    def load_groups(self, data_path: str) -> None:
+    def load_groups(self, data_path: str, legislature: int = 19) -> None:
         """Load ParliamentaryGroup nodes and MEMBER_OF_GROUP relationships."""
-        grp_df = pd.read_csv(os.path.join(data_path, "deputati_xix_gruppi.csv"))
-        gov_uri_map = self._build_gov_uri_map(data_path)
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        grp_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}_gruppi.csv"))
+        gov_uri_map = self._build_gov_uri_map(data_path, legislature=legislature)
 
         with_end: list[dict] = []
         without_end: list[dict] = []
@@ -697,10 +700,11 @@ class DatabaseBuilder:
             """, name=row["name"], acronym=row["acronym"], nodeId=row["nodeId"],
                 startDate=row["startDate"])
 
-    def load_committees(self, data_path: str) -> None:
+    def load_committees(self, data_path: str, legislature: int = 19) -> None:
         """Load Committee nodes and MEMBER_OF_COMMITTEE relationships."""
-        com_df = pd.read_csv(os.path.join(data_path, "deputati_xix_commissioni.csv"))
-        gov_uri_map = self._build_gov_uri_map(data_path)
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        com_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}_commissioni.csv"))
+        gov_uri_map = self._build_gov_uri_map(data_path, legislature=legislature)
 
         with_end: list[dict] = []
         without_end: list[dict] = []
@@ -764,13 +768,14 @@ class DatabaseBuilder:
     # Senate CSV loaders
     # ------------------------------------------------------------------
 
-    def load_senators(self, data_path: str) -> None:
-        """Load Senator Deputy nodes from senatori_xix.csv.
+    def load_senators(self, data_path: str, legislature: int = 19) -> None:
+        """Load Senator Deputy nodes from senatori_{roman}.csv.
 
         Senators are modelled as Deputy nodes with chamber='senato'.
         The id field is the senatore URI (e.g. http://dati.senato.it/senatore/17542).
         """
-        csv_path = os.path.join(data_path, "senatori_xix.csv")
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        csv_path = os.path.join(data_path, f"senatori_{roman}.csv")
         if not os.path.exists(csv_path):
             print(f"  Skipping senators — {csv_path} not found")
             return
@@ -808,9 +813,10 @@ class DatabaseBuilder:
                 d.chamber = row.chamber
         """, batch=batch)
 
-    def load_senator_groups(self, data_path: str) -> None:
+    def load_senator_groups(self, data_path: str, legislature: int = 19) -> None:
         """Load ParliamentaryGroup nodes and MEMBER_OF_GROUP rels for senators."""
-        csv_path = os.path.join(data_path, "senatori_xix_gruppi.csv")
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        csv_path = os.path.join(data_path, f"senatori_{roman}_gruppi.csv")
         if not os.path.exists(csv_path):
             print(f"  Skipping senator groups — {csv_path} not found")
             return
@@ -849,9 +855,10 @@ class DatabaseBuilder:
                 self._batch_write(neo_session, self._upsert_group_membership_no_end, without_end)
         print("Senator ParliamentaryGroup nodes and MEMBER_OF_GROUP relationships loaded.")
 
-    def load_senator_committees(self, data_path: str) -> None:
+    def load_senator_committees(self, data_path: str, legislature: int = 19) -> None:
         """Load Committee nodes and MEMBER_OF_COMMITTEE rels for senators."""
-        csv_path = os.path.join(data_path, "senatori_xix_commissioni.csv")
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        csv_path = os.path.join(data_path, f"senatori_{roman}_commissioni.csv")
         if not os.path.exists(csv_path):
             print(f"  Skipping senator committees — {csv_path} not found")
             return
@@ -913,9 +920,10 @@ class DatabaseBuilder:
             self._batch_write(neo_session, self._upsert_government_members, rows)
         print(f"Created {len(rows)} GovernmentMember nodes.")
 
-    def load_government_members_from_path(self, data_path: str) -> None:
+    def load_government_members_from_path(self, data_path: str, legislature: int = 19) -> None:
         """Create GovernmentMember nodes with CSV enrichment (photo, gender, etc.)."""
-        dep_df = pd.read_csv(os.path.join(data_path, "deputati_xix.csv"))
+        roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
+        dep_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}.csv"))
         dep_lookup: dict[str, dict] = {}
         for _, r in dep_df.iterrows():
             key = f"{str(r.get('cognome', '')).strip().upper()} {str(r.get('nome', '')).strip().upper()}"
