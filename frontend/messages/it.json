@@ -19,6 +19,7 @@
   },
   "MessageBubble": {
     "you": "Tu",
+    "originalLabel": "Originale",
     "chamberTitle": "Camera dei Deputati — XIX Legislatura",
     "expertsTitle": "Fonti selezionate per autorità",
     "expertsSectionDesc": "Questi parlamentari sono stati identificati come le voci più competenti sul tema e usati come fonti prioritarie per costruire la risposta.",
@@ -286,6 +287,11 @@
     "senato": "Senato",
     "both": "Entrambi",
     "label": "Ramo del Parlamento"
+  },
+  "LegislatureSelector": {
+    "18": "XVIII",
+    "19": "XIX",
+    "label": "Legislatura"
   },
   "Settings": {
     "title": "Configurazione Sistema",

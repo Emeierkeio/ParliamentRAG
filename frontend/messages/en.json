@@ -19,6 +19,7 @@
   },
   "MessageBubble": {
     "you": "You",
+    "originalLabel": "Original",
     "chamberTitle": "Camera dei Deputati — XIX Legislature",
     "expertsTitle": "Sources selected by authority",
     "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response.",
@@ -286,6 +287,11 @@
     "senato": "Senate",
     "both": "Both",
     "label": "Parliamentary Chamber"
+  },
+  "LegislatureSelector": {
+    "18": "XVIII",
+    "19": "XIX",
+    "label": "Legislature"
   },
   "Settings": {
     "title": "System Configuration",
