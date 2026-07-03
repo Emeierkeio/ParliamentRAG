@@ -30,6 +30,7 @@ async def get_timeline(
     before: Optional[str] = None,
     limit: int = 20,
     chamber: str = "both",
+    legislature: int = 19,
     search: Optional[str] = None,
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
@@ -43,6 +44,7 @@ async def get_timeline(
         before=before,
         limit=limit,
         chamber=chamber,
+        legislature=legislature,
         search=search,
         from_date=from_date,
         to_date=to_date,
@@ -64,7 +66,7 @@ async def get_debate_detail(
     )
 
 
-@router.get("/speakers/{debate_id}/{speaker_id}")
+@router.get("/speakers/{debate_id}/{speaker_id:path}")
 async def get_speaker_summary(
     debate_id: str,
     speaker_id: str,

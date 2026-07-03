@@ -24,6 +24,7 @@ from app.models.timeline import (
     SessionCard,
     SpeakerInfo,
     SpeakerSummaryResponse,
+    SpeechText,
     TimelineResponse,
     VoteInfo,
 )
@@ -36,6 +37,7 @@ async def get_sessions(
     before: str | None = None,
     limit: int = 20,
     chamber: str = "both",
+    legislature: int = 19,
     search: str | None = None,
     from_date: str | None = None,
     to_date: str | None = None,
@@ -74,20 +76,31 @@ async def get_sessions(
        OR EXISTS {
          MATCH (sd)-[:HAS_PHASE]->(p2)-[:CONTAINS_SPEECH]->(sp2)-[:SPOKEN_BY]->(spk2)
          WHERE (spk2:Deputy OR spk2:GovernmentMember)
-           AND toLower(spk2.firstName + ' ' + spk2.lastName) CONTAINS toLower($search)
+           AND toLower(spk2.first_name + ' ' + spk2.last_name) CONTAINS toLower($search)
        }
   }"""
+
+    # When searching, compute a relevance flag per debate so matching debates sort first
+    relevance_expr = "0 AS relevance"
+    order_debates = "d.id"
+    if search:
+        relevance_expr = (
+            "CASE WHEN toLower(d.title) CONTAINS toLower($search) THEN 1 ELSE 0 END AS relevance"
+        )
+        order_debates = "relevance DESC, d.id"
 
     cypher = f"""
 MATCH (s:Session)
 WHERE ($chambers IS NULL OR s.chamber IN $chambers)
+  AND s.legislature = $legislature
   AND ($before IS NULL OR s.date < date($before))
   AND ($from_date IS NULL OR s.date >= date($from_date))
   AND ($to_date IS NULL OR s.date <= date($to_date)){search_clause}
 WITH s ORDER BY s.date DESC LIMIT $fetch_limit
 OPTIONAL MATCH (s)-[:HAS_DEBATE]->(d)
 OPTIONAL MATCH (d)-[:HAS_PHASE]->(p)-[:CONTAINS_SPEECH]->(sp)
-WITH s, d, count(DISTINCT sp) AS dSpeechCount
+WITH s, d, count(DISTINCT sp) AS dSpeechCount, {relevance_expr}
+ORDER BY s.date DESC, {order_debates}
 WITH s, collect(DISTINCT {{id: d.id, title: d.title, speechCount: dSpeechCount}}) AS debates
 OPTIONAL MATCH (s)-[:HAS_VOTE]->(v)
 WITH s, debates, count(DISTINCT v) AS voteCount
@@ -105,6 +118,7 @@ ORDER BY date DESC
 
     params: dict = {
         "chambers": chambers,
+        "legislature": legislature,
         "before": before,
         "from_date": from_date,
         "to_date": to_date,
@@ -209,27 +223,35 @@ async def get_debate_detail(
     ]
 
     # --- Speakers (chronological, Deputy or GovernmentMember via coalesce) ---
-    # Use two OPTIONAL MATCH clauses with coalesce to handle both node labels.
-    # is_gov determined by checking which match succeeded (d IS NULL → government member).
+    # Party comes from MEMBER_OF_GROUP relationship (not a direct property).
+    # speakingRole lives on Speech, not on the speaker node — collect first distinct role.
     speaker_rows = neo4j.query(
         """
-        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
+        MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
+        WITH d, sess
+        MATCH (d)-[:HAS_PHASE]->(p:Phase)
               -[:CONTAINS_SPEECH]->(sp:Speech)
         OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
         OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gov:GovernmentMember)
         WITH coalesce(dep, gov) AS spk,
              (dep IS NULL AND gov IS NOT NULL) AS isGov,
-             p, sp
+             p, sp, sess
         WHERE spk IS NOT NULL
-        WITH spk, isGov,
+        WITH spk, isGov, sess,
              collect(DISTINCT p.title) AS participatedPhases,
              count(DISTINCT sp) AS speechCount,
-             min(sp.id) AS firstSpeechId
+             min(sp.id) AS firstSpeechId,
+             head(collect(DISTINCT sp.speakingRole)) AS speakingRole
+        OPTIONAL MATCH (spk)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+          WHERE mg.start_date <= sess.date
+            AND (mg.end_date IS NULL OR mg.end_date >= sess.date)
+        WITH spk, isGov, participatedPhases, speechCount, firstSpeechId, speakingRole,
+             head(collect(g.name)) AS party
         RETURN spk.id AS id,
-               spk.firstName AS first_name,
-               spk.lastName AS last_name,
-               spk.group AS party,
-               spk.speakingRole AS speaking_role,
+               spk.first_name AS first_name,
+               spk.last_name AS last_name,
+               party,
+               speakingRole AS speaking_role,
                isGov AS is_government_member,
                speechCount,
                participatedPhases AS phases,
@@ -298,6 +320,7 @@ async def get_debate_detail(
             type=r["type"],
         )
         for r in act_rows
+        if r["id"]  # skip null entries from OPTIONAL MATCH
     ]
 
     return DebateDetailResponse(
@@ -340,10 +363,38 @@ async def get_speaker_summary(
     )
 
     if not row:
-        return SpeakerSummaryResponse(summary=None, speech_count=0, phases=[])
+        summary_text = None
+        s_count = 0
+        s_phases: list[str] = []
+    else:
+        summary_text = row["summary"]
+        s_count = row["speech_count"] or 0
+        s_phases = [p for p in (row["phases"] or []) if p]
+
+    # --- Fetch full speech texts for this speaker in this debate ---
+    speech_rows = neo4j.query(
+        """
+        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
+              -[:CONTAINS_SPEECH]->(sp:Speech)-[:SPOKEN_BY]->(spk)
+        WHERE spk.id = $speaker_id AND (spk:Deputy OR spk:GovernmentMember)
+        RETURN sp.id AS id, sp.text AS text, p.title AS phase_title
+        ORDER BY sp.id
+        """,
+        {"debate_id": debate_id, "speaker_id": speaker_id},
+    )
+    speeches = [
+        SpeechText(
+            id=r["id"],
+            text=r["text"] or "",
+            phase_title=r["phase_title"],
+        )
+        for r in speech_rows
+        if r.get("text")
+    ]
 
     return SpeakerSummaryResponse(
-        summary=row["summary"],
-        speech_count=row["speech_count"] or 0,
-        phases=[p for p in (row["phases"] or []) if p],
+        summary=summary_text,
+        speech_count=s_count,
+        phases=s_phases,
+        speeches=speeches,
     )
