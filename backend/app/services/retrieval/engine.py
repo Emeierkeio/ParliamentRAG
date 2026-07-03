@@ -88,6 +88,7 @@ class RetrievalEngine:
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
         chambers: Optional[List[str]] = None,
+        legislature: int = 19,
     ) -> Dict[str, Any]:
         """
         Perform triple-channel retrieval (synchronous version).
@@ -152,6 +153,7 @@ class RetrievalEngine:
                 query_embedding=query_embedding,
                 top_k=top_k * 2,  # Over-retrieve for merging
                 chambers=chambers,
+                legislature=legislature,
             )
             return result, (time.time() - t0) * 1000
 
@@ -161,6 +163,7 @@ class RetrievalEngine:
                 query_text=retrieval_query,
                 top_k=top_k,
                 chambers=chambers,
+                legislature=legislature,
             )
             return result, (time.time() - t0) * 1000
 
@@ -173,6 +176,7 @@ class RetrievalEngine:
                 date_end=date_end,
                 entity_filter=entity_filter if entity_filter else None,
                 chambers=chambers,
+                legislature=legislature,
             )
             return result, (time.time() - t0) * 1000
 
@@ -182,6 +186,7 @@ class RetrievalEngine:
                 entity_filter=entity_filter,
                 top_k=50,
                 chambers=chambers,
+                legislature=legislature,
             )
             return result, (time.time() - t0) * 1000
 
@@ -268,6 +273,7 @@ class RetrievalEngine:
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
         chambers: Optional[List[str]] = None,
+        legislature: int = 19,
     ) -> Dict[str, Any]:
         """
         Perform dual-channel retrieval (async).
@@ -295,6 +301,7 @@ class RetrievalEngine:
                 date_start=date_start,
                 date_end=date_end,
                 chambers=chambers,
+                legislature=legislature,
             ),
         )
 

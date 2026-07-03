@@ -41,6 +41,7 @@ class DenseChannel:
         top_k: Optional[int] = None,
         similarity_threshold: Optional[float] = None,
         chambers: list[str] | None = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Perform vector similarity search.
@@ -72,6 +73,7 @@ class DenseChannel:
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         WHERE s.chamber IN $chambers
+          AND s.legislature = $legislature
         // Partito corrente del deputato: solo se la membership è ancora attiva oggi.
         // Se il deputato ha cambiato gruppo (mg.end_date < date()), il chunk viene
         // attribuito al nuovo gruppo o scartato — mai al gruppo precedente.
@@ -108,6 +110,7 @@ class DenseChannel:
                 "query_embedding": query_embedding,
                 "threshold": threshold,
                 "chambers": chambers,
+                "legislature": legislature,
             }
         )
 

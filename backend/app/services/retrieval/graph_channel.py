@@ -107,6 +107,7 @@ class GraphChannel:
         date_end: Optional[str] = None,
         entity_filter: Optional[Dict[str, list]] = None,
         chambers: list[str] | None = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Retrieve evidence through graph traversal.
@@ -159,6 +160,7 @@ class GraphChannel:
             date_start=date_start,
             date_end=date_end,
             chambers=chambers,
+            legislature=legislature,
         )
 
         # Step 4: Optional entity-filtered retrieval (lawRefs / personRefs)
@@ -169,6 +171,7 @@ class GraphChannel:
                 date_start=date_start,
                 date_end=date_end,
                 chambers=chambers,
+                legislature=legislature,
             )
             if entity_chunks:
                 # Merge: add entity-filtered chunks not already present
@@ -273,6 +276,7 @@ class GraphChannel:
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
         chambers: list[str] | None = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Retrieve chunks that match entity references (lawRefs / personRefs).
@@ -313,7 +317,8 @@ class GraphChannel:
         # Chamber and date filters
         chambers = chambers or ["camera", "senato"]
         params["chambers"] = chambers
-        session_conditions = ["s.chamber IN $chambers"]
+        params["legislature"] = legislature
+        session_conditions = ["s.chamber IN $chambers", "s.legislature = $legislature"]
         if date_start:
             session_conditions.append("s.date >= $date_start")
             params["date_start"] = date_start
@@ -356,6 +361,7 @@ class GraphChannel:
         date_start: Optional[str] = None,
         date_end: Optional[str] = None,
         chambers: list[str] | None = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Get chunks from speeches by act signatories, filtered by chunk-level
@@ -368,8 +374,8 @@ class GraphChannel:
 
         # Build chamber and date filters
         chambers = chambers or ["camera", "senato"]
-        params = {"act_uris": act_uris, "chambers": chambers}
-        session_conditions = ["s.chamber IN $chambers"]
+        params = {"act_uris": act_uris, "chambers": chambers, "legislature": legislature}
+        session_conditions = ["s.chamber IN $chambers", "s.legislature = $legislature"]
 
         if date_start:
             session_conditions.append("s.date >= $date_start")

@@ -28,6 +28,7 @@ class NERChannel:
         entity_filter: Dict[str, list],
         top_k: int = 50,
         chambers: Optional[List[str]] = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """Retrieve chunks matching entity patterns.
 
@@ -43,7 +44,7 @@ class NERChannel:
 
         # Build WHERE clause for lawRefs and personRefs
         where_parts: list[str] = []
-        params: dict = {"chambers": chambers, "top_k": top_k}
+        params: dict = {"chambers": chambers, "top_k": top_k, "legislature": legislature}
 
         if entity_filter.get("laws"):
             law_conditions = []
@@ -76,6 +77,7 @@ class NERChannel:
         WHERE ({entity_clause})
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         WHERE s.chamber IN $chambers
+          AND s.legislature = $legislature
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)

@@ -45,6 +45,7 @@ class SparseChannel:
         query_text: str,
         top_k: Optional[int] = None,
         chambers: list[str] | None = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Perform BM25 full-text search via Neo4j Lucene index.
@@ -75,6 +76,7 @@ class SparseChannel:
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
         WHERE s.chamber IN $chambers
+          AND s.legislature = $legislature
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
@@ -105,6 +107,7 @@ class SparseChannel:
                     "query_text": escaped_query,
                     "top_k": top_k,
                     "chambers": chambers,
+                    "legislature": legislature,
                 }
             )
             logger.info(f"Sparse channel: retrieved {len(results)} chunks")
