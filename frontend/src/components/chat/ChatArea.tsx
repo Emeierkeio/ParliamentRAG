@@ -13,7 +13,7 @@ import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFu
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
 import { Landmark, ArrowRight, History } from "lucide-react";
-import { TOPICS } from "@/lib/constants";
+import { TOPICS_BY_LEGISLATURE } from "@/lib/constants";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -194,7 +194,7 @@ function WelcomeScreen({ onSendMessage, chamber, legislature }: WelcomeScreenPro
           {t("trendingTopics")}
         </p>
         <div className="flex flex-wrap justify-center gap-2">
-          {TOPICS.map((topic) => (
+          {TOPICS_BY_LEGISLATURE[legislature].map((topic) => (
             <TopicPill key={topic} topicKey={topic} onClick={onSendMessage} />
           ))}
         </div>

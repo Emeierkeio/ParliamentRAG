@@ -284,7 +284,17 @@
       "flussi migratori": "Flussi Migratori",
       "scuola e istruzione": "Scuola E Istruzione",
       "cambiamento climatico": "Cambiamento Climatico",
-      "infrastrutture": "Infrastrutture"
+      "infrastrutture": "Infrastrutture",
+      "reddito di cittadinanza": "Reddito di cittadinanza",
+      "quota 100": "Quota 100",
+      "emergenza Covid-19": "Emergenza Covid-19",
+      "green pass e obbligo vaccinale": "Green pass e obbligo vaccinale",
+      "decreti sicurezza": "Decreti sicurezza",
+      "taglio dei parlamentari": "Taglio dei parlamentari",
+      "riforma della prescrizione": "Riforma della prescrizione",
+      "TAV Torino-Lione": "TAV Torino-Lione",
+      "ex Ilva": "Ex Ilva",
+      "superbonus 110%": "Superbonus 110%"
     },
     "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?"
   },

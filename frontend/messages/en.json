@@ -284,7 +284,17 @@
       "flussi migratori": "Migration Flows",
       "scuola e istruzione": "Education",
       "cambiamento climatico": "Climate Change",
-      "infrastrutture": "Infrastructure"
+      "infrastrutture": "Infrastructure",
+      "reddito di cittadinanza": "Citizens' Income",
+      "quota 100": "Quota 100 Pensions",
+      "emergenza Covid-19": "Covid-19 Emergency",
+      "green pass e obbligo vaccinale": "Green Pass and Vaccine Mandate",
+      "decreti sicurezza": "Security Decrees",
+      "taglio dei parlamentari": "Cut in Number of MPs",
+      "riforma della prescrizione": "Statute of Limitations Reform",
+      "TAV Torino-Lione": "Turin-Lyon High-Speed Rail",
+      "ex Ilva": "Ex Ilva Steel Plant",
+      "superbonus 110%": "110% Superbonus"
     },
     "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?"
   },
