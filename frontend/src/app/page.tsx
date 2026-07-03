@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
@@ -31,25 +31,87 @@ const ROTATING_TOPICS = [
   "sulle infrastrutture",
 ];
 
-function useRotatingText(items: string[], intervalMs = 3200) {
+function useSyncedRotation(length: number, intervalMs = 7000) {
   const [index, setIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const advance = useCallback(() => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setIndex((i) => (i + 1) % items.length);
-      setIsAnimating(false);
-    }, 350);
-  }, [items.length]);
-
   useEffect(() => {
-    const id = setInterval(advance, intervalMs);
+    const id = setInterval(() => {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % length);
+        setIsAnimating(false);
+      }, 380);
+    }, intervalMs);
     return () => clearInterval(id);
-  }, [advance, intervalMs]);
+  }, [length, intervalMs]);
 
-  return { text: items[index], isAnimating };
+  return { index, isAnimating };
 }
+
+/* ── Real quotes from the DB — verbatim, aligned 1:1 with ROTATING_TOPICS ── */
+const QUOTES = [
+  {
+    text: "«[…] il PNRR rappresentava un'occasione straordinaria, forse irripetibile, per colmare finalmente il divario che ci separa dagli altri Paesi europei.»",
+    who: "Valentina Grippo",
+    meta: "· Azione · Camera, seduta n. 608 · 4 febbraio 2026",
+  },
+  {
+    text: "«[…] il sistema non riesce ad intercettarli, […] le liste di attesa scoraggiano, […] la consapevolezza della patologia è ancora insufficiente, […] lo stigma sociale frena ogni richiesta di aiuto.»",
+    who: "Ilenia Malavasi",
+    meta: "· Partito Democratico · Camera, seduta n. 668 · 3 giugno 2026",
+  },
+  {
+    text: "«[…] la discussione sull'atomo in Italia non è onesta, non è competente ed è soprattutto surreale. Si parla, deliberatamente, di tecnologie che addirittura non saranno in commercio se non tra più di 30, 40 anni.»",
+    who: "Marco Grimaldi",
+    meta: "· Alleanza Verdi e Sinistra · Camera, seduta n. 665 · 26 maggio 2026",
+  },
+  {
+    text: "«Sono tantissimi i lavoratori il cui reddito è al di sotto della soglia di povertà, pur essendo regolarmente occupati. […] Noi pensiamo che tutto questo sia veramente inaccettabile per uno Stato civile.»",
+    who: "Davide Aiello",
+    meta: "· MoVimento 5 Stelle · Camera, seduta n. 15 · 29 novembre 2022",
+  },
+  {
+    text: "«[…] oggi non è in gioco solo la sovranità del popolo ucraino, ma gli stessi fondamenti della nostra civiltà: diritto, sapere, umanesimo del lavoro, solidarietà, socialità, radici giudaico-cristiane, democrazia.»",
+    who: "Fabio Rampelli",
+    meta: "· Fratelli d'Italia · Camera, seduta n. 673 · 11 giugno 2026",
+  },
+  {
+    text: "«[…] la pressione fiscale ai massimi da 11 anni. La colpa non è di Bruxelles, la colpa è del vostro Governo di centrodestra. Dovete assumervene le responsabilità.»",
+    who: "Piero De Luca",
+    meta: "· Partito Democratico · Camera, seduta n. 683 · 30 giugno 2026",
+  },
+  {
+    text: "«[…] oggi il vostro Governo ha presentato una proposta di riforma dell'autonomia differenziata che va esattamente nella direzione opposta a quella da lei auspicata.»",
+    who: "Maria Elena Boschi",
+    meta: "· Italia Viva · Camera, seduta n. 683 · 30 giugno 2026",
+  },
+  {
+    text: "«L'aspettavano gli avvocati, ma l'aspettavano soprattutto […] 500.000 cittadini che tutti gli anni vengono prosciolti, assolti in Italia, con fascicoli archiviati.»",
+    who: "Gianluca Vinci",
+    meta: "· Fratelli d'Italia · Camera, seduta n. 667 · 28 maggio 2026",
+  },
+  {
+    text: "«[…] una strategia molto più ampia che il Governo sta portando avanti fin dall'inizio della legislatura per restituire allo Stato la capacità di governare i flussi migratori e di far rispettare le proprie regole.»",
+    who: "Simona Bordonali",
+    meta: "· Lega · Camera, seduta n. 676 · 16 giugno 2026",
+  },
+  {
+    text: "«È una scelta che rischia di snaturare la funzione di un investimento finanziato con risorse pubbliche e pensato per garantire il diritto allo studio.»",
+    who: "Roberto Giachetti",
+    meta: "· Italia Viva · Camera, seduta n. 684 · 1 luglio 2026",
+  },
+  {
+    text: "«Nel solo 2025 si stima che il cambiamento climatico abbia portato a 24.400 decessi in Europa a causa del caldo estremo. Di questi, ben 4.597 sono attribuiti all'Italia.»",
+    who: "Patrizia Prestipino",
+    meta: "· Partito Democratico · Camera, seduta n. 675 · 15 giugno 2026",
+  },
+  {
+    text: "«Poi avete proposto il Ponte sullo Stretto, e lì veramente c'è stata la prima pietra tombale di un qualcosa che non si farà.»",
+    who: "Agostino Santillo",
+    meta: "· MoVimento 5 Stelle · Camera, seduta n. 681 · 23 giugno 2026",
+  },
+];
 
 /* ── Data freshness line (masthead) — latest session in the DB ── */
 function useEditionDate() {
@@ -80,6 +142,10 @@ function useEditionDate() {
 /* ── Page ──────────────────────────────────────────────────────── */
 export default function LandingPage() {
   const edition = useEditionDate();
+  const { index: topicIndex, isAnimating } = useSyncedRotation(
+    ROTATING_TOPICS.length
+  );
+  const quote = QUOTES[topicIndex];
 
   return (
     <div
@@ -124,7 +190,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
           {/* Headline column */}
           <div className="lg:col-span-7">
-            <RotatingHero />
+            <RotatingHero topic={ROTATING_TOPICS[topicIndex]} isAnimating={isAnimating} />
 
             <p className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-xl">
               Una domanda, tutte le posizioni.{" "}
@@ -162,22 +228,16 @@ export default function LandingPage() {
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               Dal resoconto stenografico
             </p>
-            <figure className="[font-family:var(--font-display)]">
+            <figure
+              className="[font-family:var(--font-display)] min-h-[230px] sm:min-h-[210px] transition-opacity duration-300 ease-out motion-reduce:transition-none"
+              style={{ opacity: isAnimating ? 0 : 1 }}
+            >
               <blockquote className="text-xl leading-[1.55] text-foreground/90">
-                «Sono tantissimi i lavoratori il cui reddito è al di sotto
-                della soglia di povertà, pur essendo regolarmente occupati.
-                […] Noi pensiamo che tutto questo sia veramente inaccettabile
-                per uno Stato civile.»
+                {quote.text}
               </blockquote>
               <figcaption className="mt-4 text-sm not-italic font-sans">
-                <span className="font-medium text-foreground">
-                  Davide Aiello
-                </span>
-                <span className="text-muted-foreground">
-                  {" "}
-                  · MoVimento 5 Stelle · Camera, seduta n. 15 · 29 novembre
-                  2022
-                </span>
+                <span className="font-medium text-foreground">{quote.who}</span>
+                <span className="text-muted-foreground"> {quote.meta}</span>
               </figcaption>
             </figure>
             <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
@@ -222,7 +282,7 @@ export default function LandingPage() {
             <IndexRow
               numeral="04"
               title="Autorevolezza"
-              question="Chi è il più competente sul PNRR?"
+              question="Chi è il parlamentare più autorevole sulla riforma fiscale?"
               description="La classifica dei parlamentari per competenza su un tema: interventi, atti, commissioni, professione, istruzione, ruolo."
               href="/rankings"
             />
@@ -466,8 +526,13 @@ function Guarantee({
 }
 
 /* ── Rotating headline — typeset fill-in on a ruled line ───────── */
-function RotatingHero() {
-  const { text, isAnimating } = useRotatingText(ROTATING_TOPICS, 3200);
+function RotatingHero({
+  topic,
+  isAnimating,
+}: {
+  topic: string;
+  isAnimating: boolean;
+}) {
 
   return (
     <h1 className="[font-family:var(--font-display)] text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
@@ -479,7 +544,7 @@ function RotatingHero() {
         className="inline italic text-primary transition-opacity duration-300 ease-out motion-reduce:transition-none [box-decoration-break:clone] border-b-[3px] border-primary/25"
         style={{ opacity: isAnimating ? 0 : 1 }}
       >
-        {text}?
+        {topic}?
       </span>
     </h1>
   );
