@@ -50,6 +50,9 @@ export async function getSpeakerSummary(
   speakerId: string,
 ): Promise<SpeakerSummaryResponse> {
   const res = await fetch(
+    // speakerId is a full URI (http://dati.camera.it/... or dati.senato.it/...):
+    // without encoding, the Next proxy 308-redirects and collapses "//" → "/",
+    // mangling the id before it reaches the backend.
     `/api/timeline/speakers/${encodeURIComponent(debateId)}/${encodeURIComponent(speakerId)}`,
     { headers: buildHeaders() },
   );
