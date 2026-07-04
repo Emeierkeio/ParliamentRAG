@@ -236,7 +236,12 @@ class RetrievalEngine:
         fill_count = 0
         if missing_parties:
             logger.info(f"Coverage fill: searching for {len(missing_parties)} missing parties: {missing_parties}")
-            fill_results = self._coverage_fill(query_embedding, missing_parties)
+            fill_results = self._coverage_fill(
+                query_embedding,
+                missing_parties,
+                chambers=chambers or ["camera", "senato"],
+                legislature=legislature,
+            )
             if fill_results:
                 fill_count = len(fill_results)
                 merged_results.extend(fill_results)
@@ -452,7 +457,9 @@ class RetrievalEngine:
         self,
         query_embedding: List[float],
         missing_parties: set,
-        chunks_per_party: int = 5
+        chunks_per_party: int = 5,
+        chambers: Optional[List[str]] = None,
+        legislature: int = 19,
     ) -> List[Dict[str, Any]]:
         """
         Fill coverage gaps by doing targeted vector search for missing parties.
@@ -479,6 +486,8 @@ class RetrievalEngine:
                 WHERE score >= 0.15
                 MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
                 MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
+                WHERE coalesce(s.legislature, 19) = $legislature
+                  AND coalesce(s.chamber, 'camera') IN $chambers
                 // Solo membri ATTUALI del partito: la membership deve essere
                 // attiva sia alla data del discorso che oggi.
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
@@ -518,7 +527,9 @@ class RetrievalEngine:
                     "query_embedding": query_embedding,
                     "party_name": normalized_party,
                     "party_prefix": party_prefix,
-                    "limit": chunks_per_party
+                    "limit": chunks_per_party,
+                    "legislature": legislature,
+                    "chambers": chambers or ["camera", "senato"],
                 })
 
                 if results:

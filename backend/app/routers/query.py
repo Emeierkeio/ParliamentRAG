@@ -848,6 +848,7 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                 date_start=request.date_start,
                 date_end=request.date_end,
                 chambers=_chambers,
+                legislature=request.legislature,
             )
 
             evidence_list = retrieval_result["evidence"]
