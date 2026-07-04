@@ -47,8 +47,11 @@ class SenateStenograficoParser:
     No Neo4j dependency. All output is plain Python dicts.
     """
 
-    def __init__(self, config: Optional[BuildConfig] = None) -> None:
+    def __init__(
+        self, config: Optional[BuildConfig] = None, legislature: int = 19
+    ) -> None:
         self.config = config or BuildConfig()
+        self.legislature = legislature
         # Reuse Camera parser's preprocess_text — same text cleaning rules apply
         self._camera_parser = StenograficoParser(config)
 
@@ -127,12 +130,16 @@ class SenateStenograficoParser:
             debate_slug = _slug(section_name) if section_name else f"sec{debate_order}"
             debate_id = f"{session_id}_{debate_slug}"
 
+            # Heading text may be whitespace-only or live in child elements
+            # (e.g. <docTitle>) — join all descendant text, else fall back
+            # to the section name attribute.
             heading_elem = section.find(f"{{{AKN_NS}}}heading")
-            title = (
-                heading_elem.text.strip()
-                if heading_elem is not None and heading_elem.text
-                else section_name
+            heading_text = (
+                "".join(heading_elem.itertext()).strip()
+                if heading_elem is not None
+                else ""
             )
+            title = heading_text or section_name
 
             debates.append({
                 "id": debate_id,
@@ -206,11 +213,11 @@ class SenateStenograficoParser:
         except (ValueError, AttributeError):
             year, month, day = 0, 0, 0
 
-        session_id = f"sen_leg19_sed{number}"
+        session_id = f"sen_leg{self.legislature}_sed{number}"
 
         return {
             "id": session_id,
-            "legislature": 19,
+            "legislature": self.legislature,
             "number": number,
             "year": year,
             "month": month,
@@ -301,9 +308,15 @@ class SenateStenograficoParser:
         by_attr = speech_elem.get("by", "")
         person_id = by_attr.lstrip("#")  # "p32600"
 
-        # Numeric senator ID: "p32600" -> "32600"
+        # Numeric senator ID: "p32600" -> "32600".
+        # deputatoId must match the Deputy node id loaded from senatori_xix.csv,
+        # which is the full dati.senato.it URI.
         numeric_id = person_id.lstrip("p") if person_id.startswith("p") else person_id
-        deputato_id = f"sen_{numeric_id}" if numeric_id else None
+        deputato_id = (
+            f"http://dati.senato.it/senatore/{numeric_id}"
+            if numeric_id and numeric_id.isdigit()
+            else None
+        )
 
         # Speaker display name from person_lookup or from <an:from> element
         cognome_nome = person_lookup.get(person_id, "")
