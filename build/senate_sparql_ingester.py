@@ -53,6 +53,19 @@ BATCH_SIZE = 500       # Neo4j write batch size
 # ---------------------------------------------------------------------------
 
 _SEN_VOTAZIONE_URI_RE = re.compile(r"/votazione/(\d+)-(\d+)-(\d+)$")
+_SENATORE_URI_RE = re.compile(r"/senatore/(\d+)$")
+
+
+def _senator_id_from_uri(uri: str) -> Optional[str]:
+    """Extract senator id string from a senatore URI.
+
+    Example:
+        "http://dati.senato.it/senatore/17542" -> "17542"
+
+    Returns None if URI does not match.
+    """
+    m = _SENATORE_URI_RE.search(uri)
+    return m.group(1) if m else None
 
 # ---------------------------------------------------------------------------
 # Pure helpers (URI parsing, outcome derivation)
@@ -334,6 +347,21 @@ class SenateVoteIngester:
             )
             return {record["n"] for record in result if record["n"] is not None}
 
+    def _get_senate_sittings_with_individual_votes(self, legislature: int) -> set[int]:
+        """Return session numbers where senators already have VOTED rels for this legislature.
+
+        Resume is per-sitting: if ANY senator in a sitting already has a VOTED rel linking
+        through an IndividualVote to a Vote in this Senate session, that sitting is skipped.
+        """
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (d:Deputy {chamber:'senato'})-[:VOTED]->(:IndividualVote)"
+                "-[:ON_VOTE]->(:Vote)<-[:HAS_VOTE]-(s:Session {legislature:$legislature, chamber:'senato'}) "
+                "RETURN DISTINCT s.number AS num",
+                legislature=legislature,
+            )
+            return {record["num"] for record in result if record["num"] is not None}
+
     # ------------------------------------------------------------------
     # SPARQL query methods
     # ------------------------------------------------------------------
@@ -377,8 +405,132 @@ WHERE {{
 """
         return _senato_sparql_get(query)
 
+    def _get_senate_senator_links(self, votazione_uri: str) -> dict:
+        """Return per-senator vote links for a Votazione URI.
+
+        Executes three separate SPARQL queries (one per outcome) to retrieve
+        the senator URIs that voted favorevole, contrario, or astenuto.
+
+        Returns:
+            {"favor": [uri, ...], "against": [uri, ...], "abstain": [uri, ...]}
+        """
+        results: dict = {}
+        for prop, outcome in [
+            ("favorevole", "favor"),
+            ("contrario", "against"),
+            ("astenuto", "abstain"),
+        ]:
+            query = f"""
+PREFIX osr: <http://dati.senato.it/osr/>
+SELECT ?senatore WHERE {{
+  <{votazione_uri}> osr:{prop} ?senatore .
+}}
+"""
+            bindings = _senato_sparql_get(query)
+            results[outcome] = [
+                b["senatore"]["value"] for b in bindings if "senatore" in b
+            ]
+        return results
+
     # ------------------------------------------------------------------
     # Neo4j write helpers
+    # ------------------------------------------------------------------
+
+    def ingest_individual_votes(
+        self,
+        legislature: int = 19,
+        limit_sessions: int = 0,
+    ) -> dict:
+        """Ingest per-senator IndividualVote nodes for all Senate sittings not yet processed.
+
+        Resume is per-sitting: sittings where senators already have VOTED rels are skipped.
+        IndividualVote ids carry the 'iv_senato_' prefix to prevent collision with Camera ids.
+
+        Args:
+            legislature: Legislature number (18 or 19).
+            limit_sessions: If > 0, process at most this many sittings (for testing).
+
+        Returns:
+            Stats dict: {"sittings_processed": N, "ivotes_written": N}
+        """
+        logger.info(
+            "Starting Senate individual vote ingest — legislature %d", legislature
+        )
+
+        sittings = self._get_senate_sittings_in_db(legislature)
+        done = self._get_senate_sittings_with_individual_votes(legislature)
+        todo = sorted(sittings - done)
+        logger.info(
+            "%d sittings to process for individual votes (%d already done)",
+            len(todo), len(done),
+        )
+
+        if limit_sessions:
+            todo = todo[:limit_sessions]
+            logger.info("Limited to %d sessions (test mode)", limit_sessions)
+
+        total = 0
+        sittings_processed = 0
+
+        for num in todo:
+            seduta_uri = self._get_senate_seduta_uri(legislature, num)
+            if not seduta_uri:
+                logger.warning(
+                    "  leg%d sed%d: no sedutaassemblea URI found — skipping",
+                    legislature, num,
+                )
+                continue
+
+            votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+            if not votazioni:
+                logger.debug(
+                    "  leg%d sed%d: no votazioni returned — skipping",
+                    legislature, num,
+                )
+                sittings_processed += 1
+                continue
+
+            batch: list[dict] = []
+            for vz in votazioni:
+                vz_uri = vz.get("votazione", {}).get("value", "")
+                leg, seduta, vote = parse_senate_votazione_uri(vz_uri)
+                if vote is None:
+                    logger.debug("    Skipping unparseable votazione URI: %s", vz_uri)
+                    continue
+
+                vote_id = f"senato_leg{legislature}_sed{num:03d}_v{vote:03d}"
+                links = self._get_senate_senator_links(vz_uri)
+
+                for outcome, uris in links.items():
+                    for sen_uri in uris:
+                        sen_id = _senator_id_from_uri(sen_uri)
+                        if not sen_id:
+                            continue
+                        batch.append({
+                            "id": f"iv_senato_{sen_id}_{num}_{vote}",
+                            "senatorUri": sen_uri,
+                            "voteId": vote_id,
+                            "outcome": outcome,
+                        })
+
+            if batch:
+                written = self._write_senate_individual_votes(batch)
+                total += written
+                logger.info(
+                    "  leg%d sed%d: %d individual votes written",
+                    legislature, num, written,
+                )
+
+            sittings_processed += 1
+
+        logger.info(
+            "Senate individual vote ingest complete — %d sittings, %d individual votes",
+            sittings_processed, total,
+        )
+        return {"sittings_processed": sittings_processed, "ivotes_written": total}
+
+    # ------------------------------------------------------------------
+    # Neo4j read helpers
     # ------------------------------------------------------------------
 
     def _write_senate_votes(self, batch: list[dict], legislature: int) -> int:
@@ -419,6 +571,42 @@ RETURN count(*) AS written
 
         return total_written
 
+    def _write_senate_individual_votes(self, batch: list[dict]) -> int:
+        """Write a batch of IndividualVote nodes and their VOTED/ON_VOTE rels to Neo4j.
+
+        Matches Deputy by full senatore URI (Deputy.id == senatore URI, chamber='senato').
+        Matches Vote by stable senate id (no number collision possible due to senato_ prefix).
+        MERGEs IndividualVote node and both relationships idempotently.
+
+        Args:
+            batch: List of dicts with keys: id, senatorUri, voteId, outcome.
+
+        Returns:
+            Number of IndividualVote nodes merged in this batch.
+        """
+        if not batch:
+            return 0
+
+        cypher = """
+UNWIND $batch AS row
+MATCH (d:Deputy {id: row.senatorUri})
+MATCH (v:Vote {id: row.voteId})
+MERGE (iv:IndividualVote {id: row.id})
+SET iv.outcome = row.outcome
+MERGE (d)-[:VOTED]->(iv)
+MERGE (iv)-[:ON_VOTE]->(v)
+RETURN count(*) AS written
+"""
+        total_written = 0
+        for i in range(0, len(batch), BATCH_SIZE):
+            chunk = batch[i : i + BATCH_SIZE]
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher, batch=chunk)
+                record = result.single()
+                total_written += record["written"] if record else 0
+
+        return total_written
+
 
 # ---------------------------------------------------------------------------
 # CLI entry point
@@ -451,15 +639,16 @@ if __name__ == "__main__":
         default=0,
         help="Limit to N sittings for testing (0 = all)",
     )
-    parser.add_argument(
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
         "--aggregate-only",
         action="store_true",
-        help="Ingest only aggregate Vote nodes (this plan)",
+        help="Ingest only aggregate Vote nodes (mutually exclusive with --individual-only)",
     )
-    parser.add_argument(
+    mode.add_argument(
         "--individual-only",
         action="store_true",
-        help="Ingest individual senator votes (added in Plan 04)",
+        help="Ingest only individual senator IndividualVote nodes per sitting (mutually exclusive with --aggregate-only)",
     )
     args = parser.parse_args()
 
@@ -473,8 +662,15 @@ if __name__ == "__main__":
     try:
         ingester = SenateVoteIngester(driver)
 
-        if args.individual_only and not args.aggregate_only:
-            logger.info("Individual vote ingest added in Plan 04")
+        if args.individual_only:
+            stats = ingester.ingest_individual_votes(
+                legislature=args.legislature,
+                limit_sessions=args.limit_sessions,
+            )
+            print(
+                f"Done — sittings_processed={stats['sittings_processed']}, "
+                f"ivotes_written={stats['ivotes_written']}"
+            )
         else:
             # Default (no flag) or --aggregate-only: run aggregate ingest
             stats = ingester.ingest_aggregate_votes(
