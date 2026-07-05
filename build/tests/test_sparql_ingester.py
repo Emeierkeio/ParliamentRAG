@@ -429,3 +429,157 @@ class TestVoteLinkingQuery:
         """_write_votes Cypher must contain coalesce(s.chamber,'camera') = $chamber."""
         src = inspect.getsource(SparqlIngester._write_votes)
         assert "coalesce(s.chamber, 'camera') = $chamber" in src
+
+
+# ---------------------------------------------------------------------------
+# Camera aggregate vote ingest
+# ---------------------------------------------------------------------------
+
+class TestCameraAggregateQuery:
+    """Tests for Camera aggregate SPARQL query structure and Vote id format."""
+
+    def test_query_contains_select_distinct(self):
+        """The camera aggregate query for a sitting must use SELECT DISTINCT
+        (each votazione has two rdf:type triples — without DISTINCT rows are doubled)."""
+        ingester = SparqlIngester(driver=MagicMock())
+        captured_queries: list[str] = []
+
+        def fake_sparql_get(query, timeout=30, max_retries=3):
+            captured_queries.append(query)
+            return []
+
+        with patch("sparql_ingester._sparql_get", side_effect=fake_sparql_get):
+            ingester._get_camera_votes_for_sitting(19, 405)
+
+        assert len(captured_queries) == 1
+        assert "SELECT DISTINCT" in captured_queries[0]
+
+    def test_query_contains_correct_seduta_uri(self):
+        """The aggregate query for (leg=19, session=405) must reference seduta.rdf/s19_405."""
+        ingester = SparqlIngester(driver=MagicMock())
+        captured_queries: list[str] = []
+
+        def fake_sparql_get(query, timeout=30, max_retries=3):
+            captured_queries.append(query)
+            return []
+
+        with patch("sparql_ingester._sparql_get", side_effect=fake_sparql_get):
+            ingester._get_camera_votes_for_sitting(19, 405)
+
+        assert "seduta.rdf/s19_405" in captured_queries[0]
+
+    def test_query_contains_approvato(self):
+        """The aggregate query must request ocd:approvato (Camera outcome flag)."""
+        ingester = SparqlIngester(driver=MagicMock())
+        captured_queries: list[str] = []
+
+        def fake_sparql_get(query, timeout=30, max_retries=3):
+            captured_queries.append(query)
+            return []
+
+        with patch("sparql_ingester._sparql_get", side_effect=fake_sparql_get):
+            ingester._get_camera_votes_for_sitting(19, 405)
+
+        assert "ocd:approvato" in captured_queries[0]
+
+    def test_aggregate_vote_id_format(self):
+        """Vote id for (leg=19, session=405, vote=13) must be 'camera_leg19_sed405_v013'."""
+        ingester = SparqlIngester(driver=MagicMock())
+        ingester._get_camera_sittings_in_db = MagicMock(return_value={405})
+        ingester._get_camera_sittings_with_votes = MagicMock(return_value=set())
+
+        vote_uri = "http://dati.camera.it/ocd/votazione.rdf/vs19_405_013"
+        ingester._get_camera_votes_for_sitting = MagicMock(return_value=[{
+            "votazione": {"value": vote_uri},
+            "approvato": {"value": "1"},
+        }])
+
+        written_ids: list[str] = []
+
+        def fake_write(batch, legislature):
+            for item in batch:
+                written_ids.append(item["id"])
+            return len(batch)
+
+        ingester._write_camera_aggregate_votes = fake_write
+        ingester.ingest_camera_aggregate_votes(legislature=19, start_session=405)
+
+        assert "camera_leg19_sed405_v013" in written_ids
+
+
+class TestCameraAggregateSkip:
+    """Tests that ingest_camera_aggregate_votes skips sittings that already have votes."""
+
+    def test_skips_sittings_with_existing_votes(self):
+        """When sittings_in_db={349, 405} and sittings_with_votes={349},
+        only sitting 405 should be fetched from SPARQL."""
+        ingester = SparqlIngester(driver=MagicMock())
+        ingester._get_camera_sittings_in_db = MagicMock(return_value={349, 405})
+        ingester._get_camera_sittings_with_votes = MagicMock(return_value={349})
+        ingester._get_camera_votes_for_sitting = MagicMock(return_value=[])
+        ingester._write_camera_aggregate_votes = MagicMock(return_value=0)
+
+        ingester.ingest_camera_aggregate_votes(legislature=19, start_session=1)
+
+        calls = ingester._get_camera_votes_for_sitting.call_args_list
+        fetched_sessions = [c[0][1] for c in calls]  # second positional arg is session_num
+        assert 405 in fetched_sessions
+        assert 349 not in fetched_sessions
+
+    def test_start_session_filters_earlier_sittings(self):
+        """Sittings below start_session must be excluded from the fetch."""
+        ingester = SparqlIngester(driver=MagicMock())
+        ingester._get_camera_sittings_in_db = MagicMock(return_value={200, 405})
+        ingester._get_camera_sittings_with_votes = MagicMock(return_value=set())
+        ingester._get_camera_votes_for_sitting = MagicMock(return_value=[])
+        ingester._write_camera_aggregate_votes = MagicMock(return_value=0)
+
+        ingester.ingest_camera_aggregate_votes(legislature=19, start_session=350)
+
+        calls = ingester._get_camera_votes_for_sitting.call_args_list
+        fetched_sessions = [c[0][1] for c in calls]
+        assert 200 not in fetched_sessions
+        assert 405 in fetched_sessions
+
+
+class TestCameraAggregateOutcome:
+    """Tests for aggregate Vote outcome derivation from ocd:approvato."""
+
+    def _run_ingest_with_approvato(self, approvato_value: Optional[str]) -> list[dict]:
+        ingester = SparqlIngester(driver=MagicMock())
+        ingester._get_camera_sittings_in_db = MagicMock(return_value={405})
+        ingester._get_camera_sittings_with_votes = MagicMock(return_value=set())
+
+        vote_uri = "http://dati.camera.it/ocd/votazione.rdf/vs19_405_001"
+        binding: dict = {"votazione": {"value": vote_uri}}
+        if approvato_value is not None:
+            binding["approvato"] = {"value": approvato_value}
+        ingester._get_camera_votes_for_sitting = MagicMock(return_value=[binding])
+
+        written_batches: list[dict] = []
+
+        def fake_write(batch, legislature):
+            written_batches.extend(batch)
+            return len(batch)
+
+        ingester._write_camera_aggregate_votes = fake_write
+        ingester.ingest_camera_aggregate_votes(legislature=19, start_session=405)
+        return written_batches
+
+    def test_approvato_one_maps_to_approved(self):
+        """ocd:approvato '1' must produce outcome 'approved'."""
+        batches = self._run_ingest_with_approvato("1")
+        assert len(batches) == 1
+        assert batches[0]["outcome"] == "approved"
+
+    def test_approvato_zero_maps_to_rejected(self):
+        """ocd:approvato '0' must produce outcome 'rejected'."""
+        batches = self._run_ingest_with_approvato("0")
+        assert len(batches) == 1
+        assert batches[0]["outcome"] == "rejected"
+
+    def test_missing_approvato_maps_to_unknown(self):
+        """Missing ocd:approvato must produce outcome 'unknown'."""
+        batches = self._run_ingest_with_approvato(None)
+        assert len(batches) == 1
+        assert batches[0]["outcome"] == "unknown"
