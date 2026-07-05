@@ -23,9 +23,11 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -47,13 +49,14 @@ OUTCOME_MAP: dict[str, str] = {
 BATCH_SIZE = 500          # Neo4j write batch size
 SPARQL_PAGE_SIZE = 1000   # HTTP pagination page size
 SPARQL_TIMEOUT = 150      # seconds — dati.camera.it vote queries can be slow
+SPARQL_WORKERS = 4        # concurrent SPARQL requests (be polite to the endpoint)
 
 # ---------------------------------------------------------------------------
 # Regex patterns
 # ---------------------------------------------------------------------------
 
 _DEP_URI_RE = re.compile(r"/d(\d+)_19$")
-_VOTAZIONE_URI_RE = re.compile(r"/vs19_(\d+)_(\d+)$")
+_VOTAZIONE_URI_RE = re.compile(r"/vs\d+_(\d+)_(\d+)$")
 _PERSONA_ID_RE = re.compile(r"/p(\d+)$")
 
 
@@ -176,50 +179,80 @@ class SparqlIngester:
     # Public API
     # ------------------------------------------------------------------
 
-    def ingest_votes(self, limit_deputies: int = 0) -> dict:
+    def ingest_votes(
+        self,
+        limit_deputies: int = 0,
+        workers: int = SPARQL_WORKERS,
+        chamber: str = "camera",
+        legislature: int = 19,
+    ) -> dict:
         """Fetch individual vote records from SPARQL and write IndividualVote nodes.
 
         Args:
             limit_deputies: If > 0, only process that many deputies (for testing).
+            workers: Number of concurrent SPARQL request threads.
+            chamber: 'camera' or 'senato' — scopes deputy and session queries.
+            legislature: Legislature number (18 or 19) — scopes session queries.
 
         Returns:
             Stats dict: {"deputies_processed": N, "votes_written": N, "votes_skipped": N}
         """
-        deputies = self._fetch_all_deputies()
+        deputies = self._fetch_all_deputies(chamber=chamber)
         logger.info("Found %d deputies in Neo4j", len(deputies))
         if limit_deputies > 0:
             deputies = deputies[:limit_deputies]
             logger.info("Limited to %d deputies (test mode)", limit_deputies)
 
         # Check which deputies already have votes — skip them to allow resume
-        already_done = self._get_deputies_with_votes()
+        already_done = self._get_deputies_with_votes(chamber=chamber)
         logger.info("Deputies already enriched with votes: %d", len(already_done))
 
-        total_written = 0
-        total_skipped = 0
+        # Build work list (skip already-done and unparseable)
+        work = []
         deputies_skipped_resume = 0
-
         for i, deputy in enumerate(deputies):
             neo4j_id = deputy["id"]
             person_id = _extract_person_id_from_neo4j_id(neo4j_id)
             if not person_id:
-                logger.warning("  [%d/%d] SKIP — cannot extract person_id from %s", i + 1, len(deputies), neo4j_id)
+                logger.warning("  SKIP — cannot extract person_id from %s", neo4j_id)
                 continue
-
             if neo4j_id in already_done:
                 deputies_skipped_resume += 1
                 continue
-
-            dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_19"
-            logger.info("  [%d/%d] Querying votes for person %s ...", i + 1, len(deputies), person_id)
-            written, skipped = self._ingest_deputy_votes(neo4j_id, person_id, dep_sparql_uri)
-            total_written += written
-            total_skipped += skipped
-            logger.info("  [%d/%d] → written=%d skipped=%d (total: %d written, %d skipped)",
-                        i + 1, len(deputies), written, skipped, total_written, total_skipped)
+            dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_{legislature}"
+            work.append((neo4j_id, person_id, dep_sparql_uri))
 
         if deputies_skipped_resume:
-            logger.info("Resumed: skipped %d deputies already enriched", deputies_skipped_resume)
+            logger.info("Resumed: skipping %d deputies already enriched", deputies_skipped_resume)
+        logger.info("Deputies to process: %d (with %d workers)", len(work), workers)
+
+        # Thread-safe counters
+        lock = threading.Lock()
+        total_written = 0
+        total_skipped = 0
+        done_count = 0
+
+        def _process_deputy(item):
+            nonlocal total_written, total_skipped, done_count
+            neo4j_id, person_id, dep_sparql_uri = item
+            logger.info("  Querying votes for person %s ...", person_id)
+            written, skipped = self._ingest_deputy_votes(
+                neo4j_id, person_id, dep_sparql_uri, chamber=chamber, legislature=legislature
+            )
+            with lock:
+                total_written += written
+                total_skipped += skipped
+                done_count += 1
+                logger.info("  [%d/%d] person %s → written=%d skipped=%d (total: %d written, %d skipped)",
+                            done_count, len(work), person_id, written, skipped, total_written, total_skipped)
+
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(_process_deputy, item): item for item in work}
+            for future in as_completed(futures):
+                exc = future.exception()
+                if exc:
+                    item = futures[future]
+                    logger.error("  Error processing person %s: %s", item[1], exc)
 
         logger.info(
             "Vote ingestion complete: deputies=%d, votes_written=%d, votes_skipped=%d",
@@ -231,13 +264,21 @@ class SparqlIngester:
             "votes_skipped": total_skipped,
         }
 
-    def ingest_committee_roles(self) -> dict:
+    def ingest_committee_roles(
+        self,
+        chamber: str = "camera",
+        legislature: int = 19,
+    ) -> dict:
         """Fetch committee officer roles from SPARQL and enrich MEMBER_OF_COMMITTEE.
+
+        Args:
+            chamber: 'camera' or 'senato' — scopes deputy queries.
+            legislature: Legislature number (18 or 19) — used to build deputato SPARQL URI.
 
         Returns:
             Stats dict: {"deputies_processed": N, "roles_written": N}
         """
-        deputies = self._fetch_all_deputies()
+        deputies = self._fetch_all_deputies(chamber=chamber)
         logger.info("Found %d deputies in Neo4j", len(deputies))
         total_roles = 0
 
@@ -247,7 +288,7 @@ class SparqlIngester:
             if not person_id:
                 continue
 
-            dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_19"
+            dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_{legislature}"
             bindings = self._get_committee_roles(dep_sparql_uri)
             if not bindings:
                 continue
@@ -279,10 +320,12 @@ class SparqlIngester:
         bindings: list[dict],
         deputy_neo4j_id: str,
         person_id: str,
+        chamber: str = "camera",
     ) -> list[dict]:
         """Convert SPARQL vote bindings to Neo4j batch dicts.
 
         Skips any binding where the votazione URI cannot be parsed.
+        The IndividualVote id carries a chamber prefix to prevent Camera/Senate collisions.
         """
         batch = []
         for row in bindings:
@@ -292,7 +335,7 @@ class SparqlIngester:
             if session_num is None or vote_num is None:
                 continue
             outcome = OUTCOME_MAP.get(tipo, "absent")
-            iv_id = f"iv_{person_id}_{session_num}_{vote_num}"
+            iv_id = f"iv_{chamber}_{person_id}_{session_num}_{vote_num}"
             batch.append({
                 "id": iv_id,
                 "deputyId": deputy_neo4j_id,
@@ -370,17 +413,22 @@ WHERE {{
     # Neo4j write helpers
     # ------------------------------------------------------------------
 
-    def _fetch_all_deputies(self) -> list[dict]:
-        """Return list of {id: ...} dicts for all Deputy nodes in Neo4j."""
-        with self._driver.session() as neo_session:
-            result = neo_session.run("MATCH (d:Deputy) RETURN d.id AS id")
-            return [{"id": record["id"]} for record in result if record["id"]]
-
-    def _get_deputies_with_votes(self) -> set[str]:
-        """Return set of Deputy.id values that already have VOTED relationships."""
+    def _fetch_all_deputies(self, chamber: str = "camera") -> list[dict]:
+        """Return list of {id: ...} dicts for Deputy nodes filtered by chamber."""
         with self._driver.session() as neo_session:
             result = neo_session.run(
-                "MATCH (d:Deputy)-[:VOTED]->() RETURN DISTINCT d.id AS id"
+                "MATCH (d:Deputy) WHERE coalesce(d.chamber, 'camera') = $chamber RETURN d.id AS id",
+                chamber=chamber,
+            )
+            return [{"id": record["id"]} for record in result if record["id"]]
+
+    def _get_deputies_with_votes(self, chamber: str = "camera") -> set[str]:
+        """Return set of Deputy.id values that already have VOTED relationships, filtered by chamber."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (d:Deputy)-[:VOTED]->() WHERE coalesce(d.chamber, 'camera') = $chamber "
+                "RETURN DISTINCT d.id AS id",
+                chamber=chamber,
             )
             return {record["id"] for record in result if record["id"]}
 
@@ -389,6 +437,8 @@ WHERE {{
         neo4j_id: str,
         person_id: str,
         dep_sparql_uri: str,
+        chamber: str = "camera",
+        legislature: int = 19,
     ) -> tuple[int, int]:
         """Page through all votes for one deputy and write them to Neo4j.
 
@@ -407,12 +457,12 @@ WHERE {{
                     logger.debug("    No vote records found in SPARQL")
                 break
 
-            batch = self._prepare_vote_batch(bindings, neo4j_id, person_id)
+            batch = self._prepare_vote_batch(bindings, neo4j_id, person_id, chamber=chamber)
             parse_skipped = len(bindings) - len(batch)
             skipped += parse_skipped
 
             if batch:
-                w, s = self._write_votes(batch)
+                w, s = self._write_votes(batch, chamber=chamber, legislature=legislature)
                 written += w
                 skipped += s
                 logger.debug("    Page %d: %d SPARQL rows → %d written, %d skipped", page, len(bindings), w, s + parse_skipped)
@@ -423,8 +473,16 @@ WHERE {{
 
         return written, skipped
 
-    def _write_votes(self, batch: list[dict]) -> tuple[int, int]:
+    def _write_votes(
+        self,
+        batch: list[dict],
+        chamber: str = "camera",
+        legislature: int = 19,
+    ) -> tuple[int, int]:
         """Write a batch of IndividualVote nodes to Neo4j.
+
+        Scopes Session matching to the given chamber+legislature to prevent
+        cross-legislature and cross-chamber Session number collisions.
 
         Returns (written, skipped) where skipped = rows with no matching Vote node.
         """
@@ -432,6 +490,7 @@ WHERE {{
 UNWIND $batch AS row
 MATCH (d:Deputy {id: row.deputyId})
 MATCH (s:Session {number: row.sessionNumber})-[:HAS_VOTE]->(v:Vote {number: row.voteNumber})
+WHERE coalesce(s.chamber, 'camera') = $chamber AND s.legislature = $legislature
 MERGE (iv:IndividualVote {id: row.id})
 SET iv.outcome = row.outcome
 MERGE (d)-[:VOTED]->(iv)
@@ -441,6 +500,7 @@ RETURN count(*) AS written
         count_cypher = """
 UNWIND $batch AS row
 OPTIONAL MATCH (s:Session {number: row.sessionNumber})-[:HAS_VOTE]->(v:Vote {number: row.voteNumber})
+WHERE coalesce(s.chamber, 'camera') = $chamber AND s.legislature = $legislature
 WITH row, v
 WHERE v IS NULL
 RETURN count(*) AS skipped
@@ -452,10 +512,10 @@ RETURN count(*) AS skipped
         for i in range(0, len(batch), chunk_size):
             chunk = batch[i:i + chunk_size]
             with self._driver.session() as neo_session:
-                result = neo_session.run(cypher, batch=chunk)
+                result = neo_session.run(cypher, batch=chunk, chamber=chamber, legislature=legislature)
                 record = result.single()
                 written += record["written"] if record else 0
-                skip_result = neo_session.run(count_cypher, batch=chunk)
+                skip_result = neo_session.run(count_cypher, batch=chunk, chamber=chamber, legislature=legislature)
                 skip_record = skip_result.single()
                 skipped += skip_record["skipped"] if skip_record else 0
 
