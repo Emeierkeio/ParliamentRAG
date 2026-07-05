@@ -45,7 +45,12 @@ export function DebateDetail({
     if (detail.status !== "idle") return;
     setDetail({ status: "loading" });
     getDebateDetail(debateId)
-      .then((data) => setDetail({ status: "loaded", data }))
+      .then((data) => {
+        setDetail({ status: "loaded", data });
+        // Votes were invisible in practice behind a collapsed section —
+        // open it by default whenever the debate's session has votes.
+        if (data.votes.length > 0) setVotesOpen(true);
+      })
       .catch(() => setDetail({ status: "error" }));
   }, [debateId, detail.status]);
 
