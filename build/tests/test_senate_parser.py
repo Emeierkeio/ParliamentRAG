@@ -78,8 +78,9 @@ def test_speeches_structure(parsed):
     for speech in parsed["speeches"]:
         missing = required_keys - set(speech.keys())
         assert not missing, f"Speech missing keys: {missing}"
-        assert speech["deputatoId"].startswith("sen_"), (
-            f"deputatoId {speech['deputatoId']!r} must start with 'sen_'"
+        assert speech["deputatoId"].startswith("http://dati.senato.it/senatore/"), (
+            f"deputatoId {speech['deputatoId']!r} must be a full senatore URI "
+            "(matches Deputy.id loaded from senatori CSV)"
         )
 
 
