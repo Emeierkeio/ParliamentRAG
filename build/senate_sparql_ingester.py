@@ -1,0 +1,489 @@
+"""
+senate_sparql_ingester.py — Senate aggregate vote ingest from dati.senato.it via SPARQL
+
+Ingests Senate aggregate Vote nodes for both legislatures (XVIII, XIX) from the Italian
+Senate SPARQL endpoint. Senate endpoint requires GET requests with a browser User-Agent
+(POST returns 403). Queries are scoped per-seduta to avoid 5xx timeouts from global
+Votazione queries.
+
+Schema:
+    Session {chamber:'senato'} -[:HAS_VOTE]-> Vote
+
+Vote id format: senato_leg{N}_sed{MMM}_v{KKK}  (no collision with Camera or XML-sourced nodes)
+Outcome derivation: favorevoli >= maggioranza -> "approved" else "rejected" (no approvato flag).
+
+Usage (CLI):
+    python build/senate_sparql_ingester.py --aggregate-only --legislature 19
+
+Usage (library):
+    from senate_sparql_ingester import SenateVoteIngester
+    ingester = SenateVoteIngester(driver)
+    stats = ingester.ingest_aggregate_votes(legislature=19)
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Module-level constants
+# ---------------------------------------------------------------------------
+
+SENATO_SPARQL_ENDPOINT = "https://dati.senato.it/sparql"
+
+SENATO_USER_AGENT = (
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/126.0.0.0 Safari/537.36"
+)
+
+SPARQL_TIMEOUT = 150   # seconds — Senate endpoint can be slow
+BATCH_SIZE = 500       # Neo4j write batch size
+
+# ---------------------------------------------------------------------------
+# Regex patterns
+# ---------------------------------------------------------------------------
+
+_SEN_VOTAZIONE_URI_RE = re.compile(r"/votazione/(\d+)-(\d+)-(\d+)$")
+
+# ---------------------------------------------------------------------------
+# Pure helpers (URI parsing, outcome derivation)
+# ---------------------------------------------------------------------------
+
+
+def parse_senate_votazione_uri(uri: str) -> tuple[Optional[int], Optional[int], Optional[int]]:
+    """Extract (legislature, seduta_num, vote_num) from a Senate votazione URI.
+
+    Example:
+        "http://dati.senato.it/votazione/19-167-42"
+        -> (19, 167, 42)
+
+    Returns (None, None, None) if the URI does not match.
+    """
+    m = _SEN_VOTAZIONE_URI_RE.search(uri)
+    if not m:
+        return None, None, None
+    return int(m.group(1)), int(m.group(2)), int(m.group(3))
+
+
+def _derive_senate_outcome(favorevoli: Optional[int], maggioranza: Optional[int]) -> str:
+    """Derive vote outcome from counts.
+
+    Senate has no explicit approvato flag. Outcome is:
+        favorevoli >= maggioranza -> "approved"
+        otherwise                 -> "rejected"
+        either is None            -> "unknown"
+    """
+    if favorevoli is None or maggioranza is None:
+        return "unknown"
+    return "approved" if favorevoli >= maggioranza else "rejected"
+
+
+# ---------------------------------------------------------------------------
+# GET-based SPARQL helper (Senate requires GET + browser User-Agent)
+# ---------------------------------------------------------------------------
+
+
+def _senato_sparql_get(
+    query: str,
+    timeout: int = SPARQL_TIMEOUT,
+    max_retries: int = 3,
+) -> list[dict]:
+    """Execute a SPARQL SELECT query against dati.senato.it and return bindings.
+
+    dati.senato.it requires:
+    - GET method (POST returns 403)
+    - Browser-like User-Agent
+
+    Retries with exponential backoff on transient failures.
+    Returns [] on persistent failure — never raises.
+    """
+    import time as _time
+
+    params = urllib.parse.urlencode({
+        "query": query,
+        "format": "application/sparql-results+json",
+    })
+    url = f"{SENATO_SPARQL_ENDPOINT}?{params}"
+
+    for attempt in range(1, max_retries + 1):
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Accept": "application/sparql-results+json",
+                "User-Agent": SENATO_USER_AGENT,
+                "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                raw = resp.read()
+                if not raw or not raw.strip():
+                    raise ValueError("Empty response body")
+                data = json.loads(raw)
+                _time.sleep(0.5)
+                return data.get("results", {}).get("bindings", [])
+        except (urllib.error.URLError, urllib.error.HTTPError) as exc:
+            if attempt < max_retries:
+                wait = 5 * attempt  # 5s, 10s, 15s
+                logger.warning(
+                    "Senate SPARQL request failed (attempt %d/%d, retrying in %ds): %s",
+                    attempt, max_retries, wait, exc,
+                )
+                _time.sleep(wait)
+            else:
+                logger.warning(
+                    "Senate SPARQL request failed after %d attempts: %s",
+                    max_retries, exc,
+                )
+                return []
+        except (json.JSONDecodeError, ValueError) as exc:
+            if attempt < max_retries:
+                wait = 10 * attempt  # 10s, 20s, 30s
+                logger.warning(
+                    "Senate SPARQL response not JSON (attempt %d/%d, retrying in %ds): %s",
+                    attempt, max_retries, wait, exc,
+                )
+                _time.sleep(wait)
+            else:
+                logger.warning(
+                    "Senate SPARQL response not JSON after %d attempts: %s",
+                    max_retries, exc,
+                )
+                return []
+        except Exception as exc:
+            if attempt < max_retries:
+                wait = 10 * attempt
+                logger.warning(
+                    "Unexpected Senate SPARQL error (attempt %d/%d, retrying in %ds): %s",
+                    attempt, max_retries, wait, exc,
+                )
+                _time.sleep(wait)
+            else:
+                logger.warning(
+                    "Unexpected Senate SPARQL error after %d attempts: %s",
+                    max_retries, exc,
+                )
+                return []
+    return []  # Should not reach here
+
+
+# ---------------------------------------------------------------------------
+# None-safe integer extraction
+# ---------------------------------------------------------------------------
+
+
+def _int_or_none(binding: dict, key: str) -> Optional[int]:
+    """Safely extract an integer from a SPARQL binding dict."""
+    val = binding.get(key, {}).get("value")
+    if val is None:
+        return None
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        return None
+
+
+# ---------------------------------------------------------------------------
+# SenateVoteIngester class
+# ---------------------------------------------------------------------------
+
+
+class SenateVoteIngester:
+    """Ingests Senate aggregate Vote nodes from dati.senato.it SPARQL endpoint."""
+
+    def __init__(self, driver) -> None:
+        self._driver = driver
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def ingest_aggregate_votes(
+        self,
+        legislature: int = 19,
+        limit_sessions: int = 0,
+    ) -> dict:
+        """Fetch aggregate Senate Vote nodes from SPARQL and write to Neo4j.
+
+        Args:
+            legislature: Legislature number (18 or 19).
+            limit_sessions: If > 0, process at most this many sittings (for testing).
+
+        Returns:
+            Stats dict: {"sittings_processed": N, "votes_written": N}
+        """
+        logger.info(
+            "Starting Senate aggregate vote ingest — legislature %d", legislature
+        )
+
+        # 1. Session numbers present in DB for this legislature
+        sittings = self._get_senate_sittings_in_db(legislature)
+        logger.info("Found %d Senate sessions in DB for legislature %d", len(sittings), legislature)
+
+        # 2. Skip sittings that already have HAS_VOTE (idempotency / resume)
+        done = self._get_senate_sittings_with_votes(legislature)
+        todo = sorted(sittings - done)
+        logger.info(
+            "%d sittings need aggregate votes (%d already done)",
+            len(todo), len(done),
+        )
+
+        if limit_sessions:
+            todo = todo[:limit_sessions]
+            logger.info("Limited to %d sessions (test mode)", limit_sessions)
+
+        sittings_processed = 0
+        total_votes_written = 0
+
+        for session_num in todo:
+            logger.debug("Processing sitting %d/%d ...", session_num, legislature)
+
+            # Resolve the sedutaassemblea URI for this session
+            seduta_uri = self._get_senate_seduta_uri(legislature, session_num)
+            if not seduta_uri:
+                logger.warning(
+                    "  leg%d sed%d: no sedutaassemblea URI found — skipping",
+                    legislature, session_num,
+                )
+                continue
+
+            # Fetch all votazioni for this seduta
+            votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+            if not votazioni:
+                logger.debug(
+                    "  leg%d sed%d: no votazioni returned — skipping",
+                    legislature, session_num,
+                )
+                sittings_processed += 1
+                continue
+
+            # Build batch and write
+            batch = []
+            for b in votazioni:
+                vot_uri = b.get("votazione", {}).get("value", "")
+                _, _, vote_num = parse_senate_votazione_uri(vot_uri)
+                if vote_num is None:
+                    logger.debug("    Skipping unparseable votazione URI: %s", vot_uri)
+                    continue
+
+                favorevoli = _int_or_none(b, "favorevoli")
+                maggioranza = _int_or_none(b, "maggioranza")
+
+                batch.append({
+                    "id": f"senato_leg{legislature}_sed{session_num:03d}_v{vote_num:03d}",
+                    "sessionNumber": session_num,
+                    "voteNumber": vote_num,
+                    "label": b.get("label", {}).get("value"),
+                    "type": b.get("tipo", {}).get("value"),
+                    "present": _int_or_none(b, "presenti"),
+                    "voters": _int_or_none(b, "votanti"),
+                    "inFavor": favorevoli,
+                    "against": _int_or_none(b, "contrari"),
+                    "majority": maggioranza,
+                    "onMission": _int_or_none(b, "congedo"),
+                    "outcome": _derive_senate_outcome(favorevoli, maggioranza),
+                })
+
+            written = self._write_senate_votes(batch, legislature)
+            total_votes_written += written
+            sittings_processed += 1
+            logger.info(
+                "  leg%d sed%d: %d votes written", legislature, session_num, written
+            )
+
+        logger.info(
+            "Senate aggregate ingest complete — %d sittings, %d votes",
+            sittings_processed, total_votes_written,
+        )
+        return {
+            "sittings_processed": sittings_processed,
+            "votes_written": total_votes_written,
+        }
+
+    # ------------------------------------------------------------------
+    # Neo4j read helpers
+    # ------------------------------------------------------------------
+
+    def _get_senate_sittings_in_db(self, legislature: int) -> set[int]:
+        """Return session numbers present in DB for chamber='senato', this legislature."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (s:Session {chamber:'senato', legislature:$legislature}) "
+                "RETURN s.number AS n",
+                legislature=legislature,
+            )
+            return {record["n"] for record in result if record["n"] is not None}
+
+    def _get_senate_sittings_with_votes(self, legislature: int) -> set[int]:
+        """Return session numbers that already have HAS_VOTE rels for chamber='senato'."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (s:Session {chamber:'senato', legislature:$legislature})"
+                "-[:HAS_VOTE]->(:Vote) "
+                "RETURN DISTINCT s.number AS n",
+                legislature=legislature,
+            )
+            return {record["n"] for record in result if record["n"] is not None}
+
+    # ------------------------------------------------------------------
+    # SPARQL query methods
+    # ------------------------------------------------------------------
+
+    def _get_senate_seduta_uri(
+        self, legislature: int, session_num: int
+    ) -> Optional[str]:
+        """Resolve the SedutaAssemblea URI for a given legislature + session number."""
+        query = f"""
+PREFIX osr: <http://dati.senato.it/osr/>
+SELECT ?seduta WHERE {{
+  ?seduta a osr:SedutaAssemblea ;
+          osr:legislatura {legislature} ;
+          osr:numeroSeduta {session_num} .
+}}
+LIMIT 1
+"""
+        bindings = _senato_sparql_get(query)
+        if not bindings:
+            return None
+        return bindings[0].get("seduta", {}).get("value")
+
+    def _get_senate_votes_for_seduta(self, seduta_uri: str) -> list[dict]:
+        """Fetch all Votazione bindings for a given SedutaAssemblea URI."""
+        query = f"""
+PREFIX osr: <http://dati.senato.it/osr/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?votazione ?label ?tipo ?presenti ?votanti ?favorevoli ?contrari ?maggioranza ?congedo
+WHERE {{
+  ?votazione a osr:Votazione ;
+             osr:seduta <{seduta_uri}> .
+  OPTIONAL {{ ?votazione rdfs:label ?label . }}
+  OPTIONAL {{ ?votazione osr:tipoVotazione ?tipo . }}
+  OPTIONAL {{ ?votazione osr:presenti ?presenti . }}
+  OPTIONAL {{ ?votazione osr:votanti ?votanti . }}
+  OPTIONAL {{ ?votazione osr:favorevoli ?favorevoli . }}
+  OPTIONAL {{ ?votazione osr:contrari ?contrari . }}
+  OPTIONAL {{ ?votazione osr:maggioranza ?maggioranza . }}
+  OPTIONAL {{ ?votazione osr:congedoMissione ?congedo . }}
+}}
+"""
+        return _senato_sparql_get(query)
+
+    # ------------------------------------------------------------------
+    # Neo4j write helpers
+    # ------------------------------------------------------------------
+
+    def _write_senate_votes(self, batch: list[dict], legislature: int) -> int:
+        """Write a batch of aggregate Senate Vote nodes to Neo4j.
+
+        Matches Senate Session by number+legislature, MERGEs Vote by stable id,
+        links Session -[:HAS_VOTE]-> Vote.
+
+        Returns the number of Vote nodes written/merged.
+        """
+        if not batch:
+            return 0
+
+        cypher = """
+UNWIND $batch AS row
+MATCH (s:Session {number: row.sessionNumber, chamber: 'senato', legislature: $legislature})
+MERGE (v:Vote {id: row.id})
+SET v.number = row.voteNumber,
+    v.type = row.type,
+    v.subject = row.label,
+    v.present = row.present,
+    v.voters = row.voters,
+    v.majority = row.majority,
+    v.inFavor = row.inFavor,
+    v.against = row.against,
+    v.onMission = row.onMission,
+    v.outcome = row.outcome
+MERGE (s)-[:HAS_VOTE]->(v)
+RETURN count(*) AS written
+"""
+        total_written = 0
+        for i in range(0, len(batch), BATCH_SIZE):
+            chunk = batch[i : i + BATCH_SIZE]
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher, batch=chunk, legislature=legislature)
+                record = result.single()
+                total_written += record["written"] if record else 0
+
+        return total_written
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    import argparse
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
+    parser = argparse.ArgumentParser(
+        description="Senate SPARQL enrichment — aggregate Vote nodes from dati.senato.it"
+    )
+    parser.add_argument("--neo4j-uri", default="bolt://localhost:7689")
+    parser.add_argument("--neo4j-user", default="neo4j")
+    parser.add_argument("--neo4j-password", default="thesis2026")
+    parser.add_argument(
+        "--legislature",
+        type=int,
+        default=19,
+        help="Legislature number to ingest (18 or 19, default: 19)",
+    )
+    parser.add_argument(
+        "--limit-sessions",
+        type=int,
+        default=0,
+        help="Limit to N sittings for testing (0 = all)",
+    )
+    parser.add_argument(
+        "--aggregate-only",
+        action="store_true",
+        help="Ingest only aggregate Vote nodes (this plan)",
+    )
+    parser.add_argument(
+        "--individual-only",
+        action="store_true",
+        help="Ingest individual senator votes (added in Plan 04)",
+    )
+    args = parser.parse_args()
+
+    from neo4j import GraphDatabase  # type: ignore[import]
+
+    driver = GraphDatabase.driver(
+        args.neo4j_uri,
+        auth=(args.neo4j_user, args.neo4j_password),
+    )
+
+    try:
+        ingester = SenateVoteIngester(driver)
+
+        if args.individual_only and not args.aggregate_only:
+            logger.info("Individual vote ingest added in Plan 04")
+        else:
+            # Default (no flag) or --aggregate-only: run aggregate ingest
+            stats = ingester.ingest_aggregate_votes(
+                legislature=args.legislature,
+                limit_sessions=args.limit_sessions,
+            )
+            print(
+                f"Done — sittings_processed={stats['sittings_processed']}, "
+                f"votes_written={stats['votes_written']}"
+            )
+    finally:
+        driver.close()
