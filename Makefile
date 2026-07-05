@@ -425,6 +425,55 @@ enrich-sparql-test: db-install ## Test SPARQL enrichment with 5 deputies only
 		--limit-deputies 5
 
 # ============================================================================
+#  Vote Enrichment (multi-chamber, both legislatures)
+# ============================================================================
+
+.PHONY: enrich-votes enrich-votes-individual enrich-votes-test
+
+enrich-votes: db-install ## Enrich graph with aggregate votes for both chambers (XIX+XVIII)
+	@printf "$(BOLD)$(CYAN)Vote enrichment from dati.camera.it + dati.senato.it...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@printf "$(CYAN)Camera aggregate votes (XIX 350+)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --start-session 350
+	@printf "$(CYAN)Camera aggregate votes (XVIII gap-fill)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 18 --start-session 1
+	@printf "$(CYAN)Senate aggregate votes (XIX)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19
+	@printf "$(CYAN)Senate aggregate votes (XVIII)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 18
+	@printf "\n$(BOLD)$(GREEN)Aggregate vote ingest complete!$(RESET)\n"
+
+enrich-votes-individual: db-install ## Enrich graph with per-parliamentarian individual votes (long run)
+	@printf "$(BOLD)$(CYAN)Individual vote enrichment (both chambers)...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@printf "$(CYAN)Camera individual votes (resume remaining XIX deputies)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --skip-aggregate --skip-committees --legislature 19
+	@printf "$(CYAN)Senate individual votes (XIX)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --individual-only --legislature 19
+	@printf "$(CYAN)Senate individual votes (XVIII)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --individual-only --legislature 18
+	@printf "\n$(BOLD)$(GREEN)Individual vote ingest complete!$(RESET)\n"
+
+enrich-votes-test: ## Smoke test: 2 Camera sessions + 2 Senate sittings (assumes Neo4j running)
+	@printf "$(CYAN)Smoke: 3 Camera deputies + 2 Senate sittings...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --start-session 350 --limit-sessions 2
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --limit-sessions 2
+
+# ============================================================================
 #  AI Summary Generation
 # ============================================================================
 
