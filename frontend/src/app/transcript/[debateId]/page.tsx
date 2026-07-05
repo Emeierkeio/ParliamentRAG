@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -83,10 +84,14 @@ export default function TranscriptPage() {
       <div className="shrink-0 border-b px-6 py-3">
         {/* Breadcrumb */}
         <nav
-          className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5"
+          className="flex items-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-1.5"
           aria-label="Breadcrumb"
         >
-          <Link href="/timeline" className="hover:text-primary transition-colors">
+          <Link
+            href="/timeline"
+            className="group inline-flex items-center gap-1.5 hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
             {t("breadcrumbTimeline")}
           </Link>
           <span className="mx-1.5">/</span>
