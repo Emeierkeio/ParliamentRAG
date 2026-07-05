@@ -105,6 +105,22 @@ def _derive_senate_outcome(favorevoli: Optional[int], maggioranza: Optional[int]
 # ---------------------------------------------------------------------------
 
 
+class SenateEndpointBlocked(RuntimeError):
+    """dati.senato.it is persistently refusing requests (rate-limit ban).
+
+    Continuing to hammer the endpoint extends the ban — callers must abort
+    and resume later (resume logic skips completed sittings)."""
+
+
+# Consecutive all-retries-failed requests before declaring the endpoint blocked.
+_CIRCUIT_BREAKER_THRESHOLD = 5
+_consecutive_failures = 0
+
+# Politeness delay after each successful request. 2026-07-05: 0.5s got the
+# run rate-banned mid-flight (886 sittings x 2+ queries) — keep >= 1.5s.
+_POLITENESS_DELAY = 1.5
+
+
 def _senato_sparql_get(
     query: str,
     timeout: int = SPARQL_TIMEOUT,
@@ -117,9 +133,23 @@ def _senato_sparql_get(
     - Browser-like User-Agent
 
     Retries with exponential backoff on transient failures.
-    Returns [] on persistent failure — never raises.
+    Returns [] on persistent failure of a single request; raises
+    SenateEndpointBlocked after _CIRCUIT_BREAKER_THRESHOLD consecutive
+    failed requests. HTTP 403 skips retries entirely (ban signal).
     """
     import time as _time
+
+    global _consecutive_failures
+
+    def _record_failure() -> None:
+        global _consecutive_failures
+        _consecutive_failures += 1
+        if _consecutive_failures >= _CIRCUIT_BREAKER_THRESHOLD:
+            raise SenateEndpointBlocked(
+                f"{_consecutive_failures} consecutive failed requests to "
+                "dati.senato.it — endpoint is blocking us. Stop the run and "
+                "retry later (resume will skip completed sittings)."
+            )
 
     params = urllib.parse.urlencode({
         "query": query,
@@ -142,9 +172,14 @@ def _senato_sparql_get(
                 if not raw or not raw.strip():
                     raise ValueError("Empty response body")
                 data = json.loads(raw)
-                _time.sleep(0.5)
+                _consecutive_failures = 0
+                _time.sleep(_POLITENESS_DELAY)
                 return data.get("results", {}).get("bindings", [])
         except (urllib.error.URLError, urllib.error.HTTPError) as exc:
+            if isinstance(exc, urllib.error.HTTPError) and exc.code == 403:
+                logger.warning("Senate SPARQL HTTP 403 (ban signal, no retry)")
+                _record_failure()
+                return []
             if attempt < max_retries:
                 wait = 5 * attempt  # 5s, 10s, 15s
                 logger.warning(
@@ -157,6 +192,7 @@ def _senato_sparql_get(
                     "Senate SPARQL request failed after %d attempts: %s",
                     max_retries, exc,
                 )
+                _record_failure()
                 return []
         except (json.JSONDecodeError, ValueError) as exc:
             if attempt < max_retries:
@@ -171,6 +207,7 @@ def _senato_sparql_get(
                     "Senate SPARQL response not JSON after %d attempts: %s",
                     max_retries, exc,
                 )
+                _record_failure()
                 return []
         except Exception as exc:
             if attempt < max_retries:
@@ -185,6 +222,7 @@ def _senato_sparql_get(
                     "Unexpected Senate SPARQL error after %d attempts: %s",
                     max_retries, exc,
                 )
+                _record_failure()
                 return []
     return []  # Should not reach here
 
@@ -261,7 +299,14 @@ class SenateVoteIngester:
             logger.debug("Processing sitting %d/%d ...", session_num, legislature)
 
             # Resolve the sedutaassemblea URI for this session
-            seduta_uri = self._get_senate_seduta_uri(legislature, session_num)
+            try:
+                seduta_uri = self._get_senate_seduta_uri(legislature, session_num)
+            except SenateEndpointBlocked as exc:
+                logger.error(
+                    "ABORTING run at leg%d sed%d: %s",
+                    legislature, session_num, exc,
+                )
+                break
             if not seduta_uri:
                 logger.warning(
                     "  leg%d sed%d: no sedutaassemblea URI found — skipping",
@@ -270,7 +315,14 @@ class SenateVoteIngester:
                 continue
 
             # Fetch all votazioni for this seduta
-            votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+            try:
+                votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+            except SenateEndpointBlocked as exc:
+                logger.error(
+                    "ABORTING run at leg%d sed%d: %s",
+                    legislature, session_num, exc,
+                )
+                break
             if not votazioni:
                 logger.debug(
                     "  leg%d sed%d: no votazioni returned — skipping",
@@ -473,15 +525,19 @@ SELECT ?senatore WHERE {{
         sittings_processed = 0
 
         for num in todo:
-            seduta_uri = self._get_senate_seduta_uri(legislature, num)
-            if not seduta_uri:
-                logger.warning(
-                    "  leg%d sed%d: no sedutaassemblea URI found — skipping",
-                    legislature, num,
-                )
-                continue
+            try:
+                seduta_uri = self._get_senate_seduta_uri(legislature, num)
+                if not seduta_uri:
+                    logger.warning(
+                        "  leg%d sed%d: no sedutaassemblea URI found — skipping",
+                        legislature, num,
+                    )
+                    continue
 
-            votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+                votazioni = self._get_senate_votes_for_seduta(seduta_uri)
+            except SenateEndpointBlocked as exc:
+                logger.error("ABORTING run at leg%d sed%d: %s", legislature, num, exc)
+                break
             if not votazioni:
                 logger.debug(
                     "  leg%d sed%d: no votazioni returned — skipping",
@@ -499,7 +555,16 @@ SELECT ?senatore WHERE {{
                     continue
 
                 vote_id = f"senato_leg{legislature}_sed{num:03d}_v{vote:03d}"
-                links = self._get_senate_senator_links(vz_uri)
+                try:
+                    links = self._get_senate_senator_links(vz_uri)
+                except SenateEndpointBlocked as exc:
+                    logger.error(
+                        "ABORTING run at leg%d sed%d: %s", legislature, num, exc
+                    )
+                    if batch:
+                        self._write_senate_individual_votes(batch)
+                        total += len(batch)
+                    return {"sittings_processed": sittings_processed, "individual_votes_written": total, "aborted": True}
 
                 for outcome, uris in links.items():
                     for sen_uri in uris:
