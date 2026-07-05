@@ -6,6 +6,7 @@ All HTTP calls are mocked; no network access required.
 
 from __future__ import annotations
 
+import inspect
 import sys
 import os
 import json
@@ -86,6 +87,13 @@ class TestParseVotazioneUri:
         assert session is None
         assert vote is None
 
+    def test_leg18_uri_parsed(self):
+        """Legislature-18 vs18_ URI must parse identically."""
+        uri = "http://dati.camera.it/ocd/votazione.rdf/vs18_028_026"
+        session, vote = parse_votazione_uri(uri)
+        assert session == 28
+        assert vote == 26
+
 
 # ---------------------------------------------------------------------------
 # Outcome mapping
@@ -163,8 +171,19 @@ class TestVoteBatchPreparation:
         deputy_neo4j_id = "http://dati.camera.it/ocd/persona.rdf/p308908"
         person_id = "308908"
         batches = ingester._prepare_vote_batch(self.MOCK_VOTE_BINDINGS, deputy_neo4j_id, person_id)
-        assert batches[0]["id"] == "iv_308908_29_89"
-        assert batches[1]["id"] == "iv_308908_29_90"
+        assert batches[0]["id"] == "iv_camera_308908_29_89"
+        assert batches[1]["id"] == "iv_camera_308908_29_90"
+
+    def test_id_has_chamber_prefix(self):
+        """_prepare_vote_batch with chamber='camera' produces ids with 'iv_camera_' prefix."""
+        ingester = SparqlIngester(driver=MagicMock())
+        deputy_neo4j_id = "http://dati.camera.it/ocd/persona.rdf/p308908"
+        person_id = "308908"
+        batches = ingester._prepare_vote_batch(
+            self.MOCK_VOTE_BINDINGS, deputy_neo4j_id, person_id, chamber="camera"
+        )
+        assert len(batches) > 0
+        assert all(b["id"].startswith("iv_camera_") for b in batches)
 
     def test_invalid_votazione_uri_skipped(self):
         """Bindings with unparseable votazione URI produce no batch entry."""
@@ -346,3 +365,67 @@ class TestSparqlTimeoutHandling:
             result = _sparql_get("SELECT * WHERE { ?s ?p ?o } LIMIT 1")
 
         assert result == bindings
+
+
+# ---------------------------------------------------------------------------
+# Chamber-aware deputy filtering
+# ---------------------------------------------------------------------------
+
+class TestDeputyFiltering:
+    """Tests that _fetch_all_deputies and _get_deputies_with_votes filter by chamber."""
+
+    def _make_ingester_with_mock(self):
+        driver = MagicMock()
+        mock_neo_session = MagicMock()
+        mock_neo_session.run.return_value = []
+        driver.session.return_value.__enter__.return_value = mock_neo_session
+        driver.session.return_value.__exit__.return_value = False
+        return SparqlIngester(driver), mock_neo_session
+
+    def test_fetch_all_deputies_cypher_has_chamber_filter(self):
+        """_fetch_all_deputies must include coalesce(d.chamber,'camera')=$chamber filter."""
+        ingester, mock_neo_session = self._make_ingester_with_mock()
+        ingester._fetch_all_deputies(chamber="camera")
+        call_args = mock_neo_session.run.call_args
+        query = call_args[0][0]
+        assert "coalesce(d.chamber, 'camera') = $chamber" in query
+
+    def test_fetch_all_deputies_passes_chamber_kwarg(self):
+        """_fetch_all_deputies must pass chamber= as a keyword arg to neo_session.run."""
+        ingester, mock_neo_session = self._make_ingester_with_mock()
+        ingester._fetch_all_deputies(chamber="camera")
+        call_args = mock_neo_session.run.call_args
+        assert call_args.kwargs.get("chamber") == "camera"
+
+    def test_get_deputies_with_votes_cypher_has_chamber_filter(self):
+        """_get_deputies_with_votes must include coalesce(d.chamber,'camera')=$chamber filter."""
+        ingester, mock_neo_session = self._make_ingester_with_mock()
+        ingester._get_deputies_with_votes(chamber="camera")
+        call_args = mock_neo_session.run.call_args
+        query = call_args[0][0]
+        assert "coalesce(d.chamber, 'camera') = $chamber" in query
+
+    def test_get_deputies_with_votes_passes_chamber_kwarg(self):
+        """_get_deputies_with_votes must pass chamber= as a keyword arg to neo_session.run."""
+        ingester, mock_neo_session = self._make_ingester_with_mock()
+        ingester._get_deputies_with_votes(chamber="camera")
+        call_args = mock_neo_session.run.call_args
+        assert call_args.kwargs.get("chamber") == "camera"
+
+
+# ---------------------------------------------------------------------------
+# Vote-linking Cypher correctness (source inspection)
+# ---------------------------------------------------------------------------
+
+class TestVoteLinkingQuery:
+    """Source-inspection tests: _write_votes Cypher must scope to chamber+legislature."""
+
+    def test_write_votes_cypher_has_legislature_filter(self):
+        """_write_votes Cypher must contain s.legislature = $legislature."""
+        src = inspect.getsource(SparqlIngester._write_votes)
+        assert "s.legislature = $legislature" in src
+
+    def test_write_votes_cypher_has_chamber_filter(self):
+        """_write_votes Cypher must contain coalesce(s.chamber,'camera') = $chamber."""
+        src = inspect.getsource(SparqlIngester._write_votes)
+        assert "coalesce(s.chamber, 'camera') = $chamber" in src
