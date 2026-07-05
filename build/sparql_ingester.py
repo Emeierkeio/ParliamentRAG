@@ -99,6 +99,20 @@ def _extract_person_id_from_neo4j_id(neo4j_id: str) -> Optional[str]:
     return m.group(1)
 
 
+def _to_int(row: dict, key: str) -> Optional[int]:
+    """Safely extract an integer from a SPARQL binding row dict.
+
+    Returns None when the key is absent or the value is not a valid integer.
+    """
+    val = row.get(key, {}).get("value")
+    if val is None:
+        return None
+    try:
+        return int(val)
+    except (ValueError, TypeError):
+        return None
+
+
 # ---------------------------------------------------------------------------
 # SPARQL HTTP helper
 # ---------------------------------------------------------------------------
@@ -311,6 +325,72 @@ class SparqlIngester:
             "roles_written": total_roles,
         }
 
+    def ingest_camera_aggregate_votes(
+        self,
+        legislature: int = 19,
+        start_session: int = 350,
+        limit_sessions: int = 0,
+    ) -> dict:
+        """Ingest aggregate Vote nodes from Camera SPARQL for sittings not yet covered.
+
+        Skips any sitting that already has at least one HAS_VOTE relationship to avoid
+        duplicating XML-sourced votes (which cover Camera XIX sittings 1-349).
+
+        Args:
+            legislature: Legislature number (18 or 19).
+            start_session: Only process sessions >= this number (default 350, first post-XML).
+            limit_sessions: If > 0, cap the number of sittings processed (for testing).
+
+        Returns:
+            Stats dict: {"sittings_processed": N, "votes_written": N}
+        """
+        sittings = self._get_camera_sittings_in_db(legislature)
+        done = self._get_camera_sittings_with_votes(legislature)
+        todo = sorted(n for n in sittings if n >= start_session and n not in done)
+        if limit_sessions:
+            todo = todo[:limit_sessions]
+        logger.info(
+            "Camera aggregate ingest: %d/%d sittings to process (legislature=%d, start=%d)",
+            len(todo), len(sittings), legislature, start_session,
+        )
+        written = 0
+        for num in todo:
+            bindings = self._get_camera_votes_for_sitting(legislature, num)
+            batch = []
+            for row in bindings:
+                session_num, vote_num = parse_votazione_uri(
+                    row.get("votazione", {}).get("value", "")
+                )
+                if vote_num is None:
+                    continue
+                approvato = row.get("approvato", {}).get("value")
+                outcome = (
+                    "approved" if approvato == "1"
+                    else ("rejected" if approvato == "0" else "unknown")
+                )
+                batch.append({
+                    "id": f"camera_leg{legislature}_sed{num:03d}_v{vote_num:03d}",
+                    "sessionNumber": num,
+                    "voteNumber": vote_num,
+                    "label": row.get("label", {}).get("value"),
+                    "type": row.get("tipo", {}).get("value"),
+                    "present": _to_int(row, "presenti"),
+                    "voters": _to_int(row, "votanti"),
+                    "inFavor": _to_int(row, "favorevoli"),
+                    "against": _to_int(row, "contrari"),
+                    "abstained": _to_int(row, "astenuti"),
+                    "majority": _to_int(row, "maggioranza"),
+                    "outcome": outcome,
+                })
+            if batch:
+                written += self._write_camera_aggregate_votes(batch, legislature)
+            logger.info("  sitting %d: %d votes written (total so far: %d)", num, len(batch), written)
+        logger.info(
+            "Camera aggregate ingest complete: sittings=%d, votes_written=%d",
+            len(todo), written,
+        )
+        return {"sittings_processed": len(todo), "votes_written": written}
+
     # ------------------------------------------------------------------
     # Batch preparation helpers (testable without DB)
     # ------------------------------------------------------------------
@@ -408,6 +488,99 @@ WHERE {{
 }}
 """
         return _sparql_get(query)
+
+    def _get_camera_votes_for_sitting(self, legislature: int, session_num: int) -> list[dict]:
+        """Fetch aggregate vote records for one Camera sitting from SPARQL.
+
+        Uses SELECT DISTINCT because each Camera votazione has two rdf:type triples,
+        causing duplicate rows without DISTINCT.
+        """
+        seduta_uri = f"http://dati.camera.it/ocd/seduta.rdf/s{legislature}_{session_num}"
+        query = f"""
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?votazione ?label ?tipo ?approvato ?favorevoli ?contrari
+                ?presenti ?votanti ?astenuti ?maggioranza ?data
+WHERE {{
+  ?votazione a <http://dati.camera.it/ocd/votazione> ;
+             ocd:rif_seduta <{seduta_uri}> .
+  OPTIONAL {{ ?votazione rdfs:label ?label . }}
+  OPTIONAL {{ ?votazione dc:type ?tipo . }}
+  OPTIONAL {{ ?votazione ocd:approvato ?approvato . }}
+  OPTIONAL {{ ?votazione ocd:favorevoli ?favorevoli . }}
+  OPTIONAL {{ ?votazione ocd:contrari ?contrari . }}
+  OPTIONAL {{ ?votazione ocd:presenti ?presenti . }}
+  OPTIONAL {{ ?votazione ocd:votanti ?votanti . }}
+  OPTIONAL {{ ?votazione ocd:astenuti ?astenuti . }}
+  OPTIONAL {{ ?votazione ocd:maggioranza ?maggioranza . }}
+  OPTIONAL {{ ?votazione dc:date ?data . }}
+}}
+"""
+        return _sparql_get(query)
+
+    # ------------------------------------------------------------------
+    # Neo4j read/write helpers for Camera aggregate votes
+    # ------------------------------------------------------------------
+
+    def _get_camera_sittings_in_db(self, legislature: int) -> set[int]:
+        """Return all Camera session numbers in Neo4j for the given legislature."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (s:Session) WHERE coalesce(s.chamber, 'camera') = 'camera' "
+                "AND s.legislature = $legislature RETURN s.number AS n",
+                legislature=legislature,
+            )
+            return {record["n"] for record in result if record["n"] is not None}
+
+    def _get_camera_sittings_with_votes(self, legislature: int) -> set[int]:
+        """Return Camera session numbers that already have at least one HAS_VOTE relationship."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (s:Session)-[:HAS_VOTE]->(:Vote) "
+                "WHERE coalesce(s.chamber, 'camera') = 'camera' "
+                "AND s.legislature = $legislature "
+                "RETURN DISTINCT s.number AS n",
+                legislature=legislature,
+            )
+            return {record["n"] for record in result if record["n"] is not None}
+
+    def _write_camera_aggregate_votes(self, batch: list[dict], legislature: int) -> int:
+        """Write aggregate Vote nodes and HAS_VOTE relationships for Camera sessions.
+
+        Matches the Vote node shape from db_builder._create_votes:
+          Vote {id, number, type, subject, present, voters, abstained,
+                majority, inFavor, against, outcome}
+
+        Returns the count of Vote nodes written (MERGEd).
+        """
+        cypher = """
+UNWIND $batch AS row
+MATCH (s:Session {number: row.sessionNumber})
+WHERE coalesce(s.chamber, 'camera') = 'camera' AND s.legislature = $legislature
+MERGE (v:Vote {id: row.id})
+SET v.number = row.voteNumber,
+    v.type = row.type,
+    v.subject = row.label,
+    v.present = row.present,
+    v.voters = row.voters,
+    v.abstained = row.abstained,
+    v.majority = row.majority,
+    v.inFavor = row.inFavor,
+    v.against = row.against,
+    v.outcome = row.outcome
+MERGE (s)-[:HAS_VOTE]->(v)
+RETURN count(*) AS written
+"""
+        total = 0
+        for i in range(0, len(batch), BATCH_SIZE):
+            chunk = batch[i:i + BATCH_SIZE]
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher, batch=chunk, legislature=legislature)
+                record = result.single()
+                total += record["written"] if record else 0
+        return total
 
     # ------------------------------------------------------------------
     # Neo4j write helpers
@@ -570,8 +743,36 @@ if __name__ == "__main__":
         default=0,
         help="Limit to N deputies for testing (0 = all)",
     )
-    parser.add_argument("--skip-votes", action="store_true", help="Skip vote ingestion")
+    parser.add_argument(
+        "--limit-sessions",
+        type=int,
+        default=0,
+        help="Limit aggregate ingest to N sessions for testing (0 = all)",
+    )
+    parser.add_argument("--skip-votes", action="store_true", help="Skip individual vote ingestion")
     parser.add_argument("--skip-committees", action="store_true", help="Skip committee roles")
+    parser.add_argument(
+        "--aggregate-only",
+        action="store_true",
+        help="Run Camera aggregate vote ingest only (no individual votes, no committee roles)",
+    )
+    parser.add_argument(
+        "--skip-aggregate",
+        action="store_true",
+        help="Skip aggregate vote ingest; run individual votes only",
+    )
+    parser.add_argument(
+        "--legislature",
+        type=int,
+        default=19,
+        help="Legislature number for aggregate and individual ingest (18 or 19, default 19)",
+    )
+    parser.add_argument(
+        "--start-session",
+        type=int,
+        default=350,
+        help="First session number for Camera aggregate ingest (default 350)",
+    )
     args = parser.parse_args()
 
     try:
@@ -587,21 +788,51 @@ if __name__ == "__main__":
     try:
         ingester = SparqlIngester(driver)
 
-        if not args.skip_votes:
-            print("==> Ingesting individual votes...")
-            vote_stats = ingester.ingest_votes(limit_deputies=args.limit_deputies)
-            print(
-                f"    Deputies processed : {vote_stats['deputies_processed']}\n"
-                f"    Votes written      : {vote_stats['votes_written']}\n"
-                f"    Votes skipped      : {vote_stats['votes_skipped']}"
+        if args.aggregate_only:
+            # Aggregate-only mode: Camera aggregate votes, nothing else
+            print(f"==> Ingesting Camera aggregate votes (leg={args.legislature}, start={args.start_session})...")
+            agg_stats = ingester.ingest_camera_aggregate_votes(
+                legislature=args.legislature,
+                start_session=args.start_session,
+                limit_sessions=args.limit_sessions,
             )
+            print(
+                f"    Sittings processed : {agg_stats['sittings_processed']}\n"
+                f"    Votes written      : {agg_stats['votes_written']}"
+            )
+        else:
+            # Default (individual) mode: optionally run aggregate first, then individual + committees
+            if not args.skip_aggregate:
+                print(f"==> Ingesting Camera aggregate votes (leg={args.legislature}, start={args.start_session})...")
+                agg_stats = ingester.ingest_camera_aggregate_votes(
+                    legislature=args.legislature,
+                    start_session=args.start_session,
+                    limit_sessions=args.limit_sessions,
+                )
+                print(
+                    f"    Sittings processed : {agg_stats['sittings_processed']}\n"
+                    f"    Votes written      : {agg_stats['votes_written']}"
+                )
 
-        if not args.skip_committees:
-            print("==> Enriching committee officer roles...")
-            role_stats = ingester.ingest_committee_roles()
-            print(
-                f"    Deputies processed : {role_stats['deputies_processed']}\n"
-                f"    Roles written      : {role_stats['roles_written']}"
-            )
+            if not args.skip_votes:
+                print(f"==> Ingesting individual votes (chamber=camera, leg={args.legislature})...")
+                vote_stats = ingester.ingest_votes(
+                    limit_deputies=args.limit_deputies,
+                    chamber="camera",
+                    legislature=args.legislature,
+                )
+                print(
+                    f"    Deputies processed : {vote_stats['deputies_processed']}\n"
+                    f"    Votes written      : {vote_stats['votes_written']}\n"
+                    f"    Votes skipped      : {vote_stats['votes_skipped']}"
+                )
+
+            if not args.skip_committees:
+                print("==> Enriching committee officer roles...")
+                role_stats = ingester.ingest_committee_roles()
+                print(
+                    f"    Deputies processed : {role_stats['deputies_processed']}\n"
+                    f"    Roles written      : {role_stats['roles_written']}"
+                )
     finally:
         driver.close()
