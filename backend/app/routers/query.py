@@ -515,6 +515,23 @@ async def process_query_streaming(
         except Exception as _patch_err:
             logger.warning("[QUERY:EXPERTS] Post-generation patch failed (non-critical): %s", _patch_err)
 
+        # === F1: vote coherence — how cited parties voted in the referenced sessions ===
+        try:
+            # verified_citations do not carry session_id; fall back to evidence session ids
+            _coh_session_ids = [c.get("session_id") for c in verified_citations if c.get("session_id")]
+            if not _coh_session_ids:
+                _coh_session_ids = _session_ids
+            if _coh_session_ids:
+                vote_coherence = await asyncio.get_running_loop().run_in_executor(
+                    None, lambda: votes_service.get_vote_coherence(
+                        services["neo4j"], _coh_session_ids, request.legislature
+                    )
+                )
+                if vote_coherence:
+                    yield f"data: {json.dumps({'type': 'vote_coherence', 'data': vote_coherence}, default=str)}\n\n"
+        except Exception as _coh_err:
+            logger.error(f"[VOTE-COHERENCE] Failed (pipeline continues): {_coh_err}", exc_info=True)
+
         # Translate response text if needed
         if request_locale != "it":
             final_text = await translate_response_text(final_text, target_lang=request_locale)

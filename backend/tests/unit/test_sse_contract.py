@@ -225,3 +225,62 @@ class TestExpertDictFrozenFields:
             assert sub in self.EXPERTS_SOURCE, (
                 f"score_breakdown sub-score '{sub}' not found in experts.py."
             )
+
+
+# ---------------------------------------------------------------------------
+# Phase 14 — vote_coherence and vote_facts SSE event tests
+# ---------------------------------------------------------------------------
+
+class TestVoteCoherenceAndFactsEvents:
+    """Verify vote_coherence and vote_facts SSE events are present in query.py
+    and emitted AFTER citation_details (frozen emission order)."""
+
+    QUERY_SOURCE = _read_source("app/routers/query.py")
+    QUERY_LINES = QUERY_SOURCE.splitlines()
+
+    def _first_line_of(self, literal: str) -> int:
+        """Return 0-based line index of the first line containing literal, or -1."""
+        for i, line in enumerate(self.QUERY_LINES):
+            if literal in line:
+                return i
+        return -1
+
+    def test_vote_coherence_event(self):
+        """vote_coherence SSE event must be present in query.py and emitted after citation_details."""
+        # Presence checks
+        assert "'type': 'vote_coherence'" in self.QUERY_SOURCE or '"type": "vote_coherence"' in self.QUERY_SOURCE, (
+            "query.py must emit a 'vote_coherence' SSE event (F1: speech-vote coherence)."
+        )
+        assert "votes_service.get_vote_coherence" in self.QUERY_SOURCE, (
+            "query.py must call votes_service.get_vote_coherence to fetch coherence data."
+        )
+        # Emission order: citation_details line < vote_coherence line
+        cit_line = self._first_line_of("citation_details")
+        coh_line = self._first_line_of("vote_coherence")
+        assert cit_line >= 0, "citation_details yield not found in query.py"
+        assert coh_line > cit_line, (
+            f"'vote_coherence' (line {coh_line}) must appear AFTER 'citation_details' (line {cit_line}) "
+            f"so the frontend has citations before coherence data."
+        )
+
+    def test_vote_facts_event(self):
+        """vote_facts SSE event must be present in query.py and emitted after citation_details."""
+        # Presence checks
+        assert "'type': 'vote_facts'" in self.QUERY_SOURCE or '"type": "vote_facts"' in self.QUERY_SOURCE, (
+            "query.py must emit a 'vote_facts' SSE event (F4: vote-fact chips for the chat UI)."
+        )
+        assert "_fact_chips" in self.QUERY_SOURCE, (
+            "query.py must build a _fact_chips list [{vote_id, debate_id, label}] for the vote_facts event."
+        )
+        assert "[VOTE-FACT-CHIPS] Failed (pipeline continues)" in self.QUERY_SOURCE, (
+            "query.py must guard the vote_facts emission with a non-fatal try/except."
+        )
+        # Emission order: citation_details line < vote_facts line
+        cit_line = self._first_line_of("citation_details")
+        facts_line = self._first_line_of("'type': 'vote_facts'")
+        if facts_line < 0:
+            facts_line = self._first_line_of('"type": "vote_facts"')
+        assert cit_line >= 0, "citation_details yield not found in query.py"
+        assert facts_line > cit_line, (
+            f"'vote_facts' (line {facts_line}) must appear AFTER 'citation_details' (line {cit_line})."
+        )
