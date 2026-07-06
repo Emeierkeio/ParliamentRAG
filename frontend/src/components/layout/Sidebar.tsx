@@ -33,6 +33,7 @@ import {
   BarChart3,
   Users,
   CalendarDays,
+  Vote,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -173,6 +174,11 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 isCollapsed={false}
                 disabled={false}
               />
+              <NavButton
+                item={{ icon: Vote, label: t('votesExplorer'), isActive: pathname === "/votes", onClick: () => handleNavClick(() => navTo("/votes")) }}
+                isCollapsed={false}
+                disabled={false}
+              />
 
             </nav>
           </ScrollArea>
@@ -290,6 +296,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             <NavButton
               item={{ icon: Compass, label: t('ideologicalCompass'), href: "/compass", isActive: pathname === "/compass", onClick: () => navTo("/compass") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: Vote, label: t('votesExplorer'), href: "/votes", isActive: pathname === "/votes", onClick: () => handleNavClick(() => navTo("/votes")) }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
