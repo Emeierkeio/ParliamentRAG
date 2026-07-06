@@ -25,6 +25,7 @@ from .routers.compass import router as compass_router
 from .routers.data import router as data_router
 from .routers.timeline import router as timeline_router
 from .routers.transcript import router as transcript_router
+from .routers.votes import router as votes_router
 from .config import MAINTENANCE_MODE, get_config, get_settings
 from .services.deps import get_neo4j_client
 
@@ -293,6 +294,7 @@ app.include_router(compass_router)  # Standalone ideological compass
 app.include_router(data_router)     # Phase 1 schema data (votes, debate-act links)
 app.include_router(timeline_router)    # Phase 9 parliamentary timeline
 app.include_router(transcript_router)  # Phase 10 transcript viewer
+app.include_router(votes_router)  # Vote intelligence: search + cohesion rankings
 
 
 @app.get("/")
