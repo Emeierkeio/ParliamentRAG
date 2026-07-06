@@ -13,6 +13,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
 from .query import get_services
+from ..services.compass.vote_pipeline import get_vote_compass
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Compass"])
@@ -62,4 +63,18 @@ async def compass_endpoint(request: CompassRequest):
 
     except Exception as e:
         logger.error(f"Compass endpoint error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/compass/votes")
+async def vote_compass_endpoint(legislature: int = 19, chamber: str = "camera"):
+    """Vote-based compass: party coordinates from IndividualVote PCA. Query-independent, cached."""
+    try:
+        neo4j = get_services()["neo4j"]
+        result = await asyncio.get_running_loop().run_in_executor(
+            None, lambda: get_vote_compass(legislature, chamber, neo4j)
+        )
+        return result
+    except Exception as e:
+        logger.error(f"[COMPASS-VOTES] Failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
