@@ -314,3 +314,51 @@ class TestEvaluationRouterThin:
         assert "evaluation_service" in self.EVAL_SOURCE, (
             "evaluation.py must import from services/evaluation_service.py."
         )
+
+
+# ---------------------------------------------------------------------------
+# Votes router — thin delegation pattern
+# ---------------------------------------------------------------------------
+
+def test_votes_endpoint():
+    """votes.py must expose /api/votes and /api/rankings/votes delegating to votes_service.
+
+    Checks (source-inspection only — avoids scipy/NumPy 2.x import chain):
+      1. Both route paths are declared.
+      2. All three votes_service calls are present (no business logic inlined).
+      3. No inline Cypher MATCH clause lives in the router.
+      4. main.py registers votes_router.
+    """
+    votes_src = _read_source("app/routers/votes.py")
+    main_src = _read_source("app/main.py")
+
+    # Route paths declared
+    assert '/api/votes' in votes_src or '"/api/votes"' in votes_src or "'/api/votes'" in votes_src or (
+        'prefix="/api"' in votes_src and '"/votes"' in votes_src
+    ), "votes.py must declare /api/votes route"
+
+    assert "/rankings/votes" in votes_src, "votes.py must declare /api/rankings/votes route"
+
+    # Service delegation — no business logic inlined
+    assert "votes_service.search_votes" in votes_src, (
+        "votes.py must delegate to votes_service.search_votes"
+    )
+    assert "votes_service.get_party_cohesion" in votes_src, (
+        "votes.py must delegate to votes_service.get_party_cohesion"
+    )
+    assert "votes_service.get_deputy_vote_stats" in votes_src, (
+        "votes.py must delegate to votes_service.get_deputy_vote_stats"
+    )
+
+    # No inline Cypher
+    assert "MATCH (" not in votes_src, (
+        "votes.py must not contain inline Cypher — delegate to votes_service"
+    )
+
+    # main.py registers votes_router
+    assert "from .routers.votes import router as votes_router" in main_src, (
+        "main.py must import votes_router from app.routers.votes"
+    )
+    assert "app.include_router(votes_router" in main_src, (
+        "main.py must call app.include_router(votes_router)"
+    )

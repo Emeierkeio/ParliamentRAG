@@ -143,6 +143,36 @@ def test_unified_evidence_no_span_fields():
     )
 
 
+def test_votes_search_has_chamber_filter():
+    """votes_service.py must filter by s.chamber and s.legislature in search_votes Cypher.
+
+    Also asserts:
+      - coalesce(a.title, d.title, v.subject) label hierarchy is present (Pitfall 4 guard).
+      - get_party_cohesion region contains the date-scoped MEMBER_OF_GROUP condition.
+    """
+    source = _read_source("services/votes_service.py")
+
+    # search_votes Cypher must filter both chamber and legislature
+    assert "s.chamber" in source, (
+        "votes_service.py search_votes Cypher must filter by s.chamber"
+    )
+    assert "s.legislature" in source, (
+        "votes_service.py search_votes Cypher must filter by s.legislature"
+    )
+
+    # Label hierarchy: prefer act/debate title over generic v.subject (Pitfall 4)
+    assert "coalesce(a.title, d.title, v.subject)" in source, (
+        "votes_service.py must use coalesce(a.title, d.title, v.subject) as label "
+        "to avoid generic Votazione labels from SPARQL-ingested votes"
+    )
+
+    # get_party_cohesion uses date-scoped MEMBER_OF_GROUP (as per design notes)
+    assert "mg.start_date <= s.date" in source, (
+        "votes_service.py get_party_cohesion Cypher must scope MEMBER_OF_GROUP by date "
+        "(mg.start_date <= s.date)"
+    )
+
+
 def test_citation_info_no_span_fields():
     """CitationInfo Pydantic model source in query.py must not define span_start or span_end fields."""
     source = _read_source("routers/query.py")
