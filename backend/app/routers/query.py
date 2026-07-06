@@ -22,6 +22,7 @@ from ..services.experts import compute_experts, patch_experts_for_cited_speakers
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.pipeline_logger import PipelineRunLogger
 from ..services.generation.direct_writer import DirectWriter
+from ..services import votes_service
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -251,13 +252,27 @@ async def process_query_streaming(
         gen_config = get_config().load_config().get("generation", {})
         gen_mode = gen_config.get("mode", "pipeline")
 
+        # Initialise vote_facts and session_ids in enclosing scope so Tasks 2 & 3 SSE
+        # events can access them after citation_details regardless of gen_mode.
+        vote_facts: list = []
+        _session_ids = list({e.get("session_id") for e in evidence_dicts if e.get("session_id")})
+
         if gen_mode == "direct":
             logger.info("[QUERY] Using DirectWriter (single-prompt mode, locale=%s)", request_locale)
+            # F4: fetch vote facts for RAG prompt injection (only in direct mode)
+            try:
+                vote_facts = await asyncio.get_running_loop().run_in_executor(
+                    None, lambda: votes_service.get_vote_facts(services["neo4j"], _session_ids)
+                )
+            except Exception as _vf_err:
+                logger.error(f"[VOTE-FACTS] Failed (pipeline continues): {_vf_err}", exc_info=True)
+                vote_facts = []
             writer = DirectWriter()
             generation_result = await writer.generate(
                 query=request.query,
                 evidence_list=evidence_dicts,
                 locale=request_locale,
+                vote_facts=vote_facts,
             )
         else:
             logger.info("[QUERY] Using 4-stage pipeline mode")

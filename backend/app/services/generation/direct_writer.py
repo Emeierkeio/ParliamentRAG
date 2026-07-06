@@ -50,6 +50,7 @@ class DirectWriter:
         evidence_list: List[Dict[str, Any]],
         stream_callback: Optional[callable] = None,
         locale: str = "it",
+        vote_facts: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """
         Generate multi-view summary in a single LLM call.
@@ -92,7 +93,7 @@ class DirectWriter:
         # --- Step 2: Build prompt with pre-selected evidence ---
         system_prompt = self._build_system_prompt(locale=locale)
         user_prompt = self._build_user_prompt(
-            query, gov_selection, party_selections, topic_stats, locale=locale
+            query, gov_selection, party_selections, topic_stats, locale=locale, vote_facts=vote_facts
         )
 
         if stream_callback:
@@ -235,7 +236,9 @@ Stesso formato dei partiti di maggioranza.
 
 7. LUNGHEZZA: 3-5 frasi per partito. Bilanciare maggioranza e opposizione.
 
-8. NON INVENTARE: Nessuna informazione non presente nelle evidenze."""
+8. NON INVENTARE: Nessuna informazione non presente nelle evidenze.
+
+9. VOTI PARLAMENTARI: Quando una risposta riguarda atti su cui il Parlamento ha votato, usa VERBATIM le righe [FATTO DI VOTO] presenti nel contesto. Non parafrasare i numeri di voto."""
 
     def _system_prompt_en(self) -> str:
         return """You are an expert parliamentary analyst. Write a multi-view summary of parliamentary group positions on a topic, based EXCLUSIVELY on the provided evidence.
@@ -281,7 +284,9 @@ Same format as majority parties.
 
 6. LENGTH: 3-5 sentences per party. Balance majority and opposition.
 
-7. DO NOT INVENT: No information not present in the evidence."""
+7. DO NOT INVENT: No information not present in the evidence.
+
+8. PARLIAMENT VOTES: When an answer concerns acts the Parliament has voted on, use the [FATTO DI VOTO] lines in the context VERBATIM. Do not paraphrase vote numbers."""
 
     # ── User prompt builder ────────────────────────────────────────────
 
@@ -292,6 +297,7 @@ Same format as majority parties.
         party_selections: Dict[str, Optional[Dict[str, Any]]],
         topic_stats: Dict[str, Any],
         locale: str = "it",
+        vote_facts: Optional[List[Dict[str, Any]]] = None,
     ) -> str:
         config_data = self.config.load_config()
         coalitions = config_data.get("coalitions", {})
@@ -315,6 +321,18 @@ Same format as majority parties.
             if nums:
                 parts.append(f"- {'Sessions' if _en else 'Sedute'}: N. {', '.join(nums)}")
         parts.append("")
+
+        # Vote facts — injected verbatim into prompt so the LLM can cite exact outcomes
+        if vote_facts:
+            parts.append("## " + ("VOTE FACTS" if _en else "FATTI DI VOTO"))
+            for f in vote_facts:
+                outcome_it = "approvato" if f.get("outcome") in ("approved", "approvato") else "respinto"
+                parts.append(
+                    f"[FATTO DI VOTO] \"{f['label']}\" — votato il {f['date']}: "
+                    f"{f.get('in_favor', 0)} sì, {f.get('against', 0)} no, {f.get('abstained', 0)} astenuti. "
+                    f"Esito: {outcome_it}. (vote_id: {f['vote_id']})"
+                )
+            parts.append("")
 
         # Government evidence
         parts.append("## GOVERNO")
