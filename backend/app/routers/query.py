@@ -532,6 +532,17 @@ async def process_query_streaming(
         except Exception as _coh_err:
             logger.error(f"[VOTE-COHERENCE] Failed (pipeline continues): {_coh_err}", exc_info=True)
 
+        # === F4: vote-fact chips — clickable vote references (exempt from citation-verifier) ===
+        try:
+            if vote_facts:
+                _fact_chips = [
+                    {"vote_id": f["vote_id"], "debate_id": f.get("debate_id"), "label": f["label"]}
+                    for f in vote_facts
+                ]
+                yield f"data: {json.dumps({'type': 'vote_facts', 'data': _fact_chips}, default=str)}\n\n"
+        except Exception as _vfc_err:
+            logger.error(f"[VOTE-FACT-CHIPS] Failed (pipeline continues): {_vfc_err}", exc_info=True)
+
         # Translate response text if needed
         if request_locale != "it":
             final_text = await translate_response_text(final_text, target_lang=request_locale)
