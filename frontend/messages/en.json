@@ -160,7 +160,8 @@
     "supervisor": "Supervisor",
     "cosupervisor": "Co-supervisor",
     "dataDate": "February 4, 2026",
-    "version": "Version"
+    "version": "Version",
+    "votesExplorer": "Votes"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",
@@ -671,5 +672,53 @@
     "keywordsPos": "Keywords pole (+)",
     "errorFetch": "Error calculating the ideological compass",
     "errorUnknown": "Unknown error"
+  },
+  "Votes": {
+    "title": "Votes Explorer",
+    "subtitle": "Search and filter parliamentary votes by chamber, date, outcome and margin.",
+    "filterChamber": "Chamber",
+    "filterLegislature": "Legislature",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "outcome": "Outcome",
+    "outcomeApproved": "Approved",
+    "outcomeRejected": "Rejected",
+    "minMargin": "Min margin (%)",
+    "colDate": "Date",
+    "colChamber": "Branch",
+    "colLabel": "Subject",
+    "colOutcome": "Outcome",
+    "colFavor": "In favour",
+    "colAgainst": "Against",
+    "colMargin": "Margin",
+    "empty": "No votes found with the selected filters.",
+    "loadMore": "Load more",
+    "unavailable": "Vote data not yet available."
+  },
+  "VoteCoherence": {
+    "heading": "How they voted",
+    "outcomePrefix": "Outcome",
+    "favor": "in favour",
+    "against": "against",
+    "abstain": "abstained",
+    "onlyAggregate": "Group-level data not yet available"
+  },
+  "VoteFacts": {
+    "chipAria": "Open the vote debate",
+    "chipPrefix": "Vote"
+  },
+  "VoteCompass": {
+    "toggleText": "Text axes",
+    "toggleVote": "Vote axes",
+    "tooltip": "Text axis = what they say; vote axis = what they do",
+    "variance": "Variance explained",
+    "unavailable": "Vote compass data not available."
+  },
+  "Cohesion": {
+    "columnRice": "Cohesion (Rice)",
+    "columnRebellion": "Rebellion",
+    "columnParticipation": "Participation",
+    "toggle": "Vote metrics",
+    "unavailable": "Cohesion data not yet available."
   }
 }

@@ -160,7 +160,8 @@
     "supervisor": "Relatore",
     "cosupervisor": "Correlatore",
     "dataDate": "4 febbraio 2026",
-    "version": "Versione"
+    "version": "Versione",
+    "votesExplorer": "Votazioni"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",
@@ -671,5 +672,53 @@
     "keywordsPos": "Parole chiave polo (+)",
     "errorFetch": "Errore nel calcolo del compasso ideologico",
     "errorUnknown": "Errore sconosciuto"
+  },
+  "Votes": {
+    "title": "Esplora Votazioni",
+    "subtitle": "Cerca e filtra le votazioni parlamentari per camera, data, esito e margine.",
+    "filterChamber": "Camera",
+    "filterLegislature": "Legislatura",
+    "dateFrom": "Dal",
+    "dateTo": "Al",
+    "outcome": "Esito",
+    "outcomeApproved": "Approvata",
+    "outcomeRejected": "Respinta",
+    "minMargin": "Margine minimo (%)",
+    "colDate": "Data",
+    "colChamber": "Ramo",
+    "colLabel": "Oggetto",
+    "colOutcome": "Esito",
+    "colFavor": "Favorevoli",
+    "colAgainst": "Contrari",
+    "colMargin": "Margine",
+    "empty": "Nessuna votazione trovata con i filtri selezionati.",
+    "loadMore": "Carica altre",
+    "unavailable": "Dati di voto non ancora disponibili."
+  },
+  "VoteCoherence": {
+    "heading": "Come hanno votato",
+    "outcomePrefix": "Esito",
+    "favor": "a favore",
+    "against": "contrari",
+    "abstain": "astenuti",
+    "onlyAggregate": "Dati per gruppo non ancora disponibili"
+  },
+  "VoteFacts": {
+    "chipAria": "Apri il dibattito del voto",
+    "chipPrefix": "Voto"
+  },
+  "VoteCompass": {
+    "toggleText": "Assi testuali",
+    "toggleVote": "Assi di voto",
+    "tooltip": "Asse testuale = ciò che dicono; asse di voto = ciò che fanno",
+    "variance": "Varianza spiegata",
+    "unavailable": "Dati bussola di voto non disponibili."
+  },
+  "Cohesion": {
+    "columnRice": "Coesione (Rice)",
+    "columnRebellion": "Ribellione",
+    "columnParticipation": "Partecipazione",
+    "toggle": "Metriche di voto",
+    "unavailable": "Dati di coesione non ancora disponibili."
   }
 }
