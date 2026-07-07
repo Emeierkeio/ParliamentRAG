@@ -28,9 +28,19 @@ def _read_source(relative_path: str) -> str:
 # ---------------------------------------------------------------------------
 
 class TestChatEventTypes:
-    """Verify all contract-defined event types are present in chat.py."""
+    """Verify all contract-defined event types are present in chat.py.
 
-    CHAT_SOURCE = _read_source("app/routers/chat.py")
+    'waiting' events are emitted by PipelineQueue.acquire via the emit callback
+    passed from process_chat_background. pipeline_queue.py is therefore included
+    in the source scan as part of the chat pipeline infrastructure.
+    """
+
+    # Include pipeline_queue.py: 'waiting' events are delegated there via emit_fn callback
+    CHAT_SOURCE = (
+        _read_source("app/routers/chat.py")
+        + "\n"
+        + _read_source("app/services/pipeline_queue.py")
+    )
 
     def test_chat_event_types_exist(self):
         """All event types documented in SSE_CONTRACT.md must appear in chat.py."""

@@ -199,26 +199,49 @@ async def _translate_text(client, text: str, max_tokens: int = 2000) -> str:
 
 
 async def _translate_one(citation: dict, client) -> dict:
-    """Translate a single citation's short text (preview).
+    """Translate a single citation's text and full_text in a single JSON API call.
 
-    Only translates 'text' (the short preview, ~100-300 chars).
-    full_text (entire speech, up to 11k chars) is NOT translated eagerly —
-    it would take 5-10s per citation and hit rate limits. The frontend
-    shows the original Italian in the modal with an ORIGINAL label.
+    Both 'text' (short preview) and 'full_text' (full speech) are bundled
+    into one API call for efficiency. The response is a JSON object with the
+    same keys. On failure the original citation is returned unchanged.
     """
     text = citation.get("text", "")
+    full_text = citation.get("full_text", "")
 
-    if not text:
+    if not text and not full_text:
         return citation
 
     try:
-        translated_text = await _translate_text(client, text)
+        payload: dict = {}
+        if text:
+            payload["text"] = text
+        if full_text:
+            payload["full_text"] = full_text
 
-        return {
-            **citation,
-            "translated_text": translated_text,
-            "is_translated": True,
-        }
+        resp = await client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        _TRANSLATE_SYS
+                        + "\nReturn ONLY valid JSON with the same keys as the input."
+                    ),
+                },
+                {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+            ],
+            temperature=0,
+        )
+        raw = resp.choices[0].message.content or ""
+        translated = json.loads(raw)
+
+        result = {**citation}
+        if "text" in translated:
+            result["translated_text"] = translated["text"]
+        if "full_text" in translated:
+            result["translated_full_text"] = translated["full_text"]
+        result["is_translated"] = True
+        return result
     except Exception as exc:  # noqa: BLE001
         logger.warning("Translation failed for citation; returning original. Error: %s", exc)
         return citation
