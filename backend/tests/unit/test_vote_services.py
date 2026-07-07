@@ -6,6 +6,7 @@ No Neo4j, no scipy, no numpy. Tests run in isolation from the DB.
 Task 1 covers: rice_index, mean_rice (6 tests).
 Task 3 adds:  test_vote_facts_empty, test_vote_coherence_empty (2 tests).
 Bug-fix adds: margin-as-percentage assertions, dedup guard (4 tests).
+14-08 ext:    get_vote_individual_votes shape tests (4 tests).
 """
 import pytest
 
@@ -137,4 +138,117 @@ def test_vote_coherence_cypher_no_fanout():
     )
     assert "collect(DISTINCT a)" in _VOTE_COHERENCE_CYPHER, (
         "_VOTE_COHERENCE_CYPHER must use collect(DISTINCT a) to avoid act fan-out"
+    )
+
+
+# ---------------------------------------------------------------------------
+# get_vote_individual_votes — shape tests and Cypher contract (14-08 extension)
+# ---------------------------------------------------------------------------
+
+class _FakeNeo4j:
+    """Minimal fake Neo4j client that returns a fixed row list."""
+
+    def __init__(self, rows):
+        self._rows = rows
+
+    def query(self, cypher, params=None):
+        return self._rows
+
+
+def test_individual_votes_unavailable_when_no_rows():
+    """get_vote_individual_votes returns available=False when neo4j returns empty list."""
+    from app.services.votes_service import get_vote_individual_votes
+
+    neo4j = _FakeNeo4j([])
+    result = get_vote_individual_votes(neo4j, "fake_vote_id")
+
+    assert result["available"] is False
+    assert result["vote_id"] == "fake_vote_id"
+    assert result["recorded"] == 0
+    assert result["parties"] == []
+
+
+def test_individual_votes_unavailable_when_deputy_id_null():
+    """get_vote_individual_votes returns available=False when rows have no deputy (no IndividualVotes)."""
+    from app.services.votes_service import get_vote_individual_votes
+
+    # One row returned (vote exists) but deputy_id is None (no IndividualVote data)
+    fake_row = {
+        "vote_id": "v1",
+        "official_total": 300,
+        "deputy_id": None,
+        "deputy_name": None,
+        "party": "Sconosciuto",
+        "outcome": None,
+    }
+    neo4j = _FakeNeo4j([fake_row])
+    result = get_vote_individual_votes(neo4j, "v1")
+
+    assert result["available"] is False
+    assert result["recorded"] == 0
+    assert result["official_total"] == 300
+    assert result["parties"] == []
+
+
+def test_individual_votes_grouping_by_party():
+    """get_vote_individual_votes groups deputies by party and outcome correctly."""
+    from app.services.votes_service import get_vote_individual_votes
+
+    rows = [
+        {"vote_id": "v1", "official_total": 10, "deputy_id": "d1",
+         "deputy_name": "Mario Rossi", "party": "Partito A", "outcome": "favor"},
+        {"vote_id": "v1", "official_total": 10, "deputy_id": "d2",
+         "deputy_name": "Luigi Bianchi", "party": "Partito A", "outcome": "against"},
+        {"vote_id": "v1", "official_total": 10, "deputy_id": "d3",
+         "deputy_name": "Anna Verdi", "party": "Partito B", "outcome": "favor"},
+        {"vote_id": "v1", "official_total": 10, "deputy_id": "d4",
+         "deputy_name": "Carlo Neri", "party": "Partito B", "outcome": "abstain"},
+    ]
+    neo4j = _FakeNeo4j(rows)
+    result = get_vote_individual_votes(neo4j, "v1")
+
+    assert result["available"] is True
+    assert result["vote_id"] == "v1"
+    assert result["recorded"] == 4
+    assert result["official_total"] == 10
+
+    # Parties sorted alphabetically
+    assert len(result["parties"]) == 2
+    party_a = result["parties"][0]
+    party_b = result["parties"][1]
+    assert party_a["party"] == "Partito A"
+    assert party_b["party"] == "Partito B"
+
+    # Party A: 1 favor, 1 against, 0 abstained
+    assert len(party_a["favor"]) == 1
+    assert party_a["favor"][0]["id"] == "d1"
+    assert party_a["favor"][0]["name"] == "Mario Rossi"
+    assert len(party_a["against"]) == 1
+    assert len(party_a["abstained"]) == 0
+
+    # Party B: 1 favor, 0 against, 1 abstained
+    assert len(party_b["favor"]) == 1
+    assert len(party_b["against"]) == 0
+    assert len(party_b["abstained"]) == 1
+    assert party_b["abstained"][0]["id"] == "d4"
+
+
+def test_individual_votes_cypher_date_scoped_membership():
+    """_INDIVIDUAL_VOTES_CYPHER must use date-scoped MEMBER_OF_GROUP with start/end date guard."""
+    from app.services.votes_service import _INDIVIDUAL_VOTES_CYPHER
+
+    assert "mg.start_date <= s.date" in _INDIVIDUAL_VOTES_CYPHER, (
+        "_INDIVIDUAL_VOTES_CYPHER must filter MEMBER_OF_GROUP by start_date"
+    )
+    assert "mg.end_date IS NULL OR mg.end_date >= s.date" in _INDIVIDUAL_VOTES_CYPHER, (
+        "_INDIVIDUAL_VOTES_CYPHER must filter MEMBER_OF_GROUP by end_date (NULL or future)"
+    )
+
+
+def test_individual_votes_cypher_no_fanout():
+    """_INDIVIDUAL_VOTES_CYPHER must collapse MEMBER_OF_GROUP fan-out via head(collect(...))."""
+    from app.services.votes_service import _INDIVIDUAL_VOTES_CYPHER
+
+    assert "head(collect(g.name))" in _INDIVIDUAL_VOTES_CYPHER, (
+        "_INDIVIDUAL_VOTES_CYPHER must use head(collect(g.name)) to avoid MEMBER_OF_GROUP fan-out"
     )

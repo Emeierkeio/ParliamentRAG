@@ -59,6 +59,20 @@ async def search_votes_endpoint(
     )
 
 
+@router.get("/votes/{vote_id}/individual")
+async def get_individual_votes_endpoint(
+    vote_id: str,
+    neo4j: Neo4jClient = Depends(get_neo4j_client),
+) -> dict:
+    """Per-deputy individual vote breakdown for a single vote (vote explorer drill-down).
+
+    Returns deputies grouped by party and outcome (favor / against / abstained).
+    Always returns {"available": False, ...} when IndividualVote data has not yet
+    been ingested for this vote — never presents an empty list as a completed record.
+    """
+    return votes_service.get_vote_individual_votes(neo4j, vote_id)
+
+
 @router.get("/rankings/votes")
 async def rankings_votes_endpoint(
     chamber: str = "camera",

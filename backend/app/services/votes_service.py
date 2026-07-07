@@ -377,6 +377,101 @@ def get_vote_facts(neo4j, session_ids: list[str]) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Vote explorer — per-deputy individual vote breakdown
+# ---------------------------------------------------------------------------
+
+_INDIVIDUAL_VOTES_CYPHER = """
+MATCH (v:Vote {id: $vote_id})<-[:HAS_VOTE]-(s:Session)
+OPTIONAL MATCH (dep:Deputy)-[:VOTED]->(iv:IndividualVote)-[:ON_VOTE]->(v)
+OPTIONAL MATCH (dep)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+  WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+WITH v, dep, iv, head(collect(g.name)) AS party
+RETURN v.id AS vote_id,
+       coalesce(v.inFavor, 0) + coalesce(v.against, 0) + coalesce(v.abstained, 0) AS official_total,
+       dep.id AS deputy_id,
+       dep.first_name + ' ' + dep.last_name AS deputy_name,
+       coalesce(party, 'Sconosciuto') AS party,
+       iv.outcome AS outcome
+"""
+
+
+def get_vote_individual_votes(neo4j, vote_id: str) -> dict:
+    """Return per-deputy individual vote breakdown for a single vote (drill-down).
+
+    Deputies are grouped by party, then by outcome (favor / against / abstained).
+    Returns {"available": False, ...} when no IndividualVote records exist for
+    the vote — never presents an empty deputy list as fact.
+
+    Shape:
+        {
+            "available": bool,
+            "vote_id": str,
+            "recorded": int,
+            "official_total": int,
+            "parties": [
+                {
+                    "party": str,
+                    "favor": [{"id": str, "name": str}, ...],
+                    "against": [...],
+                    "abstained": [...]
+                }
+            ]
+        }
+
+    Coverage note: when recorded < official_total, the caller should surface a note
+    that only a subset of votes could be attributed to individual deputies.
+    """
+    rows = neo4j.query(_INDIVIDUAL_VOTES_CYPHER, {"vote_id": vote_id})
+
+    if not rows:
+        return {
+            "available": False,
+            "vote_id": vote_id,
+            "recorded": 0,
+            "official_total": 0,
+            "parties": [],
+        }
+
+    official_total = int(rows[0].get("official_total") or 0)
+
+    # Filter to rows with actual IndividualVote data (dep is not NULL)
+    valid_rows = [r for r in rows if r.get("deputy_id") is not None]
+    if not valid_rows:
+        return {
+            "available": False,
+            "vote_id": vote_id,
+            "recorded": 0,
+            "official_total": official_total,
+            "parties": [],
+        }
+
+    # Group by party, then by outcome bucket
+    parties_map: dict[str, dict] = {}
+    for row in valid_rows:
+        party = row["party"]
+        if party not in parties_map:
+            parties_map[party] = {"party": party, "favor": [], "against": [], "abstained": []}
+        deputy = {"id": row["deputy_id"], "name": row.get("deputy_name") or ""}
+        outcome = row.get("outcome") or ""
+        if outcome == "favor":
+            parties_map[party]["favor"].append(deputy)
+        elif outcome == "against":
+            parties_map[party]["against"].append(deputy)
+        elif outcome in ("abstain", "abstained"):
+            parties_map[party]["abstained"].append(deputy)
+
+    parties = sorted(parties_map.values(), key=lambda p: p["party"])
+
+    return {
+        "available": True,
+        "vote_id": vote_id,
+        "recorded": len(valid_rows),
+        "official_total": official_total,
+        "parties": parties,
+    }
+
+
+# ---------------------------------------------------------------------------
 # F1 — Vote coherence per session (for SSE event)
 # ---------------------------------------------------------------------------
 
