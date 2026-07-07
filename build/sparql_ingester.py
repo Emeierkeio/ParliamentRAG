@@ -24,11 +24,14 @@ import json
 import logging
 import re
 import threading
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Optional
+
+from neo4j.exceptions import TransientError
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +53,12 @@ BATCH_SIZE = 500          # Neo4j write batch size
 SPARQL_PAGE_SIZE = 1000   # HTTP pagination page size
 SPARQL_TIMEOUT = 150      # seconds — dati.camera.it vote queries can be slow
 SPARQL_WORKERS = 4        # concurrent SPARQL requests (be polite to the endpoint)
+
+# Concurrent deputies MERGE relationships onto the same shared Vote nodes, so
+# parallel write transactions deadlock (ForsetiClient). SPARQL fetches stay
+# parallel; Neo4j writes are serialized through this lock.
+_NEO4J_WRITE_LOCK = threading.Lock()
+_WRITE_RETRIES = 5
 
 # ---------------------------------------------------------------------------
 # Regex patterns
@@ -684,13 +693,23 @@ RETURN count(*) AS skipped
 
         for i in range(0, len(batch), chunk_size):
             chunk = batch[i:i + chunk_size]
-            with self._driver.session() as neo_session:
-                result = neo_session.run(cypher, batch=chunk, chamber=chamber, legislature=legislature)
-                record = result.single()
-                written += record["written"] if record else 0
-                skip_result = neo_session.run(count_cypher, batch=chunk, chamber=chamber, legislature=legislature)
-                skip_record = skip_result.single()
-                skipped += skip_record["skipped"] if skip_record else 0
+            for attempt in range(_WRITE_RETRIES):
+                try:
+                    with _NEO4J_WRITE_LOCK, self._driver.session() as neo_session:
+                        result = neo_session.run(cypher, batch=chunk, chamber=chamber, legislature=legislature)
+                        record = result.single()
+                        written += record["written"] if record else 0
+                        skip_result = neo_session.run(count_cypher, batch=chunk, chamber=chamber, legislature=legislature)
+                        skip_record = skip_result.single()
+                        skipped += skip_record["skipped"] if skip_record else 0
+                    break
+                except TransientError as exc:
+                    if attempt == _WRITE_RETRIES - 1:
+                        raise
+                    wait = 0.5 * (2 ** attempt)
+                    logger.warning("    Transient Neo4j error (attempt %d/%d), retrying in %.1fs: %s",
+                                   attempt + 1, _WRITE_RETRIES, wait, exc.code)
+                    time.sleep(wait)
 
         return written, skipped
 
