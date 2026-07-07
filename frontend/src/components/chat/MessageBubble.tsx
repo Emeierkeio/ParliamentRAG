@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
@@ -403,7 +403,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                       ? matchedCitation.quote_text || matchedCitation.text
                       : null;
 
-                    return (
+                    const citationSpan = (
                       <span
                         className={cn(
                           "inline cursor-pointer rounded px-1 py-0.5",
@@ -415,13 +415,29 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                         onClick={() => {
                           setHighlightedChunkId(href);
                         }}
-                        title={originalQuote ? `Original: ${originalQuote}` : t('clickHighlight')}
+                        title={originalQuote ? undefined : t('clickHighlight')}
                       >
                         {children}
                         {originalQuote && (
                           <span className="inline-block ml-1 text-[10px] text-muted-foreground/60 align-super">🌐</span>
                         )}
                       </span>
+                    );
+
+                    if (!originalQuote) return citationSpan;
+
+                    return (
+                      <Tooltip delayDuration={300}>
+                        <TooltipTrigger asChild>{citationSpan}</TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-[400px] p-3">
+                          <p className="text-[10px] font-semibold text-muted-foreground/70 mb-1 uppercase tracking-wider">
+                            {t('originalLabel')}
+                          </p>
+                          <p className="text-xs leading-relaxed italic">
+                            &ldquo;{originalQuote}&rdquo;
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
                     );
                   }
 
@@ -543,6 +559,87 @@ function injectStatsLinks(content: string): string {
   return before + result + rest;
 }
 
+/** Editorial "come hanno votato" block — renders under citations when vote_coherence data is available */
+function VoteCoherenceBlock({ message }: { message: Message }) {
+  const tvc = useTranslations('VoteCoherence');
+
+  if (!message.voteCoherence) return null;
+
+  // Determine which session_ids the citations reference
+  const citedSessionIds = new Set(
+    (message.citations || []).map((c) => c.session_id).filter(Boolean)
+  );
+
+  // Match voteCoherence keys to cited sessions
+  const matchingKeys = Object.keys(message.voteCoherence).filter((key) =>
+    citedSessionIds.size === 0 ? true : citedSessionIds.has(key)
+  );
+
+  if (matchingKeys.length === 0) return null;
+
+  return (
+    <div className="mt-4 border-t border-border/40 pt-4 space-y-3">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+        {tvc('heading')}
+      </p>
+      {matchingKeys.map((sessionId) => {
+        const session = message.voteCoherence![sessionId];
+        return session.votes.map((vote) => {
+          const hasBreakdown =
+            vote.party_breakdown.length > 0 &&
+            vote.party_breakdown.some(
+              (p) => p.favor > 0 || p.against > 0 || p.abstain > 0
+            );
+          return (
+            <div key={vote.vote_id} className="space-y-2">
+              {/* Aggregate row */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] text-muted-foreground/60">{tvc('outcomePrefix')}:</span>
+                <span className="text-[11px] font-medium text-foreground">{vote.outcome}</span>
+                <span className="[font-family:var(--font-display)] text-sm tabular-nums text-foreground/80">
+                  {vote.in_favor}–{vote.against}
+                </span>
+              </div>
+              {/* Party breakdown chips or aggregate-only note */}
+              {hasBreakdown ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {vote.party_breakdown.map((pb) => (
+                    <div
+                      key={pb.party}
+                      className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 px-2 py-0.5 text-[10px]"
+                    >
+                      <span className="font-medium text-foreground/80 max-w-[80px] truncate" title={pb.party}>
+                        {pb.party}
+                      </span>
+                      {pb.favor > 0 && (
+                        <span className="text-green-600 dark:text-green-400 font-semibold">
+                          {pb.favor}
+                        </span>
+                      )}
+                      {pb.against > 0 && (
+                        <span className="text-red-500 dark:text-red-400 font-semibold">
+                          {pb.against}
+                        </span>
+                      )}
+                      {pb.abstain > 0 && (
+                        <span className="text-muted-foreground">
+                          {pb.abstain}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[10px] text-muted-foreground/50 italic">{tvc('onlyAggregate')}</p>
+              )}
+            </div>
+          );
+        });
+      })}
+    </div>
+  );
+}
+
 interface AssistantMetadataProps {
   message: Message;
   highlightedChunkId?: string | null;
@@ -624,7 +721,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
                 <span className="text-sm font-semibold">{t('hqJudgeReason')}</span>
               </div>
               <p className="text-xs text-muted-foreground italic leading-relaxed">
-                "{message.hqMetadata!.judge_reason}"
+                &ldquo;{message.hqMetadata!.judge_reason}&rdquo;
               </p>
             </div>
 
@@ -678,6 +775,8 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
               />
             ))}
           </div>
+          {/* Vote coherence editorial block — rendered inside the citations collapsible */}
+          {message.voteCoherence && <VoteCoherenceBlock message={message} />}
         </CollapsibleSection>
       )}
 
@@ -721,15 +820,11 @@ function CollapsibleSection({
   infoTooltip,
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  useEffect(() => {
-    if (forceOpen) {
-      setIsOpen(true);
-    }
-  }, [forceOpen]);
+  // Derive open state: stays open when forceOpen is true or user opened it explicitly
+  const derivedOpen = isOpen || forceOpen;
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={derivedOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
         <Button
           variant="ghost"
