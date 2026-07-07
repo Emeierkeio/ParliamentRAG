@@ -4,6 +4,7 @@ import type {
   VoteCohesionData,
   DeputyVoteStats,
   VoteCompassData,
+  VoteIndividualResponse,
 } from '@/types/votes';
 
 const BASE = config.api.baseUrl;
@@ -63,6 +64,15 @@ export async function getVoteCohesion(
     headers: buildHeaders(),
   });
   if (!res.ok) throw new Error(`Vote cohesion fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getVoteIndividual(voteId: string): Promise<VoteIndividualResponse> {
+  const res = await fetch(
+    `${BASE}/votes/${encodeURIComponent(voteId)}/individual`,
+    { headers: buildHeaders() },
+  );
+  if (!res.ok) throw new Error(`Individual votes fetch failed: ${res.status}`);
   return res.json();
 }
 

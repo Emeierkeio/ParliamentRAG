@@ -45,6 +45,26 @@ export interface DeputyVoteStats {
   rebellions: number;
 }
 
+export interface IndividualVoteDeputy {
+  id: string;
+  name: string;
+}
+
+export interface PartyIndividualVotes {
+  party: string;
+  favor: IndividualVoteDeputy[];
+  against: IndividualVoteDeputy[];
+  abstained: IndividualVoteDeputy[];
+}
+
+export interface VoteIndividualResponse {
+  available: boolean;
+  vote_id: string;
+  recorded: number;
+  official_total: number;
+  parties: PartyIndividualVotes[];
+}
+
 export interface VoteCompassParty {
   party: string;
   x: number;

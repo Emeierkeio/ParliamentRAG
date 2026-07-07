@@ -693,7 +693,14 @@
     "colMargin": "Margine",
     "empty": "Nessuna votazione trovata con i filtri selezionati.",
     "loadMore": "Carica altre",
-    "unavailable": "Dati di voto non ancora disponibili."
+    "unavailable": "Dati di voto non ancora disponibili.",
+    "showDeputies": "Vedi deputati",
+    "hideDeputies": "Nascondi deputati",
+    "individualUnavailable": "Dati di voto individuale non ancora disponibili per questa votazione.",
+    "coverageNote": "Voti individuali registrati: {recorded} su {official_total}",
+    "favorLabel": "Favorevoli",
+    "againstLabel": "Contrari",
+    "abstainedLabel": "Astenuti"
   },
   "VoteCoherence": {
     "heading": "Come hanno votato",

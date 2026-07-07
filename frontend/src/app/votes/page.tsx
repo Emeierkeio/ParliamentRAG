@@ -4,10 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
-import { searchVotes } from "@/lib/votes-api";
-import type { VoteExplorerEntry } from "@/types";
+import { searchVotes, getVoteIndividual } from "@/lib/votes-api";
+import type { VoteExplorerEntry, VoteIndividualResponse } from "@/types";
 import { cn } from "@/lib/utils";
-import { Loader2, Vote } from "lucide-react";
+import { Loader2, Vote, ChevronDown, ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const PAGE_LIMIT = 50;
@@ -33,6 +33,13 @@ export default function VotesPage() {
   const [hasMore, setHasMore] = useState(false);
   const [count, setCount] = useState(0);
 
+  // Individual votes expansion state
+  const [expandedVoteId, setExpandedVoteId] = useState<string | null>(null);
+  const [individualCache, setIndividualCache] = useState<
+    Map<string, VoteIndividualResponse>
+  >(new Map());
+  const [loadingIndividualId, setLoadingIndividualId] = useState<string | null>(null);
+
   const buildParams = useCallback(() => ({
     chamber: chamber === "both" ? "both" : chamber,
     legislature,
@@ -48,6 +55,7 @@ export default function VotesPage() {
     setLoading(true);
     setError("");
     setOffset(0);
+    setExpandedVoteId(null);
     try {
       const data = await searchVotes(buildParams());
       setRows(data.votes);
@@ -88,6 +96,37 @@ export default function VotesPage() {
       window.location.href = "/timeline";
     }
   };
+
+  const handleToggleExpand = useCallback(async (voteId: string) => {
+    // Collapse if already expanded
+    if (expandedVoteId === voteId) {
+      setExpandedVoteId(null);
+      return;
+    }
+
+    setExpandedVoteId(voteId);
+
+    // Fetch if not in cache
+    if (!individualCache.has(voteId)) {
+      setLoadingIndividualId(voteId);
+      try {
+        const data = await getVoteIndividual(voteId);
+        setIndividualCache(prev => new Map(prev).set(voteId, data));
+      } catch {
+        // On error, store an unavailable marker so we don't re-fetch
+        const errorData: VoteIndividualResponse = {
+          available: false,
+          vote_id: voteId,
+          recorded: 0,
+          official_total: 0,
+          parties: [],
+        };
+        setIndividualCache(prev => new Map(prev).set(voteId, errorData));
+      } finally {
+        setLoadingIndividualId(null);
+      }
+    }
+  }, [expandedVoteId, individualCache]);
 
   const formatOutcome = (o: string) => {
     if (o === "approved") return t("outcomeApproved");
@@ -234,7 +273,7 @@ export default function VotesPage() {
               </p>
 
               {/* Table header */}
-              <div className="hidden sm:grid grid-cols-[7rem_4rem_1fr_6rem_5rem_5rem_6rem] gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
+              <div className="hidden sm:grid grid-cols-[7rem_4rem_1fr_6rem_5rem_5rem_6rem_2rem] gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
                 <span>{t("colDate")}</span>
                 <span>{t("colChamber")}</span>
                 <span>{t("colLabel")}</span>
@@ -242,6 +281,7 @@ export default function VotesPage() {
                 <span className="text-right">{t("colFavor")}</span>
                 <span className="text-right">{t("colAgainst")}</span>
                 <span className="text-right">{t("colMargin")}</span>
+                <span />
               </div>
 
               {/* Rows */}
@@ -253,6 +293,10 @@ export default function VotesPage() {
                     onClick={() => handleRowClick(entry)}
                     formatOutcome={formatOutcome}
                     formatChamber={formatChamber}
+                    isExpanded={expandedVoteId === entry.vote_id}
+                    isLoadingIndividual={loadingIndividualId === entry.vote_id}
+                    individualData={individualCache.get(entry.vote_id) ?? null}
+                    onToggleExpand={() => handleToggleExpand(entry.vote_id)}
                   />
                 ))}
               </div>
@@ -287,20 +331,39 @@ interface VoteRowProps {
   onClick: () => void;
   formatOutcome: (o: string) => string;
   formatChamber: (c: string) => string;
+  isExpanded: boolean;
+  isLoadingIndividual: boolean;
+  individualData: VoteIndividualResponse | null;
+  onToggleExpand: () => void;
 }
 
-function VoteRow({ entry, onClick, formatOutcome, formatChamber }: VoteRowProps) {
+function VoteRow({
+  entry,
+  onClick,
+  formatOutcome,
+  formatChamber,
+  isExpanded,
+  isLoadingIndividual,
+  individualData,
+  onToggleExpand,
+}: VoteRowProps) {
+  const t = useTranslations("Votes");
   const total = entry.in_favor + entry.against + entry.abstained || 1;
   const favorPct = Math.round((entry.in_favor / total) * 100);
   const againstPct = Math.round((entry.against / total) * 100);
   const marginPct = Math.round(Math.abs(entry.margin));
   const approved = entry.outcome === "approved";
 
+  const handleExpandClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleExpand();
+  };
+
   return (
     <>
       {/* Desktop row */}
       <div
-        className="hidden sm:grid grid-cols-[7rem_4rem_1fr_6rem_5rem_5rem_6rem] gap-3 items-center px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer"
+        className="hidden sm:grid grid-cols-[7rem_4rem_1fr_6rem_5rem_5rem_6rem_2rem] gap-3 items-center px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer"
         onClick={onClick}
       >
         <span className="[font-family:var(--font-display)] text-[13px] tabular-nums text-muted-foreground shrink-0">
@@ -337,6 +400,21 @@ function VoteRow({ entry, onClick, formatOutcome, formatChamber }: VoteRowProps)
             {marginPct}%
           </span>
         </div>
+        {/* Expand toggle */}
+        <button
+          aria-label={isExpanded ? t("hideDeputies") : t("showDeputies")}
+          onClick={handleExpandClick}
+          className={cn(
+            "flex items-center justify-center h-6 w-6 rounded hover:bg-muted transition-colors",
+            isExpanded ? "text-primary" : "text-muted-foreground"
+          )}
+        >
+          {isExpanded ? (
+            <ChevronDown className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronRight className="h-3.5 w-3.5" />
+          )}
+        </button>
       </div>
 
       {/* Mobile row */}
@@ -346,9 +424,21 @@ function VoteRow({ entry, onClick, formatOutcome, formatChamber }: VoteRowProps)
       >
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] text-muted-foreground">{entry.date} · {formatChamber(entry.chamber)}</span>
-          <span className={cn("text-[11px] font-medium", approved ? "text-green-600" : "text-red-500")}>
-            {formatOutcome(entry.outcome)}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={cn("text-[11px] font-medium", approved ? "text-green-600" : "text-red-500")}>
+              {formatOutcome(entry.outcome)}
+            </span>
+            <button
+              aria-label={isExpanded ? t("hideDeputies") : t("showDeputies")}
+              onClick={handleExpandClick}
+              className={cn(
+                "flex items-center justify-center h-5 w-5 rounded hover:bg-muted transition-colors",
+                isExpanded ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              <Users className="h-3 w-3" />
+            </button>
+          </div>
         </div>
         <p className="text-[13px] text-foreground leading-snug line-clamp-2">{entry.label}</p>
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">
@@ -356,6 +446,124 @@ function VoteRow({ entry, onClick, formatOutcome, formatChamber }: VoteRowProps)
           <span>Margine: <span className="[font-family:var(--font-display)] tabular-nums">{marginPct}%</span></span>
         </div>
       </div>
+
+      {/* Expansion panel */}
+      {isExpanded && (
+        <div className="border-t border-border/40 bg-muted/20 px-4 sm:px-6 py-4">
+          <IndividualVotesPanel
+            isLoading={isLoadingIndividual}
+            data={individualData}
+          />
+        </div>
+      )}
     </>
+  );
+}
+
+// ── Individual Votes Panel ────────────────────────────────────────
+
+interface IndividualVotesPanelProps {
+  isLoading: boolean;
+  data: VoteIndividualResponse | null;
+}
+
+function IndividualVotesPanel({ isLoading, data }: IndividualVotesPanelProps) {
+  const t = useTranslations("Votes");
+
+  if (isLoading || data === null) {
+    return (
+      <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        <span>...</span>
+      </div>
+    );
+  }
+
+  if (!data.available) {
+    return (
+      <p className="text-[12px] text-muted-foreground italic">
+        {t("individualUnavailable")}
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Coverage note when recorded < official_total */}
+      {data.recorded < data.official_total && (
+        <p className="text-[11px] text-muted-foreground">
+          {t("coverageNote", { recorded: data.recorded, official_total: data.official_total })}
+        </p>
+      )}
+
+      {/* Per-party groups */}
+      <div className="space-y-3">
+        {data.parties.map(partyGroup => {
+          const hasAny =
+            partyGroup.favor.length > 0 ||
+            partyGroup.against.length > 0 ||
+            partyGroup.abstained.length > 0;
+          if (!hasAny) return null;
+          return (
+            <div key={partyGroup.party} className="space-y-1.5">
+              <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-medium">
+                {partyGroup.party}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {/* Favor */}
+                {partyGroup.favor.length > 0 && (
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-[0.15em] text-green-600 mb-1">
+                      {t("favorLabel")}
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {partyGroup.favor.map(dep => (
+                        <DeputyChip key={dep.id} name={dep.name} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Against */}
+                {partyGroup.against.length > 0 && (
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-[0.15em] text-red-500 mb-1">
+                      {t("againstLabel")}
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {partyGroup.against.map(dep => (
+                        <DeputyChip key={dep.id} name={dep.name} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Abstained */}
+                {partyGroup.abstained.length > 0 && (
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-1">
+                      {t("abstainedLabel")}
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {partyGroup.abstained.map(dep => (
+                        <DeputyChip key={dep.id} name={dep.name} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Deputy Chip ───────────────────────────────────────────────────
+
+function DeputyChip({ name }: { name: string }) {
+  return (
+    <span className="inline-block text-[11px] px-1.5 py-0.5 rounded bg-muted text-foreground leading-tight">
+      {name}
+    </span>
   );
 }

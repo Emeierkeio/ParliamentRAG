@@ -693,7 +693,14 @@
     "colMargin": "Margin",
     "empty": "No votes found with the selected filters.",
     "loadMore": "Load more",
-    "unavailable": "Vote data not yet available."
+    "unavailable": "Vote data not yet available.",
+    "showDeputies": "Show deputies",
+    "hideDeputies": "Hide deputies",
+    "individualUnavailable": "Individual vote data not yet available for this vote.",
+    "coverageNote": "Individual votes recorded: {recorded} of {official_total}",
+    "favorLabel": "In favour",
+    "againstLabel": "Against",
+    "abstainedLabel": "Abstained"
   },
   "VoteCoherence": {
     "heading": "How they voted",
