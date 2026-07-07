@@ -10,6 +10,8 @@ import { config } from "@/config";
 import { cn } from "@/lib/utils";
 import { TOPICS } from "@/lib/constants";
 import type { Expert } from "@/types";
+import { getVoteCohesion } from "@/lib/votes-api";
+import type { VoteCohesionData } from "@/types/votes";
 import {
   Crown,
   Search,
@@ -23,6 +25,7 @@ import {
   History,
   Clock,
   Loader2,
+  BarChart2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +71,7 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
 
 export default function RankingPage() {
   const t = useTranslations("RankingsPage");
+  const tc = useTranslations("Cohesion");
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const rankingHistory = useLocalHistory<{ deputies: RankingDeputy[]; computationTime: number }>(
     "parliamentrag-ranking-history"
@@ -80,6 +84,11 @@ export default function RankingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [computationTime, setComputationTime] = useState(0);
+
+  // Vote metrics state
+  const [showVoteMetrics, setShowVoteMetrics] = useState(false);
+  const [cohesion, setCohesion] = useState<VoteCohesionData | null>(null);
+  const [cohesionLoading, setCohesionLoading] = useState(false);
 
   // Filter state
   const [nameSearch, setNameSearch] = useState("");
@@ -165,6 +174,34 @@ export default function RankingPage() {
     setTopic("");
     setError("");
   };
+
+  const handleToggleVoteMetrics = useCallback(async () => {
+    const next = !showVoteMetrics;
+    setShowVoteMetrics(next);
+    if (next && cohesion === null && !cohesionLoading) {
+      setCohesionLoading(true);
+      try {
+        const data = await getVoteCohesion("camera", 19);
+        setCohesion(data as VoteCohesionData);
+      } catch {
+        setCohesion({ available: false, reason: "fetch_error" });
+      } finally {
+        setCohesionLoading(false);
+      }
+    }
+  }, [showVoteMetrics, cohesion, cohesionLoading]);
+
+  // ── Rice lookup: party name (uppercase) → rice value ──
+  const riceByParty = useMemo(() => {
+    if (!cohesion?.available || !cohesion.parties) return new Map<string, number>();
+    const map = new Map<string, number>();
+    for (const entry of cohesion.parties) {
+      map.set(entry.party.toUpperCase(), entry.rice);
+    }
+    return map;
+  }, [cohesion]);
+
+  const riceAvailable = cohesion?.available === true && riceByParty.size > 0;
 
   // ── Available committees ──
   const availableCommittees = useMemo(() => {
@@ -493,6 +530,22 @@ export default function RankingPage() {
               </PopoverContent>
             </Popover>
 
+            {/* Vote metrics toggle */}
+            <Button
+              variant={showVoteMetrics ? "default" : "outline"}
+              size="sm"
+              className="h-8 text-xs gap-1.5 shrink-0"
+              onClick={handleToggleVoteMetrics}
+              disabled={cohesionLoading}
+            >
+              {cohesionLoading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <BarChart2 className="h-3.5 w-3.5" />
+              )}
+              {tc("toggle")}
+            </Button>
+
             {/* Clear all filters */}
             {hasActiveFilters && (
               <button
@@ -530,6 +583,11 @@ export default function RankingPage() {
                 );
               })}
             </div>
+          )}
+
+          {/* Vote metrics unavailable note */}
+          {showVoteMetrics && !cohesionLoading && cohesion?.available === false && (
+            <p className="text-[11px] text-muted-foreground mt-1.5 ml-0.5">{tc("unavailable")}</p>
           )}
         </div>}
 
@@ -663,12 +721,22 @@ export default function RankingPage() {
               </div>
 
               {/* Table header (desktop) */}
-              <div className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
+              <div
+                className={cn(
+                  "hidden sm:grid gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border",
+                  showVoteMetrics && riceAvailable
+                    ? "grid-cols-[3rem_1fr_8rem_6rem_5rem_5rem]"
+                    : "grid-cols-[3rem_1fr_8rem_6rem_5rem]"
+                )}
+              >
                 <span>{t("colRank")}</span>
                 <span>{t("colDeputy")}</span>
                 <span>{t("colGroup")}</span>
                 <span>{t("colCoalition")}</span>
                 <span className="text-right">{t("colScore")}</span>
+                {showVoteMetrics && riceAvailable && (
+                  <span className="text-right">{tc("columnRice")}</span>
+                )}
               </div>
 
               {/* Rows */}
@@ -686,6 +754,9 @@ export default function RankingPage() {
                       index={index}
                       sortBy={sortBy}
                       sortLabel={SORT_OPTIONS.find((s) => s.value === sortBy)?.label || ""}
+                      showVoteMetrics={showVoteMetrics}
+                      riceAvailable={riceAvailable}
+                      riceValue={riceByParty.get(deputy.group.toUpperCase()) ?? null}
                     />
                   ))}
                 </div>
@@ -705,9 +776,12 @@ interface RankingRowProps {
   index: number;
   sortBy: SortKey;
   sortLabel: string;
+  showVoteMetrics?: boolean;
+  riceAvailable?: boolean;
+  riceValue?: number | null;
 }
 
-function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
+function RankingRow({ deputy, index, sortBy, sortLabel, showVoteMetrics, riceAvailable, riceValue }: RankingRowProps) {
   const t = useTranslations("RankingsPage");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -735,7 +809,12 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
     <>
       {/* Desktop row */}
       <div
-        className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 items-center px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer group"
+        className={cn(
+          "hidden sm:grid gap-3 items-center px-4 py-2.5 hover:bg-muted/40 transition-colors cursor-pointer group",
+          showVoteMetrics && riceAvailable
+            ? "grid-cols-[3rem_1fr_8rem_6rem_5rem_5rem]"
+            : "grid-cols-[3rem_1fr_8rem_6rem_5rem]"
+        )}
         onClick={() => setIsModalOpen(true)}
       >
         {/* Rank */}
@@ -797,6 +876,19 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
             {(displayScore * 100).toFixed(0)}
           </span>
         </div>
+
+        {/* Rice cohesion (only when vote metrics enabled and available) */}
+        {showVoteMetrics && riceAvailable && (
+          <div className="flex items-center justify-end">
+            {riceValue != null ? (
+              <span className="text-xs tabular-nums text-muted-foreground font-medium">
+                {(riceValue * 100).toFixed(0)}%
+              </span>
+            ) : (
+              <span className="text-xs text-muted-foreground/40">—</span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile row */}
