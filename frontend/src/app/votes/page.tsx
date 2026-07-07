@@ -293,7 +293,7 @@ function VoteRow({ entry, onClick, formatOutcome, formatChamber }: VoteRowProps)
   const total = entry.in_favor + entry.against + entry.abstained || 1;
   const favorPct = Math.round((entry.in_favor / total) * 100);
   const againstPct = Math.round((entry.against / total) * 100);
-  const marginPct = Math.round(Math.abs(entry.margin) * 100);
+  const marginPct = Math.round(Math.abs(entry.margin));
   const approved = entry.outcome === "approved";
 
   return (
