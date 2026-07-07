@@ -295,7 +295,8 @@ RETURN v.id AS vote_id,
        s.chamber AS chamber,
        s.legislature AS legislature,
        d.id AS debate_id,
-       coalesce(a.title, d.title, v.subject) AS label
+       trim(v.subject) AS subject,
+       coalesce(a.title, d.title) AS context_label
 ORDER BY s.date DESC, v.number ASC
 SKIP $offset LIMIT $limit
 """
@@ -314,8 +315,10 @@ def search_votes(
 ) -> dict:
     """Paginated full-text vote search with filter support (F5).
 
-    Label uses coalesce(a.title, d.title, v.subject) to avoid displaying
-    generic "Votazione" labels from SPARQL-ingested votes (Pitfall 4).
+    Returns two label fields per vote:
+      - subject: trim(v.subject) — the specific object voted (e.g. "Votazione Articolo 13")
+      - context_label: coalesce(a.title, d.title) — the debate/act title for context
+    The old single `label` field is removed; callers should use subject + context_label.
 
     margin is returned as a percentage of expressed votes:
         100 * abs(inFavor - against) / (inFavor + against), 0 when both are 0.
@@ -359,6 +362,7 @@ WITH v, s,
      head([x IN collect(DISTINCT d) WHERE x IS NOT NULL]) AS d
 WHERE a IS NOT NULL OR d IS NOT NULL
 RETURN v.id AS vote_id, coalesce(a.title, d.title, v.subject) AS label,
+       trim(v.subject) AS subject,
        v.outcome AS outcome, v.inFavor AS in_favor, v.against AS against,
        v.abstained AS abstained, toString(s.date) AS date, s.id AS session_id, d.id AS debate_id
 ORDER BY s.date DESC, v.number LIMIT 20
@@ -498,6 +502,7 @@ RETURN s.id AS session_id,
        v.against AS against,
        d.id AS debate_id,
        coalesce(a.title, d.title, v.subject) AS label,
+       trim(v.subject) AS subject,
        collect(DISTINCT {party: party, favor: party_favor, against: party_against, abstain: party_abstain}) AS party_breakdown
 ORDER BY v.number
 """
@@ -540,6 +545,7 @@ def get_vote_coherence(
         grouped[sid]["votes"].append({
             "vote_id": row["vote_id"],
             "label": row["label"],
+            "subject": row.get("subject"),
             "outcome": row["outcome"],
             "in_favor": row["in_favor"],
             "against": row["against"],

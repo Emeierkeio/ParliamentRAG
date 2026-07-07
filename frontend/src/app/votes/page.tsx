@@ -337,6 +337,15 @@ interface VoteRowProps {
   onToggleExpand: () => void;
 }
 
+/** Resolve the primary subject line. Falls back to "Votazione n. X" for null or generic subjects. */
+function resolveSubjectLine(entry: VoteExplorerEntry, t: ReturnType<typeof useTranslations>): string {
+  const subj = (entry.subject ?? "").trim();
+  if (!subj || subj.toLowerCase() === "votazione") {
+    return t("voteNumber", { number: entry.number ?? "?" });
+  }
+  return subj;
+}
+
 function VoteRow({
   entry,
   onClick,
@@ -372,9 +381,16 @@ function VoteRow({
         <span className="text-[11px] text-muted-foreground truncate">
           {formatChamber(entry.chamber)}
         </span>
-        <span className="text-[13px] text-foreground truncate leading-snug">
-          {entry.label}
-        </span>
+        <div className="flex flex-col gap-0.5 min-w-0 overflow-hidden">
+          <span className="text-[13px] text-foreground truncate leading-snug">
+            {resolveSubjectLine(entry, t)}
+          </span>
+          {entry.context_label && (
+            <span className="text-[11px] text-muted-foreground truncate">
+              {entry.context_label}
+            </span>
+          )}
+        </div>
         <span
           className={cn(
             "text-[11px] font-medium truncate",
@@ -440,7 +456,10 @@ function VoteRow({
             </button>
           </div>
         </div>
-        <p className="text-[13px] text-foreground leading-snug line-clamp-2">{entry.label}</p>
+        <p className="text-[13px] text-foreground leading-snug line-clamp-1">{resolveSubjectLine(entry, t)}</p>
+        {entry.context_label && (
+          <p className="text-[11px] text-muted-foreground truncate">{entry.context_label}</p>
+        )}
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">
           <span className="[font-family:var(--font-display)] tabular-nums">{favorPct}% — {againstPct}%</span>
           <span>Margine: <span className="[font-family:var(--font-display)] tabular-nums">{marginPct}%</span></span>

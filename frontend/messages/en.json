@@ -700,7 +700,8 @@
     "coverageNote": "Individual votes recorded: {recorded} of {official_total}",
     "favorLabel": "In favour",
     "againstLabel": "Against",
-    "abstainedLabel": "Abstained"
+    "abstainedLabel": "Abstained",
+    "voteNumber": "Vote n. {number}"
   },
   "VoteCoherence": {
     "heading": "How they voted",

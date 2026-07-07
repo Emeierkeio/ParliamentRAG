@@ -36,7 +36,7 @@ export interface Citation {
 }
 
 export interface VoteCoherencePartyBreakdown { party: string; favor: number; against: number; abstain: number; }
-export interface VoteCoherenceVote { vote_id: string; label: string; outcome: string; in_favor: number; against: number; party_breakdown: VoteCoherencePartyBreakdown[]; }
+export interface VoteCoherenceVote { vote_id: string; label: string; subject?: string | null; outcome: string; in_favor: number; against: number; party_breakdown: VoteCoherencePartyBreakdown[]; }
 export interface VoteCoherenceSession { votes: VoteCoherenceVote[]; debate_id: string | null; }
 export type VoteCoherenceData = Record<string, VoteCoherenceSession>;
 

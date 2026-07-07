@@ -327,8 +327,15 @@ Same format as majority parties.
             parts.append("## " + ("VOTE FACTS" if _en else "FATTI DI VOTO"))
             for f in vote_facts:
                 outcome_it = "approvato" if f.get("outcome") in ("approved", "approvato") else "respinto"
+                # Build richer label: «context» — subject when subject is specific
+                _subj = (f.get("subject") or "").strip()
+                _is_generic_subj = not _subj or _subj.lower() == "votazione"
+                if not _is_generic_subj and f.get("label"):
+                    _fact_label = f"«{f['label']}» — {_subj}"
+                else:
+                    _fact_label = f["label"]
                 parts.append(
-                    f"[FATTO DI VOTO] \"{f['label']}\" — votato il {f['date']}: "
+                    f"[FATTO DI VOTO] \"{_fact_label}\" — votato il {f['date']}: "
                     f"{f.get('in_favor', 0)} sì, {f.get('against', 0)} no, {f.get('abstained', 0)} astenuti. "
                     f"Esito: {outcome_it}. (vote_id: {f['vote_id']})"
                 )

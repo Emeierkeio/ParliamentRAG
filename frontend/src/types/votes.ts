@@ -4,6 +4,7 @@
 
 export interface VoteExplorerEntry {
   vote_id: string;
+  number: number | null;
   outcome: string;
   in_favor: number;
   against: number;
@@ -13,7 +14,10 @@ export interface VoteExplorerEntry {
   session_id: string;
   chamber: string;
   debate_id: string | null;
-  label: string;
+  /** Specific vote object, e.g. "Votazione Articolo 13" (may be null or generic "Votazione") */
+  subject: string | null;
+  /** Debate / act title for context — null when no debate/act is linked */
+  context_label: string | null;
 }
 
 export interface VoteSearchResponse {

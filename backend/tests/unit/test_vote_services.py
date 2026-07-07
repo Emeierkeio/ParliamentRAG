@@ -7,6 +7,7 @@ Task 1 covers: rice_index, mean_rice (6 tests).
 Task 3 adds:  test_vote_facts_empty, test_vote_coherence_empty (2 tests).
 Bug-fix adds: margin-as-percentage assertions, dedup guard (4 tests).
 14-08 ext:    get_vote_individual_votes shape tests (4 tests).
+14-08 label:  subject/context_label split for search_votes, facts, coherence (3 tests).
 """
 import pytest
 
@@ -251,4 +252,61 @@ def test_individual_votes_cypher_no_fanout():
 
     assert "head(collect(g.name))" in _INDIVIDUAL_VOTES_CYPHER, (
         "_INDIVIDUAL_VOTES_CYPHER must use head(collect(g.name)) to avoid MEMBER_OF_GROUP fan-out"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 14-08 label split: subject + context_label (search_votes, vote_facts, coherence)
+# ---------------------------------------------------------------------------
+
+def test_search_votes_cypher_has_subject_and_context_label():
+    """_SEARCH_VOTES_CYPHER must expose trim(v.subject) AS subject and
+    coalesce(a.title, d.title) AS context_label instead of the old single `label` field.
+
+    Regression guard: ensures distinct label fields so the frontend can render
+    specific vote object (subject) separately from debate/act context (context_label).
+    """
+    from app.services.votes_service import _SEARCH_VOTES_CYPHER
+
+    assert "trim(v.subject) AS subject" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must expose trim(v.subject) AS subject"
+    )
+    assert "context_label" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must expose context_label"
+    )
+    # Old single label coalesce that included v.subject as final fallback must not remain
+    assert "coalesce(a.title, d.title, v.subject) AS label" not in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must not have the old coalesce(a.title, d.title, v.subject) AS label"
+    )
+
+
+def test_vote_facts_cypher_has_subject():
+    """_VOTE_FACTS_CYPHER must expose trim(v.subject) AS subject alongside the existing label.
+
+    This allows direct_writer.py to build enriched prompt lines
+    «context» — subject when the subject is specific (non-generic).
+    """
+    from app.services.votes_service import _VOTE_FACTS_CYPHER
+
+    assert "trim(v.subject) AS subject" in _VOTE_FACTS_CYPHER, (
+        "_VOTE_FACTS_CYPHER must expose trim(v.subject) AS subject"
+    )
+    # Existing label must remain (used for fallback and fact chips)
+    assert "AS label" in _VOTE_FACTS_CYPHER, (
+        "_VOTE_FACTS_CYPHER must still expose label for backward compat"
+    )
+
+
+def test_vote_coherence_cypher_has_subject():
+    """_VOTE_COHERENCE_CYPHER must expose trim(v.subject) AS subject alongside label.
+
+    Ensures the F1 SSE event carries per-vote specific subject for richer chat display.
+    """
+    from app.services.votes_service import _VOTE_COHERENCE_CYPHER
+
+    assert "trim(v.subject) AS subject" in _VOTE_COHERENCE_CYPHER, (
+        "_VOTE_COHERENCE_CYPHER must expose trim(v.subject) AS subject"
+    )
+    assert "AS label" in _VOTE_COHERENCE_CYPHER, (
+        "_VOTE_COHERENCE_CYPHER must still expose label"
     )
