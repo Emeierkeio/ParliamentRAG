@@ -27,7 +27,7 @@ async def search_votes_endpoint(
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
     outcome: Optional[str] = None,
-    min_margin: Optional[int] = None,
+    min_margin: Optional[float] = None,
     limit: int = 50,
     offset: int = 0,
     neo4j: Neo4jClient = Depends(get_neo4j_client),
@@ -40,7 +40,7 @@ async def search_votes_endpoint(
       from_date    — ISO date string lower bound (inclusive)
       to_date      — ISO date string upper bound (inclusive)
       outcome      — filter by vote outcome string
-      min_margin   — minimum |in_favor - against| margin
+      min_margin   — minimum margin as % of expressed votes (e.g. 10 = 10 pp lead)
       limit        — page size (default: 50)
       offset       — page offset (default: 0)
 

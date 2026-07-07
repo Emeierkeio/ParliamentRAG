@@ -274,8 +274,13 @@ WHERE ($chamber = 'both' OR s.chamber = $chamber)
   AND ($outcome IS NULL OR v.outcome = $outcome)
 OPTIONAL MATCH (d:Debate)<-[:HAS_DEBATE]-(s)
 OPTIONAL MATCH (d)-[:DISCUSSES]->(a:ParliamentaryAct)
-WITH v, s, d, a,
-     abs(coalesce(v.inFavor, 0) - coalesce(v.against, 0)) AS margin
+WITH v, s,
+     CASE WHEN coalesce(v.inFavor, 0) + coalesce(v.against, 0) > 0
+          THEN 100.0 * abs(coalesce(v.inFavor, 0) - coalesce(v.against, 0))
+               / (coalesce(v.inFavor, 0) + coalesce(v.against, 0))
+          ELSE 0.0 END AS margin,
+     head([x IN collect(DISTINCT a) WHERE x IS NOT NULL]) AS a,
+     head([x IN collect(DISTINCT d) WHERE x IS NOT NULL]) AS d
 WHERE $min_margin IS NULL OR margin >= $min_margin
 RETURN v.id AS vote_id,
        v.number AS number,
@@ -303,7 +308,7 @@ def search_votes(
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
     outcome: Optional[str] = None,
-    min_margin: Optional[int] = None,
+    min_margin: Optional[float] = None,
     limit: int = 50,
     offset: int = 0,
 ) -> dict:
@@ -311,6 +316,11 @@ def search_votes(
 
     Label uses coalesce(a.title, d.title, v.subject) to avoid displaying
     generic "Votazione" labels from SPARQL-ingested votes (Pitfall 4).
+
+    margin is returned as a percentage of expressed votes:
+        100 * abs(inFavor - against) / (inFavor + against), 0 when both are 0.
+    min_margin is compared against that percentage (e.g. pass 10 to filter
+    votes where the winner got at least 10 pp more than the loser).
 
     Returns {"votes": [...], "limit": int, "offset": int, "count": int}.
     """
@@ -344,6 +354,9 @@ UNWIND $session_ids AS sid
 MATCH (s:Session {id: sid})-[:HAS_VOTE]->(v:Vote)
 OPTIONAL MATCH (d:Debate)<-[:HAS_DEBATE]-(s)
 OPTIONAL MATCH (d)-[:DISCUSSES]->(a:ParliamentaryAct)
+WITH v, s,
+     head([x IN collect(DISTINCT a) WHERE x IS NOT NULL]) AS a,
+     head([x IN collect(DISTINCT d) WHERE x IS NOT NULL]) AS d
 WHERE a IS NOT NULL OR d IS NOT NULL
 RETURN v.id AS vote_id, coalesce(a.title, d.title, v.subject) AS label,
        v.outcome AS outcome, v.inFavor AS in_favor, v.against AS against,
@@ -370,8 +383,11 @@ def get_vote_facts(neo4j, session_ids: list[str]) -> list[dict]:
 _VOTE_COHERENCE_CYPHER = """
 UNWIND $session_ids AS sid
 MATCH (s:Session {id: sid})-[:HAS_VOTE]->(v:Vote)
-MATCH (d:Debate)<-[:HAS_DEBATE]-(s)
+OPTIONAL MATCH (d:Debate)<-[:HAS_DEBATE]-(s)
 OPTIONAL MATCH (d)-[:DISCUSSES]->(a:ParliamentaryAct)
+WITH v, s,
+     head([x IN collect(DISTINCT d) WHERE x IS NOT NULL]) AS d,
+     head([x IN collect(DISTINCT a) WHERE x IS NOT NULL]) AS a
 OPTIONAL MATCH (dep:Deputy)-[:VOTED]->(iv:IndividualVote)-[:ON_VOTE]->(v)
 OPTIONAL MATCH (dep)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
   WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)

@@ -5,6 +5,7 @@ No Neo4j, no scipy, no numpy. Tests run in isolation from the DB.
 
 Task 1 covers: rice_index, mean_rice (6 tests).
 Task 3 adds:  test_vote_facts_empty, test_vote_coherence_empty (2 tests).
+Bug-fix adds: margin-as-percentage assertions, dedup guard (4 tests).
 """
 import pytest
 
@@ -78,3 +79,62 @@ def test_vote_coherence_empty():
     # Pass None as neo4j — function must return before querying the DB
     result = get_vote_coherence(None, [], 19)
     assert result == {}
+
+
+# ---------------------------------------------------------------------------
+# Bug-fix regression: margin as percentage, Cypher dedup guard (fix 14-08)
+# ---------------------------------------------------------------------------
+
+def test_search_votes_cypher_margin_is_percentage():
+    """_SEARCH_VOTES_CYPHER must compute margin as 100 * |F-A| / (F+A), not as abs count.
+
+    Regression guard: ensures `* 100` scaling and division by expressed votes are present
+    so that the returned `margin` field is a percentage [0, 100] instead of an
+    absolute vote-count difference that was erroneously multiplied by 100 on the frontend.
+    """
+    from app.services.votes_service import _SEARCH_VOTES_CYPHER
+    assert "100.0" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must scale margin to a percentage with 100.0 multiplier"
+    )
+    # The CASE guard against division by zero must be present
+    assert "CASE WHEN" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER margin computation must guard against division by zero"
+    )
+
+
+def test_search_votes_cypher_no_fanout():
+    """_SEARCH_VOTES_CYPHER must deduplicate debate/act rows using collect+head.
+
+    Regression guard: a Session with multiple Debates (and Debates with multiple acts)
+    previously fanned out each Vote row — one row per (v, d, a) combination.
+    The fix uses head(collect(DISTINCT ...)) to collapse to exactly one row per Vote.
+    """
+    from app.services.votes_service import _SEARCH_VOTES_CYPHER
+    assert "collect(DISTINCT a)" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must use collect(DISTINCT a) to avoid act fan-out"
+    )
+    assert "collect(DISTINCT d)" in _SEARCH_VOTES_CYPHER, (
+        "_SEARCH_VOTES_CYPHER must use collect(DISTINCT d) to avoid debate fan-out"
+    )
+
+
+def test_vote_facts_cypher_no_fanout():
+    """_VOTE_FACTS_CYPHER must deduplicate debate/act rows using collect+head."""
+    from app.services.votes_service import _VOTE_FACTS_CYPHER
+    assert "collect(DISTINCT a)" in _VOTE_FACTS_CYPHER, (
+        "_VOTE_FACTS_CYPHER must use collect(DISTINCT a) to avoid act fan-out"
+    )
+    assert "collect(DISTINCT d)" in _VOTE_FACTS_CYPHER, (
+        "_VOTE_FACTS_CYPHER must use collect(DISTINCT d) to avoid debate fan-out"
+    )
+
+
+def test_vote_coherence_cypher_no_fanout():
+    """_VOTE_COHERENCE_CYPHER must deduplicate debate/act rows using collect+head."""
+    from app.services.votes_service import _VOTE_COHERENCE_CYPHER
+    assert "collect(DISTINCT d)" in _VOTE_COHERENCE_CYPHER, (
+        "_VOTE_COHERENCE_CYPHER must use collect(DISTINCT d) to avoid debate fan-out"
+    )
+    assert "collect(DISTINCT a)" in _VOTE_COHERENCE_CYPHER, (
+        "_VOTE_COHERENCE_CYPHER must use collect(DISTINCT a) to avoid act fan-out"
+    )
