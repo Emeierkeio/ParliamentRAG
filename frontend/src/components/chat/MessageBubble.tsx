@@ -647,14 +647,16 @@ interface AssistantMetadataProps {
 
 function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataProps) {
   const t = useTranslations('MessageBubble');
+  const tvf = useTranslations('VoteFacts');
   const hasCitations = message.citations && message.citations.length > 0;
   const hasExperts = message.experts && message.experts.length > 0;
   const hasBalance = message.balanceMetrics;
   const hasHQMetaData = !!message.hqMetadata;
   const hasCompass = !!message.compass;
+  const hasVoteFacts = !!message.voteFacts?.length;
 
   // During streaming, only show if we have at least some data
-  const hasAnyData = hasCitations || hasExperts || hasBalance || hasHQMetaData || hasCompass;
+  const hasAnyData = hasCitations || hasExperts || hasBalance || hasHQMetaData || hasCompass || hasVoteFacts;
   if (!hasAnyData) return null;
 
   return (
@@ -794,6 +796,32 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
         >
              <CompassCard data={message.compass} />
         </CollapsibleSection>
+      )}
+
+      {/* Vote-fact chips (F4) — clickable links to voted debates, exempt from citation-verification */}
+      {hasVoteFacts && (
+        <div className="mt-2 pt-3 border-t border-border/40">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">
+            {tvf('chipPrefix')}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {message.voteFacts!.map((fact) => (
+              <a
+                key={fact.vote_id}
+                href={fact.debate_id ? `/transcript/${fact.debate_id}` : `/timeline`}
+                aria-label={tvf('chipAria')}
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium",
+                  "bg-amber-50 border border-amber-200 text-amber-800",
+                  "dark:bg-amber-950/30 dark:border-amber-700/50 dark:text-amber-300",
+                  "hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors",
+                )}
+              >
+                {fact.label}
+              </a>
+            ))}
+          </div>
+        </div>
       )}
 
     </div>
