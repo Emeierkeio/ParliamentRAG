@@ -27,12 +27,18 @@ export interface Citation {
   vote_count?: number;
   committee?: string;
   session_number?: number;
+  session_id?: string;
   debate_title?: string;
   institutional_role?: string | null;
   translated_text?: string;
   translated_full_text?: string;
   is_translated?: boolean;
 }
+
+export interface VoteCoherencePartyBreakdown { party: string; favor: number; against: number; abstain: number; }
+export interface VoteCoherenceVote { vote_id: string; label: string; outcome: string; in_favor: number; against: number; party_breakdown: VoteCoherencePartyBreakdown[]; }
+export interface VoteCoherenceSession { votes: VoteCoherenceVote[]; debate_id: string | null; }
+export type VoteCoherenceData = Record<string, VoteCoherenceSession>;
 
 export interface Expert {
   id: string;
@@ -120,6 +126,8 @@ export interface TopicStatistics {
   sessions_detail: SessionDetail[];
 }
 
+export interface VoteFactChip { vote_id: string; debate_id: string | null; label: string; }
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -134,6 +142,8 @@ export interface Message {
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
   topicStats?: TopicStatistics;
+  voteCoherence?: VoteCoherenceData;
+  voteFacts?: VoteFactChip[];
   // History ID for sharing
   chatId?: string;
 }

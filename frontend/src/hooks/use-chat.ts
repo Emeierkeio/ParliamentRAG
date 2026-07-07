@@ -12,6 +12,8 @@ import type {
   StepResult,
   TopicStatistics,
   ChatHistoryItem,
+  VoteCoherenceData,
+  VoteFactChip,
 } from "@/types";
 import type { CompassData } from "@/components/chat/CompassCard";
 import type { CommissionItem } from "@/types/sse";
@@ -231,6 +233,8 @@ export function useChat(options: UseChatOptions = {}) {
       let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
       let committeeMatches: CommissionItem[] = [];
+      let voteCoherence: VoteCoherenceData | undefined = undefined;
+      let voteFacts: VoteFactChip[] | undefined = undefined;
       // Accumulator for step results — survives React state batching race conditions
       const stepResultsMap = new Map<number, StepResult>();
       let buffer = ""; // Buffer for partial SSE messages
@@ -256,6 +260,8 @@ export function useChat(options: UseChatOptions = {}) {
                     experts,
                     balanceMetrics,
                     topicStats,
+                    voteCoherence,
+                    voteFacts,
                   });
                 }
               } catch (e) {
@@ -555,6 +561,8 @@ export function useChat(options: UseChatOptions = {}) {
                   experts,
                   balanceMetrics,
                   topicStats,
+                  voteCoherence,
+                  voteFacts,
                 });
 
                 // Save to history
@@ -597,6 +605,16 @@ export function useChat(options: UseChatOptions = {}) {
                 } catch (e) {
                   console.error("[Pipeline] History payload error:", e);
                 }
+                break;
+
+              case "vote_coherence":
+                voteCoherence = data.data as VoteCoherenceData;
+                updateLastAssistantMessage({ voteCoherence });
+                break;
+
+              case "vote_facts":
+                voteFacts = data.data as VoteFactChip[];
+                updateLastAssistantMessage({ voteFacts });
                 break;
 
               case "error":
