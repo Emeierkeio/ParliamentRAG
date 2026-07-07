@@ -38,6 +38,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTranslations } from "next-intl";
+import { getVoteCompass } from "@/lib/votes-api";
+import type { VoteCompassData, VoteCompassParty } from "@/types/votes";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -68,7 +70,13 @@ export default function CompassPage() {
   const [error, setError] = useState("");
   const [computationTime, setComputationTime] = useState(0);
 
+  // Vote compass state
+  const [axisMode, setAxisMode] = useState<"text" | "vote">("text");
+  const [voteCompass, setVoteCompass] = useState<VoteCompassData | null>(null);
+  const [voteCompassLoading, setVoteCompassLoading] = useState(false);
+
   const t = useTranslations("CompassPage");
+  const tvc = useTranslations("VoteCompass");
 
   const fetchCompass = useCallback(async (topicText: string) => {
     if (!topicText.trim()) return;
@@ -103,6 +111,7 @@ export default function CompassPage() {
       setCompassData(entry.data.compassData);
       setComputationTime(entry.data.computationTime);
       setError("");
+      setAxisMode("text");
     },
     []
   );
@@ -112,11 +121,27 @@ export default function CompassPage() {
     fetchCompass(t);
   };
 
+  const handleAxisModeChange = useCallback(async (mode: "text" | "vote") => {
+    setAxisMode(mode);
+    if (mode === "vote" && voteCompass === null && !voteCompassLoading) {
+      setVoteCompassLoading(true);
+      try {
+        const data = await getVoteCompass(19, "camera");
+        setVoteCompass(data);
+      } catch {
+        setVoteCompass({ available: false, reason: "fetch_error" });
+      } finally {
+        setVoteCompassLoading(false);
+      }
+    }
+  }, [voteCompass, voteCompassLoading]);
+
   const handleReset = () => {
     setCompassData(null);
     setActiveTopic("");
     setTopic("");
     setError("");
+    setAxisMode("text");
   };
 
   const hasResults = compassData !== null;
@@ -351,47 +376,113 @@ export default function CompassPage() {
           {/* Results - full screen layout */}
           {hasResults && !loading && (
             <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-500">
-              {/* Axis summary bar */}
+              {/* Controls bar: mode toggle + axis info */}
               <div className="shrink-0 border-b border-border/40 bg-muted/20 px-4 sm:px-6 py-2.5">
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                  {/* PC1 */}
-                  {compassData.axes.x && (compassData.axes.x.negative_side || compassData.axes.x.positive_side) && (
-                    <AxisSummary
-                      label="PC1"
-                      variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[0] || 0) * 100)}
-                      negLabel={compassData.axes.x.negative_side?.label}
-                      posLabel={compassData.axes.x.positive_side?.label}
-                      negKeywords={compassData.axes.x.negative_side?.keywords}
-                      posKeywords={compassData.axes.x.positive_side?.keywords}
-                    />
-                  )}
-                  {/* PC2 */}
-                  {dimensionality !== 1 && compassData.axes.y && (compassData.axes.y.negative_side || compassData.axes.y.positive_side) && (
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  {/* Segmented mode toggle */}
+                  <div className="flex rounded-lg border border-border overflow-hidden text-xs font-medium shrink-0">
+                    <button
+                      onClick={() => handleAxisModeChange("text")}
+                      className={cn(
+                        "px-3 py-1.5 transition-colors",
+                        axisMode === "text"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background hover:bg-muted text-muted-foreground"
+                      )}
+                    >
+                      {tvc("toggleText")}
+                    </button>
+                    <button
+                      onClick={() => handleAxisModeChange("vote")}
+                      className={cn(
+                        "px-3 py-1.5 transition-colors",
+                        axisMode === "vote"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background hover:bg-muted text-muted-foreground"
+                      )}
+                    >
+                      {tvc("toggleVote")}
+                    </button>
+                  </div>
+
+                  {/* Thesis tooltip */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="cursor-help shrink-0">
+                        <Info className="h-3.5 w-3.5 text-muted-foreground/50" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-xs">
+                      {tvc("tooltip")}
+                    </TooltipContent>
+                  </Tooltip>
+
+                  {/* Text mode: axis summaries */}
+                  {axisMode === "text" && (
                     <>
-                      <div className="hidden sm:block w-px h-5 bg-border/60" />
-                      <AxisSummary
-                        label="PC2"
-                        variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[1] || 0) * 100)}
-                        negLabel={compassData.axes.y.negative_side?.label}
-                        posLabel={compassData.axes.y.positive_side?.label}
-                        negKeywords={compassData.axes.y.negative_side?.keywords}
-                        posKeywords={compassData.axes.y.positive_side?.keywords}
-                      />
+                      <div className="hidden sm:block w-px h-5 bg-border/60 shrink-0" />
+                      {/* PC1 */}
+                      {compassData.axes.x && (compassData.axes.x.negative_side || compassData.axes.x.positive_side) && (
+                        <AxisSummary
+                          label="PC1"
+                          variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[0] || 0) * 100)}
+                          negLabel={compassData.axes.x.negative_side?.label}
+                          posLabel={compassData.axes.x.positive_side?.label}
+                          negKeywords={compassData.axes.x.negative_side?.keywords}
+                          posKeywords={compassData.axes.x.positive_side?.keywords}
+                        />
+                      )}
+                      {/* PC2 */}
+                      {dimensionality !== 1 && compassData.axes.y && (compassData.axes.y.negative_side || compassData.axes.y.positive_side) && (
+                        <>
+                          <div className="hidden sm:block w-px h-5 bg-border/60" />
+                          <AxisSummary
+                            label="PC2"
+                            variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[1] || 0) * 100)}
+                            negLabel={compassData.axes.y.negative_side?.label}
+                            posLabel={compassData.axes.y.positive_side?.label}
+                            negKeywords={compassData.axes.y.negative_side?.keywords}
+                            posKeywords={compassData.axes.y.positive_side?.keywords}
+                          />
+                        </>
+                      )}
+                      {/* Dimensionality badge */}
+                      <Badge variant="outline" className="text-[10px] ml-auto hidden sm:inline-flex">
+                        {dimensionality === 1 ? "1D Spectrum" : "2D PCA"}
+                      </Badge>
                     </>
                   )}
-                  {/* Dimensionality badge */}
-                  <Badge variant="outline" className="text-[10px] ml-auto hidden sm:inline-flex">
-                    {dimensionality === 1 ? "1D Spectrum" : "2D PCA"}
-                  </Badge>
+
+                  {/* Vote mode: variance explained */}
+                  {axisMode === "vote" && voteCompass?.available && voteCompass.variance_explained && voteCompass.variance_explained.length >= 2 && (
+                    <span className="text-[11px] text-muted-foreground">
+                      {tvc("variance")}: PC1 {(voteCompass.variance_explained[0] * 100).toFixed(0)}% · PC2 {(voteCompass.variance_explained[1] * 100).toFixed(0)}%
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Compass visualization - fills remaining space */}
-              <div className="flex-1 min-h-0 p-3 sm:p-4">
-                <div className="h-full w-full mx-auto">
-                  <CompassCard data={compassData} />
+              {axisMode === "text" ? (
+                <div className="flex-1 min-h-0 p-3 sm:p-4">
+                  <div className="h-full w-full mx-auto">
+                    <CompassCard data={compassData} />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex-1 min-h-0 p-3 sm:p-4 flex flex-col items-center justify-center">
+                  {voteCompassLoading ? (
+                    <Loader2 className="h-8 w-8 animate-spin text-primary/40" />
+                  ) : voteCompass?.available && voteCompass.parties && voteCompass.parties.length > 0 ? (
+                    <VoteCompassScatter parties={voteCompass.parties} varianceExplained={voteCompass.variance_explained} />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-center">
+                      <Info className="h-8 w-8 text-muted-foreground/30" />
+                      <p className="text-sm text-muted-foreground">{tvc("unavailable")}</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Mobile search bar */}
               <div className="sm:hidden shrink-0 border-t border-border/40 px-4 py-2">
@@ -417,6 +508,140 @@ export default function CompassPage() {
           )}
         </div>
       </main>
+    </div>
+  );
+}
+
+// ── Vote Compass Scatter ───────────────────────────────────────
+
+function VoteCompassScatter({ parties, varianceExplained }: {
+  parties: VoteCompassParty[];
+  varianceExplained?: number[];
+}) {
+  const tvc = useTranslations("VoteCompass");
+  const SVG_SIZE = 480;
+  const MARGIN = 64;
+  const INNER = SVG_SIZE - 2 * MARGIN;
+
+  const xs = parties.map((p) => p.x);
+  const ys = parties.map((p) => p.y);
+  const xMin = Math.min(...xs);
+  const xMax = Math.max(...xs);
+  const yMin = Math.min(...ys);
+  const yMax = Math.max(...ys);
+  const xPad = (xMax - xMin || 2) * 0.2;
+  const yPad = (yMax - yMin || 2) * 0.2;
+  const xLo = xMin - xPad;
+  const xHi = xMax + xPad;
+  const yLo = yMin - yPad;
+  const yHi = yMax + yPad;
+
+  const toX = (x: number) => MARGIN + ((x - xLo) / (xHi - xLo)) * INNER;
+  const toY = (y: number) => SVG_SIZE - MARGIN - ((y - yLo) / (yHi - yLo)) * INNER;
+
+  // Center lines at origin (x=0, y=0) if within view
+  const cx0 = toX(0);
+  const cy0 = toY(0);
+  const showXAxis = cx0 >= MARGIN && cx0 <= SVG_SIZE - MARGIN;
+  const showYAxis = cy0 >= MARGIN && cy0 <= SVG_SIZE - MARGIN;
+
+  return (
+    <div className="h-full w-full flex flex-col items-center overflow-hidden">
+      <svg
+        viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
+        className="flex-1 w-full max-w-[560px] max-h-[calc(100%-28px)]"
+      >
+        {/* Plot area border */}
+        <rect
+          x={MARGIN}
+          y={MARGIN}
+          width={INNER}
+          height={INNER}
+          fill="none"
+          stroke="currentColor"
+          strokeOpacity={0.07}
+          strokeWidth={1}
+        />
+
+        {/* Origin lines */}
+        {showXAxis && (
+          <line
+            x1={cx0}
+            y1={MARGIN}
+            x2={cx0}
+            y2={SVG_SIZE - MARGIN}
+            stroke="currentColor"
+            strokeOpacity={0.13}
+            strokeWidth={1}
+            strokeDasharray="4 4"
+          />
+        )}
+        {showYAxis && (
+          <line
+            x1={MARGIN}
+            y1={cy0}
+            x2={SVG_SIZE - MARGIN}
+            y2={cy0}
+            stroke="currentColor"
+            strokeOpacity={0.13}
+            strokeWidth={1}
+            strokeDasharray="4 4"
+          />
+        )}
+
+        {/* Axis labels */}
+        <text
+          x={SVG_SIZE / 2}
+          y={SVG_SIZE - MARGIN / 3.5}
+          textAnchor="middle"
+          fontSize={9}
+          fill="currentColor"
+          fillOpacity={0.35}
+        >
+          PC1
+        </text>
+        <text
+          x={MARGIN / 3.5}
+          y={SVG_SIZE / 2}
+          textAnchor="middle"
+          fontSize={9}
+          fill="currentColor"
+          fillOpacity={0.35}
+          transform={`rotate(-90, ${MARGIN / 3.5}, ${SVG_SIZE / 2})`}
+        >
+          PC2
+        </text>
+
+        {/* Party points and labels */}
+        {parties.map((p) => {
+          const px = toX(p.x);
+          const py = toY(p.y);
+          const groupConfig = config.politicalGroups[p.party as keyof typeof config.politicalGroups];
+          const color = groupConfig?.color || "#6366f1";
+          const shortLabel = p.party.length > 24 ? p.party.substring(0, 24) + "…" : p.party;
+          return (
+            <g key={p.party}>
+              <circle cx={px} cy={py} r={5.5} fill={color} fillOpacity={0.8} />
+              <text
+                x={px}
+                y={py - 9}
+                textAnchor="middle"
+                fontSize={9.5}
+                fill="currentColor"
+                fillOpacity={0.82}
+              >
+                {shortLabel}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+
+      {varianceExplained && varianceExplained.length >= 2 && (
+        <p className="text-[10px] text-muted-foreground shrink-0 pb-1 mt-1">
+          {tvc("variance")}: PC1 {(varianceExplained[0] * 100).toFixed(0)}% · PC2 {(varianceExplained[1] * 100).toFixed(0)}%
+        </p>
+      )}
     </div>
   );
 }
