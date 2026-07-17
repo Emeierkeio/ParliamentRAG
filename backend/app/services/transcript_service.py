@@ -24,9 +24,11 @@ from typing import AsyncGenerator
 
 from app.config import get_settings
 from app.models.transcript import (
+    SearchMatch,
     SpeechTextResponse,
     SuggestionsResponse,
     TranscriptResponse,
+    TranscriptSearchResponse,
     TranscriptSpeechRow,
 )
 from app.services.neo4j_client import Neo4jClient
@@ -90,15 +92,19 @@ async def get_transcript_speeches(
     # --- All speeches in chronological order ---
     speech_rows = neo4j.query(
         """
-        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
+        MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
+        WITH d, sess
+        MATCH (d)-[:HAS_PHASE]->(p:Phase)
               -[:CONTAINS_SPEECH]->(sp:Speech)
         OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
         OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gov:GovernmentMember)
         WITH coalesce(dep, gov) AS spk,
              (dep IS NULL AND gov IS NOT NULL) AS isGov,
-             p, sp
+             p, sp, sess
         WHERE spk IS NOT NULL
-        OPTIONAL MATCH (spk)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        OPTIONAL MATCH (spk)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+          WHERE mg.start_date <= sess.date
+            AND (mg.end_date IS NULL OR mg.end_date >= sess.date)
         WITH spk, isGov, p, sp, head(collect(g.name)) AS party
         RETURN sp.id AS speech_id,
                p.id AS phase_id,
@@ -166,6 +172,45 @@ async def get_speech_text(
         speech_id=row["speech_id"],
         text=row["text"] or "",
     )
+
+
+async def search_speeches(
+    neo4j: Neo4jClient,
+    debate_id: str,
+    query: str,
+) -> TranscriptSearchResponse:
+    """
+    Full-text search across all speech texts in a debate.
+
+    Uses case-insensitive CONTAINS on sp.text. Returns matching speech IDs
+    with a short snippet around the first match occurrence.
+    """
+    if not query or len(query) < 2:
+        return TranscriptSearchResponse(query=query, matches=[])
+
+    rows = neo4j.query(
+        """
+        MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
+              -[:CONTAINS_SPEECH]->(sp:Speech)
+        WHERE toLower(sp.text) CONTAINS toLower($query)
+        RETURN sp.id AS speech_id, sp.text AS text
+        ORDER BY p.id, sp.id
+        """,
+        {"debate_id": debate_id, "query": query},
+    )
+
+    matches = []
+    q_lower = query.lower()
+    for r in rows:
+        text = r["text"] or ""
+        idx = text.lower().find(q_lower)
+        # Extract a ~120 char snippet around the match
+        start = max(0, idx - 50)
+        end = min(len(text), idx + len(query) + 70)
+        snippet = ("..." if start > 0 else "") + text[start:end] + ("..." if end < len(text) else "")
+        matches.append(SearchMatch(speech_id=r["speech_id"], snippet=snippet))
+
+    return TranscriptSearchResponse(query=query, matches=matches)
 
 
 async def get_debate_suggestions(
@@ -265,34 +310,54 @@ async def debate_chat_streaming(
         )
         query_embedding = embed_resp.data[0].embedding
 
-        # Step 2: Retrieve debate-scoped chunks via vector index
+        # Step 2: Retrieve debate-scoped chunks
+        # Fetch all chunks from this debate with their embeddings, then rank
+        # by cosine similarity in Python. The global vector index misses
+        # debates whose chunks aren't in the top-K globally.
         yield f"data: {json.dumps({'type': 'progress', 'message': 'Searching debate content...'})}\n\n"
 
-        chunks = neo4j.query("""
-            CALL db.index.vector.queryNodes('chunk_embedding_index', $top_k, $embedding)
-            YIELD node AS c, score
-            WHERE score >= $threshold
-            MATCH (c)<-[:HAS_CHUNK]-(sp:Speech)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(d:Debate {id: $debate_id})
+        import numpy as np
+
+        all_chunks = neo4j.query("""
+            MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
+            WITH d, sess
+            MATCH (d)-[:HAS_PHASE]->(:Phase)-[:CONTAINS_SPEECH]->(sp:Speech)-[:HAS_CHUNK]->(c:Chunk)
+            WHERE c.embedding IS NOT NULL
             MATCH (sp)-[:SPOKEN_BY]->(spk)
             WHERE spk:Deputy OR spk:GovernmentMember
-            OPTIONAL MATCH (spk)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-            WITH c, sp, spk, score, head(collect(g.name)) AS party
+            OPTIONAL MATCH (spk)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+              WHERE mg.start_date <= sess.date
+                AND (mg.end_date IS NULL OR mg.end_date >= sess.date)
+            WITH c, sp, spk, head(collect(g.name)) AS party, c.embedding AS emb
             RETURN c.id AS chunk_id,
                    c.text AS chunk_text,
                    sp.id AS speech_id,
                    spk.id AS speaker_id,
                    spk.first_name + ' ' + spk.last_name AS speaker_name,
                    party,
-                   score
-            ORDER BY score DESC
-            LIMIT $limit
+                   emb
         """, {
-            "embedding": query_embedding,
-            "top_k": 100,
-            "threshold": 0.3,
             "debate_id": debate_id,
-            "limit": 15,
         })
+
+        # Compute cosine similarity in Python
+        logger.info("Debate chat: fetched %d chunks for debate %s", len(all_chunks), debate_id)
+        if all_chunks:
+            q_vec = np.array(query_embedding, dtype=np.float32)
+            q_norm = np.linalg.norm(q_vec)
+            scored = []
+            for ch in all_chunks:
+                emb = ch.get("emb")
+                if not emb:
+                    continue
+                c_vec = np.array(emb, dtype=np.float32)
+                score = float(np.dot(q_vec, c_vec) / (q_norm * np.linalg.norm(c_vec) + 1e-10))
+                if score >= 0.25:
+                    scored.append({**ch, "score": score})
+            scored.sort(key=lambda x: x["score"], reverse=True)
+            chunks = scored[:15]
+        else:
+            chunks = []
 
         # Step 3: Handle no results
         if not chunks:

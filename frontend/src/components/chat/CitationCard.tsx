@@ -237,7 +237,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
     ? (citation.full_text ?? citation.text ?? "") : null;
 
   const handleTranslate = async () => {
-    if (preTranslatedFull) {
+    if (preTranslatedFull || translatedFull) {
       setShowTranslated(true);
       return;
     }
@@ -262,6 +262,15 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
       setIsTranslating(false);
     }
   };
+
+  // When the UI is in English (citation.is_translated), show the English
+  // full text by default: auto-translate on first open.
+  useEffect(() => {
+    if (isOpen && citation.is_translated && !hasTranslation && !isTranslating) {
+      handleTranslate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
   const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
@@ -403,8 +412,19 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         </div>
                     )}
 
+                    {/* Translation-in-progress banner */}
+                    {isTranslating && (
+                        <div className="flex items-center gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2 text-xs font-medium text-primary">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+                            Translating to English…
+                        </div>
+                    )}
+
                     {/* Speech Text */}
-                    <div className="prose prose-lg max-w-none dark:prose-invert font-serif tracking-wide leading-loose text-foreground/90">
+                    <div className={cn(
+                        "prose prose-lg max-w-none dark:prose-invert font-serif tracking-wide leading-loose text-foreground/90",
+                        isTranslating && "opacity-50 transition-opacity"
+                    )}>
                         {parts.length > 1 ? (
                             <>
                                 {parts.map((part, i) => (
@@ -439,7 +459,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                     </div>
 
                     {/* Translate button + original text section */}
-                    {citation.is_translated && (
+                    {citation.is_translated && !isTranslating && (
                         <div className="mt-6 pt-6 border-t border-border/40">
                             <div className="flex items-center gap-2 mb-3">
                                 <Button

@@ -95,9 +95,18 @@ class DebateDetailResponse(BaseModel):
     acts: list[ActInfo]
 
 
+class SpeechText(BaseModel):
+    """Full text of a single speech in a debate."""
+
+    id: str
+    text: str
+    phase_title: Optional[str] = None
+
+
 class SpeakerSummaryResponse(BaseModel):
-    """AI-generated speaker position for GET /api/timeline/speakers/{debateId}/{speakerId}."""
+    """Speaker speeches and optional AI summary for GET /api/timeline/speakers/{debateId}/{speakerId}."""
 
     summary: Optional[str] = None
     speech_count: int
     phases: list[str]
+    speeches: list[SpeechText] = []

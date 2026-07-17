@@ -1,4 +1,4 @@
-import type { TranscriptResponse, SpeechTextResponse, SuggestionsResponse } from '@/types/transcript';
+import type { TranscriptResponse, SpeechTextResponse, SuggestionsResponse, TranscriptSearchResponse } from '@/types/transcript';
 
 function getLocale(): string {
   if (typeof document === 'undefined') return 'it';
@@ -29,6 +29,14 @@ export async function getSpeechText(debateId: string, speechId: string): Promise
     { headers: buildHeaders() },
   );
   if (!res.ok) throw new Error(`Speech text fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function searchTranscript(debateId: string, query: string): Promise<TranscriptSearchResponse> {
+  const res = await fetch(
+    `/api/transcript/${encodeURIComponent(debateId)}/search?q=${encodeURIComponent(query)}`,
+  );
+  if (!res.ok) throw new Error(`Search failed: ${res.status}`);
   return res.json();
 }
 

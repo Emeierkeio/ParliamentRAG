@@ -77,7 +77,7 @@ export function TranscriptMiniMap({ speeches }: TranscriptMiniMapProps) {
 
   return (
     <div
-      className="hidden lg:flex flex-col w-14 shrink-0 bg-sidebar overflow-y-auto"
+      className="hidden lg:flex flex-col w-20 shrink-0 bg-sidebar overflow-y-auto"
       aria-label="Debate navigation"
     >
       {phases.map((phase, idx) => {
@@ -89,15 +89,15 @@ export function TranscriptMiniMap({ speeches }: TranscriptMiniMapProps) {
             key={phase.id}
             onClick={() => handleClick(phase.id)}
             className={cn(
-              "w-full flex items-center justify-center text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors border-b border-sidebar-border",
-              isActive && "border-l-2 border-l-sidebar-primary bg-sidebar-accent/20",
+              "w-full flex items-center justify-center text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors border-b border-sidebar-border",
+              isActive && "border-l-2 border-l-sidebar-primary bg-sidebar-accent/20 text-sidebar-foreground",
             )}
             style={{ minHeight: `${height}px` }}
             aria-label={`Go to phase: ${phase.title}`}
-            title={phase.title}
+            title={`${phase.title} (${phase.speechCount})`}
           >
-            <span className="text-[10px] font-medium text-center leading-tight px-1 line-clamp-2">
-              {idx + 1}
+            <span className="text-[9px] font-medium text-center leading-tight px-1 line-clamp-3">
+              {phase.title.replace(/^\(/, "").replace(/\)$/, "").split(" ").slice(0, 3).join(" ")}
             </span>
           </button>
         );

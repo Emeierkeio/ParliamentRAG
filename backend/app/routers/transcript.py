@@ -18,6 +18,7 @@ from app.models.transcript import (
     SuggestionsResponse,
     TranscriptChatRequest,
     TranscriptResponse,
+    TranscriptSearchResponse,
 )
 from app.services.deps import get_neo4j_client
 from app.services.neo4j_client import Neo4jClient
@@ -52,6 +53,20 @@ async def get_speech_text(
         neo4j=neo4j,
         debate_id=debate_id,
         speech_id=speech_id,
+    )
+
+
+@router.get("/{debate_id}/search")
+async def search_speeches(
+    debate_id: str,
+    q: str = "",
+    neo4j: Neo4jClient = Depends(get_neo4j_client),
+) -> TranscriptSearchResponse:
+    """Full-text search across all speech texts in a debate."""
+    return await transcript_service.search_speeches(
+        neo4j=neo4j,
+        debate_id=debate_id,
+        query=q,
     )
 
 

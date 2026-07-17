@@ -71,10 +71,17 @@ export interface DebateDetailResponse {
   acts: ActInfo[];
 }
 
+export interface SpeechText {
+  id: string;
+  text: string;
+  phase_title: string | null;
+}
+
 export interface SpeakerSummaryResponse {
   summary: string | null;
   speech_count: number;
   phases: string[];
+  speeches: SpeechText[];
 }
 
 export interface TimelineFilters {

@@ -220,6 +220,13 @@ class SparqlIngester:
         Returns:
             Stats dict: {"deputies_processed": N, "votes_written": N, "votes_skipped": N}
         """
+        # Without this constraint every MERGE on IndividualVote.id is a full
+        # label scan — throughput collapses once a few hundred thousand nodes exist.
+        with self._driver.session() as neo_session:
+            neo_session.run(
+                "CREATE CONSTRAINT IF NOT EXISTS FOR (iv:IndividualVote) REQUIRE iv.id IS UNIQUE"
+            ).consume()
+
         deputies = self._fetch_all_deputies(chamber=chamber)
         logger.info("Found %d deputies in Neo4j", len(deputies))
         if limit_deputies > 0:

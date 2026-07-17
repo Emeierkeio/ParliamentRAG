@@ -108,10 +108,16 @@ class SummaryGenerator:
         driver,
         openai_client,
         concurrency: int = 10,
+        date_filter: Optional[str] = None,
+        from_date: Optional[str] = None,
+        to_date: Optional[str] = None,
     ) -> None:
         self._driver = driver
         self._client = openai_client
         self._sem = asyncio.Semaphore(concurrency)
+        self._date_filter = date_filter  # YYYY-MM-DD or None
+        self._from_date = from_date      # YYYY-MM-DD or None
+        self._to_date = to_date          # YYYY-MM-DD or None
 
     # ------------------------------------------------------------------
     # Public API
@@ -371,16 +377,50 @@ class SummaryGenerator:
     # ------------------------------------------------------------------
 
     def _fetch_pending_sessions(self) -> list[dict]:
-        """Return sessions WHERE recapIt IS NULL (resumable)."""
-        cypher = """
+        """Return sessions WHERE recapIt IS NULL (resumable).
+
+        If date_filter is set, only return sessions for that date.
+        Use --date to generate summaries for a single day.
+        """
+        if self._date_filter:
+            cypher = """
+MATCH (s:Session)
+WHERE toString(s.date) = $target_date
+RETURN s.id AS id, s.date AS date
+ORDER BY s.date
+"""
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher, target_date=self._date_filter)
+                return [{"id": r["id"], "date": r["date"]} for r in result]
+        elif self._from_date or self._to_date:
+            clauses = []
+            params: dict = {}
+            if self._from_date:
+                clauses.append("s.date >= date($from_date)")
+                params["from_date"] = self._from_date
+            if self._to_date:
+                clauses.append("s.date <= date($to_date)")
+                params["to_date"] = self._to_date
+            where = " AND ".join(clauses)
+            cypher = f"""
+MATCH (s:Session)
+WHERE {where}
+RETURN s.id AS id, s.date AS date
+ORDER BY s.date
+"""
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher, **params)
+                return [{"id": r["id"], "date": r["date"]} for r in result]
+        else:
+            cypher = """
 MATCH (s:Session)
 WHERE s.recapIt IS NULL
 RETURN s.id AS id, s.date AS date
 ORDER BY s.date
 """
-        with self._driver.session() as neo_session:
-            result = neo_session.run(cypher)
-            return [{"id": r["id"], "date": r["date"]} for r in result]
+            with self._driver.session() as neo_session:
+                result = neo_session.run(cypher)
+                return [{"id": r["id"], "date": r["date"]} for r in result]
 
     def _fetch_debates_for_session(self, session_id: str) -> list[dict]:
         """Return debates for a session, including their current recapIt (for resumability)."""
@@ -400,7 +440,7 @@ ORDER BY d.id
         """Return all speeches for a debate, with speaker info."""
         cypher = """
 MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(:Session)
-MATCH (d)<-[:BELONGS_TO_DEBATE]-(p:Phase)-[:CONTAINS_SPEECH]->(sp:Speech)
+MATCH (d)-[:HAS_PHASE]->(p:Phase)-[:CONTAINS_SPEECH]->(sp:Speech)
 OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
 OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gm:GovernmentMember)
 WITH sp, p,
@@ -551,6 +591,24 @@ if __name__ == "__main__":
         default=10,
         help="Max parallel OpenAI calls (default: 10)",
     )
+    parser.add_argument(
+        "--from-date",
+        type=str,
+        default=None,
+        help="Start date for range filter (YYYY-MM-DD, inclusive)",
+    )
+    parser.add_argument(
+        "--to-date",
+        type=str,
+        default=None,
+        help="End date for range filter (YYYY-MM-DD, inclusive)",
+    )
+    parser.add_argument(
+        "--date",
+        type=str,
+        default=None,
+        help="Generate summaries only for this date (YYYY-MM-DD). Overwrites existing summaries for that date.",
+    )
     args = parser.parse_args()
 
     # Validate dependencies
@@ -590,10 +648,18 @@ if __name__ == "__main__":
 
     openai_client = AsyncOpenAI(api_key=openai_api_key, max_retries=3)
 
+    if args.date:
+        logger.info("Date filter: %s (will overwrite existing summaries)", args.date)
+    if args.from_date or args.to_date:
+        logger.info("Date range: %s → %s", args.from_date or "start", args.to_date or "end")
+
     generator = SummaryGenerator(
         driver=driver,
         openai_client=openai_client,
         concurrency=args.concurrency,
+        date_filter=args.date,
+        from_date=args.from_date,
+        to_date=args.to_date,
     )
 
     try:

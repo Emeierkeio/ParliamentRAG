@@ -273,6 +273,7 @@ class DatabaseBuilder:
             "CREATE CONSTRAINT IF NOT EXISTS FOR (com:Committee) REQUIRE com.name IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (gm:GovernmentMember) REQUIRE gm.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (v:Vote) REQUIRE v.id IS UNIQUE",
+            "CREATE CONSTRAINT IF NOT EXISTS FOR (iv:IndividualVote) REQUIRE iv.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (a:ParliamentaryAct) REQUIRE a.uri IS UNIQUE",
         ]
         with self._driver.session() as neo_session:

@@ -562,6 +562,7 @@ const TOC_ITEMS = [
 function SideTOC() {
   const [active, setActive] = useState<string>("hero");
   const [visible, setVisible] = useState(false);
+  const [overInverted, setOverInverted] = useState(false);
 
   useEffect(() => {
     const sectionEls = TOC_ITEMS.map(({ id }) =>
@@ -578,6 +579,17 @@ function SideTOC() {
         }
       }
       setActive(current);
+
+      // The TOC is vertically centered: swap to light colors while its
+      // midpoint overlaps the dark "garanzie" section (bg-primary)
+      const inverted = document.getElementById("garanzie");
+      if (inverted) {
+        const midY = window.scrollY + window.innerHeight / 2;
+        setOverInverted(
+          midY >= inverted.offsetTop &&
+            midY <= inverted.offsetTop + inverted.offsetHeight
+        );
+      }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -609,7 +621,13 @@ function SideTOC() {
           >
             <span
               className={`[font-family:var(--font-display)] italic w-5 text-right text-sm transition-colors duration-200 ${
-                isActive ? "text-primary" : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                isActive
+                  ? overInverted
+                    ? "text-primary-foreground"
+                    : "text-primary"
+                  : overInverted
+                    ? "text-primary-foreground/40 group-hover:text-primary-foreground/80"
+                    : "text-muted-foreground/40 group-hover:text-muted-foreground"
               }`}
             >
               {numeral}
@@ -617,8 +635,12 @@ function SideTOC() {
             <span
               className={`text-[11px] font-medium transition-all duration-200 ${
                 isActive
-                  ? "text-foreground opacity-100 translate-x-0"
-                  : "text-muted-foreground/60 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
+                  ? `opacity-100 translate-x-0 ${overInverted ? "text-primary-foreground" : "text-foreground"}`
+                  : `opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 ${
+                      overInverted
+                        ? "text-primary-foreground/60"
+                        : "text-muted-foreground/60"
+                    }`
               }`}
             >
               {label}

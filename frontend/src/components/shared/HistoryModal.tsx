@@ -83,7 +83,7 @@ export function HistoryModal({ open, onClose, onLoadChat }: HistoryModalProps) {
         onClose();
       } else {
         sessionStorage.setItem("pendingChat", JSON.stringify(data));
-        window.location.href = "/";
+        window.location.href = "/home";
       }
     } catch (err) {
       console.error(err);

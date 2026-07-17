@@ -39,6 +39,13 @@ HEADERS = {
 SPARQL_PARAMS_BASE = {"format": "json"}
 
 
+ROMAN = {17: "xvii", 18: "xviii", 19: "xix", 20: "xx"}
+
+
+def csv_prefix(legislature: int) -> str:
+    return f"senatori_{ROMAN.get(legislature, f'leg{legislature}')}"
+
+
 def sparql_query(query: str) -> list[dict]:
     """Execute SPARQL query and return list of result dicts."""
     params = {**SPARQL_PARAMS_BASE, "query": query}
@@ -83,7 +90,7 @@ def _iso_to_yyyymmdd(date_str: str) -> str:
     return date_str
 
 
-def download_senators() -> list[dict] | None:
+def download_senators(legislature: int = 19) -> list[dict] | None:
     """Download senator biographical data for XIX legislature."""
     print("Downloading senators...")
     query = """
@@ -92,7 +99,7 @@ def download_senators() -> list[dict] | None:
       ?senatore a <http://xmlns.com/foaf/0.1/Person> .
       ?senatore <http://dati.senato.it/osr/mandato> ?mandato .
       ?mandato a <http://dati.camera.it/ocd/mandatoSenato> .
-      ?mandato <http://dati.senato.it/osr/legislatura> 19 .
+      ?mandato <http://dati.senato.it/osr/legislatura> {legislature} .
       ?senatore <http://www.w3.org/2000/01/rdf-schema#label> ?label .
 
       OPTIONAL { ?senatore <http://xmlns.com/foaf/0.1/gender> ?gender }
@@ -103,7 +110,7 @@ def download_senators() -> list[dict] | None:
     ORDER BY ?label
     """
     try:
-        results = sparql_query(query)
+        results = sparql_query(query.replace("{legislature}", str(legislature)))
         print(f"  Got {len(results)} rows")
 
         # Deduplicate by senatore URI (keep row with earliest mandatoStart)
@@ -142,7 +149,7 @@ def download_senators() -> list[dict] | None:
         return None
 
 
-def download_senator_groups() -> list[dict] | None:
+def download_senator_groups(legislature: int = 19) -> list[dict] | None:
     """Download parliamentary group memberships for XIX legislature senators.
 
     Uses a subquery to select the denominazione whose date range overlaps the
@@ -155,10 +162,10 @@ def download_senator_groups() -> list[dict] | None:
       ?senatore a <http://xmlns.com/foaf/0.1/Person> .
       ?senatore <http://dati.senato.it/osr/mandato> ?mandato .
       ?mandato a <http://dati.camera.it/ocd/mandatoSenato> .
-      ?mandato <http://dati.senato.it/osr/legislatura> 19 .
+      ?mandato <http://dati.senato.it/osr/legislatura> {legislature} .
 
       ?senatore <http://dati.camera.it/ocd/aderisce> ?ades .
-      ?ades <http://dati.senato.it/osr/legislatura> 19 .
+      ?ades <http://dati.senato.it/osr/legislatura> {legislature} .
       ?ades <http://dati.senato.it/osr/gruppo> ?gruppo .
       ?ades <http://dati.senato.it/osr/inizio> ?gruppoStart .
       OPTIONAL { ?ades <http://dati.senato.it/osr/fine> ?gruppoEnd }
@@ -175,7 +182,7 @@ def download_senator_groups() -> list[dict] | None:
     ORDER BY ?senatore ?gruppoStart
     """
     try:
-        results = sparql_query(query)
+        results = sparql_query(query.replace("{legislature}", str(legislature)))
         print(f"  Got {len(results)} rows")
 
         # Deduplicate: same (senatore, gruppoStart) may appear with multiple
@@ -200,7 +207,7 @@ def download_senator_groups() -> list[dict] | None:
         return None
 
 
-def download_senator_committees() -> list[dict] | None:
+def download_senator_committees(legislature: int = 19) -> list[dict] | None:
     """Download committee memberships for XIX legislature senators.
 
     Uses osr:titolo (single per commissione) to avoid titoloBreve duplicates.
@@ -212,10 +219,10 @@ def download_senator_committees() -> list[dict] | None:
       ?senatore a <http://xmlns.com/foaf/0.1/Person> .
       ?senatore <http://dati.senato.it/osr/mandato> ?mandato .
       ?mandato a <http://dati.camera.it/ocd/mandatoSenato> .
-      ?mandato <http://dati.senato.it/osr/legislatura> 19 .
+      ?mandato <http://dati.senato.it/osr/legislatura> {legislature} .
 
       ?senatore <http://dati.senato.it/osr/afferisce> ?afferenza .
-      ?afferenza <http://dati.senato.it/osr/legislatura> 19 .
+      ?afferenza <http://dati.senato.it/osr/legislatura> {legislature} .
       ?afferenza <http://dati.senato.it/osr/commissione> ?commissione .
       ?commissione <http://dati.senato.it/osr/titolo> ?organoLabel .
       OPTIONAL { ?afferenza <http://dati.senato.it/osr/inizio> ?membroStart }
@@ -224,7 +231,7 @@ def download_senator_committees() -> list[dict] | None:
     ORDER BY ?senatore ?membroStart
     """
     try:
-        results = sparql_query(query)
+        results = sparql_query(query.replace("{legislature}", str(legislature)))
         print(f"  Got {len(results)} rows")
         for r in results:
             if r.get("membroStart"):
@@ -247,14 +254,14 @@ def write_csv(filepath: str, data: list[dict], fieldnames: list[str]) -> None:
     print(f"  Written {len(data)} rows -> {os.path.basename(filepath)}")
 
 
-def main() -> None:
+def main(legislature: int = 19) -> None:
     os.makedirs(DATA_DIR, exist_ok=True)
 
     # Senators bio
-    senators = download_senators()
+    senators = download_senators(legislature)
     if senators:
         write_csv(
-            os.path.join(DATA_DIR, "senatori_xix.csv"),
+            os.path.join(DATA_DIR, f"{csv_prefix(legislature)}.csv"),
             senators,
             ["senatore", "nome", "cognome", "gender", "foto",
              "schedaCamera", "mandatoStart", "mandatoEnd"],
@@ -265,10 +272,10 @@ def main() -> None:
     time.sleep(1)
 
     # Groups
-    groups = download_senator_groups()
+    groups = download_senator_groups(legislature)
     if groups:
         write_csv(
-            os.path.join(DATA_DIR, "senatori_xix_gruppi.csv"),
+            os.path.join(DATA_DIR, f"{csv_prefix(legislature)}_gruppi.csv"),
             groups,
             ["senatore", "gruppoLabel", "gruppoBreve", "gruppoStart", "gruppoEnd"],
         )
@@ -278,10 +285,10 @@ def main() -> None:
     time.sleep(1)
 
     # Committees
-    committees = download_senator_committees()
+    committees = download_senator_committees(legislature)
     if committees:
         write_csv(
-            os.path.join(DATA_DIR, "senatori_xix_commissioni.csv"),
+            os.path.join(DATA_DIR, f"{csv_prefix(legislature)}_commissioni.csv"),
             committees,
             ["senatore", "organoLabel", "membroStart", "membroEnd"],
         )
@@ -290,9 +297,9 @@ def main() -> None:
 
     # Summary
     expected = [
-        "senatori_xix.csv",
-        "senatori_xix_gruppi.csv",
-        "senatori_xix_commissioni.csv",
+        f"{csv_prefix(legislature)}.csv",
+        f"{csv_prefix(legislature)}_gruppi.csv",
+        f"{csv_prefix(legislature)}_commissioni.csv",
     ]
     missing = [f for f in expected if not os.path.exists(os.path.join(DATA_DIR, f))]
     if missing:
@@ -303,4 +310,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--legislature", type=int, default=19)
+    main(ap.parse_args().legislature)

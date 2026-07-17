@@ -4,6 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { TimelineSession, TimelineFilters } from '@/types/timeline';
 import { getTimelineSessions } from '@/lib/timeline-api';
 
+interface UseTimelineOptions {
+  scrollContainerRef?: React.RefObject<HTMLElement | null>;
+}
+
 interface UseTimelineReturn {
   sessions: TimelineSession[];
   isLoading: boolean;
@@ -25,7 +29,7 @@ const DEFAULT_FILTERS: TimelineFilters = {
   toDate: '',
 };
 
-export function useTimeline(): UseTimelineReturn {
+export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
   const [sessions, setSessions] = useState<TimelineSession[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -95,7 +99,7 @@ export function useTimeline(): UseTimelineReturn {
           fetchSessions(cursor, true);
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1, root: options?.scrollContainerRef?.current ?? null },
     );
 
     const el = loadMoreRef.current;

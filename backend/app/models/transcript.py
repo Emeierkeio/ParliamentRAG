@@ -52,6 +52,20 @@ class SuggestionsResponse(BaseModel):
     questions: list[str]
 
 
+class SearchMatch(BaseModel):
+    """A single search match within a speech."""
+
+    speech_id: str
+    snippet: str  # text excerpt around the match
+
+
+class TranscriptSearchResponse(BaseModel):
+    """Full-text search results across all speeches in a debate."""
+
+    query: str
+    matches: list[SearchMatch]
+
+
 class TranscriptChatMessage(BaseModel):
     """A single turn in the transcript chat conversation."""
 

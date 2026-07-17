@@ -5,3 +5,6 @@ regex>=2023.0
 spacy>=3.5.0
 openai>=1.10.0
 tqdm>=4.64.0
+# Senate downloads: senato.it is behind an AWS WAF JS challenge.
+# After install, run once: playwright install chromium
+playwright>=1.45.0

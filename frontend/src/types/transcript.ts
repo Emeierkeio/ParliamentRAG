@@ -33,6 +33,16 @@ export interface SuggestionsResponse {
   questions: string[];
 }
 
+export interface SearchMatch {
+  speech_id: string;
+  snippet: string;
+}
+
+export interface TranscriptSearchResponse {
+  query: string;
+  matches: SearchMatch[];
+}
+
 /** Chat message for the transcript chatbot (session-only, no persistence). */
 export interface TranscriptMessage {
   id: string;

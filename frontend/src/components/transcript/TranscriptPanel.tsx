@@ -10,10 +10,14 @@ interface TranscriptPanelProps {
   speeches: SpeechRowData[];
   targetSpeechId?: string | null;
   onTargetConsumed?: () => void;
+  /** Speech IDs to auto-expand (from search results) */
+  searchOpenIds?: string[];
+  /** Current search query for text highlighting */
+  searchQuery?: string;
 }
 
-export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetConsumed }: TranscriptPanelProps) {
-  const [openSpeechId, setOpenSpeechId] = useState<string | null>(null);
+export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetConsumed, searchOpenIds, searchQuery }: TranscriptPanelProps) {
+  const [openSpeechIds, setOpenSpeechIds] = useState<Set<string>>(new Set());
   const [speechesLoaded, setSpeechesLoaded] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,8 +32,7 @@ export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetCo
     const hash = window.location.hash;
     if (!hash.startsWith("#speech-")) return;
     const speechId = hash.slice("#speech-".length);
-    setOpenSpeechId(speechId);
-    // Delay scroll to allow accordion to render
+    setOpenSpeechIds(new Set([speechId]));
     requestAnimationFrame(() => {
       setTimeout(() => {
         const el = document.getElementById(`speech-${speechId}`);
@@ -38,9 +41,26 @@ export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetCo
     });
   }, [speechesLoaded]);
 
+  // React to searchOpenIds changes — auto-expand matching speeches
+  useEffect(() => {
+    if (!searchOpenIds || searchOpenIds.length === 0) {
+      // When search is cleared, close all
+      setOpenSpeechIds(new Set());
+      return;
+    }
+    setOpenSpeechIds(new Set(searchOpenIds));
+    // Scroll to the first match
+    if (searchOpenIds[0]) {
+      setTimeout(() => {
+        const el = document.getElementById(`speech-${searchOpenIds[0]}`);
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    }
+  }, [searchOpenIds]);
+
   // Scroll to speech programmatically (called by chatbot citation click via targetSpeechId)
   const scrollToSpeech = useCallback((speechId: string) => {
-    setOpenSpeechId(speechId);
+    setOpenSpeechIds((prev) => new Set(prev).add(speechId));
     requestAnimationFrame(() => {
       setTimeout(() => {
         const el = document.getElementById(`speech-${speechId}`);
@@ -59,12 +79,20 @@ export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetCo
     }
   }, [targetSpeechId, scrollToSpeech, onTargetConsumed]);
 
+  const handleOpenChange = useCallback((speechId: string, isOpen: boolean) => {
+    setOpenSpeechIds((prev) => {
+      const next = new Set(prev);
+      if (isOpen) next.add(speechId);
+      else next.delete(speechId);
+      return next;
+    });
+  }, []);
+
   // Build elements with phase dividers
   const elements: React.ReactNode[] = [];
   let lastPhaseId: string | null = null;
 
   speeches.forEach((speech) => {
-    // Insert phase header when phase changes
     if (speech.phase_id !== lastPhaseId) {
       elements.push(
         <PhaseHeader key={`phase-${speech.phase_id}`} id={speech.phase_id} title={speech.phase_title} />
@@ -77,10 +105,9 @@ export function TranscriptPanel({ debateId, speeches, targetSpeechId, onTargetCo
         key={speech.speech_id}
         debateId={debateId}
         speech={speech}
-        isOpen={openSpeechId === speech.speech_id}
-        onOpenChange={(isOpen: boolean) => {
-          setOpenSpeechId(isOpen ? speech.speech_id : null);
-        }}
+        isOpen={openSpeechIds.has(speech.speech_id)}
+        onOpenChange={(isOpen: boolean) => handleOpenChange(speech.speech_id, isOpen)}
+        highlightQuery={searchQuery}
       />
     );
   });

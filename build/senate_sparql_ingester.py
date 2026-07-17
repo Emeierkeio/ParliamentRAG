@@ -26,6 +26,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import sys
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -523,6 +524,7 @@ SELECT ?senatore WHERE {{
 
         total = 0
         sittings_processed = 0
+        aborted = False
 
         for num in todo:
             try:
@@ -537,6 +539,7 @@ SELECT ?senatore WHERE {{
                 votazioni = self._get_senate_votes_for_seduta(seduta_uri)
             except SenateEndpointBlocked as exc:
                 logger.error("ABORTING run at leg%d sed%d: %s", legislature, num, exc)
+                aborted = True
                 break
             if not votazioni:
                 logger.debug(
@@ -564,7 +567,7 @@ SELECT ?senatore WHERE {{
                     if batch:
                         self._write_senate_individual_votes(batch)
                         total += len(batch)
-                    return {"sittings_processed": sittings_processed, "individual_votes_written": total, "aborted": True}
+                    return {"sittings_processed": sittings_processed, "ivotes_written": total, "aborted": True}
 
                 for outcome, uris in links.items():
                     for sen_uri in uris:
@@ -592,7 +595,7 @@ SELECT ?senatore WHERE {{
             "Senate individual vote ingest complete — %d sittings, %d individual votes",
             sittings_processed, total,
         )
-        return {"sittings_processed": sittings_processed, "ivotes_written": total}
+        return {"sittings_processed": sittings_processed, "ivotes_written": total, "aborted": aborted}
 
     # ------------------------------------------------------------------
     # Neo4j read helpers
@@ -736,6 +739,12 @@ if __name__ == "__main__":
                 f"Done — sittings_processed={stats['sittings_processed']}, "
                 f"ivotes_written={stats['ivotes_written']}"
             )
+            if stats.get("aborted"):
+                print(
+                    "ABORTED early: dati.senato.it is blocking requests (HTTP 403). "
+                    "Progress is saved — rerun later to resume from the next sitting."
+                )
+                sys.exit(3)
         else:
             # Default (no flag) or --aggregate-only: run aggregate ingest
             stats = ingester.ingest_aggregate_votes(
