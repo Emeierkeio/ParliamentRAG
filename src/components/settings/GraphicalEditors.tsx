@@ -25,7 +25,6 @@ import {
   Info,
   Network,
   Layers,
-  SlidersHorizontal,
   Filter,
   Wand2,
   Settings2,
@@ -530,21 +529,25 @@ interface GenerationEditorProps {
   onChange: (data: SystemConfig["generation"]) => void;
 }
 
-const MODEL_OPTIONS = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
+const MODEL_OPTIONS = [
+  "gpt-4.1",
+  "gpt-4.1-mini",
+  "gpt-4.1-nano",
+  "gpt-4o",
+  "gpt-4o-mini",
+  "gpt-4-turbo",
+  "gpt-3.5-turbo",
+];
 
 const MODEL_INFO: Record<string, string> = {
-  analyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4o-mini è sufficiente ed economico.",
-  writer: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e coerenza ideologica.",
+  analyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4.1-mini è sufficiente ed economico.",
+  writer: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
   integrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
 };
 
 export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
   const updateModel = (stage: string, model: string) => {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
-  };
-
-  const updateParams = (patch: Partial<typeof data.parameters>) => {
-    onChange({ ...data, parameters: { ...data.parameters, ...patch } });
   };
 
   const updatePositionBrief = (key: keyof typeof data.position_brief, value: number | boolean) => {
@@ -560,7 +563,7 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           </div>
           Generazione
         </CardTitle>
-        <CardDescription>Modelli LLM e parametri della pipeline di generazione a 4 stadi</CardDescription>
+        <CardDescription>Modelli LLM della pipeline di generazione a 4 stadi</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
 
@@ -586,46 +589,12 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
                 </select>
               </div>
             ))}
-          </div>
-        </SubSection>
-
-        {/* LLM Parameters */}
-        <SubSection icon={SlidersHorizontal} title="Parametri LLM">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <FieldWithUnit
-              label="Max Token Output"
-              info="Numero massimo di token generati per risposta. Aumentare per risposte più lunghe, ridurre per contenere i costi."
-              unit="token"
-            >
-              <Input
-                type="number" min={500} max={16000} step={500}
-                value={data.parameters.max_tokens}
-                onChange={(e) => updateParams({ max_tokens: parseInt(e.target.value) || 4000 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label="Temperatura"
-              info="Creatività/randomicità del modello. 0 = deterministico e preciso, 1 = creativo e variabile. Per testi analitici 0.2–0.4 è ottimale."
-            >
-              <Input
-                type="number" min={0} max={2} step={0.1}
-                value={data.parameters.temperature}
-                onChange={(e) => updateParams({ temperature: parseFloat(e.target.value) || 0.3 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label="Top-P (nucleus)"
-              info="Nucleus sampling: considera solo i token con probabilità cumulativa fino a Top-P. 1.0 = nessun filtraggio. Abbassare a 0.9–0.95 per output più focalizzati."
-            >
-              <Input
-                type="number" min={0} max={1} step={0.05}
-                value={data.parameters.top_p}
-                onChange={(e) => updateParams({ top_p: parseFloat(e.target.value) || 1.0 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
+            <p className="text-[11px] text-muted-foreground leading-relaxed pt-1">
+              Temperatura e max token sono fissi per stadio, tarati nel codice
+              (Analista 0.1, Scrittore 0.1, Integratore 0.0) per garantire citazioni
+              verbatim riproducibili. Il cambio di modello è l&apos;unica leva LLM con
+              effetto reale ed è applicato a caldo alla prossima query.
+            </p>
           </div>
         </SubSection>
 
@@ -686,16 +655,6 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
 
         {/* Behavior */}
         <SubSection icon={PenLine} title="Comportamento Generazione">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm">Sintesi Trasversale</span>
-              <InfoPopover text="Abilita la sezione 'Analisi Trasversale' (Stadio 3.5): identifica pattern cross-party, convergenze e divergenze tra i gruppi parlamentari. Aumenta la lunghezza e il costo della risposta." />
-            </div>
-            <ToggleSwitch
-              checked={data.enable_synthesis}
-              onChange={(v) => onChange({ ...data, enable_synthesis: v })}
-            />
-          </div>
           <div className="space-y-1.5">
             <LabelWithInfo info="Testo mostrato nella sezione del gruppo parlamentare quando non sono presenti interventi rilevanti nel corpus per quella query.">
               Messaggio Assenza Evidenze
@@ -721,7 +680,7 @@ interface QueryRewritingEditorProps {
   onChange: (data: SystemConfig["query_rewriting"]) => void;
 }
 
-const QR_MODEL_OPTIONS = ["gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
+const QR_MODEL_OPTIONS = ["gpt-4.1-nano", "gpt-4.1-mini", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
 
 export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorProps) {
   const update = (patch: Partial<SystemConfig["query_rewriting"]>) => {
@@ -754,7 +713,7 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <LabelWithInfo info="Modello LLM usato per riscrivere le query. gpt-4o-mini è raccomandato: è veloce, economico e sufficiente per questo task strutturato.">
+              <LabelWithInfo info="Modello LLM usato per riscrivere le query. gpt-4.1-nano è raccomandato: è veloce, economico e sufficiente per questo task strutturato.">
                 Modello
               </LabelWithInfo>
               <select
