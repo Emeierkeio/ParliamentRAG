@@ -197,9 +197,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               />
               <CreditsRow isCollapsed={false} />
             </nav>
-            <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
+            <div
+              className="mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden"
+              title={`${t('dataUpdatedAt')} ${lastUpdate ?? ""}`.trim()}
+            >
               <CalendarDays className="h-3 w-3 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "--/--/----"}</strong></span>
+              <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong>
             </div>
           </div>
         </aside>
@@ -313,13 +316,20 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             {/* Credits */}
             <CreditsRow isCollapsed={isCollapsed} />
 
-            {/* Data date — subtle footer line */}
-            {!isCollapsed && (
-              <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
-                <CalendarDays className="h-3 w-3 shrink-0" />
-                <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "--/--/----"}</strong></span>
-              </div>
-            )}
+            {/* Data date — subtle footer line. Always mounted (icon-only when
+                collapsed) so the bottom stack never changes height on toggle. */}
+            <div
+              className={cn(
+                "mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden",
+                isCollapsed ? "justify-center" : "gap-2 px-3"
+              )}
+              title={`${t('dataUpdatedAt')} ${lastUpdate ?? ""}`.trim()}
+            >
+              <CalendarDays className="h-3 w-3 shrink-0" />
+              {!isCollapsed && (
+                <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong>
+              )}
+            </div>
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (
