@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -68,11 +68,14 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Seed from sessionStorage so full-page navigations render the date instantly
   // (each tool switch is a full reload — without the cache the footer flashes
-  // a placeholder and the whole bottom block shifts).
-  const [lastUpdate, setLastUpdate] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return sessionStorage.getItem("lastUpdateDate");
-  });
+  // a placeholder and the whole bottom block shifts). Read in useLayoutEffect
+  // (pre-paint) rather than in the useState initializer to avoid an SSR
+  // hydration mismatch.
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+  useLayoutEffect(() => {
+    const cached = sessionStorage.getItem("lastUpdateDate");
+    if (cached) setLastUpdate(cached);
+  }, []);
 
   // Refresh in the background; update state/cache only if the value changed
   useEffect(() => {
