@@ -321,11 +321,13 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 <TooltipTrigger asChild>
                   <div
                     className={cn(
-                      "flex h-8 items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default",
-                      isCollapsed ? "justify-center" : "gap-2 px-3"
+                      "flex items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default",
+                      // Collapsed: same 36x36 centered box as collapsed NavButtons,
+                      // so the tooltip anchors at the identical position.
+                      isCollapsed ? "w-9 h-9 justify-center mx-auto" : "h-8 gap-2 px-3"
                     )}
                   >
-                    <CalendarDays className="h-3 w-3 shrink-0" />
+                    <CalendarDays className={cn("shrink-0", isCollapsed ? "h-4 w-4" : "h-3 w-3")} />
                     {!isCollapsed && (
                       <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
                     )}
