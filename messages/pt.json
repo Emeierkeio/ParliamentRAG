@@ -167,7 +167,8 @@
     "navActs": "Atos",
     "navAuthority": "Autoridade",
     "navCompass": "Bússola",
-    "navMore": "Mais"
+    "navMore": "Mais",
+    "navTimeline": "Cronologia"
   },
   "Chat": {
     "placeholder": "Pergunte algo sobre os debates parlamentares...",
