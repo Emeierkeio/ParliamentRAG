@@ -92,9 +92,12 @@ class UnifiedEvidence(BaseModel):
                     "This is the ONLY valid citation source."
     )
 
-    # Offset metadata for verification
+    # Offset metadata for verification.
+    # span_end == 0 (with span_start == 0) means "offsets unknown": chunks ingested
+    # by the v2 pipeline don't carry start_char_raw/end_char_raw. The citation flow
+    # extracts from chunk_text and skips span extraction when span_end <= span_start.
     span_start: int = Field(ge=0, description="Start offset in text")
-    span_end: int = Field(gt=0, description="End offset in text")
+    span_end: int = Field(ge=0, description="End offset in text (0 = unknown)")
 
     # Context
     debate_title: Optional[str] = Field(default=None, description="Debate title")
@@ -128,9 +131,9 @@ class UnifiedEvidence(BaseModel):
     @field_validator("span_end")
     @classmethod
     def validate_span_order(cls, v: int, info) -> int:
-        """Ensure span_end > span_start."""
-        if "span_start" in info.data and v <= info.data["span_start"]:
-            raise ValueError("span_end must be greater than span_start")
+        """Ensure span_end >= span_start (0/0 = offsets unknown, allowed)."""
+        if "span_start" in info.data and v < info.data["span_start"]:
+            raise ValueError("span_end must be >= span_start")
         return v
 
     class Config:
