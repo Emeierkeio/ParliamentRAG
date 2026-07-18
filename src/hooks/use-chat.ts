@@ -543,6 +543,17 @@ export function useChat(options: UseChatOptions = {}) {
 
               case "error":
                 console.error(`[Pipeline] ERROR from server:`, data.message);
+                // Deliberate blocks (rate limit / quota) carry a code and a
+                // fully localized explanation: show it as-is, no retry and
+                // no generic error prefix.
+                if (data.code === "rate_limited" || data.code === "quota_exhausted") {
+                  streamCompletedRef.current = true;
+                  updateLastAssistantMessage({
+                    status: "error",
+                    content: data.message,
+                  });
+                  return;
+                }
                 throw new Error(data.message);
 
               default:
