@@ -166,7 +166,8 @@
     "navTopic": "Themen",
     "navActs": "Akten",
     "navAuthority": "Autorität",
-    "navCompass": "Kompass"
+    "navCompass": "Kompass",
+    "navMore": "Mehr"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",

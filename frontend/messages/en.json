@@ -166,7 +166,8 @@
     "navTopic": "Topics",
     "navActs": "Acts",
     "navAuthority": "Authority",
-    "navCompass": "Compass"
+    "navCompass": "Compass",
+    "navMore": "More"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",

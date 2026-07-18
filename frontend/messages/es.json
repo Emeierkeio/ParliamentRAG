@@ -166,7 +166,8 @@
     "navTopic": "Temas",
     "navActs": "Actas",
     "navAuthority": "Autoridad",
-    "navCompass": "Brújula"
+    "navCompass": "Brújula",
+    "navMore": "Más"
   },
   "Chat": {
     "placeholder": "Pregunte algo sobre los debates parlamentarios...",
