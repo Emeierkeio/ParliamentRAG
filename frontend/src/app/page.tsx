@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
-import { ArrowRight, ArrowUpRight, Globe, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, Check, Award } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 
@@ -177,20 +177,23 @@ export default function LandingPage() {
               <ArrowRight className="h-3.5 w-3.5 self-center transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
-          {/* Accolade line — newspaper-style credential under the masthead */}
-          <a
-            href="https://iswc2026.semanticweb.org"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center justify-center gap-2 border-t border-border py-1.5 text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-          >
-            <span className="[font-family:var(--font-display)] normal-case tracking-normal text-[12px] font-semibold text-foreground">
+        </div>
+        {/* Accolade band — newspaper-style credential under the masthead */}
+        <a
+          href="https://iswc2026.semanticweb.org"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block border-t border-border bg-primary/[0.05] hover:bg-primary/[0.09] transition-colors cursor-pointer"
+        >
+          <span className="flex items-center justify-center gap-2.5 py-2 px-6 text-[11px] uppercase tracking-[0.2em] text-foreground/60 group-hover:text-foreground transition-colors">
+            <Award className="h-3.5 w-3.5 text-primary shrink-0" />
+            <span className="[font-family:var(--font-display)] normal-case tracking-normal text-[13px] font-semibold text-primary">
               ISWC 2026
             </span>
-            <span aria-hidden>·</span>
+            <span aria-hidden className="text-border">|</span>
             <span>{t("iswcBadge")}</span>
-          </a>
-        </div>
+          </span>
+        </a>
       </header>
 
       <SideTOC />
