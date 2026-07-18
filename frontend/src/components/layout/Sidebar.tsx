@@ -66,9 +66,15 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+  // Seed from sessionStorage so full-page navigations render the date instantly
+  // (each tool switch is a full reload — without the cache the footer flashes
+  // a placeholder and the whole bottom block shifts).
+  const [lastUpdate, setLastUpdate] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("lastUpdateDate");
+  });
 
-  // Fetch last data update date from backend
+  // Refresh in the background; update state/cache only if the value changed
   useEffect(() => {
     fetch("/api/config/last-update")
       .then(r => r.ok ? r.json() : null)
@@ -76,7 +82,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
         if (data?.last_update) {
           // Format YYYY-MM-DD to DD/MM/YYYY
           const [y, m, d] = data.last_update.split("-");
-          setLastUpdate(`${d}/${m}/${y}`);
+          const formatted = `${d}/${m}/${y}`;
+          sessionStorage.setItem("lastUpdateDate", formatted);
+          setLastUpdate(prev => (prev === formatted ? prev : formatted));
         }
       })
       .catch(() => {});
@@ -188,7 +196,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             </nav>
             <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
               <CalendarDays className="h-3 w-3 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "…"}</strong></span>
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "--/--/----"}</strong></span>
             </div>
           </div>
         </aside>
@@ -306,7 +314,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             {!isCollapsed && (
               <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
                 <CalendarDays className="h-3 w-3 shrink-0" />
-                <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "…"}</strong></span>
+                <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "--/--/----"}</strong></span>
               </div>
             )}
 
