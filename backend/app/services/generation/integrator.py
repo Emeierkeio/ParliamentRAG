@@ -263,7 +263,8 @@ Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.0,
-                max_tokens=5000
+                max_tokens=5000,
+                seed=42
             )
 
             integrated_text = response.choices[0].message.content
@@ -520,7 +521,8 @@ Sezioni originali con citazioni:
                     {"role": "user", "content": retry_prompt}
                 ],
                 temperature=0.1,  # Even lower for retry
-                max_tokens=2500
+                max_tokens=2500,
+                seed=42
             )
 
             integrated_text = response.choices[0].message.content

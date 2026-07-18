@@ -194,7 +194,7 @@ async def get_configuration():
     qr_data = config_data.get("query_rewriting", {})
     query_rewriting_config = QueryRewritingConfig(
         enabled=qr_data.get("enabled", True),
-        model=qr_data.get("model", "gpt-4o-mini"),
+        model=qr_data.get("model", "gpt-4.1-nano"),
         max_query_words=qr_data.get("max_query_words", 5),
     )
 
@@ -403,3 +403,45 @@ async def get_coalitions():
     config = get_config()
     config_data = config.load_config()
     return config_data.get("coalitions", {})
+
+
+class TranslateRequest(BaseModel):
+    text: str
+    target_lang: str = "en"
+
+
+@router.post("/translate")
+async def translate_text(req: TranslateRequest):
+    """On-demand translation of a text string."""
+    from ..services.translation import _translate_text
+    from ..key_pool import make_async_client
+
+    if not req.text or req.target_lang == "it":
+        return {"translated": req.text}
+
+    client = make_async_client()
+    try:
+        translated = await _translate_text(client, req.text, max_tokens=4000)
+        return {"translated": translated}
+    except Exception as e:
+        logger.warning("On-demand translation failed: %s", e)
+        return {"translated": req.text}
+
+
+@router.get("/last-update")
+async def get_last_update():
+    """Get the date of the most recent Session in the database."""
+    from ..services.deps import get_services
+    client = get_services()["neo4j"]
+    try:
+        result = client.query(
+            "MATCH (s:Session) RETURN max(s.date) AS last_date"
+        )
+        if result and result[0].get("last_date"):
+            d = result[0]["last_date"]
+            if hasattr(d, "to_native"):
+                d = d.to_native()
+            return {"last_update": str(d)}
+    except Exception as e:
+        logger.warning("Failed to get last update date: %s", e)
+    return {"last_update": None}

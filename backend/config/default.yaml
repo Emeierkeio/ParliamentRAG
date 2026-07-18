@@ -130,11 +130,17 @@ generation:
   # OpenAI models for 4-stage pipeline
   
   models:
-    analyst: "gpt-4o"  # Stage 1: Claim decomposition
-    writer: "gpt-4o"        # Stage 2: Sectional writing
-    integrator: "gpt-4o"    # Stage 3: Narrative integration
+    analyst: "gpt-4.1-mini"  # Stage 1: Claim decomposition (structured extraction — mini is enough)
+    writer: "gpt-4.1"        # Stage 2: Sectional writing (verbatim citations — needs top instruction following)
+    integrator: "gpt-4.1"    # Stage 3: Narrative integration (long rewrite preserving {CIT:N} markers)
     # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
+    # NOTE: synthesis (Stage 3.5) reuses the integrator model but the stage was
+    # removed from the pipeline; evidence_first_writer is unused legacy code.
 
+  # NOT WIRED: the values below are NOT read by any pipeline stage — each stage
+  # sets its own tuned temperature/max_tokens in code (analyst 0.1/2000,
+  # sectional 0.1/800, integrator 0.0/5000). Kept only for API compatibility
+  # with the settings UI. Changing them here has NO effect.
   parameters:
     max_tokens: 4000
     temperature: 0.3
@@ -152,8 +158,8 @@ generation:
   require_all_parties: true
   no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
 
-  # Enable convergence-divergence synthesis section (Stage 3.5)
-  # Adds "Analisi Trasversale" section identifying cross-party patterns
+  # NOT WIRED: Stage 3.5 (convergence-divergence synthesis) was removed from the
+  # pipeline — this flag is read but never acted upon. Changing it has NO effect.
   enable_synthesis: true
 
 # Coalition definitions for temporal authority logic
@@ -187,16 +193,18 @@ citation:
   # Citation integrity system settings
   integrity:
     # Minimum semantic coherence score (0.0-1.0)
-    # For embedding method: 0.30 calibrated for intro_text vs verbatim parliamentary quote pairs
+    # For embedding method: 0.22 calibrated for gpt-4.1 writer style — its framing
+    # sentences are more abstract/concise than gpt-4o's, so legitimate citations
+    # score 0.23-0.30 (with 0.30 they were mass-removed). Real mismatches score <=0.20.
     # For jaccard method: 0.2 recommended (keyword overlap)
-    min_coherence_score: 0.30
+    min_coherence_score: 0.22
     # Coherence validation method: "embedding" (primary) or "jaccard" (fallback)
     coherence_method: "embedding"
 
 # Query rewriting: expand short/ambiguous queries before retrieval
 query_rewriting:
   enabled: true
-  model: "gpt-4o-mini"
+  model: "gpt-4.1-nano"
   # Only rewrite queries with at most this many words.
   # Longer queries are already descriptive enough.
   max_query_words: 5

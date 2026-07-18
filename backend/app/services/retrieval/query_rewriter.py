@@ -37,7 +37,7 @@ class QueryRewriter:
     """
     Expands short/ambiguous queries with related parliamentary terms.
 
-    Uses a cheap, fast model (gpt-4o-mini) and always falls back to the
+    Uses a cheap, fast model (gpt-4.1-nano) and always falls back to the
     original query on any error so retrieval is never blocked.
     """
 
@@ -58,7 +58,7 @@ class QueryRewriter:
         if len(query.split()) > max_words:
             return query
 
-        model = cfg.get("model", "gpt-4o-mini")
+        model = cfg.get("model", "gpt-4.1-nano")
 
         try:
             response = self._client.chat.completions.create(

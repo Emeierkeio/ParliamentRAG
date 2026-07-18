@@ -570,7 +570,8 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                         {"role": "user", "content": attempt_prompt}
                     ],
                     temperature=0.1,
-                    max_tokens=800
+                    max_tokens=800,
+                    seed=42
                 )
 
                 content = response.choices[0].message.content
@@ -868,6 +869,7 @@ TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
                 ],
                 temperature=0.2,
                 max_tokens=300,
+                seed=42,
             )
             return response.choices[0].message.content.strip()
         except Exception as e:

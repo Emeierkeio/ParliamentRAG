@@ -196,9 +196,9 @@ class ConfigLoader:
             },
             "generation": {
                 "models": {
-                    "analyst": "gpt-4o",
-                    "writer": "gpt-4o",
-                    "integrator": "gpt-4o"
+                    "analyst": "gpt-4.1-mini",
+                    "writer": "gpt-4.1",
+                    "integrator": "gpt-4.1"
                 },
                 "parameters": {
                     "max_tokens": 4000,

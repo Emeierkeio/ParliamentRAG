@@ -61,11 +61,22 @@ def key_count() -> int:
         return len(_keys)  # type: ignore[arg-type]
 
 
+# SDK default timeout is 600s: a single hung call would block the pipeline
+# semaphore for 10 minutes. 180s covers the slowest call (integrator, 5000
+# output tokens) with ample margin; max_retries=2 is the SDK default made explicit.
+_DEFAULT_TIMEOUT = 180.0
+_DEFAULT_MAX_RETRIES = 2
+
+
 def make_client(**kwargs) -> openai.OpenAI:
     """Create a synchronous OpenAI client with the next round-robin key."""
+    kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
+    kwargs.setdefault("max_retries", _DEFAULT_MAX_RETRIES)
     return openai.OpenAI(api_key=next_key(), **kwargs)
 
 
 def make_async_client(**kwargs) -> openai.AsyncOpenAI:
     """Create an async OpenAI client with the next round-robin key."""
+    kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
+    kwargs.setdefault("max_retries", _DEFAULT_MAX_RETRIES)
     return openai.AsyncOpenAI(api_key=next_key(), **kwargs)

@@ -88,9 +88,41 @@ Rispondi SOLO in formato JSON valido con questa struttura:
                     {"role": "system", "content": self.SYSTEM_PROMPT},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.3,
+                temperature=0.1,
                 max_tokens=2000,
-                response_format={"type": "json_object"}
+                seed=42,
+                # Structured Outputs: schema-guaranteed JSON, no malformed-JSON retries
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "claim_analysis",
+                        "strict": True,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "claims": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "claim_id": {"type": "string"},
+                                            "claim": {"type": "string"},
+                                            "evidence_needed": {"type": "boolean"},
+                                            "party": {"type": ["string", "null"]},
+                                            "priority": {"type": "string", "enum": ["high", "medium", "low"]},
+                                        },
+                                        "required": ["claim_id", "claim", "evidence_needed", "party", "priority"],
+                                        "additionalProperties": False,
+                                    },
+                                },
+                                "query_type": {"type": "string", "enum": ["policy", "event", "comparison", "general"]},
+                                "requires_government_view": {"type": "boolean"},
+                            },
+                            "required": ["claims", "query_type", "requires_government_view"],
+                            "additionalProperties": False,
+                        },
+                    },
+                },
             )
 
             result = json.loads(response.choices[0].message.content)
