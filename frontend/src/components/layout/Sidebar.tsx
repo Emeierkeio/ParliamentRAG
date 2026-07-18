@@ -191,13 +191,17 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 isCollapsed={false}
               />
             </nav>
-            <div
-              className="mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden"
-              title={`${t('dataUpdatedAt')} ${lastUpdate ?? ""}`.trim()}
-            >
-              <CalendarDays className="h-3 w-3 shrink-0" />
-              <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
-            </div>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <div className="mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default">
+                  <CalendarDays className="h-3 w-3 shrink-0" />
+                  <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={10}>
+                {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </aside>
 
@@ -308,19 +312,26 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             />
 
             {/* Data date — subtle footer line. Always mounted (icon-only when
-                collapsed) so the bottom stack never changes height on toggle. */}
-            <div
-              className={cn(
-                "mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden",
-                isCollapsed ? "justify-center" : "gap-2 px-3"
-              )}
-              title={`${t('dataUpdatedAt')} ${lastUpdate ?? ""}`.trim()}
-            >
-              <CalendarDays className="h-3 w-3 shrink-0" />
-              {!isCollapsed && (
-                <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
-              )}
-            </div>
+                collapsed) so the bottom stack never changes height on toggle.
+                Styled tooltip (like the nav icons) carries the full label. */}
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <div
+                  className={cn(
+                    "mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default",
+                    isCollapsed ? "justify-center" : "gap-2 px-3"
+                  )}
+                >
+                  <CalendarDays className="h-3 w-3 shrink-0" />
+                  {!isCollapsed && (
+                    <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={10}>
+                {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
+              </TooltipContent>
+            </Tooltip>
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (
