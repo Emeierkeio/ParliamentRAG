@@ -145,7 +145,7 @@
     "topicSearch": "Topic Search",
     "tools": "Tools",
     "actsSearch": "Acts Search",
-    "parliamentaryTimeline": "Parliamentary Timeline",
+    "parliamentaryTimeline": "Chamber Proceedings",
     "authorityAnalysis": "Authority Analysis",
     "ideologicalCompass": "Ideological Compass",
     "dataUpdatedAt": "Data updated on",
@@ -168,7 +168,7 @@
     "navAuthority": "Authority",
     "navCompass": "Compass",
     "navMore": "More",
-    "navTimeline": "Timeline"
+    "navTimeline": "Sessions"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",
@@ -550,7 +550,7 @@
     "historyTagDateTo": "to {date}"
   },
   "Timeline": {
-    "pageTitle": "Parliamentary Timeline",
+    "pageTitle": "Chamber Proceedings",
     "browseDescription": "Browse parliamentary sessions, debates, and speaker positions",
     "searchPlaceholder": "Search debates, topics, speakers...",
     "dateFrom": "From",

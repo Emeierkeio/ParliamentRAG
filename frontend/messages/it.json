@@ -145,7 +145,7 @@
     "topicSearch": "Ricerca Topic",
     "tools": "Strumenti",
     "actsSearch": "Ricerca Atti",
-    "parliamentaryTimeline": "Cronologia Parlamentare",
+    "parliamentaryTimeline": "Lavori d’Aula",
     "authorityAnalysis": "Analisi Autorità",
     "ideologicalCompass": "Compasso Ideologico",
     "dataUpdatedAt": "Dati aggiornati al",
@@ -168,7 +168,7 @@
     "navAuthority": "Autorità",
     "navCompass": "Compasso",
     "navMore": "Altro",
-    "navTimeline": "Cronologia"
+    "navTimeline": "Aula"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",
@@ -550,7 +550,7 @@
     "historyTagDateTo": "al {date}"
   },
   "Timeline": {
-    "pageTitle": "Cronologia Parlamentare",
+    "pageTitle": "Lavori d’Aula",
     "browseDescription": "Esplora le sessioni parlamentari, i dibattiti e le posizioni dei relatori",
     "searchPlaceholder": "Cerca dibattiti, argomenti, relatori...",
     "dateFrom": "Da",

@@ -145,7 +145,7 @@
     "topicSearch": "Búsqueda de Temas",
     "tools": "Herramientas",
     "actsSearch": "Búsqueda de Actos",
-    "parliamentaryTimeline": "Cronología Parlamentaria",
+    "parliamentaryTimeline": "Trabajos del Pleno",
     "authorityAnalysis": "Análisis de Autoridad",
     "ideologicalCompass": "Brújula Ideológica",
     "dataUpdatedAt": "Datos actualizados a",
@@ -168,7 +168,7 @@
     "navAuthority": "Autoridad",
     "navCompass": "Brújula",
     "navMore": "Más",
-    "navTimeline": "Cronología"
+    "navTimeline": "Pleno"
   },
   "Chat": {
     "placeholder": "Pregunte algo sobre los debates parlamentarios...",
@@ -550,7 +550,7 @@
     "historyTagDateTo": "hasta el {date}"
   },
   "Timeline": {
-    "pageTitle": "Cronología Parlamentaria",
+    "pageTitle": "Trabajos del Pleno",
     "browseDescription": "Explore las sesiones parlamentarias, los debates y las posiciones de los oradores",
     "searchPlaceholder": "Buscar debates, temas, oradores...",
     "dateFrom": "Desde",
