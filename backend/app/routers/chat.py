@@ -12,11 +12,12 @@ import time
 from datetime import date, datetime
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 from ..services.neo4j_client import Neo4jClient
+from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.compass import IdeologyScorer
 from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
@@ -42,6 +43,7 @@ class ChatRequest(BaseModel):
     query: str = Field(..., min_length=3, max_length=4000)
     mode: str = Field(default="standard")  # "standard" or "high_quality"
     task_id: Optional[str] = Field(default=None)  # Client-provided task ID for reconnection
+    locale: str = Field(default="it")  # Language for response/citation translation ("it" | "en")
 
 
 
@@ -189,13 +191,19 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     logger.info("=" * 60)
     logger.info(f"[PIPELINE START] Task: {task_id}")
     logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
-    logger.info(f"[PIPELINE START] Mode: {request.mode}")
+    logger.info(f"[PIPELINE START] Mode: {request.mode}, Locale: {request.locale}")
     logger.info("=" * 60)
+
+    _en = request.locale == "en"
+    def _t(it: str, en: str) -> str:
+        return en if _en else it
 
     semaphore = _get_pipeline_semaphore()
     acquired = await _acquire_pipeline_slot(semaphore, emit, task_id)
     if not acquired:
-        await emit("error", {"message": "Il sistema è troppo occupato al momento. Riprova tra qualche minuto."})
+        msg = _t("Il sistema è troppo occupato al momento. Riprova tra qualche minuto.",
+                 "The system is too busy right now. Please try again in a few minutes.")
+        await emit("error", {"message": msg})
         await store.fail_task(task_id, "Timeout in coda")
         return
 
@@ -203,14 +211,14 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 1: Analisi query ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 1, "total": 8, "message": "Analisi query"})
+        await emit("progress", {"step": 1, "total": 8, "message": _t("Analisi query", "Query analysis")})
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
         # === Step 2: Commissioni ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 2, "total": 8, "message": "Commissioni"})
+        await emit("progress", {"step": 2, "total": 8, "message": _t("Commissioni", "Committees")})
 
         commission_matcher = get_commission_matcher()
         relevant_commissions = commission_matcher.find_relevant_commissions(
@@ -223,7 +231,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 3: Esperti (Authority) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 3, "total": 8, "message": "Esperti"})
+        await emit("progress", {"step": 3, "total": 8, "message": _t("Esperti", "Authoritative sources")})
 
         logger.info("[RETRIEVAL] Starting dual-channel retrieval...")
         retrieval_start = time.time()
@@ -300,7 +308,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 4: Interventi (Citations) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 4, "total": 8, "message": "Interventi"})
+        await emit("progress", {"step": 4, "total": 8, "message": _t("Interventi", "Speeches")})
 
         citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
@@ -316,7 +324,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 5: Statistiche (Balance) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 5, "total": 8, "message": "Statistiche"})
+        await emit("progress", {"step": 5, "total": 8, "message": _t("Statistiche", "Statistics")})
 
         balance = _compute_balance_metrics(evidence_dicts)
         await emit("balance", balance)
@@ -329,7 +337,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 6: Bussola Ideologica (Compass) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 6, "total": 8, "message": "Bussola Ideologica"})
+        await emit("progress", {"step": 6, "total": 8, "message": _t("Bussola Ideologica", "Ideological Compass")})
 
         compass_data = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
@@ -337,6 +345,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
                    f"axes_keys={list(compass_data.get('axes', {}).keys())}")
+        if request.locale != "it":
+            compass_data = await translate_compass_axes(compass_data, target_lang=request.locale)
         await emit("compass", compass_data)
         step_times["step_6_compass"] = time.time() - step_start
         logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
@@ -344,7 +354,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         # === Step 7: Generazione ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
-        await emit("progress", {"step": 7, "total": 8, "message": "Generazione"})
+        await emit("progress", {"step": 7, "total": 8, "message": _t("Generazione", "Generation")})
 
         logger.info("[GENERATION] Starting 4-stage generation pipeline...")
         generation_start = time.time()
@@ -509,6 +519,10 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     final_text
                 )
 
+        # Translate response text if needed
+        if request.locale != "it":
+            final_text = await translate_response_text(final_text, target_lang=request.locale)
+
         # Stream text content in chunks
         chunk_size = 50
         logger.info(f"[GENERATION] Generated {len(final_text)} chars, streaming in {len(final_text)//chunk_size + 1} chunks")
@@ -551,13 +565,15 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
+        if request.locale != "it":
+            verified_citations = await translate_citation_batch(verified_citations, target_lang=request.locale)
         await emit("citation_details", {"citations": verified_citations})
 
         # === Step 8: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             _raise_if_cancelled(task_id, store)
             step_start = time.time()
-            await emit("progress", {"step": 8, "total": 8, "message": "Valutazione"})
+            await emit("progress", {"step": 8, "total": 8, "message": _t("Valutazione", "Evaluation")})
             await emit("hq_variants", {
                 "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
             })
@@ -1708,7 +1724,7 @@ def _build_verified_citations(
 
 
 @router.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(request: ChatRequest, http_request: Request):
     """
     Main chat endpoint with SSE streaming.
 
@@ -1716,6 +1732,11 @@ async def chat_endpoint(request: ChatRequest):
     disconnects (e.g. mobile browser going to background).
     The client can poll GET /api/chat/task/{task_id} to recover results.
     """
+    # Read locale from Accept-Language header and inject into request
+    accept_lang = http_request.headers.get("accept-language", "it")
+    request.locale = "en" if "en" in accept_lang else "it"
+    logger.info(f"[CHAT] Accept-Language: {accept_lang!r}, resolved locale: {request.locale}")
+
     store = get_task_store()
 
     # Cleanup expired tasks periodically

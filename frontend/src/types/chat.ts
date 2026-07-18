@@ -23,6 +23,9 @@ export interface Citation {
   intervention_id?: string;
   camera_profile_url?: string;
   photo?: string;
+  translated_text?: string;
+  translated_full_text?: string;
+  is_translated?: boolean;
   [key: string]: any;
 }
 

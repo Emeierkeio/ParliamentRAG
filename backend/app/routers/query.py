@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 from ..services.neo4j_client import Neo4jClient
 from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
+from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -108,11 +109,18 @@ async def process_query_streaming(
 
     Yields SSE events as the pipeline progresses.
     """
+    request_locale = "it"
+    if http_request:
+        accept_lang = http_request.headers.get("accept-language", "it")
+        request_locale = "en" if "en" in accept_lang else "it"
+
     services = get_services()
+
+    _en = request_locale == "en"
 
     try:
         # Step 1: Progress - Starting
-        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Avvio retrieval...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Avvio retrieval...'})}\n\n"
 
         # Step 2: Retrieval
         retrieval_result = await services["retrieval"].retrieve(
@@ -134,10 +142,12 @@ async def process_query_streaming(
                 d["text"] = e.text
             evidence_dicts.append(d)
 
-        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': f'Trovate {len(evidence_list)} evidenze'})}\n\n"
+        _ev_msg = (f'Found {len(evidence_list)} evidence pieces' if _en
+                   else f'Trovate {len(evidence_list)} evidenze')
+        yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': _ev_msg})}\n\n"
 
         # Step 3: Authority scoring
-        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Calcolo authority scores...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Computing authority scores...' if _en else 'Calcolo authority scores...'})}\n\n"
 
         # Get unique speakers
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
@@ -171,7 +181,7 @@ async def process_query_streaming(
             return
 
         # Step 4: Compass analysis (2D text-based positioning)
-        yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Analisi compass ideologico...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Ideological compass analysis...' if _en else 'Analisi compass ideologico...'})}\n\n"
 
         try:
             compass_result = await asyncio.get_running_loop().run_in_executor(
@@ -189,6 +199,8 @@ async def process_query_streaming(
                 f"dimensionality={compass_data.get('meta', {}).get('dimensionality')}, "
                 f"is_stable={compass_data.get('meta', {}).get('is_stable')}"
             )
+            if request_locale != "it":
+                compass_data = await translate_compass_axes(compass_data, target_lang=request_locale)
             yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
         except Exception as _compass_err:
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
@@ -199,7 +211,7 @@ async def process_query_streaming(
             return
 
         # Step 5: Generation
-        yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generazione risposta multi-view...'})}\n\n"
+        yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generating multi-view answer...' if _en else 'Generazione risposta multi-view...'})}\n\n"
 
         generation_result = await services["generation"].generate(
             query=request.query,
@@ -406,6 +418,9 @@ async def process_query_streaming(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
         logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
+        if request_locale != "it":
+            logger.info("[QUERY:TRANSLATE] Translating %d citations (locale=%s)", len(verified_citations), request_locale)
+            verified_citations = await translate_citation_batch(verified_citations, target_lang=request_locale)
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
         # === Update experts: filter to cited parties and prefer cited speakers ===
@@ -500,6 +515,10 @@ async def process_query_streaming(
                 experts = final_experts
                 logger.info(f"[QUERY:EXPERTS] Updated experts after generation: {len(experts)} (from {len(cited_party_best)} cited parties)")
                 yield f"data: {json.dumps({'type': 'experts', 'data': final_experts}, default=str)}\n\n"
+
+        # Translate response text if needed
+        if request_locale != "it":
+            final_text = await translate_response_text(final_text, target_lang=request_locale)
 
         # Step 7: Stream text chunks
         chunk_size = 100

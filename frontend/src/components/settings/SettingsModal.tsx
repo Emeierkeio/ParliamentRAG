@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
+  const t = useTranslations("Settings");
   const [configData, setConfigData] = useState<SystemConfig | null>(null);
   const [originalData, setOriginalData] = useState<SystemConfig | null>(null);
   const [jsonContent, setJsonContent] = useState("");
@@ -52,7 +54,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setOriginalData(data);
       setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore nel caricamento della configurazione");
+      setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +70,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setOriginalData(data);
       setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore nel reload della configurazione");
+      setError(err instanceof Error ? err.message : t("reloadError"));
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +109,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore nel salvataggio");
+      setError(err instanceof Error ? err.message : t("saveError"));
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +124,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       try {
         parsed = JSON.parse(jsonContent);
       } catch {
-        throw new Error("Formato JSON non valido. Correggi gli errori di sintassi.");
+        throw new Error(t("invalidJson"));
       }
       const payload: ConfigUpdate = {
         retrieval: parsed.retrieval,
@@ -137,7 +139,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore nel salvataggio");
+      setError(err instanceof Error ? err.message : t("saveError"));
     } finally {
       setIsLoading(false);
     }
@@ -149,16 +151,16 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5 text-primary" />
-            Configurazione Sistema
+            {t("title")}
             {hasUnsavedChanges && (
               <Badge variant="outline" className="text-xs font-normal text-amber-600 border-amber-300 bg-amber-50 dark:bg-amber-950 ml-1">
-                Modifiche non salvate
+                {t("unsavedChanges")}
               </Badge>
             )}
           </DialogTitle>
           <DialogDescription className="flex items-center gap-1.5">
             <Info className="h-3.5 w-3.5 shrink-0" />
-            Le modifiche sono attive immediatamente ma temporanee — riavviare il server o fare Ricarica per tornare ai valori del file YAML.
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -166,22 +168,22 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Errore</AlertTitle>
+              <AlertTitle>{t("error")}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
           {success && (
             <Alert className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800">
               <Save className="h-4 w-4" />
-              <AlertTitle>Salvato</AlertTitle>
-              <AlertDescription>Impostazioni applicate correttamente.</AlertDescription>
+              <AlertTitle>{t("saved")}</AlertTitle>
+              <AlertDescription>{t("savedMessage")}</AlertDescription>
             </Alert>
           )}
 
           <Tabs defaultValue="visual" className="flex-1 flex flex-col min-h-0">
             <TabsList className="shrink-0">
-              <TabsTrigger value="visual">Editor Grafico</TabsTrigger>
-              <TabsTrigger value="json">Editor JSON</TabsTrigger>
+              <TabsTrigger value="visual">{t("visualEditor")}</TabsTrigger>
+              <TabsTrigger value="json">{t("jsonEditor")}</TabsTrigger>
             </TabsList>
 
             <TabsContent
@@ -217,17 +219,17 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <TabsContent value="json" className="flex-1 min-h-0 relative border rounded-md mt-2">
               <div className="absolute inset-0 flex flex-col">
                 <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/20">
-                  <span className="text-xs text-muted-foreground font-mono">config.json</span>
+                  <span className="text-xs text-muted-foreground font-mono">{t("configFile")}</span>
                   <Button size="sm" variant="ghost" onClick={handleJsonSave} disabled={isLoading} className="h-6 text-xs">
                     <Save className="h-3 w-3 mr-1" />
-                    Applica JSON
+                    {t("applyJson")}
                   </Button>
                 </div>
                 <Textarea
                   value={jsonContent}
                   onChange={(e) => setJsonContent(e.target.value)}
                   className="flex-1 font-mono text-xs resize-none border-0 rounded-none focus-visible:ring-0 p-3"
-                  placeholder="Caricamento configurazione..."
+                  placeholder={t("loadingConfig")}
                   disabled={isLoading}
                 />
               </div>
@@ -239,11 +241,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           <div className="flex-1 flex justify-start">
             <Button variant="outline" size="sm" onClick={handleReload} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              Ricarica da YAML
+              {t("reloadYaml")}
             </Button>
           </div>
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
-            Annulla
+            {t("cancel")}
           </Button>
           <Button
             onClick={handleSave}
@@ -253,12 +255,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             {isLoading ? (
               <>
                 <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                Salvataggio...
+                {t("saving")}
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Salva Modifiche
+                {t("saveChanges")}
               </>
             )}
           </Button>
