@@ -167,7 +167,8 @@
     "navActs": "Atti",
     "navAuthority": "Autorità",
     "navCompass": "Compasso",
-    "navMore": "Altro"
+    "navMore": "Altro",
+    "navTimeline": "Cronologia"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",

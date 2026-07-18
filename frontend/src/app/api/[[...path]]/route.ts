@@ -15,6 +15,9 @@ async function proxyRequest(request: NextRequest) {
   const headers: Record<string, string> = {
     "Content-Type": request.headers.get("Content-Type") || "application/json",
   };
+  // Locale-aware endpoints (e.g. /api/timeline) read Accept-Language
+  const acceptLanguage = request.headers.get("Accept-Language");
+  if (acceptLanguage) headers["Accept-Language"] = acceptLanguage;
 
   const fetchOptions: RequestInit = {
     method: request.method,

@@ -32,6 +32,7 @@ const NAV_ITEMS = [
   { href: "/search", icon: Search, key: "navActs" },
   { href: "/ranking", icon: BarChart3, key: "navAuthority" },
   { href: "/compass", icon: Compass, key: "navCompass" },
+  { href: "/timeline", icon: CalendarDays, key: "navTimeline" },
 ] as const;
 
 // App pages only — the landing ("/") keeps its own editorial masthead
@@ -40,6 +41,7 @@ const VISIBLE_PREFIXES = [
   "/search",
   "/ranking",
   "/compass",
+  "/timeline",
   "/chat",
   "/explorer",
   "/valutazione",

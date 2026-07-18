@@ -185,6 +185,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               disabled={false}
             />
 
+            <NavButton
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
           </nav>
         </ScrollArea>
 
@@ -205,26 +211,25 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 collapsed) so the bottom stack never changes height on toggle.
                 Styled tooltip (like the nav icons) carries the full label. */}
             <div className="mt-3 pt-3 border-t border-sidebar-border">
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <div
-                    className={cn(
-                      "flex items-center text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default",
-                      // Collapsed: same 36x36 centered box as collapsed NavButtons,
-                      // so the tooltip anchors at the identical position.
-                      isCollapsed ? "w-9 h-9 justify-center mx-auto" : "h-8 gap-2 px-3"
-                    )}
-                  >
-                    <CalendarDays className={cn("shrink-0", isCollapsed ? "h-4 w-4" : "h-3 w-3")} />
-                    {!isCollapsed && (
-                      <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
-                    )}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">
-                  {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
-                </TooltipContent>
-              </Tooltip>
+              {isCollapsed ? (
+                // Collapsed: icon-only box, tooltip carries the full label
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center justify-center w-9 h-9 mx-auto text-sidebar-foreground/35 cursor-default">
+                      <CalendarDays className="h-4 w-4 shrink-0" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">
+                    {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                // Expanded: the date is already readable — no tooltip
+                <div className="flex items-center h-8 gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default">
+                  <CalendarDays className="h-3 w-3 shrink-0" />
+                  <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
+                </div>
+              )}
             </div>
 
             {/* Expand button when collapsed - at very bottom */}
