@@ -376,10 +376,7 @@ export default function LandingPage() {
             </span>
           </div>
           <p className="text-center leading-relaxed">
-            {t("footerThesis")}
-            <br className="sm:hidden" />
-            <span className="hidden sm:inline"> — </span>
-            {t("footerAuthors")}
+            {t("footerThesis")} · {t("footerAuthors")}
           </p>
           <p className="flex items-center gap-4">
             <a
