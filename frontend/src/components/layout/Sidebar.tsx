@@ -140,7 +140,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               variant="ghost"
               size="icon"
               onClick={onCloseMobile}
-              className="h-8 w-8 text-sidebar-foreground/50 hover:text-sidebar-foreground"
+              className="h-8 w-8 text-sidebar-foreground/50 hover:text-primary"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -348,7 +348,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                         variant="ghost"
                         size="icon"
                         onClick={onToggle}
-                        className="h-10 w-10 text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors"
+                        className="h-10 w-10 text-sidebar-foreground/50 hover:text-primary transition-colors"
                     >
                         <PanelLeft className="h-5 w-5" />
                     </Button>
