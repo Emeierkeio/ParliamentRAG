@@ -110,16 +110,17 @@
   }
   html {
     overflow-x: hidden;
+    /* App pages scroll inside their own containers — without this, hitting
+       the edge of an inner scroller chains to the viewport and rubber-bands
+       the whole page (sidebar included) on macOS. Must live on html, NOT on
+       body: Chromium traps viewport wheel scrolling when set on body. */
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground antialiased font-sans;
     overflow-x: hidden;
     width: 100%;
     max-width: 100%;
-    /* App pages scroll inside their own containers — without this, hitting
-       the edge of an inner scroller chains to the body and rubber-bands the
-       whole viewport (sidebar included) on macOS. */
-    overscroll-behavior-y: none;
   }
 }
 
