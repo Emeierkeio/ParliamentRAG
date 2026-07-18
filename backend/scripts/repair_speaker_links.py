@@ -16,6 +16,11 @@ This script:
      canonical twins: the v2 ingest writes group switches (e.g. a deputy
      moving to Misto) on the persona node only, leaving the canonical node
      with a stale open-ended membership.
+  4. Attaches orphan Speech nodes to their Debate via a synthetic Phase
+     (<debateId>.sub00000): the ingest only creates Phases from stenographic
+     sottotitoli, so debates without subsections (interventi di fine seduta,
+     ordine dei lavori, richiami al Regolamento...) leave their speeches
+     disconnected and invisible to the timeline.
 
 Idempotent — safe to run repeatedly. Usage:
     python scripts/repair_speaker_links.py [neo4j_uri]
@@ -62,7 +67,18 @@ with driver.session() as s:
         RETURN count(*) AS n
     """).single()["n"]
 
+    attached = s.run("""
+        MATCH (sp:Speech) WHERE NOT (()-[:CONTAINS_SPEECH]->(sp))
+        WITH sp, split(sp.id, '.int')[0] AS debateId
+        MATCH (d:Debate {id: debateId})
+        MERGE (p:Phase {id: debateId + '.sub00000'})
+        MERGE (d)-[:HAS_PHASE]->(p)
+        MERGE (p)-[:CONTAINS_SPEECH]->(sp)
+        RETURN count(DISTINCT sp) AS n
+    """).single()["n"]
+
 driver.close()
 print(f"[REPAIR] speeches re-linked to canonical deputies: {relinked}")
 print(f"[REPAIR] persona-only deputies with normalized photo/card: {fixed}")
 print(f"[REPAIR] group memberships synced persona -> canonical: {synced}")
+print(f"[REPAIR] orphan speeches attached via synthetic phase: {attached}")
