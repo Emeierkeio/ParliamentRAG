@@ -161,7 +161,8 @@
     "cosupervisor": "Coorientador",
     "dataDate": "4 de fevereiro de 2026",
     "version": "Versão",
-    "votesExplorer": "Votações"
+    "votesExplorer": "Votações",
+    "dataShort": "Dados até"
   },
   "Chat": {
     "placeholder": "Pergunte algo sobre os debates parlamentares...",

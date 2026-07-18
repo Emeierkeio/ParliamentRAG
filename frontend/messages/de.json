@@ -161,7 +161,8 @@
     "cosupervisor": "Zweitbetreuer",
     "dataDate": "4. Februar 2026",
     "version": "Version",
-    "votesExplorer": "Abstimmungen"
+    "votesExplorer": "Abstimmungen",
+    "dataShort": "Stand"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",

@@ -161,7 +161,8 @@
     "cosupervisor": "Co-supervisor",
     "dataDate": "February 4, 2026",
     "version": "Version",
-    "votesExplorer": "Votes"
+    "votesExplorer": "Votes",
+    "dataShort": "Data as of"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",

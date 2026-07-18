@@ -202,7 +202,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               title={`${t('dataUpdatedAt')} ${lastUpdate ?? ""}`.trim()}
             >
               <CalendarDays className="h-3 w-3 shrink-0" />
-              <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong>
+              <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
             </div>
           </div>
         </aside>
@@ -327,7 +327,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             >
               <CalendarDays className="h-3 w-3 shrink-0" />
               {!isCollapsed && (
-                <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong>
+                <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
               )}
             </div>
 
