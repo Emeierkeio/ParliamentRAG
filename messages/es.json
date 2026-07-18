@@ -161,7 +161,8 @@
     "cosupervisor": "Codirector",
     "dataDate": "4 de febrero de 2026",
     "version": "Versión",
-    "votesExplorer": "Votaciones"
+    "votesExplorer": "Votaciones",
+    "dataShort": "Datos al"
   },
   "Chat": {
     "placeholder": "Pregunte algo sobre los debates parlamentarios...",

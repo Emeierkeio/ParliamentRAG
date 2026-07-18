@@ -161,7 +161,8 @@
     "cosupervisor": "Correlatore",
     "dataDate": "4 febbraio 2026",
     "version": "Versione",
-    "votesExplorer": "Votazioni"
+    "votesExplorer": "Votazioni",
+    "dataShort": "Dati al"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",
