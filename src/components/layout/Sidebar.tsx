@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -27,11 +26,7 @@ import {
   X,
   Compass,
   Menu,
-  GraduationCap,
-  BookOpen,
-  Building2,
   BarChart3,
-  Users,
   CalendarDays,
 } from "lucide-react";
 import { config } from "@/config";
@@ -195,7 +190,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
                 isCollapsed={false}
               />
-              <CreditsRow isCollapsed={false} />
             </nav>
             <div
               className="mt-3 pt-3 border-t border-sidebar-border flex h-8 items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden"
@@ -313,9 +307,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 isCollapsed={isCollapsed}
             />
 
-            {/* Credits */}
-            <CreditsRow isCollapsed={isCollapsed} />
-
             {/* Data date — subtle footer line. Always mounted (icon-only when
                 collapsed) so the bottom stack never changes height on toggle. */}
             <div
@@ -360,75 +351,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
     </>
-  );
-}
-
-function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
-  const t = useTranslations('Sidebar');
-  const content = (
-    <div className="space-y-3 text-sm">
-      <div className="flex items-center gap-2">
-        <GraduationCap className="h-4 w-4 text-primary" />
-        <span className="font-medium">{t('thesisTitle')}</span>
-      </div>
-      <p className="text-muted-foreground text-xs leading-relaxed">
-        {t('ragDescription')}
-      </p>
-      <Separator />
-      <div className="space-y-2 text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <BookOpen className="h-3.5 w-3.5" />
-          <span>{t('author')}: <strong className="text-foreground">Mirko Tritella</strong></span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Building2 className="h-3.5 w-3.5" />
-          <span>{t('university')}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Users className="h-3.5 w-3.5" />
-          <span>{t('supervisor')}: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Users className="h-3.5 w-3.5" />
-          <span>{t('cosupervisor')}: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
-        </div>
-      </div>
-    </div>
-  );
-
-  if (isCollapsed) {
-    return (
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            className="w-9 h-9 justify-center px-0 mx-auto text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-          >
-            <GraduationCap className="h-4 w-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="right" sideOffset={10} className="max-w-[260px] p-3">
-          {content}
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
-
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2.5 h-8 mb-0.5 text-[13px] text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-        >
-          <GraduationCap className="h-4 w-4 shrink-0" />
-          <span className="truncate">{t('credits')}</span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent side="top" align="start" className="w-[260px] p-4">
-        {content}
-      </PopoverContent>
-    </Popover>
   );
 }
 
