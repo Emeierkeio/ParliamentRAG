@@ -138,8 +138,6 @@ export default function LandingPage() {
   const { index: topicIndex, isAnimating } = useSyncedRotation(
     TOPIC_KEYS.length
   );
-  const quote = QUOTES[topicIndex];
-  const topic = t(`topics.${TOPIC_KEYS[topicIndex]}` as never) as string;
 
   return (
     <div
@@ -149,12 +147,12 @@ export default function LandingPage() {
       <header className="border-b-2 border-foreground">
         <div className="max-w-6xl mx-auto px-6">
           {/* Edition line */}
-          <div className="flex items-center justify-between py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
-            <span>{edition || " "}</span>
+          <div className="flex items-center justify-between gap-3 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-muted-foreground border-b border-border">
+            <span className="min-w-0">{edition || " "}</span>
             <span className="hidden sm:inline">
               {t("mastheadInstitution")}
             </span>
-            <span className="inline-flex items-center gap-5">
+            <span className="inline-flex shrink-0 items-center gap-3 sm:gap-5 whitespace-nowrap">
               <span>{t("mastheadLeg")}</span>
               <LanguageMenu />
             </span>
@@ -185,12 +183,12 @@ export default function LandingPage() {
           rel="noopener noreferrer"
           className="group block border-t border-border bg-primary/[0.05] hover:bg-primary/[0.09] transition-colors cursor-pointer"
         >
-          <span className="flex items-center justify-center gap-2.5 py-2 px-6 text-[11px] uppercase tracking-[0.2em] text-foreground/60 group-hover:text-foreground transition-colors">
+          <span className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 py-2 px-4 sm:px-6 text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-center text-foreground/60 group-hover:text-foreground transition-colors">
             <Award className="h-3.5 w-3.5 text-primary shrink-0" />
-            <span className="[font-family:var(--font-display)] normal-case tracking-normal text-[13px] font-semibold text-primary">
+            <span className="[font-family:var(--font-display)] normal-case tracking-normal text-[13px] font-semibold text-primary whitespace-nowrap">
               ISWC 2026
             </span>
-            <span aria-hidden className="text-border">|</span>
+            <span aria-hidden className="hidden sm:inline text-border">|</span>
             <span>{t("iswcBadge")}</span>
           </span>
         </a>
@@ -203,7 +201,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
           {/* Headline column */}
           <div className="lg:col-span-7">
-            <RotatingHero topic={topic} isAnimating={isAnimating} />
+            <RotatingHero index={topicIndex} isAnimating={isAnimating} />
 
             <p className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-xl">
               {t.rich("heroSub", {
@@ -214,7 +212,7 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
                 href="/home"
-                className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
+                className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
                 {t("ctaPrimary")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -238,18 +236,34 @@ export default function LandingPage() {
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("fromTranscript")}
             </p>
-            <figure
-              className="[font-family:var(--font-display)] min-h-[230px] sm:min-h-[210px] transition-opacity duration-300 ease-out motion-reduce:transition-none"
-              style={{ opacity: isAnimating ? 0 : 1 }}
-            >
-              <blockquote className="text-xl leading-[1.55] text-foreground/90">
-                {quote.text}
-              </blockquote>
-              <figcaption className="mt-4 text-sm not-italic font-sans">
-                <span className="font-medium text-foreground">{quote.who}</span>
-                <span className="text-muted-foreground"> {quote.meta}</span>
-              </figcaption>
-            </figure>
+            {/* All quotes share one grid cell: the column reserves the height
+                of the tallest quote, so rotation never shifts the layout. */}
+            <div className="grid">
+              {QUOTES.map((q, i) => {
+                const active = i === topicIndex;
+                return (
+                  <figure
+                    key={q.who + i}
+                    aria-hidden={active ? undefined : true}
+                    className={`[grid-area:1/1] [font-family:var(--font-display)] transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+                      active ? "" : "pointer-events-none select-none"
+                    }`}
+                    style={{
+                      opacity: active && !isAnimating ? 1 : 0,
+                      visibility: active ? "visible" : "hidden",
+                    }}
+                  >
+                    <blockquote className="text-lg sm:text-xl leading-[1.55] text-foreground/90">
+                      {q.text}
+                    </blockquote>
+                    <figcaption className="mt-4 text-sm not-italic font-sans">
+                      <span className="font-medium text-foreground">{q.who}</span>
+                      <span className="text-muted-foreground"> {q.meta}</span>
+                    </figcaption>
+                  </figure>
+                );
+              })}
+            </div>
             <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
               <span>{t("quoteLinkNote")}</span>
               <span className="inline-block h-2 w-2 rounded-full bg-chart-4" />
@@ -262,7 +276,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Indice — the five instruments ──────────────────────── */}
-      <section id="strumenti" className="px-6 py-20">
+      <section id="strumenti" className="px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="I" title={t("sec1Title")} />
 
@@ -308,7 +322,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Garanzie ───────────────────────────────────────────── */}
-      <section id="garanzie" className="px-6 py-20 bg-primary text-primary-foreground">
+      <section id="garanzie" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="II" title={t("sec2Title")} inverted />
 
@@ -338,7 +352,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── L'iter di ogni domanda ─────────────────────────────── */}
-      <section id="pipeline" className="px-6 py-20">
+      <section id="pipeline" className="px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="III" title={t("sec3Title")} />
           <p className="mt-6 text-muted-foreground max-w-xl">
@@ -377,7 +391,7 @@ export default function LandingPage() {
             <div className="lg:col-span-4 lg:text-right">
               <Link
                 href="/home"
-                className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
+                className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
                 {t("ctaStart")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -521,26 +535,44 @@ function Guarantee({
 }
 
 /* ── Rotating headline — typeset fill-in on a ruled line ───────── */
+/* All topics are stacked in the same grid cell so the headline always
+   reserves the height of the tallest one — no layout shift on rotation. */
 function RotatingHero({
-  topic,
+  index,
   isAnimating,
 }: {
-  topic: string;
+  index: number;
   isAnimating: boolean;
 }) {
   const t = useTranslations("Landing");
 
   return (
-    <h1 className="[font-family:var(--font-display)] text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
+    <h1 className="[font-family:var(--font-display)] text-[clamp(2.25rem,11.5vw,2.75rem)] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
       {t("heroLine1")}
       <br />
       {t("heroLine2")}
       <br />
-      <span
-        className="inline italic text-primary transition-opacity duration-300 ease-out motion-reduce:transition-none [box-decoration-break:clone] border-b-[3px] border-primary/25"
-        style={{ opacity: isAnimating ? 0 : 1 }}
-      >
-        {topic}?
+      <span className="inline-grid max-w-full align-top">
+        {TOPIC_KEYS.map((key, i) => {
+          const active = i === index;
+          return (
+            <span
+              key={key}
+              aria-hidden={active ? undefined : true}
+              className={`[grid-area:1/1] justify-self-start italic text-primary transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+                active ? "" : "pointer-events-none select-none"
+              }`}
+              style={{
+                opacity: active && !isAnimating ? 1 : 0,
+                visibility: active ? "visible" : "hidden",
+              }}
+            >
+              <span className="[box-decoration-break:clone] border-b-[3px] border-primary/25">
+                {t(`topics.${key}` as never) as string}?
+              </span>
+            </span>
+          );
+        })}
       </span>
     </h1>
   );
