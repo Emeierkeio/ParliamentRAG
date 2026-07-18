@@ -204,11 +204,11 @@ Parliamentary data are sourced from the **Camera dei Deputati open data** progra
 If you use this system or build on this work in academic contexts, please cite:
 
 ```bibtex
-@mastersthesis{tritella2025parliamentrag,
-  author = {Tritella, Mirko},
-  title  = {Who Speaks Matters: Authority-Aware Multi-View Parliamentary {RAG}},
-  school = {Università degli Studi di Milano-Bicocca},
-  year   = {2025}
+@misc{tritella2026whospeaksmatters,
+  author = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
+  title  = {Who Speaks Matters: Authority-Aware Multi-View {RAG} over Italian Parliamentary Proceedings},
+  year   = {2026},
+  note   = {University of Milano-Bicocca}
 }
 ```
 
