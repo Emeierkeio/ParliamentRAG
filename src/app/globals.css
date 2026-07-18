@@ -116,6 +116,10 @@
     overflow-x: hidden;
     width: 100%;
     max-width: 100%;
+    /* App pages scroll inside their own containers — without this, hitting
+       the edge of an inner scroller chains to the body and rubber-bands the
+       whole viewport (sidebar included) on macOS. */
+    overscroll-behavior-y: none;
   }
 }
 

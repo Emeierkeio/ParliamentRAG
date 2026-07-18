@@ -11,12 +11,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Settings, RefreshCw, Save, AlertCircle, Info } from "lucide-react";
 import { getConfig, reloadConfig, updateConfig } from "@/lib/api";
 import type { SystemConfig, ConfigUpdate } from "@/lib/api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 
 import {
@@ -35,7 +33,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const t = useTranslations("Settings");
   const [configData, setConfigData] = useState<SystemConfig | null>(null);
   const [originalData, setOriginalData] = useState<SystemConfig | null>(null);
-  const [jsonContent, setJsonContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -52,7 +49,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       const data = await getConfig();
       setConfigData(data);
       setOriginalData(data);
-      setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -68,7 +64,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       const data = await reloadConfig();
       setConfigData(data);
       setOriginalData(data);
-      setJsonContent(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("reloadError"));
     } finally {
@@ -82,13 +77,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       setSuccess(false);
     }
   }, [open]);
-
-  // Sync JSON view when graphical editors change
-  useEffect(() => {
-    if (configData) {
-      setJsonContent(JSON.stringify(configData, null, 2));
-    }
-  }, [configData]);
 
   const handleSave = async () => {
     if (!configData) return;
@@ -105,37 +93,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       const updated = await updateConfig(payload);
       setConfigData(updated);
       setOriginalData(updated);
-      setJsonContent(JSON.stringify(updated, null, 2));
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 3000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("saveError"));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleJsonSave = async () => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
-    try {
-      let parsed: any;
-      try {
-        parsed = JSON.parse(jsonContent);
-      } catch {
-        throw new Error(t("invalidJson"));
-      }
-      const payload: ConfigUpdate = {
-        retrieval: parsed.retrieval,
-        authority: parsed.authority,
-        generation: parsed.generation,
-        query_rewriting: parsed.query_rewriting,
-      };
-      const updated = await updateConfig(payload);
-      setConfigData(updated);
-      setOriginalData(updated);
-      setJsonContent(JSON.stringify(updated, null, 2));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
@@ -147,9 +104,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-4xl h-[90vh] sm:h-[85vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl h-[92dvh] sm:h-[85vh] flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
+        <DialogHeader className="shrink-0">
+          <DialogTitle className="[font-family:var(--font-display)] flex items-center gap-2 text-lg font-semibold tracking-tight">
             <Settings className="h-5 w-5 text-primary" />
             {t("title")}
             {hasUnsavedChanges && (
@@ -158,13 +115,13 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               </Badge>
             )}
           </DialogTitle>
-          <DialogDescription className="flex items-center gap-1.5">
-            <Info className="h-3.5 w-3.5 shrink-0" />
+          <DialogDescription className="flex items-start gap-1.5 text-left">
+            <Info className="h-3.5 w-3.5 shrink-0 mt-0.5" />
             {t("description")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden flex flex-col gap-3 py-1">
+        <div className="flex-1 overflow-hidden flex flex-col gap-3 min-h-0">
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -180,68 +137,39 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             </Alert>
           )}
 
-          <Tabs defaultValue="visual" className="flex-1 flex flex-col min-h-0">
-            <TabsList className="shrink-0">
-              <TabsTrigger value="visual">{t("visualEditor")}</TabsTrigger>
-              <TabsTrigger value="json">{t("jsonEditor")}</TabsTrigger>
-            </TabsList>
-
-            <TabsContent
-              value="visual"
-              className="flex-1 min-h-0 overflow-y-auto rounded-md border p-4 bg-muted/10 mt-2"
-            >
-              {configData ? (
-                <div className="space-y-4 pb-4">
-                  <RetrievalEditor
-                    data={configData.retrieval}
-                    onChange={(retrieval) => setConfigData({ ...configData, retrieval })}
-                  />
-                  <AuthorityEditor
-                    data={configData.authority}
-                    onChange={(authority) => setConfigData({ ...configData, authority })}
-                  />
-                  <GenerationEditor
-                    data={configData.generation}
-                    onChange={(generation) => setConfigData({ ...configData, generation })}
-                  />
-                  <QueryRewritingEditor
-                    data={configData.query_rewriting}
-                    onChange={(query_rewriting) => setConfigData({ ...configData, query_rewriting })}
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="json" className="flex-1 min-h-0 relative border rounded-md mt-2">
-              <div className="absolute inset-0 flex flex-col">
-                <div className="flex items-center justify-between px-3 py-2 border-b bg-muted/20">
-                  <span className="text-xs text-muted-foreground font-mono">{t("configFile")}</span>
-                  <Button size="sm" variant="ghost" onClick={handleJsonSave} disabled={isLoading} className="h-6 text-xs">
-                    <Save className="h-3 w-3 mr-1" />
-                    {t("applyJson")}
-                  </Button>
-                </div>
-                <Textarea
-                  value={jsonContent}
-                  onChange={(e) => setJsonContent(e.target.value)}
-                  className="flex-1 font-mono text-xs resize-none border-0 rounded-none focus-visible:ring-0 p-3"
-                  placeholder={t("loadingConfig")}
-                  disabled={isLoading}
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-lg border bg-muted/10 p-3 sm:p-4">
+            {configData ? (
+              <div className="space-y-4 pb-4">
+                <RetrievalEditor
+                  data={configData.retrieval}
+                  onChange={(retrieval) => setConfigData({ ...configData, retrieval })}
+                />
+                <AuthorityEditor
+                  data={configData.authority}
+                  onChange={(authority) => setConfigData({ ...configData, authority })}
+                />
+                <GenerationEditor
+                  data={configData.generation}
+                  onChange={(generation) => setConfigData({ ...configData, generation })}
+                />
+                <QueryRewritingEditor
+                  data={configData.query_rewriting}
+                  onChange={(query_rewriting) => setConfigData({ ...configData, query_rewriting })}
                 />
               </div>
-            </TabsContent>
-          </Tabs>
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0 shrink-0">
+        <DialogFooter className="shrink-0 flex-row flex-wrap items-center gap-2">
           <div className="flex-1 flex justify-start">
             <Button variant="outline" size="sm" onClick={handleReload} disabled={isLoading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-              {t("reloadYaml")}
+              <RefreshCw className={`h-4 w-4 sm:mr-2 ${isLoading ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">{t("reloadYaml")}</span>
             </Button>
           </div>
           <Button variant="outline" onClick={onClose} disabled={isLoading}>

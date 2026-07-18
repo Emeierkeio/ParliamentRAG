@@ -55,7 +55,7 @@ export default function TimelinePage() {
         onCloseMobile={closeMobile}
       />
 
-      <main ref={mainRef} className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      <main ref={mainRef} className="flex-1 flex flex-col min-w-0 overflow-y-auto overscroll-contain">
         {/* Sticky header */}
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
