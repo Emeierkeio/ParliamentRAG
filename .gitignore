@@ -243,3 +243,4 @@ backend/data/parliament.db
 *.txt
 package-lock.json
 package.json
+neo4j-local-backups/
