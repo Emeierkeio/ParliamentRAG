@@ -5,6 +5,7 @@ import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { CompassCard } from "@/components/chat/CompassCard";
+import type { CompassData } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
 import { TOPICS } from "@/lib/constants";
@@ -36,6 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslations } from "next-intl";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -50,18 +52,6 @@ interface AxisDef {
   negative_side?: AxisSide;
 }
 
-interface CompassData {
-  meta: {
-    query: string;
-    explained_variance_ratio: number[];
-    dimensionality?: number;
-    is_stable: boolean;
-    warnings?: string[];
-  };
-  axes: { x: AxisDef; y: AxisDef };
-  groups: any[];
-  scatter_sample: any[];
-}
 
 // ── Page ───────────────────────────────────────────────────────
 
@@ -78,6 +68,8 @@ export default function CompassPage() {
   const [error, setError] = useState("");
   const [computationTime, setComputationTime] = useState(0);
 
+  const t = useTranslations("CompassPage");
+
   const fetchCompass = useCallback(async (topicText: string) => {
     if (!topicText.trim()) return;
     setLoading(true);
@@ -90,14 +82,14 @@ export default function CompassPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: topicText }),
       });
-      if (!res.ok) throw new Error("Errore nel calcolo del compasso ideologico");
+      if (!res.ok) throw new Error(t("errorFetch"));
       const data = await res.json();
       const ct = data.computation_time_ms || 0;
       setCompassData(data);
       setComputationTime(ct);
       compassHistory.addEntry(topicText, { compassData: data, computationTime: ct });
-    } catch (e: any) {
-      setError(e.message || "Errore sconosciuto");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : t("errorUnknown"));
       setCompassData(null);
     } finally {
       setLoading(false);
@@ -145,13 +137,13 @@ export default function CompassPage() {
         <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
-            <h1 className="text-base font-semibold whitespace-nowrap">Compasso Ideologico</h1>
+            <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {hasResults && !loading && (
                 <>
                   <span className="text-[11px] text-muted-foreground hidden sm:inline">
-                    {compassData.groups.length} gruppi
+                    {t("groupsCount", { count: compassData.groups.length })}
                     {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
                   </span>
                   <Badge variant="secondary" className="max-w-[180px] truncate text-xs">
@@ -168,7 +160,7 @@ export default function CompassPage() {
                         {compassData.meta.warnings.map((w, i) => (
                           <p key={i}>
                             {w.includes("WEAK_ALIGNMENT")
-                              ? "Asse secondario con rumore elevato. Consigliata analisi 1D."
+                              ? t("warningWeakAlignment")
                               : w}
                           </p>
                         ))}
@@ -184,12 +176,12 @@ export default function CompassPage() {
                       <Input
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
-                        placeholder="Nuovo tema..."
+                        placeholder={t("placeholderNew")}
                         className="h-8 w-44 text-xs pl-7 pr-2 border-border bg-background"
                       />
                     </div>
                     <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs gap-1">
-                      Analizza
+                      {t("buttonAnalyze")}
                       <ArrowRight className="h-3 w-3" />
                     </Button>
                   </form>
@@ -203,20 +195,20 @@ export default function CompassPage() {
               {activeTopic && loading && (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
-                  <span className="text-xs text-muted-foreground">Analisi in corso...</span>
+                  <span className="text-xs text-muted-foreground">{t("analyzingHeader")}</span>
                 </>
               )}
 
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title="Cronologia">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" title={t("historyTitle")}>
                     <History className="h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-2" align="end">
-                  <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
+                  <p className="text-[11px] uppercase tracking-[0.2em] px-2 py-1 text-muted-foreground mb-1">{t("historyHeading")}</p>
                   {compassHistory.entries.length === 0 ? (
-                    <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
+                    <p className="text-xs text-center py-4 text-muted-foreground">{t("historyEmpty")}</p>
                   ) : (
                     <div className="space-y-0.5">
                       {compassHistory.entries.map((entry) => (
@@ -231,7 +223,7 @@ export default function CompassPage() {
                           <button
                             className="shrink-0 p-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
                             onClick={() => compassHistory.removeEntry(entry.id)}
-                            title="Rimuovi"
+                            title={t("historyRemove")}
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -251,17 +243,15 @@ export default function CompassPage() {
           {!hasResults && !loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 pb-16 overflow-y-auto">
               <div className="text-center space-y-6 max-w-lg">
-                <div className="mx-auto h-16 w-16 rounded-2xl bg-primary/8 flex items-center justify-center">
-                  <Compass className="h-8 w-8 text-primary/60" />
+                <div className="mx-auto h-14 w-14 rounded-full border border-border flex items-center justify-center">
+                  <Compass className="h-6 w-6 text-primary/60" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="text-xl font-semibold text-foreground">
-                    Compasso Ideologico
+                  <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+                    {t("pageTitle")}
                   </h2>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-                    Inserisci un tema politico per visualizzare il posizionamento ideologico
-                    di tutti i gruppi parlamentari. L&apos;analisi PCA mappa le posizioni
-                    sulla base dei discorsi e degli atti in Parlamento.
+                    {t("emptyDescription")}
                   </p>
                 </div>
 
@@ -272,45 +262,45 @@ export default function CompassPage() {
                     <Input
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="Cerca un tema..."
-                      className="h-14 text-lg pl-12 pr-24 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
+                      placeholder={t("placeholderSearch")}
+                      className="h-14 text-lg pl-12 pr-24 rounded-md"
                     />
                     <Button
                       type="submit"
                       disabled={!topic.trim()}
                       className="absolute right-2 top-1/2 -translate-y-1/2 h-10 px-4"
                     >
-                      Analizza
+                      {t("buttonAnalyze")}
                     </Button>
                   </form>
                 </div>
 
                 {/* How it works */}
                 <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto pt-2">
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <Search className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Cerca un tema</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("howStep1")}</span>
                   </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <Scan className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Analisi PCA</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("howStep2")}</span>
                   </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 rounded-lg bg-muted/40">
+                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
                     <Map className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">Mappa ideologica</span>
+                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("howStep3")}</span>
                   </div>
                 </div>
 
                 {/* Topic chips */}
                 <div className="pt-3">
-                  <p className="text-xs font-medium text-muted-foreground mb-3">
-                    Oppure prova con un tema suggerito
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                    {t("suggestedTopicsLabel")}
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
                     {TOPICS.slice(0, 8).map((t) => (
                       <button
                         key={t}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-card px-3 py-1.5 text-xs text-muted-foreground transition-all hover:border-primary/50 hover:text-foreground hover:bg-primary/5 hover:shadow-sm"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                         onClick={() => handleTopicClick(t)}
                       >
                         <span className="capitalize">{t}</span>
@@ -333,19 +323,19 @@ export default function CompassPage() {
           {loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 gap-6">
               <div className="relative">
-                <div className="h-20 w-20 rounded-2xl bg-primary/5 flex items-center justify-center">
-                  <Compass className="h-10 w-10 text-primary/40 animate-spin" style={{ animationDuration: "3s" }} />
+                <div className="h-16 w-16 rounded-full border border-border flex items-center justify-center">
+                  <Compass className="h-8 w-8 text-primary/40 animate-spin" style={{ animationDuration: "3s" }} />
                 </div>
               </div>
               <div className="text-center space-y-2">
-                <p className="text-sm font-medium text-foreground">Analisi ideologica in corso...</p>
+                <p className="text-sm font-medium text-foreground">{t("loadingHeading")}</p>
                 <p className="text-xs text-muted-foreground">
-                  Recupero evidenze e calcolo posizionamento PCA per &quot;{activeTopic}&quot;
+                  {t("loadingSubtext", { topic: activeTopic })}
                 </p>
               </div>
               {/* Skeleton compass */}
               <div className="w-full max-w-lg mx-auto">
-                <div className="aspect-square max-w-[400px] mx-auto rounded-xl bg-muted/30 border border-border/50 animate-pulse" />
+                <div className="aspect-square max-w-[400px] mx-auto bg-muted/30 border border-border animate-pulse" />
                 <div className="flex justify-center gap-4 mt-4">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <div key={i} className="flex items-center gap-1.5">
@@ -399,7 +389,7 @@ export default function CompassPage() {
               {/* Compass visualization - fills remaining space */}
               <div className="flex-1 min-h-0 p-3 sm:p-4">
                 <div className="h-full w-full mx-auto">
-                  <CompassCard data={compassData as any} />
+                  <CompassCard data={compassData} />
                 </div>
               </div>
 
@@ -412,7 +402,7 @@ export default function CompassPage() {
                   <Input
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
-                    placeholder="Nuovo tema..."
+                    placeholder={t("placeholderNew")}
                     className="h-8 text-xs flex-1"
                   />
                   <Button type="submit" size="sm" disabled={!topic.trim()} className="h-8 px-3 text-xs">
@@ -441,10 +431,11 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
   negKeywords?: string[];
   posKeywords?: string[];
 }) {
+  const t = useTranslations("CompassPage");
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="font-semibold text-foreground/70">{label}</span>
-      <span className="text-[10px] text-muted-foreground/50">({label === "PC1" ? "asse X" : "asse Y"})</span>
+      <span className="[font-family:var(--font-display)] font-medium text-foreground">{label}</span>
+      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">({label === "PC1" ? t("axisX") : t("axisY")})</span>
       <span className="text-[10px] text-muted-foreground">{variancePercent}%</span>
       <div className="flex items-center gap-1.5">
         {negLabel && (
@@ -457,7 +448,7 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
             </TooltipTrigger>
             {negKeywords && negKeywords.length > 0 && (
               <TooltipContent side="bottom" className="text-xs">
-                <p className="font-medium mb-1">Parole chiave polo (−)</p>
+                <p className="font-medium mb-1">{t("keywordsNeg")}</p>
                 <div className="flex flex-wrap gap-1">
                   {negKeywords.slice(0, 6).map((kw, i) => (
                     <span key={i} className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px]">{kw}</span>
@@ -478,7 +469,7 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
             </TooltipTrigger>
             {posKeywords && posKeywords.length > 0 && (
               <TooltipContent side="bottom" className="text-xs">
-                <p className="font-medium mb-1">Parole chiave polo (+)</p>
+                <p className="font-medium mb-1">{t("keywordsPos")}</p>
                 <div className="flex flex-wrap gap-1">
                   {posKeywords.slice(0, 6).map((kw, i) => (
                     <span key={i} className="px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px]">{kw}</span>

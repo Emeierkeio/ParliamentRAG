@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
@@ -16,20 +17,7 @@ const fraunces = Fraunces({
 });
 
 /* ── Rotating topics ───────────────────────────────────────────── */
-const ROTATING_TOPICS = [
-  "sul PNRR",
-  "sulla sanità",
-  "sulla transizione energetica",
-  "sul salario minimo",
-  "sull'invio delle armi all'Ucraina",
-  "sulla riforma fiscale",
-  "sull'autonomia differenziata",
-  "sulla riforma della giustizia",
-  "sui flussi migratori",
-  "sulla scuola",
-  "sul cambiamento climatico",
-  "sulle infrastrutture",
-];
+const TOPIC_KEYS = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12"] as const;
 
 function useSyncedRotation(length: number, intervalMs = 7000) {
   const [index, setIndex] = useState(0);
@@ -115,6 +103,8 @@ const QUOTES = [
 
 /* ── Data freshness line (masthead) — latest session in the DB ── */
 function useEditionDate() {
+  const t = useTranslations("Landing");
+  const locale = useLocale();
   const [label, setLabel] = useState("");
   useEffect(() => {
     let cancelled = false;
@@ -124,28 +114,30 @@ function useEditionDate() {
         if (cancelled) return;
         const iso: string | undefined = data?.last_update;
         if (!iso) return;
-        const formatted = new Intl.DateTimeFormat("it-IT", {
+        const formatted = new Intl.DateTimeFormat(locale, {
           day: "numeric",
           month: "long",
           year: "numeric",
         }).format(new Date(`${iso}T12:00:00`));
-        setLabel(`Dati aggiornati al ${formatted}`);
+        setLabel(t("edition", { date: formatted }));
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, t]);
   return label;
 }
 
 /* ── Page ──────────────────────────────────────────────────────── */
 export default function LandingPage() {
+  const t = useTranslations("Landing");
   const edition = useEditionDate();
   const { index: topicIndex, isAnimating } = useSyncedRotation(
-    ROTATING_TOPICS.length
+    TOPIC_KEYS.length
   );
   const quote = QUOTES[topicIndex];
+  const topic = t(`topics.${TOPIC_KEYS[topicIndex]}` as never) as string;
 
   return (
     <div
@@ -158,9 +150,9 @@ export default function LandingPage() {
           <div className="flex items-center justify-between py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">
             <span>{edition || " "}</span>
             <span className="hidden sm:inline">
-              Camera dei Deputati · XIX Legislatura
+              {t("mastheadInstitution")}
             </span>
-            <span>Leg. XIX</span>
+            <span>{t("mastheadLeg")}</span>
           </div>
           {/* Wordmark row */}
           <div className="flex items-end justify-between py-5">
@@ -176,7 +168,7 @@ export default function LandingPage() {
               href="/home"
               className="group inline-flex items-baseline gap-1.5 text-sm font-medium border-b-2 border-foreground pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
             >
-              Accedi alla consultazione
+              {t("accessCta")}
               <ArrowRight className="h-3.5 w-3.5 self-center transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
@@ -190,15 +182,12 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
           {/* Headline column */}
           <div className="lg:col-span-7">
-            <RotatingHero topic={ROTATING_TOPICS[topicIndex]} isAnimating={isAnimating} />
+            <RotatingHero topic={topic} isAnimating={isAnimating} />
 
             <p className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-xl">
-              Una domanda, tutte le posizioni.{" "}
-              <span className="text-foreground">
-                Ogni gruppo parlamentare, citato parola per parola
-              </span>{" "}
-              dagli interventi in aula — con il rimando al resoconto
-              stenografico originale.
+              {t.rich("heroSub", {
+                strong: (chunks) => <span className="text-foreground">{chunks}</span>,
+              })}
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -206,7 +195,7 @@ export default function LandingPage() {
                 href="/home"
                 className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
-                Poni la prima domanda
+                {t("ctaPrimary")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <a
@@ -216,7 +205,7 @@ export default function LandingPage() {
                 className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
-                  Codice sorgente
+                  {t("sourceCode")}
                 </span>
                 <ArrowUpRight className="h-3.5 w-3.5 self-center" />
               </a>
@@ -226,7 +215,7 @@ export default function LandingPage() {
           {/* Column of record */}
           <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-border">
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              Dal resoconto stenografico
+              {t("fromTranscript")}
             </p>
             <figure
               className="[font-family:var(--font-display)] min-h-[230px] sm:min-h-[210px] transition-opacity duration-300 ease-out motion-reduce:transition-none"
@@ -241,12 +230,11 @@ export default function LandingPage() {
               </figcaption>
             </figure>
             <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-              <span>Ogni citazione è collegata al resoconto su camera.it</span>
+              <span>{t("quoteLinkNote")}</span>
               <span className="inline-block h-2 w-2 rounded-full bg-chart-4" />
             </div>
             <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
-              Ogni risposta è composta esclusivamente da citazioni come questa:
-              reali, datate, attribuite e collegate alla fonte istituzionale.
+              {t("quotesExplainer")}
             </p>
           </aside>
         </div>
@@ -255,35 +243,35 @@ export default function LandingPage() {
       {/* ── Indice — the five instruments ──────────────────────── */}
       <section id="strumenti" className="px-6 py-20">
         <div className="max-w-6xl mx-auto">
-          <SectionRule numeral="I" title="Gli strumenti" />
+          <SectionRule numeral="I" title={t("sec1Title")} />
 
           <div className="mt-2">
             <IndexRow
               numeral="01"
-              title="Interrogazione"
-              question="Cosa dicono i partiti sulla sanità?"
-              description="Una domanda libera, una risposta con le posizioni di maggioranza e opposizione — ogni affermazione ancorata a un intervento reale."
+              title={t("idx1Title")}
+              question={t("idx1Question")}
+              description={t("idx1Desc")}
               href="/home"
             />
             <IndexRow
               numeral="02"
-              title="Ricerca negli atti"
-              question="Chi ha parlato di salario minimo?"
-              description="Interventi e atti legislativi per deputato, gruppo o parola chiave, filtrabili per data e tipo di documento."
+              title={t("idx2Title")}
+              question={t("idx2Question")}
+              description={t("idx2Desc")}
               href="/search"
             />
             <IndexRow
               numeral="03"
-              title="Autorevolezza"
-              question="Chi è il parlamentare più autorevole sulla riforma fiscale?"
-              description="La classifica dei parlamentari per competenza su un tema: interventi, atti, commissioni, professione, istruzione, ruolo."
+              title={t("idx3Title")}
+              question={t("idx3Question")}
+              description={t("idx3Desc")}
               href="/ranking"
             />
             <IndexRow
               numeral="04"
-              title="Bussola ideologica"
-              question="Come si posizionano i partiti sul clima?"
-              description="La mappa bidimensionale delle posizioni dei gruppi rispetto a un tema, con assi estratti automaticamente dal dibattito."
+              title={t("idx4Title")}
+              question={t("idx4Question")}
+              description={t("idx4Desc")}
               href="/compass"
               last
             />
@@ -294,31 +282,29 @@ export default function LandingPage() {
       {/* ── Garanzie ───────────────────────────────────────────── */}
       <section id="garanzie" className="px-6 py-20 bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto">
-          <SectionRule numeral="II" title="Garanzie di verificabilità" inverted />
+          <SectionRule numeral="II" title={t("sec2Title")} inverted />
 
           <div className="mt-12 grid md:grid-cols-3 gap-x-12 gap-y-10">
             <Guarantee
               index="a"
-              title="Nessuna affermazione orfana"
-              body="Ogni citazione rimanda al resoconto originale su camera.it. Se non è stato detto in aula, non compare nella risposta."
+              title={t("g1Title")}
+              body={t("g1Body")}
             />
             <Guarantee
               index="b"
-              title="Contraddittorio garantito"
-              body="Maggioranza e opposizione sono sempre rappresentate. Un indicatore misura quanto la copertura è equilibrata."
+              title={t("g2Title")}
+              body={t("g2Body")}
             />
             <Guarantee
               index="c"
-              title="Voci selezionate per competenza"
-              body="Prima di rispondere, il sistema individua i parlamentari più autorevoli sul tema — e mostra perché sono stati scelti."
+              title={t("g3Title")}
+              body={t("g3Body")}
             />
           </div>
 
           {/* Colophon line */}
           <p className="mt-16 pt-6 border-t border-primary-foreground/20 text-sm text-primary-foreground/70 leading-relaxed">
-            10 gruppi parlamentari coperti&ensp;·&ensp;6 criteri di
-            autorevolezza&ensp;·&ensp;8 fasi di analisi per ogni
-            domanda&ensp;·&ensp;100% delle citazioni con collegamento alla fonte
+            {t("colophonStats")}
           </p>
         </div>
       </section>
@@ -326,23 +312,15 @@ export default function LandingPage() {
       {/* ── L'iter di ogni domanda ─────────────────────────────── */}
       <section id="pipeline" className="px-6 py-20">
         <div className="max-w-6xl mx-auto">
-          <SectionRule numeral="III" title="L'iter di ogni domanda" />
+          <SectionRule numeral="III" title={t("sec3Title")} />
           <p className="mt-6 text-muted-foreground max-w-xl">
-            Come un disegno di legge segue il suo iter, ogni domanda attraversa
-            otto passaggi — tutti visibili in tempo reale.
+            {t("iterIntro")}
           </p>
 
           <ol className="mt-12 grid sm:grid-cols-2 gap-x-16">
-            {[
-              { title: "Comprensione della domanda", desc: "riformulazione e classificazione del tema per individuare le commissioni competenti" },
-              { title: "Individuazione degli esperti", desc: "selezione dei parlamentari più autorevoli secondo sei criteri, sul tema specifico" },
-              { title: "Recupero delle citazioni", desc: "ricerca semantica e knowledge graph sugli interventi in aula" },
-              { title: "Misura del bilanciamento", desc: "verifica che maggioranza e opposizione siano rappresentate equamente" },
-              { title: "Mappa delle posizioni", desc: "calcolo della collocazione di ogni gruppo rispetto al tema" },
-              { title: "Stesura della risposta", desc: "testo bilanciato, con ogni affermazione collegata alla fonte" },
-              { title: "Verifica delle fonti", desc: "controllo che ogni citazione corrisponda a un intervento reale" },
-              { title: "Archiviazione", desc: "l'analisi resta consultabile in ogni momento dalla cronologia" },
-            ].map((item, i) => (
+            {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((n, i) => {
+              const item = { title: t(`iter${n}Title` as never) as string, desc: t(`iter${n}Desc` as never) as string };
+              return (
               <li
                 key={item.title}
                 className="flex gap-5 py-4 border-b border-border"
@@ -355,7 +333,8 @@ export default function LandingPage() {
                   <span className="text-muted-foreground"> — {item.desc}</span>
                 </p>
               </li>
-            ))}
+              );
+            })}
           </ol>
         </div>
       </section>
@@ -365,15 +344,14 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto border-t-2 border-foreground pt-14">
           <div className="grid lg:grid-cols-12 gap-8 items-end">
             <h2 className="lg:col-span-8 [font-family:var(--font-display)] text-4xl sm:text-5xl font-medium tracking-tight leading-[1.08] text-balance">
-              Trenta secondi separano una curiosità da una risposta
-              documentata.
+              {t("closingHeadline")}
             </h2>
             <div className="lg:col-span-4 lg:text-right">
               <Link
                 href="/home"
                 className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
-                Inizia la consultazione
+                {t("ctaStart")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -393,11 +371,10 @@ export default function LandingPage() {
             </span>
           </div>
           <p className="text-center leading-relaxed">
-            Tesi magistrale · Università degli Studi di Milano-Bicocca
+            {t("footerThesis")}
             <br className="sm:hidden" />
             <span className="hidden sm:inline"> — </span>
-            Mirko Tritella · rel. Prof. Matteo Palmonari · correl. Dott.
-            Riccardo Pozzi
+            {t("footerAuthors")}
           </p>
           <p className="flex items-center gap-4">
             <a
@@ -526,12 +503,13 @@ function RotatingHero({
   topic: string;
   isAnimating: boolean;
 }) {
+  const t = useTranslations("Landing");
 
   return (
     <h1 className="[font-family:var(--font-display)] text-[2.75rem] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
-      Cosa pensa
+      {t("heroLine1")}
       <br />
-      il Parlamento
+      {t("heroLine2")}
       <br />
       <span
         className="inline italic text-primary transition-opacity duration-300 ease-out motion-reduce:transition-none [box-decoration-break:clone] border-b-[3px] border-primary/25"
@@ -545,14 +523,15 @@ function RotatingHero({
 
 /* ── Side TOC — roman numerals in the margin ───────────────────── */
 const TOC_ITEMS = [
-  { id: "hero", label: "Prima pagina", numeral: "·" },
-  { id: "strumenti", label: "Strumenti", numeral: "I" },
-  { id: "garanzie", label: "Garanzie", numeral: "II" },
-  { id: "pipeline", label: "Iter", numeral: "III" },
-  { id: "inizia", label: "Inizia", numeral: "→" },
+  { id: "hero", labelKey: "tocFirstPage", numeral: "·" },
+  { id: "strumenti", labelKey: "tocInstruments", numeral: "I" },
+  { id: "garanzie", labelKey: "tocGuarantees", numeral: "II" },
+  { id: "pipeline", labelKey: "tocIter", numeral: "III" },
+  { id: "inizia", labelKey: "tocStart", numeral: "→" },
 ] as const;
 
 function SideTOC() {
+  const t = useTranslations("Landing");
   const [active, setActive] = useState<string>("hero");
   const [visible, setVisible] = useState(false);
   const [overInverted, setOverInverted] = useState(false);
@@ -603,7 +582,8 @@ function SideTOC() {
       style={{ opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none" }}
       aria-label="Navigazione sezioni"
     >
-      {TOC_ITEMS.map(({ id, label, numeral }) => {
+      {TOC_ITEMS.map(({ id, labelKey, numeral }) => {
+        const label = t(labelKey as never) as string;
         const isActive = active === id;
         return (
           <button

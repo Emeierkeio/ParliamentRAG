@@ -173,23 +173,23 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           </ScrollArea>
 
           {/* Bottom */}
-          <div className="p-3 pb-6">
-            <div className="px-1 mb-2">
-              <LanguageSelector />
+          <div className="p-3 pb-5 border-t border-sidebar-border">
+            <nav className="flex flex-col gap-0.5 pt-2">
+              <LanguageSelector isCollapsed={false} />
+              <NavButton
+                item={{ icon: Settings, label: t('settings'), onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
+                isCollapsed={false}
+              />
+              <NavButton
+                item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
+                isCollapsed={false}
+              />
+              <CreditsRow isCollapsed={false} />
+            </nav>
+            <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
+              <CalendarDays className="h-3 w-3 shrink-0" />
+              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "…"}</strong></span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
-              <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">{lastUpdate || "..."}</strong></span>
-            </div>
-            <NavButton
-              item={{ icon: Settings, label: t('settings'), onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
-              isCollapsed={false}
-            />
-            <NavButton
-              item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
-              isCollapsed={false}
-            />
-            <CreditsRow isCollapsed={false} />
           </div>
         </aside>
 
@@ -287,17 +287,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
         </ScrollArea>
 
         {/* Bottom Navigation */}
-        <div className="p-3 pb-6">
-          <div className={cn("mb-2", isCollapsed ? "flex justify-center" : "px-1")}>
-            <LanguageSelector />
-          </div>
-          {!isCollapsed && (
-            <div className="flex items-center gap-2 px-3 py-2 mb-2 text-[11px] text-sidebar-foreground/40">
-              <CalendarDays className="h-3.5 w-3.5 shrink-0" />
-              <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/60">{lastUpdate || "..."}</strong></span>
-            </div>
-          )}
-          <nav className="flex flex-col gap-1">
+        <div className="p-3 pb-5 border-t border-sidebar-border">
+          <nav className="flex flex-col gap-0.5 pt-2">
+            <LanguageSelector isCollapsed={isCollapsed} />
             <NavButton
                 item={{ icon: Settings, label: t('settings'), onClick: () => setSettingsOpen(true) }}
                 isCollapsed={isCollapsed}
@@ -309,6 +301,14 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             {/* Credits */}
             <CreditsRow isCollapsed={isCollapsed} />
+
+            {/* Data date — subtle footer line */}
+            {!isCollapsed && (
+              <div className="mt-3 pt-3 border-t border-sidebar-border flex items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35">
+                <CalendarDays className="h-3 w-3 shrink-0" />
+                <span>{t('dataUpdatedAt')} <strong className="text-sidebar-foreground/55 tabular-nums">{lastUpdate || "…"}</strong></span>
+              </div>
+            )}
 
             {/* Expand button when collapsed - at very bottom */}
             {isCollapsed && (
@@ -343,32 +343,33 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 }
 
 function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
+  const t = useTranslations('Sidebar');
   const content = (
     <div className="space-y-3 text-sm">
       <div className="flex items-center gap-2">
         <GraduationCap className="h-4 w-4 text-primary" />
-        <span className="font-medium">Tesi di Laurea Magistrale</span>
+        <span className="font-medium">{t('thesisTitle')}</span>
       </div>
       <p className="text-muted-foreground text-xs leading-relaxed">
-        Sistema RAG per l&apos;analisi bilanciata dei dibattiti parlamentari italiani.
+        {t('ragDescription')}
       </p>
       <Separator />
       <div className="space-y-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <BookOpen className="h-3.5 w-3.5" />
-          <span>Autore: <strong className="text-foreground">Mirko Tritella</strong></span>
+          <span>{t('author')}: <strong className="text-foreground">Mirko Tritella</strong></span>
         </div>
         <div className="flex items-center gap-2">
           <Building2 className="h-3.5 w-3.5" />
-          <span>Università degli Studi di Milano Bicocca</span>
+          <span>{t('university')}</span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-3.5 w-3.5" />
-          <span>Relatore: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
+          <span>{t('supervisor')}: Prof. Matteo <strong className="text-foreground">Palmonari</strong></span>
         </div>
         <div className="flex items-center gap-2">
           <Users className="h-3.5 w-3.5" />
-          <span>Correlatore: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
+          <span>{t('cosupervisor')}: Dott. Riccardo <strong className="text-foreground">Pozzi</strong></span>
         </div>
       </div>
     </div>
@@ -400,7 +401,7 @@ function CreditsRow({ isCollapsed }: { isCollapsed: boolean }) {
           className="w-full justify-start gap-2.5 h-8 mb-0.5 text-[13px] text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
         >
           <GraduationCap className="h-4 w-4 shrink-0" />
-          <span className="truncate">Crediti</span>
+          <span className="truncate">{t('credits')}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent side="top" align="start" className="w-[260px] p-4">
