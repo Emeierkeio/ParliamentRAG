@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 import { SidebarStateProvider } from '@/components/layout/SidebarStateProvider';
 import { Suspense } from "react";
 import { UrlParamSync } from "@/components/layout/UrlParamSync";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -119,6 +120,7 @@ export default async function RootLayout({
             </Suspense>
             <TooltipProvider delayDuration={0}>
               {children}
+              <MobileBottomNav />
             </TooltipProvider>
             </SidebarStateProvider>
           </NextIntlClientProvider>

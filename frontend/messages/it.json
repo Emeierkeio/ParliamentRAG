@@ -162,7 +162,11 @@
     "dataDate": "4 febbraio 2026",
     "version": "Versione",
     "votesExplorer": "Votazioni",
-    "dataShort": "Dati al"
+    "dataShort": "Dati al",
+    "navTopic": "Topic",
+    "navActs": "Atti",
+    "navAuthority": "Autorità",
+    "navCompass": "Compasso"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",

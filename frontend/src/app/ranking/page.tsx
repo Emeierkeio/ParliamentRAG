@@ -235,7 +235,7 @@ export default function RankingPage() {
 
   // ── Render ──
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}

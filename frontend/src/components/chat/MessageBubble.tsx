@@ -748,7 +748,7 @@ function CollapsibleSection({
         >
           <div className="flex items-center gap-2">
             <Icon className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">{title}</span>
+            <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight">{title}</span>
             {infoTooltip && (
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -798,7 +798,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
         >
           <div className="flex items-center gap-2">
             <PieChart className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">{t('balanceTitle')}</span>
+            <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight">{t('balanceTitle')}</span>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <span className="inline-flex cursor-help">

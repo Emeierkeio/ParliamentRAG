@@ -160,7 +160,7 @@ export default function LandingPage() {
             </span>
           </div>
           {/* Wordmark row */}
-          <div className="flex items-end justify-between py-5">
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 py-5">
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center bg-primary">
                 <Image src="/logo.svg" alt="" width={26} height={26} />
@@ -171,7 +171,7 @@ export default function LandingPage() {
             </div>
             <Link
               href="/home"
-              className="group inline-flex items-baseline gap-1.5 text-sm font-medium border-b-2 border-foreground pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
+              className="group inline-flex items-baseline gap-1.5 whitespace-nowrap text-sm font-medium border-b-2 border-foreground pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
             >
               {t("accessCta")}
               <ArrowRight className="h-3.5 w-3.5 self-center transition-transform group-hover:translate-x-0.5" />

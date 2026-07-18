@@ -127,7 +127,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
               {originalText ? (
                 <Tooltip delayDuration={300}>
                   <TooltipTrigger asChild>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words cursor-help">
+                    <p className="[font-family:var(--font-display)] italic text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words cursor-help">
                       &ldquo;{displayText}&rdquo;
                       <Globe className="inline h-3 w-3 ml-1 text-muted-foreground/50" />
                       {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
@@ -150,7 +150,7 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                   </TooltipContent>
                 </Tooltip>
               ) : (
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
+                <p className="[font-family:var(--font-display)] italic text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
                   &ldquo;{displayText}&rdquo;
                   {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
                        <a
@@ -315,7 +315,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
         
         {/* Header: Title & Close */}
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
-          <DialogTitle className="flex items-center gap-2 text-lg">
+          <DialogTitle className="[font-family:var(--font-display)] flex items-center gap-2 text-lg font-semibold tracking-tight">
              <Quote className="h-5 w-5 text-primary fill-primary/10" />
              <span>{t("intervention")}</span>
           </DialogTitle>
@@ -351,12 +351,12 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                 href={citation.camera_profile_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="font-bold text-foreground text-lg leading-tight truncate hover:underline hover:text-primary transition-colors"
+                                className="[font-family:var(--font-display)] font-semibold tracking-tight text-foreground text-lg leading-tight truncate hover:underline hover:text-primary transition-colors"
                             >
                                 {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                             </a>
                         ) : (
-                            <div className="font-bold text-foreground text-lg leading-tight truncate">
+                            <div className="[font-family:var(--font-display)] font-semibold tracking-tight text-foreground text-lg leading-tight truncate">
                                 {toTitleCase(citation.deputy_first_name || "")} {toTitleCase(citation.deputy_last_name || "")}
                             </div>
                         )}
@@ -422,7 +422,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
 
                     {/* Speech Text */}
                     <div className={cn(
-                        "prose prose-lg max-w-none dark:prose-invert font-serif tracking-wide leading-loose text-foreground/90",
+                        "prose prose-lg max-w-none dark:prose-invert [font-family:var(--font-display)] leading-loose text-foreground/90",
                         isTranslating && "opacity-50 transition-opacity"
                     )}>
                         {parts.length > 1 ? (
@@ -490,7 +490,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                         <Globe className="h-3 w-3" />
                                         {t("originalLabel")}
                                     </p>
-                                    <p className="text-sm leading-relaxed italic text-muted-foreground/80 font-serif">{originalFullText}</p>
+                                    <p className="[font-family:var(--font-display)] text-sm leading-relaxed italic text-muted-foreground/80">{originalFullText}</p>
                                 </>
                             )}
                         </div>

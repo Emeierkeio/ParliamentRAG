@@ -162,7 +162,11 @@
     "dataDate": "February 4, 2026",
     "version": "Version",
     "votesExplorer": "Votes",
-    "dataShort": "Data as of"
+    "dataShort": "Data as of",
+    "navTopic": "Topics",
+    "navActs": "Acts",
+    "navAuthority": "Authority",
+    "navCompass": "Compass"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",

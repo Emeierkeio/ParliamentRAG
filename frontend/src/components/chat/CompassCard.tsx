@@ -166,7 +166,7 @@ export function CompassCard({ data }: CompassCardProps) {
   };
 
   const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: React.CSSProperties }) => (
-      <div className={cn("absolute max-w-[40%] text-center text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/90 dark:bg-black/90 px-2 py-1 rounded border shadow-sm z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
+      <div className={cn("absolute max-w-[40%] text-center text-xs font-medium text-foreground/70 bg-background/90 px-2 py-1 rounded border shadow-sm z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
            {getAxisLabel(axis, side)}
       </div>
   );

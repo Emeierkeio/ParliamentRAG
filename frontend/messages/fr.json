@@ -162,7 +162,11 @@
     "dataDate": "4 février 2026",
     "version": "Version",
     "votesExplorer": "Scrutins",
-    "dataShort": "Données au"
+    "dataShort": "Données au",
+    "navTopic": "Sujets",
+    "navActs": "Actes",
+    "navAuthority": "Autorité",
+    "navCompass": "Boussole"
   },
   "Chat": {
     "placeholder": "Posez une question sur les débats parlementaires...",
