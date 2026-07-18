@@ -121,7 +121,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <div className="flex h-16 items-center justify-between px-4">
             <div
               className="flex items-center gap-3 cursor-pointer"
-              onClick={() => handleNavClick(() => { window.location.href = "/home"; })}
+              onClick={() => handleNavClick(() => { window.location.href = "/"; })}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
@@ -220,7 +220,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             {/* Logo Area */}
             <div
               className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
-              onClick={() => window.location.href = "/home"}
+              onClick={() => window.location.href = "/"}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
