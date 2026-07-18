@@ -1,31 +1,26 @@
 "use client";
 
-import { useState, useCallback, useEffect, useLayoutEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { config } from "@/config";
+import { useInitialCollapsed } from "@/components/layout/SidebarStateProvider";
 
 const MOBILE_BREAKPOINT = 768;
-const COLLAPSED_KEY = "sidebarCollapsed";
+const COLLAPSED_COOKIE = "sidebarCollapsed";
 
 export function useSidebar() {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(config.ui.sidebar.defaultCollapsed);
+  // The initial collapsed state is read server-side from the sidebarCollapsed
+  // cookie (see layout.tsx → SidebarStateProvider), so SSR already renders the
+  // sidebar in the right state: no expand→collapse flash on full page loads
+  // (language switches and tool navigations reload the page).
+  const initialCollapsed = useInitialCollapsed();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(
+    initialCollapsed ?? config.ui.sidebar.defaultCollapsed
+  );
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Restore the persisted collapsed state before paint, so language switches
-  // and tool navigations (full page reloads) don't visually re-open the
-  // sidebar. Read in useLayoutEffect (not in the useState initializer) to
-  // avoid an SSR hydration mismatch.
-  useLayoutEffect(() => {
-    const stored = localStorage.getItem(COLLAPSED_KEY);
-    if (stored !== null) setIsCollapsed(stored === "true");
-  }, []);
-
   const persist = (value: boolean) => {
-    try {
-      localStorage.setItem(COLLAPSED_KEY, String(value));
-    } catch {
-      // Storage unavailable (private mode etc.) — state just won't persist
-    }
+    document.cookie = `${COLLAPSED_COOKIE}=${value}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   useEffect(() => {
