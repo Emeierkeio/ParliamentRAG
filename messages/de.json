@@ -145,7 +145,7 @@
     "topicSearch": "Themensuche",
     "tools": "Werkzeuge",
     "actsSearch": "Aktensuche",
-    "parliamentaryTimeline": "Parlamentarische Chronik",
+    "parliamentaryTimeline": "Plenarsitzungen",
     "authorityAnalysis": "Autoritätsanalyse",
     "ideologicalCompass": "Ideologischer Kompass",
     "dataUpdatedAt": "Datenstand vom",
@@ -168,7 +168,7 @@
     "navAuthority": "Autorität",
     "navCompass": "Kompass",
     "navMore": "Mehr",
-    "navTimeline": "Chronik"
+    "navTimeline": "Sitzungen"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",
@@ -550,7 +550,7 @@
     "historyTagDateTo": "bis {date}"
   },
   "Timeline": {
-    "pageTitle": "Parlamentarische Chronik",
+    "pageTitle": "Plenarsitzungen",
     "browseDescription": "Erkunden Sie die Parlamentssitzungen, Debatten und Positionen der Redner",
     "searchPlaceholder": "Debatten, Themen, Redner suchen...",
     "dateFrom": "Von",

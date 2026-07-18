@@ -145,7 +145,7 @@
     "topicSearch": "Recherche par sujet",
     "tools": "Outils",
     "actsSearch": "Recherche d'actes",
-    "parliamentaryTimeline": "Chronologie parlementaire",
+    "parliamentaryTimeline": "Travaux de l’Assemblée",
     "authorityAnalysis": "Analyse d'autorité",
     "ideologicalCompass": "Boussole idéologique",
     "dataUpdatedAt": "Données mises à jour au",
@@ -168,7 +168,7 @@
     "navAuthority": "Autorité",
     "navCompass": "Boussole",
     "navMore": "Plus",
-    "navTimeline": "Chronologie"
+    "navTimeline": "Séances"
   },
   "Chat": {
     "placeholder": "Posez une question sur les débats parlementaires...",
@@ -550,7 +550,7 @@
     "historyTagDateTo": "au {date}"
   },
   "Timeline": {
-    "pageTitle": "Chronologie parlementaire",
+    "pageTitle": "Travaux de l’Assemblée",
     "browseDescription": "Explorez les séances parlementaires, les débats et les positions des orateurs",
     "searchPlaceholder": "Rechercher des débats, sujets, orateurs...",
     "dateFrom": "Du",
