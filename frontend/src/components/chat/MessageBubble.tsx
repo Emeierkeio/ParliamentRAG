@@ -18,7 +18,6 @@ import { TopicStatsModal } from "./TopicStatsModal";
 import type { Message } from "@/types";
 import { config } from "@/config";
 import {
-  User,
   Bot,
   ChevronDown,
   ChevronUp,
@@ -33,6 +32,7 @@ import {
   Info,
   Landmark,
   Share2,
+  Languages,
   Check as CheckIcon,
 } from "lucide-react";
 import {
@@ -237,25 +237,21 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
     return (
       <div className={cn("py-6 border-b border-border/50", className)}>
         <div className="flex items-start justify-between gap-2 min-w-0">
-          <h2 className="text-xl sm:text-2xl font-semibold text-foreground mb-2 break-words min-w-0">
+          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-[1.75rem] font-semibold tracking-tight leading-tight text-foreground mb-2.5 break-words min-w-0">
             {message.content}
           </h2>
           {chatId && <ShareButton chatId={chatId} />}
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <User className="h-3 w-3" />
-          <span>{t('you')}</span>
-          <span>•</span>
-          <span>
+          <Landmark className="h-3.5 w-3.5" />
+          <span className="font-medium">{t('chamberTitle')}</span>
+          <span className="text-muted-foreground/40">•</span>
+          <span className="tabular-nums">
             {message.timestamp.toLocaleTimeString("it-IT", {
               hour: "2-digit",
               minute: "2-digit",
             })}
           </span>
-        </div>
-        <div className="flex items-center gap-2 mt-1.5 text-sm text-muted-foreground/70">
-          <Landmark className="h-4 w-4" />
-          <span className="font-medium">{t('chamberTitle')}</span>
         </div>
         {progressSlot}
       </div>
@@ -286,7 +282,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
             <ReactMarkdown
               components={{
                 p: ({ children }) => (
-                  <p className="mb-4 leading-relaxed last:mb-0">{children}</p>
+                  <p className="mb-4 text-[15px] leading-7 last:mb-0">{children}</p>
                 ),
                 ul: ({ children }) => (
                   <ul className="mb-4 ml-4 list-disc space-y-1">{children}</ul>
@@ -333,14 +329,14 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   );
                 },
                 h1: ({ children }) => (
-                  <h1 className="text-2xl font-bold mb-4 mt-6">{children}</h1>
+                  <h1 className="[font-family:var(--font-display)] text-2xl font-semibold tracking-tight mb-4 mt-8 first:mt-0">{children}</h1>
                 ),
                 h2: ({ children }) => {
                   const title = typeof children === "string" ? children : String(children);
                   const speakersBySection = extractSpeakersBySection(message.content, message.experts, message.citations);
                   const speakers = speakersBySection[title] || [];
                   return (
-                    <h2 className="text-xl font-bold mb-3 mt-5 flex items-center gap-2">
+                    <h2 className="[font-family:var(--font-display)] text-[1.4rem] font-semibold tracking-tight mb-3 mt-8 first:mt-0 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
                         <SpeakersTooltip speakers={speakers} iconSize="h-4 w-4" sectionTitle={title} />
@@ -353,7 +349,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   const speakersBySection = extractSpeakersBySection(message.content, message.experts, message.citations);
                   const speakers = speakersBySection[title] || [];
                   return (
-                    <h3 className="text-lg font-bold mb-2 mt-4 flex items-center gap-2">
+                    <h3 className="[font-family:var(--font-display)] text-lg font-semibold tracking-tight mb-2 mt-6 flex items-center gap-2">
                       <span>{children}</span>
                       {speakers.length > 0 && (
                         <SpeakersTooltip speakers={speakers} iconSize="h-3.5 w-3.5" sectionTitle={title} />
@@ -367,7 +363,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   </code>
                 ),
                 blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-primary/20 pl-4 py-1 italic text-muted-foreground my-4 overflow-hidden break-words">
+                  <blockquote className="[font-family:var(--font-display)] border-l-2 border-primary/30 pl-4 py-1 italic text-muted-foreground my-4 overflow-hidden break-words">
                     {children}
                   </blockquote>
                 ),
@@ -377,7 +373,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                     const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
                     return (
                       <span
-                        className="inline cursor-pointer rounded px-1 py-0.5 bg-primary/5 text-primary/90 font-medium hover:bg-primary/15 border-b-2 border-primary/40 hover:border-primary/60 transition-all duration-150"
+                        className="inline cursor-pointer rounded-[3px] px-0.5 text-primary font-medium underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px] hover:bg-primary/10 hover:decoration-primary/70 transition-colors duration-150"
                         onClick={() => setStatsModalView(view)}
                         title={t('clickForDetail')}
                       >
@@ -406,11 +402,11 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                     const citationSpan = (
                       <span
                         className={cn(
-                          "inline cursor-pointer rounded px-1 py-0.5",
-                          "bg-primary/5 text-primary/90 hover:bg-primary/15",
-                          "border-b-2 border-primary/40 hover:border-primary/60",
-                          "transition-all duration-150",
-                          highlightedChunkId === href && "bg-yellow-400/30 border-yellow-500 text-yellow-800 dark:text-yellow-300"
+                          "inline cursor-pointer rounded-[3px] px-0.5",
+                          "text-primary underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px]",
+                          "hover:bg-primary/10 hover:decoration-primary/70",
+                          "transition-colors duration-150",
+                          highlightedChunkId === href && "bg-yellow-400/30 decoration-yellow-500 text-yellow-800 dark:text-yellow-300"
                         )}
                         onClick={() => {
                           setHighlightedChunkId(href);
@@ -419,7 +415,7 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                       >
                         {children}
                         {originalQuote && (
-                          <span className="inline-block ml-1 text-[10px] text-muted-foreground/60 align-super">🌐</span>
+                          <Languages className="inline h-3 w-3 ml-0.5 align-[-1px] text-muted-foreground/60" />
                         )}
                       </span>
                     );
