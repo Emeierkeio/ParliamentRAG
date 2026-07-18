@@ -20,7 +20,7 @@
   "MessageBubble": {
     "you": "Usted",
     "originalLabel": "Original",
-    "chamberTitle": "Camera dei Deputati — XIX Legislatura",
+    "chamberTitle": "Cámara de Diputados — XIX Legislatura",
     "expertsTitle": "Fuentes seleccionadas por autoridad",
     "expertsSectionDesc": "Estos parlamentarios han sido identificados como las voces más competentes sobre el tema y utilizados como fuentes prioritarias para construir la respuesta.",
     "expertsTooltip": "Antes de recuperar las citas, el sistema identifica a los parlamentarios más autorizados sobre el tema. La autoridad se calcula sobre 6 factores: intervenciones en el Pleno, actos legislativos, comisión de pertenencia, profesión, formación académica y cargo institucional.",
@@ -260,7 +260,7 @@
     "manyInterventions": "intervenciones"
   },
   "WelcomeScreen": {
-    "badge": "Camera dei Deputati · XIX Legislatura",
+    "badge": "Cámara de Diputados · XIX Legislatura",
     "badgeSenate": "Senato della Repubblica · XIX Legislatura",
     "badgeBoth": "Parlamento Italiano · XIX Legislatura",
     "badge_camera_19": "Cámara de Diputados · XIX Legislatura",

@@ -20,7 +20,7 @@
   "MessageBubble": {
     "you": "You",
     "originalLabel": "Original",
-    "chamberTitle": "Camera dei Deputati — XIX Legislature",
+    "chamberTitle": "Chamber of Deputies — 19th Legislature",
     "expertsTitle": "Sources selected by authority",
     "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response.",
     "expertsTooltip": "Before retrieving citations, the system identifies the most authoritative parliamentarians on the topic. Authority is calculated on 6 factors: floor speeches, legislative acts, committee membership, profession, education and institutional role.",
@@ -260,7 +260,7 @@
     "manyInterventions": "speeches"
   },
   "WelcomeScreen": {
-    "badge": "Camera dei Deputati · XIX Legislature",
+    "badge": "Chamber of Deputies · 19th Legislature",
     "badgeSenate": "Senato della Repubblica · XIX Legislature",
     "badgeBoth": "Italian Parliament · XIX Legislature",
     "badge_camera_19": "Chamber of Deputies · XIX Legislature",
