@@ -811,6 +811,9 @@
     "tocGuarantees": "Guarantees",
     "tocIter": "Path",
     "tocStart": "Start",
-    "iswcBadge": "Accepted · In-Use Track"
+    "iswcBadge": "Accepted · In-Use Track",
+    "idx5Title": "Chamber Proceedings",
+    "idx5Question": "“What happened on the floor this week?”",
+    "idx5Desc": "The session-by-session record of debates and speeches, with AI-generated recaps — down to each deputy's position."
   }
 }

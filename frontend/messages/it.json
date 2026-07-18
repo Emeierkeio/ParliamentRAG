@@ -811,6 +811,9 @@
     "tocGuarantees": "Garanzie",
     "tocIter": "Iter",
     "tocStart": "Inizia",
-    "iswcBadge": "Accettato · In-Use Track"
+    "iswcBadge": "Accettato · In-Use Track",
+    "idx5Title": "Lavori d'Aula",
+    "idx5Question": "«Cosa è successo in Aula questa settimana?»",
+    "idx5Desc": "La cronologia delle sedute con dibattiti, interventi e riepiloghi generati dall'AI — fino alla posizione di ogni singolo deputato."
   }
 }
