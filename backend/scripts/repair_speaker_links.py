@@ -12,6 +12,10 @@ This script:
      deputato.rdf twin (numeric id match: p305586 -> d305586_19).
   2. For persona-only deputies (no twin — e.g. members who entered parliament
      after the original build), normalizes photo/deputy_card to working URLs.
+  3. Syncs MEMBER_OF_GROUP memberships from persona.rdf duplicates to the
+     canonical twins: the v2 ingest writes group switches (e.g. a deputy
+     moving to Misto) on the persona node only, leaving the canonical node
+     with a stale open-ended membership.
 
 Idempotent — safe to run repeatedly. Usage:
     python scripts/repair_speaker_links.py [neo4j_uri]
@@ -48,6 +52,17 @@ with driver.session() as s:
         RETURN count(bad) AS n
     """).single()["n"]
 
+    synced = s.run("""
+        MATCH (p:Deputy)-[pmg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        WHERE p.id CONTAINS 'persona.rdf/p' AND pmg.start_date >= date('2022-10-01')
+        WITH p, pmg, g, split(p.id, 'persona.rdf/p')[1] AS num
+        MATCH (c:Deputy) WHERE c.id ENDS WITH ('deputato.rdf/d' + num + '_19')
+        MERGE (c)-[cmg:MEMBER_OF_GROUP {start_date: pmg.start_date}]->(g)
+        SET cmg.end_date = pmg.end_date
+        RETURN count(*) AS n
+    """).single()["n"]
+
 driver.close()
 print(f"[REPAIR] speeches re-linked to canonical deputies: {relinked}")
 print(f"[REPAIR] persona-only deputies with normalized photo/card: {fixed}")
+print(f"[REPAIR] group memberships synced persona -> canonical: {synced}")
