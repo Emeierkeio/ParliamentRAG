@@ -12,6 +12,20 @@ from ..key_pool import make_async_client
 
 logger = logging.getLogger(__name__)
 
+# Supported target languages (BCP-47 code → English name used in prompts)
+LANG_NAMES = {
+    "en": "English",
+    "fr": "French",
+    "de": "German",
+    "es": "Spanish",
+    "pt": "Portuguese",
+}
+
+
+def _lang_name(target_lang: str) -> str | None:
+    """Return the prompt-friendly language name, or None if unsupported/it."""
+    return LANG_NAMES.get(target_lang)
+
 # ---------------------------------------------------------------------------
 # Prompt
 # ---------------------------------------------------------------------------
@@ -48,12 +62,12 @@ async def translate_citation_batch(
         ``is_translated=True``.  On failure the original citation is returned
         without any ``translated_*`` keys.
     """
-    if target_lang == "it" or not citations:
+    if not citations or _lang_name(target_lang) is None:
         return citations
 
     client = make_async_client()
     raw_results = await asyncio.gather(
-        *[_translate_one(c, client) for c in citations],
+        *[_translate_one(c, client, target_lang) for c in citations],
         return_exceptions=True,
     )
 
@@ -81,7 +95,7 @@ async def translate_response_text(
     and proper nouns (party names, people names, session numbers).
     On failure returns the original text unchanged.
     """
-    if target_lang == "it" or not text:
+    if not text or _lang_name(target_lang) is None:
         return text
 
     client = make_async_client()
@@ -92,8 +106,8 @@ async def translate_response_text(
                 {
                     "role": "system",
                     "content": (
-                        "You are a professional translator from Italian to English.\n"
-                        "Translate the following Italian parliamentary markdown text to English.\n"
+                        f"You are a professional translator from Italian to {_lang_name(target_lang)}.\n"
+                        f"Translate the following Italian parliamentary markdown text to {_lang_name(target_lang)}.\n"
                         "RULES:\n"
                         "- Preserve ALL markdown formatting (##, **, «», bullet points, etc.)\n"
                         "- Preserve ALL citation links exactly as-is: e.g. [some text](leg19_abc) — do NOT modify the link target inside parentheses\n"
@@ -123,7 +137,7 @@ async def translate_compass_axes(
     ``"y"``, each containing ``positive_label`` and ``negative_label`` strings.
     On failure returns the original data unchanged.
     """
-    if target_lang == "it" or not compass_data:
+    if not compass_data or _lang_name(target_lang) is None:
         return compass_data
 
     axes = compass_data.get("axes")
@@ -154,7 +168,7 @@ async def translate_compass_axes(
     client = make_async_client()
     try:
         prompt = (
-            "Translate these Italian political compass axis labels to English.\n"
+            f"Translate these Italian political compass axis labels to {_lang_name(target_lang)}.\n"
             "Preserve proper nouns. Return ONLY valid JSON with the same keys.\n\n"
             + json.dumps(labels_to_translate, ensure_ascii=False)
         )
@@ -190,21 +204,22 @@ async def translate_compass_axes(
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-_TRANSLATE_SYS = (
-    "Translate the following Italian parliamentary text to English. "
-    "Preserve proper nouns (names, parties, dates, session numbers). "
-    "Return ONLY the translation."
-)
+def _translate_sys(target_lang: str) -> str:
+    return (
+        f"Translate the following Italian parliamentary text to {_lang_name(target_lang) or 'English'}. "
+        "Preserve proper nouns (names, parties, dates, session numbers). "
+        "Return ONLY the translation."
+    )
 
 
-async def _translate_text(client, text: str, max_tokens: int = 2000) -> str:
+async def _translate_text(client, text: str, max_tokens: int = 2000, target_lang: str = "en") -> str:
     """Translate a single text string. Returns original on failure."""
     if not text:
         return ""
     resp = await client.chat.completions.create(
         model="gpt-4.1-nano",
         messages=[
-            {"role": "system", "content": _TRANSLATE_SYS},
+            {"role": "system", "content": _translate_sys(target_lang)},
             {"role": "user", "content": text},
         ],
         temperature=0,
@@ -213,7 +228,7 @@ async def _translate_text(client, text: str, max_tokens: int = 2000) -> str:
     return resp.choices[0].message.content or text
 
 
-async def _translate_one(citation: dict, client) -> dict:
+async def _translate_one(citation: dict, client, target_lang: str = "en") -> dict:
     """Translate a single citation's text and full_text in a single JSON API call.
 
     Both 'text' (short preview) and 'full_text' (full speech) are bundled
@@ -239,7 +254,7 @@ async def _translate_one(citation: dict, client) -> dict:
                 {
                     "role": "system",
                     "content": (
-                        _TRANSLATE_SYS
+                        _translate_sys(target_lang)
                         + "\nReturn ONLY valid JSON with the same keys as the input."
                     ),
                 },

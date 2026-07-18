@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
@@ -49,6 +50,7 @@ import {
 const PAGE_SIZE = 20;
 
 export default function SearchPage() {
+    const t = useTranslations("SearchPage");
     const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
 
     // Search history
@@ -211,20 +213,20 @@ export default function SearchPage() {
         if (data.authorFilterMode === 'deputy' && data.selectedDeputies.length > 0) {
             tags.push(data.selectedDeputies.length === 1
                 ? `${data.selectedDeputies[0].first_name} ${data.selectedDeputies[0].last_name}`
-                : `${data.selectedDeputies.length} deputati`);
+                : t("nDeputies", { count: data.selectedDeputies.length }));
         }
         if (data.authorFilterMode === 'group' && data.selectedGroups.length > 0) {
-            tags.push(data.selectedGroups.length === 1 ? data.selectedGroups[0] : `${data.selectedGroups.length} gruppi`);
+            tags.push(data.selectedGroups.length === 1 ? data.selectedGroups[0] : t("nGroups", { count: data.selectedGroups.length }));
         }
         if (data.docType !== 'all') {
-            tags.push(data.docType === 'speech' ? 'Interventi' : 'Atti');
+            tags.push(data.docType === 'speech' ? t("historyTagSpeeches") : t("historyTagActs"));
         }
         if (data.startDate && data.endDate) {
             tags.push(`${formatDate(data.startDate)} – ${formatDate(data.endDate)}`);
         } else if (data.startDate) {
-            tags.push(`dal ${formatDate(data.startDate)}`);
+            tags.push(t("historyTagDateFrom", { date: formatDate(data.startDate) }));
         } else if (data.endDate) {
-            tags.push(`al ${formatDate(data.endDate)}`);
+            tags.push(t("historyTagDateTo", { date: formatDate(data.endDate) }));
         }
         return tags;
     };
@@ -245,12 +247,12 @@ export default function SearchPage() {
                 <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
                     <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
-                        <h1 className="text-base font-semibold whitespace-nowrap">Ricerca Atti</h1>
+                        <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
                         <div className="flex items-center gap-2 ml-auto shrink-0">
                             {/* Mobile: apre bottom sheet */}
                             <button
                                 className="md:hidden inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                                title="Cronologia"
+                                title={t("historyButtonTitle")}
                                 onClick={() => setHistorySheetOpen(true)}
                             >
                                 <History className="h-4 w-4" />
@@ -262,15 +264,15 @@ export default function SearchPage() {
                                     <PopoverTrigger asChild>
                                         <button
                                             className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                                            title="Cronologia"
+                                            title={t("historyButtonTitle")}
                                         >
                                             <History className="h-4 w-4" />
                                         </button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-80 p-2" align="end">
-                                        <p className="text-xs font-medium px-2 py-1 text-muted-foreground mb-1">Cronologia ricerche</p>
+                                        <p className="text-[11px] uppercase tracking-[0.2em] px-2 py-1 text-muted-foreground mb-1">{t("historyTitle")}</p>
                                         {searchHistory.entries.length === 0 ? (
-                                            <p className="text-xs text-center py-4 text-muted-foreground">Nessuna ricerca salvata</p>
+                                            <p className="text-xs text-center py-4 text-muted-foreground">{t("noSavedSearches")}</p>
                                         ) : (
                                             <div className="space-y-0.5">
                                                 {searchHistory.entries.map((entry) => {
@@ -298,7 +300,7 @@ export default function SearchPage() {
                                                             <button
                                                                 className="shrink-0 p-1.5 mt-0.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
                                                                 onClick={() => searchHistory.removeEntry(entry.id)}
-                                                                title="Rimuovi"
+                                                                title={t("removeEntry")}
                                                             >
                                                                 <X className="h-3 w-3" />
                                                             </button>
@@ -320,48 +322,47 @@ export default function SearchPage() {
                         {/* Intro */}
                         {!hasSearched && (
                           <div className="text-center space-y-4 pt-2 pb-2">
-                            <div className="mx-auto h-14 w-14 rounded-2xl bg-primary/8 flex items-center justify-center">
-                              <SearchIcon className="h-7 w-7 text-primary/60" />
+                            <div className="mx-auto h-14 w-14 rounded-full border border-border flex items-center justify-center">
+                              <SearchIcon className="h-6 w-6 text-primary/60" />
                             </div>
                             <div className="space-y-2">
-                              <h2 className="text-xl font-semibold text-foreground">
-                                Ricerca Atti e Interventi
+                              <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+                                {t("introHeading")}
                               </h2>
                               <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
-                                Cerca tra gli atti parlamentari e gli interventi in aula.
-                                Puoi filtrare per deputato, gruppo parlamentare, tipo di documento e periodo temporale.
+                                {t("introDescription")}
                               </p>
                             </div>
                             <div className="flex flex-wrap justify-center gap-3 pt-1 max-w-md mx-auto">
-                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                                 <Text className="h-3.5 w-3.5 text-primary/70" />
-                                Ricerca testuale
+                                {t("featureText")}
                               </div>
-                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                                 <Users className="h-3.5 w-3.5 text-primary/70" />
-                                Filtra per autore
+                                {t("featureAuthor")}
                               </div>
-                              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/40 text-[11px] text-muted-foreground font-medium">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                                 <SlidersHorizontal className="h-3.5 w-3.5 text-primary/70" />
-                                Tipo e periodo
+                                {t("featurePeriod")}
                               </div>
                             </div>
                           </div>
                         )}
 
                         {/* Search Card */}
-                        <div className="bg-card border rounded-xl shadow-lg overflow-hidden">
+                        <div className="bg-card border border-border overflow-hidden">
 
                             {/* Search Input */}
                             <div className="p-4 md:p-6 pb-3 md:pb-0">
                                 <div className="relative">
                                     <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                     <Input
-                                        placeholder="Cerca negli atti e interventi parlamentari..."
+                                        placeholder={t("searchPlaceholder")}
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                        className="h-14 text-lg pl-12 pr-10 shadow-sm border-2 focus-visible:ring-offset-2 focus-visible:border-primary transition-all rounded-lg"
+                                        className="h-14 text-lg pl-12 pr-10 rounded-md"
                                     />
                                     {query && (
                                         <Button
@@ -385,7 +386,7 @@ export default function SearchPage() {
                                             onClick={() => setDocType("all")}
                                             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium"
                                         >
-                                            {docType === "speech" ? "Interventi" : "Atti"}
+                                            {docType === "speech" ? t("docTypeSpeeches") : t("docTypeActs")}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
@@ -396,7 +397,7 @@ export default function SearchPage() {
                                         >
                                             {selectedDeputies.length === 1
                                                 ? selectedDeputies[0].last_name
-                                                : `${selectedDeputies.length} deputati`}
+                                                : t("nDeputies", { count: selectedDeputies.length })}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
@@ -405,7 +406,7 @@ export default function SearchPage() {
                                             onClick={() => { setAuthorFilterMode("all"); setSelectedGroups([]); }}
                                             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium"
                                         >
-                                            {selectedGroups.length === 1 ? selectedGroups[0] : `${selectedGroups.length} gruppi`}
+                                            {selectedGroups.length === 1 ? selectedGroups[0] : t("nGroups", { count: selectedGroups.length })}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
@@ -417,8 +418,8 @@ export default function SearchPage() {
                                             {startDate && endDate
                                                 ? `${formatDate(startDate)} – ${formatDate(endDate)}`
                                                 : startDate
-                                                    ? `dal ${formatDate(startDate)}`
-                                                    : `al ${formatDate(endDate)}`}
+                                                    ? t("historyTagDateFrom", { date: formatDate(startDate) })
+                                                    : t("historyTagDateTo", { date: formatDate(endDate) })}
                                             <X className="h-3 w-3" />
                                         </button>
                                     )}
@@ -434,7 +435,7 @@ export default function SearchPage() {
                                         )}
                                     >
                                         <SlidersHorizontal className="h-3.5 w-3.5" />
-                                        Filtri
+                                        {t("filtersButton")}
                                         {activeFilterCount > 0 && (
                                             <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
                                                 {activeFilterCount}
@@ -449,17 +450,17 @@ export default function SearchPage() {
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
                                     {/* Left: Author Filter */}
-                                    <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                    <div className="space-y-3 border-t border-border pt-4">
                                         <div className="flex items-center gap-2 mb-1">
                                             <User className="h-4 w-4 text-primary" />
-                                            <Label className="text-sm font-semibold">Autore</Label>
-                                            <span className="text-xs text-muted-foreground ml-auto">Opzionale</span>
+                                            <Label className="text-[11px] uppercase tracking-[0.2em] font-normal text-muted-foreground">{t("authorLabel")}</Label>
+                                            <span className="text-xs text-muted-foreground ml-auto">{t("optional")}</span>
                                         </div>
                                         <div className="inline-flex rounded-lg border p-0.5 bg-background w-full">
                                             {([
-                                                { value: "all" as const, label: "Tutti" },
-                                                { value: "deputy" as const, label: "Deputato" },
-                                                { value: "group" as const, label: "Gruppo" },
+                                                { value: "all" as const, label: t("tabAll") },
+                                                { value: "deputy" as const, label: t("tabDeputy") },
+                                                { value: "group" as const, label: t("tabGroup") },
                                             ]).map((tab) => (
                                                 <button
                                                     key={tab.value}
@@ -478,7 +479,7 @@ export default function SearchPage() {
                                         <div className="min-h-[42px]">
                                             {authorFilterMode === "all" && (
                                                 <p className="text-sm text-muted-foreground text-center py-2 bg-background rounded-md border border-dashed">
-                                                    Ricerca in tutti gli atti e interventi
+                                                    {t("allAuthorsPlaceholder")}
                                                 </p>
                                             )}
                                             {authorFilterMode === "deputy" && (
@@ -498,16 +499,16 @@ export default function SearchPage() {
 
                                     {/* Right: Doc Type + Date */}
                                     <div className="space-y-5">
-                                        <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                        <div className="space-y-3 border-t border-border pt-4">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <FileText className="h-4 w-4 text-primary" />
-                                                <Label className="text-sm font-semibold">Tipo Documento</Label>
+                                                <Label className="text-[11px] uppercase tracking-[0.2em] font-normal text-muted-foreground">{t("docTypeLabel")}</Label>
                                             </div>
                                             <div className="inline-flex rounded-lg border p-0.5 bg-background w-full">
                                                 {([
-                                                    { value: "all" as const, label: "Tutti", icon: null },
-                                                    { value: "speech" as const, label: "Interventi", icon: MessageSquareQuote },
-                                                    { value: "act" as const, label: "Atti", icon: FileText },
+                                                    { value: "all" as const, label: t("tabAll"), icon: null },
+                                                    { value: "speech" as const, label: t("docTypeSpeeches"), icon: MessageSquareQuote },
+                                                    { value: "act" as const, label: t("docTypeActs"), icon: FileText },
                                                 ]).map((tab) => (
                                                     <button
                                                         key={tab.value}
@@ -526,15 +527,15 @@ export default function SearchPage() {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
+                                        <div className="space-y-3 border-t border-border pt-4">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <Calendar className="h-4 w-4 text-primary" />
-                                                <Label className="text-sm font-semibold">Periodo</Label>
-                                                <span className="text-xs text-muted-foreground ml-auto">Opzionale</span>
+                                                <Label className="text-[11px] uppercase tracking-[0.2em] font-normal text-muted-foreground">{t("periodLabel")}</Label>
+                                                <span className="text-xs text-muted-foreground ml-auto">{t("optional")}</span>
                                             </div>
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div className="space-y-1.5">
-                                                    <Label className="text-xs text-muted-foreground">Da</Label>
+                                                    <Label className="text-xs text-muted-foreground">{t("periodFrom")}</Label>
                                                     <Input
                                                         type="date"
                                                         value={startDate}
@@ -543,7 +544,7 @@ export default function SearchPage() {
                                                     />
                                                 </div>
                                                 <div className="space-y-1.5">
-                                                    <Label className="text-xs text-muted-foreground">A</Label>
+                                                    <Label className="text-xs text-muted-foreground">{t("periodTo")}</Label>
                                                     <Input
                                                         type="date"
                                                         value={endDate}
@@ -563,10 +564,10 @@ export default function SearchPage() {
                                     size="lg"
                                     disabled={!query.trim() || loading}
                                     onClick={handleSearch}
-                                    className="flex-1 h-12 text-base font-semibold shadow-md transition-all hover:shadow-lg"
+                                    className="flex-1 h-12 text-base font-semibold"
                                 >
                                     {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SearchIcon className="mr-2 h-5 w-5" />}
-                                    Esegui Ricerca
+                                    {t("searchButton")}
                                 </Button>
                                 {hasSearched && (
                                     <Button
@@ -576,7 +577,7 @@ export default function SearchPage() {
                                         className="h-12 px-5 text-muted-foreground"
                                     >
                                         <FilterX className="mr-2 h-4 w-4" />
-                                        Resetta
+                                        {t("resetButton")}
                                     </Button>
                                 )}
                             </div>
@@ -588,31 +589,28 @@ export default function SearchPage() {
 
                                 {/* Results header */}
                                 <div className="px-2 space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-1 bg-primary rounded-full shrink-0"></div>
-                                        <div>
-                                            <h2 className="text-xl font-bold tracking-tight">Risultati</h2>
-                                            <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                                <span>{totalResults} risultati</span>
-                                                {results.length > 0 && (
-                                                    <>
-                                                        <span className="text-muted-foreground/50">—</span>
-                                                        <span>Pagina {currentPage} di {totalPages}</span>
-                                                    </>
-                                                )}
-                                            </p>
-                                        </div>
+                                    <div className="border-b border-border pb-3 space-y-1">
+                                        <h2 className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight">{t("resultsHeading")}</h2>
+                                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                                            <span>{t("resultsCount", { count: totalResults })}</span>
+                                            {results.length > 0 && (
+                                                <>
+                                                    <span className="text-muted-foreground/50">—</span>
+                                                    <span>{t("paginationInfo", { current: currentPage, total: totalPages })}</span>
+                                                </>
+                                            )}
+                                        </p>
                                     </div>
 
                                     {/* Sort controls — riga dedicata, label sempre visibili */}
                                     {results.length > 0 && (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs text-muted-foreground shrink-0">Ordina:</span>
+                                            <span className="text-xs text-muted-foreground shrink-0">{t("sortLabel")}</span>
                                             <div className="inline-flex rounded-lg border p-0.5 bg-card shadow-sm flex-1 sm:flex-none">
                                                 {([
-                                                    { value: "relevance" as const, label: "Rilevanza", icon: ArrowUpDown },
-                                                    { value: "date_desc" as const, label: "Più recenti", icon: ArrowDown },
-                                                    { value: "date_asc" as const, label: "Meno recenti", icon: ArrowUp },
+                                                    { value: "relevance" as const, label: t("sortRelevance"), icon: ArrowUpDown },
+                                                    { value: "date_desc" as const, label: t("sortNewest"), icon: ArrowDown },
+                                                    { value: "date_asc" as const, label: t("sortOldest"), icon: ArrowUp },
                                                 ]).map((opt) => (
                                                     <button
                                                         key={opt.value}
@@ -634,10 +632,10 @@ export default function SearchPage() {
                                 </div>
 
                                 {loading ? (
-                                    <div className="flex flex-col items-center justify-center py-20 space-y-4 border rounded-xl bg-card/50">
+                                    <div className="flex flex-col items-center justify-center py-20 space-y-4 border-y border-border">
                                         <Loader2 className="h-10 w-10 animate-spin text-primary" />
                                         <p className="text-muted-foreground animate-pulse">
-                                            Ricerca in corso...
+                                            {t("searching")}
                                         </p>
                                     </div>
                                 ) : (
@@ -654,7 +652,7 @@ export default function SearchPage() {
                                                     onClick={() => handlePageChange(currentPage - 1)}
                                                 >
                                                     <ChevronLeft className="h-4 w-4 sm:mr-1" />
-                                                    <span className="hidden sm:inline">Precedente</span>
+                                                    <span className="hidden sm:inline">{t("previousPage")}</span>
                                                 </Button>
 
                                                 <div className="flex items-center gap-1">
@@ -681,7 +679,7 @@ export default function SearchPage() {
                                                     disabled={currentPage >= totalPages}
                                                     onClick={() => handlePageChange(currentPage + 1)}
                                                 >
-                                                    <span className="hidden sm:inline">Successiva</span>
+                                                    <span className="hidden sm:inline">{t("nextPage")}</span>
                                                     <ChevronRight className="h-4 w-4 sm:ml-1" />
                                                 </Button>
                                             </div>
@@ -701,7 +699,7 @@ export default function SearchPage() {
                         <div className="flex items-center justify-between">
                             <SheetTitle className="flex items-center gap-2 text-base">
                                 <History className="h-4 w-4 text-primary" />
-                                Cronologia ricerche
+                                {t("historyTitle")}
                             </SheetTitle>
                             <SheetClose asChild>
                                 <button className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent">
@@ -712,7 +710,7 @@ export default function SearchPage() {
                     </SheetHeader>
                     <div className="flex-1 overflow-y-auto py-2">
                         {searchHistory.entries.length === 0 ? (
-                            <p className="text-sm text-center py-10 text-muted-foreground">Nessuna ricerca salvata</p>
+                            <p className="text-sm text-center py-10 text-muted-foreground">{t("noSavedSearches")}</p>
                         ) : (
                             <div className="px-4 space-y-0.5 pb-8">
                                 {searchHistory.entries.map((entry) => {
@@ -740,7 +738,7 @@ export default function SearchPage() {
                                             <button
                                                 className="shrink-0 p-2.5 mt-0.5 text-muted-foreground hover:text-destructive transition-colors"
                                                 onClick={() => searchHistory.removeEntry(entry.id)}
-                                                title="Rimuovi"
+                                                title={t("removeEntry")}
                                             >
                                                 <X className="h-4 w-4" />
                                             </button>
@@ -758,7 +756,7 @@ export default function SearchPage() {
                 <SheetContent side="bottom" showCloseButton={false} className="rounded-t-2xl max-h-[90vh] flex flex-col p-0">
                     <SheetHeader className="px-4 pt-4 pb-0 shrink-0">
                         <div className="flex items-center justify-between">
-                            <SheetTitle className="text-base">Filtri</SheetTitle>
+                            <SheetTitle className="text-base">{t("filterSheetTitle")}</SheetTitle>
                             <SheetClose asChild>
                                 <button className="inline-flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent">
                                     <X className="h-4 w-4" />
@@ -769,11 +767,11 @@ export default function SearchPage() {
                         {/* Tab bar */}
                         <div className="flex gap-1 mt-3 border-b pb-0">
                             {([
-                                { key: "autore" as const, label: "Autore", icon: User,
+                                { key: "autore" as const, label: t("filterTabAuthor"), icon: User,
                                   active: authorFilterMode !== "all" && (selectedDeputies.length > 0 || selectedGroups.length > 0) },
-                                { key: "tipo" as const, label: "Tipo", icon: FileText,
+                                { key: "tipo" as const, label: t("filterTabType"), icon: FileText,
                                   active: docType !== "all" },
-                                { key: "periodo" as const, label: "Periodo", icon: Calendar,
+                                { key: "periodo" as const, label: t("filterTabPeriod"), icon: Calendar,
                                   active: !!(startDate || endDate) },
                             ]).map((tab) => (
                                 <button
@@ -804,9 +802,9 @@ export default function SearchPage() {
                             <div className="space-y-4">
                                 <div className="inline-flex rounded-lg border p-0.5 bg-muted/30 w-full">
                                     {([
-                                        { value: "all" as const, label: "Tutti" },
-                                        { value: "deputy" as const, label: "Deputato" },
-                                        { value: "group" as const, label: "Gruppo" },
+                                        { value: "all" as const, label: t("tabAll") },
+                                        { value: "deputy" as const, label: t("tabDeputy") },
+                                        { value: "group" as const, label: t("tabGroup") },
                                     ]).map((tab) => (
                                         <button
                                             key={tab.value}
@@ -826,7 +824,7 @@ export default function SearchPage() {
                                 <div className="min-h-[60px]">
                                     {authorFilterMode === "all" && (
                                         <p className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-lg border border-dashed">
-                                            Ricerca in tutti gli atti e interventi
+                                            {t("allAuthorsPlaceholder")}
                                         </p>
                                     )}
                                     {authorFilterMode === "deputy" && (
@@ -848,18 +846,18 @@ export default function SearchPage() {
                         {/* Tipo tab */}
                         {filterTab === "tipo" && (
                             <div className="space-y-3">
-                                <p className="text-sm text-muted-foreground">Scegli il tipo di documento da cercare.</p>
+                                <p className="text-sm text-muted-foreground">{t("typeTabDescription")}</p>
                                 <div className="grid grid-cols-3 gap-3">
                                     {([
-                                        { value: "all" as const, label: "Tutti", icon: null, desc: "Atti e interventi" },
-                                        { value: "speech" as const, label: "Interventi", icon: MessageSquareQuote, desc: "Discorsi in aula" },
-                                        { value: "act" as const, label: "Atti", icon: FileText, desc: "Atti parlamentari" },
+                                        { value: "all" as const, label: t("tabAll"), icon: null, desc: t("docTypeAllDesc") },
+                                        { value: "speech" as const, label: t("docTypeSpeeches"), icon: MessageSquareQuote, desc: t("docTypeSpeechDesc") },
+                                        { value: "act" as const, label: t("docTypeActs"), icon: FileText, desc: t("docTypeActDesc") },
                                     ]).map((opt) => (
                                         <button
                                             key={opt.value}
                                             onClick={() => setDocType(opt.value)}
                                             className={cn(
-                                                "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-center",
+                                                "flex flex-col items-center gap-2 p-4 rounded-md border transition-colors text-center",
                                                 docType === opt.value
                                                     ? "border-primary bg-primary/5 text-primary"
                                                     : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -881,10 +879,10 @@ export default function SearchPage() {
                         {/* Periodo tab */}
                         {filterTab === "periodo" && (
                             <div className="space-y-4">
-                                <p className="text-sm text-muted-foreground">Filtra per intervallo di date. Entrambi i campi sono opzionali.</p>
+                                <p className="text-sm text-muted-foreground">{t("periodTabDescription")}</p>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium">Data inizio</Label>
+                                        <Label className="text-sm font-medium">{t("startDateLabel")}</Label>
                                         <Input
                                             type="date"
                                             value={startDate}
@@ -893,7 +891,7 @@ export default function SearchPage() {
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium">Data fine</Label>
+                                        <Label className="text-sm font-medium">{t("endDateLabel")}</Label>
                                         <Input
                                             type="date"
                                             value={endDate}
@@ -908,7 +906,7 @@ export default function SearchPage() {
                                         className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1 transition-colors"
                                     >
                                         <X className="h-3 w-3" />
-                                        Rimuovi filtro periodo
+                                        {t("removePeriodFilter")}
                                     </button>
                                 )}
                             </div>
@@ -919,7 +917,7 @@ export default function SearchPage() {
                     <SheetFooter className="px-4 pb-6 pt-3 shrink-0 border-t">
                         <SheetClose asChild>
                             <Button className="w-full h-12 text-base font-semibold">
-                                Applica filtri
+                                {t("applyFilters")}
                                 {activeFilterCount > 0 && (
                                     <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary-foreground/20 text-[11px] font-bold">
                                         {activeFilterCount}

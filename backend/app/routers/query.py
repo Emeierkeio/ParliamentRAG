@@ -50,8 +50,11 @@ async def _rate_limited_query(
     semaphore = _get_pipeline_semaphore()
     # Notify the client immediately if it will have to wait.
     if semaphore._value == 0:
+        _accept = (http_request.headers.get("accept-language", "it") if http_request else "it").strip()[:2].lower()
+        _wait_msg = ('Il sistema sta elaborando un altra richiesta. Attendi...' if _accept == 'it'
+                     else 'The system is processing another request. Please wait...')
         yield (
-            f"data: {json.dumps({'type': 'waiting', 'message': 'Il sistema sta elaborando un altra richiesta. Attendi...'})}\n\n"
+            f"data: {json.dumps({'type': 'waiting', 'message': _wait_msg})}\n\n"
         )
     await semaphore.acquire()
     try:
@@ -112,11 +115,14 @@ async def process_query_streaming(
     request_locale = "it"
     if http_request:
         accept_lang = http_request.headers.get("accept-language", "it")
-        request_locale = "en" if "en" in accept_lang else "it"
+        from ..services.translation import LANG_NAMES
+        code = accept_lang.strip()[:2].lower()
+        request_locale = code if code in LANG_NAMES else "it"
 
     services = get_services()
 
-    _en = request_locale == "en"
+    # English progress/messages for every non-Italian locale (fr/de/es/pt included)
+    _en = request_locale != "it"
 
     try:
         # Step 1: Progress - Starting

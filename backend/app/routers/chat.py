@@ -194,7 +194,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     logger.info(f"[PIPELINE START] Mode: {request.mode}, Locale: {request.locale}")
     logger.info("=" * 60)
 
-    _en = request.locale == "en"
+    _en = request.locale != "it"
     def _t(it: str, en: str) -> str:
         return en if _en else it
 
@@ -1734,7 +1734,9 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
     """
     # Read locale from Accept-Language header and inject into request
     accept_lang = http_request.headers.get("accept-language", "it")
-    request.locale = "en" if "en" in accept_lang else "it"
+    from ..services.translation import LANG_NAMES
+    _code = accept_lang.strip()[:2].lower()
+    request.locale = _code if _code in LANG_NAMES else "it"
     logger.info(f"[CHAT] Accept-Language: {accept_lang!r}, resolved locale: {request.locale}")
 
     store = get_task_store()
