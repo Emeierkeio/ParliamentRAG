@@ -333,16 +333,16 @@ export default function SearchPage() {
                                 {t("introDescription")}
                               </p>
                             </div>
-                            <div className="flex flex-wrap justify-center gap-3 pt-1 max-w-md mx-auto">
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-1 mx-auto">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
                                 <Text className="h-3.5 w-3.5 text-primary/70" />
                                 {t("featureText")}
                               </div>
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
                                 <Users className="h-3.5 w-3.5 text-primary/70" />
                                 {t("featureAuthor")}
                               </div>
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
                                 <SlidersHorizontal className="h-3.5 w-3.5 text-primary/70" />
                                 {t("featurePeriod")}
                               </div>

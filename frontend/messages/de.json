@@ -261,7 +261,7 @@
     "manyInterventions": "Redebeiträge"
   },
   "WelcomeScreen": {
-    "badge": "Abgeordnetenkammer · XIX. Legislaturperiode",
+    "badge": "Italienische Abgeordnetenkammer · XIX. Legislaturperiode",
     "badgeSenate": "Senato della Repubblica · XIX. Legislaturperiode",
     "badgeBoth": "Italienisches Parlament · XIX. Legislaturperiode",
     "badge_camera_19": "Abgeordnetenkammer · XIX. Legislaturperiode",
@@ -270,7 +270,7 @@
     "badge_camera_18": "Abgeordnetenkammer · XVIII. Legislaturperiode",
     "badge_senato_18": "Senat der Republik · XVIII. Legislaturperiode",
     "badge_both_18": "Italienisches Parlament · XVIII. Legislaturperiode",
-    "title": "Was denkt das Parlament über jedes Thema?",
+    "title": "Was denkt das italienische Parlament zu jedem Thema?",
     "subtitle": "Aussagen der <bold>maßgeblichsten</bold> Parlamentarier zu jedem Thema, ausgewogen zwischen Mehrheit und Opposition, mit überprüfbaren Zitaten.",
     "trendingTopics": "Aktuelle Themen",
     "searchPlaceholder": "Thema suchen...",
@@ -732,11 +732,11 @@
   },
   "Landing": {
     "edition": "Datenstand vom {date}",
-    "mastheadInstitution": "Abgeordnetenkammer · XIX. Legislaturperiode",
+    "mastheadInstitution": "Italienische Abgeordnetenkammer · XIX. Legislaturperiode",
     "mastheadLeg": "Leg. XIX",
     "accessCta": "Zur Konsultation",
     "heroLine1": "Was denkt",
-    "heroLine2": "das Parlament",
+    "heroLine2": "das italienische Parlament",
     "topics": {
       "t1": "über den PNRR",
       "t2": "über das Gesundheitswesen",
