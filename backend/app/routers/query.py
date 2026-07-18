@@ -47,6 +47,22 @@ async def _rate_limited_query(
     """Wrapper that acquires the pipeline semaphore before delegating to
     process_query_streaming, ensuring at most _MAX_CONCURRENT_PIPELINES
     pipelines run concurrently inside a single worker process."""
+    from ..services import usage_guard
+
+    locale = (http_request.headers.get("accept-language", "it") if http_request else "it").strip()[:2].lower()
+
+    # Global kill-switch: OpenAI monthly quota exhausted — explain and stop
+    if usage_guard.quota_exhausted():
+        yield f"data: {json.dumps({'type': 'error', 'code': 'quota_exhausted', 'message': usage_guard.block_message('quota', locale)})}\n\n"
+        return
+
+    # Per-IP limits on the expensive pipeline — explain scope and retry time
+    ip = usage_guard.client_ip(http_request)
+    allowed, scope, retry_min = usage_guard.check_and_register(ip)
+    if not allowed:
+        yield f"data: {json.dumps({'type': 'error', 'code': 'rate_limited', 'message': usage_guard.block_message(scope, locale, retry_min)})}\n\n"
+        return
+
     semaphore = _get_pipeline_semaphore()
     # Notify the client immediately if it will have to wait.
     if semaphore._value == 0:
@@ -541,7 +557,15 @@ async def process_query_streaming(
 
     except Exception as e:
         logger.error(f"Query processing error: {e}")
-        yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+        from ..services import usage_guard
+        if usage_guard.looks_like_quota_error(e):
+            # OpenAI budget exhausted: trip the kill-switch so subsequent
+            # queries get the clear explanation without hitting the API.
+            usage_guard.mark_quota_exhausted()
+            _loc = (http_request.headers.get("accept-language", "it") if http_request else "it").strip()[:2].lower()
+            yield f"data: {json.dumps({'type': 'error', 'code': 'quota_exhausted', 'message': usage_guard.block_message('quota', _loc)})}\n\n"
+        else:
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
 
 
 def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[str, Any]:

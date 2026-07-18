@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Forward Accept-Language from the client request
+  // Forward Accept-Language and the real client IP (for per-IP rate limits)
   const acceptLanguage = request.headers.get("accept-language") || "it";
+  const clientIp = request.headers.get("x-forwarded-for") || "";
 
   try {
     // Proxy verso il backend FastAPI
@@ -31,6 +32,7 @@ export async function POST(request: NextRequest) {
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
         "Accept-Language": acceptLanguage,
+        ...(clientIp ? { "X-Forwarded-For": clientIp } : {}),
       },
       body: JSON.stringify({ query, task_id }),
     });
