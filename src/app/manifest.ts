@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "ParliamentRAG",
     description:
       "Risposte bilanciate e verificabili sui dibattiti della Camera dei Deputati, con citazioni testuali dai resoconti stenografici.",
-    start_url: "/home",
+    start_url: "/",
     display: "standalone",
     background_color: "#FBFAF8",
     theme_color: "#1B3A5C",
