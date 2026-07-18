@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale, getTranslations } from 'next-intl/server';
+import { cookies } from 'next/headers';
+import { SidebarStateProvider } from '@/components/layout/SidebarStateProvider';
 import { Suspense } from "react";
 import { UrlParamSync } from "@/components/layout/UrlParamSync";
 import "./globals.css";
@@ -99,6 +101,8 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const sidebarCookie = (await cookies()).get("sidebarCollapsed")?.value;
+  const initialCollapsed = sidebarCookie === undefined ? null : sidebarCookie === "true";
 
   return (
     <html lang={locale} className="light" suppressHydrationWarning>
@@ -109,12 +113,14 @@ export default async function RootLayout({
           <MaintenancePage />
         ) : (
           <NextIntlClientProvider messages={messages} locale={locale}>
+            <SidebarStateProvider initialCollapsed={initialCollapsed}>
             <Suspense fallback={null}>
               <UrlParamSync />
             </Suspense>
             <TooltipProvider delayDuration={0}>
               {children}
             </TooltipProvider>
+            </SidebarStateProvider>
           </NextIntlClientProvider>
         )}
       </body>
