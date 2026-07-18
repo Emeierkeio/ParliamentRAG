@@ -63,7 +63,7 @@ export default function SharedChatPage() {
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="text-center">
           <p className="text-lg font-medium text-foreground mb-2">{error}</p>
-          <a href="/" className="text-sm text-primary hover:underline">
+          <a href="/home" className="text-sm text-primary hover:underline">
             Torna alla home
           </a>
         </div>

@@ -150,15 +150,15 @@ interface WelcomeScreenProps {
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   const t = useTranslations("WelcomeScreen");
   return (
-    <div className="flex flex-col items-center justify-center pt-12 sm:pt-20 pb-12 text-center px-4">
+    <div className="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-12 text-center px-4">
 
       {/* Hero */}
       <div className="mb-8 sm:mb-10 max-w-lg space-y-3">
-        <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary mb-2">
+        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
           <Landmark className="w-3.5 h-3.5" />
           {t("badge")}
         </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground leading-tight">
+        <h1 className="[font-family:var(--font-display)] text-3xl sm:text-4xl md:text-[2.75rem] font-medium tracking-tight text-foreground leading-[1.1]">
           {t("title")}
         </h1>
         <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
@@ -170,10 +170,10 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
 
       {/* Topic pills */}
       <div className="w-full max-w-2xl">
-        <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/50 mb-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
           {t("trendingTopics")}
         </p>
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
           {TOPICS.map((topic) => (
             <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
           ))}
@@ -195,11 +195,11 @@ function TopicPill({ topic, onClick }: TopicPillProps) {
   const query = t("topicQuery", { topic: displayName });
   return (
     <button
-      className="group inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-4 py-2 text-sm text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm active:scale-[0.97]"
+      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground cursor-pointer"
       onClick={() => onClick(query)}
     >
       <span className="capitalize">{displayName}</span>
-      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5" />
+      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
     </button>
   );
 }
