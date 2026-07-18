@@ -261,7 +261,7 @@
     "manyInterventions": "speeches"
   },
   "WelcomeScreen": {
-    "badge": "Chamber of Deputies · 19th Legislature",
+    "badge": "Italian Chamber of Deputies · 19th Legislature",
     "badgeSenate": "Senato della Repubblica · XIX Legislature",
     "badgeBoth": "Italian Parliament · XIX Legislature",
     "badge_camera_19": "Chamber of Deputies · XIX Legislature",
@@ -270,7 +270,7 @@
     "badge_camera_18": "Chamber of Deputies · XVIII Legislature",
     "badge_senato_18": "Senate of the Republic · XVIII Legislature",
     "badge_both_18": "Italian Parliament · XVIII Legislature",
-    "title": "What does Parliament think about every topic?",
+    "title": "What does the Italian Parliament think on every topic?",
     "subtitle": "Statements from the <bold>most authoritative</bold> parliamentarians on each topic, balanced between majority and opposition with verifiable citations.",
     "trendingTopics": "Trending topics",
     "searchPlaceholder": "Search a topic...",
@@ -732,11 +732,11 @@
   },
   "Landing": {
     "edition": "Data updated as of {date}",
-    "mastheadInstitution": "Chamber of Deputies · 19th Legislature",
+    "mastheadInstitution": "Italian Chamber of Deputies · 19th Legislature",
     "mastheadLeg": "Leg. XIX",
     "accessCta": "Start consulting",
     "heroLine1": "What does",
-    "heroLine2": "Parliament think",
+    "heroLine2": "the Italian Parliament think",
     "topics": {
       "t1": "about the PNRR",
       "t2": "about healthcare",

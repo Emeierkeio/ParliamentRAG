@@ -261,7 +261,7 @@
     "manyInterventions": "intervenções"
   },
   "WelcomeScreen": {
-    "badge": "Câmara dos Deputados · XIX Legislatura",
+    "badge": "Câmara dos Deputados de Itália · XIX Legislatura",
     "badgeSenate": "Senato della Repubblica · XIX Legislatura",
     "badgeBoth": "Parlamento Italiano · XIX Legislatura",
     "badge_camera_19": "Câmara dos Deputados · XIX Legislatura",
@@ -270,7 +270,7 @@
     "badge_camera_18": "Câmara dos Deputados · XVIII Legislatura",
     "badge_senato_18": "Senado da República · XVIII Legislatura",
     "badge_both_18": "Parlamento Italiano · XVIII Legislatura",
-    "title": "O que pensa o Parlamento sobre cada tema?",
+    "title": "O que pensa o Parlamento italiano sobre cada tema?",
     "subtitle": "Declarações dos parlamentares <bold>com mais autoridade</bold> sobre cada tema, equilibradas entre maioria e oposição, com citações verificáveis.",
     "trendingTopics": "Temas em destaque",
     "searchPlaceholder": "Pesquisar um tema...",
@@ -732,11 +732,11 @@
   },
   "Landing": {
     "edition": "Dados atualizados a {date}",
-    "mastheadInstitution": "Câmara dos Deputados · XIX Legislatura",
+    "mastheadInstitution": "Câmara dos Deputados de Itália · XIX Legislatura",
     "mastheadLeg": "Leg. XIX",
     "accessCta": "Aceder à consulta",
     "heroLine1": "O que pensa",
-    "heroLine2": "o Parlamento",
+    "heroLine2": "o Parlamento italiano",
     "topics": {
       "t1": "sobre o PNRR",
       "t2": "sobre a saúde",
