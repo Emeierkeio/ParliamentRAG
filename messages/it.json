@@ -166,7 +166,8 @@
     "navTopic": "Topic",
     "navActs": "Atti",
     "navAuthority": "Autorità",
-    "navCompass": "Compasso"
+    "navCompass": "Compasso",
+    "navMore": "Altro"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",

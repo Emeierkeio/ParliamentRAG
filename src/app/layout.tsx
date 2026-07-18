@@ -120,7 +120,9 @@ export default async function RootLayout({
             </Suspense>
             <TooltipProvider delayDuration={0}>
               {children}
-              <MobileBottomNav />
+              <Suspense fallback={null}>
+                <MobileBottomNav />
+              </Suspense>
             </TooltipProvider>
             </SidebarStateProvider>
           </NextIntlClientProvider>

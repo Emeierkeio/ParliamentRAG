@@ -43,17 +43,10 @@ interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
-export function MobileMenuButton({ onClick, className }: { onClick: () => void; className?: string }) {
-  return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={onClick}
-      className={cn("md:hidden h-10 w-10 shrink-0", className)}
-    >
-      <Menu className="h-5 w-5" />
-    </Button>
-  );
+// Mobile navigation now lives in MobileBottomNav — the hamburger is retired.
+// Kept as a no-op so existing page call-sites don't need touching.
+export function MobileMenuButton(_props: { onClick: () => void; className?: string }) {
+  return null;
 }
 
 export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueuing = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
@@ -104,114 +97,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
     }
   };
 
-  // On mobile, render as overlay
+  // On mobile the bottom nav (MobileBottomNav) replaces the sidebar entirely
   if (isMobile) {
-    return (
-      <>
-        {/* Backdrop */}
-        {isMobileOpen && (
-          <div
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
-            onClick={onCloseMobile}
-          />
-        )}
-
-        {/* Slide-in sidebar */}
-        <aside
-          className={cn(
-            "fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-300 ease-out",
-            isMobileOpen ? "translate-x-0" : "-translate-x-full"
-          )}
-        >
-          {/* Header */}
-          <div className="flex h-16 items-center justify-between px-4">
-            <div
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={() => handleNavClick(() => { window.location.href = "/"; })}
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
-                <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
-              </div>
-              <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight text-sidebar-foreground">
-                {config.app.name}
-              </span>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onCloseMobile}
-              className="h-8 w-8 text-sidebar-foreground/50 hover:text-primary"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Navigation */}
-          <ScrollArea className="flex-1 py-4 px-3">
-            <nav className="flex flex-col gap-1">
-              {/* Primary */}
-              <NavButton
-                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/home", onClick: () => handleNavClick(() => { window.location.href = "/home"; }) }}
-                isCollapsed={false}
-                variant="primary"
-                disabled={isQueryRunning}
-              />
-
-              {/* Strumenti */}
-              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
-              <NavButton
-                item={{ icon: Search, label: t('actsSearch'), isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
-                isCollapsed={false}
-                disabled={false}
-              />
-              <NavButton
-                item={{ icon: BarChart3, label: t('authorityAnalysis'), isActive: pathname === "/ranking", onClick: () => handleNavClick(() => navTo("/ranking")) }}
-                isCollapsed={false}
-                disabled={false}
-              />
-              <NavButton
-                item={{ icon: Compass, label: t('ideologicalCompass'), isActive: pathname === "/compass", onClick: () => handleNavClick(() => navTo("/compass")) }}
-                isCollapsed={false}
-                disabled={false}
-              />
-
-            </nav>
-          </ScrollArea>
-
-          {/* Bottom */}
-          <div className="p-3 pb-5 border-t border-sidebar-border">
-            <nav className="flex flex-col gap-0.5 pt-2">
-              <LanguageSelector isCollapsed={false} />
-              <NavButton
-                item={{ icon: Settings, label: t('settings'), onClick: () => handleNavClick(() => setSettingsOpen(true)) }}
-                isCollapsed={false}
-              />
-              <NavButton
-                item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
-                isCollapsed={false}
-              />
-            </nav>
-            <div className="mt-3 pt-3 border-t border-sidebar-border">
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <div className="flex h-8 items-center gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default">
-                    <CalendarDays className="h-3 w-3 shrink-0" />
-                    <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">
-                  {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          </div>
-        </aside>
-
-        {/* Modals */}
-        <InfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
-        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-      </>
-    );
+    return null;
   }
 
   // Desktop sidebar
