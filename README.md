@@ -203,12 +203,16 @@ Parliamentary data are sourced from the **Camera dei Deputati open data** progra
 
 If you use this system or build on this work in academic contexts, please cite:
 
+Accepted at the **In-Use Track of the 25th International Semantic Web Conference (ISWC 2026)**.
+
 ```bibtex
-@misc{tritella2026whospeaksmatters,
-  author = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
-  title  = {Who Speaks Matters: Authority-Aware Multi-View {RAG} over Italian Parliamentary Proceedings},
-  year   = {2026},
-  note   = {University of Milano-Bicocca}
+@inproceedings{tritella2026whospeaksmatters,
+  author    = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
+  title     = {Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings},
+  booktitle = {Proceedings of the 25th International Semantic Web Conference (ISWC 2026), In-Use Track},
+  publisher = {Springer},
+  year      = {2026},
+  note      = {To appear}
 }
 ```
 
