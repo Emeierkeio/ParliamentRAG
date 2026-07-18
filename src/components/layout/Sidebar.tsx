@@ -121,12 +121,12 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <div className="flex h-16 items-center justify-between px-4">
             <div
               className="flex items-center gap-3 cursor-pointer"
-              onClick={() => handleNavClick(() => { window.location.href = "/"; })}
+              onClick={() => handleNavClick(() => { window.location.href = "/home"; })}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
               </div>
-              <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
+              <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight text-sidebar-foreground">
                 {config.app.name}
               </span>
             </div>
@@ -145,14 +145,14 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             <nav className="flex flex-col gap-1">
               {/* Primary */}
               <NavButton
-                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/", onClick: () => handleNavClick(() => { window.location.href = "/"; }) }}
+                item={{ icon: MessageSquare, label: t('topicSearch'), isActive: pathname === "/home", onClick: () => handleNavClick(() => { window.location.href = "/home"; }) }}
                 isCollapsed={false}
                 variant="primary"
                 disabled={isQueryRunning}
               />
 
               {/* Strumenti */}
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
               <NavButton
                 item={{ icon: Search, label: t('actsSearch'), isActive: pathname === "/search", onClick: () => handleNavClick(() => navTo("/search")) }}
                 isCollapsed={false}
@@ -220,14 +220,14 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             {/* Logo Area */}
             <div
               className={cn("flex items-center gap-3 transition-opacity duration-300 cursor-pointer", isCollapsed && "w-10 justify-center")}
-              onClick={() => window.location.href = "/"}
+              onClick={() => window.location.href = "/home"}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
                 <Image src="/logo.svg" alt={config.app.name} width={36} height={36} />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">
-                  <span className="text-sm font-bold tracking-tight text-sidebar-foreground">
+                  <span className="[font-family:var(--font-display)] text-base font-semibold tracking-tight text-sidebar-foreground">
                     {config.app.name}
                   </span>
                 </div>
@@ -253,7 +253,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <nav className="flex flex-col gap-1">
             {/* Primary */}
             <NavButton
-              item={{ icon: MessageSquare, label: t('topicSearch'), href: "/", isActive: pathname === "/", onClick: () => window.location.href = "/" }}
+              item={{ icon: MessageSquare, label: t('topicSearch'), href: "/home", isActive: pathname === "/home", onClick: () => window.location.href = "/home" }}
               isCollapsed={isCollapsed}
               variant="primary"
               disabled={isQueryRunning}
@@ -261,7 +261,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             {/* Strumenti */}
             {!isCollapsed && (
-              <p className="text-[10px] font-medium uppercase tracking-widest text-sidebar-foreground/30 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
