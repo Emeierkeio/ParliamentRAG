@@ -215,6 +215,22 @@ export default function LandingPage() {
                 <ArrowUpRight className="h-3.5 w-3.5 self-center" />
               </a>
             </div>
+
+            {/* Peer-review badge */}
+            <a
+              href="https://iswc2026.semanticweb.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-8 inline-flex items-center gap-3 border border-border px-4 py-2.5 hover:border-foreground transition-colors cursor-pointer"
+            >
+              <span className="[font-family:var(--font-display)] text-sm font-semibold tracking-tight text-foreground">
+                ISWC 2026
+              </span>
+              <span className="h-3.5 w-px bg-border group-hover:bg-foreground/30 transition-colors" />
+              <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground group-hover:text-foreground transition-colors">
+                {t("iswcBadge")}
+              </span>
+            </a>
           </div>
 
           {/* Column of record */}
