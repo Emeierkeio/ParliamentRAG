@@ -294,6 +294,13 @@ export default function LandingPage() {
               question={t("idx4Question")}
               description={t("idx4Desc")}
               href="/compass"
+            />
+            <IndexRow
+              numeral="05"
+              title={t("idx5Title")}
+              question={t("idx5Question")}
+              description={t("idx5Desc")}
+              href="/timeline"
               last
             />
           </div>

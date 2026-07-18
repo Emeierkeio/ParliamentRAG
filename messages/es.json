@@ -811,6 +811,9 @@
     "tocGuarantees": "Garantías",
     "tocIter": "Trámite",
     "tocStart": "Inicio",
-    "iswcBadge": "Aceptado · In-Use Track"
+    "iswcBadge": "Aceptado · In-Use Track",
+    "idx5Title": "Trabajos del Pleno",
+    "idx5Question": "«¿Qué ha pasado en el Pleno esta semana?»",
+    "idx5Desc": "La cronología de las sesiones con debates, intervenciones y resúmenes generados por IA — hasta la posición de cada diputado."
   }
 }
