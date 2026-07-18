@@ -239,7 +239,7 @@ export default function SearchPage() {
     ].filter(Boolean).length;
 
     return (
-        <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
+        <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
              <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">

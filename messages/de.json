@@ -162,7 +162,11 @@
     "dataDate": "4. Februar 2026",
     "version": "Version",
     "votesExplorer": "Abstimmungen",
-    "dataShort": "Stand"
+    "dataShort": "Stand",
+    "navTopic": "Themen",
+    "navActs": "Akten",
+    "navAuthority": "Autorität",
+    "navCompass": "Kompass"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",

@@ -305,7 +305,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-card border-none shadow-2xl p-0 overflow-hidden rounded-xl sm:rounded-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col">
         <DialogHeader className="p-4 sm:p-6 pb-2 shrink-0">
-          <DialogTitle className="flex items-center gap-3 text-lg sm:text-xl">
+          <DialogTitle className="[font-family:var(--font-display)] flex items-center gap-3 text-lg sm:text-xl font-semibold tracking-tight">
              <div className="p-2 bg-primary/10 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-primary" />
              </div>
@@ -340,12 +340,12 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                     href={expert.camera_profile_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xl sm:text-2xl font-bold text-foreground hover:underline hover:text-primary transition-colors block truncate"
+                    className="[font-family:var(--font-display)] text-xl sm:text-2xl font-semibold tracking-tight text-foreground hover:underline hover:text-primary transition-colors block truncate"
                   >
                     {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </a>
               ) : (
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                  <h3 className="[font-family:var(--font-display)] text-xl sm:text-2xl font-semibold tracking-tight text-foreground truncate">
                     {toTitleCase(expert.first_name)} {toTitleCase(expert.last_name)}
                   </h3>
               )}
