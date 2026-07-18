@@ -5,7 +5,9 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, Check } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { LOCALES } from "@/components/layout/LanguageSelector";
 
 /* ── Display typeface — editorial serif with optical sizing ────── */
 const fraunces = Fraunces({
@@ -152,7 +154,10 @@ export default function LandingPage() {
             <span className="hidden sm:inline">
               {t("mastheadInstitution")}
             </span>
-            <span>{t("mastheadLeg")}</span>
+            <span className="inline-flex items-center gap-5">
+              <span>{t("mastheadLeg")}</span>
+              <LanguageMenu />
+            </span>
           </div>
           {/* Wordmark row */}
           <div className="flex items-end justify-between py-5">
@@ -622,5 +627,50 @@ function SideTOC() {
         );
       })}
     </nav>
+  );
+}
+
+
+/* ── Language menu — compact editorial dropdown for the masthead ── */
+function LanguageMenu() {
+  const locale = useLocale();
+  const current = LOCALES.find((l) => l.code === locale) ?? LOCALES[0];
+
+  const switchTo = (nextLocale: string) => {
+    if (nextLocale === locale) return;
+    document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    const qs = nextLocale === "it" ? "" : `?lang=${nextLocale}`;
+    window.location.href = `/${qs}`;
+  };
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className="inline-flex items-center gap-1.5 uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          aria-label="Language"
+        >
+          <Globe className="h-3 w-3" />
+          {current.code}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent side="bottom" align="end" className="w-[170px] p-1.5">
+        {LOCALES.map((l) => (
+          <button
+            key={l.code}
+            onClick={() => switchTo(l.code)}
+            className={`flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors cursor-pointer ${
+              l.code === locale
+                ? "bg-accent text-foreground font-medium"
+                : "text-muted-foreground hover:bg-accent/60 hover:text-foreground"
+            }`}
+          >
+            <span className="w-6 text-[10px] uppercase tracking-wide text-muted-foreground/60">{l.code}</span>
+            <span className="flex-1 text-left">{l.label}</span>
+            {l.code === locale && <Check className="h-3.5 w-3.5" />}
+          </button>
+        ))}
+      </PopoverContent>
+    </Popover>
   );
 }
