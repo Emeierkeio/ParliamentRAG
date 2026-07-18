@@ -13,7 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Quote, Link as LinkIcon, Calendar, MapPin, ExternalLink, Globe, Languages, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 import { config } from "@/config";
 import type { Citation } from "@/types";
 
@@ -41,10 +48,14 @@ interface CitationCardProps {
 export function CitationCard({ citation, index, className, isHighlighted }: CitationCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("CitationCard");
 
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
+  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+
+  const displayText = citation.translated_text ?? citation.text ?? citation.quote_text ?? "";
+  const originalText = citation.is_translated ? (citation.text ?? citation.quote_text ?? "") : null;
 
   // Auto-scroll when highlighted
   useEffect(() => {
@@ -113,21 +124,48 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
               </div>
 
               {/* Extracted text preview */}
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
-                &ldquo;{citation.text || citation.quote_text || ""}&rdquo;
-                {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
-                     <a 
-                        href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
-                        onClick={(e) => e.stopPropagation()}
-                        title="Vai all'intervento originale"
-                     >
-                        <LinkIcon className="h-3 w-3" />
-                     </a>
-                )}
-              </p>
+              {originalText ? (
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words cursor-help">
+                      &ldquo;{displayText}&rdquo;
+                      <Globe className="inline h-3 w-3 ml-1 text-muted-foreground/50" />
+                      {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
+                           <a
+                              href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
+                              onClick={(e) => e.stopPropagation()}
+                              title={t("goToIntervention")}
+                           >
+                              <LinkIcon className="h-3 w-3" />
+                           </a>
+                      )}
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-[400px] p-3">
+                    <p className="text-[10px] font-semibold text-muted-foreground/70 mb-1 uppercase tracking-wider">{t("originalLabel")}</p>
+                    <p className="text-xs leading-relaxed italic">{originalText}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-3 leading-relaxed break-words">
+                  &ldquo;{displayText}&rdquo;
+                  {getCameraUrl(citation.intervention_id || citation.intervention_id) && (
+                       <a
+                          href={getCameraUrl(citation.intervention_id || citation.intervention_id) || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex align-middle ml-1 text-primary/60 hover:text-primary transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                          title={t("goToIntervention")}
+                       >
+                          <LinkIcon className="h-3 w-3" />
+                       </a>
+                  )}
+                </p>
+              )}
 
               {/* Metadata */}
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground font-medium max-w-full">
@@ -179,10 +217,61 @@ interface CitationModalProps {
 }
 
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
+  const t = useTranslations("CitationCard");
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? "Governo" : citation.coalition;
+  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
   const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
-  const displayText = citation.full_text || citation.text || "";
+  // On-demand translation state for the full speech text
+  const [translatedFull, setTranslatedFull] = useState<string | null>(null);
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showTranslated, setShowTranslated] = useState(false);
+
+  // Use pre-translated full_text if available, otherwise use on-demand translation
+  const preTranslatedFull = citation.translated_full_text && citation.translated_full_text.length > 0
+    ? citation.translated_full_text : null;
+  const hasTranslation = !!(preTranslatedFull || translatedFull);
+  const displayFullText = (showTranslated && (preTranslatedFull || translatedFull))
+    ? (preTranslatedFull || translatedFull)!
+    : (citation.full_text ?? citation.text ?? "");
+  const originalFullText = (showTranslated && hasTranslation)
+    ? (citation.full_text ?? citation.text ?? "") : null;
+
+  const handleTranslate = async () => {
+    if (preTranslatedFull || translatedFull) {
+      setShowTranslated(true);
+      return;
+    }
+    const textToTranslate = citation.full_text ?? citation.text ?? "";
+    if (!textToTranslate) return;
+
+    setIsTranslating(true);
+    try {
+      const resp = await fetch("/api/config/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textToTranslate }),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        setTranslatedFull(data.translated || textToTranslate);
+        setShowTranslated(true);
+      }
+    } catch {
+      // Silently fail — show original
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  // When the UI is in English (citation.is_translated), show the English
+  // full text by default: auto-translate on first open.
+  useEffect(() => {
+    if (isOpen && citation.is_translated && !hasTranslation && !isTranslating) {
+      handleTranslate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+  const displayText = displayFullText;
 
   const contextUrl = getCameraUrl(citation.debate_id || citation.debate_id);
   const interventionUrl = getCameraUrl(citation.intervention_id || citation.intervention_id);
@@ -193,15 +282,16 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const hasSpecificQuote = quoteText && citation.full_text &&
     quoteText.length < citation.full_text.length * 0.8; // Quote should be notably shorter than full text
 
-  let parts: string[] = [displayText];
+  // Use the active display text for highlighting (translated or original)
+  const textForHighlight = displayFullText;
+  let parts: string[] = [textForHighlight];
   let highlightText = quoteText;
 
-  if (hasSpecificQuote && citation.full_text) {
-    // Try to find and highlight the specific quote within the full text
+  // Only highlight in original Italian text (quotes won't match in translated text)
+  if (hasSpecificQuote && !showTranslated && citation.full_text) {
     if (citation.full_text.includes(quoteText)) {
       parts = citation.full_text.split(quoteText);
     } else {
-      // Try normalized matching
       const normalize = (s: string) => s.replace(/\s+/g, ' ').trim();
       const normalizedQuote = normalize(quoteText);
       const normalizedFull = normalize(citation.full_text);
@@ -213,7 +303,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
           const regex = new RegExp(pattern, 'i');
           parts = citation.full_text.split(regex);
         } catch {
-          // Keep parts as [displayText]
+          // Keep parts as [textForHighlight]
         }
       }
     }
@@ -227,7 +317,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
           <DialogTitle className="flex items-center gap-2 text-lg">
              <Quote className="h-5 w-5 text-primary fill-primary/10" />
-             <span>Intervento</span>
+             <span>{t("intervention")}</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -304,7 +394,7 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         <div className="bg-muted/30 rounded-xl p-4 border border-border/50 text-sm leading-relaxed text-muted-foreground">
                             <div className="flex items-center gap-2 mb-2 text-primary font-medium text-xs uppercase tracking-wider">
                                 <MapPin className="w-3 h-3" />
-                                Contesto Parlamentare
+                                {t("parliamentaryContext")}
                             </div>
                             {contextUrl ? (
                                 <a 
@@ -322,8 +412,19 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         </div>
                     )}
 
+                    {/* Translation-in-progress banner */}
+                    {isTranslating && (
+                        <div className="flex items-center gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2 text-xs font-medium text-primary">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+                            Translating to English…
+                        </div>
+                    )}
+
                     {/* Speech Text */}
-                    <div className="prose prose-lg max-w-none dark:prose-invert font-serif tracking-wide leading-loose text-foreground/90">
+                    <div className={cn(
+                        "prose prose-lg max-w-none dark:prose-invert font-serif tracking-wide leading-loose text-foreground/90",
+                        isTranslating && "opacity-50 transition-opacity"
+                    )}>
                         {parts.length > 1 ? (
                             <>
                                 {parts.map((part, i) => (
@@ -340,19 +441,60 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                         ) : (
                             displayText
                         )}
-                        
+                        {citation.is_translated && (
+                            <Globe className="inline h-4 w-4 ml-2 text-muted-foreground/40 align-middle" />
+                        )}
+
                         {interventionUrl && (
-                            <a 
+                            <a
                                 href={interventionUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center ml-2 text-primary/40 hover:text-primary transition-colors align-middle"
-                                title="Vai all'intervento sul sito della Camera"
+                                title={t("goToCamera")}
                             >
                                 <LinkIcon className="w-4 h-4" />
                             </a>
                         )}
                     </div>
+
+                    {/* Translate button + original text section */}
+                    {citation.is_translated && !isTranslating && (
+                        <div className="mt-6 pt-6 border-t border-border/40">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        if (showTranslated) {
+                                            setShowTranslated(false);
+                                        } else {
+                                            handleTranslate();
+                                        }
+                                    }}
+                                    disabled={isTranslating}
+                                    className="text-xs h-7 gap-1.5"
+                                >
+                                    {isTranslating ? (
+                                        <><Loader2 className="h-3 w-3 animate-spin" /> Translating...</>
+                                    ) : showTranslated ? (
+                                        <><Globe className="h-3 w-3" /> Show original</>
+                                    ) : (
+                                        <><Languages className="h-3 w-3" /> Translate</>
+                                    )}
+                                </Button>
+                            </div>
+                            {originalFullText && (
+                                <>
+                                    <p className="text-[10px] font-semibold text-muted-foreground/70 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                        <Globe className="h-3 w-3" />
+                                        {t("originalLabel")}
+                                    </p>
+                                    <p className="text-sm leading-relaxed italic text-muted-foreground/80 font-serif">{originalFullText}</p>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
              </ScrollArea>
         </div>

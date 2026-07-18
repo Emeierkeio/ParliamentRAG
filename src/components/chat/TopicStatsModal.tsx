@@ -22,6 +22,7 @@ import {
   Building2,
   Crown,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type StatsView = "interventions" | "speakers" | "sessions";
 
@@ -103,27 +104,28 @@ export function TopicStatsModal({
   onClose,
   defaultView = "interventions",
 }: TopicStatsModalProps) {
+  const t = useTranslations("TopicStatsModal");
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] sm:max-w-2xl bg-background border-none shadow-2xl p-0 overflow-hidden rounded-xl sm:rounded-2xl h-[85vh] sm:h-[80vh] flex flex-col">
         <DialogHeader className="px-6 py-4 border-b border-border/40 shrink-0 bg-card/50 backdrop-blur-sm">
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Hash className="h-5 w-5 text-primary" />
-            <span>Dettaglio Statistiche</span>
+            <span>{t("title")}</span>
           </DialogTitle>
           {/* Summary bar */}
           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <MessageSquareQuote className="h-3 w-3" />
-              {stats.intervention_count} interventi
+              {stats.intervention_count} {t("interventions")}
             </span>
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
-              {stats.speaker_count} deputati
+              {stats.speaker_count} {t("deputies")}
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
-              {stats.sessions_detail.length} sedute
+              {stats.sessions_detail.length} {t("sessions")}
             </span>
             {stats.first_date && stats.last_date && (
               <span className="hidden sm:inline text-muted-foreground/60">
@@ -137,21 +139,21 @@ export function TopicStatsModal({
           <TabsList className="grid w-full grid-cols-3 h-10 px-6 mt-2 shrink-0">
             <TabsTrigger value="interventions" className="text-xs gap-1.5">
               <MessageSquareQuote className="h-3.5 w-3.5" />
-              Interventi
+              {t("interventionsTab")}
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 ml-1">
                 {stats.intervention_count}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="speakers" className="text-xs gap-1.5">
               <Users className="h-3.5 w-3.5" />
-              Deputati
+              {t("deputiesTab")}
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 ml-1">
                 {stats.speaker_count}
               </Badge>
             </TabsTrigger>
             <TabsTrigger value="sessions" className="text-xs gap-1.5">
               <Calendar className="h-3.5 w-3.5" />
-              Sedute
+              {t("sessionsTab")}
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 ml-1">
                 {stats.sessions_detail.length}
               </Badge>
@@ -166,7 +168,7 @@ export function TopicStatsModal({
                   const speechUrl = buildSpeechUrl(intervention.speech_id);
                   const Wrapper = speechUrl ? "a" : "div";
                   const wrapperProps = speechUrl
-                    ? { href: speechUrl, target: "_blank" as const, rel: "noopener noreferrer", title: "Apri intervento su camera.it" }
+                    ? { href: speechUrl, target: "_blank" as const, rel: "noopener noreferrer", title: t("openIntervention") }
                     : {};
 
                   return (
@@ -226,7 +228,7 @@ export function TopicStatsModal({
                           {intervention.session_number > 0 && (
                             <span className="flex items-center gap-1">
                               <Hash className="h-2.5 w-2.5" />
-                              Seduta {intervention.session_number}
+                              {t("sessionNumber")} {intervention.session_number}
                             </span>
                           )}
                         </div>
@@ -241,7 +243,7 @@ export function TopicStatsModal({
                 })}
                 {stats.interventions_detail.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
-                    Nessun intervento disponibile.
+                    {t("noInterventions")}
                   </p>
                 )}
               </div>
@@ -292,7 +294,7 @@ export function TopicStatsModal({
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm font-semibold text-foreground truncate hover:text-primary hover:underline transition-colors inline-flex items-center gap-1"
-                                title="Apri scheda deputato su camera.it"
+                                title={t("openDeputy")}
                               >
                                 {speaker.speaker_name}
                                 <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
@@ -319,7 +321,7 @@ export function TopicStatsModal({
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                            {speaker.intervention_count} {speaker.intervention_count === 1 ? "intervento" : "interventi"}
+                            {speaker.intervention_count} {speaker.intervention_count === 1 ? t("oneIntervention") : t("manyInterventions")}
                           </Badge>
                         </div>
                       </div>
@@ -358,7 +360,7 @@ export function TopicStatsModal({
                 })}
                 {stats.speakers_detail.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
-                    Nessun deputato disponibile.
+                    {t("noDeputies")}
                   </p>
                 )}
               </div>
@@ -378,7 +380,7 @@ export function TopicStatsModal({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card/50 hover:bg-primary/5 hover:border-primary/20 transition-colors overflow-hidden w-full max-w-full"
-                      title="Apri resoconto stenografico su camera.it"
+                      title={t("openSession")}
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-sm">
                         {session.session_number}
@@ -386,7 +388,7 @@ export function TopicStatsModal({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
                           <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                            Seduta N. {session.session_number}
+                            {t("sessionNumber")} {session.session_number}
                           </span>
                           <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                         </div>
@@ -407,7 +409,7 @@ export function TopicStatsModal({
                 })}
                 {stats.sessions_detail.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-8">
-                    Nessuna seduta disponibile.
+                    {t("noSessions")}
                   </p>
                 )}
               </div>

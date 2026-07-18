@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
+import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
 import { Landmark, ArrowRight, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
@@ -34,6 +36,7 @@ export function ChatArea({
   className,
   mobileMenuButton,
 }: ChatAreaProps) {
+  const t = useTranslations("WelcomeScreen");
   const scrollRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -49,6 +52,8 @@ export function ChatArea({
   }, [messages.length, isLoading]); // Removed 'progress' to avoid jitter, used length to detect new msg
 
   const hasMessages = messages.length > 0;
+  const lastAssistantMessage = messages.findLast((m) => m.role === "assistant");
+  const hasCitations = (lastAssistantMessage?.citations?.length ?? 0) > 0;
 
   return (
     <div className={cn("flex h-full flex-col bg-background", className)}>
@@ -61,7 +66,7 @@ export function ChatArea({
               onSend={onSendMessage}
               onCancel={onCancelRequest}
               isLoading={isLoading}
-              placeholder="Cerca un tema..."
+              placeholder={t("searchPlaceholder")}
               className="flex-1"
             />
             {onOpenHistory && (
@@ -94,6 +99,7 @@ export function ChatArea({
           </div>
         ) : (
           <div className="mx-auto max-w-3xl px-4 pb-12 overflow-x-hidden">
+            <TranslationBanner hasCitations={hasCitations} />
             {!hasMessages ? (
               <WelcomeScreen onSendMessage={onSendMessage} />
             ) : (
@@ -142,6 +148,7 @@ interface WelcomeScreenProps {
 }
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
+  const t = useTranslations("WelcomeScreen");
   return (
     <div className="flex flex-col items-center justify-center pt-12 sm:pt-20 pb-12 text-center px-4">
 
@@ -149,20 +156,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
       <div className="mb-8 sm:mb-10 max-w-lg space-y-3">
         <div className="inline-flex items-center gap-2 rounded-full bg-primary/8 px-3 py-1.5 text-xs font-medium text-primary mb-2">
           <Landmark className="w-3.5 h-3.5" />
-          Camera dei Deputati · XIX Legislatura
+          {t("badge")}
         </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground leading-tight">
-          Cosa pensa il Parlamento su ogni tema?
+          {t("title")}
         </h1>
         <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
-          Dichiarazioni dei parlamentari <span className="text-foreground font-medium">più autorevoli</span> su ogni tema, bilanciate tra maggioranza e opposizione con citazioni verificabili.
+          {t.rich("subtitle", {
+            bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
+          })}
         </p>
       </div>
 
       {/* Topic pills */}
       <div className="w-full max-w-2xl">
         <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground/50 mb-3">
-          Temi di tendenza
+          {t("trendingTopics")}
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           {TOPICS.map((topic) => (
@@ -180,13 +189,16 @@ interface TopicPillProps {
 }
 
 function TopicPill({ topic, onClick }: TopicPillProps) {
-  const query = `Qual è la posizione dei gruppi parlamentari sul tema: ${topic}?`;
+  const t = useTranslations("WelcomeScreen");
+  const displayName = t(`topics.${topic}` as never) as string;
+  // Use the localized topic name in the query too (EN → "healthcare reform", not "riforma sanitaria")
+  const query = t("topicQuery", { topic: displayName });
   return (
     <button
       className="group inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-4 py-2 text-sm text-foreground transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm active:scale-[0.97]"
       onClick={() => onClick(query)}
     >
-      <span className="capitalize">{topic}</span>
+      <span className="capitalize">{displayName}</span>
       <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5" />
     </button>
   );

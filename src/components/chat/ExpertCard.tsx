@@ -33,6 +33,7 @@ import {
   ExternalLink
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslations } from "next-intl";
 
 interface ExpertCardProps {
   expert: Expert;
@@ -41,6 +42,7 @@ interface ExpertCardProps {
 
 export function ExpertCard({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const t = useTranslations("ExpertCard");
 
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
@@ -54,9 +56,9 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
       : "low";
 
   const scoreLevelConfig = {
-    high: { label: "Alto", color: "text-green-600" },
-    medium: { label: "Medio", color: "text-amber-600" },
-    low: { label: "Basso", color: "text-gray-500" },
+    high: { label: t("high"), color: "text-green-600" },
+    medium: { label: t("medium"), color: "text-amber-600" },
+    low: { label: t("low"), color: "text-gray-500" },
   };
 
   return (
@@ -117,13 +119,13 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
 
               {/* Coalizione indicator */}
               <p className="text-xs text-muted-foreground mt-1">
-                {expert.coalition === "maggioranza" ? "Maggioranza" : "Opposizione"}
+                {expert.coalition === "maggioranza" ? t("maggioranza") : t("opposizione")}
               </p>
 
               {/* Authority score preview */}
               <div className="mt-2 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">Autorità sul tema</span>
+                  <span className="text-[10px] text-muted-foreground/70 uppercase tracking-wider">{t("authorityOnTopic")}</span>
                   <span className={cn("text-[10px] font-semibold", scoreLevelConfig[scoreLevel].color)}>
                     {scoreLevelConfig[scoreLevel].label}
                   </span>
@@ -165,6 +167,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
 
 export function ExpertRow({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const t = useTranslations("ExpertCard");
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
 
@@ -226,7 +229,7 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
                         />
                    </div>
                    <div className="flex flex-col items-end leading-none">
-                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Autorità</span>
+                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{t("authority")}</span>
                         <span className="text-sm font-bold">{Math.round(expert.authority_score * 100)}</span>
                    </div>
              </div>
@@ -248,6 +251,7 @@ interface ExpertModalProps {
 }
 
 export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: ExpertModalProps) {
+  const t = useTranslations("ExpertCard");
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
   const groupColor = groupConfig?.color || "#6B7280";
   const groupLabel = groupConfig?.label || expert.group;
@@ -255,43 +259,43 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
   const scoreBreakdown = [
     {
       icon: MessageSquare,
-      label: "Interventi in aula",
+      label: t("speeches"),
       value: expert.score_breakdown?.speeches || 0,
-      description: "Ha parlato di questo tema",
+      description: t("speechesDesc"),
     },
     {
       icon: Target,
-      label: "Atti legislativi",
+      label: t("acts"),
       value: expert.score_breakdown?.acts || 0,
-      description: "Ha presentato atti sul tema",
+      description: t("actsDesc"),
     },
     {
       icon: Network,
-      label: "Commissione",
+      label: t("committee"),
       value: expert.score_breakdown?.committee || 0,
-      description: "Commissione pertinente",
-      tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees : (expert.committee ? [expert.committee] : ["Non assegnata"])
+      description: t("committeeDesc"),
+      tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees : (expert.committee ? [expert.committee] : [t("committeeNotAssigned")])
     },
     {
       icon: User,
-      label: "Professione",
+      label: t("profession"),
       value: expert.score_breakdown?.profession || 0,
-      description: "Background professionale",
-      tooltip: [expert.profession || "Non rilevata"]
+      description: t("professionDesc"),
+      tooltip: [expert.profession || t("professionNotFound")]
     },
     {
       icon: Layers,
-      label: "Formazione",
+      label: t("education"),
       value: expert.score_breakdown?.education || 0,
-      description: "Titoli di studio",
-      tooltip: [expert.education || "Non rilevata"]
+      description: t("educationDesc"),
+      tooltip: [expert.education || t("educationNotFound")]
     },
     {
       icon: Award,
-      label: "Ruolo istituzionale",
+      label: t("role"),
       value: expert.score_breakdown?.role || 0,
-      description: "Incarichi ricoperti",
-      tooltip: [expert.institutional_role || "Deputato"]
+      description: t("roleDesc"),
+      tooltip: [expert.institutional_role || t("defaultRole")]
     },
   ];
 
@@ -305,10 +309,10 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
              <div className="p-2 bg-primary/10 rounded-lg">
                 <TrendingUp className="h-5 w-5 text-primary" />
              </div>
-            Perché è una fonte autorevole?
+            {t("whyAuthoritative")}
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
-            L'autorità sul tema è calcolata su 6 criteri istituzionali e parlamentari.
+            {t("authorityCriteria")}
           </DialogDescription>
         </DialogHeader>
 
@@ -357,7 +361,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                 </Badge>
                 <span className="text-muted-foreground text-sm">•</span>
                 <span className="text-sm font-medium text-muted-foreground">
-                    {expert.coalition === "maggioranza" ? "Maggioranza" : "Opposizione"}
+                    {expert.coalition === "maggioranza" ? t("maggioranza") : t("opposizione")}
                 </span>
               </div>
             </div>
@@ -367,7 +371,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
           {!hideScore && (
           <div className="bg-muted/30 rounded-xl p-4 sm:p-5 border border-border/50">
              <div className="flex justify-between items-end mb-3">
-                <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">Autorità parlamentare sul tema</span>
+                <span className="text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">{t("parliamentaryAuthority")}</span>
                 <span className="text-2xl sm:text-3xl font-bold text-primary">{Math.round(expert.authority_score * 100)}</span>
              </div>
              <div className="h-3 w-full rounded-full bg-muted overflow-hidden">
@@ -383,7 +387,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
 
           {/* Grid Breakdown */}
           <div>
-            <h4 className="text-sm font-medium text-foreground mb-4">Criteri di autorità sul tema</h4>
+            <h4 className="text-sm font-medium text-foreground mb-4">{t("authorityCriteriaTitle")}</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {scoreBreakdown.map((item) => {
                     const isAtti = item.label === "Atti";
@@ -456,13 +460,13 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                   <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 min-w-0">
                           <FileText className="w-4 h-4 text-primary shrink-0" />
-                          <h4 className="text-xs sm:text-sm font-semibold truncate">Atti che dimostrano l'autorità sul tema</h4>
+                          <h4 className="text-xs sm:text-sm font-semibold truncate">{t("actsAuthorityTitle")}</h4>
                       </div>
-                      <button 
+                      <button
                         onClick={() => setSelectedDetail(null)}
                         className="text-xs text-primary hover:underline font-medium"
                       >
-                          Chiudi dettagli
+                          {t("closeDetails")}
                       </button>
                   </div>
                   <ScrollArea className="h-64 rounded-xl border border-border/40 bg-muted/5 p-3">
@@ -471,7 +475,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                               <div key={idx} className="p-3 bg-card rounded-lg border border-border/30 shadow-sm space-y-2">
                                   <div className="flex items-start justify-between gap-3">
                                       <p className="text-xs font-semibold leading-tight line-clamp-3 flex-1 italic text-foreground/90">
-                                          "{atto.title || 'Senza titolo'}"
+                                          "{atto.title || t('noTitle')}"
                                       </p>
                                       <Badge variant="outline" className="shrink-0 text-[10px] px-1.5 py-0 h-4 border-primary/20 text-primary">
                                           {Math.round(atto.similarity * 100)}% Match
@@ -483,10 +487,10 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                                               "text-[9px] px-1 py-0 h-4 font-normal",
                                               atto.is_primary ? "bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200" : "bg-gray-100 text-gray-600 hover:bg-gray-100 border-gray-200"
                                           )}>
-                                              {atto.is_primary ? "1° Firmatario" : "Co-firmatario"}
+                                              {atto.is_primary ? t("primarySigner") : t("coSigner")}
                                           </Badge>
                                           {atto.eurovoc && (
-                                              <span className="truncate max-w-[150px]">Tema: {atto.eurovoc}</span>
+                                              <span className="truncate max-w-[150px]">{t("topic")}: {atto.eurovoc}</span>
                                           )}
                                       </div>
                                   </div>

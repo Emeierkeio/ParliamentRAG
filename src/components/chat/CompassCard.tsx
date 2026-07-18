@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Minus, Info, RotateCcw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTranslations } from "next-intl";
 
 export interface CompassData {
     meta: {
@@ -30,7 +31,7 @@ export interface CompassData {
             radius_y: number;
             rotation: number;
         };
-        stats: any;
+        stats: Record<string, number>;
         core_evidence_ids: string[];
     }>;
     scatter_sample: Array<{
@@ -66,6 +67,7 @@ interface CompassCardProps {
 }
 
 export function CompassCard({ data }: CompassCardProps) {
+  const t = useTranslations("CompassCard");
   const [zoom, setZoom] = useState(1);
   // Pan offset in percentage points (0,0 = centered)
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -160,10 +162,10 @@ export function CompassCard({ data }: CompassCardProps) {
   const getAxisLabel = (axis: AxisDef, side: 'pos' | 'neg') => {
       if (side === 'pos' && axis.positive_side?.label) return axis.positive_side.label;
       if (side === 'neg' && axis.negative_side?.label) return axis.negative_side.label;
-      return side === 'pos' ? "Dimensione (+)" : "Dimensione (-)";
+      return side === 'pos' ? t("dimensionPos") : t("dimensionNeg");
   };
 
-  const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: any }) => (
+  const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: React.CSSProperties }) => (
       <div className={cn("absolute max-w-[40%] text-center text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/90 dark:bg-black/90 px-2 py-1 rounded border shadow-sm z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
            {getAxisLabel(axis, side)}
       </div>
@@ -259,10 +261,10 @@ export function CompassCard({ data }: CompassCardProps) {
                            <TooltipContent side="top">
                                <p className="font-bold text-sm">{grp.group_id}</p>
                                <div className="text-xs text-muted-foreground">
-                                   Posizione: ({grp.position_x.toFixed(2)}, {dimensionality === 1 ? '-' : grp.position_y.toFixed(2)})
+                                   {t("position")}: ({grp.position_x.toFixed(2)}, {dimensionality === 1 ? '-' : grp.position_y.toFixed(2)})
                                </div>
                                <div className="text-xs text-muted-foreground">
-                                   Frammenti: {grp.stats.n_fragments}
+                                   {t("fragments")}: {grp.stats.n_fragments}
                                </div>
                            </TooltipContent>
                        </Tooltip>
@@ -286,7 +288,7 @@ export function CompassCard({ data }: CompassCardProps) {
           <div className="flex justify-between items-center mt-1.5 px-2 shrink-0">
              {/* Varianza spiegata con tooltip esplicativo */}
              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                 <span>Varianza spiegata: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
+                 <span>{t("explainedVariance")}: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
                  <TooltipProvider>
                     <Tooltip>
                        <TooltipTrigger asChild>
@@ -294,9 +296,9 @@ export function CompassCard({ data }: CompassCardProps) {
                        </TooltipTrigger>
                        <TooltipContent side="top" className="max-w-xs">
                           <div className="text-xs space-y-1">
-                             <p><strong>Significato:</strong></p>
-                             <p>• Valore basso (≈15%): discorsi simili/sovrapposti</p>
-                             <p>• Valore alto (≈40%+): forte polarizzazione semantica</p>
+                             <p><strong>{t("meaning")}</strong></p>
+                             <p>• {t("lowVariance")}</p>
+                             <p>• {t("highVariance")}</p>
                              <p>• PC1: {Math.round((data.meta.explained_variance_ratio?.[0] || 0) * 100)}% | PC2: {dimensionality === 2 ? Math.round((data.meta.explained_variance_ratio?.[1] || 0) * 100) : 0}%</p>
                           </div>
                        </TooltipContent>
@@ -311,7 +313,7 @@ export function CompassCard({ data }: CompassCardProps) {
                  <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none" onClick={() => setZoom(z => Math.min(6, z + 0.2))}>
                      <Plus className="h-3 w-3" />
                  </Button>
-                 <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none ml-1" onClick={resetView} title="Reset vista">
+                 <Button variant="outline" size="icon" className="h-8 w-8 min-tap-none ml-1" onClick={resetView} title={t("resetView")}>
                      <RotateCcw className="h-3 w-3" />
                  </Button>
              </div>

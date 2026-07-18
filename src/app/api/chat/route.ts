@@ -20,6 +20,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Forward Accept-Language from the client request
+  const acceptLanguage = request.headers.get("accept-language") || "it";
+
   try {
     // Proxy verso il backend FastAPI
     const backendResponse = await fetch(`${BACKEND_URL}/api/query`, {
@@ -27,6 +30,7 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         "Accept": "text/event-stream",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({ query, task_id }),
     });
