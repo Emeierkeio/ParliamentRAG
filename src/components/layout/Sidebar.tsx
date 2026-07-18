@@ -351,7 +351,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                         <PanelLeft className="h-5 w-5" />
                     </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="right">{t('expandMenu')}</TooltipContent>
+                    <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">{t('expandMenu')}</TooltipContent>
                 </Tooltip>
               </div>
             )}
