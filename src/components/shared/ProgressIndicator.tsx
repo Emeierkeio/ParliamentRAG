@@ -53,10 +53,11 @@ function StepResultDetails({ step, result, details, tPi }: { step: number; resul
     }
   }
 
-  // Default: show result string
+  // Default: show result string; nothing to add when the step produced no result
+  if (!result) return null;
   return (
     <p className="text-[11px] text-primary font-medium mt-1">
-      {tPi('stepResultResult')}: {result || tPi('stepResultCompleted')}
+      {tPi('stepResultResult')}: {result}
     </p>
   );
 }
@@ -282,8 +283,14 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
       {/* Desktop: completed stepper with connecting line and labels */}
       <div className="hidden sm:block">
         <div className="relative flex justify-between items-start">
-          {/* Connecting line behind circles */}
-          <div className="absolute left-4 right-4 top-[14px] h-0.5 bg-primary/30 rounded-full" />
+          {/* Connecting line behind circles: spans first→last circle center */}
+          <div
+            className="absolute top-[13px] h-0.5 bg-primary/25 rounded-full"
+            style={{
+              left: `calc(100% / ${steps.length} / 2)`,
+              right: `calc(100% / ${steps.length} / 2)`,
+            }}
+          />
 
           {steps.map((step, index) => {
             const stepNumber = index + 1;
@@ -292,13 +299,13 @@ export function CompletedProgressStepper({ progress, className }: ProgressIndica
             return (
               <Tooltip key={step.id} delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <div className="flex flex-col items-center gap-1.5 cursor-pointer min-w-0 flex-1">
+                  <div className="group flex flex-col items-center gap-1.5 cursor-pointer min-w-0 flex-1">
                     <div
-                      className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium transition-all hover:ring-2 hover:ring-primary/30"
+                      className="relative z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium transition-all group-hover:ring-2 group-hover:ring-primary/30"
                     >
                       <Check className="h-3.5 w-3.5" />
                     </div>
-                    <span className="text-[10px] leading-tight text-center text-primary font-medium truncate w-full px-0.5">
+                    <span className="text-[10px] leading-tight text-center text-muted-foreground font-medium truncate w-full px-0.5 transition-colors group-hover:text-primary">
                       <span className="lg:hidden">{getStepShortLabel(step.id)}</span>
                       <span className="hidden lg:inline">{getStepLabel(step.id)}</span>
                     </span>
@@ -428,7 +435,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
         {/* Primary message */}
         {isNext ? (
           <>
-            <h2 className="text-lg font-semibold text-green-700 mb-1">
+            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-green-700 mb-1">
               {tPi('youreNext')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
@@ -437,7 +444,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
           </>
         ) : ahead != null ? (
           <>
-            <h2 className="text-lg font-semibold text-foreground mb-1">
+            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-foreground mb-1">
               {tPi('systemFull')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
@@ -450,7 +457,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
           </>
         ) : (
           <>
-            <h2 className="text-lg font-semibold text-foreground mb-1">
+            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-foreground mb-1">
               {tPi('systemFull')}
             </h2>
             <p className="text-sm text-muted-foreground max-w-xs mb-6">
@@ -661,7 +668,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
               <p className="text-[11px] font-medium text-primary/60 uppercase tracking-wider mb-0.5">
                 Step {progress.currentStep}
               </p>
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-foreground">
                 {getStepLabel(currentStepConfig.id)}
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -837,7 +844,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
               <p className="text-xs font-medium text-primary/60 uppercase tracking-wider mb-1">
                 Step {progress.currentStep}
               </p>
-              <h2 className="text-xl lg:text-2xl font-semibold text-foreground">
+              <h2 className="[font-family:var(--font-display)] text-2xl lg:text-[1.75rem] font-semibold tracking-tight text-foreground">
                 {getStepLabel(currentStepConfig.id)}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
