@@ -20,7 +20,7 @@
   "MessageBubble": {
     "you": "Sie",
     "originalLabel": "Original",
-    "chamberTitle": "Camera dei Deputati — XIX. Legislaturperiode",
+    "chamberTitle": "Abgeordnetenkammer — XIX. Legislaturperiode",
     "expertsTitle": "Nach Autorität ausgewählte Quellen",
     "expertsSectionDesc": "Diese Parlamentarier wurden als die kompetentesten Stimmen zum Thema identifiziert und als vorrangige Quellen für die Erstellung der Antwort verwendet.",
     "expertsTooltip": "Vor dem Abruf der Zitate identifiziert das System die maßgeblichsten Parlamentarier zum Thema. Die Autorität wird anhand von 6 Faktoren berechnet: Redebeiträge im Plenum, Gesetzgebungsakte, Ausschussmitgliedschaft, Beruf, Bildungsabschluss und institutionelle Rolle.",
@@ -260,7 +260,7 @@
     "manyInterventions": "Redebeiträge"
   },
   "WelcomeScreen": {
-    "badge": "Camera dei Deputati · XIX. Legislaturperiode",
+    "badge": "Abgeordnetenkammer · XIX. Legislaturperiode",
     "badgeSenate": "Senato della Repubblica · XIX. Legislaturperiode",
     "badgeBoth": "Italienisches Parlament · XIX. Legislaturperiode",
     "badge_camera_19": "Abgeordnetenkammer · XIX. Legislaturperiode",
