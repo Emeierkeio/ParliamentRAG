@@ -64,9 +64,11 @@ interface AxisDef {
 
 interface CompassCardProps {
     data: CompassData;
+    /** Stretch to fill the parent height (full-page usage) instead of the fixed card height. */
+    fill?: boolean;
 }
 
-export function CompassCard({ data }: CompassCardProps) {
+export function CompassCard({ data, fill = false }: CompassCardProps) {
   const t = useTranslations("CompassCard");
   const [zoom, setZoom] = useState(1);
   // Pan offset in percentage points (0,0 = centered)
@@ -166,13 +168,13 @@ export function CompassCard({ data }: CompassCardProps) {
   };
 
   const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: React.CSSProperties }) => (
-      <div className={cn("absolute max-w-[40%] text-center text-xs font-medium text-foreground/70 bg-background/90 px-2 py-1 rounded border shadow-sm z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
+      <div className={cn("absolute max-w-[40%] text-center text-[10px] uppercase tracking-[0.15em] text-muted-foreground bg-slate-50/85 dark:bg-slate-900/85 px-1.5 py-0.5 z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
            {getAxisLabel(axis, side)}
       </div>
   );
 
   return (
-    <div className="w-full flex flex-col">
+    <div className={cn("w-full flex flex-col", fill && "h-full")}>
          {/* Chart area - fills available space */}
          <div
              ref={containerRef}
@@ -182,8 +184,10 @@ export function CompassCard({ data }: CompassCardProps) {
              onPointerCancel={onPointerUp}
 
              className={cn(
-                 "relative w-full bg-slate-50 dark:bg-slate-900 rounded border overflow-hidden shadow-inner mx-auto select-none touch-none",
-                 dimensionality === 1 ? "h-[200px]" : "h-[320px]",
+                 "relative w-full bg-slate-50 dark:bg-slate-900 border overflow-hidden mx-auto select-none touch-none",
+                 fill
+                     ? "flex-1 min-h-[200px]"
+                     : dimensionality === 1 ? "h-[200px]" : "h-[320px]",
                  "cursor-grab active:cursor-grabbing"
              )}
          >

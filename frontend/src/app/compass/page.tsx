@@ -389,7 +389,7 @@ export default function CompassPage() {
               {/* Compass visualization - fills remaining space */}
               <div className="flex-1 min-h-0 p-3 sm:p-4">
                 <div className="h-full w-full mx-auto">
-                  <CompassCard data={compassData} />
+                  <CompassCard data={compassData} fill />
                 </div>
               </div>
 
@@ -437,23 +437,18 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
       <span className="[font-family:var(--font-display)] font-medium text-foreground">{label}</span>
       <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">({label === "PC1" ? t("axisX") : t("axisY")})</span>
       <span className="text-[10px] text-muted-foreground">{variancePercent}%</span>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 min-w-0">
         {negLabel && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 border border-blue-100 text-blue-700 text-[11px] font-medium cursor-help max-w-[280px]">
-                <span className="text-blue-400 text-[10px]">&minus;</span>
+              <span className="text-[11px] text-foreground/80 cursor-help border-b border-dotted border-muted-foreground/40 truncate max-w-[280px]">
                 {negLabel}
               </span>
             </TooltipTrigger>
             {negKeywords && negKeywords.length > 0 && (
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-xs max-w-xs">
                 <p className="font-medium mb-1">{t("keywordsNeg")}</p>
-                <div className="flex flex-wrap gap-1">
-                  {negKeywords.slice(0, 6).map((kw, i) => (
-                    <span key={i} className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded text-[10px]">{kw}</span>
-                  ))}
-                </div>
+                <p>{negKeywords.slice(0, 6).join(" · ")}</p>
               </TooltipContent>
             )}
           </Tooltip>
@@ -462,19 +457,14 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
         {posLabel && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-100 text-rose-700 text-[11px] font-medium cursor-help max-w-[280px]">
-                <span className="text-rose-400 text-[10px]">+</span>
+              <span className="text-[11px] text-foreground/80 cursor-help border-b border-dotted border-muted-foreground/40 truncate max-w-[280px]">
                 {posLabel}
               </span>
             </TooltipTrigger>
             {posKeywords && posKeywords.length > 0 && (
-              <TooltipContent side="bottom" className="text-xs">
+              <TooltipContent side="bottom" className="text-xs max-w-xs">
                 <p className="font-medium mb-1">{t("keywordsPos")}</p>
-                <div className="flex flex-wrap gap-1">
-                  {posKeywords.slice(0, 6).map((kw, i) => (
-                    <span key={i} className="px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-[10px]">{kw}</span>
-                  ))}
-                </div>
+                <p>{posKeywords.slice(0, 6).join(" · ")}</p>
               </TooltipContent>
             )}
           </Tooltip>
