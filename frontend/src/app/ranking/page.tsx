@@ -22,7 +22,6 @@ import {
   ChevronRight,
   History,
   Clock,
-  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -618,9 +617,6 @@ export default function RankingPage() {
           {/* ── Loading ── */}
           {loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 gap-6">
-              <div className="h-16 w-16 rounded-full border border-border flex items-center justify-center">
-                <Loader2 className="h-8 w-8 text-primary/40 animate-spin" />
-              </div>
               <div className="text-center space-y-2">
                 <p className="text-sm font-medium text-foreground">{t("loadingTitle")}</p>
                 <p className="text-xs text-muted-foreground">

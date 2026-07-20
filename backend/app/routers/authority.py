@@ -7,6 +7,7 @@ them ranked by score (descending).
 import asyncio
 import logging
 import time
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Dict, List, Optional
 
@@ -26,6 +27,14 @@ router = APIRouter(prefix="/api", tags=["Authority Ranking"])
 _neo4j_client: Optional[Neo4jClient] = None
 _retrieval_engine: Optional[RetrievalEngine] = None
 _authority_scorer: Optional[AuthorityScorer] = None
+
+# Ranking cache: normalized topic → response dict.
+# Computation takes minutes, so a proxy timeout on the first request must not
+# throw the result away; retries and repeated topics are served instantly.
+_RANKING_CACHE_MAX = 50
+_ranking_cache: "OrderedDict[str, Dict[str, Any]]" = OrderedDict()
+# In-flight dedup: concurrent requests for the same topic share one computation.
+_ranking_inflight: Dict[str, "asyncio.Task"] = {}
 
 
 def _get_services():
@@ -104,7 +113,33 @@ def _fetch_deputy_details_batch(neo4j_client: Neo4jClient, deputy_ids: List[str]
 
 @router.post("/authority-ranking")
 async def authority_ranking(request: RankingRequest):
-    """Rank all deputies by authority on a given topic."""
+    """Rank all deputies by authority on a given topic (cached per topic)."""
+    cache_key = " ".join(request.topic.lower().split())
+
+    cached = _ranking_cache.get(cache_key)
+    if cached is not None:
+        _ranking_cache.move_to_end(cache_key)
+        logger.info(f"[RANKING] Cache hit for topic '{request.topic}'")
+        return {**cached, "cached": True}
+
+    # Share one computation among concurrent requests for the same topic
+    task = _ranking_inflight.get(cache_key)
+    if task is None:
+        task = asyncio.create_task(_compute_ranking(request.topic))
+        _ranking_inflight[cache_key] = task
+        task.add_done_callback(lambda _t: _ranking_inflight.pop(cache_key, None))
+
+    result = await asyncio.shield(task)
+
+    _ranking_cache[cache_key] = result
+    _ranking_cache.move_to_end(cache_key)
+    while len(_ranking_cache) > _RANKING_CACHE_MAX:
+        _ranking_cache.popitem(last=False)
+
+    return result
+
+
+async def _compute_ranking(topic: str) -> Dict[str, Any]:
     neo4j_client, retrieval_engine, authority_scorer = _get_services()
     coalition_logic = CoalitionLogic()
 
@@ -112,7 +147,7 @@ async def authority_ranking(request: RankingRequest):
 
     # 1. Embed the topic (run in executor — synchronous HTTP call to OpenAI)
     query_embedding = await asyncio.get_running_loop().run_in_executor(
-        None, lambda: retrieval_engine.embed_query(request.topic)
+        None, lambda: retrieval_engine.embed_query(topic)
     )
     logger.info(f"[RANKING] Embedded topic in {(time.time()-t0)*1000:.0f}ms")
 
@@ -183,7 +218,7 @@ async def authority_ranking(request: RankingRequest):
     logger.info(f"[RANKING] Total time: {total_time*1000:.0f}ms for {len(deputies)} deputies")
 
     return {
-        "topic": request.topic,
+        "topic": topic,
         "count": len(deputies),
         "computation_time_ms": round(total_time * 1000),
         "deputies": deputies,
