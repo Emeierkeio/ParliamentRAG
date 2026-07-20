@@ -57,6 +57,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.parliamentrag.it"),
   title: {
     default: "ParliamentRAG",
     template: "%s | ParliamentRAG",
@@ -83,8 +84,15 @@ export const metadata: Metadata = {
     description:
       "Esplora i dibattiti della Camera dei Deputati. Ricerca atti, confronta posizioni e visualizza il posizionamento ideologico dei gruppi parlamentari.",
     siteName: "ParliamentRAG",
+    url: "https://www.parliamentrag.it",
     locale: "it_IT",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ParliamentRAG",
+    description:
+      "Esplora i dibattiti della Camera dei Deputati. Ricerca atti, confronta posizioni e visualizza il posizionamento ideologico dei gruppi parlamentari.",
   },
   robots: {
     index: true,
