@@ -694,6 +694,35 @@ export default function RankingPage() {
   );
 }
 
+// ── Deputy Avatar ──────────────────────────────────────────────
+// Falls back to initials when the photo is missing OR fails to load
+// (camera.it drops part of the requests when the full list loads).
+
+function DeputyAvatar({ deputy, groupColor }: { deputy: RankingDeputy; groupColor: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (!deputy.photo || failed) {
+    return (
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+        style={{ backgroundColor: groupColor }}
+      >
+        {deputy.first_name[0]}{deputy.last_name[0]}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={deputy.photo}
+      alt={`${deputy.first_name} ${deputy.last_name}`}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-9 w-9 shrink-0 rounded-full object-cover"
+    />
+  );
+}
+
 // ── Ranking Row ────────────────────────────────────────────────
 
 interface RankingRowProps {
@@ -748,20 +777,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
 
         {/* Deputy */}
         <div className="flex items-center gap-3 min-w-0">
-          {deputy.photo ? (
-            <img
-              src={deputy.photo}
-              alt={`${deputy.first_name} ${deputy.last_name}`}
-              className="h-9 w-9 shrink-0 rounded-full object-cover"
-            />
-          ) : (
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-              style={{ backgroundColor: groupColor }}
-            >
-              {deputy.first_name[0]}{deputy.last_name[0]}
-            </div>
-          )}
+          <DeputyAvatar deputy={deputy} groupColor={groupColor} />
           <p className="[font-family:var(--font-display)] text-[15px] font-medium tracking-tight text-foreground truncate group-hover:text-primary transition-colors">
             {deputy.first_name} {deputy.last_name}
           </p>
@@ -810,20 +826,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
             {index + 1}
           </span>
         </div>
-        {deputy.photo ? (
-          <img
-            src={deputy.photo}
-            alt={`${deputy.first_name} ${deputy.last_name}`}
-            className="h-9 w-9 shrink-0 rounded-full object-cover"
-          />
-        ) : (
-          <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
-            style={{ backgroundColor: groupColor }}
-          >
-            {deputy.first_name[0]}{deputy.last_name[0]}
-          </div>
-        )}
+        <DeputyAvatar deputy={deputy} groupColor={groupColor} />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground truncate">
             {deputy.first_name} {deputy.last_name}
