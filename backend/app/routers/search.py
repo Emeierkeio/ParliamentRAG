@@ -144,6 +144,7 @@ def _search_speeches_text(
                 "eurovoc": None,
                 "score": None,
                 "match_type": "text",
+                "is_exact": True,
             })
         return records
 
@@ -232,6 +233,7 @@ def _search_acts_text(
                 "eurovoc": record["eurovoc"] or "",
                 "score": None,
                 "match_type": "text",
+                "is_exact": True,
             })
         return records
 
@@ -316,6 +318,7 @@ def _search_speeches_semantic(
             "eurovoc": None,
             "score": round(r["score"], 4),
             "match_type": "semantic",
+            "is_exact": False,
         })
     return records
 
@@ -419,6 +422,7 @@ def _search_acts_semantic(
             "eurovoc": r.get("eurovoc") or "",
             "score": round(r["score"], 4),
             "match_type": "semantic",
+            "is_exact": False,
         })
     return records
 
@@ -485,28 +489,45 @@ async def search_results(
                         act_text = _search_acts_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
                         all_results.extend(act_text)
 
-        # Deduplicate by id
-        seen = set()
+        # Deduplicate by id, merging text (exact) and semantic hits for the same item:
+        # keep the exact-match flag and the semantic score
+        merged: Dict[str, Dict[str, Any]] = {}
         unique_results = []
         for r in all_results:
-            if r["id"] not in seen:
-                seen.add(r["id"])
+            existing = merged.get(r["id"])
+            if existing is None:
+                merged[r["id"]] = r
                 unique_results.append(r)
+            else:
+                existing["is_exact"] = existing.get("is_exact") or r.get("is_exact") or False
+                if r["score"] is not None and (existing["score"] is None or r["score"] > existing["score"]):
+                    existing["score"] = r["score"]
 
-        # Sort results
+        # Semantic-only hits whose snippet/title contains the query are exact citations too
+        q_lower = q.lower()
+        for r in unique_results:
+            if not r.get("is_exact") and (
+                q_lower in (r.get("text") or "").lower()
+                or q_lower in (r.get("act_title") or "").lower()
+            ):
+                r["is_exact"] = True
+
+        # Sort results: exact citations always come before semantic-only matches,
+        # each block ordered by the requested criterion
+        exact_first = lambda r: 0 if r.get("is_exact") else 1
         if sort_by == "date_desc":
             unique_results.sort(key=lambda r: r.get("date") or "", reverse=True)
+            unique_results.sort(key=exact_first)
         elif sort_by == "date_asc":
             unique_results.sort(key=lambda r: r.get("date") or "")
+            unique_results.sort(key=exact_first)
         else:
-            # relevance: semantic results first (by score desc), then text results (by date desc)
-            def sort_key(r):
-                if r["score"] is not None:
-                    return (0, -r["score"])
-                return (1, r.get("date") or "")
-            unique_results.sort(key=sort_key)
+            # relevance: within each block score desc, date desc as tiebreak
+            unique_results.sort(key=lambda r: r.get("date") or "", reverse=True)
+            unique_results.sort(key=lambda r: (exact_first(r), -(r["score"] or 0.0)))
 
         total = len(unique_results)
+        exact_count = sum(1 for r in unique_results if r.get("is_exact"))
 
         # Paginate
         start = (page - 1) * page_size
@@ -517,6 +538,7 @@ async def search_results(
         return {
             "results": page_results,
             "total": total,
+            "exact_count": exact_count,
             "page": page,
             "page_size": page_size,
             "total_pages": (total + page_size - 1) // page_size if total > 0 else 0,

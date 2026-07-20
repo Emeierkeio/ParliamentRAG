@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -19,7 +20,6 @@ import {
   Building2,
   Tag,
   Loader2,
-  Sparkles,
 } from "lucide-react";
 import { SearchResultItem } from "./ResultsList";
 import {
@@ -66,12 +66,12 @@ interface ResultDetailDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-function formatDate(dateString: string) {
+function formatDate(dateString: string, locale: string) {
   try {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return dateString;
-    return date.toLocaleDateString("it-IT", {
+    return date.toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -86,6 +86,7 @@ export function ResultDetailDialog({
   open,
   onOpenChange,
 }: ResultDetailDialogProps) {
+  const t = useTranslations("SearchPage");
   const [detail, setDetail] = useState<DetailData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -107,11 +108,11 @@ export function ResultDetailDialog({
             : `${config.api.baseUrl}/search/act/${encodeURIComponent(item.id)}`;
 
         const res = await fetch(endpoint);
-        if (!res.ok) throw new Error("Impossibile caricare i dettagli");
+        if (!res.ok) throw new Error(t("detailLoadError"));
         const data = await res.json();
         setDetail(data);
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Errore sconosciuto");
+        setError(e instanceof Error ? e.message : t("detailLoadError"));
       } finally {
         setLoading(false);
       }
@@ -123,11 +124,11 @@ export function ResultDetailDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-        <DialogTitle className="sr-only">Dettaglio</DialogTitle>
+        <DialogTitle className="sr-only">{t("detailTitle")}</DialogTitle>
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Caricamento...</p>
+            <p className="text-sm text-muted-foreground">{t("loading")}</p>
           </div>
         )}
 
@@ -156,6 +157,8 @@ function SpeechDetailContent({
   detail: SpeechDetail;
   item: SearchResultItem;
 }) {
+  const t = useTranslations("SearchPage");
+  const locale = useLocale();
   const groupColor = getGroupColor(detail.group);
 
   return (
@@ -164,7 +167,7 @@ function SpeechDetailContent({
         <div className="flex items-center gap-2 mb-1">
           <MessageSquareQuote className="h-5 w-5 text-primary shrink-0" />
           <h2 className="text-lg font-semibold leading-none tracking-tight">
-            Seduta n. {detail.session_number} del {formatDate(detail.date)}
+            {t("sessionOf", { number: detail.session_number ?? "", date: formatDate(detail.date, locale) })}
           </h2>
         </div>
         {detail.debate_title && (
@@ -192,14 +195,10 @@ function SpeechDetailContent({
           >
             {getGroupShortLabel(detail.group)}
           </Badge>
-          {item.match_type === "semantic" && item.score != null && (
-            <Badge
-              variant="secondary"
-              className="text-xs gap-1 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 ml-auto"
-            >
-              <Sparkles className="h-3 w-3" />
-              {(item.score * 100).toFixed(0)}%
-            </Badge>
+          {!item.is_exact && item.score != null && (
+            <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap ml-auto">
+              {t("sortRelevance")} {(item.score * 100).toFixed(0)}%
+            </span>
           )}
         </div>
 
@@ -213,7 +212,7 @@ function SpeechDetailContent({
           {detail.date && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3" />
-              {formatDate(detail.date)}
+              {formatDate(detail.date, locale)}
             </div>
           )}
           {detail.session_number && (
@@ -223,7 +222,7 @@ function SpeechDetailContent({
               rel="noopener noreferrer"
               className="text-xs text-primary hover:underline flex items-center gap-1"
             >
-              Vedi fonte ufficiale <ExternalLink className="h-3 w-3" />
+              {t("officialSource")} <ExternalLink className="h-3 w-3" />
             </a>
           )}
         </div>
@@ -239,6 +238,8 @@ function ActDetailContent({
   detail: ActDetail;
   item: SearchResultItem;
 }) {
+  const t = useTranslations("SearchPage");
+  const locale = useLocale();
   const groupColor = getGroupColor(detail.group);
   const typeLabel = getActTypeLabel(detail.act_type);
   const typeColor = getActTypeColor(detail.act_type);
@@ -263,14 +264,10 @@ function ActDetailContent({
               n. {detail.act_number}
             </span>
           )}
-          {item.match_type === "semantic" && item.score != null && (
-            <Badge
-              variant="secondary"
-              className="text-xs gap-1 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300 ml-auto"
-            >
-              <Sparkles className="h-3 w-3" />
-              {(item.score * 100).toFixed(0)}%
-            </Badge>
+          {!item.is_exact && item.score != null && (
+            <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap ml-auto">
+              {t("sortRelevance")} {(item.score * 100).toFixed(0)}%
+            </span>
           )}
         </div>
         {detail.act_title && (
@@ -285,7 +282,7 @@ function ActDetailContent({
         <div className="flex items-center gap-2">
           <User className="h-4 w-4 text-muted-foreground shrink-0" />
           <span className="text-xs text-muted-foreground">
-            Primo firmatario:
+            {t("primarySignatory")}
           </span>
           <span className="font-semibold text-sm text-foreground">
             {detail.first_name} {detail.last_name}
@@ -308,7 +305,7 @@ function ActDetailContent({
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Building2 className="h-4 w-4 shrink-0" />
             <span>
-              Destinatario:{" "}
+              {t("recipient")}{" "}
               <span className="font-medium text-foreground">
                 {detail.destinatario}
               </span>
@@ -344,7 +341,7 @@ function ActDetailContent({
           <div className="flex items-center justify-between pt-2 border-t">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <Calendar className="h-3 w-3" />
-              {formatDate(detail.date)}
+              {formatDate(detail.date, locale)}
             </div>
           </div>
         )}
