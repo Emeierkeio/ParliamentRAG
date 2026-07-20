@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { MessageSquareQuote, Calendar, FileText, ExternalLink, User, Sparkles, Building2, Tag } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { MessageSquareQuote, Calendar, FileText, ExternalLink, User, Building2, Tag } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { config } from "@/config";
 import { ResultDetailDialog } from "./ResultDetailDialog";
 
@@ -24,6 +26,7 @@ export interface SearchResultItem {
   eurovoc: string | null;
   score: number | null;
   match_type: "text" | "semantic";
+  is_exact?: boolean;
 }
 
 interface ResultsListProps {
@@ -95,6 +98,8 @@ export function getGroupShortLabel(groupName: string): string {
 }
 
 export function ResultsList({ results, query }: ResultsListProps) {
+  const t = useTranslations("SearchPage");
+  const locale = useLocale();
   const [selectedItem, setSelectedItem] = useState<SearchResultItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -106,7 +111,7 @@ export function ResultsList({ results, query }: ResultsListProps) {
   if (results.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg">
-        Nessun risultato trovato. Riprova con altri criteri.
+        {t("noResults")}
       </div>
     );
   }
@@ -116,7 +121,7 @@ export function ResultsList({ results, query }: ResultsListProps) {
       if (!dateString) return "";
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return dateString;
-      return date.toLocaleDateString("it-IT", {
+      return date.toLocaleDateString(locale, {
         day: "numeric",
         month: "long",
         year: "numeric"
@@ -153,13 +158,22 @@ export function ResultsList({ results, query }: ResultsListProps) {
   return (
     <>
       <div className="space-y-4">
-        {results.map((item, idx) =>
-          item.type === "act" ? (
-            <ActCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
+        {results.map((item, idx) => {
+          const showExactHeader = !!item.is_exact && idx === 0;
+          const showSemanticHeader = !item.is_exact && (idx === 0 || !!results[idx - 1].is_exact);
+          const card = item.type === "act" ? (
+            <ActCard item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
           ) : (
-            <SpeechCard key={`${item.id}-${idx}`} item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
-          )
-        )}
+            <SpeechCard item={item} query={query} formatDate={formatDate} highlightText={highlightText} onClick={() => handleCardClick(item)} />
+          );
+          return (
+            <div key={`${item.id}-${idx}`} className="space-y-4">
+              {showExactHeader && <SectionHeader label={t("exactSectionTitle")} />}
+              {showSemanticHeader && <SectionHeader label={t("semanticSectionTitle")} />}
+              {card}
+            </div>
+          );
+        })}
       </div>
 
       <ResultDetailDialog
@@ -168,6 +182,57 @@ export function ResultsList({ results, query }: ResultsListProps) {
         onOpenChange={setDialogOpen}
       />
     </>
+  );
+}
+
+/* ─── Loading Skeleton ─── */
+
+export function ResultsSkeleton() {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <Card key={i} className="overflow-hidden">
+          <CardHeader className="bg-muted/30 pb-3 pt-4 px-4">
+            <div className="flex justify-between items-start gap-4">
+              <div className="space-y-2 flex-1 min-w-0">
+                <Skeleton className="h-4 w-56 max-w-full" />
+                <Skeleton className="h-3 w-72 max-w-full" />
+              </div>
+              <Skeleton className="h-5 w-24 shrink-0" />
+            </div>
+          </CardHeader>
+          <CardContent className="pt-4 px-4 pb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-4 w-20" />
+            </div>
+            <div className="pl-4 border-l-2 border-muted space-y-2">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-2/3" />
+            </div>
+            <div className="mt-4 flex items-center justify-between">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-32" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Section Header ─── */
+
+function SectionHeader({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3 pt-2">
+      <span className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
+        {label}
+      </span>
+      <div className="flex-1 h-px bg-border" />
+    </div>
   );
 }
 
@@ -186,16 +251,17 @@ function SpeechCard({
   highlightText: (text: string, q: string) => React.ReactNode;
   onClick: () => void;
 }) {
+  const t = useTranslations("SearchPage");
   const groupColor = getGroupColor(item.group);
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4 cursor-pointer" style={{ borderLeftColor: groupColor }} onClick={onClick}>
+    <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <CardHeader className="bg-muted/30 pb-3 pt-4 px-4">
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">
             <div className="flex items-center gap-2 text-base font-medium">
               <MessageSquareQuote className="h-4 w-4 text-primary shrink-0" />
-              <span>Seduta n. {item.session_number} del {formatDate(item.date)}</span>
+              <span>{t("sessionOf", { number: item.session_number ?? "", date: formatDate(item.date) })}</span>
             </div>
             {item.debate_title && (
               <p className="text-sm text-muted-foreground line-clamp-1 pl-6">
@@ -204,15 +270,14 @@ function SpeechCard({
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {item.match_type === "semantic" && item.score != null && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
-                <Sparkles className="h-3 w-3" />
-                {(item.score * 100).toFixed(0)}%
-              </Badge>
+            {!item.is_exact && item.score != null && (
+              <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                {t("sortRelevance")} {(item.score * 100).toFixed(0)}%
+              </span>
             )}
             <Badge variant="outline" className="whitespace-nowrap gap-1">
               <MessageSquareQuote className="h-3 w-3" />
-              Intervento
+              {t("speechBadge")}
             </Badge>
           </div>
         </div>
@@ -252,7 +317,7 @@ function SpeechCard({
               className="text-xs text-primary hover:underline flex items-center gap-1"
               onClick={(e) => e.stopPropagation()}
             >
-              Vedi fonte ufficiale <ExternalLink className="h-3 w-3" />
+              {t("officialSource")} <ExternalLink className="h-3 w-3" />
             </a>
           )}
         </div>
@@ -276,6 +341,7 @@ function ActCard({
   highlightText: (text: string, q: string) => React.ReactNode;
   onClick: () => void;
 }) {
+  const t = useTranslations("SearchPage");
   const groupColor = getGroupColor(item.group);
   const typeLabel = getActTypeLabel(item.act_type || "");
   const typeColor = getActTypeColor(item.act_type || "");
@@ -286,7 +352,7 @@ function ActCard({
     : [];
 
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow border-l-4 border-l-emerald-500/70 cursor-pointer" onClick={onClick}>
+    <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <CardHeader className="bg-emerald-50/50 dark:bg-emerald-950/20 pb-3 pt-4 px-4">
         <div className="flex justify-between items-start gap-4">
           <div className="space-y-1.5 flex-1 min-w-0">
@@ -310,15 +376,14 @@ function ActCard({
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            {item.match_type === "semantic" && item.score != null && (
-              <Badge variant="secondary" className="text-xs gap-1 bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300">
-                <Sparkles className="h-3 w-3" />
-                {(item.score * 100).toFixed(0)}%
-              </Badge>
+            {!item.is_exact && item.score != null && (
+              <span className="text-xs text-muted-foreground tabular-nums whitespace-nowrap">
+                {t("sortRelevance")} {(item.score * 100).toFixed(0)}%
+              </span>
             )}
             <Badge variant="outline" className="whitespace-nowrap gap-1 border-emerald-300 dark:border-emerald-700">
               <FileText className="h-3 w-3" />
-              Atto
+              {t("actBadge")}
             </Badge>
           </div>
         </div>
@@ -327,7 +392,7 @@ function ActCard({
         {/* Signatory info */}
         <div className="flex items-center gap-2 mb-3">
           <User className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-xs text-muted-foreground">Primo firmatario:</span>
+          <span className="text-xs text-muted-foreground">{t("primarySignatory")}</span>
           <span className="font-semibold text-sm text-foreground">
             {item.first_name} {item.last_name}
           </span>
@@ -344,7 +409,7 @@ function ActCard({
         {item.destinatario && (
           <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
             <Building2 className="h-3.5 w-3.5 shrink-0" />
-            <span>Destinatario: <span className="font-medium text-foreground">{item.destinatario}</span></span>
+            <span>{t("recipient")} <span className="font-medium text-foreground">{item.destinatario}</span></span>
           </div>
         )}
 

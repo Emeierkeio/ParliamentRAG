@@ -6,7 +6,7 @@ import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
 import { GroupSelector } from "@/components/search/GroupSelector";
-import { ResultsList, SearchResultItem } from "@/components/search/ResultsList";
+import { ResultsList, ResultsSkeleton, SearchResultItem } from "@/components/search/ResultsList";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -632,12 +632,7 @@ export default function SearchPage() {
                                 </div>
 
                                 {loading ? (
-                                    <div className="flex flex-col items-center justify-center py-20 space-y-4 border-y border-border">
-                                        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                                        <p className="text-muted-foreground animate-pulse">
-                                            {t("searching")}
-                                        </p>
-                                    </div>
+                                    <ResultsSkeleton />
                                 ) : (
                                     <>
                                         <ResultsList results={results} query={query} />
