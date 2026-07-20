@@ -79,7 +79,7 @@ export function TimelineSearch({
           placeholder={t("searchPlaceholder")}
           value={filters.search}
           onChange={(e) => onFiltersChange({ search: e.target.value })}
-          className="pl-9 pr-9 h-10 bg-muted/40 border-transparent focus-visible:bg-background focus-visible:border-border transition-colors"
+          className="pl-9 pr-9 h-10"
           aria-label={t("searchPlaceholder")}
         />
         {filters.search && (
@@ -95,26 +95,28 @@ export function TimelineSearch({
       </div>
 
       {/* Presets + date range in a single row */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {/* Preset pills */}
-        {presets.map(({ key, days, label }) => (
-          <button
-            key={key}
-            onClick={() => applyPreset(key, days)}
-            aria-pressed={activePreset === key}
-            className={cn(
-              "h-7 px-3 rounded-full text-xs font-medium transition-all duration-150",
-              activePreset === key
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
-            {label}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Preset segmented control */}
+        <div className="inline-flex rounded-lg border p-0.5 bg-card shadow-sm">
+          {presets.map(({ key, days, label }) => (
+            <button
+              key={key}
+              onClick={() => applyPreset(key, days)}
+              aria-pressed={activePreset === key}
+              className={cn(
+                "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                activePreset === key
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* Separator */}
-        <div className="w-px h-4 bg-border mx-1 hidden sm:block" />
+        <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
 
         {/* Compact date range */}
         <div className="flex items-center gap-1.5">
@@ -123,7 +125,7 @@ export function TimelineSearch({
             type="date"
             value={filters.fromDate}
             onChange={(e) => handleFromDate(e.target.value)}
-            className="h-7 rounded-full border-0 bg-muted/60 px-3 text-xs text-muted-foreground hover:bg-muted focus:bg-background focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
+            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateFrom")}
           />
           <span className="text-[10px] text-muted-foreground/50">—</span>
@@ -131,7 +133,7 @@ export function TimelineSearch({
             type="date"
             value={filters.toDate}
             onChange={(e) => handleToDate(e.target.value)}
-            className="h-7 rounded-full border-0 bg-muted/60 px-3 text-xs text-muted-foreground hover:bg-muted focus:bg-background focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
+            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateTo")}
           />
         </div>
@@ -140,7 +142,7 @@ export function TimelineSearch({
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="h-7 px-3 rounded-full text-xs font-medium text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors ml-auto"
+            className="h-8 px-3 rounded-md text-xs font-medium text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors ml-auto"
           >
             {t("clearFilters")}
           </button>
