@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
@@ -102,8 +102,15 @@ export default function RankingPage() {
   ];
 
   // ── Fetch ranking ──
+  // The backend computes for minutes and caches per topic, but intermediate
+  // proxies drop the connection after ~30s (HTTP 499/502). The computation
+  // keeps running server-side, so we retry until the cached result is ready;
+  // in-flight dedup on the backend makes retries free.
+  const requestIdRef = useRef(0);
+
   const fetchRanking = useCallback(async (topicText: string) => {
     if (!topicText.trim()) return;
+    const reqId = ++requestIdRef.current;
     setLoading(true);
     setError("");
     setActiveTopic(topicText);
@@ -113,14 +120,33 @@ export default function RankingPage() {
     setCommitteeSearch("");
     setSortBy("authority_score");
 
+    const deadline = Date.now() + 10 * 60 * 1000;
+
     try {
-      const res = await fetch(`${config.api.baseUrl}/authority-ranking`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: topicText }),
-      });
-      if (!res.ok) throw new Error(t("errorFetch"));
-      const data = await res.json();
+      let data: any = null;
+      for (;;) {
+        try {
+          const res = await fetch(`${config.api.baseUrl}/authority-ranking`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ topic: topicText }),
+          });
+          if (res.ok) {
+            data = await res.json();
+            break;
+          }
+          // Client errors are final; 5xx means a dropped proxy hop — retry
+          if (res.status < 500) throw new Error(t("errorFetch"));
+        } catch (err) {
+          if (err instanceof Error && err.message === t("errorFetch")) throw err;
+          // network/proxy drop — fall through to retry
+        }
+        if (requestIdRef.current !== reqId) return;
+        if (Date.now() >= deadline) throw new Error(t("errorFetch"));
+        await new Promise((r) => setTimeout(r, 15_000));
+        if (requestIdRef.current !== reqId) return;
+      }
+      if (requestIdRef.current !== reqId) return;
       const mapped: RankingDeputy[] = data.deputies.map((d: any) => ({
         ...d,
         relevant_speeches_count: 0,
@@ -130,10 +156,11 @@ export default function RankingPage() {
       setComputationTime(ct);
       rankingHistory.addEntry(topicText, { deputies: mapped, computationTime: ct });
     } catch (e: unknown) {
+      if (requestIdRef.current !== reqId) return;
       setError(e instanceof Error ? e.message : t("errorUnknown"));
       setDeputies([]);
     } finally {
-      setLoading(false);
+      if (requestIdRef.current === reqId) setLoading(false);
     }
   }, [t]);
 
