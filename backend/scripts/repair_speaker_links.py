@@ -12,11 +12,16 @@ This script:
      deputato.rdf twin (numeric id match: p305586 -> d305586_19).
   2. For persona-only deputies (no twin — e.g. members who entered parliament
      after the original build), normalizes photo/deputy_card to working URLs.
-  3. Syncs MEMBER_OF_GROUP memberships from persona.rdf duplicates to the
-     canonical twins: the v2 ingest writes group switches (e.g. a deputy
-     moving to Misto) on the persona node only, leaving the canonical node
-     with a stale open-ended membership.
-  4. Attaches orphan Speech nodes to their Debate via a synthetic Phase
+  3. Syncs MEMBER_OF_GROUP and MEMBER_OF_COMMITTEE memberships from
+     persona.rdf duplicates to the canonical twins: the v2 ingest writes
+     group switches (e.g. a deputy moving to Misto) on the persona node
+     only, leaving the canonical node with a stale open-ended membership.
+  4. Deletes persona.rdf duplicates that have a canonical twin once they
+     carry no speeches or acts (everything relinked/synced above) — they
+     would otherwise show up as ghost rows in ranking and search
+     (e.g. two "Edoardo Ziello", 778 deputies instead of ~390).
+     Persona-only deputies (no twin) are kept.
+  5. Attaches orphan Speech nodes to their Debate via a synthetic Phase
      (<debateId>.sub00000): the ingest only creates Phases from stenographic
      sottotitoli, so debates without subsections (interventi di fine seduta,
      ordine dei lavori, richiami al Regolamento...) leave their speeches
@@ -67,6 +72,26 @@ with driver.session() as s:
         RETURN count(*) AS n
     """).single()["n"]
 
+    synced_committees = s.run("""
+        MATCH (p:Deputy)-[pmc:MEMBER_OF_COMMITTEE]->(c:Committee)
+        WHERE p.id CONTAINS 'persona.rdf/p'
+        WITH p, pmc, c, split(p.id, 'persona.rdf/p')[1] AS num
+        MATCH (canon:Deputy) WHERE canon.id ENDS WITH ('deputato.rdf/d' + num + '_19')
+        MERGE (canon)-[cmc:MEMBER_OF_COMMITTEE {start_date: pmc.start_date}]->(c)
+        SET cmc.end_date = pmc.end_date
+        RETURN count(*) AS n
+    """).single()["n"]
+
+    deleted = s.run("""
+        MATCH (p:Deputy) WHERE p.id CONTAINS 'persona.rdf/p'
+        WITH p, split(p.id, 'persona.rdf/p')[1] AS num
+        MATCH (canon:Deputy) WHERE canon.id ENDS WITH ('deputato.rdf/d' + num + '_19')
+        AND NOT (:Speech)-[:SPOKEN_BY]->(p)
+        AND NOT (p)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->()
+        DETACH DELETE p
+        RETURN count(*) AS n
+    """).single()["n"]
+
     attached = s.run("""
         MATCH (sp:Speech) WHERE NOT (()-[:CONTAINS_SPEECH]->(sp))
         WITH sp, split(sp.id, '.int')[0] AS debateId
@@ -81,4 +106,6 @@ driver.close()
 print(f"[REPAIR] speeches re-linked to canonical deputies: {relinked}")
 print(f"[REPAIR] persona-only deputies with normalized photo/card: {fixed}")
 print(f"[REPAIR] group memberships synced persona -> canonical: {synced}")
+print(f"[REPAIR] committee memberships synced persona -> canonical: {synced_committees}")
+print(f"[REPAIR] persona.rdf twin duplicates deleted: {deleted}")
 print(f"[REPAIR] orphan speeches attached via synthetic phase: {attached}")
