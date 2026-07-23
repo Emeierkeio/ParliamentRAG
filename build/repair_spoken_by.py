@@ -141,6 +141,28 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str,
         )
         logger.info(f"  Linked {result['n']} to Deputies by ID")
 
+    # ── Step 4b: Link remaining to GovernmentMember by FULL name ──
+    # Cognomi composti ("PICHETTO FRATIN", "DELMASTRO DELLE VEDOVE") non matchano
+    # mai con la strategia first-word di Step 5: si confronta il nome completo
+    # concatenato. Fix 2026-07-22: recuperava 673 speech orfani sulla build v2.
+    logger.info("Step 4b: Linking remaining Speech→GovernmentMember by full name...")
+
+    with driver.session() as session:
+        result = session.execute_write(
+            lambda tx: tx.run("""
+                MATCH (sp:Speech)
+                WHERE NOT (sp)-[:SPOKEN_BY]->()
+                  AND coalesce(sp.cognomeNome, sp.speakerName) IS NOT NULL
+                WITH sp, toUpper(coalesce(sp.cognomeNome, sp.speakerName)) AS full
+                MATCH (gm:GovernmentMember)
+                WHERE toUpper(gm.last_name + ' ' + gm.first_name) = full
+                   OR toUpper(gm.first_name + ' ' + gm.last_name) = full
+                MERGE (sp)-[:SPOKEN_BY]->(gm)
+                RETURN count(*) AS n
+            """).single()
+        )
+        logger.info(f"  Linked {result['n']} to GovernmentMembers by full name")
+
     # ── Step 5: Link remaining to GovernmentMember by surname ──
     logger.info("Step 5: Linking remaining Speech→GovernmentMember by surname...")
 
@@ -230,9 +252,15 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str,
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Repair SPOKEN_BY relationships")
-    p.add_argument("--neo4j-uri", default="bolt://localhost:7689")
-    p.add_argument("--neo4j-user", default="neo4j")
-    p.add_argument("--neo4j-password", required=True)
+    # Env-var fallbacks so build_and_update.run_subprocess can invoke this
+    # script without CLI args (it forwards NEO4J_* via environment).
+    p.add_argument("--neo4j-uri",
+                   default=os.environ.get("NEO4J_URI", "bolt://localhost:7689"))
+    p.add_argument("--neo4j-user",
+                   default=os.environ.get("NEO4J_USER", "neo4j"))
+    p.add_argument("--neo4j-password",
+                   default=os.environ.get("NEO4J_PASSWORD"),
+                   required=os.environ.get("NEO4J_PASSWORD") is None)
     p.add_argument("--xml-dir", default="data/xml")
     p.add_argument("--senate-xml-dir", default="data/senate_xml")
     args = p.parse_args()

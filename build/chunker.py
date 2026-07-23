@@ -121,6 +121,7 @@ def chunk_speech(
         return []
 
     chunks: list[dict] = []
+    chunk_starts: list[int] = []  # start sentence index of each emitted chunk
     chunk_index = 0
     sentence_pos = 0  # index into sentences[]
 
@@ -154,11 +155,15 @@ def chunk_speech(
             and len(chunk_text) < cfg.min_speech_length
             and chunks
         ):
-            # Append to the last chunk instead of creating a new one.
+            # Merge into the previous chunk. Rebuild from the previous chunk's
+            # start sentence to the end: the current chunk starts at an
+            # overlap position, so naive concatenation would DUPLICATE the
+            # overlap sentences and break the substring invariant (v2 C8).
             prev = chunks[-1]
+            prev_start = chunk_starts[-1]
             chunks[-1] = {
                 "id": prev["id"],
-                "text": prev["text"] + " " + chunk_text,
+                "text": " ".join(sentences[prev_start:]),
                 "index": prev["index"],
             }
             break
@@ -170,6 +175,7 @@ def chunk_speech(
                 "index": chunk_index,
             }
         )
+        chunk_starts.append(sentence_pos)
         chunk_index += 1
 
         # ----------------------------------------------------------------

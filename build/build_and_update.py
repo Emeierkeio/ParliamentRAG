@@ -104,9 +104,9 @@ def run_subprocess(
 # Atti parlamentari ingestion helper
 # ---------------------------------------------------------------------------
 
-def _ingest_atti(driver, uri: str, user: str, password: str) -> None:
+def _ingest_atti(driver, uri: str, user: str, password: str, legislature: int = 19) -> None:
     """Ingest parliamentary acts using AttiParlamentariIngester."""
-    ingester = AttiParlamentariIngester(uri, user, password)
+    ingester = AttiParlamentariIngester(uri, user, password, legislature=legislature)
     try:
         ingester.create_constraints()
         ingester.create_indexes()
@@ -155,25 +155,52 @@ def _ingest_atti(driver, uri: str, user: str, password: str) -> None:
         ingester.close()
 
 
+def _parse_yyyymmdd(raw: str):
+    """YYYYMMDD string -> ISO date string for Cypher date(), or None (C1/C3)."""
+    s = (raw or "").strip()
+    if len(s) == 8 and s.isdigit():
+        return f"{s[:4]}-{s[4:6]}-{s[6:8]}"
+    return None
+
+
 def _save_atto(driver, atto: dict, deputato_uri: str, rel_type: str) -> None:
-    """Upsert a single ParliamentaryAct node and its signatory relationship."""
+    """Upsert a single ParliamentaryAct node and its signatory relationship.
+
+    Schema v2: presentation_date come date nativa (C1, mai stringa vuota — C3),
+    concetti EuroVoc come nodi SKOS con HAS_SUBJECT invece della stringa
+    appiattita (C10), niente proprietà eurovoc/eurovoc_embedding sull'atto.
+    """
+    presentation_iso = _parse_yyyymmdd(atto.get("dataPresentazione", ""))
+    date_clause = ", a.presentation_date = date($presentation_iso)" if presentation_iso else ""
     with driver.session() as neo_session:
         neo_session.run(
-            """
-            MERGE (a:ParliamentaryAct {uri: $uri})
+            f"""
+            MERGE (a:ParliamentaryAct {{uri: $uri}})
             SET a.type = $type, a.title = $title, a.description = $description,
-                a.presentation_date = $presentation_date, a.number = $number,
-                a.recipient = $recipient, a.eurovoc = $eurovoc
+                a.number = $number, a.recipient = $recipient{date_clause}
             """,
             uri=atto.get("uri", ""),
             type=atto.get("tipo", ""),
             title=atto.get("titolo", ""),
             description=atto.get("descrizione", ""),
-            presentation_date=atto.get("dataPresentazione", ""),
             number=atto.get("numero", ""),
             recipient=atto.get("destinatario", ""),
-            eurovoc=atto.get("eurovoc", ""),
+            presentation_iso=presentation_iso,
         )
+        # EuroVoc concepts as SKOS nodes (dcterms:subject → skos:Concept)
+        concepts = atto.get("eurovoc_concepts") or []
+        if concepts:
+            neo_session.run(
+                """
+                MATCH (a:ParliamentaryAct {uri: $atto_uri})
+                UNWIND $concepts AS ev
+                MERGE (c:EurovocConcept {uri: ev.uri})
+                SET c.label_it = ev.label
+                MERGE (a)-[:HAS_SUBJECT]->(c)
+                """,
+                atto_uri=atto["uri"],
+                concepts=concepts,
+            )
         neo_session.run(
             f"""
             MATCH (d:Deputy {{id: $dep_uri}})
@@ -238,6 +265,15 @@ def do_build(
             parsed = parser.parse_xml_file(xml_path)
             builder.ingest_session(parsed)
 
+        # 5b. Substring invariant report (C8)
+        if builder.invariant_violations > 0:
+            logger.error(
+                "C8: %d chunk scartati per violazione dell'invariante substring "
+                "— indagare prima del cutover", builder.invariant_violations
+            )
+        else:
+            logger.info("C8: invariante substring rispettata da tutti i chunk")
+
         # 6. Load roles
         logger.info("Step 6: Loading roles")
         builder.load_roles()
@@ -247,10 +283,14 @@ def do_build(
             logger.info("Step 7: Skipping atti parlamentari (--skip-atti)")
         else:
             logger.info("Step 7: Ingesting atti parlamentari")
-            _ingest_atti(driver, uri, user, password)
+            _ingest_atti(driver, uri, user, password, legislature=legislature)
+
+        # 7b. Continuation titles (schema v2 §2.2 — needs DISCUSSES edges)
+        logger.info("Step 7b: Resolving continuation debate titles")
+        builder.resolve_continuation_titles()
 
         # 8. Vector index
-        logger.info("Step 8: Creating vector index")
+        logger.info("Step 8: Creating vector indexes")
         builder.create_vector_index()
 
         # 8b. Full-text index for BM25 sparse retrieval
@@ -263,6 +303,42 @@ def do_build(
         else:
             logger.info("Step 9: Pre-calculating embeddings")
             run_subprocess("precalculate_embeddings.py", uri, user, password)
+
+        # 10. SPOKEN_BY hard check (schema v2: ogni Speech DEVE avere un oratore)
+        logger.info("Step 10: Verifying SPOKEN_BY coverage")
+        with driver.session() as neo_session:
+            orphans = neo_session.run(
+                "MATCH (sp:Speech) WHERE NOT (sp)-[:SPOKEN_BY]->() RETURN count(sp) AS c"
+            ).single()["c"]
+        if orphans > 0:
+            logger.warning(
+                "%d Speech senza SPOKEN_BY — tentativo repair_spoken_by.py", orphans
+            )
+            run_subprocess("repair_spoken_by.py", uri, user, password)
+            with driver.session() as neo_session:
+                orphans = neo_session.run(
+                    "MATCH (sp:Speech) WHERE NOT (sp)-[:SPOKEN_BY]->() RETURN count(sp) AS c"
+                ).single()["c"]
+        if orphans > 0:
+            logger.error(
+                "INVARIANTE VIOLATA: %d Speech ancora senza SPOKEN_BY dopo il repair. "
+                "La build è INCOMPLETA — eseguire validate_db.py per il dettaglio.",
+                orphans,
+            )
+
+        # 11. SchemaMeta (v2 C9)
+        logger.info("Step 11: Writing SchemaMeta")
+        commit = None
+        try:
+            import subprocess as _sp
+            commit = _sp.run(
+                ["git", "rev-parse", "--short", "HEAD"],
+                capture_output=True, text=True,
+                cwd=os.path.dirname(os.path.abspath(__file__)),
+            ).stdout.strip() or None
+        except Exception:
+            pass
+        builder.write_schema_meta(build_tool_commit=commit)
 
         logger.info("Build complete!")
     finally:
@@ -329,7 +405,7 @@ def do_update(
             logger.info("Step 4: Skipping atti parlamentari (--skip-atti)")
         else:
             logger.info("Step 4: Updating atti parlamentari")
-            _ingest_atti(driver, uri, user, password)
+            _ingest_atti(driver, uri, user, password, legislature=legislature)
 
         # 5. Roles
         logger.info("Step 5: Updating roles")

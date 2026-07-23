@@ -83,6 +83,24 @@ def parse_date_to_neo4j(date_str) -> Optional[Neo4jDate]:
     return None
 
 
+def normalize_photo_url(raw_photo, legislature: int = 19) -> Optional[str]:
+    """Normalize Camera photo URLs to the https fotoDefinitivo pattern.
+
+    The CSV carries 'http://documenti.camera.it/apps/nuovosito/deputato/
+    getFoto.asp?id=N&legislatura=19' — plain http, blocked as mixed content
+    when the frontend is served over https. The stable https equivalent is
+    the fotoDefinitivo/big JPEG (verified 200 on 2026-07-23).
+    """
+    if raw_photo is None or (isinstance(raw_photo, float) and pd.isna(raw_photo)):
+        return None
+    url = str(raw_photo)
+    if 'getFoto.asp?id=' in url:
+        num = url.split('id=')[1].split('&')[0]
+        return (f"https://documenti.camera.it/_dati/leg{legislature}"
+                f"/schededeputatinuovosito/fotoDefinitivo/big/d{num}.jpg")
+    return url
+
+
 def format_date_ddmmyyyy(date_str) -> Optional[str]:
     """Convert YYYYMMDD to DD/MM/YYYY string (used for term_of_office_start)."""
     if pd.isna(date_str) or date_str == "":
@@ -191,6 +209,8 @@ class DatabaseBuilder:
         self._driver = driver
         self._config = config or BuildConfig()
         self._nlp = None  # Lazy-loaded spaCy NER model
+        # Schema v2 (C8): counter of chunks dropped for substring violations
+        self.invariant_violations = 0
 
     def _get_nlp(self):
         """Lazy-load the spaCy NER model.
@@ -261,20 +281,27 @@ class DatabaseBuilder:
         print("Database cleared.")
 
     def create_constraints(self) -> None:
-        """Create uniqueness constraints for all English-only node labels."""
+        """Create uniqueness constraints for all English-only node labels.
+
+        Schema v2 (C7): no constraints for labels the builder does not create.
+        IndividualVote is gone — individual votes are CAST relationships,
+        created by the SPARQL enrichment step which owns its own schema.
+        """
         constraints = [
             "CREATE CONSTRAINT IF NOT EXISTS FOR (s:Session) REQUIRE s.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (d:Debate) REQUIRE d.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (p:Phase) REQUIRE p.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (sp:Speech) REQUIRE sp.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (c:Chunk) REQUIRE c.id IS UNIQUE",
+            "CREATE CONSTRAINT IF NOT EXISTS FOR (p:Person) REQUIRE p.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (dep:Deputy) REQUIRE dep.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (g:ParliamentaryGroup) REQUIRE g.name IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (com:Committee) REQUIRE com.name IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (gm:GovernmentMember) REQUIRE gm.id IS UNIQUE",
+            "CREATE CONSTRAINT IF NOT EXISTS FOR (gov:Government) REQUIRE gov.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (v:Vote) REQUIRE v.id IS UNIQUE",
-            "CREATE CONSTRAINT IF NOT EXISTS FOR (iv:IndividualVote) REQUIRE iv.id IS UNIQUE",
             "CREATE CONSTRAINT IF NOT EXISTS FOR (a:ParliamentaryAct) REQUIRE a.uri IS UNIQUE",
+            "CREATE CONSTRAINT IF NOT EXISTS FOR (ev:EurovocConcept) REQUIRE ev.uri IS UNIQUE",
         ]
         with self._driver.session() as neo_session:
             for cypher in constraints:
@@ -336,8 +363,20 @@ class DatabaseBuilder:
             for speech in speeches:
                 chunks = chunk_speech(speech["text"], speech["id"], self._config)
                 for chunk in chunks:
+                    # Schema v2 (C8) — invariante: ogni chunk deve essere
+                    # substring esatta del testo salvato dello Speech (gli offset
+                    # a runtime si ricavano con speech.text.find(chunk.text)).
+                    # Un chunk violante NON entra nel DB: si scarta e si conta,
+                    # validate_db.py fa da gate finale sul totale.
+                    if chunk["text"] not in speech["text"]:
+                        self.invariant_violations += 1
+                        print(
+                            f"  [C8 VIOLATION] chunk {chunk['index']} of speech "
+                            f"{speech['id']} is not an exact substring — dropped"
+                        )
+                        continue
                     chunk["speechId"] = speech["id"]
-                all_chunks.extend(chunks)
+                    all_chunks.append(chunk)
 
             # NER enrichment (adds lawRefs and personRefs to each chunk dict)
             nlp = self._get_nlp()
@@ -393,33 +432,28 @@ class DatabaseBuilder:
 
     @staticmethod
     def _create_session(tx, session_data: dict) -> None:
+        # Schema v2 (C5): year/month/day derivabili da s.date — non si salvano.
         tx.run("""
             MERGE (s:Session {id: $id})
             SET s.legislature = $legislature,
                 s.number = $number,
-                s.year = $year,
-                s.month = $month,
-                s.day = $day,
                 s.chamber = $chamber,
                 s.date = date($date)
         """,
             id=session_data["id"],
             legislature=session_data["legislature"],
             number=session_data["number"],
-            year=session_data["year"],
-            month=session_data["month"],
-            day=session_data["day"],
             chamber=session_data.get("chamber", "camera"),
             date=session_data["date"],
         )
 
     @staticmethod
     def _create_debates(tx, batch: list) -> None:
+        # Schema v2 (C5): originalId derivabile dall'id gerarchico — non si salva.
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:Debate {id: row.id})
             SET d.title = row.title,
-                d.originalId = row.originalId,
                 d.order = row.order
             WITH d, row
             MATCH (s:Session {id: row.sessionId})
@@ -428,12 +462,12 @@ class DatabaseBuilder:
 
     @staticmethod
     def _create_phases(tx, batch: list) -> None:
+        # phaseType si tiene: usato da timeline_service.py nel backend.
         tx.run("""
             UNWIND $batch AS row
             MERGE (p:Phase {id: row.id})
             SET p.title = row.title,
                 p.phaseType = row.phaseType,
-                p.originalId = row.originalId,
                 p.order = row.order
             WITH p, row
             MATCH (d:Debate {id: row.debateId})
@@ -592,8 +626,9 @@ class DatabaseBuilder:
             desc = r.get('descrizione')
             if pd.notna(desc):
                 parts_desc = str(desc).split(";", 1)
-                education = parts_desc[0].strip() if parts_desc else None
-                profession = parts_desc[1].strip() if len(parts_desc) > 1 else None
+                # C3: '' non è un valore — proprietà assente invece di stringa vuota
+                education = (parts_desc[0].strip() or None) if parts_desc else None
+                profession = (parts_desc[1].strip() or None) if len(parts_desc) > 1 else None
 
             rows.append({
                 "id": r['deputato'],
@@ -602,10 +637,11 @@ class DatabaseBuilder:
                 "gender": r.get('gender'),
                 "education": education,
                 "profession": profession,
-                "photo": r.get('foto'),
+                "photo": normalize_photo_url(r.get('foto')),
                 "deputyCard": r.get('schedaCamera'),
                 "termOfOffice": r.get('mandatoCamera'),
-                "termOfOfficeStart": format_date_ddmmyyyy(r.get('mandatoStart')),
+                # Schema v2 (C1): data nativa, non stringa DD/MM/YYYY
+                "termOfOfficeStart": parse_date_to_neo4j(r.get('mandatoStart')),
             })
 
         with self._driver.session() as neo_session:
@@ -614,10 +650,12 @@ class DatabaseBuilder:
 
     @staticmethod
     def _upsert_deputies(tx, batch: list) -> None:
+        # Schema v2: label base Person (2.1) + date native (C1).
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:Deputy {id: row.id})
-            SET d.first_name = row.firstName,
+            SET d:Person,
+                d.first_name = row.firstName,
                 d.last_name = row.lastName,
                 d.gender = row.gender,
                 d.education = row.education,
@@ -792,7 +830,8 @@ class DatabaseBuilder:
                 "gender": r.get("gender"),
                 "photo": r.get("foto"),
                 "deputyCard": str(r.get("schedaCamera", "")),
-                "termOfOfficeStart": format_date_ddmmyyyy(r.get("mandatoStart")),
+                # Schema v2 (C1): data nativa, non stringa DD/MM/YYYY
+                "termOfOfficeStart": parse_date_to_neo4j(r.get("mandatoStart")),
                 "chamber": "senato",
             })
 
@@ -802,10 +841,13 @@ class DatabaseBuilder:
 
     @staticmethod
     def _upsert_senators(tx, batch: list) -> None:
+        # Schema v2: label Person + Senator addizionali; :Deputy resta per
+        # compatibilità con le query backend esistenti (documentato in §2.1).
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:Deputy {id: row.id})
-            SET d.first_name = row.firstName,
+            SET d:Person, d:Senator,
+                d.first_name = row.firstName,
                 d.last_name = row.lastName,
                 d.gender = row.gender,
                 d.photo = row.photo,
@@ -938,11 +980,12 @@ class DatabaseBuilder:
             fid = f"gov_{full_name.replace(' ', '_').lower()}"
 
             csv_data = dep_lookup.get(full_name)
-            photo = csv_data.get('foto') if csv_data and pd.notna(csv_data.get('foto')) else None
+            photo = normalize_photo_url(csv_data.get('foto')) if csv_data and pd.notna(csv_data.get('foto')) else None
             deputy_card = csv_data.get('schedaCamera') if csv_data and pd.notna(csv_data.get('schedaCamera')) else None
             gender = csv_data.get('gender') if csv_data and pd.notna(csv_data.get('gender')) else None
             term_of_office = csv_data.get('mandatoCamera') if csv_data and pd.notna(csv_data.get('mandatoCamera')) else None
-            tos = format_date_ddmmyyyy(csv_data.get('mandatoStart')) if csv_data else None
+            # Schema v2 (C1): data nativa, non stringa DD/MM/YYYY
+            tos = parse_date_to_neo4j(csv_data.get('mandatoStart')) if csv_data else None
 
             rows.append({
                 "id": fid,
@@ -962,12 +1005,13 @@ class DatabaseBuilder:
 
     @staticmethod
     def _upsert_government_members(tx, batch: list) -> None:
+        # Schema v2 (C5): via is_government — la label GovernmentMember basta.
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:GovernmentMember {id: row.id})
-            SET d.first_name = row.firstName,
-                d.last_name = row.lastName,
-                d.is_government = true
+            SET d:Person,
+                d.first_name = row.firstName,
+                d.last_name = row.lastName
             WITH d, row
             MATCH (g:ParliamentaryGroup {name: row.groupName})
             MERGE (d)-[mg:MEMBER_OF_GROUP]->(g)
@@ -979,9 +1023,9 @@ class DatabaseBuilder:
         tx.run("""
             UNWIND $batch AS row
             MERGE (d:GovernmentMember {id: row.id})
-            SET d.first_name = row.firstName,
+            SET d:Person,
+                d.first_name = row.firstName,
                 d.last_name = row.lastName,
-                d.is_government = true,
                 d.gender = row.gender,
                 d.photo = row.photo,
                 d.deputy_card = row.deputyCard,
@@ -997,30 +1041,67 @@ class DatabaseBuilder:
     # Roles
     # ------------------------------------------------------------------
 
+    # Governo in carica — ancora per le relazioni HOLDS_OFFICE (schema v2 §2.1)
+    GOVERNMENT_ID = "meloni_1"
+    GOVERNMENT_NAME = "Governo Meloni"
+    GOVERNMENT_START = "2022-10-22"
+
+    @staticmethod
+    def _office_type(role: str) -> str:
+        """Classify a government role string into an office_type enum."""
+        r = role.lower()
+        if "presidente del consiglio" in r and "vicepresidente" not in r:
+            return "pm"
+        if "vicepresidente del consiglio" in r:
+            return "deputy_pm"
+        if "sottosegretario" in r:
+            return "undersecretary"
+        if "viceministro" in r:
+            return "deputy_minister"
+        return "minister"
+
     def load_roles(self) -> None:
-        """Assign institutional roles to Deputy and GovernmentMember nodes."""
+        """Assign institutional roles (schema v2).
+
+        - Government roles -> (d)-[:HOLDS_OFFICE {role, office_type, start_date}]->(:Government)
+          plus GOVERNMENT_REFERENCE to the competent Committee.
+        - Committee officer roles -> role property on MEMBER_OF_COMMITTEE
+          (org:Membership-style, no separate IS_PRESIDENT/... rel types).
+        - Group leadership -> role property on the active MEMBER_OF_GROUP rel.
+        - institutional_role stays as a human-readable display property;
+          role_type/committee_role are gone (derivable from relationships).
+        """
         if not _ROLES_AVAILABLE:
             print("  (skip — app_config.py not available)")
             return
 
-        REL_MAP = {
-            "Presidente": "IS_PRESIDENT",
-            "Vicepresidente": "IS_VICE_PRESIDENT",
-            "Segretario": "IS_SECRETARY",
-            "Riferimento Governo": "GOVERNMENT_REFERENCE",
+        COMMITTEE_ROLE_MAP = {
+            "Presidente": "president",
+            "Vicepresidente": "vice_president",
+            "Segretario": "secretary",
         }
 
         with self._driver.session() as neo_session:
-            # Clear existing role properties and relationships
+            # Clear existing role data (idempotent re-run)
             neo_session.execute_write(lambda tx: tx.run("""
-                MATCH (d) WHERE d:Deputy OR d:GovernmentMember
+                MATCH (d:Person)
                 REMOVE d.institutional_role, d.role_type, d.committee_role
             """))
             neo_session.execute_write(lambda tx: tx.run("""
-                MATCH (d)-[r:IS_PRESIDENT|IS_VICE_PRESIDENT|IS_SECRETARY|GOVERNMENT_REFERENCE]->()
-                WHERE d:Deputy OR d:GovernmentMember
+                MATCH (d:Person)-[r:HOLDS_OFFICE|GOVERNMENT_REFERENCE]->()
                 DELETE r
             """))
+            neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (d:Person)-[r:MEMBER_OF_COMMITTEE|MEMBER_OF_GROUP]->()
+                REMOVE r.role
+            """))
+
+            # Government node (anchor for HOLDS_OFFICE)
+            neo_session.execute_write(lambda tx: tx.run("""
+                MERGE (gov:Government {id: $id})
+                SET gov.name = $name, gov.start_date = date($start)
+            """, id=self.GOVERNMENT_ID, name=self.GOVERNMENT_NAME,
+                start=self.GOVERNMENT_START))
 
             all_configs = [
                 (GOVERNMENT_ROLES, 'governo'),
@@ -1040,51 +1121,67 @@ class DatabaseBuilder:
                     if tipo_ruolo == 'capogruppo':
                         full_role = f"Presidente del Gruppo {target_entity}"
                         neo_session.execute_write(lambda tx, did=dep_id, r=full_role: tx.run("""
-                            MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
-                            SET d.institutional_role = $role, d.role_type = 'capogruppo'
+                            MATCH (d:Person {id: $id})
+                            SET d.institutional_role = $role
                         """, id=did, role=r))
                         if target_entity:
+                            # Group leadership on the ACTIVE membership rel
                             neo_session.execute_write(
                                 lambda tx, did=dep_id, t=target_entity: tx.run("""
-                                    MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
-                                    MATCH (g:ParliamentaryGroup) WHERE g.name CONTAINS $target
-                                    MERGE (d)-[:IS_PRESIDENT]->(g)
+                                    MATCH (d:Person {id: $id})-[r:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                                    WHERE g.name CONTAINS $target AND r.end_date IS NULL
+                                    SET r.role = 'president'
                                 """, id=did, target=t))
                     elif tipo_ruolo == 'commissione':
                         full_role = f"{ruolo_base} {target_entity}"
                         neo_session.execute_write(
-                            lambda tx, did=dep_id, r=full_role, t=target_entity: tx.run("""
-                                MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
-                                SET d.institutional_role = $role, d.role_type = 'commissione',
-                                    d.committee_role = $committee
-                            """, id=did, role=r, committee=t))
+                            lambda tx, did=dep_id, r=full_role: tx.run("""
+                                MATCH (d:Person {id: $id})
+                                SET d.institutional_role = $role
+                            """, id=did, role=r))
                         if target_entity:
-                            rel_type = None
-                            for key, val in REL_MAP.items():
+                            committee_role = None
+                            for key, val in COMMITTEE_ROLE_MAP.items():
                                 if key in ruolo_base:
-                                    rel_type = val
+                                    committee_role = val
                                     break
-                            if rel_type:
+                            if committee_role:
+                                # Officer role as property on the membership rel
+                                # (org:Membership). MERGE creates the rel if the
+                                # CSV membership is missing for this person.
                                 neo_session.execute_write(
-                                    lambda tx, did=dep_id, rt=rel_type, t=target_entity: tx.run(f"""
-                                        MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
+                                    lambda tx, did=dep_id, cr=committee_role, t=target_entity: tx.run("""
+                                        MATCH (d:Person {id: $id})
                                         MATCH (c:Committee) WHERE c.name = $target
-                                        MERGE (d)-[:{rt}]->(c)
-                                    """, id=did, target=t))
+                                        MERGE (d)-[r:MEMBER_OF_COMMITTEE]->(c)
+                                        SET r.role = $crole
+                                    """, id=did, target=t, crole=cr))
                     else:
                         neo_session.execute_write(
-                            lambda tx, did=dep_id, r=ruolo_base, rt=tipo_ruolo, t=target_entity: tx.run("""
-                                MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
-                                SET d.institutional_role = $role, d.role_type = $rtype,
-                                    d.committee_role = $committee
-                            """, id=did, role=r, rtype=rt, committee=t))
-                        if tipo_ruolo == 'governo' and target_entity:
+                            lambda tx, did=dep_id, r=ruolo_base: tx.run("""
+                                MATCH (d:Person {id: $id})
+                                SET d.institutional_role = $role
+                            """, id=did, role=r))
+                        if tipo_ruolo == 'governo':
+                            # HOLDS_OFFICE with temporal + type semantics
                             neo_session.execute_write(
-                                lambda tx, did=dep_id, t=target_entity: tx.run("""
-                                    MATCH (d) WHERE (d:Deputy OR d:GovernmentMember) AND d.id = $id
-                                    MATCH (c:Committee) WHERE c.name = $target
-                                    MERGE (d)-[:GOVERNMENT_REFERENCE]->(c)
-                                """, id=did, target=t))
+                                lambda tx, did=dep_id, r=ruolo_base: tx.run("""
+                                    MATCH (d:Person {id: $id})
+                                    MATCH (gov:Government {id: $gov_id})
+                                    MERGE (d)-[o:HOLDS_OFFICE]->(gov)
+                                    SET o.role = $role,
+                                        o.office_type = $otype,
+                                        o.start_date = date($start)
+                                """, id=did, role=r, otype=self._office_type(r),
+                                    gov_id=self.GOVERNMENT_ID,
+                                    start=self.GOVERNMENT_START))
+                            if target_entity:
+                                neo_session.execute_write(
+                                    lambda tx, did=dep_id, t=target_entity: tx.run("""
+                                        MATCH (d:Person {id: $id})
+                                        MATCH (c:Committee) WHERE c.name = $target
+                                        MERGE (d)-[:GOVERNMENT_REFERENCE]->(c)
+                                    """, id=did, target=t))
 
             # Reconcile orphan Speech nodes (no SPOKEN_BY relationship yet)
             neo_session.execute_write(lambda tx: tx.run("""
@@ -1124,17 +1221,78 @@ class DatabaseBuilder:
     # ------------------------------------------------------------------
 
     def create_vector_index(self) -> None:
-        """Create the vector index on Chunk.embedding for semantic search."""
+        """Create vector indexes for semantic search.
+
+        Schema v2: gli embedding degli atti sono liste native (C2), quindi
+        gli indici vettoriali su title/description funzionano davvero
+        (in v1 la proprietà era una stringa JSON e l'indice restava vuoto).
+        """
+        index_specs = [
+            ("chunk_embedding_index", "Chunk", "embedding"),
+            ("act_description_embedding_index", "ParliamentaryAct", "description_embedding"),
+            ("act_title_embedding_index", "ParliamentaryAct", "title_embedding"),
+        ]
+        with self._driver.session() as neo_session:
+            for name, label, prop in index_specs:
+                neo_session.execute_write(lambda tx, n=name, l=label, p=prop: tx.run(f"""
+                    CREATE VECTOR INDEX {n} IF NOT EXISTS
+                    FOR (x:{l}) ON (x.{p})
+                    OPTIONS {{indexConfig: {{
+                        `vector.dimensions`: 1536,
+                        `vector.similarity_function`: 'cosine'
+                    }}}}
+                """))
+        print("Vector indexes created (chunk + act title/description).")
+
+    # Cypher =~ usa full-match: "seguito della discussione" nudo è procedurale,
+    # ma "Seguito della discussione del disegno di legge X" ha contenuto e NON matcha.
+    PROCEDURAL_TITLE_PATTERN = (
+        r'(?i)(si riprende la discussione.*'
+        r'|seguito della discussione\.?'
+        r'|ripresa della discussione.*'
+        r'|discussione congiunta\.?)'
+    )
+
+    def resolve_continuation_titles(self) -> None:
+        """Set Debate.parent_debate_title for procedural continuation titles.
+
+        Schema v2 §2.2: sedute con titolo "Si riprende la discussione…" vengono
+        collegate al provvedimento reale via l'atto in DISCUSSES (numero/titolo),
+        così l'introduzione generata può nominare il provvedimento vero.
+        """
+        with self._driver.session() as neo_session:
+            result = neo_session.execute_write(lambda tx: tx.run("""
+                MATCH (d:Debate)
+                WHERE d.title =~ $pattern
+                OPTIONAL MATCH (d)-[:DISCUSSES]->(a:ParliamentaryAct)
+                WITH d, collect(a)[0] AS act
+                WHERE act IS NOT NULL
+                SET d.parent_debate_title = coalesce(
+                    act.title,
+                    act.type + ' ' + act.number
+                )
+                RETURN count(d) AS resolved
+            """, pattern=self.PROCEDURAL_TITLE_PATTERN).single())
+            print(f"Continuation titles resolved: {result['resolved']}")
+
+    def write_schema_meta(self, build_tool_commit: str | None = None) -> None:
+        """Write the SchemaMeta node (v2 C9) — provenance + version check anchor."""
         with self._driver.session() as neo_session:
             neo_session.execute_write(lambda tx: tx.run("""
-                CREATE VECTOR INDEX chunk_embedding_index IF NOT EXISTS
-                FOR (c:Chunk) ON (c.embedding)
-                OPTIONS {indexConfig: {
-                    `vector.dimensions`: 1536,
-                    `vector.similarity_function`: 'cosine'
-                }}
-            """))
-        print("Vector index created.")
+                MERGE (m:SchemaMeta {id: 'singleton'})
+                SET m.version = 2,
+                    m.embedding_model = $model,
+                    m.embedding_dims = 1536,
+                    m.built_at = datetime(),
+                    m.build_tool_commit = $commit,
+                    m.source_datasets = [
+                        'http://dati.camera.it/ocd/',
+                        'http://dati.senato.it/',
+                        'http://eurovoc.europa.eu/'
+                    ]
+            """, model=os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small"),
+                commit=build_tool_commit))
+        print("SchemaMeta written (version 2).")
 
     def create_fulltext_index(self) -> None:
         """Create full-text index on Chunk.text for BM25 sparse retrieval."""
