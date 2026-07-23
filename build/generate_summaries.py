@@ -438,21 +438,26 @@ ORDER BY d.id
 
     def _fetch_speeches_for_debate(self, debate_id: str) -> list[dict]:
         """Return all speeches for a debate, with speaker info."""
+        # NB: nodes store snake_case props (first_name/last_name); a deputy's
+        # group comes from the MEMBER_OF_GROUP relationship valid at the
+        # session date, not from a property.
         cypher = """
-MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(:Session)
+MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(s:Session)
 MATCH (d)-[:HAS_PHASE]->(p:Phase)-[:CONTAINS_SPEECH]->(sp:Speech)
 OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
 OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gm:GovernmentMember)
+OPTIONAL MATCH (dep)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+  WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+WITH sp, p, dep, gm, head(collect(g.name)) AS groupName
 WITH sp, p,
-     coalesce(dep, gm) AS speaker,
      CASE WHEN dep IS NOT NULL THEN dep.id
           WHEN gm IS NOT NULL THEN gm.id
           ELSE NULL END AS speakerId,
-     CASE WHEN dep IS NOT NULL THEN dep.firstName + ' ' + dep.lastName
-          WHEN gm IS NOT NULL THEN gm.firstName + ' ' + gm.lastName
+     CASE WHEN dep IS NOT NULL THEN dep.first_name + ' ' + dep.last_name
+          WHEN gm IS NOT NULL THEN gm.first_name + ' ' + gm.last_name
           ELSE NULL END AS speakerName,
-     CASE WHEN dep IS NOT NULL THEN dep.party
-          WHEN gm IS NOT NULL THEN gm.role
+     CASE WHEN dep IS NOT NULL THEN groupName
+          WHEN gm IS NOT NULL THEN coalesce(gm.institutional_role, 'Governo')
           ELSE NULL END AS party
 RETURN sp.text AS text,
        sp.id AS speechId,

@@ -4,14 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "next-intl";
 import {
   Scale,
   Search,
-  Sparkles,
   Zap,
   Clock,
   Target,
@@ -21,18 +18,13 @@ import {
   FileText,
   MessageSquare,
   Shield,
-  TrendingUp,
-  BookOpen,
   Info,
   Network,
   Layers,
-  SlidersHorizontal,
   Filter,
   Wand2,
   Settings2,
-  CheckCircle2,
   BarChart3,
-  PenLine,
   Bot,
   RefreshCcw,
 } from "lucide-react";
@@ -49,12 +41,11 @@ const WEIGHT_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
   role: Shield,
 };
 
-const MERGER_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  relevance: Target,
-  diversity: Sparkles,
-  coverage: Users,
-  authority: Scale,
-  salience: TrendingUp,
+const RRF_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  dense: Zap,
+  sparse: Search,
+  graph: Network,
+  ner: Target,
 };
 
 // ─── SubSection container ────────────────────────────────────
@@ -267,8 +258,8 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
     onChange({ ...data, ...patch });
   };
 
-  const updateMergerWeight = (key: string, value: number) => {
-    onChange({ ...data, merger_weights: { ...data.merger_weights, [key]: value } });
+  const updateRrfWeight = (key: string, value: number) => {
+    onChange({ ...data, rrf_weights: { ...data.rrf_weights, [key]: value } });
   };
 
   return (
@@ -288,18 +279,6 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
         <SubSection icon={Zap} title={t("retrieval.denseChannel")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldWithUnit
-              label={t("retrieval.topKResults")}
-              info={t("retrieval.topKResultsInfo")}
-              unit={t("generation.chunkUnit")}
-            >
-              <Input
-                type="number" min={10} max={1000}
-                value={data.dense_top_k}
-                onChange={(e) => update({ dense_top_k: parseInt(e.target.value) || 200 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
               label={t("retrieval.similarityThreshold")}
               info={t("retrieval.similarityThresholdInfo")}
             >
@@ -316,18 +295,6 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
         {/* Graph Channel */}
         <SubSection icon={Network} title={t("retrieval.graphChannel")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <FieldWithUnit
-              label={t("retrieval.minLexicalMatch")}
-              info={t("retrieval.minLexicalMatchInfo")}
-              unit={t("queryRewriting.keywordUnit")}
-            >
-              <Input
-                type="number" min={1} max={10}
-                value={data.graph_lexical_min_match}
-                onChange={(e) => update({ graph_lexical_min_match: parseInt(e.target.value) || 1 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
             <FieldWithUnit
               label={t("retrieval.semanticThreshold")}
               info={t("retrieval.semanticThresholdInfo")}
@@ -365,23 +332,34 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
           </div>
         </SubSection>
 
-        {/* Merger Weights */}
-        <SubSection icon={Layers} title={t("retrieval.mergerWeights")}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">{t("retrieval.weightsSumNote")}</span>
-            <WeightSumBadge weights={data.merger_weights} />
-          </div>
+        {/* RRF Fusion */}
+        <SubSection icon={Layers} title={t("retrieval.rrfFusion")}>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {t("retrieval.rrfNote")}
+          </p>
+          <FieldWithUnit
+            label={t("retrieval.rrfK")}
+            info={t("retrieval.rrfKInfo")}
+          >
+            <Input
+              type="number" min={1} max={200}
+              value={data.rrf_k}
+              onChange={(e) => update({ rrf_k: parseInt(e.target.value) || 60 })}
+              className="h-8 w-28"
+            />
+          </FieldWithUnit>
           <div className="space-y-2">
-            {Object.entries(data.merger_weights).map(([key, value]) => {
-              const Icon = MERGER_ICONS[key];
+            {Object.entries(data.rrf_weights).map(([key, value]) => {
+              const Icon = RRF_ICONS[key];
               return (
                 <WeightSlider
                   key={key}
-                  label={t(`mergerLabels.${key}.label`)}
+                  label={t(`rrfLabels.${key}.label`)}
                   value={value}
-                  info={t(`mergerLabels.${key}.description`)}
-                  onChange={(v) => updateMergerWeight(key, v)}
+                  info={t(`rrfLabels.${key}.description`)}
+                  onChange={(v) => updateRrfWeight(key, v)}
                   icon={Icon}
+                  max={2}
                 />
               );
             })}
@@ -535,23 +513,13 @@ interface GenerationEditorProps {
   onChange: (data: SystemConfig["generation"]) => void;
 }
 
-const MODEL_OPTIONS = ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
-
-const STAGE_KEYS = ["analyst", "writer", "integrator"] as const;
+const MODEL_OPTIONS = ["gpt-4.1-mini", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"];
 
 export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
   const t = useTranslations("GraphicalEditors");
 
   const updateModel = (stage: string, model: string) => {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
-  };
-
-  const updateParams = (patch: Partial<typeof data.parameters>) => {
-    onChange({ ...data, parameters: { ...data.parameters, ...patch } });
-  };
-
-  const updatePositionBrief = (key: keyof typeof data.position_brief, value: number | boolean) => {
-    onChange({ ...data, position_brief: { ...data.position_brief, [key]: value } });
   };
 
   return (
@@ -589,126 +557,6 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
                 </select>
               </div>
             ))}
-          </div>
-        </SubSection>
-
-        {/* LLM Parameters */}
-        <SubSection icon={SlidersHorizontal} title={t("generation.llmParameters")}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <FieldWithUnit
-              label={t("generation.maxTokenOutput")}
-              info={t("generation.maxTokenOutputInfo")}
-              unit={t("generation.tokenUnit")}
-            >
-              <Input
-                type="number" min={500} max={16000} step={500}
-                value={data.parameters.max_tokens}
-                onChange={(e) => updateParams({ max_tokens: parseInt(e.target.value) || 4000 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label={t("generation.temperature")}
-              info={t("generation.temperatureInfo")}
-            >
-              <Input
-                type="number" min={0} max={2} step={0.1}
-                value={data.parameters.temperature}
-                onChange={(e) => updateParams({ temperature: parseFloat(e.target.value) || 0.3 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label={t("generation.topP")}
-              info={t("generation.topPInfo")}
-            >
-              <Input
-                type="number" min={0} max={1} step={0.05}
-                value={data.parameters.top_p}
-                onChange={(e) => updateParams({ top_p: parseFloat(e.target.value) || 1.0 })}
-                className="h-8 flex-1"
-              />
-            </FieldWithUnit>
-          </div>
-        </SubSection>
-
-        {/* Position Brief */}
-        <SubSection icon={BookOpen} title={t("generation.positionBrief")}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm">{t("generation.enabled")}</span>
-              <InfoPopover text={t("generation.enabledInfo")} />
-            </div>
-            <ToggleSwitch
-              checked={data.position_brief.enabled}
-              onChange={(v) => updatePositionBrief("enabled", v)}
-            />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <FieldWithUnit
-              label={t("generation.maxChunksBrief")}
-              info={t("generation.maxChunksBriefInfo")}
-              unit={t("generation.chunkUnit")}
-            >
-              <Input
-                type="number" min={1} max={20}
-                value={data.position_brief.max_chunks}
-                onChange={(e) => updatePositionBrief("max_chunks", parseInt(e.target.value) || 5)}
-                className="h-8 flex-1"
-                disabled={!data.position_brief.enabled}
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label={t("generation.charsPerChunk")}
-              info={t("generation.charsPerChunkInfo")}
-              unit={t("generation.charUnit")}
-            >
-              <Input
-                type="number" min={50} max={1000} step={50}
-                value={data.position_brief.chars_per_chunk}
-                onChange={(e) => updatePositionBrief("chars_per_chunk", parseInt(e.target.value) || 200)}
-                className="h-8 flex-1"
-                disabled={!data.position_brief.enabled}
-              />
-            </FieldWithUnit>
-            <FieldWithUnit
-              label={t("generation.contextChars")}
-              info={t("generation.contextCharsInfo")}
-              unit={t("generation.charUnit")}
-            >
-              <Input
-                type="number" min={100} max={2000} step={100}
-                value={data.position_brief.context_chars}
-                onChange={(e) => updatePositionBrief("context_chars", parseInt(e.target.value) || 500)}
-                className="h-8 flex-1"
-                disabled={!data.position_brief.enabled}
-              />
-            </FieldWithUnit>
-          </div>
-        </SubSection>
-
-        {/* Behavior */}
-        <SubSection icon={PenLine} title={t("generation.generationBehavior")}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm">{t("generation.crossSynthesis")}</span>
-              <InfoPopover text={t("generation.crossSynthesisInfo")} />
-            </div>
-            <ToggleSwitch
-              checked={data.enable_synthesis}
-              onChange={(v) => onChange({ ...data, enable_synthesis: v })}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <LabelWithInfo info={t("generation.noEvidenceMessageInfo")}>
-              {t("generation.noEvidenceMessage")}
-            </LabelWithInfo>
-            <Textarea
-              value={data.no_evidence_message}
-              onChange={(e) => onChange({ ...data, no_evidence_message: e.target.value })}
-              className="text-sm min-h-[60px] resize-none"
-              rows={2}
-            />
           </div>
         </SubSection>
 

@@ -358,51 +358,46 @@
         "description": "Contribution of institutional role (President, Minister, Group Leader, Undersecretary, etc.). Top roles receive an authority boost."
       }
     },
-    "mergerLabels": {
-      "relevance": {
-        "label": "Relevance",
-        "description": "Weight of the cosine similarity between query embedding and chunk embedding. This is the primary signal of thematic relevance."
+    "rrfLabels": {
+      "dense": {
+        "label": "Dense",
+        "description": "Weight of the dense channel (embedding similarity) in RRF fusion. Primary semantic signal — usually the highest weight."
       },
-      "diversity": {
-        "label": "Diversity",
-        "description": "Penalizes chunks from the same speaker to prevent a single parliamentarian from dominating results, ensuring variety of voices."
+      "sparse": {
+        "label": "Sparse",
+        "description": "Weight of the sparse BM25 channel in RRF fusion. Rewards exact lexical matches with query terms."
       },
-      "coverage": {
-        "label": "Coverage",
-        "description": "Rewards representation of multiple parliamentary groups in the final ranking, favoring multi-party perspectives."
+      "graph": {
+        "label": "Graph",
+        "description": "Weight of the EuroVoc graph channel in RRF fusion. Structural signal from parliamentary act traversal — usually the lowest weight."
       },
-      "authority": {
-        "label": "Authority",
-        "description": "Re-weights chunks based on the parliamentarian's authority score (expertise, role, acts). Note: the actual authority ranking happens post-merge."
-      },
-      "salience": {
-        "label": "Salience",
-        "description": "Prefers politically substantive texts over procedural ones (e.g., 'Thank you, Mr. President, you may speak')."
+      "ner": {
+        "label": "NER",
+        "description": "Weight of the entity channel (NER) in RRF fusion. High weight improves precision on queries mentioning specific people or organizations."
       }
     },
     "modelInfo": {
       "analyst": "Stage 1: decomposes the query into thematic claims per party. Structured and repetitive task — gpt-4o-mini is sufficient and cost-effective.",
-      "writer": "Stage 2: writes sections for each parliamentary group from retrieved chunks. Requires high narrative quality and ideological coherence.",
+      "writer": "Model used by the DirectWriter (single-prompt mode) to write the full answer from retrieved chunks. Requires high narrative quality and ideological coherence.",
       "integrator": "Stage 3: integrates sections into a coherent and balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use LLM."
     },
     "retrieval": {
       "title": "Information Retrieval",
-      "description": "Parameters for the two search channels and the result merger",
+      "description": "Parameters for the search channels and RRF rank fusion",
       "denseChannel": "Dense Channel — Embedding",
-      "topKResults": "Top-K Results",
-      "topKResultsInfo": "Maximum number of chunks retrieved by semantic similarity (embedding). Higher values increase recall but also increase latency and computational cost.",
       "similarityThreshold": "Similarity Threshold",
       "similarityThresholdInfo": "Minimum cosine similarity threshold for the dense channel. Chunks with lower similarity are discarded before ranking. Typical range: 0.20–0.45.",
       "graphChannel": "Graph Channel — EuroVoc",
-      "minLexicalMatch": "Min Lexical Match",
-      "minLexicalMatchInfo": "Minimum number of EuroVoc keywords that must match lexically to include a parliamentary act in the graph search. Value 1 = one keyword is enough.",
       "semanticThreshold": "EuroVoc Semantic Threshold",
       "semanticThresholdInfo": "Semantic similarity threshold for EuroVoc matching. Controls how closely the EuroVoc concept must semantically match the query. Typical range: 0.35–0.55.",
       "graphChunkThreshold": "Graph Chunk Threshold",
       "graphChunkThresholdInfo": "Minimum similarity threshold for chunks retrieved via graph traversal. Prevents inclusion of off-topic chunks retrieved only through co-signature of relevant acts.",
       "maxActsPerQuery": "Max Acts per Query",
       "maxActsPerQueryInfo": "Maximum number of parliamentary acts to retrieve per query via the graph channel. Limits the computational load of Neo4j graph traversal.",
-      "mergerWeights": "Merger Weights",
+      "rrfFusion": "RRF Fusion — Channel Weights",
+      "rrfNote": "Reciprocal Rank Fusion combines the channel rankings: each channel contributes weight / (k + rank) for every chunk it retrieves. Weights are relative multipliers, they do not need to sum to 1.",
+      "rrfK": "RRF k Constant",
+      "rrfKInfo": "Rank smoothing constant in the RRF formula weight / (k + rank). Higher values flatten the difference between top and bottom ranks. Standard value: 60.",
       "weightsSumNote": "Weights must sum to 1.00"
     },
     "authority": {
@@ -427,35 +422,11 @@
     },
     "generation": {
       "title": "Generation",
-      "description": "LLM models and parameters for the 4-stage generation pipeline",
-      "llmModels": "LLM Models — 4-Stage Pipeline",
+      "description": "LLM models for answer generation (DirectWriter, single-prompt mode)",
+      "llmModels": "LLM Models",
       "analyst": "Analyst",
       "writer": "Writer",
-      "integrator": "Integrator",
-      "llmParameters": "LLM Parameters",
-      "maxTokenOutput": "Max Token Output",
-      "maxTokenOutputInfo": "Maximum number of tokens generated per response. Increase for longer responses, decrease to contain costs.",
-      "temperature": "Temperature",
-      "temperatureInfo": "Model creativity/randomness. 0 = deterministic and precise, 1 = creative and variable. For analytical texts, 0.2–0.4 is optimal.",
-      "topP": "Top-P (nucleus)",
-      "topPInfo": "Nucleus sampling: considers only tokens with cumulative probability up to Top-P. 1.0 = no filtering. Lower to 0.9–0.95 for more focused output.",
-      "tokenUnit": "tokens",
-      "chunkUnit": "chunks",
-      "charUnit": "chars",
-      "positionBrief": "Position Brief",
-      "enabled": "Enabled",
-      "enabledInfo": "Provides the writer with a summary of the parliamentary group's overall position (top N chunks) before writing the section. Improves ideological coherence of selected citations.",
-      "maxChunksBrief": "Max Brief Chunks",
-      "maxChunksBriefInfo": "Number of chunks included in the position brief. More chunks provide more context but increase input tokens and latency.",
-      "charsPerChunk": "Chars/Chunk",
-      "charsPerChunkInfo": "Maximum characters per chunk in the brief. Truncates long chunks to keep the brief compact.",
-      "contextChars": "Context Chars",
-      "contextCharsInfo": "Context characters shown for each evidence in the brief (text surrounding the citation). Helps the writer understand the tone of the speech.",
-      "generationBehavior": "Generation Behavior",
-      "crossSynthesis": "Cross-Party Synthesis",
-      "crossSynthesisInfo": "Enables the 'Cross-Party Analysis' section (Stage 3.5): identifies cross-party patterns, convergences and divergences between parliamentary groups. Increases response length and cost.",
-      "noEvidenceMessage": "No Evidence Message",
-      "noEvidenceMessageInfo": "Text shown in the parliamentary group section when no relevant speeches are present in the corpus for that query."
+      "integrator": "Integrator"
     },
     "queryRewriting": {
       "title": "Query Rewriting",
@@ -468,7 +439,6 @@
       "maxWords": "Max Words per Rewrite",
       "maxWordsInfo": "Maximum word threshold: queries with a word count equal to or less than this are rewritten. Already descriptive (longer) queries are passed directly to retrieval.",
       "wordsUnit": "words",
-      "keywordUnit": "keyword",
       "actsUnit": "acts"
     }
   },

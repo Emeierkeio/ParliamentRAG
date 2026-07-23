@@ -3,13 +3,12 @@ import { config } from "@/config";
 // Config API — maps to GET/PUT /api/config
 export interface SystemConfig {
   retrieval: {
-    dense_top_k: number;
     dense_similarity_threshold: number;
-    graph_lexical_min_match: number;
     graph_semantic_threshold: number;
     graph_chunk_similarity_threshold: number;
     graph_max_acts_per_query: number;
-    merger_weights: Record<string, number>;
+    rrf_k: number;
+    rrf_weights: Record<string, number>;
   };
   authority: {
     weights: Record<string, number>;
@@ -21,19 +20,6 @@ export interface SystemConfig {
   };
   generation: {
     models: Record<string, string>;
-    parameters: {
-      max_tokens: number;
-      temperature: number;
-      top_p: number;
-    };
-    enable_synthesis: boolean;
-    position_brief: {
-      enabled: boolean;
-      max_chunks: number;
-      chars_per_chunk: number;
-      context_chars: number;
-    };
-    no_evidence_message: string;
   };
   query_rewriting: {
     enabled: boolean;
@@ -49,13 +35,12 @@ function mapRawToConfig(raw: unknown): SystemConfig {
   const generation = r.generation as SystemConfig["generation"] & Record<string, unknown>;
   return {
     retrieval: {
-      dense_top_k: retrieval.dense_top_k,
       dense_similarity_threshold: retrieval.dense_similarity_threshold,
-      graph_lexical_min_match: retrieval.graph_lexical_min_match,
       graph_semantic_threshold: retrieval.graph_semantic_threshold,
       graph_chunk_similarity_threshold: (retrieval.graph_chunk_similarity_threshold as number | undefined) ?? 0.3,
       graph_max_acts_per_query: (retrieval.graph_max_acts_per_query as number | undefined) ?? 100,
-      merger_weights: retrieval.merger_weights as Record<string, number>,
+      rrf_k: (retrieval.rrf_k as number | undefined) ?? 60,
+      rrf_weights: (retrieval.rrf_weights as Record<string, number> | undefined) ?? { dense: 1.0, sparse: 0.8, graph: 0.5, ner: 0.9 },
     },
     authority: {
       weights: authority.weights as Record<string, number>,
@@ -67,10 +52,6 @@ function mapRawToConfig(raw: unknown): SystemConfig {
     },
     generation: {
       models: generation.models as Record<string, string>,
-      parameters: (generation.parameters as SystemConfig["generation"]["parameters"]) ?? { max_tokens: 4000, temperature: 0.3, top_p: 1.0 },
-      enable_synthesis: (generation.enable_synthesis as boolean | undefined) ?? true,
-      position_brief: generation.position_brief as SystemConfig["generation"]["position_brief"],
-      no_evidence_message: generation.no_evidence_message as string,
     },
     query_rewriting: (r.query_rewriting as SystemConfig["query_rewriting"] | undefined) ?? { enabled: true, model: "gpt-4o-mini", max_query_words: 5 },
   };
