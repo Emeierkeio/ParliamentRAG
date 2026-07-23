@@ -111,6 +111,21 @@ def format_date_ddmmyyyy(date_str) -> Optional[str]:
     return s
 
 
+# Group RENAME chains: historical label -> canonical current label.
+# dati.camera.it models an adesione as one continuous membership: when a group
+# RENAMES itself (e.g. Azione-IV joint group -> Azione-PER-RE after the IV split),
+# members who stayed keep the old label with no end date, while members who left
+# get a fresh adesione. Mapping old labels to the canonical name keeps ONE group
+# node per real group (verified 2026-07-23: Richetti vs Faraone rows).
+GROUP_RENAMES = {
+    "AZIONE - ITALIA VIVA - RENEW EUROPE":
+        "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
+    "NOI MODERATI":
+        "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+    "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE":
+        "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+}
+
 # Government group membership map: "LAST FIRST" -> group name
 GOVERNMENT_GROUPS = {
     "MELONI GIORGIA": "FRATELLI D'ITALIA",
@@ -679,6 +694,8 @@ class DatabaseBuilder:
             name, acronym = extract_group_info(r.get('gruppoLabel'))
             if not name:
                 continue
+            # Rename chains: map historical labels to the canonical group name
+            name = GROUP_RENAMES.get(name, name)
             if not acronym:
                 for key, val in SIGLA_FALLBACKS.items():
                     if key in name:
