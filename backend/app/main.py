@@ -95,6 +95,9 @@ def setup_logging():
     )
     for lib in _NOISY_LIBS:
         logging.getLogger(lib).setLevel(logging.WARNING)
+    # Le notification 01N42 (proprietà/relazioni assenti) sono rumore ATTESO
+    # finché il backend è dual-compat v1/v2: ogni DB ignora i rami dell'altro.
+    logging.getLogger("neo4j.notifications").setLevel(logging.ERROR)
 
     # ------------------------------------------------------------------
     # Moduli sotto investigazione attiva → DEBUG esplicito

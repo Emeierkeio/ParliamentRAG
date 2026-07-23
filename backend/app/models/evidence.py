@@ -25,6 +25,12 @@ PARTY_DISPLAY_NAMES: dict[str, str] = {
     "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe",
     "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva - Il Centro - Renew Europe",
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+    # Denominazioni storiche di gruppi rinominati (catena rinomina, non gruppi diversi):
+    # il gruppo congiunto Azione-IV si è rinominato in Azione-PER-RE quando IV è uscita
+    # (chi è uscito ha una nuova adesione; chi è rimasto conserva l'adesione con la label vecchia)
+    "AZIONE - ITALIA VIVA - RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "NOI MODERATI": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+    "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
     "MISTO": "Misto",
     "GOVERNO": "Governo",
 }

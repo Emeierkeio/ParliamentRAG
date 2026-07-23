@@ -15,6 +15,7 @@ SIGIR 1998) and Sentence-BERT (Reimers & Gurevych, EMNLP 2019).
 """
 import json
 import logging
+import re
 from typing import List, Dict, Any, Optional, AsyncIterator
 
 import numpy as np
@@ -66,6 +67,25 @@ NON iniziare con: connettori ("quindi", "però", "perché", "che", "e", "ma", "i
                   preposizioni + dimostrativi ("a questa", "per queste", "per questo")
                   complementi orfani (parole che completano una frase precedente).
 NON terminare in sospeso senza verbo principale o senza oggetto.
+
+REGOLA DI AUTOSUFFICIENZA (la più importante):
+La citazione deve essere COMPRENSIBILE DA SOLA, senza leggere il resto del discorso.
+VIETATE le citazioni con riferimenti irrisolti — pronomi o dimostrativi il cui
+antecedente NON è dentro la citazione:
+✗ «con questa mozione oggi vi chiediamo di interromperLO» ← interrompere COSA? Non si sa.
+✗ «la denuncia di QUEL trattato serve non per farlo decadere» ← QUALE trattato?
+✗ «quindi, credo che I PARERI diano il segno di...» ← quali pareri?
+Se la frase migliore ha un riferimento irrisolto, scegli una frase diversa dallo
+stesso testo che nomini esplicitamente l'oggetto (es. «chiediamo di interrompere
+il memorandum di cooperazione militare con Israele»).
+
+REGOLA ANTI-META-PARLAMENTARE:
+La citazione deve esprimere la POSIZIONE del gruppo SUL TEMA della domanda,
+non parlare del dibattito stesso. NON scegliere come citazione principale:
+- appelli generici all'unità ("rinnovo un appello a tutte le forze politiche")
+- annunci procedurali ("presentiamo una mozione", "voteremo i dispositivi")
+- ringraziamenti, riferimenti ad altri interventi, gestione d'aula
+a meno che il testo non contenga NIENT'ALTRO di sostanziale.
 
 STRUTTURA SEZIONE (3-5 frasi):
 1. TESTO INTRODUTTIVO (1-2 frasi): contestualizza il tema per questo gruppo e anticipa
@@ -183,6 +203,13 @@ STRUTTURA OUTPUT:
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("writer", "gpt-4o")
+        # Quote picker (Fase 2.1): call dedicato e vincolato per la selezione
+        # della citazione — separato dalla scrittura della sezione.
+        # gpt-4o (non mini): il criterio di autosufficienza richiede giudizio —
+        # mini sceglieva ancora frasi anaforiche (test 2026-07-23). ~0.3c/call.
+        self.quote_picker_model = gen_config.get("models", {}).get(
+            "quote_picker", "gpt-4o"
+        )
         self.no_evidence_message = gen_config.get(
             "no_evidence_message",
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
@@ -471,6 +498,135 @@ STRUTTURA OUTPUT:
         for section in sections:
             yield section
 
+    QUOTE_PICKER_PROMPT = """Sei un selezionatore di citazioni parlamentari.
+
+Dal TESTO scegli LA migliore citazione verbatim (1-2 frasi consecutive, 80-350
+caratteri) che soddisfi TUTTI questi criteri:
+1. PERTINENZA: risponde direttamente alla DOMANDA esprimendo la posizione del partito
+   (favorevole/contraria/condizionale) — non descrizioni neutre, non altri argomenti.
+2. AUTOSUFFICIENZA: comprensibile DA SOLA. Vietati pronomi, possessivi o
+   dimostrativi con antecedente fuori dalla citazione («chiediamo di interromperLO»,
+   «QUEL trattato», «I PARERI», «sosteniamo LA SUA difesa» — di chi?).
+   ⚠️ PERICOLO ATTRIBUZIONE: un antecedente fuori dalla citazione può riferirsi a
+   un ALTRO tema. Caso reale: «sosteniamo attivamente la sua difesa e la
+   ricostruzione» sembrava su Israele ma "sua" = l'UCRAINA (detto nel periodo
+   precedente) — citarla per Israele stravolge il significato. Nel dubbio, scegli
+   SOLO frasi che nominano esplicitamente il tema della DOMANDA.
+5. NON contiene «…» (ellissi dello stenografo = testo omesso o interrotto).
+3. NON meta-parlamentare: niente appelli all'unità, annunci di mozioni,
+   ringraziamenti, gestione d'aula. AMMESSI invece i verbi di dire con cui
+   l'oratore introduce la PROPRIA posizione («ho detto che noi sosteniamo...»,
+   «ribadisco che...»): conta il contenuto, non il verbo introduttivo.
+   ✓ VALIDA: «su Israele ho anche detto che noi sosteniamo diverse iniziative,
+   a partire dalle sanzioni verso i coloni» → posizione esplicita e sul tema.
+4. NON inizia con connettivi (quindi, dunque, perciò, e, ma, infatti, per questo...).
+
+ESEMPI DI VALUTAZIONE:
+✗ «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
+  principi della nostra Costituzione» → VIETATA: interrompere COSA? Il pronome
+  "lo" non ha antecedente nella citazione. Anche se esprime una posizione forte,
+  è incomprensibile da sola.
+✗ «la denuncia di quel trattato serve non per farlo decadere» → VIETATA: QUALE trattato?
+✗ «il segnale che chiediamo da questo Parlamento è un voto unanime» → VIETATA:
+  meta-parlamentare, parla del voto in aula e non del tema.
+✓ «chiediamo la sospensione del memorandum di cooperazione militare con Israele,
+  perché contrario al diritto internazionale» → VALIDA: oggetto esplicito, posizione chiara.
+
+⚠️ Se l'unica frase con una posizione esplicita contiene un riferimento irrisolto,
+NON ripiegarci sopra: rispondi NONE (il sistema passerà a un altro intervento).
+
+Rispondi SOLO con la citazione, copiata ESATTAMENTE carattere per carattere dal
+TESTO, senza virgolette e senza commenti.
+Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
+
+    async def _pick_quote(
+        self,
+        query: str,
+        evidence: List[Dict[str, Any]],
+        max_attempts: int = 5,
+    ) -> tuple:
+        """Select the best self-contained verbatim quote across the top evidence.
+
+        Tries up to max_attempts evidence pieces (authority-ordered). Each pick
+        is verified verbatim (whitespace-normalized substring); NONE or a failed
+        verification moves to the next evidence — la rete di scalata che il
+        section writer non aveva.
+
+        Returns:
+            (evidence_id, quote) or (None, None).
+        """
+        for e in evidence[:max_attempts]:
+            if e.get("citation_duplicate_of"):
+                continue
+            eid = e.get("evidence_id", "")
+            text = (e.get("quote_text") or e.get("chunk_text") or "").strip()
+            if not text or len(text) < 80:
+                continue
+            try:
+                response = await self.client.chat.completions.create(
+                    model=self.quote_picker_model,
+                    messages=[
+                        {"role": "system", "content": self.QUOTE_PICKER_PROMPT},
+                        {"role": "user",
+                         "content": f"DOMANDA: {query}\n\nTESTO:\n{text[:3000]}"},
+                    ],
+                    temperature=0.0,
+                    max_tokens=200,
+                )
+                picked = (response.choices[0].message.content or "").strip()
+                picked = picked.strip('«»"\'' )
+            except Exception as exc:
+                logger.warning(f"Quote picker failed for {eid}: {exc}")
+                continue
+
+            if not picked or picked.upper() == "NONE" or len(picked) < 60:
+                logger.info(f"Quote picker: no citable quote in {eid}, trying next evidence")
+                continue
+
+            # Verifica verbatim (whitespace-normalizzata); se il modello ha
+            # alterato la punteggiatura, usa il pick come LOCATORE e ricostruisci
+            # il testo esatto dalle frasi originali del chunk.
+            norm_text = " ".join(text.split())
+            norm_picked = " ".join(picked.split())
+            if norm_picked not in norm_text:
+                reconstructed = self._reconstruct_verbatim(norm_text, norm_picked)
+                if reconstructed is None:
+                    logger.warning(
+                        f"Quote picker: non-verbatim pick for {eid}, trying next "
+                        f"({picked[:60]!r})"
+                    )
+                    continue
+                norm_picked = reconstructed
+
+            logger.info(f"Quote picker: selected quote from {eid} ({len(norm_picked)} chars)")
+            return eid, norm_picked
+        return None, None
+
+    @staticmethod
+    def _reconstruct_verbatim(norm_text: str, norm_picked: str) -> Optional[str]:
+        """Map a near-verbatim pick back onto exact source sentences.
+
+        The picker's output is treated as a locator: we find the contiguous
+        run of ORIGINAL sentences whose (punctuation-insensitive) form matches
+        the pick, and return those original sentences — verbatim by construction.
+        """
+        def loose(s: str) -> str:
+            return re.sub(r'[^\wàèéìòù ]', '', s.lower()).strip()
+
+        target = loose(norm_picked)
+        if len(target) < 40:
+            return None
+        sentences = re.split(r'(?<=[.!?;])\s+', norm_text)
+        for i in range(len(sentences)):
+            acc = ""
+            for j in range(i, min(i + 3, len(sentences))):
+                acc = (acc + " " + sentences[j]).strip()
+                la = loose(acc)
+                if len(la) >= 40 and (la == target or target in la or la in target):
+                    if abs(len(la) - len(target)) <= max(30, len(target) // 3):
+                        return acc
+        return None
+
     async def _write_section(
         self,
         query: str,
@@ -494,6 +650,49 @@ STRUTTURA OUTPUT:
         # max_evidence=3: LLM cites 1 verbatim + uses 2 for analysis without citation
         evidence_context = self._build_evidence_context(evidence, query, max_evidence=3)
 
+        # Fase 2.1 — Quote picker: la citazione viene scelta da un call dedicato
+        # e vincolato PRIMA della scrittura. Il section writer la riceve come
+        # obbligatoria: se non può scegliere, non può sbagliare.
+        picked_eid, picked_quote = await self._pick_quote(query, evidence)
+
+        # Falla chiusa (2026-07-23): se il picker rifiuta TUTTE le evidenze,
+        # la sezione va scritta SENZA citazione — non in modalità libera, dove
+        # il writer ripescava da solo le quote anaforiche già bocciate (M5S
+        # «interromperlo»). Policy unica: ogni quote in pagina è vettata.
+        if not picked_eid:
+            logger.info(
+                f"Quote picker exhausted for '{party}': section will be citation-free"
+            )
+            body = await self.write_section_without_citation(
+                query=query, party=party, evidence=evidence, claims=claims,
+            )
+            if body:
+                return {
+                    "party": party,
+                    "content": f"## {party}\n\n{body}",
+                    "citations": [],
+                    "has_evidence": True,
+                    "citation_free": True,
+                }
+
+        mandatory_quote_block = ""
+        if picked_eid and picked_quote:
+            picked_ev = next(
+                (e for e in evidence if e.get("evidence_id") == picked_eid), {}
+            )
+            picked_speaker = picked_ev.get("speaker_name", "")
+            mandatory_quote_block = f"""
+⚠️ CITAZIONE OBBLIGATORIA (già selezionata e verificata — NON sceglierne un'altra):
+Oratore: {picked_speaker}
+Citazione da usare ESATTAMENTE, carattere per carattere:
+«{picked_quote}» [CIT:{picked_eid}]
+Costruisci l'introduzione e il posizionamento ATTORNO a questa citazione.
+⚠️ La sezione resta COMPLETA in 3 parti (NON accorciarla):
+1. [1-2 frasi introduttive che preparano questa citazione]
+2. **{picked_speaker}** [verbo], «citazione obbligatoria» [CIT:{picked_eid}].
+3. [1-2 frasi di posizionamento generale del gruppo sul tema]
+"""
+
         # Build claims relevant to this party
         party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
 
@@ -504,7 +703,7 @@ Partito: {party}
 
 Evidenze disponibili (ordinate per autorità, usa la PRIMA per la citazione verbatim; le altre per l'analisi):
 {evidence_context}
-
+{mandatory_quote_block}
 ⚠️ ISTRUZIONI CITATION-INTEGRATED:
 1. LEGGI la POSIZIONE COMPLESSIVA DEL GRUPPO per capire la direzione generale
 2. Scegli UNA SOLA evidenza per la citazione verbatim (la più autorevole/incisiva)

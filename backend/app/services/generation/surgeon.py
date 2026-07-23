@@ -394,6 +394,12 @@ class CitationSurgeon:
         quote = re.sub(r'\s*\([^)]*\)\s*', '', quote)
         quote = quote.strip()
 
+        # Enforcement meccanico anti-anafora (il prompt da solo non basta —
+        # osservato 2026-07-23: «quindi, credo...», «dunque, per questo...»,
+        # «proprio per questo, il supporto...»). Toglie i connettivi anaforici
+        # in testa: il resto rimane substring verbatim del testo sorgente.
+        quote = self._strip_anaphoric_opening(quote)
+
         # Strip trailing sentence punctuation — citations are always embedded
         # in narrative text inside «», so a trailing "." would read as:
         # «dimezzare le tasse.» è quello che vuole il Governo (wrong)
@@ -439,6 +445,33 @@ class CitationSurgeon:
             quote = quote[0].lower() + quote[1:] if len(quote) > 1 else quote.lower()
 
         return f'[«{quote}»]({evidence_id})'
+
+    # Connettivi anaforici che legano la frase al discorso precedente:
+    # in testa a una citazione la rendono incomprensibile da sola.
+    _ANAPHORIC_OPENERS = re.compile(
+        r"^(?:(?:e|ma|però|quindi|dunque|perciò|pertanto|allora|infatti|inoltre"
+        r"|insomma|ebbene|del resto|d'altronde|d'altra parte|detto questo"
+        r"|per questo(?:\s+motivo)?|proprio per questo|anche per questo"
+        r"|a tal fine|in questo senso|in tal senso|di conseguenza"
+        r"|come dicevo|come detto)\s*,?\s+)+",
+        re.IGNORECASE,
+    )
+
+    def _strip_anaphoric_opening(self, quote: str) -> str:
+        """Trim leading anaphoric connectives from a verbatim quote.
+
+        Safe by construction: removing a prefix keeps the remainder a verbatim
+        substring of the source text. Applied only when what remains is still
+        a substantial sentence (>= 40 chars).
+        """
+        stripped = self._ANAPHORIC_OPENERS.sub('', quote, count=1)
+        if stripped != quote and len(stripped) >= 40:
+            stripped = stripped[0].upper() + stripped[1:]
+            logger.debug(
+                f"Anaphoric opener stripped: {quote[:40]!r} -> {stripped[:40]!r}"
+            )
+            return stripped
+        return quote
 
     @staticmethod
     def _expand_to_sentence_start(

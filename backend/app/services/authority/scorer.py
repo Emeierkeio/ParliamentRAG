@@ -262,7 +262,7 @@ class AuthorityScorer:
         # giving ~0.8s/speaker × 48 = 39s. Parallel individual queries let Neo4j
         # process up to max_workers speakers simultaneously → ~5-10s total.
         all_data: Dict[str, Any] = {}
-        with ThreadPoolExecutor(max_workers=min(20, max(1, len(speaker_ids)))) as db_pool:
+        with ThreadPoolExecutor(max_workers=min(6, max(1, len(speaker_ids)))) as db_pool:
             db_futures = {
                 db_pool.submit(self._fetch_speaker_data, sid, reference_date): sid
                 for sid in speaker_ids
@@ -460,15 +460,24 @@ class AuthorityScorer:
                 END
             ) AS acts
 
-            OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
-            OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
-            WHERE s.date >= date() - duration({years: 4})
+            // Bound di memoria (2026-07-23): senza LIMIT questa fetch materializza
+            // gli embedding di TUTTI gli interventi di ogni speaker — con le liste
+            // native v2 ha mandato in OOM il container due volte. 300 interventi
+            // recenti bastano per la topic relevance e limitano a ~15MB/speaker.
+            CALL {
+                WITH d
+                OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
+                OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+                WHERE s.date >= date() - duration({years: 4})
+                WITH i, s ORDER BY s.date DESC LIMIT 300
+                RETURN collect(
+                    CASE WHEN i IS NOT NULL
+                         THEN {speech_id: i.id, date: s.date, text_embedding: i.text_embedding}
+                    END
+                ) AS interventions
+            }
             WITH d, target_id, group_memberships, committee_memberships,
-                 institutional_roles, acts, collect(
-                CASE WHEN i IS NOT NULL
-                     THEN {speech_id: i.id, date: s.date, text_embedding: i.text_embedding}
-                END
-            ) AS interventions
+                 institutional_roles, acts, interventions
 
             RETURN target_id AS tid,
                    d.id AS speaker_id,
@@ -652,14 +661,19 @@ class AuthorityScorer:
             description_embedding: a.description_embedding
         }) AS acts
 
-        OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
-        OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
-        WHERE s.date >= date() - duration({years: 4})
-        WITH d, group_memberships, committee_memberships, institutional_roles, acts, collect({
-            speech_id: i.id,
-            date: s.date,
-            text_embedding: i.text_embedding
-        }) AS interventions
+        CALL {
+            WITH d
+            OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
+            OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
+            WHERE s.date >= date() - duration({years: 4})
+            WITH i, s ORDER BY s.date DESC LIMIT 300
+            RETURN collect(
+                CASE WHEN i IS NOT NULL
+                     THEN {speech_id: i.id, date: s.date, text_embedding: i.text_embedding}
+                END
+            ) AS interventions
+        }
+        WITH d, group_memberships, committee_memberships, institutional_roles, acts, interventions
 
         RETURN d.id AS speaker_id,
                d.first_name AS first_name,

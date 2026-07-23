@@ -102,6 +102,11 @@ STRUTTURA OBBLIGATORIA PER OGNI PARTITO (3 parti, preserva tutto il contenuto):
 
 ⚠️ NON comprimere le sezioni: mantieni il contenuto completo di ciascuna sezione, solo integra il nome del partito all'inizio.
 
+⚠️ OGNI PARTITO ESATTAMENTE UNA VOLTA: un solo paragrafo "Per [Partito], ..." per
+ciascun partito. MAI due paragrafi per lo stesso partito, nemmeno con nome scritto
+in modo leggermente diverso. Copia il nome del partito ESATTAMENTE dal tag
+[PARTITO: ...], apostrofi inclusi.
+
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
 Il marcatore {CIT:N} deve essere preceduto da un bridge verbale:
 ✅ **Rossi** afferma che {CIT:3}

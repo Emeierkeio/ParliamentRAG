@@ -21,6 +21,7 @@ from datetime import datetime
 
 from .analyst import ClaimAnalyst
 from .sectional import SectionalWriter
+from .evidence_first_writer import EvidenceFirstWriter
 from .integrator import NarrativeIntegrator
 from .surgeon import CitationSurgeon
 from .synthesis import ConvergenceDivergenceAnalyzer
@@ -58,6 +59,8 @@ class GenerationPipeline:
 
         self.analyst = ClaimAnalyst()
         self.sectional_writer = SectionalWriter()
+        # Sostituzione citazioni hard-removed: intro coerenti per costruzione
+        self.evidence_first_writer = EvidenceFirstWriter()
         self.integrator = NarrativeIntegrator()
         self.surgeon = CitationSurgeon()
         self.synthesis_analyzer = ConvergenceDivergenceAnalyzer()
@@ -254,17 +257,78 @@ class GenerationPipeline:
                     # Also remove bare [CIT:id] if no inline quote preceded it
                     integrated_text = re.sub(rf'\[CIT:{re.escape(eid)}\]', '', integrated_text)
 
-                # Rewrite paragraphs for every party whose only citation was hard-removed.
-                # Any hard-removal leaves a disconnected intro/positioning sentence, regardless
-                # of whether the score was 0.34 or 0.19 — so we rewrite for all of them.
+                # Fase 2 (prima fetta) — SOSTITUZIONE prima della resa:
+                # per ogni citazione hard-removed prova l'evidenza successiva del
+                # partito via EvidenceFirstWriter (intro coerente per costruzione,
+                # era il suo scopo originario). Solo se non c'è alternativa si
+                # ripiega sul paragrafo senza citazione.
                 if hard_mismatches:
+                    removed_ids = {ic.get("evidence_id", "") for ic in hard_mismatches}
+                    used_ids = set(re.findall(r'\[CIT:([^\]]+)\]', integrated_text))
+
                     rewrite_tasks = {}
                     for ic in hard_mismatches:
                         eid = ic.get("evidence_id", "")
-                        party = evidence_map.get(eid, {}).get("party", "")
+                        removed_ev = evidence_map.get(eid, {})
+                        party = removed_ev.get("party", "")
+                        is_gov = (
+                            removed_ev.get("coalition") == "governo"
+                            or removed_ev.get("speaker_role") == "GovernmentMember"
+                        )
+
+                        # --- GOVERNO: sostituisci nella sezione dedicata ---
+                        if is_gov:
+                            gov_alternatives = [
+                                e for e in government_evidence
+                                if e.get("evidence_id") not in removed_ids
+                                and e.get("evidence_id") not in used_ids
+                            ]
+                            if gov_alternatives:
+                                # Anche la sostituzione passa dal quote picker
+                                # (2026-07-23: chunk_3 Meloni iniziava con la frase
+                                # sull'Ucraina — l'EvidenceFirstWriter la citava
+                                # bypassando ogni criterio di autosufficienza)
+                                pick_eid, pick_quote = await self.sectional_writer._pick_quote(
+                                    query, gov_alternatives
+                                )
+                                if not pick_eid:
+                                    logger.info(
+                                        f"No citable GOVERNO substitute (picker) for {eid}"
+                                    )
+                                    continue
+                                gov_alternatives = [
+                                    {**e, "quote_text": pick_quote}
+                                    for e in gov_alternatives
+                                    if e.get("evidence_id") == pick_eid
+                                ]
+                                if pick_eid in evidence_map:
+                                    evidence_map[pick_eid]["quote_text"] = pick_quote
+                                section = await self.evidence_first_writer.write_section_evidence_first(
+                                    query=query, party="GOVERNO",
+                                    evidence=gov_alternatives, max_citations=1,
+                                )
+                                new_body = re.sub(r'^###[^\n]*\n+', '', section.get("content", "")).strip()
+                                new_ids = re.findall(r'\[CIT:([^\]]+)\]', new_body)
+                                if new_body and new_ids:
+                                    replaced = re.sub(
+                                        r'(## Posizione del Governo\s*\n+).*?(?=\n\n##|\Z)',
+                                        lambda m: m.group(1) + new_body,
+                                        integrated_text, count=1, flags=re.DOTALL,
+                                    )
+                                    if replaced != integrated_text:
+                                        integrated_text = replaced
+                                        used_ids.update(new_ids)
+                                        logger.info(
+                                            f"Substituted hard-removed GOVERNO citation "
+                                            f"{eid} with {new_ids[0]}"
+                                        )
+                                        continue
+                            logger.info(f"No GOVERNO substitute available for {eid}")
+                            continue
+
                         if not party or party in rewrite_tasks:
                             continue
-                        # Only rewrite if the party has no remaining [CIT:] in the text
+                        # Only act if the party has no remaining [CIT:] in the text
                         remaining = re.findall(r'\[CIT:[^\]]+\]', integrated_text)
                         party_eids = {e.get("evidence_id") for e in evidence_by_party.get(party, [])}
                         has_other_citations = any(
@@ -274,6 +338,51 @@ class GenerationPipeline:
                             logger.info(f"Skipping rewrite for '{party}': still has other citations")
                             continue
                         party_evidence = evidence_by_party.get(party, [])
+
+                        # --- PARTITO: prova la sostituzione con l'evidenza successiva ---
+                        alternatives = [
+                            e for e in party_evidence
+                            if e.get("evidence_id") not in removed_ids
+                            and e.get("evidence_id") not in used_ids
+                        ]
+                        if alternatives:
+                            pick_eid, pick_quote = await self.sectional_writer._pick_quote(
+                                query, alternatives
+                            )
+                            if not pick_eid:
+                                logger.info(
+                                    f"No citable substitute (picker) for '{party}'"
+                                )
+                                if party_evidence:
+                                    rewrite_tasks[party] = party_evidence
+                                continue
+                            alternatives = [
+                                {**e, "quote_text": pick_quote}
+                                for e in alternatives
+                                if e.get("evidence_id") == pick_eid
+                            ]
+                            if pick_eid in evidence_map:
+                                evidence_map[pick_eid]["quote_text"] = pick_quote
+                            section = await self.evidence_first_writer.write_section_evidence_first(
+                                query=query, party=party,
+                                evidence=alternatives, max_citations=1,
+                            )
+                            new_body = re.sub(r'^###[^\n]*\n+', '', section.get("content", "")).strip()
+                            new_ids = re.findall(r'\[CIT:([^\]]+)\]', new_body)
+                            if new_body and new_ids:
+                                before = integrated_text
+                                integrated_text = self._replace_party_paragraph(
+                                    integrated_text, party, new_body
+                                )
+                                if integrated_text != before:
+                                    used_ids.update(new_ids)
+                                    logger.info(
+                                        f"Substituted hard-removed citation for '{party}': "
+                                        f"{eid} -> {new_ids[0]}"
+                                    )
+                                    continue
+
+                        # Nessuna alternativa: vecchio comportamento (paragrafo senza quote)
                         if party_evidence:
                             rewrite_tasks[party] = party_evidence
 
@@ -303,6 +412,13 @@ class GenerationPipeline:
                             integrated_text = self._inject_rewritten_paragraphs(
                                 integrated_text, failed_rewrites
                             )
+
+        # === Dedup party paragraphs ===
+        # The integrator LLM can emit the same party twice (observed 2026-07-23:
+        # double Fratelli d'Italia, one smart-quoted ’ and one straight '), and
+        # fallback injections can add a second paragraph when apostrophe
+        # mismatches hid the original. One party = one paragraph, always.
+        integrated_text = self._dedupe_party_paragraphs(integrated_text)
 
         # Update registry with coherence scores
         for detail in coherence_report.get("details", []):
@@ -652,7 +768,11 @@ class GenerationPipeline:
         Falls back to a loose match when the integrator used a non-standard
         opening (e.g. "Il {party} critica..." instead of "Per {party}, ...").
         """
-        party_escaped = re.escape(party)
+        # Apostrophe tolerance: the integrator LLM smart-quotes ' into ’, so
+        # "Fratelli d'Italia" (config) never matches "Fratelli d'Italia" (text).
+        # Every apostrophe in the pattern matches both variants; loose
+        # comparison normalizes both sides.
+        party_escaped = re.escape(party).replace(r"'", "['’]").replace("’", "['’]")
         # Strict match: canonical "Per {party}," format
         pattern = rf'(Per {party_escaped},\s+).*?(?=\n\nPer |\n\n##|\Z)'
         new_text, n = re.subn(pattern, rf'\g<1>{new_body}', text, flags=re.DOTALL)
@@ -663,19 +783,61 @@ class GenerationPipeline:
         # Loose match: integrator may have opened with "Il {party} ..." or similar.
         # Split on double-newlines and find the paragraph whose first sentence
         # contains the party name; replace the whole paragraph.
+        party_norm = party.replace("’", "'")
         parts = text.split('\n\n')
         for i, part in enumerate(parts):
             stripped = part.lstrip()
             if stripped.startswith('##'):
                 continue
-            first_sentence = stripped.split('.')[0]
-            if party in first_sentence:
+            first_sentence = stripped.split('.')[0].replace("’", "'")
+            if party_norm in first_sentence:
                 parts[i] = f"Per {party}, {new_body}"
                 logger.info(f"Rewrote citation-free paragraph for '{party}' (loose match)")
                 return '\n\n'.join(parts)
 
         logger.warning(f"Could not locate paragraph for '{party}' in integrated text — skipping rewrite")
         return text
+
+    @staticmethod
+    def _dedupe_party_paragraphs(text: str) -> str:
+        """Enforce one paragraph per party in the integrated text.
+
+        Duplicates arise from LLM repetition or fallback injections that
+        missed the original paragraph due to apostrophe variants. The kept
+        paragraph is the one WITH citations ([CIT: or «»-linked); on parity,
+        the first occurrence wins. Party keys are apostrophe-normalized.
+        """
+        parts = text.split('\n\n')
+        # First pass: index "Per {party}," paragraphs by normalized party key
+        party_of_part: Dict[int, str] = {}
+        by_party: Dict[str, list] = {}
+        for i, part in enumerate(parts):
+            m = re.match(r'\s*Per ([^,]{3,90}),', part)
+            if not m:
+                continue
+            key = m.group(1).replace("’", "'").strip().lower()
+            party_of_part[i] = key
+            by_party.setdefault(key, []).append(i)
+
+        to_drop: set = set()
+        for key, idxs in by_party.items():
+            if len(idxs) < 2:
+                continue
+            # Keep the paragraph with citations; on parity keep the first
+            def has_cit(i: int) -> bool:
+                return '[CIT:' in parts[i] or '](' in parts[i] or '«' in parts[i]
+            keeper = next((i for i in idxs if has_cit(i)), idxs[0])
+            for i in idxs:
+                if i != keeper:
+                    to_drop.add(i)
+            logger.warning(
+                f"Deduped duplicate party paragraph(s) for {key!r}: "
+                f"kept #{keeper}, dropped {sorted(to_drop & set(idxs))}"
+            )
+
+        if not to_drop:
+            return text
+        return '\n\n'.join(p for i, p in enumerate(parts) if i not in to_drop)
 
     def _inject_rewritten_paragraphs(
         self,
