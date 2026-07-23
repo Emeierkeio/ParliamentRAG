@@ -495,15 +495,15 @@ class SentenceExtractor:
         query_tokens = set(self._tokenize(query))
 
         if not query_tokens:
-            # No meaningful query tokens, return sentences with position score
-            return [(s, 1.0 / (i + 1), i) for i, s in enumerate(sentences)]
+            # No meaningful query tokens: no overlap gate possible, all citable
+            return [(s, 1.0 / (i + 1), i, True) for i, s in enumerate(sentences)]
 
         scored = []
         for i, sentence in enumerate(sentences):
             sentence_tokens = self._tokenize(sentence)
 
             if not sentence_tokens:
-                scored.append((sentence, 0.0, i))
+                scored.append((sentence, 0.0, i, False))
                 continue
 
             # Calculate overlap score
@@ -522,7 +522,13 @@ class SentenceExtractor:
             total_score = (overlap_score * 0.30 + completeness * 0.20
                            + density * 0.15 + salience * 0.25
                            + position_bonus * 0.10)
-            scored.append((sentence, total_score, i))
+
+            # Citability gate (PLAN_citation_quality Fase 0.3): a sentence is
+            # citable only if it mentions the query topic (overlap > 0) OR
+            # carries strong political content on its own (salience >= 0.7).
+            # Kills topic-irrelevant rhetoric like party self-narration.
+            citable = len(overlap) > 0 or salience >= 0.7
+            scored.append((sentence, total_score, i, citable))
 
         return scored
 
@@ -533,7 +539,7 @@ class SentenceExtractor:
 
     def _select_best(
         self,
-        scored: List[Tuple[str, float, int]],
+        scored: List[Tuple[str, float, int, bool]],
         max_chars: Optional[int]
     ) -> List[str]:
         """Select the best sentences within character limit.
@@ -541,12 +547,22 @@ class SentenceExtractor:
         Prefers complete sentences that fit within the limit over
         truncating a longer sentence. Skips sentences whose completeness
         score is below MIN_QUALITY_SCORE when alternatives exist.
+
+        Citability gate (Fase 0.3): sentences that fail the gate
+        (no query overlap AND weak salience) are NEVER selected — if
+        nothing passes, returns [] so callers can move to other evidence.
+        There is deliberately NO keep-at-least-one fallback here.
         """
         if not scored:
             return []
 
+        # Hard gate first: only citable sentences may be quoted
+        citable = [s for s in scored if s[3]]
+        if not citable:
+            return []
+
         # Sort by score descending
-        sorted_by_score = sorted(scored, key=lambda x: x[1], reverse=True)
+        sorted_by_score = sorted(citable, key=lambda x: x[1], reverse=True)
 
         # Filter out very low quality sentences if better alternatives exist
         if len(sorted_by_score) > 1:
@@ -558,7 +574,7 @@ class SentenceExtractor:
         selected = []
         total_chars = 0
 
-        for sentence, score, orig_idx in sorted_by_score:
+        for sentence, score, orig_idx, _citable in sorted_by_score:
             if len(selected) >= self.max_sentences:
                 break
 
@@ -567,7 +583,7 @@ class SentenceExtractor:
                     # Best sentence doesn't fit — try to find a shorter one
                     # that still scores well (at least 50% of best score)
                     best_score = sorted_by_score[0][1]
-                    for alt_sentence, alt_score, alt_idx in sorted_by_score[1:]:
+                    for alt_sentence, alt_score, alt_idx, _alt_citable in sorted_by_score[1:]:
                         if alt_score >= best_score * 0.5 and len(alt_sentence) <= max_chars:
                             selected.append((alt_sentence, alt_idx))
                             total_chars += len(alt_sentence) + 1

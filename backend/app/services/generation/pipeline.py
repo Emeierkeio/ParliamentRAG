@@ -529,10 +529,22 @@ class GenerationPipeline:
         )
         dates = [e.get("date") for e in evidence_list if e.get("date")]
 
-        # Find the most frequent debate title to name the specific provvedimento
+        # Find the most frequent debate title to name the specific provvedimento.
+        # Procedural continuation headings ("Si riprende la discussione...") name
+        # no provvedimento: excluded so the intro never leads with them.
+        procedural_title = re.compile(
+            r'(?i)^\s*(si riprende la discussione'
+            r'|seguito della discussione\.?\s*$'
+            r'|ripresa della discussione'
+            r'|discussione congiunta\.?\s*$'
+            r'|missioni\.?\s*$'
+            r'|interventi di fine seduta'
+            r'|ordine del giorno della prossima seduta)'
+        )
         debate_titles = [
             e.get("debate_title") for e in evidence_list
             if e.get("debate_title")
+            and not procedural_title.match(e.get("debate_title", ""))
         ]
         most_common_title = (
             Counter(debate_titles).most_common(1)[0][0]

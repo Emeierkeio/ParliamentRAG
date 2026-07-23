@@ -37,13 +37,25 @@ class NarrativeIntegrator:
 STRUTTURA (in questo ordine):
 
 ## Introduzione
-2-3 frasi che inquadrano il tema con DATI CONCRETI forniti nelle statistiche:
-- NOMINA specificamente il provvedimento, decreto, DDL o proposta in discussione
-- CITA il numero di interventi analizzati e il numero di deputati coinvolti
-- INDICA il periodo temporale (data primo e ultimo intervento)
-- CITA le sedute specifiche (es. Seduta N. 123) quando disponibili
-- NON anticipare le posizioni dei partiti
-- NON usare **grassetto** per numeri, statistiche o dati nell'introduzione (il grassetto è riservato SOLO ai cognomi dei deputati)
+ESATTAMENTE 2 frasi, in questo ordine:
+
+FRASE 1 — IL MERITO (la più importante):
+Sintetizza COSA si discute concretamente: il provvedimento specifico (decreto, DDL,
+mozione) se indicato nelle statistiche, e le questioni sostanziali in gioco che emergono
+dalle sezioni (es. "gli aiuti militari, il cessate il fuoco e il riconoscimento dello
+Stato palestinese" — NON formule vuote come "un tema importante e dibattuto").
+Deriva il contenuto dalle sezioni dei partiti, ma SENZA anticipare le loro posizioni.
+
+FRASE 2 — LA SCALA:
+Numero di interventi analizzati, numero di deputati coinvolti e periodo temporale.
+
+VIETATO nell'introduzione:
+- Elencare numeri di seduta (es. "N. 175, 180, 184...") — MAI in prosa
+- Frasi-formula senza contenuto ("si è sviluppata nell'ambito del dibattito",
+  "tema complesso e delicato", "ampio confronto tra le forze politiche")
+- Usare come nome del provvedimento titoli procedurali tipo "Si riprende la discussione"
+- Anticipare le posizioni dei singoli partiti
+- **Grassetto** su numeri o statistiche (riservato SOLO ai cognomi dei deputati)
 
 ## Posizione del Governo (se presente)
 Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
@@ -166,15 +178,9 @@ REGOLE GENERALI:
             last_str = last_date.strftime("%d/%m/%Y") if hasattr(last_date, 'strftime') else str(last_date)
             parts.append(f"- Periodo: dal {first_str} al {last_str}")
 
-        # Session numbers for academic traceability
-        session_numbers = topic_statistics.get("session_numbers", [])
-        if session_numbers:
-            sorted_sessions = sorted(session_numbers)
-            sessions_str = ", ".join(str(s) for s in sorted_sessions[:5])
-            if len(sorted_sessions) > 5:
-                sessions_str += f" e altre {len(sorted_sessions) - 5}"
-            parts.append(f"- Sedute parlamentari: N. {sessions_str}")
-
+        # Session numbers stay OUT of the prompt: they were producing noise
+        # lists ("N. 175, 180, ... e altre 26") in the introduction. The
+        # frontend still gets them via topic_stats.sessions_detail (clickable).
         return "\n".join(parts) + "\n"
 
     def _strip_citations(
@@ -247,7 +253,7 @@ REGOLE GENERALI:
 Sezioni:
 {sections_text}
 
-Crea documento CONCISO con Introduzione (2-3 frasi che NOMINANO il provvedimento specifico e citano le STATISTICHE fornite sopra) + sezioni per coalizione.
+Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discussione — provvedimento e questioni in gioco; frase 2: interventi, deputati e periodo; MAI elenchi di sedute in prosa) + sezioni per coalizione.
 
 ⚠️ CRITICO:
 1. Copia ESATTAMENTE ogni {{CIT:N}} carattere per carattere - NON modificare i numeri!
