@@ -316,9 +316,10 @@ db-populate: db-install ## Full DB build (skip CSV download if present)
 	done
 	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
 	@# 3. Download CSVs if missing
-	@test -f $(ROOT_DIR)/data/deputati_xix.csv || \
-		(printf "$(CYAN)CSV files not found — downloading from dati.camera.it...$(RESET)\n" && \
-		 $(PYTHON) $(BUILD_DIR)/download_deputies_csv.py)
+	@# CSV sempre freschi: membership/rinomine gruppi cambiano nel tempo
+	@# (2026-07-23: CSV di aprile ha nascosto la rinomina Azione-IV -> Azione-PER-RE)
+	@printf "$(CYAN)Refreshing CSV files from dati.camera.it...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
 	@# 4. Run build
 	@$(PYTHON) $(BUILD_SCRIPT) build \
 		--neo4j-uri $(NEO4J_LOCAL) \
