@@ -168,11 +168,14 @@ def _search_acts_text(
         where_clauses.append("d.id = $deputy_id")
         params["deputy_id"] = deputy_id
 
+    # presentation_date: date nativa (v2) o 'YYYYMMDD' string (v1) — normalizza
     if start_date:
-        where_clauses.append("a.dataPresentazione >= $start_date_act")
+        where_clauses.append(
+            "replace(toString(a.presentation_date), '-', '') >= $start_date_act")
         params["start_date_act"] = start_date.replace("-", "")
     if end_date:
-        where_clauses.append("a.dataPresentazione <= $end_date_act")
+        where_clauses.append(
+            "replace(toString(a.presentation_date), '-', '') <= $end_date_act")
         params["end_date_act"] = end_date.replace("-", "")
 
     where_clause = " AND ".join(where_clauses)
@@ -189,18 +192,21 @@ def _search_acts_text(
     AND {where_clause}
     OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
     {group_filter}
+    OPTIONAL MATCH (a)-[:HAS_SUBJECT]->(ev:EurovocConcept)
+    WITH a, d, g, collect(ev.label_it) AS eurovoc_labels
     RETURN a.uri AS act_uri,
-           a.tipo AS act_type,
+           a.type AS act_type,
            a.title AS act_title,
            a.description AS description,
-           a.dataPresentazione AS date_raw,
-           a.numero AS act_number,
-           a.destinatario AS destinatario,
-           a.eurovoc AS eurovoc,
+           toString(a.presentation_date) AS date_raw,
+           a.number AS act_number,
+           a.recipient AS destinatario,
+           coalesce(a.eurovoc, reduce(s = '', l IN eurovoc_labels |
+               CASE WHEN s = '' THEN l ELSE s + '; ' + l END)) AS eurovoc,
            d.first_name AS first_name,
            d.last_name AS last_name,
            coalesce(g.name, 'MISTO') AS group_name
-    ORDER BY a.dataPresentazione DESC
+    ORDER BY date_raw DESC
     LIMIT $limit
     """
 
@@ -208,10 +214,9 @@ def _search_acts_text(
         result = session.run(cypher, **params)
         records = []
         for record in result:
-            # Format date from YYYYMMDD to YYYY-MM-DD
+            # v1: 'YYYYMMDD' → riformatta; v2: toString(date) è già ISO
             date_raw = record["date_raw"] or ""
-            formatted_date = ""
-            if len(date_raw) == 8:
+            if len(date_raw) == 8 and date_raw.isdigit():
                 formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
             else:
                 formatted_date = date_raw
@@ -350,11 +355,15 @@ def _search_acts_semantic(
     if group:
         extra_where.append("g.name IN $groups")
         params["groups"] = group
+    # presentation_date: date nativa nel DB v2, stringa 'YYYYMMDD' nel v1.
+    # replace(toString(...)) normalizza entrambe a 'YYYYMMDD' per il confronto.
     if start_date:
-        extra_where.append("a.dataPresentazione >= $start_date_act")
+        extra_where.append(
+            "replace(toString(a.presentation_date), '-', '') >= $start_date_act")
         params["start_date_act"] = start_date.replace("-", "")
     if end_date:
-        extra_where.append("a.dataPresentazione <= $end_date_act")
+        extra_where.append(
+            "replace(toString(a.presentation_date), '-', '') <= $end_date_act")
         params["end_date_act"] = end_date.replace("-", "")
 
     # When filtering by deputy/group, use MATCH instead of OPTIONAL MATCH
@@ -378,14 +387,18 @@ def _search_acts_semantic(
     {group_match}
     WITH a, d, g, score
     {filter_clause}
+    OPTIONAL MATCH (a)-[:HAS_SUBJECT]->(ev:EurovocConcept)
+    WITH a, d, g, score, collect(ev.label_it) AS eurovoc_labels
     RETURN a.uri AS act_uri,
-           a.tipo AS act_type,
+           a.type AS act_type,
            a.title AS act_title,
            a.description AS description,
-           a.dataPresentazione AS date_raw,
-           a.numero AS act_number,
-           a.destinatario AS destinatario,
-           a.eurovoc AS eurovoc,
+           toString(a.presentation_date) AS date_raw,
+           a.number AS act_number,
+           a.recipient AS destinatario,
+           // v1: stringa appiattita sull'atto; v2: nodi EurovocConcept
+           coalesce(a.eurovoc, reduce(s = '', l IN eurovoc_labels |
+               CASE WHEN s = '' THEN l ELSE s + '; ' + l END)) AS eurovoc,
            d.first_name AS first_name,
            d.last_name AS last_name,
            coalesce(g.name, 'MISTO') AS group_name,
@@ -399,8 +412,8 @@ def _search_acts_semantic(
     records = []
     for r in results:
         date_raw = r.get("date_raw") or ""
-        formatted_date = ""
-        if len(date_raw) == 8:
+        # v1: 'YYYYMMDD' string → riformatta; v2: date nativa → toString dà già ISO
+        if len(date_raw) == 8 and date_raw.isdigit():
             formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
         else:
             formatted_date = date_raw
@@ -706,14 +719,17 @@ async def get_act_detail(act_uri: str) -> Dict[str, Any]:
         OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a)
         WHERE (d:Deputy OR d:GovernmentMember)
         OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+        OPTIONAL MATCH (a)-[:HAS_SUBJECT]->(ev:EurovocConcept)
+        WITH a, d, g, collect(ev.label_it) AS eurovoc_labels
         RETURN a.uri AS act_uri,
-               a.tipo AS act_type,
+               a.type AS act_type,
                a.title AS act_title,
                a.description AS description,
-               a.dataPresentazione AS date_raw,
-               a.numero AS act_number,
-               a.destinatario AS destinatario,
-               a.eurovoc AS eurovoc,
+               toString(a.presentation_date) AS date_raw,
+               a.number AS act_number,
+               a.recipient AS destinatario,
+               coalesce(a.eurovoc, reduce(s = '', l IN eurovoc_labels |
+                   CASE WHEN s = '' THEN l ELSE s + '; ' + l END)) AS eurovoc,
                d.first_name AS first_name,
                d.last_name AS last_name,
                coalesce(g.name, 'MISTO') AS group_name
@@ -727,10 +743,9 @@ async def get_act_detail(act_uri: str) -> Dict[str, Any]:
             if not record:
                 raise HTTPException(status_code=404, detail=f"Act {act_uri} not found")
 
-            # Format date from YYYYMMDD to YYYY-MM-DD
+            # v1: 'YYYYMMDD' → riformatta; v2: toString(date) è già ISO
             date_raw = record["date_raw"] or ""
-            formatted_date = ""
-            if len(date_raw) == 8:
+            if len(date_raw) == 8 and date_raw.isdigit():
                 formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
             else:
                 formatted_date = date_raw

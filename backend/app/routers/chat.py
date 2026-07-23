@@ -446,12 +446,14 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                                g.name AS party,
                                s.id AS session_id,
                                s.date AS session_date,
-                               d.title AS debate_title
+                               coalesce(d.parent_debate_title, d.title) AS debate_title
                         """,
                         {"chunk_ids": extra_citation_ids}
                     )
                 )
-                from ..models.evidence import normalize_speaker_name, normalize_party_name
+                from ..models.evidence import (
+                    normalize_speaker_name, normalize_party_name, compute_chunk_span,
+                )
                 config = get_config()
                 for row in db_rows:
                     eid = row.get("chunk_id", "")
@@ -468,6 +470,12 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     else:
                         date_obj = date.today()
 
+                    span_start, span_end = compute_chunk_span(
+                        row.get("text", "") or "",
+                        row.get("chunk_text", "") or "",
+                        fallback_start=row.get("span_start") or 0,
+                        fallback_end=row.get("span_end") or 0,
+                    )
                     extra_evidence_map[eid] = {
                         "evidence_id": eid,
                         "chunk_text": row.get("chunk_text", ""),
@@ -482,8 +490,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                         "party": party,
                         "coalition": config.get_coalition(party),
                         "date": date_obj,
-                        "span_start": row.get("span_start", 0),
-                        "span_end": row.get("span_end", 0),
+                        "span_start": span_start,
+                        "span_end": span_end,
                         "debate_title": row.get("debate_title", ""),
                         "session_id": row.get("session_id", ""),
                     }
@@ -935,12 +943,14 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                                g.name AS party,
                                s.id AS session_id,
                                s.date AS session_date,
-                               d.title AS debate_title
+                               coalesce(d.parent_debate_title, d.title) AS debate_title
                         """,
                         {"chunk_ids": extra_citation_ids}
                     )
                 )
-                from ..models.evidence import normalize_speaker_name, normalize_party_name
+                from ..models.evidence import (
+                    normalize_speaker_name, normalize_party_name, compute_chunk_span,
+                )
                 config = get_config()
                 for row in db_rows:
                     eid = row.get("chunk_id", "")
@@ -957,6 +967,12 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                     else:
                         date_obj = date.today()
 
+                    span_start, span_end = compute_chunk_span(
+                        row.get("text", "") or "",
+                        row.get("chunk_text", "") or "",
+                        fallback_start=row.get("span_start") or 0,
+                        fallback_end=row.get("span_end") or 0,
+                    )
                     extra_evidence_map[eid] = {
                         "evidence_id": eid,
                         "chunk_text": row.get("chunk_text", ""),
@@ -971,8 +987,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
                         "party": party,
                         "coalition": config.get_coalition(party),
                         "date": date_obj,
-                        "span_start": row.get("span_start", 0),
-                        "span_end": row.get("span_end", 0),
+                        "span_start": span_start,
+                        "span_end": span_end,
                         "debate_title": row.get("debate_title", ""),
                         "session_id": row.get("session_id", ""),
                     }
@@ -1205,19 +1221,37 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         WITH d
         OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
         WHERE rp.end_date IS NULL OR rp.end_date >= date()
-        RETURN collect(DISTINCT 'Presidente ' + cp.name) AS president_roles
+        WITH d, collect(DISTINCT 'Presidente ' + cp.name) AS v1_president_roles
+        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        OPTIONAL MATCH (d)-[rpm:MEMBER_OF_COMMITTEE]->(cpm:Committee)
+        WHERE rpm.role = 'president'
+          AND (rpm.end_date IS NULL OR rpm.end_date >= date())
+        WITH v1_president_roles, collect(DISTINCT 'Presidente ' + cpm.name) AS v2_president_roles
+        RETURN v1_president_roles + v2_president_roles AS president_roles
     }
     CALL {
         WITH d
         OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
         WHERE rv.end_date IS NULL OR rv.end_date >= date()
-        RETURN collect(DISTINCT 'Vicepresidente ' + cv.name) AS vice_roles
+        WITH d, collect(DISTINCT 'Vicepresidente ' + cv.name) AS v1_vice_roles
+        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        OPTIONAL MATCH (d)-[rvm:MEMBER_OF_COMMITTEE]->(cvm:Committee)
+        WHERE rvm.role = 'vice_president'
+          AND (rvm.end_date IS NULL OR rvm.end_date >= date())
+        WITH v1_vice_roles, collect(DISTINCT 'Vicepresidente ' + cvm.name) AS v2_vice_roles
+        RETURN v1_vice_roles + v2_vice_roles AS vice_roles
     }
     CALL {
         WITH d
         OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
         WHERE rs.end_date IS NULL OR rs.end_date >= date()
-        RETURN collect(DISTINCT 'Segretario ' + cs.name) AS secretary_roles
+        WITH d, collect(DISTINCT 'Segretario ' + cs.name) AS v1_secretary_roles
+        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        OPTIONAL MATCH (d)-[rsm:MEMBER_OF_COMMITTEE]->(csm:Committee)
+        WHERE rsm.role = 'secretary'
+          AND (rsm.end_date IS NULL OR rsm.end_date >= date())
+        WITH v1_secretary_roles, collect(DISTINCT 'Segretario ' + csm.name) AS v2_secretary_roles
+        RETURN v1_secretary_roles + v2_secretary_roles AS secretary_roles
     }
     WITH d, current_committee, president_roles + vice_roles + secretary_roles AS all_roles
 

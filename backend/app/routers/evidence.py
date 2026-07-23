@@ -10,7 +10,11 @@ from fastapi import APIRouter, HTTPException, Path
 from pydantic import BaseModel
 
 from ..services.neo4j_client import Neo4jClient
-from ..models.evidence import compute_quote_text, verify_citation_integrity
+from ..models.evidence import (
+    compute_chunk_span,
+    compute_quote_text,
+    verify_citation_integrity,
+)
 from ..config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -121,10 +125,16 @@ async def get_evidence(
 
         data = dict(record)
 
-        # Extract exact quote using offsets
+        # Extract exact quote: span computed via find() on the chunk text
+        # (exact by construction on schema v2 — C8 invariant; the stored v1
+        # offsets were raw-text based and wrong ~43% of the time).
         text = data.get("text", "")
-        span_start = data.get("span_start", 0)
-        span_end = data.get("span_end", 0)
+        span_start, span_end = compute_chunk_span(
+            text,
+            data.get("chunk_text", ""),
+            fallback_start=data.get("span_start") or 0,
+            fallback_end=data.get("span_end") or 0,
+        )
 
         try:
             quote_text = compute_quote_text(text, span_start, span_end)
@@ -201,8 +211,12 @@ async def verify_evidence(
 
         data = dict(record)
         text = data.get("text", "")
-        span_start = data.get("span_start", 0)
-        span_end = data.get("span_end", 0)
+        span_start, span_end = compute_chunk_span(
+            text,
+            data.get("chunk_text", ""),
+            fallback_start=data.get("span_start") or 0,
+            fallback_end=data.get("span_end") or 0,
+        )
 
         # Verify
         try:

@@ -510,7 +510,7 @@ class RetrievalEngine:
                        s.id AS session_id,
                        s.date AS session_date,
                        s.number AS session_number,
-                       d.title AS debate_title,
+                       coalesce(d.parent_debate_title, d.title) AS debate_title,
                        score AS similarity
                 ORDER BY score DESC
                 LIMIT $limit

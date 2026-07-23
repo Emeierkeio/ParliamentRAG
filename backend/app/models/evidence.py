@@ -167,6 +167,31 @@ class UnifiedEvidence(BaseModel):
         }
 
 
+def compute_chunk_span(
+    speech_text: str,
+    chunk_text: str,
+    fallback_start: int = 0,
+    fallback_end: int = 0,
+) -> tuple:
+    """
+    Compute the exact (start, end) of a chunk inside its speech text.
+
+    Schema v2: chunk.text is an exact substring of speech.text (invariant C8
+    enforced at build time), so find() is exact by construction. The stored v1
+    offsets (start_char_raw/end_char_raw) were computed on the raw pre-cleaning
+    transcript and are wrong ~43% of the time — used only as last-resort
+    fallback when find() fails (v1 edge cases).
+
+    Returns:
+        (span_start, span_end) tuple.
+    """
+    if speech_text and chunk_text:
+        pos = speech_text.find(chunk_text)
+        if pos >= 0:
+            return pos, pos + len(chunk_text)
+    return fallback_start or 0, fallback_end or 0
+
+
 def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:
     """
     Extract quote using offsets, with automatic clamping and word-boundary alignment.

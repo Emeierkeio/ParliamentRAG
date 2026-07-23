@@ -435,8 +435,20 @@ class AuthorityScorer:
                 END
             ) AS secretary_roles
 
+            // schema v2: ruoli ufficiali come proprietà su MEMBER_OF_COMMITTEE
+            OPTIONAL MATCH (d)-[rm:MEMBER_OF_COMMITTEE]->(cm:Committee)
+            WHERE rm.role IN ['president', 'vice_president', 'secretary']
             WITH d, target_id, group_memberships, committee_memberships,
-                 president_roles + vice_president_roles + secretary_roles AS institutional_roles
+                 president_roles, vice_president_roles, secretary_roles, collect(
+                CASE WHEN cm IS NOT NULL
+                     THEN {role_type: rm.role, committee_name: cm.name,
+                           committee_embedding: cm.embedding,
+                           start_date: rm.start_date, end_date: rm.end_date}
+                END
+            ) AS v2_officer_roles
+
+            WITH d, target_id, group_memberships, committee_memberships,
+                 president_roles + vice_president_roles + secretary_roles + v2_officer_roles AS institutional_roles
 
             OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
             WHERE a.presentation_date IS NULL OR a.presentation_date >= date() - duration({years: 4})
@@ -618,8 +630,19 @@ class AuthorityScorer:
             end_date: rs.end_date
         }) AS secretary_roles
 
+        // schema v2: ruoli ufficiali come proprietà su MEMBER_OF_COMMITTEE
+        OPTIONAL MATCH (d)-[rm:MEMBER_OF_COMMITTEE]->(cm:Committee)
+        WHERE rm.role IN ['president', 'vice_president', 'secretary']
+        WITH d, group_memberships, committee_memberships, president_roles, vice_president_roles, secretary_roles, collect(
+            CASE WHEN cm IS NOT NULL
+                 THEN {role_type: rm.role, committee_name: cm.name,
+                       committee_embedding: cm.embedding,
+                       start_date: rm.start_date, end_date: rm.end_date}
+            END
+        ) AS v2_officer_roles
+
         WITH d, group_memberships, committee_memberships,
-             president_roles + vice_president_roles + secretary_roles AS institutional_roles
+             president_roles + vice_president_roles + secretary_roles + v2_officer_roles AS institutional_roles
 
         OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
         WITH d, group_memberships, committee_memberships, institutional_roles, collect({
