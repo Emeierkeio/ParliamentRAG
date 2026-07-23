@@ -17,13 +17,12 @@ router = APIRouter(prefix="/api/config", tags=["Configuration"])
 
 class RetrievalConfig(BaseModel):
     """Retrieval configuration."""
-    dense_top_k: int
     dense_similarity_threshold: float
-    graph_lexical_min_match: int
     graph_semantic_threshold: float
     graph_chunk_similarity_threshold: float
     graph_max_acts_per_query: int
-    merger_weights: Dict[str, float]
+    rrf_k: int
+    rrf_weights: Dict[str, float]
 
 
 class AuthorityConfig(BaseModel):
@@ -33,7 +32,6 @@ class AuthorityConfig(BaseModel):
     time_decay_speeches_half_life: int
     acts_relevance_threshold: float
     interventions_relevance_threshold: float
-    normalization: str
     max_component_contribution: float
 
 
@@ -45,29 +43,9 @@ class CompassConfig(BaseModel):
     unclassified_groups: List[str]
 
 
-class GenerationParameters(BaseModel):
-    """LLM generation parameters."""
-    max_tokens: int
-    temperature: float
-    top_p: float
-
-
-class PositionBriefConfig(BaseModel):
-    """Position brief configuration."""
-    enabled: bool
-    max_chunks: int
-    chars_per_chunk: int
-    context_chars: int
-
-
 class GenerationConfig(BaseModel):
-    """Generation pipeline configuration."""
+    """Generation configuration (DirectWriter, single-prompt mode)."""
     models: Dict[str, str]
-    parameters: GenerationParameters
-    position_brief: PositionBriefConfig
-    require_all_parties: bool
-    enable_synthesis: bool
-    no_evidence_message: str
 
 
 class QueryRewritingConfig(BaseModel):
@@ -117,21 +95,19 @@ async def get_configuration():
     retrieval_data = config_data.get("retrieval", {})
     dense = retrieval_data.get("dense_channel", {})
     graph = retrieval_data.get("graph_channel", {})
-    merger = retrieval_data.get("merger", {})
+    rrf = retrieval_data.get("rrf", {})
 
     retrieval_config = RetrievalConfig(
-        dense_top_k=dense.get("top_k", 200),
         dense_similarity_threshold=dense.get("similarity_threshold", 0.3),
-        graph_lexical_min_match=graph.get("lexical_keywords_min_match", 1),
         graph_semantic_threshold=graph.get("semantic_similarity_threshold", 0.4),
         graph_chunk_similarity_threshold=graph.get("chunk_similarity_threshold", 0.3),
         graph_max_acts_per_query=graph.get("max_acts_per_query", 100),
-        merger_weights={
-            "relevance": merger.get("relevance_weight", 0.15),
-            "diversity": merger.get("diversity_weight", 0.15),
-            "coverage": merger.get("coverage_weight", 0.25),
-            "authority": merger.get("authority_weight", 0.25),
-            "salience": merger.get("salience_weight", 0.20),
+        rrf_k=rrf.get("k", 60),
+        rrf_weights={
+            "dense": rrf.get("dense_weight", 1.0),
+            "sparse": rrf.get("sparse_weight", 0.8),
+            "graph": rrf.get("graph_weight", 0.5),
+            "ner": rrf.get("ner_weight", 0.9),
         }
     )
 
@@ -145,7 +121,6 @@ async def get_configuration():
         time_decay_speeches_half_life=time_decay.get("speeches_half_life_days", 180),
         acts_relevance_threshold=authority_data.get("acts_relevance_threshold", 0.25),
         interventions_relevance_threshold=authority_data.get("interventions_relevance_threshold", 0.25),
-        normalization=authority_data.get("normalization", "percentile"),
         max_component_contribution=authority_data.get("max_component_contribution", 0.8),
     )
 
@@ -166,29 +141,13 @@ async def get_configuration():
 
     # Generation config
     generation_data = config_data.get("generation", {})
-    gen_params = generation_data.get("parameters", {})
-    gen_pos_brief = generation_data.get("position_brief", {})
+    models = generation_data.get("models", {})
+    # In "direct" mode only the writer model is used (single-prompt DirectWriter);
+    # analyst/integrator belong to the legacy 4-stage pipeline.
+    if generation_data.get("mode", "pipeline") == "direct":
+        models = {"writer": models.get("writer", "gpt-4.1-mini")}
 
-    generation_config = GenerationConfig(
-        models=generation_data.get("models", {}),
-        parameters=GenerationParameters(
-            max_tokens=gen_params.get("max_tokens", 4000),
-            temperature=gen_params.get("temperature", 0.3),
-            top_p=gen_params.get("top_p", 1.0),
-        ),
-        position_brief=PositionBriefConfig(
-            enabled=gen_pos_brief.get("enabled", True),
-            max_chunks=gen_pos_brief.get("max_chunks", 5),
-            chars_per_chunk=gen_pos_brief.get("chars_per_chunk", 200),
-            context_chars=gen_pos_brief.get("context_chars", 500),
-        ),
-        require_all_parties=generation_data.get("require_all_parties", True),
-        enable_synthesis=generation_data.get("enable_synthesis", True),
-        no_evidence_message=generation_data.get(
-            "no_evidence_message",
-            "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
-        ),
-    )
+    generation_config = GenerationConfig(models=models)
 
     # Query rewriting config
     qr_data = config_data.get("query_rewriting", {})
@@ -257,36 +216,32 @@ def _apply_retrieval_update(current: Dict, update: Dict) -> Dict:
     retrieval = current.get("retrieval", {})
     dense = retrieval.get("dense_channel", {})
     graph = retrieval.get("graph_channel", {})
-    merger = retrieval.get("merger", {})
+    rrf = retrieval.get("rrf", {})
 
-    if "dense_top_k" in update:
-        dense["top_k"] = update["dense_top_k"]
     if "dense_similarity_threshold" in update:
         dense["similarity_threshold"] = update["dense_similarity_threshold"]
-    if "graph_lexical_min_match" in update:
-        graph["lexical_keywords_min_match"] = update["graph_lexical_min_match"]
     if "graph_semantic_threshold" in update:
         graph["semantic_similarity_threshold"] = update["graph_semantic_threshold"]
     if "graph_chunk_similarity_threshold" in update:
         graph["chunk_similarity_threshold"] = update["graph_chunk_similarity_threshold"]
     if "graph_max_acts_per_query" in update:
         graph["max_acts_per_query"] = update["graph_max_acts_per_query"]
-    if "merger_weights" in update:
-        mw = update["merger_weights"]
-        if "relevance" in mw:
-            merger["relevance_weight"] = mw["relevance"]
-        if "diversity" in mw:
-            merger["diversity_weight"] = mw["diversity"]
-        if "coverage" in mw:
-            merger["coverage_weight"] = mw["coverage"]
-        if "authority" in mw:
-            merger["authority_weight"] = mw["authority"]
-        if "salience" in mw:
-            merger["salience_weight"] = mw["salience"]
+    if "rrf_k" in update:
+        rrf["k"] = update["rrf_k"]
+    if "rrf_weights" in update:
+        rw = update["rrf_weights"]
+        if "dense" in rw:
+            rrf["dense_weight"] = rw["dense"]
+        if "sparse" in rw:
+            rrf["sparse_weight"] = rw["sparse"]
+        if "graph" in rw:
+            rrf["graph_weight"] = rw["graph"]
+        if "ner" in rw:
+            rrf["ner_weight"] = rw["ner"]
 
     retrieval["dense_channel"] = dense
     retrieval["graph_channel"] = graph
-    retrieval["merger"] = merger
+    retrieval["rrf"] = rrf
     current["retrieval"] = retrieval
     return current
 
@@ -305,8 +260,6 @@ def _apply_authority_update(current: Dict, update: Dict) -> Dict:
         authority["acts_relevance_threshold"] = update["acts_relevance_threshold"]
     if "interventions_relevance_threshold" in update:
         authority["interventions_relevance_threshold"] = update["interventions_relevance_threshold"]
-    if "normalization" in update:
-        authority["normalization"] = update["normalization"]
     if "max_component_contribution" in update:
         authority["max_component_contribution"] = update["max_component_contribution"]
 
@@ -320,16 +273,6 @@ def _apply_generation_update(current: Dict, update: Dict) -> Dict:
 
     if "models" in update:
         generation["models"] = _deep_merge(generation.get("models", {}), update["models"])
-    if "parameters" in update:
-        generation["parameters"] = _deep_merge(generation.get("parameters", {}), update["parameters"])
-    if "position_brief" in update:
-        generation["position_brief"] = _deep_merge(generation.get("position_brief", {}), update["position_brief"])
-    if "require_all_parties" in update:
-        generation["require_all_parties"] = update["require_all_parties"]
-    if "enable_synthesis" in update:
-        generation["enable_synthesis"] = update["enable_synthesis"]
-    if "no_evidence_message" in update:
-        generation["no_evidence_message"] = update["no_evidence_message"]
 
     current["generation"] = generation
     return current
@@ -355,8 +298,9 @@ async def update_configuration(update: ConfigUpdateRequest):
     """
     Update system configuration (partial merge).
 
-    Only retrieval, authority, and generation sections can be updated.
-    Changes are persisted to config/default.yaml.
+    Only retrieval, authority, generation, and query_rewriting sections can be
+    updated. Changes are applied in-memory only — a restart or /reload restores
+    the values from config/default.yaml.
     """
     config = get_config()
     current = config.load_config()

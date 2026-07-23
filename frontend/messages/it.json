@@ -358,51 +358,46 @@
         "description": "Contributo del ruolo istituzionale (Presidente, Ministro, Capogruppo, Sottosegretario, ecc.). Ruoli apicali ricevono un boost di autorevolezza."
       }
     },
-    "mergerLabels": {
-      "relevance": {
-        "label": "Rilevanza",
-        "description": "Peso della similarità coseno tra embedding query ed embedding chunk. È il segnale primario di pertinenza tematica."
+    "rrfLabels": {
+      "dense": {
+        "label": "Denso",
+        "description": "Peso del canale denso (similarità embedding) nella fusione RRF. Segnale semantico primario — di solito il peso più alto."
       },
-      "diversity": {
-        "label": "Diversità",
-        "description": "Penalizza chunk dello stesso speaker per evitare che un singolo parlamentare domini i risultati, garantendo varietà di voci."
+      "sparse": {
+        "label": "Sparso",
+        "description": "Peso del canale sparso BM25 nella fusione RRF. Premia i match lessicali esatti con i termini della query."
       },
-      "coverage": {
-        "label": "Copertura",
-        "description": "Premia la rappresentazione di più gruppi parlamentari nel ranking finale, favorendo la visione multi-partito."
+      "graph": {
+        "label": "Grafo",
+        "description": "Peso del canale grafo EuroVoc nella fusione RRF. Segnale strutturale dalla traversata degli atti parlamentari — di solito il peso più basso."
       },
-      "authority": {
-        "label": "Autorità",
-        "description": "Ripondera i chunk in base all'authority score del parlamentare (expertise, ruolo, atti). Nota: la vera authority ranking avviene post-merge."
-      },
-      "salience": {
-        "label": "Salienza",
-        "description": "Preferisce testi politicamente sostanziali rispetto a testi procedurali (es. 'Grazie Presidente, ha facoltà di parlare')."
+      "ner": {
+        "label": "NER",
+        "description": "Peso del canale entità (NER) nella fusione RRF. Un peso alto migliora la precisione su query che citano persone o organizzazioni specifiche."
       }
     },
     "modelInfo": {
       "analyst": "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4o-mini è sufficiente ed economico.",
-      "writer": "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e coerenza ideologica.",
+      "writer": "Modello usato dal DirectWriter (modalità single-prompt) per scrivere l'intera risposta a partire dai chunk recuperati. Richiede alta qualità narrativa e coerenza ideologica.",
       "integrator": "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM."
     },
     "retrieval": {
       "title": "Recupero Informazioni",
-      "description": "Parametri dei due canali di ricerca e del merger dei risultati",
+      "description": "Parametri dei canali di ricerca e della fusione RRF dei ranking",
       "denseChannel": "Canale Denso — Embedding",
-      "topKResults": "Top-K Risultati",
-      "topKResultsInfo": "Numero massimo di chunk recuperati per similarità semantica (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo computazionale.",
       "similarityThreshold": "Soglia Similarità",
       "similarityThresholdInfo": "Soglia minima di similarità coseno per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Range tipico: 0.20–0.45.",
       "graphChannel": "Canale Grafo — EuroVoc",
-      "minLexicalMatch": "Min Match Lessicale",
-      "minLexicalMatchInfo": "Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword.",
       "semanticThreshold": "Soglia Semantica EuroVoc",
       "semanticThresholdInfo": "Soglia di similarità semantica per il matching EuroVoc. Controlla quanto strettamente il concetto EuroVoc deve corrispondere semanticamente alla query. Range tipico: 0.35–0.55.",
       "graphChunkThreshold": "Soglia Chunk Grafo",
       "graphChunkThresholdInfo": "Soglia minima di similarità per i chunk recuperati tramite traversata del grafo. Previene l'inclusione di chunk off-topic recuperati solo per co-firma di atti rilevanti.",
       "maxActsPerQuery": "Max Atti per Query",
       "maxActsPerQueryInfo": "Numero massimo di atti parlamentari da recuperare per query tramite il canale grafo. Limita il carico computazionale della traversata del grafo Neo4j.",
-      "mergerWeights": "Pesi Fusione — Merger",
+      "rrfFusion": "Fusione RRF — Pesi Canali",
+      "rrfNote": "La Reciprocal Rank Fusion combina i ranking dei canali: ogni canale contribuisce peso / (k + rank) per ciascun chunk recuperato. I pesi sono moltiplicatori relativi, non devono sommare a 1.",
+      "rrfK": "Costante k RRF",
+      "rrfKInfo": "Costante di smorzamento del rank nella formula RRF peso / (k + rank). Valori più alti appiattiscono la differenza tra le prime e le ultime posizioni. Valore standard: 60.",
       "weightsSumNote": "I pesi devono sommare a 1.00"
     },
     "authority": {
@@ -427,35 +422,11 @@
     },
     "generation": {
       "title": "Generazione",
-      "description": "Modelli LLM e parametri della pipeline di generazione a 4 stadi",
-      "llmModels": "Modelli LLM — Pipeline 4 Stadi",
+      "description": "Modelli LLM per la generazione della risposta (DirectWriter, modalità single-prompt)",
+      "llmModels": "Modelli LLM",
       "analyst": "Analista",
       "writer": "Scrittore",
-      "integrator": "Integratore",
-      "llmParameters": "Parametri LLM",
-      "maxTokenOutput": "Max Token Output",
-      "maxTokenOutputInfo": "Numero massimo di token generati per risposta. Aumentare per risposte più lunghe, ridurre per contenere i costi.",
-      "temperature": "Temperatura",
-      "temperatureInfo": "Creatività/randomicità del modello. 0 = deterministico e preciso, 1 = creativo e variabile. Per testi analitici 0.2–0.4 è ottimale.",
-      "topP": "Top-P (nucleus)",
-      "topPInfo": "Nucleus sampling: considera solo i token con probabilità cumulativa fino a Top-P. 1.0 = nessun filtraggio. Abbassare a 0.9–0.95 per output più focalizzati.",
-      "tokenUnit": "token",
-      "chunkUnit": "chunk",
-      "charUnit": "char",
-      "positionBrief": "Position Brief",
-      "enabled": "Abilitato",
-      "enabledInfo": "Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate.",
-      "maxChunksBrief": "Max Chunks Brief",
-      "maxChunksBriefInfo": "Numero di chunk inclusi nel brief di posizione. Più chunk forniscono più contesto ma aumentano i token in input e la latenza.",
-      "charsPerChunk": "Chars/Chunk",
-      "charsPerChunkInfo": "Numero massimo di caratteri per chunk nel brief. Tronca i chunk lunghi per mantenere il brief compatto.",
-      "contextChars": "Context Chars",
-      "contextCharsInfo": "Caratteri di contesto mostrati per ogni evidenza nel brief (testo circostante la citazione). Aiuta lo scrittore a capire il tono dell'intervento.",
-      "generationBehavior": "Comportamento Generazione",
-      "crossSynthesis": "Sintesi Trasversale",
-      "crossSynthesisInfo": "Abilita la sezione 'Analisi Trasversale' (Stadio 3.5): identifica pattern cross-party, convergenze e divergenze tra i gruppi parlamentari. Aumenta la lunghezza e il costo della risposta.",
-      "noEvidenceMessage": "Messaggio Assenza Evidenze",
-      "noEvidenceMessageInfo": "Testo mostrato nella sezione del gruppo parlamentare quando non sono presenti interventi rilevanti nel corpus per quella query."
+      "integrator": "Integratore"
     },
     "queryRewriting": {
       "title": "Riscrittura Query",
@@ -468,7 +439,6 @@
       "maxWords": "Max Parole per Riscrittura",
       "maxWordsInfo": "Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval.",
       "wordsUnit": "parole",
-      "keywordUnit": "keyword",
       "actsUnit": "atti"
     }
   },
