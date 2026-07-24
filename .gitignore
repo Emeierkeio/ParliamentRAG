@@ -23,7 +23,9 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
+# NB: niente "build/" qui — è la nostra pipeline (script tracciati), non
+# l'output di setuptools. La regola template ignorava in silenzio i file
+# NUOVI in build/ (scoperto con classify_chunk_citability.py, 2026-07-24).
 develop-eggs/
 dist/
 downloads/
