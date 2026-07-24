@@ -221,7 +221,7 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
           {t("settings")}
         </button>
         <a
-          href="https://github.com/Emeierkeio/thesis-ParliamentRAG"
+          href="https://github.com/Emeierkeio/ParliamentRAG"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-foreground/80 hover:bg-muted/50 transition-colors"

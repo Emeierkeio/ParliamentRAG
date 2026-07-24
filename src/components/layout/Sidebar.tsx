@@ -203,7 +203,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 isCollapsed={isCollapsed}
             />
             <NavButton
-                item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/thesis-ParliamentRAG", "_blank") }}
+                item={{ icon: Github, label: t('documentation'), onClick: () => window.open("https://github.com/Emeierkeio/ParliamentRAG", "_blank") }}
                 isCollapsed={isCollapsed}
             />
 
