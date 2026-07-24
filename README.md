@@ -112,7 +112,9 @@ make db-update-all      # incremental: new sessions + votes + summaries + citabi
 make update-data        # demo-oriented incremental update + graph repairs
 ```
 
-<p align="center"><img src="assets/neo4j_graph.png" alt="Knowledge graph excerpt" width="600"/></p>
+<p align="center"><img src="assets/kg-schema.svg" alt="Knowledge graph schema v2" width="820"/></p>
+
+<p align="center"><img src="assets/kg-instance.svg" alt="Real neighbourhood from the live knowledge graph" width="820"/></p>
 
 ---
 
@@ -219,7 +221,7 @@ Parliamentary data are sourced from the **Camera dei Deputati open data** progra
 backend/    FastAPI app — retrieval, authority scoring, generation, citation verification
 frontend/   Next.js app — chat, search, rankings, compass, timeline, evaluation
 build/      knowledge-graph construction pipeline + validation gate (see build/README.md)
-docs/       paper (camera-ready draft) and working plans
+docs/       papers (ISWC 2026 In-Use camera-ready draft + Demo paper)
 ```
 
 ---
@@ -240,6 +242,8 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
   note      = {To appear}
 }
 ```
+
+A companion **demo paper** describing the live system is also available: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
 
 ---
 

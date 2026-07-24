@@ -826,6 +826,8 @@
     "iswcBadge": "Accepté · In-Use Track",
     "idx5Title": "Travaux de l'Assemblée",
     "idx5Question": "Que s'est-il passé en séance cette semaine ?",
-    "idx5Desc": "La chronologie des séances avec débats, interventions et résumés générés par l'IA — jusqu'à la position de chaque député."
+    "idx5Desc": "La chronologie des séances avec débats, interventions et résumés générés par l'IA — jusqu'à la position de chaque député.",
+    "paperInUse": "Article de recherche",
+    "paperDemo": "Article démo"
   }
 }
