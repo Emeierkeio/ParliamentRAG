@@ -20,6 +20,10 @@ interface UseChatOptions {
 
 export function useChat(options: UseChatOptions = {}) {
   const t = useTranslations('Chat');
+  const tSteps = useTranslations('ProgressSteps');
+  // Etichetta i18n dello step (mai la stringa generica "Step N")
+  const stepLabel = (s: number) =>
+    tSteps(`step${s}.label` as Parameters<typeof tSteps>[0]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState<ProcessingProgress | null>(null);
@@ -267,13 +271,14 @@ export function useChat(options: UseChatOptions = {}) {
                   for (const [step, result] of stepResultsMap) {
                     resultsById.set(step, result);
                   }
-                  // Fill generic placeholders only for steps WITHOUT dedicated SSE events
+                  // Fill placeholders only for steps WITHOUT dedicated SSE events,
+                  // con l'etichetta i18n dello step (mai "Step N" generico).
                   const stepsWithDedicatedEvents = new Set([2, 3, 4, 5, 6]);
                   for (let s = 1; s < newStep; s++) {
                     if (!resultsById.has(s) && !stepsWithDedicatedEvents.has(s)) {
                       resultsById.set(s, {
                         step: s,
-                        label: `Step ${s}`,
+                        label: stepLabel(s),
                         result: t('completato'),
                       });
                     }
@@ -289,18 +294,39 @@ export function useChat(options: UseChatOptions = {}) {
                 });
                 break;
 
+              case "step_result": {
+                // Dettaglio preciso calcolato dal backend per uno step della
+                // pipeline (1: analisi query, 7: generazione, 8: salvataggio).
+                const srStep = Number(data.step);
+                const srDetail = String(data.detail || "");
+                if (!srStep || !srDetail) break;
+                const srResult = {
+                  step: srStep,
+                  label: stepLabel(srStep),
+                  result: srDetail,
+                };
+                stepResultsMap.set(srStep, srResult);
+                setProgress((prev) => {
+                  if (!prev) return null;
+                  return {
+                    ...prev,
+                    stepResults: [...prev.stepResults.filter(r => r.step !== srStep), srResult],
+                  };
+                });
+                break;
+              }
+
               case "commissioni":
                 const commList = data.commissioni || [];
                 commissioni = commList;
                 updateLastAssistantMessage({ commissioni: [...commList] });
                 const commNames = commList.map((c: any) => c.nome || c.name || String(c)).slice(0, 3);
                 // Save to accumulator so it survives React state batching
-                const topComm = commList.length > 0 ? (commList[0].nome || commList[0].name || String(commList[0])) : null;
                 const commResult = {
                   step: 2,
                   label: t('commissione'),
-                  result: topComm
-                    ? `${t('foundCommittee')}: ${topComm}`
+                  result: commList.length > 0
+                    ? `${commList.length} ${t('competentCommittees')}: ${commNames.join(", ")}`
                     : t('noCommittee'),
                   details: { commissioni: commList }
                 };
@@ -449,10 +475,12 @@ export function useChat(options: UseChatOptions = {}) {
                     currentStep: 7,
                     stepLabel: t('generazione'),
                     stepDescription: t('scrittura'),
+                    // Risultato provvisorio: verrà sostituito dallo step_result
+                    // del backend (n. sezioni + citazioni) a generazione finita.
                     stepResults: [...prev.stepResults, {
                       step: 7,
                       label: t('generazione'),
-                      result: t('sintesiCompletata')
+                      result: t('scrittura')
                     }]
                   };
                 });
@@ -480,10 +508,11 @@ export function useChat(options: UseChatOptions = {}) {
                   if (!newResults.some(r => r.step === 8)) {
                     newResults.push({
                       step: 8,
-                      label: t('valutazione'),
+                      label: stepLabel(8),
                       result: t('completata'),
                     });
                   }
+                  newResults.sort((a, b) => a.step - b.step);
                   return { ...prev, isComplete: true, stepResults: newResults };
                 });
                 // Mark stream as completed — no retry needed

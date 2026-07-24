@@ -254,6 +254,22 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[RETRIEVAL] Dense: {retrieval_result['metadata'].get('dense_channel_count', 0)}, "
                    f"Graph: {retrieval_result['metadata'].get('graph_channel_count', 0)}")
 
+        # Dettaglio preciso per lo step 1 della UI (Analisi query): cosa è
+        # stato fatto davvero — embedding + retrieval ibrido coi conteggi.
+        _dense_n = retrieval_result['metadata'].get('dense_channel_count', 0)
+        _graph_n = retrieval_result['metadata'].get('graph_channel_count', 0)
+        await emit("step_result", {
+            "step": 1,
+            "detail": _t(
+                f"Embedding semantico della query; retrieval ibrido: {_dense_n} "
+                f"risultati vettoriali + {_graph_n} dal grafo dei firmatari → "
+                f"{len(evidence_list)} evidenze selezionate",
+                f"Query embedding; hybrid retrieval: {_dense_n} vector results "
+                f"+ {_graph_n} from the signatories graph → "
+                f"{len(evidence_list)} selected evidence pieces",
+            ),
+        })
+
         speaker_ids = list(set(
             e.speaker_id for e in evidence_list
             if e.speaker_id and e.speaker_role == "Deputy"
@@ -367,6 +383,20 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
 
         final_text = generation_result.get("text", "")
+
+        # Dettaglio preciso per lo step 7 della UI (Generazione)
+        _gen_stages = generation_result.get("metadata", {}).get("stages", {})
+        _n_sections = _gen_stages.get("sectional", {}).get("sections_count", 0)
+        _n_cits = _gen_stages.get("surgeon", {}).get("citations_inserted", 0)
+        await emit("step_result", {
+            "step": 7,
+            "detail": _t(
+                f"{_n_sections} sezioni di gruppo scritte, {_n_cits} citazioni "
+                f"verbatim verificate e inserite ({generation_time:.0f}s)",
+                f"{_n_sections} group sections written, {_n_cits} verbatim "
+                f"citations verified and inserted ({generation_time:.0f}s)",
+            ),
+        })
 
         # === Send topic statistics ===
         topic_stats = generation_result.get("topic_statistics")
@@ -604,6 +634,17 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                 pct = (step_time / total_time) * 100 if total_time > 0 else 0
                 logger.info(f"  {step_name}: {step_time*1000:.1f}ms ({pct:.1f}%)")
         logger.info("=" * 60)
+
+        # Dettaglio preciso per lo step 8 della UI (Salvataggio)
+        await emit("step_result", {
+            "step": 8,
+            "detail": _t(
+                f"Analisi salvata nello storico — {total_time:.0f}s totali, "
+                f"{len(final_text):,} caratteri, {len(verified_citations)} citazioni",
+                f"Analysis saved to history — {total_time:.0f}s total, "
+                f"{len(final_text):,} characters, {len(verified_citations)} citations",
+            ),
+        })
 
         await emit("complete", {
             "metadata": {
