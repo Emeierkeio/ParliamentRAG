@@ -834,7 +834,7 @@
     "closingHeadline": "Trenta secondi separano una curiosità da una risposta documentata.",
     "ctaStart": "Inizia la consultazione",
     "footerThesis": "Un progetto di Mirko Tritella",
-    "footerAuthors": "Prof. Matteo Palmonari · Dott. Riccardo Pozzi · Università di Milano-Bicocca",
+    "footerAuthors": "Prof. Matteo Palmonari · Dott. Riccardo Pozzi",
     "tocFirstPage": "Prima pagina",
     "tocInstruments": "Strumenti",
     "tocGuarantees": "Garanzie",
@@ -847,7 +847,8 @@
     "paperInUse": "Paper di ricerca",
     "paperDemo": "Paper demo",
     "footerFunding": "Con il sostegno del programma EU Horizon Europe • grant",
-    "footerPrivacy": "Privacy"
+    "footerPrivacy": "Privacy",
+    "footerUni": "Università di Milano-Bicocca"
   },
   "Privacy": {
     "title": "Privacy e note legali",
