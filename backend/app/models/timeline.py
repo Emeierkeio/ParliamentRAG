@@ -62,6 +62,44 @@ class VoteInfo(BaseModel):
     abstained: Optional[int] = None
 
 
+class VoteParticipant(BaseModel):
+    """One deputy's individual vote inside a roll call."""
+
+    id: str
+    first_name: str
+    last_name: str
+    party: Optional[str] = None
+    outcome: str  # "favor" | "against" | "absent"
+
+
+class VotePartyBreakdown(BaseModel):
+    """Aggregated favor/against/absent counts for one parliamentary group."""
+
+    party: str
+    favor: int
+    against: int
+    absent: int
+
+
+class VoteDetailResponse(BaseModel):
+    """Full roll-call detail for GET /api/timeline/votes/{vote_id}."""
+
+    id: str
+    number: int
+    subject: Optional[str] = None
+    outcome: Optional[str] = None
+    vote_type: Optional[str] = None
+    in_favor: Optional[int] = None
+    against: Optional[int] = None
+    abstained: Optional[int] = None
+    present: Optional[int] = None
+    voters: Optional[int] = None
+    majority: Optional[int] = None
+    on_mission: Optional[int] = None
+    breakdown: list[VotePartyBreakdown]
+    participants: list[VoteParticipant]
+
+
 class ActInfo(BaseModel):
     """Parliamentary act discussed in a debate."""
 

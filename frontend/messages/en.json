@@ -20,7 +20,7 @@
   "MessageBubble": {
     "you": "You",
     "originalLabel": "Original",
-    "chamberTitle": "Chamber of Deputies - 19th Legislature",
+    "chamberTitle": "Chamber of Deputies · 19th Legislature",
     "expertsTitle": "Sources selected by authority",
     "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response.",
     "expertsTooltip": "Before retrieving citations, the system identifies the most authoritative parliamentarians on the topic. Authority is calculated on 6 factors: floor speeches, legislative acts, committee membership, profession, education and institutional role.",
@@ -590,7 +590,22 @@
     "loadingMore": "Loading more sessions...",
     "errorHeading": "Unable to load sessions",
     "errorBody": "An error occurred while loading the parliamentary timeline. Please refresh the page.",
-    "parliamentaryTimeline": "Parliamentary Timeline"
+    "parliamentaryTimeline": "Parliamentary Timeline",
+    "outcomeApproved": "Approved",
+    "outcomeRejected": "Rejected",
+    "voteDetailHint": "View individual votes",
+    "voteFavor": "In favor",
+    "voteAgainst": "Against",
+    "voteAbstained": "Abstained",
+    "votePresent": "Present",
+    "voteMajority": "Majority",
+    "voteOnMission": "On mission",
+    "voteBreakdownHeading": "By group",
+    "voteParticipantsHeading": "Individual votes ({count})",
+    "voteSearchPlaceholder": "Search deputy or group...",
+    "voteNoMatches": "No matches",
+    "voteLoadError": "Unable to load vote detail",
+    "phasesHeading": "Agenda"
   },
   "RankingsPage": {
     "headerTitle": "Authority Analysis",

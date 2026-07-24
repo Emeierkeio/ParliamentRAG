@@ -26,7 +26,10 @@ from ..models.timeline import (
     SpeakerSummaryResponse,
     SpeechText,
     TimelineResponse,
+    VoteDetailResponse,
     VoteInfo,
+    VoteParticipant,
+    VotePartyBreakdown,
 )
 from .neo4j_client import Neo4jClient
 
@@ -331,6 +334,119 @@ async def get_debate_detail(
         speakers=speakers,
         votes=votes,
         acts=acts,
+    )
+
+
+async def get_vote_detail(
+    neo4j: Neo4jClient,
+    vote_id: str,
+) -> VoteDetailResponse:
+    """
+    Return full roll-call detail: vote metadata, per-party breakdown, and the
+    complete participant list with individual outcomes.
+
+    Individual votes live in the graph as:
+      (Person)-[:VOTED]->(IndividualVote {outcome})-[:ON_VOTE]->(Vote)
+    with outcome in {"favor", "against", "absent"} (no per-deputy abstention
+    in the source data — abstained exists only as an aggregate on Vote).
+
+    Party attribution is date-aware via MEMBER_OF_GROUP; deputies in the
+    Gruppo Misto are attributed to their political component
+    (MEMBER_OF_COMPONENT → MistoComponent) when one is active at vote date.
+    """
+    meta = neo4j.query_single(
+        """
+        MATCH (s:Session)-[:HAS_VOTE]->(v:Vote {id: $vote_id})
+        RETURN v.id AS id,
+               v.number AS number,
+               v.subject AS subject,
+               v.outcome AS outcome,
+               v.type AS vote_type,
+               v.inFavor AS in_favor,
+               v.against AS against,
+               v.abstained AS abstained,
+               v.present AS present,
+               v.voters AS voters,
+               v.majority AS majority,
+               v.onMission AS on_mission,
+               s.date AS session_date
+        """,
+        {"vote_id": vote_id},
+    )
+    if not meta:
+        return VoteDetailResponse(
+            id=vote_id, number=0, breakdown=[], participants=[],
+        )
+
+    participant_rows = neo4j.query(
+        """
+        MATCH (s:Session)-[:HAS_VOTE]->(v:Vote {id: $vote_id})
+        MATCH (v)<-[:ON_VOTE]-(iv:IndividualVote)<-[:VOTED]-(p:Person)
+        OPTIONAL MATCH (p)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+          WHERE mg.start_date <= s.date
+            AND (mg.end_date IS NULL OR mg.end_date >= s.date)
+        OPTIONAL MATCH (p)-[mc:MEMBER_OF_COMPONENT]->(c:MistoComponent)
+          WHERE mc.start_date <= s.date
+            AND (mc.end_date IS NULL OR mc.end_date >= s.date)
+        WITH p, iv,
+             head(collect(DISTINCT g.name)) AS groupName,
+             head(collect(DISTINCT c.name)) AS componentName
+        RETURN p.id AS id,
+               p.first_name AS first_name,
+               p.last_name AS last_name,
+               CASE
+                 WHEN toLower(coalesce(groupName, '')) CONTAINS 'misto'
+                      AND componentName IS NOT NULL
+                 THEN componentName
+                 ELSE groupName
+               END AS party,
+               iv.outcome AS outcome
+        ORDER BY last_name, first_name
+        """,
+        {"vote_id": vote_id},
+    )
+
+    participants = [
+        VoteParticipant(
+            id=r["id"],
+            first_name=r["first_name"] or "",
+            last_name=r["last_name"] or "",
+            party=r["party"],
+            outcome=r["outcome"] or "absent",
+        )
+        for r in participant_rows
+    ]
+
+    # Aggregate per-party counts in Python (one graph roundtrip total).
+    counts: dict[str, dict[str, int]] = {}
+    for p in participants:
+        party = p.party or "—"
+        bucket = counts.setdefault(party, {"favor": 0, "against": 0, "absent": 0})
+        bucket[p.outcome] = bucket.get(p.outcome, 0) + 1
+    breakdown = sorted(
+        (
+            VotePartyBreakdown(party=party, **b)
+            for party, b in counts.items()
+        ),
+        key=lambda b: b.favor + b.against + b.absent,
+        reverse=True,
+    )
+
+    return VoteDetailResponse(
+        id=meta["id"],
+        number=meta["number"] or 0,
+        subject=meta["subject"],
+        outcome=meta["outcome"],
+        vote_type=meta["vote_type"],
+        in_favor=meta["in_favor"],
+        against=meta["against"],
+        abstained=meta["abstained"],
+        present=meta["present"],
+        voters=meta["voters"],
+        majority=meta["majority"],
+        on_mission=meta["on_mission"],
+        breakdown=breakdown,
+        participants=participants,
     )
 
 

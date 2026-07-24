@@ -1,4 +1,9 @@
-import type { TimelineResponse, DebateDetailResponse, SpeakerSummaryResponse } from '@/types/timeline';
+import type {
+  TimelineResponse,
+  DebateDetailResponse,
+  SpeakerSummaryResponse,
+  VoteDetailResponse,
+} from '@/types/timeline';
 
 function getLocale(): string {
   if (typeof document === 'undefined') return 'it';
@@ -42,6 +47,14 @@ export async function getDebateDetail(debateId: string): Promise<DebateDetailRes
     headers: buildHeaders(),
   });
   if (!res.ok) throw new Error(`Debate detail fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getVoteDetail(voteId: string): Promise<VoteDetailResponse> {
+  const res = await fetch(`/api/timeline/votes/${encodeURIComponent(voteId)}`, {
+    headers: buildHeaders(),
+  });
+  if (!res.ok) throw new Error(`Vote detail fetch failed: ${res.status}`);
   return res.json();
 }
 
