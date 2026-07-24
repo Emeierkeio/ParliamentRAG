@@ -22,6 +22,7 @@ Usage:
 
 import argparse
 import glob
+import html as _html
 import logging
 import os
 import re
@@ -181,8 +182,10 @@ def _save_atto(driver, atto: dict, deputato_uri: str, rel_type: str) -> None:
             """,
             uri=atto.get("uri", ""),
             type=atto.get("tipo", ""),
-            title=atto.get("titolo", ""),
-            description=atto.get("descrizione", ""),
+            # La fonte Camera contiene entità HTML (&#8212; ecc.) che finivano
+            # grezze in UI (21.574 description bonificate one-shot 2026-07-24)
+            title=_html.unescape(atto.get("titolo", "")),
+            description=_html.unescape(atto.get("descrizione", "")),
             number=atto.get("numero", ""),
             recipient=atto.get("destinatario", ""),
             presentation_iso=presentation_iso,
