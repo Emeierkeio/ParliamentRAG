@@ -247,6 +247,14 @@ A companion **demo paper** describing the live system has been submitted to the 
 
 ---
 
+## Acknowledgments
+
+This work was supported by the **EU Horizon Europe** programme through grants
+No. [101189771](https://doi.org/10.3030/101189771) (**DataPACT**) and
+No. [101070284](https://doi.org/10.3030/101070284) (**enRichMyData**).
+
+---
+
 ## License
 
 [Apache 2.0](LICENSE)

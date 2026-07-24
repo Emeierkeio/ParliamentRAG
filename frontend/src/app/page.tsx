@@ -430,9 +430,32 @@ export default function LandingPage() {
               ParliamentRAG
             </span>
           </div>
-          <p className="text-center leading-relaxed">
-            {t("footerThesis")} · {t("footerAuthors")}
-          </p>
+          <div className="text-center leading-relaxed space-y-1">
+            <p>
+              {t("footerThesis")} · {t("footerAuthors")}
+            </p>
+            <p className="text-muted-foreground/80">
+              {t("footerFunding")}{" "}
+              <a
+                href="https://doi.org/10.3030/101189771"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
+              >
+                101189771
+              </a>{" "}
+              (DataPACT) ·{" "}
+              <a
+                href="https://doi.org/10.3030/101070284"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
+              >
+                101070284
+              </a>{" "}
+              (enRichMyData)
+            </p>
+          </div>
           <p className="flex items-center gap-4">
             <a
               href="https://github.com/Emeierkeio/thesis-ParliamentRAG"
