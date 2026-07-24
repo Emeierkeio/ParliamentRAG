@@ -134,6 +134,7 @@ function useEditionDate() {
 /* ── Page ──────────────────────────────────────────────────────── */
 export default function LandingPage() {
   const t = useTranslations("Landing");
+  const locale = useLocale();
   const edition = useEditionDate();
   const { index: topicIndex, isAnimating } = useSyncedRotation(
     TOPIC_KEYS.length
@@ -274,11 +275,14 @@ export default function LandingPage() {
                     }}
                   >
                     <blockquote className="text-lg sm:text-xl leading-[1.55] text-foreground/90">
-                      {q.text}
+                      {locale === "it" ? q.text : t(`q${i + 1}`)}
                     </blockquote>
                     <figcaption className="mt-4 text-sm not-italic font-sans">
                       <span className="font-medium text-foreground">{q.who}</span>
                       <span className="text-muted-foreground"> {q.meta}</span>
+                      {locale !== "it" && (
+                        <span className="text-muted-foreground/60"> · {t("quoteTranslatedNote")}</span>
+                      )}
                     </figcaption>
                   </figure>
                 );
@@ -432,7 +436,15 @@ export default function LandingPage() {
           </div>
           <div className="text-center leading-relaxed space-y-1">
             <p>
-              {t("footerThesis")} · {t("footerAuthors")}
+              {t("footerThesis")} · {t("footerAuthors")} ·{" "}
+              <a
+                href="https://www.unimib.it/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
+              >
+                {t("footerUni")}
+              </a>
             </p>
             <p className="text-muted-foreground/80">
               {t("footerFunding")}{" "}
