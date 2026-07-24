@@ -698,7 +698,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
               {tPi('resultsObtained')}
             </p>
             <div className="space-y-1.5">
-              {progress.stepResults.map((sr) => (
+              {[...progress.stepResults].sort((a, b) => a.step - b.step).map((sr) => (
                 <div key={sr.step} className="flex items-start gap-2">
                   <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                   <div className="min-w-0">
@@ -874,7 +874,7 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
               {tPi('resultsObtained')}
             </p>
             <div className="space-y-2">
-              {progress.stepResults.map((sr) => (
+              {[...progress.stepResults].sort((a, b) => a.step - b.step).map((sr) => (
                 <div key={sr.step} className="flex items-start gap-2.5">
                   <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                   <div className="min-w-0">
