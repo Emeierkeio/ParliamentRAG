@@ -226,6 +226,28 @@ export default function LandingPage() {
                 </span>
                 <ArrowUpRight className="h-3.5 w-3.5 self-center" />
               </a>
+              <a
+                href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                  {t("paperInUse")}
+                </span>
+                <ArrowUpRight className="h-3.5 w-3.5 self-center" />
+              </a>
+              <a
+                href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                  {t("paperDemo")}
+                </span>
+                <ArrowUpRight className="h-3.5 w-3.5 self-center" />
+              </a>
             </div>
           </div>
 
@@ -419,6 +441,22 @@ export default function LandingPage() {
               className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               GitHub
+            </a>
+            <a
+              href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              {t("paperInUse")}
+            </a>
+            <a
+              href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              {t("paperDemo")}
             </a>
           </p>
         </div>
