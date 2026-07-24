@@ -150,6 +150,19 @@ class Validator:
                    f"chunk substring esatta dello speech ({rows[0]['tot']} campionati)",
                    f"{rows[0]['bad']} violazioni")
 
+        print("\n[5b] Archi NEXT tra chunk consecutivi")
+        rows = self.q("""
+            MATCH (c:Chunk) WITH count(c) AS chunks
+            MATCH (s:Speech) WITH chunks, count(s) AS speeches
+            MATCH ()-[r:NEXT]->() RETURN chunks, speeches, count(r) AS nexts
+        """)
+        chunks, speeches, nexts = rows[0]["chunks"], rows[0]["speeches"], rows[0]["nexts"]
+        expected = chunks - speeches  # ogni speech con N chunk produce N-1 NEXT
+        self.check(nexts >= expected * 0.95,
+                   f"NEXT presenti ({nexts:,} — attesi ~{expected:,})",
+                   "neighbor expansion del retrieval MORTA senza NEXT "
+                   "(persi nel primo rebuild v2, scoperto 2026-07-24)")
+
         print("\n[6] Date native (C1) — 0 date STRING")
         for label, prop in DATE_PROPS:
             rows = self.q(f"""
