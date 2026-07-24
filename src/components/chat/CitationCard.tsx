@@ -117,8 +117,10 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
                   </Badge>
                 </div>
                 {!isGoverno && (
-                  <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.group}>
-                    {citation.group}
+                  <span className="text-[10px] text-muted-foreground block max-w-full break-words" title={citation.misto_component ? `${citation.group} – ${citation.misto_component}` : citation.group}>
+                    {citation.misto_component
+                      ? `${citation.group} – ${citation.misto_component}`
+                      : citation.group}
                   </span>
                 )}
               </div>
@@ -369,8 +371,10 @@ function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
                                 {coalitionLabel}
                              </Badge>
                              {!isGoverno && (
-                               <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.group}>
-                                  {citation.group}
+                               <span className="text-xs text-muted-foreground truncate max-w-[300px]" title={citation.misto_component ? `${citation.group} – ${citation.misto_component}` : citation.group}>
+                                  {citation.misto_component
+                                    ? `${citation.group} – ${citation.misto_component}`
+                                    : citation.group}
                                </span>
                              )}
                         </div>

@@ -12,6 +12,8 @@ export interface Citation {
   deputy_first_name: string;
   deputy_last_name: string;
   group: string;
+  /** Componente del Gruppo Misto alla data del discorso (es. "+EUROPA - STATI UNITI D'EUROPA") */
+  misto_component?: string;
   coalition: string;
   text?: string;
   quote_text?: string;
