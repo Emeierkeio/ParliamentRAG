@@ -592,7 +592,9 @@ export default function SearchPage() {
                                     <div className="border-b border-border pb-3 space-y-1">
                                         <h2 className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight">{t("resultsHeading")}</h2>
                                         <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                            <span>{t("resultsCount", { count: totalResults })}</span>
+                                            {/* Durante il caricamento niente "0 results": il conteggio
+                                                appare solo a ricerca completata */}
+                                            <span>{loading ? t("searching") : t("resultsCount", { count: totalResults })}</span>
                                             {results.length > 0 && (
                                                 <>
                                                     <span className="text-muted-foreground/50">—</span>

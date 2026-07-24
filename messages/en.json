@@ -20,7 +20,7 @@
   "MessageBubble": {
     "you": "You",
     "originalLabel": "Original",
-    "chamberTitle": "Chamber of Deputies — 19th Legislature",
+    "chamberTitle": "Chamber of Deputies - 19th Legislature",
     "expertsTitle": "Sources selected by authority",
     "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response.",
     "expertsTooltip": "Before retrieving citations, the system identifies the most authoritative parliamentarians on the topic. Authority is calculated on 6 factors: floor speeches, legislative acts, committee membership, profession, education and institutional role.",
