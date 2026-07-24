@@ -261,10 +261,26 @@ class AuthorityScorer:
         # UNWIND+CALL batch queries execute CALL iterations sequentially in Neo4j,
         # giving ~0.8s/speaker × 48 = 39s. Parallel individual queries let Neo4j
         # process up to max_workers speakers simultaneously → ~5-10s total.
+        # max_workers 6→4 e retry sui TransientError: con 6 fetch concorrenti
+        # il pool transazioni Neo4j (2.1GiB) saturava e ~5-20/46 speaker
+        # cadevano con MemoryPoolOutOfMemoryError → authority di default 0.5
+        # e ranking partiti degradato (osservato 2026-07-23). L'errore è
+        # transitorio: al retry le transazioni concorrenti hanno liberato memoria.
+        from neo4j.exceptions import TransientError
+
+        def _fetch_with_retry(sid: str, retries: int = 2):
+            for attempt in range(retries + 1):
+                try:
+                    return self._fetch_speaker_data(sid, reference_date)
+                except TransientError:
+                    if attempt == retries:
+                        raise
+                    _time.sleep(0.8 * (attempt + 1))
+
         all_data: Dict[str, Any] = {}
-        with ThreadPoolExecutor(max_workers=min(6, max(1, len(speaker_ids)))) as db_pool:
+        with ThreadPoolExecutor(max_workers=min(4, max(1, len(speaker_ids)))) as db_pool:
             db_futures = {
-                db_pool.submit(self._fetch_speaker_data, sid, reference_date): sid
+                db_pool.submit(_fetch_with_retry, sid): sid
                 for sid in speaker_ids
             }
             for fut in as_completed(db_futures):
@@ -450,15 +466,22 @@ class AuthorityScorer:
             WITH d, target_id, group_memberships, committee_memberships,
                  president_roles + vice_president_roles + secretary_roles + v2_officer_roles AS institutional_roles
 
-            OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
-            WHERE a.presentation_date IS NULL OR a.presentation_date >= date() - duration({years: 4})
-            WITH d, target_id, group_memberships, committee_memberships, institutional_roles, collect(
-                CASE WHEN a IS NOT NULL
-                     THEN {uri: a.uri, date: a.presentation_date,
-                           signatory_type: type(ar),
-                           description_embedding: a.description_embedding}
-                END
-            ) AS acts
+            // Bound di memoria: come per gli interventi, gli embedding degli
+            // atti vanno limitati (deputati con 1500+ atti cofirmati = ~20MB/tx)
+            CALL {
+                WITH d
+                OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
+                WHERE a.presentation_date IS NULL OR a.presentation_date >= date() - duration({years: 4})
+                WITH a, ar ORDER BY a.presentation_date DESC LIMIT 500
+                RETURN collect(
+                    CASE WHEN a IS NOT NULL
+                         THEN {uri: a.uri, date: a.presentation_date,
+                               signatory_type: type(ar),
+                               description_embedding: a.description_embedding}
+                    END
+                ) AS acts
+            }
+            WITH d, target_id, group_memberships, committee_memberships, institutional_roles, acts
 
             // Bound di memoria (2026-07-23): senza LIMIT questa fetch materializza
             // gli embedding di TUTTI gli interventi di ogni speaker — con le liste
@@ -653,13 +676,19 @@ class AuthorityScorer:
         WITH d, group_memberships, committee_memberships,
              president_roles + vice_president_roles + secretary_roles + v2_officer_roles AS institutional_roles
 
-        OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
-        WITH d, group_memberships, committee_memberships, institutional_roles, collect({
-            uri: a.uri,
-            date: a.presentation_date,
-            signatory_type: type(ar),
-            description_embedding: a.description_embedding
-        }) AS acts
+        CALL {
+            WITH d
+            OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
+            WITH a, ar ORDER BY a.presentation_date DESC LIMIT 500
+            RETURN collect(
+                CASE WHEN a IS NOT NULL
+                     THEN {uri: a.uri, date: a.presentation_date,
+                           signatory_type: type(ar),
+                           description_embedding: a.description_embedding}
+                END
+            ) AS acts
+        }
+        WITH d, group_memberships, committee_memberships, institutional_roles, acts
 
         CALL {
             WITH d

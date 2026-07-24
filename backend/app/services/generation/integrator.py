@@ -117,6 +117,10 @@ REGOLE CITAZIONI:
 ⚠️ {CIT:N} sono marcatori numerici - copiali ESATTAMENTE (es. {CIT:1}, {CIT:12})
 ⚠️ TUTTI i marcatori {CIT:N} nell'input DEVONO apparire nell'output
 ⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
+⚠️ OGNI marcatore {CIT:N} appare UNA SOLA VOLTA, nella sezione del SUO partito.
+   Se una sezione input NON ha citazioni, il suo paragrafo output resta SENZA
+   citazioni: NON copiarci il {CIT:N} di un altro partito (attribuirebbe al
+   gruppo parole di un deputato di un altro gruppo).
 
 VARIAZIONE OBBLIGATORIA DEI BRIDGE VERBALI:
 ⚠️ OGNI citazione DEVE usare un verbo introduttivo DIVERSO da tutte le altre. ZERO ripetizioni.

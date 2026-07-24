@@ -141,7 +141,12 @@ def detect_reported_speech(text: str) -> Dict[str, Any]:
             opening_is_reported = True
             confidence = max(confidence, 0.90)
 
-    has_reported = confidence >= 0.60
+    # Gate a 0.75: i pattern regular (0.60) da soli producevano troppi falsi
+    # positivi su posizioni dirette in prima persona («Noi chiediamo il pieno
+    # riconoscimento…» di Schlein flaggata, osservato 2026-07-23) — proprio il
+    # materiale sostanziale di PD/AVS. Da soli ora non bastano; servono i
+    # pattern strong (0.85-0.90) o l'attributed inline quote (0.85+).
+    has_reported = confidence >= 0.75
 
     return {
         "has_reported_speech": has_reported,
