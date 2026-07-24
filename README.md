@@ -8,7 +8,8 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **151k+ text chunks** from **692 plenary sessions**, updated through 2026-07-17
+- **170k+ text chunks** from **694 plenary sessions**, updated through 2026-07-21
+- **16.7k roll-call votes** with **6.3M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the most credible speaker per party is selected *for the specific question asked*
 - **6 languages** (IT / EN / FR / DE / ES / PT), editorial newspaper-style UI
@@ -82,7 +83,7 @@ flowchart TD
 | `/search` | Search parliamentary acts and records |
 | `/ranking` | Topic-dependent authority rankings of deputies |
 | `/compass` | Standalone ideological compass for any topic |
-| `/timeline` | **Lavori d'Aula** — browse sessions → debates → phases → speakers, with AI-generated IT/EN recaps per session and debate, per-speaker position summaries, infinite scroll, and search + date filters |
+| `/timeline` | **Lavori d'Aula** — browse sessions → debates → phases → speakers, with AI-generated IT/EN recaps per session and debate, per-speaker position summaries, roll-call detail (per-group breakdown + individual votes, searchable), infinite scroll, and search + date filters |
 | `/valutazione` | Evaluation dashboard: automated metrics and blind A/B comparison vs. a baseline LLM |
 | `/explorer` | Interactive knowledge-graph exploration |
 
@@ -90,13 +91,26 @@ flowchart TD
 
 ---
 
-## Data
+## Knowledge graph
 
-The knowledge graph is built from **official Camera dei Deputati open data**: stenographic XML reports of plenary sessions and the Camera SPARQL endpoints (deputies, groups, committees, acts, roles).
+The graph (schema v2) is built from **official open data**: stenographic XML
+reports (Akoma Ntoso) and the SPARQL endpoints of
+[dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
+roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- XIX Legislature, 692 sessions, 151k+ speech chunks (as of 2026-07-17)
-- Incremental updates: `make update-data` ingests new sessions (transcripts, acts, roles, embeddings) and runs automatic post-update graph repairs (e.g. speaker-link deduplication)
-- The "data updated on" date shown in the app is derived from the database automatically
+- XIX Legislature: 694 sessions · 45.6k speeches · 170k+ chunks · 32.8k acts · 16.7k roll calls with 6.3M individual votes (as of 2026-07-21)
+- **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
+- **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
+- **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
+- Every build/update ends with an **invariant validation gate** (`build/validate_db.py`) — string embeddings, orphan speeches, broken chunk offsets or malformed URIs fail the build
+
+The construction pipeline lives in [`build/`](build/README.md):
+
+```bash
+make db-populate        # full build from scratch
+make db-update-all      # incremental: new sessions + votes + summaries + citability
+make update-data        # demo-oriented incremental update + graph repairs
+```
 
 <p align="center"><img src="assets/neo4j_graph.png" alt="Knowledge graph excerpt" width="600"/></p>
 
@@ -189,7 +203,7 @@ The system ships with a two-level evaluation framework over 15 predefined policy
 - **Automated metrics** (`/api/evaluation/dashboard`): parliamentary-group coverage, citation relevance and faithfulness, coalition balance, authority distribution — computed for both the system and the baseline on the same topics.
 - **Blind A/B protocol** (`/valutazione`): side-by-side comparison of system vs. baseline responses, rated on 9 dimensions on a 1–5 Likert scale. Analysis uses Mann–Whitney U, Cohen's *d*, and Krippendorff's *α* for inter-rater agreement.
 
-In the original study against Google NotebookLM (6 domain experts), the system scored higher on group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%), with human ratings favouring it on source and balance dimensions (Cohen's *d* up to 0.35) and overall satisfaction at parity. Full details in the [research report](Who_Speaks_Matters__Authority_Aware_Multi_View_Parliamentary_RAG.pdf).
+In the original study against Google NotebookLM (6 domain experts), the system scored higher on group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%), with human ratings favouring it on source and balance dimensions (Cohen's *d* up to 0.35) and overall satisfaction at parity. Full details in the [paper](docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf).
 
 ---
 
@@ -199,9 +213,20 @@ Parliamentary data are sourced from the **Camera dei Deputati open data** progra
 
 ---
 
+## Repository layout
+
+```
+backend/    FastAPI app — retrieval, authority scoring, generation, citation verification
+frontend/   Next.js app — chat, search, rankings, compass, timeline, evaluation
+build/      knowledge-graph construction pipeline + validation gate (see build/README.md)
+docs/       paper (camera-ready draft) and working plans
+```
+
+---
+
 ## Citation
 
-If you use this system or build on this work in academic contexts, please cite:
+If you use this system or build on this work in academic contexts, please cite ([PDF](docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf)):
 
 Accepted at the **In-Use Track of the 25th International Semantic Web Conference (ISWC 2026)**.
 
