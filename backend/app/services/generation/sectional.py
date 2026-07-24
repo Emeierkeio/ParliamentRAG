@@ -534,6 +534,13 @@ caratteri) che soddisfi TUTTI questi criteri:
    ✓ VALIDA: «su Israele ho anche detto che noi sosteniamo diverse iniziative,
    a partire dalle sanzioni verso i coloni» → posizione esplicita e sul tema.
 4. NON inizia con connettivi (quindi, dunque, perciò, e, ma, infatti, per questo...).
+6. NON è testo che l'oratore sta LEGGENDO da un documento: riformulazioni di
+   impegni, testi di emendamenti/mozioni/pareri (spesso tra virgolette nel
+   resoconto, o introdotti da «con questa riformulazione:», «così riformulato»,
+   «il parere è favorevole/contrario») — è il testo del documento, non la
+   posizione dell'oratore. Caso reale: «ad adottare ogni iniziativa, anche
+   normativa, utile a garantire…» era la riformulazione di un impegno letta dal
+   Vice Ministro, NON una sua dichiarazione — VIETATA.
 
 ESEMPI DI VALUTAZIONE:
 ✓ «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
