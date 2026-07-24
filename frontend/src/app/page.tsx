@@ -217,7 +217,7 @@ export default function LandingPage() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <a
-                href="https://github.com/Emeierkeio/thesis-ParliamentRAG"
+                href="https://github.com/Emeierkeio/ParliamentRAG"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -228,7 +228,7 @@ export default function LandingPage() {
                 <ArrowUpRight className="h-3.5 w-3.5 self-center" />
               </a>
               <a
-                href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -239,7 +239,7 @@ export default function LandingPage() {
                 <ArrowUpRight className="h-3.5 w-3.5 self-center" />
               </a>
               <a
-                href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -488,7 +488,7 @@ export default function LandingPage() {
           </div>
           <p className="flex items-center gap-4">
             <a
-              href="https://github.com/Emeierkeio/thesis-ParliamentRAG"
+              href="https://github.com/Emeierkeio/ParliamentRAG"
               target="_blank"
               rel="noopener noreferrer"
               className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -496,7 +496,7 @@ export default function LandingPage() {
               GitHub
             </a>
             <a
-              href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
@@ -504,7 +504,7 @@ export default function LandingPage() {
               {t("paperInUse")}
             </a>
             <a
-              href="https://github.com/Emeierkeio/thesis-ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
