@@ -364,7 +364,7 @@ db-update-senate: db-install ## Incremental Senate update (new AKNs + senator CS
 		--neo4j-password $(NEO4J_PASS)
 	@printf "\n$(BOLD)$(GREEN)Senate data updated!$(RESET)\n"
 
-db-update-all: db-update db-update-senate enrich-sparql generate-summaries classify-citability ## Update everything: Camera + Senato + SPARQL votes + AI summaries + citability
+db-update-all: db-update db-update-senate enrich-sparql generate-summaries classify-citability misto-componenti ## Update everything: Camera + Senato + SPARQL votes + AI summaries + citability + componenti Misto
 
 db-download-leg18: db-install ## Download all XVIII legislature raw data (Camera + Senato + CSVs, no DB writes)
 	@printf "$(BOLD)$(CYAN)Downloading XVIII legislature data...$(RESET)\n"
@@ -499,7 +499,13 @@ generate-summaries: db-install ## Generate AI summaries for timeline (resumable)
 
 db-full: db-all generate-summaries ## Full DB build + AI summaries (one-shot)
 
-.PHONY: classify-citability
+.PHONY: classify-citability misto-componenti
+
+misto-componenti: db-install ## Ingest componenti politiche del Gruppo Misto (SPARQL)
+	@printf "$(BOLD)$(CYAN)Ingesting componenti Gruppo Misto...$(RESET)\n"
+	@NEO4J_URI=$(NEO4J_LOCAL) NEO4J_USER=$(NEO4J_USER) NEO4J_PASSWORD=$(NEO4J_PASS) \
+		$(PYTHON) $(BUILD_DIR)/ingest_misto_componenti.py
+	@printf "\n$(BOLD)$(GREEN)Componenti Misto ingested!$(RESET)\n"
 
 classify-citability: db-install ## Classify chunk citability index-time (resumable)
 	@printf "$(BOLD)$(CYAN)Classifying chunk citability...$(RESET)\n"
