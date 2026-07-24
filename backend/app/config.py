@@ -281,7 +281,8 @@ class ConfigLoader:
             group_name: Parliamentary group name
 
         Returns:
-            'maggioranza' or 'opposizione'
+            'maggioranza', 'opposizione' o 'misto' (il Gruppo Misto non è
+            ascrivibile a uno schieramento: contiene componenti opposte)
         """
         if not group_name:
             return "opposizione"

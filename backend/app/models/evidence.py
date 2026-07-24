@@ -80,8 +80,8 @@ class UnifiedEvidence(BaseModel):
         description="Speaker type"
     )
     party: str = Field(description="Parliamentary group name")
-    coalition: Literal["maggioranza", "opposizione", "governo"] = Field(
-        description="Coalition membership"
+    coalition: Literal["maggioranza", "opposizione", "governo", "misto"] = Field(
+        description="Coalition membership ('misto' = Gruppo Misto, non ascrivibile a uno schieramento)"
     )
     # Group-change transparency: True when the speaker has since moved to a different group
     party_changed: bool = Field(default=False, description="Whether speaker changed group after this speech")

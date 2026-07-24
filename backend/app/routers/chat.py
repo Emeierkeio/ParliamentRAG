@@ -1663,6 +1663,10 @@ def _compute_balance_metrics(
         coalition = coalition_logic.get_coalition(party)
         if coalition == "maggioranza":
             maggioranza_count += 1
+        elif coalition == "misto":
+            # Il Gruppo Misto non è ascrivibile a uno schieramento
+            # (componenti opposte): escluso dal balance binario.
+            continue
         else:
             opposizione_count += 1
 

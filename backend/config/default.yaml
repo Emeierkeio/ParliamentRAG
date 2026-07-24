@@ -177,6 +177,11 @@ coalitions:
     - "Alleanza Verdi e Sinistra"
     - "Azione - Popolari Europeisti Riformatori - Renew Europe"
     - "Italia Viva - Il Centro - Renew Europe"
+
+  # Il Gruppo Misto NON è ascrivibile a uno schieramento: contiene componenti
+  # politiche di orientamento opposto (+Europa vs Futuro Nazionale Vannacci).
+  # Ha una sezione propria nella summary ed è escluso dal balance binario.
+  misto:
     - "Misto"
 
 # Citation extraction settings

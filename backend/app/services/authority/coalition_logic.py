@@ -117,12 +117,18 @@ class CoalitionLogic:
             if normalize(g) == group_norm:
                 self._coalition_cache[group_name] = "opposizione"
                 return "opposizione"
-            
-        else:
-            # Default unknown groups to opposition
-            logger.warning(f"Unknown group '{group_name}', defaulting to opposizione")
-            self._coalition_cache[group_name] = "opposizione"
-            return "opposizione"
+
+        # Gruppo Misto: coalizione propria — non ascrivibile a uno
+        # schieramento, contiene componenti politiche opposte
+        for g in coalitions.get("misto", []):
+            if normalize(g) == group_norm:
+                self._coalition_cache[group_name] = "misto"
+                return "misto"
+
+        # Default unknown groups to opposition
+        logger.warning(f"Unknown group '{group_name}', defaulting to opposizione")
+        self._coalition_cache[group_name] = "opposizione"
+        return "opposizione"
 
     def authority_carries_over(
         self,

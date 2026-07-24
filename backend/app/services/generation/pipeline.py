@@ -1000,14 +1000,19 @@ class GenerationPipeline:
         """
         config = get_config()
         MAGGIORANZA = config.coalitions.get("maggioranza", [])
+        MISTO = config.coalitions.get("misto", [])
 
         magg_injections: list = []
         opp_injections: list = []
+        misto_injections: list = []
 
         for party, body in rewritten.items():
             para = f"Per {party}, {body}"
             if party in MAGGIORANZA:
                 magg_injections.append(para)
+            elif party in MISTO:
+                # Il Misto ha un blocco proprio: non è ascrivibile a uno schieramento
+                misto_injections.append(para)
             else:
                 opp_injections.append(para)
             logger.info(f"Fallback injection: appending rewritten paragraph for '{party}'")
@@ -1037,6 +1042,14 @@ class GenerationPipeline:
                 text = text + "\n\n" + inject_block
             else:
                 text = text + f"\n\n{opp_header_alt}\n\n{inject_block}"
+
+        if misto_injections:
+            misto_header = "## Gruppo Misto"
+            inject_block = "\n\n".join(misto_injections)
+            if misto_header in text:
+                text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{misto_header}\n\n{inject_block}"
 
         return text
 
@@ -1238,10 +1251,12 @@ class GenerationPipeline:
         config = get_config()
         MAGGIORANZA = config.coalitions.get("maggioranza", [])
         OPPOSIZIONE = config.coalitions.get("opposizione", [])
+        MISTO = config.coalitions.get("misto", [])
 
         text_lower = text.lower()
         magg_injections: List[str] = []
         opp_injections: List[str] = []
+        misto_injections: List[str] = []
         injected: List[str] = []
 
         for section in sections:
@@ -1265,6 +1280,8 @@ class GenerationPipeline:
                 magg_injections.append(injected_para)
             elif party in OPPOSIZIONE:
                 opp_injections.append(injected_para)
+            elif party in MISTO:
+                misto_injections.append(injected_para)
 
             injected.append(party)
             logger.warning(f"Party injection: '{party}' missing from integrated text — injecting original section")
@@ -1296,6 +1313,14 @@ class GenerationPipeline:
                 text = text + "\n\n" + inject_block
             else:
                 text = text + f"\n\n{opp_header_alt}\n\n{inject_block}"
+
+        if misto_injections:
+            misto_header = "## Gruppo Misto"
+            inject_block = "\n\n".join(misto_injections)
+            if misto_header in text:
+                text = text + "\n\n" + inject_block
+            else:
+                text = text + f"\n\n{misto_header}\n\n{inject_block}"
 
         return text, injected
 

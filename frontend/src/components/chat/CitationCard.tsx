@@ -51,8 +51,15 @@ export function CitationCard({ citation, index, className, isHighlighted }: Cita
   const t = useTranslations("CitationCard");
 
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
-  const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+  // "misto": il Gruppo Misto non è ascrivibile a uno schieramento — badge neutro
+  const coalitionLabel = isGoverno
+    ? t("governo")
+    : citation.coalition === "misto" ? "Gruppo Misto" : citation.coalition;
+  const groupColor = isGoverno
+    ? "#4B0082"
+    : citation.coalition === "maggioranza" ? "#3B82F6"
+    : citation.coalition === "misto" ? "#6B7280"
+    : "#EF4444";
 
   const displayText = citation.translated_text ?? citation.text ?? citation.quote_text ?? "";
   const originalText = citation.is_translated ? (citation.text ?? citation.quote_text ?? "") : null;
@@ -221,8 +228,15 @@ interface CitationModalProps {
 function CitationModal({ citation, isOpen, onClose }: CitationModalProps) {
   const t = useTranslations("CitationCard");
   const isGoverno = citation.group?.toLowerCase() === "governo" || !!citation.institutional_role;
-  const coalitionLabel = isGoverno ? t("governo") : citation.coalition;
-  const groupColor = isGoverno ? "#4B0082" : citation.coalition === "maggioranza" ? "#3B82F6" : "#EF4444";
+  // "misto": il Gruppo Misto non è ascrivibile a uno schieramento — badge neutro
+  const coalitionLabel = isGoverno
+    ? t("governo")
+    : citation.coalition === "misto" ? "Gruppo Misto" : citation.coalition;
+  const groupColor = isGoverno
+    ? "#4B0082"
+    : citation.coalition === "maggioranza" ? "#3B82F6"
+    : citation.coalition === "misto" ? "#6B7280"
+    : "#EF4444";
   // On-demand translation state for the full speech text
   const [translatedFull, setTranslatedFull] = useState<string | null>(null);
   const [isTranslating, setIsTranslating] = useState(false);

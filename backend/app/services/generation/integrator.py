@@ -64,7 +64,14 @@ Ministri e membri dell'esecutivo (es. Meloni, Salvini come ministri, ecc.)
 Deputati dei partiti di maggioranza (Fratelli d'Italia, Lega, Forza Italia, Noi Moderati)
 
 ## Posizioni dell'Opposizione
-Deputati dei partiti di opposizione (Partito Democratico, Movimento 5 Stelle, Alleanza Verdi e Sinistra, Azione, Italia Viva, Misto)
+Deputati dei partiti di opposizione (Partito Democratico, Movimento 5 Stelle, Alleanza Verdi e Sinistra, Azione, Italia Viva)
+
+## Gruppo Misto (se presente)
+Il Gruppo Misto NON è ascrivibile a maggioranza o opposizione: contiene componenti
+politiche di orientamento OPPOSTO (es. +Europa e Futuro Nazionale Vannacci).
+Mantieni l'attribuzione alle componenti indicata nella sezione di input («la
+componente X del gruppo Misto…») e NON presentare mai una posizione unitaria
+del Misto quando le componenti divergono.
 
 ⚠️ IMPORTANTE - GOVERNO vs MAGGIORANZA:
 - I membri del GOVERNO (ministri, presidente del consiglio) vanno in "Posizione del Governo"
@@ -86,7 +93,7 @@ la sezione "## Posizione del Governo".
 
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
-- Le sezioni di input sono raggruppate in tag [BLOCCO: GOVERNO/MAGGIORANZA/OPPOSIZIONE] e [PARTITO: Nome Partito]
+- Le sezioni di input sono raggruppate in tag [BLOCCO: GOVERNO/MAGGIORANZA/OPPOSIZIONE/GRUPPO MISTO] e [PARTITO: Nome Partito]
   ⚠️ QUESTI TAG SONO SOLO PER L'INPUT — NON copiarli nell'output. Scrivi tu i tuoi header ## ...
 - Ogni sezione di partito inizia con [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo nell'output
 - Formato OBBLIGATORIO per il primo periodo: "Per [Nome Partito], [testo contestuale]..."
@@ -159,6 +166,8 @@ REGOLE GENERALI:
         coalitions = self.config.coalitions
         self.MAGGIORANZA = coalitions.get("maggioranza", [])
         self.OPPOSIZIONE = coalitions.get("opposizione", [])
+        # Gruppo Misto: blocco proprio, fuori dallo schieramento binario
+        self.MISTO = coalitions.get("misto", [])
 
     def _format_statistics(self, topic_statistics: Optional[Dict[str, Any]]) -> str:
         """Format topic statistics for the integrator prompt."""
@@ -359,6 +368,16 @@ Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discu
         if opp_parts:
             parts.append("[BLOCCO: OPPOSIZIONE]\n" + "\n\n".join(opp_parts))
 
+        # Gruppo Misto: blocco proprio (componenti opposte, mai fuso
+        # negli schieramenti)
+        misto_parts = []
+        for party in self.MISTO:
+            content = self._get_section_by_party(sections, party)
+            if content:
+                misto_parts.append(f"[PARTITO: {party}]\n{content}")
+        if misto_parts:
+            parts.append("[BLOCCO: GRUPPO MISTO]\n" + "\n\n".join(misto_parts))
+
         return "\n\n---\n\n".join(parts)
 
     def _simple_concatenation(self, sections: List[Dict[str, Any]]) -> str:
@@ -391,6 +410,15 @@ Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discu
                 opp_parts.append(f"Per {party}, " + strip_party_header(content))
         if opp_parts:
             parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
+
+        # Gruppo Misto: sezione propria
+        misto_parts = []
+        for party in self.MISTO:
+            content = self._get_section_by_party(sections, party)
+            if content:
+                misto_parts.append(f"Per {party}, " + strip_party_header(content))
+        if misto_parts:
+            parts.append("## Gruppo Misto\n\n" + "\n\n".join(misto_parts))
 
         return "\n\n---\n\n".join(parts)
 
