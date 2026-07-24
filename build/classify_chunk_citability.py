@@ -66,7 +66,11 @@ connettivi (quindi, ma, e, infatti...), esprime una posizione di merito. Copia \
 ESATTAMENTE carattere per carattere DAL FRAMMENTO CON QUELL'INDICE (mai da un \
 altro frammento), inclusi maiuscole e punteggiatura originali: se la frase inizia \
 con un connettivo, copiala dal primo token utile SENZA cambiare la maiuscola. \
-Se nessuna frase è citabile: null.
+MAI scegliere come best_quote testo che l'oratore sta LEGGENDO da un documento: \
+riformulazioni di impegni, testi di emendamenti/mozioni/pareri (spesso tra \
+virgolette nel resoconto o introdotti da "con questa riformulazione:", "così \
+riformulato", "il parere è favorevole/contrario") — è il testo del documento, \
+non la posizione dell'oratore. Se nessuna frase è citabile: null.
 
 Rispondi SOLO con JSON valido:
 {"results": [{"i": <indice>, "class": "<classe>", "score": <float>, "best_quote": <string|null>}, ...]}
