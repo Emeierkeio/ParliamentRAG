@@ -8,7 +8,7 @@ import { CompassCard } from "@/components/chat/CompassCard";
 import type { CompassData } from "@/components/chat/CompassCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
-import { TOPICS } from "@/lib/constants";
+import { getTopics } from "@/lib/constants";
 import {
   Compass,
   Search,
@@ -37,7 +37,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTranslations } from "next-intl";
+import {useTranslations, useLocale } from "next-intl";
 
 // ── Types ──────────────────────────────────────────────────────
 
@@ -69,6 +69,7 @@ export default function CompassPage() {
   const [computationTime, setComputationTime] = useState(0);
 
   const t = useTranslations("CompassPage");
+  const locale = useLocale();
 
   const fetchCompass = useCallback(async (topicText: string) => {
     if (!topicText.trim()) return;
@@ -297,7 +298,7 @@ export default function CompassPage() {
                     {t("suggestedTopicsLabel")}
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    {TOPICS.slice(0, 8).map((t) => (
+                    {getTopics(locale).slice(0, 8).map((t) => (
                       <button
                         key={t}
                         className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"

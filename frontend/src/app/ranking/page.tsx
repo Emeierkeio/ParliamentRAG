@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useMemo, useCallback, useRef } from "react";
-import { useTranslations } from "next-intl";
+import {useTranslations, useLocale } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
-import { TOPICS } from "@/lib/constants";
+import { getTopics } from "@/lib/constants";
 import type { Expert } from "@/types";
 import {
   Crown,
@@ -67,6 +67,7 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
 
 export default function RankingPage() {
   const t = useTranslations("RankingsPage");
+  const locale = useLocale();
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const rankingHistory = useLocalHistory<{ deputies: RankingDeputy[]; computationTime: number }>(
     "parliamentrag-ranking-history"
@@ -619,7 +620,7 @@ export default function RankingPage() {
                     {t("suggestedTopicsLabel")}
                   </p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    {TOPICS.slice(0, 8).map((t) => (
+                    {getTopics(locale).slice(0, 8).map((t) => (
                       <button
                         key={t}
                         className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
