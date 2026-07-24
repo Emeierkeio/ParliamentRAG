@@ -58,6 +58,43 @@ def parse_ocd_date(value: str | None) -> str | None:
     return f"{value[:4]}-{value[4:6]}-{value[6:8]}"
 
 
+_LOWER_WORDS = {
+    "di", "del", "della", "dello", "dei", "degli", "delle", "e", "ed",
+    "al", "allo", "alla", "ai", "agli", "alle", "da", "dal", "con", "per", "in",
+}
+_ACRONYMS = {"MAIE", "UDC", "USEI", "AVS", "PPE", "SVP"}
+
+
+def display_case(name: str) -> str:
+    """Titolo SPARQL (MAIUSCOLO) → display case coerente coi nomi dei gruppi.
+
+    '+EUROPA - STATI UNITI D'EUROPA' → '+Europa - Stati Uniti d'Europa'
+    'NOI MODERATI -MAIE'             → 'Noi Moderati - MAIE'
+    """
+    name = re.sub(r"\s*-\s*", " - ", name).strip()
+    out = []
+    for i, tok in enumerate(name.split()):
+        if tok == "-":
+            out.append(tok)
+            continue
+        if tok.upper().strip("+") in _ACRONYMS:
+            out.append(tok.upper())
+            continue
+        low = tok.lower()
+        m = re.match(r"^([dl]')(.+)$", low)  # d'europa → d'Europa
+        if m:
+            out.append(m.group(1) + m.group(2).capitalize())
+            continue
+        if i > 0 and low in _LOWER_WORDS:
+            out.append(low)
+            continue
+        if low.startswith("+"):
+            out.append("+" + low[1:].capitalize())
+        else:
+            out.append(low.capitalize())
+    return " ".join(out)
+
+
 def clean_name(title: str) -> str:
     """Titolo OCD → nome leggibile della componente.
 
@@ -75,7 +112,8 @@ def clean_name(title: str) -> str:
     name = re.sub(r"\([^()]*$", "", name)
     if name.upper().startswith("MISTO-"):
         name = name[6:]
-    return re.sub(r"[\s\-–]+$", "", name).strip()
+    name = re.sub(r"[\s\-–]+$", "", name).strip()
+    return display_case(name)
 
 
 def dep_to_persona(dep_uri: str) -> str | None:
