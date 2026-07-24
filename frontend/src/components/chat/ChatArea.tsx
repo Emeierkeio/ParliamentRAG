@@ -81,6 +81,15 @@ export function ChatArea({
               </Button>
             )}
           </div>
+          <p className="mt-1.5 px-1 text-[10px] leading-tight text-muted-foreground/60">
+            {t("researchNote")}{" "}
+            <a
+              href="/privacy"
+              className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+            >
+              Privacy
+            </a>
+          </p>
         </div>
       </div>
 
