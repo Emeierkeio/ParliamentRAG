@@ -27,9 +27,12 @@ class CommissionMatcher:
 
     def _load_config(self) -> None:
         """Load commission topics from YAML config."""
+        # 3 livelli sopra retrieval/ = backend/ (come components.py:341).
+        # Con 4 livelli il path puntava fuori dal backend → load fallito
+        # in silenzio e commissioni SEMPRE vuote (osservato 2026-07-24).
         config_path = os.path.join(
             os.path.dirname(__file__),
-            "../../../../config/commissioni_topics.yaml"
+            "../../../config/commissioni_topics.yaml"
         )
 
         try:
@@ -116,11 +119,11 @@ class CommissionMatcher:
                     matched_keywords.append(kw)
 
             if matched_keywords:
-                # Score based on number of matches and keyword specificity
-                score = len(matched_keywords) / max(len(keywords), 1)
-                # Boost for multiple matches
-                if len(matched_keywords) > 1:
-                    score = min(1.0, score * 1.2)
+                # Score sul numero ASSOLUTO di match: dividere per il totale
+                # delle keyword puniva le commissioni con vocabolario ricco
+                # (18 keyword → un match esatto scorava 0.06 e finiva sotto
+                # min_score). Un match esatto è già un segnale forte.
+                score = min(1.0, 0.5 + 0.2 * (len(matched_keywords) - 1))
                 results.append((commission_name, score, matched_keywords))
 
         # Sort by score descending

@@ -51,6 +51,16 @@ commissioni:
       - cooperazione internazionale
       - NATO
       - ONU
+      # Aree geografiche/crisi ricorrenti nel dibattito: senza queste la
+      # query «supporto a Israele» non matchava nessuna commissione
+      - Israele
+      - Palestina
+      - Gaza
+      - Medio Oriente
+      - Ucraina
+      - Russia
+      - conflitto internazionale
+      - sanzioni internazionali
     topic_categories:
       - foreign_affairs
       - eu_policy

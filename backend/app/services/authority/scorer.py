@@ -26,6 +26,14 @@ from ...config import get_config
 
 logger = logging.getLogger(__name__)
 
+# Bound GLOBALE sulle fetch authority pesanti (embedding di atti/interventi,
+# fino a ~10MB/tx): con più pipeline concorrenti i ThreadPool per-pipeline si
+# sommavano e il pool transazioni Neo4j (2.1GiB) saturava, facendo fallire
+# task interi (osservato 2026-07-24 con 2 query simultanee). Il semaforo vale
+# attraverso TUTTE le pipeline del processo.
+import threading as _threading
+_FETCH_SEMAPHORE = _threading.Semaphore(4)
+
 
 def parse_neo4j_date(date_value: Any) -> Optional[date]:
     """
@@ -144,8 +152,14 @@ class AuthorityScorer:
         if reference_date is None:
             reference_date = date.today()
 
-        # Fetch speaker data from database
-        speaker_data = self._fetch_speaker_data(speaker_id, reference_date)
+        # Fetch speaker data from database. Un TransientError residuo (pool
+        # transazioni saturo anche dopo i retry) NON deve far crashare la
+        # pipeline chiamante: authority di default come per speaker mancanti.
+        try:
+            speaker_data = self._fetch_speaker_data(speaker_id, reference_date)
+        except Exception as exc:
+            logger.warning(f"Authority fetch failed for {speaker_id}: {exc}")
+            speaker_data = None
 
         if not speaker_data:
             logger.warning(f"No data found for speaker {speaker_id}")
@@ -261,26 +275,15 @@ class AuthorityScorer:
         # UNWIND+CALL batch queries execute CALL iterations sequentially in Neo4j,
         # giving ~0.8s/speaker × 48 = 39s. Parallel individual queries let Neo4j
         # process up to max_workers speakers simultaneously → ~5-10s total.
-        # max_workers 6→4 e retry sui TransientError: con 6 fetch concorrenti
-        # il pool transazioni Neo4j (2.1GiB) saturava e ~5-20/46 speaker
-        # cadevano con MemoryPoolOutOfMemoryError → authority di default 0.5
-        # e ranking partiti degradato (osservato 2026-07-23). L'errore è
-        # transitorio: al retry le transazioni concorrenti hanno liberato memoria.
-        from neo4j.exceptions import TransientError
-
-        def _fetch_with_retry(sid: str, retries: int = 2):
-            for attempt in range(retries + 1):
-                try:
-                    return self._fetch_speaker_data(sid, reference_date)
-                except TransientError:
-                    if attempt == retries:
-                        raise
-                    _time.sleep(0.8 * (attempt + 1))
-
+        # max_workers 6→4: con 6 fetch concorrenti il pool transazioni Neo4j
+        # (2.1GiB) saturava e ~5-20/46 speaker cadevano con
+        # MemoryPoolOutOfMemoryError → authority di default 0.5 e ranking
+        # partiti degradato (osservato 2026-07-23). Retry e bound globale
+        # sono dentro _fetch_speaker_data (valgono per tutti i chiamanti).
         all_data: Dict[str, Any] = {}
         with ThreadPoolExecutor(max_workers=min(4, max(1, len(speaker_ids)))) as db_pool:
             db_futures = {
-                db_pool.submit(_fetch_with_retry, sid): sid
+                db_pool.submit(self._fetch_speaker_data, sid, reference_date): sid
                 for sid in speaker_ids
             }
             for fut in as_completed(db_futures):
@@ -609,6 +612,32 @@ class AuthorityScorer:
         return normalized
 
     def _fetch_speaker_data(
+        self,
+        speaker_id: str,
+        reference_date: date,
+        retries: int = 2,
+    ) -> Optional[Dict[str, Any]]:
+        """Fetch speaker data with global concurrency bound + transient retry.
+
+        Il semaforo globale limita le fetch pesanti attraverso TUTTE le
+        pipeline concorrenti; il retry copre i MemoryPoolOutOfMemoryError
+        residui (transitori: al retry le tx concorrenti hanno liberato
+        memoria). Vale per ogni chiamante (batch pool E compute_authority).
+        """
+        import time as _t
+        from neo4j.exceptions import TransientError
+
+        for attempt in range(retries + 1):
+            try:
+                with _FETCH_SEMAPHORE:
+                    return self._fetch_speaker_data_once(speaker_id, reference_date)
+            except TransientError:
+                if attempt == retries:
+                    raise
+                _t.sleep(0.8 * (attempt + 1))
+        return None
+
+    def _fetch_speaker_data_once(
         self,
         speaker_id: str,
         reference_date: date
