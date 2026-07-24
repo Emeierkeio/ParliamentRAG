@@ -237,8 +237,18 @@ class StenograficoParser:
             'inFavor': get_int('favorevoli'),
             'against': get_int('contrari'),
             'onMission': get_int('missione'),
-            'outcome': get_text('esito'),
+            'outcome': self._normalize_outcome(get_text('esito')),
         }
+
+    @staticmethod
+    def _normalize_outcome(esito: Optional[str]) -> Optional[str]:
+        """Map raw XML esito to the normalized outcome vocabulary used by the
+        SPARQL ingesters ('approved'/'rejected'), so all Vote nodes share one
+        vocabulary regardless of source."""
+        if not esito:
+            return None
+        mapping = {'Appr.': 'approved', 'Resp.': 'rejected'}
+        return mapping.get(esito, esito)
 
     def _parse_act_references(self, root) -> dict[str, list[dict]]:
         """Parse <metadati><argomenti> to build debate-to-act map.
