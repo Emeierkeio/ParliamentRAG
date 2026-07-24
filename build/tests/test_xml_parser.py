@@ -97,7 +97,8 @@ def test_parse_vote_standalone(sample_vote_xml):
     assert vote['type'] == 'Nominale'
     assert vote['present'] == 450
     assert vote['inFavor'] == 250
-    assert vote['outcome'] == 'Appr.'
+    # Raw XML esito 'Appr.' is normalized to the SPARQL-ingester vocabulary
+    assert vote['outcome'] == 'approved'
 
 
 # ---------------------------------------------------------------------------
