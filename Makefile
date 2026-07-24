@@ -364,7 +364,7 @@ db-update-senate: db-install ## Incremental Senate update (new AKNs + senator CS
 		--neo4j-password $(NEO4J_PASS)
 	@printf "\n$(BOLD)$(GREEN)Senate data updated!$(RESET)\n"
 
-db-update-all: db-update db-update-senate enrich-sparql generate-summaries ## Update everything: Camera + Senato + SPARQL votes + AI summaries
+db-update-all: db-update db-update-senate enrich-sparql generate-summaries classify-citability ## Update everything: Camera + Senato + SPARQL votes + AI summaries + citability
 
 db-download-leg18: db-install ## Download all XVIII legislature raw data (Camera + Senato + CSVs, no DB writes)
 	@printf "$(BOLD)$(CYAN)Downloading XVIII legislature data...$(RESET)\n"
@@ -498,6 +498,17 @@ generate-summaries: db-install ## Generate AI summaries for timeline (resumable)
 	@printf "\n$(BOLD)$(GREEN)Summary generation complete!$(RESET)\n"
 
 db-full: db-all generate-summaries ## Full DB build + AI summaries (one-shot)
+
+.PHONY: classify-citability
+
+classify-citability: db-install ## Classify chunk citability index-time (resumable)
+	@printf "$(BOLD)$(CYAN)Classifying chunk citability...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/classify_chunk_citability.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) \
+		$(if $(DRY_RUN),--dry-run,)
+	@printf "\n$(BOLD)$(GREEN)Citability classification complete!$(RESET)\n"
 
 # ============================================================================
 #  Backend Scripts
