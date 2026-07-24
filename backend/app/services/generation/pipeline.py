@@ -508,6 +508,9 @@ class GenerationPipeline:
         # apertura subito dopo il link completo (osservato 2026-07-24, Misto).
         # Qualunque seconda occorrenza di ](id) è un residuo da rimuovere.
         final_text = self._strip_residual_citation_fragments(final_text)
+        # "Ninety-one interventions" → "91 interventions" (solo intro):
+        # il prompt da solo non vince sulla convenzione stilistica inglese.
+        final_text = self._spelled_stats_to_digits(final_text)
         final_result["text"] = final_text
 
         # Collect citation IDs found in text but NOT in evidence_map.
@@ -885,6 +888,56 @@ class GenerationPipeline:
         if not to_drop:
             return text
         return '\n\n'.join(p for i, p in enumerate(parts) if i not in to_drop)
+
+    # Numeri inglesi scritti in lettere (1-99): il modello a inizio frase
+    # scrive "Ninety-one interventions" per convenzione stilistica anche se
+    # istruito a usare le cifre — e il frontend rende cliccabili le stats
+    # solo con \d+. Conversione deterministica, applicata alla sola intro.
+    _EN_UNITS = {
+        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+        "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+        "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
+        "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19,
+    }
+    _EN_TENS = {
+        "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+        "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90,
+    }
+
+    @classmethod
+    def _spelled_stats_to_digits(cls, text: str) -> str:
+        """Convert spelled-out English numbers to digits when they precede a
+        statistics noun (interventions/deputies/…) in the introduction."""
+        tens = "|".join(cls._EN_TENS)
+        units = "|".join(cls._EN_UNITS)
+        nouns = r"(interventions?|deput(?:y|ies)|parliamentarians?|speeches|sessions?|sittings?)"
+        pattern = re.compile(
+            rf"\b((?:{tens})(?:[-\s](?:{units}))?|(?:{units}))\s+{nouns}",
+            re.IGNORECASE,
+        )
+
+        def to_digits(m: re.Match) -> str:
+            word = m.group(1).lower().replace("-", " ")
+            parts = word.split()
+            value = 0
+            for p in parts:
+                value += cls._EN_TENS.get(p, cls._EN_UNITS.get(p, 0))
+            if value == 0:
+                return m.group(0)
+            return f"{value} {m.group(2)}"
+
+        # Solo la sezione introduttiva (dal primo ## al secondo ##): le quote
+        # verbatim nelle sezioni partito non vanno MAI alterate.
+        first = re.search(r"^##\s", text, re.M)
+        if not first:
+            return text
+        second = re.search(r"^##\s", text[first.end():], re.M)
+        end = first.end() + second.start() if second else len(text)
+        intro = text[:end]
+        converted = pattern.sub(to_digits, intro)
+        if converted != intro:
+            logger.info("[INTRO] Spelled-out stat numbers converted to digits")
+        return converted + text[end:]
 
     @staticmethod
     def _strip_residual_citation_fragments(text: str) -> str:

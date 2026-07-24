@@ -276,7 +276,7 @@ REGOLE GENERALI:
 Sezioni:
 {sections_text}
 
-Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discussione — provvedimento e questioni in gioco; frase 2: interventi, deputati e periodo; MAI elenchi di sedute in prosa) + sezioni per coalizione.
+Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discussione — provvedimento e questioni in gioco; frase 2: interventi, deputati e periodo, con i numeri SEMPRE in cifre — 91, mai "novantuno"/"Ninety-one", in qualunque lingua e anche a inizio frase; MAI elenchi di sedute in prosa) + sezioni per coalizione.
 
 ⚠️ CRITICO:
 1. Copia ESATTAMENTE ogni {{CIT:N}} carattere per carattere - NON modificare i numeri!
