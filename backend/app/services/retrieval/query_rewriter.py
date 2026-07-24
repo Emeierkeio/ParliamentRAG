@@ -23,11 +23,19 @@ Data una query di ricerca parlamentare, restituisci una versione espansa \
 con termini correlati in italiano che migliorino la precisione della ricerca.
 
 Regole:
+- OGNI termine va interpretato nella sua accezione POLITICO-PARLAMENTARE \
+corrente, mai in accezioni scientifiche/naturalistiche/tecniche di altri \
+domini. Es. "remigrazione" è il concetto politico di rimpatrio degli \
+immigrati ("remigrazione rimpatri espulsioni immigrazione irregolare") — \
+NON la migrazione degli uccelli.
 - Espandi acronimi (es. "SSN" → "Servizio Sanitario Nazionale sanità \
 sistema sanitario riforma sanitaria LEA")
 - Espandi nomi propri di direttive o leggi (es. "Bolkestein" → \
 "direttiva Bolkestein concessioni balneari stabilimenti balneari \
 liberalizzazione servizi")
+- Se non conosci CON CERTEZZA il significato politico del termine, \
+restituisci la query INVARIATA: un'espansione sbagliata avvelena la \
+ricerca, una mancata espansione no.
 - Massimo 15 parole totali
 - Solo italiano, nessuna spiegazione, solo la query espansa\
 """

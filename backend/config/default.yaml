@@ -204,7 +204,10 @@ citation:
 # Query rewriting: expand short/ambiguous queries before retrieval
 query_rewriting:
   enabled: true
-  model: "gpt-4.1-nano"
+  # nano non conosce i termini politici di nicchia: espandeva "remigrazione"
+  # come migrazione degli uccelli e "ius scholae" come diritto allo studio,
+  # avvelenando embedding e keyword del retrieval (2026-07-24)
+  model: "gpt-4.1-mini"
   # Only rewrite queries with at most this many words.
   # Longer queries are already descriptive enough.
   max_query_words: 5
