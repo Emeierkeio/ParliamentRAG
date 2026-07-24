@@ -73,7 +73,8 @@ class GenerationPipeline:
         self,
         query: str,
         evidence_list: List[Dict[str, Any]],
-        stream_callback: Optional[callable] = None
+        stream_callback: Optional[callable] = None,
+        query_context: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Run the complete generation pipeline with citation integrity.
@@ -138,7 +139,8 @@ class GenerationPipeline:
             query=query,
             claims=claims,
             evidence_by_party=evidence_by_party,
-            government_evidence=government_evidence
+            government_evidence=government_evidence,
+            query_context=query_context,
         ):
             sections.append(section)
 
@@ -305,7 +307,7 @@ class GenerationPipeline:
                                 # sull'Ucraina — l'EvidenceFirstWriter la citava
                                 # bypassando ogni criterio di autosufficienza)
                                 pick_eid, pick_quote = await self.sectional_writer._pick_quote(
-                                    query, gov_alternatives
+                                    query, gov_alternatives, query_context=query_context
                                 )
                                 if not pick_eid:
                                     logger.info(
@@ -364,7 +366,7 @@ class GenerationPipeline:
                         ]
                         if alternatives:
                             pick_eid, pick_quote = await self.sectional_writer._pick_quote(
-                                query, alternatives
+                                query, alternatives, query_context=query_context
                             )
                             if not pick_eid:
                                 logger.info(

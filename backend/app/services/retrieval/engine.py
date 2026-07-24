@@ -178,7 +178,11 @@ class RetrievalEngine:
                 "graph_channel_count": len(graph_results),
                 "merged_count": len(merged_results),
                 "party_coverage": party_coverage,
-                "processing_time_ms": processing_time
+                "processing_time_ms": processing_time,
+                # Query espansa dal rewriter: serve alla generazione (quote
+                # picker) per giudicare la pertinenza su termini di nicchia
+                # che il modello potrebbe non conoscere ("remigrazione").
+                "rewritten_query": retrieval_query if retrieval_query != query else None,
             }
         }
 

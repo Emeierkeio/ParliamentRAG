@@ -237,7 +237,8 @@ async def process_query_streaming(
 
         generation_result = await services["generation"].generate(
             query=request.query,
-            evidence_list=evidence_dicts
+            evidence_list=evidence_dicts,
+            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
         )
         logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
                      f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")

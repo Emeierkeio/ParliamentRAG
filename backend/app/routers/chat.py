@@ -376,7 +376,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         generation_start = time.time()
 
         generation_result = await services["generation"].generate(
-            query=request.query, evidence_list=evidence_dicts
+            query=request.query, evidence_list=evidence_dicts,
+            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
         )
 
         generation_time = time.time() - generation_start
@@ -893,7 +894,8 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         # Generation is truly async (uses async for internally)
         generation_result = await services["generation"].generate(
             query=request.query,
-            evidence_list=evidence_dicts
+            evidence_list=evidence_dicts,
+            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
         )
 
         generation_time = time.time() - generation_start

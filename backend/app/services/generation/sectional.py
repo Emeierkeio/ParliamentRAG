@@ -435,7 +435,8 @@ STRUTTURA OUTPUT:
         query: str,
         claims: List[Dict[str, Any]],
         evidence_by_party: Dict[str, List[Dict[str, Any]]],
-        government_evidence: Optional[List[Dict[str, Any]]] = None
+        government_evidence: Optional[List[Dict[str, Any]]] = None,
+        query_context: Optional[str] = None,
     ) -> AsyncIterator[Dict[str, Any]]:
         """
         Write sections for all parties IN PARALLEL.
@@ -478,7 +479,8 @@ STRUTTURA OUTPUT:
                 party="GOVERNO",
                 evidence=government_evidence,
                 claims=claims,
-                is_government=True
+                is_government=True,
+                query_context=query_context,
             ))
             task_order.append("GOVERNO")
 
@@ -490,7 +492,8 @@ STRUTTURA OUTPUT:
                 party=party,
                 evidence=evidence,
                 claims=claims,
-                is_government=False
+                is_government=False,
+                query_context=query_context,
             ))
             task_order.append(party)
 
@@ -550,6 +553,7 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         query: str,
         evidence: List[Dict[str, Any]],
         max_attempts: int = 8,
+        query_context: Optional[str] = None,
     ) -> tuple:
         """Select the best self-contained verbatim quote across the top evidence.
 
@@ -588,6 +592,14 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                 if best_quote
                 else ""
             )
+            # Su query di nicchia ("remigrazione") il modello può non conoscere
+            # il termine e bocciare quote pertinenti: i termini espansi dal
+            # query rewriter definiscono l'ambito del tema per la PERTINENZA.
+            context_block = (
+                f"TERMINI DEL TEMA (l'ambito della DOMANDA — usali per "
+                f"giudicare la pertinenza): {query_context}\n\n"
+                if query_context else ""
+            )
             try:
                 response = await self.client.chat.completions.create(
                     model=self.quote_picker_model,
@@ -595,6 +607,7 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                         {"role": "system", "content": self.QUOTE_PICKER_PROMPT},
                         {"role": "user",
                          "content": f"DOMANDA: {query}\n\n"
+                                    f"{context_block}"
                                     f"DATA INTERVENTO: {e.get('date', '')}\n\n"
                                     f"TESTO:\n{text[:3000]}"
                                     f"{candidate_block}"},
@@ -665,7 +678,8 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         party: str,
         evidence: List[Dict[str, Any]],
         claims: List[Dict[str, Any]],
-        is_government: bool = False
+        is_government: bool = False,
+        query_context: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Write a single section for a party or government."""
 
@@ -685,7 +699,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         # Fase 2.1 — Quote picker: la citazione viene scelta da un call dedicato
         # e vincolato PRIMA della scrittura. Il section writer la riceve come
         # obbligatoria: se non può scegliere, non può sbagliare.
-        picked_eid, picked_quote = await self._pick_quote(query, evidence)
+        picked_eid, picked_quote = await self._pick_quote(
+            query, evidence, query_context=query_context
+        )
 
         # Falla chiusa (2026-07-23): se il picker rifiuta TUTTE le evidenze,
         # la sezione va scritta SENZA citazione — non in modalità libera, dove
