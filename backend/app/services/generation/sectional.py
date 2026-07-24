@@ -720,6 +720,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
             # sistematico di 9/11 citazioni buone (osservato 2026-07-23).
             if picked_ev:
                 picked_ev["quote_text"] = picked_quote
+                # Il surgeon NON deve ri-estrarre da una quote già vettata dal
+                # picker: la ri-estrazione keyword-based la trita in frammenti.
+                picked_ev["quote_vetted"] = True
             mandatory_quote_block = f"""
 ⚠️ CITAZIONE OBBLIGATORIA (già selezionata e verificata — NON sceglierne un'altra):
 Oratore: {picked_speaker}

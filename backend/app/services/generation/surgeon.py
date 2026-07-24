@@ -193,6 +193,18 @@ class CitationSurgeon:
                     else:
                         logger.debug(f"Inline quote at sentence boundary for {evidence_id}")
 
+                    # Cintura anti-frammento: se anche dopo l'espansione la quote
+                    # resta sotto i 60 char (il writer ha citato un pezzetto della
+                    # quote obbligatoria), usa l'intera quote_text quando è essa
+                    # stessa una quote vettata (≤450 char, non un chunk intero).
+                    if len(verified_quote) < 60 and 60 <= len(quote_text) <= 450:
+                        logger.warning(
+                            f"Fragment quote ({len(verified_quote)} chars) for "
+                            f"{evidence_id}: using full vetted quote_text "
+                            f"({len(quote_text)} chars)"
+                        )
+                        verified_quote = quote_text.strip()
+
                     # If the verified quote is a rhetorical question, append the
                     # answer sentence to prevent semantic inversion out of context.
                     if verified_quote.rstrip().endswith('?'):
@@ -238,13 +250,21 @@ class CitationSurgeon:
 
             track_citation(evidence_id, quote_text, evidence)
 
+            # quote_vetted: quote_text È la quote scelta dal picker LLM
+            # (riversata dalla pipeline) — usarla tale e quale. Ri-estrarre
+            # con lo scoring keyword la trita in frammenti (osservato
+            # 2026-07-24: «israele del diritto all'esistenza» da una frase
+            # vettata di 290 char).
             return self._format_citation(
                 quote=quote_text,
                 speaker=evidence.get("speaker_name", ""),
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
                 evidence_id=evidence_id,
-                pre_extracted=evidence.get("pre_extracted_citation", ""),
+                pre_extracted=(
+                    quote_text if evidence.get("quote_vetted")
+                    else evidence.get("pre_extracted_citation", "")
+                ),
                 session_number=evidence.get("session_number")
             )
 
@@ -267,7 +287,10 @@ class CitationSurgeon:
                 party=evidence.get("party", ""),
                 date=str(evidence.get("date", "")),
                 evidence_id=evidence_id,
-                pre_extracted=evidence.get("pre_extracted_citation", ""),
+                pre_extracted=(
+                    quote_text if evidence.get("quote_vetted")
+                    else evidence.get("pre_extracted_citation", "")
+                ),
                 session_number=evidence.get("session_number")
             )
 
@@ -373,7 +396,7 @@ class CitationSurgeon:
         # try to re-extract a better sentence from the full quote text.
         # If no better sentence exists, keep the original to avoid empty citations.
         citation_salience = compute_chunk_salience(quote)
-        if citation_salience <= 0.2 and quote:
+        if citation_salience <= 0.2 and quote and not pre_extracted:
             logger.warning(
                 f"Procedural citation detected for {evidence_id}: "
                 f"salience={citation_salience:.1f}, attempting re-extraction"
@@ -468,7 +491,7 @@ class CitationSurgeon:
     def _expand_to_sentence_start(
         inline_quote: str,
         source_text: str,
-        max_expansion: int = 160,
+        max_expansion: int = 320,
         full_text: str = "",
         span_start: int = 0,
     ) -> str:
@@ -521,6 +544,15 @@ class CitationSurgeon:
 
             expansion_len = pos - sentence_start
             if expansion_len > max_expansion:
+                # Cap 160→320 (2026-07-24): le frasi parlamentari sono lunghe —
+                # «Israele del diritto all'esistenza» stava a ~160 char
+                # dall'inizio frase e il cap restituiva il frammento ROTTO
+                # invece di espandere. Se anche 320 non basta, meglio saperlo.
+                logger.warning(
+                    f"Sentence-start expansion aborted: needs {expansion_len} chars "
+                    f"(cap {max_expansion}) — keeping mid-sentence fragment "
+                    f"'{inline_quote[:50]}'"
+                )
                 return inline_quote
 
             return source_text[sentence_start: pos + len(inline_quote)]

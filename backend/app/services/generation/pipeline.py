@@ -235,6 +235,7 @@ class GenerationPipeline:
             for pick_eid, pick_quote in (section.get("picked_quotes") or {}).items():
                 if pick_eid in evidence_map and pick_quote:
                     evidence_map[pick_eid]["quote_text"] = pick_quote
+                    evidence_map[pick_eid]["quote_vetted"] = True
         coherence_report = self.coherence_validator.validate_all_citations(
             integrated.get("text", ""),
             evidence_map
@@ -318,6 +319,7 @@ class GenerationPipeline:
                                 ]
                                 if pick_eid in evidence_map:
                                     evidence_map[pick_eid]["quote_text"] = pick_quote
+                                    evidence_map[pick_eid]["quote_vetted"] = True
                                 section = await self.evidence_first_writer.write_section_evidence_first(
                                     query=query, party="GOVERNO",
                                     evidence=gov_alternatives, max_citations=1,
@@ -378,6 +380,7 @@ class GenerationPipeline:
                             ]
                             if pick_eid in evidence_map:
                                 evidence_map[pick_eid]["quote_text"] = pick_quote
+                                evidence_map[pick_eid]["quote_vetted"] = True
                             section = await self.evidence_first_writer.write_section_evidence_first(
                                 query=query, party=party,
                                 evidence=alternatives, max_citations=1,
