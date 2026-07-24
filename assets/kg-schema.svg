@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 720" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#7d8492"/>
+    </marker>
+    <style>
+      .node { rx: 10; }
+      .lbl  { font-size: 15px; font-weight: 600; fill: #1f2a44; }
+      .cnt  { font-size: 11px; fill: #7d8492; }
+      .edge { stroke: #7d8492; stroke-width: 1.3; fill: none; marker-end: url(#arr); }
+      .edashed { stroke-dasharray: 5 4; }
+      .elbl { font-size: 10.5px; fill: #5b6270; letter-spacing: .02em; }
+      .eprop { font-size: 9.5px; fill: #9aa0ab; font-style: italic; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1240" height="720" fill="#ffffff"/>
+
+  <!-- ====== proceedings spine (amber) ====== -->
+  <g>
+    <rect class="node" x="70" y="40"  width="160" height="48" rx="10" fill="#fdf1e3" stroke="#c87f2f"/>
+    <text class="lbl" x="150" y="61" text-anchor="middle">Session</text>
+    <text class="cnt" x="150" y="77" text-anchor="middle">694</text>
+
+    <rect class="node" x="70" y="140" width="160" height="48" rx="10" fill="#fdf1e3" stroke="#c87f2f"/>
+    <text class="lbl" x="150" y="161" text-anchor="middle">Debate</text>
+    <text class="cnt" x="150" y="177" text-anchor="middle">6,921</text>
+
+    <rect class="node" x="70" y="240" width="160" height="48" rx="10" fill="#fdf1e3" stroke="#c87f2f"/>
+    <text class="lbl" x="150" y="261" text-anchor="middle">Phase</text>
+    <text class="cnt" x="150" y="277" text-anchor="middle">7,486</text>
+
+    <rect class="node" x="70" y="340" width="160" height="48" rx="10" fill="#fdf1e3" stroke="#c87f2f"/>
+    <text class="lbl" x="150" y="361" text-anchor="middle">Speech</text>
+    <text class="cnt" x="150" y="377" text-anchor="middle">45,666</text>
+
+    <rect class="node" x="70" y="470" width="160" height="48" rx="10" fill="#fdf1e3" stroke="#c87f2f"/>
+    <text class="lbl" x="150" y="491" text-anchor="middle">Chunk</text>
+    <text class="cnt" x="150" y="507" text-anchor="middle">170,922 · vector-indexed</text>
+
+    <line class="edge" x1="150" y1="88"  x2="150" y2="136"/>
+    <text class="elbl" x="158" y="116">HAS_DEBATE</text>
+    <line class="edge" x1="150" y1="188" x2="150" y2="236"/>
+    <text class="elbl" x="158" y="216">HAS_PHASE</text>
+    <line class="edge" x1="150" y1="288" x2="150" y2="336"/>
+    <text class="elbl" x="158" y="316">CONTAINS_SPEECH</text>
+    <line class="edge" x1="150" y1="388" x2="150" y2="466"/>
+    <text class="elbl" x="158" y="430">HAS_CHUNK</text>
+    <text class="eprop" x="158" y="443">(exact substring of Speech)</text>
+
+    <!-- NEXT self-loop on Chunk -->
+    <path class="edge edashed" d="M 70 480 C 30 480, 30 508, 70 508"/>
+    <text class="elbl" x="14" y="498">NEXT</text>
+  </g>
+
+  <!-- ====== people (blue) with Person super-label ====== -->
+  <g>
+    <rect x="545" y="278" width="200" height="212" rx="14" fill="none" stroke="#8fa8cc" stroke-dasharray="4 4"/>
+    <text class="cnt" x="555" y="294" fill="#3e6db5" font-weight="600">Person</text>
+
+    <rect class="node" x="560" y="304" width="170" height="48" rx="10" fill="#e3ecf8" stroke="#3e6db5"/>
+    <text class="lbl" x="645" y="325" text-anchor="middle">Deputy</text>
+    <text class="cnt" x="645" y="341" text-anchor="middle">391</text>
+
+    <rect class="node" x="560" y="424" width="170" height="48" rx="10" fill="#e3ecf8" stroke="#3e6db5"/>
+    <text class="lbl" x="645" y="445" text-anchor="middle">Gov. Member</text>
+    <text class="cnt" x="645" y="461" text-anchor="middle">64</text>
+  </g>
+
+  <!-- SPOKEN_BY -->
+  <line class="edge" x1="230" y1="356" x2="556" y2="326"/>
+  <text class="elbl" x="330" y="330">SPOKEN_BY</text>
+  <line class="edge" x1="230" y1="372" x2="556" y2="444"/>
+  <text class="elbl" x="330" y="422">SPOKEN_BY</text>
+
+  <!-- ====== acts (green) + eurovoc (teal) ====== -->
+  <g>
+    <rect class="node" x="560" y="60" width="170" height="48" rx="10" fill="#e4f2e6" stroke="#4e9a5e"/>
+    <text class="lbl" x="645" y="81" text-anchor="middle">Parl. Act</text>
+    <text class="cnt" x="645" y="97" text-anchor="middle">32,855 · LOD URIs</text>
+
+    <rect class="node" x="900" y="60" width="190" height="48" rx="10" fill="#dff1f0" stroke="#3d9188"/>
+    <text class="lbl" x="995" y="81" text-anchor="middle">EuroVoc Concept</text>
+    <text class="cnt" x="995" y="97" text-anchor="middle">1,714</text>
+  </g>
+  <line class="edge" x1="612" y1="304" x2="612" y2="112"/>
+  <text class="elbl" x="475" y="200">PRIMARY_SIGNATORY</text>
+  <line class="edge edashed" x1="688" y1="304" x2="688" y2="112"/>
+  <text class="elbl" x="696" y="200">CO_SIGNATORY</text>
+  <line class="edge edashed" x1="230" y1="158" x2="556" y2="90"/>
+  <text class="elbl" x="330" y="112">DISCUSSES</text>
+  <line class="edge" x1="730" y1="84" x2="896" y2="84"/>
+  <text class="elbl" x="758" y="76">HAS_SUBJECT</text>
+
+  <!-- ====== organisations (slate) ====== -->
+  <g>
+    <rect class="node" x="980" y="220" width="200" height="48" rx="10" fill="#eceef2" stroke="#6b7686"/>
+    <text class="lbl" x="1080" y="241" text-anchor="middle">Parl. Group</text>
+    <text class="cnt" x="1080" y="257" text-anchor="middle">10</text>
+
+    <rect class="node" x="980" y="300" width="200" height="44" rx="10" fill="#eceef2" stroke="#6b7686"/>
+    <text class="lbl" x="1080" y="319" text-anchor="middle" font-size="14">Misto Component</text>
+    <text class="cnt" x="1080" y="334" text-anchor="middle">5</text>
+
+    <rect class="node" x="980" y="384" width="200" height="48" rx="10" fill="#eceef2" stroke="#6b7686"/>
+    <text class="lbl" x="1080" y="405" text-anchor="middle">Committee</text>
+    <text class="cnt" x="1080" y="421" text-anchor="middle">80</text>
+
+    <rect class="node" x="980" y="468" width="200" height="48" rx="10" fill="#eceef2" stroke="#6b7686"/>
+    <text class="lbl" x="1080" y="489" text-anchor="middle">Government</text>
+    <text class="cnt" x="1080" y="505" text-anchor="middle">HOLDS_OFFICE dated</text>
+  </g>
+
+  <line class="edge" x1="730" y1="316" x2="976" y2="246"/>
+  <text class="elbl" x="778" y="262">MEMBER_OF_GROUP</text>
+  <text class="eprop" x="778" y="274">(start_date, end_date)</text>
+  <line class="edge edashed" x1="730" y1="330" x2="976" y2="322"/>
+  <text class="elbl" x="790" y="316">MEMBER_OF_COMPONENT</text>
+  <line class="edge" x1="730" y1="344" x2="976" y2="404"/>
+  <text class="elbl" x="778" y="386">MEMBER_OF_COMMITTEE</text>
+  <text class="eprop" x="778" y="398">(start_date, end_date, role)</text>
+  <line class="edge" x1="730" y1="452" x2="976" y2="490"/>
+  <text class="elbl" x="790" y="464">HOLDS_OFFICE</text>
+  <text class="eprop" x="790" y="476">(office_type, start_date, end_date)</text>
+
+  <!-- ====== votes (rose) ====== -->
+  <g>
+    <rect class="node" x="400" y="600" width="170" height="48" rx="10" fill="#fbe7e9" stroke="#c4485a"/>
+    <text class="lbl" x="485" y="621" text-anchor="middle">Vote</text>
+    <text class="cnt" x="485" y="637" text-anchor="middle">16,787 roll calls</text>
+
+    <rect class="node" x="700" y="600" width="190" height="48" rx="10" fill="#fbe7e9" stroke="#c4485a"/>
+    <text class="lbl" x="795" y="621" text-anchor="middle">Individual Vote</text>
+    <text class="cnt" x="795" y="637" text-anchor="middle">6,305,481</text>
+  </g>
+
+  <!-- Session -> Vote routed down the left margin -->
+  <path class="edge" d="M 70 64 L 16 64 L 16 680 L 340 680 L 340 636 L 396 636"/>
+  <text class="elbl" x="46" y="672" >HAS_VOTE</text>
+
+  <line class="edge" x1="660" y1="490" x2="770" y2="596"/>
+  <text class="elbl" x="700" y="548">VOTED</text>
+  <line class="edge" x1="700" y1="624" x2="574" y2="624"/>
+  <text class="elbl" x="606" y="616">ON_VOTE</text>
+
+  <!-- footer note -->
+  <text class="cnt" x="1180" y="700" text-anchor="end">ParliamentRAG knowledge graph — schema v2 · XIX Legislature · counts as of 2026-07-21</text>
+</svg>
