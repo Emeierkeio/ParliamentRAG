@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 348" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="parr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#7d8492"/>
+    </marker>
+    <style>
+      .card { fill: #fbfaf8; stroke: #e3e1dc; }
+      .num  { font-size: 12px; font-weight: 700; fill: #3e6db5; letter-spacing: .06em; }
+      .ttl  { font-size: 15px; font-weight: 650; fill: #1f2a44; }
+      .sub  { font-size: 11.5px; fill: #7d8492; }
+      .flow { stroke: #7d8492; stroke-width: 1.4; fill: none; marker-end: url(#parr); }
+    </style>
+  </defs>
+
+  <rect width="1240" height="348" fill="#ffffff"/>
+
+  <!-- row 1: steps 1-4, left to right -->
+  <g>
+    <rect class="card" x="40"  y="48" width="272" height="96" rx="12"/>
+    <text class="num" x="64" y="78">01</text>
+    <text class="ttl" x="64" y="100">Query analysis</text>
+    <text class="sub" x="64" y="120">classification + short-query rewriting</text>
+
+    <rect class="card" x="336" y="48" width="272" height="96" rx="12"/>
+    <text class="num" x="360" y="78">02</text>
+    <text class="ttl" x="360" y="100">Committee matching</text>
+    <text class="sub" x="360" y="120">map the query to relevant committees</text>
+
+    <rect class="card" x="632" y="48" width="272" height="96" rx="12"/>
+    <text class="num" x="656" y="78">03</text>
+    <text class="ttl" x="656" y="100">Expert selection</text>
+    <text class="sub" x="656" y="120">query-specific authority score per group</text>
+
+    <rect class="card" x="928" y="48" width="272" height="96" rx="12"/>
+    <text class="num" x="952" y="78">04</text>
+    <text class="ttl" x="952" y="100">Multi-view retrieval</text>
+    <text class="sub" x="952" y="120">dense + graph channels, weighted fusion</text>
+
+    <line class="flow" x1="312" y1="96" x2="332" y2="96"/>
+    <line class="flow" x1="608" y1="96" x2="628" y2="96"/>
+    <line class="flow" x1="904" y1="96" x2="924" y2="96"/>
+  </g>
+
+  <!-- turn: 4 down to 5 -->
+  <path class="flow" d="M 1064 144 L 1064 200"/>
+
+  <!-- row 2: steps 5-8, right to left -->
+  <g>
+    <rect class="card" x="928" y="204" width="272" height="96" rx="12"/>
+    <text class="num" x="952" y="234">05</text>
+    <text class="ttl" x="952" y="256">Balance metrics</text>
+    <text class="sub" x="952" y="276">coverage across majority and opposition</text>
+
+    <rect class="card" x="632" y="204" width="272" height="96" rx="12"/>
+    <text class="num" x="656" y="234">06</text>
+    <text class="ttl" x="656" y="256">Ideological compass</text>
+    <text class="sub" x="656" y="276">per-topic PCA on group embeddings</text>
+
+    <rect class="card" x="336" y="204" width="272" height="96" rx="12"/>
+    <text class="num" x="360" y="234">07</text>
+    <text class="ttl" x="360" y="256">Balanced generation</text>
+    <text class="sub" x="360" y="276">majority AND opposition sections</text>
+
+    <rect class="card" x="40" y="204" width="272" height="96" rx="12" stroke="#3e6db5" stroke-width="1.6"/>
+    <text class="num" x="64" y="234">08</text>
+    <text class="ttl" x="64" y="256">Citation verification</text>
+    <text class="sub" x="64" y="276">verbatim check, unverifiable quotes cut</text>
+
+    <line class="flow" x1="924" y1="252" x2="908" y2="252"/>
+    <line class="flow" x1="628" y1="252" x2="612" y2="252"/>
+    <line class="flow" x1="332" y1="252" x2="316" y2="252"/>
+  </g>
+
+  <text class="sub" x="1200" y="332" text-anchor="end">One streamed pipeline per question — progress rendered live as an 8-step stepper</text>
+</svg>

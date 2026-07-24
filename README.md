@@ -41,18 +41,7 @@ speech chunks · acts · speakers · groups · committees · sessions
 
 Each question runs through a single streamed pipeline; the frontend renders progress as an 8-step stepper.
 
-```mermaid
-flowchart TD
-    Q[Query] --> A[1. Query analysis & classification<br/>+ short-query rewriting]
-    A --> B[2. Committee matching]
-    B --> C[3. Authority-based expert selection<br/>top speaker per parliamentary group]
-    C --> D[4. Multi-view retrieval<br/>dense embedding channel + graph channel<br/>lexical & semantic matching, weighted fusion]
-    D --> E[5. Political balance metrics]
-    E --> F[6. Ideological compass<br/>per-topic PCA on group embeddings]
-    F --> G[7. Balanced generation<br/>majority AND opposition sections]
-    G --> H[8. Citation verification<br/>verbatim check + coherence scoring;<br/>unverifiable quotes removed]
-    H --> R[Response: narrative + verified citation cards<br/>+ expert cards + compass]
-```
+<p align="center"><img src="assets/pipeline.svg" alt="Query pipeline — 8 steps" width="920"/></p>
 
 1. **Query analysis** — the question is classified and, if short or ambiguous, rewritten for retrieval.
 2. **Committee matching** — the query is mapped to the relevant parliamentary committees.
