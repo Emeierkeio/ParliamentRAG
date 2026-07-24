@@ -478,6 +478,13 @@ class GenerationPipeline:
         # === Final Verification ===
         final_text = final_result.get("text", "")
 
+        # Rete di sicurezza: gli splice della sostituzione post-coherence
+        # possono lasciare code orfane dello stesso link — «…»](id) senza
+        # apertura subito dopo il link completo (osservato 2026-07-24, Misto).
+        # Qualunque seconda occorrenza di ](id) è un residuo da rimuovere.
+        final_text = self._strip_residual_citation_fragments(final_text)
+        final_result["text"] = final_text
+
         # Collect citation IDs found in text but NOT in evidence_map.
         # These may be valid DB chunks the LLM cited from broader context
         # (e.g. sectional writer saw them but they weren't in the top-20 sidebar).
@@ -853,6 +860,54 @@ class GenerationPipeline:
         if not to_drop:
             return text
         return '\n\n'.join(p for i, p in enumerate(parts) if i not in to_drop)
+
+    @staticmethod
+    def _strip_residual_citation_fragments(text: str) -> str:
+        """Remove residual/duplicate occurrences of the same citation link.
+
+        Dopo il surgeon ogni citazione è un link [«quote»](chunk_id) e ogni
+        chunk_id deve comparire UNA volta. Gli splice della sostituzione
+        post-coherence possono lasciare code orfane («…»](id) senza apertura)
+        accodate al link completo. Si tiene la prima occorrenza completa e si
+        rimuove ogni altra ](id), estendendo a sinistra fino all'apertura del
+        frammento (« o confine di frase).
+        """
+        link_re = re.compile(r'\[«[^»]{1,600}»\]\((leg1[89]_[^)\s]+)\)')
+        first_span: Dict[str, tuple] = {}
+        for m in link_re.finditer(text):
+            first_span.setdefault(m.group(1), (m.start(), m.end()))
+
+        tail_re = re.compile(r'»?\]\((leg1[89]_[^)\s]+)\)')
+        removals = []
+        for m in tail_re.finditer(text):
+            eid = m.group(1)
+            kept = first_span.get(eid)
+            if kept and kept[0] <= m.start() < kept[1]:
+                continue  # è il link tenuto
+            if not kept:
+                continue  # occorrenza unica in formato inatteso: non toccare
+            start = m.start()
+            idx_open = text.rfind('«', 0, start)
+            idx_sent = max(text.rfind(ch, 0, start) for ch in '.!?\n')
+            if idx_open > idx_sent:
+                left = idx_open
+                if left > 0 and text[left - 1] == '[':
+                    left -= 1
+            else:
+                left = idx_sent + 1
+            end = m.end()
+            if end < len(text) and text[end] in '.,;':
+                end += 1
+            removals.append((left, end))
+
+        if not removals:
+            return text
+        for a, b in sorted(removals, reverse=True):
+            logger.warning(
+                f"Stripped residual citation fragment: {text[a:b][:90]!r}"
+            )
+            text = text[:a] + text[b:]
+        return re.sub(r' {2,}', ' ', text)
 
     @staticmethod
     def _dedupe_citation_occurrences(text: str, evidence_map: Dict[str, Any]) -> str:
