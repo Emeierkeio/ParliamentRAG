@@ -114,6 +114,27 @@ class UnifiedEvidence(BaseModel):
     authority_score: float = Field(
         ge=0.0, le=1.0, default=0.0, description="Speaker authority score"
     )
+    # Salience computed by the merger (citability stored o regex fallback).
+    # Senza questo campo il valore veniva droppato alla costruzione del
+    # modello e ricalcolato con la regex in generation/pipeline.
+    salience: Optional[float] = Field(
+        default=None, ge=0.0, le=1.0, description="Political salience score"
+    )
+
+    # Citability pre-calcolata a index-time (PLAN_citation_quality Fase 1).
+    # None = chunk non ancora classificato → fallback regex a runtime.
+    citability_score: Optional[float] = Field(
+        default=None, ge=0.0, le=1.0,
+        description="Index-time citability score from batch LLM classification"
+    )
+    citability_class: Optional[str] = Field(
+        default=None,
+        description="Citability class: substance | procedural | rhetoric | meta"
+    )
+    best_quote: Optional[str] = Field(
+        default=None,
+        description="Pre-extracted most citable verbatim sentence of the chunk"
+    )
     ideology: Optional[IdeologyScore] = Field(
         default=None, description="Ideological positioning"
     )

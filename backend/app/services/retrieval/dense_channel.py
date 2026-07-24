@@ -95,6 +95,9 @@ class DenseChannel:
                s.date AS session_date,
                s.number AS session_number,
                coalesce(d.parent_debate_title, d.title) AS debate_title,
+               c.citability_score AS citability_score,
+               c.citability_class AS citability_class,
+               c.best_quote AS best_quote,
                score AS similarity
         ORDER BY score DESC
         """
@@ -204,6 +207,11 @@ class DenseChannel:
                     "session_number": row.get("session_number", 0),
                     "similarity": row.get("similarity", 0.0),
                     "embedding": row.get("embedding"),  # For compass PCA
+                    # Citability pre-calcolata a index-time (Fase 1); None su
+                    # chunk non ancora classificati → fallback regex nel merger
+                    "citability_score": row.get("citability_score"),
+                    "citability_class": row.get("citability_class"),
+                    "best_quote": row.get("best_quote"),
                     "retrieval_channel": "dense"
                 })
             except Exception as e:

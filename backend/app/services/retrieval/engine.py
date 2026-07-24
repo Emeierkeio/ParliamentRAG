@@ -246,6 +246,10 @@ class RetrievalEngine:
                     session_number=r.get("session_number", 0),
                     similarity=r.get("similarity", 0.0),
                     authority_score=r.get("authority_score", 0.0),
+                    salience=r.get("salience"),
+                    citability_score=r.get("citability_score"),
+                    citability_class=r.get("citability_class"),
+                    best_quote=r.get("best_quote"),
                     embedding=r.get("embedding")  # For compass PCA
                 )
                 evidence_list.append(evidence)

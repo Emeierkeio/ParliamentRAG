@@ -155,11 +155,17 @@ class ChannelMerger:
             if authority_scores and speaker_id in authority_scores:
                 authority = authority_scores[speaker_id]
 
-            # Political salience score
+            # Political salience score: citability stored a index-time (Fase 1)
+            # quando disponibile; regex compute_chunk_salience solo come
+            # fallback per chunk non ancora classificati.
             salience = result.get("salience")
             if salience is None:
-                text = result.get("chunk_text") or result.get("quote_text", "")
-                salience = compute_chunk_salience(text)
+                citability = result.get("citability_score")
+                if citability is not None:
+                    salience = float(citability)
+                else:
+                    text = result.get("chunk_text") or result.get("quote_text", "")
+                    salience = compute_chunk_salience(text)
                 result["salience"] = salience
 
             # Final score
