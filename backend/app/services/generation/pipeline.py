@@ -28,7 +28,6 @@ from .synthesis import ConvergenceDivergenceAnalyzer
 from .citation_registry import CitationRegistry
 from .coherence_validator import CoherenceValidator
 from ...config import get_config
-from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -1176,11 +1175,8 @@ class GenerationPipeline:
             # (citability stored a index-time se presente, regex come fallback)
             for e in chunks:
                 if e.get("salience") is None:
-                    if e.get("citability_score") is not None:
-                        e["salience"] = float(e["citability_score"])
-                    else:
-                        text = e.get("chunk_text") or e.get("quote_text", "")
-                        e["salience"] = compute_chunk_salience(text)
+                    cit = e.get("citability_score")
+                    e["salience"] = float(cit) if cit is not None else 0.5
 
             # Step 2: group chunks by speaker
             speaker_chunks: Dict[str, list] = defaultdict(list)
@@ -1408,11 +1404,8 @@ class GenerationPipeline:
         # (citability stored a index-time se presente, regex come fallback)
         for e in gov:
             if e.get("salience") is None:
-                if e.get("citability_score") is not None:
-                    e["salience"] = float(e["citability_score"])
-                else:
-                    text = e.get("chunk_text") or e.get("quote_text", "")
-                    e["salience"] = compute_chunk_salience(text)
+                cit = e.get("citability_score")
+                e["salience"] = float(cit) if cit is not None else 0.5
 
         # Group by speaker
         speaker_chunks: dict = defaultdict(list)

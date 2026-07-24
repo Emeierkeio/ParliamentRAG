@@ -20,7 +20,6 @@ from .merger import ChannelMerger
 from .query_rewriter import QueryRewriter
 from ...models.evidence import UnifiedEvidence
 from ...config import get_config, get_settings
-from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -315,10 +314,11 @@ class RetrievalEngine:
         if not results:
             return results
 
-        # Compute salience for all current chunks
+        # Salience = stored index-time citability score (Fase 1);
+        # chunks without a score are treated as neutral (0.5).
         for r in results:
-            text = r.get("chunk_text") or r.get("quote_text", "")
-            r["salience"] = compute_chunk_salience(text)
+            cit = r.get("citability_score")
+            r["salience"] = float(cit) if cit is not None else 0.5
 
         # Candidates for expansion:
         # 1. Low-salience chunks (original logic)
@@ -358,8 +358,10 @@ class RetrievalEngine:
             RETURN cid,
                    prev.id AS prev_id, prev.text AS prev_text,
                    prev.start_char_raw AS prev_start, prev.end_char_raw AS prev_end,
+                   prev.citability_score AS prev_citability,
                    next.id AS next_id, next.text AS next_text,
                    next.start_char_raw AS next_start, next.end_char_raw AS next_end,
+                   next.citability_score AS next_citability,
                    i.text AS speech_text
             """
             neighbor_rows = self.client.query(cypher, {"chunk_ids": chunk_ids})
@@ -400,13 +402,13 @@ class RetrievalEngine:
                 best_salience = current_salience
 
                 if row.get("prev_text") and row.get("prev_id") not in existing_ids:
-                    prev_salience = compute_chunk_salience(row["prev_text"])
+                    prev_salience = float(row.get("prev_citability") or 0.5)
                     if prev_salience > best_salience:
                         best_salience = prev_salience
                         best_replacement = ("prev", row)
 
                 if row.get("next_text") and row.get("next_id") not in existing_ids:
-                    next_salience = compute_chunk_salience(row["next_text"])
+                    next_salience = float(row.get("next_citability") or 0.5)
                     if next_salience > best_salience:
                         best_salience = next_salience
                         best_replacement = ("next", row)
@@ -445,7 +447,7 @@ class RetrievalEngine:
                 if not next_text or not next_id or next_id in existing_ids:
                     continue
 
-                next_salience = compute_chunk_salience(next_text)
+                next_salience = float(row.get("next_citability") or 0.5)
                 # Append only if next chunk is more opinionated than current
                 if next_salience <= current_salience:
                     continue

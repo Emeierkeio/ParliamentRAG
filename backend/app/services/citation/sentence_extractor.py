@@ -1,15 +1,18 @@
 """
 Semantic Sentence Extractor for citations.
 
-Extracts the most semantically relevant sentences from a text chunk
-relative to a query, avoiding arbitrary truncation.
+Extracts the most query-relevant sentences from a text chunk, avoiding
+arbitrary truncation. Used as the fallback quote extractor when no
+pre-computed best_quote is available (see PLAN_citation_quality Fase 1-2:
+political salience now lives on the Chunk node as citability_score /
+citability_class, computed at index time — the regex pattern zoo that
+used to live here was removed once the whole corpus was classified).
 
-Uses a lightweight keyword-based approach for efficiency.
+Uses a lightweight keyword-overlap approach: no API calls.
 """
 import re
 import logging
 from typing import List, Tuple, Optional
-from collections import Counter
 
 logger = logging.getLogger(__name__)
 
@@ -215,117 +218,6 @@ class SentenceExtractor:
             return True
         return False
 
-    # --- Political salience patterns ---
-
-    # Patterns indicating political opinion/stance (high salience)
-    _OPINION_PATTERNS = [
-        # Explicit stance markers
-        re.compile(r'\b(?:riteniamo|crediamo|pensiamo|consideriamo|reputiamo)\b', re.IGNORECASE),
-        re.compile(r'\b(?:ci opponiamo|siamo contrari|non condividiamo|respingiamo|contestiamo)\b', re.IGNORECASE),
-        re.compile(r'\b(?:proponiamo|chiediamo|auspichiamo|sollecitiamo|esigiamo)\b', re.IGNORECASE),
-        re.compile(r'\b(?:sosteniamo|appoggiamo|condividiamo|approviamo|accogliamo)\b', re.IGNORECASE),
-        re.compile(r'\b(?:denunciamo|segnaliamo|stigmatizziamo|deploriamo|condanniamo)\b', re.IGNORECASE),
-        re.compile(r'\b(?:votiamo|voteremo)\s+(?:contro|a favore|sì|no)\b', re.IGNORECASE),
-        # Value judgments
-        re.compile(r'\bè\s+(?:inaccettabile|fondamentale|necessario|urgente|grave|doveroso|indispensabile|inammissibile|scandaloso|vergognoso)\b', re.IGNORECASE),
-        re.compile(r'\b(?:non possiamo|non si può|bisogna|occorre|serve|servono)\b', re.IGNORECASE),
-        # Group identity markers
-        re.compile(r'\b(?:il nostro gruppo|la nostra parte politica|noi di|il nostro partito|la maggioranza|l\'opposizione)\b', re.IGNORECASE),
-        # Policy direction
-        re.compile(r'\b(?:questa riforma|questo provvedimento|questa legge|questo decreto)\s+(?:è|rappresenta|costituisce|significa)\b', re.IGNORECASE),
-        # Argumentative connectors with opinion
-        re.compile(r'\b(?:per questo motivo|ecco perché|proprio per questo|a nostro avviso|a nostro giudizio|secondo noi)\b', re.IGNORECASE),
-    ]
-
-    # Patterns indicating procedural/formulaic text (low salience)
-    _PROCEDURAL_PATTERNS = [
-        re.compile(r'\b(?:dichiaro aperta|dichiaro chiusa|la seduta è aperta|la seduta è chiusa)\b', re.IGNORECASE),
-        re.compile(r'\b(?:ha facoltà di parlare|ha la parola|prego|do la parola|cedo la parola|passo la parola)\b', re.IGNORECASE),
-        re.compile(r'\b(?:metto in votazione|passiamo ai voti|procediamo alla votazione|si proceda alla votazione)\b', re.IGNORECASE),
-        re.compile(r'\b(?:ringrazio il presidente|ringrazio la presidente|ringrazio il ministro|ringrazio i colleghi|ringrazio l\'onorevole)\b', re.IGNORECASE),
-        re.compile(r'\b(?:presidente,?\s+colleghi|onorevoli colleghi|signor presidente|signora presidente)\b', re.IGNORECASE),
-        re.compile(r'\b(?:come dicevo|come stavo dicendo|tornando al tema|riprendendo il discorso)\b', re.IGNORECASE),
-        re.compile(r'\b(?:l\'ordine del giorno reca|è iscritto a parlare|risulta assente)\b', re.IGNORECASE),
-        re.compile(r'\b(?:avverto che|comunico che|informo l\'assemblea)\b', re.IGNORECASE),
-        # Formulaic vote/opinion expressions on amendments and agenda items
-        re.compile(r'\bil parere è\s+(?:favorevole|contrario|conforme)\b', re.IGNORECASE),
-        re.compile(r'\bsull\'ordine del giorno\s+n\.\s*\d+', re.IGNORECASE),
-        re.compile(r'\b(?:l\'emendamento|l\'articolo|il subemendamento)\s+(?:è approvato|è respinto|è ritirato|è precluso|è assorbito)\b', re.IGNORECASE),
-        re.compile(r'\b(?:il Governo|il relatore)\s+(?:esprime parere|invita al ritiro|accetta|non accetta)\b', re.IGNORECASE),
-        re.compile(r'\b(?:do lettura del|si intende approvato|si intendono approvati|è così stabilito)\b', re.IGNORECASE),
-        re.compile(r'\b(?:chiedo che la Presidenza|ai sensi dell\'articolo|a norma dell\'articolo)\b', re.IGNORECASE),
-        # Formulaic vote announcements
-        re.compile(r'\bannuncio il voto\s+(?:favorevole|contrario)\b', re.IGNORECASE),
-        re.compile(r'\bdichiaro? (?:il|di)\s*voto\s+(?:favorevole|contrario)\b', re.IGNORECASE),
-        re.compile(r'\bcon quest\'auspicio\b', re.IGNORECASE),
-        re.compile(r'\bvoto favorevole del gruppo\b', re.IGNORECASE),
-        re.compile(r'\bvoto contrario del gruppo\b', re.IGNORECASE),
-    ]
-
-    # Patterns indicating meta-comments about the debate itself (low substance)
-    # These sentences comment on the process/importance of the discussion
-    # without conveying an actual political position or policy argument.
-    # Grounded in FActScore (Min et al., EMNLP 2023): each atomic claim
-    # must carry factual/policy content, not just meta-commentary.
-    _META_COMMENT_PATTERNS = [
-        # Generic importance claims without policy content
-        re.compile(r'\buno dei (?:più|piu)\s+(?:delicati|importanti|complessi|difficili|significativi)\b', re.IGNORECASE),
-        re.compile(r'\bè un tema\s+(?:importante|delicato|complesso|cruciale|rilevante|centrale|fondamentale)\b', re.IGNORECASE),
-        re.compile(r'\bsu un tema (?:così|cosi)\s+(?:complesso|importante|delicato|cruciale)\b', re.IGNORECASE),
-        # Debate-about-debate references
-        re.compile(r'\bin (?:questo contesto|questa sede|quest\'aula|questo dibattito)\b', re.IGNORECASE),
-        re.compile(r'\bl\'esame di questo (?:provvedimento|decreto|disegno)\b', re.IGNORECASE),
-        re.compile(r'\bla (?:I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|XIII|XIV) Commissione\s+(?:si è trovata|ha esaminato|ha affrontato)\b', re.IGNORECASE),
-        # Epistemic hedges without substance
-        re.compile(r'\bcome (?:sappiamo|noto|è evidente|è noto|abbiamo detto|dicevo)\b', re.IGNORECASE),
-        re.compile(r'\bmi (?:preme|pare|sembra)\s+(?:sottolineare|evidenziare|ricordare|dire)\b', re.IGNORECASE),
-        # Generic "we discussed" / "we examined" without position
-        re.compile(r'\babbiamo (?:discusso|esaminato|affrontato|analizzato)\s+(?:il|la|lo|questo|questa)\b', re.IGNORECASE),
-        # Calls for attention without content
-        re.compile(r'\b(?:vorrei|voglio)\s+(?:richiamare|porre)\s+l\'attenzione\b', re.IGNORECASE),
-    ]
-
-    # Patterns indicating argumentation with data (medium-high salience)
-    _ARGUMENTATION_PATTERNS = [
-        # Numerical evidence
-        re.compile(r'\b\d+[\.,]?\d*\s*(?:per cento|%|miliardi|milioni|miliardo|milione|euro)\b', re.IGNORECASE),
-        # Legal references
-        re.compile(r'\b(?:articolo|art\.)\s+\d+', re.IGNORECASE),
-        re.compile(r'\b(?:decreto|legge|disegno di legge|proposta di legge)\s+(?:n\.|numero|del)\b', re.IGNORECASE),
-        # Comparative/temporal argumentation
-        re.compile(r'\b(?:rispetto a|a differenza di|contrariamente a|mentre invece|al contrario)\b', re.IGNORECASE),
-    ]
-
-    def _political_salience_score(self, sentence: str) -> float:
-        """Score the political salience of a sentence.
-
-        Returns:
-            1.0: strong political opinion/stance
-            0.7: argumentation with data/evidence
-            0.5: neutral (no strong signal either way)
-            0.35: meta-comment about debate without policy content
-            0.2: procedural/formulaic text
-        """
-        opinion_hits = sum(1 for p in self._OPINION_PATTERNS if p.search(sentence))
-        procedural_hits = sum(1 for p in self._PROCEDURAL_PATTERNS if p.search(sentence))
-        argumentation_hits = sum(1 for p in self._ARGUMENTATION_PATTERNS if p.search(sentence))
-        meta_hits = sum(1 for p in self._META_COMMENT_PATTERNS if p.search(sentence))
-
-        if procedural_hits > 0 and opinion_hits == 0:
-            return 0.2
-        if opinion_hits >= 2:
-            return 1.0
-        if opinion_hits == 1:
-            return 0.9
-        if argumentation_hits >= 2:
-            return 0.8
-        if argumentation_hits == 1:
-            return 0.7
-        # Meta-comments without any opinion or argumentation content
-        if meta_hits > 0 and opinion_hits == 0 and argumentation_hits == 0:
-            return 0.35
-        return 0.5
-
     # Subordinating conjunctions that signal a dependent clause fragment
     _SUBORDINATING_CONJUNCTIONS = {
         'se', 'che', 'quando', 'dove', 'come', 'perché', 'poiché',
@@ -412,69 +304,6 @@ class SentenceExtractor:
 
         return sentences
 
-    def _split_on_subordinates(self, text: str) -> List[str]:
-        """
-        Split long sentences on Italian subordinate clause markers.
-
-        Targets patterns like "che ha", "che sono", "il quale", etc.
-        which are common in parliamentary speech.
-        """
-        # Pattern for subordinate clause markers followed by verb indicators
-        # Match ", che " or " che " followed by common verb forms
-        subordinate_pattern = r',?\s+che\s+(?=\w+(?:a|e|o|ano|ono|isce|isce)\b)'
-
-        parts = re.split(subordinate_pattern, text, flags=re.IGNORECASE)
-
-        if len(parts) <= 1:
-            return []
-
-        # Clean and filter parts
-        result = []
-        for part in parts:
-            part = part.strip()
-            if len(part) >= self.min_sentence_length:
-                result.append(part)
-
-        return result if len(result) > 1 else []
-
-    def _split_on_meaningful_commas(self, text: str) -> List[str]:
-        """
-        Split long text on commas, keeping meaningful chunks.
-        Groups comma-separated clauses into reasonable sizes.
-
-        Optimized for 150 char citation limit - chunks target ~120 chars.
-        """
-        parts = text.split(',')
-        if len(parts) <= 1:
-            return []
-
-        chunks = []
-        current_chunk = ""
-
-        for part in parts:
-            part = part.strip()
-            if not part:
-                continue
-
-            # Add comma back for natural reading
-            test_chunk = f"{current_chunk}, {part}" if current_chunk else part
-
-            # Target ~120 chars to stay comfortably under 150 limit
-            if len(test_chunk) < 120:
-                # Keep building the chunk
-                current_chunk = test_chunk
-            else:
-                # Save current chunk and start new one
-                if current_chunk and len(current_chunk) >= self.min_sentence_length:
-                    chunks.append(current_chunk)
-                current_chunk = part
-
-        # Don't forget the last chunk
-        if current_chunk and len(current_chunk) >= self.min_sentence_length:
-            chunks.append(current_chunk)
-
-        return chunks if len(chunks) > 1 else []
-
     def _tokenize(self, text: str) -> List[str]:
         """Tokenize text into words, removing stop words."""
         # Lowercase and extract words
@@ -486,11 +315,11 @@ class SentenceExtractor:
         self,
         sentences: List[str],
         query: str
-    ) -> List[Tuple[str, float, int]]:
+    ) -> List[Tuple[str, float, int, bool]]:
         """
         Score sentences by relevance to query.
 
-        Returns list of (sentence, score, original_index) tuples.
+        Returns list of (sentence, score, original_index, citable) tuples.
         """
         query_tokens = set(self._tokenize(query))
 
@@ -518,16 +347,14 @@ class SentenceExtractor:
             density = len(overlap) / len(sentence_tokens) if sentence_tokens else 0
 
             completeness = self._syntactic_completeness_score(sentence)
-            salience = self._political_salience_score(sentence)
-            total_score = (overlap_score * 0.30 + completeness * 0.20
-                           + density * 0.15 + salience * 0.25
-                           + position_bonus * 0.10)
+            total_score = (overlap_score * 0.40 + completeness * 0.30
+                           + density * 0.20 + position_bonus * 0.10)
 
-            # Citability gate (PLAN_citation_quality Fase 0.3): a sentence is
-            # citable only if it mentions the query topic (overlap > 0) OR
-            # carries strong political content on its own (salience >= 0.7).
-            # Kills topic-irrelevant rhetoric like party self-narration.
-            citable = len(overlap) > 0 or salience >= 0.7
+            # Citability gate: a sentence is citable only if it mentions the
+            # query topic. Political-substance filtering happens upstream via
+            # the stored Chunk.citability_class (index-time classification),
+            # so topic overlap is the only sentence-level requirement left.
+            citable = len(overlap) > 0
             scored.append((sentence, total_score, i, citable))
 
         return scored
@@ -548,10 +375,10 @@ class SentenceExtractor:
         truncating a longer sentence. Skips sentences whose completeness
         score is below MIN_QUALITY_SCORE when alternatives exist.
 
-        Citability gate (Fase 0.3): sentences that fail the gate
-        (no query overlap AND weak salience) are NEVER selected — if
-        nothing passes, returns [] so callers can move to other evidence.
-        There is deliberately NO keep-at-least-one fallback here.
+        Citability gate: sentences with zero query overlap are NEVER
+        selected — if nothing passes, returns [] so callers can move to
+        other evidence. There is deliberately NO keep-at-least-one
+        fallback here.
         """
         if not scored:
             return []
@@ -639,24 +466,6 @@ class SentenceExtractor:
         return truncated.rstrip()
 
 
-    def compute_salience(self, text: str) -> float:
-        """Compute the political salience score for a chunk of text.
-
-        Splits text into sentences and returns the max salience score
-        found across all sentences. Useful for ranking chunks by
-        political relevance in the merger.
-
-        Returns:
-            Float between 0.0 and 1.0
-        """
-        if not text:
-            return 0.0
-        sentences = self._split_sentences(text)
-        if not sentences:
-            return self._political_salience_score(text)
-        return max(self._political_salience_score(s) for s in sentences)
-
-
 # Module-level convenience function
 _extractor = None
 
@@ -685,17 +494,3 @@ def extract_best_sentences(
         _extractor = SentenceExtractor(max_sentences=max_sentences)
 
     return _extractor.extract(text, query, max_chars)
-
-
-def compute_chunk_salience(text: str) -> float:
-    """Compute political salience score for a chunk of text.
-
-    Convenience function for use in the retrieval merger.
-
-    Returns:
-        Float between 0.0 and 1.0
-    """
-    global _extractor
-    if _extractor is None:
-        _extractor = SentenceExtractor()
-    return _extractor.compute_salience(text)
