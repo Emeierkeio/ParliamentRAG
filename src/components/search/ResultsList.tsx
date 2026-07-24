@@ -193,7 +193,7 @@ export function ResultsSkeleton() {
       {Array.from({ length: 4 }).map((_, i) => (
         <Card key={i} className="overflow-hidden">
           <CardHeader className="bg-muted/30 pb-3 pt-4 px-4">
-            <div className="flex justify-between items-start gap-4">
+            <div className="flex justify-between items-start gap-4 flex-wrap">
               <div className="space-y-2 flex-1 min-w-0">
                 <Skeleton className="h-4 w-56 max-w-full" />
                 <Skeleton className="h-3 w-72 max-w-full" />
@@ -257,7 +257,7 @@ function SpeechCard({
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <CardHeader className="bg-muted/30 pb-3 pt-4 px-4">
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex justify-between items-start gap-4 flex-wrap">
           <div className="space-y-1.5 flex-1 min-w-0">
             <div className="flex items-center gap-2 text-base font-medium">
               <MessageSquareQuote className="h-4 w-4 text-primary shrink-0" />
@@ -354,7 +354,7 @@ function ActCard({
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <CardHeader className="bg-emerald-50/50 dark:bg-emerald-950/20 pb-3 pt-4 px-4">
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex justify-between items-start gap-4 flex-wrap">
           <div className="space-y-1.5 flex-1 min-w-0">
             {/* Act type + number */}
             <div className="flex items-center gap-2 flex-wrap">
