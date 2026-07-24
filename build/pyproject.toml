@@ -1,0 +1,22 @@
+[project]
+name = "parliamentrag-build"
+version = "2.0.0"
+description = "Knowledge-graph construction pipeline for ParliamentRAG (schema v2)"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Mirko Tritella" }]
+# Pinned for reproducibility — mirror of requirements-build.txt.
+# These come on top of the backend runtime deps (neo4j, python-dotenv, ...).
+dependencies = [
+    "pandas==3.0.5",
+    "regex==2026.7.19",
+    "spacy==3.8.14",
+    "openai==2.46.0",
+    "tqdm==4.68.4",
+    "playwright==1.61.0",  # senato.it AWS WAF bypass; run once: playwright install chromium
+]
+
+[tool.setuptools]
+# The pipeline is a collection of CLI scripts, not an importable package:
+# installing this project only brings in the pinned dependencies.
+py-modules = []

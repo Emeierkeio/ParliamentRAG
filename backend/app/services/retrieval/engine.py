@@ -357,10 +357,8 @@ class RetrievalEngine:
             MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
             RETURN cid,
                    prev.id AS prev_id, prev.text AS prev_text,
-                   prev.start_char_raw AS prev_start, prev.end_char_raw AS prev_end,
                    prev.citability_score AS prev_citability,
                    next.id AS next_id, next.text AS next_text,
-                   next.start_char_raw AS next_start, next.end_char_raw AS next_end,
                    next.citability_score AS next_citability,
                    i.text AS speech_text
             """
@@ -418,12 +416,13 @@ class RetrievalEngine:
                     prefix = "prev" if direction == "prev" else "next"
                     new_id = nrow.get(f"{prefix}_id")
                     new_text = nrow.get(f"{prefix}_text")
-                    new_start = nrow.get(f"{prefix}_start", 0)
-                    new_end = nrow.get(f"{prefix}_end", 0)
                     speech_text = nrow.get("speech_text", "")
 
-                    from ...models.evidence import compute_quote_text
-                    if speech_text and new_start is not None and new_end is not None and new_start < new_end:
+                    # Schema v2: span computed via exact substring match
+                    # (chunk.text ⊆ speech.text is a build-time invariant)
+                    from ...models.evidence import compute_chunk_span, compute_quote_text
+                    new_start, new_end = compute_chunk_span(speech_text, new_text)
+                    if speech_text and new_start < new_end:
                         new_quote = compute_quote_text(speech_text, new_start, new_end)
                     else:
                         new_quote = new_text
@@ -431,8 +430,8 @@ class RetrievalEngine:
                     r["evidence_id"] = new_id
                     r["chunk_text"] = new_text
                     r["quote_text"] = new_quote
-                    r["span_start"] = new_start or 0
-                    r["span_end"] = new_end or 0
+                    r["span_start"] = new_start
+                    r["span_end"] = new_end
                     r["salience"] = best_salience
                     existing_ids.add(new_id)
                     replaced += 1
@@ -452,12 +451,12 @@ class RetrievalEngine:
                 if next_salience <= current_salience:
                     continue
 
-                next_start = row.get("next_start", 0)
-                next_end = row.get("next_end", 0)
                 speech_text = row.get("speech_text", "")
 
-                from ...models.evidence import compute_quote_text
-                if speech_text and next_start is not None and next_end is not None and next_start < next_end:
+                # Schema v2: span via exact substring match (see above)
+                from ...models.evidence import compute_chunk_span, compute_quote_text
+                next_start, next_end = compute_chunk_span(speech_text, next_text)
+                if speech_text and next_start < next_end:
                     next_quote = compute_quote_text(speech_text, next_start, next_end)
                 else:
                     next_quote = next_text
