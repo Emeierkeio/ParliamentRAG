@@ -869,7 +869,7 @@
     "s7t": "Contenuti generati da AI",
     "s7b": "Le risposte sono generate da intelligenza artificiale e possono contenere errori o imprecisioni nonostante la verifica delle citazioni. ParliamentRAG è un progetto di ricerca indipendente, non affiliato né approvato dalla Camera dei Deputati. Verifica sempre le citazioni sul resoconto ufficiale linkato in ogni citazione.",
     "s8t": "I tuoi diritti",
-    "s8b": "Il sito non richiede account e non collega le conversazioni all'identità di chi scrive: i dati salvati sono quindi, in generale, anonimi. Se però hai inserito dati personali in una domanda, puoi chiederne accesso, rettifica o cancellazione scrivendo a m.tritella@campus.unimib.it (indicando quando e cosa hai scritto, per permetterci di individuarla). Resta fermo il diritto di reclamo al Garante per la protezione dei dati personali.",
+    "s8b": "Il sito non richiede account e non collega le conversazioni all'identità di chi scrive: i dati salvati sono quindi, in generale, anonimi. Puoi eliminare direttamente una conversazione — anche dal nostro server — con l'icona del cestino nella cronologia della chat. Per ogni altra richiesta (accesso, rettifica, cancellazione di dati personali eventualmente inseriti in una domanda) scrivi a m.tritella@campus.unimib.it. Resta fermo il diritto di reclamo al Garante per la protezione dei dati personali.",
     "backHome": "Torna alla home"
   }
 }
