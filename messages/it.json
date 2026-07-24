@@ -305,7 +305,8 @@
       "ex Ilva": "Ex Ilva",
       "superbonus 110%": "Superbonus 110%"
     },
-    "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?"
+    "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?",
+    "researchNote": "Le conversazioni sono salvate in forma anonima per finalità di ricerca."
   },
   "ChamberSelector": {
     "camera": "Camera",
@@ -845,6 +846,30 @@
     "idx5Desc": "La cronologia delle sedute con dibattiti, interventi e riepiloghi generati dall'AI — fino alla posizione di ogni singolo deputato.",
     "paperInUse": "Paper di ricerca",
     "paperDemo": "Paper demo",
-    "footerFunding": "Con il sostegno del programma EU Horizon Europe — grant"
+    "footerFunding": "Con il sostegno del programma EU Horizon Europe • grant",
+    "footerPrivacy": "Privacy"
+  },
+  "Privacy": {
+    "title": "Privacy e note legali",
+    "updated": "Ultimo aggiornamento: 24 luglio 2026",
+    "introTitle": "In breve",
+    "intro": "ParliamentRAG è un progetto di ricerca accademica senza fini commerciali. Il sito non usa analytics, pubblicità né profilazione — solo cookie tecnici. Le domande poste in chat vengono salvate sul nostro server per finalità di ricerca scientifica.",
+    "s1t": "Titolare del trattamento",
+    "s1b": "Il titolare del trattamento è Mirko Tritella (progetto di ricerca — Università di Milano-Bicocca). Per qualsiasi richiesta privacy: mirkotritella1999@gmail.com.",
+    "s2t": "Cosa raccogliamo",
+    "s2b": "Le query della chat e le risposte generate sono salvate sul nostro server per valutare e migliorare il sistema nell'ambito di ricerca scientifica pubblicata. I provider di hosting conservano i normali log tecnici (es. indirizzi IP nei log del server) per sicurezza. La cronologia chat è conservata anche localmente nel tuo browser (localStorage) e puoi cancellarla in qualsiasi momento.",
+    "s3t": "Cookie",
+    "s3b": "Il sito imposta solo cookie tecnici di prima parte strettamente necessari: preferenza di lingua e stato dell'interfaccia (es. sidebar). Per questi cookie non è richiesto alcun banner di consenso. Non usiamo cookie di analytics, pubblicità o tracciamento di terze parti.",
+    "s4t": "Finalità e base giuridica",
+    "s4b": "I dati sono trattati esclusivamente per ricerca scientifica (valutazione del sistema per pubblicazioni peer-reviewed) sulla base del legittimo interesse per finalità di ricerca (art. 6(1)(f) e art. 89 GDPR). Ti chiediamo di non inserire dati personali nelle domande: le query devono riguardare temi parlamentari.",
+    "s5t": "Conservazione",
+    "s5b": "Le conversazioni salvate sono conservate per la durata del progetto di ricerca e delle relative pubblicazioni, poi cancellate o anonimizzate in modo irreversibile.",
+    "s6t": "Dati parlamentari",
+    "s6b": "Il knowledge graph contiene dati sui membri del Parlamento (nomi, interventi, voti, carriere) provenienti dagli open data ufficiali della Camera dei Deputati (dati.camera.it), trattati nel loro ruolo di titolari di cariche pubbliche secondo le licenze aperte della fonte.",
+    "s7t": "Contenuti generati da AI",
+    "s7b": "Le risposte sono generate da intelligenza artificiale e possono contenere errori o imprecisioni nonostante la verifica delle citazioni. ParliamentRAG è un progetto di ricerca indipendente, non affiliato né approvato dalla Camera dei Deputati. Verifica sempre le citazioni sul resoconto ufficiale linkato in ogni citazione.",
+    "s8t": "I tuoi diritti",
+    "s8b": "Puoi richiedere accesso, rettifica o cancellazione dei dati che ti riguardano, e proporre reclamo al Garante per la protezione dei dati personali. Scrivi a mirkotritella1999@gmail.com.",
+    "backHome": "Torna alla home"
   }
 }

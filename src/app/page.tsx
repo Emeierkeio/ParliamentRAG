@@ -444,7 +444,16 @@ export default function LandingPage() {
               >
                 101189771
               </a>{" "}
-              (DataPACT) ·{" "}
+              (
+              <a
+                href="https://datapact.eu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
+              >
+                DataPACT
+              </a>
+              ) ·{" "}
               <a
                 href="https://doi.org/10.3030/101070284"
                 target="_blank"
@@ -453,7 +462,16 @@ export default function LandingPage() {
               >
                 101070284
               </a>{" "}
-              (enRichMyData)
+              (
+              <a
+                href="https://enrichmydata.eu/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
+              >
+                enRichMyData
+              </a>
+              )
             </p>
           </div>
           <p className="flex items-center gap-4">
@@ -481,6 +499,12 @@ export default function LandingPage() {
             >
               {t("paperDemo")}
             </a>
+            <Link
+              href="/privacy"
+              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              {t("footerPrivacy")}
+            </Link>
           </p>
         </div>
       </footer>
