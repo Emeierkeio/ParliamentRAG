@@ -353,7 +353,11 @@ class CitationSurgeon:
         if pre_extracted:
             quote = pre_extracted
         else:
-            # Fallback: Extract on-the-fly (legacy behavior)
+            # Fallback: Extract on-the-fly (legacy behavior).
+            # Guardia "or quote": il gate di citabilità (fase 0) ritorna ""
+            # quando nessuna frase ha overlap con la query — es. quote del
+            # picker sul popolo palestinese per una domanda su Israele
+            # (pertinente ma zero keyword) → senza guardia usciva [«»](id).
             query = getattr(self, '_current_query', '')
             if query and len(quote) > 80:
                 quote = extract_best_sentences(
@@ -361,7 +365,8 @@ class CitationSurgeon:
                     query=query,
                     max_sentences=1,
                     max_chars=200
-                )
+                ) or quote
+        original_quote = quote
 
         # Salience gate: reject procedural citations as last defense.
         # If the citation is purely procedural (e.g. "il parere è favorevole"),
@@ -434,6 +439,24 @@ class CitationSurgeon:
         while quote != prev:
             prev = quote
             quote = dangling.sub('', quote)
+
+        # Cintura finale: se il processing ha svuotato la quote (gate + trimming
+        # possono ridurla a ""), ripiega sull'originale ripulito — mai [«»](id).
+        if len(quote) < 20:
+            fallback = " ".join(original_quote.split())
+            fallback = re.sub(r'\s*\([^)]*\)\s*', ' ', fallback).strip()
+            fallback = fallback[:300].rstrip('.!? ')
+            if len(fallback) >= 20:
+                logger.warning(
+                    f"Empty/short quote after processing for {evidence_id}: "
+                    f"using original ({len(fallback)} chars)"
+                )
+                quote = fallback
+            else:
+                logger.warning(
+                    f"No usable quote for {evidence_id}: dropping citation link"
+                )
+                return ''
 
         # Lowercase first letter (citations follow introductory constructions)
         if quote:

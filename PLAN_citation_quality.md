@@ -177,6 +177,40 @@ aggiornato post-rebuild per preferire `parent_debate_title` quando presente.
 
 ---
 
+## Fase 5 — Evoluzione temporale delle posizioni (aggiunta 2026-07-24)
+
+Problema: un gruppo che cambia linea nel tempo (es. pieno sostegno a Israele
+post-7-ottobre-2023 → richiesta riconoscimento Palestina nel 2025) oggi esce
+fuso in una posizione media falsata: position_brief somma pro/contro su tutto
+il periodo (→ CONDIZIONALE spurio) e la sezione mescola quote di fasi diverse
+come contemporanee. NON risolvere con recency-weight nel retrieval: nasconderebbe
+l'evoluzione invece di raccontarla.
+
+### 5.0 Quick win — ✅ FATTO 2026-07-24 (solo prompt)
+- SYSTEM_PROMPT sectional: REGOLA DI EVOLUZIONE TEMPORALE — evidenze divergenti
+  nel tempo → narrare l'evoluzione ancorata alle date, non la media; quote
+  collocata nel suo periodo. Stessa regola in write_section_without_citation.
+- Data dell'intervento passata al picker (DATA INTERVENTO) e nel mandatory
+  quote block del writer.
+
+### 5.1 Medio — rilevazione esplicita (dopo le prove [F] di PLAN_master)
+- position_brief bucketizzato per finestre temporali (es. semestri o
+  prima/seconda metà del range date delle evidenze del partito).
+- Direction che flippa tra finestre → flag `EVOLUZIONE` nella sezione, che si
+  struttura "prima/dopo" con DUE quote datate (secondo call del picker
+  vincolato alla finestra precedente).
+- Soglia anti-rumore: un singolo intervento fuori linea ≠ cambio di posizione;
+  servono ≥N interventi concordi per finestra (partire con N=2).
+- Validazione: query Israele (evoluzione attesa per più gruppi) + una query su
+  tema stabile (nessun falso flag).
+
+### 5.2 Strutturale — timeline di posizione (post-cutover, con [K]/[L])
+- Posizione per partito nel tempo come feature propria, agganciata
+  all'infrastruttura timeline/summaries esistente (SpeakerDebateSummary).
+- Eventuale traiettoria temporale nel compass (posizioni per finestra).
+
+---
+
 ## Validazione
 
 1. **Set di regressione**: le query di `evaluation_set.json` + la query Israele dello

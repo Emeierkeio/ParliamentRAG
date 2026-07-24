@@ -82,6 +82,15 @@ non parlare del dibattito stesso. NON scegliere come citazione principale:
 - ringraziamenti, riferimenti ad altri interventi, gestione d'aula
 a meno che il testo non contenga NIENT'ALTRO di sostanziale.
 
+REGOLA DI EVOLUZIONE TEMPORALE:
+Ogni evidenza ha una Data. Se le evidenze dello stesso gruppo esprimono posizioni
+DIVERSE in periodi diversi (es. pieno sostegno nel 2023, richieste critiche nel 2025),
+NON fonderle in una posizione unica media: racconta l'EVOLUZIONE, ancorata alle date
+(«all'indomani del…», «nell'ottobre 2023 il gruppo esprimeva…», «successivamente ha
+chiesto…»). La citazione verbatim rappresenta la posizione della SUA data: colloca
+temporalmente la quote in prosa quando il periodo è rilevante per capirla. Se le
+posizioni sono stabili nel tempo, non menzionare le date.
+
 STRUTTURA SEZIONE (3-5 frasi):
 1. TESTO INTRODUTTIVO (1-2 frasi): contestualizza il tema per questo gruppo e anticipa
    il contenuto della citazione che seguirà. Deve PREPARARE il terreno per la citazione.
@@ -585,7 +594,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                     messages=[
                         {"role": "system", "content": self.QUOTE_PICKER_PROMPT},
                         {"role": "user",
-                         "content": f"DOMANDA: {query}\n\nTESTO:\n{text[:3000]}"
+                         "content": f"DOMANDA: {query}\n\n"
+                                    f"DATA INTERVENTO: {e.get('date', '')}\n\n"
+                                    f"TESTO:\n{text[:3000]}"
                                     f"{candidate_block}"},
                     ],
                     temperature=0.0,
@@ -712,6 +723,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
             mandatory_quote_block = f"""
 ⚠️ CITAZIONE OBBLIGATORIA (già selezionata e verificata — NON sceglierne un'altra):
 Oratore: {picked_speaker}
+Data dell'intervento: {picked_ev.get('date', '')} — se le altre evidenze del gruppo
+mostrano una posizione diversa in un altro periodo, colloca questa citazione nel suo
+momento e racconta l'evoluzione (regola di evoluzione temporale).
 Citazione da usare ESATTAMENTE, carattere per carattere:
 «{picked_quote}» [CIT:{picked_eid}]
 Costruisci l'introduzione e il posizionamento ATTORNO a questa citazione.
@@ -1082,6 +1096,8 @@ TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
             "- INIZIA con 'il gruppo' o 'il partito' (minuscolo, nessun header ### o ##).\n"
             "- Ogni frase deve comunicare una posizione CONCRETA: angolo specifico, proposta, critica.\n"
             "- Usa le evidenze come base per costruire l'analisi con parole tue.\n"
+            "- Se le evidenze mostrano posizioni DIVERSE in periodi diversi (guarda le date), "
+            "racconta l'evoluzione ancorata ai periodi, non una posizione media.\n"
             "DIVIETO DI FILLER: NON scrivere 'ha espresso la propria posizione' o simili."
         )
 
