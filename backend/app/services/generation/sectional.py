@@ -24,7 +24,6 @@ import openai
 from ...config import get_config, get_settings
 from ...key_pool import make_client, make_async_client
 from ..citation import extract_best_sentences
-from ..citation.sentence_extractor import compute_chunk_salience
 from .position_brief import PositionBriefBuilder
 from .reported_speech import annotate_evidence_with_reported_speech
 
@@ -812,7 +811,7 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
         # a citation — if it doesn't, we retry once with an explicit reminder.
         has_citeable_evidence = any(
             not e.get("citation_duplicate_of")
-            and compute_chunk_salience(e.get("quote_text", "") or e.get("chunk_text", "")) > 0.35
+            and float(e.get("citability_score") or 0.5) > 0.35
             for e in evidence[:3]
         )
 
@@ -1037,10 +1036,9 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                 continue
 
             # Filter out procedural and low-substance chunks before exposing
-            # them to the LLM. compute_chunk_salience returns the max salience
-            # score across all sentences in the chunk, so a chunk with even one
-            # good sentence will pass the gate.
-            chunk_salience = compute_chunk_salience(quote_text)
+            # them to the LLM, using the stored index-time citability score
+            # (chunks without a score are treated as neutral and pass).
+            chunk_salience = float(e.get("citability_score") or 0.5)
             if chunk_salience <= 0.35:
                 logger.info(
                     f"Skipping procedural chunk {eid} ({speaker}): "

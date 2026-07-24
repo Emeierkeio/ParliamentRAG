@@ -12,7 +12,6 @@ from typing import List, Dict, Any, Set, Optional
 from collections import defaultdict
 
 from ...config import get_config
-from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -155,17 +154,14 @@ class ChannelMerger:
             if authority_scores and speaker_id in authority_scores:
                 authority = authority_scores[speaker_id]
 
-            # Political salience score: citability stored a index-time (Fase 1)
-            # quando disponibile; regex compute_chunk_salience solo come
-            # fallback per chunk non ancora classificati.
+            # Political salience score: citability stored a index-time (Fase 1).
+            # Il fallback regex è stato rimosso (Fase 3): l'intero corpus è
+            # classificato e la pipeline classifica a index-time; un chunk
+            # senza score è neutro (0.5).
             salience = result.get("salience")
             if salience is None:
                 citability = result.get("citability_score")
-                if citability is not None:
-                    salience = float(citability)
-                else:
-                    text = result.get("chunk_text") or result.get("quote_text", "")
-                    salience = compute_chunk_salience(text)
+                salience = float(citability) if citability is not None else 0.5
                 result["salience"] = salience
 
             # Final score

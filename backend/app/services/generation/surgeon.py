@@ -16,7 +16,6 @@ from typing import List, Dict, Any, Tuple, Optional, Callable
 
 from ...config import get_config
 from ..citation import extract_best_sentences
-from ..citation.sentence_extractor import compute_chunk_salience
 
 logger = logging.getLogger(__name__)
 
@@ -391,29 +390,10 @@ class CitationSurgeon:
                 ) or quote
         original_quote = quote
 
-        # Salience gate: reject procedural citations as last defense.
-        # If the citation is purely procedural (e.g. "il parere è favorevole"),
-        # try to re-extract a better sentence from the full quote text.
-        # If no better sentence exists, keep the original to avoid empty citations.
-        citation_salience = compute_chunk_salience(quote)
-        if citation_salience <= 0.2 and quote and not pre_extracted:
-            logger.warning(
-                f"Procedural citation detected for {evidence_id}: "
-                f"salience={citation_salience:.1f}, attempting re-extraction"
-            )
-            query = getattr(self, '_current_query', '')
-            if query and len(quote) > 30:
-                re_extracted = extract_best_sentences(
-                    text=quote,
-                    query=query,
-                    max_sentences=1,
-                    max_chars=200
-                )
-                if re_extracted:
-                    re_salience = compute_chunk_salience(re_extracted)
-                    if re_salience > citation_salience:
-                        quote = re_extracted
-                        logger.info(f"Re-extracted better citation: salience={re_salience:.1f}")
+        # NOTE (Fase 3): the regex-based procedural gate that used to live here
+        # was removed — procedural/rhetoric chunks are now filtered upstream via
+        # the stored Chunk.citability_class (index-time classification), and the
+        # quote picker selects from pre-extracted best_quote candidates.
 
         # Clean up whitespace
         quote = " ".join(quote.split())
