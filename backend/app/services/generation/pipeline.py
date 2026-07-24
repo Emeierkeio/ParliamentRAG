@@ -203,8 +203,15 @@ class GenerationPipeline:
             integrated_text_after_guard, sections
         )
         if injected_parties:
-            integrated["text"] = integrated_text_after_guard
             pipeline_metadata["stages"]["party_injection"] = {"injected_parties": injected_parties}
+
+        # L'integrator può duplicare la quote di un partito dentro il paragrafo
+        # di un ALTRO partito (sezioni citation-free "arricchite"): stesso
+        # [CIT:id] due volte = errore sempre, si tiene solo il paragrafo giusto.
+        integrated_text_after_guard = self._dedupe_citation_occurrences(
+            integrated_text_after_guard, evidence_map
+        )
+        integrated["text"] = integrated_text_after_guard
 
         # === Post-Integration: Balance Check (Coverage-based Fairness) ===
         balance_info = self._check_coalition_balance(integrated.get("text", ""))
@@ -220,6 +227,14 @@ class GenerationPipeline:
         # Stage 3.5 (Convergence-Divergence Analysis) removed
 
         # === Pre-Surgeon: Coherence Validation ===
+        # Riversa le quote scelte dal picker in evidence_map PRIMA della
+        # validazione: il validator deve confrontare l'intro con la QUOTE
+        # scelta, non con l'embedding del chunk intero (~1200 char multi-tema)
+        # → score 0.15-0.20 e hard-remove sistematico (osservato 2026-07-23).
+        for section in sections:
+            for pick_eid, pick_quote in (section.get("picked_quotes") or {}).items():
+                if pick_eid in evidence_map and pick_quote:
+                    evidence_map[pick_eid]["quote_text"] = pick_quote
         coherence_report = self.coherence_validator.validate_all_citations(
             integrated.get("text", ""),
             evidence_map
@@ -839,6 +854,57 @@ class GenerationPipeline:
             return text
         return '\n\n'.join(p for i, p in enumerate(parts) if i not in to_drop)
 
+    @staticmethod
+    def _dedupe_citation_occurrences(text: str, evidence_map: Dict[str, Any]) -> str:
+        """Remove duplicate occurrences of the same [CIT:id] across paragraphs.
+
+        L'integrator a volte "arricchisce" i paragrafi citation-free copiando
+        la quote+CIT di un ALTRO partito (osservato 2026-07-23: quote di
+        Bonetti/Azione attribuita al M5S con framing contraddittorio). Lo
+        stesso CIT id due volte è sempre un errore: si tiene l'occorrenza nel
+        paragrafo del partito dell'evidenza (fallback: la prima) e si rimuove
+        la frase intera nelle altre.
+        """
+        ids = re.findall(r'\[CIT:([^\]]+)\]', text)
+        dup_ids = {i for i in ids if ids.count(i) > 1}
+        if not dup_ids:
+            return text
+
+        def para_key(p: str) -> Optional[str]:
+            m = re.match(r"\s*Per ([^,]{3,90}),", p)
+            return m.group(1).replace("’", "'").strip().lower() if m else None
+
+        parts = text.split('\n\n')
+        for eid in dup_ids:
+            ev = evidence_map.get(eid, {})
+            ev_party = (
+                ev.get("current_party")
+                if ev.get("party_changed") and ev.get("current_party")
+                else ev.get("party", "")
+            ) or ""
+            key = ev_party.replace("’", "'").strip().lower()
+            occ = [i for i, p in enumerate(parts) if f'[CIT:{eid}]' in p]
+            if len(occ) < 2:
+                continue
+            keeper = next((i for i in occ if para_key(parts[i]) == key), occ[0])
+            for i in occ:
+                if i == keeper:
+                    continue
+                cleaned = re.sub(
+                    r'[^.!?\n]*«[^»]*»\s*\[CIT:' + re.escape(eid) + r'\][^.!?\n]*[.!?]?',
+                    '',
+                    parts[i],
+                )
+                # fallback: CIT senza «» adiacenti (formato inatteso)
+                cleaned = cleaned.replace(f'[CIT:{eid}]', '')
+                parts[i] = re.sub(r'  +', ' ', cleaned).strip()
+                logger.warning(
+                    f"Removed misattributed duplicate citation {eid} "
+                    f"(evidence party={ev_party!r}) from paragraph "
+                    f"{para_key(parts[i]) or '<no header>'!r}"
+                )
+        return '\n\n'.join(p for p in parts if p.strip())
+
     def _inject_rewritten_paragraphs(
         self,
         text: str,
@@ -961,10 +1027,14 @@ class GenerationPipeline:
                 continue
 
             # Step 1: ensure salience computed for all chunks
+            # (citability stored a index-time se presente, regex come fallback)
             for e in chunks:
                 if e.get("salience") is None:
-                    text = e.get("chunk_text") or e.get("quote_text", "")
-                    e["salience"] = compute_chunk_salience(text)
+                    if e.get("citability_score") is not None:
+                        e["salience"] = float(e["citability_score"])
+                    else:
+                        text = e.get("chunk_text") or e.get("quote_text", "")
+                        e["salience"] = compute_chunk_salience(text)
 
             # Step 2: group chunks by speaker
             speaker_chunks: Dict[str, list] = defaultdict(list)
@@ -1177,10 +1247,14 @@ class GenerationPipeline:
             return []
 
         # Ensure salience is computed for all chunks
+        # (citability stored a index-time se presente, regex come fallback)
         for e in gov:
             if e.get("salience") is None:
-                text = e.get("chunk_text") or e.get("quote_text", "")
-                e["salience"] = compute_chunk_salience(text)
+                if e.get("citability_score") is not None:
+                    e["salience"] = float(e["citability_score"])
+                else:
+                    text = e.get("chunk_text") or e.get("quote_text", "")
+                    e["salience"] = compute_chunk_salience(text)
 
         # Group by speaker
         speaker_chunks: dict = defaultdict(list)

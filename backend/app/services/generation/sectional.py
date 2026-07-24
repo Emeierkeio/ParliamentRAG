@@ -68,16 +68,11 @@ NON iniziare con: connettori ("quindi", "però", "perché", "che", "e", "ma", "i
                   complementi orfani (parole che completano una frase precedente).
 NON terminare in sospeso senza verbo principale o senza oggetto.
 
-REGOLA DI AUTOSUFFICIENZA (la più importante):
-La citazione deve essere COMPRENSIBILE DA SOLA, senza leggere il resto del discorso.
-VIETATE le citazioni con riferimenti irrisolti — pronomi o dimostrativi il cui
-antecedente NON è dentro la citazione:
-✗ «con questa mozione oggi vi chiediamo di interromperLO» ← interrompere COSA? Non si sa.
-✗ «la denuncia di QUEL trattato serve non per farlo decadere» ← QUALE trattato?
-✗ «quindi, credo che I PARERI diano il segno di...» ← quali pareri?
-Se la frase migliore ha un riferimento irrisolto, scegli una frase diversa dallo
-stesso testo che nomini esplicitamente l'oggetto (es. «chiediamo di interrompere
-il memorandum di cooperazione militare con Israele»).
+REGOLA DI ATTRIBUZIONE SICURA:
+Pronomi con antecedente fuori dalla citazione sono ammessi SE l'introduzione che
+scrivi ne esplicita l'oggetto (es. intro che nomina il memorandum → «vi chiediamo
+di interromperlo» va bene). VIETATE solo le citazioni il cui riferimento potrebbe
+appartenere a un ALTRO tema o soggetto rispetto alla domanda.
 
 REGOLA ANTI-META-PARLAMENTARE:
 La citazione deve esprimere la POSIZIONE del gruppo SUL TEMA della domanda,
@@ -504,14 +499,21 @@ Dal TESTO scegli LA migliore citazione verbatim (1-2 frasi consecutive, 80-350
 caratteri) che soddisfi TUTTI questi criteri:
 1. PERTINENZA: risponde direttamente alla DOMANDA esprimendo la posizione del partito
    (favorevole/contraria/condizionale) — non descrizioni neutre, non altri argomenti.
-2. AUTOSUFFICIENZA: comprensibile DA SOLA. Vietati pronomi, possessivi o
-   dimostrativi con antecedente fuori dalla citazione («chiediamo di interromperLO»,
-   «QUEL trattato», «I PARERI», «sosteniamo LA SUA difesa» — di chi?).
-   ⚠️ PERICOLO ATTRIBUZIONE: un antecedente fuori dalla citazione può riferirsi a
-   un ALTRO tema. Caso reale: «sosteniamo attivamente la sua difesa e la
+   ⚠️ La posizione CONTRARIA è pertinente quanto quella favorevole: per una domanda
+   sul supporto a X, una critica a X, alle politiche del Governo su X o una difesa
+   della controparte di X È la posizione del partito sulla domanda (es. DOMANDA sul
+   supporto a Israele → «chiediamo lo stop alle forniture militari» o «mai una parola
+   a favore del popolo palestinese» sono posizioni PERTINENTI, non altri argomenti).
+2. ATTRIBUZIONE SICURA: pronomi e dimostrativi con antecedente fuori dalla
+   citazione sono AMMESSI quando il tema della frase è inequivocabilmente quello
+   della DOMANDA (l'introduzione del paragrafo fornirà il contesto — es.
+   «chiediamo di interromperlo» riferito a un accordo con Israele va bene).
+   Sono VIETATI solo quando il riferimento potrebbe appartenere a un ALTRO tema
+   o soggetto. Caso reale: «sosteniamo attivamente la sua difesa e la
    ricostruzione» sembrava su Israele ma "sua" = l'UCRAINA (detto nel periodo
-   precedente) — citarla per Israele stravolge il significato. Nel dubbio, scegli
-   SOLO frasi che nominano esplicitamente il tema della DOMANDA.
+   precedente) — citarla per Israele stravolge il significato. Se dal testo non
+   puoi determinare CON CERTEZZA che il riferimento è sul tema della domanda,
+   scarta la frase.
 5. NON contiene «…» (ellissi dello stenografo = testo omesso o interrotto).
 3. NON meta-parlamentare: niente appelli all'unità, annunci di mozioni,
    ringraziamenti, gestione d'aula. AMMESSI invece i verbi di dire con cui
@@ -522,18 +524,13 @@ caratteri) che soddisfi TUTTI questi criteri:
 4. NON inizia con connettivi (quindi, dunque, perciò, e, ma, infatti, per questo...).
 
 ESEMPI DI VALUTAZIONE:
-✗ «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
-  principi della nostra Costituzione» → VIETATA: interrompere COSA? Il pronome
-  "lo" non ha antecedente nella citazione. Anche se esprime una posizione forte,
-  è incomprensibile da sola.
-✗ «la denuncia di quel trattato serve non per farlo decadere» → VIETATA: QUALE trattato?
+✓ «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
+  principi della nostra Costituzione» → VALIDA se il testo rende chiaro che "lo"
+  è un accordo sul tema della domanda (l'intro del paragrafo lo espliciterà).
+✗ «sosteniamo attivamente la sua difesa e la ricostruzione» → VIETATA: "sua" può
+  riferirsi a un altro Paese/tema (era l'Ucraina) — rischio attribuzione errata.
 ✗ «il segnale che chiediamo da questo Parlamento è un voto unanime» → VIETATA:
   meta-parlamentare, parla del voto in aula e non del tema.
-✓ «chiediamo la sospensione del memorandum di cooperazione militare con Israele,
-  perché contrario al diritto internazionale» → VALIDA: oggetto esplicito, posizione chiara.
-
-⚠️ Se l'unica frase con una posizione esplicita contiene un riferimento irrisolto,
-NON ripiegarci sopra: rispondi NONE (il sistema passerà a un altro intervento).
 
 Rispondi SOLO con la citazione, copiata ESATTAMENTE carattere per carattere dal
 TESTO, senza virgolette e senza commenti.
@@ -543,7 +540,7 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         self,
         query: str,
         evidence: List[Dict[str, Any]],
-        max_attempts: int = 5,
+        max_attempts: int = 8,
     ) -> tuple:
         """Select the best self-contained verbatim quote across the top evidence.
 
@@ -558,20 +555,44 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         for e in evidence[:max_attempts]:
             if e.get("citation_duplicate_of"):
                 continue
+            # Filtro hard Fase 1: chunk classificati procedural/rhetoric a
+            # index-time contribuiscono al contesto ma NON diventano citazioni.
+            citability_class = e.get("citability_class")
+            if citability_class in ("procedural", "rhetoric"):
+                logger.info(
+                    f"Quote picker: skipping {e.get('evidence_id', '')} "
+                    f"(citability_class={citability_class})"
+                )
+                continue
             eid = e.get("evidence_id", "")
             text = (e.get("quote_text") or e.get("chunk_text") or "").strip()
             if not text or len(text) < 80:
                 continue
+            # best_quote pre-estratta a index-time: offerta al picker come
+            # candidata preferita — resta da verificare solo la pertinenza
+            # alla DOMANDA (l'autosufficienza è già stata vagliata al batch).
+            best_quote = (e.get("best_quote") or "").strip()
+            candidate_block = (
+                f"\n\nCANDIDATA PREFERITA (già verificata come autosufficiente; "
+                f"usala se pertinente alla DOMANDA, altrimenti scegli dal TESTO):\n"
+                f"{best_quote}"
+                if best_quote
+                else ""
+            )
             try:
                 response = await self.client.chat.completions.create(
                     model=self.quote_picker_model,
                     messages=[
                         {"role": "system", "content": self.QUOTE_PICKER_PROMPT},
                         {"role": "user",
-                         "content": f"DOMANDA: {query}\n\nTESTO:\n{text[:3000]}"},
+                         "content": f"DOMANDA: {query}\n\nTESTO:\n{text[:3000]}"
+                                    f"{candidate_block}"},
                     ],
                     temperature=0.0,
                     max_tokens=200,
+                    # call piccolo: un hang non deve congelare la pipeline
+                    # (timeout client default 180s x2 retry = fino a 9 min)
+                    timeout=30.0,
                 )
                 picked = (response.choices[0].message.content or "").strip()
                 picked = picked.strip('«»"\'' )
@@ -681,6 +702,13 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                 (e for e in evidence if e.get("evidence_id") == picked_eid), {}
             )
             picked_speaker = picked_ev.get("speaker_name", "")
+            # CRITICO: aggiorna quote_text sull'evidenza CONDIVISA (stesso dict
+            # in evidence_map). Senza questo, il coherence validator confronta
+            # l'intro con l'embedding del CHUNK INTERO (~1200 char multi-tema)
+            # invece che con la quote scelta → score 0.15-0.20 → hard-remove
+            # sistematico di 9/11 citazioni buone (osservato 2026-07-23).
+            if picked_ev:
+                picked_ev["quote_text"] = picked_quote
             mandatory_quote_block = f"""
 ⚠️ CITAZIONE OBBLIGATORIA (già selezionata e verificata — NON sceglierne un'altra):
 Oratore: {picked_speaker}
@@ -692,6 +720,11 @@ Costruisci l'introduzione e il posizionamento ATTORNO a questa citazione.
 2. **{picked_speaker}** [verbo], «citazione obbligatoria» [CIT:{picked_eid}].
 3. [1-2 frasi di posizionamento generale del gruppo sul tema]
 """
+
+        # Dichiarazione esplicita per la pipeline (la mutazione in-place può
+        # perdersi nei re-ordering delle liste evidenza): la pipeline riversa
+        # queste quote in evidence_map PRIMA del coherence validator.
+        section_picked = {picked_eid: picked_quote} if picked_eid else {}
 
         # Build claims relevant to this party
         party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
@@ -909,6 +942,7 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
 
         return {
             "party": party,
+            "picked_quotes": section_picked,
             "content": content,
             "citations": citations,
             "has_evidence": True,
