@@ -1,0 +1,307 @@
+# ============================================================================
+#  ParliamentRAG — Data pipeline targets (included from Makefile)
+#  Builds/updates the parliamentary knowledge graph in a local Neo4j.
+#  Credentials come from .env (NEO4J_PASSWORD) — never hardcoded here.
+# ============================================================================
+
+ROOT_DIR    := $(CURDIR)
+VENV        := $(ROOT_DIR)/backend/venv
+PYTHON      := $(VENV)/bin/python
+PIP         := $(VENV)/bin/pip
+BOLD  := \033[1m
+CYAN  := \033[36m
+GREEN := \033[32m
+RESET := \033[0m
+
+venv:
+	@test -d $(VENV) || python3 -m venv $(VENV)
+
+
+# ============================================================================
+#  Database Pipeline
+# ============================================================================
+
+BUILD_DIR    := $(ROOT_DIR)/build
+BUILD_SCRIPT := $(BUILD_DIR)/build_and_update.py
+NEO4J_LOCAL  := bolt://localhost:7689
+NEO4J_USER   ?= neo4j
+NEO4J_PASS   ?= $(shell grep '^NEO4J_PASSWORD=' .env 2>/dev/null | cut -d= -f2-)
+
+.PHONY: db-populate db-update db-senate db-update-senate db-update-all db-download-leg18 db-ingest-leg18 db-download-csv db-download-senators-csv db-install
+
+db-install: venv ## Install build dependencies (pandas, regex, etc.)
+	@$(PIP) install -r $(BUILD_DIR)/requirements-build.txt -q
+	@printf "$(GREEN)Build dependencies installed$(RESET)\n"
+
+db-download-csv: db-install ## Download deputy CSVs from dati.camera.it
+	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
+
+db-download-senators-csv: db-install ## Download senator CSVs from dati.senato.it
+	@$(PYTHON) $(BUILD_DIR)/download_senators_csv.py
+
+db-all: db-install ## One-shot full DB: download CSVs + build + chunk + embed + vector index
+	@printf "$(BOLD)$(CYAN)Full database build (one-shot)...$(RESET)\n"
+	@# 1. Stop backend/frontend if running
+	@-pkill -f "uvicorn app.main:app" 2>/dev/null || true
+	@-pkill -f "next dev" 2>/dev/null || true
+	@# 2. Start Neo4j (or ensure it's running)
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@# 3. Always re-download CSVs for freshest data
+	@printf "$(CYAN)Downloading deputy CSVs from dati.camera.it...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
+	@# 4. Full build: nuke → ingest → chunk → vector index → embeddings
+	@$(PYTHON) $(BUILD_SCRIPT) build \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@# 5. Senate: download senators + AKN files + ingest (additive, no nuke)
+	@printf "$(CYAN)Building Senate data (additive)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) build-senate \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@# 6. SPARQL enrichment: individual vote records from dati.camera.it
+	@printf "$(CYAN)Enriching with SPARQL data (individual votes + committee roles)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) || printf "$(CYAN)SPARQL enrichment had issues (non-blocking, data may be partial)$(RESET)\n"
+	@printf "\n$(BOLD)$(GREEN)Database ready!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
+	@printf "  Then run $(CYAN)make compute-baseline$(RESET) with the backend up to pre-calc baseline experts.\n"
+
+db-populate: db-install ## Full DB build (skip CSV download if present)
+	@printf "$(BOLD)$(CYAN)Full database populate...$(RESET)\n"
+	@# 1. Stop backend/frontend if running
+	@-pkill -f "uvicorn app.main:app" 2>/dev/null || true
+	@-pkill -f "next dev" 2>/dev/null || true
+	@# 2. Start Neo4j (or ensure it's running)
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@# 3. Download CSVs if missing
+	@# CSV sempre freschi: membership/rinomine gruppi cambiano nel tempo
+	@# (2026-07-23: CSV di aprile ha nascosto la rinomina Azione-IV -> Azione-PER-RE)
+	@printf "$(CYAN)Refreshing CSV files from dati.camera.it...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/download_deputies_csv.py
+	@# 4. Run build
+	@$(PYTHON) $(BUILD_SCRIPT) build \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Database populated!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
+
+db-update: db-install ## Incremental update (start Neo4j if needed, download new XMLs + acts)
+	@printf "$(BOLD)$(CYAN)Updating Neo4j database...$(RESET)\n"
+	@# 1. Stop backend/frontend if running
+	@-pkill -f "uvicorn app.main:app" 2>/dev/null || true
+	@-pkill -f "next dev" 2>/dev/null || true
+	@# 2. Start Neo4j (or ensure it's running)
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@# 3. Run update
+	@$(PYTHON) $(BUILD_SCRIPT) update \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Database updated!$(RESET) Run $(CYAN)make dev$(RESET) to start the stack.\n"
+
+db-update-senate: db-install ## Incremental Senate update (new AKNs + senator CSVs + relink)
+	@printf "$(BOLD)$(CYAN)Updating Senate data...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) update-senate \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Senate data updated!$(RESET)\n"
+
+db-update-all: db-update db-update-senate enrich-sparql generate-summaries classify-citability misto-componenti ## Update everything: Camera + Senato + SPARQL votes + AI summaries + citability + componenti Misto
+
+db-download-leg18: db-install ## Download all XVIII legislature raw data (Camera + Senato + CSVs, no DB writes)
+	@printf "$(BOLD)$(CYAN)Downloading XVIII legislature data...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/download_historical.py --legislature 18
+	@printf "\n$(BOLD)$(GREEN)XVIII legislature download complete!$(RESET)\n"
+
+db-ingest-leg18: db-install ## Ingest XVIII (leg18) Camera+Senate data additively (no nuke); requires raw data on disk (make db-download-leg18)
+	@printf "$(BOLD)$(CYAN)Ingesting XVIII (leg18) data additively...$(RESET)\n"
+	@docker compose up -d neo4j
+	@$(PYTHON) $(BUILD_SCRIPT) update --legislature 18 --skip-download \
+		--neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS)
+	@$(PYTHON) $(BUILD_SCRIPT) update-senate --legislature 18 --skip-download \
+		--neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)XVIII ingest complete!$(RESET)\n"
+
+db-senate: db-install ## Build Senate data (additive, Camera data preserved)
+	@printf "$(BOLD)$(CYAN)Senate database build (additive)...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_SCRIPT) build-senate \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)Senate data built!$(RESET)\n"
+
+# ============================================================================
+#  Graph Enrichment (SPARQL)
+# ============================================================================
+
+.PHONY: enrich-sparql enrich-sparql-test
+
+enrich-sparql: db-install ## Enrich graph from dati.camera.it SPARQL (votes + committee roles)
+	@printf "$(BOLD)$(CYAN)SPARQL enrichment from dati.camera.it...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS)
+	@printf "\n$(BOLD)$(GREEN)SPARQL enrichment complete!$(RESET)\n"
+
+enrich-sparql-test: db-install ## Test SPARQL enrichment with 5 deputies only
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) \
+		--limit-deputies 5
+
+# ============================================================================
+#  Vote Enrichment (multi-chamber, both legislatures)
+# ============================================================================
+
+.PHONY: enrich-votes enrich-votes-individual enrich-votes-test
+
+enrich-votes: db-install ## Enrich graph with aggregate votes for both chambers (XIX+XVIII)
+	@printf "$(BOLD)$(CYAN)Vote enrichment from dati.camera.it + dati.senato.it...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@printf "$(CYAN)Camera aggregate votes (XIX 350+)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --start-session 350
+	@printf "$(CYAN)Camera aggregate votes (XVIII gap-fill)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 18 --start-session 1
+	@printf "$(CYAN)Senate aggregate votes (XIX)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19
+	@printf "$(CYAN)Senate aggregate votes (XVIII)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 18
+	@printf "\n$(BOLD)$(GREEN)Aggregate vote ingest complete!$(RESET)\n"
+
+enrich-votes-individual: db-install ## Enrich graph with per-parliamentarian individual votes (long run)
+	@printf "$(BOLD)$(CYAN)Individual vote enrichment (both chambers)...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@printf "$(CYAN)Camera individual votes (resume remaining XIX deputies)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --skip-aggregate --skip-committees --legislature 19
+	@printf "$(CYAN)Senate individual votes (XIX)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --individual-only --legislature 19
+	@printf "$(CYAN)Senate individual votes (XVIII)...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --individual-only --legislature 18
+	@printf "\n$(BOLD)$(GREEN)Individual vote ingest complete!$(RESET)\n"
+
+enrich-votes-test: ## Smoke test: 2 Camera sessions + 2 Senate sittings (assumes Neo4j running)
+	@printf "$(CYAN)Smoke: 3 Camera deputies + 2 Senate sittings...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --start-session 350 --limit-sessions 2
+	@$(PYTHON) $(BUILD_DIR)/senate_sparql_ingester.py --neo4j-uri $(NEO4J_LOCAL) --neo4j-user $(NEO4J_USER) --neo4j-password $(NEO4J_PASS) --aggregate-only --legislature 19 --limit-sessions 2
+
+# ============================================================================
+#  AI Summary Generation
+# ============================================================================
+
+.PHONY: generate-summaries db-full
+
+generate-summaries: db-install ## Generate AI summaries for timeline (resumable)
+	@printf "$(BOLD)$(CYAN)Generating AI summaries for timeline...$(RESET)\n"
+	@docker compose up -d neo4j
+	@printf "$(CYAN)Waiting for Neo4j bolt port (7689)...$(RESET)\n"
+	@for i in $$(seq 1 30); do \
+		$(PYTHON) -c "from neo4j import GraphDatabase; d=GraphDatabase.driver('$(NEO4J_LOCAL)',auth=('$(NEO4J_USER)','$(NEO4J_PASS)')); s=d.session(); s.run('RETURN 1').single(); s.close(); d.close()" 2>/dev/null && break; \
+		printf "."; \
+		sleep 3; \
+	done
+	@printf "\n$(GREEN)Neo4j ready$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/generate_summaries.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) \
+		$(if $(DRY_RUN),--dry-run,)
+	@printf "\n$(BOLD)$(GREEN)Summary generation complete!$(RESET)\n"
+
+db-full: db-all generate-summaries ## Full DB build + AI summaries (one-shot)
+
+.PHONY: classify-citability misto-componenti
+
+misto-componenti: db-install ## Ingest componenti politiche del Gruppo Misto (SPARQL)
+	@printf "$(BOLD)$(CYAN)Ingesting componenti Gruppo Misto...$(RESET)\n"
+	@NEO4J_URI=$(NEO4J_LOCAL) NEO4J_USER=$(NEO4J_USER) NEO4J_PASSWORD=$(NEO4J_PASS) \
+		$(PYTHON) $(BUILD_DIR)/ingest_misto_componenti.py
+	@printf "\n$(BOLD)$(GREEN)Componenti Misto ingested!$(RESET)\n"
+
+classify-citability: db-install ## Classify chunk citability index-time (resumable)
+	@printf "$(BOLD)$(CYAN)Classifying chunk citability...$(RESET)\n"
+	@$(PYTHON) $(BUILD_DIR)/classify_chunk_citability.py \
+		--neo4j-uri $(NEO4J_LOCAL) \
+		--neo4j-user $(NEO4J_USER) \
+		--neo4j-password $(NEO4J_PASS) \
+		$(if $(DRY_RUN),--dry-run,)
+	@printf "\n$(BOLD)$(GREEN)Citability classification complete!$(RESET)\n"
+
+# ============================================================================
+#  Backend Scripts
+# ============================================================================
+
+.PHONY: seed-eval compute-baseline compute-spread
+
+seed-eval: ## Seed evaluation topics into Neo4j
+	@cd $(BACKEND_DIR) && $(PYTHON) scripts/seed_evaluation_topic.py
+
+compute-baseline: ## Compute baseline experts for evaluation set
+	@cd $(BACKEND_DIR) && $(PYTHON) scripts/compute_baseline_experts.py
+
+compute-spread: ## Compute topic authority spread
+	@cd $(BACKEND_DIR) && $(PYTHON) scripts/compute_topic_authority_spread.py

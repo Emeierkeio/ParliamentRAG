@@ -23,7 +23,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
 develop-eggs/
 dist/
 downloads/
@@ -106,7 +105,6 @@ out/
 dist/
 
 # Build outputs
-build/
 *.tsbuildinfo
 
 # Vercel
@@ -224,13 +222,13 @@ site/
 
 
 # ===========================================
-# Neo4J
+# Neo4j local data & backups
 # ===========================================
 neo4j/
-*.md
-!README.md
-docs/
+neo4j-local-backups/
+dumps/
 
+# NotebookLM exports
 notebooklm_sources/
 backend/scripts/export_notebooklm.py
 
@@ -240,7 +238,13 @@ backend/scripts/export_notebooklm.py
 # Orphan data files
 backend/data/parliament.db
 
-*.txt
-package-lock.json
-package.json
-neo4j-local-backups/
+# Stray root-level node files (frontend has its own)
+/package-lock.json
+/package.json
+
+# Paper / thesis working material (kept out of the app repo)
+*.tex
+ISWC*/
+ParliamentRAG_authority.*
+outputs/
+thesis/
