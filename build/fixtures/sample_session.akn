@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<an:akomaNtoso xmlns:an="http://docs.oasis-open.org/legaldocml/ns/akn/3.0/CSD03">
+  <an:debate name="RESAULA">
+    <an:meta>
+      <an:identification source="#source">
+        <an:FRBRWork>
+          <an:FRBRnumber value="5"/>
+          <an:FRBRdate date="2022-11-15" name="generation"/>
+          <an:FRBRsubtype value="RESAULA"/>
+        </an:FRBRWork>
+      </an:identification>
+      <an:references source="#source">
+        <an:TLCPerson id="p32600"
+                      href="http://dati.senato.it/osr/Persona/32600"
+                      showAs="CASTELLONE"/>
+        <an:TLCPerson id="p12345"
+                      href="http://dati.senato.it/osr/Persona/12345"
+                      showAs="ROSSI"/>
+        <an:TLCRole id="rolePresidente"
+                    href="/ontology/roles/it/Presidente"
+                    showAs="Presidente"/>
+      </an:references>
+    </an:meta>
+    <an:debateBody>
+      <an:debateSection name="InizioSeduta">
+        <an:heading>Inizio della seduta</an:heading>
+        <an:narrative>La seduta e' aperta alle ore 10.</an:narrative>
+      </an:debateSection>
+      <an:debateSection name="DiscussioneArgomento">
+        <an:heading>Discussione del disegno di legge: Bilancio dello Stato</an:heading>
+        <an:speech by="#p32600" as="#rolePresidente">
+          <an:from refersTo="#p32600">PRESIDENTE</an:from>
+          <an:p>Ha facolta' di parlare il senatore Rossi.</an:p>
+          <an:p>Prego, senatore.</an:p>
+        </an:speech>
+        <an:speech by="#p12345" as="#d1e27a1234">
+          <an:from refersTo="#p12345">ROSSI</an:from>
+          <an:p>Signor Presidente, desidero esprimere la mia posizione sul disegno di legge di bilancio per l'anno 2023.</an:p>
+          <an:p>Questo provvedimento contiene misure importanti per la crescita economica del paese e per il sostegno alle famiglie italiane.</an:p>
+        </an:speech>
+        <an:speech by="#p32600" as="#d1e27a5678">
+          <an:from refersTo="#p32600">CASTELLONE</an:from>
+          <an:p>Concordo con quanto affermato dal collega Rossi riguardo alle misure fiscali previste dalla legge di bilancio.</an:p>
+          <an:p>E' necessario garantire risorse adeguate per la sanita' e l'istruzione nel prossimo anno finanziario.</an:p>
+        </an:speech>
+      </an:debateSection>
+    </an:debateBody>
+  </an:debate>
+</an:akomaNtoso>

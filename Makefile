@@ -24,14 +24,14 @@ UVICORN      := $(BACKEND_DIR)/venv/bin/uvicorn
 # Data-update settings: the demo DB is REMOTE (server 89.167.54.206), reached
 # through an SSH tunnel on local port 7690. The ingestion pipeline lives in the
 # v2 repo (../ParliamentRAG/build) and is schema-compatible with this DB.
-V2_DIR       ?= ../ParliamentRAG
+V2_DIR       ?= .
 DEMO_NEO4J   ?= bolt://localhost:7690
 SSH_HOST     := root@89.167.54.206
 TUNNEL_CMD   := ssh -f -N -L 7690:localhost:7687 $(SSH_HOST)
 
 # Remote Neo4j (deployed demo) and local staging copy
-REMOTE_NEO4J_CONTAINER := parliament-neo4j
-REMOTE_NEO4J_VOLUME    := parliament-rag_neo4j_data
+REMOTE_NEO4J_CONTAINER := parliament-neo4j-v2
+REMOTE_NEO4J_VOLUME    := parliament_v2_data
 REMOTE_BACKUP_DIR      := /root/neo4j-backups
 LOCAL_NEO4J_NAME       := demo-neo4j-local
 LOCAL_NEO4J_VOLUME     := demo_neo4j_local_data
@@ -212,3 +212,6 @@ update-data: tunnel
 	@echo "Repairing speaker links (v2 ingest attaches new speeches to persona.rdf duplicates)..."
 	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py $(DEMO_NEO4J)
 	@echo "Done. The 'Data updated on' date in the sidebar now reflects the DB automatically."
+
+# Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
+include Makefile.data

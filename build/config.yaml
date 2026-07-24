@@ -1,0 +1,13 @@
+# ParliamentRAG Build Configuration
+# ---------------------------------------------------------------------------
+# Externalized parameters for the build pipeline.
+# Edit these values to tune chunking behaviour without touching source code.
+# ---------------------------------------------------------------------------
+
+chunking:
+  chunk_size: 1200        # Target characters per chunk
+  chunk_overlap: 250      # Overlap between consecutive chunks
+  min_speech_length: 100  # Minimum characters to process a speech
+
+ingestion:
+  batch_size: 1000        # UNWIND batch size for Neo4j write transactions
