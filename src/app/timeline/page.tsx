@@ -62,7 +62,7 @@ export default function TimelinePage() {
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
           </div>
-          <div className="px-4 sm:px-6 pb-3">
+          <div className="px-4 sm:px-6 pb-3 mx-auto w-full max-w-4xl">
             <TimelineSearch
               filters={filters}
               onFiltersChange={setFilters}
@@ -73,12 +73,12 @@ export default function TimelinePage() {
         </header>
 
         {/* Explainer text */}
-        <p className="text-sm text-muted-foreground px-4 sm:px-6 py-2">
+        <p className="text-sm text-muted-foreground px-4 sm:px-6 py-2 mx-auto w-full max-w-4xl">
           {t("browseDescription")}
         </p>
 
-        {/* Session list */}
-        <div className="px-4 sm:px-6 py-4 flex-1">
+        {/* Session list — width-capped reading column */}
+        <div className="px-4 sm:px-6 py-4 flex-1 mx-auto w-full max-w-4xl">
           {isLoading ? (
             <TimelineSkeleton />
           ) : error ? (
