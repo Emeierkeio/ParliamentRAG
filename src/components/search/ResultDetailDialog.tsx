@@ -123,7 +123,7 @@ export function ResultDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden">
         <DialogTitle className="sr-only">{t("detailTitle")}</DialogTitle>
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 space-y-3">
@@ -203,7 +203,7 @@ function SpeechDetailContent({
         </div>
 
         {/* Full text */}
-        <div className="pl-4 border-l-2 border-primary/20 text-sm leading-relaxed text-foreground whitespace-pre-line max-h-[50vh] overflow-y-auto">
+        <div className="pl-4 pr-2 border-l-2 border-primary/20 text-sm leading-relaxed text-foreground whitespace-pre-line break-words max-h-[50vh] overflow-y-auto overflow-x-hidden max-w-full">
           {detail.full_text}
         </div>
 
@@ -315,7 +315,7 @@ function ActDetailContent({
 
         {/* Full description */}
         {detail.description && (
-          <div className="pl-4 border-l-2 border-emerald-500/20 text-sm leading-relaxed text-foreground whitespace-pre-line max-h-[50vh] overflow-y-auto">
+          <div className="pl-4 pr-2 border-l-2 border-emerald-500/20 text-sm leading-relaxed text-foreground whitespace-pre-line break-words max-h-[50vh] overflow-y-auto overflow-x-hidden max-w-full">
             {detail.description}
           </div>
         )}
