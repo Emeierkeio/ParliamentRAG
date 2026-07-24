@@ -299,7 +299,7 @@ function SpeechCard({
         </div>
 
         {/* Text */}
-        <div className="pl-4 border-l-2 border-primary/20 text-sm leading-relaxed text-muted-foreground">
+        <div className="pl-4 pr-1 border-l-2 border-primary/20 text-sm leading-relaxed text-muted-foreground break-words overflow-hidden max-w-full">
           {highlightText(item.text, query)}
         </div>
 
@@ -415,7 +415,7 @@ function ActCard({
 
         {/* Description text */}
         {item.text && (
-          <div className="pl-4 border-l-2 border-emerald-500/20 text-sm leading-relaxed text-muted-foreground">
+          <div className="pl-4 pr-1 border-l-2 border-emerald-500/20 text-sm leading-relaxed text-muted-foreground break-words overflow-hidden max-w-full">
             {highlightText(item.text, query)}
           </div>
         )}
