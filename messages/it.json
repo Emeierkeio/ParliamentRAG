@@ -590,7 +590,22 @@
     "loadingMore": "Caricamento altre sessioni...",
     "errorHeading": "Impossibile caricare le sessioni",
     "errorBody": "Si e' verificato un errore durante il caricamento della cronologia parlamentare. Aggiorna la pagina.",
-    "parliamentaryTimeline": "Cronologia Parlamentare"
+    "parliamentaryTimeline": "Cronologia Parlamentare",
+    "outcomeApproved": "Approvata",
+    "outcomeRejected": "Respinta",
+    "voteDetailHint": "Vedi i voti individuali",
+    "voteFavor": "Favorevoli",
+    "voteAgainst": "Contrari",
+    "voteAbstained": "Astenuti",
+    "votePresent": "Presenti",
+    "voteMajority": "Maggioranza",
+    "voteOnMission": "In missione",
+    "voteBreakdownHeading": "Per gruppo",
+    "voteParticipantsHeading": "Voti individuali ({count})",
+    "voteSearchPlaceholder": "Cerca deputato o gruppo...",
+    "voteNoMatches": "Nessun risultato",
+    "voteLoadError": "Impossibile caricare il dettaglio della votazione",
+    "phasesHeading": "Ordine dei lavori"
   },
   "RankingsPage": {
     "headerTitle": "Analisi Autorità",

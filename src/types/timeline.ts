@@ -44,6 +44,38 @@ export interface VoteInfo {
   abstained: number | null;
 }
 
+export interface VoteParticipant {
+  id: string;
+  first_name: string;
+  last_name: string;
+  party: string | null;
+  outcome: string; // "favor" | "against" | "absent"
+}
+
+export interface VotePartyBreakdown {
+  party: string;
+  favor: number;
+  against: number;
+  absent: number;
+}
+
+export interface VoteDetailResponse {
+  id: string;
+  number: number;
+  subject: string | null;
+  outcome: string | null;
+  vote_type: string | null;
+  in_favor: number | null;
+  against: number | null;
+  abstained: number | null;
+  present: number | null;
+  voters: number | null;
+  majority: number | null;
+  on_mission: number | null;
+  breakdown: VotePartyBreakdown[];
+  participants: VoteParticipant[];
+}
+
 export interface ActInfo {
   id: string;
   title: string | null;
