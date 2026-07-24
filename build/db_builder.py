@@ -516,6 +516,17 @@ class DatabaseBuilder:
             MATCH (sp:Speech {id: row.speechId})
             MERGE (sp)-[:HAS_CHUNK]->(c)
         """, batch=batch)
+        # Archi NEXT tra chunk consecutivi dello stesso speech: usati dalla
+        # neighbor expansion del retrieval (e dichiarati nel paper §4).
+        # Persi nel primo rebuild v2 — la feature degradava in silenzio
+        # («appended 0/100 next chunks» in ogni log, scoperto 2026-07-24).
+        tx.run("""
+            UNWIND $batch AS row
+            MATCH (a:Chunk {id: row.id})
+            MATCH (sp:Speech {id: row.speechId})-[:HAS_CHUNK]->(b:Chunk)
+            WHERE b.index = row.index + 1
+            MERGE (a)-[:NEXT]->(b)
+        """, batch=batch)
 
     @staticmethod
     def _create_votes(tx, batch: list) -> None:
