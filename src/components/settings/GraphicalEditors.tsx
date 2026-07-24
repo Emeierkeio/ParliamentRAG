@@ -35,24 +35,229 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import type { SystemConfig } from "@/lib/api";
+import { useLocale } from "next-intl";
+
+// ─── Localized strings ───────────────────────────────────────
+
+const STR = {
+  it: {
+    // Retrieval
+    retrievalTitle: "Recupero Informazioni",
+    retrievalDesc: "Parametri dei due canali di ricerca e del merger dei risultati",
+    denseChannel: "Canale Denso — Embedding",
+    topK: "Top-K Risultati",
+    topKInfo: "Numero massimo di chunk recuperati per similarità semantica (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo computazionale.",
+    simThreshold: "Soglia Similarità",
+    simThresholdInfo: "Soglia minima di similarità coseno per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Range tipico: 0.20–0.45.",
+    graphChannel: "Canale Grafo — EuroVoc",
+    minLexMatch: "Min Match Lessicale",
+    minLexMatchInfo: "Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword.",
+    eurovocThreshold: "Soglia Semantica EuroVoc",
+    eurovocThresholdInfo: "Soglia di similarità semantica per il matching EuroVoc. Controlla quanto strettamente il concetto EuroVoc deve corrispondere semanticamente alla query. Range tipico: 0.35–0.55.",
+    graphChunkThreshold: "Soglia Chunk Grafo",
+    graphChunkThresholdInfo: "Soglia minima di similarità per i chunk recuperati tramite traversata del grafo. Previene l'inclusione di chunk off-topic recuperati solo per co-firma di atti rilevanti.",
+    maxActs: "Max Atti per Query",
+    maxActsInfo: "Numero massimo di atti parlamentari da recuperare per query tramite il canale grafo. Limita il carico computazionale della traversata del grafo Neo4j.",
+    mergerWeights: "Pesi Fusione — Merger",
+    weightsMustSum: "I pesi devono sommare a 1.00",
+    unitChunk: "chunk",
+    unitKeyword: "keyword",
+    unitActs: "atti",
+    // Authority
+    authorityTitle: "Authority Score",
+    authorityDesc: "Pesi e soglie per il calcolo dello score di autorevolezza dei parlamentari",
+    componentWeights: "Pesi Componenti",
+    timeDecay: "Decadimento Temporale",
+    actsHalfLife: "Half-life Atti",
+    actsHalfLifeInfo: "Vita media in giorni per il decadimento temporale degli atti parlamentari. Un atto presentato 'half_life' giorni fa vale la metà di uno odierno. Valori bassi privilegiano l'attività recente.",
+    speechesHalfLife: "Half-life Interventi",
+    speechesHalfLifeInfo: "Vita media in giorni per il decadimento temporale degli interventi in aula. Interventi recenti pesano di più rispetto a quelli lontani nel tempo.",
+    unitDays: "giorni",
+    relevanceThresholds: "Soglie di Rilevanza",
+    relevanceThresholdsDesc: "Similarità coseno minima tra l'embedding dell'atto/intervento e la query. Elementi sotto soglia vengono esclusi dal conteggio, indipendentemente dalla quantità.",
+    actsRelevance: "Soglia Rilevanza Atti",
+    actsRelevanceInfo: "Similarità coseno minima tra la descrizione dell'atto e la query per conteggiarlo nell'authority. Atti irrilevanti al topic non contribuiscono al punteggio. Range tipico: 0.20–0.35.",
+    interventionsRelevance: "Soglia Rilevanza Interventi",
+    interventionsRelevanceInfo: "Similarità coseno minima tra l'embedding dell'intervento e la query per conteggiarlo. Interventi off-topic non incrementano il punteggio del parlamentare. Range tipico: 0.20–0.35.",
+    advancedParams: "Parametri Avanzati",
+    maxComponentContribution: "Max Contributo Componente",
+    maxComponentContributionInfo: "Contributo massimo (cap) che una singola componente può apportare all'authority score finale. Previene che un solo fattore (es. numero di interventi) domini completamente il punteggio.",
+    // Generation
+    generationTitle: "Generazione",
+    generationDesc: "Modelli LLM della pipeline di generazione a 4 stadi",
+    modelsSection: "Modelli LLM — Pipeline 4 Stadi",
+    stageAnalyst: "Analista",
+    stageWriter: "Scrittore",
+    stageIntegrator: "Integratore",
+    modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4.1-mini è sufficiente ed economico.",
+    modelInfoWriter: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
+    modelInfoIntegrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
+    tempNote: "Temperatura e max token sono fissi per stadio, tarati nel codice (Analista 0.1, Scrittore 0.1, Integratore 0.0) per garantire citazioni verbatim riproducibili. Il cambio di modello è l'unica leva LLM con effetto reale ed è applicato a caldo alla prossima query.",
+    positionBrief: "Position Brief",
+    enabledM: "Abilitato",
+    positionBriefInfo: "Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate.",
+    maxChunksBrief: "Max Chunks Brief",
+    maxChunksBriefInfo: "Numero di chunk inclusi nel brief di posizione. Più chunk forniscono più contesto ma aumentano i token in input e la latenza.",
+    charsPerChunk: "Chars/Chunk",
+    charsPerChunkInfo: "Numero massimo di caratteri per chunk nel brief. Tronca i chunk lunghi per mantenere il brief compatto.",
+    contextChars: "Context Chars",
+    contextCharsInfo: "Caratteri di contesto mostrati per ogni evidenza nel brief (testo circostante la citazione). Aiuta lo scrittore a capire il tono dell'intervento.",
+    unitChar: "char",
+    generationBehavior: "Comportamento Generazione",
+    noEvidenceLabel: "Messaggio Assenza Evidenze",
+    noEvidenceInfo: "Testo mostrato nella sezione del gruppo parlamentare quando non sono presenti interventi rilevanti nel corpus per quella query.",
+    // Query Rewriting
+    qrTitle: "Riscrittura Query",
+    qrDesc: "Espansione automatica delle query brevi prima del retrieval",
+    qrConfig: "Configurazione",
+    enabledF: "Abilitata",
+    qrEnabledInfo: "Se abilitata, le query brevi vengono riformulate e arricchite con termini correlati prima di essere inviate al retrieval. Migliora il recall per query ambigue o troppo sintetiche.",
+    qrModel: "Modello",
+    qrModelInfo: "Modello LLM usato per riscrivere le query. gpt-4.1-nano è raccomandato: è veloce, economico e sufficiente per questo task strutturato.",
+    maxWords: "Max Parole per Riscrittura",
+    maxWordsInfo: "Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval.",
+    unitWords: "parole",
+  },
+  en: {
+    // Retrieval
+    retrievalTitle: "Information Retrieval",
+    retrievalDesc: "Parameters of the two retrieval channels and the result merger",
+    denseChannel: "Dense Channel — Embedding",
+    topK: "Top-K Results",
+    topKInfo: "Maximum number of chunks retrieved by semantic similarity (embedding). Higher values increase recall but raise latency and computational cost.",
+    simThreshold: "Similarity Threshold",
+    simThresholdInfo: "Minimum cosine similarity threshold for the dense channel. Chunks with lower similarity are discarded before ranking. Typical range: 0.20–0.45.",
+    graphChannel: "Graph Channel — EuroVoc",
+    minLexMatch: "Min Lexical Match",
+    minLexMatchInfo: "Minimum number of EuroVoc keywords that must match lexically to include a parliamentary act in the graph search. Value 1 = a single keyword is enough.",
+    eurovocThreshold: "EuroVoc Semantic Threshold",
+    eurovocThresholdInfo: "Semantic similarity threshold for EuroVoc matching. Controls how closely the EuroVoc concept must semantically match the query. Typical range: 0.35–0.55.",
+    graphChunkThreshold: "Graph Chunk Threshold",
+    graphChunkThresholdInfo: "Minimum similarity threshold for chunks retrieved via graph traversal. Prevents the inclusion of off-topic chunks retrieved only through co-signing of relevant acts.",
+    maxActs: "Max Acts per Query",
+    maxActsInfo: "Maximum number of parliamentary acts to retrieve per query through the graph channel. Limits the computational load of the Neo4j graph traversal.",
+    mergerWeights: "Fusion Weights — Merger",
+    weightsMustSum: "Weights must sum to 1.00",
+    unitChunk: "chunks",
+    unitKeyword: "keywords",
+    unitActs: "acts",
+    // Authority
+    authorityTitle: "Authority Score",
+    authorityDesc: "Weights and thresholds for computing the authority score of members of parliament",
+    componentWeights: "Component Weights",
+    timeDecay: "Time Decay",
+    actsHalfLife: "Acts Half-life",
+    actsHalfLifeInfo: "Half-life in days for the time decay of parliamentary acts. An act submitted 'half_life' days ago is worth half of one submitted today. Low values favor recent activity.",
+    speechesHalfLife: "Speeches Half-life",
+    speechesHalfLifeInfo: "Half-life in days for the time decay of floor speeches. Recent speeches weigh more than older ones.",
+    unitDays: "days",
+    relevanceThresholds: "Relevance Thresholds",
+    relevanceThresholdsDesc: "Minimum cosine similarity between the act/speech embedding and the query. Items below the threshold are excluded from the count, regardless of quantity.",
+    actsRelevance: "Acts Relevance Threshold",
+    actsRelevanceInfo: "Minimum cosine similarity between the act description and the query for it to count towards authority. Acts irrelevant to the topic do not contribute to the score. Typical range: 0.20–0.35.",
+    interventionsRelevance: "Speeches Relevance Threshold",
+    interventionsRelevanceInfo: "Minimum cosine similarity between the speech embedding and the query for it to count. Off-topic speeches do not increase the member's score. Typical range: 0.20–0.35.",
+    advancedParams: "Advanced Parameters",
+    maxComponentContribution: "Max Component Contribution",
+    maxComponentContributionInfo: "Maximum contribution (cap) a single component can bring to the final authority score. Prevents a single factor (e.g. number of speeches) from completely dominating the score.",
+    // Generation
+    generationTitle: "Generation",
+    generationDesc: "LLM models of the 4-stage generation pipeline",
+    modelsSection: "LLM Models — 4-Stage Pipeline",
+    stageAnalyst: "Analyst",
+    stageWriter: "Writer",
+    stageIntegrator: "Integrator",
+    modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task — gpt-4.1-mini is sufficient and cost-effective.",
+    modelInfoWriter: "Stage 2: writes the sections for each parliamentary group from the retrieved chunks. Requires high narrative quality and verbatim citation fidelity — gpt-4.1 recommended.",
+    modelInfoIntegrator: "Stage 3: integrates the sections into a coherent, balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use an LLM.",
+    tempNote: "Temperature and max tokens are fixed per stage, tuned in code (Analyst 0.1, Writer 0.1, Integrator 0.0) to guarantee reproducible verbatim citations. Changing the model is the only LLM lever with real effect and is hot-applied on the next query.",
+    positionBrief: "Position Brief",
+    enabledM: "Enabled",
+    positionBriefInfo: "Provides the writer with a summary of the parliamentary group's overall position (top N chunks) before it writes the section. Improves the ideological coherence of the selected citations.",
+    maxChunksBrief: "Max Brief Chunks",
+    maxChunksBriefInfo: "Number of chunks included in the position brief. More chunks provide more context but increase input tokens and latency.",
+    charsPerChunk: "Chars/Chunk",
+    charsPerChunkInfo: "Maximum number of characters per chunk in the brief. Truncates long chunks to keep the brief compact.",
+    contextChars: "Context Chars",
+    contextCharsInfo: "Context characters shown for each piece of evidence in the brief (text surrounding the citation). Helps the writer understand the tone of the speech.",
+    unitChar: "chars",
+    generationBehavior: "Generation Behavior",
+    noEvidenceLabel: "No-Evidence Message",
+    noEvidenceInfo: "Text shown in the parliamentary group's section when no relevant speeches are present in the corpus for that query.",
+    // Query Rewriting
+    qrTitle: "Query Rewriting",
+    qrDesc: "Automatic expansion of short queries before retrieval",
+    qrConfig: "Configuration",
+    enabledF: "Enabled",
+    qrEnabledInfo: "If enabled, short queries are reformulated and enriched with related terms before being sent to retrieval. Improves recall for ambiguous or overly terse queries.",
+    qrModel: "Model",
+    qrModelInfo: "LLM model used to rewrite queries. gpt-4.1-nano is recommended: fast, cheap and sufficient for this structured task.",
+    maxWords: "Max Words for Rewriting",
+    maxWordsInfo: "Maximum word threshold: queries with this many words or fewer are rewritten. Already descriptive (longer) queries are passed directly to retrieval.",
+    unitWords: "words",
+  },
+} as const;
+
+type Lang = "it" | "en";
+
+function useLang(): Lang {
+  const locale = useLocale();
+  return locale === "it" ? "it" : "en";
+}
 
 // ─── Shared helpers ──────────────────────────────────────────
 
-const WEIGHT_LABELS: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; description: string }> = {
-  profession: { label: "Professione", icon: Briefcase, description: "Contributo della professione pre-parlamentare all'authority score. Un parlamentare con background medico o giuridico ha expertise specifica per query di settore." },
-  education: { label: "Istruzione", icon: GraduationCap, description: "Contributo del titolo di studio all'authority score. Lauree specialistiche e dottorati in materia rilevante incrementano il peso." },
-  committee: { label: "Commissioni", icon: Users, description: "Contributo dell'appartenenza a commissioni parlamentari tematicamente rilevanti rispetto alla query. Più alta è la pertinenza semantica, maggiore il peso." },
-  acts: { label: "Atti", icon: FileText, description: "Contributo al numero di atti parlamentari presentati (leggi, mozioni, interrogazioni), ponderati per recency tramite decadimento temporale esponenziale." },
-  interventions: { label: "Interventi", icon: MessageSquare, description: "Contributo al numero di interventi in aula ponderati per recency. Parlamentari attivi e recenti ottengono score più alti rispetto a quelli inattivi." },
-  role: { label: "Ruolo", icon: Shield, description: "Contributo del ruolo istituzionale (Presidente, Ministro, Capogruppo, Sottosegretario, ecc.). Ruoli apicali ricevono un boost di autorevolezza." },
+const WEIGHT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  profession: Briefcase,
+  education: GraduationCap,
+  committee: Users,
+  acts: FileText,
+  interventions: MessageSquare,
+  role: Shield,
 };
 
-const MERGER_LABELS: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; description: string }> = {
-  relevance: { label: "Rilevanza", icon: Target, description: "Peso della similarità coseno tra embedding query ed embedding chunk. È il segnale primario di pertinenza tematica." },
-  diversity: { label: "Diversità", icon: Sparkles, description: "Penalizza chunk dello stesso speaker per evitare che un singolo parlamentare domini i risultati, garantendo varietà di voci." },
-  coverage: { label: "Copertura", icon: Users, description: "Premia la rappresentazione di più gruppi parlamentari nel ranking finale, favorendo la visione multi-partito." },
-  authority: { label: "Autorità", icon: Scale, description: "Ripondera i chunk in base all'authority score del parlamentare (expertise, ruolo, atti). Nota: la vera authority ranking avviene post-merge." },
-  salience: { label: "Salienza", icon: TrendingUp, description: "Preferisce testi politicamente sostanziali rispetto a testi procedurali (es. 'Grazie Presidente, ha facoltà di parlare')." },
+const WEIGHT_LABELS: Record<Lang, Record<string, { label: string; description: string }>> = {
+  it: {
+    profession: { label: "Professione", description: "Contributo della professione pre-parlamentare all'authority score. Un parlamentare con background medico o giuridico ha expertise specifica per query di settore." },
+    education: { label: "Istruzione", description: "Contributo del titolo di studio all'authority score. Lauree specialistiche e dottorati in materia rilevante incrementano il peso." },
+    committee: { label: "Commissioni", description: "Contributo dell'appartenenza a commissioni parlamentari tematicamente rilevanti rispetto alla query. Più alta è la pertinenza semantica, maggiore il peso." },
+    acts: { label: "Atti", description: "Contributo al numero di atti parlamentari presentati (leggi, mozioni, interrogazioni), ponderati per recency tramite decadimento temporale esponenziale." },
+    interventions: { label: "Interventi", description: "Contributo al numero di interventi in aula ponderati per recency. Parlamentari attivi e recenti ottengono score più alti rispetto a quelli inattivi." },
+    role: { label: "Ruolo", description: "Contributo del ruolo istituzionale (Presidente, Ministro, Capogruppo, Sottosegretario, ecc.). Ruoli apicali ricevono un boost di autorevolezza." },
+  },
+  en: {
+    profession: { label: "Profession", description: "Contribution of the pre-parliamentary profession to the authority score. A member with a medical or legal background has specific expertise for domain queries." },
+    education: { label: "Education", description: "Contribution of the educational qualification to the authority score. Specialized degrees and PhDs in a relevant field increase the weight." },
+    committee: { label: "Committees", description: "Contribution of membership in parliamentary committees thematically relevant to the query. The higher the semantic relevance, the greater the weight." },
+    acts: { label: "Acts", description: "Contribution of the number of parliamentary acts submitted (bills, motions, interpellations), weighted for recency via exponential time decay." },
+    interventions: { label: "Speeches", description: "Contribution of the number of floor speeches weighted for recency. Active, recent members obtain higher scores than inactive ones." },
+    role: { label: "Role", description: "Contribution of the institutional role (President, Minister, Group Leader, Undersecretary, etc.). Top-level roles receive an authority boost." },
+  },
+};
+
+const MERGER_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  relevance: Target,
+  diversity: Sparkles,
+  coverage: Users,
+  authority: Scale,
+  salience: TrendingUp,
+};
+
+const MERGER_LABELS: Record<Lang, Record<string, { label: string; description: string }>> = {
+  it: {
+    relevance: { label: "Rilevanza", description: "Peso della similarità coseno tra embedding query ed embedding chunk. È il segnale primario di pertinenza tematica." },
+    diversity: { label: "Diversità", description: "Penalizza chunk dello stesso speaker per evitare che un singolo parlamentare domini i risultati, garantendo varietà di voci." },
+    coverage: { label: "Copertura", description: "Premia la rappresentazione di più gruppi parlamentari nel ranking finale, favorendo la visione multi-partito." },
+    authority: { label: "Autorità", description: "Ripondera i chunk in base all'authority score del parlamentare (expertise, ruolo, atti). Nota: la vera authority ranking avviene post-merge." },
+    salience: { label: "Salienza", description: "Preferisce testi politicamente sostanziali rispetto a testi procedurali (es. 'Grazie Presidente, ha facoltà di parlare')." },
+  },
+  en: {
+    relevance: { label: "Relevance", description: "Weight of the cosine similarity between the query embedding and the chunk embedding. It is the primary signal of topical relevance." },
+    diversity: { label: "Diversity", description: "Penalizes chunks from the same speaker to prevent a single member from dominating the results, ensuring a variety of voices." },
+    coverage: { label: "Coverage", description: "Rewards the representation of multiple parliamentary groups in the final ranking, favoring a multi-party view." },
+    authority: { label: "Authority", description: "Re-weights chunks based on the member's authority score (expertise, role, acts). Note: the actual authority ranking happens post-merge." },
+    salience: { label: "Salience", description: "Prefers politically substantive texts over procedural ones (e.g. 'Thank you Mr. President, you have the floor')." },
+  },
 };
 
 // ─── SubSection container ────────────────────────────────────
@@ -259,6 +464,10 @@ interface RetrievalEditorProps {
 }
 
 export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
+  const lang = useLang();
+  const S = STR[lang];
+  const mergerLabels = MERGER_LABELS[lang];
+
   const update = (patch: Partial<SystemConfig["retrieval"]>) => {
     onChange({ ...data, ...patch });
   };
@@ -274,19 +483,19 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
           <div className="p-1.5 rounded-md bg-blue-100 dark:bg-blue-950">
             <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
-          Recupero Informazioni
+          {S.retrievalTitle}
         </CardTitle>
-        <CardDescription>Parametri dei due canali di ricerca e del merger dei risultati</CardDescription>
+        <CardDescription>{S.retrievalDesc}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
 
         {/* Dense Channel */}
-        <SubSection icon={Zap} title="Canale Denso — Embedding">
+        <SubSection icon={Zap} title={S.denseChannel}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldWithUnit
-              label="Top-K Risultati"
-              info="Numero massimo di chunk recuperati per similarità semantica (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo computazionale."
-              unit="chunk"
+              label={S.topK}
+              info={S.topKInfo}
+              unit={S.unitChunk}
             >
               <Input
                 type="number" min={10} max={1000}
@@ -296,8 +505,8 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Soglia Similarità"
-              info="Soglia minima di similarità coseno per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Range tipico: 0.20–0.45."
+              label={S.simThreshold}
+              info={S.simThresholdInfo}
             >
               <Input
                 type="number" step={0.05} min={0} max={1}
@@ -310,12 +519,12 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
         </SubSection>
 
         {/* Graph Channel */}
-        <SubSection icon={Network} title="Canale Grafo — EuroVoc">
+        <SubSection icon={Network} title={S.graphChannel}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldWithUnit
-              label="Min Match Lessicale"
-              info="Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword."
-              unit="keyword"
+              label={S.minLexMatch}
+              info={S.minLexMatchInfo}
+              unit={S.unitKeyword}
             >
               <Input
                 type="number" min={1} max={10}
@@ -325,8 +534,8 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Soglia Semantica EuroVoc"
-              info="Soglia di similarità semantica per il matching EuroVoc. Controlla quanto strettamente il concetto EuroVoc deve corrispondere semanticamente alla query. Range tipico: 0.35–0.55."
+              label={S.eurovocThreshold}
+              info={S.eurovocThresholdInfo}
             >
               <Input
                 type="number" step={0.05} min={0} max={1}
@@ -336,8 +545,8 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Soglia Chunk Grafo"
-              info="Soglia minima di similarità per i chunk recuperati tramite traversata del grafo. Previene l'inclusione di chunk off-topic recuperati solo per co-firma di atti rilevanti."
+              label={S.graphChunkThreshold}
+              info={S.graphChunkThresholdInfo}
             >
               <Input
                 type="number" step={0.05} min={0} max={1}
@@ -347,9 +556,9 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Max Atti per Query"
-              info="Numero massimo di atti parlamentari da recuperare per query tramite il canale grafo. Limita il carico computazionale della traversata del grafo Neo4j."
-              unit="atti"
+              label={S.maxActs}
+              info={S.maxActsInfo}
+              unit={S.unitActs}
             >
               <Input
                 type="number" min={10} max={500}
@@ -362,14 +571,14 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
         </SubSection>
 
         {/* Merger Weights */}
-        <SubSection icon={Layers} title="Pesi Fusione — Merger">
+        <SubSection icon={Layers} title={S.mergerWeights}>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">I pesi devono sommare a 1.00</span>
+            <span className="text-xs text-muted-foreground">{S.weightsMustSum}</span>
             <WeightSumBadge weights={data.merger_weights} />
           </div>
           <div className="space-y-2">
             {Object.entries(data.merger_weights).map(([key, value]) => {
-              const meta = MERGER_LABELS[key];
+              const meta = mergerLabels[key];
               return (
                 <WeightSlider
                   key={key}
@@ -377,7 +586,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
                   value={value}
                   info={meta?.description}
                   onChange={(v) => updateMergerWeight(key, v)}
-                  icon={meta?.icon}
+                  icon={MERGER_ICONS[key]}
                 />
               );
             })}
@@ -397,6 +606,10 @@ interface AuthorityEditorProps {
 }
 
 export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
+  const lang = useLang();
+  const S = STR[lang];
+  const weightLabels = WEIGHT_LABELS[lang];
+
   const updateWeight = (key: string, value: number) => {
     onChange({ ...data, weights: { ...data.weights, [key]: value } });
   };
@@ -412,21 +625,21 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
           <div className="p-1.5 rounded-md bg-amber-100 dark:bg-amber-950">
             <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           </div>
-          Authority Score
+          {S.authorityTitle}
         </CardTitle>
-        <CardDescription>Pesi e soglie per il calcolo dello score di autorevolezza dei parlamentari</CardDescription>
+        <CardDescription>{S.authorityDesc}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
 
         {/* Component Weights */}
-        <SubSection icon={BarChart3} title="Pesi Componenti">
+        <SubSection icon={BarChart3} title={S.componentWeights}>
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">I pesi devono sommare a 1.00</span>
+            <span className="text-xs text-muted-foreground">{S.weightsMustSum}</span>
             <WeightSumBadge weights={data.weights} />
           </div>
           <div className="space-y-2">
             {Object.entries(data.weights).map(([key, value]) => {
-              const meta = WEIGHT_LABELS[key];
+              const meta = weightLabels[key];
               return (
                 <WeightSlider
                   key={key}
@@ -434,7 +647,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
                   value={value}
                   info={meta?.description}
                   onChange={(v) => updateWeight(key, v)}
-                  icon={meta?.icon}
+                  icon={WEIGHT_ICONS[key]}
                 />
               );
             })}
@@ -442,12 +655,12 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
         </SubSection>
 
         {/* Time Decay */}
-        <SubSection icon={Clock} title="Decadimento Temporale">
+        <SubSection icon={Clock} title={S.timeDecay}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldWithUnit
-              label="Half-life Atti"
-              info="Vita media in giorni per il decadimento temporale degli atti parlamentari. Un atto presentato 'half_life' giorni fa vale la metà di uno odierno. Valori bassi privilegiano l'attività recente."
-              unit="giorni"
+              label={S.actsHalfLife}
+              info={S.actsHalfLifeInfo}
+              unit={S.unitDays}
             >
               <Input
                 type="number" min={30} max={3650}
@@ -457,9 +670,9 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Half-life Interventi"
-              info="Vita media in giorni per il decadimento temporale degli interventi in aula. Interventi recenti pesano di più rispetto a quelli lontani nel tempo."
-              unit="giorni"
+              label={S.speechesHalfLife}
+              info={S.speechesHalfLifeInfo}
+              unit={S.unitDays}
             >
               <Input
                 type="number" min={30} max={3650}
@@ -472,14 +685,14 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
         </SubSection>
 
         {/* Relevance Thresholds */}
-        <SubSection icon={Filter} title="Soglie di Rilevanza">
+        <SubSection icon={Filter} title={S.relevanceThresholds}>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Similarità coseno minima tra l'embedding dell'atto/intervento e la query. Elementi sotto soglia vengono esclusi dal conteggio, indipendentemente dalla quantità.
+            {S.relevanceThresholdsDesc}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FieldWithUnit
-              label="Soglia Rilevanza Atti"
-              info="Similarità coseno minima tra la descrizione dell'atto e la query per conteggiarlo nell'authority. Atti irrilevanti al topic non contribuiscono al punteggio. Range tipico: 0.20–0.35."
+              label={S.actsRelevance}
+              info={S.actsRelevanceInfo}
             >
               <Input
                 type="number" step={0.05} min={0} max={1}
@@ -489,8 +702,8 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Soglia Rilevanza Interventi"
-              info="Similarità coseno minima tra l'embedding dell'intervento e la query per conteggiarlo. Interventi off-topic non incrementano il punteggio del parlamentare. Range tipico: 0.20–0.35."
+              label={S.interventionsRelevance}
+              info={S.interventionsRelevanceInfo}
             >
               <Input
                 type="number" step={0.05} min={0} max={1}
@@ -503,10 +716,10 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
         </SubSection>
 
         {/* Advanced */}
-        <SubSection icon={Settings2} title="Parametri Avanzati">
+        <SubSection icon={Settings2} title={S.advancedParams}>
           <FieldWithUnit
-            label="Max Contributo Componente"
-            info="Contributo massimo (cap) che una singola componente può apportare all'authority score finale. Previene che un solo fattore (es. numero di interventi) domini completamente il punteggio."
+            label={S.maxComponentContribution}
+            info={S.maxComponentContributionInfo}
           >
             <Input
               type="number" step={0.05} min={0} max={1}
@@ -539,13 +752,16 @@ const MODEL_OPTIONS = [
   "gpt-3.5-turbo",
 ];
 
-const MODEL_INFO: Record<string, string> = {
-  analyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4.1-mini è sufficiente ed economico.",
-  writer: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
-  integrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
-};
-
 export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
+  const lang = useLang();
+  const S = STR[lang];
+
+  const modelInfo: Record<string, string> = {
+    analyst: S.modelInfoAnalyst,
+    writer: S.modelInfoWriter,
+    integrator: S.modelInfoIntegrator,
+  };
+
   const updateModel = (stage: string, model: string) => {
     onChange({ ...data, models: { ...data.models, [stage]: model } });
   };
@@ -561,22 +777,22 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           <div className="p-1.5 rounded-md bg-purple-100 dark:bg-purple-950">
             <Zap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
           </div>
-          Generazione
+          {S.generationTitle}
         </CardTitle>
-        <CardDescription>Modelli LLM della pipeline di generazione a 4 stadi</CardDescription>
+        <CardDescription>{S.generationDesc}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
 
         {/* Models */}
-        <SubSection icon={Bot} title="Modelli LLM — Pipeline 4 Stadi">
+        <SubSection icon={Bot} title={S.modelsSection}>
           <div className="space-y-2.5">
             {Object.entries(data.models).map(([stage, model]) => (
               <div key={stage} className="flex items-center gap-3">
                 <div className="w-28 flex items-center gap-1 shrink-0">
                   <Label className="text-sm">
-                    {stage === "analyst" ? "Analista" : stage === "writer" ? "Scrittore" : "Integratore"}
+                    {stage === "analyst" ? S.stageAnalyst : stage === "writer" ? S.stageWriter : S.stageIntegrator}
                   </Label>
-                  {MODEL_INFO[stage] && <InfoPopover text={MODEL_INFO[stage]} />}
+                  {modelInfo[stage] && <InfoPopover text={modelInfo[stage]} />}
                 </div>
                 <select
                   value={model}
@@ -590,20 +806,17 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               </div>
             ))}
             <p className="text-[11px] text-muted-foreground leading-relaxed pt-1">
-              Temperatura e max token sono fissi per stadio, tarati nel codice
-              (Analista 0.1, Scrittore 0.1, Integratore 0.0) per garantire citazioni
-              verbatim riproducibili. Il cambio di modello è l&apos;unica leva LLM con
-              effetto reale ed è applicato a caldo alla prossima query.
+              {S.tempNote}
             </p>
           </div>
         </SubSection>
 
         {/* Position Brief */}
-        <SubSection icon={BookOpen} title="Position Brief">
+        <SubSection icon={BookOpen} title={S.positionBrief}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="text-sm">Abilitato</span>
-              <InfoPopover text="Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate." />
+              <span className="text-sm">{S.enabledM}</span>
+              <InfoPopover text={S.positionBriefInfo} />
             </div>
             <ToggleSwitch
               checked={data.position_brief.enabled}
@@ -612,9 +825,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <FieldWithUnit
-              label="Max Chunks Brief"
-              info="Numero di chunk inclusi nel brief di posizione. Più chunk forniscono più contesto ma aumentano i token in input e la latenza."
-              unit="chunk"
+              label={S.maxChunksBrief}
+              info={S.maxChunksBriefInfo}
+              unit={S.unitChunk}
             >
               <Input
                 type="number" min={1} max={20}
@@ -625,9 +838,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Chars/Chunk"
-              info="Numero massimo di caratteri per chunk nel brief. Tronca i chunk lunghi per mantenere il brief compatto."
-              unit="char"
+              label={S.charsPerChunk}
+              info={S.charsPerChunkInfo}
+              unit={S.unitChar}
             >
               <Input
                 type="number" min={50} max={1000} step={50}
@@ -638,9 +851,9 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               />
             </FieldWithUnit>
             <FieldWithUnit
-              label="Context Chars"
-              info="Caratteri di contesto mostrati per ogni evidenza nel brief (testo circostante la citazione). Aiuta lo scrittore a capire il tono dell'intervento."
-              unit="char"
+              label={S.contextChars}
+              info={S.contextCharsInfo}
+              unit={S.unitChar}
             >
               <Input
                 type="number" min={100} max={2000} step={100}
@@ -654,10 +867,10 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
         </SubSection>
 
         {/* Behavior */}
-        <SubSection icon={PenLine} title="Comportamento Generazione">
+        <SubSection icon={PenLine} title={S.generationBehavior}>
           <div className="space-y-1.5">
-            <LabelWithInfo info="Testo mostrato nella sezione del gruppo parlamentare quando non sono presenti interventi rilevanti nel corpus per quella query.">
-              Messaggio Assenza Evidenze
+            <LabelWithInfo info={S.noEvidenceInfo}>
+              {S.noEvidenceLabel}
             </LabelWithInfo>
             <Textarea
               value={data.no_evidence_message}
@@ -683,6 +896,9 @@ interface QueryRewritingEditorProps {
 const QR_MODEL_OPTIONS = ["gpt-4.1-nano", "gpt-4.1-mini", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
 
 export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorProps) {
+  const lang = useLang();
+  const S = STR[lang];
+
   const update = (patch: Partial<SystemConfig["query_rewriting"]>) => {
     onChange({ ...data, ...patch });
   };
@@ -694,16 +910,16 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
           <div className="p-1.5 rounded-md bg-green-100 dark:bg-green-950">
             <RefreshCcw className="h-4 w-4 text-green-600 dark:text-green-400" />
           </div>
-          Riscrittura Query
+          {S.qrTitle}
         </CardTitle>
-        <CardDescription>Espansione automatica delle query brevi prima del retrieval</CardDescription>
+        <CardDescription>{S.qrDesc}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        <SubSection icon={Wand2} title="Configurazione">
+        <SubSection icon={Wand2} title={S.qrConfig}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="text-sm">Abilitata</span>
-              <InfoPopover text="Se abilitata, le query brevi vengono riformulate e arricchite con termini correlati prima di essere inviate al retrieval. Migliora il recall per query ambigue o troppo sintetiche." />
+              <span className="text-sm">{S.enabledF}</span>
+              <InfoPopover text={S.qrEnabledInfo} />
             </div>
             <ToggleSwitch
               checked={data.enabled}
@@ -713,8 +929,8 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <LabelWithInfo info="Modello LLM usato per riscrivere le query. gpt-4.1-nano è raccomandato: è veloce, economico e sufficiente per questo task strutturato.">
-                Modello
+              <LabelWithInfo info={S.qrModelInfo}>
+                {S.qrModel}
               </LabelWithInfo>
               <select
                 value={data.model}
@@ -728,9 +944,9 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
               </select>
             </div>
             <FieldWithUnit
-              label="Max Parole per Riscrittura"
-              info="Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval."
-              unit="parole"
+              label={S.maxWords}
+              info={S.maxWordsInfo}
+              unit={S.unitWords}
             >
               <Input
                 type="number" min={1} max={20}
