@@ -828,6 +828,7 @@
     "idx5Question": "Was ist diese Woche im Plenum passiert?",
     "idx5Desc": "Die Chronik der Sitzungen mit Debatten, Reden und KI-generierten Zusammenfassungen — bis zur Position jedes einzelnen Abgeordneten.",
     "paperInUse": "Forschungsartikel",
-    "paperDemo": "Demo-Artikel"
+    "paperDemo": "Demo-Artikel",
+    "footerFunding": "Gefördert durch das EU-Programm Horizon Europe — Finanzhilfen"
   }
 }
