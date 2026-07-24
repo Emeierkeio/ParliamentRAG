@@ -227,6 +227,52 @@ class ChannelMerger:
             speaker_selected[speaker_id] += 1
             party_selected[party] += 1
 
+        # === Quota MINIMA per partito (garanzia multi-view) ===
+        # Il greedy ha un massimo per partito ma nessun minimo: sui temi di
+        # nicchia i gruppi grandi saturano il pool e i piccoli arrivano al
+        # quote picker con 2-4 evidenze → sezioni senza citazioni anche quando
+        # il corpus ha materiale ottimo (osservato 2026-07-24 su
+        # 'remigrazione': Misto con 2 evidenze mentre la componente Futuro
+        # Nazionale ne parla spesso e Magi ha 22 chunk substance sul tema).
+        # Top-up dai migliori candidati del partito, espellendo i peggiori
+        # dei partiti sovra-rappresentati per restare a top_k.
+        min_per_party = self.config.retrieval.get("merger", {}).get("min_per_party", 5)
+        known_parties = set(self.config.get_all_parties())
+        selected_ids = {r.get("evidence_id") for r in selected}
+        remaining_by_party: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        for r in sorted_results:
+            if r.get("evidence_id") not in selected_ids and r.get("party", "") in known_parties:
+                remaining_by_party[r.get("party", "")].append(r)
+
+        for party in known_parties:
+            while (party_selected[party] < min_per_party
+                   and remaining_by_party.get(party)):
+                candidate = remaining_by_party[party].pop(0)
+                if speaker_selected[candidate.get("speaker_id", "")] >= max_per_speaker:
+                    continue
+                if len(selected) >= top_k:
+                    # vittima: il selezionato con score più basso di un partito
+                    # che resta sopra la quota minima anche dopo la rimozione
+                    victim = next(
+                        (r for r in reversed(selected)
+                         if party_selected[r.get("party", "")] > min_per_party),
+                        None,
+                    )
+                    if victim is None:
+                        break  # nessun donatore: non sforare top_k
+                    selected.remove(victim)
+                    party_selected[victim.get("party", "")] -= 1
+                    speaker_selected[victim.get("speaker_id", "")] -= 1
+                selected.append(candidate)
+                selected_ids.add(candidate.get("evidence_id"))
+                party_selected[party] += 1
+                speaker_selected[candidate.get("speaker_id", "")] += 1
+                logger.info(
+                    f"Min-quota top-up: aggiunto chunk di "
+                    f"{candidate.get('speaker_name', '?')} per '{party}' "
+                    f"({party_selected[party]}/{min_per_party})"
+                )
+
         return selected
 
     def _log_coverage(self, results: List[Dict[str, Any]]):

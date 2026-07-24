@@ -146,19 +146,44 @@ class RetrievalEngine:
             top_k=top_k
         )
 
-        # Coverage fill: find chunks for missing parties
-        covered_parties = {r.get("party") for r in merged_results if r.get("party")}
+        # Coverage fill: garanzia multi-view anche per i partiti SOTTO QUOTA,
+        # non solo per quelli assenti. Sui temi di nicchia i gruppi piccoli
+        # entravano nel pool con 2-4 chunk marginali → quote picker a secco
+        # anche con materiale ottimo nel corpus (osservato 2026-07-24 su
+        # 'remigrazione': Misto con 2 evidenze, Magi ha 22 chunk sul tema).
+        from collections import Counter
+        min_per_party = self.config.retrieval.get("merger", {}).get("min_per_party", 5)
+        # Solo Deputy: i membri del Governo vanno nella sezione GOVERNO, non
+        # nelle sezioni partito — i ministri tecnici agganciati al MISTO
+        # gonfiavano il conteggio e il Misto risultava "a quota" con 4 chunk
+        # utili (osservato 2026-07-24).
+        party_counts = Counter(
+            r.get("party") for r in merged_results
+            if r.get("party") and r.get("speaker_role") != "GovernmentMember"
+        )
         all_parties = set(self.config.get_all_parties())
-        missing_parties = all_parties - covered_parties
+        under_represented = {
+            p for p in all_parties if party_counts.get(p, 0) < min_per_party
+        }
 
         fill_count = 0
-        if missing_parties:
-            logger.info(f"Coverage fill: searching for {len(missing_parties)} missing parties: {missing_parties}")
-            fill_results = self._coverage_fill(query_embedding, missing_parties)
+        if under_represented:
+            logger.info(
+                f"Coverage fill: {len(under_represented)} parties under quota "
+                f"({min_per_party}): {under_represented}"
+            )
+            fill_results = self._coverage_fill(
+                query_embedding, under_represented, chunks_per_party=min_per_party
+            )
             if fill_results:
+                existing_ids = {r.get("evidence_id") for r in merged_results}
+                fill_results = [
+                    r for r in fill_results
+                    if r.get("evidence_id") not in existing_ids
+                ]
                 fill_count = len(fill_results)
                 merged_results.extend(fill_results)
-                logger.info(f"Coverage fill: added {fill_count} chunks for missing parties")
+                logger.info(f"Coverage fill: added {fill_count} chunks for under-represented parties")
 
         # Expand to neighboring chunks when a more politically salient
         # adjacent chunk exists for the same speech
@@ -503,6 +528,8 @@ class RetrievalEngine:
                 // Partito attuale (per calcolo party_changed in _process_results)
                 OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
                 WHERE mg_now.end_date IS NULL
+                OPTIONAL MATCH (speaker)-[mcp:MEMBER_OF_COMPONENT]->(mcomp:MistoComponent)
+                WHERE mcp.start_date <= s.date AND (mcp.end_date IS NULL OR mcp.end_date >= s.date)
                 RETURN c.id AS chunk_id,
                        c.text AS chunk_text,
                        c.embedding AS embedding,
@@ -520,6 +547,10 @@ class RetrievalEngine:
                        s.date AS session_date,
                        s.number AS session_number,
                        coalesce(d.parent_debate_title, d.title) AS debate_title,
+                       mcomp.name AS misto_component,
+                       c.citability_score AS citability_score,
+                       c.citability_class AS citability_class,
+                       c.best_quote AS best_quote,
                        score AS similarity
                 ORDER BY score DESC
                 LIMIT $limit

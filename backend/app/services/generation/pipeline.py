@@ -260,7 +260,27 @@ class GenerationPipeline:
 
             # Hard-remove citations with extreme mismatch (likely wrong source cited)
             HARD_REMOVE_THRESHOLD = 0.35
-            hard_mismatches = [ic for ic in incoherent if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD]
+            # Le quote VETTATE dal picker sono esenti dall'hard-remove: il
+            # writer costruisce l'intro ATTORNO alla quote obbligatoria, la
+            # coerenza è garantita per costruzione. La similarity embedding
+            # tra due testi corti è un giudice peggiore del contratto
+            # picker+writer: sulle query di nicchia scendeva sotto 0.35 per
+            # quasi tutte le citazioni buone innescando sostituzioni a catena
+            # (e sezioni senza quote dove il pool è sottile, 2026-07-24).
+            hard_mismatches = [
+                ic for ic in incoherent
+                if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD
+                and not evidence_map.get(ic.get("evidence_id", ""), {}).get("quote_vetted")
+            ]
+            n_exempt = sum(
+                1 for ic in incoherent
+                if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD
+                and evidence_map.get(ic.get("evidence_id", ""), {}).get("quote_vetted")
+            )
+            if n_exempt:
+                logger.info(
+                    f"Coherence: {n_exempt} low-score citations kept (picker-vetted)"
+                )
             if hard_mismatches:
                 logger.warning(f"Hard-removing {len(hard_mismatches)} citations with score < {HARD_REMOVE_THRESHOLD}")
                 for ic in hard_mismatches:
