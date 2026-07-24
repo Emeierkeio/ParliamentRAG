@@ -77,6 +77,11 @@ class DenseChannel:
         // Partito attuale: gruppo corrente (membership ancora aperta).
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
         WHERE mg_now.end_date IS NULL
+        // Componente del Gruppo Misto alla data del discorso: il Misto
+        // contiene componenti opposte (+Europa vs Futuro Nazionale Vannacci),
+        // l'attribuzione va alla componente, mai al Misto monolitico.
+        OPTIONAL MATCH (speaker)-[mcp:MEMBER_OF_COMPONENT]->(mcomp:MistoComponent)
+        WHERE mcp.start_date <= s.date AND (mcp.end_date IS NULL OR mcp.end_date >= s.date)
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
@@ -95,6 +100,7 @@ class DenseChannel:
                s.date AS session_date,
                s.number AS session_number,
                coalesce(d.parent_debate_title, d.title) AS debate_title,
+               mcomp.name AS misto_component,
                c.citability_score AS citability_score,
                c.citability_class AS citability_class,
                c.best_quote AS best_quote,
@@ -212,6 +218,7 @@ class DenseChannel:
                     "citability_score": row.get("citability_score"),
                     "citability_class": row.get("citability_class"),
                     "best_quote": row.get("best_quote"),
+                    "misto_component": row.get("misto_component"),
                     "retrieval_channel": "dense"
                 })
             except Exception as e:

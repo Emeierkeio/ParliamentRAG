@@ -254,6 +254,7 @@ class RetrievalEngine:
                     citability_score=r.get("citability_score"),
                     citability_class=r.get("citability_class"),
                     best_quote=r.get("best_quote"),
+                    misto_component=r.get("misto_component"),
                     embedding=r.get("embedding")  # For compass PCA
                 )
                 evidence_list.append(evidence)

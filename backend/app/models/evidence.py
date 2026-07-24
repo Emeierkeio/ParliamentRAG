@@ -86,6 +86,10 @@ class UnifiedEvidence(BaseModel):
     # Group-change transparency: True when the speaker has since moved to a different group
     party_changed: bool = Field(default=False, description="Whether speaker changed group after this speech")
     current_party: Optional[str] = Field(default=None, description="Current group name if party_changed is True")
+    # Componente del Gruppo Misto alla data del discorso (es. "+EUROPA -
+    # STATI UNITI D'EUROPA", "FUTURO NAZIONALE VANNACCI - FREE"): il Misto
+    # contiene componenti opposte, l'attribuzione va sempre alla componente.
+    misto_component: Optional[str] = Field(default=None, description="Misto sub-component at speech date")
     date: date_type = Field(description="Date of the intervention")
 
     # TEXT FIELDS - CLEARLY DISTINGUISHED

@@ -1622,6 +1622,11 @@ def _build_citations_for_frontend(
         if e.get("party_changed") and e.get("current_party"):
             cit_data["party_changed"] = True
             cit_data["current_party"] = e["current_party"]
+        # Componente del Gruppo Misto alla data del discorso: senza questa il
+        # frontend attribuirebbe al "Misto" posizioni di componenti opposte
+        # (+Europa vs Futuro Nazionale Vannacci)
+        if e.get("misto_component"):
+            cit_data["misto_component"] = e["misto_component"]
         if is_government:
             role = gov_role_map.get(speaker_id)
             if not role and neo4j_client:
@@ -1780,6 +1785,8 @@ def _build_verified_citations(
         if party_changed and current_party:
             cit_data["party_changed"] = True
             cit_data["current_party"] = current_party
+        if evidence.get("misto_component"):
+            cit_data["misto_component"] = evidence["misto_component"]
         if is_government:
             role = gov_role_map.get(speaker_id)
             if not role and neo4j_client:

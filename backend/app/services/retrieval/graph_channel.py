@@ -279,6 +279,8 @@ class GraphChannel:
         WHERE {date_clause}
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
+        OPTIONAL MATCH (speaker)-[mcp:MEMBER_OF_COMPONENT]->(mcomp:MistoComponent)
+        WHERE mcp.start_date <= s.date AND (mcp.end_date IS NULL OR mcp.end_date >= s.date)
         RETURN c.id AS chunk_id,
                c.text AS chunk_text,
                c.embedding AS embedding,
@@ -295,6 +297,7 @@ class GraphChannel:
                s.date AS session_date,
                s.number AS session_number,
                coalesce(d.parent_debate_title, d.title) AS debate_title,
+               mcomp.name AS misto_component,
                c.citability_score AS citability_score,
                c.citability_class AS citability_class,
                c.best_quote AS best_quote
@@ -406,6 +409,7 @@ class GraphChannel:
                     "citability_score": row.get("citability_score"),
                     "citability_class": row.get("citability_class"),
                     "best_quote": row.get("best_quote"),
+                    "misto_component": row.get("misto_component"),
                     "retrieval_channel": "graph"
                 })
             except Exception as e:

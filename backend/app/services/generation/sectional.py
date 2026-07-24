@@ -1048,6 +1048,18 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
             if party_changed and current_party:
                 group_change_note = f"\n⚠️ CAMBIO GRUPPO: al momento del discorso era in {speaker_party}, ora è in {current_party}. Aggiungi nel testo: «(allora in {speaker_party})» dopo il nome del deputato."
 
+            # Componente del Gruppo Misto: il Misto contiene componenti
+            # politicamente OPPOSTE (+Europa vs Futuro Nazionale Vannacci) —
+            # la posizione va attribuita alla componente, mai al Misto intero.
+            misto_component = e.get("misto_component")
+            if misto_component:
+                group_change_note += (
+                    f"\n⚠️ COMPONENTE DEL GRUPPO MISTO: {misto_component}. "
+                    f"Attribuisci la posizione alla componente («la componente "
+                    f"{misto_component} del gruppo Misto…»), MAI al gruppo Misto "
+                    f"nel suo insieme: contiene componenti di orientamento opposto."
+                )
+
             # Reported-speech warning — injected directly into the evidence
             # block so the LLM sees it immediately before the text.
             rs_info = e.get("reported_speech", {})
