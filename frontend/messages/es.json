@@ -839,7 +839,7 @@
     "introTitle": "En resumen",
     "intro": "ParliamentRAG es un proyecto de investigación académica sin fines comerciales. El sitio no usa analytics, publicidad ni perfilado — solo cookies técnicas. Las preguntas del chat se guardan en nuestro servidor con fines de investigación científica.",
     "s1t": "Responsable del tratamiento",
-    "s1b": "El responsable es Mirko Tritella (proyecto de investigación — Universidad de Milano-Bicocca). Contacto: mirkotritella1999@gmail.com.",
+    "s1b": "El responsable es Mirko Tritella (proyecto de investigación — Universidad de Milano-Bicocca). Contacto: m.tritella@campus.unimib.it.",
     "s2t": "Qué recopilamos",
     "s2b": "Las consultas del chat y las respuestas generadas se guardan en nuestro servidor para evaluar y mejorar el sistema como parte de investigación científica publicada. Los proveedores de hosting conservan los registros técnicos habituales (p. ej. direcciones IP) por seguridad. Tu historial de chat también se guarda localmente en tu navegador (localStorage) y puedes borrarlo en cualquier momento.",
     "s3t": "Cookies",
@@ -853,7 +853,7 @@
     "s7t": "Contenido generado por IA",
     "s7b": "Las respuestas son generadas por inteligencia artificial y pueden contener errores pese a la verificación de citas. ParliamentRAG es un proyecto de investigación independiente, no afiliado a la Camera dei Deputati. Verifica siempre las citas en el acta oficial enlazada.",
     "s8t": "Tus derechos",
-    "s8b": "Puedes solicitar acceso, rectificación o supresión de tus datos y presentar una reclamación ante la autoridad de control. Escribe a mirkotritella1999@gmail.com.",
+    "s8b": "Puedes solicitar acceso, rectificación o supresión de tus datos y presentar una reclamación ante la autoridad de control. Escribe a m.tritella@campus.unimib.it.",
     "backHome": "Volver al inicio"
   }
 }
