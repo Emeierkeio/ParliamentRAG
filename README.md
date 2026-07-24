@@ -243,7 +243,7 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 }
 ```
 
-A companion **demo paper** describing the live system is also available: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
+A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
 
 ---
 
