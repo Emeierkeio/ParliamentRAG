@@ -853,7 +853,7 @@
     "s7t": "Contenus générés par IA",
     "s7b": "Les réponses sont générées par intelligence artificielle et peuvent contenir des erreurs malgré la vérification des citations. ParliamentRAG est un projet de recherche indépendant, non affilié à la Camera dei Deputati. Vérifiez toujours les citations dans le compte rendu officiel lié.",
     "s8t": "Vos droits",
-    "s8b": "Le site ne demande aucun compte et ne relie pas les conversations à votre identité : les données conservées sont donc, en général, anonymes. Si vous avez toutefois inclus des données personnelles dans une question, vous pouvez en demander l'accès, la rectification ou l'effacement en écrivant à m.tritella@campus.unimib.it (en précisant quand et ce que vous avez écrit, afin que nous puissions la retrouver). Vous conservez le droit de déposer une réclamation auprès de l'autorité de contrôle.",
+    "s8b": "Le site ne demande aucun compte et ne relie pas les conversations à votre identité : les données conservées sont donc, en général, anonymes. Vous pouvez supprimer vous-même une conversation — également de notre serveur — via l'icône corbeille dans l'historique du chat. Pour toute autre demande (accès, rectification ou effacement de données personnelles éventuellement incluses dans une question), écrivez à m.tritella@campus.unimib.it. Vous conservez le droit de déposer une réclamation auprès de l'autorité de contrôle.",
     "backHome": "Retour à l'accueil"
   }
 }
