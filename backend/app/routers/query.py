@@ -248,7 +248,11 @@ async def process_query_streaming(
         if topic_stats:
             # Enrich speakers_detail with profile URL, profession, education, committee from Neo4j
             speakers_detail = topic_stats.get("speakers_detail", [])
-            speaker_ids_for_enrichment = [s["speaker_id"] for s in speakers_detail if s.get("speaker_id")]
+            interventions_detail = topic_stats.get("interventions_detail", [])
+            speaker_ids_for_enrichment = list(set(
+                [s["speaker_id"] for s in speakers_detail if s.get("speaker_id")]
+                + [i["speaker_id"] for i in interventions_detail if i.get("speaker_id")]
+            ))
             if speaker_ids_for_enrichment:
                 enrichment_data = await asyncio.get_running_loop().run_in_executor(
                     None, lambda: _batch_fetch_speaker_enrichment(services["neo4j"], speaker_ids_for_enrichment)
@@ -258,11 +262,18 @@ async def process_query_streaming(
                     if sid in enrichment_data:
                         info = enrichment_data[sid]
                         speaker["camera_profile_url"] = info.get("camera_profile_url")
+                        # La foto era già estratta dalla fetch ma mai applicata:
+                        # il modal statistiche mostrava le iniziali (2026-07-24)
+                        speaker["photo"] = info.get("photo")
                         speaker["profession"] = info.get("profession")
                         speaker["education"] = info.get("education")
                         speaker["committee"] = info.get("committee")
                         if info.get("institutional_role"):
                             speaker["institutional_role"] = info["institutional_role"]
+                for intervention in interventions_detail:
+                    sid = intervention.get("speaker_id", "")
+                    if sid in enrichment_data:
+                        intervention["photo"] = enrichment_data[sid].get("photo")
 
             ts_payload = {
                 "intervention_count": topic_stats.get("intervention_count", 0),
@@ -278,7 +289,7 @@ async def process_query_streaming(
                     else str(topic_stats.get("last_date", ""))
                 ),
                 "speakers_detail": speakers_detail,
-                "interventions_detail": topic_stats.get("interventions_detail", []),
+                "interventions_detail": interventions_detail,
                 "sessions_detail": topic_stats.get("sessions_detail", []),
             }
             yield f"data: {json.dumps({'type': 'topic_stats', **ts_payload}, default=str)}\n\n"

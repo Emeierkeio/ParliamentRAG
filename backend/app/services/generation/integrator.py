@@ -48,6 +48,11 @@ Deriva il contenuto dalle sezioni dei partiti, ma SENZA anticipare le loro posiz
 
 FRASE 2 — LA SCALA:
 Numero di interventi analizzati, numero di deputati coinvolti e periodo temporale.
+⚠️ I numeri delle statistiche SEMPRE in CIFRE (91, 60), MAI in lettere
+("novantuno", "Ninety-one") — in QUALUNQUE lingua e anche a inizio frase:
+il frontend li rende cliccabili solo se sono cifre. Se serve, riformula
+per non aprire la frase col numero ("Sono stati analizzati 91 interventi…" /
+"The analysis covers 91 interventions…").
 
 VIETATO nell'introduzione:
 - Elencare numeri di seduta (es. "N. 175, 180, 184...") — MAI in prosa
