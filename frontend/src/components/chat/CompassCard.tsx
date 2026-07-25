@@ -13,6 +13,7 @@ export interface CompassData {
         query: string;
         explained_variance_ratio: number[];
         dimensionality?: number;
+        axis_method?: string; // "semantic" (query-anchored poles) | "pca"
         is_stable: boolean;
         warnings?: string[];
     };
@@ -71,6 +72,8 @@ interface CompassCardProps {
 export function CompassCard({ data, fill = false }: CompassCardProps) {
   const t = useTranslations("CompassCard");
   const [zoom, setZoom] = useState(1);
+  // Highlight all scatter points of the hovered group
+  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
   // Pan offset in percentage points (0,0 = centered)
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const dragRef = useRef<{ dragging: boolean; startX: number; startY: number; startPanX: number; startPanY: number } | null>(null);
@@ -215,26 +218,37 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                 </>
               )}
 
-              {/* Scatter Points */}
-              {data.scatter_sample.map((pt, i) => (
+              {/* Scatter Points — light up with the hovered group's centroid */}
+              {data.scatter_sample.map((pt, i) => {
+                  const isHighlighted = hoveredGroup !== null && pt.group_id === hoveredGroup;
+                  const isDimmed = hoveredGroup !== null && pt.group_id !== hoveredGroup;
+                  return (
                   <div
                     key={i}
-                    className="absolute w-1.5 h-1.5 rounded-full opacity-20 transition-opacity hover:opacity-60"
+                    className={`absolute rounded-full transition-all duration-150 ${
+                        isHighlighted ? "w-2.5 h-2.5 opacity-90 z-10" : "w-1.5 h-1.5"
+                    } ${isDimmed ? "opacity-[0.06]" : ""} ${hoveredGroup === null ? "opacity-20 hover:opacity-60" : ""}`}
                     style={{
                         left: `${scale(pt.x, 'x')}%`,
                         top: dimensionality === 1 ? '50%' : `${scale(-pt.y, 'y')}%`,
                         backgroundColor: getGroupColor(pt.group_id),
+                        boxShadow: isHighlighted ? `0 0 0 2px color-mix(in srgb, ${getGroupColor(pt.group_id)} 30%, transparent)` : undefined,
                         transform: 'translate(-50%, -50%)'
                     }}
                   />
-              ))}
+              )})}
 
-              {/* Group Centroids with Labels */}
+              {/* Group Centroids with Labels — dot area tracks fragment count */}
                {data.groups.map((grp) => {
                    const cx = scale(grp.position_x, 'x');
                    const cy = dimensionality === 1 ? 50 : scale(-grp.position_y, 'y');
                    const color = getGroupColor(grp.group_id);
                    const abbrev = getGroupAbbrev(grp.group_id);
+                   const maxFragments = Math.max(1, ...data.groups.map(g => g.stats?.n_fragments || 0));
+                   const dotPx = 10 + 14 * Math.sqrt((grp.stats?.n_fragments || 1) / maxFragments);
+
+                   const totalFragments = data.groups.reduce((s, g) => s + (g.stats?.n_fragments || 0), 0);
+                   const sharePct = totalFragments > 0 ? Math.round(((grp.stats?.n_fragments || 0) / totalFragments) * 100) : 0;
 
                    return (
                    <TooltipProvider key={grp.group_id}>
@@ -247,11 +261,13 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                                         top: `${cy}%`,
                                         transform: 'translate(-50%, -50%)'
                                     }}
+                                    onMouseEnter={() => setHoveredGroup(grp.group_id)}
+                                    onMouseLeave={() => setHoveredGroup(null)}
                                 >
                                     {/* Dot */}
                                     <div
-                                        className="w-4 h-4 rounded-full border-2 border-white dark:border-slate-800 shadow-md"
-                                        style={{ backgroundColor: color }}
+                                        className="rounded-full border-2 border-white dark:border-slate-800 shadow-md"
+                                        style={{ backgroundColor: color, width: dotPx, height: dotPx }}
                                     />
                                     {/* Label */}
                                     <span
@@ -262,13 +278,20 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                                     </span>
                                 </div>
                            </TooltipTrigger>
-                           <TooltipContent side="top">
-                               <p className="font-bold text-sm">{grp.group_id}</p>
-                               <div className="text-xs text-muted-foreground">
-                                   {t("position")}: ({grp.position_x.toFixed(2)}, {dimensionality === 1 ? '-' : grp.position_y.toFixed(2)})
+                           <TooltipContent side="top" className="p-0 overflow-hidden border-0 shadow-lg">
+                               <div className="px-3 py-2 flex items-center gap-2" style={{ backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)` }}>
+                                   <span className="inline-block h-2.5 w-2.5 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                                   <span className="font-semibold text-[13px] leading-tight">{grp.group_id}</span>
                                </div>
-                               <div className="text-xs text-muted-foreground">
-                                   {t("fragments")}: {grp.stats.n_fragments}
+                               <div className="px-3 py-2 space-y-1">
+                                   <div className="flex items-baseline justify-between gap-6 text-xs">
+                                       <span className="text-muted-foreground">{t("fragments")}</span>
+                                       <span className="font-medium tabular-nums">{grp.stats.n_fragments} <span className="text-muted-foreground font-normal">· {sharePct}%</span></span>
+                                   </div>
+                                   <div className="flex items-baseline justify-between gap-6 text-xs">
+                                       <span className="text-muted-foreground">{t("position")}</span>
+                                       <span className="font-medium tabular-nums">{grp.position_x.toFixed(2)}, {dimensionality === 1 ? '—' : grp.position_y.toFixed(2)}</span>
+                                   </div>
                                </div>
                            </TooltipContent>
                        </Tooltip>
@@ -276,10 +299,17 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                )})}
           </div>
           
-          {/* Legend */}
+          {/* Legend — hovering an entry highlights that group's points too */}
           <div className="flex flex-wrap gap-2 mt-2 justify-center shrink-0">
               {data.groups.map((grp) => (
-                  <div key={grp.group_id} className="flex items-center gap-1 text-xs">
+                  <div
+                      key={grp.group_id}
+                      className={`flex items-center gap-1 text-xs cursor-default rounded px-1 transition-opacity ${
+                          hoveredGroup !== null && hoveredGroup !== grp.group_id ? "opacity-40" : ""
+                      }`}
+                      onMouseEnter={() => setHoveredGroup(grp.group_id)}
+                      onMouseLeave={() => setHoveredGroup(null)}
+                  >
                       <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: getGroupColor(grp.group_id) }}
@@ -290,9 +320,9 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
           </div>
 
           <div className="flex justify-between items-center mt-1.5 px-2 shrink-0">
-             {/* Varianza spiegata con tooltip esplicativo */}
+             {/* Varianza spiegata / segnale lungo gli assi ancorati */}
              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                 <span>{t("explainedVariance")}: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
+                 <span>{data.meta.axis_method === "semantic" ? t("signalCaptured") : t("explainedVariance")}: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
                  <TooltipProvider>
                     <Tooltip>
                        <TooltipTrigger asChild>
@@ -303,7 +333,7 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                              <p><strong>{t("meaning")}</strong></p>
                              <p>• {t("lowVariance")}</p>
                              <p>• {t("highVariance")}</p>
-                             <p>• PC1: {Math.round((data.meta.explained_variance_ratio?.[0] || 0) * 100)}% | PC2: {dimensionality === 2 ? Math.round((data.meta.explained_variance_ratio?.[1] || 0) * 100) : 0}%</p>
+                             <p>• {data.meta.axis_method === "semantic" ? t("axis1Short") : "PC1"}: {Math.round((data.meta.explained_variance_ratio?.[0] || 0) * 100)}% | {data.meta.axis_method === "semantic" ? t("axis2Short") : "PC2"}: {dimensionality === 2 ? Math.round((data.meta.explained_variance_ratio?.[1] || 0) * 100) : 0}%</p>
                           </div>
                        </TooltipContent>
                     </Tooltip>
@@ -322,6 +352,11 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                  </Button>
              </div>
           </div>
+
+          {/* Disclaimer — automated analysis, not a certified political placement */}
+          <p className="mt-1.5 px-2 text-center text-[10px] leading-snug text-muted-foreground/70 shrink-0">
+              {t("disclaimer")}
+          </p>
     </div>
   );
 }

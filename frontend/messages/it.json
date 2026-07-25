@@ -247,7 +247,11 @@
     "dimension": "Dimensione",
     "dimensionPos": "Dimensione (+)",
     "dimensionNeg": "Dimensione (-)",
-    "resetView": "Reset vista"
+    "resetView": "Reset vista",
+    "signalCaptured": "Segnale lungo gli assi",
+    "axis1Short": "Asse 1",
+    "axis2Short": "Asse 2",
+    "disclaimer": "Bussola generata automaticamente dagli interventi in Aula recuperati per questa domanda: descrive il linguaggio dei discorsi, non certifica il posizionamento politico dei gruppi. Risultati diversi sono possibili con domande diverse."
   },
   "TopicStatsModal": {
     "title": "Dettaglio Statistiche",
@@ -707,7 +711,10 @@
     "keywordsNeg": "Parole chiave polo (−)",
     "keywordsPos": "Parole chiave polo (+)",
     "errorFetch": "Errore nel calcolo del compasso ideologico",
-    "errorUnknown": "Errore sconosciuto"
+    "errorUnknown": "Errore sconosciuto",
+    "axis1Label": "Asse 1",
+    "axis2Label": "Asse 2",
+    "anchoredBadge": "Assi ancorati alla domanda"
   },
   "Votes": {
     "title": "Esplora Votazioni",

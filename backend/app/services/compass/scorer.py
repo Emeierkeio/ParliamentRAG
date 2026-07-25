@@ -274,15 +274,37 @@ class IdeologyScorer:
         # Convert evidence to Fragment objects
         fragments = self._evidence_to_fragments(evidence_list)
 
+        # Exclude unclassified groups (config compass.unclassified, e.g. Misto):
+        # the mixed group aggregates unrelated components, so a single centroid
+        # would be meaningless in the compass.
+        excluded_groups = {
+            g.strip().lower()
+            for g in self.config.load_config().get("compass", {}).get("unclassified", [])
+        } | {"misto"}
+        fragments = [f for f in fragments if f.group_id.strip().lower() not in excluded_groups]
+
         if len(fragments) < 3:
             logger.warning(f"Only {len(fragments)} fragments, need at least 3 for PCA")
             return self._fallback_compass_data(evidence_list)
 
         # Run the IC-1 to IC-6 pipeline
         try:
-            compass_config = self.config.load_config().get("compass", {})
+            full_config = self.config.load_config()
+            compass_config = full_config.get("compass", {})
+
+            # Semantic anchored axes (default): readable poles generated for
+            # the query. Any failure falls back to the PCA path, never breaks
+            # the compass.
+            semantic_axes = None
+            if query and compass_config.get("axis_method", "semantic") == "semantic":
+                try:
+                    from .semantic_axes import SemanticAxisGenerator
+                    semantic_axes = SemanticAxisGenerator(full_config).generate(query)
+                except Exception as e:
+                    logger.warning(f"Semantic axes failed, falling back to PCA: {e}")
+
             pipeline = CompassPipeline(compass_config)
-            result = pipeline.run(fragments, query=query)
+            result = pipeline.run(fragments, query=query, semantic_axes=semantic_axes)
 
             # Convert to frontend-compatible format
             return self._pipeline_result_to_dict(result)
@@ -374,6 +396,7 @@ class IdeologyScorer:
             },
             "meta": {
                 "method": "weighted_pca_pipeline",
+                "axis_method": result.meta.axis_method,
                 "explained_variance_ratio": result.meta.explained_variance_ratio,
                 "total_variance_explained": result.meta.total_variance_explained,
                 "n_evidence": result.meta.n_evidence,

@@ -78,9 +78,13 @@ class CompassMetadata(BaseModel):
     """Metadata about the compass analysis."""
     query: str = Field(default="", description="Original query")
     dimensionality: int = Field(default=2, description="1 or 2 dimensions")
+    axis_method: str = Field(
+        default="pca",
+        description="'semantic' = query-anchored pole axes, 'pca' = discovered axes"
+    )
     explained_variance_ratio: List[float] = Field(
         default_factory=list,
-        description="Variance explained by each PC"
+        description="Share of corpus variance captured by each axis"
     )
     total_variance_explained: float = Field(
         default=0.0,

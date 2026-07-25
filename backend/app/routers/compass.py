@@ -20,7 +20,7 @@ router = APIRouter(prefix="/api", tags=["Compass"])
 
 class CompassRequest(BaseModel):
     query: str = Field(..., min_length=3, max_length=1000)
-    top_k: int = Field(default=100, ge=10, le=500)
+    top_k: int = Field(default=200, ge=10, le=500)
 
 
 @router.post("/compass")
@@ -47,7 +47,9 @@ async def compass_endpoint(request: CompassRequest):
 
         # Step 2: Compute compass positions
         compass_result = await asyncio.get_running_loop().run_in_executor(
-            None, services["ideology"].compute_2d_text_positions, evidence_dicts
+            None,
+            lambda: services["ideology"].compute_2d_text_positions(
+                evidence_dicts, query=request.query),
         )
 
         elapsed_ms = round((time.time() - start) * 1000)
