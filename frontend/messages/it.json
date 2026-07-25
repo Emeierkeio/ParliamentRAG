@@ -846,7 +846,7 @@
     "idx5Desc": "La cronologia delle sedute con dibattiti, interventi e riepiloghi generati dall'AI — fino alla posizione di ogni singolo deputato.",
     "paperInUse": "Paper di ricerca",
     "paperDemo": "Paper demo",
-    "footerFunding": "Con il sostegno del programma EU Horizon Europe • grant",
+    "footerFunding": "Con il sostegno del programma EU Horizon Europe",
     "footerPrivacy": "Privacy",
     "footerUni": "Università di Milano-Bicocca",
     "dataBandKicker": "Dati aperti",
@@ -854,7 +854,8 @@
     "dataBandBody": "Interamente esportabile in RDF, allineato agli open data della Camera e ai vocabolari del web semantico.",
     "dataBandCta": "Esplora i dati",
     "footerData": "Dati aperti (RDF)",
-    "tocData": "Dati"
+    "tocData": "Dati",
+    "footerGrants": "grant"
   },
   "Privacy": {
     "title": "Privacy e note legali",
@@ -936,11 +937,9 @@
     "fileVotesTitle": "I voti individuali",
     "fileVotesDesc": "Tutti i 6,3 milioni di voti espressi da ogni singolo deputato in ogni votazione elettronica della legislatura.",
     "zenodoNote": "Pubblicazione su Zenodo in preparazione",
-    "reproTitle": "Riproducibile da subito",
-    "reproBody": "Non vuoi aspettare? Il dump si rigenera in pochi minuti dal codice sorgente con <code>make export-rdf</code> —",
     "licenseNote": "I dati derivano dagli open data della Camera dei Deputati (dati.camera.it, licenza CC-BY) e dal thesaurus EuroVoc dell'Ufficio delle pubblicazioni dell'UE. Gli embedding vettoriali, le conversazioni degli utenti e i riassunti generati dall'AI non fanno parte dell'export.",
     "downloadCta": "Scarica il file",
-    "readyNote": "disponibile da questo server",
-    "heroGraphNote": "Nodi e archi reali del grafo — deputato p307394"
+    "readyNote": "disponibile",
+    "heroGraphNote": "Nodi e archi reali del grafo — deputato {id}"
   }
 }

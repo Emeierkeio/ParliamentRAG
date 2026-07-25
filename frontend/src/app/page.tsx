@@ -8,6 +8,7 @@ import { Fraunces } from "next/font/google";
 import { ArrowRight, ArrowUpRight, Globe, Check, Award } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
+import { useKgStats } from "@/hooks/use-kg-stats";
 
 /* ── Display typeface — editorial serif with optical sizing ────── */
 const fraunces = Fraunces({
@@ -504,7 +505,9 @@ export default function LandingPage() {
               </a>
             </p>
             <p className="text-muted-foreground/80 md:text-right">
-              {t("footerFunding")}{" "}
+              {t("footerFunding")}
+              <br />
+              {t("footerGrants")}{" "}
               <a
                 href="https://doi.org/10.3030/101189771"
                 target="_blank"
@@ -575,14 +578,15 @@ function FooterLink({
   );
 }
 
-/* ── Data stats — key graph numbers, labels shared with /data ──── */
+/* ── Data stats — live graph numbers, labels shared with /data ─── */
 function DataStats() {
   const td = useTranslations("DataPage");
   const locale = useLocale();
+  const kg = useKgStats();
   const stats = [
-    { value: 863834, key: "stTriples" },
-    { value: 6305481, key: "stIndVotes", compact: true },
-    { value: 45666, key: "stSpeeches" },
+    { value: kg.triples ?? 0, key: "stTriples" },
+    { value: kg.individual_votes, key: "stIndVotes", compact: true },
+    { value: kg.speeches, key: "stSpeeches" },
   ] as const;
   const fmt = (value: number, compact?: boolean) =>
     new Intl.NumberFormat(locale, {
