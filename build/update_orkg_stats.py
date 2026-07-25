@@ -6,9 +6,12 @@ in resource R1909775 (number of nodes/edges/deputies/acts/speeches/chunks and
 snapshot date). This script reads the live counts and rewrites those literals
 via the ORKG REST API, so the entry stays aligned after `make update-data`.
 
-Auth: set ORKG_API_TOKEN in the repo-root .env (ORKG → Account settings →
-Access token). Without a token the script prints a notice and exits 0, so the
-Makefile pipeline never breaks on it.
+Auth: set ORKG_EMAIL and ORKG_PASSWORD in the repo-root .env (the same
+credentials used to log in on orkg.org); the script obtains a short-lived
+JWT via the OIDC password grant (public client `orkg-client`). A pre-made
+ORKG_API_TOKEN env var, if present, is used directly instead. Without
+credentials the script prints a notice and exits 0, so the Makefile
+pipeline never breaks on it.
 
 Usage:
     python build/update_orkg_stats.py [--neo4j-uri bolt://localhost:7690] [--dry-run]
@@ -24,7 +27,32 @@ from neo4j import GraphDatabase
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ORKG_API = "https://orkg.org/api"
+ORKG_TOKEN_URL = "https://accounts.orkg.org/realms/orkg/protocol/openid-connect/token"
 KG_RESOURCE = "R1909775"  # "ParliamentRAG knowledge graph" inside paper R1909763
+
+
+def obtain_token() -> str | None:
+    """JWT from ORKG_API_TOKEN, or via OIDC password grant with ORKG_EMAIL/PASSWORD."""
+    token = os.environ.get("ORKG_API_TOKEN")
+    if token:
+        return token
+    email = os.environ.get("ORKG_EMAIL")
+    password = os.environ.get("ORKG_PASSWORD")
+    if not (email and password):
+        return None
+    resp = requests.post(
+        ORKG_TOKEN_URL,
+        data={
+            "grant_type": "password",
+            "client_id": "orkg-client",
+            "username": email,
+            "password": password,
+        },
+        timeout=30,
+    )
+    if resp.status_code != 200:
+        sys.exit(f"ORKG login failed ({resp.status_code}): {resp.text[:200]}")
+    return resp.json()["access_token"]
 
 
 def live_counts(uri: str, user: str, password: str) -> dict:
@@ -53,9 +81,9 @@ def main():
     args = parser.parse_args()
 
     load_dotenv(REPO_ROOT / ".env")
-    token = os.environ.get("ORKG_API_TOKEN")
+    token = obtain_token()
     if not token and not args.dry_run:
-        print("ORKG sync skipped: ORKG_API_TOKEN not set in .env")
+        print("ORKG sync skipped: set ORKG_EMAIL and ORKG_PASSWORD in .env")
         return
 
     uri = args.neo4j_uri or os.environ.get("NEO4J_URI", "bolt://localhost:7687")
