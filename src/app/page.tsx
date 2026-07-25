@@ -407,6 +407,34 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Dati aperti — band linking to /data ────────────────── */}
+      <section className="px-6 pb-14 sm:pb-20">
+        <div className="max-w-6xl mx-auto">
+          <Link
+            href="/data"
+            className="group grid sm:grid-cols-12 gap-x-6 gap-y-4 items-center border-y-2 border-foreground py-8 px-2 -mx-2 transition-colors hover:bg-accent/60 cursor-pointer"
+          >
+            <div className="sm:col-span-9">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                {t("dataBandKicker")}
+              </p>
+              <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight leading-snug">
+                {t("dataBandTitle")}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground max-w-xl">
+                {t("dataBandBody")}
+              </p>
+            </div>
+            <div className="sm:col-span-3 sm:justify-self-end">
+              <span className="inline-flex items-center gap-2 text-[15px] font-medium text-primary">
+                {t("dataBandCta")}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       {/* ── Chiusura ───────────────────────────────────────────── */}
       <section id="inizia" className="px-6 pt-8 pb-24">
         <div className="max-w-6xl mx-auto border-t-2 border-foreground pt-14">
@@ -521,6 +549,12 @@ export default function LandingPage() {
             >
               ORKG
             </a>
+            <Link
+              href="/data"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              {t("footerData")}
+            </Link>
             <Link
               href="/privacy"
               className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
