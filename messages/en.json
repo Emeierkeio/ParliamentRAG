@@ -846,7 +846,7 @@
     "idx5Desc": "The session-by-session record of debates and speeches, with AI-generated recaps — down to each deputy's position.",
     "paperInUse": "Research paper",
     "paperDemo": "Demo paper",
-    "footerFunding": "Supported by the EU Horizon Europe programme — grants",
+    "footerFunding": "Supported by the EU Horizon Europe programme",
     "footerPrivacy": "Privacy",
     "q1": "«[…] the NRRP represented an extraordinary, perhaps unrepeatable, opportunity to finally close the gap that separates us from the other European countries.»",
     "q2": "«[…] the system fails to reach them, […] waiting lists are discouraging, […] awareness of the condition is still insufficient, […] social stigma holds back every request for help.»",
@@ -867,7 +867,8 @@
     "dataBandBody": "Fully exportable as RDF, aligned with the Chamber's open data and the vocabularies of the Semantic Web.",
     "dataBandCta": "Explore the data",
     "footerData": "Open data (RDF)",
-    "tocData": "Data"
+    "tocData": "Data",
+    "footerGrants": "grants"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",
@@ -949,11 +950,9 @@
     "fileVotesTitle": "The individual votes",
     "fileVotesDesc": "All 6.3 million votes cast by every single deputy in every electronic ballot of the legislature.",
     "zenodoNote": "Zenodo publication in preparation",
-    "reproTitle": "Reproducible right now",
-    "reproBody": "Don't want to wait? The dump regenerates in minutes from the source code with <code>make export-rdf</code> —",
     "licenseNote": "The data derives from the open data of the Chamber of Deputies (dati.camera.it, CC-BY licence) and the EuroVoc thesaurus of the EU Publications Office. Vector embeddings, user conversations and AI-generated summaries are not part of the export.",
     "downloadCta": "Download file",
-    "readyNote": "available from this server",
-    "heroGraphNote": "Real nodes and edges from the graph — deputy p307394"
+    "readyNote": "available",
+    "heroGraphNote": "Real nodes and edges from the graph — deputy {id}"
   }
 }

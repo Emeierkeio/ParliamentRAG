@@ -830,7 +830,7 @@
     "idx5Desc": "A cronologia das sessões com debates, discursos e resumos gerados por IA — até a posição de cada deputado.",
     "paperInUse": "Artigo de pesquisa",
     "paperDemo": "Artigo demo",
-    "footerFunding": "Com o apoio do programa Horizonte Europa da UE — subvenções",
+    "footerFunding": "Com o apoio do programa Horizonte Europa da UE",
     "footerPrivacy": "Privacidade",
     "q1": "«[…] o PNRR representava uma ocasião extraordinária, talvez irrepetível, para finalmente colmatar o fosso que nos separa dos outros países europeus.»",
     "q2": "«[…] o sistema não consegue interceptá-los, […] as listas de espera desencorajam, […] a consciência da patologia ainda é insuficiente, […] o estigma social trava qualquer pedido de ajuda.»",
@@ -851,7 +851,8 @@
     "dataBandBody": "Totalmente exportável em RDF, alinhado com os dados abertos da Câmara e os vocabulários da web semântica.",
     "dataBandCta": "Explore os dados",
     "footerData": "Dados abertos (RDF)",
-    "tocData": "Dados"
+    "tocData": "Dados",
+    "footerGrants": "subvenções"
   },
   "Privacy": {
     "title": "Privacidade e avisos legais",
@@ -933,11 +934,9 @@
     "fileVotesTitle": "Os votos individuais",
     "fileVotesDesc": "Todos os 6,3 milhões de votos dados por cada deputado em cada votação eletrônica da legislatura.",
     "zenodoNote": "Publicação no Zenodo em preparação",
-    "reproTitle": "Reproduzível desde já",
-    "reproBody": "Não quer esperar? O dump se regenera em poucos minutos a partir do código-fonte com <code>make export-rdf</code> —",
     "licenseNote": "Os dados derivam dos dados abertos da Câmara dos Deputados (dati.camera.it, licença CC-BY) e do tesauro EuroVoc do Serviço das Publicações da UE. Os embeddings vetoriais, as conversas dos usuários e os resumos gerados por IA não fazem parte da exportação.",
     "downloadCta": "Baixar o arquivo",
-    "readyNote": "disponível neste servidor",
-    "heroGraphNote": "Nós e arestas reais do grafo — deputado p307394"
+    "readyNote": "disponível",
+    "heroGraphNote": "Nós e arestas reais do grafo — deputado {id}"
   }
 }
