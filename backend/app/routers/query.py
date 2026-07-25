@@ -207,7 +207,9 @@ async def process_query_streaming(
 
         try:
             compass_result = await asyncio.get_running_loop().run_in_executor(
-                None, services["ideology"].compute_2d_text_positions, evidence_dicts
+                None,
+                lambda: services["ideology"].compute_2d_text_positions(
+                    evidence_dicts, query=request.query),
             )
             compass_data = {
                 "meta": compass_result.get("meta", {}),

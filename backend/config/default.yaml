@@ -70,6 +70,15 @@ authority:
 compass:
   purpose: "multi-view coverage"  # NOT ideology discovery
 
+  # Axis discovery: "semantic" (default) anchors the axes to two LLM-generated
+  # pole pairs for the query (readable by construction, stable across time
+  # windows — required for the future position-timeline feature); "pca" is the
+  # legacy post-hoc discovery. Semantic falls back to PCA on any LLM failure.
+  axis_method: "semantic"
+  semantic_axes:
+    model: "gpt-4.1-mini"   # pole generation (temperature 0, JSON mode)
+    max_axis_cos: 0.85      # above this the two axes are near-duplicates -> warning
+
   anchors:
     enabled: false  # Set to true to enable soft anchors for axis orientation
     left:
@@ -81,7 +90,7 @@ compass:
     center:
       groups:
         - "Azione - Popolari Europeisti Riformatori - Renew Europe"
-        - "Italia Viva - Il Centro - Renew Europe"
+        - "Italia Viva - Casa Riformista"
         - "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
       confidence: 0.6
 

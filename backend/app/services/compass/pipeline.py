@@ -71,7 +71,8 @@ class CompassPipeline:
     def run(
         self,
         fragments: List[Fragment],
-        query: str = ""
+        query: str = "",
+        semantic_axes=None,
     ) -> CompassAnalysisResponse:
         """
         Run the complete IC-1 to IC-6 pipeline.
@@ -79,6 +80,9 @@ class CompassPipeline:
         Args:
             fragments: List of Fragment objects with embeddings
             query: Original query string for metadata
+            semantic_axes: Optional SemanticAxes (semantic_axes.py). When given,
+                IC-1 projects onto the anchored axes instead of running PCA and
+                pole labels come from the LLM-generated poles.
 
         Returns:
             CompassAnalysisResponse with all analysis results
@@ -87,22 +91,34 @@ class CompassPipeline:
             CompassRefusalError: If analysis cannot produce reliable results
         """
         warnings = []
+        axis_method = "semantic" if semantic_axes is not None else "pca"
 
         # Check minimum fragments
         if len(fragments) < 3:
             return self._fallback_response(fragments, query, "Insufficient data (< 3 fragments)")
 
-        # IC-1: Axis Discovery (Weighted PCA)
+        # IC-1: Axis Discovery (semantic anchors or weighted PCA)
         try:
-            axes, mu, evr = self._ic1_axis_discovery(fragments)
+            if semantic_axes is not None:
+                axes, mu, evr = self._ic1_semantic_axes(fragments, semantic_axes)
+                if semantic_axes.correlated:
+                    warnings.append(
+                        f"SEMANTIC_AXES_CORRELATED: |cos|={semantic_axes.axis_cos:.2f}, "
+                        "second axis orthogonalized")
+            else:
+                axes, mu, evr = self._ic1_axis_discovery(fragments)
         except Exception as e:
             logger.error(f"IC-1 failed: {e}")
-            return self._fallback_response(fragments, query, f"PCA failed: {e}")
+            return self._fallback_response(fragments, query, f"Axis discovery failed: {e}")
 
-        # Dimensionality decision
-        dimensionality = self._decide_dimensionality(evr)
-        if dimensionality == 1:
-            warnings.append("ONE_DIMENSIONAL_MODE: PC2/PC1 ratio < 0.40")
+        # Dimensionality decision. Semantic axes stay 2D by construction:
+        # both dimensions carry meaning even when one has less variance.
+        if semantic_axes is not None:
+            dimensionality = 2
+        else:
+            dimensionality = self._decide_dimensionality(evr)
+            if dimensionality == 1:
+                warnings.append("ONE_DIMENSIONAL_MODE: PC2/PC1 ratio < 0.40")
 
         # Validation
         total_var = sum(evr[:2]) if len(evr) >= 2 else evr[0]
@@ -121,8 +137,11 @@ class CompassPipeline:
         # IC-5: Evidence Binding
         axis_defs = self._ic5_evidence_binding(axes, evr, projected, dimensionality)
 
-        # IC-6: Axis Labeling (optional, requires spacy)
-        axis_defs = self._ic6_interpretability(axis_defs, fragments, projected)
+        # IC-6: Axis Labeling — anchored pole labels, or TF-IDF for PCA axes
+        if semantic_axes is not None:
+            axis_defs = self._ic6_semantic_labels(axis_defs, semantic_axes, fragments)
+        else:
+            axis_defs = self._ic6_interpretability(axis_defs, fragments, projected)
 
         # Build scatter sample
         scatter_sample = self._build_scatter_sample(projected, dimensionality)
@@ -138,6 +157,7 @@ class CompassPipeline:
             meta=CompassMetadata(
                 query=query,
                 dimensionality=dimensionality,
+                axis_method=axis_method,
                 explained_variance_ratio=evr[:2].tolist() if len(evr) >= 2 else [evr[0], 0.0],
                 total_variance_explained=float(total_var),
                 n_evidence=len(fragments),
@@ -217,6 +237,104 @@ class CompassPipeline:
         )
 
         return axes, mu, evr
+
+    def _ic1_semantic_axes(
+        self,
+        fragments: List[Fragment],
+        semantic_axes,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """
+        IC-1 (semantic variant): use LLM-anchored axes instead of PCA.
+
+        The axes are fixed unit vectors built from the query's pole pairs
+        (semantic_axes.py); here we only compute the weighted mean for
+        centering and how much of the corpus variance each anchored axis
+        captures (same role the explained-variance ratio plays for PCA:
+        low values mean "the debate does not move along these poles").
+        Orientation is fixed by the poles, so no skewness flip.
+        """
+        embeddings = np.array([f.embedding for f in fragments])
+        group_ids = [f.group_id for f in fragments]
+
+        # Same inverse-frequency weighting as the PCA path, so group size
+        # does not skew the centering.
+        group_counts = Counter(group_ids)
+        n_groups = len(group_counts)
+        weights = np.array([
+            min(1.0 / (group_counts[gid] * n_groups), self.max_weight_per_fragment)
+            for gid in group_ids
+        ])
+        weights /= weights.sum()
+
+        mu = np.average(embeddings, axis=0, weights=weights)
+        X_weighted = np.sqrt(weights)[:, np.newaxis] * (embeddings - mu)
+
+        axes = semantic_axes.matrix()  # [2, D] unit vectors
+        total_var = float(np.sum(X_weighted ** 2))
+        if total_var > 0:
+            evr = np.array([
+                float(np.sum((X_weighted @ axes[i]) ** 2)) / total_var
+                for i in range(axes.shape[0])
+            ])
+        else:
+            evr = np.zeros(axes.shape[0])
+
+        logger.info(
+            f"IC-1 (semantic): variance along anchored axes "
+            f"EVR=[{evr[0]:.3f}, {evr[1]:.3f}], n_fragments={len(fragments)}"
+        )
+        return axes, mu, evr
+
+    def _ic6_semantic_labels(
+        self,
+        axis_defs: List[AxisDefinition],
+        semantic_axes,
+        fragments: List[Fragment],
+    ) -> List[AxisDefinition]:
+        """
+        IC-6 (semantic variant): pole labels come from the generated poles —
+        shown to the user *before* the points, not inferred after the fact.
+        TF-IDF keywords from the pole-bound fragments are kept as secondary
+        evidence that the projection matches the announced poles.
+        """
+        text_lookup = {f.id: f.text for f in fragments}
+
+        for axis_def in axis_defs:
+            if axis_def.index >= len(semantic_axes.axes):
+                continue
+            axis = semantic_axes.axes[axis_def.index]
+
+            pos_texts = [t for t in (text_lookup.get(fid, "")
+                         for fid in axis_def.positive_pole_fragments) if t]
+            neg_texts = [t for t in (text_lookup.get(fid, "")
+                         for fid in axis_def.negative_pole_fragments) if t]
+
+            pos_keywords: List[str] = []
+            neg_keywords: List[str] = []
+            try:
+                if self._axis_labeler is None:
+                    from .axis_labeling import AxisLabeler
+                    self._axis_labeler = AxisLabeler()
+                _, pos_keywords = self._axis_labeler.label_pole(pos_texts, neg_texts)
+                _, neg_keywords = self._axis_labeler.label_pole(neg_texts, pos_texts)
+            except Exception as e:
+                logger.warning(f"IC-6 semantic: keyword enrichment failed: {e}")
+
+            axis_def.positive_side = AxisSideDescription(
+                label=axis.positive.label,
+                explanation=axis.positive.description,
+                keywords=pos_keywords[:10],
+                fragments=[{"text_preview": t[:100]} for t in pos_texts[:3]],
+            )
+            axis_def.negative_side = AxisSideDescription(
+                label=axis.negative.label,
+                explanation=axis.negative.description,
+                keywords=neg_keywords[:10],
+                fragments=[{"text_preview": t[:100]} for t in neg_texts[:3]],
+            )
+
+        logger.info(f"IC-6 (semantic): labeled {len(axis_defs)} axes from anchored poles")
+        return axis_defs
 
     def _decide_dimensionality(self, evr: np.ndarray) -> int:
         """

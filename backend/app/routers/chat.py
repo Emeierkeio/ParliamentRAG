@@ -356,7 +356,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         await emit("progress", {"step": 6, "total": 8, "message": _t("Bussola Ideologica", "Ideological Compass")})
 
         compass_data = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
+            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts, query=request.query)
         )
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
@@ -873,7 +873,7 @@ async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, No
         await asyncio.sleep(0)  # Flush
 
         compass_data = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts)
+            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts, query=request.query)
         )
         logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
                    f"groups_count={len(compass_data.get('groups', []))}, "
@@ -1689,7 +1689,8 @@ def _compute_balance_metrics(
 
 def _compute_compass_data(
     ideology_scorer: IdeologyScorer,
-    evidence_dicts: List[Dict[str, Any]]
+    evidence_dicts: List[Dict[str, Any]],
+    query: str = "",
 ) -> Dict[str, Any]:
     """
     Compute compass data in frontend-expected format.
@@ -1704,7 +1705,7 @@ def _compute_compass_data(
     - scatter_sample: array of {x, y, group_id, text}
     """
     # Use the new text-based 2D positioning method
-    compass_result = ideology_scorer.compute_2d_text_positions(evidence_dicts)
+    compass_result = ideology_scorer.compute_2d_text_positions(evidence_dicts, query=query)
 
     return {
         "meta": compass_result.get("meta", {}),
