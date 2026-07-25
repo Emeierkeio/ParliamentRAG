@@ -229,6 +229,8 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 
 A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
 
+A machine-readable **semantic description** of the paper (approach, knowledge graph, evaluation, comparison with related systems) is available in the [Open Research Knowledge Graph](https://orkg.org/papers/R1909763).
+
 ---
 
 ## Acknowledgments
