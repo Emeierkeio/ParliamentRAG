@@ -5,25 +5,32 @@
   </picture>
 </p>
 
-**Balanced, verifiable answers about Italian parliamentary debate — grounded in what was actually said, and by whom.**
+<p align="center">
+  <a href="https://www.parliamentrag.it/"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-parliamentrag.it-1E3A5F"></a>
+  <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://zenodo.org/badge/DOI/10.5281/zenodo.21560331.svg"></a>
+  <a href="https://orkg.org/papers/R1909763"><img alt="ORKG semantic description" src="https://img.shields.io/badge/ORKG-R1909763-E86161"></a>
+  <a href="docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
+  <a href="LICENSE"><img alt="Code license" src="https://img.shields.io/badge/code-Apache_2.0-0969DA"></a>
+  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license" src="https://img.shields.io/badge/data-CC--BY_4.0-97CA00"></a>
+</p>
 
-ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation system over the stenographic records of the Camera dei Deputati (XIX Legislature). Ask a policy question and get a response that represents *every* parliamentary group — majority and opposition — with verbatim, verified citations linked back to the original transcripts.
+**Balanced, verifiable answers about Italian parliamentary debate, grounded in what was actually said and by whom.**
 
-**Live**: [www.parliamentrag.it](https://www.parliamentrag.it/)
+ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation system over the stenographic records of the Camera dei Deputati (XIX Legislature). Ask a policy question and get an answer that covers every parliamentary group, majority and opposition alike, with verbatim citations checked against the original transcripts.
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
 - **170k+ text chunks** from **694 plenary sessions**, updated through 2026-07-21
 - **16.8k roll-call votes** with **6.3M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
-- **Topic-aware authority scoring**: the most credible speaker per party is selected *for the specific question asked*
+- **Topic-aware authority scoring**: the most credible speaker per party is selected for the specific question asked
 - **6 languages** (IT / EN / FR / DE / ES / PT), editorial newspaper-style UI
 
 ---
 
 ## Why
 
-LLM summaries of parliamentary activity tend to favour dominant actors, quote out of context, and flatten disagreement. ParliamentRAG treats *what is said* and *who says it* as equally important: retrieval, generation, and presentation are all constrained to cover the full spectrum of parliamentary groups, and every claim is anchored to a verifiable span of the official record.
+LLM summaries of parliamentary activity tend to favour dominant actors, quote out of context, and flatten disagreement. ParliamentRAG treats what is said and who says it as equally important: retrieval, generation, and presentation are all constrained to cover the whole range of parliamentary groups, and every claim is anchored to a verifiable span of the official record.
 
 ---
 
@@ -37,14 +44,14 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 
 <p align="center"><img src="assets/pipeline.svg" alt="Query pipeline — 8 steps" width="920"/></p>
 
-1. **Query analysis** — the question is classified and, if short or ambiguous, rewritten for retrieval.
-2. **Committee matching** — the query is mapped to the relevant parliamentary committees.
-3. **Expert selection** — for each parliamentary group, the top speaker is chosen by a **query-specific authority score** with six components: *profession, education, committee membership, legislative acts, speech interventions, institutional role* (semantic components use the query embedding; activity components are time-decayed).
-4. **Multi-view retrieval** — a dense channel (vector similarity over `text-embedding-3-small` embeddings) and a graph channel (lexical + semantic matching over the knowledge graph) are fused by a weighted merger balancing relevance, party coverage, speaker diversity, and political salience.
-5. **Balance metrics** — coverage and balance statistics are computed over the retrieved evidence.
-6. **Ideological compass** — a per-topic PCA over group embeddings positions parliamentary groups on latent debate axes.
-7. **Generation** — a multi-stage writer produces a narrative that explicitly represents both majority and opposition positions.
-8. **Citation verification** — every quotation is matched verbatim against its source chunk and coherence-scored; anything that cannot be verified is stripped from the answer.
+1. **Query analysis**: the question is classified and, if short or ambiguous, rewritten for retrieval.
+2. **Committee matching**: the query is mapped to the relevant parliamentary committees.
+3. **Expert selection**: for each parliamentary group, the top speaker is chosen by a **query-specific authority score** with six components: profession, education, committee membership, legislative acts, speech interventions, institutional role (semantic components use the query embedding; activity components are time-decayed).
+4. **Multi-view retrieval**: a dense channel (vector similarity over `text-embedding-3-small` embeddings) and a graph channel (lexical + semantic matching over the knowledge graph) are fused by a weighted merger balancing relevance, party coverage, speaker diversity, and political salience.
+5. **Balance metrics**: coverage and balance statistics are computed over the retrieved evidence.
+6. **Ideological compass**: parliamentary groups are placed on two axes anchored to the question. The opposing poles of each axis (e.g. "more public spending" vs. "budget rigour") are generated per query and embedded with the same model as the evidence, so the axes are readable by construction and stable across recomputations.
+7. **Generation**: a multi-stage writer produces a narrative that explicitly represents both majority and opposition positions.
+8. **Citation verification**: every quotation is matched verbatim against its source chunk and coherence-scored; anything that cannot be verified is stripped from the answer.
 
 ### Models
 
@@ -67,9 +74,10 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 | `/search` | Search parliamentary acts and records |
 | `/ranking` | Topic-dependent authority rankings of deputies |
 | `/compass` | Standalone ideological compass for any topic |
-| `/timeline` | **Lavori d'Aula** — browse sessions → debates → phases → speakers, with AI-generated IT/EN recaps per session and debate, per-speaker position summaries, roll-call detail (per-group breakdown + individual votes, searchable), infinite scroll, and search + date filters |
+| `/timeline` | **Lavori d'Aula**: browse sessions → debates → phases → speakers, with AI-generated IT/EN recaps per session and debate, per-speaker position summaries, roll-call detail (per-group breakdown + individual votes, searchable), infinite scroll, and search + date filters |
 | `/valutazione` | Evaluation dashboard: automated metrics and blind A/B comparison vs. a baseline LLM |
 | `/explorer` | Interactive knowledge-graph exploration |
+| `/data` | Open-data page: live graph statistics, ontology alignment for non-specialists, RDF dumps |
 
 **UI**: editorial newspaper-style design (Fraunces serif), light/dark themes, mobile bottom navigation, and full internationalization in 6 languages (`frontend/messages/{it,en,fr,de,es,pt}.json` via `next-intl`).
 
@@ -82,11 +90,12 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature — data as of 2026-07-21** (updated incrementally): 694 sessions · 45.7k speeches · 170k+ chunks · 32.9k acts · 16.8k roll calls with 6.3M individual votes
+- **XIX Legislature, data as of 2026-07-21** (updated incrementally): 694 sessions · 45.7k speeches · 170k+ chunks · 32.9k acts · 16.8k roll calls with 6.3M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
-- Every build/update ends with an **invariant validation gate** (`build/validate_db.py`) — string embeddings, orphan speeches, broken chunk offsets or malformed URIs fail the build
+- Every build/update ends with an **invariant validation gate** (`build/validate_db.py`): string embeddings, orphan speeches, broken chunk offsets or malformed URIs fail the build
+- **RDF export**: the whole graph is serialized back to RDF (`make export-rdf`; Turtle, plus the 6.3M individual votes in N-Triples) and archived on Zenodo under CC-BY 4.0 with DOI [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331); project terms use the [w3id.org/parliamentrag](https://w3id.org/parliamentrag/) namespace
 
 The construction pipeline lives in [`build/`](build/README.md):
 
@@ -152,7 +161,7 @@ The production instance at [parliamentrag.it](https://www.parliamentrag.it/) aut
 | Section | Controls |
 |---|---|
 | `retrieval.dense_channel` / `retrieval.graph_channel` | top-k, similarity thresholds, lexical matching |
-| `retrieval.merger` | fusion weights — relevance 0.35, salience 0.25, coverage 0.20, diversity 0.15, authority 0.05 |
+| `retrieval.merger` | fusion weights: relevance 0.35, salience 0.25, coverage 0.20, diversity 0.15, authority 0.05 |
 | `authority.weights` | interventions 0.25, committee 0.25, acts 0.20, profession 0.15, education 0.10, role 0.05 |
 | `authority.time_decay` | half-life for acts and speeches |
 | `generation.models` | per-stage model selection |
@@ -173,7 +182,7 @@ All routes are mounted under `/api` (interactive docs at `/docs`).
 | `GET /api/evidence/{id}` | Full evidence item with source transcript |
 | `GET /api/search` | Parliamentary acts and record search |
 | `GET /api/authority` | Topic-dependent authority rankings |
-| `GET /api/compass` | Standalone ideological compass |
+| `POST /api/compass` | Standalone ideological compass |
 | `GET /api/timeline` | Sessions, debates, phases, speaker summaries |
 | `GET /api/history` | Chat history |
 | `GET /api/evaluation/dashboard` | Automated metrics + A/B results |
@@ -186,7 +195,7 @@ All routes are mounted under `/api` (interactive docs at `/docs`).
 
 The system ships with a two-level evaluation framework over 15 predefined policy topics (`backend/evaluation_set.json`, with pre-computed query-specific baseline experts):
 
-- **Automated metrics** (`/api/evaluation/dashboard`): parliamentary-group coverage, citation relevance and faithfulness, coalition balance, authority distribution — computed for both the system and the baseline on the same topics.
+- **Automated metrics** (`/api/evaluation/dashboard`): parliamentary-group coverage, citation relevance and faithfulness, coalition balance, authority distribution, computed for both the system and the baseline on the same topics.
 - **Blind A/B protocol** (`/valutazione`): side-by-side comparison of system vs. baseline responses, rated on 9 dimensions on a 1–5 Likert scale. Analysis uses Mann–Whitney U, Cohen's *d*, and Krippendorff's *α* for inter-rater agreement.
 
 In the original study against Google NotebookLM (6 domain experts), the system scored higher on group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%), with human ratings favouring it on source and balance dimensions (Cohen's *d* up to 0.35) and overall satisfaction at parity. Full details in the [paper](docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf).
@@ -195,7 +204,7 @@ In the original study against Google NotebookLM (6 domain experts), the system s
 
 ## Data attribution
 
-Parliamentary data are sourced from the **Camera dei Deputati open data** program ([dati.camera.it](https://dati.camera.it/)) — stenographic reports and SPARQL endpoints — released under their respective open licenses. ParliamentRAG is an independent project and is not affiliated with or endorsed by the Camera dei Deputati.
+Parliamentary data are sourced from the **Camera dei Deputati open data** program ([dati.camera.it](https://dati.camera.it/)): stenographic reports and SPARQL endpoints, released under their respective open licenses. ParliamentRAG is an independent project and is not affiliated with or endorsed by the Camera dei Deputati.
 
 ---
 
@@ -228,6 +237,8 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 ```
 
 A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
+
+The **RDF dataset** can be cited via its Zenodo DOI: [10.5281/zenodo.21560332](https://doi.org/10.5281/zenodo.21560332) (version used in the paper) or [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331) (always the latest version).
 
 A machine-readable **semantic description** of the paper (approach, knowledge graph, evaluation, comparison with related systems) is available in the [Open Research Knowledge Graph](https://orkg.org/papers/R1909763).
 
