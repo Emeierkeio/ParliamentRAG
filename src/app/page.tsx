@@ -487,7 +487,7 @@ export default function LandingPage() {
               <FooterLink href="https://orkg.org/papers/R1909763" external>
                 ORKG
               </FooterLink>
-              <FooterLink href="https://doi.org/10.5281/zenodo.21560332" external>
+              <FooterLink href="https://doi.org/10.5281/zenodo.21560331" external>
                 Zenodo
               </FooterLink>
               <FooterLink href="/data">{t("footerData")}</FooterLink>

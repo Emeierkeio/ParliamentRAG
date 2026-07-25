@@ -16,8 +16,10 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-/* ── Long-term archive of the dumps (published record) ─────────── */
-const ZENODO_DOI = "10.5281/zenodo.21560332";
+/* ── Long-term archive of the dumps (published record) ───────────
+   Concept DOI: always resolves to the LATEST version of the dataset.
+   The paper cites the version DOI (…21560332) for reproducibility. */
+const ZENODO_DOI = "10.5281/zenodo.21560331";
 const ZENODO_URL = `https://doi.org/${ZENODO_DOI}`;
 
 /* ── Graph numbers — live from /api/data/stats, static fallback ── */
