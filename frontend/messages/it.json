@@ -853,7 +853,8 @@
     "dataBandTitle": "Sotto ogni risposta c'è un grafo della conoscenza",
     "dataBandBody": "Interamente esportabile in RDF, allineato agli open data della Camera e ai vocabolari del web semantico.",
     "dataBandCta": "Esplora i dati",
-    "footerData": "Dati aperti (RDF)"
+    "footerData": "Dati aperti (RDF)",
+    "tocData": "Dati"
   },
   "Privacy": {
     "title": "Privacy e note legali",
