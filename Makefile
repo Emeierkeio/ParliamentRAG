@@ -179,6 +179,30 @@ build:
 export-rdf:
 	@$(BACKEND_DIR)/venv/bin/python build/export_rdf.py $(EXPORT_RDF_FLAGS)
 
+## Nuova versione del record Zenodo con i dump correnti di dumps/rdf/.
+##
+## Contesto (se te lo sei dimenticato): il sito vivo si aggiorna ogni giorno
+## con `make update-data`; Zenodo invece è l'archivio citabile del dump RDF
+## e NON va tenuto sincronizzato — resta indietro apposta. Si pubblica una
+## nuova versione solo nei momenti che contano (camera-ready, conferenza,
+## fine legislatura), perché ogni versione è uno snapshot congelato che
+## garantisce la riproducibilità di ciò che il paper cita.
+##
+## DOI: ogni versione ha il suo DOI; il *concept DOI* 10.5281/zenodo.21560331
+## punta sempre all'ultima versione (è quello linkato dal sito). Il paper
+## cita il DOI della versione usata negli esperimenti.
+##
+## Flusso completo per aggiornare l'archivio:
+##   1. make export-rdf EXPORT_RDF_FLAGS="--votes"   # rigenera i dump dal grafo
+##   2. make zenodo-update                           # crea la bozza e carica i file
+##   3. apri il link stampato e premi Publish tu     # il DOI pubblicato è permanente
+##
+## Richiede ZENODO_TOKEN nello .env di root (token personale, scope
+## deposit:write + deposit:actions). Varianti: ZENODO_FLAGS="--dry-run" per
+## vedere cosa farebbe, "--skip-votes" per saltare il file voti da 3.8 GB.
+zenodo-update:
+	@$(BACKEND_DIR)/venv/bin/python build/zenodo_update.py $(ZENODO_FLAGS)
+
 ## Open the SSH tunnel to the remote demo Neo4j if it is not already up.
 ## Also detects half-dead tunnels (port listening but connection refused/hung after
 ## a network change) by probing the bolt port, and reopens them.

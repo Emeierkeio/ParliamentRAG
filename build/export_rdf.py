@@ -40,9 +40,9 @@ Deliberately excluded: embeddings (all `*embedding*` properties), Chunk nodes
 (retrieval artifacts — Speech keeps the full transcript text), ChatHistory
 (private), SpeakerDebateSummary (LLM-derived, not source knowledge).
 
-Note before publishing (Zenodo/paper site): pick and assert a data license —
-source data from dati.camera.it is CC-BY; this script does not emit a
-dcterms:license triple on purpose.
+License: the dataset entity carries dcterms:license CC-BY 4.0 (source data
+from dati.camera.it is CC-BY, so attribution carries over to the derived
+graph); use the same license on the Zenodo record.
 
 Usage:
     python export_rdf.py [--out DIR] [--format ttl|nt] [--votes] [--skip-text]
@@ -279,13 +279,23 @@ class RdfExporter:
 
     def export_provenance(self):
         PRO = self.PRO
+        dataset = self.PRR["dataset"]
+        self.g.add((dataset, RDF.type, PROV.Entity))
+        self.g.add((dataset, DCTERMS.title,
+                    Literal("ParliamentRAG knowledge graph (Italian Chamber of Deputies, leg. 19)", lang="en")))
+        # CC-BY 4.0: source data from dati.camera.it is CC-BY, attribution must carry over
+        self.g.add((dataset, DCTERMS.license,
+                    URIRef("https://creativecommons.org/licenses/by/4.0/")))
+        self.g.add((dataset, DCTERMS.source, URIRef("http://dati.camera.it")))
+        self.g.add((dataset, DCTERMS.rightsHolder,
+                    Literal("Camera dei deputati (source data); ParliamentRAG (derived graph)", lang="en")))
+
         meta = None
         for rec in self.rows("MATCH (n:SchemaMeta) RETURN n"):
             meta = dict(rec["n"])
         if not meta:
             return
         activity = self.mint("build", meta.get("id", "singleton"))
-        dataset = self.PRR["dataset"]
         self.g.add((activity, RDF.type, PROV.Activity))
         for source in meta.get("source_datasets", []):
             self.g.add((activity, PROV.used, URIRef(source)))
@@ -295,9 +305,6 @@ class RdfExporter:
             "build_tool_commit": PRO.buildToolCommit,
             "version": PRO.schemaVersion,
         })
-        self.g.add((dataset, RDF.type, PROV.Entity))
-        self.g.add((dataset, DCTERMS.title,
-                    Literal("ParliamentRAG knowledge graph (Italian Chamber of Deputies, leg. 19)", lang="en")))
         self.g.add((dataset, PROV.wasGeneratedBy, activity))
 
     # ---- relationship passes ----------------------------------------------
