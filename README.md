@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-cream.svg">
+    <img src="assets/logo-blue.svg" alt="ParliamentRAG logo" width="140">
+  </picture>
+</p>
+
 # ParliamentRAG
 
 **Balanced, verifiable answers about Italian parliamentary debate — grounded in what was actually said, and by whom.**
@@ -24,18 +31,7 @@ LLM summaries of parliamentary activity tend to favour dominant actors, quote ou
 
 ## System architecture
 
-```
-Next.js 16 (App Router, TypeScript, Tailwind v4, shadcn)
-Chat · Search · Rankings · Compass · Timeline · Evaluation
-        │  HTTP + Server-Sent Events (8-step progress)
-        ▼
-FastAPI backend (Python)
-routers: query · chat · search · authority · compass · timeline · history · evaluation · evidence · graph · survey
-        │  Bolt
-        ▼
-Neo4j 5.15 — knowledge graph + native vector index
-speech chunks · acts · speakers · groups · committees · sessions
-```
+<p align="center"><img src="assets/architecture.svg" alt="System architecture — Next.js frontend, FastAPI backend, Neo4j graph store" width="860"/></p>
 
 ### Query pipeline
 
@@ -58,7 +54,8 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 |---|---|
 | Writer / Integrator | `gpt-4.1` |
 | Analyst (claim decomposition) | `gpt-4.1-mini` |
-| Query rewriter, UI translations | `gpt-4.1-nano` |
+| Query rewriter | `gpt-4.1-mini` |
+| UI translations | `gpt-4.1-nano` |
 | Embeddings (all semantic operations) | `text-embedding-3-small` (1536-d, Neo4j native vector index) |
 
 ---
