@@ -26,4 +26,5 @@ RUN mkdir -p logs data
 ENV WORKERS=1
 ENV MAX_CONCURRENT_PIPELINES=1
 
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WORKERS}
+# Dual-stack bind (::): required for Railway private networking, which is IPv6-only
+CMD uvicorn app.main:app --host :: --port ${PORT:-8000} --workers ${WORKERS}
