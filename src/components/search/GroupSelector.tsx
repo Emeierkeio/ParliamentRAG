@@ -28,7 +28,7 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
   { value: "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA", label: "Partito Democratico - Italia Democratica e Progressista", shortLabel: "PD" },
   { value: "MOVIMENTO 5 STELLE", label: "Movimento 5 Stelle", shortLabel: "M5S" },
   { value: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione - Popolari Europeisti Riformatori - Renew Europe", shortLabel: "Azione" },
-  { value: "ITALIA VIVA-IL CENTRO-RENEW EUROPE", label: "Italia Viva - Il Centro - Renew Europe", shortLabel: "IV" },
+  { value: "ITALIA VIVA-CASA RIFORMISTA (IV-CR)", label: "Italia Viva - Casa Riformista", shortLabel: "IV" },
   { value: "ALLEANZA VERDI E SINISTRA", label: "Alleanza Verdi e Sinistra", shortLabel: "AVS" },
   { value: "MISTO", label: "Misto", shortLabel: "Misto" },
 ];
@@ -45,7 +45,7 @@ const OPPOSIZIONE_VALUES = [
   "MOVIMENTO 5 STELLE",
   "ALLEANZA VERDI E SINISTRA",
   "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
-  "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
+  "ITALIA VIVA-CASA RIFORMISTA (IV-CR)",
 ];
 
 interface GroupSelectorProps {
