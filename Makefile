@@ -173,6 +173,12 @@ install-frontend:
 build:
 	@cd $(FRONTEND_DIR) && npm run build
 
+## RDF export of the KG (Linked Data deliverable) into dumps/rdf/.
+## Uses NEO4J_URI from .env. Add EXPORT_RDF_FLAGS="--votes" for the 6.3M
+## individual votes (separate .nt file), "--skip-text" for a small dump.
+export-rdf:
+	@$(BACKEND_DIR)/venv/bin/python build/export_rdf.py $(EXPORT_RDF_FLAGS)
+
 ## Open the SSH tunnel to the remote demo Neo4j if it is not already up.
 ## Also detects half-dead tunnels (port listening but connection refused/hung after
 ## a network change) by probing the bolt port, and reopens them.
@@ -211,7 +217,11 @@ update-data: tunnel
 		--neo4j-password $$NEO4J_PASS_VAL
 	@echo "Repairing speaker links (v2 ingest attaches new speeches to persona.rdf duplicates)..."
 	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py $(DEMO_NEO4J)
-	@echo "Done. The 'Data updated on' date in the sidebar now reflects the DB automatically."
+	@echo "Refreshing README data stats..."
+	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
+	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
+	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J)
+	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
 include Makefile.data

@@ -10,3 +10,6 @@ tqdm==4.68.4
 # Senate downloads: senato.it is behind an AWS WAF JS challenge.
 # After install, run once: playwright install chromium
 playwright==1.61.0
+
+# RDF export (export_rdf.py)
+rdflib==7.6.0
