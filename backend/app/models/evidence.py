@@ -23,6 +23,7 @@ PARTY_DISPLAY_NAMES: dict[str, str] = {
     "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": "Forza Italia - Berlusconi Presidente - PPE",
     "ALLEANZA VERDI E SINISTRA": "Alleanza Verdi e Sinistra",
     "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "ITALIA VIVA-CASA RIFORMISTA (IV-CR)": "Italia Viva - Casa Riformista",
     "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva - Il Centro - Renew Europe",
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
     # Denominazioni storiche di gruppi rinominati (catena rinomina, non gruppi diversi):

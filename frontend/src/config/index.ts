@@ -57,6 +57,7 @@ export const config = {
     "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE": { color: "#2196F3", label: "Forza Italia - Berlusconi Presidente - PPE" },
     "ALLEANZA VERDI E SINISTRA": { color: "#66BB6A", label: "Alleanza Verdi e Sinistra" },
     "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": { color: "#FF9800", label: "Azione - Popolari Europeisti Riformatori - Renew Europe" },
+    "ITALIA VIVA-CASA RIFORMISTA (IV-CR)": { color: "#E91E63", label: "Italia Viva - Casa Riformista" },
     "ITALIA VIVA-IL CENTRO-RENEW EUROPE": { color: "#E91E63", label: "Italia Viva - Il Centro - Renew Europe" },
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": { color: "#9C27B0", label: "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC, Italia al Centro) - MAIE" },
     "MISTO": { color: "#9E9E9E", label: "Gruppo Misto" },

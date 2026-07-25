@@ -761,6 +761,7 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
           "MOVIMENTO 5 STELLE": "Movimento 5 Stelle",
           "ALLEANZA VERDI E SINISTRA": "All. Verdi e Sinistra",
           "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE": "Azione",
+          "ITALIA VIVA-CASA RIFORMISTA (IV-CR)": "Italia Viva",
           "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva",
           "MISTO": "Gruppo Misto",
         };
