@@ -42,25 +42,31 @@ function formatBytes(bytes: number, locale: string) {
     : `${nf.format(Math.round(bytes / 1e6))} MB`;
 }
 
-/* ── Real triples from the RDF dump (deputy p307394, abridged) ─── */
-const TURTLE_LINES: { text: string; hl?: "uri" | "pred" | "lit" | "dim" }[] = [
-  { text: "@prefix foaf: <http://xmlns.com/foaf/0.1/> .", hl: "dim" },
-  { text: "@prefix ocd:  <http://dati.camera.it/ocd/> .", hl: "dim" },
-  { text: "@prefix org:  <http://www.w3.org/ns/org#> .", hl: "dim" },
-  { text: "@prefix pr:   <https://w3id.org/parliamentrag/ontology#> .", hl: "dim" },
-  { text: "" },
-  { text: "<http://dati.camera.it/ocd/persona.rdf/p307394>", hl: "uri" },
-  { text: "    a foaf:Person, ocd:deputato ;", hl: "pred" },
-  { text: '    foaf:givenName  "DAVIDE" ;', hl: "lit" },
-  { text: '    foaf:familyName "AIELLO" ;', hl: "lit" },
-  { text: "    ocd:rif_mandatoCamera <…/mandatoCamera.rdf/mc19_307394> ." },
-  { text: "" },
-  { text: "<…/membership/p307394_m5s_2022-10-18>", hl: "uri" },
-  { text: "    a org:Membership ;", hl: "pred" },
-  { text: "    org:member       <…/persona.rdf/p307394> ;" },
-  { text: "    org:organization <…/group/m5s> ;" },
-  { text: '    pr:startDate "2022-10-18"^^xsd:date .', hl: "lit" },
-];
+/* ── Real triples from the dump, for the sampled deputy ────────── */
+type TurtleLine = { text: string; hl?: "uri" | "pred" | "lit" | "dim" };
+
+function buildTurtleLines(s: GraphSample): TurtleLine[] {
+  const pid = s.person.id;
+  const start = s.membership_start ?? "";
+  return [
+    { text: "@prefix foaf: <http://xmlns.com/foaf/0.1/> .", hl: "dim" },
+    { text: "@prefix ocd:  <http://dati.camera.it/ocd/> .", hl: "dim" },
+    { text: "@prefix org:  <http://www.w3.org/ns/org#> .", hl: "dim" },
+    { text: "@prefix pr:   <https://w3id.org/parliamentrag/ontology#> .", hl: "dim" },
+    { text: "" },
+    { text: `<http://dati.camera.it/ocd/persona.rdf/${pid}>`, hl: "uri" },
+    { text: "    a foaf:Person, ocd:deputato ;", hl: "pred" },
+    { text: `    foaf:givenName  "${s.person.first_name}" ;`, hl: "lit" },
+    { text: `    foaf:familyName "${s.person.last_name}" ;`, hl: "lit" },
+    { text: `    ocd:rif_mandatoCamera <…/mandatoCamera.rdf/${s.mandate ?? ""}> .` },
+    { text: "" },
+    { text: `<…/membership/${pid}_${s.group_slug}_${start}>`, hl: "uri" },
+    { text: "    a org:Membership ;", hl: "pred" },
+    { text: `    org:member       <…/persona.rdf/${pid}> ;` },
+    { text: `    org:organization <…/group/${s.group_slug}> ;` },
+    { text: `    pr:startDate "${start}"^^xsd:date .`, hl: "lit" },
+  ];
+}
 
 /* ── Ontology alignment — vocab column is not translated ───────── */
 const MAPPING_ROWS = [
@@ -75,8 +81,11 @@ const MAPPING_ROWS = [
 
 /* ── Random real deputy for the hero figure ────────────────────── */
 type GraphSample = {
-  person: { id: string; last_name: string };
+  person: { id: string; first_name: string; last_name: string };
   group: string | null;
+  group_slug: string;
+  membership_start: string | null;
+  mandate: string | null;
   speech: string | null;
   act: string | null;
   topic: string | null;
@@ -84,8 +93,11 @@ type GraphSample = {
 };
 
 const GRAPH_SAMPLE_FALLBACK: GraphSample = {
-  person: { id: "p307394", last_name: "AIELLO" },
+  person: { id: "p307394", first_name: "DAVIDE", last_name: "AIELLO" },
   group: "M5S",
+  group_slug: "m5s",
+  membership_start: "2022-10-18",
+  mandate: "mc19_307394_20220930",
   speech: "leg19_sed2_tit00030.int00020",
   act: "aic1_00004_19",
   topic: "prestazione di servizi",
@@ -116,8 +128,14 @@ function useGraphSample(): { sample: GraphSample; loaded: boolean } {
   return { sample, loaded };
 }
 
+function titleCase(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/(^|[\s'-])\p{L}/gu, (c) => c.toUpperCase());
+}
+
 /* ── Manifest of dumps actually present on this server ─────────── */
-type RdfFile = { filename: string; bytes: number };
+type RdfFile = { filename: string; bytes: number; modified?: string };
 
 function useRdfManifest() {
   const [files, setFiles] = useState<Record<string, RdfFile>>({});
@@ -149,6 +167,16 @@ export default function DataPage() {
   const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
   const stats = useKgStats();
   const { sample: graphSample, loaded: graphLoaded } = useGraphSample();
+  const updatedNote = (file?: RdfFile) =>
+    file?.modified
+      ? t("updatedAt", {
+          date: new Intl.DateTimeFormat(locale, {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }).format(new Date(`${file.modified}T12:00:00`)),
+        })
+      : undefined;
 
   return (
     <div
@@ -175,8 +203,8 @@ export default function DataPage() {
         <div className="border-t border-primary-foreground/10 bg-black/20">
           <div className="max-w-6xl mx-auto px-6 py-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 font-mono text-[11px] tracking-wide">
             <span className="text-primary-foreground/50">
-              <span className="text-chart-3">~/parliamentrag $</span> make
-              export-rdf
+              <span className="text-chart-3">parliamentrag_kg.ttl</span>{" "}
+              · text/turtle
             </span>
             <span className="inline-flex items-center gap-2 text-primary-foreground/50">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
@@ -273,18 +301,27 @@ export default function DataPage() {
         <div className="max-w-6xl mx-auto">
           <TermRule index="03" title={t("sec3Title")} />
           <p className="mt-6 text-primary-foreground/65 max-w-2xl">
-            {t("sec3Intro")}
+            {t("sec3Intro", {
+              name: titleCase(
+                `${graphSample.person.first_name} ${graphSample.person.last_name}`
+              ),
+            })}
           </p>
 
           <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
-            <figure className="lg:col-span-7 min-w-0">
+            <figure
+              className={`lg:col-span-7 min-w-0 transition-opacity duration-500 motion-reduce:transition-none ${
+                graphLoaded ? "opacity-100" : "opacity-0"
+              }`}
+              aria-hidden={!graphLoaded}
+            >
               <div className="border border-primary-foreground/20 bg-black/25">
                 <div className="flex items-center gap-2 px-4 py-2.5 border-b border-primary-foreground/15 font-mono text-[11px] text-primary-foreground/45">
                   <span className="inline-block h-2 w-2 rounded-full bg-chart-4/70" />
                   parliamentrag_kg.ttl
                 </div>
                 <pre className="overflow-x-auto px-5 py-4 text-[12.5px] leading-[1.75] font-mono">
-                  {TURTLE_LINES.map((line, i) => (
+                  {buildTurtleLines(graphSample).map((line, i) => (
                     <code
                       key={i}
                       className={`block whitespace-pre ${
@@ -392,6 +429,7 @@ export default function DataPage() {
               locale={locale}
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
+              updatedNote={updatedNote(manifest["parliamentrag_kg.ttl"])}
               pendingNote={t("zenodoNote")}
             />
             <FileCard
@@ -404,6 +442,7 @@ export default function DataPage() {
               locale={locale}
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
+              updatedNote={updatedNote(manifest["parliamentrag_votes.nt"])}
               pendingNote={t("zenodoNote")}
             />
           </div>
@@ -568,6 +607,7 @@ function FileCard({
   locale,
   downloadLabel,
   readyNote,
+  updatedNote,
   pendingNote,
 }: {
   title: string;
@@ -579,6 +619,7 @@ function FileCard({
   locale: string;
   downloadLabel: string;
   readyNote: string;
+  updatedNote?: string;
   pendingNote: string;
 }) {
   const size = file ? formatBytes(file.bytes, locale) : fallbackSize;
@@ -610,6 +651,7 @@ function FileCard({
           <span className="inline-flex items-center gap-2 font-mono text-[11px] text-primary-foreground/45">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
             {readyNote}
+            {updatedNote ? ` · ${updatedNote}` : null}
           </span>
         </div>
       ) : (

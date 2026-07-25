@@ -916,7 +916,7 @@
     "idea3Title": "Elementary facts",
     "idea3Body": "Knowledge is broken down into minimal subject–predicate–object sentences: “Aiello, is a member of, MoVimento 5 Stelle”. A machine reads them effortlessly and combines them to answer complex questions.",
     "sec3Title": "A deputy, in triples",
-    "sec3Intro": "The triples below come straight from the dump: they describe deputy Davide Aiello, his record and his group membership.",
+    "sec3Intro": "The triples below come straight from the dump: they describe deputy {name}, his record and his group membership.",
     "exCaption": "Abridged excerpt from the parliamentrag_kg.ttl dump (URIs shortened for readability).",
     "ex1Title": "The URI is the official one",
     "ex1Body": "the identifier is the same as dati.camera.it: our data and the Chamber's data link up by themselves.",
@@ -953,6 +953,7 @@
     "licenseNote": "The data derives from the open data of the Chamber of Deputies (dati.camera.it, CC-BY licence) and the EuroVoc thesaurus of the EU Publications Office. Vector embeddings, user conversations and AI-generated summaries are not part of the export.",
     "downloadCta": "Download file",
     "readyNote": "available",
-    "heroGraphNote": "Real nodes and edges from the graph — deputy {id}"
+    "heroGraphNote": "Real nodes and edges from the graph — deputy {id}",
+    "updatedAt": "updated {date}"
   }
 }
