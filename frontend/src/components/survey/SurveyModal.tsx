@@ -110,7 +110,7 @@ const POLITICAL_GROUPS_ORDERED = [
   { key: "MOVIMENTO 5 STELLE", label: "Movimento 5 Stelle", coalition: "opposizione" },
   { key: "ALLEANZA VERDI E SINISTRA", label: "Alleanza Verdi e Sinistra", coalition: "opposizione" },
   { key: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", coalition: "opposizione" },
-  { key: "ITALIA VIVA-IL CENTRO-RENEW EUROPE", label: "Italia Viva", coalition: "opposizione" },
+  { key: "ITALIA VIVA-CASA RIFORMISTA (IV-CR)", label: "Italia Viva", coalition: "opposizione" },
   { key: "MISTO", label: "Gruppo Misto", coalition: "altro" },
 ];
 

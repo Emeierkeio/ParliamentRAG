@@ -59,7 +59,7 @@ const GROUPS: { value: string; label: string; shortLabel: string }[] = [
   { value: "MOVIMENTO 5 STELLE", label: "M5S", shortLabel: "M5S" },
   { value: "ALLEANZA VERDI E SINISTRA", label: "AVS", shortLabel: "AVS" },
   { value: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", shortLabel: "Azione" },
-  { value: "ITALIA VIVA-IL CENTRO-RENEW EUROPE", label: "Italia Viva", shortLabel: "IV" },
+  { value: "ITALIA VIVA-CASA RIFORMISTA (IV-CR)", label: "Italia Viva", shortLabel: "IV" },
   { value: "MISTO", label: "Misto", shortLabel: "Misto" },
 ];
 
