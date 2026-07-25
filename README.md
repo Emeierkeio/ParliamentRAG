@@ -1,11 +1,9 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-cream.svg">
-    <img src="assets/logo-blue.svg" alt="ParliamentRAG logo" width="140">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-lockup-cream.svg">
+    <img src="assets/logo-lockup-blue.svg" alt="ParliamentRAG" width="380">
   </picture>
 </p>
-
-# ParliamentRAG
 
 **Balanced, verifiable answers about Italian parliamentary debate — grounded in what was actually said, and by whom.**
 

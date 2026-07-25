@@ -194,7 +194,7 @@ async def get_configuration():
     qr_data = config_data.get("query_rewriting", {})
     query_rewriting_config = QueryRewritingConfig(
         enabled=qr_data.get("enabled", True),
-        model=qr_data.get("model", "gpt-4.1-nano"),
+        model=qr_data.get("model", "gpt-4.1-mini"),
         max_query_words=qr_data.get("max_query_words", 5),
     )
 
