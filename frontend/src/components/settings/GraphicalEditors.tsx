@@ -113,7 +113,7 @@ const STR = {
     enabledF: "Abilitata",
     qrEnabledInfo: "Se abilitata, le query brevi vengono riformulate e arricchite con termini correlati prima di essere inviate al retrieval. Migliora il recall per query ambigue o troppo sintetiche.",
     qrModel: "Modello",
-    qrModelInfo: "Modello LLM usato per riscrivere le query. gpt-4.1-nano è raccomandato: è veloce, economico e sufficiente per questo task strutturato.",
+    qrModelInfo: "Modello LLM usato per riscrivere le query. gpt-4.1-mini è raccomandato: i modelli più piccoli non conoscono i termini politici di nicchia (es. \"remigrazione\", \"ius scholae\") e li espandono in modo errato, degradando il retrieval.",
     maxWords: "Max Parole per Riscrittura",
     maxWordsInfo: "Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval.",
     unitWords: "parole",
@@ -191,7 +191,7 @@ const STR = {
     enabledF: "Enabled",
     qrEnabledInfo: "If enabled, short queries are reformulated and enriched with related terms before being sent to retrieval. Improves recall for ambiguous or overly terse queries.",
     qrModel: "Model",
-    qrModelInfo: "LLM model used to rewrite queries. gpt-4.1-nano is recommended: fast, cheap and sufficient for this structured task.",
+    qrModelInfo: "LLM model used to rewrite queries. gpt-4.1-mini is recommended: smaller models do not know niche political terms (e.g. \"remigrazione\", \"ius scholae\") and expand them incorrectly, degrading retrieval.",
     maxWords: "Max Words for Rewriting",
     maxWordsInfo: "Maximum word threshold: queries with this many words or fewer are rewritten. Already descriptive (longer) queries are passed directly to retrieval.",
     unitWords: "words",
@@ -893,7 +893,7 @@ interface QueryRewritingEditorProps {
   onChange: (data: SystemConfig["query_rewriting"]) => void;
 }
 
-const QR_MODEL_OPTIONS = ["gpt-4.1-nano", "gpt-4.1-mini", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
+const QR_MODEL_OPTIONS = ["gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
 
 export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorProps) {
   const lang = useLang();
