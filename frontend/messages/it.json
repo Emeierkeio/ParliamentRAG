@@ -938,6 +938,9 @@
     "zenodoNote": "Pubblicazione su Zenodo in preparazione",
     "reproTitle": "Riproducibile da subito",
     "reproBody": "Non vuoi aspettare? Il dump si rigenera in pochi minuti dal codice sorgente con <code>make export-rdf</code> —",
-    "licenseNote": "I dati derivano dagli open data della Camera dei Deputati (dati.camera.it, licenza CC-BY) e dal thesaurus EuroVoc dell'Ufficio delle pubblicazioni dell'UE. Gli embedding vettoriali, le conversazioni degli utenti e i riassunti generati dall'AI non fanno parte dell'export."
+    "licenseNote": "I dati derivano dagli open data della Camera dei Deputati (dati.camera.it, licenza CC-BY) e dal thesaurus EuroVoc dell'Ufficio delle pubblicazioni dell'UE. Gli embedding vettoriali, le conversazioni degli utenti e i riassunti generati dall'AI non fanno parte dell'export.",
+    "downloadCta": "Scarica il file",
+    "readyNote": "disponibile da questo server",
+    "heroGraphNote": "Nodi e archi reali del grafo — deputato p307394"
   }
 }
