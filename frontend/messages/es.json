@@ -900,7 +900,7 @@
     "idea3Title": "Hechos elementales",
     "idea3Body": "El conocimiento se descompone en frases mínimas sujeto–predicado–objeto: «Aiello, es miembro de, MoVimento 5 Stelle». Una máquina las lee sin esfuerzo y las combina para responder preguntas complejas.",
     "sec3Title": "Un diputado, en tripletas",
-    "sec3Intro": "Las tripletas de abajo vienen directamente del volcado: describen al diputado Davide Aiello, su ficha y su pertenencia al grupo.",
+    "sec3Intro": "Las tripletas de abajo vienen directamente del volcado: describen al diputado {name}, su ficha y su pertenencia al grupo.",
     "exCaption": "Extracto abreviado del volcado parliamentrag_kg.ttl (URIs acortados para la legibilidad).",
     "ex1Title": "El URI es el oficial",
     "ex1Body": "el identificador es el mismo de dati.camera.it: nuestros datos y los de la Cámara se enlazan solos.",
@@ -937,6 +937,7 @@
     "licenseNote": "Los datos derivan de los datos abiertos de la Cámara de Diputados (dati.camera.it, licencia CC-BY) y del tesauro EuroVoc de la Oficina de Publicaciones de la UE. Los embeddings vectoriales, las conversaciones de los usuarios y los resúmenes generados por IA no forman parte de la exportación.",
     "downloadCta": "Descargar el archivo",
     "readyNote": "disponible",
-    "heroGraphNote": "Nodos y aristas reales del grafo — diputado {id}"
+    "heroGraphNote": "Nodos y aristas reales del grafo — diputado {id}",
+    "updatedAt": "actualizado el {date}"
   }
 }

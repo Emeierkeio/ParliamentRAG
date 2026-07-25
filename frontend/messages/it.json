@@ -903,7 +903,7 @@
     "idea3Title": "Fatti elementari",
     "idea3Body": "La conoscenza è scomposta in frasi minime soggetto–predicato–oggetto: «Aiello, è membro di, MoVimento 5 Stelle». Una macchina le legge senza sforzo e le combina per rispondere a domande complesse.",
     "sec3Title": "Un deputato, in triple",
-    "sec3Intro": "Le triple qui sotto vengono dal dump: descrivono il deputato Davide Aiello, la sua anagrafica e l'iscrizione al gruppo.",
+    "sec3Intro": "Le triple qui sotto vengono dal dump: descrivono il deputato {name}, la sua anagrafica e l'iscrizione al gruppo.",
     "exCaption": "Estratto abbreviato dal dump parliamentrag_kg.ttl (URI accorciati per leggibilità).",
     "ex1Title": "L'URI è quello ufficiale",
     "ex1Body": "l'identificativo è lo stesso di dati.camera.it: i nostri dati e quelli della Camera si agganciano da soli.",
@@ -940,6 +940,7 @@
     "licenseNote": "I dati derivano dagli open data della Camera dei Deputati (dati.camera.it, licenza CC-BY) e dal thesaurus EuroVoc dell'Ufficio delle pubblicazioni dell'UE. Gli embedding vettoriali, le conversazioni degli utenti e i riassunti generati dall'AI non fanno parte dell'export.",
     "downloadCta": "Scarica il file",
     "readyNote": "disponibile",
-    "heroGraphNote": "Nodi e archi reali del grafo — deputato {id}"
+    "heroGraphNote": "Nodi e archi reali del grafo — deputato {id}",
+    "updatedAt": "aggiornato al {date}"
   }
 }

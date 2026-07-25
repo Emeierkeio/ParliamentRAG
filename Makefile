@@ -219,7 +219,9 @@ update-data: tunnel
 	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py $(DEMO_NEO4J)
 	@echo "Refreshing README data stats..."
 	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
-	@echo "Done. Sidebar date, landing//data stats and README now reflect the updated DB."
+	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
+	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J)
+	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
 include Makefile.data
