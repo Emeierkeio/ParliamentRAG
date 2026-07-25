@@ -82,7 +82,7 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- XIX Legislature: 694 sessions · 45.6k speeches · 170k+ chunks · 32.8k acts · 16.7k roll calls with 6.3M individual votes (as of 2026-07-21)
+- **XIX Legislature — data as of 2026-07-21** (updated incrementally): 694 sessions · 45.6k speeches · 170k+ chunks · 32.8k acts · 16.7k roll calls with 6.3M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
