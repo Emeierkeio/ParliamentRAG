@@ -850,7 +850,8 @@
     "dataBandTitle": "Unter jeder Antwort liegt ein Wissensgraph",
     "dataBandBody": "Vollständig als RDF exportierbar, abgestimmt auf die offenen Daten der Kammer und die Vokabulare des Semantic Web.",
     "dataBandCta": "Daten erkunden",
-    "footerData": "Offene Daten (RDF)"
+    "footerData": "Offene Daten (RDF)",
+    "tocData": "Daten"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",

@@ -866,7 +866,8 @@
     "dataBandTitle": "Beneath every answer there is a knowledge graph",
     "dataBandBody": "Fully exportable as RDF, aligned with the Chamber's open data and the vocabularies of the Semantic Web.",
     "dataBandCta": "Explore the data",
-    "footerData": "Open data (RDF)"
+    "footerData": "Open data (RDF)",
+    "tocData": "Data"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",

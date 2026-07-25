@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Fraunces } from "next/font/google";
 import { ArrowLeft, ArrowUpRight, Download } from "lucide-react";
 
@@ -16,15 +16,21 @@ const fraunces = Fraunces({
 
 /* ── Graph numbers — from the live KG (schema v2, leg. 19) ─────── */
 const STATS = [
-  { value: "455", key: "stPeople" },
-  { value: "45.666", key: "stSpeeches" },
-  { value: "694", key: "stSessions" },
-  { value: "32.855", key: "stActs" },
-  { value: "16.787", key: "stVotes" },
-  { value: "6,3 mln", key: "stIndVotes" },
-  { value: "1.714", key: "stEurovoc" },
-  { value: "863.834", key: "stTriples" },
+  { value: 455, key: "stPeople" },
+  { value: 45666, key: "stSpeeches" },
+  { value: 694, key: "stSessions" },
+  { value: 32855, key: "stActs" },
+  { value: 16787, key: "stVotes" },
+  { value: 6305481, key: "stIndVotes", compact: true },
+  { value: 1714, key: "stEurovoc" },
+  { value: 863834, key: "stTriples" },
 ] as const;
+
+function formatStat(value: number, locale: string, compact?: boolean) {
+  return new Intl.NumberFormat(locale, {
+    ...(compact ? { notation: "compact" as const, maximumFractionDigits: 1 } : {}),
+  }).format(value);
+}
 
 /* ── Real triples from the RDF dump (deputy p307394, abridged) ─── */
 const TURTLE_LINES: { text: string; hl?: "uri" | "pred" | "lit" }[] = [
@@ -59,6 +65,7 @@ const MAPPING_ROWS = [
 
 export default function DataPage() {
   const t = useTranslations("DataPage");
+  const locale = useLocale();
 
   return (
     <div
@@ -110,7 +117,7 @@ export default function DataPage() {
             {STATS.map((s) => (
               <div key={s.key}>
                 <p className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-medium tracking-tight text-primary tabular-nums">
-                  {s.value}
+                  {formatStat(s.value, locale, "compact" in s && s.compact)}
                 </p>
                 <p className="mt-1.5 text-sm text-muted-foreground leading-snug">
                   {t(s.key)}
@@ -255,7 +262,7 @@ export default function DataPage() {
             />
             <FileCard
               title={t("fileVotesTitle")}
-              format="N-Triples · 3,8 GB"
+              format={`N-Triples · ${formatStat(3.8, locale)} GB`}
               body={t("fileVotesDesc")}
               note={t("zenodoNote")}
             />
