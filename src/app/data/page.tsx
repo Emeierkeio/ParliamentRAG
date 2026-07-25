@@ -658,7 +658,7 @@ function FileCard({
           </span>
         </div>
       ) : (
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-5">
           <a
             href={ZENODO_URL}
             target="_blank"
@@ -669,10 +669,6 @@ function FileCard({
             {zenodoLabel}
             <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] text-primary-foreground/45">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
-            DOI {ZENODO_DOI}
-          </span>
         </div>
       )}
     </div>
