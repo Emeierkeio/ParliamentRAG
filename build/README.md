@@ -53,6 +53,7 @@ dataset patterns (dati.camera.it/ocd/…, eurovoc.europa.eu/…).
 | `generate_summaries.py` | AI recaps (IT/EN) for timeline |
 | `precalculate_embeddings.py`, `embedding_service.py` | OpenAI embeddings with local cache |
 | `validate_db.py` | post-build invariant gate |
+| `export_rdf.py` | RDF export of the KG (Linked Data deliverable, `make export-rdf`) |
 
 ## Notes
 

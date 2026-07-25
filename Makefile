@@ -173,6 +173,12 @@ install-frontend:
 build:
 	@cd $(FRONTEND_DIR) && npm run build
 
+## RDF export of the KG (Linked Data deliverable) into dumps/rdf/.
+## Uses NEO4J_URI from .env. Add EXPORT_RDF_FLAGS="--votes" for the 6.3M
+## individual votes (separate .nt file), "--skip-text" for a small dump.
+export-rdf:
+	@$(BACKEND_DIR)/venv/bin/python build/export_rdf.py $(EXPORT_RDF_FLAGS)
+
 ## Open the SSH tunnel to the remote demo Neo4j if it is not already up.
 ## Also detects half-dead tunnels (port listening but connection refused/hung after
 ## a network change) by probing the bolt port, and reopens them.
