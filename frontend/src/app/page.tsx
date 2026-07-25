@@ -159,7 +159,7 @@ export default function LandingPage() {
             </span>
           </div>
           {/* Wordmark row */}
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 py-5">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <div className="flex items-center gap-3">
               <Image src="/logo-blue.svg" alt="" width={46} height={26} />
               <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-semibold tracking-tight">
@@ -168,10 +168,10 @@ export default function LandingPage() {
             </div>
             <Link
               href="/home"
-              className="group inline-flex items-baseline gap-1.5 whitespace-nowrap text-sm font-medium border-b-2 border-foreground pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
+              className="group inline-flex w-full sm:w-auto justify-center items-center gap-2 whitespace-nowrap bg-primary text-primary-foreground px-4 py-2.5 text-[13px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
             >
               {t("accessCta")}
-              <ArrowRight className="h-3.5 w-3.5 self-center transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function LandingPage() {
               })}
             </p>
 
-            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <div className="mt-8 sm:mt-10">
               <Link
                 href="/home"
                 className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
@@ -216,39 +216,41 @@ export default function LandingPage() {
                 {t("ctaPrimary")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
-              <a
-                href="https://github.com/Emeierkeio/ParliamentRAG"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
-                  {t("sourceCode")}
-                </span>
-                <ArrowUpRight className="h-3.5 w-3.5 self-center" />
-              </a>
-              <a
-                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
-                  {t("paperInUse")}
-                </span>
-                <ArrowUpRight className="h-3.5 w-3.5 self-center" />
-              </a>
-              <a
-                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              >
-                <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
-                  {t("paperDemo")}
-                </span>
-                <ArrowUpRight className="h-3.5 w-3.5 self-center" />
-              </a>
+              <div className="mt-5 flex w-full sm:w-auto flex-wrap items-center justify-between sm:justify-start gap-x-3 gap-y-1 sm:gap-x-8">
+                <a
+                  href="https://github.com/Emeierkeio/ParliamentRAG"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-baseline gap-1 py-1.5 text-[13px] sm:text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                    {t("sourceCode")}
+                  </span>
+                  <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
+                </a>
+                <a
+                  href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-baseline gap-1 py-1.5 text-[13px] sm:text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                    {t("paperInUse")}
+                  </span>
+                  <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
+                </a>
+                <a
+                  href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-baseline gap-1 py-1.5 text-[13px] sm:text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                    {t("paperDemo")}
+                  </span>
+                  <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
+                </a>
+              </div>
             </div>
           </div>
 
