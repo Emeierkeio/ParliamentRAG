@@ -247,7 +247,11 @@
     "dimension": "Dimension",
     "dimensionPos": "Dimension (+)",
     "dimensionNeg": "Dimension (-)",
-    "resetView": "Reset view"
+    "resetView": "Reset view",
+    "signalCaptured": "Signal along the axes",
+    "axis1Short": "Axis 1",
+    "axis2Short": "Axis 2",
+    "disclaimer": "Compass generated automatically from the floor speeches retrieved for this question: it describes the language of the speeches and does not certify the political positioning of the groups. Different questions may yield different results."
   },
   "TopicStatsModal": {
     "title": "Statistics Detail",
@@ -707,7 +711,10 @@
     "keywordsNeg": "Keywords pole (−)",
     "keywordsPos": "Keywords pole (+)",
     "errorFetch": "Error calculating the ideological compass",
-    "errorUnknown": "Unknown error"
+    "errorUnknown": "Unknown error",
+    "axis1Label": "Axis 1",
+    "axis2Label": "Axis 2",
+    "anchoredBadge": "Axes anchored to the question"
   },
   "Votes": {
     "title": "Votes Explorer",

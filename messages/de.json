@@ -246,7 +246,11 @@
     "dimension": "Dimension",
     "dimensionPos": "Dimension (+)",
     "dimensionNeg": "Dimension (-)",
-    "resetView": "Ansicht zurücksetzen"
+    "resetView": "Ansicht zurücksetzen",
+    "signalCaptured": "Signal entlang der Achsen",
+    "axis1Short": "Achse 1",
+    "axis2Short": "Achse 2",
+    "disclaimer": "Der Kompass wird automatisch aus den für diese Frage abgerufenen Plenarreden erzeugt: Er beschreibt die Sprache der Reden und zertifiziert nicht die politische Positionierung der Fraktionen. Andere Fragen können andere Ergebnisse liefern."
   },
   "TopicStatsModal": {
     "title": "Statistikdetails",
@@ -691,7 +695,10 @@
     "keywordsNeg": "Schlagwörter Pol (−)",
     "keywordsPos": "Schlagwörter Pol (+)",
     "errorFetch": "Fehler bei der Berechnung des ideologischen Kompasses",
-    "errorUnknown": "Unbekannter Fehler"
+    "errorUnknown": "Unbekannter Fehler",
+    "axis1Label": "Achse 1",
+    "axis2Label": "Achse 2",
+    "anchoredBadge": "Achsen an der Frage verankert"
   },
   "Votes": {
     "title": "Abstimmungen erkunden",

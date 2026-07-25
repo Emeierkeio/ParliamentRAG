@@ -246,7 +246,11 @@
     "dimension": "Dimensión",
     "dimensionPos": "Dimensión (+)",
     "dimensionNeg": "Dimensión (-)",
-    "resetView": "Restablecer vista"
+    "resetView": "Restablecer vista",
+    "signalCaptured": "Señal a lo largo de los ejes",
+    "axis1Short": "Eje 1",
+    "axis2Short": "Eje 2",
+    "disclaimer": "Brújula generada automáticamente a partir de las intervenciones recuperadas para esta pregunta: describe el lenguaje de los discursos y no certifica el posicionamiento político de los grupos. Preguntas distintas pueden dar resultados distintos."
   },
   "TopicStatsModal": {
     "title": "Detalle de Estadísticas",
@@ -691,7 +695,10 @@
     "keywordsNeg": "Palabras clave del polo (−)",
     "keywordsPos": "Palabras clave del polo (+)",
     "errorFetch": "Error al calcular la brújula ideológica",
-    "errorUnknown": "Error desconocido"
+    "errorUnknown": "Error desconocido",
+    "axis1Label": "Eje 1",
+    "axis2Label": "Eje 2",
+    "anchoredBadge": "Ejes anclados a la pregunta"
   },
   "Votes": {
     "title": "Explorar Votaciones",

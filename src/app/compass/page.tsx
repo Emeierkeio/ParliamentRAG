@@ -355,24 +355,24 @@ export default function CompassPage() {
               {/* Axis summary bar */}
               <div className="shrink-0 border-b border-border/40 bg-muted/20 px-4 sm:px-6 py-2.5">
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                  {/* PC1 */}
+                  {/* Axis 1 / PC1 */}
                   {compassData.axes.x && (compassData.axes.x.negative_side || compassData.axes.x.positive_side) && (
                     <AxisSummary
-                      label="PC1"
-                      variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[0] || 0) * 100)}
+                      axisKey="x"
+                      label={compassData.meta.axis_method === "semantic" ? t("axis1Label") : "PC1"}
                       negLabel={compassData.axes.x.negative_side?.label}
                       posLabel={compassData.axes.x.positive_side?.label}
                       negKeywords={compassData.axes.x.negative_side?.keywords}
                       posKeywords={compassData.axes.x.positive_side?.keywords}
                     />
                   )}
-                  {/* PC2 */}
+                  {/* Axis 2 / PC2 */}
                   {dimensionality !== 1 && compassData.axes.y && (compassData.axes.y.negative_side || compassData.axes.y.positive_side) && (
                     <>
                       <div className="hidden sm:block w-px h-5 bg-border/60" />
                       <AxisSummary
-                        label="PC2"
-                        variancePercent={Math.round((compassData.meta.explained_variance_ratio?.[1] || 0) * 100)}
+                        axisKey="y"
+                        label={compassData.meta.axis_method === "semantic" ? t("axis2Label") : "PC2"}
                         negLabel={compassData.axes.y.negative_side?.label}
                         posLabel={compassData.axes.y.positive_side?.label}
                         negKeywords={compassData.axes.y.negative_side?.keywords}
@@ -380,9 +380,13 @@ export default function CompassPage() {
                       />
                     </>
                   )}
-                  {/* Dimensionality badge */}
+                  {/* Method badge */}
                   <Badge variant="outline" className="text-[10px] ml-auto hidden sm:inline-flex">
-                    {dimensionality === 1 ? "1D Spectrum" : "2D PCA"}
+                    {dimensionality === 1
+                      ? "1D Spectrum"
+                      : compassData.meta.axis_method === "semantic"
+                        ? t("anchoredBadge")
+                        : "2D PCA"}
                   </Badge>
                 </div>
               </div>
@@ -424,9 +428,9 @@ export default function CompassPage() {
 
 // ── Axis Summary (compact inline) ─────────────────────────────
 
-function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, posKeywords }: {
+function AxisSummary({ axisKey, label, negLabel, posLabel, negKeywords, posKeywords }: {
+  axisKey: "x" | "y";
   label: string;
-  variancePercent: number;
   negLabel?: string;
   posLabel?: string;
   negKeywords?: string[];
@@ -435,9 +439,7 @@ function AxisSummary({ label, variancePercent, negLabel, posLabel, negKeywords, 
   const t = useTranslations("CompassPage");
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="[font-family:var(--font-display)] font-medium text-foreground">{label}</span>
-      <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">({label === "PC1" ? t("axisX") : t("axisY")})</span>
-      <span className="text-[10px] text-muted-foreground">{variancePercent}%</span>
+      <span className="[font-family:var(--font-display)] font-medium text-foreground" title={axisKey === "x" ? t("axisX") : t("axisY")}>{label}</span>
       <div className="flex items-center gap-1.5 min-w-0">
         {negLabel && (
           <Tooltip>
