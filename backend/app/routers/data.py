@@ -7,7 +7,9 @@ missing the manifest is simply empty and the frontend falls back to the
 """
 import json
 import logging
+import re
 import time
+from datetime import date
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
@@ -82,9 +84,11 @@ async def graph_sample():
 
     client = get_services()["neo4j"]
     person = client.query_single(
-        "MATCH (p:Deputy)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) "
-        "WITH p, g, rand() AS r ORDER BY r LIMIT 1 "
-        "RETURN p.id AS id, p.last_name AS last_name, "
+        "MATCH (p:Deputy)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) "
+        "WHERE m.end_date IS NULL "
+        "WITH p, m, g, rand() AS r ORDER BY r LIMIT 1 "
+        "RETURN p.id AS id, p.first_name AS first_name, p.last_name AS last_name, "
+        "p.term_of_office AS mandate, toString(m.start_date) AS membership_start, "
         "coalesce(g.acronym, g.name) AS group_label"
     )
     if not person:
@@ -109,9 +113,18 @@ async def graph_sample():
         "WITH v, rand() AS r ORDER BY r LIMIT 1 RETURN v.id AS id",
         {"id": pid},
     )
+    group_slug = re.sub(r"[^a-z0-9]+", "-", (person["group_label"] or "").lower()).strip("-")[:24]
+    mandate = person["mandate"] or ""
     return {
-        "person": {"id": pid.rsplit("/", 1)[-1], "last_name": person["last_name"]},
+        "person": {
+            "id": pid.rsplit("/", 1)[-1],
+            "first_name": person["first_name"],
+            "last_name": person["last_name"],
+        },
         "group": person["group_label"],
+        "group_slug": group_slug,
+        "membership_start": person["membership_start"],
+        "mandate": mandate.rsplit("/", 1)[-1] if mandate else None,
         "speech": speech["id"] if speech else None,
         "act": act["uri"].rsplit("/", 1)[-1] if act else None,
         "topic": act["topic"] if act else None,
@@ -126,7 +139,12 @@ async def rdf_manifest():
     for name in ALLOWED_FILES:
         path = RDF_DIR / name
         if path.is_file():
-            files.append({"filename": name, "bytes": path.stat().st_size})
+            stat = path.stat()
+            files.append({
+                "filename": name,
+                "bytes": stat.st_size,
+                "modified": date.fromtimestamp(stat.st_mtime).isoformat(),
+            })
     return {"files": files}
 
 

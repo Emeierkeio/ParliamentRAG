@@ -900,7 +900,7 @@
     "idea3Title": "Elementare Fakten",
     "idea3Body": "Das Wissen ist in minimale Subjekt–Prädikat–Objekt-Sätze zerlegt: „Aiello, ist Mitglied von, MoVimento 5 Stelle“. Eine Maschine liest sie mühelos und kombiniert sie zu Antworten auf komplexe Fragen.",
     "sec3Title": "Ein Abgeordneter, in Tripeln",
-    "sec3Intro": "Die Tripel unten stammen direkt aus dem Dump: Sie beschreiben den Abgeordneten Davide Aiello, seine Stammdaten und seine Fraktionszugehörigkeit.",
+    "sec3Intro": "Die Tripel unten stammen direkt aus dem Dump: Sie beschreiben den Abgeordneten {name}, seine Stammdaten und seine Fraktionszugehörigkeit.",
     "exCaption": "Gekürzter Auszug aus dem Dump parliamentrag_kg.ttl (URIs zur Lesbarkeit verkürzt).",
     "ex1Title": "Die URI ist die offizielle",
     "ex1Body": "der Identifikator ist derselbe wie bei dati.camera.it: Unsere Daten und die der Kammer verbinden sich von selbst.",
@@ -937,6 +937,7 @@
     "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, CC-BY-Lizenz) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports.",
     "downloadCta": "Datei herunterladen",
     "readyNote": "verfügbar",
-    "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}"
+    "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}",
+    "updatedAt": "Stand {date}"
   }
 }
