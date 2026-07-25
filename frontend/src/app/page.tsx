@@ -409,29 +409,29 @@ export default function LandingPage() {
       </section>
 
       {/* ── IV. Dati aperti — the graph behind the answers ─────── */}
-      <section id="dati" className="px-6 py-14 sm:py-20">
+      <section id="dati" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto">
-          <SectionRule numeral="IV" title={t("dataBandKicker")} />
+          <SectionRule numeral="IV" title={t("dataBandKicker")} inverted />
           <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
             <div className="lg:col-span-7">
               <h3 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-medium tracking-tight leading-[1.12] text-balance">
                 {t("dataBandTitle")}
               </h3>
-              <p className="mt-4 leading-relaxed text-muted-foreground max-w-xl">
+              <p className="mt-4 leading-relaxed text-primary-foreground/70 max-w-xl">
                 {t("dataBandBody")}
               </p>
               <div className="mt-8">
                 <Link
                   href="/data"
-                  className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
+                  className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary-foreground text-primary px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
                 >
                   {t("dataBandCta")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>
-            <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-border">
-              <DataStats />
+            <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-primary-foreground/15">
+              <DataStats inverted />
             </aside>
           </div>
         </div>
@@ -582,7 +582,7 @@ function FooterLink({
 }
 
 /* ── Data stats — live graph numbers, labels shared with /data ─── */
-function DataStats() {
+function DataStats({ inverted = false }: { inverted?: boolean }) {
   const td = useTranslations("DataPage");
   const locale = useLocale();
   const kg = useKgStats();
@@ -602,13 +602,13 @@ function DataStats() {
         <div
           key={s.key}
           className={`flex items-baseline justify-between gap-4 py-4 ${
-            i === 0 ? "" : "border-t border-border"
+            i === 0 ? "" : `border-t ${inverted ? "border-primary-foreground/15" : "border-border"}`
           }`}
         >
-          <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-primary tabular-nums">
+          <span className={`[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight tabular-nums ${inverted ? "text-primary-foreground" : "text-primary"}`}>
             {fmt(s.value, "compact" in s && s.compact)}
           </span>
-          <span className="text-sm text-muted-foreground text-right leading-snug">
+          <span className={`text-sm text-right leading-snug ${inverted ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
             {td(s.key)}
           </span>
         </div>
@@ -797,15 +797,16 @@ function SideTOC() {
       setActive(current);
 
       // The TOC is vertically centered: swap to light colors while its
-      // midpoint overlaps the dark "garanzie" section (bg-primary)
-      const inverted = document.getElementById("garanzie");
-      if (inverted) {
-        const midY = window.scrollY + window.innerHeight / 2;
-        setOverInverted(
-          midY >= inverted.offsetTop &&
-            midY <= inverted.offsetTop + inverted.offsetHeight
-        );
-      }
+      // midpoint overlaps one of the dark sections (bg-primary)
+      const midY = window.scrollY + window.innerHeight / 2;
+      setOverInverted(
+        ["garanzie", "dati"].some((id) => {
+          const el = document.getElementById(id);
+          return el
+            ? midY >= el.offsetTop && midY <= el.offsetTop + el.offsetHeight
+            : false;
+        })
+      );
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
