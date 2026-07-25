@@ -202,13 +202,13 @@ export default function LandingPage() {
           <div className="lg:col-span-7">
             <RotatingHero index={topicIndex} isAnimating={isAnimating} />
 
-            <p className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-xl">
+            <p className="mt-6 sm:mt-8 text-lg leading-relaxed text-muted-foreground max-w-xl">
               {t.rich("heroSub", {
                 strong: (chunks) => <span className="text-foreground">{chunks}</span>,
               })}
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
                 href="/home"
                 className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
@@ -220,7 +220,7 @@ export default function LandingPage() {
                 href="https://github.com/Emeierkeio/ParliamentRAG"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
                   {t("sourceCode")}
@@ -231,7 +231,7 @@ export default function LandingPage() {
                 href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
                   {t("paperInUse")}
@@ -242,7 +242,7 @@ export default function LandingPage() {
                 href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="group inline-flex items-baseline gap-1 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
                   {t("paperDemo")}
@@ -486,12 +486,12 @@ export default function LandingPage() {
               )
             </p>
           </div>
-          <p className="flex items-center gap-4">
+          <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             <a
               href="https://github.com/Emeierkeio/ParliamentRAG"
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               GitHub
             </a>
@@ -499,7 +499,7 @@ export default function LandingPage() {
               href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {t("paperInUse")}
             </a>
@@ -507,7 +507,7 @@ export default function LandingPage() {
               href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {t("paperDemo")}
             </a>
@@ -515,13 +515,13 @@ export default function LandingPage() {
               href="https://orkg.org/papers/R1909763"
               target="_blank"
               rel="noopener noreferrer"
-              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               ORKG
             </a>
             <Link
               href="/privacy"
-              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {t("footerPrivacy")}
             </Link>
@@ -648,7 +648,7 @@ function RotatingHero({
   const t = useTranslations("Landing");
 
   return (
-    <h1 className="[font-family:var(--font-display)] text-[clamp(2.25rem,11.5vw,2.75rem)] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
+    <h1 className="[font-family:var(--font-display)] text-[clamp(2rem,10.5vw,2.75rem)] sm:text-6xl lg:text-[4.25rem] font-medium tracking-tight leading-[1.06]">
       {t("heroLine1")}
       <br />
       {t("heroLine2")}
