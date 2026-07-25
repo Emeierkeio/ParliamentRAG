@@ -92,22 +92,28 @@ const GRAPH_SAMPLE_FALLBACK: GraphSample = {
   vote: "leg19_sed43_vot_11",
 };
 
-function useGraphSample(): GraphSample {
+function useGraphSample(): { sample: GraphSample; loaded: boolean } {
   const [sample, setSample] = useState<GraphSample>(GRAPH_SAMPLE_FALLBACK);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     let cancelled = false;
     fetch("/api/data/graph-sample", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (cancelled || !data?.person?.id) return;
-        setSample({ ...GRAPH_SAMPLE_FALLBACK, ...data, person: data.person });
+        if (cancelled) return;
+        if (data?.person?.id) {
+          setSample({ ...GRAPH_SAMPLE_FALLBACK, ...data, person: data.person });
+        }
+        setLoaded(true);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cancelled) setLoaded(true);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
-  return sample;
+  return { sample, loaded };
 }
 
 /* ── Manifest of dumps actually present on this server ─────────── */
@@ -142,7 +148,7 @@ export default function DataPage() {
   const locale = useLocale();
   const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
   const stats = useKgStats();
-  const graphSample = useGraphSample();
+  const { sample: graphSample, loaded: graphLoaded } = useGraphSample();
 
   return (
     <div
@@ -198,7 +204,12 @@ export default function DataPage() {
               })}
             </p>
           </div>
-          <figure className="lg:col-span-5">
+          <figure
+            className={`lg:col-span-5 transition-opacity duration-500 motion-reduce:transition-none ${
+              graphLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            aria-hidden={!graphLoaded}
+          >
             <GraphFigure sample={graphSample} />
             <figcaption className="mt-2 text-center font-mono text-[10px] text-primary-foreground/40">
               {t("heroGraphNote", { id: graphSample.person.id })}
