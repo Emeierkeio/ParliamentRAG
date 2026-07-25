@@ -16,6 +16,10 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
+/* ── Long-term archive of the dumps (published record) ─────────── */
+const ZENODO_DOI = "10.5281/zenodo.21560332";
+const ZENODO_URL = `https://doi.org/${ZENODO_DOI}`;
+
 /* ── Graph numbers — live from /api/data/stats, static fallback ── */
 const STATS = [
   { field: "people", key: "stPeople" },
@@ -417,7 +421,7 @@ export default function DataPage() {
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
               updatedNote={updatedNote(manifest["parliamentrag_kg.ttl"])}
-              pendingNote={t("zenodoNote")}
+              zenodoLabel={t("zenodoCta")}
             />
             <FileCard
               title={t("fileVotesTitle")}
@@ -430,7 +434,7 @@ export default function DataPage() {
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
               updatedNote={updatedNote(manifest["parliamentrag_votes.nt"])}
-              pendingNote={t("zenodoNote")}
+              zenodoLabel={t("zenodoCta")}
             />
           </div>
 
@@ -443,6 +447,16 @@ export default function DataPage() {
               className="group inline-flex items-baseline gap-0.5 text-primary-foreground/70 border-b border-primary-foreground/30 hover:border-primary-foreground hover:text-primary-foreground transition-colors"
             >
               GitHub
+              <ArrowUpRight className="h-3 w-3 self-center" />
+            </a>{" "}
+            · {t("archiveLabel")}{" "}
+            <a
+              href={ZENODO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-baseline gap-0.5 text-primary-foreground/70 border-b border-primary-foreground/30 hover:border-primary-foreground hover:text-primary-foreground transition-colors"
+            >
+              Zenodo · DOI {ZENODO_DOI}
               <ArrowUpRight className="h-3 w-3 self-center" />
             </a>
           </p>
@@ -595,7 +609,7 @@ function FileCard({
   downloadLabel,
   readyNote,
   updatedNote,
-  pendingNote,
+  zenodoLabel,
 }: {
   title: string;
   format: string;
@@ -607,7 +621,7 @@ function FileCard({
   downloadLabel: string;
   readyNote: string;
   updatedNote?: string;
-  pendingNote: string;
+  zenodoLabel: string;
 }) {
   const size = file ? formatBytes(file.bytes, locale) : fallbackSize;
   return (
@@ -642,9 +656,22 @@ function FileCard({
           </span>
         </div>
       ) : (
-        <p className="mt-5 pt-3 border-t border-primary-foreground/15 font-mono text-[11px] text-chart-3">
-          {pendingNote}
-        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+          <a
+            href={ZENODO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2.5 bg-primary-foreground text-primary px-5 py-2.5 text-[13px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
+          >
+            <Download className="h-3.5 w-3.5" />
+            {zenodoLabel}
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] text-primary-foreground/45">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
+            DOI {ZENODO_DOI}
+          </span>
+        </div>
       )}
     </div>
   );
