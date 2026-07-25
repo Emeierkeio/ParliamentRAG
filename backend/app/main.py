@@ -22,6 +22,7 @@ from .routers.evaluation import router as evaluation_router
 from .routers.authority import router as authority_router
 from .routers.compass import router as compass_router
 from .routers.timeline import router as timeline_router
+from .routers.data import router as data_router
 from .config import MAINTENANCE_MODE, get_config, get_settings
 
 
@@ -259,6 +260,7 @@ app.include_router(evaluation_router)  # Evaluation dashboard
 app.include_router(authority_router)  # Authority ranking by topic
 app.include_router(compass_router)  # Standalone ideological compass
 app.include_router(timeline_router)  # Parliamentary timeline (sessions/debates)
+app.include_router(data_router)  # Open data (RDF dump downloads)
 
 
 @app.get("/")

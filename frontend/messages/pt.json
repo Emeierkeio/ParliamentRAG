@@ -935,6 +935,9 @@
     "zenodoNote": "Publicação no Zenodo em preparação",
     "reproTitle": "Reproduzível desde já",
     "reproBody": "Não quer esperar? O dump se regenera em poucos minutos a partir do código-fonte com <code>make export-rdf</code> —",
-    "licenseNote": "Os dados derivam dos dados abertos da Câmara dos Deputados (dati.camera.it, licença CC-BY) e do tesauro EuroVoc do Serviço das Publicações da UE. Os embeddings vetoriais, as conversas dos usuários e os resumos gerados por IA não fazem parte da exportação."
+    "licenseNote": "Os dados derivam dos dados abertos da Câmara dos Deputados (dati.camera.it, licença CC-BY) e do tesauro EuroVoc do Serviço das Publicações da UE. Os embeddings vetoriais, as conversas dos usuários e os resumos gerados por IA não fazem parte da exportação.",
+    "downloadCta": "Baixar o arquivo",
+    "readyNote": "disponível neste servidor",
+    "heroGraphNote": "Nós e arestas reais do grafo — deputado p307394"
   }
 }

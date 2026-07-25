@@ -935,6 +935,9 @@
     "zenodoNote": "Zenodo-Veröffentlichung in Vorbereitung",
     "reproTitle": "Sofort reproduzierbar",
     "reproBody": "Sie wollen nicht warten? Der Dump lässt sich in wenigen Minuten aus dem Quellcode mit <code>make export-rdf</code> neu erzeugen —",
-    "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, CC-BY-Lizenz) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports."
+    "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, CC-BY-Lizenz) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports.",
+    "downloadCta": "Datei herunterladen",
+    "readyNote": "auf diesem Server verfügbar",
+    "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter p307394"
   }
 }

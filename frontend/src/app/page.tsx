@@ -458,14 +458,40 @@ export default function LandingPage() {
 
       {/* ── Colophon ───────────────────────────────────────────── */}
       <footer className="px-6 py-10 border-t border-border">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo-blue.svg" alt="" width={27} height={15} />
-            <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
-              ParliamentRAG
-            </span>
+        <div className="max-w-6xl mx-auto">
+          {/* Brand + resource links */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-8 gap-y-5">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Image src="/logo-blue.svg" alt="" width={27} height={15} />
+              <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
+                ParliamentRAG
+              </span>
+            </div>
+            <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+              <FooterLink href="https://github.com/Emeierkeio/ParliamentRAG" external>
+                GitHub
+              </FooterLink>
+              <FooterLink
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+                external
+              >
+                {t("paperInUse")}
+              </FooterLink>
+              <FooterLink
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+                external
+              >
+                {t("paperDemo")}
+              </FooterLink>
+              <FooterLink href="https://orkg.org/papers/R1909763" external>
+                ORKG
+              </FooterLink>
+              <FooterLink href="/data">{t("footerData")}</FooterLink>
+              <FooterLink href="/privacy">{t("footerPrivacy")}</FooterLink>
+            </nav>
           </div>
-          <div className="text-center leading-relaxed space-y-1">
+          {/* Credits */}
+          <div className="mt-6 pt-5 border-t border-border flex flex-col md:flex-row md:items-baseline justify-between gap-x-8 gap-y-2 text-xs text-muted-foreground leading-relaxed">
             <p>
               {t("footerThesis")} · {t("footerAuthors")} ·{" "}
               <a
@@ -477,7 +503,7 @@ export default function LandingPage() {
                 {t("footerUni")}
               </a>
             </p>
-            <p className="text-muted-foreground/80">
+            <p className="text-muted-foreground/80 md:text-right">
               {t("footerFunding")}{" "}
               <a
                 href="https://doi.org/10.3030/101189771"
@@ -517,55 +543,35 @@ export default function LandingPage() {
               )
             </p>
           </div>
-          <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("paperInUse")}
-            </a>
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("paperDemo")}
-            </a>
-            <a
-              href="https://orkg.org/papers/R1909763"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              ORKG
-            </a>
-            <Link
-              href="/data"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("footerData")}
-            </Link>
-            <Link
-              href="/privacy"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("footerPrivacy")}
-            </Link>
-          </p>
         </div>
       </footer>
     </div>
+  );
+}
+
+/* ── Footer link — internal or external resource ───────────────── */
+function FooterLink({
+  href,
+  external = false,
+  children,
+}: {
+  href: string;
+  external?: boolean;
+  children: React.ReactNode;
+}) {
+  const className =
+    "inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer whitespace-nowrap";
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
   );
 }
 
@@ -580,6 +586,7 @@ function DataStats() {
   ] as const;
   const fmt = (value: number, compact?: boolean) =>
     new Intl.NumberFormat(locale, {
+      useGrouping: "always",
       ...(compact ? { notation: "compact" as const, maximumFractionDigits: 1 } : {}),
     }).format(value);
   return (
