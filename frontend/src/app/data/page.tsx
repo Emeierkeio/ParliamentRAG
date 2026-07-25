@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Fraunces } from "next/font/google";
 import { ArrowLeft, ArrowUpRight, Download } from "lucide-react";
+import { useKgStats } from "@/hooks/use-kg-stats";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -15,16 +16,16 @@ const fraunces = Fraunces({
   display: "swap",
 });
 
-/* ── Graph numbers — from the live KG (schema v2, leg. 19) ─────── */
+/* ── Graph numbers — live from /api/data/stats, static fallback ── */
 const STATS = [
-  { value: 455, key: "stPeople" },
-  { value: 45666, key: "stSpeeches" },
-  { value: 694, key: "stSessions" },
-  { value: 32855, key: "stActs" },
-  { value: 16787, key: "stVotes" },
-  { value: 6305481, key: "stIndVotes", compact: true },
-  { value: 1714, key: "stEurovoc" },
-  { value: 863834, key: "stTriples" },
+  { field: "people", key: "stPeople" },
+  { field: "speeches", key: "stSpeeches" },
+  { field: "sessions", key: "stSessions" },
+  { field: "acts", key: "stActs" },
+  { field: "votes", key: "stVotes" },
+  { field: "individual_votes", key: "stIndVotes", compact: true },
+  { field: "eurovoc_concepts", key: "stEurovoc" },
+  { field: "triples", key: "stTriples" },
 ] as const;
 
 function formatStat(value: number, locale: string, compact?: boolean) {
@@ -72,33 +73,76 @@ const MAPPING_ROWS = [
   { n: "r7", vocab: "PROV-O" },
 ] as const;
 
-/* ── Manifest of dumps actually present on this server ─────────── */
-type RdfFile = { filename: string; bytes: number };
+/* ── Random real deputy for the hero figure ────────────────────── */
+type GraphSample = {
+  person: { id: string; last_name: string };
+  group: string | null;
+  speech: string | null;
+  act: string | null;
+  topic: string | null;
+  vote: string | null;
+};
 
-function useRdfManifest() {
-  const [files, setFiles] = useState<Record<string, RdfFile>>({});
+const GRAPH_SAMPLE_FALLBACK: GraphSample = {
+  person: { id: "p307394", last_name: "AIELLO" },
+  group: "M5S",
+  speech: "leg19_sed2_tit00030.int00020",
+  act: "aic1_00004_19",
+  topic: "prestazione di servizi",
+  vote: "leg19_sed43_vot_11",
+};
+
+function useGraphSample(): GraphSample {
+  const [sample, setSample] = useState<GraphSample>(GRAPH_SAMPLE_FALLBACK);
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/data/rdf")
+    fetch("/api/data/graph-sample", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (cancelled || !data?.files) return;
-        const map: Record<string, RdfFile> = {};
-        for (const f of data.files as RdfFile[]) map[f.filename] = f;
-        setFiles(map);
+        if (cancelled || !data?.person?.id) return;
+        setSample({ ...GRAPH_SAMPLE_FALLBACK, ...data, person: data.person });
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
   }, []);
-  return files;
+  return sample;
+}
+
+/* ── Manifest of dumps actually present on this server ─────────── */
+type RdfFile = { filename: string; bytes: number };
+
+function useRdfManifest() {
+  const [files, setFiles] = useState<Record<string, RdfFile>>({});
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/data/rdf")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (cancelled) return;
+        const map: Record<string, RdfFile> = {};
+        for (const f of (data?.files ?? []) as RdfFile[]) map[f.filename] = f;
+        setFiles(map);
+        setLoaded(true);
+      })
+      .catch(() => {
+        if (!cancelled) setLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  return { files, loaded };
 }
 
 export default function DataPage() {
   const t = useTranslations("DataPage");
   const locale = useLocale();
-  const manifest = useRdfManifest();
+  const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
+  const stats = useKgStats();
+  const graphSample = useGraphSample();
 
   return (
     <div
@@ -130,7 +174,7 @@ export default function DataPage() {
             </span>
             <span className="inline-flex items-center gap-2 text-primary-foreground/50">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
-              863,834 triples · leg. XIX
+              {formatStat(stats.triples ?? 0, "en")} triples · leg. XIX
             </span>
           </div>
         </div>
@@ -155,9 +199,9 @@ export default function DataPage() {
             </p>
           </div>
           <figure className="lg:col-span-5">
-            <GraphFigure />
+            <GraphFigure sample={graphSample} />
             <figcaption className="mt-2 text-center font-mono text-[10px] text-primary-foreground/40">
-              {t("heroGraphNote")}
+              {t("heroGraphNote", { id: graphSample.person.id })}
             </figcaption>
           </figure>
         </div>
@@ -174,7 +218,7 @@ export default function DataPage() {
                 className="border-b border-r border-primary-foreground/15 p-5 sm:p-6"
               >
                 <p className="font-mono text-2xl sm:text-3xl font-medium tracking-tight tabular-nums">
-                  {formatStat(s.value, locale, "compact" in s && s.compact)}
+                  {formatStat(stats[s.field] ?? 0, locale, "compact" in s && s.compact)}
                 </p>
                 <p className="mt-2 text-[13px] text-primary-foreground/55 leading-snug">
                   {t(s.key)}
@@ -332,6 +376,7 @@ export default function DataPage() {
               format="Turtle"
               body={t("fileKgDesc")}
               file={manifest["parliamentrag_kg.ttl"]}
+              resolved={manifestLoaded}
               fallbackSize="172 MB"
               locale={locale}
               downloadLabel={t("downloadCta")}
@@ -343,6 +388,7 @@ export default function DataPage() {
               format="N-Triples"
               body={t("fileVotesDesc")}
               file={manifest["parliamentrag_votes.nt"]}
+              resolved={manifestLoaded}
               fallbackSize={`${formatStat(3.8, locale)} GB`}
               locale={locale}
               downloadLabel={t("downloadCta")}
@@ -351,32 +397,17 @@ export default function DataPage() {
             />
           </div>
 
-          <div className="mt-10 border border-primary-foreground/20 bg-black/25 px-5 py-4 max-w-3xl">
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-chart-3 mb-2">
-              {t("reproTitle")}
-            </p>
-            <p className="text-sm leading-relaxed text-primary-foreground/80">
-              {t.rich("reproBody", {
-                code: (chunks) => (
-                  <code className="font-mono text-[12.5px] text-chart-4">
-                    {chunks}
-                  </code>
-                ),
-              })}{" "}
-              <a
-                href="https://github.com/Emeierkeio/ParliamentRAG"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 text-primary-foreground border-b border-primary-foreground/30 hover:border-primary-foreground transition-colors"
-              >
-                GitHub
-                <ArrowUpRight className="h-3 w-3 self-center" />
-              </a>
-            </p>
-          </div>
-
           <p className="mt-8 text-xs text-primary-foreground/45 max-w-3xl leading-relaxed">
-            {t("licenseNote")}
+            {t("licenseNote")}{" "}
+            <a
+              href="https://github.com/Emeierkeio/ParliamentRAG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-baseline gap-0.5 text-primary-foreground/70 border-b border-primary-foreground/30 hover:border-primary-foreground hover:text-primary-foreground transition-colors"
+            >
+              GitHub
+              <ArrowUpRight className="h-3 w-3 self-center" />
+            </a>
           </p>
         </div>
       </section>
@@ -384,16 +415,7 @@ export default function DataPage() {
   );
 }
 
-/* ── Hero graph — real nodes and edges around deputy p307394 ───── */
-const GRAPH_NODES = [
-  { id: "person", x: 240, y: 170, r: 17, label: "AIELLO", sub: "persona.rdf/p307394", accent: true },
-  { id: "speech", x: 84, y: 62, r: 11, label: "Speech", sub: "leg19_sed2" },
-  { id: "group", x: 404, y: 76, r: 13, label: "M5S", sub: "gruppoParlamentare" },
-  { id: "act", x: 106, y: 296, r: 11, label: "Atto", sub: "aic.rdf/aic1_00004" },
-  { id: "vote", x: 404, y: 268, r: 11, label: "Votazione", sub: "leg19_sed43_vot_11" },
-  { id: "topic", x: 268, y: 344, r: 11, label: "EuroVoc", sub: "skos:Concept" },
-] as const;
-
+/* ── Hero graph — a random real deputy and their neighbours ────── */
 const GRAPH_EDGES = [
   { from: "speech", to: "person", label: "pr:spokenBy", t: 0.5 },
   { from: "person", to: "group", label: "org:member", t: 0.5 },
@@ -402,8 +424,27 @@ const GRAPH_EDGES = [
   { from: "act", to: "topic", label: "dcterms:subject", t: 0.68 },
 ] as const;
 
-function GraphFigure() {
-  const byId = Object.fromEntries(GRAPH_NODES.map((n) => [n.id, n]));
+function clip(text: string, max: number) {
+  return text.length > max ? text.slice(0, max - 1).trimEnd() + "…" : text;
+}
+
+function GraphFigure({ sample }: { sample: GraphSample }) {
+  const speechSub = (sample.speech ?? "").split("_tit")[0] || "leg19";
+  const nodes = [
+    { id: "person", x: 240, y: 170, r: 17, accent: true,
+      label: clip(sample.person.last_name, 14), sub: `persona.rdf/${sample.person.id}` },
+    { id: "speech", x: 84, y: 62, r: 11, accent: false,
+      label: "Speech", sub: speechSub },
+    { id: "group", x: 404, y: 76, r: 13, accent: false,
+      label: clip(sample.group ?? "Gruppo", 16), sub: "gruppoParlamentare" },
+    { id: "act", x: 106, y: 296, r: 11, accent: false,
+      label: "Atto", sub: sample.act ?? "atto" },
+    { id: "vote", x: 404, y: 268, r: 11, accent: false,
+      label: "Votazione", sub: sample.vote ?? "votazione" },
+    { id: "topic", x: 268, y: 344, r: 11, accent: false,
+      label: "EuroVoc", sub: clip(sample.topic ?? "skos:Concept", 26) },
+  ];
+  const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   return (
     <svg
       viewBox="0 0 480 400"
@@ -446,7 +487,7 @@ function GraphFigure() {
           </g>
         );
       })}
-      {GRAPH_NODES.map((n) => (
+      {nodes.map((n) => (
         <g key={n.id}>
           {"accent" in n && n.accent && (
             <circle
@@ -511,6 +552,7 @@ function FileCard({
   format,
   body,
   file,
+  resolved,
   fallbackSize,
   locale,
   downloadLabel,
@@ -521,6 +563,7 @@ function FileCard({
   format: string;
   body: string;
   file?: RdfFile;
+  resolved: boolean;
   fallbackSize: string;
   locale: string;
   downloadLabel: string;
@@ -541,7 +584,9 @@ function FileCard({
       <p className="mt-3 text-sm leading-relaxed text-primary-foreground/60 flex-1">
         {body}
       </p>
-      {file ? (
+      {!resolved ? (
+        <div className="mt-5 h-10" aria-hidden />
+      ) : file ? (
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <a
             href={`/api/data/rdf/${file.filename}`}

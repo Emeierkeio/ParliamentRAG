@@ -830,7 +830,7 @@
     "idx5Desc": "Die Chronik der Sitzungen mit Debatten, Reden und KI-generierten Zusammenfassungen — bis zur Position jedes einzelnen Abgeordneten.",
     "paperInUse": "Forschungsartikel",
     "paperDemo": "Demo-Artikel",
-    "footerFunding": "Gefördert durch das EU-Programm Horizon Europe — Finanzhilfen",
+    "footerFunding": "Gefördert durch das EU-Programm Horizon Europe",
     "footerPrivacy": "Datenschutz",
     "q1": "«[…] der PNRR war eine außergewöhnliche, vielleicht einmalige Gelegenheit, endlich die Lücke zu schließen, die uns von den anderen europäischen Ländern trennt.»",
     "q2": "«[…] das System erreicht sie nicht, […] die Wartelisten entmutigen, […] das Bewusstsein für die Krankheit ist noch unzureichend, […] das soziale Stigma bremst jede Bitte um Hilfe.»",
@@ -851,7 +851,8 @@
     "dataBandBody": "Vollständig als RDF exportierbar, abgestimmt auf die offenen Daten der Kammer und die Vokabulare des Semantic Web.",
     "dataBandCta": "Daten erkunden",
     "footerData": "Offene Daten (RDF)",
-    "tocData": "Daten"
+    "tocData": "Daten",
+    "footerGrants": "Finanzhilfen"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",
@@ -933,11 +934,9 @@
     "fileVotesTitle": "Die Einzelstimmen",
     "fileVotesDesc": "Alle 6,3 Millionen Stimmen, die jeder einzelne Abgeordnete in jeder elektronischen Abstimmung der Legislaturperiode abgegeben hat.",
     "zenodoNote": "Zenodo-Veröffentlichung in Vorbereitung",
-    "reproTitle": "Sofort reproduzierbar",
-    "reproBody": "Sie wollen nicht warten? Der Dump lässt sich in wenigen Minuten aus dem Quellcode mit <code>make export-rdf</code> neu erzeugen —",
     "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, CC-BY-Lizenz) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports.",
     "downloadCta": "Datei herunterladen",
-    "readyNote": "auf diesem Server verfügbar",
-    "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter p307394"
+    "readyNote": "verfügbar",
+    "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}"
   }
 }

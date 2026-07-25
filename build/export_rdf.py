@@ -52,10 +52,12 @@ is loaded automatically, same convention as the other build scripts).
 """
 import argparse
 import hashlib
+import json
 import os
 import re
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
 
@@ -458,6 +460,13 @@ def main():
         print(f"Serializing {len(exporter.g):,} triples -> {kg_path} ...")
         exporter.g.serialize(destination=str(kg_path),
                              format="turtle" if args.format == "ttl" else "nt")
+
+        # Consumed by the backend /api/data/stats endpoint
+        meta_path = out_dir / "export_meta.json"
+        meta_path.write_text(json.dumps({
+            "triples": len(exporter.g),
+            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        }) + "\n")
 
         if args.votes:
             print("Streaming individual votes...")
