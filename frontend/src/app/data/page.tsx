@@ -199,19 +199,6 @@ export default function DataPage() {
             {t("backHome")}
           </Link>
         </div>
-        {/* Terminal status strip */}
-        <div className="border-t border-primary-foreground/10 bg-black/20">
-          <div className="max-w-6xl mx-auto px-6 py-2 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 font-mono text-[11px] tracking-wide">
-            <span className="text-primary-foreground/50">
-              <span className="text-chart-3">parliamentrag_kg.ttl</span>{" "}
-              · text/turtle
-            </span>
-            <span className="inline-flex items-center gap-2 text-primary-foreground/50">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
-              {formatStat(stats.triples ?? 0, "en")} triples · leg. XIX
-            </span>
-          </div>
-        </div>
       </header>
 
       {/* ── Hero ───────────────────────────────────────────────── */}
