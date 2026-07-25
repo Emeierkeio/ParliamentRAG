@@ -8,6 +8,7 @@ import { Fraunces } from "next/font/google";
 import { ArrowRight, ArrowUpRight, Globe, Check, Award } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
+import { useKgStats } from "@/hooks/use-kg-stats";
 
 /* ── Display typeface — editorial serif with optical sizing ────── */
 const fraunces = Fraunces({
@@ -407,6 +408,35 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── IV. Dati aperti — the graph behind the answers ─────── */}
+      <section id="dati" className="px-6 py-14 sm:py-20">
+        <div className="max-w-6xl mx-auto">
+          <SectionRule numeral="IV" title={t("dataBandKicker")} />
+          <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+            <div className="lg:col-span-7">
+              <h3 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-medium tracking-tight leading-[1.12] text-balance">
+                {t("dataBandTitle")}
+              </h3>
+              <p className="mt-4 leading-relaxed text-muted-foreground max-w-xl">
+                {t("dataBandBody")}
+              </p>
+              <div className="mt-8">
+                <Link
+                  href="/data"
+                  className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
+                >
+                  {t("dataBandCta")}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+            <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-border">
+              <DataStats />
+            </aside>
+          </div>
+        </div>
+      </section>
+
       {/* ── Chiusura ───────────────────────────────────────────── */}
       <section id="inizia" className="px-6 pt-8 pb-24">
         <div className="max-w-6xl mx-auto border-t-2 border-foreground pt-14">
@@ -429,14 +459,40 @@ export default function LandingPage() {
 
       {/* ── Colophon ───────────────────────────────────────────── */}
       <footer className="px-6 py-10 border-t border-border">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo-blue.svg" alt="" width={27} height={15} />
-            <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
-              ParliamentRAG
-            </span>
+        <div className="max-w-6xl mx-auto">
+          {/* Brand + resource links */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-8 gap-y-5">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Image src="/logo-blue.svg" alt="" width={27} height={15} />
+              <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
+                ParliamentRAG
+              </span>
+            </div>
+            <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+              <FooterLink href="https://github.com/Emeierkeio/ParliamentRAG" external>
+                GitHub
+              </FooterLink>
+              <FooterLink
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
+                external
+              >
+                {t("paperInUse")}
+              </FooterLink>
+              <FooterLink
+                href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
+                external
+              >
+                {t("paperDemo")}
+              </FooterLink>
+              <FooterLink href="https://orkg.org/papers/R1909763" external>
+                ORKG
+              </FooterLink>
+              <FooterLink href="/data">{t("footerData")}</FooterLink>
+              <FooterLink href="/privacy">{t("footerPrivacy")}</FooterLink>
+            </nav>
           </div>
-          <div className="text-center leading-relaxed space-y-1">
+          {/* Credits */}
+          <div className="mt-6 pt-5 border-t border-border flex flex-col md:flex-row md:items-baseline justify-between gap-x-8 gap-y-2 text-xs text-muted-foreground leading-relaxed">
             <p>
               {t("footerThesis")} · {t("footerAuthors")} ·{" "}
               <a
@@ -448,8 +504,10 @@ export default function LandingPage() {
                 {t("footerUni")}
               </a>
             </p>
-            <p className="text-muted-foreground/80">
-              {t("footerFunding")}{" "}
+            <p className="text-muted-foreground/80 md:text-right">
+              {t("footerFunding")}
+              <br />
+              {t("footerGrants")}{" "}
               <a
                 href="https://doi.org/10.3030/101189771"
                 target="_blank"
@@ -488,48 +546,70 @@ export default function LandingPage() {
               )
             </p>
           </div>
-          <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              GitHub
-            </a>
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("paperInUse")}
-            </a>
-            <a
-              href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("paperDemo")}
-            </a>
-            <a
-              href="https://orkg.org/papers/R1909763"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              ORKG
-            </a>
-            <Link
-              href="/privacy"
-              className="inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {t("footerPrivacy")}
-            </Link>
-          </p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/* ── Footer link — internal or external resource ───────────────── */
+function FooterLink({
+  href,
+  external = false,
+  children,
+}: {
+  href: string;
+  external?: boolean;
+  children: React.ReactNode;
+}) {
+  const className =
+    "inline-block pt-1 pb-0.5 border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer whitespace-nowrap";
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
+
+/* ── Data stats — live graph numbers, labels shared with /data ─── */
+function DataStats() {
+  const td = useTranslations("DataPage");
+  const locale = useLocale();
+  const kg = useKgStats();
+  const stats = [
+    { value: kg.triples ?? 0, key: "stTriples" },
+    { value: kg.individual_votes, key: "stIndVotes", compact: true },
+    { value: kg.speeches, key: "stSpeeches" },
+  ] as const;
+  const fmt = (value: number, compact?: boolean) =>
+    new Intl.NumberFormat(locale, {
+      useGrouping: "always",
+      ...(compact ? { notation: "compact" as const, maximumFractionDigits: 1 } : {}),
+    }).format(value);
+  return (
+    <div>
+      {stats.map((s, i) => (
+        <div
+          key={s.key}
+          className={`flex items-baseline justify-between gap-4 py-4 ${
+            i === 0 ? "" : "border-t border-border"
+          }`}
+        >
+          <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-primary tabular-nums">
+            {fmt(s.value, "compact" in s && s.compact)}
+          </span>
+          <span className="text-sm text-muted-foreground text-right leading-snug">
+            {td(s.key)}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -687,6 +767,7 @@ const TOC_ITEMS = [
   { id: "strumenti", labelKey: "tocInstruments", numeral: "I" },
   { id: "garanzie", labelKey: "tocGuarantees", numeral: "II" },
   { id: "pipeline", labelKey: "tocIter", numeral: "III" },
+  { id: "dati", labelKey: "tocData", numeral: "IV" },
   { id: "inizia", labelKey: "tocStart", numeral: "→" },
 ] as const;
 
