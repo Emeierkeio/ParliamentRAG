@@ -511,6 +511,14 @@ export default function LandingPage() {
             >
               {t("paperDemo")}
             </a>
+            <a
+              href="https://orkg.org/papers/R1909763"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              ORKG
+            </a>
             <Link
               href="/privacy"
               className="border-b border-border hover:border-foreground hover:text-foreground transition-colors cursor-pointer"
