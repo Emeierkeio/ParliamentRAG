@@ -759,7 +759,8 @@ class DatabaseBuilder:
                 SET g.acronym = $acronym
                 WITH g
                 MATCH (d:{label} {{id: $nodeId}})
-                CREATE (d)-[:MEMBER_OF_GROUP {{start_date: $startDate, end_date: $endDate}}]->(g)
+                MERGE (d)-[m:MEMBER_OF_GROUP {{start_date: $startDate}}]->(g)
+                SET m.end_date = $endDate
             """, name=row["name"], acronym=row["acronym"], nodeId=row["nodeId"],
                 startDate=row["startDate"], endDate=row["endDate"])
 
@@ -772,7 +773,8 @@ class DatabaseBuilder:
                 SET g.acronym = $acronym
                 WITH g
                 MATCH (d:{label} {{id: $nodeId}})
-                CREATE (d)-[:MEMBER_OF_GROUP {{start_date: $startDate}}]->(g)
+                MERGE (d)-[m:MEMBER_OF_GROUP {{start_date: $startDate}}]->(g)
+                REMOVE m.end_date
             """, name=row["name"], acronym=row["acronym"], nodeId=row["nodeId"],
                 startDate=row["startDate"])
 
@@ -824,7 +826,8 @@ class DatabaseBuilder:
                 MERGE (c:Committee {{name: $name}})
                 WITH c
                 MATCH (d:{label} {{id: $nodeId}})
-                CREATE (d)-[:MEMBER_OF_COMMITTEE {{start_date: $startDate, end_date: $endDate}}]->(c)
+                MERGE (d)-[m:MEMBER_OF_COMMITTEE {{start_date: $startDate}}]->(c)
+                SET m.end_date = $endDate
             """, name=row["name"], nodeId=row["nodeId"],
                 startDate=row["startDate"], endDate=row["endDate"])
 
@@ -836,7 +839,8 @@ class DatabaseBuilder:
                 MERGE (c:Committee {{name: $name}})
                 WITH c
                 MATCH (d:{label} {{id: $nodeId}})
-                CREATE (d)-[:MEMBER_OF_COMMITTEE {{start_date: $startDate}}]->(c)
+                MERGE (d)-[m:MEMBER_OF_COMMITTEE {{start_date: $startDate}}]->(c)
+                REMOVE m.end_date
             """, name=row["name"], nodeId=row["nodeId"],
                 startDate=row["startDate"])
 
