@@ -41,7 +41,7 @@ LOCAL_BOLT_PORT        := 7691
 LOCAL_HTTP_PORT        := 7477
 LOCAL_BACKUP_DIR       := $(CURDIR)/neo4j-local-backups
 
-.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs tunnel browser db-backup db-pull db-use-local db-use-remote
+.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs og-images tunnel browser db-backup db-pull db-use-local db-use-remote
 
 help:
 	@grep -E '^#   make' Makefile | sed 's/^#   //'
@@ -242,6 +242,12 @@ browser:
 ## refresh deputy/group CSVs, download + ingest new Camera stenografici, atti, roles, embeddings.
 ## Embeddings hit the v2 cache (build/embeddings_cache.db) so OpenAI cost is near zero for
 ## sessions already ingested in the v2 DB.
+## Rigenera le Open Graph preview (home, /home, /data) da screenshot del
+## sito live, ritagliando la barra "dati aggiornati al ..." così la preview
+## non invecchia. Output nei file opengraph-image.png di Next.js.
+og-images:
+	@$(BACKEND_DIR)/venv/bin/python scripts/gen_og_images.py
+
 ## Backfill delle relazioni MENTIONS (Chunk->Deputy) e CITES
 ## (Chunk->ParliamentaryAct) dai campi NER dei chunk. Idempotente (solo MERGE):
 ## si può rilanciare in qualsiasi momento. L'ingest ordinario le crea già per

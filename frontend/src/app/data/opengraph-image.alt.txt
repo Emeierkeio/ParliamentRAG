@@ -1,0 +1,1 @@
+The ParliamentRAG knowledge graph: speeches, acts, votes and EuroVoc subjects linked as one queryable graph.
