@@ -4,6 +4,7 @@ Configuration endpoint for exposing system settings.
 Returns effective configuration WITHOUT secrets.
 """
 import logging
+import re
 from typing import Dict, Any, List, Optional
 
 from fastapi import APIRouter
@@ -466,18 +467,42 @@ async def get_recent_topics(lang: str = "it"):
                     {"days": days},
                 )
                 since = since_row[0]["since"] if since_row else None
-                # Acts behind the chips: shown in the header tooltip so the
-                # list is traceable to actual proceedings (titles stay in
-                # Italian — they are official act names, like quotations)
-                act_rows = neo4j.query(
-                    "MATCH (a:ParliamentaryAct)-[:HAS_SUBJECT]->(c:EurovocConcept) "
-                    "WHERE a.presentation_date >= date() - duration({days: $days}) "
-                    "AND c.label_it IN $topics AND a.title IS NOT NULL AND a.title <> '' "
-                    "RETURN DISTINCT a.title AS title, toString(a.presentation_date) AS date "
-                    "ORDER BY date DESC LIMIT 5",
-                    {"days": days, "topics": topics},
-                )
-                acts = [{"title": r["title"], "date": r["date"]} for r in act_rows]
+                break
+        # Tooltip evidence: the provvedimenti actually discussed on the floor
+        # (bills first, mozioni/risoluzioni as filler), not the ODG and
+        # interrogazioni that dominate by volume. DISCUSSES points at
+        # placeholder act nodes minted from the transcript references, so they
+        # are resolved to the real SPARQL acts by number (base number for
+        # lettered variants, '-'→'/' for mozioni). Own window cascade: recent
+        # sittings can be ODG/question-time only. Titles stay in Italian —
+        # they are official act names, like quotations.
+        for act_days in (7, 30, 90):
+            act_rows = neo4j.query(
+                "MATCH (se:Session)-[:HAS_DEBATE]->(:Debate)-[:DISCUSSES]->(ph) "
+                "WHERE se.date >= date() - duration({days: $days}) "
+                "WITH DISTINCT ph, max(se.date) AS sd "
+                "WITH ph, sd, split(ph.number, '-')[0] AS base "
+                "MATCH (a:ParliamentaryAct) "
+                "WHERE a.uri STARTS WITH 'http' AND a.title IS NOT NULL AND a.title <> '' "
+                "  AND (a.number = ph.number OR a.number = base "
+                "       OR a.number = replace(ph.number, '-', '/')) "
+                "  AND (CASE WHEN ph.type = 'pdl' THEN a.type IN ['Progetto di Legge', 'pdl'] "
+                "       ELSE toLower(a.type) CONTAINS toLower(ph.type) END) "
+                "WITH DISTINCT a, sd, CASE "
+                "  WHEN a.type IN ['Progetto di Legge', 'pdl'] THEN 0 ELSE 1 END AS prio "
+                "RETURN a.title AS title, toString(sd) AS date, a.type AS type "
+                "ORDER BY prio, date DESC LIMIT 4",
+                {"days": act_days},
+            )
+            acts = [
+                {
+                    "title": re.sub(r"<[^>]+>", "", r["title"]),
+                    "date": r["date"],
+                    "type": r["type"],
+                }
+                for r in act_rows
+            ]
+            if len(acts) >= 2:
                 break
     except Exception as e:
         logger.warning("Failed to get recent topics: %s", e)

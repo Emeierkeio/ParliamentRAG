@@ -311,7 +311,8 @@
     "topicQuery": "¿Cuál es la posición de los grupos parlamentarios sobre el tema: {topic}?",
     "researchNote": "Las conversaciones se guardan de forma anónima con fines de investigación.",
     "lastTopics": "Últimos temas debatidos",
-    "lastTopicsHint": "De los temas de los actos presentados desde el {date}. Por ejemplo:"
+    "lastTopicsHint": "Temas extraídos de los actos parlamentarios presentados desde el {date}.",
+    "lastTopicsHintActs": "Recientemente en el pleno, entre otros:"
   },
   "ChamberSelector": {
     "camera": "Cámara de Diputados",
