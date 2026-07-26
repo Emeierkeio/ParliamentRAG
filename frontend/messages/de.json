@@ -312,7 +312,8 @@
     "researchNote": "Konversationen werden zu Forschungszwecken anonym gespeichert.",
     "lastTopics": "Zuletzt diskutierte Themen",
     "lastTopicsHint": "Themen der seit dem {date} im Plenum diskutierten Vorlagen.",
-    "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:"
+    "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:",
+    "lastTopicsLoading": "Die letzten Plenardebatten werden im Wissensgraphen gesucht…"
   },
   "ChamberSelector": {
     "camera": "Abgeordnetenkammer",

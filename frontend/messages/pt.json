@@ -312,7 +312,8 @@
     "researchNote": "As conversas são guardadas anonimamente para fins de pesquisa.",
     "lastTopics": "Últimos temas debatidos",
     "lastTopicsHint": "Temas das medidas debatidas em plenário desde {date}.",
-    "lastTopicsHintActs": "Recentemente em plenário, entre outros:"
+    "lastTopicsHintActs": "Recentemente em plenário, entre outros:",
+    "lastTopicsLoading": "A procurar os últimos debates em plenário no grafo…"
   },
   "ChamberSelector": {
     "camera": "Câmara",
