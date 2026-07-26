@@ -355,7 +355,7 @@ function TopicPill({ topic, onClick, raw = false, queryText }: TopicPillProps) {
   const query = t("topicQuery", { topic: queryText ?? label });
   return (
     <button
-      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
       onClick={() => onClick(query)}
     >
       <span>{displayName}</span>

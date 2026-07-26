@@ -455,7 +455,7 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
                 "You label Italian parliamentary act titles. For each title "
                 "return a JSON object with two fields, BOTH strictly written "
                 f"in {lang_name} (translate if needed):\n"
-                '- "label": a theme label, 2-5 words, lowercase, clear on its '
+                '- "label": a theme label, 2-4 words and at most 35 characters, lowercase, clear on its '
                 "own, and distinct from the labels of the other acts (when "
                 "two acts share a theme, name the specific aspect of each);\n"
                 '- "query": a noun phrase of 8-18 words describing precisely '
