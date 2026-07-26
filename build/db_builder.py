@@ -209,6 +209,7 @@ class DatabaseBuilder:
         self._driver = driver
         self._config = config or BuildConfig()
         self._nlp = None  # Lazy-loaded spaCy NER model
+        self._ref_linkers = None  # Lazy-loaded (DeputyResolver, ActIndex)
         # Schema v2 (C8): counter of chunks dropped for substring violations
         self.invariant_violations = 0
 
@@ -225,6 +226,21 @@ class DatabaseBuilder:
                 print("WARNING: spaCy model it_core_news_lg not installed. Skipping NER.")
                 self._nlp = False  # Sentinel to avoid retrying
         return self._nlp if self._nlp is not False else None
+
+    def _get_ref_linkers(self):
+        """Lazy-load the deputy roster and Camera-bill index for NER linking.
+
+        Loaded once per builder instance: acts ingested later in the same run
+        (update mode ingests sessions before atti) resolve on the next run or
+        via the link_refs.py backfill.
+        """
+        if self._ref_linkers is None:
+            from link_refs import load_resolver, load_act_index
+            with self._driver.session() as neo_session:
+                self._ref_linkers = (
+                    load_resolver(neo_session), load_act_index(neo_session)
+                )
+        return self._ref_linkers
 
     # ------------------------------------------------------------------
     # Schema setup
@@ -387,8 +403,16 @@ class DatabaseBuilder:
                     chunk["lawRefs"] = []
                     chunk["personRefs"] = []
 
+            # Resolve NER strings to graph entities (mentionIds / citesUris)
+            from link_refs import annotate_chunks, write_links
+            resolver, act_index = self._get_ref_linkers()
+            annotate_chunks(all_chunks, resolver, act_index)
+
             self._batch_write(neo_session, self._create_speeches, speeches)
             self._batch_write(neo_session, self._create_chunks, all_chunks)
+
+            # MENTIONS / CITES relationships from the resolved NER refs
+            write_links(neo_session, all_chunks)
 
             # 5. SPOKEN_BY relationships
             self._batch_write(neo_session, self._link_speeches_to_speakers, speeches)
@@ -1297,6 +1321,7 @@ class DatabaseBuilder:
                     m.embedding_model = $model,
                     m.embedding_dims = 1536,
                     m.built_at = datetime(),
+                    m.updated_at = datetime(),
                     m.build_tool_commit = $commit,
                     m.source_datasets = [
                         'http://dati.camera.it/ocd/',

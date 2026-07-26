@@ -10,6 +10,7 @@
 #   make build                        # production build of the frontend
 #   make update-data                  # ingest new Camera sessions into the demo DB (via v2 pipeline)
 #   make update-data DEMO_NEO4J=bolt://localhost:7691   # same, but against the LOCAL copy (staging)
+#   make link-refs                    # backfill MENTIONS/CITES from chunk NER fields (idempotent)
 #   make db-backup                    # dated dump of the remote DB on the server (few min downtime)
 #   make db-pull                      # download latest dump + restore into a local Neo4j (:7691)
 #   make db-use-local / db-use-remote # switch NEO4J_URI in .env between local copy and remote
@@ -39,7 +40,7 @@ LOCAL_BOLT_PORT        := 7691
 LOCAL_HTTP_PORT        := 7477
 LOCAL_BACKUP_DIR       := $(CURDIR)/neo4j-local-backups
 
-.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data tunnel db-backup db-pull db-use-local db-use-remote
+.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs tunnel db-backup db-pull db-use-local db-use-remote
 
 help:
 	@grep -E '^#   make' Makefile | sed 's/^#   //'
@@ -226,6 +227,13 @@ tunnel:
 ## refresh deputy/group CSVs, download + ingest new Camera stenografici, atti, roles, embeddings.
 ## Embeddings hit the v2 cache (build/embeddings_cache.db) so OpenAI cost is near zero for
 ## sessions already ingested in the v2 DB.
+## Backfill delle relazioni MENTIONS (Chunk->Deputy) e CITES
+## (Chunk->ParliamentaryAct) dai campi NER dei chunk. Idempotente (solo MERGE):
+## si può rilanciare in qualsiasi momento. L'ingest ordinario le crea già per
+## i chunk nuovi; questo serve per lo storico o dopo modifiche alle regex.
+link-refs: tunnel
+	@$(BACKEND_DIR)/venv/bin/python build/link_refs.py --neo4j-uri $(DEMO_NEO4J)
+
 update-data: tunnel
 	@test -f $(V2_DIR)/build/build_and_update.py || { \
 		echo "ERROR: v2 pipeline not found at $(V2_DIR)/build — set V2_DIR=<path to ParliamentRAG repo>"; exit 1; }
