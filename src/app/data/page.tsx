@@ -21,6 +21,10 @@ const fraunces = Fraunces({
    The paper cites the version DOI (…21560332) for reproducibility. */
 const ZENODO_DOI = "10.5281/zenodo.21560331";
 const ZENODO_URL = `https://doi.org/${ZENODO_DOI}`;
+// Date the dataset was last published to Zenodo. Rewritten by
+// build/zenodo_update.py on a successful publish, NOT by make update-data:
+// the archive is a frozen snapshot and lags the live graph on purpose.
+const ZENODO_UPDATED = "2026-07-26";
 
 /* ── Graph numbers — live from /api/data/stats, static fallback ── */
 const STATS = [
@@ -460,7 +464,14 @@ export default function DataPage() {
             >
               Zenodo · DOI {ZENODO_DOI}
               <ArrowUpRight className="h-3 w-3 self-center" />
-            </a>
+            </a>{" · "}
+            {t("updatedAt", {
+              date: new Intl.DateTimeFormat(locale, {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              }).format(new Date(`${ZENODO_UPDATED}T12:00:00`)),
+            })}
           </p>
         </div>
       </section>
