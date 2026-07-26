@@ -311,7 +311,8 @@
     },
     "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?",
     "researchNote": "Le conversazioni sono salvate in forma anonima per finalità di ricerca.",
-    "lastTopics": "Ultimi argomenti discussi"
+    "lastTopics": "Ultimi argomenti discussi",
+    "lastTopicsHint": "Dai temi degli atti presentati in aula dal {date}. Ad esempio:"
   },
   "ChamberSelector": {
     "camera": "Camera",
