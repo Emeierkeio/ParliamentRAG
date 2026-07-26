@@ -428,6 +428,43 @@ async def translate_text(req: TranslateRequest):
         return {"translated": req.text}
 
 
+_recent_topics_cache: dict = {"at": 0.0, "data": None}
+_RECENT_TOPICS_TTL_S = 3600
+
+
+@router.get("/recent-topics")
+async def get_recent_topics():
+    """EuroVoc subjects of the most recently presented acts (last-topics chips).
+
+    Looks at the last 30 days of parliamentary acts, widening to 90 when the
+    window is too empty (e.g. summer recess). Cached for an hour.
+    """
+    import time as _time
+    if _recent_topics_cache["data"] is not None and \
+            _time.time() - _recent_topics_cache["at"] < _RECENT_TOPICS_TTL_S:
+        return _recent_topics_cache["data"]
+    from ..services.deps import get_services
+    client = get_services()["neo4j"]
+    topics: list[str] = []
+    try:
+        for days in (30, 90):
+            rows = client.query(
+                "MATCH (a:ParliamentaryAct)-[:HAS_SUBJECT]->(c:EurovocConcept) "
+                "WHERE a.presentation_date >= date() - duration({days: $days}) "
+                "RETURN c.label_it AS topic, count(*) AS n "
+                "ORDER BY n DESC LIMIT 6",
+                {"days": days},
+            )
+            topics = [r["topic"] for r in rows if r.get("topic")]
+            if len(topics) >= 3:
+                break
+    except Exception as e:
+        logger.warning("Failed to get recent topics: %s", e)
+    data = {"topics": topics}
+    _recent_topics_cache.update(at=_time.time(), data=data)
+    return data
+
+
 @router.get("/last-update")
 async def get_last_update():
     """Date of the last `make update-data` run (SchemaMeta.updated_at).
