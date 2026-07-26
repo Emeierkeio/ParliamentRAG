@@ -312,7 +312,8 @@
     "researchNote": "Las conversaciones se guardan de forma anónima con fines de investigación.",
     "lastTopics": "Últimos temas debatidos",
     "lastTopicsHint": "Temas de las medidas debatidas en el pleno desde el {date}.",
-    "lastTopicsHintActs": "Recientemente en el pleno, entre otros:"
+    "lastTopicsHintActs": "Recientemente en el pleno, entre otros:",
+    "lastTopicsLoading": "Buscando los últimos debates del pleno en el grafo…"
   },
   "ChamberSelector": {
     "camera": "Cámara de Diputados",
