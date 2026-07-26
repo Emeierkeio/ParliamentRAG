@@ -163,6 +163,19 @@ interface RecentTopics {
   acts: { title: string; date: string }[];
 }
 
+function formatDate(iso: string | null, locale: string): string {
+  if (!iso) return "";
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // Latest subjects actually on the floor (EuroVoc of recent acts), served in
   // the UI language and cached per locale so the section doesn't pop in on
@@ -236,15 +249,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                       <HelpCircle className="w-3.5 h-3.5" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" align="start" className="max-w-sm text-left normal-case tracking-normal">
-                    <p className="font-medium mb-1.5">
-                      {t("lastTopicsHint", { date: recent.since ?? "" })}
+                  <TooltipContent
+                    side="bottom"
+                    align="start"
+                    className="max-w-sm p-3.5 text-left normal-case tracking-normal"
+                  >
+                    <p className="text-[11px] leading-snug opacity-75 mb-2.5">
+                      {t("lastTopicsHint", { date: formatDate(recent.since, locale) })}
                     </p>
-                    <ul className="space-y-1.5">
+                    <p className="text-[11px] font-semibold mb-2">{t("lastTopicsHintActs")}</p>
+                    <ul className="space-y-2.5">
                       {recent.acts.map((act) => (
                         <li key={act.title} className="leading-snug">
-                          <span className="line-clamp-2 opacity-90">{act.title}</span>
-                          <span className="opacity-60 tabular-nums">{act.date}</span>
+                          <span className="block text-[10px] uppercase tracking-wide tabular-nums opacity-60 mb-0.5">
+                            {formatDate(act.date, locale)}
+                          </span>
+                          <span className="line-clamp-2 text-xs">{act.title}</span>
                         </li>
                       ))}
                     </ul>
