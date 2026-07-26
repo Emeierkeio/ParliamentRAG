@@ -534,6 +534,10 @@ async def get_recent_topics(lang: str = "it"):
     if acts:
         try:
             labels = await _topics_from_titles([a["title"] for a in acts], lang)
+            # Per-act label in the tooltip: the official title alone is
+            # unreadable legalese, the label says what the measure is about
+            for act, label in zip(acts, labels):
+                act["topic"] = label or None
             seen: set = set()
             for label in labels:
                 if label and label.lower() not in seen and len(topics) < 6:
@@ -544,7 +548,8 @@ async def get_recent_topics(lang: str = "it"):
             # Max 2 subjects per act so one multi-subject act cannot
             # monopolise the list (Italian only — no LLM available here)
             seen = set()
-            for subjects in subjects_by_act:
+            for act, subjects in zip(acts, subjects_by_act):
+                act["topic"] = subjects[0] if subjects else None
                 for subject in subjects[:2]:
                     if subject and subject not in seen and len(topics) < 6:
                         seen.add(subject)
