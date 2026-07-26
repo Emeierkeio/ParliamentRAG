@@ -661,6 +661,24 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
   const [mobileABTab, setMobileABTab] = useState<"A" | "B" | "valuta">("A");
   const [hasConfirmedReading, setHasConfirmedReading] = useState(false);
 
+  // Same date/cache as the Sidebar footer: last `make update-data` run
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+  useEffect(() => {
+    const cached = sessionStorage.getItem("lastUpdateDate");
+    if (cached) setLastUpdate(cached);
+    fetch("/api/config/last-update")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.last_update) {
+          const [y, m, d] = data.last_update.split("-");
+          const formatted = `${d}/${m}/${y}`;
+          sessionStorage.setItem("lastUpdateDate", formatted);
+          setLastUpdate(prev => (prev === formatted ? prev : formatted));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
 
   // Group A/B questions by category (exclude overall_satisfaction - handled separately)
   const categories = SURVEY_QUESTIONS.filter(q => q.id !== "overall_satisfaction").reduce((acc, q) => {
@@ -1319,7 +1337,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
                     Valutatore: <span className="font-semibold text-white">{toTitleCase(evaluatorId)}</span>
                   </p>
                 )}
-                <p className="text-xs text-blue-300">I dati parlamentari sono aggiornati al <strong className="text-blue-100">04/02/2026</strong></p>
+                <p className="text-xs text-blue-300">I dati parlamentari sono aggiornati al <strong className="text-blue-100">{lastUpdate ?? "…"}</strong></p>
               </div>
             </div>
           ) : (
