@@ -160,7 +160,7 @@ interface WelcomeScreenProps {
 interface RecentTopics {
   topics: string[];
   since: string | null;
-  acts: { title: string; date: string }[];
+  acts: { title: string; date: string; topic?: string | null }[];
 }
 
 function formatDate(iso: string | null, locale: string): string {
@@ -258,13 +258,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                       {t("lastTopicsHint", { date: formatDate(recent.since, locale) })}
                     </p>
                     <p className="text-[11px] font-semibold mb-2">{t("lastTopicsHintActs")}</p>
-                    <ul className="space-y-2.5">
+                    <ul className="space-y-3">
                       {recent.acts.map((act) => (
                         <li key={act.title} className="leading-snug">
-                          <span className="block text-[10px] uppercase tracking-wide tabular-nums opacity-60 mb-0.5">
-                            {formatDate(act.date, locale)}
+                          <span className="flex items-baseline justify-between gap-3 mb-0.5">
+                            <span className="text-xs font-semibold">
+                              {act.topic
+                                ? act.topic.charAt(0).toUpperCase() + act.topic.slice(1)
+                                : formatDate(act.date, locale)}
+                            </span>
+                            {act.topic && (
+                              <span className="shrink-0 text-[10px] tabular-nums opacity-60">
+                                {formatDate(act.date, locale)}
+                              </span>
+                            )}
                           </span>
-                          <span className="line-clamp-2 text-xs">{act.title}</span>
+                          <span className="line-clamp-2 text-[11px] opacity-70">{act.title}</span>
                         </li>
                       ))}
                     </ul>
