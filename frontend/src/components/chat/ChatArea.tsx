@@ -196,29 +196,48 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         </p>
       </div>
 
-      {/* Topic pills: latest subjects from the live KG, then the curated legislature list */}
-      {recentTopics.length > 0 && (
+      {/* Topics: latest subjects from the live KG (left) and the curated
+          legislature list (right). Two visual languages on purpose — chips
+          for live data, underlined links for the curated picks. */}
+      {recentTopics.length > 0 ? (
+        <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
+          <section>
+            <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+              <span className="relative flex h-1.5 w-1.5" aria-hidden>
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary/60 motion-safe:animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
+              {t("lastTopics")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {recentTopics.map((topic) => (
+                <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
+              ))}
+            </div>
+          </section>
+          <section className="sm:border-l sm:border-border sm:pl-10">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+              {t("trendingTopics")}
+            </p>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              {TOPICS.map((topic) => (
+                <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
+              ))}
+            </div>
+          </section>
+        </div>
+      ) : (
         <div className="w-full max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-            {t("lastTopics")}
+            {t("trendingTopics")}
           </p>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
-            {recentTopics.map((topic) => (
-              <TopicPill key={topic} topic={topic} raw onClick={onSendMessage} />
+            {TOPICS.map((topic) => (
+              <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
             ))}
           </div>
         </div>
       )}
-      <div className="w-full max-w-2xl">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-          {t("trendingTopics")}
-        </p>
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
-          {TOPICS.map((topic) => (
-            <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -226,22 +245,37 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
 interface TopicPillProps {
   topic: string;
   onClick: (message: string) => void;
-  /** Dynamic topics (from the KG) have no i18n key: show the label as-is */
-  raw?: boolean;
 }
 
-function TopicPill({ topic, onClick, raw = false }: TopicPillProps) {
+function TopicPill({ topic, onClick }: TopicPillProps) {
   const t = useTranslations("WelcomeScreen");
-  const displayName = raw ? topic : (t(`topics.${topic}` as never) as string);
+  const displayName = t(`topics.${topic}` as never) as string;
   // Use the localized topic name in the query too (EN → "healthcare reform", not "riforma sanitaria")
   const query = t("topicQuery", { topic: displayName });
   return (
     <button
-      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground cursor-pointer"
+      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
       onClick={() => onClick(query)}
     >
       <span className="capitalize">{displayName}</span>
       <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
+    </button>
+  );
+}
+
+/** Chip for KG-derived topics: EuroVoc labels are lowercase Italian, so only
+ *  the first letter is capitalized ("Protezione dell'ambiente", not
+ *  "Protezione Dell'Ambiente"). */
+function TopicChip({ topic, onClick }: TopicPillProps) {
+  const t = useTranslations("WelcomeScreen");
+  const displayName = topic.charAt(0).toUpperCase() + topic.slice(1);
+  const query = t("topicQuery", { topic });
+  return (
+    <button
+      className="inline-flex items-center rounded-full border border-border bg-muted/40 px-3 py-1.5 text-[13px] text-foreground/80 transition-colors duration-200 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      onClick={() => onClick(query)}
+    >
+      {displayName}
     </button>
   );
 }
