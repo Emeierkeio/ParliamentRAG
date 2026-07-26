@@ -177,6 +177,13 @@ export default function DataPage() {
   const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
   const stats = useKgStats();
   const { sample: graphSample, loaded: graphLoaded } = useGraphSample();
+  const zenodoUpdatedLabel = t("updatedAt", {
+    date: new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(`${ZENODO_UPDATED}T12:00:00`)),
+  });
   const updatedNote = (file?: RdfFile) =>
     file?.modified
       ? t("updatedAt", {
@@ -427,6 +434,7 @@ export default function DataPage() {
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
               updatedNote={updatedNote(manifest["parliamentrag_kg.ttl"])}
+              archivedNote={zenodoUpdatedLabel}
               zenodoLabel={t("zenodoCta")}
             />
             <FileCard
@@ -440,6 +448,7 @@ export default function DataPage() {
               downloadLabel={t("downloadCta")}
               readyNote={t("readyNote")}
               updatedNote={updatedNote(manifest["parliamentrag_votes.nt"])}
+              archivedNote={zenodoUpdatedLabel}
               zenodoLabel={t("zenodoCta")}
             />
           </div>
@@ -464,14 +473,7 @@ export default function DataPage() {
             >
               Zenodo · DOI {ZENODO_DOI}
               <ArrowUpRight className="h-3 w-3 self-center" />
-            </a>{" · "}
-            {t("updatedAt", {
-              date: new Intl.DateTimeFormat(locale, {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              }).format(new Date(`${ZENODO_UPDATED}T12:00:00`)),
-            })}
+            </a>
           </p>
         </div>
       </section>
@@ -622,6 +624,7 @@ function FileCard({
   downloadLabel,
   readyNote,
   updatedNote,
+  archivedNote,
   zenodoLabel,
 }: {
   title: string;
@@ -634,6 +637,7 @@ function FileCard({
   downloadLabel: string;
   readyNote: string;
   updatedNote?: string;
+  archivedNote?: string;
   zenodoLabel: string;
 }) {
   const size = file ? formatBytes(file.bytes, locale) : fallbackSize;
@@ -643,8 +647,16 @@ function FileCard({
         <h3 className="[font-family:var(--font-display)] text-xl font-medium tracking-tight">
           {title}
         </h3>
-        <span className="font-mono text-[11px] uppercase tracking-wide text-primary-foreground/45 shrink-0 mt-2">
+        <span className="text-right font-mono text-[11px] uppercase tracking-wide text-primary-foreground/45 shrink-0 mt-2 leading-relaxed">
           {format} · {size}
+          {archivedNote ? (
+            <>
+              <br />
+              <span className="normal-case tracking-normal text-primary-foreground/40">
+                {archivedNote}
+              </span>
+            </>
+          ) : null}
         </span>
       </div>
       <p className="mt-3 text-sm leading-relaxed text-primary-foreground/60 flex-1">
