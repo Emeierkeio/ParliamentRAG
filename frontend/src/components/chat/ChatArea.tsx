@@ -158,7 +158,7 @@ interface WelcomeScreenProps {
 }
 
 interface RecentTopics {
-  topics: string[];
+  topics: { label: string; query: string }[];
   since: string | null;
   acts: { title: string; date: string; topic?: string | null }[];
 }
@@ -190,12 +190,12 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // hydration mismatch (same pattern as the Sidebar footer date).
   useLayoutEffect(() => {
     try {
-      const cached = sessionStorage.getItem(`recentTopics2:${locale}`);
+      const cached = sessionStorage.getItem(`recentTopics3:${locale}`);
       if (cached) setRecent(JSON.parse(cached));
     } catch {}
   }, [locale]);
   useEffect(() => {
-    const cacheKey = `recentTopics2:${locale}`;
+    const cacheKey = `recentTopics3:${locale}`;
     fetch(`/api/config/recent-topics?lang=${encodeURIComponent(locale)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
@@ -290,7 +290,13 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                     />
                   ))
                 : recent.topics.map((topic) => (
-                    <TopicPill key={topic} topic={topic} raw onClick={onSendMessage} />
+                    <TopicPill
+                      key={topic.label}
+                      topic={topic.label}
+                      queryText={topic.query}
+                      raw
+                      onClick={onSendMessage}
+                    />
                   ))}
             </div>
           </section>
@@ -326,17 +332,21 @@ interface TopicPillProps {
   onClick: (message: string) => void;
   /** KG-derived topics arrive already localized and have no i18n key */
   raw?: boolean;
+  /** Expanded phrase sent as the query (chip shows the short label, the
+   *  query carries the act's context — "digital signatures" alone would
+   *  lose the electoral meaning) */
+  queryText?: string;
 }
 
 /** Sentence case, not Title Case: EuroVoc and curated labels are lowercase
  *  phrases with embedded proper nouns ("conflitto in Ucraina"), so only the
  *  first letter is raised. */
-function TopicPill({ topic, onClick, raw = false }: TopicPillProps) {
+function TopicPill({ topic, onClick, raw = false, queryText }: TopicPillProps) {
   const t = useTranslations("WelcomeScreen");
   const label = raw ? topic : (t(`topics.${topic}` as never) as string);
   const displayName = label.charAt(0).toUpperCase() + label.slice(1);
-  // The localized label goes into the query too (EN UI → EN query)
-  const query = t("topicQuery", { topic: label });
+  // The localized label (or the expanded phrase) goes into the query
+  const query = t("topicQuery", { topic: queryText ?? label });
   return (
     <button
       className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
