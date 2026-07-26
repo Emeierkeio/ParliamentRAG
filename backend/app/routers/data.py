@@ -57,7 +57,15 @@ async def kg_stats():
         result = client.query(f"MATCH (n:`{label}`) RETURN count(n) AS c")
         data[key] = result[0]["c"] if result else None
 
-    result = client.query("MATCH (s:Session) RETURN max(s.date) AS last_date")
+    # Last `make update-data` run; falls back to newest Session date for
+    # DBs stamped before SchemaMeta.updated_at existed
+    result = client.query(
+        "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+        "WITH date(m.updated_at) AS stamped "
+        "OPTIONAL MATCH (s:Session) "
+        "WITH stamped, max(s.date) AS newest "
+        "RETURN coalesce(stamped, newest) AS last_date"
+    )
     last = result[0].get("last_date") if result else None
     data["last_update"] = str(last.to_native() if hasattr(last, "to_native") else last) if last else None
 
