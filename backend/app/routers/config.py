@@ -433,38 +433,52 @@ _recent_topics_cache: dict = {}  # lang -> {"at": ts, "data": {...}}
 _RECENT_TOPICS_TTL_S = 3600
 
 
-async def _topics_from_titles(titles: list[str], lang: str) -> list[str]:
-    """Short topic labels (in the UI language) from official act titles.
+async def _label_acts(titles: list[str], lang: str) -> list[dict]:
+    """Chip label + expanded query phrase (in the UI language) per act title.
 
-    Bills mostly carry no EuroVoc subject in the source data, so the topic is
-    distilled from the title with the same nano model used for translations.
+    Bills mostly carry no EuroVoc subject in the source data, so both are
+    distilled from the official title with the same nano model used for
+    translations. The label feeds the chip, the phrase feeds the query sent
+    on click — "firme digitali" alone would lose the electoral context.
     Raises on any LLM problem — the caller falls back to EuroVoc subjects.
     """
     import json as _json
     from ..key_pool import make_async_client
     lang_names = {"it": "italiano", "en": "English", "fr": "français",
                   "de": "Deutsch", "es": "español", "pt": "português"}
+    lang_name = lang_names.get(lang, lang)
     llm = make_async_client()
     resp = await llm.chat.completions.create(
         model="gpt-4.1-nano",
         messages=[
             {"role": "system", "content": (
-                "Per ogni titolo di atto parlamentare fornisci un'etichetta "
-                f"tematica breve (2-4 parole, minuscolo) in {lang_names.get(lang, lang)}. "
-                "Rispondi SOLO con un array JSON di stringhe, stesso ordine "
-                "dei titoli."
+                "You label Italian parliamentary act titles. For each title "
+                "return a JSON object with two fields, BOTH strictly written "
+                f"in {lang_name} (translate if needed):\n"
+                '- "label": a theme label, 2-5 words, lowercase, clear on its '
+                "own, and distinct from the labels of the other acts (when "
+                "two acts share a theme, name the specific aspect of each);\n"
+                '- "query": a noun phrase of 8-18 words describing precisely '
+                "what the measure is about. No lead-in such as \"the position "
+                "of parliamentary groups\": the phrase will be inserted into "
+                "that sentence by the caller.\n"
+                "Reply ONLY with a JSON array of objects, same order as the titles."
             )},
             {"role": "user", "content": _json.dumps(titles, ensure_ascii=False)},
         ],
         temperature=0,
-        max_tokens=300,
+        max_tokens=700,
     )
     raw = (resp.choices[0].message.content or "").strip()
     raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.M).strip()
-    labels = _json.loads(raw)
-    if not isinstance(labels, list):
+    items = _json.loads(raw)
+    if not isinstance(items, list):
         raise ValueError("not a list")
-    return [str(x).strip() for x in labels]
+    return [
+        {"label": str(x.get("label", "")).strip(),
+         "query": str(x.get("query", "")).strip()}
+        for x in items
+    ]
 
 
 @router.get("/recent-topics")
@@ -533,16 +547,19 @@ async def get_recent_topics(lang: str = "it"):
         logger.warning("Failed to get recent topics: %s", e)
     if acts:
         try:
-            labels = await _topics_from_titles([a["title"] for a in acts], lang)
+            items = await _label_acts([a["title"] for a in acts], lang)
             # Per-act label in the tooltip: the official title alone is
             # unreadable legalese, the label says what the measure is about
-            for act, label in zip(acts, labels):
-                act["topic"] = label or None
+            for act, item in zip(acts, items):
+                act["topic"] = item["label"] or None
             seen: set = set()
-            for label in labels:
-                if label and label.lower() not in seen and len(topics) < 6:
-                    seen.add(label.lower())
-                    topics.append(label)
+            for item in items:
+                if item["label"] and item["label"].lower() not in seen and len(topics) < 6:
+                    seen.add(item["label"].lower())
+                    topics.append({
+                        "label": item["label"],
+                        "query": item["query"] or item["label"],
+                    })
         except Exception as e:
             logger.warning("Recent-topics labelling failed, EuroVoc fallback: %s", e)
             # Max 2 subjects per act so one multi-subject act cannot
@@ -553,7 +570,7 @@ async def get_recent_topics(lang: str = "it"):
                 for subject in subjects[:2]:
                     if subject and subject not in seen and len(topics) < 6:
                         seen.add(subject)
-                        topics.append(subject)
+                        topics.append({"label": subject, "query": subject})
     data = {"topics": topics, "since": since, "acts": acts[:4]}
     _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
     return data
