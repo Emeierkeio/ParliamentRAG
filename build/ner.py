@@ -29,15 +29,37 @@ from typing import List, Optional
 # ---------------------------------------------------------------------------
 
 LAW_PATTERNS = [
-    # decreto legislativo / D.L. / DL / D.Lgs / DLgs with optional number/year
+    # decreto legislativo / decreto-legge / D.L. / DL / D.Lgs / DLgs
+    # with optional number/year
     re.compile(
-        r'\b(?:D\.?L(?:gs)?\.?|decreto(?:\s+legislativo)?|legge)\s+(?:n\.\s*)?\d+(?:/\d{2,4})?',
+        r'\b(?:D\.?L(?:gs)?\.?|decreto(?:[-\s]legge|\s+legislativo)?|legge)\s+(?:n\.\s*)?\d+(?:/\d{2,4})?',
         re.I,
     ),
     # Standalone D.lgs / D.Lgs / DLgs variants (alternate spacing)
     re.compile(
         r'\bD\.?\s*(?:L(?:gs)?|lgs)\.?\s*\d+(?:[/-]\d{2,4})?',
         re.I,
+    ),
+    # d.P.R. — decreto del Presidente della Repubblica
+    re.compile(
+        r'\bd\.?\s*P\.?\s*R\.?\s*(?:n\.\s*)?\d+(?:/\d{2,4})?',
+        re.I,
+    ),
+    # testo unico / T.U.
+    re.compile(
+        r'\btesto\s+unico\b|\bT\.U\.',
+        re.I,
+    ),
+    # Direttive e regolamenti UE: "direttiva 2006/112/CE", "regolamento (UE) 2016/679"
+    re.compile(
+        r'\b(?:direttiva|regolamento)\s+(?:\(?\s*(?:UE|CE|CEE)\s*\)?\s+)?(?:n\.\s*)?\d+/\d+(?:/(?:UE|CE|CEE))?',
+        re.I,
+    ),
+    # Atti Camera/Senato: "A.C. 2505", "A.S. 1234-B" — resolvable to
+    # ParliamentaryAct nodes in the graph. Case-sensitive: "a.c." in lowercase
+    # prose is almost never an act reference.
+    re.compile(
+        r'\bA\.\s?[CS]\.\s*(?:n\.\s*)?\d+(?:-[A-Z]+)?',
     ),
     # art. / articolo with optional comma number
     re.compile(

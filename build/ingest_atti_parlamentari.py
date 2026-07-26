@@ -190,10 +190,14 @@ class AttiParlamentariIngester:
             """)
             return [dict(record) for record in result]
 
-    def get_atti_deputato(self, deputato_uri: str) -> Dict[str, List[Dict]]:
+    def get_atti_deputato(self, deputato_uri: str, since: str | None = None) -> Dict[str, List[Dict]]:
         """
         Recupera tutti gli atti di un deputato (primo_firmatario e altro_firmatario).
         Usa dc:subject per eurovoc e ocd:destinatario con rdfs:label per il destinatario.
+
+        since: soglia "YYYYMMDD" su ocd:startDate per l'update incrementale —
+        limita la SPARQL agli atti presentati da quella data in poi. Gli atti
+        senza startDate passano comunque (mai esclusi per dato mancante).
         """
         # Se l'URI non è completo, costruiscilo.
         # NB: nell'ontologia OCD ocd:primo_firmatario/altro_firmatario puntano
@@ -243,6 +247,7 @@ class AttiParlamentariIngester:
                 ?atto dcterms:subject ?eurovocUri .
                 FILTER(STRSTARTS(STR(?eurovocUri), "http://eurovoc.europa.eu/"))
             }}
+            {f'FILTER(!BOUND(?dataPresentazione) || STR(?dataPresentazione) >= "{since}")' if since else ''}
         }}
         GROUP BY ?atto ?tipo ?titolo ?descrizione ?dataPresentazione ?numero ?destinatarioLabel ?ruolo
         """

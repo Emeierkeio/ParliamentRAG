@@ -55,7 +55,15 @@ def main():
             "acts": "ParliamentaryAct", "votes": "Vote", "ivotes": "IndividualVote",
         }.items():
             counts[key] = session.run(f"MATCH (n:`{label}`) RETURN count(n) AS c").single()["c"]
-        last = session.run("MATCH (s:Session) RETURN max(s.date) AS d").single()["d"]
+        # Last `make update-data` run; falls back to newest Session date for
+        # DBs stamped before SchemaMeta.updated_at existed
+        last = session.run(
+            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+            "WITH date(m.updated_at) AS stamped "
+            "OPTIONAL MATCH (s:Session) "
+            "WITH stamped, max(s.date) AS newest "
+            "RETURN coalesce(stamped, newest) AS d"
+        ).single()["d"]
     driver.close()
     last_date = str(last.to_native() if hasattr(last, "to_native") else last)
 
@@ -72,8 +80,8 @@ def main():
             "individual vote records** linked to deputies",
         ),
         (
-            re.compile(r"^- \*\*XIX Legislature — data as of .*$", re.M),
-            f"- **XIX Legislature — data as of {last_date}** (updated incrementally): "
+            re.compile(r"^- \*\*XIX Legislature[,—\s]+data as of .*$", re.M),
+            f"- **XIX Legislature, data as of {last_date}** (updated incrementally): "
             f"{counts['sessions']} sessions · {k(counts['speeches'])} speeches · "
             f"{kplus(counts['chunks'])} chunks · {k(counts['acts'])} acts · "
             f"{k(counts['votes'])} roll calls with {m(counts['ivotes'])} individual votes",

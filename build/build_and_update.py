@@ -29,6 +29,7 @@ import re
 import subprocess
 import sys
 import time
+from datetime import timedelta
 
 from neo4j import GraphDatabase
 
@@ -105,8 +106,15 @@ def run_subprocess(
 # Atti parlamentari ingestion helper
 # ---------------------------------------------------------------------------
 
-def _ingest_atti(driver, uri: str, user: str, password: str, legislature: int = 19) -> None:
-    """Ingest parliamentary acts using AttiParlamentariIngester."""
+def _ingest_atti(
+    driver, uri: str, user: str, password: str, legislature: int = 19,
+    since: str | None = None,
+) -> None:
+    """Ingest parliamentary acts using AttiParlamentariIngester.
+
+    since ("YYYYMMDD"): limit the per-deputy SPARQL to acts presented from
+    that date on (incremental update). None = full sweep.
+    """
     ingester = AttiParlamentariIngester(uri, user, password, legislature=legislature)
     try:
         ingester.create_constraints()
@@ -128,7 +136,7 @@ def _ingest_atti(driver, uri: str, user: str, password: str, legislature: int = 
             dep_nome = f"{dep.get('nome', '')} {dep.get('cognome', '')}"
             logger.debug("[%d/%d] %s...", i + 1, len(deputati), dep_nome)
 
-            atti = ingester.get_atti_deputato(dep_uri)
+            atti = ingester.get_atti_deputato(dep_uri, since=since)
             n_primo = len(atti["primo_firmatario"])
             n_altro = len(atti["altro_firmatario"])
 
@@ -138,15 +146,12 @@ def _ingest_atti(driver, uri: str, user: str, password: str, legislature: int = 
                     i + 1, len(deputati), dep_nome, n_primo, n_altro,
                 )
 
-            for atto in atti["primo_firmatario"]:
+            for atto in atti["primo_firmatario"] + atti["altro_firmatario"]:
                 atti_unici.add(atto["uri"])
-                _save_atto(driver, atto, dep_uri, "PRIMARY_SIGNATORY")
-                total_primo += 1
-
-            for atto in atti["altro_firmatario"]:
-                atti_unici.add(atto["uri"])
-                _save_atto(driver, atto, dep_uri, "CO_SIGNATORY")
-                total_altro += 1
+            _save_atti_batch(driver, atti["primo_firmatario"], dep_uri, "PRIMARY_SIGNATORY")
+            _save_atti_batch(driver, atti["altro_firmatario"], dep_uri, "CO_SIGNATORY")
+            total_primo += n_primo
+            total_altro += n_altro
 
         logger.info(
             "Atti unici: %d, Primo: %d, Altro: %d",
@@ -164,54 +169,53 @@ def _parse_yyyymmdd(raw: str):
     return None
 
 
-def _save_atto(driver, atto: dict, deputato_uri: str, rel_type: str) -> None:
-    """Upsert a single ParliamentaryAct node and its signatory relationship.
+def _save_atti_batch(driver, atti: list[dict], deputato_uri: str, rel_type: str) -> None:
+    """Upsert a deputy's ParliamentaryAct nodes and signatory relationships in
+    one UNWIND query (atto + EuroVoc SKOS + relazione firmatario).
 
-    Schema v2: presentation_date come date nativa (C1, mai stringa vuota — C3),
-    concetti EuroVoc come nodi SKOS con HAS_SUBJECT invece della stringa
-    appiattita (C10), niente proprietà eurovoc/eurovoc_embedding sull'atto.
+    Batched per deputato: on a remote DB behind an SSH tunnel (~200ms RTT) the
+    previous per-atto version cost ~2000 round-trips per deputy (~7 min each).
+
+    Schema v2: presentation_date come date nativa (C1, mai stringa vuota — C3,
+    preservato dal FOREACH condizionale), concetti EuroVoc come nodi SKOS con
+    HAS_SUBJECT invece della stringa appiattita (C10).
     """
-    presentation_iso = _parse_yyyymmdd(atto.get("dataPresentazione", ""))
-    date_clause = ", a.presentation_date = date($presentation_iso)" if presentation_iso else ""
+    if not atti:
+        return
+    rows = [
+        {
+            "uri": atto.get("uri", ""),
+            "type": atto.get("tipo", ""),
+            # La fonte Camera contiene entità HTML (&#8212; ecc.) che finivano
+            # grezze in UI (21.574 description bonificate one-shot 2026-07-24)
+            "title": _html.unescape(atto.get("titolo", "")),
+            "description": _html.unescape(atto.get("descrizione", "")),
+            "number": atto.get("numero", ""),
+            "recipient": atto.get("destinatario", ""),
+            "presentation_iso": _parse_yyyymmdd(atto.get("dataPresentazione", "")),
+            "concepts": atto.get("eurovoc_concepts") or [],
+        }
+        for atto in atti
+    ]
     with driver.session() as neo_session:
         neo_session.run(
             f"""
-            MERGE (a:ParliamentaryAct {{uri: $uri}})
-            SET a.type = $type, a.title = $title, a.description = $description,
-                a.number = $number, a.recipient = $recipient{date_clause}
-            """,
-            uri=atto.get("uri", ""),
-            type=atto.get("tipo", ""),
-            # La fonte Camera contiene entità HTML (&#8212; ecc.) che finivano
-            # grezze in UI (21.574 description bonificate one-shot 2026-07-24)
-            title=_html.unescape(atto.get("titolo", "")),
-            description=_html.unescape(atto.get("descrizione", "")),
-            number=atto.get("numero", ""),
-            recipient=atto.get("destinatario", ""),
-            presentation_iso=presentation_iso,
-        )
-        # EuroVoc concepts as SKOS nodes (dcterms:subject → skos:Concept)
-        concepts = atto.get("eurovoc_concepts") or []
-        if concepts:
-            neo_session.run(
-                """
-                MATCH (a:ParliamentaryAct {uri: $atto_uri})
-                UNWIND $concepts AS ev
-                MERGE (c:EurovocConcept {uri: ev.uri})
-                SET c.label_it = ev.label
-                MERGE (a)-[:HAS_SUBJECT]->(c)
-                """,
-                atto_uri=atto["uri"],
-                concepts=concepts,
-            )
-        neo_session.run(
-            f"""
             MATCH (d:Deputy {{id: $dep_uri}})
-            MATCH (a:ParliamentaryAct {{uri: $atto_uri}})
+            UNWIND $rows AS row
+            MERGE (a:ParliamentaryAct {{uri: row.uri}})
+            SET a.type = row.type, a.title = row.title,
+                a.description = row.description,
+                a.number = row.number, a.recipient = row.recipient
+            FOREACH (_ IN CASE WHEN row.presentation_iso IS NULL THEN [] ELSE [1] END |
+                SET a.presentation_date = date(row.presentation_iso))
             MERGE (d)-[:{rel_type}]->(a)
+            FOREACH (ev IN row.concepts |
+                MERGE (c:EurovocConcept {{uri: ev.uri}})
+                SET c.label_it = ev.label
+                MERGE (a)-[:HAS_SUBJECT]->(c))
             """,
             dep_uri=deputato_uri,
-            atto_uri=atto["uri"],
+            rows=rows,
         )
 
 
@@ -360,6 +364,7 @@ def do_update(
     skip_atti: bool = False,
     skip_embeddings: bool = False,
     legislature: int = 19,
+    full_atti: bool = False,
 ) -> None:
     """Incremental update: new XMLs, refreshed CSVs, new atti parlamentari."""
     config = load_config(CONFIG_PATH)
@@ -403,12 +408,27 @@ def do_update(
         else:
             logger.info("  No new stenografici found.")
 
-        # 4. Atti parlamentari
+        # 4. Atti parlamentari — incremental by default: only acts presented
+        # since the previous update run (7-day margin for late-arriving data).
+        # --full-atti forces the full per-deputy sweep, e.g. to pick up
+        # corrections to older acts.
         if skip_atti:
             logger.info("Step 4: Skipping atti parlamentari (--skip-atti)")
         else:
-            logger.info("Step 4: Updating atti parlamentari")
-            _ingest_atti(driver, uri, user, password, legislature=legislature)
+            since = None
+            if not full_atti:
+                with driver.session() as neo_session:
+                    rec = neo_session.run(
+                        "MATCH (m:SchemaMeta {id: 'singleton'}) RETURN m.updated_at AS u"
+                    ).single()
+                if rec and rec["u"]:
+                    prev = rec["u"].to_native()
+                    since = (prev - timedelta(days=7)).strftime("%Y%m%d")
+            if since:
+                logger.info("Step 4: Updating atti parlamentari (incremental since %s)", since)
+            else:
+                logger.info("Step 4: Updating atti parlamentari (full sweep)")
+            _ingest_atti(driver, uri, user, password, legislature=legislature, since=since)
 
         # 5. Roles
         logger.info("Step 5: Updating roles")
@@ -424,6 +444,14 @@ def do_update(
         else:
             logger.info("Step 6: Pre-calculating embeddings (incremental)")
             run_subprocess("precalculate_embeddings.py", uri, user, password)
+
+        # 7. Stamp the update run (shown as "data updated at" in the UI/README,
+        #    which would otherwise display the stale max(Session.date))
+        logger.info("Step 7: Stamping SchemaMeta.updated_at")
+        with driver.session() as neo_session:
+            neo_session.execute_write(lambda tx: tx.run(
+                "MERGE (m:SchemaMeta {id: 'singleton'}) SET m.updated_at = datetime()"
+            ))
 
         logger.info("Update complete!")
     finally:
@@ -610,6 +638,10 @@ def main() -> None:
         "--legislature", type=int, default=19,
         help="Legislature number to build/update (default: 19)",
     )
+    arg_parser.add_argument(
+        "--full-atti", action="store_true",
+        help="Update mode: full atti sweep instead of incremental since last run",
+    )
 
     args = arg_parser.parse_args()
     start_time = time.time()
@@ -651,6 +683,7 @@ def main() -> None:
             args.skip_atti,
             args.skip_embeddings,
             legislature=args.legislature,
+            full_atti=args.full_atti,
         )
 
     total = time.time() - start_time
