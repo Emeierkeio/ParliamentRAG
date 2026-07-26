@@ -36,6 +36,7 @@ Usage:
 """
 import argparse
 import os
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -121,14 +122,37 @@ def main():
         print(f"    done ({r.json()['size'] / 1e6:,.0f} MB on Zenodo)")
 
     # 4. Stamp today's date on the new version.
+    today = date.today().isoformat()
     meta = draft["metadata"]
-    meta["publication_date"] = date.today().isoformat()
+    meta["publication_date"] = today
     meta.pop("doi", None)  # the draft gets its own DOI on publish
     r = requests.put(draft["links"]["self"], params=auth, json={"metadata": meta})
     r.raise_for_status()
 
-    # 5. Never publish programmatically: a published DOI cannot be undone.
+    # 5. Reflect the archive date on the /data page (the "aggiornato al ..."
+    #    next to the Zenodo DOI). Kept in the frontend, not in the live graph,
+    #    so it tracks the Zenodo publish and not make update-data.
+    _stamp_data_page(today)
+
+    # 6. Never publish programmatically: a published DOI cannot be undone.
     print(f"\nDraft ready — review and press Publish here:\n  {draft['links']['html']}")
+
+
+def _stamp_data_page(iso_date: str) -> None:
+    page = REPO_ROOT / "frontend" / "src" / "app" / "data" / "page.tsx"
+    try:
+        text = page.read_text(encoding="utf-8")
+        new, n = re.subn(
+            r'const ZENODO_UPDATED = "\d{4}-\d{2}-\d{2}";',
+            f'const ZENODO_UPDATED = "{iso_date}";', text,
+        )
+        if n == 1:
+            page.write_text(new, encoding="utf-8")
+            print(f"Stamped ZENODO_UPDATED = {iso_date} in data/page.tsx (commit + deploy the frontend).")
+        else:
+            print(f"WARNING: ZENODO_UPDATED constant not found in {page} — update it by hand.")
+    except OSError as e:
+        print(f"WARNING: could not stamp data/page.tsx: {e}")
 
 
 if __name__ == "__main__":
