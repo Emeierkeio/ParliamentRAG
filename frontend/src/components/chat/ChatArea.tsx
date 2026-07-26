@@ -10,7 +10,7 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, ArrowRight, History } from "lucide-react";
+import { Landmark, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
 
 interface ChatAreaProps {
@@ -161,15 +161,17 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // the UI language and cached per locale so the section doesn't pop in on
   // every visit
   const locale = useLocale();
-  const [recentTopics, setRecentTopics] = useState<string[]>([]);
-  // Seed from sessionStorage pre-paint (useLayoutEffect): with useEffect the
-  // first frame shows the trending-only fallback and the columns pop in a
-  // beat later on every reload. Not in the useState initializer to avoid an
-  // SSR hydration mismatch (same pattern as the Sidebar footer date).
+  // null = loading (server HTML and pre-fetch: skeleton chips), [] = resolved
+  // empty (collapse to trending only), non-empty = real chips. The layout is
+  // two columns in every state except resolved-empty, so a reload never
+  // reflows: the server paints the same geometry the client settles on.
+  const [recentTopics, setRecentTopics] = useState<string[] | null>(null);
+  // Cache seeded pre-paint; not in the useState initializer to avoid an SSR
+  // hydration mismatch (same pattern as the Sidebar footer date).
   useLayoutEffect(() => {
     try {
       const cached = sessionStorage.getItem(`recentTopics:${locale}`);
-      setRecentTopics(cached ? JSON.parse(cached) : []);
+      if (cached) setRecentTopics(JSON.parse(cached));
     } catch {}
   }, [locale]);
   useEffect(() => {
@@ -180,9 +182,11 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         if (Array.isArray(data?.topics) && data.topics.length > 0) {
           sessionStorage.setItem(cacheKey, JSON.stringify(data.topics));
           setRecentTopics(data.topics);
+        } else {
+          setRecentTopics((prev) => prev ?? []);
         }
       })
-      .catch(() => {});
+      .catch(() => setRecentTopics((prev) => prev ?? []));
   }, [locale]);
 
   const t = useTranslations("WelcomeScreen");
@@ -205,10 +209,12 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         </p>
       </div>
 
-      {/* Topics: latest subjects from the live KG (left) and the curated
-          legislature list (right). Two visual languages on purpose — chips
-          for live data, underlined links for the curated picks. */}
-      {recentTopics.length > 0 ? (
+      {/* Topics: latest subjects from the live KG (left, skeleton while
+          loading) and the curated legislature list (right). Same chip
+          affordance for both — the source difference lives in the headers.
+          The layout collapses to a single centered list only when the
+          endpoint resolves with no data. */}
+      {recentTopics === null || recentTopics.length > 0 ? (
         <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
           <section>
             <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
@@ -219,18 +225,25 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
               {t("lastTopics")}
             </p>
             <div className="flex flex-wrap gap-2">
-              {recentTopics.map((topic) => (
-                <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
-              ))}
+              {recentTopics === null
+                ? ["w-28", "w-16", "w-32", "w-24", "w-36", "w-24"].map((w, i) => (
+                    <span
+                      key={i}
+                      className={cn("h-8 rounded-full bg-muted/60 motion-safe:animate-pulse", w)}
+                    />
+                  ))
+                : recentTopics.map((topic) => (
+                    <TopicChip key={topic} topic={topic} raw onClick={onSendMessage} />
+                  ))}
             </div>
           </section>
           <section className="sm:border-l sm:border-border sm:pl-10">
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("trendingTopics")}
             </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-3">
+            <div className="flex flex-wrap gap-2">
               {TOPICS.map((topic) => (
-                <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
+                <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
               ))}
             </div>
           </section>
@@ -240,9 +253,9 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
             {t("trendingTopics")}
           </p>
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+          <div className="flex flex-wrap justify-center gap-2">
             {TOPICS.map((topic) => (
-              <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
+              <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
             ))}
           </div>
         </div>
@@ -251,34 +264,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   );
 }
 
-interface TopicPillProps {
+interface TopicChipProps {
   topic: string;
   onClick: (message: string) => void;
+  /** KG-derived topics arrive already localized and have no i18n key */
+  raw?: boolean;
 }
 
-function TopicPill({ topic, onClick }: TopicPillProps) {
+/** Sentence case, not Title Case: EuroVoc and curated labels are lowercase
+ *  phrases with embedded proper nouns ("conflitto in Ucraina"), so only the
+ *  first letter is raised. */
+function TopicChip({ topic, onClick, raw = false }: TopicChipProps) {
   const t = useTranslations("WelcomeScreen");
-  const displayName = t(`topics.${topic}` as never) as string;
-  // Use the localized topic name in the query too (EN → "healthcare reform", not "riforma sanitaria")
-  const query = t("topicQuery", { topic: displayName });
-  return (
-    <button
-      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
-      onClick={() => onClick(query)}
-    >
-      <span className="capitalize">{displayName}</span>
-      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
-    </button>
-  );
-}
-
-/** Chip for KG-derived topics: EuroVoc labels are lowercase Italian, so only
- *  the first letter is capitalized ("Protezione dell'ambiente", not
- *  "Protezione Dell'Ambiente"). */
-function TopicChip({ topic, onClick }: TopicPillProps) {
-  const t = useTranslations("WelcomeScreen");
-  const displayName = topic.charAt(0).toUpperCase() + topic.slice(1);
-  const query = t("topicQuery", { topic });
+  const label = raw ? topic : (t(`topics.${topic}` as never) as string);
+  const displayName = label.charAt(0).toUpperCase() + label.slice(1);
+  // The localized label goes into the query too (EN UI → EN query)
+  const query = t("topicQuery", { topic: label });
   return (
     <button
       className="inline-flex items-center rounded-full border border-border bg-muted/40 px-3 py-1.5 text-[13px] text-foreground/80 transition-colors duration-200 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
