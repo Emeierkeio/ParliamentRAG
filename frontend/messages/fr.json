@@ -310,7 +310,8 @@
     },
     "topicQuery": "Quelle est la position des groupes parlementaires sur le sujet : {topic} ?",
     "researchNote": "Les conversations sont conservées de façon anonyme à des fins de recherche.",
-    "lastTopics": "Derniers sujets discutés"
+    "lastTopics": "Derniers sujets discutés",
+    "lastTopicsHint": "D'après les sujets des actes présentés depuis le {date}. Par exemple :"
   },
   "ChamberSelector": {
     "camera": "Chambre des députés",

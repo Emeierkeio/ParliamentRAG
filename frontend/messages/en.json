@@ -311,7 +311,8 @@
     },
     "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?",
     "researchNote": "Conversations are stored anonymously for research purposes.",
-    "lastTopics": "Latest topics discussed"
+    "lastTopics": "Latest topics discussed",
+    "lastTopicsHint": "From the subjects of acts presented since {date}. For example:"
   },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",
