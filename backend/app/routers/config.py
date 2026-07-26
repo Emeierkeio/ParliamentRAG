@@ -448,6 +448,8 @@ async def get_recent_topics(lang: str = "it"):
     from ..services.deps import get_services
     neo4j = get_services()["neo4j"]
     topics: list[str] = []
+    acts: list[dict] = []
+    since = None
     try:
         for days in (7, 30, 90):
             rows = neo4j.query(
@@ -459,6 +461,23 @@ async def get_recent_topics(lang: str = "it"):
             )
             topics = [r["topic"] for r in rows if r.get("topic")]
             if len(topics) >= 3:
+                since_row = neo4j.query(
+                    "RETURN toString(date() - duration({days: $days})) AS since",
+                    {"days": days},
+                )
+                since = since_row[0]["since"] if since_row else None
+                # Acts behind the chips: shown in the header tooltip so the
+                # list is traceable to actual proceedings (titles stay in
+                # Italian — they are official act names, like quotations)
+                act_rows = neo4j.query(
+                    "MATCH (a:ParliamentaryAct)-[:HAS_SUBJECT]->(c:EurovocConcept) "
+                    "WHERE a.presentation_date >= date() - duration({days: $days}) "
+                    "AND c.label_it IN $topics AND a.title IS NOT NULL AND a.title <> '' "
+                    "RETURN DISTINCT a.title AS title, toString(a.presentation_date) AS date "
+                    "ORDER BY date DESC LIMIT 5",
+                    {"days": days, "topics": topics},
+                )
+                acts = [{"title": r["title"], "date": r["date"]} for r in act_rows]
                 break
     except Exception as e:
         logger.warning("Failed to get recent topics: %s", e)
@@ -474,7 +493,7 @@ async def get_recent_topics(lang: str = "it"):
             ]))
         except Exception as e:
             logger.warning("Recent-topics translation to %s failed: %s", lang, e)
-    data = {"topics": topics}
+    data = {"topics": topics, "since": since, "acts": acts}
     _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
     return data
 

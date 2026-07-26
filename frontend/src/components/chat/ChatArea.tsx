@@ -10,8 +10,9 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, History } from "lucide-react";
+import { Landmark, ArrowRight, HelpCircle, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface ChatAreaProps {
   messages: Message[];
@@ -156,6 +157,12 @@ interface WelcomeScreenProps {
   onSendMessage: (message: string) => void;
 }
 
+interface RecentTopics {
+  topics: string[];
+  since: string | null;
+  acts: { title: string; date: string }[];
+}
+
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // Latest subjects actually on the floor (EuroVoc of recent acts), served in
   // the UI language and cached per locale so the section doesn't pop in on
@@ -165,28 +172,28 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // empty (collapse to trending only), non-empty = real chips. The layout is
   // two columns in every state except resolved-empty, so a reload never
   // reflows: the server paints the same geometry the client settles on.
-  const [recentTopics, setRecentTopics] = useState<string[] | null>(null);
+  const [recent, setRecent] = useState<RecentTopics | null>(null);
   // Cache seeded pre-paint; not in the useState initializer to avoid an SSR
   // hydration mismatch (same pattern as the Sidebar footer date).
   useLayoutEffect(() => {
     try {
-      const cached = sessionStorage.getItem(`recentTopics:${locale}`);
-      if (cached) setRecentTopics(JSON.parse(cached));
+      const cached = sessionStorage.getItem(`recentTopics2:${locale}`);
+      if (cached) setRecent(JSON.parse(cached));
     } catch {}
   }, [locale]);
   useEffect(() => {
-    const cacheKey = `recentTopics:${locale}`;
+    const cacheKey = `recentTopics2:${locale}`;
     fetch(`/api/config/recent-topics?lang=${encodeURIComponent(locale)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (Array.isArray(data?.topics) && data.topics.length > 0) {
-          sessionStorage.setItem(cacheKey, JSON.stringify(data.topics));
-          setRecentTopics(data.topics);
+          sessionStorage.setItem(cacheKey, JSON.stringify(data));
+          setRecent(data);
         } else {
-          setRecentTopics((prev) => prev ?? []);
+          setRecent((prev) => prev ?? { topics: [], since: null, acts: [] });
         }
       })
-      .catch(() => setRecentTopics((prev) => prev ?? []));
+      .catch(() => setRecent((prev) => prev ?? { topics: [], since: null, acts: [] }));
   }, [locale]);
 
   const t = useTranslations("WelcomeScreen");
@@ -214,26 +221,47 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           affordance for both — the source difference lives in the headers.
           The layout collapses to a single centered list only when the
           endpoint resolves with no data. */}
-      {recentTopics === null || recentTopics.length > 0 ? (
+      {recent === null || recent.topics.length > 0 ? (
         <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
           <section>
             <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              <span className="relative flex h-1.5 w-1.5" aria-hidden>
-                <span className="absolute inline-flex h-full w-full rounded-full bg-primary/60 motion-safe:animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
-              </span>
               {t("lastTopics")}
+              {recent !== null && recent.acts.length > 0 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="text-muted-foreground/60 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"
+                      aria-label={t("lastTopicsHint", { date: recent.since ?? "" })}
+                    >
+                      <HelpCircle className="w-3.5 h-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" align="start" className="max-w-sm text-left normal-case tracking-normal">
+                    <p className="font-medium mb-1.5">
+                      {t("lastTopicsHint", { date: recent.since ?? "" })}
+                    </p>
+                    <ul className="space-y-1.5">
+                      {recent.acts.map((act) => (
+                        <li key={act.title} className="leading-snug">
+                          <span className="line-clamp-2 opacity-90">{act.title}</span>
+                          <span className="opacity-60 tabular-nums">{act.date}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </p>
-            <div className="flex flex-wrap gap-2">
-              {recentTopics === null
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              {recent === null
                 ? ["w-28", "w-16", "w-32", "w-24", "w-36", "w-24"].map((w, i) => (
                     <span
                       key={i}
-                      className={cn("h-8 rounded-full bg-muted/60 motion-safe:animate-pulse", w)}
+                      className={cn("h-4 mb-1 rounded-sm bg-muted/60 motion-safe:animate-pulse", w)}
                     />
                   ))
-                : recentTopics.map((topic) => (
-                    <TopicChip key={topic} topic={topic} raw onClick={onSendMessage} />
+                : recent.topics.map((topic) => (
+                    <TopicPill key={topic} topic={topic} raw onClick={onSendMessage} />
                   ))}
             </div>
           </section>
@@ -241,9 +269,9 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("trendingTopics")}
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
               {TOPICS.map((topic) => (
-                <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
+                <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
               ))}
             </div>
           </section>
@@ -253,9 +281,9 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
             {t("trendingTopics")}
           </p>
-          <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
             {TOPICS.map((topic) => (
-              <TopicChip key={topic} topic={topic} onClick={onSendMessage} />
+              <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
             ))}
           </div>
         </div>
@@ -264,7 +292,7 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   );
 }
 
-interface TopicChipProps {
+interface TopicPillProps {
   topic: string;
   onClick: (message: string) => void;
   /** KG-derived topics arrive already localized and have no i18n key */
@@ -274,7 +302,7 @@ interface TopicChipProps {
 /** Sentence case, not Title Case: EuroVoc and curated labels are lowercase
  *  phrases with embedded proper nouns ("conflitto in Ucraina"), so only the
  *  first letter is raised. */
-function TopicChip({ topic, onClick, raw = false }: TopicChipProps) {
+function TopicPill({ topic, onClick, raw = false }: TopicPillProps) {
   const t = useTranslations("WelcomeScreen");
   const label = raw ? topic : (t(`topics.${topic}` as never) as string);
   const displayName = label.charAt(0).toUpperCase() + label.slice(1);
@@ -282,10 +310,11 @@ function TopicChip({ topic, onClick, raw = false }: TopicChipProps) {
   const query = t("topicQuery", { topic: label });
   return (
     <button
-      className="inline-flex items-center rounded-full border border-border bg-muted/40 px-3 py-1.5 text-[13px] text-foreground/80 transition-colors duration-200 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
       onClick={() => onClick(query)}
     >
-      {displayName}
+      <span>{displayName}</span>
+      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
     </button>
   );
 }
