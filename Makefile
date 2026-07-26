@@ -8,6 +8,7 @@
 #   make stop                         # kill whatever is listening on the two ports
 #   make install                      # install backend + frontend dependencies
 #   make build                        # production build of the frontend
+#   make browser                      # open Neo4j Browser on the remote DB (tunnels 7474+7687)
 #   make update-data                  # ingest new Camera sessions into the demo DB (via v2 pipeline)
 #   make update-data DEMO_NEO4J=bolt://localhost:7691   # same, but against the LOCAL copy (staging)
 #   make link-refs                    # backfill MENTIONS/CITES from chunk NER fields (idempotent)
@@ -40,7 +41,7 @@ LOCAL_BOLT_PORT        := 7691
 LOCAL_HTTP_PORT        := 7477
 LOCAL_BACKUP_DIR       := $(CURDIR)/neo4j-local-backups
 
-.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs tunnel db-backup db-pull db-use-local db-use-remote
+.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs tunnel browser db-backup db-pull db-use-local db-use-remote
 
 help:
 	@grep -E '^#   make' Makefile | sed 's/^#   //'
@@ -222,6 +223,20 @@ tunnel:
 		echo "Opening SSH tunnel: $(TUNNEL_CMD)"; \
 		$(TUNNEL_CMD) && echo "Tunnel opened."; \
 	fi
+
+## Open the Neo4j Browser on the remote demo DB. Forwards the HTTP UI (7474)
+## and bolt (7687) over SSH — the ports are firewalled to localhost on the
+## server, so this tunnel is the only way in. Leaves ssh in the foreground;
+## Ctrl+C closes it. Login in the browser: bolt://localhost:7687, user neo4j,
+## password from .env (NEO4J_PASSWORD).
+browser:
+	@PW=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
+	echo "Neo4j Browser → http://localhost:7474"; \
+	echo "  Connect URL : bolt://localhost:7687"; \
+	echo "  User        : $${NEO4J_USER_VAL:-neo4j}"; \
+	echo "  Password    : $$PW"; \
+	echo "Opening tunnel (Ctrl+C to close)..."; \
+	ssh -N -L 7474:localhost:7474 -L 7687:localhost:7687 $(SSH_HOST)
 
 ## Incremental data update of the demo DB (remote, via tunnel) using the v2 build pipeline:
 ## refresh deputy/group CSVs, download + ingest new Camera stenografici, atti, roles, embeddings.
