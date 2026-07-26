@@ -433,14 +433,54 @@ _recent_topics_cache: dict = {}  # lang -> {"at": ts, "data": {...}}
 _RECENT_TOPICS_TTL_S = 3600
 
 
+async def _topics_from_titles(titles: list[str], lang: str) -> list[str]:
+    """Short topic labels (in the UI language) from official act titles.
+
+    Bills mostly carry no EuroVoc subject in the source data, so the topic is
+    distilled from the title with the same nano model used for translations.
+    Raises on any LLM problem — the caller falls back to EuroVoc subjects.
+    """
+    import json as _json
+    from ..key_pool import make_async_client
+    lang_names = {"it": "italiano", "en": "English", "fr": "français",
+                  "de": "Deutsch", "es": "español", "pt": "português"}
+    llm = make_async_client()
+    resp = await llm.chat.completions.create(
+        model="gpt-4.1-nano",
+        messages=[
+            {"role": "system", "content": (
+                "Per ogni titolo di atto parlamentare fornisci un'etichetta "
+                f"tematica breve (2-4 parole, minuscolo) in {lang_names.get(lang, lang)}. "
+                "Rispondi SOLO con un array JSON di stringhe, stesso ordine "
+                "dei titoli."
+            )},
+            {"role": "user", "content": _json.dumps(titles, ensure_ascii=False)},
+        ],
+        temperature=0,
+        max_tokens=300,
+    )
+    raw = (resp.choices[0].message.content or "").strip()
+    raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.M).strip()
+    labels = _json.loads(raw)
+    if not isinstance(labels, list):
+        raise ValueError("not a list")
+    return [str(x).strip() for x in labels]
+
+
 @router.get("/recent-topics")
 async def get_recent_topics(lang: str = "it"):
-    """EuroVoc subjects of the most recently presented acts (last-topics chips).
+    """Topics of the provvedimenti most recently discussed on the floor.
 
-    Starts from the last 7 days of parliamentary acts, widening to 30 and 90
-    when the window is too empty (e.g. summer recess). Labels come from the KG
-    in Italian and are translated on the fly for other UI languages. Cached
-    per language for an hour.
+    Chips and tooltip share one source: Session → Debate → DISCUSSES → act.
+    DISCUSSES points at placeholder act nodes minted from transcript
+    references, so they are resolved to the real SPARQL acts by number (base
+    number for lettered variants, '-'→'/' for mozioni). Bills first, mozioni
+    and risoluzioni as filler — never the ODG/interrogazioni that dominate by
+    volume. Window cascade 7→30→90 days (recess-proof). Topic labels are
+    distilled from the act titles in the UI language (bills carry no EuroVoc
+    in the source data), with EuroVoc subjects as fallback. Titles in the
+    tooltip stay in Italian — they are official act names, like quotations.
+    Cached per language for an hour.
     """
     import time as _time
     cached = _recent_topics_cache.get(lang)
@@ -450,33 +490,10 @@ async def get_recent_topics(lang: str = "it"):
     neo4j = get_services()["neo4j"]
     topics: list[str] = []
     acts: list[dict] = []
+    subjects_by_act: list[list[str]] = []
     since = None
     try:
         for days in (7, 30, 90):
-            rows = neo4j.query(
-                "MATCH (a:ParliamentaryAct)-[:HAS_SUBJECT]->(c:EurovocConcept) "
-                "WHERE a.presentation_date >= date() - duration({days: $days}) "
-                "RETURN c.label_it AS topic, count(*) AS n "
-                "ORDER BY n DESC LIMIT 6",
-                {"days": days},
-            )
-            topics = [r["topic"] for r in rows if r.get("topic")]
-            if len(topics) >= 3:
-                since_row = neo4j.query(
-                    "RETURN toString(date() - duration({days: $days})) AS since",
-                    {"days": days},
-                )
-                since = since_row[0]["since"] if since_row else None
-                break
-        # Tooltip evidence: the provvedimenti actually discussed on the floor
-        # (bills first, mozioni/risoluzioni as filler), not the ODG and
-        # interrogazioni that dominate by volume. DISCUSSES points at
-        # placeholder act nodes minted from the transcript references, so they
-        # are resolved to the real SPARQL acts by number (base number for
-        # lettered variants, '-'→'/' for mozioni). Own window cascade: recent
-        # sittings can be ODG/question-time only. Titles stay in Italian —
-        # they are official act names, like quotations.
-        for act_days in (7, 30, 90):
             act_rows = neo4j.query(
                 "MATCH (se:Session)-[:HAS_DEBATE]->(:Debate)-[:DISCUSSES]->(ph) "
                 "WHERE se.date >= date() - duration({days: $days}) "
@@ -490,35 +507,49 @@ async def get_recent_topics(lang: str = "it"):
                 "       ELSE toLower(a.type) CONTAINS toLower(ph.type) END) "
                 "WITH DISTINCT a, sd, CASE "
                 "  WHEN a.type IN ['Progetto di Legge', 'pdl'] THEN 0 ELSE 1 END AS prio "
-                "RETURN a.title AS title, toString(sd) AS date, a.type AS type "
-                "ORDER BY prio, date DESC LIMIT 4",
-                {"days": act_days},
+                "OPTIONAL MATCH (a)-[:HAS_SUBJECT]->(c:EurovocConcept) "
+                "WITH a, sd, prio, collect(c.label_it) AS subjects "
+                "RETURN a.title AS title, toString(sd) AS date, a.type AS type, subjects "
+                "ORDER BY prio, date DESC LIMIT 6",
+                {"days": days},
             )
-            acts = [
-                {
-                    "title": re.sub(r"<[^>]+>", "", r["title"]),
-                    "date": r["date"],
-                    "type": r["type"],
-                }
-                for r in act_rows
-            ]
-            if len(acts) >= 2:
+            if len(act_rows) >= 2:
+                acts = [
+                    {
+                        "title": re.sub(r"<[^>]+>", "", r["title"]),
+                        "date": r["date"],
+                        "type": r["type"],
+                    }
+                    for r in act_rows
+                ]
+                subjects_by_act = [r["subjects"] or [] for r in act_rows]
+                since_row = neo4j.query(
+                    "RETURN toString(date() - duration({days: $days})) AS since",
+                    {"days": days},
+                )
+                since = since_row[0]["since"] if since_row else None
                 break
     except Exception as e:
         logger.warning("Failed to get recent topics: %s", e)
-    if lang != "it" and topics:
-        import asyncio
-        from ..services.translation import _translate_text
-        from ..key_pool import make_async_client
+    if acts:
         try:
-            llm = make_async_client()
-            topics = list(await asyncio.gather(*[
-                _translate_text(llm, topic, max_tokens=60, target_lang=lang)
-                for topic in topics
-            ]))
+            labels = await _topics_from_titles([a["title"] for a in acts], lang)
+            seen: set = set()
+            for label in labels:
+                if label and label.lower() not in seen and len(topics) < 6:
+                    seen.add(label.lower())
+                    topics.append(label)
         except Exception as e:
-            logger.warning("Recent-topics translation to %s failed: %s", lang, e)
-    data = {"topics": topics, "since": since, "acts": acts}
+            logger.warning("Recent-topics labelling failed, EuroVoc fallback: %s", e)
+            # Max 2 subjects per act so one multi-subject act cannot
+            # monopolise the list (Italian only — no LLM available here)
+            seen = set()
+            for subjects in subjects_by_act:
+                for subject in subjects[:2]:
+                    if subject and subject not in seen and len(topics) < 6:
+                        seen.add(subject)
+                        topics.append(subject)
+    data = {"topics": topics, "since": since, "acts": acts[:4]}
     _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
     return data
 
