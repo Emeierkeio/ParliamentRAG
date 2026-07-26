@@ -311,7 +311,7 @@
     "topicQuery": "Qual é a posição dos grupos parlamentares sobre o tema: {topic}?",
     "researchNote": "As conversas são guardadas anonimamente para fins de pesquisa.",
     "lastTopics": "Últimos temas debatidos",
-    "lastTopicsHint": "Temas extraídos dos atos parlamentares apresentados desde {date}.",
+    "lastTopicsHint": "Temas das medidas debatidas em plenário desde {date}.",
     "lastTopicsHintActs": "Recentemente em plenário, entre outros:"
   },
   "ChamberSelector": {

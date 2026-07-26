@@ -311,7 +311,7 @@
     "topicQuery": "Quelle est la position des groupes parlementaires sur le sujet : {topic} ?",
     "researchNote": "Les conversations sont conservées de façon anonyme à des fins de recherche.",
     "lastTopics": "Derniers sujets discutés",
-    "lastTopicsHint": "Sujets tirés des actes parlementaires présentés depuis le {date}.",
+    "lastTopicsHint": "Sujets des textes discutés en séance depuis le {date}.",
     "lastTopicsHintActs": "Récemment en séance, entre autres :"
   },
   "ChamberSelector": {
