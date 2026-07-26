@@ -313,7 +313,8 @@
     "researchNote": "Conversations are stored anonymously for research purposes.",
     "lastTopics": "Latest topics discussed",
     "lastTopicsHint": "Topics of the measures discussed on the floor since {date}.",
-    "lastTopicsHintActs": "Recently on the floor, among others:"
+    "lastTopicsHintActs": "Recently on the floor, among others:",
+    "lastTopicsLoading": "Looking up the latest floor discussions in the knowledge graph…"
   },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",

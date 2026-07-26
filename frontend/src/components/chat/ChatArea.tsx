@@ -10,7 +10,7 @@ import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, ArrowRight, HelpCircle, History } from "lucide-react";
+import { Landmark, ArrowRight, HelpCircle, History, Loader2 } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -281,6 +281,12 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                 </Tooltip>
               )}
             </p>
+            {recent === null && (
+              <p className="flex items-center gap-1.5 mb-3 text-[11px] italic text-muted-foreground/70">
+                <Loader2 className="w-3 h-3 motion-safe:animate-spin" aria-hidden />
+                {t("lastTopicsLoading")}
+              </p>
+            )}
             <div className="flex flex-wrap gap-x-6 gap-y-3">
               {recent === null
                 ? ["w-28", "w-16", "w-32", "w-24", "w-36", "w-24"].map((w, i) => (
