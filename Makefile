@@ -12,6 +12,7 @@
 #   make update-data                  # ingest new Camera sessions into the demo DB (via v2 pipeline)
 #   make update-data DEMO_NEO4J=bolt://localhost:7691   # same, but against the LOCAL copy (staging)
 #   make link-refs                    # backfill MENTIONS/CITES from chunk NER fields (idempotent)
+#   make og-images                    # regenerate Open Graph preview images (home, /home, /data)
 #   make db-backup                    # dated dump of the remote DB on the server (few min downtime)
 #   make db-pull                      # download latest dump + restore into a local Neo4j (:7691)
 #   make db-use-local / db-use-remote # switch NEO4J_URI in .env between local copy and remote
@@ -246,7 +247,7 @@ browser:
 ## sito live, ritagliando la barra "dati aggiornati al ..." così la preview
 ## non invecchia. Output nei file opengraph-image.png di Next.js.
 og-images:
-	@$(BACKEND_DIR)/venv/bin/python scripts/gen_og_images.py
+	@$(BACKEND_DIR)/venv/bin/python build/gen_og_images.py
 
 ## Backfill delle relazioni MENTIONS (Chunk->Deputy) e CITES
 ## (Chunk->ParliamentaryAct) dai campi NER dei chunk. Idempotente (solo MERGE):
