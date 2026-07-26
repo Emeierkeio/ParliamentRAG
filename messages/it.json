@@ -283,7 +283,7 @@
     "badge_both_18": "Parlamento Italiano · XVIII Legislatura",
     "title": "Cosa pensa il Parlamento su ogni tema?",
     "subtitle": "Dichiarazioni dei parlamentari <bold>più autorevoli</bold> su ogni tema, bilanciate tra maggioranza e opposizione con citazioni verificabili.",
-    "trendingTopics": "Temi di tendenza",
+    "trendingTopics": "Trending · XIX Legislatura",
     "searchPlaceholder": "Cerca un tema...",
     "topics": {
       "PNRR": "PNRR",
@@ -310,7 +310,8 @@
       "superbonus 110%": "Superbonus 110%"
     },
     "topicQuery": "Qual è la posizione dei gruppi parlamentari sul tema: {topic}?",
-    "researchNote": "Le conversazioni sono salvate in forma anonima per finalità di ricerca."
+    "researchNote": "Le conversazioni sono salvate in forma anonima per finalità di ricerca.",
+    "lastTopics": "Ultimi argomenti discussi"
   },
   "ChamberSelector": {
     "camera": "Camera",
