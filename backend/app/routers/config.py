@@ -430,12 +430,20 @@ async def translate_text(req: TranslateRequest):
 
 @router.get("/last-update")
 async def get_last_update():
-    """Get the date of the most recent Session in the database."""
+    """Date of the last `make update-data` run (SchemaMeta.updated_at).
+
+    Falls back to the most recent Session date for DBs stamped before
+    updated_at existed.
+    """
     from ..services.deps import get_services
     client = get_services()["neo4j"]
     try:
         result = client.query(
-            "MATCH (s:Session) RETURN max(s.date) AS last_date"
+            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+            "WITH date(m.updated_at) AS stamped "
+            "OPTIONAL MATCH (s:Session) "
+            "WITH stamped, max(s.date) AS newest "
+            "RETURN coalesce(stamped, newest) AS last_date"
         )
         if result and result[0].get("last_date"):
             d = result[0]["last_date"]
