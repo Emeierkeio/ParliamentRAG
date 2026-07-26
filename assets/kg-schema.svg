@@ -123,13 +123,13 @@
   </g>
 
   <line class="edge" x1="730" y1="316" x2="976" y2="246"/>
-  <text class="elbl" x="778" y="262">MEMBER_OF_GROUP</text>
-  <text class="eprop" x="778" y="274">(start_date, end_date)</text>
+  <text class="elbl" x="745" y="236">MEMBER_OF_GROUP</text>
+  <text class="eprop" x="745" y="248">(start_date, end_date)</text>
   <line class="edge edashed" x1="730" y1="330" x2="976" y2="322"/>
   <text class="elbl" x="790" y="316">MEMBER_OF_COMPONENT</text>
   <line class="edge" x1="730" y1="344" x2="976" y2="404"/>
-  <text class="elbl" x="778" y="386">MEMBER_OF_COMMITTEE</text>
-  <text class="eprop" x="778" y="398">(start_date, end_date, role)</text>
+  <text class="elbl" x="745" y="412">MEMBER_OF_COMMITTEE</text>
+  <text class="eprop" x="745" y="424">(start_date, end_date, role)</text>
   <line class="edge" x1="730" y1="452" x2="976" y2="490"/>
   <text class="elbl" x="800" y="502">HOLDS_OFFICE</text>
   <text class="eprop" x="800" y="514">(office_type, start_date, end_date)</text>
