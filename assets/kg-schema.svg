@@ -67,15 +67,15 @@
     <text class="cnt" x="645" y="461" text-anchor="middle">64</text>
   </g>
 
-  <!-- SPOKEN_BY -->
-  <path id="e-spoken-dep" class="edge" d="M 230 356 L 556 326"/>
+  <!-- SPOKEN_BY: Speech -> Deputy (straight) and Speech -> Gov. Member (elbow) -->
+  <path id="e-spoken-dep" class="edge" d="M 230 344 L 556 344"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken-dep" href="#e-spoken-dep" startOffset="50%">SPOKEN_BY</textPath></text>
-  <path id="e-spoken-gov" class="edge" d="M 230 372 L 556 444"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken-gov" href="#e-spoken-gov" startOffset="50%">SPOKEN_BY</textPath></text>
+  <path id="e-spoken-gov" class="edge" d="M 230 376 L 430 376 L 430 448 L 556 448"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken-gov" href="#e-spoken-gov" startOffset="25%">SPOKEN_BY</textPath></text>
 
-  <!-- MENTIONS: Chunk -> Person (NER-resolved; deputies and gov. members) -->
-  <path id="e-mentions" class="edge edashed" d="M 230 512 L 571 492"/>
-  <text dy="-4" text-anchor="middle"><textPath xlink:href="#e-mentions" href="#e-mentions" startOffset="50%"><tspan class="elbl">MENTIONS </tspan><tspan class="eprop">(NER-resolved)</tspan></textPath></text>
+  <!-- MENTIONS: Chunk -> Person (NER-resolved), enters the Person box from below -->
+  <path id="e-mentions" class="edge edashed" d="M 230 504 L 640 504 L 640 494"/>
+  <text dy="-4" text-anchor="middle"><textPath xlink:href="#e-mentions" href="#e-mentions" startOffset="48%"><tspan class="elbl">MENTIONS </tspan><tspan class="eprop">(NER-resolved)</tspan></textPath></text>
 
   <!-- CITES: Chunk -> Parl. Act, routed along the top margin (NER-resolved) -->
   <path id="e-cites" class="edge edashed" d="M 70 474 L 44 474 L 44 24 L 645 24 L 645 56"/>
@@ -95,8 +95,8 @@
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-primary" href="#e-primary" startOffset="50%">PRIMARY_SIGNATORY</textPath></text>
   <path id="e-cosign" class="edge edashed" d="M 688 304 L 688 112"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-cosign" href="#e-cosign" startOffset="50%">CO_SIGNATORY</textPath></text>
-  <path id="e-discusses" class="edge edashed" d="M 230 158 L 556 90"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-discusses" href="#e-discusses" startOffset="50%">DISCUSSES</textPath></text>
+  <path id="e-discusses" class="edge edashed" d="M 230 158 L 500 158 L 500 90 L 556 90"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-discusses" href="#e-discusses" startOffset="34%">DISCUSSES</textPath></text>
   <path id="e-subject" class="edge" d="M 730 84 L 896 84"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-subject" href="#e-subject" startOffset="50%">HAS_SUBJECT</textPath></text>
 
@@ -119,17 +119,21 @@
     <text class="cnt" x="1080" y="505" text-anchor="middle">HOLDS_OFFICE dated</text>
   </g>
 
-  <path id="e-group" class="edge" d="M 730 316 L 976 246"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-group" href="#e-group" startOffset="50%">MEMBER_OF_GROUP</textPath></text>
-  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-group" href="#e-group" startOffset="50%">(start_date, end_date)</textPath></text>
-  <path id="e-component" class="edge edashed" d="M 730 330 L 976 322"/>
+  <!-- Deputy -> Parl. Group: up-lane just right of the Person box, label on the long run -->
+  <path id="e-group" class="edge" d="M 730 312 L 760 312 L 760 244 L 976 244"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-group" href="#e-group" startOffset="66%">MEMBER_OF_GROUP</textPath></text>
+  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-group" href="#e-group" startOffset="66%">(start_date, end_date)</textPath></text>
+  <!-- Deputy -> Misto Component (straight) -->
+  <path id="e-component" class="edge edashed" d="M 730 328 L 976 328"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-component" href="#e-component" startOffset="50%">MEMBER_OF_COMPONENT</textPath></text>
-  <path id="e-committee" class="edge" d="M 730 344 L 976 404"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-committee" href="#e-committee" startOffset="50%">MEMBER_OF_COMMITTEE</textPath></text>
-  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-committee" href="#e-committee" startOffset="50%">(start_date, end_date, role)</textPath></text>
-  <path id="e-office" class="edge" d="M 730 452 L 976 490"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-office" href="#e-office" startOffset="50%">HOLDS_OFFICE</textPath></text>
-  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-office" href="#e-office" startOffset="50%">(office_type, start_date, end_date)</textPath></text>
+  <!-- Deputy -> Committee: down-lane, label on the long run -->
+  <path id="e-committee" class="edge" d="M 730 344 L 770 344 L 770 400 L 976 400"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-committee" href="#e-committee" startOffset="66%">MEMBER_OF_COMMITTEE</textPath></text>
+  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-committee" href="#e-committee" startOffset="66%">(start_date, end_date, role)</textPath></text>
+  <!-- Gov. Member -> Government: down-lane, label on the long run -->
+  <path id="e-office" class="edge" d="M 730 448 L 770 448 L 770 492 L 976 492"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-office" href="#e-office" startOffset="64%">HOLDS_OFFICE</textPath></text>
+  <text class="eprop" dy="12" text-anchor="middle"><textPath xlink:href="#e-office" href="#e-office" startOffset="64%">(office_type, start_date, end_date)</textPath></text>
 
   <!-- ====== votes (rose) ====== -->
   <g>
@@ -146,8 +150,9 @@
   <path id="e-hasvote" class="edge" d="M 70 64 L 16 64 L 16 680 L 340 680 L 340 636 L 396 636"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-hasvote" href="#e-hasvote" startOffset="76%">HAS_VOTE</textPath></text>
 
-  <path id="e-voted" class="edge" d="M 660 490 L 770 596"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-voted" href="#e-voted" startOffset="50%">VOTED</textPath></text>
+  <!-- Person -> Individual Vote (down into the top edge of the box) -->
+  <path id="e-voted" class="edge" d="M 680 490 L 680 560 L 795 560 L 795 596"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-voted" href="#e-voted" startOffset="57%">VOTED</textPath></text>
   <path id="e-onvote" class="edge" d="M 574 624 L 700 624" style="marker-end: none; marker-start: url(#arr);"/>
   <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-onvote" href="#e-onvote" startOffset="50%">ON_VOTE</textPath></text>
 
