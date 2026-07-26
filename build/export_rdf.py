@@ -34,6 +34,8 @@ Relationship → RDF mapping:
                                          + pr:startDate / pr:endDate)
   HOLDS_OFFICE {role,...}             reified org:Post + org:holds
   GOVERNMENT_REFERENCE                pr:governmentReferenceFor
+  MENTIONS (chunk -> speech level)    schema:mentions (NER-resolved)
+  CITES (chunk -> speech level)       dcterms:references (NER-resolved)
   VOTED / ON_VOTE (--votes only)      ocd:voto with pr:voter / pr:onVote
 
 Deliberately excluded: embeddings (all `*embedding*` properties), Chunk nodes
@@ -64,7 +66,7 @@ from urllib.parse import quote
 from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import DCTERMS, FOAF, ORG, PROV, RDF, RDFS, SKOS, XSD
+from rdflib.namespace import DCTERMS, FOAF, ORG, PROV, RDF, RDFS, SDO, SKOS, XSD
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -90,7 +92,7 @@ class RdfExporter:
         self.g = Graph()
         for prefix, ns in [("ocd", OCD), ("foaf", FOAF), ("org", ORG),
                            ("skos", SKOS), ("dcterms", DCTERMS), ("prov", PROV),
-                           ("pr", self.PRO), ("prr", self.PRR)]:
+                           ("schema", SDO), ("pr", self.PRO), ("prr", self.PRR)]:
             self.g.bind(prefix, ns)
         self.uri_by_eid = {}  # Neo4j elementId -> URIRef, filled by node passes
 
@@ -337,6 +339,30 @@ class RdfExporter:
                 count += 1
             print(f"  {rel_type}: {count}")
 
+    def export_mentions_citations(self):
+        """NER-resolved MENTIONS/CITES, lifted from Chunk to Speech level.
+
+        Chunks are deliberately not part of the dump, so the chunk-level
+        relationships are aggregated onto the parent Speech (DISTINCT pairs):
+        schema:mentions towards persons, dcterms:references towards acts.
+        """
+        for rel_type, predicate in (
+            ("MENTIONS", SDO.mentions),
+            ("CITES", DCTERMS.references),
+        ):
+            count = 0
+            for rec in self.rows(
+                f"MATCH (sp:Speech)-[:HAS_CHUNK]->(:Chunk)-[:`{rel_type}`]->(t) "
+                "RETURN DISTINCT elementId(sp) AS a, elementId(t) AS b"
+            ):
+                subject = self.uri_by_eid.get(rec["a"])
+                obj = self.uri_by_eid.get(rec["b"])
+                if subject is None or obj is None:
+                    continue
+                self.g.add((subject, predicate, obj))
+                count += 1
+            print(f"  {rel_type} (speech-level): {count}")
+
     def export_memberships(self):
         """MEMBER_OF_* {start,end} → reified org:Membership (W3C ORG)."""
         PRO = self.PRO
@@ -460,6 +486,7 @@ def main():
 
         print("Exporting relationships...")
         exporter.export_simple_relationships()
+        exporter.export_mentions_citations()
         exporter.export_memberships()
         exporter.export_offices()
 

@@ -282,7 +282,7 @@
     "badge_both_18": "Parlamento Italiano · XVIII Legislatura",
     "title": "O que pensa o Parlamento italiano sobre cada tema?",
     "subtitle": "Declarações dos parlamentares <bold>com mais autoridade</bold> sobre cada tema, equilibradas entre maioria e oposição, com citações verificáveis.",
-    "trendingTopics": "Temas em destaque",
+    "trendingTopics": "Tendências · XIX legislatura",
     "searchPlaceholder": "Pesquisar um tema...",
     "topics": {
       "PNRR": "PNRR",
@@ -309,7 +309,8 @@
       "superbonus 110%": "Superbonus 110%"
     },
     "topicQuery": "Qual é a posição dos grupos parlamentares sobre o tema: {topic}?",
-    "researchNote": "As conversas são guardadas anonimamente para fins de pesquisa."
+    "researchNote": "As conversas são guardadas anonimamente para fins de pesquisa.",
+    "lastTopics": "Últimos temas debatidos"
   },
   "ChamberSelector": {
     "camera": "Câmara",

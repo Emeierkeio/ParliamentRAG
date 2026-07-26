@@ -282,7 +282,7 @@
     "badge_both_18": "Italienisches Parlament · XVIII. Legislaturperiode",
     "title": "Was denkt das italienische Parlament zu jedem Thema?",
     "subtitle": "Aussagen der <bold>maßgeblichsten</bold> Parlamentarier zu jedem Thema, ausgewogen zwischen Mehrheit und Opposition, mit überprüfbaren Zitaten.",
-    "trendingTopics": "Aktuelle Themen",
+    "trendingTopics": "Trends · 19. Legislaturperiode",
     "searchPlaceholder": "Thema suchen...",
     "topics": {
       "PNRR": "PNRR",
@@ -309,7 +309,8 @@
       "superbonus 110%": "Superbonus 110%"
     },
     "topicQuery": "Wie ist die Position der Fraktionen zum Thema: {topic}?",
-    "researchNote": "Konversationen werden zu Forschungszwecken anonym gespeichert."
+    "researchNote": "Konversationen werden zu Forschungszwecken anonym gespeichert.",
+    "lastTopics": "Zuletzt diskutierte Themen"
   },
   "ChamberSelector": {
     "camera": "Abgeordnetenkammer",

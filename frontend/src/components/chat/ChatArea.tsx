@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -157,6 +157,25 @@ interface WelcomeScreenProps {
 }
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
+  // Latest subjects actually on the floor (EuroVoc of recent acts), cached
+  // like the sidebar date so the section doesn't pop in on every visit
+  const [recentTopics, setRecentTopics] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const cached = sessionStorage.getItem("recentTopics");
+      if (cached) setRecentTopics(JSON.parse(cached));
+    } catch {}
+    fetch("/api/config/recent-topics")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.topics) && data.topics.length > 0) {
+          sessionStorage.setItem("recentTopics", JSON.stringify(data.topics));
+          setRecentTopics(data.topics);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const t = useTranslations("WelcomeScreen");
   return (
     <div className="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-12 text-center px-4">
@@ -177,7 +196,19 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
         </p>
       </div>
 
-      {/* Topic pills */}
+      {/* Topic pills: latest subjects from the live KG, then the curated legislature list */}
+      {recentTopics.length > 0 && (
+        <div className="w-full max-w-2xl">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+            {t("lastTopics")}
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+            {recentTopics.map((topic) => (
+              <TopicPill key={topic} topic={topic} raw onClick={onSendMessage} />
+            ))}
+          </div>
+        </div>
+      )}
       <div className="w-full max-w-2xl">
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
           {t("trendingTopics")}
@@ -195,11 +226,13 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
 interface TopicPillProps {
   topic: string;
   onClick: (message: string) => void;
+  /** Dynamic topics (from the KG) have no i18n key: show the label as-is */
+  raw?: boolean;
 }
 
-function TopicPill({ topic, onClick }: TopicPillProps) {
+function TopicPill({ topic, onClick, raw = false }: TopicPillProps) {
   const t = useTranslations("WelcomeScreen");
-  const displayName = t(`topics.${topic}` as never) as string;
+  const displayName = raw ? topic : (t(`topics.${topic}` as never) as string);
   // Use the localized topic name in the query too (EN → "healthcare reform", not "riforma sanitaria")
   const query = t("topicQuery", { topic: displayName });
   return (

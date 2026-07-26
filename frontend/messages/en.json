@@ -283,7 +283,7 @@
     "badge_both_18": "Italian Parliament · XVIII Legislature",
     "title": "What does the Italian Parliament think on every topic?",
     "subtitle": "Statements from the <bold>most authoritative</bold> parliamentarians on each topic, balanced between majority and opposition with verifiable citations.",
-    "trendingTopics": "Trending topics",
+    "trendingTopics": "Trending · 19th Legislature",
     "searchPlaceholder": "Search a topic...",
     "topics": {
       "PNRR": "PNRR",
@@ -310,7 +310,8 @@
       "superbonus 110%": "110% Superbonus"
     },
     "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?",
-    "researchNote": "Conversations are stored anonymously for research purposes."
+    "researchNote": "Conversations are stored anonymously for research purposes.",
+    "lastTopics": "Latest topics discussed"
   },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",
