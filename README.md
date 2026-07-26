@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://www.parliamentrag.it/"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-parliamentrag.it-1E3A5F"></a>
-  <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://zenodo.org/badge/DOI/10.5281/zenodo.21560331.svg"></a>
+  <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://img.shields.io/badge/RDF_dataset-Zenodo-1682D4?logo=zenodo&logoColor=white"></a>
   <a href="https://orkg.org/papers/R1909763"><img alt="ORKG semantic description" src="https://img.shields.io/badge/ORKG-R1909763-E86161"></a>
   <br>
   <a href="docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
