@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -162,12 +162,18 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // every visit
   const locale = useLocale();
   const [recentTopics, setRecentTopics] = useState<string[]>([]);
-  useEffect(() => {
-    const cacheKey = `recentTopics:${locale}`;
+  // Seed from sessionStorage pre-paint (useLayoutEffect): with useEffect the
+  // first frame shows the trending-only fallback and the columns pop in a
+  // beat later on every reload. Not in the useState initializer to avoid an
+  // SSR hydration mismatch (same pattern as the Sidebar footer date).
+  useLayoutEffect(() => {
     try {
-      const cached = sessionStorage.getItem(cacheKey);
+      const cached = sessionStorage.getItem(`recentTopics:${locale}`);
       setRecentTopics(cached ? JSON.parse(cached) : []);
     } catch {}
+  }, [locale]);
+  useEffect(() => {
+    const cacheKey = `recentTopics:${locale}`;
     fetch(`/api/config/recent-topics?lang=${encodeURIComponent(locale)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
