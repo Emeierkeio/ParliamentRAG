@@ -312,7 +312,7 @@
     "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?",
     "researchNote": "Conversations are stored anonymously for research purposes.",
     "lastTopics": "Latest topics discussed",
-    "lastTopicsHint": "Subjects drawn from the parliamentary acts presented since {date}.",
+    "lastTopicsHint": "Topics of the measures discussed on the floor since {date}.",
     "lastTopicsHintActs": "Recently on the floor, among others:"
   },
   "ChamberSelector": {

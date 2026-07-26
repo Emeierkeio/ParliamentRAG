@@ -311,7 +311,7 @@
     "topicQuery": "Wie ist die Position der Fraktionen zum Thema: {topic}?",
     "researchNote": "Konversationen werden zu Forschungszwecken anonym gespeichert.",
     "lastTopics": "Zuletzt diskutierte Themen",
-    "lastTopicsHint": "Themen aus den seit dem {date} eingebrachten parlamentarischen Akten.",
+    "lastTopicsHint": "Themen der seit dem {date} im Plenum diskutierten Vorlagen.",
     "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:"
   },
   "ChamberSelector": {
