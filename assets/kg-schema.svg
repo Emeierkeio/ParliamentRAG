@@ -67,11 +67,9 @@
     <text class="cnt" x="645" y="461" text-anchor="middle">64</text>
   </g>
 
-  <!-- SPOKEN_BY: Speech -> Deputy (straight) and Speech -> Gov. Member (elbow) -->
-  <path id="e-spoken-dep" class="edge" d="M 230 344 L 556 344"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken-dep" href="#e-spoken-dep" startOffset="50%">SPOKEN_BY</textPath></text>
-  <path id="e-spoken-gov" class="edge" d="M 230 376 L 430 376 L 430 448 L 556 448"/>
-  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken-gov" href="#e-spoken-gov" startOffset="25%">SPOKEN_BY</textPath></text>
+  <!-- SPOKEN_BY: Speech -> Person (covers deputies and government members) -->
+  <path id="e-spoken" class="edge" d="M 230 364 L 541 364"/>
+  <text class="elbl" dy="-4" text-anchor="middle"><textPath xlink:href="#e-spoken" href="#e-spoken" startOffset="50%">SPOKEN_BY</textPath></text>
 
   <!-- MENTIONS: Chunk -> Person (NER-resolved), enters the Person box from below -->
   <path id="e-mentions" class="edge edashed" d="M 230 504 L 640 504 L 640 494"/>
