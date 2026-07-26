@@ -73,15 +73,16 @@
   <line class="edge" x1="230" y1="372" x2="556" y2="444"/>
   <text class="elbl" x="330" y="422">SPOKEN_BY</text>
 
-  <!-- MENTIONS: Chunk -> Person (NER-resolved; deputies and gov. members) -->
-  <line class="edge edashed" x1="230" y1="500" x2="541" y2="410"/>
-  <text class="elbl" x="392" y="468">MENTIONS</text>
-  <text class="eprop" x="392" y="480">(NER-resolved)</text>
+  <!-- MENTIONS: Chunk -> Person (NER-resolved; deputies and gov. members),
+       kept below the Speech->Gov.Member SPOKEN_BY edge to avoid crossings -->
+  <line class="edge edashed" x1="230" y1="512" x2="571" y2="492"/>
+  <text class="elbl" x="300" y="492">MENTIONS</text>
+  <text class="eprop" x="368" y="492">(NER-resolved)</text>
 
-  <!-- CITES: Chunk -> Parl. Act, routed along the left margin (NER-resolved) -->
-  <path class="edge edashed" d="M 70 474 L 44 474 L 44 130 L 600 130 L 600 112"/>
-  <text class="elbl" x="430" y="124">CITES</text>
-  <text class="eprop" x="470" y="124">(NER-resolved)</text>
+  <!-- CITES: Chunk -> Parl. Act, routed along the top margin (NER-resolved) -->
+  <path class="edge edashed" d="M 70 474 L 44 474 L 44 24 L 645 24 L 645 56"/>
+  <text class="elbl" x="300" y="18">CITES</text>
+  <text class="eprop" x="344" y="18">(NER-resolved)</text>
 
   <!-- ====== acts (green) + eurovoc (teal) ====== -->
   <g>
