@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -157,24 +157,27 @@ interface WelcomeScreenProps {
 }
 
 function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
-  // Latest subjects actually on the floor (EuroVoc of recent acts), cached
-  // like the sidebar date so the section doesn't pop in on every visit
+  // Latest subjects actually on the floor (EuroVoc of recent acts), served in
+  // the UI language and cached per locale so the section doesn't pop in on
+  // every visit
+  const locale = useLocale();
   const [recentTopics, setRecentTopics] = useState<string[]>([]);
   useEffect(() => {
+    const cacheKey = `recentTopics:${locale}`;
     try {
-      const cached = sessionStorage.getItem("recentTopics");
-      if (cached) setRecentTopics(JSON.parse(cached));
+      const cached = sessionStorage.getItem(cacheKey);
+      setRecentTopics(cached ? JSON.parse(cached) : []);
     } catch {}
-    fetch("/api/config/recent-topics")
+    fetch(`/api/config/recent-topics?lang=${encodeURIComponent(locale)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (Array.isArray(data?.topics) && data.topics.length > 0) {
-          sessionStorage.setItem("recentTopics", JSON.stringify(data.topics));
+          sessionStorage.setItem(cacheKey, JSON.stringify(data.topics));
           setRecentTopics(data.topics);
         }
       })
       .catch(() => {});
-  }, []);
+  }, [locale]);
 
   const t = useTranslations("WelcomeScreen");
   return (
