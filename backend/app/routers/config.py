@@ -462,6 +462,10 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
                 "what the measure is about. No lead-in such as \"the position "
                 "of parliamentary groups\": the phrase will be inserted into "
                 "that sentence by the caller.\n"
+                "Some titles carry no subject (just an act number and the "
+                "presenter): for those, derive label and query from the "
+                "EuroVoc subjects appended after \"soggetti:\". Never label "
+                "the act form (mozione, risoluzione): always the topic.\n"
                 "Reply ONLY with a JSON array of objects, same order as the titles."
             )},
             {"role": "user", "content": _json.dumps(titles, ensure_ascii=False)},
@@ -547,7 +551,13 @@ async def get_recent_topics(lang: str = "it"):
         logger.warning("Failed to get recent topics: %s", e)
     if acts:
         try:
-            items = await _label_acts([a["title"] for a in acts], lang)
+            # Mozioni/risoluzioni have number-only titles: append their
+            # EuroVoc subjects so the label names the topic, not the form
+            llm_inputs = [
+                a["title"] + (f" — soggetti: {'; '.join(subs[:6])}" if subs else "")
+                for a, subs in zip(acts, subjects_by_act)
+            ]
+            items = await _label_acts(llm_inputs, lang)
             # Per-act label in the tooltip: the official title alone is
             # unreadable legalese, the label says what the measure is about
             for act, item in zip(acts, items):
