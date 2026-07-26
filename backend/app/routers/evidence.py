@@ -98,8 +98,6 @@ async def get_evidence(
 
     RETURN c.id AS chunk_id,
            c.text AS chunk_text,
-           c.start_char_raw AS span_start,
-           c.end_char_raw AS span_end,
            i.id AS speech_id,
            i.text AS text,
            speaker.id AS speaker_id,
@@ -132,8 +130,6 @@ async def get_evidence(
         span_start, span_end = compute_chunk_span(
             text,
             data.get("chunk_text", ""),
-            fallback_start=data.get("span_start") or 0,
-            fallback_end=data.get("span_end") or 0,
         )
 
         try:
@@ -194,8 +190,6 @@ async def verify_evidence(
     MATCH (c:Chunk {id: $evidence_id})
     MATCH (c)<-[:HAS_CHUNK]-(i:Speech)
     RETURN c.text AS chunk_text,
-           c.start_char_raw AS span_start,
-           c.end_char_raw AS span_end,
            i.text AS text
     """
 
@@ -214,8 +208,6 @@ async def verify_evidence(
         span_start, span_end = compute_chunk_span(
             text,
             data.get("chunk_text", ""),
-            fallback_start=data.get("span_start") or 0,
-            fallback_end=data.get("span_end") or 0,
         )
 
         # Verify
