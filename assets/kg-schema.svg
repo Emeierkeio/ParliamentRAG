@@ -50,7 +50,7 @@
 
     <!-- NEXT self-loop on Chunk -->
     <path class="edge edashed" d="M 70 480 C 30 480, 30 508, 70 508"/>
-    <text class="elbl" x="14" y="498">NEXT</text>
+    <text class="elbl" x="22" y="526">NEXT</text>
   </g>
 
   <!-- ====== people (blue) with Person super-label ====== -->
@@ -131,8 +131,8 @@
   <text class="elbl" x="778" y="386">MEMBER_OF_COMMITTEE</text>
   <text class="eprop" x="778" y="398">(start_date, end_date, role)</text>
   <line class="edge" x1="730" y1="452" x2="976" y2="490"/>
-  <text class="elbl" x="790" y="464">HOLDS_OFFICE</text>
-  <text class="eprop" x="790" y="476">(office_type, start_date, end_date)</text>
+  <text class="elbl" x="800" y="502">HOLDS_OFFICE</text>
+  <text class="eprop" x="800" y="514">(office_type, start_date, end_date)</text>
 
   <!-- ====== votes (rose) ====== -->
   <g>
