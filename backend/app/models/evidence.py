@@ -104,9 +104,9 @@ class UnifiedEvidence(BaseModel):
     )
 
     # Offset metadata for verification.
-    # span_end == 0 (with span_start == 0) means "offsets unknown": chunks ingested
-    # by the v2 pipeline don't carry start_char_raw/end_char_raw. The citation flow
-    # extracts from chunk_text and skips span extraction when span_end <= span_start.
+    # span_end == 0 (with span_start == 0) means "offsets unknown": the citation
+    # flow extracts from chunk_text and skips span extraction when
+    # span_end <= span_start.
     span_start: int = Field(ge=0, description="Start offset in text")
     span_end: int = Field(ge=0, description="End offset in text (0 = unknown)")
 
@@ -199,20 +199,13 @@ class UnifiedEvidence(BaseModel):
         }
 
 
-def compute_chunk_span(
-    speech_text: str,
-    chunk_text: str,
-    fallback_start: int = 0,
-    fallback_end: int = 0,
-) -> tuple:
+def compute_chunk_span(speech_text: str, chunk_text: str) -> tuple:
     """
     Compute the exact (start, end) of a chunk inside its speech text.
 
     Schema v2: chunk.text is an exact substring of speech.text (invariant C8
-    enforced at build time), so find() is exact by construction. The stored v1
-    offsets (start_char_raw/end_char_raw) were computed on the raw pre-cleaning
-    transcript and are wrong ~43% of the time — used only as last-resort
-    fallback when find() fails (v1 edge cases).
+    enforced at build time), so find() is exact by construction. (0, 0) means
+    "offsets unknown" and the citation flow falls back to chunk_text.
 
     Returns:
         (span_start, span_end) tuple.
@@ -221,7 +214,7 @@ def compute_chunk_span(
         pos = speech_text.find(chunk_text)
         if pos >= 0:
             return pos, pos + len(chunk_text)
-    return fallback_start or 0, fallback_end or 0
+    return 0, 0
 
 
 def compute_quote_text(speech_text: str, span_start: int, span_end: int) -> str:

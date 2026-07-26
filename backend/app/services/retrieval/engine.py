@@ -534,8 +534,6 @@ class RetrievalEngine:
                 RETURN c.id AS chunk_id,
                        c.text AS chunk_text,
                        c.embedding AS embedding,
-                       c.start_char_raw AS span_start,
-                       c.end_char_raw AS span_end,
                        i.id AS speech_id,
                        i.text AS text,
                        speaker.id AS speaker_id,

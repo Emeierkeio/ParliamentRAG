@@ -329,8 +329,6 @@ async def process_query_streaming(
                             AND (mg.end_date IS NULL OR mg.end_date >= s.date)
                         RETURN c.id AS chunk_id,
                                c.text AS chunk_text,
-                               c.start_char_raw AS span_start,
-                               c.end_char_raw AS span_end,
                                i.id AS speech_id,
                                i.text AS text,
                                speaker.id AS speaker_id,
@@ -374,8 +372,6 @@ async def process_query_streaming(
                     span_start, span_end = compute_chunk_span(
                         row.get("text", "") or "",
                         row.get("chunk_text", "") or "",
-                        fallback_start=row.get("span_start") or 0,
-                        fallback_end=row.get("span_end") or 0,
                     )
                     extra_evidence_map[eid] = {
                         "evidence_id": eid,
