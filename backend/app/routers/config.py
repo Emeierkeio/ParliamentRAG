@@ -428,27 +428,29 @@ async def translate_text(req: TranslateRequest):
         return {"translated": req.text}
 
 
-_recent_topics_cache: dict = {"at": 0.0, "data": None}
+_recent_topics_cache: dict = {}  # lang -> {"at": ts, "data": {...}}
 _RECENT_TOPICS_TTL_S = 3600
 
 
 @router.get("/recent-topics")
-async def get_recent_topics():
+async def get_recent_topics(lang: str = "it"):
     """EuroVoc subjects of the most recently presented acts (last-topics chips).
 
-    Looks at the last 30 days of parliamentary acts, widening to 90 when the
-    window is too empty (e.g. summer recess). Cached for an hour.
+    Starts from the last 7 days of parliamentary acts, widening to 30 and 90
+    when the window is too empty (e.g. summer recess). Labels come from the KG
+    in Italian and are translated on the fly for other UI languages. Cached
+    per language for an hour.
     """
     import time as _time
-    if _recent_topics_cache["data"] is not None and \
-            _time.time() - _recent_topics_cache["at"] < _RECENT_TOPICS_TTL_S:
-        return _recent_topics_cache["data"]
+    cached = _recent_topics_cache.get(lang)
+    if cached is not None and _time.time() - cached["at"] < _RECENT_TOPICS_TTL_S:
+        return cached["data"]
     from ..services.deps import get_services
-    client = get_services()["neo4j"]
+    neo4j = get_services()["neo4j"]
     topics: list[str] = []
     try:
-        for days in (30, 90):
-            rows = client.query(
+        for days in (7, 30, 90):
+            rows = neo4j.query(
                 "MATCH (a:ParliamentaryAct)-[:HAS_SUBJECT]->(c:EurovocConcept) "
                 "WHERE a.presentation_date >= date() - duration({days: $days}) "
                 "RETURN c.label_it AS topic, count(*) AS n "
@@ -460,8 +462,20 @@ async def get_recent_topics():
                 break
     except Exception as e:
         logger.warning("Failed to get recent topics: %s", e)
+    if lang != "it" and topics:
+        import asyncio
+        from ..services.translation import _translate_text
+        from ..key_pool import make_async_client
+        try:
+            llm = make_async_client()
+            topics = list(await asyncio.gather(*[
+                _translate_text(llm, topic, max_tokens=60, target_lang=lang)
+                for topic in topics
+            ]))
+        except Exception as e:
+            logger.warning("Recent-topics translation to %s failed: %s", lang, e)
     data = {"topics": topics}
-    _recent_topics_cache.update(at=_time.time(), data=data)
+    _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
     return data
 
 
