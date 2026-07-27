@@ -103,7 +103,7 @@ export default function ValutazionePage() {
   // Evaluator-only mode: show just the survey modal, no dashboard
   if (evaluatorId) {
     return (
-      <div className="h-screen bg-gray-100 dark:bg-zinc-900">
+      <div className="h-dvh bg-gray-100 dark:bg-zinc-900">
         <SurveyModal
           isOpen={true}
           onClose={() => window.location.reload()}
@@ -115,7 +115,7 @@ export default function ValutazionePage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950">
+    <div className="flex h-dvh overflow-hidden bg-white dark:bg-zinc-950">
       <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">

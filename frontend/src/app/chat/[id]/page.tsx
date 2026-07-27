@@ -49,7 +49,7 @@ export default function SharedChatPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
+      <div className="flex h-dvh items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">Caricamento conversazione...</p>
@@ -60,7 +60,7 @@ export default function SharedChatPage() {
 
   if (error) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
+      <div className="flex h-dvh items-center justify-center bg-background">
         <div className="text-center">
           <p className="text-lg font-medium text-foreground mb-2">{error}</p>
           <a href="/home" className="text-sm text-primary hover:underline">
@@ -72,7 +72,7 @@ export default function SharedChatPage() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}
