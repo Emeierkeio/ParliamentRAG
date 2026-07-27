@@ -626,9 +626,9 @@
     "sortEducation": "Formation",
     "sortRole": "Rôle",
     "clearAllFilters": "Effacer les filtres",
-    "emptyStateHeading": "Analyse d'autorité des députés",
+    "emptyStateHeading": "Qui mène le débat ?",
     "emptyStateDescription": "Recherchez un sujet politique et découvrez quels députés font le plus autorité en la matière, sur la base des interventions, des actes, des commissions, de la profession, de la formation et du rôle institutionnel.",
-    "topicPlaceholder": "Rechercher un sujet...",
+    "topicPlaceholder": "Ex. santé publique",
     "searchButton": "Rechercher",
     "step1": "Recherchez un sujet",
     "step2": "Classement généré",
@@ -682,7 +682,7 @@
     "groupsCount": "{count} groupes",
     "warningWeakAlignment": "Axe secondaire avec bruit élevé. Analyse 1D recommandée.",
     "placeholderNew": "Nouveau sujet...",
-    "placeholderSearch": "Rechercher un sujet...",
+    "placeholderSearch": "Ex. salaire minimum",
     "buttonAnalyze": "Analyser",
     "analyzingHeader": "Analyse en cours...",
     "historyTitle": "Historique",
@@ -704,7 +704,8 @@
     "errorUnknown": "Erreur inconnue",
     "axis1Label": "Axe 1",
     "axis2Label": "Axe 2",
-    "anchoredBadge": "Axes ancrés à la question"
+    "anchoredBadge": "Axes ancrés à la question",
+    "promptHeading": "Où se situent les groupes ?"
   },
   "Votes": {
     "title": "Explorer les scrutins",

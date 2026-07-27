@@ -626,9 +626,9 @@
     "sortEducation": "Formación",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpiar filtros",
-    "emptyStateHeading": "Análisis de Autoridad de los Diputados",
+    "emptyStateHeading": "¿Quién lidera el debate?",
     "emptyStateDescription": "Busque un tema político y descubra qué diputados son más autorizados en la materia, sobre la base de intervenciones, actos, comisiones, profesión, formación y cargo institucional.",
-    "topicPlaceholder": "Buscar un tema...",
+    "topicPlaceholder": "Ej. sanidad pública",
     "searchButton": "Buscar",
     "step1": "Busque un tema",
     "step2": "Clasificación generada",
@@ -682,7 +682,7 @@
     "groupsCount": "{count} grupos",
     "warningWeakAlignment": "Eje secundario con ruido elevado. Se recomienda el análisis 1D.",
     "placeholderNew": "Nuevo tema...",
-    "placeholderSearch": "Buscar un tema...",
+    "placeholderSearch": "Ej. salario mínimo",
     "buttonAnalyze": "Analizar",
     "analyzingHeader": "Análisis en curso...",
     "historyTitle": "Historial",
@@ -704,7 +704,8 @@
     "errorUnknown": "Error desconocido",
     "axis1Label": "Eje 1",
     "axis2Label": "Eje 2",
-    "anchoredBadge": "Ejes anclados a la pregunta"
+    "anchoredBadge": "Ejes anclados a la pregunta",
+    "promptHeading": "¿Dónde se sitúan los grupos?"
   },
   "Votes": {
     "title": "Explorar Votaciones",
