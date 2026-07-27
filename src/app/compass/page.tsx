@@ -105,7 +105,7 @@ export default function CompassPage() {
   const dimensionality = compassData?.meta?.dimensionality ?? 2;
 
   return (
-    <div className="flex h-dvh bg-background overflow-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex h-dvh bg-background overflow-hidden pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}

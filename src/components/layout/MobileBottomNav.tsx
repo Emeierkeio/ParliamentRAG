@@ -14,6 +14,7 @@ import {
   Settings,
   CalendarDays,
   Check,
+  Loader2,
 } from "lucide-react";
 import {
   Sheet,
@@ -57,6 +58,15 @@ export function MobileBottomNav() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  // Tab switches are full page loads: without instant feedback the app feels
+  // dead for the whole transition. The overlay stays up until the new
+  // document paints; pageshow clears it when iOS restores from bfcache.
+  const [navTarget, setNavTarget] = useState<string | null>(null);
+  useEffect(() => {
+    const clear = () => setNavTarget(null);
+    window.addEventListener("pageshow", clear);
+    return () => window.removeEventListener("pageshow", clear);
+  }, []);
 
   const isVisible = VISIBLE_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
@@ -77,10 +87,10 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur-lg pb-[env(safe-area-inset-bottom)]"
+      className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(27,58,92,0.16)]"
       aria-label={t("tools")}
     >
-      <div className="flex h-14 items-stretch justify-around">
+      <div className="flex h-14 items-stretch justify-around px-1">
         {NAV_ITEMS.map(({ href, icon: Icon, key }) => {
           const isActive =
             href === "/home"
@@ -91,7 +101,10 @@ export function MobileBottomNav() {
               key={href}
               href={href}
               aria-current={isActive ? "page" : undefined}
-              className={tabClass(isActive)}
+              className={tabClass(isActive || navTarget === href)}
+              onClick={() => {
+                if (!isActive) setNavTarget(href);
+              }}
             >
               <span className={pillClass(isActive)}>
                 <Icon className="h-[18px] w-[18px]" />
@@ -128,6 +141,13 @@ export function MobileBottomNav() {
       </div>
 
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      {/* Transition veil: covers the old page from tab-tap to new-document paint */}
+      {navTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm">
+          <Loader2 className="h-6 w-6 motion-safe:animate-spin text-primary" />
+        </div>
+      )}
     </nav>
   );
 }
@@ -173,13 +193,14 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
   };
 
   return (
-    <div className="px-5 pt-4">
+    <div className="px-5 pt-5">
       {/* Radix requires a title for screen readers; visually the sheet
           starts straight from the language section */}
       <SheetTitle className="sr-only">{config.app.name}</SheetTitle>
 
-      {/* Language */}
-      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+      {/* Language — the label keeps clear of the sheet's absolute close X
+          (top-right), and the extra margin drops the grid below it */}
+      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3 pr-10">
         {tLang("switchTo")}
       </p>
       <div className="grid grid-cols-3 gap-1.5">
@@ -200,23 +221,23 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
         ))}
       </div>
 
-      {/* Secondary actions */}
-      <div className="mt-4 flex flex-col gap-0.5">
+      {/* Secondary actions — icon-only, one row */}
+      <div className="mt-3 grid grid-cols-2 gap-1.5">
         <button
           onClick={onOpenSettings}
-          className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-foreground/80 hover:bg-muted/50 transition-colors"
+          aria-label={t("settings")}
+          className="flex h-10 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
         >
-          <Settings className="h-4 w-4 text-muted-foreground" />
-          {t("settings")}
+          <Settings className="h-4 w-4" />
         </button>
         <a
           href="https://github.com/Emeierkeio/ParliamentRAG"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-foreground/80 hover:bg-muted/50 transition-colors"
+          aria-label={t("documentation")}
+          className="flex h-10 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
         >
-          <Github className="h-4 w-4 text-muted-foreground" />
-          {t("documentation")}
+          <Github className="h-4 w-4" />
         </a>
       </div>
 
