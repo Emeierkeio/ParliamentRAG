@@ -237,7 +237,7 @@ export default function SearchPage() {
     ].filter(Boolean).length;
 
     return (
-        <div className="flex h-screen overflow-hidden bg-white dark:bg-zinc-950 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+        <div className="flex h-dvh overflow-hidden bg-white dark:bg-zinc-950 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
              <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
@@ -356,8 +356,10 @@ export default function SearchPage() {
                                 </div>
                             </div>
 
-                            {/* ── MOBILE: compact filter bar ── */}
-                            <div className="md:hidden px-4 pt-2 pb-0">
+                            {/* ── MOBILE: active-filter chips (row only exists when
+                                 something is set — the Filters button lives in the
+                                 action row below) ── */}
+                            <div className={cn("md:hidden px-4 pt-2 pb-0", activeFilterCount === 0 && "hidden")}>
                                 <div className="flex items-center gap-2 flex-wrap">
                                     {/* Active filter chips */}
                                     {docType !== "all" && (
@@ -403,24 +405,6 @@ export default function SearchPage() {
                                         </button>
                                     )}
 
-                                    {/* Filtri button */}
-                                    <button
-                                        onClick={() => setFilterSheetOpen(true)}
-                                        className={cn(
-                                            "ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors shrink-0",
-                                            activeFilterCount > 0
-                                                ? "border-primary text-primary bg-primary/5"
-                                                : "border-border text-muted-foreground hover:text-foreground hover:bg-muted/40"
-                                        )}
-                                    >
-                                        <SlidersHorizontal className="h-3.5 w-3.5" />
-                                        {t("filtersButton")}
-                                        {activeFilterCount > 0 && (
-                                            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
-                                                {activeFilterCount}
-                                            </span>
-                                        )}
-                                    </button>
                                 </div>
                             </div>
 
@@ -539,6 +523,25 @@ export default function SearchPage() {
 
                             {/* Action Buttons (always visible) */}
                             <div className="px-4 md:px-6 pb-4 md:pb-6 pt-3 flex gap-3">
+                                {/* Mobile: Filters beside the CTA instead of on a row of its own */}
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    onClick={() => setFilterSheetOpen(true)}
+                                    className={cn(
+                                        "md:hidden h-12 px-4 shrink-0",
+                                        activeFilterCount > 0
+                                            ? "border-primary text-primary bg-primary/5"
+                                            : "text-muted-foreground"
+                                    )}
+                                >
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                    {activeFilterCount > 0 && (
+                                        <span className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] font-bold leading-none">
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                </Button>
                                 <Button
                                     size="lg"
                                     disabled={!query.trim() || loading}

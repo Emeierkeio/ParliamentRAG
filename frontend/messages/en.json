@@ -642,9 +642,9 @@
     "sortEducation": "Education",
     "sortRole": "Role",
     "clearAllFilters": "Clear filters",
-    "emptyStateHeading": "Deputy Authority Analysis",
+    "emptyStateHeading": "Who leads the debate?",
     "emptyStateDescription": "Search a political topic and discover which deputies are most authoritative on it, based on speeches, acts, committees, profession, education and institutional role.",
-    "topicPlaceholder": "Search a topic...",
+    "topicPlaceholder": "E.g. public healthcare",
     "searchButton": "Search",
     "step1": "Search a topic",
     "step2": "Ranking generated",
@@ -698,7 +698,7 @@
     "groupsCount": "{count} groups",
     "warningWeakAlignment": "Secondary axis with high noise. 1D analysis recommended.",
     "placeholderNew": "New topic...",
-    "placeholderSearch": "Search a topic...",
+    "placeholderSearch": "E.g. minimum wage",
     "buttonAnalyze": "Analyze",
     "analyzingHeader": "Analyzing...",
     "historyTitle": "History",
@@ -720,7 +720,8 @@
     "errorUnknown": "Unknown error",
     "axis1Label": "Axis 1",
     "axis2Label": "Axis 2",
-    "anchoredBadge": "Axes anchored to the question"
+    "anchoredBadge": "Axes anchored to the question",
+    "promptHeading": "Where do the groups stand?"
   },
   "Votes": {
     "title": "Votes Explorer",

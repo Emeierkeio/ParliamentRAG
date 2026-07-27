@@ -261,7 +261,7 @@ export default function RankingPage() {
 
   // ── Render ──
   return (
-    <div className="flex h-screen bg-background overflow-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex h-dvh bg-background overflow-hidden pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}
@@ -565,8 +565,11 @@ export default function RankingPage() {
           {!hasResults && !loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 pb-16">
               <div className="text-center space-y-5 max-w-lg">
-                {/* Tool first — the page header already carries the title, so
-                    the empty state opens straight on the search input */}
+                {/* Prompt-as-question + example placeholder (NN/g: the
+                    placeholder shows the format, the question says the job) */}
+                <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+                  {t("emptyStateHeading")}
+                </h2>
                 {/* Search bar */}
                 <div className="w-full max-w-md mx-auto">
                   <form onSubmit={(e) => { e.preventDefault(); fetchRanking(topic); }} className="relative">
@@ -586,10 +589,6 @@ export default function RankingPage() {
                     </Button>
                   </form>
                 </div>
-
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-                  {t("emptyStateDescription")}
-                </p>
 
                 {/* Topic chips */}
                 <div className="pt-3">

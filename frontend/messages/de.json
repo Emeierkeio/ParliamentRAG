@@ -626,9 +626,9 @@
     "sortEducation": "Bildung",
     "sortRole": "Rolle",
     "clearAllFilters": "Filter löschen",
-    "emptyStateHeading": "Autoritätsanalyse der Abgeordneten",
+    "emptyStateHeading": "Wer führt die Debatte an?",
     "emptyStateDescription": "Suchen Sie ein politisches Thema und finden Sie heraus, welche Abgeordneten auf diesem Gebiet am maßgeblichsten sind, basierend auf Redebeiträgen, Akten, Ausschüssen, Beruf, Bildung und institutioneller Rolle.",
-    "topicPlaceholder": "Thema suchen...",
+    "topicPlaceholder": "z. B. Gesundheitswesen",
     "searchButton": "Suchen",
     "step1": "Thema suchen",
     "step2": "Rangliste erstellt",
@@ -682,7 +682,7 @@
     "groupsCount": "{count} Fraktionen",
     "warningWeakAlignment": "Sekundärachse mit hohem Rauschen. 1D-Analyse empfohlen.",
     "placeholderNew": "Neues Thema...",
-    "placeholderSearch": "Thema suchen...",
+    "placeholderSearch": "z. B. Mindestlohn",
     "buttonAnalyze": "Analysieren",
     "analyzingHeader": "Analyse läuft...",
     "historyTitle": "Verlauf",
@@ -704,7 +704,8 @@
     "errorUnknown": "Unbekannter Fehler",
     "axis1Label": "Achse 1",
     "axis2Label": "Achse 2",
-    "anchoredBadge": "Achsen an der Frage verankert"
+    "anchoredBadge": "Achsen an der Frage verankert",
+    "promptHeading": "Wo stehen die Fraktionen?"
   },
   "Votes": {
     "title": "Abstimmungen erkunden",
