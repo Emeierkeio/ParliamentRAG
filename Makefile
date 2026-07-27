@@ -303,8 +303,10 @@ update-data: tunnel
 	START=$$(NEO4J_PASSWORD="$$NEO4J_PASS_VAL" $(BACKEND_DIR)/venv/bin/python -c 'import os; from neo4j import GraphDatabase; d = GraphDatabase.driver("$(DEMO_NEO4J)", auth=("neo4j", os.environ["NEO4J_PASSWORD"])); s = d.session(); m = s.run("MATCH (n:Session {chamber: \x27camera\x27}) RETURN max(toInteger(n.number)) AS m").single()["m"]; print(max(1, (m or 11) - 10)); d.close()'); \
 	echo "  start-session: $$START"; \
 	$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
+	$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --individual-recent --legislature 19 --start-session $$START; \
 	if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
 		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
+		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --individual-recent --legislature 19 --start-session $$START; \
 	fi
 	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 

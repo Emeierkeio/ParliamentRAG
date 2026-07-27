@@ -67,6 +67,8 @@ _WRITE_RETRIES = 5
 _DEP_URI_RE = re.compile(r"/d(\d+)_19$")
 _VOTAZIONE_URI_RE = re.compile(r"/vs\d+_(\d+)_(\d+)$")
 _PERSONA_ID_RE = re.compile(r"/p(\d+)$")
+# Legislature-agnostic deputato URI (deputato.rdf/d{person}_{leg})
+_DEPUTATO_URI_RE = re.compile(r"deputato\.rdf/d(\d+)_\d+$")
 
 
 # ---------------------------------------------------------------------------
@@ -294,6 +296,94 @@ class SparqlIngester:
             "votes_skipped": total_skipped,
         }
 
+    def ingest_individual_votes_for_recent_sittings(
+        self,
+        legislature: int = 19,
+        start_session: int = 1,
+        chamber: str = "camera",
+    ) -> dict:
+        """Individual votes for the sittings from start_session on, queried
+        per votazione instead of per deputy.
+
+        The per-deputy path (ingest_votes) resumes by skipping deputies that
+        already have votes, which makes it blind to new sittings after the
+        first full build. This is the incremental complement: bounded by
+        sitting number, idempotent MERGEs, cheap enough for the daily update.
+        """
+        # SPARQL rows carry deputato URIs; map their person_id back to Deputy nodes
+        person_to_neo4j: dict[str, str] = {}
+        for dep in self._fetch_all_deputies(chamber=chamber):
+            pid = _extract_person_id_from_neo4j_id(dep["id"])
+            if pid:
+                person_to_neo4j[pid] = dep["id"]
+
+        sittings = sorted(
+            n for n in self._get_camera_sittings_in_db(legislature)
+            if n is not None and int(n) >= start_session
+        )
+        logger.info(
+            "Individual-vote ingest for %d sittings (legislature=%s, start=%s)",
+            len(sittings), legislature, start_session,
+        )
+
+        total_written = 0
+        total_skipped = 0
+        for num in sittings:
+            rows = self._get_camera_votes_for_sitting(legislature, num)
+            uris = sorted({
+                r.get("votazione", {}).get("value", "")
+                for r in rows if r.get("votazione", {}).get("value")
+            })
+            sitting_written = 0
+            for uri in uris:
+                session_num, vote_num = parse_votazione_uri(uri)
+                if session_num is None or vote_num is None:
+                    continue
+                offset = 0
+                while True:
+                    bindings = self._get_votazione_individual_votes(uri, offset=offset)
+                    if not bindings:
+                        break
+                    batch = []
+                    for row in bindings:
+                        dep_uri = row.get("deputato", {}).get("value", "")
+                        tipo = row.get("tipo", {}).get("value", "")
+                        pid_match = _DEPUTATO_URI_RE.search(dep_uri)
+                        if not pid_match:
+                            total_skipped += 1
+                            continue
+                        neo4j_id = person_to_neo4j.get(pid_match.group(1))
+                        if not neo4j_id:
+                            total_skipped += 1
+                            continue
+                        batch.append({
+                            "id": f"iv_{chamber}_{pid_match.group(1)}_{session_num}_{vote_num}",
+                            "deputyId": neo4j_id,
+                            "sessionNumber": session_num,
+                            "voteNumber": vote_num,
+                            "outcome": OUTCOME_MAP.get(tipo, "absent"),
+                        })
+                    if batch:
+                        w, s = self._write_votes(batch, chamber=chamber, legislature=legislature)
+                        total_written += w
+                        total_skipped += s
+                        sitting_written += w
+                    if len(bindings) < SPARQL_PAGE_SIZE:
+                        break
+                    offset += SPARQL_PAGE_SIZE
+            logger.info("  sitting %s: %d individual votes written (total: %d)",
+                        num, sitting_written, total_written)
+
+        logger.info(
+            "Individual-vote ingest complete: sittings=%d, written=%d, skipped=%d",
+            len(sittings), total_written, total_skipped,
+        )
+        return {
+            "sittings_processed": len(sittings),
+            "votes_written": total_written,
+            "votes_skipped": total_skipped,
+        }
+
     def ingest_committee_roles(
         self,
         chamber: str = "camera",
@@ -479,6 +569,24 @@ WHERE {{
   ?voto a ocd:voto ;
         ocd:rif_deputato <{dep_sparql_uri}> ;
         ocd:rif_votazione ?votazione ;
+        dc:type ?tipo .
+}}
+LIMIT {SPARQL_PAGE_SIZE}
+OFFSET {offset}
+"""
+        return _sparql_get(query)
+
+    def _get_votazione_individual_votes(self, votazione_uri: str, offset: int = 0) -> list[dict]:
+        """Fetch one page of individual vote records for a single votazione."""
+        query = f"""
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?deputato ?tipo
+WHERE {{
+  ?voto a ocd:voto ;
+        ocd:rif_votazione <{votazione_uri}> ;
+        ocd:rif_deputato ?deputato ;
         dc:type ?tipo .
 }}
 LIMIT {SPARQL_PAGE_SIZE}
@@ -800,6 +908,14 @@ if __name__ == "__main__":
         default=350,
         help="First session number for Camera aggregate ingest (default 350)",
     )
+    parser.add_argument(
+        "--individual-recent",
+        action="store_true",
+        help=(
+            "Ingest individual votes per votazione for sittings from "
+            "--start-session on (incremental update mode), then exit"
+        ),
+    )
     args = parser.parse_args()
 
     try:
@@ -815,7 +931,19 @@ if __name__ == "__main__":
     try:
         ingester = SparqlIngester(driver)
 
-        if args.aggregate_only:
+        if args.individual_recent:
+            # Incremental mode: individual votes for recent sittings only
+            print(f"==> Ingesting individual votes per votazione (leg={args.legislature}, start={args.start_session})...")
+            iv_stats = ingester.ingest_individual_votes_for_recent_sittings(
+                legislature=args.legislature,
+                start_session=args.start_session,
+            )
+            print(
+                f"    Sittings processed : {iv_stats['sittings_processed']}\n"
+                f"    Votes written      : {iv_stats['votes_written']}\n"
+                f"    Votes skipped      : {iv_stats['votes_skipped']}"
+            )
+        elif args.aggregate_only:
             # Aggregate-only mode: Camera aggregate votes, nothing else
             print(f"==> Ingesting Camera aggregate votes (leg={args.legislature}, start={args.start_session})...")
             agg_stats = ingester.ingest_camera_aggregate_votes(
