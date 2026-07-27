@@ -72,11 +72,6 @@ export default function TimelinePage() {
           </div>
         </header>
 
-        {/* Explainer text */}
-        <p className="text-sm text-muted-foreground px-4 sm:px-6 py-2 mx-auto w-full max-w-4xl">
-          {t("browseDescription")}
-        </p>
-
         {/* Session list — width-capped reading column */}
         <div className="px-4 sm:px-6 py-4 flex-1 mx-auto w-full max-w-4xl">
           {isLoading ? (
@@ -128,17 +123,9 @@ export default function TimelinePage() {
                         </div>
                       </div>
 
-                      {/* ── Session card ── */}
+                      {/* ── Session card ── (date and chamber already live in
+                           the card header, no extra mobile row) */}
                       <div className="flex-1 min-w-0 pb-2">
-                        {/* Mobile date + chamber badge row */}
-                        <div className="flex items-center gap-2 mb-1 sm:hidden">
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
-                          </span>
-                          <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                            {session.chamber}
-                          </span>
-                        </div>
                         <SessionCard session={session} searchTerm={filters.search} />
                       </div>
                     </div>

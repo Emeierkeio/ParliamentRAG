@@ -148,7 +148,9 @@ export function SessionCard({ session, searchTerm }: SessionCardProps) {
         <div className="pb-4">
           {/* AI recap */}
           {session.recap ? (
-            <p className="text-sm text-foreground/80 leading-relaxed">
+            // Clamped while collapsed: the card is a preview, the full recap
+            // belongs to the expanded state (tap anywhere on the header)
+            <p className={cn("text-sm text-foreground/80 leading-relaxed", !open && "line-clamp-3")}>
               {searchTerm ? highlightText(session.recap, searchTerm) : session.recap}
             </p>
           ) : (
