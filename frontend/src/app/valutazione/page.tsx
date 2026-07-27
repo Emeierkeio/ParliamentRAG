@@ -115,7 +115,7 @@ export default function ValutazionePage() {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-white dark:bg-zinc-950">
+    <div className="flex h-dvh overflow-hidden bg-background">
       <Sidebar isCollapsed={isCollapsed} onToggle={toggle} isMobile={isMobile} isMobileOpen={isMobileOpen} onCloseMobile={closeMobile} />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">

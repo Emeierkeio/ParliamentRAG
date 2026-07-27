@@ -331,7 +331,7 @@
   "Settings": {
     "title": "Configuração do Sistema",
     "unsavedChanges": "Alterações não guardadas",
-    "description": "As alterações entram em vigor imediatamente, mas são temporárias — reinicie o servidor ou faça Recarregar para repor os valores do ficheiro YAML.",
+    "description": "As alterações aplicam-se de imediato, mas apenas nesta sessão: reiniciar o servidor, ou Recarregar, repõe os valores do ficheiro YAML.",
     "error": "Erro",
     "saved": "Guardado",
     "savedMessage": "Definições aplicadas com êxito.",

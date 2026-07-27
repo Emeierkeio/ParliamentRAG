@@ -92,7 +92,7 @@ const STR = {
     modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4.1-mini è sufficiente ed economico.",
     modelInfoWriter: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
     modelInfoIntegrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
-    tempNote: "Temperatura e max token sono fissi per stadio, tarati nel codice (Analista 0.1, Scrittore 0.1, Integratore 0.0) per garantire citazioni verbatim riproducibili. Il cambio di modello è l'unica leva LLM con effetto reale ed è applicato a caldo alla prossima query.",
+    tempNote: "Temperatura e max token sono fissi per stadio (Analista 0.1, Scrittore 0.1, Integratore 0.0), tarati nel codice per avere citazioni verbatim riproducibili. Da qui si cambia solo il modello, che vale dalla query successiva.",
     positionBrief: "Position Brief",
     enabledM: "Abilitato",
     positionBriefInfo: "Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate.",
@@ -170,7 +170,7 @@ const STR = {
     modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task — gpt-4.1-mini is sufficient and cost-effective.",
     modelInfoWriter: "Stage 2: writes the sections for each parliamentary group from the retrieved chunks. Requires high narrative quality and verbatim citation fidelity — gpt-4.1 recommended.",
     modelInfoIntegrator: "Stage 3: integrates the sections into a coherent, balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use an LLM.",
-    tempNote: "Temperature and max tokens are fixed per stage, tuned in code (Analyst 0.1, Writer 0.1, Integrator 0.0) to guarantee reproducible verbatim citations. Changing the model is the only LLM lever with real effect and is hot-applied on the next query.",
+    tempNote: "Temperature and max tokens are fixed per stage (Analyst 0.1, Writer 0.1, Integrator 0.0), tuned in code for reproducible verbatim citations. Only the model can be changed here; it applies from the next query.",
     positionBrief: "Position Brief",
     enabledM: "Enabled",
     positionBriefInfo: "Provides the writer with a summary of the parliamentary group's overall position (top N chunks) before it writes the section. Improves the ideological coherence of the selected citations.",
@@ -305,16 +305,17 @@ function ToggleSwitch({
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
       className={[
-        "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        "relative inline-block shrink-0 appearance-none rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         checked ? "bg-primary" : "bg-input",
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
       ].join(" ")}
+      // Pixel sizes inline: on iOS the utility-sized track collapsed into a
+      // blob, explicit dimensions keep the pill shape everywhere
+      style={{ width: 36, height: 20 }}
     >
       <span
-        className={[
-          "pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform",
-          checked ? "translate-x-4" : "translate-x-0",
-        ].join(" ")}
+        className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full bg-white shadow transition-all"
+        style={{ width: 16, height: 16, left: checked ? 18 : 2 }}
       />
       {label && (
         <span className="sr-only">{label}</span>
@@ -480,9 +481,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <div className="p-1.5 rounded-md bg-blue-100 dark:bg-blue-950">
-            <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-          </div>
+          <Search className="h-4 w-4 text-muted-foreground" />
           {S.retrievalTitle}
         </CardTitle>
         <CardDescription>{S.retrievalDesc}</CardDescription>
@@ -491,7 +490,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
 
         {/* Dense Channel */}
         <SubSection icon={Zap} title={S.denseChannel}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <FieldWithUnit
               label={S.topK}
               info={S.topKInfo}
@@ -520,7 +519,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
 
         {/* Graph Channel */}
         <SubSection icon={Network} title={S.graphChannel}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <FieldWithUnit
               label={S.minLexMatch}
               info={S.minLexMatchInfo}
@@ -622,9 +621,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <div className="p-1.5 rounded-md bg-amber-100 dark:bg-amber-950">
-            <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          </div>
+          <Scale className="h-4 w-4 text-muted-foreground" />
           {S.authorityTitle}
         </CardTitle>
         <CardDescription>{S.authorityDesc}</CardDescription>
@@ -656,7 +653,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
 
         {/* Time Decay */}
         <SubSection icon={Clock} title={S.timeDecay}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <FieldWithUnit
               label={S.actsHalfLife}
               info={S.actsHalfLifeInfo}
@@ -689,7 +686,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
           <p className="text-xs text-muted-foreground leading-relaxed">
             {S.relevanceThresholdsDesc}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <FieldWithUnit
               label={S.actsRelevance}
               info={S.actsRelevanceInfo}
@@ -774,9 +771,7 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <div className="p-1.5 rounded-md bg-purple-100 dark:bg-purple-950">
-            <Zap className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-          </div>
+          <Zap className="h-4 w-4 text-muted-foreground" />
           {S.generationTitle}
         </CardTitle>
         <CardDescription>{S.generationDesc}</CardDescription>
@@ -907,9 +902,7 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
-          <div className="p-1.5 rounded-md bg-green-100 dark:bg-green-950">
-            <RefreshCcw className="h-4 w-4 text-green-600 dark:text-green-400" />
-          </div>
+          <RefreshCcw className="h-4 w-4 text-muted-foreground" />
           {S.qrTitle}
         </CardTitle>
         <CardDescription>{S.qrDesc}</CardDescription>
@@ -927,7 +920,7 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <LabelWithInfo info={S.qrModelInfo}>
                 {S.qrModel}
