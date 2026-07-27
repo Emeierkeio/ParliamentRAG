@@ -508,11 +508,11 @@
     "noSavedSearches": "Aucune recherche enregistrée",
     "removeEntry": "Supprimer",
     "introHeading": "Recherche d'actes et d'interventions",
-    "introDescription": "Recherchez parmi les actes parlementaires et les interventions en séance.",
+    "introDescription": "Cherchez entreprises, personnes et sujets dans les actes",
     "featureText": "Recherche textuelle",
     "featureAuthor": "Filtrer par auteur",
     "featurePeriod": "Type et période",
-    "searchPlaceholder": "Rechercher dans les actes et interventions parlementaires...",
+    "searchPlaceholder": "Ex. Eni, énergie nucléaire",
     "docTypeSpeeches": "Interventions",
     "docTypeActs": "Actes",
     "filtersButton": "Filtres",
@@ -570,7 +570,8 @@
     "historyTagSpeeches": "Interventions",
     "historyTagActs": "Actes",
     "historyTagDateFrom": "du {date}",
-    "historyTagDateTo": "au {date}"
+    "historyTagDateTo": "au {date}",
+    "suggestedTopicsLabel": "Ou essayez un sujet suggéré"
   },
   "Timeline": {
     "pageTitle": "Travaux de l’Assemblée",
@@ -626,7 +627,7 @@
     "sortEducation": "Formation",
     "sortRole": "Rôle",
     "clearAllFilters": "Effacer les filtres",
-    "emptyStateHeading": "Qui mène le débat ?",
+    "emptyStateHeading": "Découvrez les députés qui font autorité sur un sujet",
     "emptyStateDescription": "Recherchez un sujet politique et découvrez quels députés font le plus autorité en la matière, sur la base des interventions, des actes, des commissions, de la profession, de la formation et du rôle institutionnel.",
     "topicPlaceholder": "Ex. santé publique",
     "searchButton": "Rechercher",
@@ -705,7 +706,7 @@
     "axis1Label": "Axe 1",
     "axis2Label": "Axe 2",
     "anchoredBadge": "Axes ancrés à la question",
-    "promptHeading": "Où se situent les groupes ?"
+    "promptHeading": "Comparez les positions des groupes sur un sujet"
   },
   "Votes": {
     "title": "Explorer les scrutins",

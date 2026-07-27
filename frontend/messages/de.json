@@ -508,11 +508,11 @@
     "noSavedSearches": "Keine gespeicherten Suchen",
     "removeEntry": "Entfernen",
     "introHeading": "Suche in Akten und Redebeiträgen",
-    "introDescription": "Durchsuchen Sie parlamentarische Akte und Redebeiträge im Plenum.",
+    "introDescription": "Suchen Sie Unternehmen, Personen und Themen in Akten und Reden",
     "featureText": "Textsuche",
     "featureAuthor": "Nach Autor filtern",
     "featurePeriod": "Typ und Zeitraum",
-    "searchPlaceholder": "In parlamentarischen Akten und Redebeiträgen suchen...",
+    "searchPlaceholder": "z. B. Eni, Kernenergie",
     "docTypeSpeeches": "Redebeiträge",
     "docTypeActs": "Akte",
     "filtersButton": "Filter",
@@ -570,7 +570,8 @@
     "historyTagSpeeches": "Redebeiträge",
     "historyTagActs": "Akte",
     "historyTagDateFrom": "vom {date}",
-    "historyTagDateTo": "bis {date}"
+    "historyTagDateTo": "bis {date}",
+    "suggestedTopicsLabel": "Oder versuchen Sie es mit einem vorgeschlagenen Thema"
   },
   "Timeline": {
     "pageTitle": "Plenarsitzungen",
@@ -626,7 +627,7 @@
     "sortEducation": "Bildung",
     "sortRole": "Rolle",
     "clearAllFilters": "Filter löschen",
-    "emptyStateHeading": "Wer führt die Debatte an?",
+    "emptyStateHeading": "Finden Sie die maßgeblichen Abgeordneten zu einem Thema",
     "emptyStateDescription": "Suchen Sie ein politisches Thema und finden Sie heraus, welche Abgeordneten auf diesem Gebiet am maßgeblichsten sind, basierend auf Redebeiträgen, Akten, Ausschüssen, Beruf, Bildung und institutioneller Rolle.",
     "topicPlaceholder": "z. B. Gesundheitswesen",
     "searchButton": "Suchen",
@@ -705,7 +706,7 @@
     "axis1Label": "Achse 1",
     "axis2Label": "Achse 2",
     "anchoredBadge": "Achsen an der Frage verankert",
-    "promptHeading": "Wo stehen die Fraktionen?"
+    "promptHeading": "Vergleichen Sie die Positionen der Fraktionen zu einem Thema"
   },
   "Votes": {
     "title": "Abstimmungen erkunden",
