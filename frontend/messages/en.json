@@ -509,11 +509,11 @@
     "noSavedSearches": "No saved searches",
     "removeEntry": "Remove",
     "introHeading": "Search Acts and Speeches",
-    "introDescription": "Search through parliamentary acts and floor speeches.",
+    "introDescription": "Search companies, people and topics in acts and speeches",
     "featureText": "Text search",
     "featureAuthor": "Filter by author",
     "featurePeriod": "Type and period",
-    "searchPlaceholder": "Search parliamentary acts and speeches...",
+    "searchPlaceholder": "E.g. Eni, nuclear energy",
     "docTypeSpeeches": "Speeches",
     "docTypeActs": "Acts",
     "filtersButton": "Filters",
@@ -571,7 +571,8 @@
     "historyTagSpeeches": "Speeches",
     "historyTagActs": "Acts",
     "historyTagDateFrom": "from {date}",
-    "historyTagDateTo": "to {date}"
+    "historyTagDateTo": "to {date}",
+    "suggestedTopicsLabel": "Or try a suggested topic"
   },
   "Timeline": {
     "pageTitle": "Chamber Proceedings",
@@ -642,7 +643,7 @@
     "sortEducation": "Education",
     "sortRole": "Role",
     "clearAllFilters": "Clear filters",
-    "emptyStateHeading": "Who leads the debate?",
+    "emptyStateHeading": "Find the most authoritative deputies on a topic",
     "emptyStateDescription": "Search a political topic and discover which deputies are most authoritative on it, based on speeches, acts, committees, profession, education and institutional role.",
     "topicPlaceholder": "E.g. public healthcare",
     "searchButton": "Search",
@@ -721,7 +722,7 @@
     "axis1Label": "Axis 1",
     "axis2Label": "Axis 2",
     "anchoredBadge": "Axes anchored to the question",
-    "promptHeading": "Where do the groups stand?"
+    "promptHeading": "Compare the groups' positions on a topic"
   },
   "Votes": {
     "title": "Votes Explorer",

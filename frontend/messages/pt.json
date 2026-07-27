@@ -508,11 +508,11 @@
     "noSavedSearches": "Nenhuma pesquisa guardada",
     "removeEntry": "Remover",
     "introHeading": "Pesquisa de Atos e Intervenções",
-    "introDescription": "Pesquise entre os atos parlamentares e as intervenções em plenário.",
+    "introDescription": "Pesquise empresas, pessoas e temas em atos e intervenções",
     "featureText": "Pesquisa textual",
     "featureAuthor": "Filtrar por autor",
     "featurePeriod": "Tipo e período",
-    "searchPlaceholder": "Pesquisar nos atos e intervenções parlamentares...",
+    "searchPlaceholder": "Ex. Eni, energia nuclear",
     "docTypeSpeeches": "Intervenções",
     "docTypeActs": "Atos",
     "filtersButton": "Filtros",
@@ -570,7 +570,8 @@
     "historyTagSpeeches": "Intervenções",
     "historyTagActs": "Atos",
     "historyTagDateFrom": "de {date}",
-    "historyTagDateTo": "até {date}"
+    "historyTagDateTo": "até {date}",
+    "suggestedTopicsLabel": "Ou experimente um tema sugerido"
   },
   "Timeline": {
     "pageTitle": "Trabalhos do Plenário",
@@ -626,7 +627,7 @@
     "sortEducation": "Educação",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpar filtros",
-    "emptyStateHeading": "Quem lidera o debate?",
+    "emptyStateHeading": "Descubra os deputados mais influentes sobre um tema",
     "emptyStateDescription": "Pesquise um tema político e descubra que deputados têm mais autoridade na matéria, com base em intervenções, atos, comissões, profissão, educação e cargo institucional.",
     "topicPlaceholder": "Ex. saúde pública",
     "searchButton": "Pesquisar",
@@ -705,7 +706,7 @@
     "axis1Label": "Eixo 1",
     "axis2Label": "Eixo 2",
     "anchoredBadge": "Eixos ancorados na pergunta",
-    "promptHeading": "Onde se situam os grupos?"
+    "promptHeading": "Compare as posições dos grupos sobre um tema"
   },
   "Votes": {
     "title": "Explorar Votações",
