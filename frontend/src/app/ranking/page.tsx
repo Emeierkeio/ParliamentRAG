@@ -19,7 +19,7 @@ import {
   ChevronDown,
   RotateCcw,
   Landmark,
-  ChevronRight,
+  ArrowRight,
   History,
   Clock,
 } from "lucide-react";
@@ -619,15 +619,15 @@ export default function RankingPage() {
                   <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
                     {t("suggestedTopicsLabel")}
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
                     {getTopics(locale).slice(0, 8).map((t) => (
                       <button
                         key={t}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                        className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground cursor-pointer"
                         onClick={() => handleTopicClick(t)}
                       >
-                        <span className="capitalize">{t}</span>
-                        <ChevronRight className="w-3 h-3 opacity-40" />
+                        <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
+                        <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
                       </button>
                     ))}
                   </div>
