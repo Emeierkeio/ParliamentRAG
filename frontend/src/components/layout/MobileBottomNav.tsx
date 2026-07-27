@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect } from "react";
-import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -178,10 +177,7 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
     <div className="px-1">
       <SheetHeader className="px-0 pb-2">
         <SheetTitle asChild>
-          <a href="/" className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center bg-primary rounded-md">
-              <Image src="/logo.svg" alt="" width={22} height={22} />
-            </span>
+          <a href="/" className="flex items-center">
             <span className="[font-family:var(--font-display)] text-lg font-semibold tracking-tight">
               {config.app.name}
             </span>
