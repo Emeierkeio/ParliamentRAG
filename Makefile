@@ -275,6 +275,25 @@ update-data: tunnel
 	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
 	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
 	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J)
+	@# Same incremental update replayed on the local snapshot (:$(LOCAL_BOLT_PORT)), so the
+	@# local copy never drifts from the demo DB. Downloads and embeddings hit the
+	@# caches of the run above, so this pass is cheap. Skip with LOCAL_SYNC=0;
+	@# skipped automatically when the local Neo4j is off or when update-data was
+	@# already pointed at the local copy via DEMO_NEO4J.
+	@if [ "$(LOCAL_SYNC)" = "0" ] || [ "$(DEMO_NEO4J)" = "bolt://localhost:$(LOCAL_BOLT_PORT)" ]; then \
+		echo "Local snapshot sync skipped."; \
+	elif nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
+		echo "Replaying the incremental update on the local snapshot (:$(LOCAL_BOLT_PORT))..."; \
+		NEO4J_USER_VAL=$$(grep '^NEO4J_USER=' .env | cut -d= -f2-); \
+		NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
+		( cd $(V2_DIR) && backend/venv/bin/python build/build_and_update.py update \
+			--neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) \
+			--neo4j-user $${NEO4J_USER_VAL:-neo4j} \
+			--neo4j-password $$NEO4J_PASS_VAL ) && \
+		$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py bolt://localhost:$(LOCAL_BOLT_PORT); \
+	else \
+		echo "Local snapshot not running on :$(LOCAL_BOLT_PORT) — sync skipped (make db-pull to recreate it)."; \
+	fi
 	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
