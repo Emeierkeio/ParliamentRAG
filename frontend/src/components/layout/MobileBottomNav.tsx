@@ -14,7 +14,6 @@ import {
   Settings,
   CalendarDays,
   Check,
-  Loader2,
 } from "lucide-react";
 import {
   Sheet,
@@ -142,10 +141,12 @@ export function MobileBottomNav() {
 
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
-      {/* Transition veil: covers the old page from tab-tap to new-document paint */}
+      {/* Slim indeterminate progress bar (YouTube-style) while the next
+          document loads; the cross-document fade itself is handled by the
+          CSS @view-transition rule in globals */}
       {navTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-sm">
-          <Loader2 className="h-6 w-6 motion-safe:animate-spin text-primary" />
+        <div className="fixed inset-x-0 top-0 z-[60] h-0.5 overflow-hidden" role="progressbar" aria-label={t("tools")}>
+          <div className="h-full w-1/3 bg-primary motion-safe:animate-[nav-progress_1s_ease-in-out_infinite]" />
         </div>
       )}
     </nav>

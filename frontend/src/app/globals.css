@@ -135,6 +135,30 @@
   }
 }
 
+/* Cross-document view transitions: tab switches are full page loads, this
+   gives them a native-feeling cross-fade on Safari 18+/Chrome 126+ and is
+   ignored everywhere else. The bottom-nav progress bar covers the wait. */
+@view-transition {
+  navigation: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Indeterminate top progress bar for tab navigation */
+@keyframes nav-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
 /* Refined Scrollbar */
 @layer utilities {
   .scrollbar-thin {
