@@ -214,10 +214,10 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // page two screens long); desktop keeps the two-column grid untouched.
   const [mobileTab, setMobileTab] = useState<"recent" | "trending">("recent");
   return (
-    <div className="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-12 text-center px-4">
+    <div className="flex flex-col items-center justify-center pt-6 sm:pt-16 pb-12 text-center px-4">
 
       {/* Hero */}
-      <div className="mb-8 sm:mb-10 max-w-lg space-y-3">
+      <div className="mb-6 sm:mb-10 max-w-lg space-y-3">
         <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
           <Landmark className="w-3.5 h-3.5" />
           {t("badge")}
@@ -317,16 +317,22 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                 ? ["w-28", "w-16", "w-32", "w-24", "w-36", "w-24"].map((w, i) => (
                     <span
                       key={i}
-                      className={cn("h-4 mb-1 rounded-sm bg-muted/60 motion-safe:animate-pulse", w)}
+                      className={cn(
+                        "h-4 mb-1 rounded-sm bg-muted/60 motion-safe:animate-pulse",
+                        w,
+                        // the sixth row would push the list past the fold on phones
+                        i >= 5 && "hidden sm:block"
+                      )}
                     />
                   ))
-                : recent.topics.map((topic) => (
+                : recent.topics.map((topic, i) => (
                     <TopicPill
                       key={topic.label}
                       topic={topic.label}
                       queryText={topic.query}
                       raw
                       onClick={onSendMessage}
+                      className={i >= 5 ? "hidden sm:inline-flex" : undefined}
                     />
                   ))}
             </div>
@@ -373,12 +379,13 @@ interface TopicPillProps {
    *  query carries the act's context — "digital signatures" alone would
    *  lose the electoral meaning) */
   queryText?: string;
+  className?: string;
 }
 
 /** Sentence case, not Title Case: EuroVoc and curated labels are lowercase
  *  phrases with embedded proper nouns ("conflitto in Ucraina"), so only the
  *  first letter is raised. */
-function TopicPill({ topic, onClick, raw = false, queryText }: TopicPillProps) {
+function TopicPill({ topic, onClick, raw = false, queryText, className }: TopicPillProps) {
   const t = useTranslations("WelcomeScreen");
   const label = raw ? topic : (t(`topics.${topic}` as never) as string);
   const displayName = label.charAt(0).toUpperCase() + label.slice(1);
@@ -386,7 +393,10 @@ function TopicPill({ topic, onClick, raw = false, queryText }: TopicPillProps) {
   const query = t("topicQuery", { topic: queryText ?? label });
   return (
     <button
-      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer"
+      className={cn(
+        "group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer",
+        className
+      )}
       onClick={() => onClick(query)}
     >
       <span>{displayName}</span>

@@ -18,7 +18,6 @@ import {
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -174,19 +173,13 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
   };
 
   return (
-    <div className="px-1">
-      <SheetHeader className="px-0 pb-2">
-        <SheetTitle asChild>
-          <a href="/" className="flex items-center">
-            <span className="[font-family:var(--font-display)] text-lg font-semibold tracking-tight">
-              {config.app.name}
-            </span>
-          </a>
-        </SheetTitle>
-      </SheetHeader>
+    <div className="px-5 pt-4">
+      {/* Radix requires a title for screen readers; visually the sheet
+          starts straight from the language section */}
+      <SheetTitle className="sr-only">{config.app.name}</SheetTitle>
 
       {/* Language */}
-      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mt-3 mb-2">
+      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
         {tLang("switchTo")}
       </p>
       <div className="grid grid-cols-3 gap-1.5">
