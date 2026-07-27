@@ -311,6 +311,8 @@
     "topicQuery": "Wie ist die Position der Fraktionen zum Thema: {topic}?",
     "researchNote": "Konversationen werden zu Forschungszwecken anonym gespeichert.",
     "lastTopics": "Zuletzt diskutierte Themen",
+    "lastTopicsTab": "Aktuelle Themen",
+    "trendingTab": "Trends",
     "lastTopicsHint": "Themen der seit dem {date} im Plenum diskutierten Vorlagen.",
     "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:",
     "lastTopicsLoading": "Die letzten Plenardebatten werden im Wissensgraphen gesucht…"

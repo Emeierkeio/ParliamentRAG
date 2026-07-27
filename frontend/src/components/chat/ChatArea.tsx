@@ -210,6 +210,9 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   }, [locale]);
 
   const t = useTranslations("WelcomeScreen");
+  // Mobile shows one topic list at a time (the stacked sections make the
+  // page two screens long); desktop keeps the two-column grid untouched.
+  const [mobileTab, setMobileTab] = useState<"recent" | "trending">("recent");
   return (
     <div className="flex flex-col items-center justify-center pt-10 sm:pt-16 pb-12 text-center px-4">
 
@@ -235,9 +238,31 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           The layout collapses to a single centered list only when the
           endpoint resolves with no data. */}
       {recent === null || recent.topics.length > 0 ? (
-        <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
-          <section>
-            <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+        <>
+          <div className="mb-6 flex w-full max-w-3xl gap-1.5 sm:hidden">
+            {(
+              [
+                ["recent", t("lastTopicsTab")],
+                ["trending", t("trendingTab")],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setMobileTab(key)}
+                className={cn(
+                  "flex-1 rounded-lg border px-2 py-2 text-[13px] transition-colors",
+                  mobileTab === key
+                    ? "border-primary/40 bg-primary/5 text-primary font-medium"
+                    : "border-border text-muted-foreground"
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
+          <section className={cn(mobileTab !== "recent" && "hidden sm:block")}>
+            <p className="hidden sm:flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("lastTopics")}
               {recent !== null && recent.acts.length > 0 && (
                 <Tooltip>
@@ -306,8 +331,13 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                   ))}
             </div>
           </section>
-          <section className="sm:border-l sm:border-border sm:pl-10">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <section
+            className={cn(
+              "sm:border-l sm:border-border sm:pl-10",
+              mobileTab !== "trending" && "hidden sm:block"
+            )}
+          >
+            <p className="hidden sm:block text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("trendingTopics")}
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-3">
@@ -316,7 +346,8 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
               ))}
             </div>
           </section>
-        </div>
+          </div>
+        </>
       ) : (
         <div className="w-full max-w-2xl">
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">

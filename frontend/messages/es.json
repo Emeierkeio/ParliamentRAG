@@ -311,6 +311,8 @@
     "topicQuery": "¿Cuál es la posición de los grupos parlamentarios sobre el tema: {topic}?",
     "researchNote": "Las conversaciones se guardan de forma anónima con fines de investigación.",
     "lastTopics": "Últimos temas debatidos",
+    "lastTopicsTab": "Últimos temas",
+    "trendingTab": "Tendencias",
     "lastTopicsHint": "Temas de las medidas debatidas en el pleno desde el {date}.",
     "lastTopicsHintActs": "Recientemente en el pleno, entre otros:",
     "lastTopicsLoading": "Buscando los últimos debates del pleno en el grafo…"
