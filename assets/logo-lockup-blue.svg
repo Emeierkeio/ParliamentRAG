@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 484 80" fill="none">
-  <g transform="translate(0,4) scale(0.32)" stroke="#1B3A5C" stroke-width="32" stroke-linecap="round">
-    <path d="M 24 200 A 176 176 0 0 1 376 200" opacity="0.6"/>
-    <path d="M 80 200 A 120 120 0 0 1 320 200" opacity="0.75"/>
-    <path d="M 136 200 A 64 64 0 0 1 264 200" opacity="0.9"/>
+  <g transform="translate(4,8) scale(0.41)" fill="#1B3A5C">
+    <path d="M 14.3 147.6 A 104 104 0 1 1 209.7 147.6 L 166.5 131.8 A 58 58 0 1 0 57.5 131.8 Z"/>
+    <path d="M 91 147.6 A 21 21 0 0 1 133 147.6 Z"/>
   </g>
-  <text x="152" y="57" font-family="Fraunces, Georgia, 'Times New Roman', serif" font-size="40" font-weight="600" letter-spacing="-0.5" fill="#1B3A5C">ParliamentRAG</text>
+  <text x="112" y="53" font-family="Fraunces, Georgia, 'Times New Roman', serif" font-size="36" font-weight="600" letter-spacing="-0.5" fill="#1B3A5C">ParliamentRAG</text>
 </svg>
