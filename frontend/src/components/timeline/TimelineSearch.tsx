@@ -32,6 +32,9 @@ export function TimelineSearch({
   // The hook mounts the page on the last-month window, so the matching
   // chip starts lit; it goes dark as soon as the dates are edited by hand.
   const [activePreset, setActivePreset] = useState<Preset>("month");
+  // On phones the date inputs live behind the calendar toggle: the presets
+  // cover the common cases and the sticky filter block must stay short.
+  const [showDates, setShowDates] = useState(false);
 
   const applyPreset = useCallback(
     (preset: Preset, days: number) => {
@@ -99,8 +102,8 @@ export function TimelineSearch({
 
       {/* Presets + date range in a single row */}
       <div className="flex flex-wrap items-center gap-2">
-        {/* Preset segmented control — full width on phones, inline on larger screens */}
-        <div className="flex w-full sm:w-auto sm:inline-flex rounded-lg border p-0.5 bg-card shadow-sm">
+        {/* Preset segmented control — fills the row on phones, inline on larger screens */}
+        <div className="flex flex-1 sm:flex-none sm:inline-flex rounded-lg border p-0.5 bg-card shadow-sm">
           {presets.map(({ key, days, label }) => (
             <button
               key={key}
@@ -118,11 +121,27 @@ export function TimelineSearch({
           ))}
         </div>
 
+        {/* Custom-dates toggle (phones only) */}
+        <button
+          type="button"
+          onClick={() => setShowDates((v) => !v)}
+          aria-expanded={showDates}
+          aria-label={t("dateFrom")}
+          className={cn(
+            "sm:hidden flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-colors",
+            showDates
+              ? "border-primary/40 bg-primary/5 text-primary"
+              : "border-border bg-card text-muted-foreground"
+          )}
+        >
+          <Calendar className="h-4 w-4" />
+        </button>
+
         {/* Separator */}
         <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
 
-        {/* Compact date range */}
-        <div className="flex items-center gap-1.5 w-full sm:w-auto">
+        {/* Compact date range — hidden on phones until the toggle opens it */}
+        <div className={cn("items-center gap-1.5 w-full sm:w-auto", showDates ? "flex" : "hidden sm:flex")}>
           <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 hidden sm:block" />
           <input
             type="date"
@@ -139,16 +158,18 @@ export function TimelineSearch({
             className="flex-1 sm:flex-none h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateTo")}
           />
-          {/* Clear sits beside the dates so the row doesn't jump when it appears */}
-          {hasActiveFilters && (
-            <button
-              onClick={handleClear}
-              className="h-8 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors ml-auto sm:ml-1 shrink-0"
-            >
-              {t("clearFilters")}
-            </button>
-          )}
         </div>
+
+        {/* Clear all — outside the dates row so it stays reachable on phones
+            while the dates are collapsed */}
+        {hasActiveFilters && (
+          <button
+            onClick={handleClear}
+            className="h-8 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors ml-auto shrink-0"
+          >
+            {t("clearFilters")}
+          </button>
+        )}
       </div>
 
       <div aria-live="polite" className="sr-only" />
