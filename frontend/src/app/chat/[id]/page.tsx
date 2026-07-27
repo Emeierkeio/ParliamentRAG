@@ -72,7 +72,7 @@ export default function SharedChatPage() {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
       <Sidebar
         isCollapsed={isCollapsed}
         onToggle={toggle}
