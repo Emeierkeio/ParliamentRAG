@@ -28,8 +28,6 @@ import {
     ChevronRight,
     User,
     Calendar,
-    Text,
-    Users,
     SlidersHorizontal,
     History,
     Clock,
@@ -317,36 +315,17 @@ export default function SearchPage() {
                 </header>
 
                 <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6">
-                    <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 pb-20">
+                    <div className={`max-w-4xl mx-auto space-y-6 md:space-y-8 ${hasSearched ? "pb-20" : "pb-4"}`}>
 
                         {/* Intro */}
                         {!hasSearched && (
-                          <div className="text-center space-y-4 pt-2 pb-2">
-                            <div className="mx-auto h-14 w-14 rounded-full border border-border flex items-center justify-center">
-                              <SearchIcon className="h-6 w-6 text-primary/60" />
-                            </div>
-                            <div className="space-y-2">
-                              <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
-                                {t("introHeading")}
-                              </h2>
-                              <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
-                                {t("introDescription")}
-                              </p>
-                            </div>
-                            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-1 mx-auto">
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
-                                <Text className="h-3.5 w-3.5 text-primary/70" />
-                                {t("featureText")}
-                              </div>
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
-                                <Users className="h-3.5 w-3.5 text-primary/70" />
-                                {t("featureAuthor")}
-                              </div>
-                              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground whitespace-nowrap">
-                                <SlidersHorizontal className="h-3.5 w-3.5 text-primary/70" />
-                                {t("featurePeriod")}
-                              </div>
-                            </div>
+                          <div className="text-center pt-2 pb-2">
+                            {/* One line, then straight to the search card: the page
+                                header already carries the title and the capability
+                                list lives in the Filters panel itself */}
+                            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                              {t("introDescription")}
+                            </p>
                           </div>
                         )}
 

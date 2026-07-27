@@ -169,7 +169,7 @@ export default function LandingPage() {
             </div>
             <Link
               href="/home"
-              className="group inline-flex w-full sm:w-auto justify-center items-center gap-2 whitespace-nowrap bg-primary text-primary-foreground px-4 py-2.5 text-[13px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
+              className="group hidden sm:inline-flex w-auto justify-center items-center gap-2 whitespace-nowrap bg-primary text-primary-foreground px-4 py-2.5 text-[13px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
             >
               {t("accessCta")}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />

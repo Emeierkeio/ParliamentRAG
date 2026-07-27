@@ -214,7 +214,7 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // page two screens long); desktop keeps the two-column grid untouched.
   const [mobileTab, setMobileTab] = useState<"recent" | "trending">("recent");
   return (
-    <div className="flex flex-col items-center justify-center pt-6 sm:pt-16 pb-12 text-center px-4">
+    <div className="flex flex-col items-center justify-center pt-6 sm:pt-16 pb-4 sm:pb-12 text-center px-4">
 
       {/* Hero */}
       <div className="mb-6 sm:mb-10 max-w-lg space-y-3">
