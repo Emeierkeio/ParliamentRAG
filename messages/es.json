@@ -508,11 +508,11 @@
     "noSavedSearches": "Ninguna búsqueda guardada",
     "removeEntry": "Eliminar",
     "introHeading": "Búsqueda de Actos e Intervenciones",
-    "introDescription": "Busque entre los actos parlamentarios y las intervenciones en el Pleno.",
+    "introDescription": "Busque empresas, personas y temas en actos e intervenciones",
     "featureText": "Búsqueda textual",
     "featureAuthor": "Filtrar por autor",
     "featurePeriod": "Tipo y periodo",
-    "searchPlaceholder": "Buscar en los actos e intervenciones parlamentarios...",
+    "searchPlaceholder": "Ej. Eni, energía nuclear",
     "docTypeSpeeches": "Intervenciones",
     "docTypeActs": "Actos",
     "filtersButton": "Filtros",
@@ -570,7 +570,8 @@
     "historyTagSpeeches": "Intervenciones",
     "historyTagActs": "Actos",
     "historyTagDateFrom": "desde el {date}",
-    "historyTagDateTo": "hasta el {date}"
+    "historyTagDateTo": "hasta el {date}",
+    "suggestedTopicsLabel": "O pruebe con un tema sugerido"
   },
   "Timeline": {
     "pageTitle": "Trabajos del Pleno",
@@ -626,7 +627,7 @@
     "sortEducation": "Formación",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpiar filtros",
-    "emptyStateHeading": "¿Quién lidera el debate?",
+    "emptyStateHeading": "Descubra los diputados más autorizados sobre un tema",
     "emptyStateDescription": "Busque un tema político y descubra qué diputados son más autorizados en la materia, sobre la base de intervenciones, actos, comisiones, profesión, formación y cargo institucional.",
     "topicPlaceholder": "Ej. sanidad pública",
     "searchButton": "Buscar",
@@ -705,7 +706,7 @@
     "axis1Label": "Eje 1",
     "axis2Label": "Eje 2",
     "anchoredBadge": "Ejes anclados a la pregunta",
-    "promptHeading": "¿Dónde se sitúan los grupos?"
+    "promptHeading": "Compare las posiciones de los grupos sobre un tema"
   },
   "Votes": {
     "title": "Explorar Votaciones",

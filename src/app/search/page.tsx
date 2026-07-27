@@ -35,6 +35,7 @@ import {
     ArrowUpDown,
     ArrowUp,
     ArrowDown,
+    ArrowRight,
 } from "lucide-react";
 import { cn, formatDate } from "@/lib/utils";
 import { config } from "@/config";
@@ -46,6 +47,21 @@ import {
 } from "@/components/ui/popover";
 
 const PAGE_SIZE = 20;
+
+// Entity/topic examples for the empty state: the tool searches WHO and WHAT
+// gets named in acts and speeches, so the suggestions are real entities, not
+// the political themes used by the other tools. Italian terms on purpose —
+// the corpus is Italian regardless of the UI language.
+const SUGGESTED_SEARCHES = [
+    "Eni",
+    "Enel",
+    "Leonardo",
+    "YouTrend",
+    "energia nucleare",
+    "intelligenza artificiale",
+    "Stellantis",
+    "terzo settore",
+] as const;
 
 export default function SearchPage() {
     const t = useTranslations("SearchPage");
@@ -168,6 +184,24 @@ export default function SearchPage() {
             endDate,
             docType,
         });
+    };
+
+    const runSuggestedSearch = async (topic: string) => {
+        const label = topic.charAt(0).toUpperCase() + topic.slice(1);
+        setQuery(label);
+        setHasSearched(true);
+        setCurrentPage(1);
+        const snapshot = {
+            query: label,
+            authorFilterMode,
+            selectedDeputies,
+            selectedGroups,
+            startDate,
+            endDate,
+            docType,
+        };
+        await fetchPage(1, snapshot);
+        searchHistory.addEntry(label, snapshot);
     };
 
     const handlePageChange = async (page: number) => {
@@ -320,12 +354,11 @@ export default function SearchPage() {
                         {/* Intro */}
                         {!hasSearched && (
                           <div className="text-center pt-2 pb-2">
-                            {/* One line, then straight to the search card: the page
-                                header already carries the title and the capability
-                                list lives in the Filters panel itself */}
-                            <p className="text-sm text-muted-foreground leading-relaxed max-w-lg mx-auto">
+                            {/* Action heading, same register as the other tool pages
+                                ("do X" — the page header carries the tool name) */}
+                            <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
                               {t("introDescription")}
-                            </p>
+                            </h2>
                           </div>
                         )}
 
@@ -564,6 +597,28 @@ export default function SearchPage() {
                                 )}
                             </div>
                         </div>
+
+                        {/* Suggested searches — the empty page must always offer
+                            something tappable, same affordance as the other tools */}
+                        {!hasSearched && (
+                            <div className="pt-1 text-center">
+                                <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+                                    {t("suggestedTopicsLabel")}
+                                </p>
+                                <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
+                                    {SUGGESTED_SEARCHES.map((topic) => (
+                                        <button
+                                            key={topic}
+                                            className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground cursor-pointer"
+                                            onClick={() => runSuggestedSearch(topic)}
+                                        >
+                                            <span>{topic.charAt(0).toUpperCase() + topic.slice(1)}</span>
+                                            <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Search Stats & Results */}
                         {(hasSearched) && (
