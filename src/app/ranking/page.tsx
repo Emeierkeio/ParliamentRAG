@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { getTopics } from "@/lib/constants";
 import type { Expert } from "@/types";
 import {
-  Crown,
   Search,
   ArrowUpDown,
   X,
@@ -565,21 +564,11 @@ export default function RankingPage() {
           {/* ── Empty state ── */}
           {!hasResults && !loading && (
             <div className="flex flex-col items-center justify-center h-full px-4 pb-16">
-              <div className="text-center space-y-6 max-w-lg">
-                <div className="mx-auto h-14 w-14 rounded-full border border-border flex items-center justify-center">
-                  <Crown className="h-6 w-6 text-primary/60" />
-                </div>
-                <div className="space-y-2">
-                  <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
-                    {t("emptyStateHeading")}
-                  </h2>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-                    {t("emptyStateDescription")}
-                  </p>
-                </div>
-
+              <div className="text-center space-y-5 max-w-lg">
+                {/* Tool first — the page header already carries the title, so
+                    the empty state opens straight on the search input */}
                 {/* Search bar */}
-                <div className="w-full max-w-md mx-auto pt-2">
+                <div className="w-full max-w-md mx-auto">
                   <form onSubmit={(e) => { e.preventDefault(); fetchRanking(topic); }} className="relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -598,21 +587,9 @@ export default function RankingPage() {
                   </form>
                 </div>
 
-                {/* How it works */}
-                <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto pt-2">
-                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
-                    <Search className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step1")}</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
-                    <ArrowUpDown className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step2")}</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1.5 p-3 border-t border-border">
-                    <Users className="h-4 w-4 text-primary/70" />
-                    <span className="text-[11px] text-muted-foreground font-medium leading-tight">{t("step3")}</span>
-                  </div>
-                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+                  {t("emptyStateDescription")}
+                </p>
 
                 {/* Topic chips */}
                 <div className="pt-3">
