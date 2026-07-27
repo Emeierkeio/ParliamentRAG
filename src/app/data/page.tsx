@@ -203,7 +203,7 @@ export default function DataPage() {
       <header className="border-b border-primary-foreground/20">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between py-5">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.svg" alt="" width={46} height={26} />
+            <Image src="/logo.svg" alt="" width={46} height={32} />
             <span className="[font-family:var(--font-display)] text-xl sm:text-2xl font-semibold tracking-tight">
               ParliamentRAG
             </span>
