@@ -24,14 +24,18 @@ interface UseTimelineReturn {
 
 // The page opens on the last month of sessions, not the whole legislature:
 // the recent ones are what people come for, and the full list stays a
-// date-filter edit away.
+// date-filter edit away. Same window (and same date math) as the "last
+// month" preset chip in TimelineSearch, so that chip lights up on load.
 function makeDefaultFilters(): TimelineFilters {
-  const d = new Date();
-  d.setMonth(d.getMonth() - 1);
-  const fromDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
-    d.getDate(),
-  ).padStart(2, '0')}`;
-  return { chamber: 'both', search: '', fromDate, toDate: '' };
+  const today = new Date();
+  const from = new Date(today);
+  from.setDate(today.getDate() - 30);
+  return {
+    chamber: 'both',
+    search: '',
+    fromDate: from.toISOString().slice(0, 10),
+    toDate: today.toISOString().slice(0, 10),
+  };
 }
 
 export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
@@ -123,11 +127,12 @@ export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
     setFiltersState(makeDefaultFilters());
   }, []);
 
+  const defaults = makeDefaultFilters();
   const hasActiveFilters =
-    filters.chamber !== 'both' ||
+    filters.chamber !== defaults.chamber ||
     filters.search !== '' ||
-    filters.fromDate !== makeDefaultFilters().fromDate ||
-    filters.toDate !== '';
+    filters.fromDate !== defaults.fromDate ||
+    filters.toDate !== defaults.toDate;
 
   return {
     sessions,

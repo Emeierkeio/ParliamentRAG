@@ -29,7 +29,9 @@ export function TimelineSearch({
   hasActiveFilters,
 }: TimelineSearchProps) {
   const t = useTranslations("Timeline");
-  const [activePreset, setActivePreset] = useState<Preset>(null);
+  // The hook mounts the page on the last-month window, so the matching
+  // chip starts lit; it goes dark as soon as the dates are edited by hand.
+  const [activePreset, setActivePreset] = useState<Preset>("month");
 
   const applyPreset = useCallback(
     (preset: Preset, days: number) => {
@@ -59,7 +61,8 @@ export function TimelineSearch({
   );
 
   const handleClear = useCallback(() => {
-    setActivePreset(null);
+    // Clearing returns to the default view, which is the last-month window
+    setActivePreset("month");
     onClear();
   }, [onClear]);
 
@@ -96,15 +99,15 @@ export function TimelineSearch({
 
       {/* Presets + date range in a single row */}
       <div className="flex flex-wrap items-center gap-2">
-        {/* Preset segmented control */}
-        <div className="inline-flex rounded-lg border p-0.5 bg-card shadow-sm">
+        {/* Preset segmented control — full width on phones, inline on larger screens */}
+        <div className="flex w-full sm:w-auto sm:inline-flex rounded-lg border p-0.5 bg-card shadow-sm">
           {presets.map(({ key, days, label }) => (
             <button
               key={key}
               onClick={() => applyPreset(key, days)}
               aria-pressed={activePreset === key}
               className={cn(
-                "px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+                "flex-1 sm:flex-none px-3 py-1.5 rounded-md text-xs font-medium transition-all",
                 activePreset === key
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -119,13 +122,13 @@ export function TimelineSearch({
         <div className="w-px h-5 bg-border mx-1 hidden sm:block" />
 
         {/* Compact date range */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 w-full sm:w-auto">
           <Calendar className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 hidden sm:block" />
           <input
             type="date"
             value={filters.fromDate}
             onChange={(e) => handleFromDate(e.target.value)}
-            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
+            className="flex-1 sm:flex-none h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateFrom")}
           />
           <span className="text-[10px] text-muted-foreground/50">—</span>
@@ -133,20 +136,19 @@ export function TimelineSearch({
             type="date"
             value={filters.toDate}
             onChange={(e) => handleToDate(e.target.value)}
-            className="h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
+            className="flex-1 sm:flex-none h-8 rounded-md border border-border bg-background px-2.5 text-xs text-foreground focus:ring-1 focus:ring-ring/50 transition-colors outline-none"
             aria-label={t("dateTo")}
           />
+          {/* Clear sits beside the dates so the row doesn't jump when it appears */}
+          {hasActiveFilters && (
+            <button
+              onClick={handleClear}
+              className="h-8 px-2.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors ml-auto sm:ml-1 shrink-0"
+            >
+              {t("clearFilters")}
+            </button>
+          )}
         </div>
-
-        {/* Clear all */}
-        {hasActiveFilters && (
-          <button
-            onClick={handleClear}
-            className="h-8 px-3 rounded-md text-xs font-medium text-destructive/80 hover:text-destructive hover:bg-destructive/10 transition-colors ml-auto"
-          >
-            {t("clearFilters")}
-          </button>
-        )}
       </div>
 
       <div aria-live="polite" className="sr-only" />
