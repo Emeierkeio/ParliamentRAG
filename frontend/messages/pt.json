@@ -626,9 +626,9 @@
     "sortEducation": "Educação",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpar filtros",
-    "emptyStateHeading": "Análise de Autoridade dos Deputados",
+    "emptyStateHeading": "Quem lidera o debate?",
     "emptyStateDescription": "Pesquise um tema político e descubra que deputados têm mais autoridade na matéria, com base em intervenções, atos, comissões, profissão, educação e cargo institucional.",
-    "topicPlaceholder": "Pesquisar um tema...",
+    "topicPlaceholder": "Ex. saúde pública",
     "searchButton": "Pesquisar",
     "step1": "Pesquise um tema",
     "step2": "Classificação gerada",
@@ -682,7 +682,7 @@
     "groupsCount": "{count} grupos",
     "warningWeakAlignment": "Eixo secundário com ruído elevado. Recomenda-se a análise 1D.",
     "placeholderNew": "Novo tema...",
-    "placeholderSearch": "Pesquisar um tema...",
+    "placeholderSearch": "Ex. salário mínimo",
     "buttonAnalyze": "Analisar",
     "analyzingHeader": "Análise em curso...",
     "historyTitle": "Histórico",
@@ -704,7 +704,8 @@
     "errorUnknown": "Erro desconhecido",
     "axis1Label": "Eixo 1",
     "axis2Label": "Eixo 2",
-    "anchoredBadge": "Eixos ancorados na pergunta"
+    "anchoredBadge": "Eixos ancorados na pergunta",
+    "promptHeading": "Onde se situam os grupos?"
   },
   "Votes": {
     "title": "Explorar Votações",
