@@ -22,12 +22,17 @@ interface UseTimelineReturn {
   hasActiveFilters: boolean;
 }
 
-const DEFAULT_FILTERS: TimelineFilters = {
-  chamber: 'both',
-  search: '',
-  fromDate: '',
-  toDate: '',
-};
+// The page opens on the last month of sessions, not the whole legislature:
+// the recent ones are what people come for, and the full list stays a
+// date-filter edit away.
+function makeDefaultFilters(): TimelineFilters {
+  const d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  const fromDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(
+    d.getDate(),
+  ).padStart(2, '0')}`;
+  return { chamber: 'both', search: '', fromDate, toDate: '' };
+}
 
 export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
   const [sessions, setSessions] = useState<TimelineSession[]>([]);
@@ -36,7 +41,7 @@ export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
   const [isLoading, setIsLoading] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFiltersState] = useState<TimelineFilters>(DEFAULT_FILTERS);
+  const [filters, setFiltersState] = useState<TimelineFilters>(makeDefaultFilters);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -115,13 +120,13 @@ export function useTimeline(options?: UseTimelineOptions): UseTimelineReturn {
   }, []);
 
   const clearFilters = useCallback(() => {
-    setFiltersState(DEFAULT_FILTERS);
+    setFiltersState(makeDefaultFilters());
   }, []);
 
   const hasActiveFilters =
     filters.chamber !== 'both' ||
     filters.search !== '' ||
-    filters.fromDate !== '' ||
+    filters.fromDate !== makeDefaultFilters().fromDate ||
     filters.toDate !== '';
 
   return {
