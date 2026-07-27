@@ -78,13 +78,16 @@ export function MobileBottomNav() {
       isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
     );
 
-  const pillClass = (isActive: boolean) =>
+  // Active tab: primary colour + a light spring on the icon, no pill —
+  // quieter than a grey blob on the glass bar
+  const iconClass = (isActive: boolean) =>
     cn(
-      "flex h-6 w-12 items-center justify-center rounded-full transition-colors",
-      isActive && "bg-primary/10"
+      "h-[19px] w-[19px] transition-transform duration-300 ease-out mb-0.5",
+      isActive && "scale-110 -translate-y-px"
     );
 
   return (
+    <>
     <nav
       className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(27,58,92,0.16)]"
       aria-label={t("tools")}
@@ -105,9 +108,7 @@ export function MobileBottomNav() {
                 if (!isActive) setNavTarget(href);
               }}
             >
-              <span className={pillClass(isActive)}>
-                <Icon className="h-[18px] w-[18px]" />
-              </span>
+              <Icon className={iconClass(isActive)} />
               <span className="truncate max-w-full px-1">
                 {t(key as "navTopic")}
               </span>
@@ -119,9 +120,7 @@ export function MobileBottomNav() {
         <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
           <SheetTrigger asChild>
             <button className={tabClass(moreOpen)}>
-              <span className={pillClass(moreOpen)}>
-                <Menu className="h-[18px] w-[18px]" />
-              </span>
+              <Menu className={iconClass(moreOpen)} />
               <span className="truncate max-w-full px-1">{t("navMore")}</span>
             </button>
           </SheetTrigger>
@@ -140,16 +139,18 @@ export function MobileBottomNav() {
       </div>
 
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
-
-      {/* Slim indeterminate progress bar (YouTube-style) while the next
-          document loads; the cross-document fade itself is handled by the
-          CSS @view-transition rule in globals */}
-      {navTarget && (
-        <div className="fixed inset-x-0 top-0 z-[60] h-0.5 overflow-hidden" role="progressbar" aria-label={t("tools")}>
-          <div className="h-full w-1/3 bg-primary motion-safe:animate-[nav-progress_1s_ease-in-out_infinite]" />
-        </div>
-      )}
     </nav>
+
+    {/* Slim indeterminate progress bar (YouTube-style) while the next
+        document loads. Lives OUTSIDE the nav: its backdrop-filter makes the
+        nav a containing block for fixed descendants, which would pin the bar
+        to the nav instead of the viewport. */}
+    {navTarget && (
+      <div className="md:hidden fixed inset-x-0 top-0 z-[60] h-0.5 overflow-hidden" role="progressbar" aria-label={t("tools")}>
+        <div className="h-full w-1/3 bg-primary motion-safe:animate-[nav-progress_1s_ease-in-out_infinite]" />
+      </div>
+    )}
+    </>
   );
 }
 

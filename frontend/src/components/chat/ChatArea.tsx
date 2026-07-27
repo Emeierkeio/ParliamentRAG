@@ -214,18 +214,19 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   // page two screens long); desktop keeps the two-column grid untouched.
   const [mobileTab, setMobileTab] = useState<"recent" | "trending">("recent");
   return (
-    <div className="flex flex-col items-center justify-center pt-6 sm:pt-16 pb-4 sm:pb-12 text-center px-4">
+    <div className="flex flex-col items-center justify-center pt-4 sm:pt-16 pb-2 sm:pb-12 text-center px-4">
 
-      {/* Hero */}
-      <div className="mb-6 sm:mb-10 max-w-lg space-y-3">
-        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+      {/* Hero — tight on phones: with the search bar and the bottom nav the
+          content zone is ~600px and the page must not scroll when idle */}
+      <div className="mb-5 sm:mb-10 max-w-lg space-y-2.5 sm:space-y-3">
+        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:mb-2">
           <Landmark className="w-3.5 h-3.5" />
           {t("badge")}
         </div>
-        <h1 className="[font-family:var(--font-display)] text-3xl sm:text-4xl md:text-[2.75rem] font-medium tracking-tight text-foreground leading-[1.1]">
+        <h1 className="[font-family:var(--font-display)] text-[1.7rem] sm:text-4xl md:text-[2.75rem] font-medium tracking-tight text-foreground leading-[1.1]">
           {t("title")}
         </h1>
-        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
+        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto line-clamp-2 sm:line-clamp-none">
           {t.rich("subtitle", {
             bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
           })}
@@ -239,7 +240,7 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           endpoint resolves with no data. */}
       {recent === null || recent.topics.length > 0 ? (
         <>
-          <div className="mb-6 flex w-full max-w-3xl gap-1.5 sm:hidden">
+          <div className="mb-4 flex w-full max-w-3xl gap-1.5 sm:hidden">
             {(
               [
                 ["recent", t("lastTopicsTab")],

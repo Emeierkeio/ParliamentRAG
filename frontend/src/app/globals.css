@@ -110,6 +110,9 @@
   }
   html {
     overflow-x: hidden;
+    /* The iOS safe areas (status bar, home indicator) show the html
+       background: without this they flash white against the cream pages */
+    background-color: var(--background);
     /* App pages scroll inside their own containers — without this, hitting
        the edge of an inner scroller chains to the viewport and rubber-bands
        the whole page (sidebar included) on macOS. Must live on html, NOT on
