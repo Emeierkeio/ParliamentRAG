@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <header className="px-6 py-5 border-b border-border">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo-blue.svg" alt="" width={27} height={15} />
+            <Image src="/logo-blue.svg" alt="" width={26} height={18} />
             <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
               ParliamentRAG
             </span>
