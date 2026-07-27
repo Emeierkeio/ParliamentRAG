@@ -107,7 +107,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
     <>
       <aside
         className={cn(
-          "hidden md:flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-out",
+          "hidden md:flex h-dvh flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-out",
           isCollapsed ? "w-[70px]" : "w-[260px]"
         )}
       >
