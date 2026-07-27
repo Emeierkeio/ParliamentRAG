@@ -104,7 +104,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-4xl h-[92dvh] sm:h-[85vh] flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
+      {/* Full screen on phones; the desktop dialog stays a centered panel */}
+      <DialogContent className="max-w-none w-dvw h-dvh rounded-none border-0 sm:max-w-4xl sm:w-auto sm:h-[85vh] sm:rounded-lg sm:border flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
         <DialogHeader className="shrink-0">
           <DialogTitle className="[font-family:var(--font-display)] flex items-center gap-2 text-lg font-semibold tracking-tight">
             <Settings className="h-5 w-5 text-primary" />
@@ -137,7 +138,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             </Alert>
           )}
 
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain rounded-lg border bg-muted/10 p-3 sm:p-4">
+          {/* One container only: the section "cards" inside are flattened to
+              plain sections — boxes in boxes read as clutter on a phone */}
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:px-0 [&_[data-slot=card-header]]:px-1 [&_[data-slot=card-content]]:px-1">
             {configData ? (
               <div className="space-y-4 pb-4">
                 <RetrievalEditor

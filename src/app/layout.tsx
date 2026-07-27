@@ -54,6 +54,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
+  // Paints the iOS/Android browser chrome (status bar area) in the page
+  // cream instead of default white
+  themeColor: "#FBFAF8",
 };
 
 export const metadata: Metadata = {

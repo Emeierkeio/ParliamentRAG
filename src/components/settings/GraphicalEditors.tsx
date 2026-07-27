@@ -274,7 +274,7 @@ function SubSection({
   className?: string;
 }) {
   return (
-    <div className={`rounded-lg border bg-muted/20 p-3 space-y-3 ${className ?? ""}`}>
+    <div className={`border-t border-border/60 pt-3 space-y-3 ${className ?? ""}`}>
       <div className="flex items-center gap-1.5">
         {Icon && <Icon className="h-3.5 w-3.5 text-muted-foreground" />}
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</span>

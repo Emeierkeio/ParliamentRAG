@@ -530,7 +530,7 @@
     "periodLabel": "Período",
     "periodFrom": "De",
     "periodTo": "Até",
-    "searchButton": "Executar Pesquisa",
+    "searchButton": "Pesquisar",
     "resetButton": "Repor",
     "resultsHeading": "Resultados",
     "resultsCount": "{count} resultados",

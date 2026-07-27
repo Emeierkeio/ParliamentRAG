@@ -579,7 +579,12 @@ export default function SearchPage() {
                                     size="lg"
                                     disabled={!query.trim() || loading}
                                     onClick={handleSearch}
-                                    className="flex-1 h-12 text-base font-semibold"
+                                    // While searching the button must read "working",
+                                    // not "washed out": keep the primary fill
+                                    className={cn(
+                                        "flex-1 h-12 text-base font-semibold rounded-lg",
+                                        loading && "disabled:opacity-100"
+                                    )}
                                 >
                                     {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <SearchIcon className="mr-2 h-5 w-5" />}
                                     {t("searchButton")}

@@ -530,7 +530,7 @@
     "periodLabel": "Période",
     "periodFrom": "Du",
     "periodTo": "Au",
-    "searchButton": "Lancer la recherche",
+    "searchButton": "Rechercher",
     "resetButton": "Réinitialiser",
     "resultsHeading": "Résultats",
     "resultsCount": "{count} résultats",
