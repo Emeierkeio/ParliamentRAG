@@ -332,7 +332,7 @@
   "Settings": {
     "title": "Configurazione Sistema",
     "unsavedChanges": "Modifiche non salvate",
-    "description": "Le modifiche sono attive immediatamente ma temporanee — riavviare il server o fare Ricarica per tornare ai valori del file YAML.",
+    "description": "Le modifiche valgono subito, ma solo per questa sessione: al riavvio del server, o con Ricarica, tornano i valori del file YAML.",
     "error": "Errore",
     "saved": "Salvato",
     "savedMessage": "Impostazioni applicate correttamente.",

@@ -331,7 +331,7 @@
   "Settings": {
     "title": "Configuration du système",
     "unsavedChanges": "Modifications non enregistrées",
-    "description": "Les modifications prennent effet immédiatement mais sont temporaires — redémarrez le serveur ou faites Recharger pour revenir aux valeurs du fichier YAML.",
+    "description": "Les modifications s'appliquent tout de suite, mais seulement pour cette session : un redémarrage du serveur, ou Recharger, rétablit les valeurs du fichier YAML.",
     "error": "Erreur",
     "saved": "Enregistré",
     "savedMessage": "Paramètres appliqués avec succès.",

@@ -104,8 +104,12 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      {/* Full screen on phones; the desktop dialog stays a centered panel */}
-      <DialogContent className="max-w-none w-dvw h-dvh rounded-none border-0 sm:max-w-4xl sm:w-auto sm:h-[85vh] sm:rounded-lg sm:border flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
+      {/* Full screen on phones; the desktop dialog stays a centered panel.
+          Auto-focus lands on the close X and paints its focus ring as a
+          stray box — prevented, focus stays on the dialog itself. */}
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="max-w-none w-dvw h-dvh rounded-none border-0 sm:max-w-4xl sm:w-auto sm:h-[85vh] sm:rounded-lg sm:border flex flex-col p-4 sm:p-6 gap-3 sm:gap-4">
         <DialogHeader className="shrink-0">
           <DialogTitle className="[font-family:var(--font-display)] flex items-center gap-2 text-lg font-semibold tracking-tight">
             <Settings className="h-5 w-5 text-primary" />
