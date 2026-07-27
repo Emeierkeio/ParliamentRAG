@@ -294,6 +294,18 @@ update-data: tunnel
 	else \
 		echo "Local snapshot not running on :$(LOCAL_BOLT_PORT) — sync skipped (make db-pull to recreate it)."; \
 	fi
+	@# Aggregate votes live only in dati.camera.it SPARQL (the stenografico XMLs
+	@# stopped shipping the raccoltaVotazioni block), and the endpoint publishes
+	@# with a few days of lag: re-sweep the last ~10 Camera sittings on every
+	@# update so late votes land. Idempotent MERGEs, seconds per run.
+	@echo "Refreshing aggregate votes from dati.camera.it (last ~10 Camera sittings)..."
+	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
+	START=$$(NEO4J_PASSWORD="$$NEO4J_PASS_VAL" $(BACKEND_DIR)/venv/bin/python -c 'import os; from neo4j import GraphDatabase; d = GraphDatabase.driver("$(DEMO_NEO4J)", auth=("neo4j", os.environ["NEO4J_PASSWORD"])); s = d.session(); m = s.run("MATCH (n:Session {chamber: \x27camera\x27}) RETURN max(toInteger(n.number)) AS m").single()["m"]; print(max(1, (m or 11) - 10)); d.close()'); \
+	echo "  start-session: $$START"; \
+	$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
+	if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
+		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
+	fi
 	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
