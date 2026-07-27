@@ -332,7 +332,7 @@
   "Settings": {
     "title": "System Configuration",
     "unsavedChanges": "Unsaved changes",
-    "description": "Changes take effect immediately but are temporary — restart the server or Reload to restore YAML file values.",
+    "description": "Changes apply right away, but only for this session: a server restart, or Reload, brings back the YAML values.",
     "error": "Error",
     "saved": "Saved",
     "savedMessage": "Settings applied successfully.",

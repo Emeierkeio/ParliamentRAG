@@ -14,9 +14,11 @@ import {
   Settings,
   CalendarDays,
   Check,
+  X,
 } from "lucide-react";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetTitle,
   SheetTrigger,
@@ -126,7 +128,9 @@ export function MobileBottomNav() {
           </SheetTrigger>
           <SheetContent
             side="bottom"
-            className="rounded-t-2xl border-t border-border pb-[calc(1rem+env(safe-area-inset-bottom))]"
+            // The default absolute X floats mid-air next to the language grid:
+            // hidden here, replaced by an inline close in the header row
+            className="rounded-t-2xl border-t border-border pb-[calc(1rem+env(safe-area-inset-bottom))] [&>button]:hidden"
           >
             <MoreSheetContent
               onOpenSettings={() => {
@@ -195,16 +199,21 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
   };
 
   return (
-    <div className="px-5 pt-5">
+    <div className="px-5 pt-4">
       {/* Radix requires a title for screen readers; visually the sheet
           starts straight from the language section */}
       <SheetTitle className="sr-only">{config.app.name}</SheetTitle>
 
-      {/* Language — the label keeps clear of the sheet's absolute close X
-          (top-right), and the extra margin drops the grid below it */}
-      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3 pr-10">
-        {tLang("switchTo")}
-      </p>
+      {/* Header row: section label left, close right — same baseline */}
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          {tLang("switchTo")}
+        </p>
+        <SheetClose className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">
+          <X className="h-4 w-4" />
+          <span className="sr-only">{config.app.name}</span>
+        </SheetClose>
+      </div>
       <div className="grid grid-cols-3 gap-1.5">
         {LOCALES.map((l) => (
           <button
@@ -223,34 +232,34 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
         ))}
       </div>
 
-      {/* Secondary actions — icon-only, one row */}
-      <div className="mt-3 grid grid-cols-2 gap-1.5">
-        <button
-          onClick={onOpenSettings}
-          aria-label={t("settings")}
-          className="flex h-10 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
-        >
-          <Settings className="h-4 w-4" />
-        </button>
-        <a
-          href="https://github.com/Emeierkeio/ParliamentRAG"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t("documentation")}
-          className="flex h-10 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
-        >
-          <Github className="h-4 w-4" />
-        </a>
-      </div>
-
-      {/* Data date */}
-      <div className="mt-3 pt-3 border-t border-border/60 flex items-center gap-2 px-2 text-[10px] uppercase tracking-wide text-muted-foreground/70">
-        <CalendarDays className="h-3 w-3 shrink-0" />
-        <span className="truncate">
-          {t("dataShort")}{" "}
-          <strong className="tabular-nums font-semibold text-muted-foreground">
-            {lastUpdate || "--/--/----"}
-          </strong>
+      {/* Footer: data date (the info that matters) + small icon actions */}
+      <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground min-w-0">
+          <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {t("dataShort")}{" "}
+            <strong className="text-sm tabular-nums font-semibold text-foreground">
+              {lastUpdate || "--/--/----"}
+            </strong>
+          </span>
+        </span>
+        <span className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={onOpenSettings}
+            aria-label={t("settings")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+          <a
+            href="https://github.com/Emeierkeio/ParliamentRAG"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t("documentation")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+          >
+            <Github className="h-4 w-4" />
+          </a>
         </span>
       </div>
     </div>

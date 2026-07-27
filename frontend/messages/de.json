@@ -331,7 +331,7 @@
   "Settings": {
     "title": "Systemkonfiguration",
     "unsavedChanges": "Nicht gespeicherte Änderungen",
-    "description": "Die Änderungen sind sofort aktiv, aber temporär — starten Sie den Server neu oder nutzen Sie „Neu laden“, um zu den Werten der YAML-Datei zurückzukehren.",
+    "description": "Die Änderungen gelten sofort, aber nur für diese Sitzung: ein Neustart des Servers oder „Neu laden“ stellt die Werte der YAML-Datei wieder her.",
     "error": "Fehler",
     "saved": "Gespeichert",
     "savedMessage": "Einstellungen erfolgreich angewendet.",
