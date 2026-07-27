@@ -531,7 +531,7 @@
     "periodLabel": "Period",
     "periodFrom": "From",
     "periodTo": "To",
-    "searchButton": "Run Search",
+    "searchButton": "Search",
     "resetButton": "Reset",
     "resultsHeading": "Results",
     "resultsCount": "{count} results",

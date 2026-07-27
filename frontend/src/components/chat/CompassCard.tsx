@@ -170,8 +170,10 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
       return side === 'pos' ? t("dimensionPos") : t("dimensionNeg");
   };
 
+  // Two clamped lines instead of a single truncated one: the pole names are
+  // the only key to reading the chart, cutting them makes it useless
   const AxisLabel = ({ axis, side, className, ...props }: { axis: AxisDef, side: 'pos'|'neg', className?: string, style?: React.CSSProperties }) => (
-      <div className={cn("absolute max-w-[40%] text-center text-[10px] uppercase tracking-[0.15em] text-muted-foreground bg-slate-50/85 dark:bg-slate-900/85 px-1.5 py-0.5 z-10 truncate", className)} title={getAxisLabel(axis, side)} {...props}>
+      <div className={cn("absolute max-w-[40%] text-center text-[9px] sm:text-[10px] uppercase tracking-[0.08em] leading-tight text-muted-foreground bg-slate-50/85 dark:bg-slate-900/85 px-1.5 py-0.5 z-10 line-clamp-2", className)} title={getAxisLabel(axis, side)} {...props}>
            {getAxisLabel(axis, side)}
       </div>
   );
@@ -201,11 +203,12 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                   <div className="absolute top-1/2 left-0 w-full h-[1px] bg-slate-200 dark:bg-slate-700 pointer-events-none" />
                   <div className="absolute top-0 left-1/2 w-[1px] h-full bg-slate-200 dark:bg-slate-700 pointer-events-none" />
                   
-                  {/* 2D Labels */}
-                  <AxisLabel axis={data.axes.y} side="pos" className="top-4 left-1/2 -translate-x-1/2" />
-                  <AxisLabel axis={data.axes.y} side="neg" className="bottom-4 left-1/2 -translate-x-1/2" />
-                  <AxisLabel axis={data.axes.x} side="pos" className="right-4 top-1/2 -translate-y-1/2" />
-                  <AxisLabel axis={data.axes.x} side="neg" className="left-4 top-1/2 -translate-y-1/2" />
+                  {/* 2D Labels — the x poles hug the edges with a tight width
+                      cap so they never march into the central cluster */}
+                  <AxisLabel axis={data.axes.y} side="pos" className="top-2 left-1/2 -translate-x-1/2 max-w-[72%]" />
+                  <AxisLabel axis={data.axes.y} side="neg" className="bottom-2 left-1/2 -translate-x-1/2 max-w-[72%]" />
+                  <AxisLabel axis={data.axes.x} side="pos" className="right-2 top-1/2 -translate-y-1/2 max-w-[24%] text-right" />
+                  <AxisLabel axis={data.axes.x} side="neg" className="left-2 top-1/2 -translate-y-1/2 max-w-[24%] text-left" />
                 </>
               ) : (
                 <>
@@ -245,7 +248,7 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                    const color = getGroupColor(grp.group_id);
                    const abbrev = getGroupAbbrev(grp.group_id);
                    const maxFragments = Math.max(1, ...data.groups.map(g => g.stats?.n_fragments || 0));
-                   const dotPx = 10 + 14 * Math.sqrt((grp.stats?.n_fragments || 1) / maxFragments);
+                   const dotPx = 8 + 9 * Math.sqrt((grp.stats?.n_fragments || 1) / maxFragments);
 
                    const totalFragments = data.groups.reduce((s, g) => s + (g.stats?.n_fragments || 0), 0);
                    const sharePct = totalFragments > 0 ? Math.round(((grp.stats?.n_fragments || 0) / totalFragments) * 100) : 0;
