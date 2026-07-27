@@ -241,9 +241,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                         variant="ghost"
                         size="icon"
                         onClick={onToggle}
-                        className="h-10 w-10 text-sidebar-foreground/50 hover:text-primary transition-colors"
+                        className="h-8 w-8 text-sidebar-foreground/50 hover:bg-transparent hover:text-sidebar-foreground transition-colors"
                     >
-                        <PanelLeft className="h-5 w-5" />
+                        <PanelLeft className="h-4 w-4" />
                     </Button>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">{t('expandMenu')}</TooltipContent>
