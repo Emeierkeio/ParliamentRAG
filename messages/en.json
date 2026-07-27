@@ -312,6 +312,8 @@
     "topicQuery": "What is the position of parliamentary groups on the topic: {topic}?",
     "researchNote": "Conversations are stored anonymously for research purposes.",
     "lastTopics": "Latest topics discussed",
+    "lastTopicsTab": "Latest topics",
+    "trendingTab": "Trending",
     "lastTopicsHint": "Topics of the measures discussed on the floor since {date}.",
     "lastTopicsHintActs": "Recently on the floor, among others:",
     "lastTopicsLoading": "Looking up the latest floor discussions in the knowledge graph…"
