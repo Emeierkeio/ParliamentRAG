@@ -621,7 +621,8 @@
     "voteSearchPlaceholder": "Search deputy or group...",
     "voteNoMatches": "No matches",
     "voteLoadError": "Unable to load vote detail",
-    "phasesHeading": "Agenda"
+    "phasesHeading": "Agenda",
+    "voteMistoComponents": "Mixed Group components"
   },
   "RankingsPage": {
     "headerTitle": "Authority Analysis",

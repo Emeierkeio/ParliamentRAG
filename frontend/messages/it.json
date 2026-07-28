@@ -621,7 +621,8 @@
     "voteSearchPlaceholder": "Cerca deputato o gruppo...",
     "voteNoMatches": "Nessun risultato",
     "voteLoadError": "Impossibile caricare il dettaglio della votazione",
-    "phasesHeading": "Ordine dei lavori"
+    "phasesHeading": "Ordine dei lavori",
+    "voteMistoComponents": "Componenti del Gruppo Misto"
   },
   "RankingsPage": {
     "headerTitle": "Analisi Autorità",
