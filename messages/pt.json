@@ -347,7 +347,11 @@
     "loadError": "Erro ao carregar a configuração",
     "reloadError": "Erro ao recarregar a configuração",
     "invalidJson": "Formato JSON inválido. Corrija os erros de sintaxe.",
-    "saveError": "Erro ao guardar"
+    "saveError": "Erro ao guardar",
+    "tabRetrieval": "Pesquisa",
+    "tabAuthority": "Autoridade",
+    "tabGeneration": "Geração",
+    "tabRewriting": "Reescrita"
   },
   "GraphicalEditors": {
     "weightLabels": {

@@ -152,13 +152,15 @@
   }
 }
 
-/* Indeterminate top progress bar for tab navigation */
+/* Top progress bar for tab navigation: grows from zero and decelerates
+   toward 85% — the page swap cuts it off, so it always reads as "loading
+   from the start", never as a stuck fragment */
 @keyframes nav-progress {
   0% {
-    transform: translateX(-100%);
+    transform: scaleX(0);
   }
   100% {
-    transform: translateX(400%);
+    transform: scaleX(0.85);
   }
 }
 

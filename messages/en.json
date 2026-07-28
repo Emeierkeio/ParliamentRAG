@@ -348,7 +348,11 @@
     "loadError": "Error loading configuration",
     "reloadError": "Error reloading configuration",
     "invalidJson": "Invalid JSON format. Fix the syntax errors.",
-    "saveError": "Error saving"
+    "saveError": "Error saving",
+    "tabRetrieval": "Retrieval",
+    "tabAuthority": "Authority",
+    "tabGeneration": "Generation",
+    "tabRewriting": "Rewriting"
   },
   "GraphicalEditors": {
     "weightLabels": {

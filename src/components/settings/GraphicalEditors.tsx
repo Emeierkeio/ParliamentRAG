@@ -446,12 +446,14 @@ function FieldWithUnit({
   unit?: string;
   children: React.ReactNode;
 }) {
+  // Settings-style row: label left, compact value right. One parameter,
+  // one line — the whole panel reads as a list instead of nested boxes.
   return (
-    <div className="space-y-1.5">
+    <div className="flex items-center justify-between gap-3 py-1 min-h-10">
       <LabelWithInfo info={info}>{label}</LabelWithInfo>
-      <div className="flex items-center gap-2">
-        {children}
-        {unit && <span className="text-xs text-muted-foreground whitespace-nowrap">{unit}</span>}
+      <div className="flex items-center gap-1.5 shrink-0">
+        <div className="w-24 [&_input]:text-right">{children}</div>
+        {unit && <span className="text-[11px] text-muted-foreground whitespace-nowrap w-12">{unit}</span>}
       </div>
     </div>
   );
@@ -490,7 +492,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
 
         {/* Dense Channel */}
         <SubSection icon={Zap} title={S.denseChannel}>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-0">
             <FieldWithUnit
               label={S.topK}
               info={S.topKInfo}
@@ -519,7 +521,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
 
         {/* Graph Channel */}
         <SubSection icon={Network} title={S.graphChannel}>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-0">
             <FieldWithUnit
               label={S.minLexMatch}
               info={S.minLexMatchInfo}
@@ -653,7 +655,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
 
         {/* Time Decay */}
         <SubSection icon={Clock} title={S.timeDecay}>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-0">
             <FieldWithUnit
               label={S.actsHalfLife}
               info={S.actsHalfLifeInfo}
@@ -686,7 +688,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
           <p className="text-xs text-muted-foreground leading-relaxed">
             {S.relevanceThresholdsDesc}
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-0">
             <FieldWithUnit
               label={S.actsRelevance}
               info={S.actsRelevanceInfo}
@@ -818,7 +820,7 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               onChange={(v) => updatePositionBrief("enabled", v)}
             />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="space-y-0">
             <FieldWithUnit
               label={S.maxChunksBrief}
               info={S.maxChunksBriefInfo}
@@ -920,8 +922,8 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
+          <div className="space-y-0">
+            <div className="flex items-center justify-between gap-3 py-1 min-h-10">
               <LabelWithInfo info={S.qrModelInfo}>
                 {S.qrModel}
               </LabelWithInfo>
@@ -929,7 +931,7 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
                 value={data.model}
                 onChange={(e) => update({ model: e.target.value })}
                 disabled={!data.enabled}
-                className="w-full h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-40 h-8 shrink-0 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {QR_MODEL_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
