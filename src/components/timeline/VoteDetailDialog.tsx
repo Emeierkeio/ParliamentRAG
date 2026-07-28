@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, X, Minus, Loader2 } from "lucide-react";
+import { Check, X, Minus, Loader2, Info } from "lucide-react";
 
 import {
   Dialog,
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { getVoteDetail } from "@/lib/timeline-api";
+import { VoteHemicycle, wedgeKey, wedgeRank } from "@/components/timeline/VoteHemicycle";
 import type { VoteInfo, VoteDetailResponse } from "@/types/timeline";
 
 interface VoteDetailDialogProps {
@@ -38,12 +39,14 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
   const t = useTranslations("Timeline");
   const [detail, setDetail] = useState<DetailState>({ status: "loading" });
   const [query, setQuery] = useState("");
+  const [selectedParty, setSelectedParty] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
     let cancelled = false;
     setDetail({ status: "loading" });
     setQuery("");
+    setSelectedParty(null);
     getVoteDetail(vote.id)
       .then((data) => {
         if (!cancelled) setDetail({ status: "loaded", data });
@@ -59,13 +62,22 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
   const filtered = useMemo(() => {
     if (detail.status !== "loaded") return [];
     const q = query.trim().toLowerCase();
-    if (!q) return detail.data.participants;
-    return detail.data.participants.filter(
-      (p) =>
-        `${p.first_name} ${p.last_name}`.toLowerCase().includes(q) ||
-        (p.party ?? "").toLowerCase().includes(q),
-    );
-  }, [detail, query]);
+    return detail.data.participants
+      .filter(
+        (p) =>
+          (selectedParty === null || wedgeKey(p.party) === selectedParty) &&
+          (!q || `${p.first_name} ${p.last_name}`.toLowerCase().includes(q)),
+      )
+      // Same left→right order as the hemicycle; Misto components cluster
+      // together, then A→Z by surname within each group/component.
+      .sort(
+        (a, b) =>
+          wedgeRank(a.party) - wedgeRank(b.party) ||
+          (a.party ?? "").localeCompare(b.party ?? "") ||
+          a.last_name.localeCompare(b.last_name) ||
+          a.first_name.localeCompare(b.first_name),
+      );
+  }, [detail, query, selectedParty]);
 
   const outcomeLabel = (outcome: string | null) =>
     outcome === "approved"
@@ -137,65 +149,35 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           </p>
         )}
 
-        {detail.status === "loaded" && (
+        {detail.status === "loaded" && (() => {
+          // Aggregates exist but every individual outcome is "absent":
+          // either a secret ballot or the per-deputy dataset (published
+          // separately by the Camera) is not out yet. Both look identical
+          // in the graph, so one honest notice covers them — drawing an
+          // all-grey chamber would read as "everyone was absent".
+          const hasIndividualData = detail.data.participants.some(
+            (p) => p.outcome === "favor" || p.outcome === "against",
+          );
+          if (!hasIndividualData) {
+            return (
+              <div className="flex-1 overflow-y-auto px-6 py-4">
+                <div className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p>{t("voteNoIndividualData")}</p>
+                </div>
+              </div>
+            );
+          }
+          return (
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
-            {/* Per-party stacked bars. The Misto components (Vannacci-Free,
-                +Europa, Minoranze Linguistiche, …) are not parliamentary
-                groups: they come from the componenti ingest in mixed case,
-                while official groups are all-caps — that split renders them
-                as a labelled sub-list instead of fake groups. */}
-            {detail.data.breakdown.length > 0 && (() => {
-              const isComponent = (p: string) => p !== p.toUpperCase();
-              const officialGroups = detail.data.breakdown.filter((b) => !isComponent(b.party));
-              const mistoComponents = detail.data.breakdown.filter((b) => isComponent(b.party));
-              const renderRow = (b: (typeof detail.data.breakdown)[number]) => {
-                const total = b.favor + b.against + b.absent;
-                return (
-                  <div key={b.party}>
-                    <div className="flex items-baseline justify-between gap-2 text-xs">
-                      <span className="truncate font-medium">{b.party}</span>
-                      <span className="shrink-0 tabular-nums text-muted-foreground">
-                        <span className="text-emerald-700 dark:text-emerald-500">{b.favor}</span>
-                        {" / "}
-                        <span className="text-red-700 dark:text-red-500">{b.against}</span>
-                        {" / "}
-                        {b.absent}
-                      </span>
-                    </div>
-                    <div className="mt-1 flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                      {b.favor > 0 && (
-                        <div
-                          className="bg-emerald-600"
-                          style={{ width: `${(b.favor / total) * 100}%` }}
-                        />
-                      )}
-                      {b.against > 0 && (
-                        <div
-                          className="bg-red-600"
-                          style={{ width: `${(b.against / total) * 100}%` }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              };
-              return (
-                <section>
-                  <h4 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                    {t("voteBreakdownHeading")}
-                  </h4>
-                  <div className="space-y-2">{officialGroups.map(renderRow)}</div>
-                  {mistoComponents.length > 0 && (
-                    <div className="mt-3 pl-3 border-l-2 border-border/60">
-                      <h5 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
-                        {t("voteMistoComponents")}
-                      </h5>
-                      <div className="space-y-2 opacity-90">{mistoComponents.map(renderRow)}</div>
-                    </div>
-                  )}
-                </section>
-              );
-            })()}
+            {detail.data.participants.length > 0 && (
+              <VoteHemicycle
+                participants={detail.data.participants}
+                breakdown={detail.data.breakdown}
+                selectedParty={selectedParty}
+                onSelectParty={setSelectedParty}
+              />
+            )}
 
             {/* Individual votes */}
             <section>
@@ -242,7 +224,8 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
               )}
             </section>
           </div>
-        )}
+          );
+        })()}
       </DialogContent>
     </Dialog>
   );
