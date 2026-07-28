@@ -305,17 +305,23 @@ function ToggleSwitch({
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
       className={[
-        "relative inline-block shrink-0 appearance-none rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        checked ? "bg-primary" : "bg-input",
+        // min-tap-none: the global coarse-pointer rule forces 44x44 minimums
+        // on buttons and was inflating the 40x24 track into a circle
+        "min-tap-none relative inline-block shrink-0 p-0 border-0 bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full",
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
       ].join(" ")}
-      // Pixel sizes inline: on iOS the utility-sized track collapsed into a
-      // blob, explicit dimensions keep the pill shape everywhere
-      style={{ width: 36, height: 20 }}
+      style={{ width: 40, height: 24, WebkitAppearance: "none", appearance: "none" }}
     >
       <span
-        className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full bg-white shadow transition-all"
-        style={{ width: 16, height: 16, left: checked ? 18 : 2 }}
+        aria-hidden
+        className={[
+          "absolute inset-0 rounded-full transition-colors",
+          checked ? "bg-primary" : "bg-input",
+        ].join(" ")}
+      />
+      <span
+        className="pointer-events-none absolute rounded-full bg-white shadow transition-all"
+        style={{ width: 18, height: 18, top: 3, left: checked ? 19 : 3 }}
       />
       {label && (
         <span className="sr-only">{label}</span>
