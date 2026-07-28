@@ -631,7 +631,7 @@
     "sortEducation": "Bildung",
     "sortRole": "Rolle",
     "clearAllFilters": "Filter löschen",
-    "emptyStateHeading": "Finden Sie die maßgeblichen Abgeordneten",
+    "emptyStateHeading": "Finden Sie die <em>maßgeblichen</em> Abgeordneten zu jedem Thema",
     "emptyStateDescription": "Suchen Sie ein politisches Thema und finden Sie heraus, welche Abgeordneten auf diesem Gebiet am maßgeblichsten sind, basierend auf Redebeiträgen, Akten, Ausschüssen, Beruf, Bildung und institutioneller Rolle.",
     "topicPlaceholder": "z. B. Gesundheitswesen",
     "searchButton": "Suchen",
@@ -651,8 +651,7 @@
     "colScore": "Score",
     "noResultsFiltered": "Keine Abgeordneten entsprechen den ausgewählten Filtern.",
     "errorFetch": "Fehler bei der Berechnung des Rankings",
-    "errorUnknown": "Unbekannter Fehler",
-    "emptyStateHeadingAccent": "zu jedem Thema"
+    "errorUnknown": "Unbekannter Fehler"
   },
   "Transcript": {
     "breadcrumbTimeline": "Chronik",
@@ -711,8 +710,7 @@
     "axis1Label": "Achse 1",
     "axis2Label": "Achse 2",
     "anchoredBadge": "Achsen an der Frage verankert",
-    "promptHeading": "Vergleichen Sie die Positionen der Fraktionen",
-    "promptHeadingAccent": "zu jedem Thema"
+    "promptHeading": "Vergleichen Sie die <em>Positionen</em> der Fraktionen zu jedem Thema"
   },
   "Votes": {
     "title": "Abstimmungen erkunden",

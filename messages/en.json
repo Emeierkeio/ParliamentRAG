@@ -647,7 +647,7 @@
     "sortEducation": "Education",
     "sortRole": "Role",
     "clearAllFilters": "Clear filters",
-    "emptyStateHeading": "Find the most authoritative deputies",
+    "emptyStateHeading": "Find the <em>most authoritative</em> deputies on any topic",
     "emptyStateDescription": "Search a political topic and discover which deputies are most authoritative on it, based on speeches, acts, committees, profession, education and institutional role.",
     "topicPlaceholder": "E.g. public healthcare",
     "searchButton": "Search",
@@ -667,8 +667,7 @@
     "colScore": "Score",
     "noResultsFiltered": "No deputies match the selected filters.",
     "errorFetch": "Error computing the ranking",
-    "errorUnknown": "Unknown error",
-    "emptyStateHeadingAccent": "on any topic"
+    "errorUnknown": "Unknown error"
   },
   "Transcript": {
     "breadcrumbTimeline": "Timeline",
@@ -727,8 +726,7 @@
     "axis1Label": "Axis 1",
     "axis2Label": "Axis 2",
     "anchoredBadge": "Axes anchored to the question",
-    "promptHeading": "Compare the groups' positions",
-    "promptHeadingAccent": "on any topic"
+    "promptHeading": "Compare the groups' <em>positions</em> on any topic"
   },
   "Votes": {
     "title": "Votes Explorer",
