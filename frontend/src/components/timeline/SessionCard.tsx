@@ -48,6 +48,7 @@ export function SessionCard({ session, searchTerm }: SessionCardProps) {
   const proceduralId = useId();
 
   const formattedDate = new Date(session.date).toLocaleDateString(undefined, {
+    weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",

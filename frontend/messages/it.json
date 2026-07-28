@@ -600,6 +600,7 @@
     "askAboutThis": "Chiedi informazioni",
     "askQuestionTemplate": "Quali posizioni sono state espresse nel dibattito su {debateTitle} del {date}?",
     "speakersHeading": "Relatori",
+    "interventionsHeading": "Interventi",
     "speakerSummaryLoading": "Caricamento interventi...",
     "speakerSummaryUnavailable": "Riepilogo non disponibile",
     "speechLabel": "Intervento {n}",

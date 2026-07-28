@@ -121,6 +121,20 @@ class SpeakerInfo(BaseModel):
     phases: list[str]  # Phase titles where this speaker participated
 
 
+class InterventionInfo(BaseModel):
+    """One speech slot in a debate, in chronological order (a deputy who
+    speaks twice appears twice, at each point where they took the floor)."""
+
+    speech_id: str
+    speaker_id: str
+    first_name: str
+    last_name: str
+    party: Optional[str] = None
+    speaking_role: Optional[str] = None
+    is_government_member: bool = False
+    phase_title: Optional[str] = None
+
+
 class DebateDetailResponse(BaseModel):
     """Full debate detail for GET /api/timeline/debates/{id}."""
 
@@ -129,6 +143,7 @@ class DebateDetailResponse(BaseModel):
     recap: Optional[str] = None
     phases: list[PhaseInfo]
     speakers: list[SpeakerInfo]
+    interventions: list[InterventionInfo] = []
     votes: list[VoteInfo]
     acts: list[ActInfo]
 

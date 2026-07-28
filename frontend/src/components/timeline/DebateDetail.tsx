@@ -10,7 +10,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SpeakerRow } from "./SpeakerRow";
+import { InterventionRow } from "./InterventionRow";
 import { getDebateDetail } from "@/lib/timeline-api";
 import type { DebateDetailResponse } from "@/types/timeline";
 
@@ -95,15 +95,20 @@ export function DebateDetail({
         </p>
       )}
 
-      {/* 3. Who spoke */}
-      {data.speakers.length > 0 && (
+      {/* 3. Who spoke — chronological: one row per speech slot, so a
+          deputy who takes the floor twice appears twice, in order */}
+      {data.interventions.length > 0 && (
         <section className="mt-6">
           <h4 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-            {t("speakersHeading")} ({data.speakers.length})
+            {t("interventionsHeading")} ({data.interventions.length})
           </h4>
           <div>
-            {data.speakers.map((speaker, idx) => (
-              <SpeakerRow key={`${speaker.id}-${idx}`} speaker={speaker} debateId={debateId} />
+            {data.interventions.map((intervention) => (
+              <InterventionRow
+                key={intervention.speech_id}
+                intervention={intervention}
+                debateId={debateId}
+              />
             ))}
           </div>
         </section>

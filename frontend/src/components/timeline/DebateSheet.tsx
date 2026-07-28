@@ -30,6 +30,7 @@ export function DebateSheet({
   const t = useTranslations("Timeline");
 
   const formattedDate = new Date(sessionDate).toLocaleDateString(undefined, {
+    weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",

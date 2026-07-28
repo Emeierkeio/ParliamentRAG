@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
-
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetContent,
@@ -59,6 +58,7 @@ export function SessionVotesSheet({
   }, [open, sessionId]);
 
   const formattedDate = new Date(sessionDate).toLocaleDateString(undefined, {
+    weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -82,8 +82,14 @@ export function SessionVotesSheet({
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-6 py-4 pb-8">
           {state.status === "loading" && (
-            <div className="flex items-center justify-center py-16">
-              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-48" />
+              <Skeleton className="h-1 w-full max-w-xs" />
+              <div className="pt-2 space-y-2">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <Skeleton key={i} className="h-5 w-full" />
+                ))}
+              </div>
             </div>
           )}
           {state.status === "error" && (
