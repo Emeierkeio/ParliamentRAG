@@ -164,6 +164,30 @@
   }
 }
 
+/* Hemicycle vote dots light up in a left-to-right sweep like the chamber's
+   voting board; the per-seat delay is set inline. transform-box keeps the
+   scale centered on each dot instead of the SVG origin. */
+@keyframes hemicycle-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.hemicycle-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hemicycle-dot-in 0.35s ease-out backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hemicycle-dot {
+    animation: none;
+  }
+}
+
 /* Refined Scrollbar */
 @layer utilities {
   .scrollbar-thin {
