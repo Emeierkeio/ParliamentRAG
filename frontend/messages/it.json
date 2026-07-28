@@ -647,7 +647,7 @@
     "sortEducation": "Istruzione",
     "sortRole": "Ruolo",
     "clearAllFilters": "Pulisci filtri",
-    "emptyStateHeading": "Scopri i deputati più autorevoli",
+    "emptyStateHeading": "Scopri i deputati <em>più autorevoli</em> su ogni tema",
     "emptyStateDescription": "Cerca un tema politico e scopri quali deputati sono più autorevoli in materia, sulla base di interventi, atti, commissioni, professione, istruzione e ruolo istituzionale.",
     "topicPlaceholder": "Es. sanità pubblica",
     "searchButton": "Cerca",
@@ -667,8 +667,7 @@
     "colScore": "Score",
     "noResultsFiltered": "Nessun deputato corrisponde ai filtri selezionati.",
     "errorFetch": "Errore nel calcolo del ranking",
-    "errorUnknown": "Errore sconosciuto",
-    "emptyStateHeadingAccent": "su ogni tema"
+    "errorUnknown": "Errore sconosciuto"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronologia",
@@ -727,8 +726,7 @@
     "axis1Label": "Asse 1",
     "axis2Label": "Asse 2",
     "anchoredBadge": "Assi ancorati alla domanda",
-    "promptHeading": "Confronta le posizioni dei gruppi",
-    "promptHeadingAccent": "su ogni tema"
+    "promptHeading": "Confronta le <em>posizioni</em> dei gruppi su ogni tema"
   },
   "Votes": {
     "title": "Esplora Votazioni",

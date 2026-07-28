@@ -631,7 +631,7 @@
     "sortEducation": "Educação",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpar filtros",
-    "emptyStateHeading": "Descubra os deputados mais influentes",
+    "emptyStateHeading": "Descubra os deputados <em>mais influentes</em> sobre cada tema",
     "emptyStateDescription": "Pesquise um tema político e descubra que deputados têm mais autoridade na matéria, com base em intervenções, atos, comissões, profissão, educação e cargo institucional.",
     "topicPlaceholder": "Ex. saúde pública",
     "searchButton": "Pesquisar",
@@ -651,8 +651,7 @@
     "colScore": "Pontuação",
     "noResultsFiltered": "Nenhum deputado corresponde aos filtros selecionados.",
     "errorFetch": "Erro no cálculo do ranking",
-    "errorUnknown": "Erro desconhecido",
-    "emptyStateHeadingAccent": "sobre cada tema"
+    "errorUnknown": "Erro desconhecido"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronologia",
@@ -711,8 +710,7 @@
     "axis1Label": "Eixo 1",
     "axis2Label": "Eixo 2",
     "anchoredBadge": "Eixos ancorados na pergunta",
-    "promptHeading": "Compare as posições dos grupos",
-    "promptHeadingAccent": "sobre cada tema"
+    "promptHeading": "Compare as <em>posições</em> dos grupos sobre cada tema"
   },
   "Votes": {
     "title": "Explorar Votações",

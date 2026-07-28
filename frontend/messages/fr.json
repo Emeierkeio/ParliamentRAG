@@ -631,7 +631,7 @@
     "sortEducation": "Formation",
     "sortRole": "Rôle",
     "clearAllFilters": "Effacer les filtres",
-    "emptyStateHeading": "Découvrez les députés qui font autorité",
+    "emptyStateHeading": "Découvrez les députés <em>qui font autorité</em> sur chaque sujet",
     "emptyStateDescription": "Recherchez un sujet politique et découvrez quels députés font le plus autorité en la matière, sur la base des interventions, des actes, des commissions, de la profession, de la formation et du rôle institutionnel.",
     "topicPlaceholder": "Ex. santé publique",
     "searchButton": "Rechercher",
@@ -651,8 +651,7 @@
     "colScore": "Score",
     "noResultsFiltered": "Aucun député ne correspond aux filtres sélectionnés.",
     "errorFetch": "Erreur lors du calcul du classement",
-    "errorUnknown": "Erreur inconnue",
-    "emptyStateHeadingAccent": "sur chaque sujet"
+    "errorUnknown": "Erreur inconnue"
   },
   "Transcript": {
     "breadcrumbTimeline": "Chronologie",
@@ -711,8 +710,7 @@
     "axis1Label": "Axe 1",
     "axis2Label": "Axe 2",
     "anchoredBadge": "Axes ancrés à la question",
-    "promptHeading": "Comparez les positions des groupes",
-    "promptHeadingAccent": "sur chaque sujet"
+    "promptHeading": "Comparez les <em>positions</em> des groupes sur chaque sujet"
   },
   "Votes": {
     "title": "Explorer les scrutins",
