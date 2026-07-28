@@ -84,6 +84,11 @@ export const metadata: Metadata = {
   authors: [{ name: "Mirko Tritella" }],
   // Installed-app launch on iOS: without startup images the WebView boots on
   // a blank screen (black in dark mode). One cream splash per device size.
+  // Next emits only the modern mobile-web-app-capable meta; iOS honours the
+  // startup images below only with the apple- prefixed one present too
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+  },
   appleWebApp: {
     capable: true,
     title: "ParliamentRAG",
