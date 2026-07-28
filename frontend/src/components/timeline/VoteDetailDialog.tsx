@@ -139,47 +139,63 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
 
         {detail.status === "loaded" && (
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
-            {/* Per-party stacked bars */}
-            {detail.data.breakdown.length > 0 && (
-              <section>
-                <h4 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                  {t("voteBreakdownHeading")}
-                </h4>
-                <div className="space-y-2">
-                  {detail.data.breakdown.map((b) => {
-                    const total = b.favor + b.against + b.absent;
-                    return (
-                      <div key={b.party}>
-                        <div className="flex items-baseline justify-between gap-2 text-xs">
-                          <span className="truncate font-medium">{b.party}</span>
-                          <span className="shrink-0 tabular-nums text-muted-foreground">
-                            <span className="text-emerald-700 dark:text-emerald-500">{b.favor}</span>
-                            {" / "}
-                            <span className="text-red-700 dark:text-red-500">{b.against}</span>
-                            {" / "}
-                            {b.absent}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                          {b.favor > 0 && (
-                            <div
-                              className="bg-emerald-600"
-                              style={{ width: `${(b.favor / total) * 100}%` }}
-                            />
-                          )}
-                          {b.against > 0 && (
-                            <div
-                              className="bg-red-600"
-                              style={{ width: `${(b.against / total) * 100}%` }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
+            {/* Per-party stacked bars. The Misto components (Vannacci-Free,
+                +Europa, Minoranze Linguistiche, …) are not parliamentary
+                groups: they come from the componenti ingest in mixed case,
+                while official groups are all-caps — that split renders them
+                as a labelled sub-list instead of fake groups. */}
+            {detail.data.breakdown.length > 0 && (() => {
+              const isComponent = (p: string) => p !== p.toUpperCase();
+              const officialGroups = detail.data.breakdown.filter((b) => !isComponent(b.party));
+              const mistoComponents = detail.data.breakdown.filter((b) => isComponent(b.party));
+              const renderRow = (b: (typeof detail.data.breakdown)[number]) => {
+                const total = b.favor + b.against + b.absent;
+                return (
+                  <div key={b.party}>
+                    <div className="flex items-baseline justify-between gap-2 text-xs">
+                      <span className="truncate font-medium">{b.party}</span>
+                      <span className="shrink-0 tabular-nums text-muted-foreground">
+                        <span className="text-emerald-700 dark:text-emerald-500">{b.favor}</span>
+                        {" / "}
+                        <span className="text-red-700 dark:text-red-500">{b.against}</span>
+                        {" / "}
+                        {b.absent}
+                      </span>
+                    </div>
+                    <div className="mt-1 flex h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      {b.favor > 0 && (
+                        <div
+                          className="bg-emerald-600"
+                          style={{ width: `${(b.favor / total) * 100}%` }}
+                        />
+                      )}
+                      {b.against > 0 && (
+                        <div
+                          className="bg-red-600"
+                          style={{ width: `${(b.against / total) * 100}%` }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              };
+              return (
+                <section>
+                  <h4 className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                    {t("voteBreakdownHeading")}
+                  </h4>
+                  <div className="space-y-2">{officialGroups.map(renderRow)}</div>
+                  {mistoComponents.length > 0 && (
+                    <div className="mt-3 pl-3 border-l-2 border-border/60">
+                      <h5 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70 mb-2">
+                        {t("voteMistoComponents")}
+                      </h5>
+                      <div className="space-y-2 opacity-90">{mistoComponents.map(renderRow)}</div>
+                    </div>
+                  )}
+                </section>
+              );
+            })()}
 
             {/* Individual votes */}
             <section>
