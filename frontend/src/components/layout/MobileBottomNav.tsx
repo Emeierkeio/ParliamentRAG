@@ -91,9 +91,16 @@ export function MobileBottomNav() {
   return (
     <>
     <nav
-      className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(27,58,92,0.16)]"
+      className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(27,58,92,0.16)] overflow-hidden"
       aria-label={t("tools")}
     >
+      {/* Loading line on the bar itself — the top of the screen is out of
+          the visual field when tapping tabs, the bar edge is where you look */}
+      {navTarget && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 z-10" role="progressbar" aria-label={t("tools")}>
+          <div className="h-full w-full bg-primary origin-left motion-safe:animate-[nav-progress_2.5s_cubic-bezier(0.15,0.6,0.3,1)_forwards]" />
+        </div>
+      )}
       <div className="flex h-14 items-stretch justify-around px-1">
         {NAV_ITEMS.map(({ href, icon: Icon, key }) => {
           const isActive =
@@ -145,15 +152,6 @@ export function MobileBottomNav() {
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </nav>
 
-    {/* Slim indeterminate progress bar (YouTube-style) while the next
-        document loads. Lives OUTSIDE the nav: its backdrop-filter makes the
-        nav a containing block for fixed descendants, which would pin the bar
-        to the nav instead of the viewport. */}
-    {navTarget && (
-      <div className="md:hidden fixed inset-x-0 top-0 z-[60] h-0.5" role="progressbar" aria-label={t("tools")}>
-        <div className="h-full w-full bg-primary origin-left motion-safe:animate-[nav-progress_2.5s_cubic-bezier(0.15,0.6,0.3,1)_forwards]" />
-      </div>
-    )}
     </>
   );
 }

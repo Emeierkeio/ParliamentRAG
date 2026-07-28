@@ -120,7 +120,10 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="light" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased bg-white text-gray-900`}
+        // bg-background, NOT bg-white: Safari paints the status-bar /
+        // safe-area strip with the body background — white here was the
+        // white band above every page on iPhone
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased bg-background text-foreground`}
       >
         {MAINTENANCE_MODE ? (
           <MaintenancePage />
