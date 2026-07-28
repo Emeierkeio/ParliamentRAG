@@ -600,6 +600,7 @@
     "askAboutThis": "Ask about this",
     "askQuestionTemplate": "What positions were expressed in the debate on {debateTitle} on {date}?",
     "speakersHeading": "Speakers",
+    "interventionsHeading": "Speeches",
     "speakerSummaryLoading": "Loading speeches...",
     "speakerSummaryUnavailable": "Summary unavailable",
     "speechLabel": "Speech {n}",

@@ -93,12 +93,24 @@ export interface SpeakerInfo {
   phases: string[];
 }
 
+export interface InterventionInfo {
+  speech_id: string;
+  speaker_id: string;
+  first_name: string;
+  last_name: string;
+  party: string | null;
+  speaking_role: string | null;
+  is_government_member: boolean;
+  phase_title: string | null;
+}
+
 export interface DebateDetailResponse {
   id: string;
   title: string;
   recap: string | null;
   phases: PhaseInfo[];
   speakers: SpeakerInfo[];
+  interventions: InterventionInfo[];
   votes: VoteInfo[];
   acts: ActInfo[];
 }
