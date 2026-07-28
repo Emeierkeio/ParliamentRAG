@@ -20,6 +20,7 @@ from ..models.timeline import (
     ActInfo,
     DebateDetailResponse,
     DebateSummary,
+    InterventionInfo,
     PhaseInfo,
     SessionCard,
     SpeakerInfo,
@@ -277,6 +278,48 @@ async def get_debate_detail(
         for r in speaker_rows
     ]
 
+    # --- Interventions (chronological: one row per speech slot, so a
+    #     deputy who takes the floor twice appears twice, in order) ---
+    intervention_rows = neo4j.query(
+        """
+        MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
+        MATCH (d)-[:HAS_PHASE]->(p:Phase)-[:CONTAINS_SPEECH]->(sp:Speech)
+        OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(dep:Deputy)
+        OPTIONAL MATCH (sp)-[:SPOKEN_BY]->(gov:GovernmentMember)
+        WITH sp, p, sess,
+             coalesce(dep, gov) AS spk,
+             (dep IS NULL AND gov IS NOT NULL) AS isGov
+        WHERE spk IS NOT NULL
+        OPTIONAL MATCH (spk)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+          WHERE mg.start_date <= sess.date
+            AND (mg.end_date IS NULL OR mg.end_date >= sess.date)
+        WITH sp, p, spk, isGov, head(collect(g.name)) AS party
+        RETURN sp.id AS speech_id,
+               spk.id AS speaker_id,
+               spk.first_name AS first_name,
+               spk.last_name AS last_name,
+               party,
+               sp.speakingRole AS speaking_role,
+               isGov AS is_government_member,
+               p.title AS phase_title
+        ORDER BY sp.id
+        """,
+        {"debate_id": debate_id},
+    )
+    interventions = [
+        InterventionInfo(
+            speech_id=r["speech_id"],
+            speaker_id=r["speaker_id"],
+            first_name=r["first_name"] or "",
+            last_name=r["last_name"] or "",
+            party=r["party"],
+            speaking_role=r["speaking_role"],
+            is_government_member=bool(r["is_government_member"]),
+            phase_title=r["phase_title"],
+        )
+        for r in intervention_rows
+    ]
+
     # --- Votes (via session, not direct from debate) ---
     vote_rows = neo4j.query(
         """
@@ -332,6 +375,7 @@ async def get_debate_detail(
         recap=debate_row["recap"],
         phases=phases,
         speakers=speakers,
+        interventions=interventions,
         votes=votes,
         acts=acts,
     )

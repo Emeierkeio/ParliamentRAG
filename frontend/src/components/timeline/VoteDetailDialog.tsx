@@ -2,7 +2,9 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, X, Minus, Loader2, Info } from "lucide-react";
+import { Check, X, Minus, Info } from "lucide-react";
+
+import { Skeleton } from "@/components/ui/skeleton";
 
 import {
   Dialog,
@@ -138,8 +140,22 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
         </DialogHeader>
 
         {detail.status === "loading" && (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          <div className="px-6 py-4 space-y-5">
+            {/* Hemicycle placeholder: half-donut + legend, then list rows */}
+            <div className="mx-auto w-full max-w-md">
+              <Skeleton className="mx-auto h-24 w-48 rounded-t-full" />
+              <div className="mt-2 flex justify-center gap-4">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-full" />
+              {Array.from({ length: 6 }, (_, i) => (
+                <Skeleton key={i} className="h-4 w-full" />
+              ))}
+            </div>
           </div>
         )}
 
