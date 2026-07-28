@@ -337,6 +337,44 @@ async def get_debate_detail(
     )
 
 
+async def get_session_votes(
+    neo4j: Neo4jClient,
+    session_id: str,
+) -> list[VoteInfo]:
+    """Return every roll-call vote of a sitting.
+
+    Votes hang off the Session (the Camera XML records them per sitting,
+    not per debate), so this is the one honest place to list them without
+    the duplication of repeating the full list in each debate detail.
+    """
+    vote_rows = neo4j.query(
+        """
+        MATCH (s:Session {id: $session_id})-[:HAS_VOTE]->(v:Vote)
+        RETURN v.id AS id,
+               v.number AS number,
+               v.subject AS subject,
+               v.outcome AS outcome,
+               v.inFavor AS in_favor,
+               v.against AS against,
+               v.abstained AS abstained
+        ORDER BY v.number
+        """,
+        {"session_id": session_id},
+    )
+    return [
+        VoteInfo(
+            id=r["id"],
+            number=r["number"] or 0,
+            subject=r["subject"],
+            outcome=r["outcome"],
+            in_favor=r["in_favor"],
+            against=r["against"],
+            abstained=r["abstained"],
+        )
+        for r in vote_rows
+    ]
+
+
 async def get_vote_detail(
     neo4j: Neo4jClient,
     vote_id: str,
