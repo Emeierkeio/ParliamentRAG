@@ -281,8 +281,8 @@
     "badge_camera_18": "Chamber of Deputies · XVIII Legislature",
     "badge_senato_18": "Senate of the Republic · XVIII Legislature",
     "badge_both_18": "Italian Parliament · XVIII Legislature",
-    "title": "What does the Italian Parliament think on every topic?",
-    "subtitle": "Statements from the <bold>most authoritative</bold> parliamentarians on each topic, balanced between majority and opposition with verifiable citations.",
+    "title": "What does the Italian Parliament think <em>on every topic?</em>",
+    "subtitle": "The <bold>most authoritative</bold> voices from majority and opposition, quoted word for word from floor speeches.",
     "trendingTopics": "Trending · 19th Legislature",
     "searchPlaceholder": "Search a topic...",
     "topics": {

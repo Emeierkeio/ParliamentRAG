@@ -280,8 +280,8 @@
     "badge_camera_18": "Abgeordnetenkammer · XVIII. Legislaturperiode",
     "badge_senato_18": "Senat der Republik · XVIII. Legislaturperiode",
     "badge_both_18": "Italienisches Parlament · XVIII. Legislaturperiode",
-    "title": "Was denkt das italienische Parlament zu jedem Thema?",
-    "subtitle": "Aussagen der <bold>maßgeblichsten</bold> Parlamentarier zu jedem Thema, ausgewogen zwischen Mehrheit und Opposition, mit überprüfbaren Zitaten.",
+    "title": "Was denkt das italienische Parlament <em>zu jedem Thema?</em>",
+    "subtitle": "Die <bold>maßgeblichsten</bold> Stimmen von Mehrheit und Opposition, Wort für Wort aus den Plenarreden zitiert.",
     "trendingTopics": "Trends · 19. Legislaturperiode",
     "searchPlaceholder": "Thema suchen...",
     "topics": {
