@@ -55,7 +55,6 @@ const PAGE_SIZE = 20;
 const SUGGESTED_SEARCHES = [
     "Eni",
     "Enel",
-    "Leonardo",
     "YouTrend",
     "energia nucleare",
     "intelligenza artificiale",
