@@ -280,8 +280,8 @@
     "badge_camera_18": "Chambre des députés · XVIIIe législature",
     "badge_senato_18": "Sénat de la République · XVIIIe législature",
     "badge_both_18": "Parlement italien · XVIIIe législature",
-    "title": "Que pense le Parlement italien sur chaque sujet ?",
-    "subtitle": "Les déclarations des parlementaires <bold>faisant le plus autorité</bold> sur chaque sujet, équilibrées entre majorité et opposition avec des citations vérifiables.",
+    "title": "Que pense le Parlement italien <em>sur chaque sujet ?</em>",
+    "subtitle": "Les voix <bold>faisant le plus autorité</bold> de la majorité et de l'opposition, citées mot pour mot depuis les interventions en séance.",
     "trendingTopics": "Tendances · XIXe législature",
     "searchPlaceholder": "Rechercher un sujet...",
     "topics": {
