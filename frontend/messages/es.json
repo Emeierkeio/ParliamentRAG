@@ -631,7 +631,7 @@
     "sortEducation": "Formación",
     "sortRole": "Cargo",
     "clearAllFilters": "Limpiar filtros",
-    "emptyStateHeading": "Descubra los diputados más autorizados",
+    "emptyStateHeading": "Descubra los diputados <em>más autorizados</em> sobre cada tema",
     "emptyStateDescription": "Busque un tema político y descubra qué diputados son más autorizados en la materia, sobre la base de intervenciones, actos, comisiones, profesión, formación y cargo institucional.",
     "topicPlaceholder": "Ej. sanidad pública",
     "searchButton": "Buscar",
@@ -651,8 +651,7 @@
     "colScore": "Puntuación",
     "noResultsFiltered": "Ningún diputado coincide con los filtros seleccionados.",
     "errorFetch": "Error al calcular el ranking",
-    "errorUnknown": "Error desconocido",
-    "emptyStateHeadingAccent": "sobre cada tema"
+    "errorUnknown": "Error desconocido"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronología",
@@ -711,8 +710,7 @@
     "axis1Label": "Eje 1",
     "axis2Label": "Eje 2",
     "anchoredBadge": "Ejes anclados a la pregunta",
-    "promptHeading": "Compare las posiciones de los grupos",
-    "promptHeadingAccent": "sobre cada tema"
+    "promptHeading": "Compare las <em>posiciones</em> de los grupos sobre cada tema"
   },
   "Votes": {
     "title": "Explorar Votaciones",
