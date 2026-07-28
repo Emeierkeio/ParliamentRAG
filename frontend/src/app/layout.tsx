@@ -8,6 +8,7 @@ import { SidebarStateProvider } from '@/components/layout/SidebarStateProvider';
 import { Suspense } from "react";
 import { UrlParamSync } from "@/components/layout/UrlParamSync";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
+import { BackendWakeGate } from "@/components/layout/BackendWakeGate";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -158,6 +159,7 @@ export default async function RootLayout({
               <UrlParamSync />
             </Suspense>
             <TooltipProvider delayDuration={0}>
+              <BackendWakeGate />
               {children}
               <Suspense fallback={null}>
                 <MobileBottomNav />
