@@ -3,6 +3,7 @@ import type {
   DebateDetailResponse,
   SpeakerSummaryResponse,
   VoteDetailResponse,
+  VoteInfo,
 } from '@/types/timeline';
 
 function getLocale(): string {
@@ -47,6 +48,15 @@ export async function getDebateDetail(debateId: string): Promise<DebateDetailRes
     headers: buildHeaders(),
   });
   if (!res.ok) throw new Error(`Debate detail fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getSessionVotes(sessionId: string): Promise<VoteInfo[]> {
+  const res = await fetch(
+    `/api/timeline/sessions/${encodeURIComponent(sessionId)}/votes`,
+    { headers: buildHeaders() },
+  );
+  if (!res.ok) throw new Error(`Session votes fetch failed: ${res.status}`);
   return res.json();
 }
 

@@ -17,6 +17,7 @@ from ..models.timeline import (
     SpeakerSummaryResponse,
     TimelineResponse,
     VoteDetailResponse,
+    VoteInfo,
 )
 from ..services.neo4j_client import Neo4jClient, get_neo4j_client
 from ..services import timeline_service
@@ -64,6 +65,15 @@ async def get_debate_detail(
         debate_id=debate_id,
         locale=locale,
     )
+
+
+@router.get("/sessions/{session_id}/votes")
+async def get_session_votes(
+    session_id: str,
+    neo4j: Neo4jClient = Depends(get_neo4j_client),
+) -> list[VoteInfo]:
+    """List every roll-call vote of a sitting (votes are recorded per sitting)."""
+    return await timeline_service.get_session_votes(neo4j=neo4j, session_id=session_id)
 
 
 @router.get("/votes/{vote_id}")
