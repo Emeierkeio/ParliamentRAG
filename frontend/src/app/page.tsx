@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
-import { ArrowRight, ArrowUpRight, Globe, Check, Award } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, Check, Award, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { useKgStats } from "@/hooks/use-kg-stats";
@@ -140,11 +140,33 @@ export default function LandingPage() {
   const { index: topicIndex, isAnimating } = useSyncedRotation(
     TOPIC_KEYS.length
   );
+  // Entering the app loads the full tool bundle and can take seconds:
+  // without instant feedback the tap feels dead. pageshow clears the
+  // state when iOS restores the landing from bfcache.
+  const [leaving, setLeaving] = useState(false);
+  useEffect(() => {
+    const clear = () => setLeaving(false);
+    window.addEventListener("pageshow", clear);
+    return () => window.removeEventListener("pageshow", clear);
+  }, []);
+  const goCta = (className: string) =>
+    leaving ? (
+      <Loader2 className={`${className} motion-safe:animate-spin`} />
+    ) : (
+      <ArrowRight className={className} />
+    );
 
   return (
     <div
       className={`${fraunces.variable} min-h-screen bg-background text-foreground`}
     >
+      {/* Progress line while the app document loads after a CTA tap */}
+      {leaving && (
+        <div className="fixed inset-x-0 top-0 z-[100] h-0.5" role="progressbar" aria-label="loading">
+          <div className="h-full w-full bg-primary origin-left motion-safe:animate-[nav-progress_2.5s_cubic-bezier(0.15,0.6,0.3,1)_forwards]" />
+        </div>
+      )}
+
       {/* ── Masthead ───────────────────────────────────────────── */}
       <header className="border-b-2 border-foreground">
         <div className="max-w-6xl mx-auto px-6">
@@ -169,10 +191,11 @@ export default function LandingPage() {
             </div>
             <Link
               href="/home"
+              onClick={() => setLeaving(true)}
               className="group hidden sm:inline-flex w-auto justify-center items-center gap-2 whitespace-nowrap bg-primary text-primary-foreground px-4 py-2.5 text-[13px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
             >
               {t("accessCta")}
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              {goCta("h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5")}
             </Link>
           </div>
         </div>
@@ -212,10 +235,11 @@ export default function LandingPage() {
             <div className="mt-8 sm:mt-10">
               <Link
                 href="/home"
+                onClick={() => setLeaving(true)}
                 className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
                 {t("ctaPrimary")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                {goCta("h-4 w-4 transition-transform group-hover:translate-x-1")}
               </Link>
               <div className="mt-5 flex w-full sm:w-auto flex-wrap items-center justify-between sm:justify-start gap-x-3 gap-y-1 sm:gap-x-8">
                 <a
@@ -314,6 +338,7 @@ export default function LandingPage() {
               question={t("idx1Question")}
               description={t("idx1Desc")}
               href="/home"
+              onNavigate={() => setLeaving(true)}
             />
             <IndexRow
               numeral="02"
@@ -321,6 +346,7 @@ export default function LandingPage() {
               question={t("idx2Question")}
               description={t("idx2Desc")}
               href="/search"
+              onNavigate={() => setLeaving(true)}
             />
             <IndexRow
               numeral="03"
@@ -328,6 +354,7 @@ export default function LandingPage() {
               question={t("idx3Question")}
               description={t("idx3Desc")}
               href="/ranking"
+              onNavigate={() => setLeaving(true)}
             />
             <IndexRow
               numeral="04"
@@ -335,6 +362,7 @@ export default function LandingPage() {
               question={t("idx4Question")}
               description={t("idx4Desc")}
               href="/compass"
+              onNavigate={() => setLeaving(true)}
             />
             <IndexRow
               numeral="05"
@@ -342,6 +370,7 @@ export default function LandingPage() {
               question={t("idx5Question")}
               description={t("idx5Desc")}
               href="/timeline"
+              onNavigate={() => setLeaving(true)}
               last
             />
           </div>
@@ -447,10 +476,11 @@ export default function LandingPage() {
             <div className="lg:col-span-4 lg:text-right">
               <Link
                 href="/home"
+                onClick={() => setLeaving(true)}
                 className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
                 {t("ctaStart")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                {goCta("h-4 w-4 transition-transform group-hover:translate-x-1")}
               </Link>
             </div>
           </div>
@@ -655,6 +685,7 @@ function IndexRow({
   description,
   href,
   last = false,
+  onNavigate,
 }: {
   numeral: string;
   title: string;
@@ -662,10 +693,12 @@ function IndexRow({
   description: string;
   href: string;
   last?: boolean;
+  onNavigate?: () => void;
 }) {
   return (
     <Link
       href={href}
+      onClick={onNavigate}
       className={`group grid sm:grid-cols-12 gap-x-6 gap-y-2 py-7 px-2 -mx-2 items-baseline border-border transition-colors hover:bg-accent/60 cursor-pointer ${
         last ? "" : "border-b"
       }`}
