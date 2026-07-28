@@ -201,6 +201,10 @@
     "title": "System in Wartung",
     "description": "Wir führen Wartungsarbeiten durch, um den Dienst zu verbessern. Wir sind in Kürze wieder online."
   },
+  "WakeGate": {
+    "waking": "Der Dienst wird gerade aktiviert",
+    "hint": "In wenigen Sekunden bereit"
+  },
   "ExpertCard": {
     "authorityOnTopic": "Autorität zum Thema",
     "high": "Hoch",

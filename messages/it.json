@@ -202,6 +202,10 @@
     "title": "Sistema in manutenzione",
     "description": "Stiamo effettuando operazioni di manutenzione per migliorare il servizio. Torneremo online a breve."
   },
+  "WakeGate": {
+    "waking": "Il servizio si sta riattivando",
+    "hint": "Pronto tra qualche secondo"
+  },
   "ExpertCard": {
     "authorityOnTopic": "Autorità sul tema",
     "high": "Alto",
