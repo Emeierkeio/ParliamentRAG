@@ -567,8 +567,11 @@ export default function RankingPage() {
               <div className="text-center space-y-5 max-w-lg">
                 {/* Prompt-as-question + example placeholder (NN/g: the
                     placeholder shows the format, the question says the job) */}
-                <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground">
+                {/* Two deliberate lines, landing-hero register: plain first
+                    line, italic primary accent on the second */}
+                <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">
                   {t("emptyStateHeading")}
+                  <span className="block italic text-primary">{t("emptyStateHeadingAccent")}</span>
                 </h2>
                 {/* Search bar */}
                 <div className="w-full max-w-md mx-auto">
