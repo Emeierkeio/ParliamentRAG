@@ -150,8 +150,8 @@ export function MobileBottomNav() {
         nav a containing block for fixed descendants, which would pin the bar
         to the nav instead of the viewport. */}
     {navTarget && (
-      <div className="md:hidden fixed inset-x-0 top-0 z-[60] h-0.5 overflow-hidden" role="progressbar" aria-label={t("tools")}>
-        <div className="h-full w-1/3 bg-primary motion-safe:animate-[nav-progress_1s_ease-in-out_infinite]" />
+      <div className="md:hidden fixed inset-x-0 top-0 z-[60] h-0.5" role="progressbar" aria-label={t("tools")}>
+        <div className="h-full w-full bg-primary origin-left motion-safe:animate-[nav-progress_2.5s_cubic-bezier(0.15,0.6,0.3,1)_forwards]" />
       </div>
     )}
     </>

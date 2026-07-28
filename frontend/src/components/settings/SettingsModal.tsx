@@ -29,8 +29,12 @@ interface SettingsModalProps {
   onClose: () => void;
 }
 
+type SettingsTab = "retrieval" | "authority" | "generation" | "rewriting";
+
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const t = useTranslations("Settings");
+  // One section at a time: the four editors stacked were a wall of fields
+  const [activeTab, setActiveTab] = useState<SettingsTab>("retrieval");
   const [configData, setConfigData] = useState<SystemConfig | null>(null);
   const [originalData, setOriginalData] = useState<SystemConfig | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -142,27 +146,59 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             </Alert>
           )}
 
-          {/* One container only: the section "cards" inside are flattened to
-              plain sections — boxes in boxes read as clutter on a phone */}
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:px-0 [&_[data-slot=card-header]]:px-1 [&_[data-slot=card-content]]:px-1">
+          {/* Section tabs — the tab names the section, so the card headers
+              inside are hidden and each tab opens straight on its fields */}
+          <div className="flex rounded-lg border p-0.5 bg-card shadow-sm shrink-0">
+            {(
+              [
+                ["retrieval", t("tabRetrieval")],
+                ["authority", t("tabAuthority")],
+                ["generation", t("tabGeneration")],
+                ["rewriting", t("tabRewriting")],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                aria-pressed={activeTab === key}
+                className={
+                  activeTab === key
+                    ? "flex-1 px-2 py-1.5 rounded-md text-xs font-medium bg-primary text-primary-foreground shadow-sm"
+                    : "flex-1 px-2 py-1.5 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground transition-all"
+                }
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain [&_[data-slot=card]]:border-0 [&_[data-slot=card]]:shadow-none [&_[data-slot=card]]:bg-transparent [&_[data-slot=card]]:px-0 [&_[data-slot=card]]:py-2 [&_[data-slot=card-header]]:hidden [&_[data-slot=card-content]]:px-1">
             {configData ? (
-              <div className="space-y-4 pb-4">
-                <RetrievalEditor
-                  data={configData.retrieval}
-                  onChange={(retrieval) => setConfigData({ ...configData, retrieval })}
-                />
-                <AuthorityEditor
-                  data={configData.authority}
-                  onChange={(authority) => setConfigData({ ...configData, authority })}
-                />
-                <GenerationEditor
-                  data={configData.generation}
-                  onChange={(generation) => setConfigData({ ...configData, generation })}
-                />
-                <QueryRewritingEditor
-                  data={configData.query_rewriting}
-                  onChange={(query_rewriting) => setConfigData({ ...configData, query_rewriting })}
-                />
+              <div className="pb-4">
+                {activeTab === "retrieval" && (
+                  <RetrievalEditor
+                    data={configData.retrieval}
+                    onChange={(retrieval) => setConfigData({ ...configData, retrieval })}
+                  />
+                )}
+                {activeTab === "authority" && (
+                  <AuthorityEditor
+                    data={configData.authority}
+                    onChange={(authority) => setConfigData({ ...configData, authority })}
+                  />
+                )}
+                {activeTab === "generation" && (
+                  <GenerationEditor
+                    data={configData.generation}
+                    onChange={(generation) => setConfigData({ ...configData, generation })}
+                  />
+                )}
+                {activeTab === "rewriting" && (
+                  <QueryRewritingEditor
+                    data={configData.query_rewriting}
+                    onChange={(query_rewriting) => setConfigData({ ...configData, query_rewriting })}
+                  />
+                )}
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
