@@ -281,8 +281,8 @@
     "badge_camera_18": "Camera dei Deputati · XVIII Legislatura",
     "badge_senato_18": "Senato della Repubblica · XVIII Legislatura",
     "badge_both_18": "Parlamento Italiano · XVIII Legislatura",
-    "title": "Cosa pensa il Parlamento su ogni tema?",
-    "subtitle": "Dichiarazioni dei parlamentari <bold>più autorevoli</bold> su ogni tema, bilanciate tra maggioranza e opposizione con citazioni verificabili.",
+    "title": "Cosa pensa il Parlamento <em>su ogni tema?</em>",
+    "subtitle": "Le voci <bold>più autorevoli</bold> di maggioranza e opposizione, citate parola per parola dagli interventi in aula.",
     "trendingTopics": "Trending · XIX Legislatura",
     "searchPlaceholder": "Cerca un tema...",
     "topics": {

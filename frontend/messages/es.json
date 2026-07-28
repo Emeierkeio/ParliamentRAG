@@ -280,8 +280,8 @@
     "badge_camera_18": "Cámara de Diputados · XVIII Legislatura",
     "badge_senato_18": "Senado de la República · XVIII Legislatura",
     "badge_both_18": "Parlamento Italiano · XVIII Legislatura",
-    "title": "¿Qué piensa el Parlamento italiano sobre cada tema?",
-    "subtitle": "Declaraciones de los parlamentarios <bold>más autorizados</bold> sobre cada tema, equilibradas entre mayoría y oposición con citas verificables.",
+    "title": "¿Qué piensa el Parlamento italiano <em>sobre cada tema?</em>",
+    "subtitle": "Las voces <bold>más autorizadas</bold> de la mayoría y la oposición, citadas palabra por palabra de las intervenciones en el Pleno.",
     "trendingTopics": "Tendencias · XIX legislatura",
     "searchPlaceholder": "Buscar un tema...",
     "topics": {

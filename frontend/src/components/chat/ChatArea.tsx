@@ -224,9 +224,11 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           {t("badge")}
         </div>
         <h1 className="[font-family:var(--font-display)] text-[1.7rem] sm:text-4xl md:text-[2.75rem] font-medium tracking-tight text-foreground leading-[1.1]">
-          {t("title")}
+          {t.rich("title", {
+            em: (chunks) => <span className="italic text-primary">{chunks}</span>,
+          })}
         </h1>
-        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto line-clamp-2 sm:line-clamp-none">
+        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
           {t.rich("subtitle", {
             bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
           })}
