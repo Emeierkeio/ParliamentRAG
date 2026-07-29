@@ -139,6 +139,9 @@ class ProjectedFragment:
     confidence: float = 0.0  # SCR (Subspace Contribution Ratio)
     is_outlier: bool = False
     text: str = ""
+    # LLM stance per axis in [-1, 1], None = no position on that axis.
+    # Set only in stance mode; coordinates are derived from it.
+    stance: Optional[tuple] = None
 
 
 class CompassRefusalError(Exception):

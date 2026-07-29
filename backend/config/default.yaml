@@ -79,6 +79,18 @@ compass:
     model: "gpt-4.1-mini"   # pole generation (temperature 0, JSON mode)
     max_axis_cos: 0.85      # above this the two axes are near-duplicates -> warning
 
+  # LLM stance scoring: positions come from what each speaker argues, scored
+  # per axis in [-1,1] (null = no position), instead of embedding projection
+  # (which tracks vocabulary, not stance). Falls back to embedding projection
+  # on any failure.
+  stance:
+    enabled: true
+    model: "gpt-4.1-mini"   # temperature 0, JSON mode, batched
+    batch_size: 25          # fragments per LLM call
+    max_workers: 8          # parallel batch calls (25*8 = one wave for 200 fragments)
+    max_fragments: 200      # classify at most this many (retrieval order)
+    text_clip: 700          # chars of each fragment sent to the classifier
+
   anchors:
     enabled: false  # Set to true to enable soft anchors for axis orientation
     left:

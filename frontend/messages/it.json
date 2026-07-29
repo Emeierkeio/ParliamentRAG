@@ -255,6 +255,11 @@
     "signalCaptured": "Segnale lungo gli assi",
     "axis1Short": "Asse 1",
     "axis2Short": "Asse 2",
+    "stanceCoverage": "Interventi con posizione",
+    "stanceLow": "basso = pochi interventi si schierano su questi assi",
+    "stanceHigh": "alto = dibattito molto schierato su questi assi",
+    "weakStanceWarning": "Pochi interventi prendono una posizione netta su questi assi: le posizioni dei gruppi sono poco affidabili.",
+    "stanceDisclaimer": "Posizioni stimate automaticamente da un modello linguistico, intervento per intervento, sugli interventi in Aula recuperati per questa domanda: sono indicative e non certificano il posizionamento politico dei gruppi. I punti al centro non prendono posizione.",
     "disclaimer": "Bussola generata automaticamente dagli interventi in Aula recuperati per questa domanda: descrive il linguaggio dei discorsi, non certifica il posizionamento politico dei gruppi. Risultati diversi sono possibili con domande diverse."
   },
   "TopicStatsModal": {
