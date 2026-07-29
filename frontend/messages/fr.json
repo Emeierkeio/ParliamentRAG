@@ -254,6 +254,11 @@
     "signalCaptured": "Signal le long des axes",
     "axis1Short": "Axe 1",
     "axis2Short": "Axe 2",
+    "stanceCoverage": "Interventions prenant position",
+    "stanceLow": "faible = peu d'interventions prennent parti sur ces axes",
+    "stanceHigh": "élevé = débat fortement clivé le long de ces axes",
+    "weakStanceWarning": "Peu d'interventions prennent une position claire sur ces axes : les positions des groupes sont peu fiables.",
+    "stanceDisclaimer": "Positions estimées automatiquement par un modèle de langage, intervention par intervention, à partir des interventions en séance récupérées pour cette question : elles sont indicatives et ne certifient pas le positionnement politique des groupes. Les points au centre ne prennent pas position.",
     "disclaimer": "Boussole générée automatiquement à partir des interventions en séance récupérées pour cette question : elle décrit le langage des discours et ne certifie pas le positionnement politique des groupes. Des questions différentes peuvent donner des résultats différents."
   },
   "TopicStatsModal": {

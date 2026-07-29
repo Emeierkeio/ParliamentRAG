@@ -73,6 +73,7 @@ class CompassPipeline:
         fragments: List[Fragment],
         query: str = "",
         semantic_axes=None,
+        stance_scores: Optional[Dict[str, Tuple[Optional[float], Optional[float]]]] = None,
     ) -> CompassAnalysisResponse:
         """
         Run the complete IC-1 to IC-6 pipeline.
@@ -83,6 +84,10 @@ class CompassPipeline:
             semantic_axes: Optional SemanticAxes (semantic_axes.py). When given,
                 IC-1 projects onto the anchored axes instead of running PCA and
                 pole labels come from the LLM-generated poles.
+            stance_scores: Optional {fragment_id: (a1, a2)} LLM stance scores
+                (stance.py). When given together with semantic_axes, coordinates
+                come from the stance scores instead of embedding projection —
+                embeddings measure lexical similarity, not position.
 
         Returns:
             CompassAnalysisResponse with all analysis results
@@ -91,11 +96,15 @@ class CompassPipeline:
             CompassRefusalError: If analysis cannot produce reliable results
         """
         warnings = []
-        axis_method = "semantic" if semantic_axes is not None else "pca"
 
         # Check minimum fragments
         if len(fragments) < 3:
             return self._fallback_response(fragments, query, "Insufficient data (< 3 fragments)")
+
+        if semantic_axes is not None and stance_scores:
+            return self._run_stance(fragments, query, semantic_axes, stance_scores)
+
+        axis_method = "semantic" if semantic_axes is not None else "pca"
 
         # IC-1: Axis Discovery (semantic anchors or weighted PCA)
         try:
@@ -173,6 +182,145 @@ class CompassPipeline:
                     negative_pole_fragments=[],
                 ),
             },
+            groups=groups,
+            scatter_sample=scatter_sample,
+        )
+
+    # Stance scores live in [-1, 1]; the chart renders ~[-5, 5], so scale up
+    # to use the plane while leaving margin for the axis labels.
+    STANCE_PLOT_SCALE = 3.0
+    # Below this share of stance-taking fragments the positions are flagged
+    # as unreliable (LOW_STANCE_COVERAGE) and the compass is marked unstable.
+    MIN_STANCE_COVERAGE = 0.15
+
+    def _run_stance(
+        self,
+        fragments: List[Fragment],
+        query: str,
+        semantic_axes,
+        stance_scores: Dict[str, Tuple[Optional[float], Optional[float]]],
+    ) -> CompassAnalysisResponse:
+        """
+        Stance-mode pipeline: coordinates from LLM stance scores.
+
+        Fragments with no position on either axis (or not classified) sit at
+        the origin as outliers: they never enter centroids or pole evidence.
+        The "signal" metadata becomes stance coverage — the share of classified
+        fragments that take a position — which is what the chart actually shows.
+        """
+        warnings = []
+        if semantic_axes.correlated:
+            warnings.append(
+                f"SEMANTIC_AXES_CORRELATED: |cos|={semantic_axes.axis_cos:.2f}, "
+                "second axis orthogonalized")
+
+        # IC-2 (stance): scores -> coordinates
+        projected = []
+        for f in fragments:
+            sx, sy = stance_scores.get(f.id) or (None, None)
+            has_stance = sx is not None or sy is not None
+            projected.append(ProjectedFragment(
+                fragment_id=f.id,
+                group_id=f.group_id,
+                raw_coordinates=(sx or 0.0, sy or 0.0),
+                coordinates=(
+                    (sx or 0.0) * self.STANCE_PLOT_SCALE,
+                    (sy or 0.0) * self.STANCE_PLOT_SCALE,
+                ),
+                confidence=1.0 if has_stance else 0.0,
+                is_outlier=not has_stance,
+                text=f.text,
+                stance=(sx, sy),
+            ))
+
+        # Coverage: how much of the classified evidence takes a position
+        n_classified = sum(1 for f in fragments if f.id in stance_scores)
+        cov = []
+        for i in range(2):
+            n_axis = sum(1 for p in projected if p.stance[i] is not None)
+            cov.append(n_axis / n_classified if n_classified else 0.0)
+        n_stance = sum(1 for p in projected if not p.is_outlier)
+        cov_any = n_stance / n_classified if n_classified else 0.0
+
+        if cov_any < self.MIN_STANCE_COVERAGE or n_stance < 5:
+            warnings.append(
+                f"LOW_STANCE_COVERAGE: only {n_stance}/{n_classified} fragments "
+                "take a position on these axes")
+
+        # IC-3 (stance): per-axis mean over the fragments scored on that axis,
+        # so a fragment silent on one axis does not drag the group to 0 there.
+        groups_map: Dict[str, List[ProjectedFragment]] = {}
+        for p in projected:
+            groups_map.setdefault(p.group_id, []).append(p)
+
+        groups = []
+        for group_id, group_frags in groups_map.items():
+            centroid = []
+            for i in range(2):
+                vals = [p.stance[i] for p in group_frags if p.stance[i] is not None]
+                centroid.append(
+                    float(np.mean(vals)) * self.STANCE_PLOT_SCALE if vals else 0.0)
+            group_n_stance = sum(1 for p in group_frags if not p.is_outlier)
+            groups.append(GroupPosition(
+                group_id=group_id,
+                position_x=centroid[0],
+                position_y=centroid[1],
+                dispersion=DispersionEllipse(
+                    center_x=centroid[0], center_y=centroid[1],
+                    radius_x=0.1, radius_y=0.1, rotation=0.0,
+                ),
+                stats={
+                    "n_fragments": len(group_frags),
+                    "n_valid": group_n_stance,
+                    "confidence": group_n_stance / len(group_frags) if group_frags else 0.0,
+                },
+                core_evidence_ids=[],
+            ))
+
+        # IC-4: dispersion ellipses over the stance-taking points
+        groups = self._ic4_dispersion(groups, projected)
+
+        # IC-5 (stance): pole evidence only from fragments actually scored on
+        # the axis with the matching sign — neutrals never represent a pole.
+        axis_defs = []
+        for i in range(2):
+            scored = sorted(
+                (p for p in projected if p.stance[i] is not None),
+                key=lambda p: p.stance[i],
+            )
+            n_pole = min(50, max(3, len(scored) // 10))
+            negative_pole = [p.fragment_id for p in scored[:n_pole] if p.stance[i] < 0]
+            positive_pole = [p.fragment_id for p in scored[-n_pole:] if p.stance[i] > 0]
+            axis_defs.append(AxisDefinition(
+                index=i,
+                explained_variance=float(cov[i]),
+                positive_pole_fragments=positive_pole,
+                negative_pole_fragments=negative_pole,
+            ))
+
+        # IC-6: pole labels from the generated axes (unchanged)
+        axis_defs = self._ic6_semantic_labels(axis_defs, semantic_axes, fragments)
+
+        scatter_sample = self._build_scatter_sample(projected, 2, jitter=0.12)
+
+        is_stable = n_stance >= 10 and cov_any >= self.MIN_STANCE_COVERAGE and len(groups) >= 2
+
+        logger.info(
+            f"Stance pipeline: {n_stance}/{n_classified} fragments with stance, "
+            f"coverage=[{cov[0]:.2f}, {cov[1]:.2f}], {len(groups)} groups")
+
+        return CompassAnalysisResponse(
+            meta=CompassMetadata(
+                query=query,
+                dimensionality=2,
+                axis_method="stance",
+                explained_variance_ratio=[float(cov[0]), float(cov[1])],
+                total_variance_explained=float(cov_any),
+                n_evidence=len(fragments),
+                is_stable=is_stable,
+                warnings=warnings,
+            ),
+            axes={"x": axis_defs[0], "y": axis_defs[1]},
             groups=groups,
             scatter_sample=scatter_sample,
         )
@@ -707,9 +855,16 @@ class CompassPipeline:
     def _build_scatter_sample(
         self,
         projected: List[ProjectedFragment],
-        dimensionality: int
+        dimensionality: int,
+        jitter: float = 0.0,
     ) -> List[Dict[str, Any]]:
-        """Build scatter sample for visualization."""
+        """
+        Build scatter sample for visualization.
+
+        jitter: uniform +/- offset added to each coordinate. Stance scores are
+        near-discrete, so without jitter points stack exactly on top of each
+        other. Seeded, so the sample is deterministic.
+        """
         random.seed(self.scatter_random_seed)
 
         # Sample if too many
@@ -720,8 +875,9 @@ class CompassPipeline:
 
         return [
             {
-                "x": p.coordinates[0],
-                "y": p.coordinates[1] if dimensionality == 2 else 0.0,
+                "x": p.coordinates[0] + (random.uniform(-jitter, jitter) if jitter else 0.0),
+                "y": (p.coordinates[1] + (random.uniform(-jitter, jitter) if jitter else 0.0))
+                     if dimensionality == 2 else 0.0,
                 "group_id": p.group_id,
                 "text": p.text[:100] if p.text else "",
                 "evidence_id": p.fragment_id,

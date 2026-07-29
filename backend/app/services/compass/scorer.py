@@ -303,8 +303,25 @@ class IdeologyScorer:
                 except Exception as e:
                     logger.warning(f"Semantic axes failed, falling back to PCA: {e}")
 
+            # LLM stance scoring (default): positions from what each speaker
+            # argues, not from embedding similarity to the pole texts (which
+            # tracks vocabulary, not stance — rebuttals land on the wrong
+            # side). Any failure falls back to embedding projection.
+            stance_scores = None
+            if semantic_axes is not None and compass_config.get("stance", {}).get("enabled", True):
+                try:
+                    from .stance import StanceClassifier
+                    stance_scores = StanceClassifier(full_config).classify(
+                        fragments, semantic_axes)
+                except Exception as e:
+                    logger.warning(
+                        f"Stance classification failed, falling back to "
+                        f"embedding projection: {e}")
+
             pipeline = CompassPipeline(compass_config)
-            result = pipeline.run(fragments, query=query, semantic_axes=semantic_axes)
+            result = pipeline.run(
+                fragments, query=query, semantic_axes=semantic_axes,
+                stance_scores=stance_scores)
 
             # Convert to frontend-compatible format
             return self._pipeline_result_to_dict(result)

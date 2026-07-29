@@ -254,6 +254,11 @@
     "signalCaptured": "Signal entlang der Achsen",
     "axis1Short": "Achse 1",
     "axis2Short": "Achse 2",
+    "stanceCoverage": "Redebeiträge mit Position",
+    "stanceLow": "niedrig = wenige Redebeiträge beziehen auf diesen Achsen Stellung",
+    "stanceHigh": "hoch = Debatte stark entlang dieser Achsen gespalten",
+    "weakStanceWarning": "Nur wenige Redebeiträge beziehen auf diesen Achsen klar Stellung: Die Gruppenpositionen sind wenig verlässlich.",
+    "stanceDisclaimer": "Positionen werden automatisch von einem Sprachmodell geschätzt, Beitrag für Beitrag, anhand der für diese Frage abgerufenen Redebeiträge: Sie sind Richtwerte und zertifizieren nicht die politische Positionierung der Fraktionen. Punkte in der Mitte beziehen keine Stellung.",
     "disclaimer": "Der Kompass wird automatisch aus den für diese Frage abgerufenen Plenarreden erzeugt: Er beschreibt die Sprache der Reden und zertifiziert nicht die politische Positionierung der Fraktionen. Andere Fragen können andere Ergebnisse liefern."
   },
   "TopicStatsModal": {
