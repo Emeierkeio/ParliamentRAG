@@ -255,6 +255,11 @@
     "signalCaptured": "Signal along the axes",
     "axis1Short": "Axis 1",
     "axis2Short": "Axis 2",
+    "stanceCoverage": "Interventions taking a stance",
+    "stanceLow": "low = few speeches take sides on these axes",
+    "stanceHigh": "high = debate strongly divided along these axes",
+    "weakStanceWarning": "Few speeches take a clear stance on these axes: group positions are unreliable.",
+    "stanceDisclaimer": "Positions estimated automatically by a language model, speech by speech, from the floor speeches retrieved for this question: they are indicative and do not certify the political positioning of the groups. Points at the center take no stance.",
     "disclaimer": "Compass generated automatically from the floor speeches retrieved for this question: it describes the language of the speeches and does not certify the political positioning of the groups. Different questions may yield different results."
   },
   "TopicStatsModal": {

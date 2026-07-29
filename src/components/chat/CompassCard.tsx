@@ -12,8 +12,11 @@ export interface CompassData {
     meta: {
         query: string;
         explained_variance_ratio: number[];
+        total_variance_explained?: number;
         dimensionality?: number;
-        axis_method?: string; // "semantic" (query-anchored poles) | "pca"
+        // "stance" (LLM stance scores on anchored poles) | "semantic"
+        // (embedding projection on anchored poles) | "pca"
+        axis_method?: string;
         is_stable: boolean;
         warnings?: string[];
     };
@@ -81,6 +84,13 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
 
   if (!data?.meta || !data?.groups) return null;
   const dimensionality = data.meta.dimensionality ?? 2;
+  const isStance = data.meta.axis_method === "stance";
+  // Stance mode: the metric is coverage (share of interventions taking a
+  // position), NOT variance — the two axis ratios overlap, so use the total.
+  const signalPct = isStance
+      ? Math.round((data.meta.total_variance_explained || 0) * 100)
+      : Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100);
+  const lowStance = isStance && (data.meta.warnings || []).some(w => w.startsWith("LOW_STANCE_COVERAGE"));
 
   const resetView = () => { setZoom(1); setPan({ x: 0, y: 0 }); };
 
@@ -325,7 +335,7 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
           <div className="flex justify-between items-center mt-1.5 px-2 shrink-0">
              {/* Varianza spiegata / segnale lungo gli assi ancorati */}
              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                 <span>{data.meta.axis_method === "semantic" ? t("signalCaptured") : t("explainedVariance")}: {Math.round(((data.meta.explained_variance_ratio?.[0] || 0) + (dimensionality === 2 ? (data.meta.explained_variance_ratio?.[1] || 0) : 0)) * 100)}%</span>
+                 <span>{isStance ? t("stanceCoverage") : data.meta.axis_method === "semantic" ? t("signalCaptured") : t("explainedVariance")}: {signalPct}%</span>
                  <TooltipProvider>
                     <Tooltip>
                        <TooltipTrigger asChild>
@@ -334,9 +344,9 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                        <TooltipContent side="top" className="max-w-xs">
                           <div className="text-xs space-y-1">
                              <p><strong>{t("meaning")}</strong></p>
-                             <p>• {t("lowVariance")}</p>
-                             <p>• {t("highVariance")}</p>
-                             <p>• {data.meta.axis_method === "semantic" ? t("axis1Short") : "PC1"}: {Math.round((data.meta.explained_variance_ratio?.[0] || 0) * 100)}% | {data.meta.axis_method === "semantic" ? t("axis2Short") : "PC2"}: {dimensionality === 2 ? Math.round((data.meta.explained_variance_ratio?.[1] || 0) * 100) : 0}%</p>
+                             <p>• {isStance ? t("stanceLow") : t("lowVariance")}</p>
+                             <p>• {isStance ? t("stanceHigh") : t("highVariance")}</p>
+                             <p>• {data.meta.axis_method === "pca" ? "PC1" : t("axis1Short")}: {Math.round((data.meta.explained_variance_ratio?.[0] || 0) * 100)}% | {data.meta.axis_method === "pca" ? "PC2" : t("axis2Short")}: {dimensionality === 2 ? Math.round((data.meta.explained_variance_ratio?.[1] || 0) * 100) : 0}%</p>
                           </div>
                        </TooltipContent>
                     </Tooltip>
@@ -356,9 +366,16 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
              </div>
           </div>
 
+          {/* Weak signal — few interventions actually take a stance on these axes */}
+          {lowStance && (
+              <p className="mt-1.5 px-2 text-center text-[10px] leading-snug text-amber-600 dark:text-amber-500 shrink-0">
+                  {t("weakStanceWarning")}
+              </p>
+          )}
+
           {/* Disclaimer — automated analysis, not a certified political placement */}
           <p className="mt-1.5 px-2 text-center text-[10px] leading-snug text-muted-foreground/70 shrink-0">
-              {t("disclaimer")}
+              {isStance ? t("stanceDisclaimer") : t("disclaimer")}
           </p>
     </div>
   );

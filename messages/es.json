@@ -254,6 +254,11 @@
     "signalCaptured": "Señal a lo largo de los ejes",
     "axis1Short": "Eje 1",
     "axis2Short": "Eje 2",
+    "stanceCoverage": "Intervenciones que toman posición",
+    "stanceLow": "bajo = pocas intervenciones se posicionan en estos ejes",
+    "stanceHigh": "alto = debate muy dividido a lo largo de estos ejes",
+    "weakStanceWarning": "Pocas intervenciones toman una posición clara en estos ejes: las posiciones de los grupos son poco fiables.",
+    "stanceDisclaimer": "Posiciones estimadas automáticamente por un modelo de lenguaje, intervención por intervención, a partir de las intervenciones recuperadas para esta pregunta: son indicativas y no certifican el posicionamiento político de los grupos. Los puntos en el centro no toman posición.",
     "disclaimer": "Brújula generada automáticamente a partir de las intervenciones recuperadas para esta pregunta: describe el lenguaje de los discursos y no certifica el posicionamiento político de los grupos. Preguntas distintas pueden dar resultados distintos."
   },
   "TopicStatsModal": {

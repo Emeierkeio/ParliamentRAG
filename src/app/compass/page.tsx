@@ -321,7 +321,7 @@ export default function CompassPage() {
                   {compassData.axes.x && (compassData.axes.x.negative_side || compassData.axes.x.positive_side) && (
                     <AxisSummary
                       axisKey="x"
-                      label={compassData.meta.axis_method === "semantic" ? t("axis1Label") : "PC1"}
+                      label={compassData.meta.axis_method === "pca" ? "PC1" : t("axis1Label")}
                       negLabel={compassData.axes.x.negative_side?.label}
                       posLabel={compassData.axes.x.positive_side?.label}
                       negKeywords={compassData.axes.x.negative_side?.keywords}
@@ -334,7 +334,7 @@ export default function CompassPage() {
                       <div className="hidden sm:block w-px h-5 bg-border/60" />
                       <AxisSummary
                         axisKey="y"
-                        label={compassData.meta.axis_method === "semantic" ? t("axis2Label") : "PC2"}
+                        label={compassData.meta.axis_method === "pca" ? "PC2" : t("axis2Label")}
                         negLabel={compassData.axes.y.negative_side?.label}
                         posLabel={compassData.axes.y.positive_side?.label}
                         negKeywords={compassData.axes.y.negative_side?.keywords}
@@ -346,9 +346,9 @@ export default function CompassPage() {
                   <Badge variant="outline" className="text-[10px] ml-auto hidden sm:inline-flex">
                     {dimensionality === 1
                       ? "1D Spectrum"
-                      : compassData.meta.axis_method === "semantic"
-                        ? t("anchoredBadge")
-                        : "2D PCA"}
+                      : compassData.meta.axis_method === "pca"
+                        ? "2D PCA"
+                        : t("anchoredBadge")}
                   </Badge>
                 </div>
               </div>
