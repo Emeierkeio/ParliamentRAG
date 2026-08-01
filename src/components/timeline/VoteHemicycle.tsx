@@ -201,8 +201,15 @@ export function VoteHemicycle({
         const halfW = (info.sigla.length * 2.9 + 6) / 2;
         const xAt = (r: number) => CX + r * Math.cos(mid);
         let ring = xAt(LABEL_R[0]) - halfW < lastEnd[0] + 2 ? 1 : 0;
-        if (ring === 1 && xAt(LABEL_R[1]) - halfW < lastEnd[1] + 2) ring = 0;
-        const x = xAt(LABEL_R[ring]);
+        let x = xAt(LABEL_R[ring]);
+        if (ring === 1 && x - halfW < lastEnd[1] + 2) {
+          // Both rings taken (many small wedges near the apex): slide the
+          // chip right past the previous one on the freer ring instead of
+          // stacking it on top — a small drift from the wedge midpoint
+          // beats an unreadable overlap.
+          ring = lastEnd[0] <= lastEnd[1] ? 0 : 1;
+          x = Math.max(xAt(LABEL_R[ring]), lastEnd[ring] + 2 + halfW);
+        }
         lastEnd[ring] = Math.max(lastEnd[ring], x + halfW);
         return {
           party,
@@ -264,7 +271,10 @@ export function VoteHemicycle({
                 onClick={() => onSelectParty?.(isSelected ? null : l.party)}
                 style={pct(l.x, l.y)}
                 className={cn(
-                  "absolute z-10 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border px-[1.1cqw] py-[0.25cqw] text-[2.2cqw] font-medium tracking-wide transition-colors",
+                  // appearance-none: without it iOS 26 Safari restyles bare
+                  // buttons as large fixed-size glass circles, wrecking the
+                  // chip layout entirely.
+                  "absolute z-10 appearance-none -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full border px-[1.1cqw] py-[0.25cqw] text-[2.2cqw] font-medium tracking-wide transition-colors",
                   isSelected
                     ? "border-foreground bg-foreground text-background"
                     : isActive
