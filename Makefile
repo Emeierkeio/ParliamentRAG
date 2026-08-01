@@ -275,6 +275,30 @@ update-data: tunnel
 		--neo4j-password $$NEO4J_PASS_VAL
 	@echo "Repairing speaker links (v2 ingest attaches new speeches to persona.rdf duplicates)..."
 	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py $(DEMO_NEO4J)
+	@# AI summaries for the timeline, NEW sessions only. The DB carries a large
+	@# historical backlog of sessions without recap (646 as of 2026-07) that we
+	@# deliberately do NOT backfill: the plain "recapIt IS NULL" mode would eat
+	@# it all. Instead we start from the frontier — the most recent date that
+	@# already has a recap — and generate_summaries.py --from-date skips any
+	@# already-summarized session in the range, so re-runs are idempotent.
+	@# Runs BEFORE the local replay so sync_local_snapshot.py copies the fresh
+	@# summaries to the local snapshot too.
+	@echo "Generating AI summaries for new sessions..."
+	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
+	OPENAI_KEY_VAL=$$(grep '^OPENAI_API_KEY=' .env | cut -d= -f2-); \
+	if [ -z "$$OPENAI_KEY_VAL" ]; then \
+		echo "WARNING: OPENAI_API_KEY not found in .env — summaries skipped."; \
+	else \
+		FRONTIER=$$(NEO4J_PASSWORD="$$NEO4J_PASS_VAL" $(BACKEND_DIR)/venv/bin/python -c 'import os; from neo4j import GraphDatabase; d = GraphDatabase.driver("$(DEMO_NEO4J)", auth=("neo4j", os.environ["NEO4J_PASSWORD"])); s = d.session(); m = s.run("MATCH (n:Session) WHERE n.recapIt IS NOT NULL RETURN toString(max(n.date)) AS m").single()["m"]; print(m or ""); d.close()'); \
+		if [ -z "$$FRONTIER" ]; then \
+			echo "WARNING: no session has a recap yet — summary frontier unknown, skipping (run 'make generate-summaries' for a full pass)."; \
+		else \
+			echo "  summary frontier: $$FRONTIER"; \
+			OPENAI_API_KEY="$$OPENAI_KEY_VAL" $(BACKEND_DIR)/venv/bin/python build/generate_summaries.py \
+				--neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" \
+				--from-date "$$FRONTIER"; \
+		fi; \
+	fi
 	@echo "Refreshing README data stats..."
 	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
 	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
