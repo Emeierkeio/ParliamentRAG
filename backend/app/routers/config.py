@@ -433,6 +433,55 @@ _recent_topics_cache: dict = {}  # lang -> {"at": ts, "data": {...}}
 _RECENT_TOPICS_TTL_S = 3600
 
 
+def _topics_data_version(neo4j) -> str | None:
+    """Version anchor for the persisted recent-topics cache.
+
+    Topics only change when new sessions/acts land, i.e. at `make
+    update-data`, which stamps SchemaMeta.updated_at. Older DBs fall back
+    to the newest Session date.
+    """
+    try:
+        rows = neo4j.query(
+            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+            "WITH m.updated_at AS stamped "
+            "OPTIONAL MATCH (s:Session) "
+            "WITH stamped, max(s.date) AS newest "
+            "RETURN coalesce(toString(stamped), toString(newest)) AS v"
+        )
+        return rows[0]["v"] if rows and rows[0].get("v") else None
+    except Exception as e:
+        logger.warning("Recent-topics version anchor failed: %s", e)
+        return None
+
+
+def _read_persisted_topics(neo4j, lang: str, version: str) -> dict | None:
+    """Return the Neo4j-persisted topics if still valid for this data version."""
+    import json as _json
+    try:
+        rows = neo4j.query(
+            "MATCH (c:RecentTopicsCache {lang: $lang}) "
+            "RETURN c.data AS data, c.data_version AS v",
+            {"lang": lang},
+        )
+        if rows and rows[0].get("data") and rows[0].get("v") == version:
+            return _json.loads(rows[0]["data"])
+    except Exception as e:
+        logger.warning("Recent-topics persisted read failed: %s", e)
+    return None
+
+
+def _write_persisted_topics(neo4j, lang: str, version: str, data: dict) -> None:
+    import json as _json
+    try:
+        neo4j.query(
+            "MERGE (c:RecentTopicsCache {lang: $lang}) "
+            "SET c.data = $data, c.data_version = $v, c.computed_at = datetime()",
+            {"lang": lang, "data": _json.dumps(data, ensure_ascii=False), "v": version},
+        )
+    except Exception as e:
+        logger.warning("Recent-topics persisted write failed: %s", e)
+
+
 async def _label_acts(titles: list[str], lang: str) -> list[dict]:
     """Chip label + expanded query phrase (in the UI language) per act title.
 
@@ -486,7 +535,7 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
 
 
 @router.get("/recent-topics")
-async def get_recent_topics(lang: str = "it"):
+async def get_recent_topics(lang: str = "it", refresh: bool = False):
     """Topics of the provvedimenti most recently discussed on the floor.
 
     Chips and tooltip share one source: Session → Debate → DISCUSSES → act.
@@ -498,18 +547,30 @@ async def get_recent_topics(lang: str = "it"):
     distilled from the act titles in the UI language (bills carry no EuroVoc
     in the source data), with EuroVoc subjects as fallback. Titles in the
     tooltip stay in Italian — they are official act names, like quotations.
-    Cached per language for an hour.
+    Cached at three levels: in-process for an hour, and persisted in Neo4j
+    keyed to SchemaMeta.updated_at — the data only changes at `make
+    update-data`, so the expensive Neo4j+LLM computation runs once per data
+    update (warmed by the update itself), not once per backend cold start.
     """
     import time as _time
-    cached = _recent_topics_cache.get(lang)
+    # refresh=1 (used by the update-data warm-up) skips both caches so the
+    # recomputation always sees the freshly-ingested data.
+    cached = None if refresh else _recent_topics_cache.get(lang)
     if cached is not None and _time.time() - cached["at"] < _RECENT_TOPICS_TTL_S:
         return cached["data"]
     from ..services.deps import get_services
     neo4j = get_services()["neo4j"]
+    version = _topics_data_version(neo4j)
+    if version and not refresh:
+        persisted = _read_persisted_topics(neo4j, lang, version)
+        if persisted is not None:
+            _recent_topics_cache[lang] = {"at": _time.time(), "data": persisted}
+            return persisted
     topics: list[str] = []
     acts: list[dict] = []
     subjects_by_act: list[list[str]] = []
     since = None
+    labelled = False
     try:
         for days in (7, 30, 90):
             act_rows = neo4j.query(
@@ -558,6 +619,7 @@ async def get_recent_topics(lang: str = "it"):
                 for a, subs in zip(acts, subjects_by_act)
             ]
             items = await _label_acts(llm_inputs, lang)
+            labelled = True
             # Per-act label in the tooltip: the official title alone is
             # unreadable legalese, the label says what the measure is about
             for act, item in zip(acts, items):
@@ -583,6 +645,11 @@ async def get_recent_topics(lang: str = "it"):
                         topics.append({"label": subject, "query": subject})
     data = {"topics": topics, "since": since, "acts": acts[:4]}
     _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
+    # Persist only fully-labelled results: freezing the EuroVoc fallback in
+    # Neo4j would pin degraded labels until the next data update, while a
+    # non-persisted fallback retries the LLM on the next cold start.
+    if labelled and topics and version:
+        _write_persisted_topics(neo4j, lang, version, data)
     return data
 
 

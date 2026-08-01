@@ -299,6 +299,14 @@ update-data: tunnel
 				--from-date "$$FRONTIER"; \
 		fi; \
 	fi
+	@# Landing-page topic chips: recompute now (data just changed) so the
+	@# result lands in Neo4j (RecentTopicsCache) and no visitor ever waits
+	@# for the Neo4j+LLM computation. The curl also wakes the prod backend.
+	@echo "Warming recent-topics cache on prod (it, en)..."
+	@for L in it en; do \
+		curl -s -m 120 "https://www.parliamentrag.it/api/config/recent-topics?lang=$$L&refresh=1" -o /dev/null \
+			&& echo "  lang=$$L ok" || echo "  lang=$$L FAILED (will recompute on first visit)"; \
+	done
 	@echo "Refreshing README data stats..."
 	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
 	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
