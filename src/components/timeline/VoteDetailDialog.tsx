@@ -92,7 +92,8 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] flex flex-col gap-0 p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <div className="flex items-start justify-between gap-3 pr-6">
+          {/* pr-10 clears the absolute ✕ button (right-4 + icon + focus ring) */}
+          <div className="flex items-start justify-between gap-3 pr-10">
             <DialogTitle className="text-base leading-snug">
               {vote.subject || t("votesLabel", { count: 1 })}
             </DialogTitle>
