@@ -17,8 +17,11 @@ import { useTranslations } from "next-intl";
 
 const EXCLUDED_ROUTES = ["/", "/privacy"];
 
-/** An awake backend answers well within this: show nothing until it expires. */
-const GRACE_MS = 700;
+/** An awake backend answers well within this: show nothing until it expires.
+    The probe crosses mobile RTT + the Next proxy + a Neo4j connectivity
+    check, so on cellular an awake backend can still take 1-2s — anything
+    shorter flashes the overlay on visits that need no waking at all. */
+const GRACE_MS = 2500;
 /** Fail open: never brick the app if the probe keeps failing. */
 const MAX_WAIT_MS = 90_000;
 const RETRY_MS = 2_500;
@@ -31,9 +34,27 @@ export function BackendWakeGate() {
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
+    // Fire-and-forget wake: reaching the backend at all is what un-sleeps
+    // the Railway container; the response itself does not matter here.
+    const wake = () => {
+      fetch("/api/health", { cache: "no-store" }).catch(() => {});
+    };
+
+    // iOS Safari restores long-suspended tabs without reloading, so the
+    // gate never re-probes while the backend may have gone back to sleep.
+    // Warm it as soon as the tab is visible again, before the user's next
+    // interaction has to pay the cold start.
+    const onVisible = () => {
+      if (document.visibilityState === "visible") wake();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
     if (EXCLUDED_ROUTES.includes(pathname)) {
       setPhase("done");
-      return;
+      // These routes render without backend data, but the user's next stop
+      // needs it: start the cold boot now instead of at first navigation.
+      wake();
+      return () => document.removeEventListener("visibilitychange", onVisible);
     }
     let cancelled = false;
     const start = Date.now();
@@ -66,6 +87,7 @@ export function BackendWakeGate() {
     return () => {
       cancelled = true;
       clearTimeout(graceTimer);
+      document.removeEventListener("visibilitychange", onVisible);
     };
     // Probe once per document load: client-side navigations keep this
     // mounted, and traffic from an open tab keeps the backend awake.
