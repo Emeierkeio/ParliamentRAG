@@ -393,7 +393,10 @@ ORDER BY s.date
                 result = neo_session.run(cypher, target_date=self._date_filter)
                 return [{"id": r["id"], "date": r["date"]} for r in result]
         elif self._from_date or self._to_date:
-            clauses = []
+            # Unlike --date, range mode stays incremental: sessions that already
+            # have a recap are skipped, so re-running over the same range only
+            # fills the gaps instead of regenerating (and re-paying) everything.
+            clauses = ["s.recapIt IS NULL"]
             params: dict = {}
             if self._from_date:
                 clauses.append("s.date >= date($from_date)")
@@ -652,7 +655,8 @@ if __name__ == "__main__":
         driver.close()
         sys.exit(1)
 
-    openai_client = AsyncOpenAI(api_key=openai_api_key, max_retries=3)
+    # In dry-run the client is never called, but the SDK refuses a None key
+    openai_client = AsyncOpenAI(api_key=openai_api_key or "sk-dry-run", max_retries=3)
 
     if args.date:
         logger.info("Date filter: %s (will overwrite existing summaries)", args.date)
