@@ -22,10 +22,11 @@ interface VoteHemicycleProps {
 const FILL: Record<string, string> = {
   favor: "fill-emerald-600",
   against: "fill-red-600",
+  abstain: "fill-amber-500",
   absent: "fill-muted-foreground/25",
 };
 
-const OUTCOME_ORDER: Record<string, number> = { favor: 0, against: 1, absent: 2 };
+const OUTCOME_ORDER: Record<string, number> = { favor: 0, against: 1, abstain: 2, absent: 3 };
 
 /* Shorthand and hemicycle sector for XIX-legislature groups and Misto
    components. `rank` orders the wedges left→right following the sector
@@ -180,12 +181,16 @@ export function VoteHemicycle({
       }
     });
     // Tooltip counts aggregated per wedge (all Misto components fold into one).
-    const byParty = new Map<string, { favor: number; against: number; absent: number }>();
+    const byParty = new Map<
+      string,
+      { favor: number; against: number; abstain: number; absent: number }
+    >();
     for (const b of breakdown) {
       const key = wedgeKey(b.party);
-      const cur = byParty.get(key) ?? { favor: 0, against: 0, absent: 0 };
+      const cur = byParty.get(key) ?? { favor: 0, against: 0, abstain: 0, absent: 0 };
       cur.favor += b.favor;
       cur.against += b.against;
+      cur.abstain += b.abstain ?? 0;
       cur.absent += b.absent;
       byParty.set(key, cur);
     }
@@ -225,9 +230,9 @@ export function VoteHemicycle({
 
   if (ordered.length === 0) return null;
 
-  const tally = { favor: 0, against: 0, absent: 0 };
+  const tally = { favor: 0, against: 0, abstain: 0, absent: 0 };
   for (const p of ordered) {
-    const k = p.outcome === "favor" || p.outcome === "against" ? p.outcome : "absent";
+    const k = p.outcome in tally ? (p.outcome as keyof typeof tally) : "absent";
     tally[k]++;
   }
 
@@ -236,7 +241,9 @@ export function VoteHemicycle({
       ? t("voteFavor")
       : outcome === "against"
         ? t("voteAgainst")
-        : t("voteAbsent");
+        : outcome === "abstain"
+          ? t("voteAbstained")
+          : t("voteAbsent");
 
   // Sweep the whole chamber in ~1s regardless of deputy count.
   const stagger = Math.min(3, 1000 / ordered.length);
@@ -289,8 +296,11 @@ export function VoteHemicycle({
               <p className="max-w-56 font-medium">{l.party}</p>
               {l.data && (
                 <p className="tabular-nums">
-                  {t("voteFavor")}: {l.data.favor} · {t("voteAgainst")}: {l.data.against} ·{" "}
-                  {t("voteAbsent")}: {l.data.absent}
+                  {t("voteFavor")}: {l.data.favor} · {t("voteAgainst")}: {l.data.against}
+                  {l.data.abstain > 0 && (
+                    <> · {t("voteAbstained")}: {l.data.abstain}</>
+                  )}{" "}
+                  · {t("voteAbsent")}: {l.data.absent}
                 </p>
               )}
             </TooltipContent>
@@ -300,7 +310,7 @@ export function VoteHemicycle({
       <svg
         viewBox={`${VB.x} ${VB.y} ${VB.w} ${VB.h}`}
         role="img"
-        aria-label={`${t("voteFavor")}: ${tally.favor}, ${t("voteAgainst")}: ${tally.against}, ${t("voteAbsent")}: ${tally.absent}`}
+        aria-label={`${t("voteFavor")}: ${tally.favor}, ${t("voteAgainst")}: ${tally.against}, ${t("voteAbstained")}: ${tally.abstain}, ${t("voteAbsent")}: ${tally.absent}`}
       >
         {ordered.map((p, i) => {
           const seat = seats[i];
@@ -334,6 +344,12 @@ export function VoteHemicycle({
           <span className="h-2 w-2 rounded-full bg-red-600" />
           {t("voteAgainst")} · {tally.against}
         </span>
+        {tally.abstain > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-amber-500" />
+            {t("voteAbstained")} · {tally.abstain}
+          </span>
+        )}
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full bg-muted-foreground/25" />
           {t("voteAbsent")} · {tally.absent}

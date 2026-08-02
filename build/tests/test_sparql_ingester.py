@@ -108,17 +108,18 @@ class TestOutcomeMapping:
     def test_contrario_maps_to_against(self):
         assert OUTCOME_MAP["Contrario"] == "against"
 
-    def test_astenuto_maps_to_abstain(self):
-        assert OUTCOME_MAP["Astenuto"] == "abstain"
+    def test_astensione_maps_to_abstain(self):
+        assert OUTCOME_MAP["Astensione"] == "abstain"
 
     def test_non_ha_votato_maps_to_absent(self):
         assert OUTCOME_MAP["Non ha votato"] == "absent"
 
-    def test_in_missione_maps_to_on_mission(self):
-        assert OUTCOME_MAP["In missione"] == "on_mission"
+    def test_ha_votato_falls_through_to_absent(self):
+        # Votazioni segrete: l'espressione non è pubblica, il fallback è "absent".
+        assert OUTCOME_MAP.get("Ha votato", "absent") == "absent"
 
-    def test_all_five_outcomes_present(self):
-        assert len(OUTCOME_MAP) == 5
+    def test_all_four_outcomes_present(self):
+        assert len(OUTCOME_MAP) == 4
 
 
 # ---------------------------------------------------------------------------

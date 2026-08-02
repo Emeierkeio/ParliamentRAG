@@ -34,6 +34,7 @@ type DetailState =
 const OUTCOME_STYLES: Record<string, { dot: string; icon: typeof Check }> = {
   favor: { dot: "text-emerald-600", icon: Check },
   against: { dot: "text-red-600", icon: X },
+  abstain: { dot: "text-amber-500", icon: Minus },
   absent: { dot: "text-muted-foreground/60", icon: Minus },
 };
 
@@ -108,7 +109,19 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           </div>
           {detail.status === "loaded" && (
             <DialogDescription asChild>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+              <div className="space-y-1.5">
+                {(detail.data.description || detail.data.act_title) && (
+                  <div className="space-y-0.5 text-xs text-muted-foreground pr-10">
+                    {detail.data.description &&
+                      detail.data.description !== detail.data.subject && (
+                        <p>{detail.data.description}</p>
+                      )}
+                    {detail.data.act_title && (
+                      <p className="italic line-clamp-2">{detail.data.act_title}</p>
+                    )}
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
                 <span className="text-emerald-700 dark:text-emerald-500 font-medium">
                   {t("voteFavor")}: {detail.data.in_favor ?? "–"}
                 </span>
@@ -135,6 +148,7 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
                     {t("voteOnMission")}: {detail.data.on_mission}
                   </span>
                 )}
+                </div>
               </div>
             </DialogDescription>
           )}
@@ -173,7 +187,10 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           // in the graph, so one honest notice covers them — drawing an
           // all-grey chamber would read as "everyone was absent".
           const hasIndividualData = detail.data.participants.some(
-            (p) => p.outcome === "favor" || p.outcome === "against",
+            (p) =>
+              p.outcome === "favor" ||
+              p.outcome === "against" ||
+              p.outcome === "abstain",
           );
           if (!hasIndividualData) {
             return (

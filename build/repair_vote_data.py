@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+"""
+One-shot repair delle votazioni Camera (leg. 19) già presenti in Neo4j.
+
+Due riparazioni indipendenti, attivabili singolarmente:
+
+  --abstentions   Gli IndividualVote degli astenuti sono salvati come "absent":
+                  la vecchia OUTCOME_MAP cercava "Astenuto" ma il valore reale
+                  di dc:type su dati.camera.it è "Astensione", quindi tutte le
+                  astensioni cadevano nel fallback. Rilegge da SPARQL le coppie
+                  (deputato, votazione) con dc:type "Astensione" e setta
+                  outcome='abstain' sui nodi corrispondenti.
+
+  --subjects      Backfill di subject/description/finalVote/confidenceVote e
+                  della relazione (Vote)-[:ON_ACT]->(ParliamentaryAct) per
+                  tutte le votazioni leg 19. Le votazioni delle sedute 1-349
+                  (fonte XML) hanno oggetti criptici ("EM. 9.1"); il label
+                  SPARQL ("Votazione Emendamento 1.104 PDL n. 0080") è
+                  canonico e vince sempre quando presente.
+
+Senza flag esegue entrambe. Idempotente: rilanciarlo non cambia il risultato.
+
+Uso:
+  python build/repair_vote_data.py --neo4j-uri bolt://localhost:7691  # staging
+  python build/repair_vote_data.py --neo4j-uri bolt://localhost:7690  # prod (tunnel)
+"""
+
+import argparse
+import logging
+import os
+import sys
+
+from neo4j import GraphDatabase
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sparql_ingester import (  # noqa: E402
+    _DEPUTATO_URI_RE,
+    _sparql_get,
+    clean_sparql_text,
+    parse_votazione_uri,
+)
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
+
+LEG_URI = "http://dati.camera.it/ocd/legislatura.rdf/repubblica_19"
+SPARQL_PAGE = 10_000
+NEO4J_BATCH = 1_000
+
+
+def _count(where_block: str, key_var: str) -> int:
+    """COUNT(DISTINCT ?key_var) del blocco WHERE dato.
+
+    DISTINCT è obbligatorio: le triple replicate su più grafi gonfiano
+    COUNT(*) (es. 38599 vs 19237 votazioni reali).
+    """
+    rows = _sparql_get(
+        "PREFIX ocd: <http://dati.camera.it/ocd/>\n"
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n"
+        f"SELECT (COUNT(DISTINCT ?{key_var}) AS ?n) WHERE {{ {where_block} }}"
+    )
+    return int(rows[0]["n"]["value"]) if rows else -1
+
+
+def _paged(query_tmpl: str, key_var: str) -> list[dict]:
+    """SELECT paginata via keyset sul valore di ?key_var (URI crescente).
+
+    Virtuoso risponde 500 sugli OFFSET grandi, quindi si pagina con
+    FILTER (STR(?k) > "ultimo visto"). Una pagina fallita appare come pagina
+    vuota (_sparql_get non rilancia): il chiamante DEVE confrontare il totale
+    con un COUNT e fermarsi se mancano righe.
+    """
+    rows: list[dict] = []
+    last = ""
+    while True:
+        key_filter = f'FILTER (STR(?{key_var}) > "{last}")' if last else ""
+        bindings = _sparql_get(query_tmpl.format(limit=SPARQL_PAGE, key_filter=key_filter))
+        rows.extend(bindings)
+        logger.info("  SPARQL keyset page da %r -> %d rows (tot %d)",
+                    last[-40:], len(bindings), len(rows))
+        if len(bindings) < SPARQL_PAGE:
+            return rows
+        last = bindings[-1][key_var]["value"]
+
+
+def repair_abstentions(driver) -> None:
+    logger.info("Fetch astensioni leg 19 da SPARQL (~483k righe)...")
+    where = """
+  ?voto a ocd:voto ;
+        dc:type "Astensione" ;
+        ocd:rif_votazione ?votazione ;
+        ocd:rif_deputato ?deputato .
+  ?votazione ocd:rif_leg <""" + LEG_URI + "> ."
+    expected = _count(where, key_var="voto")
+    rows = _paged("""
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+SELECT DISTINCT ?voto ?deputato ?votazione WHERE {{""" + where + """
+  {key_filter}
+}}
+ORDER BY STR(?voto)
+LIMIT {limit}
+""", key_var="voto")
+    if len(rows) < expected:
+        raise RuntimeError(
+            f"Fetch astensioni incompleto: {len(rows)}/{expected} righe — "
+            "pagina SPARQL fallita, nessuna scrittura eseguita."
+        )
+
+    ids = set()
+    for row in rows:
+        dep = _DEPUTATO_URI_RE.search(row.get("deputato", {}).get("value", ""))
+        sed, vot = parse_votazione_uri(row.get("votazione", {}).get("value", ""))
+        if dep and sed is not None:
+            ids.add(f"iv_camera_{dep.group(1)}_{sed}_{vot}")
+    logger.info("Astensioni: %d righe SPARQL -> %d id univoci", len(rows), len(ids))
+
+    id_list = sorted(ids)
+    updated = 0
+    with driver.session() as session:
+        for i in range(0, len(id_list), NEO4J_BATCH):
+            chunk = id_list[i:i + NEO4J_BATCH]
+            rec = session.run(
+                """
+                UNWIND $ids AS ivId
+                MATCH (iv:IndividualVote {id: ivId})
+                SET iv.outcome = 'abstain'
+                RETURN count(iv) AS n
+                """,
+                ids=chunk,
+            ).single()
+            updated += rec["n"] if rec else 0
+    missing = len(id_list) - updated
+    logger.info("Astensioni riparate: %d aggiornate, %d senza nodo in DB "
+                "(deputati mai matchati in ingest: atteso)", updated, missing)
+
+
+def repair_subjects(driver) -> None:
+    logger.info("Fetch metadati votazioni leg 19 da SPARQL...")
+    expected = _count(
+        "?votazione a <http://dati.camera.it/ocd/votazione> ; "
+        f"ocd:rif_leg <{LEG_URI}> .",
+        key_var="votazione",
+    )
+    rows = _paged("""
+PREFIX ocd: <http://dati.camera.it/ocd/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?votazione ?label ?descrizione ?finale ?fiducia ?atto ?attoTitolo WHERE {{
+  ?votazione a ocd:votazione ;
+             ocd:rif_leg <""" + LEG_URI + """> .
+  OPTIONAL {{ ?votazione rdfs:label ?label . }}
+  OPTIONAL {{ ?votazione dc:description ?descrizione . }}
+  OPTIONAL {{ ?votazione ocd:votazioneFinale ?finale . }}
+  OPTIONAL {{ ?votazione ocd:richiestaFiducia ?fiducia . }}
+  OPTIONAL {{ ?votazione ocd:rif_attoCamera ?atto .
+              OPTIONAL {{ ?atto dc:title ?attoTitolo . }} }}
+  {key_filter}
+}}
+ORDER BY STR(?votazione)
+LIMIT {limit}
+""", key_var="votazione")
+
+    # Una riga per votazione (le OPTIONAL possono duplicare).
+    by_vote: dict[tuple[int, int], dict] = {}
+    for row in rows:
+        sed, vot = parse_votazione_uri(row.get("votazione", {}).get("value", ""))
+        if sed is None or (sed, vot) in by_vote:
+            continue
+        by_vote[(sed, vot)] = {
+            "sessionNumber": sed,
+            "voteNumber": vot,
+            "label": clean_sparql_text(row.get("label", {}).get("value")),
+            "description": clean_sparql_text(row.get("descrizione", {}).get("value")),
+            "finalVote": row.get("finale", {}).get("value") == "1",
+            "confidenceVote": row.get("fiducia", {}).get("value") == "1",
+            "actUri": row.get("atto", {}).get("value"),
+            "actTitle": clean_sparql_text(row.get("attoTitolo", {}).get("value")),
+        }
+    batch = list(by_vote.values())
+    logger.info("Votazioni: %d righe SPARQL -> %d votazioni univoche", len(rows), len(batch))
+    if len(batch) < expected:
+        raise RuntimeError(
+            f"Fetch votazioni incompleto: {len(batch)}/{expected} — "
+            "pagina SPARQL fallita, nessuna scrittura eseguita."
+        )
+
+    updated = 0
+    with driver.session() as session:
+        for i in range(0, len(batch), NEO4J_BATCH):
+            chunk = batch[i:i + NEO4J_BATCH]
+            rec = session.run(
+                """
+                UNWIND $batch AS row
+                MATCH (s:Session {number: row.sessionNumber})-[:HAS_VOTE]->(v:Vote {number: row.voteNumber})
+                WHERE coalesce(s.chamber, 'camera') = 'camera' AND s.legislature = 19
+                SET v.subject = coalesce(row.label, v.subject),
+                    v.description = row.description,
+                    v.finalVote = row.finalVote,
+                    v.confidenceVote = row.confidenceVote
+                FOREACH (_ IN CASE WHEN row.actUri IS NULL THEN [] ELSE [1] END |
+                  MERGE (a:ParliamentaryAct {uri: row.actUri})
+                  ON CREATE SET a.title = row.actTitle
+                  MERGE (v)-[:ON_ACT]->(a)
+                )
+                RETURN count(v) AS n
+                """,
+                batch=chunk,
+            ).single()
+            updated += rec["n"] if rec else 0
+    logger.info("Votazioni aggiornate: %d/%d (le mancanti non hanno nodo Vote in DB)",
+                updated, len(batch))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--neo4j-uri", default="bolt://localhost:7691")
+    parser.add_argument("--neo4j-user", default="neo4j")
+    parser.add_argument("--neo4j-password", default=os.environ.get("NEO4J_PASSWORD", ""))
+    parser.add_argument("--abstentions", action="store_true")
+    parser.add_argument("--subjects", action="store_true")
+    args = parser.parse_args()
+
+    run_all = not (args.abstentions or args.subjects)
+    driver = GraphDatabase.driver(args.neo4j_uri, auth=(args.neo4j_user, args.neo4j_password))
+    try:
+        driver.verify_connectivity()
+        if args.abstentions or run_all:
+            repair_abstentions(driver)
+        if args.subjects or run_all:
+            repair_subjects(driver)
+    finally:
+        driver.close()
+
+
+if __name__ == "__main__":
+    main()

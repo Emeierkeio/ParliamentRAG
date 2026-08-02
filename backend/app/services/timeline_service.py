@@ -429,8 +429,9 @@ async def get_vote_detail(
 
     Individual votes live in the graph as:
       (Person)-[:VOTED]->(IndividualVote {outcome})-[:ON_VOTE]->(Vote)
-    with outcome in {"favor", "against", "absent"} (no per-deputy abstention
-    in the source data — abstained exists only as an aggregate on Vote).
+    with outcome in {"favor", "against", "abstain", "absent"}. In secret
+    ballots the source data hides the expression ("Ha votato"), so every
+    record is "absent" and the frontend shows a dedicated notice instead.
 
     Party attribution is date-aware via MEMBER_OF_GROUP; deputies in the
     Gruppo Misto are attributed to their political component
@@ -439,9 +440,12 @@ async def get_vote_detail(
     meta = neo4j.query_single(
         """
         MATCH (s:Session)-[:HAS_VOTE]->(v:Vote {id: $vote_id})
+        OPTIONAL MATCH (v)-[:ON_ACT]->(a:ParliamentaryAct)
         RETURN v.id AS id,
                v.number AS number,
                v.subject AS subject,
+               v.description AS description,
+               head(collect(a.title)) AS act_title,
                v.outcome AS outcome,
                v.type AS vote_type,
                v.inFavor AS in_favor,
@@ -503,14 +507,18 @@ async def get_vote_detail(
     counts: dict[str, dict[str, int]] = {}
     for p in participants:
         party = p.party or "—"
-        bucket = counts.setdefault(party, {"favor": 0, "against": 0, "absent": 0})
-        bucket[p.outcome] = bucket.get(p.outcome, 0) + 1
+        bucket = counts.setdefault(
+            party, {"favor": 0, "against": 0, "abstain": 0, "absent": 0}
+        )
+        # Unknown outcome values count as absent instead of silently vanishing
+        # (pydantic would drop an unexpected key at model construction).
+        bucket[p.outcome if p.outcome in bucket else "absent"] += 1
     breakdown = sorted(
         (
             VotePartyBreakdown(party=party, **b)
             for party, b in counts.items()
         ),
-        key=lambda b: b.favor + b.against + b.absent,
+        key=lambda b: b.favor + b.against + b.abstain + b.absent,
         reverse=True,
     )
 
@@ -518,6 +526,9 @@ async def get_vote_detail(
         id=meta["id"],
         number=meta["number"] or 0,
         subject=meta["subject"],
+        description=meta["description"],
+        # Act titles from the atti ingest carry stray padding (" BRAGA ed altri: ... ").
+        act_title=meta["act_title"].strip() if meta["act_title"] else None,
         outcome=meta["outcome"],
         vote_type=meta["vote_type"],
         in_favor=meta["in_favor"],
