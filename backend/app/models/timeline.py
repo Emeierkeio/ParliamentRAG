@@ -56,6 +56,8 @@ class VoteInfo(BaseModel):
     id: str
     number: int
     subject: Optional[str] = None
+    description: Optional[str] = None
+    final_vote: bool = False
     outcome: Optional[str] = None
     in_favor: Optional[int] = None
     against: Optional[int] = None

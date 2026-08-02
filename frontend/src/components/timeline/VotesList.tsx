@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
+import { KIND_LABEL_KEYS, voteKind, voteTitle } from "@/lib/vote-utils";
 import { VoteDetailDialog } from "./VoteDetailDialog";
 import type { VoteInfo } from "@/types/timeline";
 
@@ -25,6 +26,7 @@ export function VotesList({ votes }: VotesListProps) {
 
   const isKeyVote = (v: VoteInfo, i: number) => {
     if (v.outcome === "approved") return true;
+    if (v.final_vote) return true;
     if (v.subject && !/^votazione\.?$/i.test(v.subject.trim())) return true;
     if (
       v.in_favor !== null &&
@@ -75,7 +77,10 @@ export function VotesList({ votes }: VotesListProps) {
         </div>
       )}
       <div className="space-y-0.5">
-        {visibleVotes.map((vote) => (
+        {visibleVotes.map((vote) => {
+          const kind = voteKind(vote);
+          const title = voteTitle(vote);
+          return (
           <button
             key={vote.id}
             type="button"
@@ -83,9 +88,14 @@ export function VotesList({ votes }: VotesListProps) {
             className="group flex w-full flex-wrap items-center gap-2 rounded-md px-2 py-1 -mx-2 text-left text-xs transition-colors hover:bg-muted/60"
             title={t("voteDetailHint")}
           >
-            {vote.subject && (
+            {kind && (
+              <span className="shrink-0 rounded border border-border/60 px-1 py-px text-[10px] uppercase tracking-wide text-muted-foreground">
+                {t(KIND_LABEL_KEYS[kind])}
+              </span>
+            )}
+            {title && (
               <span className="text-muted-foreground group-hover:text-foreground group-hover:underline underline-offset-2">
-                {vote.subject}
+                {title}
               </span>
             )}
             {vote.outcome && (
@@ -118,7 +128,8 @@ export function VotesList({ votes }: VotesListProps) {
               </span>
             )}
           </button>
-        ))}
+          );
+        })}
         {votes.length > VOTES_COLLAPSE_THRESHOLD && (
           <button
             type="button"
