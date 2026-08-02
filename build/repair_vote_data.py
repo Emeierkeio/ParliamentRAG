@@ -2,7 +2,7 @@
 """
 One-shot repair delle votazioni Camera (leg. 19) già presenti in Neo4j.
 
-Due riparazioni indipendenti, attivabili singolarmente:
+Riparazioni indipendenti, attivabili singolarmente:
 
   --abstentions   Gli IndividualVote degli astenuti sono salvati come "absent":
                   la vecchia OUTCOME_MAP cercava "Astenuto" ma il valore reale
@@ -18,7 +18,11 @@ Due riparazioni indipendenti, attivabili singolarmente:
                   SPARQL ("Votazione Emendamento 1.104 PDL n. 0080") è
                   canonico e vince sempre quando presente.
 
-Senza flag esegue entrambe. Idempotente: rilanciarlo non cambia il risultato.
+  --government    Backfill dei voti individuali dei ministri-deputati
+                  (GovernmentMember con deputy_card): l'ingest storico
+                  matchava solo i Deputy e perdeva i loro voti.
+
+Senza flag le esegue tutte. Idempotente: rilanciarlo non cambia il risultato.
 
 Uso:
   python build/repair_vote_data.py --neo4j-uri bolt://localhost:7691  # staging
@@ -35,6 +39,7 @@ from neo4j import GraphDatabase
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from sparql_ingester import (  # noqa: E402
     _DEPUTATO_URI_RE,
+    SparqlIngester,
     _sparql_get,
     clean_sparql_text,
     parse_votazione_uri,
@@ -212,6 +217,30 @@ LIMIT {limit}
                 updated, len(batch))
 
 
+def repair_government_votes(driver, legislature: int = 19) -> None:
+    """Backfill dei voti individuali dei ministri-deputati.
+
+    I membri del Governo che siedono anche alla Camera (Tajani, Giorgetti, ...)
+    esistono nel grafo solo come GovernmentMember: l'ingest storico matchava
+    solo i Deputy e i loro voti si perdevano (es. 150 favorevoli in emiciclo
+    contro 153 nell'aggregato ufficiale). Riusa il flusso per-deputato
+    dell'ingester, che ora accetta anche i GovernmentMember.
+    """
+    ingester = SparqlIngester(driver)
+    gov = ingester._fetch_government_deputies()
+    logger.info("Ministri-deputati con deputy_card: %d", len(gov))
+    total_written = 0
+    for i, g in enumerate(gov, 1):
+        uri = f"http://dati.camera.it/ocd/deputato.rdf/d{g['person_id']}_{legislature}"
+        written, skipped = ingester._ingest_deputy_votes(
+            g["id"], g["person_id"], uri, chamber="camera", legislature=legislature
+        )
+        total_written += written
+        logger.info("  [%d/%d] %s (p%s): %d voti scritti, %d skip",
+                    i, len(gov), g["id"], g["person_id"], written, skipped)
+    logger.info("Backfill ministri-deputati completo: %d voti scritti", total_written)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--neo4j-uri", default="bolt://localhost:7691")
@@ -219,9 +248,10 @@ def main() -> None:
     parser.add_argument("--neo4j-password", default=os.environ.get("NEO4J_PASSWORD", ""))
     parser.add_argument("--abstentions", action="store_true")
     parser.add_argument("--subjects", action="store_true")
+    parser.add_argument("--government", action="store_true")
     args = parser.parse_args()
 
-    run_all = not (args.abstentions or args.subjects)
+    run_all = not (args.abstentions or args.subjects or args.government)
     driver = GraphDatabase.driver(args.neo4j_uri, auth=(args.neo4j_user, args.neo4j_password))
     try:
         driver.verify_connectivity()
@@ -229,6 +259,8 @@ def main() -> None:
             repair_abstentions(driver)
         if args.subjects or run_all:
             repair_subjects(driver)
+        if args.government or run_all:
+            repair_government_votes(driver)
     finally:
         driver.close()
 
