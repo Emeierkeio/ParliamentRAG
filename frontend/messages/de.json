@@ -340,7 +340,7 @@
   "Settings": {
     "title": "Systemkonfiguration",
     "unsavedChanges": "Nicht gespeicherte Änderungen",
-    "description": "Die Änderungen gelten sofort, aber nur für diese Sitzung: ein Neustart des Servers oder „Neu laden“ stellt die Werte der YAML-Datei wieder her.",
+    "description": "Die Änderungen gelten sofort, aber nur für diese Sitzung: ein Neustart des Servers oder „Standardeinstellungen wiederherstellen“ stellt die Standardwerte wieder her.",
     "error": "Fehler",
     "saved": "Gespeichert",
     "savedMessage": "Einstellungen erfolgreich angewendet.",
@@ -349,7 +349,7 @@
     "configFile": "config.json",
     "applyJson": "JSON anwenden",
     "loadingConfig": "Konfiguration wird geladen...",
-    "reloadYaml": "Aus YAML neu laden",
+    "reloadYaml": "Standardeinstellungen wiederherstellen",
     "cancel": "Abbrechen",
     "saving": "Wird gespeichert...",
     "saveChanges": "Änderungen speichern",

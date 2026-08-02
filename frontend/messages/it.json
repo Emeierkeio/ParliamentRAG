@@ -341,7 +341,7 @@
   "Settings": {
     "title": "Configurazione Sistema",
     "unsavedChanges": "Modifiche non salvate",
-    "description": "Le modifiche valgono subito, ma solo per questa sessione: al riavvio del server, o con Ricarica, tornano i valori del file YAML.",
+    "description": "Le modifiche valgono subito, ma solo per questa sessione: al riavvio del server, o con Ripristina predefiniti, tornano le impostazioni predefinite.",
     "error": "Errore",
     "saved": "Salvato",
     "savedMessage": "Impostazioni applicate correttamente.",
@@ -350,7 +350,7 @@
     "configFile": "config.json",
     "applyJson": "Applica JSON",
     "loadingConfig": "Caricamento configurazione...",
-    "reloadYaml": "Ricarica da YAML",
+    "reloadYaml": "Ripristina predefiniti",
     "cancel": "Annulla",
     "saving": "Salvataggio...",
     "saveChanges": "Salva Modifiche",
