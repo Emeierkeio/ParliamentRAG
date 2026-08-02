@@ -111,7 +111,9 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           {detail.status === "loaded" && (
             <DialogDescription asChild>
               <div className="space-y-1.5">
-                {(detail.data.description || detail.data.acts.length > 0) && (
+                {(detail.data.description ||
+                  detail.data.acts.length > 0 ||
+                  detail.data.session_annex_url) && (
                   <div className="space-y-0.5 text-xs text-muted-foreground pr-10">
                     {detail.data.description &&
                       !(voteTitle(vote) ?? "").includes(detail.data.description) && (
@@ -136,6 +138,17 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
                           </p>
                         )
                       ),
+                    )}
+                    {detail.data.session_annex_url && (
+                      <a
+                        href={detail.data.session_annex_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/act block underline-offset-2 hover:underline hover:text-foreground"
+                      >
+                        {t("voteAnnexLink")}
+                        <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/act:opacity-100" />
+                      </a>
                     )}
                   </div>
                 )}

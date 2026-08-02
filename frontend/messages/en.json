@@ -635,6 +635,7 @@
     "voteKindResolution": "Resolution",
     "voteKindMotion": "Motion",
     "voteKindPreliminary": "Preliminary",
+    "voteAnnexLink": "Texts voted in the sitting — Annex A (amendments, articles, agenda items)",
     "voteActFallback": "Act page and full text",
     "voteBreakdownHeading": "By group",
     "voteParticipantsHeading": "Individual votes ({count})",

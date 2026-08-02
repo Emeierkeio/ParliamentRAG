@@ -635,6 +635,7 @@
     "voteKindResolution": "Risoluzione",
     "voteKindMotion": "Mozione",
     "voteKindPreliminary": "Pregiudiziale",
+    "voteAnnexLink": "Testi votati nella seduta — Allegato A (emendamenti, articoli, odg)",
     "voteActFallback": "Scheda e testo dell'atto",
     "voteBreakdownHeading": "Per gruppo",
     "voteParticipantsHeading": "Voti individuali ({count})",
