@@ -99,6 +99,9 @@ class VoteDetailResponse(BaseModel):
     subject: Optional[str] = None
     description: Optional[str] = None
     acts: list[VoteActRef] = []
+    # Allegato A del resoconto di seduta: testi integrali di emendamenti,
+    # articoli e odg votati in quella seduta (documenti.camera.it).
+    session_annex_url: Optional[str] = None
     outcome: Optional[str] = None
     vote_type: Optional[str] = None
     in_favor: Optional[int] = None

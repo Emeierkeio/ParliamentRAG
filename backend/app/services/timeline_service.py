@@ -496,7 +496,10 @@ async def get_vote_detail(
                v.voters AS voters,
                v.majority AS majority,
                v.onMission AS on_mission,
-               s.date AS session_date
+               s.date AS session_date,
+               s.number AS session_number,
+               s.legislature AS legislature,
+               coalesce(s.chamber, 'camera') AS chamber
         """,
         {"vote_id": vote_id},
     )
@@ -582,12 +585,25 @@ async def get_vote_detail(
         key=lambda a: 0 if a.url and "aic.camera.it" in a.url else 1,
     )
 
+    # Testi di emendamenti/articoli: non hanno un URL per singolo atto nei
+    # dati aperti, ma l'Allegato A del resoconto li contiene tutti e il suo
+    # URL si deriva da legislatura + numero seduta (zero-pad a 4 cifre).
+    annex_url = None
+    if meta["chamber"] == "camera" and meta["session_number"]:
+        leg = meta["legislature"] or 19
+        annex_url = (
+            "https://documenti.camera.it/apps/commonServices/getDocumento.ashx"
+            f"?idLegislatura={leg}&sezione=assemblea&tipoDoc=documenti_seduta"
+            f"&idSeduta={int(meta['session_number']):04d}&nomefile=allegato_a"
+        )
+
     return VoteDetailResponse(
         id=meta["id"],
         number=meta["number"] or 0,
         subject=meta["subject"],
         description=meta["description"],
         acts=[a for a in acts if a.title or a.url],
+        session_annex_url=annex_url,
         outcome=meta["outcome"],
         vote_type=meta["vote_type"],
         in_favor=meta["in_favor"],

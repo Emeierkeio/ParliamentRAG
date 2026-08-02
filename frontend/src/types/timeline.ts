@@ -73,6 +73,7 @@ export interface VoteDetailResponse {
   subject: string | null;
   description: string | null;
   acts: VoteActRef[];
+  session_annex_url: string | null;
   outcome: string | null;
   vote_type: string | null;
   in_favor: number | null;
