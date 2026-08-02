@@ -340,7 +340,7 @@
   "Settings": {
     "title": "Configuración del Sistema",
     "unsavedChanges": "Cambios sin guardar",
-    "description": "Los cambios se aplican al momento, pero solo durante esta sesión: reiniciar el servidor o pulsar Recargar restablece los valores del archivo YAML.",
+    "description": "Los cambios se aplican al momento, pero solo durante esta sesión: reiniciar el servidor o Restablecer predeterminados restaura la configuración predeterminada.",
     "error": "Error",
     "saved": "Guardado",
     "savedMessage": "Configuración aplicada correctamente.",
@@ -349,7 +349,7 @@
     "configFile": "config.json",
     "applyJson": "Aplicar JSON",
     "loadingConfig": "Cargando configuración...",
-    "reloadYaml": "Recargar desde YAML",
+    "reloadYaml": "Restablecer predeterminados",
     "cancel": "Cancelar",
     "saving": "Guardando...",
     "saveChanges": "Guardar Cambios",
