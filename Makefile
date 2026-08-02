@@ -349,6 +349,21 @@ update-data: tunnel
 		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
 		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --individual-recent --legislature 19 --start-session $$START; \
 	fi
+	@# Titoli/atti delle votazioni: le sedute recenti nascono con label generico
+	@# ("Votazione") e senza rif_attoCamera; dati.camera.it li arricchisce solo
+	@# quando consolida il dataset (mesi dopo) e l'ingest aggregati salta le
+	@# sedute gia' coperte, quindi non li rivedrebbe mai. Questo refresh
+	@# ripassa TUTTA la legislatura a ogni update (idempotente, ~1 min): appena
+	@# la Camera consolida, titoli, descrizioni e link agli atti arrivano da
+	@# soli. Non blocca l'update se l'endpoint SPARQL fa i capricci.
+	@echo "Refreshing vote titles/acts from dati.camera.it (whole legislature)..."
+	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
+	$(BACKEND_DIR)/venv/bin/python build/repair_vote_data.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --subjects \
+		|| echo "WARNING: vote titles refresh failed (SPARQL flaky?) — will retry at next update-data"; \
+	if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
+		$(BACKEND_DIR)/venv/bin/python build/repair_vote_data.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --subjects \
+			|| echo "WARNING: vote titles refresh failed on local snapshot"; \
+	fi
 	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
