@@ -16,6 +16,9 @@ Pitfall notes (from RESEARCH.md):
 """
 from __future__ import annotations
 
+import re
+import urllib.parse
+
 from ..models.timeline import (
     ActInfo,
     DebateDetailResponse,
@@ -27,12 +30,42 @@ from ..models.timeline import (
     SpeakerSummaryResponse,
     SpeechText,
     TimelineResponse,
+    VoteActRef,
     VoteDetailResponse,
     VoteInfo,
     VoteParticipant,
     VotePartyBreakdown,
 )
 from .neo4j_client import Neo4jClient
+
+
+def _act_public_url(uri: str | None) -> str | None:
+    """Public camera.it page for a ParliamentaryAct URI, when derivable.
+
+    - attocamera.rdf/ac19_2735          → scheda dell'atto (PDL/DDL)
+    - aic.rdf/aic9_01492_027_19         → scheda AIC (ODG/mozione/risoluzione)
+      con il testo integrale; il numero si ricostruisce dai segmenti dell'URI
+      ("9_02911_A_028" → "9/02911-A/028": le lettere sono suffissi del
+      segmento precedente).
+    """
+    if not uri:
+        return None
+    m = re.search(r"/attocamera\.rdf/ac(\d+)_(\w+)$", uri)
+    if m:
+        leg, num = m.group(1), m.group(2)
+        return f"https://www.camera.it/leg{leg}/126?tab=1&leg={leg}&idDocumento={num}"
+    m = re.search(r"/aic\.rdf/aic(.+)_(\d+)$", uri)
+    if m:
+        body, leg = m.group(1), m.group(2)
+        segments: list[str] = []
+        for part in body.split("_"):
+            if part.isalpha() and segments:
+                segments[-1] += f"-{part}"
+            else:
+                segments.append(part)
+        numero = urllib.parse.quote("/".join(segments), safe="")
+        return f"https://aic.camera.it/aic/scheda.html?numero={numero}&ramo=CAMERA&leg={leg}"
+    return None
 
 
 async def get_sessions(
@@ -453,7 +486,7 @@ async def get_vote_detail(
                v.number AS number,
                v.subject AS subject,
                v.description AS description,
-               head(collect(a.title)) AS act_title,
+               collect(DISTINCT {uri: a.uri, title: a.title}) AS acts,
                v.outcome AS outcome,
                v.type AS vote_type,
                v.inFavor AS in_favor,
@@ -530,13 +563,31 @@ async def get_vote_detail(
         reverse=True,
     )
 
+    # Atti collegati: prima l'oggetto votato (ODG/mozione via aic.rdf), poi il
+    # disegno di legge di contesto. I titoli dall'ingest atti hanno padding.
+    # Gli AIC senza dc:title nel dataset non hanno neanche la scheda su
+    # aic.camera.it (il link darebbe "FILE NON TROVATO"): niente titolo,
+    # niente link.
+    act_refs = []
+    for a in meta["acts"]:
+        if not a.get("uri"):
+            continue
+        title = (a["title"] or "").strip() or None
+        url = _act_public_url(a["uri"])
+        if url and "aic.camera.it" in url and not title:
+            url = None
+        act_refs.append(VoteActRef(title=title, url=url))
+    acts = sorted(
+        act_refs,
+        key=lambda a: 0 if a.url and "aic.camera.it" in a.url else 1,
+    )
+
     return VoteDetailResponse(
         id=meta["id"],
         number=meta["number"] or 0,
         subject=meta["subject"],
         description=meta["description"],
-        # Act titles from the atti ingest carry stray padding (" BRAGA ed altri: ... ").
-        act_title=meta["act_title"].strip() if meta["act_title"] else None,
+        acts=[a for a in acts if a.title or a.url],
         outcome=meta["outcome"],
         vote_type=meta["vote_type"],
         in_favor=meta["in_favor"],
