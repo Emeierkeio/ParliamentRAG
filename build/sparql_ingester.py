@@ -270,6 +270,18 @@ class SparqlIngester:
             dep_sparql_uri = f"http://dati.camera.it/ocd/deputato.rdf/d{person_id}_{legislature}"
             work.append((neo4j_id, person_id, dep_sparql_uri))
 
+        # Ministri-deputati: esistono solo come GovernmentMember ma votano in
+        # Aula; senza questo blocco i loro voti individuali si perdono.
+        if chamber == "camera":
+            for gov in self._fetch_government_deputies():
+                if gov["id"] in already_done:
+                    deputies_skipped_resume += 1
+                    continue
+                dep_sparql_uri = (
+                    f"http://dati.camera.it/ocd/deputato.rdf/d{gov['person_id']}_{legislature}"
+                )
+                work.append((gov["id"], gov["person_id"], dep_sparql_uri))
+
         if deputies_skipped_resume:
             logger.info("Resumed: skipping %d deputies already enriched", deputies_skipped_resume)
         logger.info("Deputies to process: %d (with %d workers)", len(work), workers)
@@ -326,12 +338,16 @@ class SparqlIngester:
         first full build. This is the incremental complement: bounded by
         sitting number, idempotent MERGEs, cheap enough for the daily update.
         """
-        # SPARQL rows carry deputato URIs; map their person_id back to Deputy nodes
+        # SPARQL rows carry deputato URIs; map their person_id back to Deputy
+        # nodes, plus the ministri-deputati that only exist as GovernmentMember.
         person_to_neo4j: dict[str, str] = {}
         for dep in self._fetch_all_deputies(chamber=chamber):
             pid = _extract_person_id_from_neo4j_id(dep["id"])
             if pid:
                 person_to_neo4j[pid] = dep["id"]
+        if chamber == "camera":
+            for gov in self._fetch_government_deputies():
+                person_to_neo4j.setdefault(gov["person_id"], gov["id"])
 
         sittings = sorted(
             n for n in self._get_camera_sittings_in_db(legislature)
@@ -758,11 +774,29 @@ RETURN count(*) AS written
             )
             return [{"id": record["id"]} for record in result if record["id"]]
 
-    def _get_deputies_with_votes(self, chamber: str = "camera") -> set[str]:
-        """Return set of Deputy.id values that already have VOTED relationships, filtered by chamber."""
+    def _fetch_government_deputies(self) -> list[dict]:
+        """Return [{id, person_id}] for GovernmentMembers that sit in the Camera.
+
+        I ministri-deputati (Tajani, Giorgetti, ...) votano in Aula ma nel
+        grafo esistono solo come GovernmentMember: deputy_card è il loro id
+        persona Camera, la chiave per agganciare i voti individuali SPARQL.
+        """
         with self._driver.session() as neo_session:
             result = neo_session.run(
-                "MATCH (d:Deputy)-[:VOTED]->() WHERE coalesce(d.chamber, 'camera') = $chamber "
+                "MATCH (g:GovernmentMember) WHERE g.deputy_card IS NOT NULL "
+                "RETURN g.id AS id, g.deputy_card AS person_id"
+            )
+            return [
+                {"id": r["id"], "person_id": str(r["person_id"])}
+                for r in result
+                if r["id"] and r["person_id"]
+            ]
+
+    def _get_deputies_with_votes(self, chamber: str = "camera") -> set[str]:
+        """Return set of Person.id values (Deputy or GovernmentMember) that already have VOTED relationships, filtered by chamber."""
+        with self._driver.session() as neo_session:
+            result = neo_session.run(
+                "MATCH (d:Person)-[:VOTED]->() WHERE coalesce(d.chamber, 'camera') = $chamber "
                 "RETURN DISTINCT d.id AS id",
                 chamber=chamber,
             )
@@ -822,9 +856,15 @@ RETURN count(*) AS written
 
         Returns (written, skipped) where skipped = rows with no matching Vote node.
         """
+        # Il votante può essere un Deputy o un ministro-deputato
+        # (GovernmentMember): due OPTIONAL MATCH separati usano gli indici
+        # per label invece di uno scan su Person.id.
         cypher = """
 UNWIND $batch AS row
-MATCH (d:Deputy {id: row.deputyId})
+OPTIONAL MATCH (dep:Deputy {id: row.deputyId})
+OPTIONAL MATCH (gov:GovernmentMember {id: row.deputyId})
+WITH row, coalesce(dep, gov) AS d
+WHERE d IS NOT NULL
 MATCH (s:Session {number: row.sessionNumber})-[:HAS_VOTE]->(v:Vote {number: row.voteNumber})
 WHERE coalesce(s.chamber, 'camera') = $chamber AND s.legislature = $legislature
 MERGE (iv:IndividualVote {id: row.id})
