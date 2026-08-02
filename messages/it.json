@@ -635,6 +635,7 @@
     "voteKindResolution": "Risoluzione",
     "voteKindMotion": "Mozione",
     "voteKindPreliminary": "Pregiudiziale",
+    "voteActFallback": "Scheda e testo dell'atto",
     "voteBreakdownHeading": "Per gruppo",
     "voteParticipantsHeading": "Voti individuali ({count})",
     "voteSearchPlaceholder": "Cerca deputato...",

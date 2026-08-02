@@ -635,6 +635,7 @@
     "voteKindResolution": "Resolution",
     "voteKindMotion": "Motion",
     "voteKindPreliminary": "Preliminary",
+    "voteActFallback": "Act page and full text",
     "voteBreakdownHeading": "By group",
     "voteParticipantsHeading": "Individual votes ({count})",
     "voteSearchPlaceholder": "Search deputy...",

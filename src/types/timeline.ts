@@ -62,12 +62,17 @@ export interface VotePartyBreakdown {
   absent: number;
 }
 
+export interface VoteActRef {
+  title: string | null;
+  url: string | null;
+}
+
 export interface VoteDetailResponse {
   id: string;
   number: number;
   subject: string | null;
   description: string | null;
-  act_title: string | null;
+  acts: VoteActRef[];
   outcome: string | null;
   vote_type: string | null;
   in_favor: number | null;
