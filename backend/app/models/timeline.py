@@ -84,6 +84,13 @@ class VotePartyBreakdown(BaseModel):
     absent: int
 
 
+class VoteActRef(BaseModel):
+    """Act a roll call voted on (bill, ODG, motion), with its public page."""
+
+    title: Optional[str] = None
+    url: Optional[str] = None  # camera.it / aic.camera.it page with the text
+
+
 class VoteDetailResponse(BaseModel):
     """Full roll-call detail for GET /api/timeline/votes/{vote_id}."""
 
@@ -91,7 +98,7 @@ class VoteDetailResponse(BaseModel):
     number: int
     subject: Optional[str] = None
     description: Optional[str] = None
-    act_title: Optional[str] = None
+    acts: list[VoteActRef] = []
     outcome: Optional[str] = None
     vote_type: Optional[str] = None
     in_favor: Optional[int] = None

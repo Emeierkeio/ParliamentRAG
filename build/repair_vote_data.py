@@ -151,7 +151,7 @@ def repair_subjects(driver) -> None:
 PREFIX ocd: <http://dati.camera.it/ocd/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?votazione ?label ?descrizione ?finale ?fiducia ?atto ?attoTitolo WHERE {{
+SELECT DISTINCT ?votazione ?label ?descrizione ?finale ?fiducia ?atto ?attoTitolo ?aic ?aicTitolo WHERE {{
   ?votazione a ocd:votazione ;
              ocd:rif_leg <""" + LEG_URI + """> .
   OPTIONAL {{ ?votazione rdfs:label ?label . }}
@@ -160,6 +160,8 @@ SELECT DISTINCT ?votazione ?label ?descrizione ?finale ?fiducia ?atto ?attoTitol
   OPTIONAL {{ ?votazione ocd:richiestaFiducia ?fiducia . }}
   OPTIONAL {{ ?votazione ocd:rif_attoCamera ?atto .
               OPTIONAL {{ ?atto dc:title ?attoTitolo . }} }}
+  OPTIONAL {{ ?votazione ocd:rif_aic ?aic .
+              OPTIONAL {{ ?aic dc:title ?aicTitolo . }} }}
   {key_filter}
 }}
 ORDER BY STR(?votazione)
@@ -181,6 +183,8 @@ LIMIT {limit}
             "confidenceVote": row.get("fiducia", {}).get("value") == "1",
             "actUri": row.get("atto", {}).get("value"),
             "actTitle": clean_sparql_text(row.get("attoTitolo", {}).get("value")),
+            "aicUri": row.get("aic", {}).get("value"),
+            "aicTitle": clean_sparql_text(row.get("aicTitolo", {}).get("value")),
         }
     batch = list(by_vote.values())
     logger.info("Votazioni: %d righe SPARQL -> %d votazioni univoche", len(rows), len(batch))
@@ -205,8 +209,13 @@ LIMIT {limit}
                     v.confidenceVote = row.confidenceVote
                 FOREACH (_ IN CASE WHEN row.actUri IS NULL THEN [] ELSE [1] END |
                   MERGE (a:ParliamentaryAct {uri: row.actUri})
-                  ON CREATE SET a.title = row.actTitle
+                  SET a.title = coalesce(a.title, row.actTitle)
                   MERGE (v)-[:ON_ACT]->(a)
+                )
+                FOREACH (_ IN CASE WHEN row.aicUri IS NULL THEN [] ELSE [1] END |
+                  MERGE (b:ParliamentaryAct {uri: row.aicUri})
+                  SET b.title = coalesce(b.title, row.aicTitle)
+                  MERGE (v)-[:ON_ACT]->(b)
                 )
                 RETURN count(v) AS n
                 """,

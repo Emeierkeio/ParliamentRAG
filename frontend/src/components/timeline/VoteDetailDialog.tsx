@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Check, X, Minus, Info } from "lucide-react";
+import { Check, X, Minus, Info, ExternalLink } from "lucide-react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -111,14 +111,31 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           {detail.status === "loaded" && (
             <DialogDescription asChild>
               <div className="space-y-1.5">
-                {(detail.data.description || detail.data.act_title) && (
+                {(detail.data.description || detail.data.acts.length > 0) && (
                   <div className="space-y-0.5 text-xs text-muted-foreground pr-10">
                     {detail.data.description &&
                       !(voteTitle(vote) ?? "").includes(detail.data.description) && (
                         <p>{detail.data.description}</p>
                       )}
-                    {detail.data.act_title && (
-                      <p className="italic line-clamp-2">{detail.data.act_title}</p>
+                    {detail.data.acts.map((act, i) =>
+                      act.url ? (
+                        <a
+                          key={act.url ?? i}
+                          href={act.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group/act block italic line-clamp-2 underline-offset-2 hover:underline hover:text-foreground"
+                        >
+                          {act.title ?? t("voteActFallback")}
+                          <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/act:opacity-100" />
+                        </a>
+                      ) : (
+                        act.title && (
+                          <p key={i} className="italic line-clamp-2">
+                            {act.title}
+                          </p>
+                        )
+                      ),
                     )}
                   </div>
                 )}

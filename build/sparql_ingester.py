@@ -524,6 +524,8 @@ class SparqlIngester:
                     "confidenceVote": row.get("fiducia", {}).get("value") == "1",
                     "actUri": row.get("atto", {}).get("value"),
                     "actTitle": clean_sparql_text(row.get("attoTitolo", {}).get("value")),
+                    "aicUri": row.get("aic", {}).get("value"),
+                    "aicTitle": clean_sparql_text(row.get("aicTitolo", {}).get("value")),
                 })
             if batch:
                 written += self._write_camera_aggregate_votes(batch, legislature)
@@ -664,7 +666,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?votazione ?label ?tipo ?approvato ?favorevoli ?contrari
                 ?presenti ?votanti ?astenuti ?maggioranza ?data
-                ?descrizione ?finale ?fiducia ?atto ?attoTitolo
+                ?descrizione ?finale ?fiducia ?atto ?attoTitolo ?aic ?aicTitolo
 WHERE {{
   ?votazione a <http://dati.camera.it/ocd/votazione> ;
              ocd:rif_seduta <{seduta_uri}> .
@@ -683,6 +685,8 @@ WHERE {{
   OPTIONAL {{ ?votazione ocd:richiestaFiducia ?fiducia . }}
   OPTIONAL {{ ?votazione ocd:rif_attoCamera ?atto .
               OPTIONAL {{ ?atto dc:title ?attoTitolo . }} }}
+  OPTIONAL {{ ?votazione ocd:rif_aic ?aic .
+              OPTIONAL {{ ?aic dc:title ?aicTitolo . }} }}
 }}
 """
         return _sparql_get(query)
@@ -747,8 +751,13 @@ SET v.number = row.voteNumber,
 MERGE (s)-[:HAS_VOTE]->(v)
 FOREACH (_ IN CASE WHEN row.actUri IS NULL THEN [] ELSE [1] END |
   MERGE (a:ParliamentaryAct {uri: row.actUri})
-  ON CREATE SET a.title = row.actTitle
+  SET a.title = coalesce(a.title, row.actTitle)
   MERGE (v)-[:ON_ACT]->(a)
+)
+FOREACH (_ IN CASE WHEN row.aicUri IS NULL THEN [] ELSE [1] END |
+  MERGE (b:ParliamentaryAct {uri: row.aicUri})
+  SET b.title = coalesce(b.title, row.aicTitle)
+  MERGE (v)-[:ON_ACT]->(b)
 )
 RETURN count(*) AS written
 """
