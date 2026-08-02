@@ -49,13 +49,14 @@ export interface VoteParticipant {
   first_name: string;
   last_name: string;
   party: string | null;
-  outcome: string; // "favor" | "against" | "absent"
+  outcome: string; // "favor" | "against" | "abstain" | "absent"
 }
 
 export interface VotePartyBreakdown {
   party: string;
   favor: number;
   against: number;
+  abstain: number;
   absent: number;
 }
 
@@ -63,6 +64,8 @@ export interface VoteDetailResponse {
   id: string;
   number: number;
   subject: string | null;
+  description: string | null;
+  act_title: string | null;
   outcome: string | null;
   vote_type: string | null;
   in_favor: number | null;
