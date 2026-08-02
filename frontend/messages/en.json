@@ -341,7 +341,7 @@
   "Settings": {
     "title": "System Configuration",
     "unsavedChanges": "Unsaved changes",
-    "description": "Changes apply right away, but only for this session: a server restart, or Reload, brings back the YAML values.",
+    "description": "Changes apply right away, but only for this session: a server restart, or Restore defaults, brings back the default settings.",
     "error": "Error",
     "saved": "Saved",
     "savedMessage": "Settings applied successfully.",
@@ -350,7 +350,7 @@
     "configFile": "config.json",
     "applyJson": "Apply JSON",
     "loadingConfig": "Loading configuration...",
-    "reloadYaml": "Reload from YAML",
+    "reloadYaml": "Restore defaults",
     "cancel": "Cancel",
     "saving": "Saving...",
     "saveChanges": "Save Changes",

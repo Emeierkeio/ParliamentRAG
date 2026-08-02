@@ -340,7 +340,7 @@
   "Settings": {
     "title": "Configuration du système",
     "unsavedChanges": "Modifications non enregistrées",
-    "description": "Les modifications s'appliquent tout de suite, mais seulement pour cette session : un redémarrage du serveur, ou Recharger, rétablit les valeurs du fichier YAML.",
+    "description": "Les modifications s'appliquent immédiatement, mais seulement pour cette session : un redémarrage du serveur, ou Rétablir les valeurs par défaut, restaure les réglages par défaut.",
     "error": "Erreur",
     "saved": "Enregistré",
     "savedMessage": "Paramètres appliqués avec succès.",
@@ -349,7 +349,7 @@
     "configFile": "config.json",
     "applyJson": "Appliquer le JSON",
     "loadingConfig": "Chargement de la configuration...",
-    "reloadYaml": "Recharger depuis YAML",
+    "reloadYaml": "Rétablir les valeurs par défaut",
     "cancel": "Annuler",
     "saving": "Enregistrement...",
     "saveChanges": "Enregistrer les modifications",
