@@ -20,6 +20,7 @@ Usage (library):
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 import re
@@ -44,9 +45,11 @@ SPARQL_ENDPOINT = "https://dati.camera.it/sparql"
 OUTCOME_MAP: dict[str, str] = {
     "Favorevole": "favor",
     "Contrario": "against",
-    "Astenuto": "abstain",
+    "Astensione": "abstain",
     "Non ha votato": "absent",
-    "In missione": "on_mission",
+    # "Ha votato" (palese nelle votazioni segrete: espressione non pubblica)
+    # cade volutamente nel fallback "absent": la UI mostra l'avviso di voto
+    # segreto quando non esistono record favor/against.
 }
 
 BATCH_SIZE = 500          # Neo4j write batch size
@@ -87,6 +90,19 @@ def sparql_dep_uri_to_neo4j_id(uri: str) -> Optional[str]:
         return None
     person_id = m.group(1)
     return f"http://dati.camera.it/ocd/persona.rdf/p{person_id}"
+
+
+def clean_sparql_text(value: Optional[str]) -> Optional[str]:
+    """Normalizza un letterale testuale di dati.camera.it.
+
+    Alcuni campi (es. dc:description delle votazioni) arrivano con entità
+    HTML doppiamente codificate ("&amp;#39;"): due passate di unescape le
+    risolvono entrambe; una passata sola è comunque idempotente sul testo
+    già pulito.
+    """
+    if not value:
+        return None
+    return html.unescape(html.unescape(value)).strip() or None
 
 
 def parse_votazione_uri(uri: str) -> tuple[Optional[int], Optional[int]]:
@@ -478,7 +494,7 @@ class SparqlIngester:
                     "id": f"camera_leg{legislature}_sed{num:03d}_v{vote_num:03d}",
                     "sessionNumber": num,
                     "voteNumber": vote_num,
-                    "label": row.get("label", {}).get("value"),
+                    "label": clean_sparql_text(row.get("label", {}).get("value")),
                     "type": row.get("tipo", {}).get("value"),
                     "present": _to_int(row, "presenti"),
                     "voters": _to_int(row, "votanti"),
@@ -487,6 +503,11 @@ class SparqlIngester:
                     "abstained": _to_int(row, "astenuti"),
                     "majority": _to_int(row, "maggioranza"),
                     "outcome": outcome,
+                    "description": clean_sparql_text(row.get("descrizione", {}).get("value")),
+                    "finalVote": row.get("finale", {}).get("value") == "1",
+                    "confidenceVote": row.get("fiducia", {}).get("value") == "1",
+                    "actUri": row.get("atto", {}).get("value"),
+                    "actTitle": clean_sparql_text(row.get("attoTitolo", {}).get("value")),
                 })
             if batch:
                 written += self._write_camera_aggregate_votes(batch, legislature)
@@ -627,6 +648,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?votazione ?label ?tipo ?approvato ?favorevoli ?contrari
                 ?presenti ?votanti ?astenuti ?maggioranza ?data
+                ?descrizione ?finale ?fiducia ?atto ?attoTitolo
 WHERE {{
   ?votazione a <http://dati.camera.it/ocd/votazione> ;
              ocd:rif_seduta <{seduta_uri}> .
@@ -640,6 +662,11 @@ WHERE {{
   OPTIONAL {{ ?votazione ocd:astenuti ?astenuti . }}
   OPTIONAL {{ ?votazione ocd:maggioranza ?maggioranza . }}
   OPTIONAL {{ ?votazione dc:date ?data . }}
+  OPTIONAL {{ ?votazione dc:description ?descrizione . }}
+  OPTIONAL {{ ?votazione ocd:votazioneFinale ?finale . }}
+  OPTIONAL {{ ?votazione ocd:richiestaFiducia ?fiducia . }}
+  OPTIONAL {{ ?votazione ocd:rif_attoCamera ?atto .
+              OPTIONAL {{ ?atto dc:title ?attoTitolo . }} }}
 }}
 """
         return _sparql_get(query)
@@ -673,9 +700,13 @@ WHERE {{
     def _write_camera_aggregate_votes(self, batch: list[dict], legislature: int) -> int:
         """Write aggregate Vote nodes and HAS_VOTE relationships for Camera sessions.
 
-        Matches the Vote node shape from db_builder._create_votes:
-          Vote {id, number, type, subject, present, voters, abstained,
-                majority, inFavor, against, outcome}
+        Matches the Vote node shape from db_builder._create_votes, plus the
+        SPARQL-only enrichments:
+          Vote {id, number, type, subject, description, finalVote,
+                confidenceVote, present, voters, abstained, majority,
+                inFavor, against, outcome}
+        and, when the votazione references an atto Camera, the relationship
+        (v)-[:ON_ACT]->(ParliamentaryAct {uri}).
 
         Returns the count of Vote nodes written (MERGEd).
         """
@@ -687,6 +718,9 @@ MERGE (v:Vote {id: row.id})
 SET v.number = row.voteNumber,
     v.type = row.type,
     v.subject = row.label,
+    v.description = row.description,
+    v.finalVote = row.finalVote,
+    v.confidenceVote = row.confidenceVote,
     v.present = row.present,
     v.voters = row.voters,
     v.abstained = row.abstained,
@@ -695,6 +729,11 @@ SET v.number = row.voteNumber,
     v.against = row.against,
     v.outcome = row.outcome
 MERGE (s)-[:HAS_VOTE]->(v)
+FOREACH (_ IN CASE WHEN row.actUri IS NULL THEN [] ELSE [1] END |
+  MERGE (a:ParliamentaryAct {uri: row.actUri})
+  ON CREATE SET a.title = row.actTitle
+  MERGE (v)-[:ON_ACT]->(a)
+)
 RETURN count(*) AS written
 """
         total = 0

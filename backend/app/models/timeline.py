@@ -69,15 +69,16 @@ class VoteParticipant(BaseModel):
     first_name: str
     last_name: str
     party: Optional[str] = None
-    outcome: str  # "favor" | "against" | "absent"
+    outcome: str  # "favor" | "against" | "abstain" | "absent"
 
 
 class VotePartyBreakdown(BaseModel):
-    """Aggregated favor/against/absent counts for one parliamentary group."""
+    """Aggregated favor/against/abstain/absent counts for one parliamentary group."""
 
     party: str
     favor: int
     against: int
+    abstain: int = 0
     absent: int
 
 
@@ -87,6 +88,8 @@ class VoteDetailResponse(BaseModel):
     id: str
     number: int
     subject: Optional[str] = None
+    description: Optional[str] = None
+    act_title: Optional[str] = None
     outcome: Optional[str] = None
     vote_type: Optional[str] = None
     in_favor: Optional[int] = None
