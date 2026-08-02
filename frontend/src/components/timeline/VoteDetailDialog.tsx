@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { getVoteDetail } from "@/lib/timeline-api";
+import { voteTitle } from "@/lib/vote-utils";
 import { VoteHemicycle, wedgeKey, wedgeRank } from "@/components/timeline/VoteHemicycle";
 import type { VoteInfo, VoteDetailResponse } from "@/types/timeline";
 
@@ -96,7 +97,7 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           {/* pr-10 clears the absolute ✕ button (right-4 + icon + focus ring) */}
           <div className="flex items-start justify-between gap-3 pr-10">
             <DialogTitle className="text-base leading-snug">
-              {vote.subject || t("votesLabel", { count: 1 })}
+              {voteTitle(vote) || t("votesLabel", { count: 1 })}
             </DialogTitle>
             {vote.outcome && (
               <Badge
@@ -113,7 +114,7 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
                 {(detail.data.description || detail.data.act_title) && (
                   <div className="space-y-0.5 text-xs text-muted-foreground pr-10">
                     {detail.data.description &&
-                      detail.data.description !== detail.data.subject && (
+                      !(voteTitle(vote) ?? "").includes(detail.data.description) && (
                         <p>{detail.data.description}</p>
                       )}
                     {detail.data.act_title && (

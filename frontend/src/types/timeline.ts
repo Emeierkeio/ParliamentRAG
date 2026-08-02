@@ -38,6 +38,8 @@ export interface VoteInfo {
   id: string;
   number: number;
   subject: string | null;
+  description: string | null;
+  final_vote: boolean;
   outcome: string | null;
   in_favor: number | null;
   against: number | null;
