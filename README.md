@@ -192,6 +192,25 @@ All routes are mounted under `/api` (interactive docs at `/docs`).
 
 ---
 
+## MCP connector (Claude and compatible clients)
+
+`mcp/` ships a [Model Context Protocol](https://modelcontextprotocol.io) server
+that exposes the public read-only API as tools for Claude Code, Claude Desktop
+and any MCP client: hybrid search over speeches and acts, sittings with recaps,
+roll-call votes with per-deputy outcomes (filterable by deputy or group), the
+exact text of voted amendments, and debate details.
+
+```bash
+# Claude Code, no install needed (requires uv)
+claude mcp add parliamentrag -- uv run /path/to/ParliamentRAG/mcp/server.py
+```
+
+Ask things like *"come hanno votato i deputati del PD sul voto finale del
+DDL 2961?"* and Claude answers from the official records instead of guessing.
+Setup for Claude Desktop and pip-based installs: [`mcp/README.md`](mcp/README.md).
+
+---
+
 ## Evaluation
 
 The system ships with a two-level evaluation framework over 15 predefined policy topics (`backend/evaluation_set.json`, with pre-computed query-specific baseline experts):
@@ -216,6 +235,7 @@ backend/    FastAPI app — retrieval, authority scoring, generation, citation v
 frontend/   Next.js app — chat, search, rankings, compass, timeline, evaluation
 build/      knowledge-graph construction pipeline + validation gate (see build/README.md)
 docs/       papers (ISWC 2026 In-Use camera-ready draft + Demo paper)
+mcp/        MCP server exposing the public API as Claude tools (see mcp/README.md)
 ```
 
 ---

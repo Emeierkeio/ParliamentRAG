@@ -49,6 +49,13 @@ claude mcp add parliamentrag -- uv run /percorso/assoluto/ParliamentRAG/mcp/serv
 claude mcp add parliamentrag -- uvx --from "git+https://github.com/Emeierkeio/ParliamentRAG.git#subdirectory=mcp" parliamentrag-mcp
 ```
 
+**Senza uv (pip):**
+
+```bash
+pip install "parliamentrag-mcp @ git+https://github.com/Emeierkeio/ParliamentRAG.git#subdirectory=mcp"
+claude mcp add parliamentrag -- parliamentrag-mcp
+```
+
 ## Note
 
 - I contenuti (interventi, riassunti, testi) sono in italiano.
