@@ -10,12 +10,13 @@ Endpoints:
 """
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from ..models.timeline import (
     DebateDetailResponse,
     SpeakerSummaryResponse,
     TimelineResponse,
+    VoteActTextResponse,
     VoteDetailResponse,
     VoteInfo,
 )
@@ -83,6 +84,18 @@ async def get_vote_detail(
 ) -> VoteDetailResponse:
     """Get roll-call detail: metadata, per-party breakdown, individual votes."""
     return await timeline_service.get_vote_detail(neo4j=neo4j, vote_id=vote_id)
+
+
+@router.get("/votes/{vote_id}/act-text")
+async def get_vote_act_text(
+    vote_id: str,
+    neo4j: Neo4jClient = Depends(get_neo4j_client),
+) -> VoteActTextResponse:
+    """Full text of the amendment/article the roll call voted on (Allegato A)."""
+    result = await timeline_service.get_vote_act_text(neo4j=neo4j, vote_id=vote_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="No extractable text for this vote")
+    return result
 
 
 @router.get("/speakers/{debate_id}/{speaker_id:path}")

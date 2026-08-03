@@ -67,6 +67,11 @@ export interface VoteActRef {
   url: string | null;
 }
 
+export interface VoteActTextResponse {
+  paragraphs: string[];
+  source_url: string;
+}
+
 export interface VoteDetailResponse {
   id: string;
   number: number;
