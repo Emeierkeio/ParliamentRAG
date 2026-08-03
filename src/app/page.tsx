@@ -275,6 +275,17 @@ export default function LandingPage() {
                   </span>
                   <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
                 </a>
+                <a
+                  href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-baseline gap-1 py-1.5 text-[13px] sm:text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                    {t("mcpConnector")}
+                  </span>
+                  <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
+                </a>
               </div>
             </div>
           </div>

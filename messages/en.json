@@ -902,6 +902,7 @@
     "idx5Desc": "The session-by-session record of debates and speeches, with AI-generated recaps — down to each deputy's position.",
     "paperInUse": "Research paper",
     "paperDemo": "Demo paper",
+    "mcpConnector": "Claude connector (MCP)",
     "footerFunding": "Supported by the EU Horizon Europe programme",
     "footerPrivacy": "Privacy",
     "q1": "«[…] the NRRP represented an extraordinary, perhaps unrepeatable, opportunity to finally close the gap that separates us from the other European countries.»",
