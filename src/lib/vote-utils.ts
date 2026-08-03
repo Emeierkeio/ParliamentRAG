@@ -18,14 +18,19 @@ export function voteTitle(vote: VoteInfo): string | null {
 /* Il dataset non ha un campo "tipo di deliberazione": si classifica da
    subject/descrizione (più il flag finalVote), pattern osservati sia nei
    label consolidati sia nelle sigle delle sedute recenti. */
+// Le sedute recenti usano sigle senza punti ("ART AGG 2.01006", "SUBEM",
+// "ART PREM", "MOZ"): i pattern le coprono insieme alle forme estese.
 const KIND_PATTERNS: Array<[RegExp, string]> = [
   [/VOTO FINALE|VOTAZIONE FINALE/, "final"],
   [/FIDUCIA/, "confidence"],
-  [/SUBEMENDAMENTO|EMENDAMENTO|\bEM\.?\s*\d|ART\.\s*AGG|ARTICOLO AGGIUNTIVO/, "amendment"],
+  [
+    /SUBEMENDAMENTO|\bSUBEM\b|EMENDAMENTO|\bEM\.?\s*\d|ART\.?\s*AGG|ARTICOLO AGGIUNTIVO|ART\.?\s*PREM|PREMISSIVO/,
+    "amendment",
+  ],
   [/ARTICOLO|\bART\.?\s*\d/, "article"],
   [/ORDINE DEL GIORNO|\bODG\b/, "agenda"],
   [/RISOLUZIONE/, "resolution"],
-  [/MOZIONE/, "motion"],
+  [/MOZIONE|\bMOZ\b/, "motion"],
   [/PREGIUDIZIALE|SOSPENSIVA/, "preliminary"],
 ];
 
