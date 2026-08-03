@@ -31,6 +31,7 @@ from ..models.timeline import (
     SpeechText,
     TimelineResponse,
     VoteActRef,
+    VoteActTextResponse,
     VoteDetailResponse,
     VoteInfo,
     VoteParticipant,
@@ -585,17 +586,7 @@ async def get_vote_detail(
         key=lambda a: 0 if a.url and "aic.camera.it" in a.url else 1,
     )
 
-    # Testi di emendamenti/articoli: non hanno un URL per singolo atto nei
-    # dati aperti, ma l'Allegato A del resoconto li contiene tutti e il suo
-    # URL si deriva da legislatura + numero seduta (zero-pad a 4 cifre).
-    annex_url = None
-    if meta["chamber"] == "camera" and meta["session_number"]:
-        leg = meta["legislature"] or 19
-        annex_url = (
-            "https://documenti.camera.it/apps/commonServices/getDocumento.ashx"
-            f"?idLegislatura={leg}&sezione=assemblea&tipoDoc=documenti_seduta"
-            f"&idSeduta={int(meta['session_number']):04d}&nomefile=allegato_a"
-        )
+    annex_url = _annex_url(meta["chamber"], meta["legislature"], meta["session_number"])
 
     return VoteDetailResponse(
         id=meta["id"],
@@ -616,6 +607,172 @@ async def get_vote_detail(
         breakdown=breakdown,
         participants=participants,
     )
+
+
+# ---------------------------------------------------------------------------
+# Testo votato (Allegato A del resoconto di seduta)
+# ---------------------------------------------------------------------------
+
+def _annex_url(chamber: str | None, legislature: int | None, session_number: int | None) -> str | None:
+    """URL dell'Allegato A su documenti.camera.it: testi integrali di
+    emendamenti, articoli e odg votati nella seduta. Derivabile da
+    legislatura + numero seduta (zero-pad a 4 cifre); solo Camera."""
+    if chamber != "camera" or not session_number:
+        return None
+    leg = legislature or 19
+    return (
+        "https://documenti.camera.it/apps/commonServices/getDocumento.ashx"
+        f"?idLegislatura={leg}&sezione=assemblea&tipoDoc=documenti_seduta"
+        f"&idSeduta={int(session_number):04d}&nomefile=allegato_a"
+    )
+
+
+# Allegato A parsato, per URL. Pochi elementi (400-700 KB l'uno): FIFO corta.
+_ANNEX_CACHE: dict[str, list[tuple[str | None, str]]] = {}
+_ANNEX_CACHE_MAX = 8
+
+
+def _fetch_annex_paragraphs(url: str) -> list[tuple[str | None, str]]:
+    """Scarica l'Allegato A e lo riduce a [(id, testo)] per ogni <p>.
+
+    Il documento è HTML statico ben formato: paragrafi piatti, con id
+    ancorati ("eme.6.21._ac.2987-A", "ac.80-A.art_2") nelle sedute recenti.
+    """
+    import html as html_mod
+    import urllib.request
+
+    if url in _ANNEX_CACHE:
+        return _ANNEX_CACHE[url]
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 ParliamentRAG"})
+    with urllib.request.urlopen(req, timeout=25) as resp:
+        raw = resp.read().decode("utf-8", errors="ignore")
+    start = raw.find('id="allegato_a"')
+    if start > 0:
+        raw = raw[start:]
+    paras: list[tuple[str | None, str]] = []
+    for m in re.finditer(r"<p([^>]*)>(.*?)</p>", raw, re.S):
+        attrs, body = m.group(1), m.group(2)
+        idm = re.search(r'id="([^"]+)"', attrs)
+        text = re.sub(r"<[^>]+>", " ", body)
+        text = html_mod.unescape(re.sub(r"\s+", " ", text)).strip()
+        paras.append((idm.group(1) if idm else None, text))
+    if len(_ANNEX_CACHE) >= _ANNEX_CACHE_MAX:
+        _ANNEX_CACHE.pop(next(iter(_ANNEX_CACHE)))
+    _ANNEX_CACHE[url] = paras
+    return paras
+
+
+def _annex_target(subject: str | None, description: str | None) -> tuple[str, str] | None:
+    """(kind, numero) di ciò che la votazione delibera, da subject/descrizione.
+
+    kind: "amendment" (emendamenti, articoli aggiuntivi/premissivi,
+    subemendamenti — nell'Allegato A sono tutti blocchi "eme") oppure
+    "article". None per tutto il resto (odg, finali, mozioni...).
+    """
+    s = f"{subject or ''} {description or ''}"
+    up = s.upper()
+    num = re.search(r"\d+(?:\.\d+)+", s)
+    if num and (
+        "EMENDAMENTO" in up
+        or re.search(r"\bEM\.?\s*\d", up)
+        or "ART. AGG" in up
+        or "ARTICOLO AGGIUNTIVO" in up
+        or "PREMISSIVO" in up
+    ):
+        return ("amendment", num.group(0))
+    art = re.search(r"ARTICOLO\s+(\d+|UNICO)", up)
+    if art and "AGGIUNTIVO" not in up:
+        return ("article", art.group(1).lower())
+    return None
+
+
+def _extract_amendment(paras: list[tuple[str | None, str]], num: str) -> list[str] | None:
+    esc = re.escape(num)
+    # Il blocco si chiude con "6.21. Proponenti." (spesso dopo un <br> nello
+    # stesso paragrafo), quindi il terminatore può stare ovunque nel testo.
+    term = re.compile(rf"(?:^|\s){esc}\.\s+[A-ZÀ-Ù]")
+    id_re = re.compile(rf"^eme\.{esc}\._")
+    start = next((i for i, (p, _) in enumerate(paras) if p and id_re.match(p)), None)
+    if start is not None:
+        seg: list[str] = []
+        for _, text in paras[start:start + 60]:
+            if text:
+                seg.append(text)
+            if term.search(text):
+                return seg
+        return None
+    # Formato vecchio (senza id per emendamento): trova il terminatore e
+    # risali fino al confine del blocco precedente.
+    ti = next((i for i, (_, t) in enumerate(paras) if term.search(t)), None)
+    if ti is None:
+        return None
+    boundary = re.compile(
+        r"^(\d+(?:\.\d+)+\.\s|A\.C\.|ARTICOLO|EMENDAMENT|SUBEMENDAMENT|"
+        r"ORDINI DEL GIORNO|MOZION|RISOLUZION)"
+    )
+    j = ti - 1
+    while j >= 0 and not (
+        paras[j][0]
+        or boundary.match(paras[j][1])
+        or re.search(r"(?:^|\s)\d+(?:\.\d+)+\.\s+[A-ZÀ-Ù][a-zà-ù]", paras[j][1])
+    ):
+        j -= 1
+    return [t for _, t in paras[j + 1:ti + 1] if t]
+
+
+def _extract_article(paras: list[tuple[str | None, str]], num: str) -> list[str] | None:
+    id_re = re.compile(rf"\.art_{re.escape(num)}$")
+    start = next((i for i, (p, _) in enumerate(paras) if p and id_re.search(p)), None)
+    if start is None:
+        return None
+    seg: list[str] = []
+    for k, (pid, text) in enumerate(paras[start:start + 80]):
+        if k > 0 and pid:  # inizia il blocco ancorato successivo
+            break
+        if text:
+            seg.append(text)
+    return seg or None
+
+
+async def get_vote_act_text(
+    neo4j: Neo4jClient,
+    vote_id: str,
+) -> VoteActTextResponse | None:
+    """Estrae dall'Allegato A il testo dell'emendamento/articolo votato.
+
+    None quando la votazione non delibera un emendamento/articolo, la seduta
+    non ha Allegato A raggiungibile, o il blocco non si trova (formati vecchi
+    senza ancore e testi non pubblicati)."""
+    meta = neo4j.query_single(
+        """
+        MATCH (s:Session)-[:HAS_VOTE]->(v:Vote {id: $vote_id})
+        RETURN v.subject AS subject,
+               v.description AS description,
+               s.number AS session_number,
+               s.legislature AS legislature,
+               coalesce(s.chamber, 'camera') AS chamber
+        """,
+        {"vote_id": vote_id},
+    )
+    if not meta:
+        return None
+    target = _annex_target(meta["subject"], meta["description"])
+    url = _annex_url(meta["chamber"], meta["legislature"], meta["session_number"])
+    if not target or not url:
+        return None
+    try:
+        paras = _fetch_annex_paragraphs(url)
+    except Exception:
+        return None
+    kind, num = target
+    seg = (
+        _extract_amendment(paras, num)
+        if kind == "amendment"
+        else _extract_article(paras, num)
+    )
+    if not seg:
+        return None
+    return VoteActTextResponse(paragraphs=seg, source_url=url)
 
 
 async def get_speaker_summary(

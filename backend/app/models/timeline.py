@@ -91,6 +91,14 @@ class VoteActRef(BaseModel):
     url: Optional[str] = None  # camera.it / aic.camera.it page with the text
 
 
+class VoteActTextResponse(BaseModel):
+    """Testo integrale di ciò che una votazione ha deliberato (emendamento o
+    articolo), estratto dall'Allegato A del resoconto di seduta."""
+
+    paragraphs: list[str]
+    source_url: str
+
+
 class VoteDetailResponse(BaseModel):
     """Full roll-call detail for GET /api/timeline/votes/{vote_id}."""
 
