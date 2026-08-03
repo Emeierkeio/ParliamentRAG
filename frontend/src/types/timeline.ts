@@ -65,6 +65,7 @@ export interface VotePartyBreakdown {
 export interface VoteActRef {
   title: string | null;
   url: string | null;
+  text_url: string | null;
 }
 
 export interface VoteActTextResponse {

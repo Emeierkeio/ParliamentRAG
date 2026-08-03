@@ -149,26 +149,34 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
                       !(voteTitle(vote) ?? "").includes(detail.data.description) && (
                         <p>{detail.data.description}</p>
                       )}
-                    {detail.data.acts.map((act, i) =>
-                      act.url ? (
-                        <a
-                          key={act.url ?? i}
-                          href={act.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group/act block italic line-clamp-2 underline-offset-2 hover:underline hover:text-foreground"
-                        >
-                          {act.title ?? t("voteActFallback")}
-                          <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/act:opacity-100" />
-                        </a>
-                      ) : (
-                        act.title && (
-                          <p key={i} className="italic line-clamp-2">
-                            {act.title}
-                          </p>
-                        )
-                      ),
-                    )}
+                    {detail.data.acts.map((act, i) => (
+                      <div key={act.url ?? act.text_url ?? i}>
+                        {act.url ? (
+                          <a
+                            href={act.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/act block italic line-clamp-2 underline-offset-2 hover:underline hover:text-foreground"
+                          >
+                            {act.title ?? t("voteActFallback")}
+                            <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/act:opacity-100" />
+                          </a>
+                        ) : (
+                          act.title && <p className="italic line-clamp-2">{act.title}</p>
+                        )}
+                        {act.text_url && (
+                          <a
+                            href={act.text_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group/pdf inline-block text-[11px] underline-offset-2 hover:underline hover:text-foreground"
+                          >
+                            {t("voteActTextPdf")}
+                            <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/pdf:opacity-100" />
+                          </a>
+                        )}
+                      </div>
+                    ))}
                     {canShowActText && (
                       <div>
                         <button

@@ -487,7 +487,7 @@ async def get_vote_detail(
                v.number AS number,
                v.subject AS subject,
                v.description AS description,
-               collect(DISTINCT {uri: a.uri, title: a.title}) AS acts,
+               collect(DISTINCT {uri: a.uri, title: a.title, text_pdf: a.textPdfUrl}) AS acts,
                v.secretVote AS secret_vote,
                v.outcome AS outcome,
                v.type AS vote_type,
@@ -581,7 +581,7 @@ async def get_vote_detail(
         url = _act_public_url(a["uri"])
         if url and "aic.camera.it" in url and not title:
             url = None
-        act_refs.append(VoteActRef(title=title, url=url))
+        act_refs.append(VoteActRef(title=title, url=url, text_url=a.get("text_pdf")))
     acts = sorted(
         act_refs,
         key=lambda a: 0 if a.url and "aic.camera.it" in a.url else 1,
@@ -594,7 +594,7 @@ async def get_vote_detail(
         number=meta["number"] or 0,
         subject=meta["subject"],
         description=meta["description"],
-        acts=[a for a in acts if a.title or a.url],
+        acts=[a for a in acts if a.title or a.url or a.text_url],
         session_annex_url=annex_url,
         secret_vote=bool(meta["secret_vote"]),
         outcome=meta["outcome"],
