@@ -16,10 +16,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { getVoteDetail } from "@/lib/timeline-api";
-import { voteTitle } from "@/lib/vote-utils";
+import { getVoteActText, getVoteDetail } from "@/lib/timeline-api";
+import { voteKind, voteTitle } from "@/lib/vote-utils";
 import { VoteHemicycle, wedgeKey, wedgeRank } from "@/components/timeline/VoteHemicycle";
-import type { VoteInfo, VoteDetailResponse } from "@/types/timeline";
+import type { VoteInfo, VoteDetailResponse, VoteActTextResponse } from "@/types/timeline";
 
 interface VoteDetailDialogProps {
   vote: VoteInfo;
@@ -31,6 +31,12 @@ type DetailState =
   | { status: "loading" }
   | { status: "loaded"; data: VoteDetailResponse }
   | { status: "error" };
+
+type ActTextState =
+  | { status: "collapsed" }
+  | { status: "loading" }
+  | { status: "unavailable" }
+  | { status: "loaded"; data: VoteActTextResponse };
 
 const OUTCOME_STYLES: Record<string, { dot: string; icon: typeof Check }> = {
   favor: { dot: "text-emerald-600", icon: Check },
@@ -44,6 +50,28 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
   const [detail, setDetail] = useState<DetailState>({ status: "loading" });
   const [query, setQuery] = useState("");
   const [selectedParty, setSelectedParty] = useState<string | null>(null);
+  const [actText, setActText] = useState<ActTextState>({ status: "collapsed" });
+  const [showActText, setShowActText] = useState(false);
+
+  // Testo estraibile solo per emendamenti e articoli (l'Allegato A li ancóra);
+  // per odg/mozioni c'è già il link alla scheda aic.camera.it.
+  const kind = voteKind(vote);
+  const canShowActText = kind === "amendment" || kind === "article";
+
+  const toggleActText = () => {
+    if (showActText) {
+      setShowActText(false);
+      return;
+    }
+    setShowActText(true);
+    if (actText.status !== "collapsed") return;
+    setActText({ status: "loading" });
+    getVoteActText(vote.id)
+      .then((data) =>
+        setActText(data ? { status: "loaded", data } : { status: "unavailable" }),
+      )
+      .catch(() => setActText({ status: "unavailable" }));
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -51,6 +79,8 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
     setDetail({ status: "loading" });
     setQuery("");
     setSelectedParty(null);
+    setActText({ status: "collapsed" });
+    setShowActText(false);
     getVoteDetail(vote.id)
       .then((data) => {
         if (!cancelled) setDetail({ status: "loaded", data });
@@ -113,7 +143,7 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
               <div className="space-y-1.5">
                 {(detail.data.description ||
                   detail.data.acts.length > 0 ||
-                  detail.data.session_annex_url) && (
+                  canShowActText) && (
                   <div className="space-y-0.5 text-xs text-muted-foreground pr-10">
                     {detail.data.description &&
                       !(voteTitle(vote) ?? "").includes(detail.data.description) && (
@@ -139,16 +169,43 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
                         )
                       ),
                     )}
-                    {detail.data.session_annex_url && (
-                      <a
-                        href={detail.data.session_annex_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/act block underline-offset-2 hover:underline hover:text-foreground"
-                      >
-                        {t("voteAnnexLink")}
-                        <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/act:opacity-100" />
-                      </a>
+                    {canShowActText && (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={toggleActText}
+                          className="underline underline-offset-2 hover:text-foreground"
+                        >
+                          {showActText ? t("voteHideText") : t("voteShowText")}
+                        </button>
+                        {showActText && actText.status === "loading" && (
+                          <div className="mt-1.5 space-y-1.5">
+                            <Skeleton className="h-3 w-full" />
+                            <Skeleton className="h-3 w-4/5" />
+                          </div>
+                        )}
+                        {showActText && actText.status === "unavailable" && (
+                          <p className="mt-1 text-muted-foreground/70">
+                            {t("voteTextUnavailable")}
+                          </p>
+                        )}
+                        {showActText && actText.status === "loaded" && (
+                          <div className="mt-1.5 max-h-44 space-y-1.5 overflow-y-auto rounded-md border border-border/60 bg-muted/30 px-3 py-2 text-left">
+                            {actText.data.paragraphs.map((p, i) => (
+                              <p key={i}>{p}</p>
+                            ))}
+                            <a
+                              href={actText.data.source_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group/src inline-block pt-0.5 text-[11px] text-muted-foreground/80 underline-offset-2 hover:underline hover:text-foreground"
+                            >
+                              {t("voteTextSource")}
+                              <ExternalLink className="ml-1 inline h-3 w-3 align-[-1px] opacity-60 group-hover/src:opacity-100" />
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}

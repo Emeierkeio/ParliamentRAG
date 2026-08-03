@@ -2,6 +2,7 @@ import type {
   TimelineResponse,
   DebateDetailResponse,
   SpeakerSummaryResponse,
+  VoteActTextResponse,
   VoteDetailResponse,
   VoteInfo,
 } from '@/types/timeline';
@@ -65,6 +66,20 @@ export async function getVoteDetail(voteId: string): Promise<VoteDetailResponse>
     headers: buildHeaders(),
   });
   if (!res.ok) throw new Error(`Vote detail fetch failed: ${res.status}`);
+  return res.json();
+}
+
+/** Testo dell'emendamento/articolo votato, estratto dall'Allegato A.
+ *  null quando non estraibile (404): il chiamante nasconde la sezione. */
+export async function getVoteActText(
+  voteId: string,
+): Promise<VoteActTextResponse | null> {
+  const res = await fetch(
+    `/api/timeline/votes/${encodeURIComponent(voteId)}/act-text`,
+    { headers: buildHeaders() },
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`Vote act text fetch failed: ${res.status}`);
   return res.json();
 }
 
