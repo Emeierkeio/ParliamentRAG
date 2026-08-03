@@ -522,6 +522,7 @@ class SparqlIngester:
                     "description": clean_sparql_text(row.get("descrizione", {}).get("value")),
                     "finalVote": row.get("finale", {}).get("value") == "1",
                     "confidenceVote": row.get("fiducia", {}).get("value") == "1",
+                    "secretVote": row.get("segreta", {}).get("value") == "1",
                     "actUri": row.get("atto", {}).get("value"),
                     "actTitle": clean_sparql_text(row.get("attoTitolo", {}).get("value")),
                     "aicUri": row.get("aic", {}).get("value"),
@@ -666,7 +667,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT DISTINCT ?votazione ?label ?tipo ?approvato ?favorevoli ?contrari
                 ?presenti ?votanti ?astenuti ?maggioranza ?data
-                ?descrizione ?finale ?fiducia ?atto ?attoTitolo ?aic ?aicTitolo
+                ?descrizione ?finale ?fiducia ?segreta ?atto ?attoTitolo ?aic ?aicTitolo
 WHERE {{
   ?votazione a <http://dati.camera.it/ocd/votazione> ;
              ocd:rif_seduta <{seduta_uri}> .
@@ -683,6 +684,7 @@ WHERE {{
   OPTIONAL {{ ?votazione dc:description ?descrizione . }}
   OPTIONAL {{ ?votazione ocd:votazioneFinale ?finale . }}
   OPTIONAL {{ ?votazione ocd:richiestaFiducia ?fiducia . }}
+  OPTIONAL {{ ?votazione ocd:votazioneSegreta ?segreta . }}
   OPTIONAL {{ ?votazione ocd:rif_attoCamera ?atto .
               OPTIONAL {{ ?atto dc:title ?attoTitolo . }} }}
   OPTIONAL {{ ?votazione ocd:rif_aic ?aic .
@@ -741,6 +743,7 @@ SET v.number = row.voteNumber,
     v.description = row.description,
     v.finalVote = row.finalVote,
     v.confidenceVote = row.confidenceVote,
+    v.secretVote = row.secretVote,
     v.present = row.present,
     v.voters = row.voters,
     v.abstained = row.abstained,

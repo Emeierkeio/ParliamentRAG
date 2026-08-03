@@ -274,18 +274,22 @@ export function VoteDetailDialog({ vote, open, onOpenChange }: VoteDetailDialogP
           // separately by the Camera) is not out yet. Both look identical
           // in the graph, so one honest notice covers them — drawing an
           // all-grey chamber would read as "everyone was absent".
+          // Solo favor/against contano come "dati individuali": nelle
+          // votazioni segrete gli astenuti restano pubblici, e da soli
+          // disegnerebbero un emiciclo tutto grigio.
           const hasIndividualData = detail.data.participants.some(
-            (p) =>
-              p.outcome === "favor" ||
-              p.outcome === "against" ||
-              p.outcome === "abstain",
+            (p) => p.outcome === "favor" || p.outcome === "against",
           );
-          if (!hasIndividualData) {
+          if (!hasIndividualData || detail.data.secret_vote) {
             return (
               <div className="flex-1 overflow-y-auto px-6 py-4">
                 <div className="flex items-start gap-2.5 rounded-lg border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
                   <Info className="mt-0.5 h-4 w-4 shrink-0" />
-                  <p>{t("voteNoIndividualData")}</p>
+                  <p>
+                    {detail.data.secret_vote
+                      ? t("voteSecretNotice")
+                      : t("voteNoIndividualData")}
+                  </p>
                 </div>
               </div>
             );
