@@ -646,6 +646,7 @@
     "voteNoMatches": "No matches",
     "voteLoadError": "Unable to load vote detail",
     "voteNoIndividualData": "Individual deputy votes are not available for this ballot: it was a secret ballot, or the Chamber has not published the data yet.",
+    "voteSecretNotice": "Secret ballot: individual votes are not public. Only abstentions are on record.",
     "votesApproved": "{count, plural, one {# approved} other {# approved}}",
     "votesRejected": "{count, plural, one {# rejected} other {# rejected}}",
     "votesOther": "{count, plural, one {# other} other {# other}}",

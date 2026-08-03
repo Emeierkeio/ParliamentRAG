@@ -110,6 +110,9 @@ class VoteDetailResponse(BaseModel):
     # Allegato A del resoconto di seduta: testi integrali di emendamenti,
     # articoli e odg votati in quella seduta (documenti.camera.it).
     session_annex_url: Optional[str] = None
+    # Scrutinio segreto: le espressioni individuali non sono pubbliche
+    # (restano noti solo gli astenuti).
+    secret_vote: bool = False
     outcome: Optional[str] = None
     vote_type: Optional[str] = None
     in_favor: Optional[int] = None

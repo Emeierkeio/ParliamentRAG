@@ -646,6 +646,7 @@
     "voteNoMatches": "Nessun risultato",
     "voteLoadError": "Impossibile caricare il dettaglio della votazione",
     "voteNoIndividualData": "I voti dei singoli deputati non sono disponibili per questa votazione: scrutinio segreto oppure dati non ancora pubblicati dalla Camera.",
+    "voteSecretNotice": "Scrutinio segreto: il voto dei singoli deputati non è pubblico. Restano noti solo gli astenuti.",
     "votesApproved": "{count, plural, one {# approvata} other {# approvate}}",
     "votesRejected": "{count, plural, one {# respinta} other {# respinte}}",
     "votesOther": "{count, plural, one {# altra} other {# altre}}",

@@ -488,6 +488,7 @@ async def get_vote_detail(
                v.subject AS subject,
                v.description AS description,
                collect(DISTINCT {uri: a.uri, title: a.title}) AS acts,
+               v.secretVote AS secret_vote,
                v.outcome AS outcome,
                v.type AS vote_type,
                v.inFavor AS in_favor,
@@ -595,6 +596,7 @@ async def get_vote_detail(
         description=meta["description"],
         acts=[a for a in acts if a.title or a.url],
         session_annex_url=annex_url,
+        secret_vote=bool(meta["secret_vote"]),
         outcome=meta["outcome"],
         vote_type=meta["vote_type"],
         in_favor=meta["in_favor"],
@@ -672,11 +674,14 @@ def _annex_target(subject: str | None, description: str | None) -> tuple[str, st
     s = f"{subject or ''} {description or ''}"
     up = s.upper()
     num = re.search(r"\d+(?:\.\d+)+", s)
+    # Anche le sigle senza punti delle sedute recenti: ART AGG, SUBEM, ART PREM.
     if num and (
         "EMENDAMENTO" in up
+        or "SUBEM" in up
         or re.search(r"\bEM\.?\s*\d", up)
-        or "ART. AGG" in up
+        or re.search(r"ART\.?\s*AGG", up)
         or "ARTICOLO AGGIUNTIVO" in up
+        or re.search(r"ART\.?\s*PREM", up)
         or "PREMISSIVO" in up
     ):
         return ("amendment", num.group(0))
