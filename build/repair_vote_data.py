@@ -32,6 +32,7 @@ Uso:
 import argparse
 import logging
 import os
+import re
 import sys
 
 from neo4j import GraphDatabase
@@ -170,6 +171,7 @@ LIMIT {limit}
 """, key_var="votazione")
 
     # Una riga per votazione (le OPTIONAL possono duplicare).
+    act_num_re = re.compile(r"\b(?:TU\s+)?(?:PDL|DDL)(?:\s+COST)?\b\D{0,8}?0*(\d+)")
     by_vote: dict[tuple[int, int], dict] = {}
     for row in rows:
         sed, vot = parse_votazione_uri(row.get("votazione", {}).get("value", ""))
@@ -188,6 +190,14 @@ LIMIT {limit}
             "aicUri": row.get("aic", {}).get("value"),
             "aicTitle": clean_sparql_text(row.get("aicTitolo", {}).get("value")),
         }
+        # Sedute recenti: niente rif_attoCamera, ma la descrizione porta il
+        # numero dell'atto ("PDL 2822-A E ABB - VOTO FINALE") e l'URI
+        # attocamera è deterministico.
+        rec = by_vote[(sed, vot)]
+        if not rec["actUri"]:
+            m = act_num_re.search(f"{rec['label'] or ''} {rec['description'] or ''}")
+            if m:
+                rec["actUri"] = f"http://dati.camera.it/ocd/attocamera.rdf/ac19_{m.group(1)}"
     batch = list(by_vote.values())
     logger.info("Votazioni: %d righe SPARQL -> %d votazioni univoche", len(rows), len(batch))
     if len(batch) < expected:
@@ -227,6 +237,49 @@ LIMIT {limit}
             updated += rec["n"] if rec else 0
     logger.info("Votazioni aggiornate: %d/%d (le mancanti non hanno nodo Vote in DB)",
                 updated, len(batch))
+
+    # Arricchimento degli atti votati: titolo (quando manca) e PDF del testo
+    # integrale. dc:relation sull'atto elenca gli stampati PDF; il codice più
+    # alto nel nome file è la stampa più recente (es. la versione -A votata).
+    act_uris = sorted({
+        r["actUri"] for r in batch
+        if r["actUri"] and "/attocamera.rdf/" in r["actUri"]
+    })
+    logger.info("Arricchimento %d atti votati (titolo + PDF testo integrale)...", len(act_uris))
+    payload = []
+    for i in range(0, len(act_uris), 60):
+        values = " ".join(f"<{u}>" for u in act_uris[i:i + 60])
+        rows2 = _sparql_get(f"""
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+SELECT ?atto ?titolo ?rel WHERE {{
+  VALUES ?atto {{ {values} }}
+  OPTIONAL {{ ?atto dc:title ?titolo . }}
+  OPTIONAL {{ ?atto dc:relation ?rel . FILTER(STRENDS(STR(?rel), ".pdf")) }}
+}}""")
+        by_act: dict[str, dict] = {}
+        for r in rows2:
+            uri = r["atto"]["value"]
+            e = by_act.setdefault(uri, {"uri": uri, "title": None, "pdfs": set()})
+            if "titolo" in r and not e["title"]:
+                e["title"] = clean_sparql_text(r["titolo"]["value"])
+            if "rel" in r:
+                e["pdfs"].add(r["rel"]["value"])
+        for e in by_act.values():
+            latest = max(e["pdfs"], key=lambda u: int((re.search(r"(\d+)\.pdf$", u) or [0, "-1"])[1])) if e["pdfs"] else None
+            payload.append({"uri": e["uri"], "title": e["title"], "pdf": latest})
+    with driver.session() as session:
+        for i in range(0, len(payload), NEO4J_BATCH):
+            session.run(
+                """
+                UNWIND $batch AS row
+                MATCH (a:ParliamentaryAct {uri: row.uri})
+                SET a.title = coalesce(a.title, row.title),
+                    a.textPdfUrl = coalesce(row.pdf, a.textPdfUrl)
+                """,
+                batch=payload[i:i + NEO4J_BATCH],
+            )
+    logger.info("Atti arricchiti: %d (con PDF: %d)",
+                len(payload), sum(1 for p in payload if p["pdf"]))
 
 
 def repair_government_votes(driver, legislature: int = 19) -> None:

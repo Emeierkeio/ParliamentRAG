@@ -88,7 +88,8 @@ class VoteActRef(BaseModel):
     """Act a roll call voted on (bill, ODG, motion), with its public page."""
 
     title: Optional[str] = None
-    url: Optional[str] = None  # camera.it / aic.camera.it page with the text
+    url: Optional[str] = None  # camera.it / aic.camera.it page (iter, dossier)
+    text_url: Optional[str] = None  # direct PDF of the full text (stampato)
 
 
 class VoteActTextResponse(BaseModel):
