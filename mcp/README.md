@@ -56,6 +56,26 @@ pip install "parliamentrag-mcp @ git+https://github.com/Emeierkeio/ParliamentRAG
 claude mcp add parliamentrag -- parliamentrag-mcp
 ```
 
+**Altri client MCP** (Cursor, VS Code con Copilot, Gemini CLI, Windsurf, …):
+lo stesso blocco JSON funziona ovunque, cambia solo il file di
+configurazione del client (`~/.cursor/mcp.json`, `.vscode/mcp.json`,
+`~/.gemini/settings.json`, ecc.):
+
+```json
+{
+  "mcpServers": {
+    "parliamentrag": {
+      "command": "uv",
+      "args": ["run", "/percorso/assoluto/ParliamentRAG/mcp/server.py"]
+    }
+  }
+}
+```
+
+**ChatGPT**: supporta MCP tramite connettori remoti, quindi serve
+esporre il server su un URL pubblico (HTTP/SSE) invece che via stdio —
+non basta la configurazione locale qui sopra.
+
 ## Note
 
 - I contenuti (interventi, riassunti, testi) sono in italiano.
