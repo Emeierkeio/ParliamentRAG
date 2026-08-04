@@ -21,11 +21,13 @@ from typing import Any, Optional
 
 import httpx
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 
 API_BASE = os.environ.get("PARLIAMENTRAG_API", "https://www.parliamentrag.it/api")
 
 mcp = FastMCP(
     "parliamentrag",
+    website_url="https://www.parliamentrag.it",
     instructions=(
         "Tools over official Italian Chamber of Deputies data (19th legislature, "
         "via parliamentrag.it). Data is in Italian. Every speech and vote links "
@@ -37,6 +39,18 @@ mcp = FastMCP(
 # Il backend Railway va in sleep: la prima chiamata può metterci decine di
 # secondi. Timeout largo + un retry sono parte del contratto, non paranoia.
 _TIMEOUT = httpx.Timeout(90.0, connect=30.0)
+
+
+def _ro(title: str) -> ToolAnnotations:
+    """Annotazioni standard: tutti i tool sono letture idempotenti di dati
+    pubblici (richiesto dalla directory dei connettori)."""
+    return ToolAnnotations(
+        title=title,
+        readOnlyHint=True,
+        destructiveHint=False,
+        idempotentHint=True,
+        openWorldHint=True,
+    )
 
 
 async def _get(path: str, params: dict | None = None) -> Any:
@@ -66,7 +80,7 @@ def _trim(text: Optional[str], limit: int = 600) -> Optional[str]:
     return text
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("Search parliamentary records"))
 async def search_parliament(
     query: str,
     doc_type: str = "all",
@@ -112,7 +126,7 @@ async def search_parliament(
     return {"total": data.get("total"), "results": results}
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("List plenary sittings"))
 async def list_sessions(
     limit: int = 10,
     before: Optional[str] = None,
@@ -160,7 +174,7 @@ async def list_sessions(
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("List roll-call votes of a sitting"))
 async def get_session_votes(session_id: str) -> dict:
     """List every roll-call vote of one sitting: subject, description, kind
     (final vote flag), outcome and aggregate counts.
@@ -188,7 +202,7 @@ async def get_session_votes(session_id: str) -> dict:
     }
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("Get roll-call vote details"))
 async def get_vote_details(
     vote_id: str,
     include_individual_votes: bool = False,
@@ -242,7 +256,7 @@ async def get_vote_details(
     return out
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("Get the voted amendment/article text"))
 async def get_voted_text(vote_id: str) -> dict:
     """Exact full text of the amendment or article a roll call voted on,
     extracted from the official sitting minutes (Allegato A).
@@ -266,7 +280,7 @@ async def get_voted_text(vote_id: str) -> dict:
     return {"available": True, "paragraphs": d["paragraphs"], "source_url": d["source_url"]}
 
 
-@mcp.tool()
+@mcp.tool(annotations=_ro("Get debate details"))
 async def get_debate(debate_id: str) -> dict:
     """Detail of one debate: AI recap (Italian), discussed acts, phases and
     the list of speakers with their groups and speech counts.
