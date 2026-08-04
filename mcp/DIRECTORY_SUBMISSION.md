@@ -8,7 +8,7 @@ nomi < 64 caratteri, hosting di produzione.
 ## Server basics
 
 - **Name**: ParliamentRAG
-- **Tagline**: Official Italian Chamber of Deputies data for your AI assistant
+- **Tagline**: Italian Chamber of Deputies open data for your AI assistant
 - **Server URL**: `https://mcp.parliamentrag.it/mcp`
 - **Connector type**: Remote MCP server
 - **Transport**: Streamable HTTP
@@ -17,8 +17,8 @@ nomi < 64 caratteri, hosting di produzione.
 
 ## Primary use cases (2-3 frasi)
 
-ParliamentRAG gives assistants direct access to the official records of the
-Italian Chamber of Deputies (19th legislature): floor speeches, roll-call
+ParliamentRAG gives assistants direct access to the open data of the
+Italian Chamber of Deputies (19th legislature), as published in the official records: floor speeches, roll-call
 votes with per-deputy outcomes, and the exact text of voted amendments.
 Journalists, researchers and citizens can ask questions like "how did PD
 deputies vote on bill 2961?" and get answers grounded in the official
