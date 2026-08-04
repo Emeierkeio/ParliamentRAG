@@ -26,10 +26,19 @@ logger = logging.getLogger(__name__)
 # Gruppi rinominati in corso di legislatura: nel grafo esistono con entrambe le
 # denominazioni perché l'attribuzione degli interventi è storicamente accurata
 # (il gruppo al momento del discorso). La bussola però li deve fondere, o lo
-# stesso soggetto politico compare due volte (due "IV" in mappa).
-RENAMED_GROUPS = {
-    "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)",
-}
+# stesso soggetto politico compare due volte (due "IV" in mappa). Il match è
+# per sottostringa: le denominazioni portano suffissi e spaziature variabili.
+RENAMED_GROUP_PATTERNS = [
+    ("ITALIA VIVA", "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"),
+]
+
+
+def canonical_group(party: str) -> str:
+    up = (party or "").upper()
+    for needle, canonical in RENAMED_GROUP_PATTERNS:
+        if needle in up:
+            return canonical
+    return party
 
 
 class IdeologyScorer:
@@ -365,10 +374,9 @@ class IdeologyScorer:
             if not emb or len(emb) == 0:
                 continue
 
-            party = e.get("party", "MISTO")
             fragments.append(Fragment(
                 id=e.get("evidence_id", f"frag_{len(fragments)}"),
-                group_id=RENAMED_GROUPS.get(party, party),
+                group_id=canonical_group(e.get("party", "MISTO")),
                 speaker_id=e.get("speaker_id", ""),
                 embedding=emb,
                 text=e.get("chunk_text", ""),
