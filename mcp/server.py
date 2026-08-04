@@ -43,7 +43,7 @@ except ImportError:
     _ICONS = None
 
 mcp = FastMCP(
-    "parliamentrag",
+    "ParliamentRAG",
     website_url="https://www.parliamentrag.it",
     instructions=(
         "Tools over official Italian Chamber of Deputies data (19th legislature, "
@@ -540,7 +540,7 @@ def _install_rate_limit() -> None:
 
     class RateLimitMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request, call_next):
-            if request.url.path in ("/", "/icon.png"):
+            if request.url.path in ("/", "/icon.png", "/favicon.ico"):
                 return await call_next(request)
             fwd = request.headers.get("x-forwarded-for", "")
             ip = fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
@@ -607,16 +607,24 @@ def main() -> None:
 
         from starlette.responses import PlainTextResponse, Response
 
-        @mcp.custom_route("/icon.png", methods=["GET"])
-        async def icon(_request: Request) -> Response:
-            for candidate in (Path(__file__).parent / "icon.png", Path("icon.png")):
+        def _serve_asset(filename: str, media_type: str) -> Response:
+            for candidate in (Path(__file__).parent / filename, Path(filename)):
                 if candidate.is_file():
                     return Response(
                         candidate.read_bytes(),
-                        media_type="image/png",
+                        media_type=media_type,
                         headers={"Cache-Control": "public, max-age=86400"},
                     )
-            return PlainTextResponse("icon not found", status_code=404)
+            return PlainTextResponse(f"{filename} not found", status_code=404)
+
+        @mcp.custom_route("/icon.png", methods=["GET"])
+        async def icon(_request: Request) -> Response:
+            return _serve_asset("icon.png", "image/png")
+
+        # Alcuni client mostrano la favicon del dominio come logo del connettore.
+        @mcp.custom_route("/favicon.ico", methods=["GET"])
+        async def favicon(_request: Request) -> Response:
+            return _serve_asset("favicon.ico", "image/x-icon")
 
         _install_rate_limit()
         mcp.run(transport="streamable-http")
