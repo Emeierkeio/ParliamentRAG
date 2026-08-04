@@ -313,9 +313,17 @@ def main() -> None:
     #   di ChatGPT e claude.ai; stateless così regge dietro un load balancer.
     transport = os.environ.get("MCP_TRANSPORT", "stdio")
     if transport in ("http", "streamable-http"):
+        from mcp.server.transport_security import TransportSecuritySettings
+
         mcp.settings.host = "0.0.0.0"
         mcp.settings.port = int(os.environ.get("PORT", "8080"))
         mcp.settings.stateless_http = True
+        # La protezione DNS-rebinding dell'SDK serve ai server locali: su un
+        # dominio pubblico dietro TLS rifiuterebbe l'Host legittimo
+        # ("Invalid Host header" per mcp.parliamentrag.it).
+        mcp.settings.transport_security = TransportSecuritySettings(
+            enable_dns_rebinding_protection=False
+        )
         mcp.run(transport="streamable-http")
     else:
         mcp.run()
