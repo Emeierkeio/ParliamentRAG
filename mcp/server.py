@@ -922,8 +922,12 @@ def main() -> None:
 
         @mcp.custom_route("/", methods=["GET"])
         async def landing(request: Request) -> HTMLResponse:
+            # ?lang= vince sull'Accept-Language: il sito principale lo passa
+            # per mantenere la lingua scelta dall'utente nella UI.
+            lang = request.query_params.get("lang", "").lower()[:2]
+            accept = lang if lang in _L10N else request.headers.get("accept-language", "")
             return HTMLResponse(
-                _render_landing(request.headers.get("accept-language", "")),
+                _render_landing(accept),
                 headers={"Vary": "Accept-Language"},
             )
 
