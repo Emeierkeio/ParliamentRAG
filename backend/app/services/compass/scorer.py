@@ -23,6 +23,14 @@ from ...models.evidence import IdeologyScore
 
 logger = logging.getLogger(__name__)
 
+# Gruppi rinominati in corso di legislatura: nel grafo esistono con entrambe le
+# denominazioni perché l'attribuzione degli interventi è storicamente accurata
+# (il gruppo al momento del discorso). La bussola però li deve fondere, o lo
+# stesso soggetto politico compare due volte (due "IV" in mappa).
+RENAMED_GROUPS = {
+    "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)",
+}
+
 
 class IdeologyScorer:
     """
@@ -357,9 +365,10 @@ class IdeologyScorer:
             if not emb or len(emb) == 0:
                 continue
 
+            party = e.get("party", "MISTO")
             fragments.append(Fragment(
                 id=e.get("evidence_id", f"frag_{len(fragments)}"),
-                group_id=e.get("party", "MISTO"),
+                group_id=RENAMED_GROUPS.get(party, party),
                 speaker_id=e.get("speaker_id", ""),
                 embedding=emb,
                 text=e.get("chunk_text", ""),
