@@ -214,7 +214,7 @@ claude mcp add parliamentrag -- uv run /path/to/ParliamentRAG/mcp/server.py
 ```
 
 Ask things like *"come hanno votato i deputati del PD sul voto finale del
-DDL 2961?"* — or *"mostrami l'emiciclo di quel voto"* — and the answer comes
+DDL 2961?"* or *"mostrami l'emiciclo di quel voto"*, and the answer comes
 from the official records instead of model memory. Full setup for every
 client: [`mcp/README.md`](mcp/README.md).
 

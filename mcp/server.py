@@ -52,6 +52,9 @@ mcp = FastMCP(
         "When you report the results of a specific roll-call vote, also call "
         "get_vote_hemicycle for that vote_id so the user sees the seating chart "
         "alongside the numbers (skip it for secret ballots). "
+        "Always answer in the language of the conversation (English, French, "
+        "Italian, ...): translate summaries and labels, but keep verbatim "
+        "quotes in the original Italian. "
         "The backend may cold-start: if a call times out, retry once."
     ),
     **({"icons": _ICONS} if _ICONS else {}),
@@ -380,7 +383,9 @@ async def get_vote_hemicycle(vote_id: str) -> FastMCPImage:
 
 # Pagina umana sulla radice del dominio: chi apre l'URL nel browser (dal
 # post o per curiosità) deve capire cos'è, non vedere un errore JSON-RPC.
-_LANDING = """<!doctype html><html lang="it"><head><meta charset="utf-8">
+# Pagina localizzata: la lingua si sceglie dall'Accept-Language del browser,
+# stesse sei lingue del sito principale, fallback italiano.
+_LANDING_TEMPLATE = """<!doctype html><html lang="§lang§"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ParliamentRAG MCP</title>
 <link rel="icon" type="image/png" href="/icon.png">
@@ -422,53 +427,46 @@ footer .credits{max-width:1152px;margin:20px auto 0;padding-top:16px;border-top:
 </style></head><body>
 <header>
 <div class="shell">
-<div class="edition"><span>Server MCP</span><span>Camera dei Deputati &middot; XIX Legislatura</span></div>
+<div class="edition"><span>Server MCP</span><span>§institution§</span></div>
 <div class="wordmark">
 <a class="brand" href="https://www.parliamentrag.it"><img src="https://www.parliamentrag.it/logo-blue.svg" alt="" width="46" height="32"><span>ParliamentRAG</span></a>
-<a class="cta" href="https://www.parliamentrag.it/home">Accedi alla consultazione &rarr;</a>
+<a class="cta" href="https://www.parliamentrag.it/home">§cta§ &rarr;</a>
 </div>
 </div>
-<a class="band" href="https://iswc2026.semanticweb.org"><b>ISWC 2026</b> &nbsp;&middot;&nbsp; Accettato &middot; In-Use Track</a>
+<a class="band" href="https://iswc2026.semanticweb.org"><b>ISWC 2026</b> &nbsp;&middot;&nbsp; §iswc§</a>
 </header>
 <main>
 <h1>ParliamentRAG MCP</h1>
 <div class="intro">
-<p>Questo indirizzo &egrave; un server <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.
-Aperto nel browser mostra solo questa pagina; aggiunto a un assistente AI gli d&agrave;
-accesso ai dati ufficiali della Camera dei Deputati (XIX legislatura):
-votazioni nominali, interventi in Aula, testi degli emendamenti votati.
-Sola lettura, senza registrazione, gratuito.</p>
+<p>§intro§</p>
 </div>
 <div class="cols">
 <section>
-<h2>Cosa sa fare</h2>
+<h2>§caps_h§</h2>
 <ul>
-<li>Ricerca negli interventi in Aula e negli atti parlamentari</li>
-<li>Sedute con riassunto, dibattiti e votazioni</li>
-<li>Dettaglio di ogni voto nominale: aggregati, voti per gruppo e per singolo deputato</li>
-<li>Testo esatto dell'emendamento o articolo votato, dall'Allegato A del resoconto</li>
-<li>Grafico dell'emiciclo di un voto, come immagine nella chat</li>
+<li>§cap1§</li>
+<li>§cap2§</li>
+<li>§cap3§</li>
+<li>§cap4§</li>
+<li>§cap5§</li>
 </ul>
-<p>Esempio: &laquo;Come hanno votato i deputati del PD sul voto finale del DDL 2961?&raquo;
-&mdash; la risposta arriva dai resoconti ufficiali, con i numeri reali e i link alle fonti.</p>
-<p>I dati vengono da <a href="https://dati.camera.it">dati.camera.it</a> e dai resoconti
-stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.
-Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>.</p>
+<p>§example§</p>
+<p>§source§</p>
 </section>
 <section>
-<h2>Come collegarlo</h2>
-<p>L'endpoint da aggiungere ai connettori del tuo assistente:</p>
+<h2>§connect_h§</h2>
+<p>§endpoint_line§</p>
 <p><code>https://mcp.parliamentrag.it/mcp</code></p>
 <ul>
-<li><b>claude.ai</b>: Impostazioni &rarr; Connettori &rarr; Aggiungi connettore personalizzato</li>
-<li><b>ChatGPT</b>: Impostazioni &rarr; App e connettori (modalit&agrave; sviluppatore) &rarr; Crea</li>
+<li><b>claude.ai</b>: §settings§ &rarr; §connectors§ &rarr; §add_custom§</li>
+<li><b>ChatGPT</b>: §settings§ &rarr; §apps_conn§ (§dev_mode§) &rarr; §create§</li>
 <li><b>Claude Code</b>: <code>claude mcp add -t http parliamentrag https://mcp.parliamentrag.it/mcp</code></li>
 <li><b>Gemini CLI</b>: <code>gemini mcp add -t http parliamentrag https://mcp.parliamentrag.it/mcp</code></li>
-<li><b>Perplexity</b> (app desktop): Impostazioni &rarr; Connettori &rarr; Aggiungi connettore</li>
-<li><b>Le Chat</b> (Mistral): Impostazioni &rarr; Connettori &rarr; Aggiungi connettore MCP</li>
-<li><b>Cursor</b>: Settings &rarr; MCP &rarr; Add server, con <code>"url"</code> = endpoint</li>
-<li><b>VS Code</b> (Copilot): in <code>.vscode/mcp.json</code>, server con <code>"type": "http"</code></li>
-<li><b>Windsurf</b>: in <code>mcp_config.json</code>, server con <code>"serverUrl"</code> = endpoint</li>
+<li><b>Perplexity</b> (§desktop_app§): §settings§ &rarr; §connectors§ &rarr; §add_conn§</li>
+<li><b>Le Chat</b> (Mistral): §settings§ &rarr; §connectors§ &rarr; §add_mcp§</li>
+<li><b>Cursor</b>: Settings &rarr; MCP &rarr; Add server, §with§ <code>"url"</code> = endpoint</li>
+<li><b>VS Code</b> (Copilot): §in§ <code>.vscode/mcp.json</code>, §server_with§ <code>"type": "http"</code></li>
+<li><b>Windsurf</b>: §in§ <code>mcp_config.json</code>, §server_with§ <code>"serverUrl"</code> = endpoint</li>
 </ul>
 </section>
 </div>
@@ -478,18 +476,253 @@ Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentR
 <a class="brand" href="https://www.parliamentrag.it"><img src="https://www.parliamentrag.it/logo-blue.svg" alt="" width="26" height="18"><span>ParliamentRAG</span></a>
 <nav>
 <a href="https://github.com/Emeierkeio/ParliamentRAG">GitHub</a>
-<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf">Paper di ricerca</a>
-<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf">Paper demo</a>
+<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf">§paper_inuse§</a>
+<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf">§paper_demo§</a>
 <a href="https://orkg.org/papers/R1909763">ORKG</a>
 <a href="https://doi.org/10.5281/zenodo.21560331">Zenodo</a>
-<a href="https://www.parliamentrag.it/data">Dati aperti (RDF)</a>
+<a href="https://www.parliamentrag.it/data">§footer_data§</a>
 <a href="https://www.parliamentrag.it/privacy">Privacy</a>
 </nav>
 </div>
-<div class="credits">Un progetto di Mirko Tritella &middot; Prof. Matteo Palmonari &middot; Dott. Riccardo Pozzi &middot;
+<div class="credits">§thesis§ &middot; Prof. Matteo Palmonari &middot; Dott. Riccardo Pozzi &middot;
 <a href="https://www.unimib.it/" style="color:inherit">Universit&agrave; di Milano-Bicocca</a></div>
 </footer>
 </body></html>"""
+
+_MCP_URL_ANCHOR = '<a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>'
+_MCP_PROTO_ANCHOR = '<a href="https://modelcontextprotocol.io">Model Context Protocol</a>'
+_DATI_ANCHOR = '<a href="https://dati.camera.it">dati.camera.it</a>'
+
+_L10N: dict[str, dict[str, str]] = {
+    "it": {
+        "institution": "Camera dei Deputati &middot; XIX Legislatura",
+        "cta": "Accedi alla consultazione",
+        "iswc": "Accettato &middot; In-Use Track",
+        "intro": f"Questo indirizzo è un server {_MCP_PROTO_ANCHOR}. Aperto nel browser "
+                 "mostra solo questa pagina; aggiunto a un assistente AI gli dà accesso "
+                 "ai dati ufficiali della Camera dei Deputati (XIX legislatura): votazioni "
+                 "nominali, interventi in Aula, testi degli emendamenti votati. Sola "
+                 "lettura, senza registrazione, gratuito.",
+        "caps_h": "Cosa sa fare",
+        "cap1": "Ricerca negli interventi in Aula e negli atti parlamentari",
+        "cap2": "Sedute con riassunto, dibattiti e votazioni",
+        "cap3": "Dettaglio di ogni voto nominale: aggregati, voti per gruppo e per singolo deputato",
+        "cap4": "Testo esatto dell'emendamento o articolo votato, dall'Allegato A del resoconto",
+        "cap5": "Grafico dell'emiciclo di un voto, come immagine nella chat",
+        "example": "Esempio: &laquo;Come hanno votato i deputati del PD sul voto finale "
+                   "del DDL 2961?&raquo;. La risposta arriva dai resoconti ufficiali, "
+                   "con i numeri reali e i link alle fonti.",
+        "source": f"I dati vengono da {_DATI_ANCHOR} e dai resoconti stenografici della "
+                  "Camera. Progetto indipendente, non affiliato alla Camera dei Deputati. "
+                  f"Istruzioni complete e codice: {_MCP_URL_ANCHOR}.",
+        "connect_h": "Come collegarlo",
+        "endpoint_line": "L'endpoint da aggiungere ai connettori del tuo assistente:",
+        "settings": "Impostazioni", "connectors": "Connettori",
+        "add_custom": "Aggiungi connettore personalizzato",
+        "apps_conn": "App e connettori", "dev_mode": "modalità sviluppatore",
+        "create": "Crea", "desktop_app": "app desktop",
+        "add_conn": "Aggiungi connettore", "add_mcp": "Aggiungi connettore MCP",
+        "with": "con", "in": "in", "server_with": "server con",
+        "paper_inuse": "Paper di ricerca", "paper_demo": "Paper demo",
+        "footer_data": "Dati aperti (RDF)",
+        "thesis": "Un progetto di Mirko Tritella",
+    },
+    "en": {
+        "institution": "Italian Chamber of Deputies &middot; 19th Legislature",
+        "cta": "Start consulting",
+        "iswc": "Accepted &middot; In-Use Track",
+        "intro": f"This address is a {_MCP_PROTO_ANCHOR} server. Opened in a browser it "
+                 "only shows this page; added to an AI assistant it gives it access to "
+                 "the official data of the Italian Chamber of Deputies (19th "
+                 "legislature): roll-call votes, floor speeches, the texts of voted "
+                 "amendments. Read-only, no sign-up, free.",
+        "caps_h": "What it can do",
+        "cap1": "Search across floor speeches and parliamentary acts",
+        "cap2": "Sittings with summary, debates and votes",
+        "cap3": "Detail of every roll-call vote: totals, votes by group and by individual deputy",
+        "cap4": "The exact text of the voted amendment or article, from annex A of the official report",
+        "cap5": "The hemicycle chart of a vote, as an image in the chat",
+        "example": "Example: &ldquo;How did PD deputies vote on the final vote on bill "
+                   "2961?&rdquo;. The answer comes from the official records, with the "
+                   "real numbers and links to the sources.",
+        "source": f"The data comes from {_DATI_ANCHOR} and the Chamber's verbatim "
+                  "reports. Independent project, not affiliated with the Chamber of "
+                  f"Deputies. Full instructions and code: {_MCP_URL_ANCHOR}.",
+        "connect_h": "How to connect it",
+        "endpoint_line": "The endpoint to add to your assistant's connectors:",
+        "settings": "Settings", "connectors": "Connectors",
+        "add_custom": "Add custom connector",
+        "apps_conn": "Apps &amp; connectors", "dev_mode": "developer mode",
+        "create": "Create", "desktop_app": "desktop app",
+        "add_conn": "Add connector", "add_mcp": "Add MCP connector",
+        "with": "with", "in": "in", "server_with": "server with",
+        "paper_inuse": "Research paper", "paper_demo": "Demo paper",
+        "footer_data": "Open data (RDF)",
+        "thesis": "A project by Mirko Tritella",
+    },
+    "es": {
+        "institution": "Cámara de Diputados de Italia &middot; XIX Legislatura",
+        "cta": "Acceda a la consulta",
+        "iswc": "Aceptado &middot; In-Use Track",
+        "intro": f"Esta dirección es un servidor {_MCP_PROTO_ANCHOR}. Abierta en el "
+                 "navegador solo muestra esta página; añadida a un asistente de IA le "
+                 "da acceso a los datos oficiales de la Cámara de Diputados de Italia "
+                 "(XIX legislatura): votaciones nominales, intervenciones en el pleno, "
+                 "textos de las enmiendas votadas. Solo lectura, sin registro, gratuito.",
+        "caps_h": "Qué sabe hacer",
+        "cap1": "Búsqueda en las intervenciones del pleno y en los actos parlamentarios",
+        "cap2": "Sesiones con resumen, debates y votaciones",
+        "cap3": "Detalle de cada votación nominal: totales, votos por grupo y por diputado",
+        "cap4": "El texto exacto de la enmienda o del artículo votado, del anexo A del acta",
+        "cap5": "El gráfico del hemiciclo de una votación, como imagen en el chat",
+        "example": "Ejemplo: &laquo;¿Cómo votaron los diputados del PD en la votación "
+                   "final del proyecto de ley 2961?&raquo;. La respuesta llega de las "
+                   "actas oficiales, con los números reales y los enlaces a las fuentes.",
+        "source": f"Los datos provienen de {_DATI_ANCHOR} y de las actas taquigráficas "
+                  "de la Cámara. Proyecto independiente, no afiliado a la Cámara de "
+                  f"Diputados. Instrucciones completas y código: {_MCP_URL_ANCHOR}.",
+        "connect_h": "Cómo conectarlo",
+        "endpoint_line": "El endpoint que hay que añadir a los conectores de tu asistente:",
+        "settings": "Configuración", "connectors": "Conectores",
+        "add_custom": "Añadir conector personalizado",
+        "apps_conn": "Apps y conectores", "dev_mode": "modo desarrollador",
+        "create": "Crear", "desktop_app": "app de escritorio",
+        "add_conn": "Añadir conector", "add_mcp": "Añadir conector MCP",
+        "with": "con", "in": "en", "server_with": "servidor con",
+        "paper_inuse": "Artículo de investigación", "paper_demo": "Artículo demo",
+        "footer_data": "Datos abiertos (RDF)",
+        "thesis": "Un proyecto de Mirko Tritella",
+    },
+    "fr": {
+        "institution": "Chambre des députés italienne &middot; XIXe législature",
+        "cta": "Accéder à la consultation",
+        "iswc": "Accepté &middot; In-Use Track",
+        "intro": f"Cette adresse est un serveur {_MCP_PROTO_ANCHOR}. Ouverte dans un "
+                 "navigateur, elle n'affiche que cette page ; ajoutée à un assistant "
+                 "IA, elle lui donne accès aux données officielles de la Chambre des "
+                 "députés italienne (XIXe législature) : votes nominaux, interventions "
+                 "en séance, textes des amendements votés. Lecture seule, sans "
+                 "inscription, gratuit.",
+        "caps_h": "Ce qu'il sait faire",
+        "cap1": "Recherche dans les interventions en séance et les actes parlementaires",
+        "cap2": "Séances avec résumé, débats et votes",
+        "cap3": "Détail de chaque vote nominal : totaux, votes par groupe et par député",
+        "cap4": "Le texte exact de l'amendement ou de l'article voté, tiré de l'annexe A du compte rendu",
+        "cap5": "Le graphique de l'hémicycle d'un vote, en image dans la conversation",
+        "example": "Exemple : &laquo; Comment les députés du PD ont-ils voté lors du "
+                   "vote final sur le projet de loi 2961 ? &raquo;. La réponse vient des "
+                   "comptes rendus officiels, avec les vrais chiffres et les liens vers "
+                   "les sources.",
+        "source": f"Les données proviennent de {_DATI_ANCHOR} et des comptes rendus "
+                  "sténographiques de la Chambre. Projet indépendant, sans lien avec la "
+                  f"Chambre des députés. Instructions complètes et code : {_MCP_URL_ANCHOR}.",
+        "connect_h": "Comment le connecter",
+        "endpoint_line": "L'endpoint à ajouter aux connecteurs de votre assistant :",
+        "settings": "Paramètres", "connectors": "Connecteurs",
+        "add_custom": "Ajouter un connecteur personnalisé",
+        "apps_conn": "Applications et connecteurs", "dev_mode": "mode développeur",
+        "create": "Créer", "desktop_app": "application de bureau",
+        "add_conn": "Ajouter un connecteur", "add_mcp": "Ajouter un connecteur MCP",
+        "with": "avec", "in": "dans", "server_with": "serveur avec",
+        "paper_inuse": "Article de recherche", "paper_demo": "Article démo",
+        "footer_data": "Données ouvertes (RDF)",
+        "thesis": "Un projet de Mirko Tritella",
+    },
+    "de": {
+        "institution": "Italienische Abgeordnetenkammer &middot; XIX. Legislaturperiode",
+        "cta": "Zur Konsultation",
+        "iswc": "Angenommen &middot; In-Use Track",
+        "intro": f"Diese Adresse ist ein {_MCP_PROTO_ANCHOR}-Server. Im Browser zeigt "
+                 "sie nur diese Seite; einem KI-Assistenten hinzugefügt, gibt sie ihm "
+                 "Zugriff auf die offiziellen Daten der italienischen "
+                 "Abgeordnetenkammer (XIX. Legislaturperiode): namentliche "
+                 "Abstimmungen, Redebeiträge im Plenum, Texte der abgestimmten "
+                 "Änderungsanträge. Nur Lesezugriff, ohne Registrierung, kostenlos.",
+        "caps_h": "Was er kann",
+        "cap1": "Suche in Plenarreden und parlamentarischen Akten",
+        "cap2": "Sitzungen mit Zusammenfassung, Debatten und Abstimmungen",
+        "cap3": "Detail jeder namentlichen Abstimmung: Summen, Stimmen nach Fraktion und einzelnen Abgeordneten",
+        "cap4": "Der genaue Text des abgestimmten Änderungsantrags oder Artikels, aus Anlage A des Protokolls",
+        "cap5": "Die Halbkreis-Grafik einer Abstimmung, als Bild im Chat",
+        "example": "Beispiel: &bdquo;Wie haben die PD-Abgeordneten bei der "
+                   "Schlussabstimmung über Gesetzentwurf 2961 gestimmt?&ldquo;. Die Antwort kommt aus den "
+                   "offiziellen Protokollen, mit den echten Zahlen und Links zu den Quellen.",
+        "source": f"Die Daten stammen von {_DATI_ANCHOR} und aus den stenografischen "
+                  "Protokollen der Kammer. Unabhängiges Projekt, nicht mit der "
+                  "Abgeordnetenkammer verbunden. Vollständige Anleitung und Code: "
+                  f"{_MCP_URL_ANCHOR}.",
+        "connect_h": "So wird er verbunden",
+        "endpoint_line": "Der Endpoint für die Konnektoren deines Assistenten:",
+        "settings": "Einstellungen", "connectors": "Konnektoren",
+        "add_custom": "Eigenen Konnektor hinzufügen",
+        "apps_conn": "Apps &amp; Konnektoren", "dev_mode": "Entwicklermodus",
+        "create": "Erstellen", "desktop_app": "Desktop-App",
+        "add_conn": "Konnektor hinzufügen", "add_mcp": "MCP-Konnektor hinzufügen",
+        "with": "mit", "in": "in", "server_with": "Server mit",
+        "paper_inuse": "Forschungsartikel", "paper_demo": "Demo-Artikel",
+        "footer_data": "Offene Daten (RDF)",
+        "thesis": "Ein Projekt von Mirko Tritella",
+    },
+    "pt": {
+        "institution": "Câmara dos Deputados de Itália &middot; XIX Legislatura",
+        "cta": "Aceder à consulta",
+        "iswc": "Aceito &middot; In-Use Track",
+        "intro": f"Este endereço é um servidor {_MCP_PROTO_ANCHOR}. Aberto no navegador "
+                 "mostra apenas esta página; adicionado a um assistente de IA, dá-lhe "
+                 "acesso aos dados oficiais da Câmara dos Deputados de Itália (XIX "
+                 "legislatura): votações nominais, intervenções no plenário, textos "
+                 "das emendas votadas. Somente leitura, sem registo, gratuito.",
+        "caps_h": "O que ele faz",
+        "cap1": "Pesquisa nas intervenções do plenário e nos atos parlamentares",
+        "cap2": "Sessões com resumo, debates e votações",
+        "cap3": "Detalhe de cada votação nominal: totais, votos por grupo e por deputado",
+        "cap4": "O texto exato da emenda ou do artigo votado, do anexo A da ata",
+        "cap5": "O gráfico do hemiciclo de uma votação, como imagem no chat",
+        "example": "Exemplo: &laquo;Como votaram os deputados do PD na votação final "
+                   "do projeto de lei 2961?&raquo;. A resposta vem das atas oficiais, "
+                   "com os números reais e as ligações às fontes.",
+        "source": f"Os dados vêm de {_DATI_ANCHOR} e das atas estenográficas da "
+                  "Câmara. Projeto independente, não afiliado à Câmara dos Deputados. "
+                  f"Instruções completas e código: {_MCP_URL_ANCHOR}.",
+        "connect_h": "Como conectá-lo",
+        "endpoint_line": "O endpoint a adicionar aos conectores do teu assistente:",
+        "settings": "Definições", "connectors": "Conectores",
+        "add_custom": "Adicionar conector personalizado",
+        "apps_conn": "Apps e conectores", "dev_mode": "modo de programador",
+        "create": "Criar", "desktop_app": "app de desktop",
+        "add_conn": "Adicionar conector", "add_mcp": "Adicionar conector MCP",
+        "with": "com", "in": "em", "server_with": "servidor com",
+        "paper_inuse": "Artigo de pesquisa", "paper_demo": "Artigo demo",
+        "footer_data": "Dados abertos (RDF)",
+        "thesis": "Um projeto de Mirko Tritella",
+    },
+}
+
+
+def _pick_lang(accept_language: str) -> str:
+    """Prima lingua supportata nell'Accept-Language, per qualità decrescente."""
+    ranked = []
+    for i, part in enumerate(accept_language.split(",")):
+        code = part.split(";")[0].strip().lower()[:2]
+        q = 1.0
+        if ";q=" in part:
+            try:
+                q = float(part.split(";q=")[1].split(",")[0])
+            except ValueError:
+                q = 0.0
+        ranked.append((-q, i, code))
+    for _, _, code in sorted(ranked):
+        if code in _L10N:
+            return code
+    return "it"
+
+
+def _render_landing(accept_language: str) -> str:
+    lang = _pick_lang(accept_language)
+    html = _LANDING_TEMPLATE.replace("§lang§", lang)
+    for key, value in _L10N[lang].items():
+        html = html.replace(f"§{key}§", value)
+    return html
 
 
 
@@ -688,8 +921,11 @@ def main() -> None:
         from starlette.responses import HTMLResponse
 
         @mcp.custom_route("/", methods=["GET"])
-        async def landing(_request: Request) -> HTMLResponse:
-            return HTMLResponse(_LANDING)
+        async def landing(request: Request) -> HTMLResponse:
+            return HTMLResponse(
+                _render_landing(request.headers.get("accept-language", "")),
+                headers={"Vary": "Accept-Language"},
+            )
 
         # Logo dichiarato negli icons del server: i client lo scaricano da qui.
         # Nel container il file è in /app (cwd), in sviluppo accanto allo script.
