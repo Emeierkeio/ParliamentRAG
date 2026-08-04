@@ -1,7 +1,7 @@
 {
   "name": "parliamentrag",
   "version": "0.1.0",
-  "description": "Official Italian Chamber of Deputies data for your assistant: roll-call votes with per-deputy outcomes, floor speeches, exact amendment texts and hemicycle charts. Read-only, sourced from the official records (dati.camera.it).",
+  "description": "Italian Chamber of Deputies data for your assistant: roll-call votes with per-deputy outcomes, floor speeches, exact amendment texts and hemicycle charts. Read-only, built on the Chamber's open data (dati.camera.it). Independent project, not affiliated with the Chamber.",
   "author": {
     "name": "Mirko Tritella",
     "url": "https://www.parliamentrag.it"
@@ -9,7 +9,13 @@
   "homepage": "https://www.parliamentrag.it",
   "repository": "https://github.com/Emeierkeio/ParliamentRAG",
   "license": "Apache-2.0",
-  "keywords": ["parliament", "italy", "open-data", "votes", "civic-tech"],
+  "keywords": [
+    "parliament",
+    "italy",
+    "open-data",
+    "votes",
+    "civic-tech"
+  ],
   "mcpServers": {
     "parliamentrag": {
       "type": "http",
