@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.10"
-# dependencies = ["mcp>=1.2.0,<2", "httpx>=0.27"]
+# dependencies = ["mcp>=1.2.0,<2", "httpx>=0.27", "pillow>=10"]
 # ///
 """
 ParliamentRAG MCP server — Italian Chamber of Deputies data as Claude tools.
@@ -21,6 +21,7 @@ from typing import Any, Optional
 
 import httpx
 from mcp.server.fastmcp import FastMCP
+from mcp.server.fastmcp import Image as FastMCPImage
 from mcp.types import ToolAnnotations
 
 API_BASE = os.environ.get("PARLIAMENTRAG_API", "https://www.parliamentrag.it/api")
@@ -320,6 +321,38 @@ async def get_debate(debate_id: str) -> dict:
     }
 
 
+
+@mcp.tool(annotations=_ro("Render vote hemicycle image"))
+async def get_vote_hemicycle(vote_id: str) -> FastMCPImage:
+    """Render the hemicycle chart of a roll-call vote as an image: one dot per
+    deputy, coloured by outcome (green=in favour, red=against, amber=abstained,
+    grey=absent), seated by parliamentary group as in the ParliamentRAG UI.
+
+    Use together with get_vote_details: this tool shows the picture, that one
+    returns the numbers and names.
+
+    Args:
+        vote_id: Vote id from get_session_votes.
+    """
+    d = await _get(f"/timeline/votes/{vote_id}")
+    if d.get("secret_vote"):
+        raise ValueError(
+            "Secret ballot: individual votes are not public, no hemicycle to draw "
+            "(only abstentions are on record)."
+        )
+    participants = d.get("participants", [])
+    has_data = any(p.get("outcome") in ("favor", "against") for p in participants)
+    if not has_data:
+        raise ValueError("No individual vote data available for this roll call.")
+    title = (d.get("subject") or "Votazione") + (
+        f" · {d['description']}" if d.get("description") and d.get("subject") in (None, "Votazione", "Votazione finale") else ""
+    )
+    sub = (f"Favorevoli {d.get('in_favor')} · Contrari {d.get('against')} · "
+           f"Astenuti {d.get('abstained')} · voti individuali: {len(participants)}")
+    png = _render_hemicycle_png(participants, title, sub)
+    return FastMCPImage(data=png, format="png")
+
+
 # Pagina umana sulla radice del dominio: chi apre l'URL nel browser (dal
 # post o per curiosità) deve capire cos'è, non vedere un errore JSON-RPC.
 _LANDING = """<!doctype html><html lang="it"><head><meta charset="utf-8">
@@ -342,6 +375,116 @@ della Camera dei Deputati (votazioni nominali, interventi, testi degli emendamen
 <p>Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>
 &middot; Il sistema: <a href="https://www.parliamentrag.it">parliamentrag.it</a></p>
 </main></body></html>"""
+
+
+
+# ---------------------------------------------------------------------------
+# Emiciclo come immagine (stessa disposizione della grafica del sito)
+# ---------------------------------------------------------------------------
+
+_WEDGE_ORDER = [
+    ("VERDI E SINISTRA", 0), ("PARTITO DEMOCRATICO", 1), ("MOVIMENTO 5 STELLE", 2),
+    ("AZIONE", 3), ("ITALIA VIVA", 4), ("MISTO", 5), ("NOI MODERATI", 6),
+    ("FORZA ITALIA", 7), ("LEGA", 8), ("FRATELLI D'ITALIA", 9),
+]
+
+_OUTCOME_COLOR = {
+    "favor": (5, 150, 105),      # verde
+    "against": (220, 38, 38),    # rosso
+    "abstain": (245, 158, 11),   # ambra
+    "absent": (200, 196, 186),   # grigio caldo
+}
+_OUTCOME_ORDER = {"favor": 0, "against": 1, "abstain": 2, "absent": 3}
+
+
+def _wedge_rank(party: str | None) -> float:
+    up = (party or "").upper()
+    if not up:
+        return 5.5
+    if up != (party or "") and "MISTO" not in up:
+        pass
+    if "MISTO" in up or (party and party != party.upper()):
+        # componenti del Misto (nomi in minuscolo/misto) stanno col Misto
+        return 5.0
+    for needle, rank in _WEDGE_ORDER:
+        if needle in up:
+            return float(rank)
+    return 5.5
+
+
+def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -> bytes:
+    import io as _io
+    import math
+
+    from PIL import Image as PILImage, ImageDraw, ImageFont
+
+    W, H = 1400, 880
+    CX, CY = W // 2, 700
+    INNER, OUTER = 220, 500
+
+    ordered = sorted(participants, key=lambda p: (
+        _wedge_rank(p.get("party")),
+        (p.get("party") or "").upper(),
+        _OUTCOME_ORDER.get(p.get("outcome"), 3),
+        p.get("last_name", ""),
+    ))
+    total = len(ordered)
+    if total == 0:
+        raise ValueError("No individual votes to draw")
+
+    rows = max(4, round(total / 50))
+    row_gap = (OUTER - INNER) / (rows - 1)
+    radii = [INNER + i * row_gap for i in range(rows)]
+    radii_sum = sum(radii)
+    exact = [total * r / radii_sum for r in radii]
+    counts = [int(v) for v in exact]
+    rest = total - sum(counts)
+    for _, i in sorted(((v - int(v), i) for i, v in enumerate(exact)), reverse=True)[:rest]:
+        counts[i] += 1
+
+    seats = []
+    for row, (r, n) in enumerate(zip(radii, counts)):
+        for k in range(n):
+            ang = math.pi / 2 if n == 1 else math.pi - (math.pi * k) / (n - 1)
+            seats.append((CX + r * math.cos(ang), CY - r * math.sin(ang), ang, row))
+    seats.sort(key=lambda s: (-s[2], s[3]))
+
+    inner_seats = counts[0] or 1
+    arc_spacing = math.pi * INNER / inner_seats
+    dot = max(6.0, min(13.0, row_gap * 0.34, arc_spacing * 0.42))
+
+    img = PILImage.new("RGB", (W, H), (247, 243, 236))
+    draw = ImageDraw.Draw(img)
+    f_title = ImageFont.load_default(34)
+    f_sub = ImageFont.load_default(22)
+    f_leg = ImageFont.load_default(24)
+
+    draw.text((40, 34), title, fill=(28, 43, 65), font=f_title)
+    draw.text((40, 84), subtitle, fill=(85, 96, 111), font=f_sub)
+
+    for (x, y, _a, _r), p in zip(seats, ordered):
+        color = _OUTCOME_COLOR.get(p.get("outcome"), _OUTCOME_COLOR["absent"])
+        draw.circle((x, y), dot, fill=color)
+
+    tally = {"favor": 0, "against": 0, "abstain": 0, "absent": 0}
+    for p in ordered:
+        tally[p.get("outcome") if p.get("outcome") in tally else "absent"] += 1
+    labels = [("favor", "Favorevoli"), ("against", "Contrari"),
+              ("abstain", "Astenuti"), ("absent", "Assenti")]
+    x = 130
+    for key, label in labels:
+        if key == "abstain" and tally[key] == 0:
+            continue
+        draw.circle((x, CY + 90), 11, fill=_OUTCOME_COLOR[key])
+        text = f"{label} {tally[key]}"
+        draw.text((x + 22, CY + 78), text, fill=(28, 43, 65), font=f_leg)
+        x += 40 + draw.textlength(text, font=f_leg) + 40
+    draw.text((40, H - 36), "parliamentrag.it", fill=(141, 135, 121),
+              font=ImageFont.load_default(18))
+
+    buf = _io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
 
 
 def _install_rate_limit() -> None:
