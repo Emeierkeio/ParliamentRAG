@@ -26,6 +26,22 @@ from mcp.types import ToolAnnotations
 
 API_BASE = os.environ.get("PARLIAMENTRAG_API", "https://www.parliamentrag.it/api")
 
+# Icona del server (mostrata dai client accanto al nome del connettore).
+# Il tipo Icon esiste solo dalle versioni recenti dell'SDK: senza, si va
+# avanti senza logo invece di crashare sui client con mcp vecchio.
+try:
+    from mcp.types import Icon
+
+    _ICONS = [
+        Icon(
+            src="https://mcp.parliamentrag.it/icon.png",
+            mimeType="image/png",
+            sizes=["512x512"],
+        )
+    ]
+except ImportError:
+    _ICONS = None
+
 mcp = FastMCP(
     "parliamentrag",
     website_url="https://www.parliamentrag.it",
@@ -33,8 +49,12 @@ mcp = FastMCP(
         "Tools over official Italian Chamber of Deputies data (19th legislature, "
         "via parliamentrag.it). Data is in Italian. Every speech and vote links "
         "back to the official record: cite those links when reporting facts. "
+        "When you report the results of a specific roll-call vote, also call "
+        "get_vote_hemicycle for that vote_id so the user sees the seating chart "
+        "alongside the numbers (skip it for secret ballots). "
         "The backend may cold-start: if a call times out, retry once."
     ),
+    **({"icons": _ICONS} if _ICONS else {}),
 )
 
 # Il backend Railway va in sleep: la prima chiamata può metterci decine di
@@ -214,6 +234,9 @@ async def get_vote_details(
     linked act (with official page and full-text PDF), secret-ballot flag,
     and optionally the ~400 individual per-deputy votes.
 
+    After presenting these results, call get_vote_hemicycle with the same
+    vote_id to show the seating chart as well (unless the ballot was secret).
+
     In secret ballots individual expressions are not public (only abstentions
     are on record) — the "secret_vote" flag tells you when that is the case.
 
@@ -326,7 +349,9 @@ async def get_debate(debate_id: str) -> dict:
 async def get_vote_hemicycle(vote_id: str) -> FastMCPImage:
     """Render the hemicycle chart of a roll-call vote as an image: one dot per
     deputy, coloured by outcome (green=in favour, red=against, amber=abstained,
-    grey=absent), seated by parliamentary group as in the ParliamentRAG UI.
+    grey=absent), grouped by parliamentary group as in the ParliamentRAG UI.
+    Dots show group totals, not the real seat of each deputy — the image says
+    so in its caption.
 
     Use together with get_vote_details: this tool shows the picture, that one
     returns the numbers and names.
@@ -461,6 +486,13 @@ def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -
 
     draw.text((40, 34), title, fill=(28, 43, 65), font=f_title)
     draw.text((40, 84), subtitle, fill=(85, 96, 111), font=f_sub)
+    draw.text(
+        (40, 118),
+        "Rappresentazione schematica: i punti mostrano i totali di voto "
+        "per gruppo, non il seggio reale dei singoli deputati.",
+        fill=(141, 135, 121),
+        font=ImageFont.load_default(18),
+    )
 
     for (x, y, _a, _r), p in zip(seats, ordered):
         color = _OUTCOME_COLOR.get(p.get("outcome"), _OUTCOME_COLOR["absent"])
@@ -508,7 +540,7 @@ def _install_rate_limit() -> None:
 
     class RateLimitMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request, call_next):
-            if request.url.path == "/":
+            if request.url.path in ("/", "/icon.png"):
                 return await call_next(request)
             fwd = request.headers.get("x-forwarded-for", "")
             ip = fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
@@ -568,6 +600,23 @@ def main() -> None:
         @mcp.custom_route("/", methods=["GET"])
         async def landing(_request: Request) -> HTMLResponse:
             return HTMLResponse(_LANDING)
+
+        # Logo dichiarato negli icons del server: i client lo scaricano da qui.
+        # Nel container il file è in /app (cwd), in sviluppo accanto allo script.
+        from pathlib import Path
+
+        from starlette.responses import PlainTextResponse, Response
+
+        @mcp.custom_route("/icon.png", methods=["GET"])
+        async def icon(_request: Request) -> Response:
+            for candidate in (Path(__file__).parent / "icon.png", Path("icon.png")):
+                if candidate.is_file():
+                    return Response(
+                        candidate.read_bytes(),
+                        media_type="image/png",
+                        headers={"Cache-Control": "public, max-age=86400"},
+                    )
+            return PlainTextResponse("icon not found", status_code=404)
 
         _install_rate_limit()
         mcp.run(transport="streamable-http")
