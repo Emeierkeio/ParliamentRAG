@@ -384,13 +384,49 @@ _LANDING = """<!doctype html><html lang="it"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ParliamentRAG MCP</title>
 <link rel="icon" type="image/png" href="/icon.png">
-<style>body{font-family:Georgia,serif;background:#f7f3ec;color:#1c2b41;margin:0;display:flex;min-height:100vh;justify-content:center}
-main{max-width:680px;padding:56px 28px}h1{font-size:2rem;margin:0 0 12px}
-h2{font-size:1.15rem;margin:34px 0 8px}
-p,li{font-size:1.02rem;line-height:1.55;color:#55606f}li{margin:4px 0}
-code{background:#1c2b41;color:#e8dcc8;padding:3px 8px;border-radius:6px;font-size:.92rem}
-li code{background:#eee7da;color:#1c2b41}
-a{color:#a34a28}footer{margin-top:40px;font-size:.9rem;color:#8d8779}</style></head><body><main>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbfaf7;--fg:#1c2433;--primary:#1B3A5C;--muted:#6b7280;--border:#e8e5df;--display:'Fraunces',Georgia,serif}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg);margin:0;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--primary)}
+header{border-bottom:2px solid var(--fg)}
+.shell{max-width:1152px;margin:0 auto;padding:0 24px;width:100%}
+.edition{display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.wordmark{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--fg)}
+.brand span{font-family:var(--display);font-size:1.7rem;font-weight:600;letter-spacing:-.02em}
+.cta{background:var(--primary);color:#f4f1ea;padding:10px 16px;font-size:13px;letter-spacing:.02em;text-decoration:none}
+.cta:hover{background:var(--fg)}
+.band{display:block;border-top:1px solid var(--border);background:rgba(27,58,92,.05);text-decoration:none;text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,36,51,.6)}
+.band b{font-family:var(--display);text-transform:none;letter-spacing:0;font-size:13px;color:var(--primary)}
+main{max-width:680px;margin:0 auto;padding:48px 24px 64px;width:100%;flex:1}
+h1{font-family:var(--display);font-size:2rem;font-weight:600;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-family:var(--display);font-size:1.2rem;font-weight:600;margin:36px 0 8px}
+p,li{font-size:1.0rem;line-height:1.6;color:#4b5563}li{margin:4px 0}
+code{background:var(--primary);color:#f4f1ea;padding:3px 8px;border-radius:5px;font-size:.9rem}
+li code{background:#edeae2;color:var(--fg)}
+footer{border-top:1px solid var(--border);padding:36px 24px;font-size:12px;color:var(--muted)}
+footer .row{max-width:1152px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+footer .brand span{font-family:var(--display);font-size:.95rem;font-weight:500}
+footer nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+footer nav a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--border)}
+footer nav a:hover{color:var(--fg);border-color:var(--fg)}
+footer .credits{max-width:1152px;margin:20px auto 0;padding-top:16px;border-top:1px solid var(--border);line-height:1.6}
+</style></head><body>
+<header>
+<div class="shell">
+<div class="edition"><span>Server MCP</span><span>Camera dei Deputati &middot; XIX Legislatura</span></div>
+<div class="wordmark">
+<a class="brand" href="https://www.parliamentrag.it"><img src="https://www.parliamentrag.it/logo-blue.svg" alt="" width="46" height="32"><span>ParliamentRAG</span></a>
+<a class="cta" href="https://www.parliamentrag.it/home">Accedi alla consultazione &rarr;</a>
+</div>
+</div>
+<a class="band" href="https://iswc2026.semanticweb.org"><b>ISWC 2026</b> &nbsp;&middot;&nbsp; Accettato &middot; In-Use Track</a>
+</header>
+<main>
 <h1>ParliamentRAG MCP</h1>
 <p>Questo indirizzo &egrave; un server <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.
 Aperto nel browser mostra solo questa pagina; aggiunto a un assistente AI gli d&agrave;
@@ -424,13 +460,27 @@ Sola lettura, senza registrazione, gratuito.</p>
 <li><b>Windsurf</b>: in <code>mcp_config.json</code>, server con <code>"serverUrl"</code> = endpoint</li>
 </ul>
 
-<footer>
 <p>I dati vengono da <a href="https://dati.camera.it">dati.camera.it</a> e dai resoconti
-stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.</p>
-<p>Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>
-&middot; Il sito: <a href="https://www.parliamentrag.it">parliamentrag.it</a></p>
+stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.
+Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>.</p>
+</main>
+<footer>
+<div class="row">
+<a class="brand" href="https://www.parliamentrag.it"><img src="https://www.parliamentrag.it/logo-blue.svg" alt="" width="26" height="18"><span>ParliamentRAG</span></a>
+<nav>
+<a href="https://github.com/Emeierkeio/ParliamentRAG">GitHub</a>
+<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf">Paper di ricerca</a>
+<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf">Paper demo</a>
+<a href="https://orkg.org/papers/R1909763">ORKG</a>
+<a href="https://doi.org/10.5281/zenodo.21560331">Zenodo</a>
+<a href="https://www.parliamentrag.it/data">Dati aperti (RDF)</a>
+<a href="https://www.parliamentrag.it/privacy">Privacy</a>
+</nav>
+</div>
+<div class="credits">Un progetto di Mirko Tritella &middot; Prof. Matteo Palmonari &middot; Dott. Riccardo Pozzi &middot;
+<a href="https://www.unimib.it/" style="color:inherit">Universit&agrave; di Milano-Bicocca</a></div>
 </footer>
-</main></body></html>"""
+</body></html>"""
 
 
 
