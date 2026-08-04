@@ -307,7 +307,18 @@ async def get_debate(debate_id: str) -> dict:
 
 
 def main() -> None:
-    mcp.run()
+    # Due modi di esecuzione:
+    # - stdio (default): client locali (Claude Code/Desktop, Cursor, ...)
+    # - streamable-http (MCP_TRANSPORT=http): server remoto per i connettori
+    #   di ChatGPT e claude.ai; stateless così regge dietro un load balancer.
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+    if transport in ("http", "streamable-http"):
+        mcp.settings.host = "0.0.0.0"
+        mcp.settings.port = int(os.environ.get("PORT", "8080"))
+        mcp.settings.stateless_http = True
+        mcp.run(transport="streamable-http")
+    else:
+        mcp.run()
 
 
 if __name__ == "__main__":
