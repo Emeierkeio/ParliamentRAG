@@ -383,22 +383,53 @@ async def get_vote_hemicycle(vote_id: str) -> FastMCPImage:
 _LANDING = """<!doctype html><html lang="it"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ParliamentRAG MCP</title>
-<style>body{font-family:Georgia,serif;background:#f7f3ec;color:#1c2b41;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center}
-main{max-width:640px;padding:48px 28px}h1{font-size:2rem;margin:0 0 12px}p,li{font-size:1.05rem;line-height:1.55;color:#55606f}
-code{background:#1c2b41;color:#e8dcc8;padding:3px 8px;border-radius:6px;font-size:.95rem}
-a{color:#a34a28}</style></head><body><main>
-<h1>ParliamentRAG &mdash; server MCP</h1>
-<p>Questo &egrave; un connettore <a href="https://modelcontextprotocol.io">Model Context Protocol</a>:
-non un sito, ma un servizio che d&agrave; agli assistenti AI accesso ai dati ufficiali
-della Camera dei Deputati (votazioni nominali, interventi, testi degli emendamenti).</p>
-<p>Per usarlo, aggiungi ai connettori del tuo assistente:</p>
+<link rel="icon" type="image/png" href="/icon.png">
+<style>body{font-family:Georgia,serif;background:#f7f3ec;color:#1c2b41;margin:0;display:flex;min-height:100vh;justify-content:center}
+main{max-width:680px;padding:56px 28px}h1{font-size:2rem;margin:0 0 12px}
+h2{font-size:1.15rem;margin:34px 0 8px}
+p,li{font-size:1.02rem;line-height:1.55;color:#55606f}li{margin:4px 0}
+code{background:#1c2b41;color:#e8dcc8;padding:3px 8px;border-radius:6px;font-size:.92rem}
+li code{background:#eee7da;color:#1c2b41}
+a{color:#a34a28}footer{margin-top:40px;font-size:.9rem;color:#8d8779}</style></head><body><main>
+<h1>ParliamentRAG MCP</h1>
+<p>Questo indirizzo &egrave; un server <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.
+Aperto nel browser mostra solo questa pagina; aggiunto a un assistente AI gli d&agrave;
+accesso ai dati ufficiali della Camera dei Deputati (XIX legislatura):
+votazioni nominali, interventi in Aula, testi degli emendamenti votati.
+Sola lettura, senza registrazione, gratuito.</p>
+
+<h2>Cosa sa fare</h2>
+<ul>
+<li>Ricerca negli interventi in Aula e negli atti parlamentari</li>
+<li>Sedute con riassunto, dibattiti e votazioni</li>
+<li>Dettaglio di ogni voto nominale: aggregati, voti per gruppo e per singolo deputato</li>
+<li>Testo esatto dell'emendamento o articolo votato, dall'Allegato A del resoconto</li>
+<li>Grafico dell'emiciclo di un voto, come immagine nella chat</li>
+</ul>
+<p>Esempio: &laquo;Come hanno votato i deputati del PD sul voto finale del DDL 2961?&raquo;
+&mdash; la risposta arriva dai resoconti ufficiali, con i numeri reali e i link alle fonti.</p>
+
+<h2>Come collegarlo</h2>
+<p>L'endpoint da aggiungere ai connettori del tuo assistente:</p>
 <p><code>https://mcp.parliamentrag.it/mcp</code></p>
 <ul>
-<li><b>claude.ai</b>: Settings &rarr; Connectors &rarr; Add custom connector</li>
-<li><b>ChatGPT</b>: Impostazioni &rarr; Connettori (modalit&agrave; sviluppatore)</li>
+<li><b>claude.ai</b>: Impostazioni &rarr; Connettori &rarr; Aggiungi connettore personalizzato</li>
+<li><b>ChatGPT</b>: Impostazioni &rarr; App e connettori (modalit&agrave; sviluppatore) &rarr; Crea</li>
+<li><b>Claude Code</b>: <code>claude mcp add -t http parliamentrag https://mcp.parliamentrag.it/mcp</code></li>
+<li><b>Gemini CLI</b>: <code>gemini mcp add -t http parliamentrag https://mcp.parliamentrag.it/mcp</code></li>
+<li><b>Perplexity</b> (app desktop): Impostazioni &rarr; Connettori &rarr; Aggiungi connettore</li>
+<li><b>Le Chat</b> (Mistral): Impostazioni &rarr; Connettori &rarr; Aggiungi connettore MCP</li>
+<li><b>Cursor</b>: Settings &rarr; MCP &rarr; Add server, con <code>"url"</code> = endpoint</li>
+<li><b>VS Code</b> (Copilot): in <code>.vscode/mcp.json</code>, server con <code>"type": "http"</code></li>
+<li><b>Windsurf</b>: in <code>mcp_config.json</code>, server con <code>"serverUrl"</code> = endpoint</li>
 </ul>
+
+<footer>
+<p>I dati vengono da <a href="https://dati.camera.it">dati.camera.it</a> e dai resoconti
+stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.</p>
 <p>Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>
-&middot; Il sistema: <a href="https://www.parliamentrag.it">parliamentrag.it</a></p>
+&middot; Il sito: <a href="https://www.parliamentrag.it">parliamentrag.it</a></p>
+</footer>
 </main></body></html>"""
 
 
