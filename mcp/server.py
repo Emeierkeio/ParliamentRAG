@@ -402,9 +402,13 @@ header{border-bottom:2px solid var(--fg)}
 .cta:hover{background:var(--fg)}
 .band{display:block;border-top:1px solid var(--border);background:rgba(27,58,92,.05);text-decoration:none;text-align:center;padding:8px 16px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(28,36,51,.6)}
 .band b{font-family:var(--display);text-transform:none;letter-spacing:0;font-size:13px;color:var(--primary)}
-main{max-width:680px;margin:0 auto;padding:48px 24px 64px;width:100%;flex:1}
+main{max-width:1152px;margin:0 auto;padding:48px 24px 64px;width:100%;flex:1}
+.intro{max-width:760px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px 64px;margin-top:8px}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
 h1{font-family:var(--display);font-size:2rem;font-weight:600;letter-spacing:-.02em;margin:0 0 12px}
 h2{font-family:var(--display);font-size:1.2rem;font-weight:600;margin:36px 0 8px}
+.cols h2{margin-top:28px}
 p,li{font-size:1.0rem;line-height:1.6;color:#4b5563}li{margin:4px 0}
 code{background:var(--primary);color:#f4f1ea;padding:3px 8px;border-radius:5px;font-size:.9rem}
 li code{background:#edeae2;color:var(--fg)}
@@ -428,12 +432,15 @@ footer .credits{max-width:1152px;margin:20px auto 0;padding-top:16px;border-top:
 </header>
 <main>
 <h1>ParliamentRAG MCP</h1>
+<div class="intro">
 <p>Questo indirizzo &egrave; un server <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.
 Aperto nel browser mostra solo questa pagina; aggiunto a un assistente AI gli d&agrave;
 accesso ai dati ufficiali della Camera dei Deputati (XIX legislatura):
 votazioni nominali, interventi in Aula, testi degli emendamenti votati.
 Sola lettura, senza registrazione, gratuito.</p>
-
+</div>
+<div class="cols">
+<section>
 <h2>Cosa sa fare</h2>
 <ul>
 <li>Ricerca negli interventi in Aula e negli atti parlamentari</li>
@@ -444,7 +451,11 @@ Sola lettura, senza registrazione, gratuito.</p>
 </ul>
 <p>Esempio: &laquo;Come hanno votato i deputati del PD sul voto finale del DDL 2961?&raquo;
 &mdash; la risposta arriva dai resoconti ufficiali, con i numeri reali e i link alle fonti.</p>
-
+<p>I dati vengono da <a href="https://dati.camera.it">dati.camera.it</a> e dai resoconti
+stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.
+Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>.</p>
+</section>
+<section>
 <h2>Come collegarlo</h2>
 <p>L'endpoint da aggiungere ai connettori del tuo assistente:</p>
 <p><code>https://mcp.parliamentrag.it/mcp</code></p>
@@ -459,10 +470,8 @@ Sola lettura, senza registrazione, gratuito.</p>
 <li><b>VS Code</b> (Copilot): in <code>.vscode/mcp.json</code>, server con <code>"type": "http"</code></li>
 <li><b>Windsurf</b>: in <code>mcp_config.json</code>, server con <code>"serverUrl"</code> = endpoint</li>
 </ul>
-
-<p>I dati vengono da <a href="https://dati.camera.it">dati.camera.it</a> e dai resoconti
-stenografici della Camera. Progetto indipendente, non affiliato alla Camera dei Deputati.
-Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>.</p>
+</section>
+</div>
 </main>
 <footer>
 <div class="row">
