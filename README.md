@@ -192,22 +192,31 @@ All routes are mounted under `/api` (interactive docs at `/docs`).
 
 ---
 
-## MCP connector (Claude and compatible clients)
+## MCP connector (Claude, ChatGPT and compatible clients)
 
-`mcp/` ships a [Model Context Protocol](https://modelcontextprotocol.io) server
-that exposes the public read-only API as tools for Claude Code, Claude Desktop
-and any MCP client: hybrid search over speeches and acts, sittings with recaps,
-roll-call votes with per-deputy outcomes (filterable by deputy or group), the
-exact text of voted amendments, and debate details.
+ParliamentRAG is also a [Model Context Protocol](https://modelcontextprotocol.io)
+server: assistants get direct, read-only access to the official records —
+hybrid search over speeches and acts, sittings with recaps, roll-call votes
+with per-deputy outcomes (filterable by deputy or group), the exact text of
+voted amendments, and hemicycle charts rendered as images in the conversation.
+
+**Zero-install (claude.ai, ChatGPT and any remote-MCP client):** add the
+hosted endpoint to your assistant's connectors:
+
+```
+https://mcp.parliamentrag.it/mcp
+```
+
+**Local (Claude Code, Cursor, VS Code, Gemini CLI):**
 
 ```bash
-# Claude Code, no install needed (requires uv)
 claude mcp add parliamentrag -- uv run /path/to/ParliamentRAG/mcp/server.py
 ```
 
 Ask things like *"come hanno votato i deputati del PD sul voto finale del
-DDL 2961?"* and Claude answers from the official records instead of guessing.
-Setup for Claude Desktop and pip-based installs: [`mcp/README.md`](mcp/README.md).
+DDL 2961?"* — or *"mostrami l'emiciclo di quel voto"* — and the answer comes
+from the official records instead of model memory. Full setup for every
+client: [`mcp/README.md`](mcp/README.md).
 
 ---
 
