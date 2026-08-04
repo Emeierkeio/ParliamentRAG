@@ -72,9 +72,28 @@ configurazione del client (`~/.cursor/mcp.json`, `.vscode/mcp.json`,
 }
 ```
 
-**ChatGPT**: supporta MCP tramite connettori remoti, quindi serve
-esporre il server su un URL pubblico (HTTP/SSE) invece che via stdio —
-non basta la configurazione locale qui sopra.
+## Server remoto (ChatGPT e claude.ai)
+
+ChatGPT e claude.ai usano MCP tramite **connettori remoti**: serve il server
+esposto su un URL pubblico. Il server supporta già il trasporto
+streamable-http:
+
+```bash
+MCP_TRANSPORT=http PORT=8080 uv run mcp/server.py
+# endpoint MCP: http://localhost:8080/mcp
+```
+
+Per il deploy c'è il `Dockerfile` in questa cartella (su Railway: nuovo
+servizio dal repo con root directory `mcp/`, poi dominio ad es.
+`mcp.parliamentrag.it`). Una volta online:
+
+- **claude.ai**: Settings → Connectors → Add custom connector →
+  `https://mcp.parliamentrag.it/mcp`
+- **ChatGPT**: Impostazioni → Connettori (modalità sviluppatore) →
+  aggiungi l'URL dell'endpoint
+
+Il server resta in sola lettura sull'API pubblica: nessuna credenziale,
+nessun dato utente.
 
 ## Note
 
