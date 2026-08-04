@@ -306,6 +306,86 @@ async def get_debate(debate_id: str) -> dict:
     }
 
 
+# Pagina umana sulla radice del dominio: chi apre l'URL nel browser (dal
+# post o per curiosità) deve capire cos'è, non vedere un errore JSON-RPC.
+_LANDING = """<!doctype html><html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ParliamentRAG MCP</title>
+<style>body{font-family:Georgia,serif;background:#f7f3ec;color:#1c2b41;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center}
+main{max-width:640px;padding:48px 28px}h1{font-size:2rem;margin:0 0 12px}p,li{font-size:1.05rem;line-height:1.55;color:#55606f}
+code{background:#1c2b41;color:#e8dcc8;padding:3px 8px;border-radius:6px;font-size:.95rem}
+a{color:#a34a28}</style></head><body><main>
+<h1>ParliamentRAG &mdash; server MCP</h1>
+<p>Questo &egrave; un connettore <a href="https://modelcontextprotocol.io">Model Context Protocol</a>:
+non un sito, ma un servizio che d&agrave; agli assistenti AI accesso ai dati ufficiali
+della Camera dei Deputati (votazioni nominali, interventi, testi degli emendamenti).</p>
+<p>Per usarlo, aggiungi ai connettori del tuo assistente:</p>
+<p><code>https://mcp.parliamentrag.it/mcp</code></p>
+<ul>
+<li><b>claude.ai</b>: Settings &rarr; Connectors &rarr; Add custom connector</li>
+<li><b>ChatGPT</b>: Impostazioni &rarr; Connettori (modalit&agrave; sviluppatore)</li>
+</ul>
+<p>Istruzioni complete e codice: <a href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/mcp">github.com/Emeierkeio/ParliamentRAG</a>
+&middot; Il sistema: <a href="https://www.parliamentrag.it">parliamentrag.it</a></p>
+</main></body></html>"""
+
+
+def _install_rate_limit() -> None:
+    """Rate limit per IP sull'endpoint remoto.
+
+    Il server è pubblico e senza chiave: i tool sono in sola lettura su dati
+    pubblici, quindi l'unico rischio è il martellamento dell'API a monte.
+    Finestra scorrevole da 60 richieste/minuto per IP: una conversazione
+    tipica di un assistente fa 1-20 chiamate, chi ne fa di più sta facendo
+    scraping e può usare direttamente l'API o il dump Zenodo.
+    """
+    import time
+    from collections import deque
+
+    from starlette.middleware.base import BaseHTTPMiddleware
+    from starlette.responses import JSONResponse
+
+    WINDOW = 60.0
+    LIMIT = int(os.environ.get("MCP_RATE_LIMIT", "60"))
+    hits: dict[str, deque] = {}
+
+    class RateLimitMiddleware(BaseHTTPMiddleware):
+        async def dispatch(self, request, call_next):
+            if request.url.path == "/":
+                return await call_next(request)
+            fwd = request.headers.get("x-forwarded-for", "")
+            ip = fwd.split(",")[0].strip() or (request.client.host if request.client else "?")
+            now = time.monotonic()
+            q = hits.setdefault(ip, deque())
+            while q and now - q[0] > WINDOW:
+                q.popleft()
+            if len(q) >= LIMIT:
+                return JSONResponse(
+                    {"jsonrpc": "2.0", "id": None,
+                     "error": {"code": -32000,
+                               "message": "Rate limit exceeded: max "
+                                          f"{LIMIT} requests/minute. For bulk access use "
+                                          "the public API or the Zenodo dump."}},
+                    status_code=429,
+                    headers={"Retry-After": "60"},
+                )
+            q.append(now)
+            if len(hits) > 10000:  # niente crescita illimitata della mappa
+                for k in [k for k, v in hits.items() if not v]:
+                    hits.pop(k, None)
+            return await call_next(request)
+
+    # L'app streamable-http è costruita da FastMCP: il middleware va montato lì.
+    original = mcp.streamable_http_app
+
+    def with_middleware(*args, **kwargs):
+        app = original(*args, **kwargs)
+        app.add_middleware(RateLimitMiddleware)
+        return app
+
+    mcp.streamable_http_app = with_middleware
+
+
 def main() -> None:
     # Due modi di esecuzione:
     # - stdio (default): client locali (Claude Code/Desktop, Cursor, ...)
@@ -324,6 +404,15 @@ def main() -> None:
         mcp.settings.transport_security = TransportSecuritySettings(
             enable_dns_rebinding_protection=False
         )
+
+        from starlette.requests import Request
+        from starlette.responses import HTMLResponse
+
+        @mcp.custom_route("/", methods=["GET"])
+        async def landing(_request: Request) -> HTMLResponse:
+            return HTMLResponse(_LANDING)
+
+        _install_rate_limit()
         mcp.run(transport="streamable-http")
     else:
         mcp.run()
