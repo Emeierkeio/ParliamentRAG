@@ -4,7 +4,7 @@
 FROM python:3.12-slim
 
 WORKDIR /app
-COPY pyproject.toml server.py icon.png ./
+COPY pyproject.toml server.py icon.png favicon.ico ./
 RUN pip install --no-cache-dir .
 
 ENV MCP_TRANSPORT=streamable-http
