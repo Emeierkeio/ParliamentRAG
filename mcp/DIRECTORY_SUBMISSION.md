@@ -13,7 +13,7 @@ nomi < 64 caratteri, hosting di produzione.
 - **Connector type**: Remote MCP server
 - **Transport**: Streamable HTTP
 - **Auth type**: None (open, read-only public data)
-- **Read/write**: read-only (all 6 tools annotated `readOnlyHint: true`)
+- **Read/write**: read-only (all 7 tools annotated `readOnlyHint: true`)
 
 ## Primary use cases (2-3 frasi)
 
@@ -35,6 +35,7 @@ official source on camera.it.
 | `get_vote_details` | Get roll-call vote details | ✓ |
 | `get_voted_text` | Get the voted amendment/article text | ✓ |
 | `get_debate` | Get debate details | ✓ |
+| `get_vote_hemicycle` | Render vote hemicycle chart | ✓ |
 
 Tutti annotati con `readOnlyHint: true`, `destructiveHint: false`,
 `idempotentHint: true`, `openWorldHint: true`. Nessun tool di scrittura.

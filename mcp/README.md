@@ -8,6 +8,10 @@ deputati, testo esatto degli emendamenti votati.
 Il server interroga l'API pubblica di [parliamentrag.it](https://www.parliamentrag.it)
 in sola lettura: nessuna credenziale, nessun database locale.
 
+**La via più rapida** — endpoint remoto già online, niente da installare:
+aggiungi `https://mcp.parliamentrag.it/mcp` ai connettori del tuo assistente
+(claude.ai, ChatGPT in modalità sviluppatore, o qualsiasi client remote-MCP).
+
 ## Strumenti
 
 | Tool | Cosa fa |
@@ -18,6 +22,7 @@ in sola lettura: nessuna credenziale, nessun database locale.
 | `get_vote_details` | Dettaglio votazione: aggregati, breakdown per gruppo, atto collegato (scheda + PDF), voti individuali filtrabili per deputato/gruppo, flag scrutinio segreto |
 | `get_voted_text` | Testo integrale dell'emendamento/articolo votato, dall'Allegato A del resoconto |
 | `get_debate` | Dettaglio dibattito: riassunto, atti discussi, oratori |
+| `get_vote_hemicycle` | L'emiciclo della votazione come immagine: un punto per deputato, colori per esito, mostrato direttamente nella chat |
 
 ## Installazione
 
