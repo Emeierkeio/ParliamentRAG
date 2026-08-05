@@ -9,6 +9,7 @@ import { ArrowRight, ArrowUpRight, Globe, Check, Award, Loader2 } from "lucide-r
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { useKgStats } from "@/hooks/use-kg-stats";
+import { useLastUpdate } from "@/hooks/use-last-update";
 
 /* ── Display typeface — editorial serif with optical sizing ────── */
 const fraunces = Fraunces({
@@ -108,28 +109,13 @@ const QUOTES = [
 function useEditionDate() {
   const t = useTranslations("Landing");
   const locale = useLocale();
-  const [label, setLabel] = useState("");
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/config/last-update")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (cancelled) return;
-        const iso: string | undefined = data?.last_update;
-        if (!iso) return;
-        const formatted = new Intl.DateTimeFormat(locale, {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }).format(new Date(`${iso}T12:00:00`));
-        setLabel(t("edition", { date: formatted }));
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [locale, t]);
-  return label;
+  const iso = useLastUpdate();
+  const formatted = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(`${iso}T12:00:00`));
+  return t("edition", { date: formatted });
 }
 
 /* ── Page ──────────────────────────────────────────────────────── */
