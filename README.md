@@ -251,7 +251,8 @@ mcp/        MCP server exposing the public API as Claude tools (see mcp/README.m
 
 ## Citation
 
-If you use this system or build on this work in academic contexts, please cite:
+If you use this system or build on this work in academic contexts, please cite
+([accepted manuscript](https://www.parliamentrag.it/who-speaks-matters-iswc2026.pdf)):
 
 Accepted at the **In-Use Track of the 25th International Semantic Web Conference (ISWC 2026)**.
 
