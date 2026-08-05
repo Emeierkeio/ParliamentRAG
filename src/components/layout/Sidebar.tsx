@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState } from "react";
 import { useTranslations } from 'next-intl';
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,7 @@ import {
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
+import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -54,32 +55,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
   const pathname = usePathname();
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  // Seed from sessionStorage so full-page navigations render the date instantly
-  // (each tool switch is a full reload — without the cache the footer flashes
-  // a placeholder and the whole bottom block shifts). Read in useLayoutEffect
-  // (pre-paint) rather than in the useState initializer to avoid an SSR
-  // hydration mismatch.
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  useLayoutEffect(() => {
-    const cached = sessionStorage.getItem("lastUpdateDate");
-    if (cached) setLastUpdate(cached);
-  }, []);
-
-  // Refresh in the background; update state/cache only if the value changed
-  useEffect(() => {
-    fetch("/api/config/last-update")
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.last_update) {
-          // Format YYYY-MM-DD to DD/MM/YYYY
-          const [y, m, d] = data.last_update.split("-");
-          const formatted = `${d}/${m}/${y}`;
-          sessionStorage.setItem("lastUpdateDate", formatted);
-          setLastUpdate(prev => (prev === formatted ? prev : formatted));
-        }
-      })
-      .catch(() => {});
-  }, []);
+  // Cached pre-paint in the shared hook, so full-page navigations render the
+  // date instantly and the footer never flashes a placeholder.
+  const lastUpdate = formatLastUpdateShort(useLastUpdate());
 
   const handleNavClick = (action: () => void) => {
     action();

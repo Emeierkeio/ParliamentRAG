@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ import {
 import { SettingsModal } from "@/components/settings/SettingsModal";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { config } from "@/config";
+import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 
 const NAV_ITEMS = [
   { href: "/home", icon: MessageSquare, key: "navTopic" },
@@ -163,25 +164,8 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Data-update date: same sessionStorage-seeded fetch as the desktop sidebar
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  useLayoutEffect(() => {
-    const cached = sessionStorage.getItem("lastUpdateDate");
-    if (cached) setLastUpdate(cached);
-  }, []);
-  useEffect(() => {
-    fetch("/api/config/last-update")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.last_update) {
-          const [y, m, d] = data.last_update.split("-");
-          const formatted = `${d}/${m}/${y}`;
-          sessionStorage.setItem("lastUpdateDate", formatted);
-          setLastUpdate((prev) => (prev === formatted ? prev : formatted));
-        }
-      })
-      .catch(() => {});
-  }, []);
+  // Data-update date: same localStorage-cached hook as the desktop sidebar
+  const lastUpdate = formatLastUpdateShort(useLastUpdate());
 
   const switchTo = (nextLocale: string) => {
     if (nextLocale === locale) return;

@@ -57,6 +57,7 @@ import {
   createSimpleRating,
   getEvaluatedChatIds,
 } from "@/lib/survey-api";
+import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 
 interface SurveyModalProps {
   isOpen: boolean;
@@ -662,22 +663,7 @@ export function SurveyModal({ isOpen, onClose, evaluatorId, fullScreen }: Survey
   const [hasConfirmedReading, setHasConfirmedReading] = useState(false);
 
   // Same date/cache as the Sidebar footer: last `make update-data` run
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
-  useEffect(() => {
-    const cached = sessionStorage.getItem("lastUpdateDate");
-    if (cached) setLastUpdate(cached);
-    fetch("/api/config/last-update")
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.last_update) {
-          const [y, m, d] = data.last_update.split("-");
-          const formatted = `${d}/${m}/${y}`;
-          sessionStorage.setItem("lastUpdateDate", formatted);
-          setLastUpdate(prev => (prev === formatted ? prev : formatted));
-        }
-      })
-      .catch(() => {});
-  }, []);
+  const lastUpdate = formatLastUpdateShort(useLastUpdate());
 
 
   // Group A/B questions by category (exclude overall_satisfaction - handled separately)
