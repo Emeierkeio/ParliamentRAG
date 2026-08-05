@@ -10,7 +10,7 @@
   <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://img.shields.io/badge/RDF_dataset-Zenodo-1682D4?logo=zenodo&logoColor=white"></a>
   <a href="https://orkg.org/papers/R1909763"><img alt="ORKG semantic description" src="https://img.shields.io/badge/ORKG-R1909763-E86161"></a>
   <br>
-  <a href="docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
+  <a href="https://iswc2026.semanticweb.org"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
   <a href="LICENSE"><img alt="Code license" src="https://img.shields.io/badge/code-Apache_2.0-0969DA"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license" src="https://img.shields.io/badge/data-CC--BY_4.0-97CA00"></a>
 </p>
@@ -21,7 +21,7 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **173k+ text chunks** from **702 plenary sessions**, updated through 2026-08-04
+- **173k+ text chunks** from **703 plenary sessions**, updated through 2026-08-05
 - **17.1k roll-call votes** with **6.8M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the most credible speaker per party is selected for the specific question asked
@@ -91,7 +91,7 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature, data as of 2026-08-04** (updated incrementally): 702 sessions · 46.4k speeches · 173k+ chunks · 36.1k acts · 17.1k roll calls with 6.8M individual votes
+- **XIX Legislature, data as of 2026-08-05** (updated incrementally): 703 sessions · 46.6k speeches · 173k+ chunks · 36.1k acts · 17.1k roll calls with 6.8M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
@@ -227,7 +227,7 @@ The system ships with a two-level evaluation framework over 15 predefined policy
 - **Automated metrics** (`/api/evaluation/dashboard`): parliamentary-group coverage, citation relevance and faithfulness, coalition balance, authority distribution, computed for both the system and the baseline on the same topics.
 - **Blind A/B protocol** (`/valutazione`): side-by-side comparison of system vs. baseline responses, rated on 9 dimensions on a 1–5 Likert scale. Analysis uses Mann–Whitney U, Cohen's *d*, and Krippendorff's *α* for inter-rater agreement.
 
-In the original study against Google NotebookLM (6 domain experts), the system scored higher on group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%), with human ratings favouring it on source and balance dimensions (Cohen's *d* up to 0.35) and overall satisfaction at parity. Full details in the [paper](docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf).
+In the original study against Google NotebookLM (6 domain experts), the system scored higher on group coverage (97% vs. 95%) and citation faithfulness (100% vs. 95%), with human ratings favouring it on source and balance dimensions (Cohen's *d* up to 0.35) and overall satisfaction at parity. Full details in the paper (see [Citation](#citation)).
 
 ---
 
@@ -251,7 +251,7 @@ mcp/        MCP server exposing the public API as Claude tools (see mcp/README.m
 
 ## Citation
 
-If you use this system or build on this work in academic contexts, please cite ([PDF](docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf)):
+If you use this system or build on this work in academic contexts, please cite:
 
 Accepted at the **In-Use Track of the 25th International Semantic Web Conference (ISWC 2026)**.
 
@@ -266,7 +266,7 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 }
 ```
 
-A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track: [PDF](docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf).
+A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track.
 
 The **RDF dataset** can be cited via its Zenodo DOI: [10.5281/zenodo.21560332](https://doi.org/10.5281/zenodo.21560332) (version used in the paper) or [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331) (always the latest version).
 

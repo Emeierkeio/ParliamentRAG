@@ -476,8 +476,6 @@ footer .credits{max-width:1152px;margin:20px auto 0;padding-top:16px;border-top:
 <a class="brand" href="https://www.parliamentrag.it"><img src="https://www.parliamentrag.it/logo-blue.svg" alt="" width="26" height="18"><span>ParliamentRAG</span></a>
 <nav>
 <a href="https://github.com/Emeierkeio/ParliamentRAG">GitHub</a>
-<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Who_Speaks_Matters_ISWC2026-Camera_Ready_Draft.pdf">§paper_inuse§</a>
-<a href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/Tritella_Pozzi_Palmonari_ISWC2026_Demo.pdf">§paper_demo§</a>
 <a href="https://orkg.org/papers/R1909763">ORKG</a>
 <a href="https://doi.org/10.5281/zenodo.21560331">Zenodo</a>
 <a href="https://www.parliamentrag.it/data">§footer_data§</a>

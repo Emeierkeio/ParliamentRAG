@@ -248,3 +248,6 @@ ISWC*/
 ParliamentRAG_authority.*
 outputs/
 thesis/
+
+# Paper PDFs: solo locali, non leggibili su GitHub
+docs/*.pdf
