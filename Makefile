@@ -310,7 +310,8 @@ update-data: tunnel
 	@echo "Refreshing README data stats..."
 	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
 	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
-	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J)
+	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J) \
+		|| echo "  ORKG sync FAILED (non-blocking): orkg.org slow or unreachable, retry at next update"
 	@# Same incremental update replayed on the local snapshot (:$(LOCAL_BOLT_PORT)), so the
 	@# local copy never drifts from the demo DB. Downloads and embeddings hit the
 	@# caches of the run above, so this pass is cheap. Everything written to the
