@@ -535,24 +535,6 @@ export default function LandingPage() {
               >
                 DataPACT
               </a>
-              ) ·{" "}
-              <a
-                href="https://doi.org/10.3030/101070284"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
-              >
-                101070284
-              </a>{" "}
-              (
-              <a
-                href="https://enrichmydata.eu/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-b border-border hover:border-foreground hover:text-foreground transition-colors"
-              >
-                enRichMyData
-              </a>
               )
             </p>
           </div>
