@@ -277,9 +277,8 @@ A machine-readable **semantic description** of the paper (approach, knowledge gr
 
 ## Acknowledgments
 
-This work was supported by the **EU Horizon Europe** programme through grants
-No. [101189771](https://doi.org/10.3030/101189771) ([**DataPACT**](https://datapact.eu/)) and
-No. [101070284](https://doi.org/10.3030/101070284) ([**enRichMyData**](https://enrichmydata.eu/)).
+This work was supported by the **EU Horizon Europe** programme through grant
+No. [101189771](https://doi.org/10.3030/101189771) ([**DataPACT**](https://datapact.eu/)).
 
 ---
 
