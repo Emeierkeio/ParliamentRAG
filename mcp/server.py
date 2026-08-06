@@ -25,6 +25,9 @@ from mcp.server.fastmcp import Image as FastMCPImage
 from mcp.types import ToolAnnotations
 
 API_BASE = os.environ.get("PARLIAMENTRAG_API", "https://www.parliamentrag.it/api")
+# Base pubblica del server MCP stesso: usata per costruire gli URL stabili
+# delle immagini (/vote/{id}/hemicycle.png) restituiti dentro i tool result.
+MCP_PUBLIC_BASE = os.environ.get("MCP_PUBLIC_BASE", "https://mcp.parliamentrag.it")
 
 # Icona del server (mostrata dai client accanto al nome del connettore).
 # Il tipo Icon esiste solo dalle versioni recenti dell'SDK: senza, si va
@@ -50,8 +53,9 @@ mcp = FastMCP(
         "via parliamentrag.it). Data is in Italian. Every speech and vote links "
         "back to the official record: cite those links when reporting facts. "
         "When you report the results of a specific roll-call vote, also call "
-        "get_vote_hemicycle for that vote_id so the user sees the seating chart "
-        "alongside the numbers (skip it for secret ballots). "
+        "get_vote_hemicycle for that vote_id: it returns the numeric breakdown, "
+        "a stable public image URL you should cite, and the chart itself. For "
+        "secret ballots it returns an explanation instead of a chart. "
         "Always answer in the language of the conversation (English, French, "
         "Italian, ...): translate summaries and labels, but keep verbatim "
         "quotes in the original Italian. "
@@ -265,6 +269,7 @@ async def get_vote_details(
         "majority": d.get("majority"),
         "acts": d.get("acts"),
         "breakdown_by_group": d.get("breakdown"),
+        "counts_consistency": _counts_consistency(d),
     }
     participants = d.get("participants", [])
     if deputy or group:
@@ -348,37 +353,80 @@ async def get_debate(debate_id: str) -> dict:
 
 
 
-@mcp.tool(annotations=_ro("Render vote hemicycle image"))
-async def get_vote_hemicycle(vote_id: str) -> FastMCPImage:
-    """Render the hemicycle chart of a roll-call vote as an image: one dot per
-    deputy, coloured by outcome (green=in favour, red=against, amber=abstained,
-    grey=absent), grouped by parliamentary group as in the ParliamentRAG UI.
-    Dots show group totals, not the real seat of each deputy — the image says
-    so in its caption.
+@mcp.tool(annotations=_ro("Vote hemicycle: numbers + chart"))
+async def get_vote_hemicycle(vote_id: str, format: str = "png"):
+    """Hemicycle chart of a roll-call vote, together with the numbers behind
+    it: one dot per deputy, coloured by outcome (green=in favour, red=against,
+    amber=abstained, grey=absent), grouped by parliamentary group as in the
+    ParliamentRAG UI. Dots show group totals, not the real seat of each deputy.
 
-    Use together with get_vote_details: this tool shows the picture, that one
-    returns the numbers and names.
+    Returns multiple content blocks, so the information survives clients that
+    drop images:
+    1. a JSON text block with outcome, official totals, per-group breakdown,
+       a counts-consistency check and stable public image URLs
+       (https://mcp.parliamentrag.it/vote/{vote_id}/hemicycle.png or .svg) —
+       cite the URL when reporting the vote;
+    2. the chart: a PNG image block (default), or the SVG markup as a text
+       block when format="svg" (lightweight, can be embedded inline).
+
+    For secret ballots there is nothing to draw: individual votes are not
+    public (only abstentions are on record), and the tool returns the
+    aggregate totals with an explanation instead of a chart.
 
     Args:
         vote_id: Vote id from get_session_votes.
+        format: "png" (image block, default) or "svg" (markup as text).
     """
+    if format not in ("png", "svg"):
+        return {"error": f'Unsupported format "{format}": use "png" or "svg".'}
     d = await _get(f"/timeline/votes/{vote_id}")
+    totals = {
+        "in_favor": d.get("in_favor"),
+        "against": d.get("against"),
+        "abstained": d.get("abstained"),
+        "present": d.get("present"),
+        "majority": d.get("majority"),
+    }
     if d.get("secret_vote"):
-        raise ValueError(
-            "Secret ballot: individual votes are not public, no hemicycle to draw "
-            "(only abstentions are on record)."
-        )
+        return {
+            "available": False,
+            "secret_vote": True,
+            "reason": (
+                "Secret ballot: individual votes are not public, so there is "
+                "no hemicycle to draw. Only the aggregate totals below are "
+                "official; the only expressions on record are abstentions."
+            ),
+            "official_totals": totals,
+            "outcome": d.get("outcome"),
+        }
     participants = d.get("participants", [])
-    has_data = any(p.get("outcome") in ("favor", "against") for p in participants)
-    if not has_data:
-        raise ValueError("No individual vote data available for this roll call.")
-    title = (d.get("subject") or "Votazione") + (
-        f" · {d['description']}" if d.get("description") and d.get("subject") in (None, "Votazione", "Votazione finale") else ""
-    )
-    sub = (f"Favorevoli {d.get('in_favor')} · Contrari {d.get('against')} · "
-           f"Astenuti {d.get('abstained')} · voti individuali: {len(participants)}")
-    png = _render_hemicycle_png(participants, title, sub)
-    return FastMCPImage(data=png, format="png")
+    if not any(p.get("outcome") in ("favor", "against") for p in participants):
+        return {
+            "available": False,
+            "secret_vote": False,
+            "reason": "No individual vote data available for this roll call.",
+            "official_totals": totals,
+            "outcome": d.get("outcome"),
+        }
+    title, sub, note = _hemicycle_captions(d, participants)
+    summary = {
+        "available": True,
+        "vote_id": d.get("id"),
+        "subject": d.get("subject"),
+        "description": d.get("description"),
+        "outcome": d.get("outcome"),
+        "official_totals": totals,
+        "breakdown_by_group": d.get("breakdown"),
+        "counts_consistency": _counts_consistency(d),
+        "individual_votes_drawn": len(participants),
+        "image_png_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.png",
+        "image_svg_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.svg",
+        "chart_note": note,
+    }
+    if format == "svg":
+        return [summary, _render_hemicycle_svg(participants, title, sub, note)]
+    png = _render_hemicycle_png(participants, title, sub, note)
+    return [summary, FastMCPImage(data=png, format="png")]
 
 
 # Pagina umana sulla radice del dominio: chi apre l'URL nel browser (dal
@@ -758,14 +806,76 @@ def _wedge_rank(party: str | None) -> float:
     return 5.5
 
 
-def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -> bytes:
-    import io as _io
+_HEMI_W, _HEMI_H = 1400, 880
+_HEMI_DISCLAIMER = ("Rappresentazione schematica: i punti mostrano i totali di "
+                    "voto per gruppo, non il seggio reale dei singoli deputati.")
+
+
+def _counts_consistency(d: dict) -> Optional[dict]:
+    """Confronto tra i totali ufficiali del tabellone e la somma dei conteggi
+    per gruppo. Nei dati sorgente occasionalmente divergono: si espongono
+    entrambi e si marca l'incoerenza, la scelta di quale citare resta a chi
+    consuma il dato."""
+    if d.get("secret_vote"):
+        # Scrutinio segreto: le espressioni individuali non sono pubbliche
+        # (ogni record risulta "absent"), il confronto non ha senso.
+        return {
+            "applicable": False,
+            "reason": "Secret ballot: individual expressions are not public, "
+                      "so per-group counts cannot be compared with the "
+                      "official totals.",
+        }
+    groups = d.get("breakdown") or []
+    if not groups:
+        return None
+    sums = {
+        "in_favor": sum(g.get("favor") or 0 for g in groups),
+        "against": sum(g.get("against") or 0 for g in groups),
+        "abstained": sum(g.get("abstain") or 0 for g in groups),
+    }
+    official = {k: d.get(k) for k in ("in_favor", "against", "abstained")}
+    consistent = all(
+        official[k] is None or official[k] == sums[k] for k in sums
+    )
+    out = {
+        "official_totals": official,
+        "sum_of_group_breakdown": sums,
+        "consistent": consistent,
+    }
+    if not consistent:
+        out["note"] = (
+            "Official aggregate totals and the sum of per-group counts "
+            "disagree. Both come from the official record; cite one "
+            "explicitly instead of mixing them."
+        )
+    return out
+
+
+def _hemicycle_captions(d: dict, participants: list[dict]) -> tuple[str, str, str]:
+    """Titolo, sottotitolo e nota della grafica (condivisi da PNG e SVG)."""
+    title = (d.get("subject") or "Votazione") + (
+        f" · {d['description']}"
+        if d.get("description")
+        and d.get("subject") in (None, "Votazione", "Votazione finale")
+        else ""
+    )
+    sub = (f"Favorevoli {d.get('in_favor')} · Contrari {d.get('against')} · "
+           f"Astenuti {d.get('abstained')} · voti individuali: {len(participants)}")
+    note = _HEMI_DISCLAIMER
+    cc = _counts_consistency(d)
+    if cc and cc.get("consistent") is False:
+        note += (" Attenzione: la somma dei conteggi per gruppo non coincide "
+                 "con i totali ufficiali del tabellone.")
+    return title, sub, note
+
+
+def _hemicycle_layout(participants: list[dict]):
+    """Disposizione dei seggi: stessa geometria per PNG e SVG.
+
+    Ritorna (ordered, seats, dot, tally) con seats allineati a ordered."""
     import math
 
-    from PIL import Image as PILImage, ImageDraw, ImageFont
-
-    W, H = 1400, 880
-    CX, CY = W // 2, 700
+    CX, CY = _HEMI_W // 2, 700
     INNER, OUTER = 220, 500
 
     ordered = sorted(participants, key=lambda p: (
@@ -799,6 +909,65 @@ def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -
     arc_spacing = math.pi * INNER / inner_seats
     dot = max(6.0, min(13.0, row_gap * 0.34, arc_spacing * 0.42))
 
+    tally = {"favor": 0, "against": 0, "abstain": 0, "absent": 0}
+    for p in ordered:
+        tally[p.get("outcome") if p.get("outcome") in tally else "absent"] += 1
+
+    return ordered, seats, dot, tally
+
+
+_LEGEND_LABELS = [("favor", "Favorevoli"), ("against", "Contrari"),
+                  ("abstain", "Astenuti"), ("absent", "Assenti")]
+
+
+def _wrap_note(note: str) -> list[str]:
+    """La nota può crescere (avviso incoerenza): a 18px stanno ~120 caratteri
+    nella larghezza utile, oltre si va a capo invece di sbordare."""
+    import textwrap
+
+    return textwrap.wrap(note, width=120)
+
+
+def _hemicycle_palette():
+    """Palette per la quantizzazione: fondo, colori pieni (voti, testi) e le
+    loro sfumature verso il fondo per i bordi antialiasati, più i punti medi
+    tra colori di voto adiacenti."""
+    from PIL import Image as PILImage
+
+    bg = (247, 243, 236)
+    solids = [
+        (28, 43, 65),     # navy titoli
+        (85, 96, 111),    # grigio sottotitolo
+        (141, 135, 121),  # grigio note
+        *_OUTCOME_COLOR.values(),
+    ]
+    colors = [bg]
+    for c in solids:
+        for t in (0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.0):
+            colors.append(tuple(round(c[i] * t + bg[i] * (1 - t)) for i in range(3)))
+    outcomes = list(_OUTCOME_COLOR.values())
+    for i, a in enumerate(outcomes):
+        for b in outcomes[i + 1:]:
+            colors.append(tuple((a[k] + b[k]) // 2 for k in range(3)))
+    flat = [ch for c in colors for ch in c]
+    flat += list(bg) * (256 - len(colors))  # pad: mai entry nere spurie
+    pal = PILImage.new("P", (1, 1))
+    pal.putpalette(flat)
+    return pal
+
+
+def _render_hemicycle_png(
+    participants: list[dict], title: str, subtitle: str,
+    note: str = _HEMI_DISCLAIMER,
+) -> bytes:
+    import io as _io
+
+    from PIL import Image as PILImage, ImageDraw, ImageFont
+
+    W, H = _HEMI_W, _HEMI_H
+    CY = 700
+    ordered, seats, dot, tally = _hemicycle_layout(participants)
+
     img = PILImage.new("RGB", (W, H), (247, 243, 236))
     draw = ImageDraw.Draw(img)
     f_title = ImageFont.load_default(34)
@@ -807,25 +976,16 @@ def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -
 
     draw.text((40, 34), title, fill=(28, 43, 65), font=f_title)
     draw.text((40, 84), subtitle, fill=(85, 96, 111), font=f_sub)
-    draw.text(
-        (40, 118),
-        "Rappresentazione schematica: i punti mostrano i totali di voto "
-        "per gruppo, non il seggio reale dei singoli deputati.",
-        fill=(141, 135, 121),
-        font=ImageFont.load_default(18),
-    )
+    for i, line in enumerate(_wrap_note(note)):
+        draw.text((40, 118 + i * 24), line, fill=(141, 135, 121),
+                  font=ImageFont.load_default(18))
 
     for (x, y, _a, _r), p in zip(seats, ordered):
         color = _OUTCOME_COLOR.get(p.get("outcome"), _OUTCOME_COLOR["absent"])
         draw.circle((x, y), dot, fill=color)
 
-    tally = {"favor": 0, "against": 0, "abstain": 0, "absent": 0}
-    for p in ordered:
-        tally[p.get("outcome") if p.get("outcome") in tally else "absent"] += 1
-    labels = [("favor", "Favorevoli"), ("against", "Contrari"),
-              ("abstain", "Astenuti"), ("absent", "Assenti")]
     x = 130
-    for key, label in labels:
+    for key, label in _LEGEND_LABELS:
         if key == "abstain" and tally[key] == 0:
             continue
         draw.circle((x, CY + 90), 11, fill=_OUTCOME_COLOR[key])
@@ -835,9 +995,58 @@ def _render_hemicycle_png(participants: list[dict], title: str, subtitle: str) -
     draw.text((40, H - 36), "parliamentrag.it", fill=(141, 135, 121),
               font=ImageFont.load_default(18))
 
+    # Grafica piatta: ridotta a ~1000px e a palette 8 bit pesa una frazione
+    # del PNG RGB originale (meno contesto consumato, meno troncamenti lato
+    # client). Palette FISSA di colori brand + sfumature verso il fondo: la
+    # quantizzazione adattiva sacrificherebbe i colori rari (es. un solo
+    # astenuto ambra su 400 punti).
+    img = img.resize((1000, round(1000 * H / W)), PILImage.LANCZOS)
+    img = img.quantize(palette=_hemicycle_palette(), dither=PILImage.Dither.NONE)
+
     buf = _io.BytesIO()
-    img.save(buf, format="PNG")
+    img.save(buf, format="PNG", optimize=True)
     return buf.getvalue()
+
+
+def _render_hemicycle_svg(
+    participants: list[dict], title: str, subtitle: str,
+    note: str = _HEMI_DISCLAIMER,
+) -> str:
+    """Stessa grafica del PNG, come testo SVG: pesa una frazione e un modello
+    può reinserirla inline senza perdita."""
+    from html import escape
+
+    hexc = {"favor": "#059669", "against": "#dc2626",
+            "abstain": "#f59e0b", "absent": "#c8c4ba"}
+    CY = 700
+    ordered, seats, dot, tally = _hemicycle_layout(participants)
+
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {_HEMI_W} {_HEMI_H}" '
+        f'font-family="system-ui, -apple-system, sans-serif">',
+        f'<rect width="{_HEMI_W}" height="{_HEMI_H}" fill="#f7f3ec"/>',
+        f'<text x="40" y="62" font-size="34" fill="#1c2b41">{escape(title)}</text>',
+        f'<text x="40" y="102" font-size="22" fill="#55606f">{escape(subtitle)}</text>',
+    ]
+    for i, line in enumerate(_wrap_note(note)):
+        parts.append(f'<text x="40" y="{132 + i * 24}" font-size="18" '
+                     f'fill="#8d8779">{escape(line)}</text>')
+    for (x, y, _a, _r), p in zip(seats, ordered):
+        color = hexc.get(p.get("outcome"), hexc["absent"])
+        parts.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="{dot:.1f}" fill="{color}"/>')
+    x = 130.0
+    for key, label in _LEGEND_LABELS:
+        if key == "abstain" and tally[key] == 0:
+            continue
+        text = f"{label} {tally[key]}"
+        parts.append(f'<circle cx="{x:.0f}" cy="{CY + 90}" r="11" fill="{hexc[key]}"/>')
+        parts.append(f'<text x="{x + 22:.0f}" y="{CY + 98}" font-size="24" '
+                     f'fill="#1c2b41">{escape(text)}</text>')
+        x += 40 + len(text) * 13.5 + 40
+    parts.append(f'<text x="40" y="{_HEMI_H - 24}" font-size="18" '
+                 'fill="#8d8779">parliamentrag.it</text>')
+    parts.append("</svg>")
+    return "\n".join(parts)
 
 
 def _install_rate_limit() -> None:
@@ -953,6 +1162,49 @@ def main() -> None:
         @mcp.custom_route("/favicon.ico", methods=["GET"])
         async def favicon(_request: Request) -> Response:
             return _serve_asset("favicon.ico", "image/x-icon")
+
+        # URL pubblico stabile dell'emiciclo: funziona su qualunque client,
+        # sopravvive alla copia della conversazione, è citabile. I voti sono
+        # immutabili, quindi cache lunga.
+        async def _hemicycle_response(vote_id: str, fmt: str) -> Response:
+            try:
+                d = await _get(f"/timeline/votes/{vote_id}")
+            except httpx.HTTPStatusError as exc:
+                return PlainTextResponse(
+                    "vote not found", status_code=exc.response.status_code
+                )
+            if d.get("secret_vote"):
+                return PlainTextResponse(
+                    "Secret ballot: individual votes are not public, "
+                    "no hemicycle exists for this vote.",
+                    status_code=404,
+                )
+            participants = d.get("participants", [])
+            if not any(p.get("outcome") in ("favor", "against") for p in participants):
+                return PlainTextResponse(
+                    "No individual vote data for this roll call.", status_code=404
+                )
+            title, sub, note = _hemicycle_captions(d, participants)
+            headers = {"Cache-Control": "public, max-age=604800"}
+            if fmt == "svg":
+                return Response(
+                    _render_hemicycle_svg(participants, title, sub, note),
+                    media_type="image/svg+xml",
+                    headers=headers,
+                )
+            return Response(
+                _render_hemicycle_png(participants, title, sub, note),
+                media_type="image/png",
+                headers=headers,
+            )
+
+        @mcp.custom_route("/vote/{vote_id}/hemicycle.png", methods=["GET"])
+        async def hemicycle_png(request: Request) -> Response:
+            return await _hemicycle_response(request.path_params["vote_id"], "png")
+
+        @mcp.custom_route("/vote/{vote_id}/hemicycle.svg", methods=["GET"])
+        async def hemicycle_svg(request: Request) -> Response:
+            return await _hemicycle_response(request.path_params["vote_id"], "svg")
 
         _install_rate_limit()
         mcp.run(transport="streamable-http")
