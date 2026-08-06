@@ -56,6 +56,10 @@ mcp = FastMCP(
         "get_vote_hemicycle for that vote_id: it returns the numeric breakdown, "
         "a stable public image URL you should cite, and the chart itself. For "
         "secret ballots it returns an explanation instead of a chart. "
+        "If your client does not display tool-result images inline but can "
+        "render artifacts or HTML (e.g. claude.ai web), call it with "
+        "format='svg' and render the returned SVG markup as an artifact, "
+        "verbatim and complete, so the user actually sees the chart. "
         "Always answer in the language of the conversation (English, French, "
         "Italian, ...): translate summaries and labels, but keep verbatim "
         "quotes in the original Italian. "
@@ -368,6 +372,11 @@ async def get_vote_hemicycle(vote_id: str, format: str = "png"):
        cite the URL when reporting the vote;
     2. the chart: a PNG image block (default), or the SVG markup as a text
        block when format="svg" (lightweight, can be embedded inline).
+
+    If your client cannot display tool-result images inline but supports
+    artifacts or HTML rendering (e.g. claude.ai web), use format="svg" and
+    render the returned markup as an artifact, verbatim and complete: the
+    user then sees the chart instead of a link.
 
     For secret ballots there is nothing to draw: individual votes are not
     public (only abstentions are on record), and the tool returns the
