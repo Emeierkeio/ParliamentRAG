@@ -794,8 +794,14 @@ RETURN count(*) AS written
         persona Camera, la chiave per agganciare i voti individuali SPARQL.
         """
         with self._driver.session() as neo_session:
+            # Guardia anti-doppione: se per la stessa persona esiste anche un
+            # nodo Deputy (successo con Bellucci per uno split del nome
+            # sbagliato), i voti li prende il Deputy — processarla anche qui
+            # duplicherebbe ogni suo voto.
             result = neo_session.run(
                 "MATCH (g:GovernmentMember) WHERE g.deputy_card IS NOT NULL "
+                "AND NOT EXISTS { MATCH (d:Deputy) WHERE d.id = "
+                "  'http://dati.camera.it/ocd/persona.rdf/p' + toString(g.deputy_card) } "
                 "RETURN g.id AS id, g.deputy_card AS person_id"
             )
             return [

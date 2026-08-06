@@ -111,6 +111,30 @@ GROUP_RENAMES = {
         "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
 }
 
+def _split_gov_full_name(full_name: str, dep_df=None) -> tuple[str, str]:
+    """Split di una chiave GOVERNMENT_GROUPS "COGNOME NOME" in (cognome, nome).
+
+    L'euristica "ultima parola = nome" sbaglia i nomi propri composti:
+    "BELLUCCI MARIA TERESA" diventava cognome "BELLUCCI MARIA" + nome
+    "TERESA", il lookup sul CSV falliva e la persona finiva nel grafo due
+    volte (Deputy + GovernmentMember), coi voti contati doppi. Se c'è il CSV
+    dei deputati si prova ogni punto di taglio contro cognome/nome reali;
+    l'euristica resta solo come fallback (non-deputati: senatori, tecnici).
+    """
+    parts = full_name.split()
+    if dep_df is not None and len(parts) > 2:
+        csv_pairs = {
+            (str(r["cognome"]).strip().upper(), str(r["nome"]).strip().upper())
+            for _, r in dep_df.iterrows()
+        }
+        for cut in range(1, len(parts)):
+            last = " ".join(parts[:cut])
+            first = " ".join(parts[cut:])
+            if (last.upper(), first.upper()) in csv_pairs:
+                return last, first
+    return " ".join(parts[:-1]), parts[-1]
+
+
 # Government group membership map: "LAST FIRST" -> group name
 GOVERNMENT_GROUPS = {
     "MELONI GIORGIA": "FRATELLI D'ITALIA",
@@ -618,14 +642,14 @@ class DatabaseBuilder:
     # ------------------------------------------------------------------
 
     def _build_gov_uri_map(self, data_path: str, legislature: int = 19) -> dict[str, str]:
+        # NB: usa _split_gov_full_name (module-level) — mai parts[-1] a mano.
         """Build map of Deputy CSV URI -> GovernmentMember ID for gov deputies."""
         roman = ROMAN_MAP.get(legislature, f"leg{legislature}")
         dep_df = pd.read_csv(os.path.join(data_path, f"deputati_{roman}.csv"))
         gov_uri_map: dict[str, str] = {}
         for full_name in GOVERNMENT_GROUPS:
-            parts = full_name.split()
-            last_name = " ".join(parts[:-1]).upper()
-            first_name = parts[-1].upper()
+            last_name, first_name = _split_gov_full_name(full_name, dep_df)
+            last_name, first_name = last_name.upper(), first_name.upper()
             match = dep_df[
                 (dep_df['cognome'].str.strip().str.upper() == last_name) &
                 (dep_df['nome'].str.strip().str.upper() == first_name)
@@ -644,8 +668,8 @@ class DatabaseBuilder:
         # Build set of (last_name, first_name) for GovernmentMember exclusion
         gov_names: set[tuple[str, str]] = set()
         for full_name in GOVERNMENT_GROUPS:
-            parts = full_name.split()
-            gov_names.add((" ".join(parts[:-1]).upper(), parts[-1].upper()))
+            ln, fn = _split_gov_full_name(full_name, dep_df)
+            gov_names.add((ln.upper(), fn.upper()))
 
         rows: list[dict] = []
         skipped = 0
@@ -989,9 +1013,7 @@ class DatabaseBuilder:
         # Build gov member rows from GOVERNMENT_GROUPS constant
         rows: list[dict] = []
         for full_name, group_name in GOVERNMENT_GROUPS.items():
-            parts = full_name.split()
-            last_name = " ".join(parts[:-1])
-            first_name = parts[-1]
+            last_name, first_name = _split_gov_full_name(full_name)
             fid = f"gov_{full_name.replace(' ', '_').lower()}"
             rows.append({
                 "id": fid,
@@ -1015,9 +1037,7 @@ class DatabaseBuilder:
 
         rows: list[dict] = []
         for full_name, group_name in GOVERNMENT_GROUPS.items():
-            parts = full_name.split()
-            last_name = " ".join(parts[:-1])
-            first_name = parts[-1]
+            last_name, first_name = _split_gov_full_name(full_name, dep_df)
             fid = f"gov_{full_name.replace(' ', '_').lower()}"
 
             csv_data = dep_lookup.get(full_name)
