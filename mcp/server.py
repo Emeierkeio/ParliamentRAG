@@ -428,8 +428,8 @@ async def get_vote_hemicycle(vote_id: str, format: str = "png"):
         "breakdown_by_group": d.get("breakdown"),
         "counts_consistency": _counts_consistency(d),
         "individual_votes_drawn": len(participants),
-        "image_png_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.png",
-        "image_svg_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.svg",
+        "image_png_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.png?r={_RENDER_V}",
+        "image_svg_url": f"{MCP_PUBLIC_BASE}/vote/{vote_id}/hemicycle.svg?r={_RENDER_V}",
         "chart_note": note,
     }
     if format == "svg":
@@ -816,6 +816,10 @@ def _wedge_rank(party: str | None) -> float:
 
 
 _HEMI_W, _HEMI_H = 1400, 970
+# Versione del renderer, nei query string degli URL immagine: i voti sono
+# immutabili ma la grafica evolve, e Cloudflare tiene la cache per max-age —
+# bump a ogni modifica visiva per non servire render vecchi.
+_RENDER_V = "2"
 _HEMI_DISCLAIMER = ("Rappresentazione schematica: i punti mostrano i totali di "
                     "voto per gruppo, non il seggio reale dei singoli deputati.")
 
@@ -1274,7 +1278,7 @@ def main() -> None:
                     "No individual vote data for this roll call.", status_code=404
                 )
             title, sub, note = _hemicycle_captions(d, participants)
-            headers = {"Cache-Control": "public, max-age=604800"}
+            headers = {"Cache-Control": "public, max-age=86400"}
             if fmt == "svg":
                 return Response(
                     _render_hemicycle_svg(participants, title, sub, note),
