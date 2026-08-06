@@ -815,7 +815,7 @@ def _wedge_rank(party: str | None) -> float:
     return 5.5
 
 
-_HEMI_W, _HEMI_H = 1400, 880
+_HEMI_W, _HEMI_H = 1400, 970
 _HEMI_DISCLAIMER = ("Rappresentazione schematica: i punti mostrano i totali di "
                     "voto per gruppo, non il seggio reale dei singoli deputati.")
 
@@ -928,6 +928,46 @@ def _hemicycle_layout(participants: list[dict]):
 _LEGEND_LABELS = [("favor", "Favorevoli"), ("against", "Contrari"),
                   ("abstain", "Astenuti"), ("absent", "Assenti")]
 
+_PARTY_ABBR = [
+    ("FRATELLI D'ITALIA", "FdI"),
+    ("PARTITO DEMOCRATICO", "PD"),
+    ("LEGA", "Lega"),
+    ("FORZA ITALIA", "FI"),
+    ("MOVIMENTO 5 STELLE", "M5S"),
+    ("AZIONE", "Azione"),
+    ("VERDI E SINISTRA", "AVS"),
+    ("ITALIA VIVA", "IV"),
+    ("NOI MODERATI", "NM"),
+    ("MINORANZE LINGUISTICHE", "Min.Ling."),
+    ("EUROPA", "+Eu"),
+    ("VANNACCI", "FN"),
+    ("MISTO", "Misto"),
+]
+
+
+def _party_abbr(name: Optional[str]) -> str:
+    up = (name or "").upper()
+    for needle, abbr in _PARTY_ABBR:
+        if needle in up:
+            return abbr
+    return (name or "Altri").split()[0].title()
+
+
+def _group_strip(ordered: list[dict]) -> list[tuple[str, dict]]:
+    """[(sigla, {outcome: n})] nell'ordine dei cunei (sinistra → destra),
+    per la fascia gruppi sotto la legenda: rende leggibile chi è ogni cuneo
+    anche quando gruppi adiacenti votano nello stesso modo."""
+    strip: list[tuple[str, dict]] = []
+    index: dict[str, dict] = {}
+    for p in ordered:
+        abbr = _party_abbr(p.get("party"))
+        if abbr not in index:
+            index[abbr] = {"favor": 0, "against": 0, "abstain": 0, "absent": 0}
+            strip.append((abbr, index[abbr]))
+        o = p.get("outcome")
+        index[abbr][o if o in index[abbr] else "absent"] += 1
+    return strip
+
 
 def _wrap_note(note: str) -> list[str]:
     """La nota può crescere (avviso incoerenza): a 18px stanno ~120 caratteri
@@ -1001,6 +1041,26 @@ def _render_hemicycle_png(
         text = f"{label} {tally[key]}"
         draw.text((x + 22, CY + 78), text, fill=(28, 43, 65), font=f_leg)
         x += 40 + draw.textlength(text, font=f_leg) + 40
+
+    # Fascia gruppi: sigle nell'ordine dei cunei coi conteggi colorati per
+    # esito — senza, i cunei adiacenti con lo stesso voto sono indistinguibili.
+    f_grp = ImageFont.load_default(21)
+    draw.text((40, CY + 126), "Gruppi, da sinistra a destra dell'arco:",
+              fill=(141, 135, 121), font=ImageFont.load_default(18))
+    gx, gy = 40.0, CY + 156
+    for i, (abbr, oc) in enumerate(_group_strip(ordered)):
+        tokens = [(("  ·  " if i else ""), (176, 170, 156)), (abbr + " ", (28, 43, 65))]
+        for key in ("favor", "against", "abstain"):
+            if oc[key]:
+                tokens.append((f"{oc[key]} ", _OUTCOME_COLOR[key]))
+        entry_w = sum(draw.textlength(t, font=f_grp) for t, _ in tokens)
+        if gx + entry_w > W - 40:
+            gx, gy = 40.0, gy + 34
+            tokens[0] = ("", tokens[0][1])
+        for t, color in tokens:
+            draw.text((gx, gy), t, fill=color, font=f_grp)
+            gx += draw.textlength(t, font=f_grp)
+
     draw.text((40, H - 36), "parliamentrag.it", fill=(141, 135, 121),
               font=ImageFont.load_default(18))
 
@@ -1052,6 +1112,26 @@ def _render_hemicycle_svg(
         parts.append(f'<text x="{x + 22:.0f}" y="{CY + 98}" font-size="24" '
                      f'fill="#1c2b41">{escape(text)}</text>')
         x += 40 + len(text) * 13.5 + 40
+
+    parts.append(f'<text x="40" y="{CY + 140}" font-size="18" fill="#8d8779">'
+                 "Gruppi, da sinistra a destra dell'arco:</text>")
+    gx, gy = 40.0, CY + 172
+    est = 12.0  # larghezza media glifo a 21px
+    for i, (abbr, oc) in enumerate(_group_strip(ordered)):
+        tokens = [(("  ·  " if i else ""), "#b0aa9c"), (abbr + " ", "#1c2b41")]
+        for key in ("favor", "against", "abstain"):
+            if oc[key]:
+                tokens.append((f"{oc[key]} ", hexc[key]))
+        entry_w = sum(len(t) * est for t, _ in tokens)
+        if gx + entry_w > _HEMI_W - 40:
+            gx, gy = 40.0, gy + 34
+            tokens[0] = ("", tokens[0][1])
+        for t, color in tokens:
+            if t:
+                parts.append(f'<text x="{gx:.0f}" y="{gy:.0f}" font-size="21" '
+                             f'fill="{color}">{escape(t)}</text>')
+            gx += len(t) * est
+
     parts.append(f'<text x="40" y="{_HEMI_H - 24}" font-size="18" '
                  'fill="#8d8779">parliamentrag.it</text>')
     parts.append("</svg>")
