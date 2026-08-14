@@ -251,3 +251,11 @@ thesis/
 
 # Paper PDFs: solo locali, non leggibili su GitHub
 docs/*.pdf
+
+# Tracker locale delle pubblicazioni del paper (solo locale, mai su GitHub)
+PAPER_TRACKER.md
+
+# Sorgenti arXiv e materiale social: solo locali
+arxiv-who-speaks-matters/
+parliament_rag_paper-*/
+linkedin-*
