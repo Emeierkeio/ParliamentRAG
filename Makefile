@@ -42,7 +42,10 @@ LOCAL_BOLT_PORT        := 7691
 LOCAL_HTTP_PORT        := 7477
 LOCAL_BACKUP_DIR       := $(CURDIR)/neo4j-local-backups
 
-.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs og-images tunnel browser db-backup db-pull db-use-local db-use-remote
+# Hugging Face dataset (parquet mirror of the KG, follows the live DB)
+HF_DATASET_REPO        := emeierkeio/parliamentrag-camera-leg19
+
+.PHONY: help dev dev-backend dev-frontend stop install install-backend install-frontend build check-ports update-data link-refs og-images tunnel browser db-backup db-pull db-use-local db-use-remote export-hf hf-upload
 
 help:
 	@grep -E '^#   make' Makefile | sed 's/^#   //'
@@ -181,6 +184,22 @@ build:
 ## individual votes (separate .nt file), "--skip-text" for a small dump.
 export-rdf:
 	@$(BACKEND_DIR)/venv/bin/python build/export_rdf.py $(EXPORT_RDF_FLAGS)
+
+## Export parquet del KG per Hugging Face in dumps/hf/ (tabelle + card).
+## Usa NEO4J_URI dallo .env (snapshot locale :7691). La card viene generata
+## da build/hf_dataset_card.md con i conteggi presi dal grafo al momento
+## dell'export, quindi non va mai aggiornata a mano. EXPORT_HF_FLAGS:
+## "--card-only" per rigenerare solo il README, "--skip-individual-votes".
+export-hf:
+	@$(BACKEND_DIR)/venv/bin/python build/export_hf.py $(EXPORT_HF_FLAGS)
+
+## Ricarica dumps/hf/ sul dataset Hugging Face. A differenza di Zenodo
+## (snapshot congelato, vedi sotto) il dataset HF segue il DB vivo: viene
+## rilanciato in coda a ogni `make update-data`. Richiede la CLI `hf` con
+## token write (`hf auth login`).
+hf-upload:
+	@hf upload $(HF_DATASET_REPO) dumps/hf . --repo-type dataset \
+		--commit-message "Data update $$(date +%Y-%m-%d)"
 
 ## Nuova versione del record Zenodo con i dump correnti di dumps/rdf/.
 ##
@@ -365,7 +384,36 @@ update-data: tunnel
 		$(BACKEND_DIR)/venv/bin/python build/repair_vote_data.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --subjects \
 			|| echo "WARNING: vote titles refresh failed on local snapshot"; \
 	fi
-	@echo "Done. Sidebar date, landing//data stats, README and ORKG now reflect the updated DB."
+	@# Atti placeholder: l'ingest XML crea placeholder per gli argomenti dei
+	@# dibattiti (mozioni con numero 1-00004 vs 1/00004, pdl versione
+	@# commissione "-A"); l'atto vero arriva dalla SPARQL in un giro
+	@# successivo. Questo pass idempotente ripunta DISCUSSES/CITES e cancella
+	@# il placeholder appena il match esiste.
+	@echo "Resolving placeholder acts against ingested real acts..."
+	@backend/venv/bin/python build/repair_placeholder_acts.py --neo4j-uri $(DEMO_NEO4J) \
+		|| echo "WARNING: placeholder resolution failed — retry at next update-data"
+	@if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
+		backend/venv/bin/python build/repair_placeholder_acts.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) \
+			|| echo "WARNING: placeholder resolution failed on local snapshot"; \
+	fi
+	@# Dataset Hugging Face: a differenza di Zenodo (snapshot congelato) segue
+	@# il DB vivo — rigenera i parquet + card da NEO4J_URI (.env, snapshot
+	@# locale :$(LOCAL_BOLT_PORT)) e ricarica il repo. Non blocca l'update:
+	@# senza CLI hf o senza rete si riprova al prossimo giro (o a mano con
+	@# `make export-hf hf-upload`).
+	@echo "Updating Hugging Face dataset ($(HF_DATASET_REPO))..."
+	@if ! command -v hf >/dev/null 2>&1; then \
+		echo "  hf CLI not installed — skipped (uv tool install huggingface_hub)"; \
+	elif ! nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
+		echo "  local snapshot (:$(LOCAL_BOLT_PORT)) not running — skipped"; \
+	else \
+		( $(BACKEND_DIR)/venv/bin/python build/export_hf.py \
+			&& hf upload $(HF_DATASET_REPO) dumps/hf . --repo-type dataset \
+				--commit-message "Data update $$(date +%Y-%m-%d)" >/dev/null \
+			&& echo "  HF dataset updated." ) \
+		|| echo "WARNING: HF dataset update failed — retry with 'make export-hf hf-upload'"; \
+	fi
+	@echo "Done. Sidebar date, landing//data stats, README, ORKG and HF dataset now reflect the updated DB."
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
 include Makefile.data

@@ -15,6 +15,7 @@ dependencies = [
     "tqdm==4.68.4",
     "playwright==1.61.0",  # senato.it AWS WAF bypass; run once: playwright install chromium
     "rdflib==7.6.0",  # RDF export (export_rdf.py)
+    "pyarrow==25.0.1",  # Parquet export for Hugging Face (export_hf.py)
 ]
 
 [tool.setuptools]
