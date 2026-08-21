@@ -243,7 +243,7 @@ Parliamentary data are sourced from the **Camera dei Deputati open data** progra
 backend/    FastAPI app — retrieval, authority scoring, generation, citation verification
 frontend/   Next.js app — chat, search, rankings, compass, timeline, evaluation
 build/      knowledge-graph construction pipeline + validation gate (see build/README.md)
-docs/       papers (ISWC 2026 In-Use camera-ready draft + Demo paper)
+docs/       LLM prompt reference (papers are served from parliamentrag.it, see Citation)
 mcp/        MCP server exposing the public API as Claude tools (see mcp/README.md)
 ```
 
