@@ -6,14 +6,11 @@
 </p>
 
 <p align="center">
-  <a href="https://www.parliamentrag.it/"><img alt="Live demo" src="https://img.shields.io/badge/live_demo-parliamentrag.it-1E3A5F"></a>
-  <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://img.shields.io/badge/RDF_dataset-Zenodo-1682D4?logo=zenodo&logoColor=white"></a>
-  <a href="https://orkg.org/papers/R1909763"><img alt="ORKG semantic description" src="https://img.shields.io/badge/ORKG-R1909763-E86161"></a>
-  <br>
-  <a href="https://iswc2026.semanticweb.org"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
-  <a href="https://iswc2026.semanticweb.org"><img alt="ISWC 2026 Posters &amp; Demos" src="https://img.shields.io/badge/ISWC_2026-Posters_%26_Demos-6A4C93"></a>
-  <a href="LICENSE"><img alt="Code license" src="https://img.shields.io/badge/code-Apache_2.0-0969DA"></a>
-  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license" src="https://img.shields.io/badge/data-CC--BY_4.0-97CA00"></a>
+  <a href="https://www.parliamentrag.it/"><img alt="Live demo at parliamentrag.it" src="https://img.shields.io/badge/Live_demo-parliamentrag.it-1E3A5F?style=flat-square"></a>
+  <a href="https://iswc2026.semanticweb.org"><img alt="Two papers accepted at ISWC 2026" src="https://img.shields.io/badge/ISWC_2026-In--Use_%2B_Demo_papers-6A4C93?style=flat-square"></a>
+  <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://img.shields.io/badge/Dataset-Zenodo_DOI-1682D4?style=flat-square&logo=zenodo&logoColor=white"></a>
+  <a href="LICENSE"><img alt="Code license Apache 2.0" src="https://img.shields.io/badge/Code-Apache_2.0-0969DA?style=flat-square"></a>
+  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license CC BY 4.0" src="https://img.shields.io/badge/Data-CC_BY_4.0-97CA00?style=flat-square&logo=creativecommons&logoColor=white"></a>
 </p>
 
 **Balanced, verifiable answers about Italian parliamentary debate, grounded in what was actually said and by whom.**
@@ -25,14 +22,14 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 - **174k+ text chunks** from **705 plenary sessions**, updated through 2026-08-20
 - **17.3k roll-call votes** with **6.9M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
-- **Topic-aware authority scoring**: the most credible speaker per party is selected for the specific question asked
+- **Topic-aware authority scoring**: the system picks the most credible speaker per party for the specific question asked
 - **6 languages** (IT / EN / FR / DE / ES / PT), editorial newspaper-style UI
 
 ---
 
 ## Why
 
-LLM summaries of parliamentary activity tend to favour dominant actors, quote out of context, and flatten disagreement. ParliamentRAG treats what is said and who says it as equally important: retrieval, generation, and presentation are all constrained to cover the whole range of parliamentary groups, and every claim is anchored to a verifiable span of the official record.
+LLM summaries of parliamentary activity tend to favour dominant actors, quote out of context, and flatten disagreement. ParliamentRAG treats what is said and who says it as equally important: retrieval, generation, and presentation all have to cover the whole range of parliamentary groups, and every claim points to a verifiable span of the official record.
 
 ---
 
@@ -196,7 +193,7 @@ All routes are mounted under `/api` (interactive docs at `/docs`).
 ## MCP connector (Claude, ChatGPT and compatible clients)
 
 ParliamentRAG is also a [Model Context Protocol](https://modelcontextprotocol.io)
-server: assistants get direct, read-only access to the official records —
+server: assistants get direct, read-only access to the official records:
 hybrid search over speeches and acts, sittings with recaps, roll-call votes
 with per-deputy outcomes (filterable by deputy or group), the exact text of
 voted amendments, and hemicycle charts rendered as images in the conversation.
@@ -268,7 +265,7 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 }
 ```
 
-A companion **demo paper** describing the live system has been accepted at the ISWC 2026 Posters & Demos track; its CEUR-WS citation will be added here once the proceedings are published.
+A companion **demo paper** on the live system was accepted at the ISWC 2026 Posters & Demos track; we will add its CEUR-WS citation here once the proceedings are out.
 
 The **RDF dataset** can be cited via its Zenodo DOI: [10.5281/zenodo.21560332](https://doi.org/10.5281/zenodo.21560332) (version used in the paper) or [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331) (always the latest version).
 
