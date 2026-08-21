@@ -511,6 +511,9 @@ export default function LandingPage() {
               <FooterLink href="https://doi.org/10.5281/zenodo.21560331" external>
                 Zenodo
               </FooterLink>
+              <FooterLink href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19" external>
+                Hugging Face
+              </FooterLink>
               <FooterLink href="/data">{t("footerData")}</FooterLink>
               <FooterLink href="/privacy">{t("footerPrivacy")}</FooterLink>
             </nav>
