@@ -658,6 +658,9 @@
     "colGroup": "Grupo",
     "colCoalition": "Coligação",
     "colScore": "Pontuação",
+    "methodTitle": "Como funciona a pontuação",
+    "methodP1": "A pontuação é uma soma ponderada de seis componentes, cada um entre 0 e 1: profissão, formação, comissões, atos assinados, discursos em plenário e cargos institucionais. A relevância para o tema vem da similaridade semântica entre a sua pergunta e os textos por trás de cada componente; a atividade recente pesa mais e só contam os mandatos em curso.",
+    "methodP2": "Leia-a como uma estimativa interpretável da especialização no tema, não como uma medida objetiva de autoridade. O detalhamento em cada linha mostra o que determina cada posição: você pode julgar a classificação e contestá-la.",
     "noResultsFiltered": "Nenhum deputado corresponde aos filtros selecionados.",
     "errorFetch": "Erro no cálculo do ranking",
     "errorUnknown": "Erro desconhecido"

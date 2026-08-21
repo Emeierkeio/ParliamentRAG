@@ -9,10 +9,11 @@ import logging
 import asyncio
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from .query import get_services
+from ..services.translation import translate_compass_axes
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Compass"])
@@ -24,10 +25,11 @@ class CompassRequest(BaseModel):
 
 
 @router.post("/compass")
-async def compass_endpoint(request: CompassRequest):
+async def compass_endpoint(request: CompassRequest, http_request: Request):
     """Compute ideological compass for all parties on a given topic."""
     services = get_services()
     start = time.time()
+    locale = (http_request.headers.get("accept-language", "it") or "it").strip()[:2].lower()
 
     try:
         # Step 1: Retrieve evidence
@@ -51,6 +53,12 @@ async def compass_endpoint(request: CompassRequest):
             lambda: services["ideology"].compute_2d_text_positions(
                 evidence_dicts, query=request.query),
         )
+
+        # Axis poles are always generated in Italian so the anchored vectors
+        # stay identical across UI languages; only the labels get translated.
+        if locale != "it":
+            compass_result = await translate_compass_axes(
+                compass_result, target_lang=locale)
 
         elapsed_ms = round((time.time() - start) * 1000)
 

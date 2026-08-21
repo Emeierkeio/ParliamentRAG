@@ -658,6 +658,9 @@
     "colGroup": "Fraktion",
     "colCoalition": "Koalition",
     "colScore": "Score",
+    "methodTitle": "So entsteht der Score",
+    "methodP1": "Der Score ist eine gewichtete Summe aus sechs Komponenten, jede zwischen 0 und 1: Beruf, Ausbildung, Ausschüsse, unterzeichnete Akten, Redebeiträge im Plenum und institutionelle Rollen. Die Relevanz zum Thema ergibt sich aus der semantischen Ähnlichkeit zwischen Ihrer Frage und den Texten hinter jeder Komponente; jüngere Aktivität wiegt stärker, und nur laufende Mandate zählen.",
+    "methodP2": "Lesen Sie ihn als interpretierbare Schätzung der Themenexpertise, nicht als objektives Maß für Autorität. Die Aufschlüsselung in jeder Zeile zeigt, was jede Position bestimmt: Sie können das Ranking beurteilen und hinterfragen.",
     "noResultsFiltered": "Keine Abgeordneten entsprechen den ausgewählten Filtern.",
     "errorFetch": "Fehler bei der Berechnung des Rankings",
     "errorUnknown": "Unbekannter Fehler"

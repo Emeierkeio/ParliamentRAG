@@ -702,6 +702,9 @@
     "colGroup": "Group",
     "colCoalition": "Coalition",
     "colScore": "Score",
+    "methodTitle": "How the score works",
+    "methodP1": "The score is a weighted sum of six components, each between 0 and 1: profession, education, committee memberships, signed acts, floor speeches, and institutional roles. Relevance to your topic comes from the semantic similarity between your question and the texts behind each component; recent activity weighs more, and only mandates valid today count.",
+    "methodP2": "Read it as an interpretable estimate of topic expertise, not as an objective measure of authority. The breakdown on each row shows what drives every position, so you can judge the ranking and challenge it.",
     "noResultsFiltered": "No deputies match the selected filters.",
     "errorFetch": "Error computing the ranking",
     "errorUnknown": "Unknown error"
