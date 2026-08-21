@@ -251,6 +251,17 @@ export default function LandingPage() {
                   <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
                 </a>
                 <a
+                  href="/parliamentrag-demo-iswc2026.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-baseline gap-1 py-1.5 text-[13px] sm:text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <span className="border-b border-border group-hover:border-foreground pb-0.5 transition-colors">
+                    {t("paperDemo")}
+                  </span>
+                  <ArrowUpRight className="hidden sm:block h-3.5 w-3.5 self-center" />
+                </a>
+                <a
                   href={`https://mcp.parliamentrag.it/?lang=${locale}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -490,6 +501,9 @@ export default function LandingPage() {
               </FooterLink>
               <FooterLink href="/who-speaks-matters-iswc2026.pdf" external>
                 {t("paperInUse")}
+              </FooterLink>
+              <FooterLink href="/parliamentrag-demo-iswc2026.pdf" external>
+                {t("paperDemo")}
               </FooterLink>
               <FooterLink href="https://orkg.org/papers/R1909763" external>
                 ORKG
