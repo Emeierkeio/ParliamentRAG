@@ -21,6 +21,7 @@ import {
   ArrowRight,
   History,
   Clock,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -665,6 +666,18 @@ export default function RankingPage() {
                   {t("newSearch")}
                 </Button>
               </div>
+
+              {/* Methodology note (issue #18, from the ISWC demo reviews) */}
+              <details className="mb-4">
+                <summary className="cursor-pointer list-none inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  <Info className="h-3.5 w-3.5" />
+                  <span className="border-b border-border pb-0.5">{t("methodTitle")}</span>
+                </summary>
+                <div className="mt-3 max-w-3xl space-y-2 text-[13px] leading-relaxed text-muted-foreground">
+                  <p>{t("methodP1")}</p>
+                  <p>{t("methodP2")}</p>
+                </div>
+              </details>
 
               {/* Table header (desktop) */}
               <div className="hidden sm:grid grid-cols-[3rem_1fr_8rem_6rem_5rem] gap-3 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground border-b border-border">

@@ -658,6 +658,9 @@
     "colGroup": "Groupe",
     "colCoalition": "Coalition",
     "colScore": "Score",
+    "methodTitle": "Comment fonctionne le score",
+    "methodP1": "Le score est une somme pondérée de six composantes, chacune entre 0 et 1 : profession, formation, commissions, actes signés, interventions en séance et rôles institutionnels. La pertinence par rapport au thème vient de la similarité sémantique entre votre question et les textes derrière chaque composante ; l'activité récente pèse davantage et seuls les mandats en cours comptent.",
+    "methodP2": "Lisez-le comme une estimation interprétable de l'expertise sur le thème, pas comme une mesure objective d'autorité. La décomposition sur chaque ligne montre ce qui détermine chaque position : vous pouvez juger le classement et le contester.",
     "noResultsFiltered": "Aucun député ne correspond aux filtres sélectionnés.",
     "errorFetch": "Erreur lors du calcul du classement",
     "errorUnknown": "Erreur inconnue"

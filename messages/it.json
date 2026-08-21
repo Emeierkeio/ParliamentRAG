@@ -702,6 +702,9 @@
     "colGroup": "Gruppo",
     "colCoalition": "Coalizione",
     "colScore": "Score",
+    "methodTitle": "Come funziona il punteggio",
+    "methodP1": "Il punteggio è una somma pesata di sei componenti, ciascuna tra 0 e 1: professione, titolo di studio, commissioni, atti firmati, interventi in Aula e ruoli istituzionali. La pertinenza col tema nasce dalla similarità semantica tra la tua domanda e i testi dietro ogni componente; l'attività recente pesa di più e contano solo gli incarichi in corso.",
+    "methodP2": "Leggilo come una stima interpretabile dell'expertise sul tema, non come una misura oggettiva di autorevolezza. La scomposizione su ogni riga mostra cosa determina ogni posizione: puoi giudicare la classifica e contestarla.",
     "noResultsFiltered": "Nessun deputato corrisponde ai filtri selezionati.",
     "errorFetch": "Errore nel calcolo del ranking",
     "errorUnknown": "Errore sconosciuto"

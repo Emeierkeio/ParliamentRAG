@@ -61,7 +61,7 @@ export default function CompassPage() {
     try {
       const res = await fetch(`${config.api.baseUrl}/compass`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept-Language": locale },
         body: JSON.stringify({ query: topicText }),
       });
       if (!res.ok) throw new Error(t("errorFetch"));
@@ -76,7 +76,7 @@ export default function CompassPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [locale, t]);
 
   const restoreCompassEntry = useCallback(
     (entry: { topic: string; data: { compassData: CompassData; computationTime: number } }) => {

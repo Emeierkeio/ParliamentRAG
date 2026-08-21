@@ -658,6 +658,9 @@
     "colGroup": "Grupo",
     "colCoalition": "Coalición",
     "colScore": "Puntuación",
+    "methodTitle": "Cómo funciona la puntuación",
+    "methodP1": "La puntuación es una suma ponderada de seis componentes, cada uno entre 0 y 1: profesión, formación, comisiones, actos firmados, intervenciones en el pleno y cargos institucionales. La relevancia respecto al tema nace de la similitud semántica entre tu pregunta y los textos detrás de cada componente; la actividad reciente pesa más y solo cuentan los mandatos en curso.",
+    "methodP2": "Léela como una estimación interpretable de la experiencia en el tema, no como una medida objetiva de autoridad. El desglose de cada fila muestra qué determina cada posición: puedes juzgar la clasificación y cuestionarla.",
     "noResultsFiltered": "Ningún diputado coincide con los filtros seleccionados.",
     "errorFetch": "Error al calcular el ranking",
     "errorUnknown": "Error desconocido"
