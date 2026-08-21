@@ -10,6 +10,15 @@ retrieval:
     similarity_threshold: 0.3
     index_name: "chunk_embedding_index"
 
+  # Gate fuori-dominio (issue #22). Soglie tarate con
+  # build/calibrate_relevance_gate.py (21/08/2026): i 15 topic reali
+  # dell'eval set hanno minimo 15 chunk densi con similarità >= 0.78,
+  # le query fuori dominio massimo 6.
+  relevance_gate:
+    enabled: true
+    chunk_similarity_floor: 0.78
+    min_chunks_above_floor: 10
+
   graph_channel:
     # Hybrid Eurovoc matching (lexical + semantic)
     lexical_keywords_min_match: 1

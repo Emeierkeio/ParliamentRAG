@@ -19,6 +19,8 @@ from ..services.neo4j_client import Neo4jClient
 from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
+from ..services.domain_check import check_domain
+from ..services.relevance_gate import gate_message, domain_notice
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -141,6 +143,10 @@ async def process_query_streaming(
     _en = request_locale != "it"
 
     try:
+        # Domain check (issue #22): runs while retrieval works. Never blocks
+        # on its own; the result gets awaited only where it changes the output.
+        domain_task = asyncio.create_task(check_domain(request.query, request_locale))
+
         # Step 1: Progress - Starting
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Avvio retrieval...'})}\n\n"
 
@@ -167,6 +173,26 @@ async def process_query_streaming(
         _ev_msg = (f'Found {len(evidence_list)} evidence pieces' if _en
                    else f'Trovate {len(evidence_list)} evidenze')
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': _ev_msg})}\n\n"
+
+        # Out-of-domain gate (issue #22): with too little on-topic dense
+        # evidence the pipeline stops here and answers honestly, instead of
+        # generating a report from off-topic chunks. Thresholds calibrated
+        # with build/calibrate_relevance_gate.py.
+        gate_cfg = services["retrieval"].config.retrieval.get("relevance_gate", {})
+        relevance = retrieval_result["metadata"].get("relevance", {})
+        if (gate_cfg.get("enabled", True)
+                and relevance.get("chunks_above_floor", 0)
+                < gate_cfg.get("min_chunks_above_floor", 10)):
+            logger.info(f"[RELEVANCE_GATE] Blocked {request.query!r}: {relevance}")
+            domain = await domain_task
+            message = gate_message(
+                request.query, domain.get("suggestions", []), request_locale)
+            for i in range(0, len(message), 100):
+                yield f"data: {json.dumps({'type': 'chunk', 'data': message[i:i+100]})}\n\n"
+                await asyncio.sleep(0.02)
+            _meta = {**retrieval_result["metadata"], "relevance_gate": "blocked"}
+            yield f"data: {json.dumps({'type': 'complete', 'metadata': _meta}, default=str)}\n\n"
+            return
 
         # Step 3: Authority scoring
         yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Computing authority scores...' if _en else 'Calcolo authority scores...'})}\n\n"
@@ -559,6 +585,14 @@ async def process_query_streaming(
         # Translate response text if needed
         if request_locale != "it":
             final_text = await translate_response_text(final_text, target_lang=request_locale)
+
+        # Non-blocking domain notice (issue #22): the evidence gate passed
+        # but the LLM check flags the query as out of scope. Prepended after
+        # translation because the notice is already localized.
+        domain = await domain_task
+        if not domain.get("in_domain", True):
+            final_text = domain_notice(
+                domain.get("suggestions", []), request_locale) + final_text
 
         # Step 7: Stream text chunks
         chunk_size = 100

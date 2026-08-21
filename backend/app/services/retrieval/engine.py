@@ -195,9 +195,21 @@ class RetrievalEngine:
         processing_time = (time.time() - start_time) * 1000
         party_coverage = self._compute_party_coverage(evidence_list)
 
+        # Similarità del canale denso per il gate fuori-dominio (issue #22):
+        # stessa distribuzione usata da build/calibrate_relevance_gate.py
+        # per tarare le soglie, calcolata PRIMA di merge e coverage fill.
+        gate_cfg = self.config.retrieval.get("relevance_gate", {})
+        gate_floor = gate_cfg.get("chunk_similarity_floor", 0.78)
+        dense_sims = [r.get("similarity", 0.0) for r in dense_results]
+
         return {
             "evidence": evidence_list,
             "metadata": {
+                "relevance": {
+                    "max_similarity": max(dense_sims, default=0.0),
+                    "chunks_above_floor": sum(1 for s in dense_sims if s >= gate_floor),
+                    "floor": gate_floor,
+                },
                 "dense_channel_count": len(dense_results),
                 "graph_channel_count": len(graph_results),
                 "merged_count": len(merged_results),
