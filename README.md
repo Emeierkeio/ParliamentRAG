@@ -11,6 +11,7 @@
   <a href="https://orkg.org/papers/R1909763"><img alt="ORKG semantic description" src="https://img.shields.io/badge/ORKG-R1909763-E86161"></a>
   <br>
   <a href="https://iswc2026.semanticweb.org"><img alt="ISWC 2026 In-Use Track" src="https://img.shields.io/badge/ISWC_2026-In--Use_Track-6A4C93"></a>
+  <a href="https://iswc2026.semanticweb.org"><img alt="ISWC 2026 Posters &amp; Demos" src="https://img.shields.io/badge/ISWC_2026-Posters_%26_Demos-6A4C93"></a>
   <a href="LICENSE"><img alt="Code license" src="https://img.shields.io/badge/code-Apache_2.0-0969DA"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license" src="https://img.shields.io/badge/data-CC--BY_4.0-97CA00"></a>
 </p>
@@ -21,8 +22,8 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **174k+ text chunks** from **705 plenary sessions**, updated through 2026-08-10
-- **17.2k roll-call votes** with **6.8M individual vote records** linked to deputies
+- **174k+ text chunks** from **705 plenary sessions**, updated through 2026-08-20
+- **17.3k roll-call votes** with **6.9M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the most credible speaker per party is selected for the specific question asked
 - **6 languages** (IT / EN / FR / DE / ES / PT), editorial newspaper-style UI
@@ -91,7 +92,7 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature, data as of 2026-08-10** (updated incrementally): 705 sessions · 46.9k speeches · 174k+ chunks · 36.3k acts · 17.2k roll calls with 6.8M individual votes
+- **XIX Legislature, data as of 2026-08-20** (updated incrementally): 705 sessions · 46.9k speeches · 174k+ chunks · 35.6k acts · 17.3k roll calls with 6.9M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
@@ -267,7 +268,7 @@ Accepted at the **In-Use Track of the 25th International Semantic Web Conference
 }
 ```
 
-A companion **demo paper** describing the live system has been submitted to the ISWC 2026 Posters & Demos track.
+A companion **demo paper** describing the live system has been accepted at the ISWC 2026 Posters & Demos track; its CEUR-WS citation will be added here once the proceedings are published.
 
 The **RDF dataset** can be cited via its Zenodo DOI: [10.5281/zenodo.21560332](https://doi.org/10.5281/zenodo.21560332) (version used in the paper) or [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331) (always the latest version).
 
