@@ -227,9 +227,10 @@ interface MessageBubbleProps {
   chatId?: string;
   progressSlot?: React.ReactNode;
   onSuggestionClick?: (query: string) => void;
+  queryText?: string;
 }
 
-export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick, queryText }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
@@ -519,7 +520,12 @@ export function MessageBubble({ message, className, chatId, progressSlot, onSugg
         {/* Pollici per risposta (issue #21): a fine prosa, PRIMA delle
             sezioni di approfondimento — a fondo pagina non li vede nessuno */}
         {!isUser && message.status === "complete" && !message.gate && message.content && (
-          <AnswerFeedback context={message.chatId || chatId} />
+          <AnswerFeedback
+            context={
+              message.chatId || chatId ||
+              (queryText ? `q:${queryText.slice(0, 280)}` : undefined)
+            }
+          />
         )}
         {/* Additional metadata for assistant messages — show progressively once text is visible */}
         {!isUser && message.content && (message.status === "complete" || message.status === "streaming") && (
