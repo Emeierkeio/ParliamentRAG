@@ -279,141 +279,14 @@ link-refs: tunnel
 		$(BACKEND_DIR)/venv/bin/python build/link_refs.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT); \
 	fi
 
+## L'orchestrazione vive in build/update_data.sh: log completo su file
+## (build/logs/update-data-<timestamp>.log), a terminale solo avanzamento,
+## esito per step e WARNING/ERROR. La logica dei singoli step (frontiera
+## summaries, replay locale, SPARQL, HF, ...) è documentata nello script.
 update-data: tunnel
-	@test -f $(V2_DIR)/build/build_and_update.py || { \
-		echo "ERROR: v2 pipeline not found at $(V2_DIR)/build — set V2_DIR=<path to ParliamentRAG repo>"; exit 1; }
-	@test -x $(V2_DIR)/backend/venv/bin/python || { \
-		echo "ERROR: v2 backend venv missing — run 'make db-install' inside $(V2_DIR) first"; exit 1; }
-	@NEO4J_USER_VAL=$$(grep '^NEO4J_USER=' .env | cut -d= -f2-); \
-	NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
-	test -n "$$NEO4J_PASS_VAL" || { echo "ERROR: NEO4J_PASSWORD not found in .env"; exit 1; }; \
-	echo "Updating demo DB at $(DEMO_NEO4J) using pipeline in $(V2_DIR)/build ..."; \
-	cd $(V2_DIR) && backend/venv/bin/python build/build_and_update.py update \
-		--neo4j-uri $(DEMO_NEO4J) \
-		--neo4j-user $${NEO4J_USER_VAL:-neo4j} \
-		--neo4j-password $$NEO4J_PASS_VAL
-	@echo "Repairing speaker links (v2 ingest attaches new speeches to persona.rdf duplicates)..."
-	@$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py $(DEMO_NEO4J)
-	@# AI summaries for the timeline, NEW sessions only. The DB carries a large
-	@# historical backlog of sessions without recap (646 as of 2026-07) that we
-	@# deliberately do NOT backfill: the plain "recapIt IS NULL" mode would eat
-	@# it all. Instead we start from the frontier — the most recent date that
-	@# already has a recap — and generate_summaries.py --from-date skips any
-	@# already-summarized session in the range, so re-runs are idempotent.
-	@# Runs BEFORE the local replay so sync_local_snapshot.py copies the fresh
-	@# summaries to the local snapshot too.
-	@echo "Generating AI summaries for new sessions..."
-	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
-	OPENAI_KEY_VAL=$$(grep '^OPENAI_API_KEY=' .env | cut -d= -f2-); \
-	if [ -z "$$OPENAI_KEY_VAL" ]; then \
-		echo "WARNING: OPENAI_API_KEY not found in .env — summaries skipped."; \
-	else \
-		FRONTIER=$$(NEO4J_PASSWORD="$$NEO4J_PASS_VAL" $(BACKEND_DIR)/venv/bin/python -c 'import os; from neo4j import GraphDatabase; d = GraphDatabase.driver("$(DEMO_NEO4J)", auth=("neo4j", os.environ["NEO4J_PASSWORD"])); s = d.session(); m = s.run("MATCH (n:Session) WHERE n.recapIt IS NOT NULL RETURN toString(max(n.date)) AS m").single()["m"]; print(m or ""); d.close()'); \
-		if [ -z "$$FRONTIER" ]; then \
-			echo "WARNING: no session has a recap yet — summary frontier unknown, skipping (run 'make generate-summaries' for a full pass)."; \
-		else \
-			echo "  summary frontier: $$FRONTIER"; \
-			OPENAI_API_KEY="$$OPENAI_KEY_VAL" $(BACKEND_DIR)/venv/bin/python build/generate_summaries.py \
-				--neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" \
-				--from-date "$$FRONTIER"; \
-		fi; \
-	fi
-	@# Landing-page topic chips: recompute now (data just changed) so the
-	@# result lands in Neo4j (RecentTopicsCache) and no visitor ever waits
-	@# for the Neo4j+LLM computation. The curl also wakes the prod backend.
-	@echo "Warming recent-topics cache on prod (it, en)..."
-	@for L in it en; do \
-		curl -s -m 120 "https://www.parliamentrag.it/api/config/recent-topics?lang=$$L&refresh=1" -o /dev/null \
-			&& echo "  lang=$$L ok" || echo "  lang=$$L FAILED (will recompute on first visit)"; \
-	done
-	@echo "Refreshing README data stats..."
-	@$(BACKEND_DIR)/venv/bin/python build/update_readme_stats.py --neo4j-uri $(DEMO_NEO4J)
-	@echo "Syncing ORKG entry statistics (skipped without ORKG_API_TOKEN in .env)..."
-	@$(BACKEND_DIR)/venv/bin/python build/update_orkg_stats.py --neo4j-uri $(DEMO_NEO4J) \
-		|| echo "  ORKG sync FAILED (non-blocking): orkg.org slow or unreachable, retry at next update"
-	@# Same incremental update replayed on the local snapshot (:$(LOCAL_BOLT_PORT)), so the
-	@# local copy never drifts from the demo DB. Downloads and embeddings hit the
-	@# caches of the run above, so this pass is cheap. Everything written to the
-	@# remote by other paths (AI summaries, chunk citability, ChatHistory/survey
-	@# nodes, componenti Misto) is NOT part of the pipeline: it gets copied over
-	@# by sync_local_snapshot.py right after the replay. Skip with LOCAL_SYNC=0;
-	@# skipped automatically when the local Neo4j is off or when update-data was
-	@# already pointed at the local copy via DEMO_NEO4J.
-	@if [ "$(LOCAL_SYNC)" = "0" ] || [ "$(DEMO_NEO4J)" = "bolt://localhost:$(LOCAL_BOLT_PORT)" ]; then \
-		echo "Local snapshot sync skipped."; \
-	elif nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
-		echo "Replaying the incremental update on the local snapshot (:$(LOCAL_BOLT_PORT))..."; \
-		NEO4J_USER_VAL=$$(grep '^NEO4J_USER=' .env | cut -d= -f2-); \
-		NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
-		( cd $(V2_DIR) && backend/venv/bin/python build/build_and_update.py update \
-			--neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) \
-			--neo4j-user $${NEO4J_USER_VAL:-neo4j} \
-			--neo4j-password $$NEO4J_PASS_VAL ) && \
-		$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/repair_speaker_links.py bolt://localhost:$(LOCAL_BOLT_PORT) && \
-		echo "Syncing remote-only data (summaries, citability, chats, Misto) to the local snapshot..." && \
-		$(BACKEND_DIR)/venv/bin/python $(BACKEND_DIR)/scripts/sync_local_snapshot.py $(DEMO_NEO4J) bolt://localhost:$(LOCAL_BOLT_PORT); \
-	else \
-		echo "Local snapshot not running on :$(LOCAL_BOLT_PORT) — sync skipped (make db-pull to recreate it)."; \
-	fi
-	@# Aggregate votes live only in dati.camera.it SPARQL (the stenografico XMLs
-	@# stopped shipping the raccoltaVotazioni block), and the endpoint publishes
-	@# with a few days of lag: re-sweep the last ~10 Camera sittings on every
-	@# update so late votes land. Idempotent MERGEs, seconds per run.
-	@echo "Refreshing aggregate votes from dati.camera.it (last ~10 Camera sittings)..."
-	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
-	START=$$(NEO4J_PASSWORD="$$NEO4J_PASS_VAL" $(BACKEND_DIR)/venv/bin/python -c 'import os; from neo4j import GraphDatabase; d = GraphDatabase.driver("$(DEMO_NEO4J)", auth=("neo4j", os.environ["NEO4J_PASSWORD"])); s = d.session(); m = s.run("MATCH (n:Session {chamber: \x27camera\x27}) RETURN max(toInteger(n.number)) AS m").single()["m"]; print(max(1, (m or 11) - 10)); d.close()'); \
-	echo "  start-session: $$START"; \
-	$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
-	$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --individual-recent --legislature 19 --start-session $$START; \
-	if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
-		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --aggregate-only --legislature 19 --start-session $$START; \
-		$(BACKEND_DIR)/venv/bin/python build/sparql_ingester.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --individual-recent --legislature 19 --start-session $$START; \
-	fi
-	@# Titoli/atti delle votazioni: le sedute recenti nascono con label generico
-	@# ("Votazione") e senza rif_attoCamera; dati.camera.it li arricchisce solo
-	@# quando consolida il dataset (mesi dopo) e l'ingest aggregati salta le
-	@# sedute gia' coperte, quindi non li rivedrebbe mai. Questo refresh
-	@# ripassa TUTTA la legislatura a ogni update (idempotente, ~1 min): appena
-	@# la Camera consolida, titoli, descrizioni e link agli atti arrivano da
-	@# soli. Non blocca l'update se l'endpoint SPARQL fa i capricci.
-	@echo "Refreshing vote titles/acts from dati.camera.it (whole legislature)..."
-	@NEO4J_PASS_VAL=$$(grep '^NEO4J_PASSWORD=' .env | cut -d= -f2-); \
-	$(BACKEND_DIR)/venv/bin/python build/repair_vote_data.py --neo4j-uri $(DEMO_NEO4J) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --subjects \
-		|| echo "WARNING: vote titles refresh failed (SPARQL flaky?) — will retry at next update-data"; \
-	if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
-		$(BACKEND_DIR)/venv/bin/python build/repair_vote_data.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) --neo4j-user neo4j --neo4j-password "$$NEO4J_PASS_VAL" --subjects \
-			|| echo "WARNING: vote titles refresh failed on local snapshot"; \
-	fi
-	@# Atti placeholder: l'ingest XML crea placeholder per gli argomenti dei
-	@# dibattiti (mozioni con numero 1-00004 vs 1/00004, pdl versione
-	@# commissione "-A"); l'atto vero arriva dalla SPARQL in un giro
-	@# successivo. Questo pass idempotente ripunta DISCUSSES/CITES e cancella
-	@# il placeholder appena il match esiste.
-	@echo "Resolving placeholder acts against ingested real acts..."
-	@backend/venv/bin/python build/repair_placeholder_acts.py --neo4j-uri $(DEMO_NEO4J) \
-		|| echo "WARNING: placeholder resolution failed — retry at next update-data"
-	@if [ "$(LOCAL_SYNC)" != "0" ] && [ "$(DEMO_NEO4J)" != "bolt://localhost:$(LOCAL_BOLT_PORT)" ] && nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
-		backend/venv/bin/python build/repair_placeholder_acts.py --neo4j-uri bolt://localhost:$(LOCAL_BOLT_PORT) \
-			|| echo "WARNING: placeholder resolution failed on local snapshot"; \
-	fi
-	@# Dataset Hugging Face: a differenza di Zenodo (snapshot congelato) segue
-	@# il DB vivo — rigenera i parquet + card da NEO4J_URI (.env, snapshot
-	@# locale :$(LOCAL_BOLT_PORT)) e ricarica il repo. Non blocca l'update:
-	@# senza CLI hf o senza rete si riprova al prossimo giro (o a mano con
-	@# `make export-hf hf-upload`).
-	@echo "Updating Hugging Face dataset ($(HF_DATASET_REPO))..."
-	@if ! command -v hf >/dev/null 2>&1; then \
-		echo "  hf CLI not installed — skipped (uv tool install huggingface_hub)"; \
-	elif ! nc -z -w 2 localhost $(LOCAL_BOLT_PORT) >/dev/null 2>&1; then \
-		echo "  local snapshot (:$(LOCAL_BOLT_PORT)) not running — skipped"; \
-	else \
-		( $(BACKEND_DIR)/venv/bin/python build/export_hf.py \
-			&& hf upload $(HF_DATASET_REPO) dumps/hf . --repo-type dataset \
-				--commit-message "Data update $$(date +%Y-%m-%d)" >/dev/null \
-			&& echo "  HF dataset updated." ) \
-		|| echo "WARNING: HF dataset update failed — retry with 'make export-hf hf-upload'"; \
-	fi
-	@echo "Done. Sidebar date, landing//data stats, README, ORKG and HF dataset now reflect the updated DB."
+	@V2_DIR="$(V2_DIR)" DEMO_NEO4J="$(DEMO_NEO4J)" BACKEND_DIR="$(BACKEND_DIR)" \
+	LOCAL_BOLT_PORT="$(LOCAL_BOLT_PORT)" LOCAL_SYNC="$(LOCAL_SYNC)" \
+	HF_DATASET_REPO="$(HF_DATASET_REPO)" bash build/update_data.sh
 
 # Data-pipeline targets (db-populate, db-update-all, enrich-sparql, ...)
 include Makefile.data
