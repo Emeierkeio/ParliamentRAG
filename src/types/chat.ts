@@ -117,6 +117,13 @@ export interface TopicStatistics {
   sessions_detail: SessionDetail[];
 }
 
+export interface GateInfo {
+  title: string;
+  body: string;
+  suggestions_label: string;
+  suggestions: string[];
+}
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -131,6 +138,8 @@ export interface Message {
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
   topicStats?: TopicStatistics;
+  // Relevance gate (tema non trovato): sostituisce il contenuto markdown
+  gate?: GateInfo;
   // History ID for sharing
   chatId?: string;
 }
