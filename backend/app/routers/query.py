@@ -20,7 +20,7 @@ from ..services.authority.coalition_logic import CoalitionLogic
 from ..services.deps import get_services
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.domain_check import check_domain
-from ..services.relevance_gate import gate_message, domain_notice
+from ..services.relevance_gate import gate_payload, domain_notice
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -185,11 +185,9 @@ async def process_query_streaming(
                 < gate_cfg.get("min_chunks_above_floor", 10)):
             logger.info(f"[RELEVANCE_GATE] Blocked {request.query!r}: {relevance}")
             domain = await domain_task
-            message = gate_message(
+            payload = gate_payload(
                 request.query, domain.get("suggestions", []), request_locale)
-            for i in range(0, len(message), 100):
-                yield f"data: {json.dumps({'type': 'chunk', 'data': message[i:i+100]})}\n\n"
-                await asyncio.sleep(0.02)
+            yield f"data: {json.dumps({'type': 'gate', 'data': payload}, default=str)}\n\n"
             _meta = {**retrieval_result["metadata"], "relevance_gate": "blocked"}
             yield f"data: {json.dumps({'type': 'complete', 'metadata': _meta}, default=str)}\n\n"
             return

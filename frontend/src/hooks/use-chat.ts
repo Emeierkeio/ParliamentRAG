@@ -7,6 +7,7 @@ import type {
   Citation,
   Expert,
   BalanceMetrics,
+  GateInfo,
   ProcessingProgress,
   StepResult,
   TopicStatistics,
@@ -184,6 +185,7 @@ export function useChat(options: UseChatOptions = {}) {
       let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
       let commissioni: any[] = [];
+      let gateInfo: GateInfo | null = null;
       // Accumulator for step results — survives React state batching race conditions
       const stepResultsMap = new Map<number, { step: number; label: string; result: string; details?: any }>();
       let buffer = ""; // Buffer per messaggi SSE parziali
@@ -460,6 +462,14 @@ export function useChat(options: UseChatOptions = {}) {
                 }
                 break;
 
+              case "gate":
+                // Relevance gate: query fuori dominio, pipeline ferma al
+                // retrieval. Via lo stepper: renderà il blocco dedicato.
+                gateInfo = data.data as GateInfo;
+                setProgress(null);
+                updateLastAssistantMessage({ gate: gateInfo });
+                break;
+
               case "chunk":
                 accumulatedContent += (data.data || data.content || "");
                 setStreamingContent(accumulatedContent);
@@ -487,6 +497,14 @@ export function useChat(options: UseChatOptions = {}) {
                 break;
 
               case "complete":
+
+                // Query bloccata dal gate: niente stepper, niente history
+                if (gateInfo) {
+                  streamCompletedRef.current = true;
+                  setProgress(null);
+                  updateLastAssistantMessage({ status: "complete", gate: gateInfo });
+                  break;
+                }
 
                 // Extract citation links from generated text for cross-check
                 const textCitLinks = (accumulatedContent.match(/\]\((leg1[89]_[^)]+)\)/g) || [])

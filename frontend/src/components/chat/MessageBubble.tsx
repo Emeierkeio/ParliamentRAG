@@ -34,6 +34,7 @@ import {
   Share2,
   Languages,
   ArrowRight,
+  SearchX,
   Check as CheckIcon,
 } from "lucide-react";
 import {
@@ -274,6 +275,40 @@ export function MessageBubble({ message, className, chatId, progressSlot, onSugg
             </div>
             {message.content && (
               <p className="text-sm text-destructive/90">{message.content}</p>
+            )}
+          </div>
+        )}
+
+        {/* Relevance gate: tema non trovato nel corpus */}
+        {message.gate && (
+          <div className="py-2">
+            <div className="flex items-center gap-2.5 mb-3">
+              <SearchX className="h-5 w-5 text-muted-foreground shrink-0" strokeWidth={1.5} />
+              <h2 className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight text-foreground">
+                {message.gate.title}
+              </h2>
+            </div>
+            <p className="text-[15px] leading-7 text-muted-foreground max-w-prose">
+              {message.gate.body}
+            </p>
+            {message.gate.suggestions.length > 0 && (
+              <div className="mt-7 pt-5 border-t border-border">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+                  {message.gate.suggestions_label}
+                </p>
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  {message.gate.suggestions.map((topic) => (
+                    <button
+                      key={topic}
+                      onClick={() => onSuggestionClick?.(topic)}
+                      className="group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-primary hover:text-primary cursor-pointer"
+                    >
+                      <span>{topic}</span>
+                      <ArrowRight className="w-3 h-3 shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5" />
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         )}

@@ -11,30 +11,35 @@ through the translation step.
 """
 
 _GATE = {
-    "it": ("## Tema non trovato\n\nNel corpus della Camera dei Deputati "
-           "(XIX legislatura) non ci sono dibattiti pertinenti a «{query}», "
-           "quindi il sistema non ha generato una risposta.",
-           "\n\nTemi vicini che l'Aula ha discusso:\n"),
-    "en": ("## Topic not found\n\nThe Chamber of Deputies corpus "
-           "(19th legislature) has no debates relevant to «{query}», so the "
-           "system generated no answer.",
-           "\n\nNearby topics the Chamber did debate:\n"),
-    "fr": ("## Sujet introuvable\n\nLe corpus de la Chambre des députés "
-           "(XIXe législature) ne contient aucun débat pertinent pour "
-           "«{query}» ; le système n'a donc généré aucune réponse.",
-           "\n\nSujets proches réellement débattus :\n"),
-    "de": ("## Thema nicht gefunden\n\nDas Korpus der Abgeordnetenkammer "
-           "(19. Legislaturperiode) enthält keine Debatten zu «{query}»; das "
-           "System hat deshalb keine Antwort erzeugt.",
-           "\n\nVerwandte Themen, die die Kammer debattiert hat:\n"),
-    "es": ("## Tema no encontrado\n\nEl corpus de la Cámara de Diputados "
-           "(XIX legislatura) no contiene debates pertinentes para «{query}», "
-           "así que el sistema no generó una respuesta.",
-           "\n\nTemas cercanos que la Cámara sí debatió:\n"),
-    "pt": ("## Tema não encontrado\n\nO corpus da Câmara dos Deputados "
-           "(XIX legislatura) não contém debates pertinentes a «{query}», "
-           "então o sistema não gerou uma resposta.",
-           "\n\nTemas próximos que a Câmara debateu:\n"),
+    "it": ("Tema non trovato",
+           "Nel corpus della Camera dei Deputati (XIX legislatura) non ci "
+           "sono dibattiti pertinenti a «{query}», quindi il sistema non ha "
+           "generato una risposta.",
+           "Temi vicini che l'Aula ha discusso"),
+    "en": ("Topic not found",
+           "The Chamber of Deputies corpus (19th legislature) has no debates "
+           "relevant to «{query}», so the system generated no answer.",
+           "Nearby topics the Chamber did debate"),
+    "fr": ("Sujet introuvable",
+           "Le corpus de la Chambre des députés (XIXe législature) ne "
+           "contient aucun débat pertinent pour «{query}» ; le système n'a "
+           "donc généré aucune réponse.",
+           "Sujets proches réellement débattus"),
+    "de": ("Thema nicht gefunden",
+           "Das Korpus der Abgeordnetenkammer (19. Legislaturperiode) "
+           "enthält keine Debatten zu «{query}»; das System hat deshalb "
+           "keine Antwort erzeugt.",
+           "Verwandte Themen, die die Kammer debattiert hat"),
+    "es": ("Tema no encontrado",
+           "El corpus de la Cámara de Diputados (XIX legislatura) no "
+           "contiene debates pertinentes para «{query}», así que el sistema "
+           "no generó una respuesta.",
+           "Temas cercanos que la Cámara sí debatió"),
+    "pt": ("Tema não encontrado",
+           "O corpus da Câmara dos Deputados (XIX legislatura) não contém "
+           "debates pertinentes a «{query}», então o sistema não gerou uma "
+           "resposta.",
+           "Temas próximos que a Câmara debateu"),
 }
 
 _NOTICE = {
@@ -65,19 +70,28 @@ _NOTICE = {
 }
 
 
-def gate_message(query: str, suggestions: list, locale: str = "it") -> str:
-    """Markdown shown instead of the answer when the evidence gate blocks.
+def gate_payload(query: str, suggestions: list, locale: str = "it") -> dict:
+    """Structured payload for the ``gate`` SSE event.
 
-    Suggestions become ``suggest:`` links: the frontend renders them as
-    clickable chips that launch the suggested query.
+    The frontend renders it as a dedicated empty-state block (serif title,
+    explanation, clickable topic chips) instead of markdown content.
     """
-    from urllib.parse import quote
+    title, body, sugg_label = _GATE.get(locale, _GATE["en"])
+    return {
+        "title": title,
+        "body": body.format(query=query),
+        "suggestions_label": sugg_label,
+        "suggestions": list(suggestions),
+    }
 
-    body, sugg_header = _GATE.get(locale, _GATE["en"])
-    text = body.format(query=query)
-    if suggestions:
-        chips = " ".join(f"[{s}](suggest:{quote(s)})" for s in suggestions)
-        text += sugg_header + "\n" + chips
+
+def gate_message(query: str, suggestions: list, locale: str = "it") -> str:
+    """Markdown fallback with the same content as :func:`gate_payload`."""
+    p = gate_payload(query, suggestions, locale)
+    text = f"## {p['title']}\n\n{p['body']}"
+    if p["suggestions"]:
+        text += f"\n\n{p['suggestions_label']}:\n" + "\n".join(
+            f"- {s}" for s in p["suggestions"])
     return text
 
 
