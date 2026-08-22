@@ -110,21 +110,21 @@ export function FeedbackPulse({ tool, context, className }: FeedbackPulseProps) 
     >
       {stage === "idle" && (
         <div className="flex items-center gap-4">
-          <span>{t("prompt")}</span>
+          <span className="text-foreground">{t("prompt")}</span>
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => vote("up")}
               aria-label={t("voteUpAria")}
-              className="p-1 -m-1 text-muted-foreground/70 hover:text-foreground transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
+              className="p-1 -m-1 text-muted-foreground hover:text-primary transition-all duration-150 hover:-translate-y-0.5 cursor-pointer"
             >
-              <ThumbsUp className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <ThumbsUp className="h-4 w-4" strokeWidth={1.75} />
             </button>
             <button
               onClick={() => vote("down")}
               aria-label={t("voteDownAria")}
-              className="p-1 -m-1 text-muted-foreground/70 hover:text-foreground transition-all duration-150 hover:translate-y-0.5 cursor-pointer"
+              className="p-1 -m-1 text-muted-foreground hover:text-primary transition-all duration-150 hover:translate-y-0.5 cursor-pointer"
             >
-              <ThumbsDown className="h-3.5 w-3.5" strokeWidth={1.75} />
+              <ThumbsDown className="h-4 w-4" strokeWidth={1.75} />
             </button>
           </div>
           <button
@@ -224,45 +224,53 @@ export function AnswerFeedback({ context, className }: { context?: string; class
   }, [comment]);
 
   return (
-    <div className={cn("mt-4 text-[13px] text-muted-foreground", className)}>
-      <div className="flex items-center gap-3">
-        {stage === "idle" && <span>{t("prompt")}</span>}
-        <button
-          onClick={() => stage === "idle" && vote("up")}
-          disabled={stage !== "idle"}
-          aria-label={t("voteUpAria")}
-          className={cn(
-            "p-1 -m-1 transition-all duration-150",
-            voted === "up"
-              ? "text-foreground"
-              : "text-muted-foreground/50",
-            stage === "idle" && "hover:text-foreground hover:-translate-y-0.5 cursor-pointer",
-            voted === "down" && "opacity-30",
-          )}
-        >
-          <ThumbsUp className={cn("h-3.5 w-3.5", voted === "up" && "fill-current")} strokeWidth={1.75} />
-        </button>
-        <button
-          onClick={() => stage === "idle" && vote("down")}
-          disabled={stage !== "idle"}
-          aria-label={t("voteDownAria")}
-          className={cn(
-            "p-1 -m-1 transition-all duration-150",
-            voted === "down"
-              ? "text-foreground"
-              : "text-muted-foreground/50",
-            stage === "idle" && "hover:text-foreground hover:translate-y-0.5 cursor-pointer",
-            voted === "up" && "opacity-30",
-          )}
-        >
-          <ThumbsDown className={cn("h-3.5 w-3.5", voted === "down" && "fill-current")} strokeWidth={1.75} />
-        </button>
-        {showThanks && <span className="animate-in fade-in duration-300">{t("thanks")}</span>}
+    <div
+      className={cn(
+        "mt-5 inline-block border border-border bg-muted/40 px-4 py-2.5",
+        "animate-in fade-in slide-in-from-bottom-1 duration-500",
+        className,
+      )}
+    >
+      <div className="flex items-center gap-4">
+        {stage === "idle" && (
+          <span className="text-[13px] text-foreground">{t("prompt")}</span>
+        )}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => stage === "idle" && vote("up")}
+            disabled={stage !== "idle"}
+            aria-label={t("voteUpAria")}
+            className={cn(
+              "p-1 -m-1 transition-all duration-150",
+              voted === "up" ? "text-primary" : "text-muted-foreground",
+              stage === "idle" && "hover:text-primary hover:-translate-y-0.5 cursor-pointer",
+              voted === "down" && "opacity-30",
+            )}
+          >
+            <ThumbsUp className={cn("h-4 w-4", voted === "up" && "fill-current")} strokeWidth={1.75} />
+          </button>
+          <button
+            onClick={() => stage === "idle" && vote("down")}
+            disabled={stage !== "idle"}
+            aria-label={t("voteDownAria")}
+            className={cn(
+              "p-1 -m-1 transition-all duration-150",
+              voted === "down" ? "text-primary" : "text-muted-foreground",
+              stage === "idle" && "hover:text-primary hover:translate-y-0.5 cursor-pointer",
+              voted === "up" && "opacity-30",
+            )}
+          >
+            <ThumbsDown className={cn("h-4 w-4", voted === "down" && "fill-current")} strokeWidth={1.75} />
+          </button>
+        </div>
+        {showThanks && (
+          <span className="text-[13px] text-muted-foreground animate-in fade-in duration-300">{t("thanks")}</span>
+        )}
       </div>
 
       {stage === "comment" && (
         <form
-          className="mt-2 flex items-center gap-3 max-w-md"
+          className="mt-2.5 flex items-center gap-3 w-72 max-w-full"
           onSubmit={(e) => { e.preventDefault(); sendComment(); }}
         >
           <input
@@ -275,7 +283,7 @@ export function AnswerFeedback({ context, className }: { context?: string; class
           />
           <button
             type="submit"
-            className="group/send inline-flex items-center gap-1 whitespace-nowrap border-b border-border pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
+            className="group/send inline-flex items-center gap-1 whitespace-nowrap text-[13px] text-muted-foreground border-b border-border pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
           >
             {comment.trim() ? t("send") : t("skip")}
             <ArrowRight className="h-3 w-3 transition-transform group-hover/send:translate-x-0.5" />
