@@ -142,8 +142,16 @@ export function ChatArea({
                     }
                   }
 
+                  // Domanda che ha generato questa risposta: fallback del
+                  // context di feedback se il chatId non è ancora arrivato
+                  const prevMsg = messages[idx - 1];
+                  const queryText =
+                    message.role === "assistant" && prevMsg?.role === "user"
+                      ? prevMsg.content
+                      : undefined;
+
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} queryText={queryText} />
                   );
                 })}
 
