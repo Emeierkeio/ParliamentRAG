@@ -15,7 +15,7 @@ import { CitationCard } from "./CitationCard";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
 import { CompassCard } from "./CompassCard";
 import { TopicStatsModal } from "./TopicStatsModal";
-import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
+import { AnswerFeedback } from "@/components/feedback/FeedbackPulse";
 import type { Message } from "@/types";
 import { config } from "@/config";
 import {
@@ -227,10 +227,9 @@ interface MessageBubbleProps {
   chatId?: string;
   progressSlot?: React.ReactNode;
   onSuggestionClick?: (query: string) => void;
-  isLast?: boolean;
 }
 
-export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick, isLast }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
@@ -524,9 +523,9 @@ export function MessageBubble({ message, className, chatId, progressSlot, onSugg
             highlightedChunkId={highlightedChunkId}
           />
         )}
-        {/* Micro-feedback sull'ultima risposta completata (issue #21) */}
-        {!isUser && isLast && message.status === "complete" && !message.gate && message.content && (
-          <FeedbackPulse tool="chat" context={message.chatId || chatId} className="max-w-md" />
+        {/* Pollici per risposta (issue #21): sempre visibili, stile ChatGPT */}
+        {!isUser && message.status === "complete" && !message.gate && message.content && (
+          <AnswerFeedback context={message.chatId || chatId} />
         )}
         {/* Topic Stats Modal */}
         {message.topicStats && statsModalView && (

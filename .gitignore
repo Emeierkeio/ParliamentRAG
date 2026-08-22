@@ -244,7 +244,8 @@ backend/data/parliament.db
 
 # Paper / thesis working material (kept out of the app repo)
 *.tex
-ISWC*/
+/ISWC_2026___ParliamentRAG/
+/ISWC2026___Demo__Matteo_/
 ParliamentRAG_authority.*
 outputs/
 thesis/
@@ -261,3 +262,6 @@ parliament_rag_paper-*/
 linkedin-*
 daily-papers/
 research-proposals/
+
+# Tracker locale dei follow-up (solo locale, mai su GitHub)
+FOLLOWUP_TRACKER.md

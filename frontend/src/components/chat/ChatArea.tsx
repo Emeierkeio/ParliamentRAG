@@ -143,7 +143,7 @@ export function ChatArea({
                   }
 
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} isLast={idx === messages.length - 1} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} />
                   );
                 })}
 

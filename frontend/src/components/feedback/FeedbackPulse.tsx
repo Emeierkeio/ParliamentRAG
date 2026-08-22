@@ -166,3 +166,121 @@ export function FeedbackPulse({ tool, context, className }: FeedbackPulseProps) 
     </div>
   );
 }
+
+// Per-answer thumbs for the chat: always visible, no snooze. The chosen
+// thumb stays filled after the vote; the optional comment appears once.
+
+type AnswerStage = "idle" | "comment" | "done";
+
+export function AnswerFeedback({ context, className }: { context?: string; className?: string }) {
+  const t = useTranslations("Feedback");
+  const locale = useLocale();
+  const [stage, setStage] = useState<AnswerStage>("idle");
+  const [voted, setVoted] = useState<"up" | "down" | null>(null);
+  const [comment, setComment] = useState("");
+  const [showThanks, setShowThanks] = useState(false);
+  const feedbackIdRef = useRef<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (stage === "comment") inputRef.current?.focus();
+  }, [stage]);
+
+  useEffect(() => {
+    if (!showThanks) return;
+    const timer = setTimeout(() => setShowThanks(false), 2500);
+    return () => clearTimeout(timer);
+  }, [showThanks]);
+
+  const vote = useCallback(async (value: "up" | "down") => {
+    setVoted(value);
+    setStage("comment");
+    try {
+      const res = await fetch(`${config.api.baseUrl}/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tool: "chat", vote: value, context, locale }),
+      });
+      if (res.ok) feedbackIdRef.current = (await res.json()).id;
+    } catch {
+      // mai bloccare l'utente per un feedback
+    }
+  }, [context, locale]);
+
+  const sendComment = useCallback(async () => {
+    const text = comment.trim();
+    setStage("done");
+    setShowThanks(true);
+    if (!text || !feedbackIdRef.current) return;
+    try {
+      await fetch(`${config.api.baseUrl}/feedback/${feedbackIdRef.current}/comment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comment: text }),
+      });
+    } catch {
+      // come sopra
+    }
+  }, [comment]);
+
+  return (
+    <div className={cn("mt-3 text-[13px] text-muted-foreground", className)}>
+      <div className="flex items-center gap-2.5">
+        <button
+          onClick={() => stage === "idle" && vote("up")}
+          disabled={stage !== "idle"}
+          aria-label={t("voteUpAria")}
+          className={cn(
+            "p-1 -m-1 transition-all duration-150",
+            voted === "up"
+              ? "text-foreground"
+              : "text-muted-foreground/50",
+            stage === "idle" && "hover:text-foreground hover:-translate-y-0.5 cursor-pointer",
+            voted === "down" && "opacity-30",
+          )}
+        >
+          <ThumbsUp className={cn("h-3.5 w-3.5", voted === "up" && "fill-current")} strokeWidth={1.75} />
+        </button>
+        <button
+          onClick={() => stage === "idle" && vote("down")}
+          disabled={stage !== "idle"}
+          aria-label={t("voteDownAria")}
+          className={cn(
+            "p-1 -m-1 transition-all duration-150",
+            voted === "down"
+              ? "text-foreground"
+              : "text-muted-foreground/50",
+            stage === "idle" && "hover:text-foreground hover:translate-y-0.5 cursor-pointer",
+            voted === "up" && "opacity-30",
+          )}
+        >
+          <ThumbsDown className={cn("h-3.5 w-3.5", voted === "down" && "fill-current")} strokeWidth={1.75} />
+        </button>
+        {showThanks && <span className="animate-in fade-in duration-300">{t("thanks")}</span>}
+      </div>
+
+      {stage === "comment" && (
+        <form
+          className="mt-2 flex items-center gap-3 max-w-md"
+          onSubmit={(e) => { e.preventDefault(); sendComment(); }}
+        >
+          <input
+            ref={inputRef}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            maxLength={500}
+            placeholder={t("placeholder")}
+            className="flex-1 min-w-0 bg-transparent border-0 border-b border-border pb-1 text-[13px] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-foreground transition-colors"
+          />
+          <button
+            type="submit"
+            className="group/send inline-flex items-center gap-1 whitespace-nowrap border-b border-border pb-0.5 hover:border-primary hover:text-primary transition-colors cursor-pointer"
+          >
+            {comment.trim() ? t("send") : t("skip")}
+            <ArrowRight className="h-3 w-3 transition-transform group-hover/send:translate-x-0.5" />
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
