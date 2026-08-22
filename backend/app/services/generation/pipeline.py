@@ -1277,6 +1277,8 @@ class GenerationPipeline:
         "Movimento 5 Stelle": "movimento 5 stelle",
         "Alleanza Verdi e Sinistra": "alleanza verdi",
         "Azione - Popolari Europeisti Riformatori - Renew Europe": "azione",
+        "Italia Viva - Casa Riformista": "italia viva",
+        # Denominazione precedente al rename dell'estate 2026
         "Italia Viva - Il Centro - Renew Europe": "italia viva",
         "Misto": "misto",
     }

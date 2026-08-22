@@ -240,6 +240,21 @@ class Validator:
         self.check(rows[0]["c"] > 0, f"ruoli commissione su MEMBER_OF_COMMITTEE ({rows[0]['c']})",
                    "nessun role su MEMBER_OF_COMMITTEE", warn_only=True)
 
+        print("\n[11b] Membership gruppo univoca (rename detection)")
+        # Un rename del gruppo alla fonte (denominazione nuova = nodo nuovo,
+        # perché l'ingest fa MERGE per nome) lascia i deputati con DUE
+        # membership aperte e l'attribuzione partito diventa arbitraria
+        # (successo con Italia Viva → Casa Riformista, 2026-08: Faraone
+        # attribuito al Misto). Cura: build/repair_group_rename.py.
+        rows = self.q("""
+            MATCH (d:Deputy)-[m:MEMBER_OF_GROUP]->(:ParliamentaryGroup)
+            WHERE m.end_date IS NULL
+            WITH d, count(m) AS n WHERE n > 1
+            RETURN d.last_name AS dep, n LIMIT 10
+        """)
+        self.check(not rows, "0 deputati con più membership di gruppo aperte",
+                   f"probabile rename di gruppo non riconciliato: {rows}")
+
         print("\n[12] Conteggi base")
         for label in ["Session", "Debate", "Phase", "Speech", "Chunk",
                       "Deputy", "GovernmentMember", "ParliamentaryAct"]:

@@ -518,12 +518,22 @@ class RetrievalEngine:
 
         fill_results = []
 
+        # Reverse della mappa display->DB: i nomi DB possono avere suffissi
+        # che la trasformazione meccanica non ricostruisce (es. il rename
+        # "ITALIA VIVA-CASA RIFORMISTA (IV-CR)" con l'acronimo in coda).
+        from ...models.evidence import PARTY_DISPLAY_NAMES
+        db_names_by_display: Dict[str, str] = {}
+        for db_name, display in PARTY_DISPLAY_NAMES.items():
+            db_names_by_display.setdefault(display, db_name)
+
         for party in missing_parties:
             try:
-                # Normalize party name to match DB storage format:
-                # DB stores uppercase with no spaces around hyphens (e.g. "ITALIA VIVA-IL CENTRO-RENEW EUROPE")
-                # Config uses display names with spaces (e.g. "Italia Viva - Il Centro - Renew Europe")
-                normalized_party = party.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-")
+                # DB storage format: uppercase senza spazi intorno ai trattini.
+                # Prima la mappa ufficiale, poi la trasformazione meccanica
+                # come fallback per nomi non mappati.
+                normalized_party = db_names_by_display.get(
+                    party,
+                    party.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-"))
 
                 cypher = """
                 CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)

@@ -13,32 +13,32 @@ through the translation step.
 _GATE = {
     "it": ("Tema non trovato",
            "Nel corpus della Camera dei Deputati (XIX legislatura) non ci "
-           "sono dibattiti pertinenti a «{query}», quindi il sistema non ha "
-           "generato una risposta.",
+           "sono dibattiti pertinenti a questo tema, quindi il sistema non "
+           "ha generato una risposta.",
            "Temi vicini che l'Aula ha discusso"),
     "en": ("Topic not found",
            "The Chamber of Deputies corpus (19th legislature) has no debates "
-           "relevant to «{query}», so the system generated no answer.",
+           "relevant to this topic, so the system generated no answer.",
            "Nearby topics the Chamber did debate"),
     "fr": ("Sujet introuvable",
            "Le corpus de la Chambre des députés (XIXe législature) ne "
-           "contient aucun débat pertinent pour «{query}» ; le système n'a "
+           "contient aucun débat pertinent sur ce sujet ; le système n'a "
            "donc généré aucune réponse.",
            "Sujets proches réellement débattus"),
     "de": ("Thema nicht gefunden",
            "Das Korpus der Abgeordnetenkammer (19. Legislaturperiode) "
-           "enthält keine Debatten zu «{query}»; das System hat deshalb "
+           "enthält keine Debatten zu diesem Thema; das System hat deshalb "
            "keine Antwort erzeugt.",
            "Verwandte Themen, die die Kammer debattiert hat"),
     "es": ("Tema no encontrado",
            "El corpus de la Cámara de Diputados (XIX legislatura) no "
-           "contiene debates pertinentes para «{query}», así que el sistema "
-           "no generó una respuesta.",
+           "contiene debates pertinentes sobre este tema, así que el "
+           "sistema no generó una respuesta.",
            "Temas cercanos que la Cámara sí debatió"),
     "pt": ("Tema não encontrado",
            "O corpus da Câmara dos Deputados (XIX legislatura) não contém "
-           "debates pertinentes a «{query}», então o sistema não gerou uma "
-           "resposta.",
+           "debates pertinentes sobre este tema, então o sistema não gerou "
+           "uma resposta.",
            "Temas próximos que a Câmara debateu"),
 }
 

@@ -164,7 +164,7 @@ I 10 gruppi parlamentari sono:
 5. Forza Italia - Berlusconi Presidente - PPE
 6. Alleanza Verdi e Sinistra
 7. Azione - Popolari Europeisti Riformatori - Renew Europe
-8. Italia Viva - Il Centro - Renew Europe
+8. Italia Viva - Casa Riformista
 9. Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare
 10. Misto
 

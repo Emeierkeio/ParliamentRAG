@@ -44,7 +44,7 @@ KNOWN_PARTIES = {
     "Movimento 5 Stelle",
     "Alleanza Verdi e Sinistra",
     "Azione - Popolari Europeisti Riformatori - Renew Europe",
-    "Italia Viva - Il Centro - Renew Europe",
+    "Italia Viva - Casa Riformista",
     "Misto",
 }
 

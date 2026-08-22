@@ -168,7 +168,7 @@ class ConfigLoader:
                     "center": {
                         "groups": [
                             "Azione - Popolari Europeisti Riformatori - Renew Europe",
-                            "Italia Viva - Il Centro - Renew Europe",
+                            "Italia Viva - Casa Riformista",
                             "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare"
                         ],
                         "confidence": 0.6
@@ -220,7 +220,7 @@ class ConfigLoader:
                     "Movimento 5 Stelle",
                     "Alleanza Verdi e Sinistra",
                     "Azione - Popolari Europeisti Riformatori - Renew Europe",
-                    "Italia Viva - Il Centro - Renew Europe",
+                    "Italia Viva - Casa Riformista",
                     "Misto"
                 ]
             },

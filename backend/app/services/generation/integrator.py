@@ -102,7 +102,7 @@ FORMATO:
   ⚠️ QUESTI TAG SONO SOLO PER L'INPUT — NON copiarli nell'output. Scrivi tu i tuoi header ## ...
 - Ogni sezione di partito inizia con [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo nell'output
 - Formato OBBLIGATORIO per il primo periodo: "Per [Nome Partito], [testo contestuale]..."
-  Esempio: "Per Italia Viva - Il Centro - Renew Europe, il gruppo sostiene con fermezza..."
+  Esempio: "Per Italia Viva - Casa Riformista, il gruppo sostiene con fermezza..."
 - Cognomi SEMPRE in **grassetto**
 - Ogni partito è un paragrafo separato
 - Usa SEMPRE il nome completo del partito (es. "Fratelli d'Italia", "Movimento 5 Stelle", "Partito Democratico"), MAI abbreviazioni
