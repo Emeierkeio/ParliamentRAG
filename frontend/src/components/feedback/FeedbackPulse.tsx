@@ -224,8 +224,9 @@ export function AnswerFeedback({ context, className }: { context?: string; class
   }, [comment]);
 
   return (
-    <div className={cn("mt-3 text-[13px] text-muted-foreground", className)}>
-      <div className="flex items-center gap-2.5">
+    <div className={cn("mt-4 text-[13px] text-muted-foreground", className)}>
+      <div className="flex items-center gap-3">
+        {stage === "idle" && <span>{t("prompt")}</span>}
         <button
           onClick={() => stage === "idle" && vote("up")}
           disabled={stage !== "idle"}

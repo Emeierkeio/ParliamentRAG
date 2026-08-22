@@ -632,7 +632,12 @@ export default function SearchPage() {
                                 {/* Results header */}
                                 <div className="px-2 space-y-3">
                                     <div className="border-b border-border pb-3 space-y-1">
-                                        <h2 className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight">{t("resultsHeading")}</h2>
+                                        <div className="flex items-center justify-between gap-4">
+                                            <h2 className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight">{t("resultsHeading")}</h2>
+                                            {results.length > 0 && !loading && (
+                                                <FeedbackPulse tool="search" context={query} className="mt-0 pt-0 border-t-0 hidden sm:block shrink-0" />
+                                            )}
+                                        </div>
                                         <p className="text-sm text-muted-foreground flex items-center gap-2">
                                             {/* Durante il caricamento niente "0 results": il conteggio
                                                 appare solo a ricerca completata */}
@@ -724,9 +729,9 @@ export default function SearchPage() {
                                             </div>
                                         )}
 
-                                        {/* Micro-feedback sotto i risultati (issue #21) */}
+                                        {/* Micro-feedback a fondo lista solo su mobile (issue #21) */}
                                         {results.length > 0 && (
-                                            <FeedbackPulse tool="search" context={query} className="max-w-md" />
+                                            <FeedbackPulse tool="search" context={query} className="max-w-md sm:hidden" />
                                         )}
                                     </>
                                 )}
