@@ -72,8 +72,8 @@ export default function IswcBoothPage() {
   }
 
   return (
-    <main className="min-h-dvh bg-background">
-      <div className="max-w-md mx-auto px-6 py-10">
+    <main className="min-h-dvh bg-background overflow-x-hidden">
+      <div className="max-w-md mx-auto px-5 sm:px-6 py-10">
         <header className="mb-8">
           <Image src="/logo-blue.svg" alt="ParliamentRAG" width={34} height={24} className="mb-5 dark:invert" />
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
@@ -92,16 +92,15 @@ export default function IswcBoothPage() {
                 <span className="[font-family:var(--font-display)] text-muted-foreground mr-2">{i + 1}.</span>
                 {t(key)}
               </legend>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-muted-foreground w-16">{t("scaleLow")}</span>
-                <div className="flex gap-1.5 flex-1 justify-center">
+              <div>
+                <div className="flex justify-between gap-1.5">
                   {[1, 2, 3, 4, 5].map((v) => (
                     <button
                       key={v}
                       onClick={() => setAnswers((a) => ({ ...a, [key]: v }))}
                       aria-label={`${v}/5`}
                       className={cn(
-                        "h-9 w-9 border text-sm tabular-nums transition-colors cursor-pointer",
+                        "h-10 flex-1 border text-sm tabular-nums transition-colors cursor-pointer",
                         answers[key] === v
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
@@ -111,7 +110,10 @@ export default function IswcBoothPage() {
                     </button>
                   ))}
                 </div>
-                <span className="text-[11px] text-muted-foreground w-16 text-right">{t("scaleHigh")}</span>
+                <div className="mt-1.5 flex justify-between text-[11px] text-muted-foreground">
+                  <span>{t("scaleLow")}</span>
+                  <span>{t("scaleHigh")}</span>
+                </div>
               </div>
             </fieldset>
           ))}
