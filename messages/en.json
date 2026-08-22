@@ -1019,6 +1019,7 @@
   },
   "Feedback": {
     "prompt": "Was this useful?",
+    "dialogTitle": "Ten more seconds?",
     "placeholder": "What would you improve?",
     "send": "Send",
     "skip": "Skip",

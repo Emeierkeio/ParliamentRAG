@@ -975,6 +975,7 @@
   },
   "Feedback": {
     "prompt": "Isto foi útil?",
+    "dialogTitle": "Mais dez segundos?",
     "placeholder": "O que você melhoraria?",
     "send": "Enviar",
     "skip": "Pular",

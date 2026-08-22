@@ -1006,6 +1006,7 @@
   },
   "Feedback": {
     "prompt": "Ti è stato utile?",
+    "dialogTitle": "Dieci secondi in più?",
     "placeholder": "Cosa miglioreresti?",
     "send": "Invia",
     "skip": "Salta",
