@@ -58,7 +58,18 @@ export function FeedbackDialog({ open, onClose, tool, context }: FeedbackDialogP
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
-      <DialogContent className="max-w-md gap-0 p-6">
+      <DialogContent
+        className={cn(
+          "sm:max-w-md gap-0 p-6 max-h-[88dvh] overflow-y-auto",
+          // Sotto i 640px: bottom sheet, non modale centrato — con la
+          // tastiera aperta un dialog centrato balla, il sheet no
+          "max-sm:!top-auto max-sm:!bottom-0 max-sm:!left-0 max-sm:!right-0",
+          "max-sm:!translate-x-0 max-sm:!translate-y-0 max-sm:!max-w-full",
+          "max-sm:!rounded-b-none max-sm:rounded-t-lg max-sm:border-x-0 max-sm:border-b-0",
+          "max-sm:data-[state=open]:!slide-in-from-bottom-6 max-sm:data-[state=open]:!zoom-in-100",
+          "max-sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]",
+        )}
+      >
         <DialogHeader className="mb-4">
           <DialogTitle className="[font-family:var(--font-display)] text-xl font-medium tracking-tight text-left">
             {tf("dialogTitle")}
@@ -81,7 +92,7 @@ export function FeedbackDialog({ open, onClose, tool, context }: FeedbackDialogP
                         a[key] === v ? { ...a, [key]: undefined } : { ...a, [key]: v })}
                       aria-label={`${v}/5`}
                       className={cn(
-                        "h-8 flex-1 border text-[13px] tabular-nums transition-colors cursor-pointer",
+                        "h-10 sm:h-8 flex-1 border text-[13px] tabular-nums transition-colors cursor-pointer",
                         answers[key] === v
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
@@ -112,7 +123,7 @@ export function FeedbackDialog({ open, onClose, tool, context }: FeedbackDialogP
             <button
               onClick={submit}
               className={cn(
-                "flex-1 py-2.5 text-sm font-medium tracking-wide transition-colors cursor-pointer",
+                "flex-1 py-3 sm:py-2.5 text-sm font-medium tracking-wide transition-colors cursor-pointer",
                 hasContent
                   ? "bg-primary text-primary-foreground hover:bg-foreground"
                   : "bg-muted text-muted-foreground",
