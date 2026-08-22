@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
+import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { CompassCard } from "@/components/chat/CompassCard";
@@ -350,6 +351,9 @@ export default function CompassPage() {
                         ? "2D PCA"
                         : t("anchoredBadge")}
                   </Badge>
+
+                  {/* Micro-feedback inline nella barra assi (issue #21) */}
+                  <FeedbackPulse tool="compass" context={activeTopic} className="mt-0 pt-0 border-t-0 hidden lg:block" />
                 </div>
               </div>
 

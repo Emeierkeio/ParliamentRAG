@@ -972,5 +972,15 @@
     "readyNote": "disponível",
     "heroGraphNote": "Nós e arestas reais do grafo — deputado {id}",
     "updatedAt": "atualizado em {date}"
+  },
+  "Feedback": {
+    "prompt": "Isto foi útil?",
+    "placeholder": "O que você melhoraria?",
+    "send": "Enviar",
+    "skip": "Pular",
+    "thanks": "Recebido, obrigado.",
+    "voteUpAria": "Útil",
+    "voteDownAria": "Não útil",
+    "dismissAria": "Ocultar"
   }
 }

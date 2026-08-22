@@ -19,6 +19,7 @@ from .routers.graph import router as graph_router
 from .routers.search import router as search_router
 from .routers.survey import router as survey_router
 from .routers.evaluation import router as evaluation_router
+from .routers.feedback import router as feedback_router
 from .routers.authority import router as authority_router
 from .routers.compass import router as compass_router
 from .routers.timeline import router as timeline_router
@@ -261,6 +262,7 @@ app.include_router(authority_router)  # Authority ranking by topic
 app.include_router(compass_router)  # Standalone ideological compass
 app.include_router(timeline_router)  # Parliamentary timeline (sessions/debates)
 app.include_router(data_router)  # Open data (RDF dump downloads)
+app.include_router(feedback_router)  # In-app tool feedback (issue #21)
 
 
 @app.get("/")

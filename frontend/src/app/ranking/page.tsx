@@ -6,6 +6,7 @@ import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
+import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { config } from "@/config";
 import { cn } from "@/lib/utils";
 import { getTopics } from "@/lib/constants";
@@ -707,6 +708,9 @@ export default function RankingPage() {
                   ))}
                 </div>
               )}
+
+              {/* Micro-feedback sotto la classifica (issue #21) */}
+              <FeedbackPulse tool="ranking" context={activeTopic} className="max-w-md" />
             </div>
           )}
         </div>

@@ -972,5 +972,15 @@
     "readyNote": "verfügbar",
     "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}",
     "updatedAt": "Stand {date}"
+  },
+  "Feedback": {
+    "prompt": "War das hilfreich?",
+    "placeholder": "Was würden Sie verbessern?",
+    "send": "Senden",
+    "skip": "Überspringen",
+    "thanks": "Angekommen, danke.",
+    "voteUpAria": "Hilfreich",
+    "voteDownAria": "Nicht hilfreich",
+    "dismissAria": "Ausblenden"
   }
 }

@@ -972,5 +972,15 @@
     "readyNote": "disponible",
     "heroGraphNote": "Nœuds et arcs réels du graphe — député {id}",
     "updatedAt": "mis à jour le {date}"
+  },
+  "Feedback": {
+    "prompt": "Cela vous a été utile ?",
+    "placeholder": "Que faudrait-il améliorer ?",
+    "send": "Envoyer",
+    "skip": "Passer",
+    "thanks": "Bien reçu, merci.",
+    "voteUpAria": "Utile",
+    "voteDownAria": "Pas utile",
+    "dismissAria": "Masquer"
   }
 }

@@ -6,6 +6,7 @@ import { Loader2, ArrowUp, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
+import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { SessionCard } from "@/components/timeline/SessionCard";
 import { TimelineSearch } from "@/components/timeline/TimelineSearch";
@@ -147,6 +148,11 @@ export default function TimelinePage() {
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
               <span className="text-sm text-muted-foreground">{t("loadingMore")}</span>
             </div>
+          )}
+
+          {/* Micro-feedback a fine lista (issue #21) */}
+          {!isLoading && !isFetchingMore && !hasMore && sessions.length > 0 && (
+            <FeedbackPulse tool="timeline" className="max-w-md" />
           )}
 
           {/* Accessibility live region */}
