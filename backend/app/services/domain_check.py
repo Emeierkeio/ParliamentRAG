@@ -28,9 +28,15 @@ della Camera dei Deputati italiana (XIX legislatura, dal 2022 a oggi).
 Giudica se la query è plausibilmente un tema di dibattito parlamentare italiano.
 
 Fuori dominio: politica interna di altri paesi senza un ruolo dell'Italia, \
-sport, cucina, spettacolo, turismo, temi inventati o mai esistiti.
-In dominio: qualsiasi tema di politica italiana, e le posizioni italiane su \
-questioni internazionali (guerre, trattati, Unione europea).
+temi inventati o mai esistiti, e la cronaca non politica (risultati sportivi, \
+ricette, gossip, consigli di viaggio).
+In dominio: qualsiasi tema di politica italiana, le posizioni italiane su \
+questioni internazionali (guerre, trattati, Unione europea), e QUALSIASI \
+settore — sport, cinema, cibo, turismo, spettacolo — se la domanda riguarda \
+leggi, finanziamenti, regolamentazione o posizioni politiche su quel settore.
+Criterio generale: se il tema può essere oggetto di una legge, di un \
+indennizzo o di un dibattito alla Camera (es. vittime di errori giudiziari, \
+risarcimenti, tutele), è in dominio.
 Nel dubbio: in_domain=true.
 
 Se fuori dominio, proponi SEMPRE 2-3 temi vicini alla query che la Camera ha \
