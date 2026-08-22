@@ -13,33 +13,27 @@ through the translation step.
 _GATE = {
     "it": ("## Tema non trovato\n\nNel corpus della Camera dei Deputati "
            "(XIX legislatura) non ci sono dibattiti pertinenti a «{query}», "
-           "quindi il sistema non ha generato una risposta: una sintesi "
-           "costruita su evidenze fuori tema sarebbe fuorviante.",
+           "quindi il sistema non ha generato una risposta.",
            "\n\nTemi vicini che l'Aula ha discusso:\n"),
     "en": ("## Topic not found\n\nThe Chamber of Deputies corpus "
            "(19th legislature) has no debates relevant to «{query}», so the "
-           "system generated no answer: a summary built on off-topic "
-           "evidence would mislead.",
+           "system generated no answer.",
            "\n\nNearby topics the Chamber did debate:\n"),
     "fr": ("## Sujet introuvable\n\nLe corpus de la Chambre des députés "
            "(XIXe législature) ne contient aucun débat pertinent pour "
-           "«{query}» ; le système n'a donc généré aucune réponse : une "
-           "synthèse construite sur des éléments hors sujet serait trompeuse.",
+           "«{query}» ; le système n'a donc généré aucune réponse.",
            "\n\nSujets proches réellement débattus :\n"),
     "de": ("## Thema nicht gefunden\n\nDas Korpus der Abgeordnetenkammer "
            "(19. Legislaturperiode) enthält keine Debatten zu «{query}»; das "
-           "System hat deshalb keine Antwort erzeugt: eine Zusammenfassung "
-           "aus themenfremden Belegen wäre irreführend.",
+           "System hat deshalb keine Antwort erzeugt.",
            "\n\nVerwandte Themen, die die Kammer debattiert hat:\n"),
     "es": ("## Tema no encontrado\n\nEl corpus de la Cámara de Diputados "
            "(XIX legislatura) no contiene debates pertinentes para «{query}», "
-           "así que el sistema no generó una respuesta: una síntesis "
-           "construida sobre evidencias fuera de tema sería engañosa.",
+           "así que el sistema no generó una respuesta.",
            "\n\nTemas cercanos que la Cámara sí debatió:\n"),
     "pt": ("## Tema não encontrado\n\nO corpus da Câmara dos Deputados "
            "(XIX legislatura) não contém debates pertinentes a «{query}», "
-           "então o sistema não gerou uma resposta: uma síntese construída "
-           "sobre evidências fora do tema seria enganosa.",
+           "então o sistema não gerou uma resposta.",
            "\n\nTemas próximos que a Câmara debateu:\n"),
 }
 
@@ -72,18 +66,28 @@ _NOTICE = {
 
 
 def gate_message(query: str, suggestions: list, locale: str = "it") -> str:
-    """Markdown shown instead of the answer when the evidence gate blocks."""
+    """Markdown shown instead of the answer when the evidence gate blocks.
+
+    Suggestions become ``suggest:`` links: the frontend renders them as
+    clickable chips that launch the suggested query.
+    """
+    from urllib.parse import quote
+
     body, sugg_header = _GATE.get(locale, _GATE["en"])
     text = body.format(query=query)
     if suggestions:
-        text += sugg_header + "\n".join(f"- {s}" for s in suggestions)
+        chips = " ".join(f"[{s}](suggest:{quote(s)})" for s in suggestions)
+        text += sugg_header + "\n" + chips
     return text
 
 
 def domain_notice(suggestions: list, locale: str = "it") -> str:
     """Blockquote prepended to the answer when only the LLM check fires."""
+    from urllib.parse import quote
+
     template, sugg_template = _NOTICE.get(locale, _NOTICE["en"])
     sugg = ""
     if suggestions:
-        sugg = sugg_template.format(topics=", ".join(suggestions))
+        links = ", ".join(f"[{s}](suggest:{quote(s)})" for s in suggestions)
+        sugg = sugg_template.format(topics=links)
     return template.format(sugg=sugg)

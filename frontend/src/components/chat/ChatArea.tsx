@@ -139,7 +139,7 @@ export function ChatArea({
                   }
 
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} />
                   );
                 })}
 

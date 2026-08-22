@@ -33,6 +33,7 @@ import {
   Landmark,
   Share2,
   Languages,
+  ArrowRight,
   Check as CheckIcon,
 } from "lucide-react";
 import {
@@ -223,9 +224,10 @@ interface MessageBubbleProps {
   className?: string;
   chatId?: string;
   progressSlot?: React.ReactNode;
+  onSuggestionClick?: (query: string) => void;
 }
 
-export function MessageBubble({ message, className, chatId, progressSlot }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
@@ -368,6 +370,21 @@ export function MessageBubble({ message, className, chatId, progressSlot }: Mess
                   </blockquote>
                 ),
                 a: ({ href, children }) => {
+                  // Suggested-topic chip (relevance gate): clicking launches
+                  // the suggested query as a new message
+                  if (href?.startsWith("suggest:")) {
+                    const topic = decodeURIComponent(href.slice("suggest:".length));
+                    return (
+                      <button
+                        onClick={() => onSuggestionClick?.(topic)}
+                        className="group inline-flex items-center gap-1.5 mr-5 mb-2 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-primary hover:text-primary cursor-pointer"
+                      >
+                        <span>{children}</span>
+                        <ArrowRight className="w-3 h-3 shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:text-primary group-hover:translate-x-0.5" />
+                      </button>
+                    );
+                  }
+
                   // Check if it's a stats link (#stats-interventions, #stats-speakers, #stats-sessions)
                   if (href?.startsWith("#stats-")) {
                     const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
