@@ -32,10 +32,12 @@ async def compass_endpoint(request: CompassRequest, http_request: Request):
     locale = (http_request.headers.get("accept-language", "it") or "it").strip()[:2].lower()
 
     try:
-        # Step 1: Retrieve evidence
+        # Step 1: Retrieve evidence (locale: query non italiane tradotte
+        # dal rewriter prima dell'embedding)
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
+            locale=locale,
         )
         evidence_list = retrieval_result["evidence"]
 

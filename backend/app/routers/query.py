@@ -150,12 +150,14 @@ async def process_query_streaming(
         # Step 1: Progress - Starting
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Avvio retrieval...'})}\n\n"
 
-        # Step 2: Retrieval
+        # Step 2: Retrieval (locale: le query non italiane vengono tradotte
+        # dal rewriter prima dell'embedding, il corpus è italiano)
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
             date_start=request.date_start,
-            date_end=request.date_end
+            date_end=request.date_end,
+            locale=request_locale
         )
 
         evidence_list = retrieval_result["evidence"]
@@ -174,23 +176,31 @@ async def process_query_streaming(
                    else f'Trovate {len(evidence_list)} evidenze')
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': _ev_msg})}\n\n"
 
-        # Out-of-domain gate (issue #22): with too little on-topic dense
-        # evidence the pipeline stops here and answers honestly, instead of
-        # generating a report from off-topic chunks. Thresholds calibrated
-        # with build/calibrate_relevance_gate.py.
+        # Out-of-domain gate (issue #22): blocca SOLO con entrambi i segnali,
+        # poche evidenze dense sopra soglia E domain check fuori dominio.
+        # L'evidenza sottile da sola non basta: i temi di nicchia legittimi
+        # (es. atti recenti con pochi dibattiti in Aula) proseguono e il
+        # writer gestisce la scarsità per gruppo. Falso positivo osservato
+        # 2026-08-22: "Cinema and audiovisual regulation" dai chip della
+        # welcome. Soglie: build/calibrate_relevance_gate.py.
         gate_cfg = services["retrieval"].config.retrieval.get("relevance_gate", {})
         relevance = retrieval_result["metadata"].get("relevance", {})
         if (gate_cfg.get("enabled", True)
                 and relevance.get("chunks_above_floor", 0)
                 < gate_cfg.get("min_chunks_above_floor", 10)):
-            logger.info(f"[RELEVANCE_GATE] Blocked {request.query!r}: {relevance}")
             domain = await domain_task
-            payload = gate_payload(
-                request.query, domain.get("suggestions", []), request_locale)
-            yield f"data: {json.dumps({'type': 'gate', 'data': payload}, default=str)}\n\n"
-            _meta = {**retrieval_result["metadata"], "relevance_gate": "blocked"}
-            yield f"data: {json.dumps({'type': 'complete', 'metadata': _meta}, default=str)}\n\n"
-            return
+            if domain.get("in_domain", True):
+                logger.info(
+                    f"[RELEVANCE_GATE] Thin evidence but in-domain, proceeding: "
+                    f"{request.query!r} {relevance}")
+            else:
+                logger.info(f"[RELEVANCE_GATE] Blocked {request.query!r}: {relevance}")
+                payload = gate_payload(
+                    request.query, domain.get("suggestions", []), request_locale)
+                yield f"data: {json.dumps({'type': 'gate', 'data': payload}, default=str)}\n\n"
+                _meta = {**retrieval_result["metadata"], "relevance_gate": "blocked"}
+                yield f"data: {json.dumps({'type': 'complete', 'metadata': _meta}, default=str)}\n\n"
+                return
 
         # Step 3: Authority scoring
         yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Computing authority scores...' if _en else 'Calcolo authority scores...'})}\n\n"

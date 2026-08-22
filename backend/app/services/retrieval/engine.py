@@ -80,7 +80,8 @@ class RetrievalEngine:
         top_k: int = 100,
         authority_scores: Optional[Dict[str, float]] = None,
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        locale: str = "it"
     ) -> Dict[str, Any]:
         """
         Perform dual-channel retrieval (synchronous version).
@@ -104,7 +105,7 @@ class RetrievalEngine:
         # Rewrite short/ambiguous queries before retrieval.
         # The rewritten query is used for embedding + graph keyword search;
         # the original query is kept for logging and UI display.
-        retrieval_query = self.query_rewriter.rewrite(query)
+        retrieval_query = self.query_rewriter.rewrite(query, locale=locale)
 
         # Generate query embedding
         logger.info(f"Generating embedding for query: {query[:50]}...")
@@ -228,7 +229,8 @@ class RetrievalEngine:
         top_k: int = 100,
         authority_scores: Optional[Dict[str, float]] = None,
         date_start: Optional[str] = None,
-        date_end: Optional[str] = None
+        date_end: Optional[str] = None,
+        locale: str = "it"
     ) -> Dict[str, Any]:
         """
         Perform dual-channel retrieval (async).
@@ -255,6 +257,7 @@ class RetrievalEngine:
                 authority_scores=authority_scores,
                 date_start=date_start,
                 date_end=date_end,
+                locale=locale,
             ),
         )
 

@@ -23,6 +23,7 @@ Data una query di ricerca parlamentare, restituisci una versione espansa \
 con termini correlati in italiano che migliorino la precisione della ricerca.
 
 Regole:
+- Se la query è in un'altra lingua, prima TRADUCILA in italiano, poi espandila.
 - OGNI termine va interpretato nella sua accezione POLITICO-PARLAMENTARE \
 corrente, mai in accezioni scientifiche/naturalistiche/tecniche di altri \
 domini. Es. "remigrazione" è il concetto politico di rimpatrio degli \
@@ -53,17 +54,24 @@ class QueryRewriter:
         self._client = make_client()
         self._config = get_config()
 
-    def rewrite(self, query: str) -> str:
+    def rewrite(self, query: str, locale: str = "it") -> str:
         """
         Return an expanded version of `query`, or the original if rewriting
         is disabled, the query is already long, or the LLM call fails.
+
+        Non-Italian queries (locale != "it") skip the length cutoff: the
+        corpus is Italian, so they always go through the LLM, which
+        translates before expanding. Without this, an English question
+        embedded as-is gets depressed similarities across the board (the
+        relevance gate blocked "Cinema and audiovisual regulation", a topic
+        with 97 on-topic chunks in Italian, observed 2026-08-22).
         """
         cfg = self._config.load_config().get("query_rewriting", {})
         if not cfg.get("enabled", True):
             return query
 
         max_words = cfg.get("max_query_words", 5)
-        if len(query.split()) > max_words:
+        if locale == "it" and len(query.split()) > max_words:
             return query
 
         model = cfg.get("model", "gpt-4.1-nano")
