@@ -892,6 +892,7 @@ const PARTY_SHORT_NAMES: Record<string, string> = {
   "Movimento 5 Stelle": "M5S",
   "Alleanza Verdi e Sinistra": "AVS",
   "Azione - Popolari Europeisti Riformatori - Renew Europe": "Azione",
+  "Italia Viva - Casa Riformista": "Italia Viva",
   "Italia Viva - Il Centro - Renew Europe": "Italia Viva",
   "Misto": "Misto",
 };
