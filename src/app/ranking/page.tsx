@@ -662,6 +662,7 @@ export default function RankingPage() {
                     : t("resultsFiltered", { filtered: filteredDeputies.length, total: deputies.length })}
                   {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
                 </p>
+                <FeedbackPulse tool="ranking" context={activeTopic} className="mt-0 pt-0 border-t-0 hidden sm:block" />
                 <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1.5 sm:hidden">
                   <RotateCcw className="h-3 w-3" />
                   {t("newSearch")}
@@ -709,8 +710,8 @@ export default function RankingPage() {
                 </div>
               )}
 
-              {/* Micro-feedback sotto la classifica (issue #21) */}
-              <FeedbackPulse tool="ranking" context={activeTopic} className="max-w-md" />
+              {/* Micro-feedback a fondo lista solo su mobile (issue #21) */}
+              <FeedbackPulse tool="ranking" context={activeTopic} className="max-w-md sm:hidden" />
             </div>
           )}
         </div>

@@ -516,16 +516,17 @@ export function MessageBubble({ message, className, chatId, progressSlot, onSugg
           </div>
         )}
 
+        {/* Pollici per risposta (issue #21): a fine prosa, PRIMA delle
+            sezioni di approfondimento — a fondo pagina non li vede nessuno */}
+        {!isUser && message.status === "complete" && !message.gate && message.content && (
+          <AnswerFeedback context={message.chatId || chatId} />
+        )}
         {/* Additional metadata for assistant messages — show progressively once text is visible */}
         {!isUser && message.content && (message.status === "complete" || message.status === "streaming") && (
           <AssistantMetadata
             message={message}
             highlightedChunkId={highlightedChunkId}
           />
-        )}
-        {/* Pollici per risposta (issue #21): sempre visibili, stile ChatGPT */}
-        {!isUser && message.status === "complete" && !message.gate && message.content && (
-          <AnswerFeedback context={message.chatId || chatId} />
         )}
         {/* Topic Stats Modal */}
         {message.topicStats && statsModalView && (

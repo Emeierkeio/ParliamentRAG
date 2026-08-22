@@ -65,6 +65,7 @@ export default function TimelinePage() {
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
+            <FeedbackPulse tool="timeline" className="mt-0 pt-0 border-t-0 ml-auto hidden sm:block" />
           </div>
           <div className="px-4 sm:px-6 pb-3 mx-auto w-full max-w-4xl">
             <TimelineSearch
@@ -150,9 +151,9 @@ export default function TimelinePage() {
             </div>
           )}
 
-          {/* Micro-feedback a fine lista (issue #21) */}
+          {/* Micro-feedback a fine lista solo su mobile (issue #21) */}
           {!isLoading && !isFetchingMore && !hasMore && sessions.length > 0 && (
-            <FeedbackPulse tool="timeline" className="max-w-md" />
+            <FeedbackPulse tool="timeline" className="max-w-md sm:hidden" />
           )}
 
           {/* Accessibility live region */}
