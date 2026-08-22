@@ -117,13 +117,19 @@ async def feedback_stats():
 # ---------------------------------------------------------------------------
 
 class BoothCreate(BaseModel):
-    q1: int = Field(..., ge=1, le=5)
-    q2: int = Field(..., ge=1, le=5)
-    q3: int = Field(..., ge=1, le=5)
-    q4: int = Field(..., ge=1, le=5)
+    # Le quattro scale sono opzionali: la pagina /iswc le manda tutte, il
+    # dialog post-voto dei widget puo' mandarne un sottoinsieme.
+    q1: Optional[int] = Field(default=None, ge=1, le=5)
+    q2: Optional[int] = Field(default=None, ge=1, le=5)
+    q3: Optional[int] = Field(default=None, ge=1, le=5)
+    q4: Optional[int] = Field(default=None, ge=1, le=5)
     comment: Optional[str] = Field(default=None, max_length=1000)
     role: Optional[str] = Field(default=None, max_length=30)
     locale: Optional[str] = Field(default=None, max_length=5)
+    # Provenienza: "booth" (pagina /iswc) o "widget" (dialog post-voto)
+    source: Optional[str] = Field(default="booth", max_length=20)
+    tool: Optional[str] = Field(default=None, max_length=20)
+    context: Optional[str] = Field(default=None, max_length=300)
 
 
 @router.post("/booth")
@@ -135,6 +141,7 @@ async def create_booth_survey(payload: BoothCreate):
         CREATE (s:BoothSurvey {
             id: $id, q1: $q1, q2: $q2, q3: $q3, q4: $q4,
             comment: $comment, role: $role, locale: $locale,
+            source: $source, tool: $tool, context: $context,
             created_at: datetime($created_at)
         })
         """,
@@ -145,6 +152,9 @@ async def create_booth_survey(payload: BoothCreate):
             "comment": (payload.comment or "").strip()[:1000] or None,
             "role": payload.role,
             "locale": payload.locale,
+            "source": payload.source or "booth",
+            "tool": payload.tool,
+            "context": (payload.context or "").strip()[:300] or None,
             "created_at": datetime.now(timezone.utc).isoformat(),
         },
     )
@@ -158,10 +168,11 @@ async def booth_stats():
     rows = client.query(
         """
         MATCH (s:BoothSurvey)
-        RETURN count(s) AS n,
+        RETURN coalesce(s.source, 'booth') AS source, count(s) AS n,
                avg(s.q1) AS q1_mean, avg(s.q2) AS q2_mean,
                avg(s.q3) AS q3_mean, avg(s.q4) AS q4_mean,
                sum(CASE WHEN s.comment IS NOT NULL THEN 1 ELSE 0 END) AS with_comment
+        ORDER BY source
         """
     )
-    return rows[0] if rows else {"n": 0}
+    return {"sources": rows}
