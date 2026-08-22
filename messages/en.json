@@ -1016,5 +1016,15 @@
     "readyNote": "available",
     "heroGraphNote": "Real nodes and edges from the graph — deputy {id}",
     "updatedAt": "updated {date}"
+  },
+  "Feedback": {
+    "prompt": "Was this useful?",
+    "placeholder": "What would you improve?",
+    "send": "Send",
+    "skip": "Skip",
+    "thanks": "Noted, thanks.",
+    "voteUpAria": "Useful",
+    "voteDownAria": "Not useful",
+    "dismissAria": "Hide"
   }
 }

@@ -117,6 +117,10 @@ export function ChatArea({
                 {messages.map((message, idx) => {
                   // For user messages, pass chatId and progress slot
                   const nextMsg = messages[idx + 1];
+
+                  // Query bloccata dal gate: niente headline con la query,
+                  // resta solo il blocco "tema non trovato" dell'assistente
+                  if (message.role === "user" && nextMsg?.gate) return null;
                   const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
                   const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
 
@@ -139,7 +143,7 @@ export function ChatArea({
                   }
 
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} isLast={idx === messages.length - 1} />
                   );
                 })}
 

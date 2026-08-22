@@ -972,5 +972,15 @@
     "readyNote": "disponible",
     "heroGraphNote": "Nodos y aristas reales del grafo — diputado {id}",
     "updatedAt": "actualizado el {date}"
+  },
+  "Feedback": {
+    "prompt": "¿Te ha sido útil?",
+    "placeholder": "¿Qué mejorarías?",
+    "send": "Enviar",
+    "skip": "Omitir",
+    "thanks": "Recibido, gracias.",
+    "voteUpAria": "Útil",
+    "voteDownAria": "No útil",
+    "dismissAria": "Ocultar"
   }
 }

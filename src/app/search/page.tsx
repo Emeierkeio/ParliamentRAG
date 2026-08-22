@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
+import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
 import { GroupSelector } from "@/components/search/GroupSelector";
@@ -721,6 +722,11 @@ export default function SearchPage() {
                                                     <ChevronRight className="h-4 w-4 sm:ml-1" />
                                                 </Button>
                                             </div>
+                                        )}
+
+                                        {/* Micro-feedback sotto i risultati (issue #21) */}
+                                        {results.length > 0 && (
+                                            <FeedbackPulse tool="search" context={query} className="max-w-md" />
                                         )}
                                     </>
                                 )}

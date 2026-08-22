@@ -1003,5 +1003,15 @@
     "readyNote": "disponibile",
     "heroGraphNote": "Nodi e archi reali del grafo — deputato {id}",
     "updatedAt": "aggiornato al {date}"
+  },
+  "Feedback": {
+    "prompt": "Ti è stato utile?",
+    "placeholder": "Cosa miglioreresti?",
+    "send": "Invia",
+    "skip": "Salta",
+    "thanks": "Ricevuto, grazie.",
+    "voteUpAria": "Utile",
+    "voteDownAria": "Non utile",
+    "dismissAria": "Nascondi"
   }
 }
