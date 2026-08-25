@@ -45,7 +45,9 @@
     "clickHighlight": "Klicken Sie, um die Quelle hervorzuheben",
     "governoSection": "Regierungsmitglieder in diesem Abschnitt",
     "deputiesSection": "Abgeordnete in diesem Abschnitt",
-    "altro": "Sonstige"
+    "altro": "Sonstige",
+    "traceTitle": "Hinter den Kulissen",
+    "traceTooltip": "Wie diese Antwort entstanden ist: die Phasen der Pipeline mit realen Verarbeitungszeiten, vom Evidenz-Abruf bis zur Zitatprüfung."
   },
   "ProgressIndicator": {
     "connecting": "Verbindung wird hergestellt...",
@@ -1006,5 +1008,79 @@
     "thanksTitle": "Angekommen.",
     "thanksBody": "Ihre Antworten fließen in die Usability-Evaluation des Systems ein. Kommen Sie am Stand vorbei.",
     "tryCta": "ParliamentRAG ausprobieren"
+  },
+  "Trace": {
+    "subtitle": "von der Frage zur geprüften Antwort",
+    "rewrittenLabel": "umformulierte Anfrage",
+    "maggShort": "Mehrheit",
+    "oppShort": "Opposition",
+    "footnote": "Auf dem Server gemessene Zeiten beim Erstellen dieser Antwort. Jeder Balken ist eine Phase der Pipeline; die eingerückten Zeilen sind die internen Schritte der Generierung.",
+    "stages": {
+      "commissions": "Ausschüsse",
+      "retrieval": "Evidenz-Abruf",
+      "authority": "Authority-Score",
+      "citations_preview": "Redebeiträge",
+      "balance": "Ausgewogenheit",
+      "compass": "Ideologischer Kompass",
+      "generation": "Generierung",
+      "verification": "Zitatprüfung",
+      "analyst": "Analyse der Frage",
+      "sectional": "Abschnitte je Fraktion",
+      "integrator": "Narrative Integration",
+      "surgeon": "Zitat-Einbettung",
+      "other": "weitere Aufrufe"
+    },
+    "info": {
+      "matched": "Ausschüsse",
+      "dense": "vektoriell",
+      "graph": "aus dem Graphen",
+      "selected": "ausgewählt",
+      "speakers": "Abgeordnete",
+      "experts": "Experten",
+      "citations": "Zitate",
+      "groups": "Gruppen",
+      "chars": "Zeichen",
+      "claims": "Aussagen",
+      "sections": "Abschnitte",
+      "citations_bound": "gebundene Zitate",
+      "citations_repaired": "repariert",
+      "citations_inserted": "eingefügt",
+      "citations_failed": "ungeprüft",
+      "citations_verified": "geprüft"
+    },
+    "tabs": {
+      "pipeline": "Pipeline",
+      "calls": "LLM-Aufrufe",
+      "citations": "Zitate",
+      "retrieval": "Abruf"
+    },
+    "status": {
+      "resolved": "aufgelöst",
+      "failed": "fehlgeschlagen",
+      "orphaned": "verwaist",
+      "bound": "gebunden",
+      "in_text": "im Text",
+      "registered": "registriert"
+    },
+    "noCalls": "keine LLM-Aufrufe in dieser Phase",
+    "inputLabel": "Eingabe",
+    "responseLabel": "Antwort",
+    "callError": "Fehler",
+    "coherenceShort": "Koh.",
+    "citExpected": "erwartet",
+    "citResolved": "aufgelöst",
+    "citFailed": "fehlgeschlagen",
+    "citCoherence": "Ø Kohärenz",
+    "unsupportedTitle": "Aussagen ohne Zitat",
+    "coverageTitle": "Abdeckung je Fraktion",
+    "evidenceTitle": "Top-30-Belege (Merge-Reihenfolge)",
+    "evidenceSpeaker": "Redner",
+    "evidenceDate": "Datum",
+    "evidenceNote": "sim = semantische Ähnlichkeit zur Frage · auth = Authority-Score des Redners zum Thema · cit = Zitierbarkeit der Passage (bei Indexierung vorberechnet)",
+    "domainOk": "Anfrage im Themenbereich",
+    "domainOut": "Anfrage außerhalb des Themenbereichs",
+    "varianceShort": "Var",
+    "compassStable": "stabil",
+    "compassUnstable": "instabil"
   }
 }

@@ -122,6 +122,7 @@ export function ChatArea({
                   // resta solo il blocco "tema non trovato" dell'assistente
                   if (message.role === "user" && nextMsg?.gate) return null;
                   const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
+                  const answerTrace = message.role === "user" ? nextMsg?.trace : undefined;
                   const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
 
                   // Show progress stepper below the last user message (only when streaming text or completed)
@@ -151,7 +152,7 @@ export function ChatArea({
                       : undefined;
 
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} progressSlot={progressSlot} onSuggestionClick={onSendMessage} queryText={queryText} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} answerTrace={answerTrace} progressSlot={progressSlot} onSuggestionClick={onSendMessage} queryText={queryText} />
                   );
                 })}
 

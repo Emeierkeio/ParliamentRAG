@@ -45,7 +45,9 @@
     "clickHighlight": "Clicca per evidenziare la fonte",
     "governoSection": "Membri del Governo in questa sezione",
     "deputiesSection": "Deputati in questa sezione",
-    "altro": "Altro"
+    "altro": "Altro",
+    "traceTitle": "Dietro le quinte",
+    "traceTooltip": "Come è stata costruita questa risposta: le fasi della pipeline con i tempi reali di elaborazione, dal recupero delle evidenze alla verifica delle citazioni."
   },
   "ProgressIndicator": {
     "connecting": "Connessione...",
@@ -1037,5 +1039,79 @@
     "thanksTitle": "Ricevuto.",
     "thanksBody": "Le tue risposte entrano nella valutazione di usabilità del sistema. Passa al banchetto per il resto.",
     "tryCta": "Prova ParliamentRAG"
+  },
+  "Trace": {
+    "subtitle": "dalla domanda alla risposta verificata",
+    "rewrittenLabel": "query riscritta",
+    "maggShort": "magg.",
+    "oppShort": "opp.",
+    "footnote": "Tempi misurati sul server durante la costruzione di questa risposta. Ogni barra è una fase della pipeline; le righe rientrate sono i passaggi interni della generazione.",
+    "stages": {
+      "commissions": "Commissioni",
+      "retrieval": "Recupero evidenze",
+      "authority": "Authority scoring",
+      "citations_preview": "Interventi",
+      "balance": "Bilanciamento",
+      "compass": "Bussola ideologica",
+      "generation": "Generazione",
+      "verification": "Verifica citazioni",
+      "analyst": "Analisi della domanda",
+      "sectional": "Sezioni per gruppo",
+      "integrator": "Integrazione narrativa",
+      "surgeon": "Innesto citazioni",
+      "other": "altre chiamate"
+    },
+    "info": {
+      "matched": "commissioni",
+      "dense": "vettoriali",
+      "graph": "dal grafo",
+      "selected": "selezionate",
+      "speakers": "deputati",
+      "experts": "esperti",
+      "citations": "citazioni",
+      "groups": "gruppi",
+      "chars": "caratteri",
+      "claims": "claim",
+      "sections": "sezioni",
+      "citations_bound": "citazioni legate",
+      "citations_repaired": "riparate",
+      "citations_inserted": "inserite",
+      "citations_failed": "non verificate",
+      "citations_verified": "verificate"
+    },
+    "tabs": {
+      "pipeline": "Pipeline",
+      "calls": "Chiamate LLM",
+      "citations": "Citazioni",
+      "retrieval": "Retrieval"
+    },
+    "status": {
+      "resolved": "risolta",
+      "failed": "fallita",
+      "orphaned": "orfana",
+      "bound": "legata",
+      "in_text": "nel testo",
+      "registered": "registrata"
+    },
+    "noCalls": "nessuna chiamata LLM in questa fase",
+    "inputLabel": "input",
+    "responseLabel": "risposta",
+    "callError": "errore",
+    "coherenceShort": "coer.",
+    "citExpected": "attese",
+    "citResolved": "risolte",
+    "citFailed": "fallite",
+    "citCoherence": "coerenza media",
+    "unsupportedTitle": "affermazioni senza citazione",
+    "coverageTitle": "copertura per gruppo",
+    "evidenceTitle": "prime 30 evidenze (ordine di merge)",
+    "evidenceSpeaker": "oratore",
+    "evidenceDate": "data",
+    "evidenceNote": "sim = similarità semantica con la domanda · auth = authority score dell'oratore sul tema · cit = citabilità del passaggio (pre-calcolata all'indicizzazione)",
+    "domainOk": "query in dominio",
+    "domainOut": "query fuori dominio",
+    "varianceShort": "var",
+    "compassStable": "stabile",
+    "compassUnstable": "instabile"
   }
 }

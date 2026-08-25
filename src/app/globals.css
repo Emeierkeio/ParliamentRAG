@@ -182,8 +182,25 @@
   transform-origin: center;
   animation: hemicycle-dot-in 0.35s ease-out backwards;
 }
+
+/* Barre della waterfall "dietro le quinte": crescono da sinistra come una
+   registrazione che si riavvolge; il ritardo per-stadio è impostato inline */
+@keyframes trace-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.animate-trace-grow {
+  animation: trace-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 @media (prefers-reduced-motion: reduce) {
   .hemicycle-dot {
+    animation: none;
+  }
+  .animate-trace-grow {
     animation: none;
   }
 }

@@ -124,6 +124,104 @@ export interface GateInfo {
   suggestions: string[];
 }
 
+/** Stadio della pipeline nel trace "dietro le quinte" */
+export interface TraceStage {
+  key: string;
+  ms: number | null;
+  /** Offset reale di inizio dallo start della pipeline (ms) */
+  at?: number | null;
+  info?: Record<string, string | number | null | undefined>;
+  model?: string;
+  children?: TraceStage[];
+}
+
+/** Anteprima di un messaggio inviato all'LLM */
+export interface LlmMessagePreview {
+  role: string;
+  chars: number;
+  preview: string;
+}
+
+/** Singola chiamata LLM registrata dal backend */
+export interface LlmCall {
+  endpoint: "chat" | "embeddings";
+  model?: string | null;
+  t_offset_ms: number;
+  duration_ms: number;
+  temperature?: number | null;
+  messages?: LlmMessagePreview[];
+  tokens?: { prompt?: number | null; completion?: number | null; total?: number | null };
+  response_chars?: number;
+  response_preview?: string;
+  finish_reason?: string | null;
+  inputs?: number;
+  input_preview?: string;
+  cost_usd?: number | null;
+  error?: string;
+}
+
+/** Evidenza del pool retrieval con le componenti di score del merge */
+export interface RetrievalSampleItem {
+  id: string;
+  speaker?: string | null;
+  party?: string | null;
+  coalition?: string | null;
+  similarity?: number | null;
+  authority?: number | null;
+  citability?: number | null;
+  date?: string | null;
+}
+
+/** Stato di una citazione nel CitationRegistry */
+export interface CitationLedgerEntry {
+  evidence_id: string;
+  status: string;
+  speaker?: string | null;
+  party?: string | null;
+  section_party?: string | null;
+  coherence_score?: number | null;
+  error?: string | null;
+}
+
+/** Report integrità citazioni della pipeline */
+export interface CitationsReport {
+  expected?: number | null;
+  resolved?: number | null;
+  failed?: number | null;
+  orphaned?: number | null;
+  success_rate?: number | null;
+  coherence?: {
+    all_coherent?: boolean;
+    coherent_count?: number;
+    incoherent_count?: number;
+    average_score?: number;
+  } | null;
+  unsupported_claims?: string[];
+  ledger?: CitationLedgerEntry[];
+}
+
+/** Trace della pipeline: durate, chiamate LLM e registro citazioni */
+export interface TraceData {
+  total_ms: number;
+  rewritten_query?: string | null;
+  stages: TraceStage[];
+  llm?: {
+    calls: number;
+    chat_calls: number;
+    embedding_calls: number;
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+    cost_usd?: number;
+  };
+  llm_calls?: LlmCall[];
+  citations_report?: CitationsReport;
+  retrieval_sample?: RetrievalSampleItem[];
+  party_coverage?: Record<string, number>;
+  compass_meta?: { method?: string | null; variance?: number | null; stable?: boolean | null } | null;
+  domain?: { in_domain?: boolean } | null;
+}
+
 export interface Message {
   id: string;
   role: MessageRole;
@@ -138,6 +236,7 @@ export interface Message {
   balanceMetrics?: BalanceMetrics;
   hqMetadata?: HQMetadata;
   topicStats?: TopicStatistics;
+  trace?: TraceData;
   // Relevance gate (tema non trovato): sostituisce il contenuto markdown
   gate?: GateInfo;
   // History ID for sharing
