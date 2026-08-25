@@ -11,6 +11,7 @@ import openai
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client
+from ...tracing import stage
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +66,7 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("analyst", "gpt-4o")
 
+    @stage("analyst")
     def analyze(
         self,
         query: str,

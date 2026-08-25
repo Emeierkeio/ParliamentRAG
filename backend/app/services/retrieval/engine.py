@@ -14,6 +14,7 @@ import openai
 
 from ..neo4j_client import Neo4jClient
 from ...key_pool import make_client
+from ...tracing import stage
 from .dense_channel import DenseChannel
 from .graph_channel import GraphChannel
 from .merger import ChannelMerger
@@ -74,6 +75,7 @@ class RetrievalEngine:
 
         return response.data[0].embedding
 
+    @stage("retrieval")
     def retrieve_sync(
         self,
         query: str,

@@ -14,6 +14,7 @@ Includes citation integrity system:
 - Final Completeness Check: ensures all citations resolved
 """
 import re
+import time
 import asyncio
 import logging
 from typing import List, Dict, Any, Optional, AsyncIterator
@@ -28,6 +29,7 @@ from .synthesis import ConvergenceDivergenceAnalyzer
 from .citation_registry import CitationRegistry
 from .coherence_validator import CoherenceValidator
 from ...config import get_config
+from ...tracing import stage
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +70,7 @@ class GenerationPipeline:
             method=integrity_config.get("coherence_method", "embedding"),
         )
 
+    @stage("generation_pipeline")
     async def generate(
         self,
         query: str,
@@ -105,6 +108,7 @@ class GenerationPipeline:
                 "message": "Analyzing query and evidence..."
             })
 
+        _stage_t0 = time.perf_counter()
         claims_result = self.analyst.analyze(query, evidence_list)
         claims = claims_result.get("claims", [])
 
@@ -112,6 +116,8 @@ class GenerationPipeline:
             "claims_count": len(claims),
             "query_type": claims_result.get("query_type"),
             "requires_government": claims_result.get("requires_government_view", False),
+            "duration_ms": round((time.perf_counter() - _stage_t0) * 1000, 1),
+            "model": self.analyst.model,
         }
 
         logger.info(f"Stage 1 complete: {len(claims)} claims identified")
@@ -134,6 +140,7 @@ class GenerationPipeline:
             })
 
         sections = []
+        _stage_t0 = time.perf_counter()
         async for section in self.sectional_writer.write_sections(
             query=query,
             claims=claims,
@@ -165,6 +172,8 @@ class GenerationPipeline:
             "sections_count": len(sections),
             "parties_with_evidence": sum(1 for s in sections if s.get("has_evidence")),
             "citations_bound": len(registry.get_expected_citations()),
+            "duration_ms": round((time.perf_counter() - _stage_t0) * 1000, 1),
+            "model": self.sectional_writer.model,
         }
 
         logger.info(f"Stage 2 complete: {len(sections)} sections written, "
@@ -182,6 +191,7 @@ class GenerationPipeline:
         topic_statistics = self._compute_topic_statistics(evidence_list)
 
         # Use integrate_with_guard to verify citation preservation
+        _stage_t0 = time.perf_counter()
         integrated = self.integrator.integrate_with_guard(
             query, sections, registry, topic_statistics=topic_statistics
         )
@@ -190,6 +200,8 @@ class GenerationPipeline:
             "integration_success": not integrated.get("integration_failed", False),
             "citation_verification": integrated.get("citation_verification", {}),
             "citations_repaired": integrated.get("citations_repaired", 0),
+            "duration_ms": round((time.perf_counter() - _stage_t0) * 1000, 1),
+            "model": self.integrator.model,
         }
 
         logger.info(f"Stage 3 complete: Narrative integrated, "
@@ -473,6 +485,7 @@ class GenerationPipeline:
                 "message": "Inserting citations..."
             })
 
+        _stage_t0 = time.perf_counter()
         final_result = self.surgeon.insert_citations(
             text=integrated_text,
             evidence_map=evidence_map,
@@ -493,6 +506,7 @@ class GenerationPipeline:
         pipeline_metadata["stages"]["surgeon"] = {
             "citations_inserted": final_result.get("total_citations", 0),
             "citations_failed": final_result.get("failed_count", 0),
+            "duration_ms": round((time.perf_counter() - _stage_t0) * 1000, 1),
         }
 
         logger.info(

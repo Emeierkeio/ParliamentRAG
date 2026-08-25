@@ -23,6 +23,7 @@ import openai
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client, make_async_client
+from ...tracing import stage
 from ..citation import extract_best_sentences
 from .position_brief import PositionBriefBuilder
 from .reported_speech import annotate_evidence_with_reported_speech
@@ -429,6 +430,7 @@ STRUTTURA OUTPUT:
                 else:
                     seen_citations[normalized] = e
 
+    @stage("sectional_writer")
     async def write_sections(
         self,
         query: str,

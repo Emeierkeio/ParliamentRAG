@@ -70,13 +70,18 @@ _DEFAULT_MAX_RETRIES = 2
 
 def make_client(**kwargs) -> openai.OpenAI:
     """Create a synchronous OpenAI client with the next round-robin key."""
+    from .tracing import wrap_llm_client
+    from .llm_recorder import wrap_recording
     kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
     kwargs.setdefault("max_retries", _DEFAULT_MAX_RETRIES)
-    return openai.OpenAI(api_key=next_key(), **kwargs)
+    # recorder per ultimo: misura il tempo totale percepito dalla pipeline
+    return wrap_recording(wrap_llm_client(openai.OpenAI(api_key=next_key(), **kwargs)))
 
 
 def make_async_client(**kwargs) -> openai.AsyncOpenAI:
     """Create an async OpenAI client with the next round-robin key."""
+    from .tracing import wrap_llm_client
+    from .llm_recorder import wrap_recording
     kwargs.setdefault("timeout", _DEFAULT_TIMEOUT)
     kwargs.setdefault("max_retries", _DEFAULT_MAX_RETRIES)
-    return openai.AsyncOpenAI(api_key=next_key(), **kwargs)
+    return wrap_recording(wrap_llm_client(openai.AsyncOpenAI(api_key=next_key(), **kwargs)))

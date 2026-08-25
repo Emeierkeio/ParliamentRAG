@@ -13,6 +13,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CitationCard } from "./CitationCard";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
+import { TraceButton } from "./TraceCard";
+import type { TraceData } from "@/types";
 import { CompassCard } from "./CompassCard";
 import { TopicStatsModal } from "./TopicStatsModal";
 import { AnswerFeedback } from "@/components/feedback/FeedbackPulse";
@@ -225,12 +227,14 @@ interface MessageBubbleProps {
   message: Message;
   className?: string;
   chatId?: string;
+  /** Trace della risposta associata: mostrato come bottone accanto a Condividi */
+  answerTrace?: TraceData;
   progressSlot?: React.ReactNode;
   onSuggestionClick?: (query: string) => void;
   queryText?: string;
 }
 
-export function MessageBubble({ message, className, chatId, progressSlot, onSuggestionClick, queryText }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, answerTrace, progressSlot, onSuggestionClick, queryText }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
@@ -245,7 +249,10 @@ export function MessageBubble({ message, className, chatId, progressSlot, onSugg
           <h2 className="[font-family:var(--font-display)] text-2xl sm:text-[1.75rem] font-semibold tracking-tight leading-tight text-foreground mb-2.5 break-words min-w-0">
             {message.content}
           </h2>
-          {chatId && <ShareButton chatId={chatId} />}
+          <div className="flex items-center gap-1 shrink-0">
+            <TraceButton trace={answerTrace} />
+            {chatId && <ShareButton chatId={chatId} />}
+          </div>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Landmark className="h-3.5 w-3.5" />

@@ -596,9 +596,11 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[CITATIONS] {len(gen_citations)} total citations ({len(text_evidence_ids)} in text, {len(tracked_ids)} tracked)")
 
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
+        verify_start = time.time()
         verified_citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
+        verify_time = time.time() - verify_start
         logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
         if request.locale != "it":
             verified_citations = await translate_citation_batch(verified_citations, target_lang=request.locale)
@@ -642,6 +644,55 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                 f"{len(final_text):,} characters, {len(verified_citations)} citations",
             ),
         })
+
+        # === Trace: dietro le quinte della pipeline ===
+        # Solo durate e contatori: niente prompt, niente testi delle evidenze.
+        _gen_stage_meta = generation_result.get("metadata", {}).get("stages", {})
+
+        def _gen_child(key: str, info: Dict[str, Any]) -> Dict[str, Any]:
+            s = _gen_stage_meta.get(key, {})
+            child: Dict[str, Any] = {"key": key, "ms": s.get("duration_ms"), "info": info}
+            if s.get("model"):
+                child["model"] = s["model"]
+            return child
+
+        trace = {
+            "total_ms": round(total_time * 1000),
+            "rewritten_query": retrieval_result.get("metadata", {}).get("rewritten_query"),
+            "stages": [
+                {"key": "commissions", "ms": round(step_times.get("step_2_commissioni", 0) * 1000, 1),
+                 "info": {"matched": len(relevant_commissions)}},
+                {"key": "retrieval", "ms": round(retrieval_time * 1000, 1),
+                 "info": {"dense": _dense_n, "graph": _graph_n, "selected": len(evidence_list)}},
+                {"key": "authority", "ms": round(authority_time * 1000, 1),
+                 "info": {"speakers": len(speaker_ids), "experts": len(experts)}},
+                {"key": "citations_preview", "ms": round(step_times.get("step_4_citations", 0) * 1000, 1),
+                 "info": {"citations": len(citations)}},
+                {"key": "balance", "ms": round(step_times.get("step_5_balance", 0) * 1000, 1),
+                 "info": {"maggioranza_pct": round(balance.get("maggioranza_percentage", 0), 1),
+                          "opposizione_pct": round(balance.get("opposizione_percentage", 0), 1)}},
+                {"key": "compass", "ms": round(step_times.get("step_6_compass", 0) * 1000, 1),
+                 "info": {"groups": len(compass_data.get("groups", [])),
+                          "method": compass_data.get("meta", {}).get("axis_method")}},
+                {"key": "generation", "ms": round(generation_time * 1000, 1),
+                 "info": {"chars": len(final_text)},
+                 "children": [
+                     _gen_child("analyst", {
+                         "claims": _gen_stage_meta.get("analyst", {}).get("claims_count")}),
+                     _gen_child("sectional", {
+                         "sections": _gen_stage_meta.get("sectional", {}).get("sections_count"),
+                         "citations_bound": _gen_stage_meta.get("sectional", {}).get("citations_bound")}),
+                     _gen_child("integrator", {
+                         "citations_repaired": _gen_stage_meta.get("integrator", {}).get("citations_repaired")}),
+                     _gen_child("surgeon", {
+                         "citations_inserted": _gen_stage_meta.get("surgeon", {}).get("citations_inserted"),
+                         "citations_failed": _gen_stage_meta.get("surgeon", {}).get("citations_failed")}),
+                 ]},
+                {"key": "verification", "ms": round(verify_time * 1000, 1),
+                 "info": {"citations_verified": len(verified_citations)}},
+            ],
+        }
+        await emit("trace", {"trace": trace})
 
         await emit("complete", {
             "metadata": {

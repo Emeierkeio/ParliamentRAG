@@ -45,6 +45,7 @@ class ChatHistoryItem(BaseModel):
     compass: Optional[Dict[str, Any]] = None
 
     topic_stats: Optional[Dict[str, Any]] = None
+    trace: Optional[Dict[str, Any]] = None  # pipeline trace: durate/contatori per stadio
 
     # A/B Baseline comparison fields (optional for backwards compatibility)
     baseline_answer: Optional[str] = None
@@ -122,6 +123,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         balance_json = json.dumps(chat.balance, ensure_ascii=False, default=str) if chat.balance else ""
         compass_json = json.dumps(chat.compass, ensure_ascii=False, default=str) if chat.compass else ""
         topic_stats_json = json.dumps(chat.topic_stats, ensure_ascii=False, default=str) if chat.topic_stats else ""
+        trace_json = json.dumps(chat.trace, ensure_ascii=False, default=str) if chat.trace else ""
         ab_assignment_json = json.dumps(chat.ab_assignment, ensure_ascii=False) if chat.ab_assignment else ""
 
         baseline_value = (chat.baseline_answer or "")[:50000]
@@ -140,6 +142,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
                 balance: $balance,
                 compass: $compass,
                 topic_stats: $topic_stats,
+                trace: $trace,
                 baseline_answer: $baseline_answer,
                 ab_assignment: $ab_assignment
             })
@@ -155,6 +158,7 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
             "balance": balance_json,
             "compass": compass_json,
             "topic_stats": topic_stats_json,
+            "trace": trace_json,
             "baseline_answer": baseline_value,
             "ab_assignment": ab_assignment_json,
         })
@@ -196,7 +200,7 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
                c.timestamp AS timestamp, c.citations AS citations,
                c.experts AS experts, c.commissioni AS commissioni,
                c.balance AS balance, c.compass AS compass,
-               c.topic_stats AS topic_stats,
+               c.topic_stats AS topic_stats, c.trace AS trace,
                c.baseline_answer AS baseline_answer, c.ab_assignment AS ab_assignment
     """, {"id": chat_id})
 
@@ -215,6 +219,7 @@ async def get_chat(chat_id: str) -> Dict[str, Any]:
         "balance": json.loads(r["balance"]) if r.get("balance") else None,
         "compass": json.loads(r["compass"]) if r.get("compass") else None,
         "topic_stats": json.loads(r["topic_stats"]) if r.get("topic_stats") else None,
+        "trace": json.loads(r["trace"]) if r.get("trace") else None,
         "baseline_answer": r.get("baseline_answer") or None,
         "ab_assignment": json.loads(r["ab_assignment"]) if r.get("ab_assignment") else None,
     }

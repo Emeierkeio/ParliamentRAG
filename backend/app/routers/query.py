@@ -4,6 +4,7 @@ Main query endpoint for Multi-View RAG.
 Supports both synchronous and SSE streaming responses.
 """
 import json
+import time
 import logging
 import asyncio
 import os
@@ -24,6 +25,8 @@ from ..services.relevance_gate import gate_payload, domain_notice
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
+
+from ..log_context import new_query_id  # noqa: E402
 router = APIRouter(prefix="/api", tags=["Query"])
 
 # ---------------------------------------------------------------------------
@@ -64,6 +67,11 @@ async def _rate_limited_query(
     if not allowed:
         yield f"data: {json.dumps({'type': 'error', 'code': 'rate_limited', 'message': usage_guard.block_message(scope, locale, retry_min)})}\n\n"
         return
+
+    # Correlation id: tutti i log di questa query (anche nei thread del
+    # default executor) portano lo stesso qid
+    qid = new_query_id()
+    logger.info(f'Query accettata (qid={qid}, ip={ip}, locale={locale}): "{request.query[:150]}"')
 
     semaphore = _get_pipeline_semaphore()
     # Notify the client immediately if it will have to wait.
@@ -138,6 +146,9 @@ async def process_query_streaming(
         request_locale = code if code in LANG_NAMES else "it"
 
     services = get_services()
+    pipeline_t0 = time.perf_counter()
+    from ..llm_recorder import start_recording
+    llm_recorder = start_recording()
 
     # English progress/messages for every non-Italian locale (fr/de/es/pt included)
     _en = request_locale != "it"
@@ -206,6 +217,7 @@ async def process_query_streaming(
         yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Computing authority scores...' if _en else 'Calcolo authority scores...'})}\n\n"
 
         # Get unique speakers
+        _authority_t0 = time.perf_counter()
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
         query_embedding = await asyncio.get_running_loop().run_in_executor(
             None, lambda: services["retrieval"].embed_query(request.query)
@@ -216,6 +228,7 @@ async def process_query_streaming(
             None,
             lambda: services["authority"].compute_all_authority(speaker_ids, query_embedding),
         )
+        authority_ms = (time.perf_counter() - _authority_t0) * 1000
         authority_scores = {sid: r["total_score"] for sid, r in authority_all.items()}
         authority_details = authority_all
 
@@ -239,17 +252,32 @@ async def process_query_streaming(
         # Step 4: Compass analysis (2D text-based positioning)
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Ideological compass analysis...' if _en else 'Analisi compass ideologico...'})}\n\n"
 
+        compass_ms = None
+        compass_at = None
+        compass_groups = 0
+        compass_method = None
+        compass_meta_info = None
         try:
+            _compass_t0 = time.perf_counter()
+            compass_at = (_compass_t0 - pipeline_t0) * 1000
             compass_result = await asyncio.get_running_loop().run_in_executor(
                 None,
                 lambda: services["ideology"].compute_2d_text_positions(
                     evidence_dicts, query=request.query),
             )
+            compass_ms = (time.perf_counter() - _compass_t0) * 1000
             compass_data = {
                 "meta": compass_result.get("meta", {}),
                 "axes": compass_result.get("axes", {}),
                 "groups": compass_result.get("groups", []),
                 "scatter_sample": compass_result.get("scatter_sample", []),
+            }
+            compass_groups = len(compass_data.get("groups", []))
+            compass_method = compass_data.get("meta", {}).get("axis_method")
+            compass_meta_info = {
+                "method": compass_method,
+                "variance": compass_data.get("meta", {}).get("total_variance_explained"),
+                "stable": compass_data.get("meta", {}).get("is_stable"),
             }
             logger.info(
                 f"[COMPASS] groups={len(compass_data.get('groups', []))}, "
@@ -271,11 +299,13 @@ async def process_query_streaming(
         # Step 5: Generation
         yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generating multi-view answer...' if _en else 'Generazione risposta multi-view...'})}\n\n"
 
+        _generation_t0 = time.perf_counter()
         generation_result = await services["generation"].generate(
             query=request.query,
             evidence_list=evidence_dicts,
             query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
         )
+        generation_ms = (time.perf_counter() - _generation_t0) * 1000
         logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
                      f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
@@ -488,9 +518,11 @@ async def process_query_streaming(
 
         # Send citation_details to update the sidebar with ALL cited chunks
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
+        _verify_t0 = time.perf_counter()
         verified_citations = await asyncio.get_running_loop().run_in_executor(
             None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
         )
+        verify_ms = (time.perf_counter() - _verify_t0) * 1000
         logger.info(f"[QUERY:CITATIONS] {len(verified_citations)} citations built (text_links={len(text_evidence_ids)}, tracked={len(gen_citations)}, map={len(evidence_map_for_cit)})")
         if request_locale != "it":
             logger.info("[QUERY:TRANSLATE] Translating %d citations (locale=%s)", len(verified_citations), request_locale)
@@ -611,6 +643,113 @@ async def process_query_streaming(
             chunk = final_text[i:i+chunk_size]
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
+
+        # === Trace: dietro le quinte della pipeline ===
+        # Solo durate e contatori: niente prompt, niente testi delle evidenze.
+        _r_meta = retrieval_result.get("metadata", {})
+        _gen_stage_meta = generation_result.get("metadata", {}).get("stages", {})
+
+        def _gen_child(key: str, info: Dict[str, Any]) -> Dict[str, Any]:
+            s = _gen_stage_meta.get(key, {})
+            child: Dict[str, Any] = {"key": key, "ms": s.get("duration_ms"), "info": info}
+            if s.get("model"):
+                child["model"] = s["model"]
+            return child
+
+        trace = {
+            "total_ms": round((time.perf_counter() - pipeline_t0) * 1000),
+            "rewritten_query": _r_meta.get("rewritten_query"),
+            "stages": [
+                {"key": "retrieval", "ms": round(_r_meta.get("processing_time_ms") or 0, 1), "at": 0,
+                 "info": {"dense": _r_meta.get("dense_channel_count", 0),
+                          "graph": _r_meta.get("graph_channel_count", 0),
+                          "selected": len(evidence_dicts)}},
+                {"key": "authority", "ms": round(authority_ms, 1),
+                 "at": round((_authority_t0 - pipeline_t0) * 1000, 1),
+                 "info": {"speakers": len(speaker_ids), "experts": len(experts)}},
+                {"key": "compass", "ms": round(compass_ms, 1) if compass_ms is not None else None,
+                 "at": round(compass_at, 1) if compass_at is not None else None,
+                 "info": {"groups": compass_groups, "method": compass_method}},
+                {"key": "generation", "ms": round(generation_ms, 1),
+                 "at": round((_generation_t0 - pipeline_t0) * 1000, 1),
+                 "info": {"chars": len(final_text)},
+                 "children": [
+                     _gen_child("analyst", {
+                         "claims": _gen_stage_meta.get("analyst", {}).get("claims_count")}),
+                     _gen_child("sectional", {
+                         "sections": _gen_stage_meta.get("sectional", {}).get("sections_count"),
+                         "citations_bound": _gen_stage_meta.get("sectional", {}).get("citations_bound")}),
+                     _gen_child("integrator", {
+                         "citations_repaired": _gen_stage_meta.get("integrator", {}).get("citations_repaired")}),
+                     _gen_child("surgeon", {
+                         "citations_inserted": _gen_stage_meta.get("surgeon", {}).get("citations_inserted"),
+                         "citations_failed": _gen_stage_meta.get("surgeon", {}).get("citations_failed")}),
+                 ]},
+                {"key": "verification", "ms": round(verify_ms, 1),
+                 "at": round((_verify_t0 - pipeline_t0) * 1000, 1),
+                 "info": {"citations_verified": len(verified_citations)}},
+            ],
+        }
+
+        # Chiamate LLM registrate (modello, durata, token, costo stimato,
+        # anteprime I/O)
+        trace["llm"] = llm_recorder.totals()
+        trace["llm_calls"] = llm_recorder.sorted_calls()
+
+        # Campione del pool retrieval nell'ordine del merge: le componenti di
+        # score che decidono la selezione multi-view, evidenza per evidenza
+        trace["retrieval_sample"] = [
+            {
+                "id": d.get("evidence_id"),
+                "speaker": d.get("speaker_name"),
+                "party": d.get("party"),
+                "coalition": d.get("coalition"),
+                "similarity": round(d.get("similarity") or 0, 3),
+                "authority": round(d.get("authority_score") or 0, 3),
+                "citability": round(d["citability_score"], 3) if d.get("citability_score") is not None else None,
+                "date": str(d.get("date") or ""),
+            }
+            for d in evidence_dicts[:30]
+        ]
+        trace["party_coverage"] = _r_meta.get("party_coverage")
+        trace["compass_meta"] = compass_meta_info
+        trace["domain"] = {"in_domain": domain.get("in_domain", True)}
+
+        # Registro citazioni: lo stato di ogni citazione attraverso la
+        # pipeline (bound → in_text → resolved/failed), coerenza semantica
+        # e motivi di scarto. È il "perché" dietro ogni [«quote»].
+        _integrity = generation_result.get("metadata", {}).get("citation_integrity", {})
+        _final_rep = _integrity.get("final", {})
+        _ledger = []
+        for status_name, entries in (_final_rep.get("by_status") or {}).items():
+            # "registered" = evidenza recuperata ma mai candidata a citazione:
+            # è la quasi totalità del pool retrieval, solo rumore nel registro
+            if status_name == "registered":
+                continue
+            for e in entries:
+                _ledger.append({
+                    "evidence_id": e.get("evidence_id"),
+                    "status": status_name,
+                    "speaker": e.get("speaker"),
+                    "party": e.get("party"),
+                    "section_party": e.get("section_party"),
+                    "coherence_score": round(e["coherence_score"], 3) if e.get("coherence_score") is not None else None,
+                    "error": (str(e["error"])[:200] if e.get("error") else None),
+                })
+        trace["citations_report"] = {
+            "expected": _final_rep.get("total_expected"),
+            "resolved": _final_rep.get("resolved"),
+            "failed": _final_rep.get("failed"),
+            "orphaned": _final_rep.get("orphaned"),
+            "success_rate": round(_final_rep["success_rate"], 3) if _final_rep.get("success_rate") is not None else None,
+            "coherence": _integrity.get("coherence"),
+            "unsupported_claims": [
+                str(c)[:200] for c in (_integrity.get("unsupported_claims") or [])[:10]
+            ],
+            "ledger": _ledger,
+        }
+
+        yield f"data: {json.dumps({'type': 'trace', 'trace': trace}, default=str)}\n\n"
 
         # Complete
         yield f"data: {json.dumps({'type': 'complete', 'metadata': retrieval_result['metadata']}, default=str)}\n\n"

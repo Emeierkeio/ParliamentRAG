@@ -11,6 +11,7 @@ import type {
   ProcessingProgress,
   StepResult,
   TopicStatistics,
+  TraceData,
 } from "@/types";
 import type { CompassData } from "@/components/chat/CompassCard";
 import { config } from "@/config";
@@ -184,6 +185,7 @@ export function useChat(options: UseChatOptions = {}) {
       let balanceMetrics: BalanceMetrics | undefined;
       let compassData: CompassData | undefined = undefined;
       let topicStats: TopicStatistics | undefined;
+      let traceData: TraceData | undefined;
       let commissioni: any[] = [];
       let gateInfo: GateInfo | null = null;
       // Accumulator for step results — survives React state batching race conditions
@@ -454,6 +456,13 @@ export function useChat(options: UseChatOptions = {}) {
                 updateLastAssistantMessage({ topicStats });
                 break;
 
+              case "trace":
+                traceData = (data.trace || data.data?.trace) as TraceData;
+                if (traceData) {
+                  updateLastAssistantMessage({ trace: traceData });
+                }
+                break;
+
               case "citation_details":
                 const citDetailsPayload = data.data || data.citations;
                 if (Array.isArray(citDetailsPayload)) {
@@ -543,6 +552,7 @@ export function useChat(options: UseChatOptions = {}) {
                   experts,
                   balanceMetrics,
                   topicStats,
+                  trace: traceData,
                 });
 
                 // Log timing if available
@@ -565,6 +575,7 @@ export function useChat(options: UseChatOptions = {}) {
                     } : null,
                     compass: compassData,
                     topic_stats: topicStats || null,
+                    trace: traceData || null,
                   };
 
                   fetch(`${config.api.baseUrl}/history`, {
@@ -745,6 +756,7 @@ export function useChat(options: UseChatOptions = {}) {
       } : undefined,
       compass: historyData.compass,
       topicStats: historyData.topic_stats || undefined,
+      trace: historyData.trace || undefined,
       chatId: historyData.id,
     };
 

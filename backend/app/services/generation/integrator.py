@@ -15,6 +15,7 @@ import openai
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client
+from ...tracing import stage
 
 if TYPE_CHECKING:
     from .citation_registry import CitationRegistry
@@ -448,6 +449,7 @@ Sezioni originali con citazioni:
 {sections}
 """
 
+    @stage("integrator")
     def integrate_with_guard(
         self,
         query: str,
