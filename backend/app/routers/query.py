@@ -147,7 +147,7 @@ async def process_query_streaming(
 
     services = get_services()
     pipeline_t0 = time.perf_counter()
-    from ..llm_recorder import start_recording
+    from ..llm_recorder import start_recording, set_llm_stage
     llm_recorder = start_recording()
 
     # English progress/messages for every non-Italian locale (fr/de/es/pt included)
@@ -250,22 +250,50 @@ async def process_query_streaming(
             return
 
         # Step 4: Compass analysis (2D text-based positioning)
+        # La generazione non consuma l'output della bussola: parte qui in un
+        # thread e viene attesa solo A VALLE della generazione. Wall clock =
+        # max(bussola, generazione) invece della somma (~15-25s risparmiati).
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Ideological compass analysis...' if _en else 'Analisi compass ideologico...'})}\n\n"
 
         compass_ms = None
-        compass_at = None
+        compass_at = round((time.perf_counter() - pipeline_t0) * 1000, 1)
         compass_groups = 0
         compass_method = None
         compass_meta_info = None
+
+        def _run_compass():
+            set_llm_stage("compass")
+            _t0 = time.perf_counter()
+            result = services["ideology"].compute_2d_text_positions(
+                evidence_dicts, query=request.query)
+            return result, (time.perf_counter() - _t0) * 1000
+
+        compass_future = asyncio.get_running_loop().run_in_executor(None, _run_compass)
+
+        # Check if client disconnected before generation
+        if http_request and await http_request.is_disconnected():
+            logger.info("[QUERY] Client disconnected before generation – aborting")
+            return
+
+        # Step 5: Generation
+        yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generating multi-view answer...' if _en else 'Generazione risposta multi-view...'})}\n\n"
+
+        _generation_t0 = time.perf_counter()
+        set_llm_stage("generation")
+        generation_result = await services["generation"].generate(
+            query=request.query,
+            evidence_list=evidence_dicts,
+            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
+        )
+        set_llm_stage(None)
+        generation_ms = (time.perf_counter() - _generation_t0) * 1000
+        logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
+                     f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
+
+        # Bussola: girava in parallelo alla generazione, a questo punto è
+        # (quasi sempre) già pronta — l'attesa residua è ~0
         try:
-            _compass_t0 = time.perf_counter()
-            compass_at = (_compass_t0 - pipeline_t0) * 1000
-            compass_result = await asyncio.get_running_loop().run_in_executor(
-                None,
-                lambda: services["ideology"].compute_2d_text_positions(
-                    evidence_dicts, query=request.query),
-            )
-            compass_ms = (time.perf_counter() - _compass_t0) * 1000
+            compass_result, compass_ms = await compass_future
             compass_data = {
                 "meta": compass_result.get("meta", {}),
                 "axes": compass_result.get("axes", {}),
@@ -280,7 +308,7 @@ async def process_query_streaming(
                 "stable": compass_data.get("meta", {}).get("is_stable"),
             }
             logger.info(
-                f"[COMPASS] groups={len(compass_data.get('groups', []))}, "
+                f"[COMPASS] groups={compass_groups}, "
                 f"variance={compass_data.get('meta', {}).get('explained_variance_ratio')}, "
                 f"dimensionality={compass_data.get('meta', {}).get('dimensionality')}, "
                 f"is_stable={compass_data.get('meta', {}).get('is_stable')}"
@@ -290,24 +318,6 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'compass', 'data': compass_data}, default=str)}\n\n"
         except Exception as _compass_err:
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
-
-        # Check if client disconnected before generation
-        if http_request and await http_request.is_disconnected():
-            logger.info("[QUERY] Client disconnected before generation – aborting")
-            return
-
-        # Step 5: Generation
-        yield f"data: {json.dumps({'type': 'progress', 'step': 5, 'message': 'Generating multi-view answer...' if _en else 'Generazione risposta multi-view...'})}\n\n"
-
-        _generation_t0 = time.perf_counter()
-        generation_result = await services["generation"].generate(
-            query=request.query,
-            evidence_list=evidence_dicts,
-            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
-        )
-        generation_ms = (time.perf_counter() - _generation_t0) * 1000
-        logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
-                     f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
         # === Send topic statistics for frontend clickable intro stats ===
         topic_stats = generation_result.get("topic_statistics")

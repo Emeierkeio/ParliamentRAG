@@ -13,11 +13,14 @@ the prompt. Batched + parallel calls keep latency at one request wave.
 """
 import json
 import logging
-from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Optional, Tuple
 
 from ...config import get_config
 from ...key_pool import make_client
+# Propaga il contesto (recorder trace + query id) nei thread dei batch:
+# con un ThreadPoolExecutor liscio le chiamate stance sarebbero invisibili
+# nel pannello "dietro le quinte"
+from ...log_context import ContextPropagatingExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +88,7 @@ class StanceClassifier:
 
         results: Dict[str, StanceScore] = {}
         failed = 0
-        with ThreadPoolExecutor(max_workers=self.max_workers) as pool:
+        with ContextPropagatingExecutor(max_workers=self.max_workers) as pool:
             for batch, scores in zip(
                 batches, pool.map(lambda b: self._classify_batch(header, b), batches)
             ):

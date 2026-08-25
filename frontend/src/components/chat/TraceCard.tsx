@@ -97,6 +97,25 @@ function assignCalls(rows: StageRow[], calls: LlmCall[]): Map<string, LlmCall[]>
   };
   for (const call of calls) {
     const t = call.t_offset_ms;
+
+    // Il tag esplicito del backend vince: con bussola e generazione in
+    // parallelo le finestre temporali si sovrappongono
+    if (call.stage) {
+      const row = rows.find((r) => r.stage.key === call.stage);
+      let assigned = call.stage;
+      if (row) {
+        for (const { stage: child, start: cStart } of row.children) {
+          const cEnd = cStart + (child.ms ?? 0);
+          if (t >= cStart && t < cEnd) {
+            assigned = child.key;
+            break;
+          }
+        }
+      }
+      push(assigned, call);
+      continue;
+    }
+
     let assigned: string | null = null;
     for (const { stage, start, children } of rows) {
       const end = start + (stage.ms ?? 0);

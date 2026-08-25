@@ -52,6 +52,18 @@ _recorder_var: contextvars.ContextVar[Optional["LlmCallRecorder"]] = contextvars
     "llm_recorder", default=None
 )
 
+# Etichetta di fase per l'attribuzione delle chiamate nel trace: con la
+# bussola in parallelo alla generazione le finestre temporali si
+# sovrappongono, quindi il tag esplicito batte l'inferenza per offset.
+_stage_var: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
+    "llm_stage", default=None
+)
+
+
+def set_llm_stage(stage: Optional[str]) -> None:
+    """Etichetta le prossime chiamate LLM di questo contesto con la fase data."""
+    _stage_var.set(stage)
+
 
 class LlmCallRecorder:
     """Raccoglie le chiamate LLM di una singola query."""
@@ -109,6 +121,9 @@ def _record_chat(rec, kwargs, response, t_start, duration_ms, error=None) -> Non
             if isinstance(m, dict)
         ],
     }
+    stage = _stage_var.get()
+    if stage:
+        entry["stage"] = stage
     if error is not None:
         entry["error"] = _preview(str(error), 300)
     elif response is not None:
@@ -119,6 +134,12 @@ def _record_chat(rec, kwargs, response, t_start, duration_ms, error=None) -> Non
                 "completion": getattr(usage, "completion_tokens", None),
                 "total": getattr(usage, "total_tokens", None),
             }
+            # prompt caching automatico OpenAI: quanti token del prompt erano
+            # in cache (prefissi >=1024 token ripetuti, scontati del 50%)
+            details = getattr(usage, "prompt_tokens_details", None)
+            cached = getattr(details, "cached_tokens", None) if details else None
+            if cached:
+                entry["tokens"]["cached"] = cached
             entry["cost_usd"] = _estimate_cost(
                 entry.get("model"),
                 entry["tokens"]["prompt"],
@@ -151,6 +172,9 @@ def _record_embeddings(rec, kwargs, response, t_start, duration_ms, error=None) 
         "inputs": n_inputs,
         "input_preview": _preview(sample, 200),
     }
+    stage = _stage_var.get()
+    if stage:
+        entry["stage"] = stage
     if error is not None:
         entry["error"] = _preview(str(error), 300)
     elif response is not None:
