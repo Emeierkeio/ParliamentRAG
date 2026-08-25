@@ -4,11 +4,14 @@ Multi-View RAG API for Italian Parliamentary Data.
 FastAPI application entry point.
 """
 import sys
+import time
 import logging
 from datetime import datetime
 from contextlib import asynccontextmanager
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+
+from .log_context import query_id_var
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,6 +30,57 @@ from .routers.data import router as data_router
 from .config import MAINTENANCE_MODE, get_config, get_settings
 
 
+class _ContextEnricher(logging.Filter):
+    """
+    Arricchisce ogni record con:
+    - qid: correlation id della query corrente ("-" fuori da una query)
+    - shortname: logger name senza i prefissi app.services./app.routers./app.
+      così le righe restano allineate e leggibili (i nomi di librerie terze
+      passano invariati: langsmith.client, uvicorn.access, ...)
+    """
+    _PREFIXES = ("app.services.", "app.routers.", "app.")
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.qid = query_id_var.get()
+        name = record.name
+        for prefix in self._PREFIXES:
+            if name.startswith(prefix):
+                name = name[len(prefix):]
+                break
+        record.shortname = name
+        return True
+
+
+class _RepeatSuppressFilter(logging.Filter):
+    """
+    Sopprime le ripetizioni dello stesso messaggio entro una finestra.
+    Il primo passa; le repliche identiche vengono contate e riassunte
+    al passaggio successivo. Pensato per langsmith.client, che in caso
+    di key invalida ripete lo stesso 403 a ogni batch di trace.
+    """
+    def __init__(self, window_seconds: float = 300.0):
+        super().__init__()
+        self.window = window_seconds
+        self._seen: dict = {}  # (levelno, msg[:100]) -> [ultimo_pass, soppressi]
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        key = (record.levelno, record.getMessage()[:100])
+        now = time.monotonic()
+        entry = self._seen.get(key)
+        if entry is None or now - entry[0] >= self.window:
+            suppressed = entry[1] if entry else 0
+            self._seen[key] = [now, 0]
+            if suppressed:
+                record.msg = (
+                    f"{record.getMessage()} "
+                    f"[+{suppressed} ripetizioni identiche soppresse]"
+                )
+                record.args = ()
+            return True
+        entry[1] += 1
+        return False
+
+
 def setup_logging():
     """
     Configure logging to console and two rotating log files:
@@ -34,8 +88,12 @@ def setup_logging():
     - logs/app_TIMESTAMP.log   : INFO+  — log operativo pulito, niente rumore da librerie
     - logs/debug_TIMESTAMP.log : DEBUG+ — traccia completa per investigazione
 
-    Librerie rumorose (httpx, urllib3, ecc.) vengono silenziati a WARNING
-    in modo che non inquinino né il terminale né i file.
+    Formato riga: timestamp.millis [LIVELLO ] [qid] modulo - messaggio
+    dove qid è il correlation id della query ("-" per i log di startup/infra).
+
+    Librerie rumorose (httpx, urllib3, ecc.) vengono silenziate a WARNING;
+    uvicorn viene reindirizzato sui nostri handler così tutto il processo
+    logga con un unico formato.
 
     Moduli sotto investigazione attiva vengono portati a DEBUG esplicitamente
     così i loro log di dettaglio finiscono nel debug file.
@@ -47,9 +105,10 @@ def setup_logging():
     app_log_file   = log_dir / f"app_{timestamp}.log"
     debug_log_file = log_dir / f"debug_{timestamp}.log"
 
-    # Formato: livello giustificato a 8 char per allineamento visivo
-    fmt = "%(asctime)s [%(levelname)-8s] %(name)s - %(message)s"
-    formatter = logging.Formatter(fmt, datefmt="%Y-%m-%d %H:%M:%S,%f"[:-3])
+    # Millisecondi via %(msecs)03d: datefmt non supporta %f
+    fmt = "%(asctime)s.%(msecs)03d [%(levelname)-8s] [%(qid)s] %(shortname)-30s %(message)s"
+    formatter = logging.Formatter(fmt, datefmt="%Y-%m-%d %H:%M:%S")
+    enricher = _ContextEnricher()
 
     # Il root logger deve stare a DEBUG: i singoli handler/logger filtrano il resto
     root_logger = logging.getLogger()
@@ -59,6 +118,7 @@ def setup_logging():
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
+    console_handler.addFilter(enricher)
 
     # --- app log: INFO+, 20 MB rotating, 10 backup ---
     app_handler = RotatingFileHandler(
@@ -69,6 +129,7 @@ def setup_logging():
     )
     app_handler.setLevel(logging.INFO)
     app_handler.setFormatter(formatter)
+    app_handler.addFilter(enricher)
 
     # --- debug log: DEBUG+, 50 MB rotating, 5 backup ---
     debug_handler = RotatingFileHandler(
@@ -79,6 +140,7 @@ def setup_logging():
     )
     debug_handler.setLevel(logging.DEBUG)
     debug_handler.setFormatter(formatter)
+    debug_handler.addFilter(enricher)
 
     root_logger.addHandler(console_handler)
     root_logger.addHandler(app_handler)
@@ -101,6 +163,20 @@ def setup_logging():
     # finché il backend è dual-compat v1/v2: ogni DB ignora i rami dell'altro.
     logging.getLogger("neo4j.notifications").setLevel(logging.ERROR)
 
+    # langsmith ritenta l'invio dei trace a ogni batch: se la key è invalida
+    # ripete lo stesso 403 decine di volte per query. Primo warning passa,
+    # le repliche vengono contate e riassunte ogni 5 minuti.
+    logging.getLogger("langsmith.client").addFilter(_RepeatSuppressFilter())
+
+    # ------------------------------------------------------------------
+    # Uvicorn: rimuovi i suoi handler e lascia propagare al root, così
+    # server, access log e app loggano con lo stesso formato
+    # ------------------------------------------------------------------
+    for uv_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+        uv_logger = logging.getLogger(uv_name)
+        uv_logger.handlers.clear()
+        uv_logger.propagate = True
+
     # ------------------------------------------------------------------
     # Moduli sotto investigazione attiva → DEBUG esplicito
     # I loro log di dettaglio finiscono nel debug file senza spam nel
@@ -122,12 +198,23 @@ logger = logging.getLogger(__name__)
 logger.info(f"[STARTUP] App log  : {_app_log}")
 logger.info(f"[STARTUP] Debug log: {_debug_log}")
 
+# LangSmith tracing: va inizializzato prima della creazione dei client OpenAI
+from .tracing import init_tracing  # noqa: E402
+init_tracing()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
     # Startup
     logger.info("Starting Multi-View RAG API...")
+
+    # Default executor che propaga i contextvars: i log emessi nei thread
+    # di run_in_executor (retrieval, authority, compass) mantengono il
+    # query id invece di mostrare "-"
+    import asyncio
+    from .log_context import ContextPropagatingExecutor
+    asyncio.get_running_loop().set_default_executor(ContextPropagatingExecutor())
 
     # Validate configuration
     try:

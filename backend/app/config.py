@@ -67,6 +67,16 @@ class Settings(BaseSettings):
     # This system uses OpenAI for all LLM inference.
     
 
+    # LangSmith observability (tracing attivo solo se la key è presente)
+    langsmith_api_key: str = Field(
+        default="",
+        description="LangSmith API key (vuota = tracing disabilitato)"
+    )
+    langsmith_project: str = Field(
+        default="parliamentrag",
+        description="LangSmith project name"
+    )
+
     # Debug settings
     debug: bool = Field(default=False, description="Enable debug mode")
     log_level: str = Field(default="INFO", description="Logging level")

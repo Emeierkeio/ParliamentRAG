@@ -10,6 +10,7 @@ neo4j>=5.15.0
 
 # AI/ML
 openai>=1.10.0
+langsmith>=0.1.140
 numpy>=1.24.0
 scipy>=1.11.0
 spacy>=3.5.0
