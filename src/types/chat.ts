@@ -146,6 +146,8 @@ export interface LlmMessagePreview {
 export interface LlmCall {
   endpoint: "chat" | "embeddings";
   model?: string | null;
+  /** Fase taggata dal backend (vince sull'inferenza per offset temporale) */
+  stage?: string;
   t_offset_ms: number;
   duration_ms: number;
   temperature?: number | null;
