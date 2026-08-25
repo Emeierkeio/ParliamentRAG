@@ -15,6 +15,7 @@ import logging
 from typing import List, Dict, Any, Tuple, Optional, Callable
 
 from ...config import get_config
+from ...tracing import stage
 from ..citation import extract_best_sentences
 
 logger = logging.getLogger(__name__)
@@ -51,6 +52,7 @@ class CitationSurgeon:
             "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
         )
 
+    @stage("surgeon")
     def insert_citations(
         self,
         text: str,
@@ -659,6 +661,12 @@ class CitationSurgeon:
         Looks for text patterns that suggest unsupported assertions.
         """
         unsupported = []
+        # Gli id nei link [«quote»](leg19_sed..._tit00070.sub00010...) contengono
+        # punti: lo split per frase li spezzerebbe a metà, e la coda della frase
+        # citata (senza più « né link) verrebbe marcata come claim senza fonte.
+        # Sostituire i link con un segnaposto « » preserva il marker di citazione.
+        text = re.sub(r'\[«[^\]]*»\]\([^)]+\)', '«»', text)
+        text = self.CITATION_PATTERN_MARKDOWN.sub('«»', text)
         sentences = re.split(r'[.!?]', text)
 
         for sentence in sentences:

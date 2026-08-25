@@ -412,8 +412,12 @@ class CoherenceValidator:
         results = []
 
         # Find all citations with their context
-        # Match sentence containing [CIT:id]
-        pattern = r'([^.!?]*\[CIT:([^\]]+)\][^.!?]*[.!?]?)'
+        # Match sentence containing [CIT:id].
+        # Le quote inline «...» contengono punteggiatura di fine frase: un
+        # pattern ingenuo [^.!?]* si ferma all'ultimo punto DENTRO la quote e
+        # l'intro degenerava in "»" (coerenza ~0.17 sistematica). Le span
+        # «...» vanno trattate come atomiche.
+        pattern = r'((?:[^.!?«]|«[^»]*»)*\[CIT:([^\]]+)\])'
         matches = re.findall(pattern, text_with_citations)
 
         for full_match, evidence_id in matches:
@@ -428,9 +432,14 @@ class CoherenceValidator:
             evidence = evidence_map[evidence_id]
             quote_text = evidence.get("quote_text") or evidence.get("chunk_text", "")
 
-            # Extract intro (text before [CIT:])
+            # Extract intro: la proposizione che INTRODUCE la quote, cioè il
+            # testo prima dell'apertura «. La quote non va confrontata con sé.
             parts = full_match.split(f"[CIT:{evidence_id}]")
             intro = parts[0].strip() if parts else ""
+            if "«" in intro:
+                before_quote = intro.split("«", 1)[0].strip()
+                # se la quote apre la frase, tieni la frase senza le quote
+                intro = before_quote or re.sub(r'«[^»]*»', '', intro).strip()
 
             # Pass evidence dict so _stance_alignment_check can use pre-annotated
             # reported_speech info (set by annotate_evidence_with_reported_speech
