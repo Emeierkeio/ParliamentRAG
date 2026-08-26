@@ -47,7 +47,7 @@
     "deputiesSection": "Députés dans cette section",
     "altro": "Autre",
     "traceTitle": "Dans les coulisses",
-    "traceTooltip": "Comment cette réponse a été construite : les phases de la pipeline avec les temps réels de traitement, de la récupération des preuves à la vérification des citations."
+    "traceTooltip": "Phases, temps et appels aux modèles qui ont produit cette réponse, mesurés sur le serveur : de la récupération des preuves à la vérification des citations."
   },
   "ProgressIndicator": {
     "connecting": "Connexion...",
@@ -1014,7 +1014,7 @@
     "rewrittenLabel": "requête reformulée",
     "maggShort": "majorité",
     "oppShort": "opposition",
-    "footnote": "Temps mesurés sur le serveur pendant la construction de cette réponse. Chaque barre est une phase de la pipeline ; les lignes en retrait sont les étapes internes de la génération.",
+    "footnote": "Temps mesurés sur le serveur. Chaque barre est une phase de la pipeline ; les lignes en retrait sont les étapes internes de la génération. Les phases peuvent se chevaucher : la boussole tourne en parallèle de la génération.",
     "stages": {
       "commissions": "Commissions",
       "retrieval": "Récupération des preuves",

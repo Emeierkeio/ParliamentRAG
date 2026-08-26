@@ -47,7 +47,7 @@
     "deputiesSection": "Abgeordnete in diesem Abschnitt",
     "altro": "Sonstige",
     "traceTitle": "Hinter den Kulissen",
-    "traceTooltip": "Wie diese Antwort entstanden ist: die Phasen der Pipeline mit realen Verarbeitungszeiten, vom Evidenz-Abruf bis zur Zitatprüfung."
+    "traceTooltip": "Phasen, Zeiten und Modellaufrufe hinter dieser Antwort, gemessen auf dem Server: vom Evidenz-Abruf bis zur Zitatprüfung."
   },
   "ProgressIndicator": {
     "connecting": "Verbindung wird hergestellt...",
@@ -1014,7 +1014,7 @@
     "rewrittenLabel": "umformulierte Anfrage",
     "maggShort": "Mehrheit",
     "oppShort": "Opposition",
-    "footnote": "Auf dem Server gemessene Zeiten beim Erstellen dieser Antwort. Jeder Balken ist eine Phase der Pipeline; die eingerückten Zeilen sind die internen Schritte der Generierung.",
+    "footnote": "Auf dem Server gemessene Zeiten. Jeder Balken ist eine Phase der Pipeline; eingerückte Zeilen sind die internen Schritte der Generierung. Phasen können sich überlappen: Der Kompass läuft parallel zur Generierung.",
     "stages": {
       "commissions": "Ausschüsse",
       "retrieval": "Evidenz-Abruf",

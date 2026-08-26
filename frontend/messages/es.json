@@ -47,7 +47,7 @@
     "deputiesSection": "Diputados en esta sección",
     "altro": "Otros",
     "traceTitle": "Entre bastidores",
-    "traceTooltip": "Cómo se construyó esta respuesta: las fases de la pipeline con tiempos reales de procesamiento, desde la recuperación de evidencias hasta la verificación de citas."
+    "traceTooltip": "Fases, tiempos y llamadas a los modelos que produjeron esta respuesta, medidos en el servidor: de la recuperación de evidencias a la verificación de citas."
   },
   "ProgressIndicator": {
     "connecting": "Conectando...",
@@ -1014,7 +1014,7 @@
     "rewrittenLabel": "consulta reformulada",
     "maggShort": "mayoría",
     "oppShort": "oposición",
-    "footnote": "Tiempos medidos en el servidor durante la construcción de esta respuesta. Cada barra es una fase de la pipeline; las filas con sangría son los pasos internos de la generación.",
+    "footnote": "Tiempos medidos en el servidor. Cada barra es una fase de la pipeline; las filas con sangría son los pasos internos de la generación. Las fases pueden solaparse: la brújula corre en paralelo a la generación.",
     "stages": {
       "commissions": "Comisiones",
       "retrieval": "Recuperación de evidencias",

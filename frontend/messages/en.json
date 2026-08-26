@@ -47,7 +47,7 @@
     "deputiesSection": "Deputies in this section",
     "altro": "Other",
     "traceTitle": "Behind the scenes",
-    "traceTooltip": "How this answer was built: the pipeline phases with real processing times, from evidence retrieval to citation checking."
+    "traceTooltip": "Phases, timings and model calls behind this answer, measured on the server: from evidence retrieval to citation checking."
   },
   "ProgressIndicator": {
     "connecting": "Connecting...",
@@ -1058,7 +1058,7 @@
     "rewrittenLabel": "rewritten query",
     "maggShort": "majority",
     "oppShort": "opposition",
-    "footnote": "Times measured on the server while building this answer. Each bar is a pipeline phase; the indented rows are the internal steps of text generation.",
+    "footnote": "Server-measured timings. Each bar is a pipeline phase; indented rows are the internal steps of generation. Phases can overlap: the compass runs alongside generation.",
     "stages": {
       "commissions": "Committees",
       "retrieval": "Evidence retrieval",
