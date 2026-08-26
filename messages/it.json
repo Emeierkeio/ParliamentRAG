@@ -47,7 +47,7 @@
     "deputiesSection": "Deputati in questa sezione",
     "altro": "Altro",
     "traceTitle": "Dietro le quinte",
-    "traceTooltip": "Come è stata costruita questa risposta: le fasi della pipeline con i tempi reali di elaborazione, dal recupero delle evidenze alla verifica delle citazioni."
+    "traceTooltip": "Fasi, tempi e chiamate ai modelli che hanno prodotto questa risposta, misurati sul server: dal recupero delle evidenze alla verifica delle citazioni."
   },
   "ProgressIndicator": {
     "connecting": "Connessione...",
@@ -1045,7 +1045,7 @@
     "rewrittenLabel": "query riscritta",
     "maggShort": "magg.",
     "oppShort": "opp.",
-    "footnote": "Tempi misurati sul server durante la costruzione di questa risposta. Ogni barra è una fase della pipeline; le righe rientrate sono i passaggi interni della generazione.",
+    "footnote": "Tempi misurati sul server. Ogni barra è una fase della pipeline; le righe rientrate sono i passaggi interni della generazione. Le fasi possono sovrapporsi: la bussola corre in parallelo alla generazione.",
     "stages": {
       "commissions": "Commissioni",
       "retrieval": "Recupero evidenze",

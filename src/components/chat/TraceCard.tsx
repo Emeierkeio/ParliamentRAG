@@ -806,7 +806,7 @@ export function TraceButton({ trace }: { trace?: TraceData }) {
           <LangChainGlyph className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[88vh] overflow-y-auto">
+      <DialogContent className="w-[min(96vw,64rem)] sm:max-w-5xl max-h-[88vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="[font-family:var(--font-display)] text-xl">
             {t("traceTitle")}
