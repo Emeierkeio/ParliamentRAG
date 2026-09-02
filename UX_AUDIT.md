@@ -178,3 +178,17 @@ Problemi:
 15. Ricerca globale unificata (persone + atti + temi in un solo indice).
 16. Confronto tra due gruppi ("Confronta con…").
 17. History unificata cross-strumento.
+
+---
+
+## Addendum — 3 settembre 2026 (iterazione radicale)
+
+La prima iterazione è stata giudicata troppo conservativa: ha rietichettato i 5 strumenti invece di superarli. Problemi aggiunti all'audit:
+
+- **La sidebar scura è il manifesto della dashboard mentality**: incornicia ogni pagina come "pannello", contraddice la natura editoriale del prodotto. Va rimossa, non ridisegnata.
+- **/explorer è legacy**: interfaccia Cypher per addetti ai lavori, non feature di prodotto. Va de-linkata ovunque (nav, palette, mobile, /data, landing); il grafo resta infrastruttura e viene *raccontato* in /data e /metodologia.
+- **Le entità senza URL sono il vero debito**: deputati chiusi in un modal, sedute in un infinite scroll, gruppi da nessuna parte. Verificato in produzione che `POST /graph/query` (read-only, ~300ms) espone tutto il necessario (foto, scheda Camera, professione, formazione, conteggi) e `GET /search/results` filtra per deputato/gruppo: le directory e i profili si costruiscono senza toccare il backend.
+- **"Documentazione" → GitHub è microcopy disonesto**; la metodologia merita una pagina propria.
+- **La landing indicizza strumenti** ("Gli strumenti", 01–05): è la negazione del modello ASK→EXPLORE→UNDERSTAND→VERIFY.
+
+Decisioni e piano nella nuova `RADICAL_REDESIGN.md`; esplorazione brand completa in `BRAND_EXPLORATION.md`.
