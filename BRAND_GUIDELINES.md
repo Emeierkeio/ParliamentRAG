@@ -73,10 +73,10 @@ Non creare altri sotto-brand. "Search", "Research" ecc. restano nomi di funzioni
 
 Primaria (IT / EN):
 
-> **Dalla domanda alla fonte.**
-> **From question to source.**
+> **Il Parlamento italiano, ricercabile e verificabile.**
+> **The Italian Parliament, searchable and verifiable.**
 
-È il concetto centrale del brand (vedi §8) in quattro parole, comprensibile a chiunque, non slogan.
+Descrittore, non slogan: in pochi secondi dice cosa è il prodotto. Sostituisce "Dalla domanda alla fonte" (settembre 2026: giudicata evocativa ma non abbastanza esplicativa); quella formula resta utilizzabile come claim secondario nel racconto domanda→fonte.
 
 Alternative valutate (utilizzabili in contesti secondari):
 
