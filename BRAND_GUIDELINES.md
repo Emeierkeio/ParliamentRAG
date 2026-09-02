@@ -106,30 +106,26 @@ Da questo concetto discendono: il simbolo (§9), il linguaggio grafico (§13), i
 
 ## 9. Logo
 
-### Simbolo — "l'Emiciclo" (v2, selezionato dopo esplorazione)
+### Simbolo — "l'Emiciclo" (v3: il simbolo storico, raffinato)
 
-Tre settori d'arco che formano un emiciclo, con un quadrato pieno al centro della corda:
+Decisione di settembre 2026: il simbolo in uso su parliamentrag.it (settore d'anello a 220° con l'oratore nell'apertura) è la direzione vincente. Non si reinventa: si raffina. La silhouette resta identica; il raffinamento integra in modo quasi impercettibile persone, rete e conoscenza:
 
-```
-   ◠ ◠ ◠
-     ■
-```
+- **Due corridoi parziali** tagliano l'anello dal bordo esterno fino a circa due terzi della profondità, dividendolo in tre settori: *le persone e i gruppi in Aula*.
+- **La banda interna resta continua**: i settori sono distinti ma l'Aula è una — *la rete che li collega*.
+- **La cupola dell'oratore** nell'apertura: *chi parla, la parola che diventa conoscenza e fonte*.
 
-- **Tre settori** = i gruppi in Aula: il Parlamento come rete di parti distinte, non un blocco unico. I vuoti tra i settori sono i corridoi dell'Aula.
-- **Quadrato pieno** = il podio di chi parla e insieme la fonte: ciò che viene detto in Aula è ciò che il sistema ancora al resoconto. Angoli vivi = documento.
-- La lettura complessiva: *l'Aula che si deposita in una fonte verificabile* (HEMICYCLE + NETWORK + TRACE + SOURCE).
+A colpo d'occhio (e sotto i 24px) il simbolo è indistinguibile da quello storico: continuità totale di riconoscimento. Da vicino, la struttura racconta il prodotto.
 
-Geometria di riferimento (griglia 24×24):
-- settori: centro (12, 15.2), raggio 8, stroke 3.6, terminali netti (butt); spans 180°–126.7°, 116.7°–63.3°, 53.3°–0° (gap 10°)
-- quadrato: 4.8×4.8, centro (12, 16.35)
+Geometria di riferimento (coordinate native 224×156, poi inscritta in viewBox quadrata 24×24 con `translate(1,4.34) scale(0.098214)`):
+- anello: centro (112,112), r esterno 104, r interno 58, settore 200°→−20° (220°)
+- corridoi: 2, ampiezza 5°, simmetrici rispetto alla verticale, dal bordo esterno fino a r 75; banda interna continua da r 76 a 58
+- oratore: semicerchio r 21, centro (112, 147.6)
 
-A 16px i tre settori degradano con grazia in un arco unico: il simbolo resta leggibile (test superato su favicon 16/32).
+Varianti: la **small-size** (favicon 16/32, timbri) omette i corridoi (sotto i 24px sporcherebbero il raster) ed è la silhouette storica pura. Su superfici scure il simbolo è Paper, su chiare è Ink; sempre monocromo.
 
-**Processo di selezione (settembre 2026).** Esplorate 5 direzioni × 30+ varianti (fogli in `assets/brand/`): (A) emiciclo astratto ad archi concentrici — scartato, lettura "segnale wi-fi"; (B) emiciclo di nodi-seggio — leggibile solo a grandi dimensioni; (C) emiciclo + tracciato discendente — la famiglia cerchio-arco-gomito legge come "cuffie/headset"; (D) spazio negativo — letture ambigue (archi, avatar); (E) evoluzione del tracciato v1 — stessi problemi di C. La sintesi vincente unisce la B (settori = rete) e la D (i vuoti disegnano l'Aula) mantenendo dal tracciato v1 il quadrato-fonte come ancora.
+**Processo.** Prima dell'approdo alla v3 sono state esplorate 5 direzioni × 40+ varianti (fogli in `assets/brand/`): archi concentrici (lettura "wi-fi"), nodi-seggio (illeggibili a 16px), emiciclo+tracciato (lettura "cuffie"), spazio negativo (ambiguo), settori a tratto. Il round finale di raffinamento del simbolo storico (10+5 varianti) ha confrontato tagli pieni e parziali a 3/5 settori: vincono i tagli parziali a 3 settori, gli unici che preservano la silhouette al 100% aggiungendo significato.
 
-Cosa NON è: non è una cupola, non è Montecitorio, non è un cervello, non è un circuito, non è un tricolore, non contiene "RAG".
-
-Nei contesti digitali un solo settore può usare l'accento Blu Archivio (il settore "che parla"); su carta e in contesti formali il simbolo è sempre monocromo.
+Cosa NON è: non è una cupola di palazzo, non è Montecitorio, non è un cervello, non è un circuito, non è un tricolore, non contiene "RAG".
 
 ### Sistema
 

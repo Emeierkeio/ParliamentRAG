@@ -1,8 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-  <!-- l'Emiciclo: tre settori (i gruppi in Aula) + quadrato (il podio, la fonte) -->
+  <!-- Emiciclo ParliamentRAG: settore ad anello 220 gradi + oratore. -->
+  <!-- Raffinamento 2026: due corridoi parziali dividono i settori (le persone,
+       i gruppi) ma la banda interna resta continua (la rete, l'Aula una). -->
   <!-- Versione chiara: per superfici scure (sidebar, data page) -->
-  <path d="M4.000 15.200 A8 8 0 0 1 7.222 8.783" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
-  <path d="M8.409 8.051 A8 8 0 0 1 15.591 8.051" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
-  <path d="M16.778 8.783 A8 8 0 0 1 20.000 15.200" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
-  <rect x="9.6" y="13.95" width="4.8" height="4.8" fill="#FBFAF8"/>
+  <g transform="translate(1,4.34) scale(0.098214)">
+    <path d="M 14.27 147.57 A 104.0 104.0 0 0 1 45.15 32.33 L 63.79 54.55 A 75 75 0 0 0 41.52 137.65 Z" fill="#FBFAF8"/>
+    <path d="M 52.35 26.81 A 104.0 104.0 0 0 1 171.65 26.81 L 155.02 50.56 A 75 75 0 0 0 68.98 50.56 Z" fill="#FBFAF8"/>
+    <path d="M 178.85 32.33 A 104.0 104.0 0 0 1 209.73 147.57 L 182.48 137.65 A 75 75 0 0 0 160.21 54.55 Z" fill="#FBFAF8"/>
+    <path d="M 40.58 137.99 A 76 76 0 1 1 183.42 137.99 L 166.50 131.84 A 58.0 58.0 0 1 0 57.50 131.84 Z" fill="#FBFAF8"/>
+    <path d="M 91.00 147.60 A 21.0 21.0 0 0 1 133.00 147.60 Z" fill="#FBFAF8"/>
+  </g>
 </svg>
