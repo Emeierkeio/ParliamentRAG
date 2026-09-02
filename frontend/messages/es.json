@@ -302,7 +302,7 @@
     "title": "¿Qué piensa el Parlamento italiano <em>sobre cada tema?</em>",
     "subtitle": "Las voces <bold>más autorizadas</bold> de la mayoría y la oposición, citadas palabra por palabra de las intervenciones en el Pleno.",
     "trendingTopics": "Tendencias · XIX legislatura",
-    "searchPlaceholder": "Buscar un tema...",
+    "searchPlaceholder": "Pregúntale algo al Parlamento…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Reforma Sanitaria",
@@ -526,7 +526,7 @@
     "manyConversations": "conversaciones"
   },
   "SearchPage": {
-    "pageTitle": "Búsqueda de Actos",
+    "pageTitle": "Intervenciones y actos",
     "historyButtonTitle": "Historial",
     "historyTitle": "Historial de búsquedas",
     "noSavedSearches": "Ninguna búsqueda guardada",
@@ -706,7 +706,7 @@
     "transcriptLoadError": "No se pudo cargar el acta. Actualice la página."
   },
   "CompassPage": {
-    "pageTitle": "Brújula Ideológica",
+    "pageTitle": "Posiciones de los grupos",
     "groupsCount": "{count} grupos",
     "warningWeakAlignment": "Eje secundario con ruido elevado. Se recomienda el análisis 1D.",
     "placeholderNew": "Nuevo tema...",
@@ -895,7 +895,8 @@
     "dataBandCta": "Explora los datos",
     "footerData": "Datos abiertos (RDF)",
     "tocData": "Datos",
-    "footerGrants": "subvención"
+    "footerGrants": "subvención",
+    "tagline": "De la pregunta a la fuente"
   },
   "Privacy": {
     "title": "Privacidad y avisos legales",

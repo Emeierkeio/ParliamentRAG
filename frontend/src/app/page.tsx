@@ -171,8 +171,13 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <div className="flex items-center gap-3">
               <Image src="/logo-blue.svg" alt="" width={38} height={38} />
-              <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-semibold tracking-tight">
-                ParliamentRAG
+              <span className="flex flex-col">
+                <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-semibold tracking-tight leading-none">
+                  ParliamentRAG
+                </span>
+                <span className="mt-1 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {t("tagline")}
+                </span>
               </span>
             </div>
             <Link

@@ -15,6 +15,7 @@ import {
   CalendarDays,
   Check,
   X,
+  Database,
 } from "lucide-react";
 import {
   Sheet,
@@ -24,6 +25,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SettingsModal } from "@/components/settings/SettingsModal";
+import { openCommandPalette } from "@/components/shared/CommandPalette";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { config } from "@/config";
 import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
@@ -212,6 +214,28 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
             <span className="truncate">{l.label}</span>
           </button>
         ))}
+      </div>
+
+      {/* Ricerca globale + dati aperti: le voci che la bottom nav non ospita */}
+      <div className="mt-4 pt-3 border-t border-border/60 grid grid-cols-2 gap-1.5">
+        <SheetClose asChild>
+          <button
+            onClick={() => openCommandPalette()}
+            className="flex items-center justify-center gap-2 rounded-lg border border-border px-2 py-2 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            <Search className="h-3.5 w-3.5 shrink-0" />
+            {t("commandPalette")}
+          </button>
+        </SheetClose>
+        <SheetClose asChild>
+          <a
+            href="/data"
+            className="flex items-center justify-center gap-2 rounded-lg border border-border px-2 py-2 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            <Database className="h-3.5 w-3.5 shrink-0" />
+            {t("openData")}
+          </a>
+        </SheetClose>
       </div>
 
       {/* Footer: data date (the info that matters) + small icon actions */}

@@ -303,7 +303,7 @@
     "title": "What does the Italian Parliament think <em>on every topic?</em>",
     "subtitle": "The <bold>most authoritative</bold> voices from majority and opposition, quoted word for word from floor speeches.",
     "trendingTopics": "Trending · 19th Legislature",
-    "searchPlaceholder": "Search a topic...",
+    "searchPlaceholder": "Ask Parliament something…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Healthcare Reform",
@@ -527,7 +527,7 @@
     "manyConversations": "conversations"
   },
   "SearchPage": {
-    "pageTitle": "Acts Search",
+    "pageTitle": "Speeches and acts",
     "historyButtonTitle": "History",
     "historyTitle": "Search history",
     "noSavedSearches": "No saved searches",
@@ -750,7 +750,7 @@
     "transcriptLoadError": "Could not load transcript. Please refresh the page."
   },
   "CompassPage": {
-    "pageTitle": "Ideological Compass",
+    "pageTitle": "Group positions",
     "groupsCount": "{count} groups",
     "warningWeakAlignment": "Secondary axis with high noise. 1D analysis recommended.",
     "placeholderNew": "New topic...",
@@ -939,7 +939,8 @@
     "dataBandCta": "Explore the data",
     "footerData": "Open data (RDF)",
     "tocData": "Data",
-    "footerGrants": "grant"
+    "footerGrants": "grant",
+    "tagline": "From question to source"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",

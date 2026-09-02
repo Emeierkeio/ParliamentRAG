@@ -303,7 +303,7 @@
     "title": "Cosa pensa il Parlamento <em>su ogni tema?</em>",
     "subtitle": "Le voci <bold>più autorevoli</bold> di maggioranza e opposizione, citate parola per parola dagli interventi in aula.",
     "trendingTopics": "Trending · XIX Legislatura",
-    "searchPlaceholder": "Cerca un tema...",
+    "searchPlaceholder": "Chiedi qualcosa al Parlamento…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Riforma Sanitaria",
@@ -527,7 +527,7 @@
     "manyConversations": "conversazioni"
   },
   "SearchPage": {
-    "pageTitle": "Ricerca Atti",
+    "pageTitle": "Interventi e atti",
     "historyButtonTitle": "Cronologia",
     "historyTitle": "Cronologia ricerche",
     "noSavedSearches": "Nessuna ricerca salvata",
@@ -750,7 +750,7 @@
     "transcriptLoadError": "Impossibile caricare il verbale. Aggiorna la pagina."
   },
   "CompassPage": {
-    "pageTitle": "Compasso Ideologico",
+    "pageTitle": "Posizioni dei gruppi",
     "groupsCount": "{count} gruppi",
     "warningWeakAlignment": "Asse secondario con rumore elevato. Consigliata analisi 1D.",
     "placeholderNew": "Nuovo tema...",
@@ -926,7 +926,8 @@
     "dataBandCta": "Esplora i dati",
     "footerData": "Dati aperti (RDF)",
     "tocData": "Dati",
-    "footerGrants": "grant"
+    "footerGrants": "grant",
+    "tagline": "Dalla domanda alla fonte"
   },
   "Privacy": {
     "title": "Privacy e note legali",

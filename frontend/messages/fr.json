@@ -302,7 +302,7 @@
     "title": "Que pense le Parlement italien <em>sur chaque sujet ?</em>",
     "subtitle": "Les voix <bold>faisant le plus autorité</bold> de la majorité et de l'opposition, citées mot pour mot depuis les interventions en séance.",
     "trendingTopics": "Tendances · XIXe législature",
-    "searchPlaceholder": "Rechercher un sujet...",
+    "searchPlaceholder": "Posez une question au Parlement…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Réforme de la santé",
@@ -526,7 +526,7 @@
     "manyConversations": "conversations"
   },
   "SearchPage": {
-    "pageTitle": "Recherche d'actes",
+    "pageTitle": "Interventions et actes",
     "historyButtonTitle": "Historique",
     "historyTitle": "Historique des recherches",
     "noSavedSearches": "Aucune recherche enregistrée",
@@ -706,7 +706,7 @@
     "transcriptLoadError": "Impossible de charger le compte rendu. Actualisez la page."
   },
   "CompassPage": {
-    "pageTitle": "Boussole idéologique",
+    "pageTitle": "Positions des groupes",
     "groupsCount": "{count} groupes",
     "warningWeakAlignment": "Axe secondaire avec bruit élevé. Analyse 1D recommandée.",
     "placeholderNew": "Nouveau sujet...",
@@ -895,7 +895,8 @@
     "dataBandCta": "Explorer les données",
     "footerData": "Données ouvertes (RDF)",
     "tocData": "Données",
-    "footerGrants": "subvention"
+    "footerGrants": "subvention",
+    "tagline": "De la question à la source"
   },
   "Privacy": {
     "title": "Confidentialité et mentions légales",

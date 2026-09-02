@@ -302,7 +302,7 @@
     "title": "Was denkt das italienische Parlament <em>zu jedem Thema?</em>",
     "subtitle": "Die <bold>maßgeblichsten</bold> Stimmen von Mehrheit und Opposition, Wort für Wort aus den Plenarreden zitiert.",
     "trendingTopics": "Trends · 19. Legislaturperiode",
-    "searchPlaceholder": "Thema suchen...",
+    "searchPlaceholder": "Fragen Sie das Parlament…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Gesundheitsreform",
@@ -526,7 +526,7 @@
     "manyConversations": "Unterhaltungen"
   },
   "SearchPage": {
-    "pageTitle": "Aktensuche",
+    "pageTitle": "Reden und Akten",
     "historyButtonTitle": "Verlauf",
     "historyTitle": "Suchverlauf",
     "noSavedSearches": "Keine gespeicherten Suchen",
@@ -706,7 +706,7 @@
     "transcriptLoadError": "Protokoll konnte nicht geladen werden. Aktualisieren Sie die Seite."
   },
   "CompassPage": {
-    "pageTitle": "Ideologischer Kompass",
+    "pageTitle": "Positionen der Fraktionen",
     "groupsCount": "{count} Fraktionen",
     "warningWeakAlignment": "Sekundärachse mit hohem Rauschen. 1D-Analyse empfohlen.",
     "placeholderNew": "Neues Thema...",
@@ -895,7 +895,8 @@
     "dataBandCta": "Daten erkunden",
     "footerData": "Offene Daten (RDF)",
     "tocData": "Daten",
-    "footerGrants": "Finanzhilfe"
+    "footerGrants": "Finanzhilfe",
+    "tagline": "Von der Frage zur Quelle"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",

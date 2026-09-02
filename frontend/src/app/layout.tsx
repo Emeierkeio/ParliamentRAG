@@ -64,11 +64,11 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.parliamentrag.it"),
   title: {
-    default: "ParliamentRAG",
+    default: "ParliamentRAG — Interroga il Parlamento italiano",
     template: "%s | ParliamentRAG",
   },
   description:
-    "Esplora i dibattiti della Camera dei Deputati: ricerca atti, confronta posizioni politiche e visualizza il posizionamento ideologico dei gruppi parlamentari su qualsiasi tema.",
+    "Esplora interventi, atti, votazioni e posizioni della XIX Legislatura con risposte AI verificabili e collegate alle fonti ufficiali.",
   keywords: [
     "parlamento italiano",
     "camera dei deputati",
