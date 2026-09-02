@@ -335,7 +335,8 @@
     "trendingTab": "Trending",
     "lastTopicsHint": "Topics of the measures discussed on the floor since {date}.",
     "lastTopicsHintActs": "Recently on the floor, among others:",
-    "lastTopicsLoading": "Looking up the latest floor discussions in the knowledge graph…"
+    "lastTopicsLoading": "Looking up the latest floor discussions in the knowledge graph…",
+    "historyLabel": "History"
   },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",

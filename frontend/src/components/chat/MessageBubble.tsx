@@ -326,7 +326,7 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
 
         {/* Content */}
         {message.content && (
-          <div className="prose prose-sm max-w-none prose-neutral dark:prose-invert overflow-hidden break-words [overflow-wrap:anywhere]">
+          <div className="prose prose-sm sm:prose-base max-w-none prose-neutral dark:prose-invert overflow-hidden break-words [overflow-wrap:anywhere] prose-headings:[font-family:var(--font-display)] prose-headings:tracking-tight prose-p:max-w-[70ch] prose-li:max-w-[70ch]">
             <ReactMarkdown
               components={{
                 p: ({ children }) => (

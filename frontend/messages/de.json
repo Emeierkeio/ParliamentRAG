@@ -334,7 +334,8 @@
     "trendingTab": "Trends",
     "lastTopicsHint": "Themen der seit dem {date} im Plenum diskutierten Vorlagen.",
     "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:",
-    "lastTopicsLoading": "Die letzten Plenardebatten werden im Wissensgraphen gesucht…"
+    "lastTopicsLoading": "Die letzten Plenardebatten werden im Wissensgraphen gesucht…",
+    "historyLabel": "Verlauf"
   },
   "ChamberSelector": {
     "camera": "Abgeordnetenkammer",

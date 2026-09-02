@@ -335,7 +335,8 @@
     "trendingTab": "Trending",
     "lastTopicsHint": "Temi dei provvedimenti discussi in aula dal {date}.",
     "lastTopicsHintActs": "In aula si discuteva, tra l'altro:",
-    "lastTopicsLoading": "Sto cercando le ultime discussioni d'aula nel grafo…"
+    "lastTopicsLoading": "Sto cercando le ultime discussioni d'aula nel grafo…",
+    "historyLabel": "Cronologia"
   },
   "ChamberSelector": {
     "camera": "Camera",

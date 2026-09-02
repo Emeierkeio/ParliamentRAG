@@ -334,7 +334,8 @@
     "trendingTab": "Tendencias",
     "lastTopicsHint": "Temas de las medidas debatidas en el pleno desde el {date}.",
     "lastTopicsHintActs": "Recientemente en el pleno, entre otros:",
-    "lastTopicsLoading": "Buscando los últimos debates del pleno en el grafo…"
+    "lastTopicsLoading": "Buscando los últimos debates del pleno en el grafo…",
+    "historyLabel": "Historial"
   },
   "ChamberSelector": {
     "camera": "Cámara de Diputados",

@@ -334,7 +334,8 @@
     "trendingTab": "Tendências",
     "lastTopicsHint": "Temas das medidas debatidas em plenário desde {date}.",
     "lastTopicsHintActs": "Recentemente em plenário, entre outros:",
-    "lastTopicsLoading": "A procurar os últimos debates em plenário no grafo…"
+    "lastTopicsLoading": "A procurar os últimos debates em plenário no grafo…",
+    "historyLabel": "Histórico"
   },
   "ChamberSelector": {
     "camera": "Câmara",

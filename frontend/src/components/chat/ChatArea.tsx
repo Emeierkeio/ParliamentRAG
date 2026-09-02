@@ -60,7 +60,9 @@ export function ChatArea({
 
   return (
     <div className={cn("flex h-full flex-col bg-background", className)}>
-      {/* Top Search Area - Minimal & Clean */}
+      {/* Barra di ricerca compatta: solo a conversazione avviata — nello
+          stato vuoto la domanda vive nell'hero, senza doppio input */}
+      {hasMessages && (
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
         <div className="mx-auto max-w-3xl p-3 py-4 md:p-4 md:py-5">
           <div className="flex items-center gap-2">
@@ -96,6 +98,7 @@ export function ChatArea({
           </p>
         </div>
       </div>
+      )}
 
       {/* Main Content Area */}
       <ScrollArea className="flex-1" ref={scrollRef}>
@@ -114,7 +117,14 @@ export function ChatArea({
           <div className="mx-auto max-w-3xl px-4 pb-12 overflow-x-hidden">
             <TranslationBanner hasCitations={hasCitations} />
             {!hasMessages ? (
-              <WelcomeScreen onSendMessage={onSendMessage} />
+              <WelcomeScreen
+                onSendMessage={onSendMessage}
+                onCancelRequest={onCancelRequest}
+                isLoading={isLoading}
+                initialInput={initialInput}
+                onOpenHistory={onOpenHistory}
+                mobileMenuButton={mobileMenuButton}
+              />
             ) : (
               <div className="space-y-0 min-h-[50vh]">
                 {messages.map((message, idx) => {
@@ -171,6 +181,11 @@ export function ChatArea({
 
 interface WelcomeScreenProps {
   onSendMessage: (message: string) => void;
+  onCancelRequest: () => void;
+  isLoading: boolean;
+  initialInput?: string;
+  onOpenHistory?: () => void;
+  mobileMenuButton?: React.ReactNode;
 }
 
 interface RecentTopics {
@@ -192,7 +207,7 @@ function formatDate(iso: string | null, locale: string): string {
   }
 }
 
-function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
+function WelcomeScreen({ onSendMessage, onCancelRequest, isLoading, initialInput, onOpenHistory, mobileMenuButton }: WelcomeScreenProps) {
   // Latest subjects actually on the floor (EuroVoc of recent acts), served in
   // the UI language and cached per locale so the section doesn't pop in on
   // every visit
@@ -248,6 +263,41 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           {t.rich("subtitle", {
             bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
           })}
+        </p>
+      </div>
+
+      {/* La domanda al centro: input hero, non barra di servizio */}
+      <div className="w-full max-w-2xl mb-6 sm:mb-10 text-left">
+        <div className="flex items-center gap-2">
+          {mobileMenuButton}
+          <ChatInput
+            onSend={onSendMessage}
+            onCancel={onCancelRequest}
+            isLoading={isLoading}
+            placeholder={t("searchPlaceholder")}
+            className="flex-1"
+            initialValue={initialInput}
+          />
+          {onOpenHistory && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onOpenHistory}
+              className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
+              aria-label={t("historyLabel")}
+            >
+              <History className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        <p className="mt-1.5 px-1 text-[10px] leading-tight text-muted-foreground/60 text-center">
+          {t("researchNote")}{" "}
+          <a
+            href="/privacy"
+            className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+          >
+            Privacy
+          </a>
         </p>
       </div>
 
@@ -385,6 +435,34 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
           </div>
         </div>
       )}
+
+      {/* Altri modi di esplorare: link sobri, non card — su mobile ci pensa
+          la bottom nav */}
+      <ExploreModesRow />
+    </div>
+  );
+}
+
+function ExploreModesRow() {
+  const tSidebar = useTranslations("Sidebar");
+  const modes = [
+    { label: tSidebar("actsSearch"), href: "/search" },
+    { label: tSidebar("authorityAnalysis"), href: "/ranking" },
+    { label: tSidebar("ideologicalCompass"), href: "/compass" },
+    { label: tSidebar("parliamentaryTimeline"), href: "/timeline" },
+  ];
+  return (
+    <div className="hidden sm:flex w-full max-w-3xl mt-14 pt-6 border-t border-border items-center justify-center gap-x-8 gap-y-2 flex-wrap">
+      {modes.map((m) => (
+        <a
+          key={m.href}
+          href={m.href}
+          className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+        >
+          {m.label}
+          <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+        </a>
+      ))}
     </div>
   );
 }
