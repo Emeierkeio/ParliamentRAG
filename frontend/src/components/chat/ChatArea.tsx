@@ -445,24 +445,41 @@ function WelcomeScreen({ onSendMessage, onCancelRequest, isLoading, initialInput
 
 function ExploreModesRow() {
   const tSidebar = useTranslations("Sidebar");
-  const modes = [
-    { label: tSidebar("actsSearch"), href: "/search" },
-    { label: tSidebar("authorityAnalysis"), href: "/ranking" },
-    { label: tSidebar("ideologicalCompass"), href: "/compass" },
-    { label: tSidebar("parliamentaryTimeline"), href: "/timeline" },
+  const tEnt = useTranslations("Entities");
+  // Le entità del Parlamento prima degli strumenti di analisi:
+  // il modello mentale è "esplora il Parlamento", non "scegli un tool"
+  const entities = [
+    { label: tSidebar("deputies"), href: "/parlamentari" },
+    { label: tSidebar("groups"), href: "/gruppi" },
+    { label: tSidebar("acts"), href: "/atti" },
+    { label: tSidebar("sessions"), href: "/sedute" },
   ];
+  const analyses = [
+    { label: tSidebar("ideologicalCompass"), href: "/compass" },
+    { label: tSidebar("authorityAnalysis"), href: "/ranking" },
+  ];
+  const linkClass =
+    "group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm";
   return (
-    <div className="hidden sm:flex w-full max-w-3xl mt-14 pt-6 border-t border-border items-center justify-center gap-x-8 gap-y-2 flex-wrap">
-      {modes.map((m) => (
-        <a
-          key={m.href}
-          href={m.href}
-          className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-        >
-          {m.label}
-          <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
-        </a>
-      ))}
+    <div className="hidden sm:block w-full max-w-3xl mt-14 pt-6 border-t border-border text-center">
+      <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+        {tEnt("exploreTitle")}
+      </p>
+      <div className="flex items-center justify-center gap-x-8 gap-y-2 flex-wrap">
+        {entities.map((m) => (
+          <a key={m.href} href={m.href} className={cn(linkClass, "text-foreground/80 font-medium")}>
+            {m.label}
+            <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+        ))}
+        <span aria-hidden="true" className="hidden md:inline-block h-4 border-l border-border" />
+        {analyses.map((m) => (
+          <a key={m.href} href={m.href} className={linkClass}>
+            {m.label}
+            <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+          </a>
+        ))}
+      </div>
     </div>
   );
 }
