@@ -106,7 +106,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               onClick={() => window.location.href = "/"}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
-                <Image src="/logo.svg" alt={config.app.name} width={28} height={28} />
+                <Image src="/logo.svg" alt={config.app.name} width={34} height={24} />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">
@@ -342,7 +342,7 @@ function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
       <DialogContent className="max-w-[95vw] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="" width={24} height={24} />
+            <Image src="/logo.svg" alt="" width={29} height={20} />
             {config.app.name}
           </DialogTitle>
           <DialogDescription>

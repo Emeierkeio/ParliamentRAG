@@ -54,7 +54,7 @@ export function AppHeader() {
         <div className="flex h-14 items-center gap-2 px-4 sm:px-6">
           {/* Brand */}
           <a href="/home" className="flex items-center gap-2.5 shrink-0 mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm">
-            <Image src="/logo-blue.svg" alt="" width={26} height={26} />
+            <Image src="/logo-blue.svg" alt="" width={30} height={21} />
             <span className="[font-family:var(--font-display)] text-[17px] font-semibold tracking-tight hidden sm:inline">
               ParliamentRAG
             </span>

@@ -1,8 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Favicon: emiciclo small-size (senza corridoi) su fondo Ink -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
   <rect width="32" height="32" rx="7" fill="#23262E"/>
-  <g transform="translate(3.5,6.05) scale(0.111607)">
-    <path d="M 14.27 147.57 A 104.0 104.0 0 1 1 209.73 147.57 L 166.50 131.84 A 58.0 58.0 0 1 0 57.50 131.84 Z" fill="#FBFAF8"/>
-    <path d="M 91.00 147.60 A 21.0 21.0 0 0 1 133.00 147.60 Z" fill="#FBFAF8"/>
-  </g>
+  <path d="M 5 24 A 11 11 0 0 1 27 24" fill="none" stroke="#FBFAF8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 8.5 24 A 7.5 7.5 0 0 1 23.5 24" fill="none" stroke="#FBFAF8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 12 24 A 4 4 0 0 1 20 24" fill="none" stroke="#FBFAF8" stroke-width="2" stroke-linecap="round"/>
 </svg>

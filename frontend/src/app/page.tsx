@@ -158,7 +158,7 @@ export default function LandingPage() {
           {/* Wordmark row */}
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-5">
             <div className="flex items-center gap-3">
-              <Image src="/logo-blue.svg" alt="" width={38} height={38} />
+              <Image src="/logo-blue.svg" alt="" width={46} height={32} />
               <span className="flex flex-col">
                 <span className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-semibold tracking-tight leading-none">
                   ParliamentRAG
@@ -461,7 +461,7 @@ export default function LandingPage() {
           {/* Brand + resource links */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-8 gap-y-5">
             <div className="flex items-center gap-2.5 shrink-0">
-              <Image src="/logo-blue.svg" alt="" width={22} height={22} />
+              <Image src="/logo-blue.svg" alt="" width={26} height={18} />
               <span className="[font-family:var(--font-display)] text-sm font-medium text-foreground">
                 ParliamentRAG
               </span>
