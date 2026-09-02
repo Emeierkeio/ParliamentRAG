@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 156" fill="none">
-  <!-- Parliament diagram: 220° annulus sector, flat colour -->
-  <path d="M 14.3 147.6 A 104 104 0 1 1 209.7 147.6 L 166.5 131.8 A 58 58 0 1 0 57.5 131.8 Z" fill="#E8DCC8"/>
-  <!-- Speaker: small dome in the opening -->
-  <path d="M 91 147.6 A 21 21 0 0 1 133 147.6 Z" fill="#E8DCC8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Il Tracciato: domanda (cerchio) -> percorso -> nodo di conoscenza -> fonte (quadrato) -->
+  <!-- Versione chiara: per superfici scure (sidebar, data page) -->
+  <circle cx="5.5" cy="5" r="2.5" stroke="#FBFAF8" stroke-width="2"/>
+  <path d="M5.5 9.4 L5.5 14.5 Q5.5 16.5 7.5 16.5 L16 16.5" stroke="#FBFAF8" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <circle cx="11.2" cy="16.5" r="2.2" fill="#FBFAF8"/>
+  <rect x="16" y="14" width="5" height="5" fill="#FBFAF8"/>
 </svg>

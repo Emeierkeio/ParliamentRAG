@@ -113,8 +113,8 @@ export function BackendWakeGate() {
       <Image
         src="/logo-blue.svg"
         alt=""
-        width={118}
-        height={82}
+        width={96}
+        height={96}
         priority
         className="motion-safe:animate-[pulse_2.2s_ease-in-out_infinite]"
       />

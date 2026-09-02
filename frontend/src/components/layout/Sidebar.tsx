@@ -103,7 +103,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               onClick={() => window.location.href = "/"}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center text-sidebar-foreground">
-                <Image src="/logo.svg" alt={config.app.name} width={37} height={26} />
+                <Image src="/logo.svg" alt={config.app.name} width={28} height={28} />
               </div>
               {!isCollapsed && (
                 <div className="flex flex-col fade-in">

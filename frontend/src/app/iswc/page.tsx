@@ -75,7 +75,7 @@ export default function IswcBoothPage() {
     <main className="min-h-dvh bg-background overflow-x-hidden">
       <div className="max-w-md mx-auto px-5 sm:px-6 py-10">
         <header className="mb-8">
-          <Image src="/logo-blue.svg" alt="ParliamentRAG" width={34} height={24} className="mb-5 dark:invert" />
+          <Image src="/logo-blue.svg" alt="ParliamentRAG" width={28} height={28} className="mb-5 dark:invert" />
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2">
             ISWC 2026 · Bari
           </p>
