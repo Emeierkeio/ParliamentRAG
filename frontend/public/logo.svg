@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-  <!-- Il Tracciato: domanda (cerchio) -> percorso -> nodo di conoscenza -> fonte (quadrato) -->
+  <!-- l'Emiciclo: tre settori (i gruppi in Aula) + quadrato (il podio, la fonte) -->
   <!-- Versione chiara: per superfici scure (sidebar, data page) -->
-  <circle cx="5.5" cy="5" r="2.5" stroke="#FBFAF8" stroke-width="2"/>
-  <path d="M5.5 9.4 L5.5 14.5 Q5.5 16.5 7.5 16.5 L16 16.5" stroke="#FBFAF8" stroke-width="2" stroke-linecap="round" fill="none"/>
-  <circle cx="11.2" cy="16.5" r="2.2" fill="#FBFAF8"/>
-  <rect x="16" y="14" width="5" height="5" fill="#FBFAF8"/>
+  <path d="M4.000 15.200 A8 8 0 0 1 7.222 8.783" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
+  <path d="M8.409 8.051 A8 8 0 0 1 15.591 8.051" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
+  <path d="M16.778 8.783 A8 8 0 0 1 20.000 15.200" stroke="#FBFAF8" stroke-width="3.6" fill="none" stroke-linecap="butt"/>
+  <rect x="9.6" y="13.95" width="4.8" height="4.8" fill="#FBFAF8"/>
 </svg>

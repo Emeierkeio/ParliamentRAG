@@ -106,31 +106,30 @@ Da questo concetto discendono: il simbolo (§9), il linguaggio grafico (§13), i
 
 ## 9. Logo
 
-### Simbolo — "il Tracciato"
+### Simbolo — "l'Emiciclo" (v2, selezionato dopo esplorazione)
 
-Tre elementi su una diagonale, collegati da una linea:
+Tre settori d'arco che formano un emiciclo, con un quadrato pieno al centro della corda:
 
 ```
-  ○
-   \
-    ●
-     \
-      ■
+   ◠ ◠ ◠
+     ■
 ```
 
-- **Cerchio aperto** = la domanda (aperta, umana)
-- **Nodo pieno** = il passaggio nel grafo di conoscenza
-- **Quadrato pieno** = la fonte (chiusa, ancorata, ufficiale)
+- **Tre settori** = i gruppi in Aula: il Parlamento come rete di parti distinte, non un blocco unico. I vuoti tra i settori sono i corridoi dell'Aula.
+- **Quadrato pieno** = il podio di chi parla e insieme la fonte: ciò che viene detto in Aula è ciò che il sistema ancora al resoconto. Angoli vivi = documento.
+- La lettura complessiva: *l'Aula che si deposita in una fonte verificabile* (HEMICYCLE + NETWORK + TRACE + SOURCE).
 
 Geometria di riferimento (griglia 24×24):
-- cerchio: centro (5.5, 5.5), r 2.6, stroke 2, senza riempimento
-- linea: da (7.4, 7.4) a (17, 17), stroke 2, round cap, interrotta dal nodo
-- nodo: cerchio pieno r 1.8 centro (11.5, 11.5)
-- quadrato: 5×5, angoli vivi, centro (17.5, 17.5)
+- settori: centro (12, 15.2), raggio 8, stroke 3.6, terminali netti (butt); spans 180°–126.7°, 116.7°–63.3°, 53.3°–0° (gap 10°)
+- quadrato: 4.8×4.8, centro (12, 16.35)
 
-Il simbolo vive da solo: favicon, app icon, avatar social, watermark, logo su paper. A 16px il tracciato si semplifica: cerchio, nodo e quadrato senza linea (la diagonale resta leggibile per allineamento).
+A 16px i tre settori degradano con grazia in un arco unico: il simbolo resta leggibile (test superato su favicon 16/32).
 
-Cosa NON è: non è una cupola, non è un cervello, non è un circuito, non è un tricolore, non contiene "RAG".
+**Processo di selezione (settembre 2026).** Esplorate 5 direzioni × 30+ varianti (fogli in `assets/brand/`): (A) emiciclo astratto ad archi concentrici — scartato, lettura "segnale wi-fi"; (B) emiciclo di nodi-seggio — leggibile solo a grandi dimensioni; (C) emiciclo + tracciato discendente — la famiglia cerchio-arco-gomito legge come "cuffie/headset"; (D) spazio negativo — letture ambigue (archi, avatar); (E) evoluzione del tracciato v1 — stessi problemi di C. La sintesi vincente unisce la B (settori = rete) e la D (i vuoti disegnano l'Aula) mantenendo dal tracciato v1 il quadrato-fonte come ancora.
+
+Cosa NON è: non è una cupola, non è Montecitorio, non è un cervello, non è un circuito, non è un tricolore, non contiene "RAG".
+
+Nei contesti digitali un solo settore può usare l'accento Blu Archivio (il settore "che parla"); su carta e in contesti formali il simbolo è sempre monocromo.
 
 ### Sistema
 
