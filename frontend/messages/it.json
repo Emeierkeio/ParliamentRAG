@@ -309,7 +309,7 @@
     "title": "Cosa pensa il Parlamento <em>su ogni tema?</em>",
     "subtitle": "Le voci <bold>più autorevoli</bold> di maggioranza e opposizione, citate parola per parola dagli interventi in aula.",
     "trendingTopics": "Trending · XIX Legislatura",
-    "searchPlaceholder": "Chiedi qualcosa al Parlamento…",
+    "searchPlaceholder": "Cerca un tema, una persona, un atto o fai una domanda…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Riforma Sanitaria",
@@ -342,7 +342,8 @@
     "lastTopicsHint": "Temi dei provvedimenti discussi in aula dal {date}.",
     "lastTopicsHintActs": "In aula si discuteva, tra l'altro:",
     "lastTopicsLoading": "Sto cercando le ultime discussioni d'aula nel grafo…",
-    "historyLabel": "Cronologia"
+    "historyLabel": "Cronologia",
+    "orPickTopic": "Oppure scegli un argomento."
   },
   "ChamberSelector": {
     "camera": "Camera",

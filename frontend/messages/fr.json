@@ -308,7 +308,7 @@
     "title": "Que pense le Parlement italien <em>sur chaque sujet ?</em>",
     "subtitle": "Les voix <bold>faisant le plus autorité</bold> de la majorité et de l'opposition, citées mot pour mot depuis les interventions en séance.",
     "trendingTopics": "Tendances · XIXe législature",
-    "searchPlaceholder": "Posez une question au Parlement…",
+    "searchPlaceholder": "Cherchez un sujet, une personne, un acte ou posez une question…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Réforme de la santé",
@@ -341,7 +341,8 @@
     "lastTopicsHint": "Sujets des textes discutés en séance depuis le {date}.",
     "lastTopicsHintActs": "Récemment en séance, entre autres :",
     "lastTopicsLoading": "Recherche des dernières discussions en séance dans le graphe…",
-    "historyLabel": "Historique"
+    "historyLabel": "Historique",
+    "orPickTopic": "Ou choisissez un sujet."
   },
   "ChamberSelector": {
     "camera": "Chambre des députés",

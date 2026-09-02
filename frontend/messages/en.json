@@ -309,7 +309,7 @@
     "title": "What does the Italian Parliament think <em>on every topic?</em>",
     "subtitle": "The <bold>most authoritative</bold> voices from majority and opposition, quoted word for word from floor speeches.",
     "trendingTopics": "Trending · 19th Legislature",
-    "searchPlaceholder": "Ask Parliament something…",
+    "searchPlaceholder": "Search a topic, a person, an act, or ask a question…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Healthcare Reform",
@@ -342,7 +342,8 @@
     "lastTopicsHint": "Topics of the measures discussed on the floor since {date}.",
     "lastTopicsHintActs": "Recently on the floor, among others:",
     "lastTopicsLoading": "Looking up the latest floor discussions in the knowledge graph…",
-    "historyLabel": "History"
+    "historyLabel": "History",
+    "orPickTopic": "Or pick a topic."
   },
   "ChamberSelector": {
     "camera": "Chamber of Deputies",

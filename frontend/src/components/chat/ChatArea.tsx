@@ -301,6 +301,12 @@ function WelcomeScreen({ onSendMessage, onCancelRequest, isLoading, initialInput
         </p>
       </div>
 
+      {/* Ponte search->temi: i temi sotto sono scorciatoie della ricerca,
+          non una sezione indipendente (cliccarli = digitarli nella search) */}
+      <p className="mb-5 text-[13px] text-muted-foreground">
+        {t("orPickTopic")}
+      </p>
+
       {/* Topics: latest subjects from the live KG (left, skeleton while
           loading) and the curated legislature list (right). Same chip
           affordance for both — the source difference lives in the headers.

@@ -308,7 +308,7 @@
     "title": "¿Qué piensa el Parlamento italiano <em>sobre cada tema?</em>",
     "subtitle": "Las voces <bold>más autorizadas</bold> de la mayoría y la oposición, citadas palabra por palabra de las intervenciones en el Pleno.",
     "trendingTopics": "Tendencias · XIX legislatura",
-    "searchPlaceholder": "Pregúntale algo al Parlamento…",
+    "searchPlaceholder": "Busca un tema, una persona, un acto o haz una pregunta…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Reforma Sanitaria",
@@ -341,7 +341,8 @@
     "lastTopicsHint": "Temas de las medidas debatidas en el pleno desde el {date}.",
     "lastTopicsHintActs": "Recientemente en el pleno, entre otros:",
     "lastTopicsLoading": "Buscando los últimos debates del pleno en el grafo…",
-    "historyLabel": "Historial"
+    "historyLabel": "Historial",
+    "orPickTopic": "O elige un tema."
   },
   "ChamberSelector": {
     "camera": "Cámara de Diputados",

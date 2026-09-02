@@ -308,7 +308,7 @@
     "title": "Was denkt das italienische Parlament <em>zu jedem Thema?</em>",
     "subtitle": "Die <bold>maßgeblichsten</bold> Stimmen von Mehrheit und Opposition, Wort für Wort aus den Plenarreden zitiert.",
     "trendingTopics": "Trends · 19. Legislaturperiode",
-    "searchPlaceholder": "Fragen Sie das Parlament…",
+    "searchPlaceholder": "Suchen Sie ein Thema, eine Person, eine Akte oder stellen Sie eine Frage…",
     "topics": {
       "PNRR": "PNRR",
       "riforma sanitaria": "Gesundheitsreform",
@@ -341,7 +341,8 @@
     "lastTopicsHint": "Themen der seit dem {date} im Plenum diskutierten Vorlagen.",
     "lastTopicsHintActs": "Zuletzt im Plenum, unter anderem:",
     "lastTopicsLoading": "Die letzten Plenardebatten werden im Wissensgraphen gesucht…",
-    "historyLabel": "Verlauf"
+    "historyLabel": "Verlauf",
+    "orPickTopic": "Oder wählen Sie ein Thema."
   },
   "ChamberSelector": {
     "camera": "Abgeordnetenkammer",
