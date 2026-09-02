@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
@@ -89,6 +89,26 @@ export default function CompassPage() {
     },
     []
   );
+
+  // Deep link: /compass?topic=... avvia il calcolo; le ricerche fatte in
+  // pagina scrivono ?topic= così il risultato è condivisibile via URL
+  const didAutoRun = useRef(false);
+  useEffect(() => {
+    if (didAutoRun.current) return;
+    didAutoRun.current = true;
+    const fromUrl = new URLSearchParams(window.location.search).get("topic");
+    if (fromUrl?.trim()) {
+      setTopic(fromUrl);
+      fetchCompass(fromUrl);
+    }
+  }, [fetchCompass]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (activeTopic) url.searchParams.set("topic", activeTopic);
+    else url.searchParams.delete("topic");
+    window.history.replaceState(null, "", url.toString());
+  }, [activeTopic]);
 
   const handleTopicClick = (t: string) => {
     setTopic(t);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {useTranslations, useLocale } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
@@ -181,6 +181,26 @@ export default function RankingPage() {
     },
     []
   );
+
+  // Deep link: /ranking?topic=... avvia il calcolo; le ricerche fatte in
+  // pagina scrivono ?topic= così il risultato è condivisibile via URL
+  const didAutoRun = useRef(false);
+  useEffect(() => {
+    if (didAutoRun.current) return;
+    didAutoRun.current = true;
+    const fromUrl = new URLSearchParams(window.location.search).get("topic");
+    if (fromUrl?.trim()) {
+      setTopic(fromUrl);
+      fetchRanking(fromUrl);
+    }
+  }, [fetchRanking]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (activeTopic) url.searchParams.set("topic", activeTopic);
+    else url.searchParams.delete("topic");
+    window.history.replaceState(null, "", url.toString());
+  }, [activeTopic]);
 
   const handleTopicClick = (t: string) => {
     setTopic(t);
