@@ -4,21 +4,11 @@ import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import { Fraunces } from "next/font/google";
 import { ArrowRight, ArrowUpRight, Globe, Check, Award, Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { useKgStats } from "@/hooks/use-kg-stats";
 import { useLastUpdate } from "@/hooks/use-last-update";
-
-/* ── Display typeface — editorial serif with optical sizing ────── */
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 /* ── Rotating topics ───────────────────────────────────────────── */
 const TOPIC_KEYS = ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12"] as const;
@@ -143,9 +133,7 @@ export default function LandingPage() {
     );
 
   return (
-    <div
-      className={`${fraunces.variable} min-h-screen bg-background text-foreground`}
-    >
+    <div className="min-h-screen bg-background text-foreground">
       {/* Progress line while the app document loads after a CTA tap */}
       {leaving && (
         <div className="fixed inset-x-0 top-0 z-[100] h-0.5" role="progressbar" aria-label="loading">
@@ -342,39 +330,17 @@ export default function LandingPage() {
               href="/home"
               onNavigate={() => setLeaving(true)}
             />
-            <IndexRow
-              numeral="02"
-              title={t("idx2Title")}
-              question={t("idx2Question")}
-              description={t("idx2Desc")}
-              href="/search"
-              onNavigate={() => setLeaving(true)}
-            />
-            <IndexRow
-              numeral="03"
-              title={t("idx3Title")}
-              question={t("idx3Question")}
-              description={t("idx3Desc")}
-              href="/ranking"
-              onNavigate={() => setLeaving(true)}
-            />
-            <IndexRow
-              numeral="04"
-              title={t("idx4Title")}
-              question={t("idx4Question")}
-              description={t("idx4Desc")}
-              href="/compass"
-              onNavigate={() => setLeaving(true)}
-            />
-            <IndexRow
-              numeral="05"
-              title={t("idx5Title")}
-              question={t("idx5Question")}
-              description={t("idx5Desc")}
-              href="/sedute"
-              onNavigate={() => setLeaving(true)}
-              last
-            />
+          </div>
+
+          {/* Le entita del Parlamento: si esplora un'istituzione, non un
+              elenco di strumenti (RADICAL_REDESIGN.md par. 4) */}
+          <div className="mt-10 grid sm:grid-cols-2 gap-x-12">
+            <EntityLink label={t("entDeputies")} desc={t("entDeputiesDesc")} href="/parlamentari" onNavigate={() => setLeaving(true)} />
+            <EntityLink label={t("entGroups")} desc={t("entGroupsDesc")} href="/gruppi" onNavigate={() => setLeaving(true)} />
+            <EntityLink label={t("entActs")} desc={t("entActsDesc")} href="/atti" onNavigate={() => setLeaving(true)} />
+            <EntityLink label={t("entSessions")} desc={t("entSessionsDesc")} href="/sedute" onNavigate={() => setLeaving(true)} />
+            <EntityLink label={t("entPositions")} desc={t("entPositionsDesc")} href="/compass" onNavigate={() => setLeaving(true)} />
+            <EntityLink label={t("entAuthority")} desc={t("entAuthorityDesc")} href="/ranking" onNavigate={() => setLeaving(true)} last />
           </div>
         </div>
       </section>
@@ -501,6 +467,9 @@ export default function LandingPage() {
               </span>
             </div>
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+              <FooterLink href="/parlamentari">{t("entDeputies")}</FooterLink>
+              <FooterLink href="/sedute">{t("entSessions")}</FooterLink>
+              <FooterLink href="/metodologia">{t("tocIter")}</FooterLink>
               <FooterLink href="https://github.com/Emeierkeio/ParliamentRAG" external>
                 GitHub
               </FooterLink>
@@ -703,6 +672,41 @@ function IndexRow({
       <span className="sm:col-span-1 justify-self-end self-center hidden sm:block">
         <ArrowRight className="h-4 w-4 text-muted-foreground/40 transition-all group-hover:text-primary group-hover:translate-x-1" />
       </span>
+    </Link>
+  );
+}
+
+/* ── EntityLink — voce dell'esplorazione (entita del Parlamento) ── */
+function EntityLink({
+  label,
+  desc,
+  href,
+  last = false,
+  onNavigate,
+}: {
+  label: string;
+  desc: string;
+  href: string;
+  last?: boolean;
+  onNavigate?: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onNavigate}
+      className={`group flex items-baseline justify-between gap-6 py-5 px-2 -mx-2 border-b border-border transition-colors hover:bg-accent/60 cursor-pointer ${
+        last ? "sm:border-b" : ""
+      }`}
+    >
+      <span className="min-w-0">
+        <span className="[font-family:var(--font-display)] text-lg font-medium tracking-tight block">
+          {label}
+        </span>
+        <span className="text-sm leading-relaxed text-muted-foreground block mt-0.5">
+          {desc}
+        </span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 self-center text-muted-foreground/40 transition-all group-hover:text-primary group-hover:translate-x-1" />
     </Link>
   );
 }

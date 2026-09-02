@@ -94,12 +94,23 @@ export default function SearchPage() {
     };
 
     // Filter state
-    const [query, setQuery] = useState("");
+    // La query può arrivare via URL (/search?q=..., usata da profili
+    // deputato, gruppi e command palette): prefill senza auto-invio
+    const [query, setQuery] = useState(() => {
+        if (typeof window === "undefined") return "";
+        return new URLSearchParams(window.location.search).get("q") ?? "";
+    });
     const [selectedDeputies, setSelectedDeputies] = useState<Deputy[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    const [docType, setDocType] = useState<"all" | "speech" | "act">("all");
+    // Il filtro tipo può arrivare via URL (es. /search?doc_type=act, usato
+    // dal redirect di /atti): lo si legge solo al primo render.
+    const [docType, setDocType] = useState<"all" | "speech" | "act">(() => {
+        if (typeof window === "undefined") return "all";
+        const fromUrl = new URLSearchParams(window.location.search).get("doc_type");
+        return fromUrl === "act" || fromUrl === "speech" ? fromUrl : "all";
+    });
     const [authorFilterMode, setAuthorFilterMode] = useState<"all" | "deputy" | "group">("all");
 
     // Sort state
