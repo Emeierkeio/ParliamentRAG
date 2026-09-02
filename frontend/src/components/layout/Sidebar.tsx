@@ -24,7 +24,6 @@ import {
   Settings,
   Search,
   FileText,
-  Network,
   Database,
   X,
   Compass,
@@ -163,12 +162,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             <NavButton
               item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
-              isCollapsed={isCollapsed}
-              disabled={false}
-            />
-
-            <NavButton
-              item={{ icon: Network, label: t('graphExplorer'), href: "/explorer", isActive: pathname.startsWith("/explorer"), onClick: () => navTo("/explorer") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
