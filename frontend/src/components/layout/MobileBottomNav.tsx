@@ -220,7 +220,7 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
         ))}
       </div>
 
-      {/* Ricerca globale + dati aperti: le voci che la bottom nav non ospita */}
+      {/* Le voci che la bottom nav non ospita */}
       <div className="mt-4 pt-3 border-t border-border/60 grid grid-cols-2 gap-1.5">
         <SheetClose asChild>
           <button
@@ -231,15 +231,22 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
             {t("commandPalette")}
           </button>
         </SheetClose>
-        <SheetClose asChild>
-          <a
-            href="/data"
-            className="flex items-center justify-center gap-2 rounded-lg border border-border px-2 py-2 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors"
-          >
-            <Database className="h-3.5 w-3.5 shrink-0" />
-            {t("openData")}
-          </a>
-        </SheetClose>
+        {[
+          { href: "/gruppi", label: t("groups") },
+          { href: "/compass", label: t("ideologicalCompass") },
+          { href: "/ranking", label: t("authorityAnalysis") },
+          { href: "/metodologia", label: t("methodology") },
+          { href: "/data", label: t("openData") },
+        ].map((item) => (
+          <SheetClose asChild key={item.href}>
+            <a
+              href={item.href}
+              className="flex items-center justify-center gap-2 rounded-lg border border-border px-2 py-2 text-[13px] text-muted-foreground hover:bg-muted/50 transition-colors"
+            >
+              {item.label}
+            </a>
+          </SheetClose>
+        ))}
       </div>
 
       {/* Footer: data date (the info that matters) + small icon actions */}

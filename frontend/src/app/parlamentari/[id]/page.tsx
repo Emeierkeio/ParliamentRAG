@@ -166,7 +166,7 @@ export default function DeputyProfilePage() {
                         className="h-2 w-2 shrink-0 rounded-full"
                         style={{ backgroundColor: getGroupColor(profile.group) }}
                       />
-                      <span>{toTitleCase(profile.group)}</span>
+                      <span>{(config.politicalGroups as Record<string, { label?: string }>)[profile.group]?.label ?? toTitleCase(profile.group)}</span>
                     </p>
                   )}
                   {profile.institutional_role && (

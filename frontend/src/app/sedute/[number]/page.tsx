@@ -38,6 +38,21 @@ function debateRecordUrl(n: number, debateId: string): string | null {
   return `${officialRecordUrl(n)}#sed${paddedSessionNumber(n)}.stenografico.${m[1]}`;
 }
 
+
+// I titoli dei dibattiti arrivano dalla fonte con lo stesso timestamp
+// ripetuto piu volte ("(ore 9,39). (ore 9,39) (ore 9,39)"): si tiene la
+// prima occorrenza e si scartano le successive
+function cleanDebateTitle(title: string): string {
+  let seen = false;
+  return title
+    .replace(/\s*\(ore\s[^)]*\)\.?/g, (m) => {
+      if (seen) return "";
+      seen = true;
+      return m;
+    })
+    .trim();
+}
+
 export default function SessionDetailPage() {
   const t = useTranslations("Entities");
   const locale = useLocale();
@@ -77,7 +92,7 @@ export default function SessionDetailPage() {
           date: rows[0].date,
           debates: rows
             .filter((r): r is { date: string; id: string; title: string } => !!r.id)
-            .map((r) => ({ id: r.id, title: r.title ?? r.id })),
+            .map((r) => ({ id: r.id, title: cleanDebateTitle(String(r.title ?? r.id)) })),
         });
       }
     } catch {

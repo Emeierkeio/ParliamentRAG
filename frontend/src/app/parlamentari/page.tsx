@@ -6,7 +6,16 @@ import { Search } from "lucide-react";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
 import { graphQuery, deputySlug } from "@/lib/graph";
-import { getGroupColor } from "@/config";
+
+// Nomi gruppo dal grafo in maiuscolo: la label canonica vive in config,
+// il title-case resta solo come ripiego per nomi non mappati
+function groupLabel(name: string): string {
+  return (
+    (config.politicalGroups as Record<string, { label?: string }>)[name]?.label ??
+    toTitleCase(name)
+  );
+}
+import { config, getGroupColor } from "@/config";
 import { toTitleCase } from "@/lib/utils";
 
 interface DeputyRow {
@@ -161,7 +170,7 @@ export default function DeputiesDirectoryPage() {
                                 className="h-2 w-2 shrink-0 rounded-full"
                                 style={{ backgroundColor: getGroupColor(d.group) }}
                               />
-                              <span className="truncate">{toTitleCase(d.group)}</span>
+                              <span className="truncate">{groupLabel(d.group)}</span>
                             </p>
                           )}
                         </div>
