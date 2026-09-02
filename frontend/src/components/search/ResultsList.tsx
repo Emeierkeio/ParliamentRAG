@@ -6,7 +6,7 @@ import { MessageSquareQuote, Calendar, FileText, ExternalLink, User, Building2, 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { config } from "@/config";
+import { config, getGroupColor } from "@/config";
 import { ResultDetailDialog } from "./ResultDetailDialog";
 
 export interface SearchResultItem {
@@ -82,7 +82,7 @@ export function getActTypeColor(tipo: string): string {
 
 export function getGroupColor(groupName: string): string {
   const entry = (config.politicalGroups as Record<string, { color: string }>)[groupName];
-  return entry?.color || "#9E9E9E";
+  return entry?.color || getGroupColor("Misto");
 }
 
 export function getGroupShortLabel(groupName: string): string {

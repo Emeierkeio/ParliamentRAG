@@ -32,7 +32,7 @@ import {
 import type { Expert } from "@/types/chat";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { cn } from "@/lib/utils";
-import { config } from "@/config";
+import { config, getGroupColor } from "@/config";
 import { StarRating } from "./StarRating";
 import { CitationReviewStep } from "./CitationReviewStep";
 import {
@@ -379,7 +379,7 @@ function AuthorityExpertMini({ expert, side, score, onExpertClick }: {
   onExpertClick?: (expert: Expert) => void;
 }) {
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
-  const groupColor = groupConfig?.color || "#6B7280";
+  const groupColor = getGroupColor(expert.group);
   const isA = side === "A";
 
   const primaryCommittee = expert.committees?.[0] || expert.committee || null;

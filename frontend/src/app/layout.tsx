@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Geist, Geist_Mono, Literata } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale, getTranslations } from 'next-intl/server';
@@ -41,8 +41,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Editorial display serif — usable app-wide via [font-family:var(--font-display)]
-const fraunces = Fraunces({
+// Serif editoriale del brand (Literata): titoli, domande, quote — via [font-family:var(--font-display)]
+const literata = Literata({
   subsets: ["latin"],
   style: ["normal", "italic"],
   weight: ["400", "500", "600", "700"],
@@ -148,7 +148,7 @@ export default async function RootLayout({
         // bg-background, NOT bg-white: Safari paints the status-bar /
         // safe-area strip with the body background — white here was the
         // white band above every page on iPhone
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased bg-background text-foreground`}
+        className={`${geistSans.variable} ${geistMono.variable} ${literata.variable} antialiased bg-background text-foreground`}
       >
         {MAINTENANCE_MODE ? (
           <MaintenancePage />

@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { config } from "@/config";
+import { config, getGroupColor } from "@/config";
 import type { Expert } from "@/types";
 import {
   User,
@@ -45,7 +45,7 @@ export function ExpertCard({ expert, className }: ExpertCardProps) {
   const t = useTranslations("ExpertCard");
 
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
-  const groupColor = groupConfig?.color || "#6B7280";
+  const groupColor = getGroupColor(expert.group);
   const groupLabel = groupConfig?.label || expert.group;
 
   const scoreLevel =
@@ -169,7 +169,7 @@ export function ExpertRow({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const t = useTranslations("ExpertCard");
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
-  const groupColor = groupConfig?.color || "#6B7280";
+  const groupColor = getGroupColor(expert.group);
 
   return (
     <>
@@ -253,7 +253,7 @@ interface ExpertModalProps {
 export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: ExpertModalProps) {
   const t = useTranslations("ExpertCard");
   const groupConfig = config.politicalGroups[expert.group as keyof typeof config.politicalGroups];
-  const groupColor = groupConfig?.color || "#6B7280";
+  const groupColor = getGroupColor(expert.group);
   const groupLabel = groupConfig?.label || expert.group;
 
   const scoreBreakdown = [

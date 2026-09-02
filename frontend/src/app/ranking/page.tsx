@@ -7,7 +7,7 @@ import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
-import { config } from "@/config";
+import { config, getGroupColor } from "@/config";
 import { cn } from "@/lib/utils";
 import { getTopics } from "@/lib/constants";
 import type { Expert } from "@/types";
@@ -400,7 +400,7 @@ export default function RankingPage() {
                   {GROUPS.filter((g) => g.label.toLowerCase().includes(groupSearch.toLowerCase())).map((g) => {
                     const selected = selectedGroups.includes(g.value);
                     const groupConfig = config.politicalGroups[g.value as keyof typeof config.politicalGroups];
-                    const color = groupConfig?.color || "#6B7280";
+                    const color = getGroupColor(g.value);
                     return (
                       <button
                         key={g.value}
@@ -543,7 +543,7 @@ export default function RankingPage() {
               {selectedGroups.map((gv) => {
                 const g = GROUPS.find((gr) => gr.value === gv);
                 const groupConfig = config.politicalGroups[gv as keyof typeof config.politicalGroups];
-                const color = groupConfig?.color || "#6B7280";
+                const color = getGroupColor(gv);
                 return (
                   <Badge
                     key={gv}
@@ -764,7 +764,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
 
   const groupConfig =
     config.politicalGroups[deputy.group as keyof typeof config.politicalGroups];
-  const groupColor = groupConfig?.color || "#6B7280";
+  const groupColor = getGroupColor(deputy.group);
   const groupLabel = groupConfig?.label || deputy.group;
 
   const displayScore =

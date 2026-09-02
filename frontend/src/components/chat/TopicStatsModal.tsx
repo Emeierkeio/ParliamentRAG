@@ -9,7 +9,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { config } from "@/config";
+import { config, getGroupColor } from "@/config";
 import type { TopicStatistics } from "@/types";
 import {
   MessageSquareQuote,
@@ -35,7 +35,7 @@ interface TopicStatsModalProps {
 
 function getGroupColor(party: string): string {
   const entry = config.politicalGroups[party as keyof typeof config.politicalGroups];
-  return entry?.color || "#9E9E9E";
+  return entry?.color || getGroupColor("Misto");
 }
 
 function getCoalitionColor(coalition: string): string {

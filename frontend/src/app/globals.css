@@ -25,6 +25,8 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -46,62 +48,64 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* Institutional Italian Parliament Theme */
+/* Brand "Il Tracciato" — inchiostro su carta, un solo accento funzionale
+   (Blu Archivio). Vedi BRAND_GUIDELINES.md §11 e DESIGN_SYSTEM.md. */
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* Background: Warm off-white with subtle warmth */
-  --background: oklch(0.985 0.003 80);
-  --foreground: oklch(0.18 0.03 250);
+  /* Paper: off-white caldo */
+  --background: oklch(0.985 0.004 85);
+  --foreground: oklch(0.24 0.015 260); /* Ink */
 
-  /* Surface: Clean white cards */
+  /* Surface: superfici rialzate */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 250);
+  --card-foreground: oklch(0.24 0.015 260);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 250);
+  --popover-foreground: oklch(0.24 0.015 260);
 
-  /* Primary: Blu Istituzionale Italiano */
-  --primary: oklch(0.32 0.08 250); /* #1B3A5C */
-  --primary-foreground: oklch(0.95 0.01 80);
+  /* Blu Archivio: unico accento (azioni, link, focus, attivo) */
+  --primary: oklch(0.42 0.08 255);
+  --primary-foreground: oklch(0.985 0.004 85);
 
-  /* Secondary: Warm sand tone */
-  --secondary: oklch(0.95 0.01 80);
-  --secondary-foreground: oklch(0.32 0.08 250);
+  --secondary: oklch(0.95 0.008 85);
+  --secondary-foreground: oklch(0.3 0.03 260);
 
-  /* Muted: Warm light gray */
-  --muted: oklch(0.96 0.005 80);
-  --muted-foreground: oklch(0.5 0.01 250);
+  /* Muted: contrasto AA su Paper */
+  --muted: oklch(0.955 0.006 85);
+  --muted-foreground: oklch(0.45 0.015 260);
 
-  /* Accent: Light blue institutional tint */
-  --accent: oklch(0.94 0.015 250);
-  --accent-foreground: oklch(0.25 0.06 250);
+  --accent: oklch(0.94 0.012 255);
+  --accent-foreground: oklch(0.3 0.05 258);
 
-  /* Destructive: Bordeaux parlamentare */
-  --destructive: oklch(0.48 0.18 15);
+  /* Error: bordeaux, mai rosso squillante */
+  --destructive: oklch(0.5 0.16 20);
   --destructive-foreground: oklch(1 0 0);
 
-  /* Borders: Warm subtle borders */
-  --border: oklch(0.91 0.005 80);
-  --input: oklch(0.91 0.005 80);
-  --ring: oklch(0.55 0.1 250);
+  /* Verifica e avvisi (solo semantici, mai decorativi) */
+  --success: oklch(0.52 0.1 155);
+  --warning: oklch(0.72 0.13 80);
 
-  /* Charts - Institutional Palette */
-  --chart-1: oklch(0.32 0.08 250); /* Blu Istituzionale */
-  --chart-2: oklch(0.48 0.18 15);  /* Bordeaux */
-  --chart-3: oklch(0.62 0.06 80);  /* Oro scuro */
-  --chart-4: oklch(0.55 0.12 145); /* Verde */
-  --chart-5: oklch(0.5 0.15 300);  /* Viola */
+  --border: oklch(0.9 0.006 85);
+  --input: oklch(0.9 0.006 85);
+  --ring: oklch(0.42 0.08 255);
 
-  /* Sidebar: Blu scuro istituzionale */
-  --sidebar: oklch(0.22 0.05 250);
-  --sidebar-foreground: oklch(0.85 0.01 80);
-  --sidebar-primary: oklch(0.95 0.01 80);
-  --sidebar-primary-foreground: oklch(0.22 0.05 250);
-  --sidebar-accent: oklch(0.28 0.06 250);
-  --sidebar-accent-foreground: oklch(0.92 0.005 80);
-  --sidebar-border: oklch(0.30 0.04 250);
-  --sidebar-ring: oklch(0.55 0.1 250);
+  /* Charts: base analitica neutra + accento */
+  --chart-1: oklch(0.42 0.08 255);
+  --chart-2: oklch(0.5 0.16 20);
+  --chart-3: oklch(0.62 0.06 80);
+  --chart-4: oklch(0.52 0.1 155);
+  --chart-5: oklch(0.5 0.12 300);
+
+  /* Sidebar: superficie Ink (quasi monocroma, non blu partito) */
+  --sidebar: oklch(0.25 0.02 260);
+  --sidebar-foreground: oklch(0.87 0.008 85);
+  --sidebar-primary: oklch(0.95 0.008 85);
+  --sidebar-primary-foreground: oklch(0.25 0.02 260);
+  --sidebar-accent: oklch(0.31 0.025 260);
+  --sidebar-accent-foreground: oklch(0.93 0.006 85);
+  --sidebar-border: oklch(0.33 0.02 260);
+  --sidebar-ring: oklch(0.6 0.06 255);
 }
 
 @layer base {

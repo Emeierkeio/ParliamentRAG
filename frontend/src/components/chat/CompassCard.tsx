@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Minus, Info, RotateCcw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTranslations } from "next-intl";
+import { getGroupColor, getGroupAbbrev } from "@/config";
 
 export interface CompassData {
     meta: {
@@ -134,37 +135,7 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
     return () => el.removeEventListener("wheel", handler);
   }, []);
 
-  // Group colors and abbreviations map
-  const groupConfig: Record<string, { color: string; abbrev: string }> = {
-      "FRATELLI D'ITALIA": { color: "#0066CC", abbrev: "FdI" },
-      "PARTITO DEMOCRATICO": { color: "#E30613", abbrev: "PD" },
-      "LEGA": { color: "#008C45", abbrev: "Lega" },
-      "MOVIMENTO 5 STELLE": { color: "#FFCC00", abbrev: "M5S" },
-      "FORZA ITALIA": { color: "#00AEEF", abbrev: "FI" },
-      "AZIONE": { color: "#F5821F", abbrev: "Az" },
-      "ITALIA VIVA": { color: "#EB008B", abbrev: "IV" },
-      "ALLEANZA VERDI": { color: "#4CAF50", abbrev: "AVS" },
-      "NOI MODERATI": { color: "#1E3A5F", abbrev: "NM" },
-      "MISTO": { color: "#808080", abbrev: "Misto" },
-      "GOVERNO": { color: "#4B0082", abbrev: "Gov" }
-  };
-
-  const getGroupColor = (groupId: string) => {
-       const upperGroupId = groupId.toUpperCase();
-       for (const [key, config] of Object.entries(groupConfig)) {
-           if (upperGroupId.includes(key.toUpperCase())) return config.color;
-       }
-       return "#808080";
-  };
-
-  const getGroupAbbrev = (groupId: string) => {
-       const upperGroupId = groupId.toUpperCase();
-       for (const [key, config] of Object.entries(groupConfig)) {
-           if (upperGroupId.includes(key.toUpperCase())) return config.abbrev;
-       }
-       // Fallback: first 3 letters
-       return groupId.substring(0, 3);
-  }
+  // Colori e abbreviazioni dalla palette-dato unica (src/config)
 
   // Scaling with pan offset
   const scale = (val: number, axis: 'x' | 'y') => {
