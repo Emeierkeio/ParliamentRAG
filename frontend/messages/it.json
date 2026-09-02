@@ -784,7 +784,8 @@
     "axis1Label": "Asse 1",
     "axis2Label": "Asse 2",
     "anchoredBadge": "Assi ancorati alla domanda",
-    "promptHeading": "Confronta le <em>posizioni</em> dei gruppi su ogni tema"
+    "promptHeading": "Confronta le <em>posizioni</em> dei gruppi su ogni tema",
+    "reset": "Azzera"
   },
   "Votes": {
     "title": "Esplora Votazioni",

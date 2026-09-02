@@ -740,7 +740,8 @@
     "axis1Label": "Eixo 1",
     "axis2Label": "Eixo 2",
     "anchoredBadge": "Eixos ancorados na pergunta",
-    "promptHeading": "Compare as <em>posições</em> dos grupos sobre cada tema"
+    "promptHeading": "Compare as <em>posições</em> dos grupos sobre cada tema",
+    "reset": "Repor"
   },
   "Votes": {
     "title": "Explorar Votações",

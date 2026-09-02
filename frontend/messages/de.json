@@ -740,7 +740,8 @@
     "axis1Label": "Achse 1",
     "axis2Label": "Achse 2",
     "anchoredBadge": "Achsen an der Frage verankert",
-    "promptHeading": "Vergleichen Sie die <em>Positionen</em> der Fraktionen zu jedem Thema"
+    "promptHeading": "Vergleichen Sie die <em>Positionen</em> der Fraktionen zu jedem Thema",
+    "reset": "Zurücksetzen"
   },
   "Votes": {
     "title": "Abstimmungen erkunden",

@@ -784,7 +784,8 @@
     "axis1Label": "Axis 1",
     "axis2Label": "Axis 2",
     "anchoredBadge": "Axes anchored to the question",
-    "promptHeading": "Compare the groups' <em>positions</em> on any topic"
+    "promptHeading": "Compare the groups' <em>positions</em> on any topic",
+    "reset": "Reset"
   },
   "Votes": {
     "title": "Votes Explorer",

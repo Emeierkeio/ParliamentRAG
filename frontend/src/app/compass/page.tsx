@@ -185,7 +185,7 @@ export default function CompassPage() {
                   </form>
                   <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1 px-2">
                     <RotateCcw className="h-3 w-3" />
-                    <span className="hidden sm:inline">Reset</span>
+                    <span className="hidden sm:inline">{t("reset")}</span>
                   </Button>
                 </>
               )}

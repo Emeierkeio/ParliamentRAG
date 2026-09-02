@@ -740,7 +740,8 @@
     "axis1Label": "Axe 1",
     "axis2Label": "Axe 2",
     "anchoredBadge": "Axes ancrés à la question",
-    "promptHeading": "Comparez les <em>positions</em> des groupes sur chaque sujet"
+    "promptHeading": "Comparez les <em>positions</em> des groupes sur chaque sujet",
+    "reset": "Réinitialiser"
   },
   "Votes": {
     "title": "Explorer les scrutins",
