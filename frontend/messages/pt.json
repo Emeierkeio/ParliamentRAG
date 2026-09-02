@@ -144,15 +144,15 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Pesquisa de Temas",
+    "topicSearch": "Pergunte ao Parlamento",
     "tools": "Ferramentas",
-    "actsSearch": "Pesquisa de Atos",
+    "actsSearch": "Intervenções e atos",
     "parliamentaryTimeline": "Trabalhos do Plenário",
-    "authorityAnalysis": "Análise de Autoridade",
-    "ideologicalCompass": "Bússola Ideológica",
+    "authorityAnalysis": "Quem sabe mais",
+    "ideologicalCompass": "Posições dos grupos",
     "dataUpdatedAt": "Dados atualizados a",
     "settings": "Definições",
-    "documentation": "Documentação",
+    "documentation": "GitHub",
     "expandMenu": "Expandir menu",
     "university": "Universidade de Milão-Bicocca",
     "credits": "Créditos",
@@ -165,12 +165,17 @@
     "version": "Versão",
     "votesExplorer": "Votações",
     "dataShort": "Dados até",
-    "navTopic": "Temas",
+    "navTopic": "Perguntar",
     "navActs": "Atos",
-    "navAuthority": "Autoridade",
-    "navCompass": "Bússola",
+    "navAuthority": "Peritos",
+    "navCompass": "Posições",
     "navMore": "Mais",
-    "navTimeline": "Plenário"
+    "navTimeline": "Plenário",
+    "explore": "Explorar",
+    "analyze": "Analisar",
+    "graphExplorer": "Grafo de conhecimento",
+    "openData": "Dados abertos",
+    "commandPalette": "Pesquisar em tudo"
   },
   "Chat": {
     "placeholder": "Pergunte algo sobre os debates parlamentares...",
@@ -1082,5 +1087,16 @@
     "varianceShort": "var",
     "compassStable": "estável",
     "compassUnstable": "instável"
+  },
+  "CommandPalette": {
+    "title": "Pesquisa global",
+    "description": "Navegar, encontrar deputados ou fazer uma pergunta",
+    "placeholder": "Pesquise um tema, um deputado, uma ferramenta…",
+    "noResults": "Sem resultados",
+    "ask": "Perguntar",
+    "askAbout": "Pergunte ao Parlamento: “{query}”",
+    "deputies": "Deputados",
+    "topics": "Temas sugeridos",
+    "navigate": "Ir para"
   }
 }

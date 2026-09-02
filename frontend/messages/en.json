@@ -144,15 +144,15 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Topic Search",
+    "topicSearch": "Ask Parliament",
     "tools": "Tools",
-    "actsSearch": "Acts Search",
-    "parliamentaryTimeline": "Chamber Proceedings",
-    "authorityAnalysis": "Authority Analysis",
-    "ideologicalCompass": "Ideological Compass",
+    "actsSearch": "Speeches and acts",
+    "parliamentaryTimeline": "Chamber proceedings",
+    "authorityAnalysis": "Who knows it best",
+    "ideologicalCompass": "Group positions",
     "dataUpdatedAt": "Data updated on",
     "settings": "Settings",
-    "documentation": "Documentation",
+    "documentation": "GitHub",
     "expandMenu": "Expand menu",
     "university": "University of Milano-Bicocca",
     "credits": "Credits",
@@ -165,12 +165,17 @@
     "version": "Version",
     "votesExplorer": "Votes",
     "dataShort": "Data as of",
-    "navTopic": "Topics",
+    "navTopic": "Ask",
     "navActs": "Acts",
-    "navAuthority": "Authority",
-    "navCompass": "Compass",
+    "navAuthority": "Experts",
+    "navCompass": "Positions",
     "navMore": "More",
-    "navTimeline": "Sessions"
+    "navTimeline": "Chamber",
+    "explore": "Explore",
+    "analyze": "Analyse",
+    "graphExplorer": "Knowledge graph",
+    "openData": "Open data",
+    "commandPalette": "Search everywhere"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",
@@ -1126,5 +1131,16 @@
     "varianceShort": "var",
     "compassStable": "stable",
     "compassUnstable": "unstable"
+  },
+  "CommandPalette": {
+    "title": "Global search",
+    "description": "Navigate, find deputies or ask a question",
+    "placeholder": "Search a topic, a deputy, a tool…",
+    "noResults": "No results",
+    "ask": "Ask",
+    "askAbout": "Ask Parliament: “{query}”",
+    "deputies": "Deputies",
+    "topics": "Suggested topics",
+    "navigate": "Go to"
   }
 }

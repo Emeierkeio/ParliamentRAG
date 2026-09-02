@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import { UrlParamSync } from "@/components/layout/UrlParamSync";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { BackendWakeGate } from "@/components/layout/BackendWakeGate";
+import { GlobalCommandPalette } from "@/components/shared/CommandPalette";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -164,6 +165,7 @@ export default async function RootLayout({
               <Suspense fallback={null}>
                 <MobileBottomNav />
               </Suspense>
+              <GlobalCommandPalette />
             </TooltipProvider>
             </SidebarStateProvider>
           </NextIntlClientProvider>

@@ -33,11 +33,6 @@ interface TopicStatsModalProps {
   defaultView?: StatsView;
 }
 
-function getGroupColor(party: string): string {
-  const entry = config.politicalGroups[party as keyof typeof config.politicalGroups];
-  return entry?.color || getGroupColor("Misto");
-}
-
 function getCoalitionColor(coalition: string): string {
   switch (coalition) {
     case "maggioranza": return "#3B82F6";

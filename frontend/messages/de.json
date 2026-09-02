@@ -144,15 +144,15 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Themensuche",
+    "topicSearch": "Das Parlament fragen",
     "tools": "Werkzeuge",
-    "actsSearch": "Aktensuche",
+    "actsSearch": "Reden und Akten",
     "parliamentaryTimeline": "Plenarsitzungen",
-    "authorityAnalysis": "Autoritätsanalyse",
-    "ideologicalCompass": "Ideologischer Kompass",
+    "authorityAnalysis": "Wer sich auskennt",
+    "ideologicalCompass": "Positionen der Fraktionen",
     "dataUpdatedAt": "Datenstand vom",
     "settings": "Einstellungen",
-    "documentation": "Dokumentation",
+    "documentation": "GitHub",
     "expandMenu": "Menü erweitern",
     "university": "Universität Mailand-Bicocca",
     "credits": "Impressum",
@@ -165,12 +165,17 @@
     "version": "Version",
     "votesExplorer": "Abstimmungen",
     "dataShort": "Stand",
-    "navTopic": "Themen",
+    "navTopic": "Fragen",
     "navActs": "Akten",
-    "navAuthority": "Autorität",
-    "navCompass": "Kompass",
+    "navAuthority": "Experten",
+    "navCompass": "Positionen",
     "navMore": "Mehr",
-    "navTimeline": "Sitzungen"
+    "navTimeline": "Plenum",
+    "explore": "Erkunden",
+    "analyze": "Analysieren",
+    "graphExplorer": "Wissensgraph",
+    "openData": "Offene Daten",
+    "commandPalette": "Überall suchen"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",
@@ -1082,5 +1087,16 @@
     "varianceShort": "Var",
     "compassStable": "stabil",
     "compassUnstable": "instabil"
+  },
+  "CommandPalette": {
+    "title": "Globale Suche",
+    "description": "Navigieren, Abgeordnete finden oder eine Frage stellen",
+    "placeholder": "Thema, Abgeordnete oder Werkzeug suchen…",
+    "noResults": "Keine Ergebnisse",
+    "ask": "Fragen",
+    "askAbout": "Das Parlament fragen: „{query}“",
+    "deputies": "Abgeordnete",
+    "topics": "Vorgeschlagene Themen",
+    "navigate": "Gehe zu"
   }
 }

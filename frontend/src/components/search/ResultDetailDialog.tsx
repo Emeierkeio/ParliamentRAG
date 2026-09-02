@@ -25,9 +25,9 @@ import { SearchResultItem } from "./ResultsList";
 import {
   getActTypeLabel,
   getActTypeColor,
-  getGroupColor,
   getGroupShortLabel,
 } from "./ResultsList";
+import { getGroupColor } from "@/config";
 
 interface SpeechDetail {
   type: "speech";

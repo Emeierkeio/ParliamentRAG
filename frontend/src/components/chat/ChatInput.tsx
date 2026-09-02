@@ -13,6 +13,7 @@ interface ChatInputProps {
   disabled?: boolean;
   className?: string;
   placeholder?: string;
+  initialValue?: string;
 }
 
 export function ChatInput({
@@ -22,8 +23,9 @@ export function ChatInput({
   disabled = false,
   className,
   placeholder,
+  initialValue,
 }: ChatInputProps) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue ?? "");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea

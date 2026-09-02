@@ -8,6 +8,12 @@ import { useSidebar, useChat } from "@/hooks";
 
 export default function Home() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
+  // Prefill dalla command palette o da link condivisi (/home?q=...):
+  // riempie l'input senza inviare — la domanda parte solo su azione utente
+  const [initialInput] = useState(() => {
+    if (typeof window === "undefined") return undefined;
+    return new URLSearchParams(window.location.search).get("q") ?? undefined;
+  });
   const {
     messages,
     isLoading,
@@ -58,6 +64,7 @@ export default function Home() {
           onCancelRequest={cancelRequest}
           onOpenHistory={() => setHistoryOpen(true)}
           mobileMenuButton={<MobileMenuButton onClick={toggle} />}
+          initialInput={initialInput}
         />
       </main>
     </div>

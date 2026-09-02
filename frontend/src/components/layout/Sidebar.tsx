@@ -23,6 +23,9 @@ import {
   Github,
   Settings,
   Search,
+  FileText,
+  Network,
+  Database,
   X,
   Compass,
   Menu,
@@ -31,6 +34,7 @@ import {
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
+import { openCommandPalette } from "@/components/shared/CommandPalette";
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
 import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 
@@ -131,7 +135,7 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
         {/* Navigation */}
         <ScrollArea className="flex-1 py-6 px-3">
           <nav className="flex flex-col gap-1">
-            {/* Primary */}
+            {/* Primary: la domanda prima degli strumenti */}
             <NavButton
               item={{ icon: MessageSquare, label: t('topicSearch'), href: "/home", isActive: pathname === "/home", onClick: () => window.location.href = "/home" }}
               isCollapsed={isCollapsed}
@@ -139,17 +143,41 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               disabled={isQueryRunning}
             />
 
-            {/* Strumenti */}
+            <NavButton
+              item={{ icon: Search, label: t('commandPalette'), onClick: () => openCommandPalette(), shortcut: "⌘K" }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            {/* Esplora */}
             {!isCollapsed && (
-              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('explore')}</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
             <NavButton
-              item={{ icon: Search, label: t('actsSearch'), href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
+              item={{ icon: FileText, label: t('actsSearch'), href: "/search", isActive: pathname === "/search", onClick: () => navTo("/search") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
+
+            <NavButton
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: Network, label: t('graphExplorer'), href: "/explorer", isActive: pathname.startsWith("/explorer"), onClick: () => navTo("/explorer") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            {/* Analizza */}
+            {!isCollapsed && (
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('analyze')}</p>
+            )}
+            {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
             <NavButton
               item={{ icon: BarChart3, label: t('authorityAnalysis'), href: "/ranking", isActive: pathname === "/ranking", onClick: () => navTo("/ranking") }}
@@ -163,18 +191,16 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               disabled={false}
             />
 
-            <NavButton
-              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
-              isCollapsed={isCollapsed}
-              disabled={false}
-            />
-
           </nav>
         </ScrollArea>
 
         {/* Bottom Navigation */}
         <div className="p-3 pb-5 border-t border-sidebar-border">
           <nav className="flex flex-col gap-0.5 pt-2">
+            <NavButton
+                item={{ icon: Database, label: t('openData'), href: "/data", isActive: pathname === "/data", onClick: () => navTo("/data") }}
+                isCollapsed={isCollapsed}
+            />
             <LanguageSelector isCollapsed={isCollapsed} />
             <NavButton
                 item={{ icon: Settings, label: t('settings'), onClick: () => setSettingsOpen(true) }}
@@ -248,6 +274,7 @@ interface NavItem {
   href?: string;
   onClick?: () => void;
   isActive?: boolean;
+  shortcut?: string;
 }
 
 interface NavButtonProps {
@@ -292,6 +319,11 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       )} />
       {!isCollapsed && (
         <span className="truncate">{item.label}</span>
+      )}
+      {!isCollapsed && item.shortcut && (
+        <kbd className="ml-auto text-[10px] font-mono text-sidebar-foreground/35 border border-sidebar-border rounded px-1 py-0.5">
+          {item.shortcut}
+        </kbd>
       )}
     </Button>
   );

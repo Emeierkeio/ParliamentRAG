@@ -144,15 +144,15 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Ricerca Topic",
+    "topicSearch": "Chiedi al Parlamento",
     "tools": "Strumenti",
-    "actsSearch": "Ricerca Atti",
+    "actsSearch": "Interventi e atti",
     "parliamentaryTimeline": "Lavori d’Aula",
-    "authorityAnalysis": "Analisi Autorità",
-    "ideologicalCompass": "Compasso Ideologico",
+    "authorityAnalysis": "Chi ne sa di più",
+    "ideologicalCompass": "Posizioni dei gruppi",
     "dataUpdatedAt": "Dati aggiornati al",
     "settings": "Impostazioni",
-    "documentation": "Documentazione",
+    "documentation": "GitHub",
     "expandMenu": "Espandi menu",
     "university": "Università degli Studi di Milano Bicocca",
     "credits": "Crediti",
@@ -165,12 +165,17 @@
     "version": "Versione",
     "votesExplorer": "Votazioni",
     "dataShort": "Dati al",
-    "navTopic": "Topic",
+    "navTopic": "Chiedi",
     "navActs": "Atti",
-    "navAuthority": "Autorità",
-    "navCompass": "Compasso",
+    "navAuthority": "Autorevoli",
+    "navCompass": "Posizioni",
     "navMore": "Altro",
-    "navTimeline": "Aula"
+    "navTimeline": "Aula",
+    "explore": "Esplora",
+    "analyze": "Analizza",
+    "graphExplorer": "Knowledge graph",
+    "openData": "Dati aperti",
+    "commandPalette": "Cerca ovunque"
   },
   "Chat": {
     "placeholder": "Chiedi qualcosa sui dibattiti parlamentari...",
@@ -1113,5 +1118,16 @@
     "varianceShort": "var",
     "compassStable": "stabile",
     "compassUnstable": "instabile"
+  },
+  "CommandPalette": {
+    "title": "Ricerca globale",
+    "description": "Naviga, cerca deputati o fai una domanda",
+    "placeholder": "Cerca un tema, un deputato, uno strumento…",
+    "noResults": "Nessun risultato",
+    "ask": "Chiedi",
+    "askAbout": "Chiedi al Parlamento: “{query}”",
+    "deputies": "Deputati",
+    "topics": "Temi suggeriti",
+    "navigate": "Vai a"
   }
 }

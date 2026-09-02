@@ -24,6 +24,7 @@ interface ChatAreaProps {
   onOpenHistory?: () => void;
   className?: string;
   mobileMenuButton?: React.ReactNode;
+  initialInput?: string;
 }
 
 export function ChatArea({
@@ -36,6 +37,7 @@ export function ChatArea({
   onOpenHistory,
   className,
   mobileMenuButton,
+  initialInput,
 }: ChatAreaProps) {
   const t = useTranslations("WelcomeScreen");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -69,6 +71,7 @@ export function ChatArea({
               isLoading={isLoading}
               placeholder={t("searchPlaceholder")}
               className="flex-1"
+              initialValue={initialInput}
             />
             {onOpenHistory && (
               <Button

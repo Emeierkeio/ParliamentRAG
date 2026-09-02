@@ -80,11 +80,6 @@ export function getActTypeColor(tipo: string): string {
   return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300";
 }
 
-export function getGroupColor(groupName: string): string {
-  const entry = (config.politicalGroups as Record<string, { color: string }>)[groupName];
-  return entry?.color || getGroupColor("Misto");
-}
-
 export function getGroupShortLabel(groupName: string): string {
   if (!groupName) return "";
   const entry = (config.politicalGroups as Record<string, { color: string; label: string }>)[groupName];
