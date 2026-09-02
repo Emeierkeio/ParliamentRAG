@@ -16,6 +16,7 @@ import {
   Check,
   X,
   Database,
+  Users,
 } from "lucide-react";
 import {
   Sheet,
@@ -33,9 +34,8 @@ import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 const NAV_ITEMS = [
   { href: "/home", icon: MessageSquare, key: "navTopic" },
   { href: "/search", icon: Search, key: "navActs" },
-  { href: "/ranking", icon: BarChart3, key: "navAuthority" },
-  { href: "/compass", icon: Compass, key: "navCompass" },
-  { href: "/timeline", icon: CalendarDays, key: "navTimeline" },
+  { href: "/parlamentari", icon: Users, key: "navDeputies" },
+  { href: "/sedute", icon: CalendarDays, key: "navTimeline" },
 ] as const;
 
 // App pages only — the landing ("/") keeps its own editorial masthead
@@ -45,8 +45,12 @@ const VISIBLE_PREFIXES = [
   "/ranking",
   "/compass",
   "/timeline",
+  "/sedute",
+  "/parlamentari",
+  "/gruppi",
+  "/atti",
+  "/metodologia",
   "/chat",
-  "/explorer",
   "/valutazione",
 ];
 

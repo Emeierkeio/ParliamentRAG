@@ -371,7 +371,7 @@ export default function LandingPage() {
               title={t("idx5Title")}
               question={t("idx5Question")}
               description={t("idx5Desc")}
-              href="/timeline"
+              href="/sedute"
               onNavigate={() => setLeaving(true)}
               last
             />

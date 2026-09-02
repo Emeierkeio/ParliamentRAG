@@ -15,11 +15,13 @@ import {
   MessageSquare,
   FileText,
   CalendarDays,
-  Network,
   BarChart3,
   Compass,
   Database,
   User,
+  Users,
+  Landmark,
+  BookOpen,
 } from "lucide-react";
 import { config, getGroupAbbrev } from "@/config";
 import { getTopics } from "@/lib/constants";
@@ -91,11 +93,14 @@ export function CommandPalette({
   const navItems = [
     { icon: MessageSquare, label: tSidebar("topicSearch"), path: "/home" },
     { icon: FileText, label: tSidebar("actsSearch"), path: "/search" },
-    { icon: CalendarDays, label: tSidebar("parliamentaryTimeline"), path: "/timeline" },
-    { icon: Network, label: tSidebar("graphExplorer"), path: "/explorer" },
-    { icon: BarChart3, label: tSidebar("authorityAnalysis"), path: "/ranking" },
+    { icon: Users, label: tSidebar("deputies"), path: "/parlamentari" },
+    { icon: Landmark, label: tSidebar("groups"), path: "/gruppi" },
+    { icon: FileText, label: tSidebar("acts"), path: "/atti" },
+    { icon: CalendarDays, label: tSidebar("sessions"), path: "/sedute" },
     { icon: Compass, label: tSidebar("ideologicalCompass"), path: "/compass" },
+    { icon: BarChart3, label: tSidebar("authorityAnalysis"), path: "/ranking" },
     { icon: Database, label: tSidebar("openData"), path: "/data" },
+    { icon: BookOpen, label: tSidebar("methodology"), path: "/metodologia" },
   ];
 
   const topics = getTopics(locale).slice(0, 6);
@@ -135,7 +140,7 @@ export function CommandPalette({
                 key={d.id}
                 value={`dep-${d.first_name} ${d.last_name}`}
                 onSelect={() =>
-                  go(`/search?q=${encodeURIComponent(`${d.first_name} ${d.last_name}`)}`)
+                  go(`/parlamentari/${encodeURIComponent(d.id.split("/").pop() ?? d.id)}`)
                 }
               >
                 <User aria-hidden="true" />

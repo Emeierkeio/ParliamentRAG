@@ -449,7 +449,7 @@ function ExploreModesRow() {
     { label: tSidebar("actsSearch"), href: "/search" },
     { label: tSidebar("authorityAnalysis"), href: "/ranking" },
     { label: tSidebar("ideologicalCompass"), href: "/compass" },
-    { label: tSidebar("parliamentaryTimeline"), href: "/timeline" },
+    { label: tSidebar("parliamentaryTimeline"), href: "/sedute" },
   ];
   return (
     <div className="hidden sm:flex w-full max-w-3xl mt-14 pt-6 border-t border-border items-center justify-center gap-x-8 gap-y-2 flex-wrap">

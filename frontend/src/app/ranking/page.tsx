@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {useTranslations, useLocale } from "next-intl";
-import { Sidebar, MobileMenuButton } from "@/components/layout";
+import { MobileMenuButton } from "@/components/layout";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
@@ -283,14 +284,8 @@ export default function RankingPage() {
 
   // ── Render ──
   return (
-    <div className="flex h-dvh bg-background overflow-hidden pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <Sidebar
-        isCollapsed={isCollapsed}
-        onToggle={toggle}
-        isMobile={isMobile}
-        isMobileOpen={isMobileOpen}
-        onCloseMobile={closeMobile}
-      />
+    <div className="flex flex-col h-dvh bg-background overflow-hidden pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <AppHeader />
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* ── Header ── */}
