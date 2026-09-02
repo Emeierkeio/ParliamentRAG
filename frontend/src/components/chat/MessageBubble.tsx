@@ -239,6 +239,8 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
   const [highlightedChunkId, setHighlightedChunkId] = useState<string | null>(null);
+  // Hover sull'inline citation: evidenzia la card senza farla scrollare
+  const [hoveredChunkId, setHoveredChunkId] = useState<string | null>(null);
   const [statsModalView, setStatsModalView] = useState<"interventions" | "speakers" | "sessions" | null>(null);
   const t = useTranslations('MessageBubble');
 
@@ -467,11 +469,13 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
                           "text-primary underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px]",
                           "hover:bg-primary/10 hover:decoration-primary/70",
                           "transition-colors duration-150",
-                          highlightedChunkId === href && "bg-yellow-400/30 decoration-yellow-500 text-yellow-800 dark:text-yellow-300"
+                          (highlightedChunkId === href || hoveredChunkId === href) && "bg-primary/15 decoration-primary text-primary"
                         )}
                         onClick={() => {
                           setHighlightedChunkId(href);
                         }}
+                        onMouseEnter={() => setHoveredChunkId(href)}
+                        onMouseLeave={() => setHoveredChunkId((cur) => (cur === href ? null : cur))}
                         title={originalQuote ? undefined : t('clickHighlight')}
                       >
                         {children}
@@ -539,6 +543,7 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
           <AssistantMetadata
             message={message}
             highlightedChunkId={highlightedChunkId}
+            hoveredChunkId={hoveredChunkId}
           />
         )}
         {/* Topic Stats Modal */}
@@ -628,9 +633,10 @@ function injectStatsLinks(content: string): string {
 interface AssistantMetadataProps {
   message: Message;
   highlightedChunkId?: string | null;
+  hoveredChunkId?: string | null;
 }
 
-function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataProps) {
+function AssistantMetadata({ message, highlightedChunkId, hoveredChunkId }: AssistantMetadataProps) {
   const t = useTranslations('MessageBubble');
   const hasCitations = message.citations && message.citations.length > 0;
   const hasExperts = message.experts && message.experts.length > 0;
@@ -756,7 +762,8 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
                 key={citation.chunk_id}
                 citation={citation}
                 index={index}
-                isHighlighted={highlightedChunkId === citation.chunk_id}
+                isHighlighted={highlightedChunkId === citation.chunk_id || hoveredChunkId === citation.chunk_id}
+                scrollOnHighlight={highlightedChunkId === citation.chunk_id}
               />
             ))}
           </div>

@@ -15,7 +15,10 @@
     "parliamentaryContext": "Parliamentary Context",
     "intervention": "Speech",
     "goToCamera": "Go to speech on Camera dei Deputati website",
-    "governo": "Government"
+    "governo": "Government",
+    "translating": "Translating…",
+    "showOriginal": "Show original",
+    "translate": "Translate"
   },
   "MessageBubble": {
     "you": "You",

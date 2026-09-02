@@ -15,7 +15,10 @@
     "parliamentaryContext": "Parlamentarischer Kontext",
     "intervention": "Redebeitrag",
     "goToCamera": "Zum Redebeitrag auf der Website der Abgeordnetenkammer",
-    "governo": "Regierung"
+    "governo": "Regierung",
+    "translating": "Übersetzung läuft…",
+    "showOriginal": "Original anzeigen",
+    "translate": "Übersetzen"
   },
   "MessageBubble": {
     "you": "Sie",

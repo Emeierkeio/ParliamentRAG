@@ -15,7 +15,10 @@
     "parliamentaryContext": "Contexto Parlamentario",
     "intervention": "Intervención",
     "goToCamera": "Ir a la intervención en el sitio web de la Camera dei Deputati",
-    "governo": "Gobierno"
+    "governo": "Gobierno",
+    "translating": "Traduciendo…",
+    "showOriginal": "Mostrar original",
+    "translate": "Traducir"
   },
   "MessageBubble": {
     "you": "Usted",

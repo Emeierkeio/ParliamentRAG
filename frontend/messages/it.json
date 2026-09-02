@@ -15,7 +15,10 @@
     "parliamentaryContext": "Contesto Parlamentare",
     "intervention": "Intervento",
     "goToCamera": "Vai all'intervento sul sito della Camera",
-    "governo": "Governo"
+    "governo": "Governo",
+    "translating": "Traduzione in corso…",
+    "showOriginal": "Mostra originale",
+    "translate": "Traduci"
   },
   "MessageBubble": {
     "you": "Tu",
