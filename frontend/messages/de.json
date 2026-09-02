@@ -897,9 +897,9 @@
     "quoteTranslatedNote": "aus dem italienischen Protokoll übersetzt",
     "footerUni": "Universität Mailand-Bicocca",
     "dataBandKicker": "Offene Daten",
-    "dataBandTitle": "Unter jeder Antwort liegt ein Wissensgraph",
-    "dataBandBody": "Vollständig als RDF exportierbar, abgestimmt auf die offenen Daten der Kammer und die Vokabulare des Semantic Web.",
-    "dataBandCta": "Daten erkunden",
+    "dataBandTitle": "Auf offenen Parlamentsdaten gebaut",
+    "dataBandBody": "Abgeordnete, Reden, Akten und Sitzungen sind in einer strukturierten Datenbasis verknüpft, als RDF exportierbar und an den Open Data der Kammer ausgerichtet.",
+    "dataBandCta": "Daten herunterladen",
     "footerData": "Offene Daten (RDF)",
     "tocData": "Daten",
     "footerGrants": "Finanzhilfe",
@@ -915,7 +915,8 @@
     "entPositions": "Positionen",
     "entPositionsDesc": "Wo die Fraktionen zu einem Thema stehen, mit Abdeckung und Quellen.",
     "entAuthority": "Wer sich auskennt",
-    "entAuthorityDesc": "Die sachkundigsten Abgeordneten zu einem Thema, mit Begründung."
+    "entAuthorityDesc": "Die sachkundigsten Abgeordneten zu einem Thema, mit Begründung.",
+    "methodologyCta": "Die vollständige Methodik"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",

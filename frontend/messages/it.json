@@ -928,9 +928,9 @@
     "footerPrivacy": "Privacy",
     "footerUni": "Università di Milano-Bicocca",
     "dataBandKicker": "Dati aperti",
-    "dataBandTitle": "Sotto ogni risposta c'è un knowledge graph",
-    "dataBandBody": "Interamente esportabile in RDF, allineato agli open data della Camera e ai vocabolari del web semantico.",
-    "dataBandCta": "Esplora i dati",
+    "dataBandTitle": "Costruito su dati parlamentari aperti",
+    "dataBandBody": "Parlamentari, interventi, atti e sedute sono collegati in una base di dati strutturata, esportabile in RDF e allineata agli open data della Camera.",
+    "dataBandCta": "Scarica i dati",
     "footerData": "Dati aperti (RDF)",
     "tocData": "Dati",
     "footerGrants": "grant",
@@ -946,7 +946,8 @@
     "entPositions": "Posizioni",
     "entPositionsDesc": "Dove si collocano i gruppi su un tema, con copertura e fonti.",
     "entAuthority": "Chi ne sa di più",
-    "entAuthorityDesc": "I parlamentari più autorevoli su un tema, con il perché."
+    "entAuthorityDesc": "I parlamentari più autorevoli su un tema, con il perché.",
+    "methodologyCta": "La metodologia completa"
   },
   "Privacy": {
     "title": "Privacy e note legali",

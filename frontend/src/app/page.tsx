@@ -305,9 +305,33 @@ export default function LandingPage() {
                 );
               })}
             </div>
-            <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("quoteLinkNote")}</span>
-              <span className="inline-block h-2 w-2 rounded-full bg-chart-4" />
+            {/* La fonte fa parte del visual: il link apre il resoconto
+                stenografico della seduta citata in questo momento */}
+            <div className="mt-6 pt-4 border-t border-border text-xs">
+              {(() => {
+                const sedutaMatch = QUOTES[topicIndex]?.meta.match(/seduta n\. (\d+)/);
+                const sedutaUrl = sedutaMatch
+                  ? `https://www.camera.it/leg19/410?idSeduta=${sedutaMatch[1].padStart(4, "0")}&tipo=stenografico`
+                  : null;
+                const label = <span>{t("quoteLinkNote")}</span>;
+                return sedutaUrl ? (
+                  <a
+                    href={sedutaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <span aria-hidden="true" className="inline-block h-2 w-2 bg-current" />
+                    {label}
+                    <ArrowUpRight className="h-3 w-3 opacity-60 group-hover:opacity-100" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center gap-2 text-muted-foreground">
+                    <span aria-hidden="true" className="inline-block h-2 w-2 bg-current" />
+                    {label}
+                  </span>
+                );
+              })()}
             </div>
             <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
               {t("quotesExplainer")}
@@ -383,25 +407,29 @@ export default function LandingPage() {
             {t("iterIntro")}
           </p>
 
-          <ol className="mt-12 grid sm:grid-cols-2 gap-x-16">
-            {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((n, i) => {
-              const item = { title: t(`iter${n}Title` as never) as string, desc: t(`iter${n}Desc` as never) as string };
-              return (
-              <li
-                key={item.title}
-                className="flex gap-5 py-4 border-b border-border"
-              >
-                <span className="[font-family:var(--font-display)] text-lg text-primary/50 tabular-nums leading-6 select-none">
-                  {String(i + 1).padStart(2, "0")}
+          {/* Sulla landing la metodologia serve alla fiducia, non alla
+              completezza: quattro tappe chiave, il resto vive in /metodologia */}
+          <ol className="mt-10 flex flex-wrap items-baseline gap-x-3 gap-y-3">
+            {([1, 3, 7, 8] as const).map((n, i) => (
+              <li key={n} className="flex items-baseline gap-3">
+                {i > 0 && (
+                  <ArrowRight className="h-3.5 w-3.5 self-center text-muted-foreground/40" aria-hidden="true" />
+                )}
+                <span className="[font-family:var(--font-display)] text-lg sm:text-xl font-medium tracking-tight">
+                  {t(`iter${n}Title` as never) as string}
                 </span>
-                <p className="text-[15px] leading-relaxed">
-                  <span className="font-medium">{item.title}</span>
-                  <span className="text-muted-foreground"> — {item.desc}</span>
-                </p>
               </li>
-              );
-            })}
+            ))}
           </ol>
+          <div className="mt-8">
+            <Link
+              href="/metodologia"
+              className="group inline-flex items-center gap-2 text-[15px] font-medium text-primary hover:underline underline-offset-4"
+            >
+              {t("methodologyCta")}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </section>
 

@@ -897,9 +897,9 @@
     "quoteTranslatedNote": "traduit du compte rendu italien",
     "footerUni": "Université de Milan-Bicocca",
     "dataBandKicker": "Données ouvertes",
-    "dataBandTitle": "Sous chaque réponse, il y a un graphe de connaissances",
-    "dataBandBody": "Entièrement exportable en RDF, aligné sur les données ouvertes de la Chambre et les vocabulaires du Web sémantique.",
-    "dataBandCta": "Explorer les données",
+    "dataBandTitle": "Construit sur des données parlementaires ouvertes",
+    "dataBandBody": "Députés, interventions, actes et séances sont reliés dans une base de données structurée, exportable en RDF et alignée sur les open data de la Chambre.",
+    "dataBandCta": "Télécharger les données",
     "footerData": "Données ouvertes (RDF)",
     "tocData": "Données",
     "footerGrants": "subvention",
@@ -915,7 +915,8 @@
     "entPositions": "Positions",
     "entPositionsDesc": "Où se situent les groupes sur un sujet, avec couverture et sources.",
     "entAuthority": "Qui en sait le plus",
-    "entAuthorityDesc": "Les députés les plus compétents sur un sujet, avec le pourquoi."
+    "entAuthorityDesc": "Les députés les plus compétents sur un sujet, avec le pourquoi.",
+    "methodologyCta": "La méthodologie complète"
   },
   "Privacy": {
     "title": "Confidentialité et mentions légales",

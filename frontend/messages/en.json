@@ -941,9 +941,9 @@
     "quoteTranslatedNote": "translated from the Italian record",
     "footerUni": "University of Milano-Bicocca",
     "dataBandKicker": "Open data",
-    "dataBandTitle": "Beneath every answer there is a knowledge graph",
-    "dataBandBody": "Fully exportable as RDF, aligned with the Chamber's open data and the vocabularies of the Semantic Web.",
-    "dataBandCta": "Explore the data",
+    "dataBandTitle": "Built on open parliamentary data",
+    "dataBandBody": "Deputies, speeches, acts and sittings are connected in a structured database, exportable as RDF and aligned with the Chamber's open data.",
+    "dataBandCta": "Download the data",
     "footerData": "Open data (RDF)",
     "tocData": "Data",
     "footerGrants": "grant",
@@ -959,7 +959,8 @@
     "entPositions": "Positions",
     "entPositionsDesc": "Where groups stand on a topic, with coverage and sources.",
     "entAuthority": "Who knows it best",
-    "entAuthorityDesc": "The most authoritative deputies on a topic, with the why."
+    "entAuthorityDesc": "The most authoritative deputies on a topic, with the why.",
+    "methodologyCta": "The full methodology"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",

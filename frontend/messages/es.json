@@ -897,9 +897,9 @@
     "quoteTranslatedNote": "traducido del acta italiana",
     "footerUni": "Universidad de Milán-Bicocca",
     "dataBandKicker": "Datos abiertos",
-    "dataBandTitle": "Debajo de cada respuesta hay un grafo de conocimiento",
-    "dataBandBody": "Totalmente exportable en RDF, alineado con los datos abiertos de la Cámara y los vocabularios de la web semántica.",
-    "dataBandCta": "Explora los datos",
+    "dataBandTitle": "Construido sobre datos parlamentarios abiertos",
+    "dataBandBody": "Diputados, intervenciones, actos y sesiones están conectados en una base de datos estructurada, exportable en RDF y alineada con los datos abiertos de la Cámara.",
+    "dataBandCta": "Descarga los datos",
     "footerData": "Datos abiertos (RDF)",
     "tocData": "Datos",
     "footerGrants": "subvención",
@@ -915,7 +915,8 @@
     "entPositions": "Posiciones",
     "entPositionsDesc": "Dónde se sitúan los grupos sobre un tema, con cobertura y fuentes.",
     "entAuthority": "Quién sabe más",
-    "entAuthorityDesc": "Los diputados más autorizados sobre un tema, con el porqué."
+    "entAuthorityDesc": "Los diputados más autorizados sobre un tema, con el porqué.",
+    "methodologyCta": "La metodología completa"
   },
   "Privacy": {
     "title": "Privacidad y avisos legales",
