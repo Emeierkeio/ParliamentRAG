@@ -64,7 +64,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.parliamentrag.it"),
   title: {
-    default: "ParliamentRAG — Interroga il Parlamento italiano",
+    default: "ParliamentRAG | Interroga il Parlamento italiano",
     template: "%s | ParliamentRAG",
   },
   description:
