@@ -106,41 +106,16 @@ Da questo concetto discendono: il simbolo (§9), il linguaggio grafico (§13), i
 
 ## 9. Logo
 
-### Simbolo — "l'Emiciclo" (v3: il simbolo storico, raffinato)
+### Simbolo — l'Emiciclo storico (LOCKED)
 
-Decisione di settembre 2026: il simbolo in uso su parliamentrag.it (settore d'anello a 220° con l'oratore nell'apertura) è la direzione vincente. Non si reinventa: si raffina. La silhouette resta identica; il raffinamento integra in modo quasi impercettibile persone, rete e conoscenza:
+Decisione finale (settembre 2026): **il simbolo è esattamente quello della versione precedente di ParliamentRAG** — settore d'anello a 220° con apertura inferiore e piccolo elemento semicircolare dell'oratore. Geometria, proporzioni, spessori e composizione del lockup `[simbolo] ParliamentRAG` sono BLOCCATI.
 
-- **Due corridoi parziali** tagliano l'anello dal bordo esterno fino a circa due terzi della profondità, dividendolo in tre settori: *le persone e i gruppi in Aula*.
-- **La banda interna resta continua**: i settori sono distinti ma l'Aula è una — *la rete che li collega*.
-- **La cupola dell'oratore** nell'apertura: *chi parla, la parola che diventa conoscenza e fonte*.
+- Source of truth: gli SVG originali del repository (`frontend/public/logo.svg`, `logo-blue.svg`, `favicon.svg`, `src/app/icon.svg`), path invariati.
+- **Unica modifica consentita: il colore.** Con la palette attuale: versione chiara in Paper `#FBFAF8` (su superfici scure), versione scura in Ink `#23262E` (su superfici chiare); favicon e app icon su fondo Ink. Il vecchio blu `#1B3A5C` e il crema `#E8DCC8` non si usano più.
+- Vietato: aggiungere nodi, tracce, corridoi, varianti geometriche o nuove interpretazioni dell'emiciclo. Qualsiasi proposta che non si sovrapponga esattamente alla silhouette originale va scartata.
+- Wordmark: `ParliamentRAG` senza separazioni grafiche o cromatiche di "RAG"; tipografia display corrente (Literata) per il lockup testuale in-app.
 
-A colpo d'occhio (e sotto i 24px) il simbolo è indistinguibile da quello storico: continuità totale di riconoscimento. Da vicino, la struttura racconta il prodotto.
-
-Geometria di riferimento (coordinate native 224×156, poi inscritta in viewBox quadrata 24×24 con `translate(1,4.34) scale(0.098214)`):
-- anello: centro (112,112), r esterno 104, r interno 58, settore 200°→−20° (220°)
-- corridoi: 2, ampiezza 5°, simmetrici rispetto alla verticale, dal bordo esterno fino a r 75; banda interna continua da r 76 a 58
-- oratore: semicerchio r 21, centro (112, 147.6)
-
-Varianti: la **small-size** (favicon 16/32, timbri) omette i corridoi (sotto i 24px sporcherebbero il raster) ed è la silhouette storica pura. Su superfici scure il simbolo è Paper, su chiare è Ink; sempre monocromo.
-
-**Processo.** Prima dell'approdo alla v3 sono state esplorate 5 direzioni × 40+ varianti (fogli in `assets/brand/`): archi concentrici (lettura "wi-fi"), nodi-seggio (illeggibili a 16px), emiciclo+tracciato (lettura "cuffie"), spazio negativo (ambiguo), settori a tratto. Il round finale di raffinamento del simbolo storico (10+5 varianti) ha confrontato tagli pieni e parziali a 3/5 settori: vincono i tagli parziali a 3 settori, gli unici che preservano la silhouette al 100% aggiungendo significato.
-
-Cosa NON è: non è una cupola di palazzo, non è Montecitorio, non è un cervello, non è un circuito, non è un tricolore, non contiene "RAG".
-
-### Sistema
-
-| Versione | Composizione | Uso |
-|---|---|---|
-| Primary | simbolo + wordmark orizzontale | header sito, documenti |
-| Secondary | simbolo sopra wordmark (stacked) | poster, slide title |
-| Symbol | solo simbolo | favicon, avatar, watermark |
-| Wordmark | solo "ParliamentRAG" | contesti dove il simbolo è già presente |
-| Monochrome | tutto in Ink oppure tutto in Paper | stampa b/n, timbri, paper accademici |
-| Small-size | simbolo semplificato (3 elementi, no linea) | ≤20px |
-
-Wordmark: "ParliamentRAG" in Literata SemiBold, tracking leggermente negativo, nessuna enfasi cromatica su "RAG". Colori: Ink su Paper; inversione Paper su Ink per fondi scuri. Il simbolo può usare l'accento Blu Archivio sul solo quadrato (la fonte) quando serve un punto focale; in contesti formali resta monocromo.
-
-Clear space: altezza del quadrato su tutti i lati. Dimensione minima lockup: 24px di altezza.
+Le esplorazioni alternative (tracciato v1, settori v2, corridoi v3) restano documentate in `BRAND_EXPLORATION.md` e in `assets/brand/` come archivio di processo: nessuna è in uso.
 
 ## 10. Typography
 
