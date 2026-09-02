@@ -88,7 +88,7 @@ export function RadarChart({
         <polygon
           points={polygon(metrics)}
           fill="rgba(59, 130, 246, 0.2)"
-          stroke="#3b82f6"
+          stroke="var(--primary)"
           strokeWidth="2.5"
         />
 
@@ -101,7 +101,7 @@ export function RadarChart({
               cx={p.x}
               cy={p.y}
               r="4"
-              fill="#3b82f6"
+              fill="var(--primary)"
               stroke="white"
               strokeWidth="2"
             />
@@ -129,7 +129,7 @@ export function RadarChart({
       {/* Legend */}
       <div className="flex items-center gap-6 mt-2 text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-0.5 bg-blue-500 rounded" />
+          <div className="w-4 h-0.5 bg-primary rounded" />
           <span className="text-gray-600 dark:text-gray-400">Automatiche</span>
         </div>
         {secondaryMetrics && (
@@ -161,7 +161,7 @@ interface HorizontalBarChartProps {
 
 export function HorizontalBarChart({
   items,
-  colorClass = "from-blue-500 to-indigo-500",
+  colorClass = "from-primary to-primary/70",
 }: HorizontalBarChartProps) {
   return (
     <div className="space-y-4">
@@ -290,7 +290,7 @@ interface MetricCardProps {
   description?: string;
   baselineValue?: number;
   baselineCi?: [number, number];
-  /** Use a neutral blue color scheme — for metrics where higher/lower isn't inherently good or bad */
+  /** Use a neutral accent color scheme — for metrics where higher/lower isn't inherently good or bad */
   isNeutral?: boolean;
 }
 
@@ -313,14 +313,14 @@ export function MetricCard({
       : value.toFixed(3);
 
   const getColorClass = (v: number) => {
-    if (isNeutral) return "text-blue-600 dark:text-blue-400";
+    if (isNeutral) return "text-primary";
     if (v >= 0.8) return "text-emerald-600 dark:text-emerald-400";
     if (v >= 0.6) return "text-amber-600 dark:text-amber-400";
     return "text-red-600 dark:text-red-400";
   };
 
   const getBarColor = (v: number) => {
-    if (isNeutral) return "bg-blue-500";
+    if (isNeutral) return "bg-primary";
     if (v >= 0.8) return "bg-emerald-500";
     if (v >= 0.6) return "bg-amber-500";
     return "bg-red-500";
@@ -362,7 +362,7 @@ export function MetricCard({
         {format === "percent" && (
           <div className="space-y-1 mb-1">
             <div className="flex items-center gap-1">
-              <span className="text-[10px] text-blue-500 w-14 shrink-0">Sistema</span>
+              <span className="text-[10px] text-primary w-14 shrink-0">Sistema</span>
               <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
                 <div
                   className={cn("h-1.5 rounded-full transition-all", getBarColor(value))}
@@ -468,10 +468,10 @@ export function ABComparisonChart({ items, maxValue = 5 }: ABComparisonChartProp
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-20 text-xs text-blue-600 dark:text-blue-400">Sistema</span>
+                <span className="w-20 text-xs text-primary">Sistema</span>
                 <div className="flex-1 h-5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-500"
                     style={{ width: `${Math.min(sysPct, 100)}%` }}
                   />
                 </div>
@@ -497,7 +497,7 @@ export function ABComparisonChart({ items, maxValue = 5 }: ABComparisonChartProp
       })}
       <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-primary to-primary/70" />
           ParliamentRAG
         </div>
         <div className="flex items-center gap-1">
@@ -528,7 +528,7 @@ export function WinRateChart({ systemWinRate, baselineWinRate, tieRate, totalEva
       <div className="flex items-center h-10 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
         {sysW > 0 && (
           <div
-            className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold"
+            className="h-full bg-gradient-to-r from-primary to-primary/70 flex items-center justify-center text-white text-xs font-bold"
             style={{ width: `${sysW}%` }}
           >
             {sysW > 8 ? `${sysW}%` : ""}
@@ -553,7 +553,7 @@ export function WinRateChart({ systemWinRate, baselineWinRate, tieRate, totalEva
       </div>
       <div className="flex items-center justify-between text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-gradient-to-r from-blue-500 to-indigo-500" />
+          <div className="w-3 h-3 rounded bg-gradient-to-r from-primary to-primary/70" />
           <span className="text-gray-600 dark:text-gray-400">
             ParliamentRAG preferito ({sysW}%)
           </span>

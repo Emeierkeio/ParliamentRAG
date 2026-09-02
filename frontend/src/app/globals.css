@@ -48,35 +48,36 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* Brand "Il Tracciato" — inchiostro su carta, un solo accento funzionale
-   (Blu Archivio). Vedi BRAND_GUIDELINES.md §11 e DESIGN_SYSTEM.md. */
+/* Brand ParliamentRAG: inchiostro su carta, un solo accento funzionale
+   (Petrolio). Vedi BRAND_GUIDELINES.md par. 11 e DESIGN_SYSTEM.md. */
 :root {
   --radius: 0.5rem;
 
   /* Paper: off-white caldo */
   --background: oklch(0.985 0.004 85);
-  --foreground: oklch(0.24 0.015 260); /* Ink */
+  --foreground: oklch(0.24 0.01 220); /* Ink (neutro, niente cast blu) */
 
   /* Surface: superfici rialzate */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.015 260);
+  --card-foreground: oklch(0.24 0.01 220);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.015 260);
+  --popover-foreground: oklch(0.24 0.01 220);
 
-  /* Blu Archivio: unico accento (azioni, link, focus, attivo) */
-  --primary: oklch(0.42 0.08 255);
+  /* Petrolio: unico accento (azioni, link, focus, attivo) - nessun
+     partito italiano lo possiede, e non e il vecchio blu istituzionale */
+  --primary: oklch(0.45 0.07 205);
   --primary-foreground: oklch(0.985 0.004 85);
 
   --secondary: oklch(0.95 0.008 85);
-  --secondary-foreground: oklch(0.3 0.03 260);
+  --secondary-foreground: oklch(0.3 0.02 220);
 
   /* Muted: contrasto AA su Paper */
   --muted: oklch(0.955 0.006 85);
-  --muted-foreground: oklch(0.45 0.015 260);
+  --muted-foreground: oklch(0.45 0.012 220);
 
-  --accent: oklch(0.94 0.012 255);
-  --accent-foreground: oklch(0.3 0.05 258);
+  --accent: oklch(0.94 0.012 200);
+  --accent-foreground: oklch(0.3 0.05 205);
 
   /* Error: bordeaux, mai rosso squillante */
   --destructive: oklch(0.5 0.16 20);
@@ -88,24 +89,24 @@
 
   --border: oklch(0.9 0.006 85);
   --input: oklch(0.9 0.006 85);
-  --ring: oklch(0.42 0.08 255);
+  --ring: oklch(0.45 0.07 205);
 
   /* Charts: base analitica neutra + accento */
-  --chart-1: oklch(0.42 0.08 255);
+  --chart-1: oklch(0.45 0.07 205);
   --chart-2: oklch(0.5 0.16 20);
   --chart-3: oklch(0.62 0.06 80);
   --chart-4: oklch(0.52 0.1 155);
   --chart-5: oklch(0.5 0.12 300);
 
   /* Sidebar: superficie Ink (quasi monocroma, non blu partito) */
-  --sidebar: oklch(0.25 0.02 260);
+  --sidebar: oklch(0.25 0.012 220);
   --sidebar-foreground: oklch(0.87 0.008 85);
   --sidebar-primary: oklch(0.95 0.008 85);
-  --sidebar-primary-foreground: oklch(0.25 0.02 260);
-  --sidebar-accent: oklch(0.31 0.025 260);
+  --sidebar-primary-foreground: oklch(0.25 0.012 220);
+  --sidebar-accent: oklch(0.31 0.015 220);
   --sidebar-accent-foreground: oklch(0.93 0.006 85);
-  --sidebar-border: oklch(0.33 0.02 260);
-  --sidebar-ring: oklch(0.6 0.06 255);
+  --sidebar-border: oklch(0.33 0.012 220);
+  --sidebar-ring: oklch(0.6 0.05 205);
 }
 
 @layer base {

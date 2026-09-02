@@ -154,7 +154,7 @@ export default function ValutazionePage() {
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
               <p className="text-muted-foreground">Caricamento dati di valutazione...</p>
             </div>
           </div>
@@ -252,7 +252,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-blue-600">
+            <div className="text-3xl font-bold text-primary">
               {data.total_evaluated}
             </div>
             <div className="text-sm text-muted-foreground">Valutate (A/B blind)</div>
@@ -383,7 +383,7 @@ function OverviewTab({ data }: { data: EvaluationDashboardData }) {
           <Card>
             <CardContent className="p-6 text-center">
               <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Sistema</div>
-              <div className="text-4xl font-bold text-blue-600">
+              <div className="text-4xl font-bold text-primary">
                 {ab.system_avg_overall.toFixed(2)}
               </div>
               <div className="text-sm text-muted-foreground">/5</div>
@@ -589,7 +589,7 @@ function AutomatedTab({ data }: { data: EvaluationDashboardData }) {
               {m.format === "percent" && (
                 <div className="space-y-1 mt-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-blue-500 w-16 shrink-0">Sistema</span>
+                    <span className="text-xs text-primary w-16 shrink-0">Sistema</span>
                     <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                       <div
                         className={cn("h-full rounded-full", m.value >= 0.8 ? "bg-emerald-500" : m.value >= 0.6 ? "bg-amber-500" : "bg-red-500")}
@@ -728,7 +728,7 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
                 <div className="flex items-center h-6 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
                   {sysPct > 0 && (
                     <div
-                      className="h-full bg-blue-500"
+                      className="h-full bg-primary"
                       style={{ width: `${sysPct}%` }}
                     />
                   )}
@@ -781,7 +781,7 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <UserCheck className="w-5 h-5 text-indigo-500" />
+                <UserCheck className="w-5 h-5 text-primary" />
                 Autorità Esperti per Gruppo Politico
               </CardTitle>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -804,7 +804,7 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
                     </div>
                     <div className="flex items-center h-6 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
                       {sysPct > 0 && (
-                        <div className="h-full bg-blue-500" style={{ width: `${sysPct}%` }} />
+                        <div className="h-full bg-primary" style={{ width: `${sysPct}%` }} />
                       )}
                       {eqPct > 0 && (
                         <div className="h-full bg-gray-300 dark:bg-gray-600" style={{ width: `${eqPct}%` }} />
@@ -826,7 +826,7 @@ function HumanTab({ data }: { data: EvaluationDashboardData }) {
         <Card>
           <CardContent className="p-6 text-center">
             <div className="text-sm text-muted-foreground mb-2">Soddisfazione Media Sistema</div>
-            <div className="text-4xl font-bold text-blue-600">
+            <div className="text-4xl font-bold text-primary">
               {ab.system_avg_overall.toFixed(2)}
             </div>
             <div className="text-sm text-muted-foreground">/5</div>
@@ -934,7 +934,7 @@ function AuthorityByGroupChart({
         </h5>
         {hasBaseline && (
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-blue-500" />Sistema</span>
+            <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-primary" />Sistema</span>
             <span className="flex items-center gap-1">
               <span className="inline-block w-2.5 h-2.5 rounded-sm bg-gray-300 dark:bg-gray-600" />
               Baseline{isAggregateBaseline ? " (media)" : ""}
@@ -958,7 +958,7 @@ function AuthorityByGroupChart({
                 <div className="flex items-center gap-1.5">
                   <div className="flex-1 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-blue-500 rounded-full transition-all"
+                      className="h-full bg-primary rounded-full transition-all"
                       style={{ width: `${sysPct}%` }}
                     />
                   </div>
@@ -1010,10 +1010,10 @@ function ChatEvaluationRow({
   const effectiveBaselineByGroup = m.baseline_authority_by_group ?? avgBaselineAuthorityByGroup;
 
   const miniMetrics = [
-    { label: "Copertura", value: m.party_coverage_score, color: "bg-blue-500" },
+    { label: "Copertura", value: m.party_coverage_score, color: "bg-primary" },
     { label: "Fedeltà", value: m.verbatim_match_score, color: "bg-emerald-500" },
     { label: "Autorevolezza", value: m.authority_utilization, color: "bg-amber-500" },
-    { label: "Completezza", value: m.response_completeness, color: "bg-indigo-500" },
+    { label: "Completezza", value: m.response_completeness, color: "bg-chart-5" },
   ];
 
   const formatDate = (ts: string) => {
@@ -1048,7 +1048,7 @@ function ChatEvaluationRow({
               {item.human && (
                 <Badge
                   variant="secondary"
-                  className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                  className="text-xs bg-accent text-accent-foreground"
                 >
                   Valutata A/B
                 </Badge>
@@ -1232,7 +1232,7 @@ function ChatEvaluationRow({
               </h4>
               {item.human ? (
                 <div className="space-y-3">
-                  <div className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase mb-1">
+                  <div className="text-xs font-medium text-primary uppercase mb-1">
                     A/B Blind
                   </div>
                   {AB_DIMENSIONS.map((dim) => {
@@ -1249,7 +1249,7 @@ function ChatEvaluationRow({
                           </span>
                         </div>
                         <div className="flex items-center gap-2 text-xs">
-                          <span className="w-6 text-blue-600">A:</span>
+                          <span className="w-6 text-primary">A:</span>
                           <div className="flex gap-0.5">
                             {Array.from({ length: 5 }, (_, i) => (
                               <div
@@ -1257,7 +1257,7 @@ function ChatEvaluationRow({
                                 className={cn(
                                   "w-2 h-2 rounded-full",
                                   i < rating.rating_a
-                                    ? "bg-blue-400"
+                                    ? "bg-primary/70"
                                     : "bg-gray-200 dark:bg-gray-700"
                                 )}
                               />

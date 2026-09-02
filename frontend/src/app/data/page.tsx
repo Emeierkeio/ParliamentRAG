@@ -4,17 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Fraunces } from "next/font/google";
 import { ArrowLeft, ArrowUpRight, Download } from "lucide-react";
 import { useKgStats } from "@/hooks/use-kg-stats";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-display",
-  display: "swap",
-});
 
 /* ── Long-term archive of the dumps (published record) ───────────
    Concept DOI: always resolves to the LATEST version of the dataset.
@@ -197,10 +189,10 @@ export default function DataPage() {
 
   return (
     <div
-      className={`${fraunces.variable} min-h-screen bg-primary text-primary-foreground`}
+      className="min-h-screen bg-foreground text-background"
     >
       {/* ── Masthead — dark ────────────────────────────────────── */}
-      <header className="border-b border-primary-foreground/20">
+      <header className="border-b border-background/20">
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between py-5">
           <Link href="/" className="flex items-center gap-3">
             <Image src="/logo.svg" alt="" width={46} height={32} />
@@ -210,7 +202,7 @@ export default function DataPage() {
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-xs text-primary-foreground/60 hover:text-primary-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-background/60 hover:text-background transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             {t("backHome")}
@@ -228,10 +220,10 @@ export default function DataPage() {
             <h1 className="mt-5 [font-family:var(--font-display)] text-4xl sm:text-6xl font-medium tracking-tight leading-[1.06] text-balance">
               {t("heroTitle")}
             </h1>
-            <p className="mt-6 text-lg leading-relaxed text-primary-foreground/70 max-w-2xl">
+            <p className="mt-6 text-lg leading-relaxed text-background/70 max-w-2xl">
               {t.rich("heroSub", {
                 strong: (chunks) => (
-                  <span className="text-primary-foreground">{chunks}</span>
+                  <span className="text-background">{chunks}</span>
                 ),
               })}
             </p>
@@ -243,7 +235,7 @@ export default function DataPage() {
             aria-hidden={!graphLoaded}
           >
             <GraphFigure sample={graphSample} />
-            <figcaption className="mt-2 text-center font-mono text-[10px] text-primary-foreground/40">
+            <figcaption className="mt-2 text-center font-mono text-[10px] text-background/40">
               {t("heroGraphNote", { id: graphSample.person.id })}
             </figcaption>
           </figure>
@@ -254,22 +246,22 @@ export default function DataPage() {
       <section className="px-6 py-14 sm:py-16">
         <div className="max-w-6xl mx-auto">
           <TermRule index="01" title={t("sec1Title")} />
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 border-t border-l border-primary-foreground/15">
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-4 border-t border-l border-background/15">
             {STATS.map((s) => (
               <div
                 key={s.key}
-                className="border-b border-r border-primary-foreground/15 p-5 sm:p-6"
+                className="border-b border-r border-background/15 p-5 sm:p-6"
               >
                 <p className="font-mono text-2xl sm:text-3xl font-medium tracking-tight tabular-nums">
                   {formatStat(stats[s.field] ?? 0, locale, "compact" in s && s.compact)}
                 </p>
-                <p className="mt-2 text-[13px] text-primary-foreground/55 leading-snug">
+                <p className="mt-2 text-[13px] text-background/55 leading-snug">
                   {t(s.key)}
                 </p>
               </div>
             ))}
           </div>
-          <p className="mt-6 font-mono text-xs text-primary-foreground/45 max-w-2xl leading-relaxed">
+          <p className="mt-6 font-mono text-xs text-background/45 max-w-2xl leading-relaxed">
             {t("sec1Note")}
           </p>
         </div>
@@ -279,11 +271,11 @@ export default function DataPage() {
       <section className="px-6 py-14 sm:py-16">
         <div className="max-w-6xl mx-auto">
           <TermRule index="02" title={t("sec2Title")} />
-          <div className="mt-10 grid md:grid-cols-3 border-t border-l border-primary-foreground/15">
+          <div className="mt-10 grid md:grid-cols-3 border-t border-l border-background/15">
             {(["idea1", "idea2", "idea3"] as const).map((idea, i) => (
               <div
                 key={idea}
-                className="border-b border-r border-primary-foreground/15 p-6 sm:p-7"
+                className="border-b border-r border-background/15 p-6 sm:p-7"
               >
                 <p className="font-mono text-xs text-chart-3">
                   [{String.fromCharCode(97 + i)}]
@@ -291,7 +283,7 @@ export default function DataPage() {
                 <h3 className="mt-3 [font-family:var(--font-display)] text-xl font-medium">
                   {t(`${idea}Title`)}
                 </h3>
-                <p className="mt-2.5 text-sm leading-relaxed text-primary-foreground/65">
+                <p className="mt-2.5 text-sm leading-relaxed text-background/65">
                   {t(`${idea}Body`)}
                 </p>
               </div>
@@ -304,7 +296,7 @@ export default function DataPage() {
       <section className="px-6 py-14 sm:py-16">
         <div className="max-w-6xl mx-auto">
           <TermRule index="03" title={t("sec3Title")} />
-          <p className="mt-6 text-primary-foreground/65 max-w-2xl">
+          <p className="mt-6 text-background/65 max-w-2xl">
             {t("sec3Intro", {
               name: titleCase(
                 `${graphSample.person.first_name} ${graphSample.person.last_name}`
@@ -319,8 +311,8 @@ export default function DataPage() {
               }`}
               aria-hidden={!graphLoaded}
             >
-              <div className="border border-primary-foreground/20 bg-black/25">
-                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-primary-foreground/15 font-mono text-[11px] text-primary-foreground/45">
+              <div className="border border-background/20 bg-black/25">
+                <div className="flex items-center gap-2 px-4 py-2.5 border-b border-background/15 font-mono text-[11px] text-background/45">
                   <span className="inline-block h-2 w-2 rounded-full bg-chart-4/70" />
                   parliamentrag_kg.ttl
                 </div>
@@ -334,10 +326,10 @@ export default function DataPage() {
                           : line.hl === "lit"
                             ? "text-chart-4"
                             : line.hl === "pred"
-                              ? "text-primary-foreground/90"
+                              ? "text-background/90"
                               : line.hl === "dim"
-                                ? "text-primary-foreground/35"
-                                : "text-primary-foreground/70"
+                                ? "text-background/35"
+                                : "text-background/70"
                       }`}
                     >
                       {line.text || " "}
@@ -345,12 +337,12 @@ export default function DataPage() {
                   ))}
                 </pre>
               </div>
-              <figcaption className="mt-3 font-mono text-[11px] text-primary-foreground/45">
+              <figcaption className="mt-3 font-mono text-[11px] text-background/45">
                 {t("exCaption")}
               </figcaption>
             </figure>
 
-            <div className="lg:col-span-5 lg:pl-8 lg:border-l border-primary-foreground/15 space-y-6">
+            <div className="lg:col-span-5 lg:pl-8 lg:border-l border-background/15 space-y-6">
               {(["ex1", "ex2", "ex3"] as const).map((ex, i) => (
                 <div key={ex} className="flex gap-4">
                   <span className="font-mono text-sm text-chart-3 leading-6 select-none">
@@ -358,7 +350,7 @@ export default function DataPage() {
                   </span>
                   <p className="text-sm leading-relaxed">
                     <span className="font-medium">{t(`${ex}Title`)}</span>
-                    <span className="text-primary-foreground/60">
+                    <span className="text-background/60">
                       {" "}
                       — {t(`${ex}Body`)}
                     </span>
@@ -374,21 +366,21 @@ export default function DataPage() {
       <section className="px-6 py-14 sm:py-16">
         <div className="max-w-6xl mx-auto">
           <TermRule index="04" title={t("sec4Title")} />
-          <p className="mt-6 text-primary-foreground/65 max-w-2xl">
+          <p className="mt-6 text-background/65 max-w-2xl">
             {t("sec4Intro")}
           </p>
 
           <div className="mt-10 overflow-x-auto">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
-                <tr className="border-b border-primary-foreground/40 text-left">
-                  <th className="py-3 pr-6 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-primary-foreground/50">
+                <tr className="border-b border-background/40 text-left">
+                  <th className="py-3 pr-6 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-background/50">
                     {t("mapCol1")}
                   </th>
-                  <th className="py-3 pr-6 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-primary-foreground/50">
+                  <th className="py-3 pr-6 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-background/50">
                     {t("mapCol2")}
                   </th>
-                  <th className="py-3 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-primary-foreground/50">
+                  <th className="py-3 font-mono font-normal text-[11px] uppercase tracking-[0.2em] text-background/50">
                     {t("mapCol3")}
                   </th>
                 </tr>
@@ -397,13 +389,13 @@ export default function DataPage() {
                 {MAPPING_ROWS.map((row) => (
                   <tr
                     key={row.n}
-                    className="border-b border-primary-foreground/15 align-top"
+                    className="border-b border-background/15 align-top"
                   >
                     <td className="py-3.5 pr-6 font-medium">{t(`${row.n}c`)}</td>
                     <td className="py-3.5 pr-6 font-mono text-[12.5px] text-chart-3 whitespace-nowrap">
                       {row.vocab}
                     </td>
-                    <td className="py-3.5 text-primary-foreground/60 leading-relaxed">
+                    <td className="py-3.5 text-background/60 leading-relaxed">
                       {t(`${row.n}m`)}
                     </td>
                   </tr>
@@ -418,7 +410,7 @@ export default function DataPage() {
       <section className="px-6 pt-14 pb-24">
         <div className="max-w-6xl mx-auto">
           <TermRule index="05" title={t("sec5Title")} />
-          <p className="mt-6 text-primary-foreground/65 max-w-2xl">
+          <p className="mt-6 text-background/65 max-w-2xl">
             {t("sec5Intro")}
           </p>
 
@@ -453,13 +445,13 @@ export default function DataPage() {
             />
           </div>
 
-          <p className="mt-8 text-xs text-primary-foreground/45 max-w-3xl leading-relaxed">
+          <p className="mt-8 text-xs text-background/45 max-w-3xl leading-relaxed">
             {t("licenseNote")}{" "}
             <a
               href="https://github.com/Emeierkeio/ParliamentRAG"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-baseline gap-0.5 text-primary-foreground/70 border-b border-primary-foreground/30 hover:border-primary-foreground hover:text-primary-foreground transition-colors"
+              className="group inline-flex items-baseline gap-0.5 text-background/70 border-b border-background/30 hover:border-background hover:text-background transition-colors"
             >
               GitHub
               <ArrowUpRight className="h-3 w-3 self-center" />
@@ -469,7 +461,7 @@ export default function DataPage() {
               href={ZENODO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-baseline gap-0.5 text-primary-foreground/70 border-b border-primary-foreground/30 hover:border-primary-foreground hover:text-primary-foreground transition-colors"
+              className="group inline-flex items-baseline gap-0.5 text-background/70 border-b border-background/30 hover:border-background hover:text-background transition-colors"
             >
               Zenodo · DOI {ZENODO_DOI}
               <ArrowUpRight className="h-3 w-3 self-center" />
@@ -530,7 +522,7 @@ function GraphFigure({ sample }: { sample: GraphSample }) {
               y1={a.y}
               x2={b.x}
               y2={b.y}
-              className="stroke-primary-foreground/25"
+              className="stroke-background/25"
               strokeWidth="1"
               strokeDasharray="3 4"
             />
@@ -571,7 +563,7 @@ function GraphFigure({ sample }: { sample: GraphSample }) {
             className={
               "accent" in n && n.accent
                 ? "fill-chart-3/15 stroke-chart-3"
-                : "fill-primary stroke-primary-foreground/55"
+                : "fill-primary stroke-background/55"
             }
             strokeWidth="1.25"
           />
@@ -579,7 +571,7 @@ function GraphFigure({ sample }: { sample: GraphSample }) {
             x={n.x}
             y={n.y - n.r - 8}
             textAnchor="middle"
-            className="fill-primary-foreground font-mono"
+            className="fill-background font-mono"
             fontSize="11"
             fontWeight="500"
           >
@@ -589,7 +581,7 @@ function GraphFigure({ sample }: { sample: GraphSample }) {
             x={n.x}
             y={n.y + n.r + 14}
             textAnchor="middle"
-            className="fill-primary-foreground/40 font-mono"
+            className="fill-background/40 font-mono"
             fontSize="8.5"
           >
             {n.sub}
@@ -603,7 +595,7 @@ function GraphFigure({ sample }: { sample: GraphSample }) {
 /* ── Terminal section rule — mono index instead of roman numeral ── */
 function TermRule({ index, title }: { index: string; title: string }) {
   return (
-    <div className="flex items-baseline gap-4 border-b border-primary-foreground/30 pb-3">
+    <div className="flex items-baseline gap-4 border-b border-background/30 pb-3">
       <span className="font-mono text-sm text-chart-3">{index} /</span>
       <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight">
         {title}
@@ -642,24 +634,24 @@ function FileCard({
 }) {
   const size = file ? formatBytes(file.bytes, locale) : fallbackSize;
   return (
-    <div className="border border-primary-foreground/20 px-6 py-5 flex flex-col">
+    <div className="border border-background/20 px-6 py-5 flex flex-col">
       <div className="flex items-start justify-between gap-4">
         <h3 className="[font-family:var(--font-display)] text-xl font-medium tracking-tight">
           {title}
         </h3>
-        <span className="text-right font-mono text-[11px] uppercase tracking-wide text-primary-foreground/45 shrink-0 mt-2 leading-relaxed">
+        <span className="text-right font-mono text-[11px] uppercase tracking-wide text-background/45 shrink-0 mt-2 leading-relaxed">
           {format} · {size}
           {archivedNote ? (
             <>
               <br />
-              <span className="normal-case tracking-normal text-primary-foreground/40">
+              <span className="normal-case tracking-normal text-background/40">
                 {archivedNote}
               </span>
             </>
           ) : null}
         </span>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-primary-foreground/60 flex-1">
+      <p className="mt-3 text-sm leading-relaxed text-background/60 flex-1">
         {body}
       </p>
       {!resolved ? (
@@ -669,12 +661,12 @@ function FileCard({
           <a
             href={`/api/data/rdf/${file.filename}`}
             download={file.filename}
-            className="group inline-flex items-center gap-2.5 bg-primary-foreground text-primary px-5 py-2.5 text-[13px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
+            className="group inline-flex items-center gap-2.5 bg-background text-primary px-5 py-2.5 text-[13px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
           >
             <Download className="h-3.5 w-3.5" />
             {downloadLabel}
           </a>
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] text-primary-foreground/45">
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] text-background/45">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
             {readyNote}
             {updatedNote ? ` · ${updatedNote}` : null}
@@ -686,7 +678,7 @@ function FileCard({
             href={ZENODO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2.5 bg-primary-foreground text-primary px-5 py-2.5 text-[13px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
+            className="group inline-flex items-center gap-2.5 bg-background text-primary px-5 py-2.5 text-[13px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
           >
             <Download className="h-3.5 w-3.5" />
             {zenodoLabel}

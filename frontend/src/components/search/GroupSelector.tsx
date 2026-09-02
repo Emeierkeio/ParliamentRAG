@@ -129,7 +129,7 @@ export function GroupSelector({ selectedGroups, onSelect }: GroupSelectorProps) 
                     {isMaggioranzaFull && <Check className="h-3 w-3" />}
                     {isMaggioranzaPartial && <div className="h-2 w-2 bg-primary rounded-sm" />}
                   </div>
-                  <Shield className="h-4 w-4 text-blue-600" />
+                  <Shield className="h-4 w-4 text-primary" />
                   <span className="font-medium">Maggioranza</span>
                   <span className="ml-auto text-xs text-muted-foreground">4 gruppi</span>
                 </CommandItem>

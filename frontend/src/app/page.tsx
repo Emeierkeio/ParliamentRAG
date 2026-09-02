@@ -346,7 +346,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Garanzie ───────────────────────────────────────────── */}
-      <section id="garanzie" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
+      <section id="garanzie" className="px-6 py-14 sm:py-20 bg-foreground text-background">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="II" title={t("sec2Title")} inverted />
 
@@ -369,7 +369,7 @@ export default function LandingPage() {
           </div>
 
           {/* Colophon line */}
-          <p className="mt-16 pt-6 border-t border-primary-foreground/20 text-sm text-primary-foreground/70 leading-relaxed">
+          <p className="mt-16 pt-6 border-t border-background/20 text-sm text-background/70 leading-relaxed">
             {t("colophonStats")}
           </p>
         </div>
@@ -406,7 +406,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── IV. Dati aperti — the graph behind the answers ─────── */}
-      <section id="dati" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
+      <section id="dati" className="px-6 py-14 sm:py-20 bg-foreground text-background">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="IV" title={t("dataBandKicker")} inverted />
           <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
@@ -414,20 +414,20 @@ export default function LandingPage() {
               <h3 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-medium tracking-tight leading-[1.12] text-balance">
                 {t("dataBandTitle")}
               </h3>
-              <p className="mt-4 leading-relaxed text-primary-foreground/70 max-w-xl">
+              <p className="mt-4 leading-relaxed text-background/70 max-w-xl">
                 {t("dataBandBody")}
               </p>
               <div className="mt-8">
                 <Link
                   href="/data"
-                  className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary-foreground text-primary px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
+                  className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-background text-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-chart-3 transition-colors cursor-pointer"
                 >
                   {t("dataBandCta")}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>
-            <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-primary-foreground/15">
+            <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-background/15">
               <DataStats inverted />
             </aside>
           </div>
@@ -582,13 +582,13 @@ function DataStats({ inverted = false }: { inverted?: boolean }) {
         <div
           key={s.key}
           className={`flex items-baseline justify-between gap-4 py-4 ${
-            i === 0 ? "" : `border-t ${inverted ? "border-primary-foreground/15" : "border-border"}`
+            i === 0 ? "" : `border-t ${inverted ? "border-background/15" : "border-border"}`
           }`}
         >
-          <span className={`[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight tabular-nums ${inverted ? "text-primary-foreground" : "text-primary"}`}>
+          <span className={`[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight tabular-nums ${inverted ? "text-background" : "text-primary"}`}>
             {fmt(s.value, "compact" in s && s.compact)}
           </span>
-          <span className={`text-sm text-right leading-snug ${inverted ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+          <span className={`text-sm text-right leading-snug ${inverted ? "text-background/60" : "text-muted-foreground"}`}>
             {td(s.key)}
           </span>
         </div>
@@ -610,12 +610,12 @@ function SectionRule({
   return (
     <div
       className={`flex items-baseline gap-4 border-b pb-3 ${
-        inverted ? "border-primary-foreground/30" : "border-foreground"
+        inverted ? "border-background/30" : "border-foreground"
       }`}
     >
       <span
         className={`[font-family:var(--font-display)] italic text-lg ${
-          inverted ? "text-primary-foreground/60" : "text-primary/60"
+          inverted ? "text-background/60" : "text-primary/60"
         }`}
       >
         {numeral}.
@@ -723,14 +723,14 @@ function Guarantee({
 }) {
   return (
     <div className="flex gap-4">
-      <span className="[font-family:var(--font-display)] italic text-lg text-primary-foreground/50 leading-7 select-none">
+      <span className="[font-family:var(--font-display)] italic text-lg text-background/50 leading-7 select-none">
         {index})
       </span>
       <div>
         <h3 className="[font-family:var(--font-display)] text-xl font-medium mb-2">
           {title}
         </h3>
-        <p className="text-sm leading-relaxed text-primary-foreground/75">
+        <p className="text-sm leading-relaxed text-background/75">
           {body}
         </p>
       </div>
@@ -859,10 +859,10 @@ function SideTOC() {
               className={`[font-family:var(--font-display)] italic w-5 text-right text-sm transition-colors duration-200 ${
                 isActive
                   ? overInverted
-                    ? "text-primary-foreground"
+                    ? "text-background"
                     : "text-primary"
                   : overInverted
-                    ? "text-primary-foreground/40 group-hover:text-primary-foreground/80"
+                    ? "text-background/40 group-hover:text-background/80"
                     : "text-muted-foreground/40 group-hover:text-muted-foreground"
               }`}
             >
@@ -871,10 +871,10 @@ function SideTOC() {
             <span
               className={`text-[11px] font-medium transition-all duration-200 ${
                 isActive
-                  ? `opacity-100 translate-x-0 ${overInverted ? "text-primary-foreground" : "text-foreground"}`
+                  ? `opacity-100 translate-x-0 ${overInverted ? "text-background" : "text-foreground"}`
                   : `opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 ${
                       overInverted
-                        ? "text-primary-foreground/60"
+                        ? "text-background/60"
                         : "text-muted-foreground/60"
                     }`
               }`}

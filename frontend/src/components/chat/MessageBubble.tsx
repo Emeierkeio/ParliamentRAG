@@ -910,14 +910,14 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
             {/* Maggioranza */}
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-blue-400">{t('maggioranza')}</span>
+                <span className="text-primary">{t('maggioranza')}</span>
                 <span className="text-muted-foreground">
                   {Math.round(metrics.maggioranzaPercentage)}%
                 </span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full transition-all bg-blue-500"
+                  className="h-full rounded-full transition-all bg-primary"
                   style={{ width: `${metrics.maggioranzaPercentage}%` }}
                 />
               </div>

@@ -211,7 +211,7 @@ function AuthorityGroupComparisonPanel({
   if (isLoadingA || isLoadingB) {
     return (
       <div className="flex flex-1 w-full flex-col items-center justify-center text-gray-400 gap-3 min-h-0">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
         <p className="text-xs text-gray-500">Ricerca deputati nel testo...</p>
       </div>
     );
@@ -340,7 +340,7 @@ function AuthorityGroupComparisonPanel({
                 ? "bg-gray-100 text-gray-400 dark:bg-gray-800/50 dark:text-gray-500"
                 : expertA
                   ? "bg-blue-50 text-blue-400 dark:bg-blue-900/20 dark:text-blue-400"
-                  : "bg-indigo-50 text-indigo-400 dark:bg-indigo-900/20 dark:text-indigo-400";
+                  : "bg-indigo-50 text-primary dark:bg-indigo-900/20 dark:text-primary";
 
               return (
                 <div key={key} className="rounded-xl mb-2 bg-gray-50 dark:bg-gray-900/20 border border-gray-100 dark:border-gray-800/20 opacity-60">

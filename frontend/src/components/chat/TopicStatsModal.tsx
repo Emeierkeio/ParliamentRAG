@@ -35,8 +35,8 @@ interface TopicStatsModalProps {
 
 function getCoalitionColor(coalition: string): string {
   switch (coalition) {
-    case "maggioranza": return "#3B82F6";
-    case "governo": return "#4B0082";
+    case "maggioranza": return "var(--primary)";
+    case "governo": return "var(--chart-5)";
     case "opposizione": return "#EF4444";
     default: return "#9E9E9E";
   }
@@ -332,7 +332,7 @@ export function TopicStatsModal({
                           )}
                           {speaker.committee && (
                             <span className="flex items-center gap-1" title="Commissione">
-                              <Building2 className="h-2.5 w-2.5 text-blue-500" />
+                              <Building2 className="h-2.5 w-2.5 text-primary" />
                               <span className="truncate max-w-[200px]">{speaker.committee}</span>
                             </span>
                           )}

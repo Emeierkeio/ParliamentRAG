@@ -26,19 +26,21 @@ Definiti una sola volta in `globals.css` (`@theme`), nessun hex nei componenti.
 
 ```
 --background      oklch(0.98 0.004 85)    /* Paper */
---foreground      oklch(0.24 0.015 260)   /* Ink */
+--foreground      oklch(0.24 0.01 220)    /* Ink neutro */
 --card / surface  oklch(1 0 0)            /* superficie rialzata */
 --muted           oklch(0.94 0.006 85)
---muted-foreground oklch(0.45 0.015 260)  /* ≥4.5:1 su Paper */
+--muted-foreground oklch(0.45 0.012 220)  /* >=4.5:1 su Paper */
 --border          oklch(0.88 0.008 85)
---primary         oklch(0.42 0.08 255)    /* Blu Archivio: azioni, link, attivo */
+--primary         oklch(0.45 0.07 205)    /* Petrolio: azioni, link, attivo */
 --primary-foreground oklch(0.98 0.004 85)
---ring            oklch(0.42 0.08 255)
+--ring            oklch(0.45 0.07 205)
 --success         oklch(0.52 0.1 155)     /* solo verifica */
 --warning         oklch(0.72 0.13 80)
 --destructive     oklch(0.5 0.16 20)      /* bordeaux */
 --sidebar         Ink (nav scura conservata come superficie brand)
 ```
+
+**Migrazione settembre 2026 (via il vecchio blu).** Il blu istituzionale `#1B3A5C` e ogni suo derivato (token hue 250-260, tailwind `blue-*` di brand, ombre tinte, `theme_color` del manifest, crema `#E8DCC8` del logo) sono rimossi: accento unico Petrolio, superfici scure in Ink neutro (`bg-foreground`), logo in Paper/Ink. Audit: `grep -rn "1B3A5C|3B82F6|E8DCC8"` deve restituire zero. Eccezioni ammesse perche' colori-dato, non brand: blu/indigo del pannello survey A/B (Sistema A vs B nel confronto cieco) e i badge categorici dei tipi di atto in ResultsList.
 
 Palette gruppi parlamentari: **solo** in `src/config/index.ts` (`POLITICAL_GROUP_COLORS`); compass, ranking, hemicycle, grafo la importano. Vietato definire colori partito altrove.
 

@@ -28,12 +28,12 @@ export function TranslationBanner({ hasCitations }: TranslationBannerProps) {
   };
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 mb-2 rounded-lg bg-blue-50 border border-blue-200 text-sm text-blue-800">
+    <div className="flex items-center gap-2 px-4 py-2 mb-2 rounded-lg bg-accent border border-border text-sm text-accent-foreground">
       <Globe className="h-4 w-4 flex-shrink-0" />
       <p className="flex-1">{t("message")}</p>
       <button
         onClick={handleDismiss}
-        className="text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap underline"
+        className="text-xs text-primary hover:text-accent-foreground whitespace-nowrap underline"
       >
         {t("dontShowAgain")}
       </button>

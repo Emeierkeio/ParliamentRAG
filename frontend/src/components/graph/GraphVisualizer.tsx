@@ -166,7 +166,7 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
     const getNodeColor = (label: string) => {
         const colors: Record<string, string> = {
             // English labels
-            "Deputy": "#3b82f6", // Blue
+            "Deputy": "#2A6B74", // Blue
             "GovernmentMember": "#2563eb", // Darker blue
             "ParliamentaryGroup": "#ef4444", // Red
             "Committee": "#10b981", // Green
@@ -177,7 +177,7 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
             "Phase": "#f97316", // Orange
             "Chunk": "#6366f1", // Indigo
             // Italian fallbacks
-            "Deputato": "#3b82f6",
+            "Deputato": "#2A6B74",
             "MembroGoverno": "#2563eb",
             "GruppoParlamentare": "#ef4444",
             "Commissione": "#10b981",
@@ -253,7 +253,7 @@ export function GraphVisualizer({ data }: GraphVisualizerProps) {
                 // Draw node circle
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, nodeR, 0, 2 * Math.PI);
-                ctx.fillStyle = node.color || '#3b82f6';
+                ctx.fillStyle = node.color || '#2A6B74';
                 ctx.fill();
 
                 // Draw border

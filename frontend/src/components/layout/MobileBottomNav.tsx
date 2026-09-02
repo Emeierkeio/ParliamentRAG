@@ -98,7 +98,7 @@ export function MobileBottomNav() {
   return (
     <>
     <nav
-      className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(27,58,92,0.16)] overflow-hidden"
+      className="md:hidden fixed inset-x-3 bottom-[calc(0.625rem+env(safe-area-inset-bottom))] z-40 rounded-[1.75rem] border border-white/50 bg-background/60 backdrop-blur-2xl backdrop-saturate-150 shadow-[0_8px_32px_rgba(30,33,40,0.16)] overflow-hidden"
       aria-label={t("tools")}
     >
       {/* Loading line on the bar itself — the top of the screen is out of
