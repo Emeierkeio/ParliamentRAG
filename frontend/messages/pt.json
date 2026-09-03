@@ -22,8 +22,8 @@
     "originalLabel": "Original",
     "chamberTitle": "Câmara dos Deputados — XIX Legislatura",
     "expertsTitle": "Fontes selecionadas por autoridade",
-    "expertsSectionDesc": "Estes parlamentares foram identificados como as vozes mais competentes sobre o tema e utilizados como fontes prioritárias para construir a resposta.",
-    "expertsTooltip": "Antes de recuperar as citações, o sistema identifica os parlamentares com mais autoridade sobre o tema. A autoridade é calculada com base em 6 fatores: intervenções em plenário, atos legislativos, comissão a que pertence, profissão, habilitações académicas e cargo institucional.",
+    "expertsSectionDesc": "Estes parlamentares foram identificados como as vozes mais competentes sobre o tema e usados como fontes prioritárias para construir a resposta: a autoridade decide quem é citado por cada grupo, não quem tem razão. A pontuação combina seis critérios com pesos declarados: leia <method>como funciona</method> ou <ranking>experimente com os pesos na análise de autoridade</ranking>.",
+    "expertsTooltip": "Antes de recuperar as citações, o sistema identifica os parlamentares com mais autoridade sobre o tema: a autoridade serve para escolher quem citar por cada grupo, não para julgar as suas posições. É calculada sobre 6 fatores com pesos declarados: intervenções no plenário, atos legislativos, comissão, profissão, formação e cargo institucional.",
     "citationsTitle": "Citações",
     "citationsTooltip": "Intervenções parlamentares recuperadas da base de dados através de pesquisa semântica híbrida (vetorial + texto integral), provenientes dos parlamentares selecionados por autoridade sobre o tema.",
     "balanceTitle": "Equilíbrio",
@@ -47,7 +47,9 @@
     "deputiesSection": "Deputados nesta secção",
     "altro": "Outro",
     "traceTitle": "Nos bastidores",
-    "traceTooltip": "Fases, tempos e chamadas aos modelos que produziram esta resposta, medidos no servidor: da recuperação de evidências à verificação de citações."
+    "traceTooltip": "Fases, tempos e chamadas aos modelos que produziram esta resposta, medidos no servidor: da recuperação de evidências à verificação de citações.",
+    "aiDisclaimer": "Resposta gerada por IA. As citações são verificadas palavra por palavra na ata oficial; a seleção das passagens e a síntese são do sistema e podem omitir contexto.",
+    "aiDisclaimerLink": "Como funciona"
   },
   "ProgressIndicator": {
     "connecting": "A ligar...",
@@ -240,7 +242,15 @@
     "noTitle": "Sem título",
     "primarySigner": "1.º Signatário",
     "coSigner": "Cossignatário",
-    "topic": "Tema"
+    "topic": "Tema",
+    "weightLabel": "peso",
+    "weightsNote": "Os pesos dos seis critérios são uma escolha editorial do sistema, idêntica para todos os deputados e documentada publicamente.",
+    "weightsLink": "Como funciona",
+    "simulateTitle": "Experimente com os pesos",
+    "simulateDesc": "Mova os pesos e observe como mudaria a pontuação de autoridade sobre este tema. Os valores são relativos e normalizados automaticamente.",
+    "simulateOfficialLabel": "Oficial",
+    "simulateResult": "Com os seus pesos",
+    "simulateReset": "Restaurar pesos oficiais"
   },
   "CompassCard": {
     "meaning": "Significado:",
@@ -260,8 +270,10 @@
     "stanceLow": "baixo = poucas intervenções tomam partido nestes eixos",
     "stanceHigh": "alto = debate muito dividido ao longo destes eixos",
     "weakStanceWarning": "Poucas intervenções tomam uma posição clara nestes eixos: as posições dos grupos são pouco fiáveis.",
-    "stanceDisclaimer": "Posições estimadas automaticamente por um modelo de linguagem, intervenção por intervenção, a partir das intervenções recuperadas para esta pergunta: são indicativas e não certificam o posicionamento político dos grupos. Os pontos no centro não tomam posição.",
-    "disclaimer": "Bússola gerada automaticamente a partir das intervenções recuperadas para esta pergunta: descreve a linguagem dos discursos e não certifica o posicionamento político dos grupos. Perguntas diferentes podem produzir resultados diferentes."
+    "stanceDisclaimer": "Posições estimadas automaticamente por um modelo de linguagem, intervenção por intervenção, sobre as intervenções recuperadas para esta pergunta. A posição de um grupo é a média apenas das intervenções que tomam posição em cada eixo, atenuada para o centro quando são poucas: o tooltip indica em quantas intervenções assenta cada coordenada. Os pontos no centro não tomam posição; nada aqui certifica o posicionamento político dos grupos.",
+    "disclaimer": "Bússola gerada automaticamente a partir das intervenções recuperadas para esta pergunta: descreve a linguagem dos discursos e não certifica o posicionamento político dos grupos. Perguntas diferentes podem produzir resultados diferentes.",
+    "positionBasis": "Posição baseada em",
+    "methodLink": "Como funciona"
   },
   "TopicStatsModal": {
     "title": "Detalhe das Estatísticas",
@@ -665,7 +677,13 @@
     "methodP2": "Leia-a como uma estimativa interpretável da especialização no tema, não como uma medida objetiva de autoridade. O detalhamento em cada linha mostra o que determina cada posição: você pode julgar a classificação e contestá-la.",
     "noResultsFiltered": "Nenhum deputado corresponde aos filtros selecionados.",
     "errorFetch": "Erro no cálculo do ranking",
-    "errorUnknown": "Erro desconhecido"
+    "errorUnknown": "Erro desconhecido",
+    "methodMore": "Método completo e pesos dos critérios",
+    "weightsButton": "Pesos",
+    "weightsPanelTitle": "Pesos dos critérios",
+    "weightsPanelDesc": "Os pesos oficiais são uma escolha editorial documentada. Modifique-os para ver como o ranking muda: os valores são relativos e normalizados automaticamente.",
+    "weightsReset": "Restaurar pesos oficiais",
+    "weightsCustom": "Pesos personalizados"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronologia",
@@ -886,7 +904,8 @@
     "dataBandCta": "Explore os dados",
     "footerData": "Dados abertos (RDF)",
     "tocData": "Dados",
-    "footerGrants": "subvenção"
+    "footerGrants": "subvenção",
+    "footerMethod": "Método"
   },
   "Privacy": {
     "title": "Privacidade e avisos legais",
@@ -969,7 +988,7 @@
     "fileVotesDesc": "Os votos dados por cada deputado em cada votação eletrônica da legislatura, um por um.",
     "zenodoCta": "Baixar do Zenodo",
     "archiveLabel": "Arquivo permanente:",
-    "licenseNote": "Os dados derivam dos dados abertos da Câmara dos Deputados (dati.camera.it, licença CC-BY) e do tesauro EuroVoc do Serviço das Publicações da UE. Os embeddings vetoriais, as conversas dos usuários e os resumos gerados por IA não fazem parte da exportação.",
+    "licenseNote": "Os dados derivam dos dados abertos da Câmara dos Deputados (dati.camera.it, licença CC BY-SA 4.0) e do tesauro EuroVoc do Serviço das Publicações da UE. Os embeddings vetoriais, as conversas dos usuários e os resumos gerados por IA não fazem parte da exportação.",
     "downloadCta": "Baixar o arquivo",
     "readyNote": "disponível",
     "heroGraphNote": "Nós e arestas reais do grafo — deputado {id}",
@@ -1082,5 +1101,45 @@
     "varianceShort": "var",
     "compassStable": "estável",
     "compassUnstable": "instável"
+  },
+  "Method": {
+    "backHome": "Voltar ao início",
+    "title": "Como funciona",
+    "tagline": "Método e escolhas editoriais",
+    "introTitle": "Em resumo",
+    "intro": "As respostas do ParliamentRAG são geradas por modelos de IA a partir das atas taquigráficas oficiais da Câmara dos Deputados italiana (XIX legislatura). Cada citação é verificada palavra por palavra na fonte; a seleção das fontes e a síntese são, por outro lado, escolhas do sistema, regidas pelos critérios descritos nesta página.",
+    "pipelineTitle": "Da pergunta à resposta",
+    "pipelineP1": "Cada pergunta passa por uma pipeline em etapas: a consulta é reescrita e expandida, o sistema recupera as intervenções pertinentes com busca semântica híbrida, calcula a autoridade de cada parlamentar sobre o tema, gera uma seção para cada grupo parlamentar e as integra numa única resposta. As citações são extraídas por posição do texto original: se uma citação não coincidir com a ata, é descartada.",
+    "pipelineP2": "O painel «Nos bastidores», disponível em cada resposta, mostra as fases, os tempos e as chamadas aos modelos que a produziram.",
+    "authorityTitle": "A pontuação de autoridade",
+    "authorityP1": "A autoridade de um parlamentar sobre um tema é uma soma ponderada de seis componentes, cada uma entre 0 e 1 e calculada em relação à pergunta feita: não existe uma pontuação global, apenas uma pontuação por tema.",
+    "thComponent": "Critério",
+    "thWeight": "Peso",
+    "wInterventions": "Intervenções no plenário",
+    "dInterventions": "Quanto, e quão recentemente, falou do tema no plenário",
+    "wCommittee": "Comissão",
+    "dCommittee": "Pertinência da sua comissão em relação ao tema",
+    "wActs": "Atos legislativos",
+    "dActs": "Atos assinados sobre o tema, ponderados por recência",
+    "wProfession": "Profissão",
+    "dProfession": "Afinidade entre percurso profissional e tema",
+    "wEducation": "Formação",
+    "dEducation": "Afinidade entre títulos académicos e tema",
+    "wRole": "Cargo institucional",
+    "dRole": "Cargos institucionais em curso",
+    "authorityP2": "Estes pesos são uma escolha editorial, não uma medida neutra: declaram quais sinais contam e quanto. Publicamo-los para que possam ser inspecionados e contestados; na página de <ranking>análise de autoridade</ranking> pode modificá-los e observar como o ranking muda.",
+    "citationsTitle": "Citações exatas, seleção declarada",
+    "citationsP1": "Cada citação é extraída por posição da ata taquigráfica e verificada palavra por palavra: o que aparece entre aspas foi realmente dito, e cada citação liga ao documento oficial.",
+    "citationsP2": "A exatidão não elimina a seleção: quais passagens citar, e em que enquadramento, é decisão do sistema. Uma citação autêntica pode ser parcial em relação à intervenção completa ou à posição global do orador. O contexto integral está sempre a um clique, na ata oficial.",
+    "limitsTitle": "Limites",
+    "limitsP1": "As respostas são conteúdos gerados e podem conter erros ou omissões: uma intervenção relevante pode não ser recuperada, uma posição pode ser resumida de forma incompleta. O ParliamentRAG é um projeto de investigação independente, não afiliado nem aprovado pela Câmara dos Deputados. Para qualquer uso que importe, verifique na ata oficial.",
+    "linksTitle": "Para aprofundar",
+    "linksIntro": "A arquitetura, os pesos e a avaliação do sistema estão documentados no artigo científico:",
+    "linkPaper": "Artigo (PDF)",
+    "linkArxiv": "arXiv",
+    "linkOrkg": "ORKG",
+    "compassTitle": "A bússola ideológica",
+    "compassP1": "Para cada pergunta o sistema gera dois eixos temáticos e pede a um modelo de linguagem que classifique cada intervenção recuperada: uma posição entre −1 e +1 em cada eixo, ou nenhuma posição. A posição de um grupo é a média apenas das suas intervenções que tomam posição nesse eixo, atenuada para o centro quando são poucas: uma posição nítida ganha-se com os números, não com três frases.",
+    "compassP2": "Duas cautelas de leitura. As coordenadas de um grupo podem assentar em conjuntos diferentes de intervenções para os dois eixos, e o número de intervenções por trás de cada coordenada é indicado no tooltip. Os pontos no centro não tomam posição: a bússola descreve o que os grupos defenderam no plenário sobre esta pergunta, não certifica o seu posicionamento político."
   }
 }

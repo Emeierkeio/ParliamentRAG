@@ -22,8 +22,8 @@
     "originalLabel": "Original",
     "chamberTitle": "Abgeordnetenkammer — XIX. Legislaturperiode",
     "expertsTitle": "Nach Autorität ausgewählte Quellen",
-    "expertsSectionDesc": "Diese Parlamentarier wurden als die kompetentesten Stimmen zum Thema identifiziert und als vorrangige Quellen für die Erstellung der Antwort verwendet.",
-    "expertsTooltip": "Vor dem Abruf der Zitate identifiziert das System die maßgeblichsten Parlamentarier zum Thema. Die Autorität wird anhand von 6 Faktoren berechnet: Redebeiträge im Plenum, Gesetzgebungsakte, Ausschussmitgliedschaft, Beruf, Bildungsabschluss und institutionelle Rolle.",
+    "expertsSectionDesc": "Diese Abgeordneten wurden als die kompetentesten Stimmen zum Thema identifiziert und als vorrangige Quellen für die Antwort genutzt: Die Autorität entscheidet, wer für jede Fraktion zitiert wird, nicht wer recht hat. Der Wert kombiniert sechs Kriterien mit offengelegten Gewichten: Lesen Sie, <method>wie es funktioniert</method>, oder <ranking>experimentieren Sie mit den Gewichten in der Autoritätsanalyse</ranking>.",
+    "expertsTooltip": "Vor dem Abruf der Zitate identifiziert das System die Abgeordneten mit der höchsten Autorität zum Thema: Die Autorität dient dazu, auszuwählen, wer für jede Fraktion zitiert wird, nicht deren Positionen zu bewerten. Sie wird aus 6 Faktoren mit offengelegten Gewichten berechnet: Redebeiträge im Plenum, Gesetzgebungsakte, Ausschuss, Beruf, Ausbildung und institutionelle Rolle.",
     "citationsTitle": "Zitate",
     "citationsTooltip": "Parlamentarische Redebeiträge, die per hybrider semantischer Suche (Vektor + Volltext) aus der Datenbank abgerufen wurden, von den nach Autorität zum Thema ausgewählten Parlamentariern.",
     "balanceTitle": "Ausgewogenheit",
@@ -47,7 +47,9 @@
     "deputiesSection": "Abgeordnete in diesem Abschnitt",
     "altro": "Sonstige",
     "traceTitle": "Hinter den Kulissen",
-    "traceTooltip": "Phasen, Zeiten und Modellaufrufe hinter dieser Antwort, gemessen auf dem Server: vom Evidenz-Abruf bis zur Zitatprüfung."
+    "traceTooltip": "Phasen, Zeiten und Modellaufrufe hinter dieser Antwort, gemessen auf dem Server: vom Evidenz-Abruf bis zur Zitatprüfung.",
+    "aiDisclaimer": "KI-generierte Antwort. Die Zitate sind Wort für Wort am offiziellen Protokoll überprüft; die Auswahl der Passagen und die Synthese stammen vom System und können Kontext auslassen.",
+    "aiDisclaimerLink": "So funktioniert es"
   },
   "ProgressIndicator": {
     "connecting": "Verbindung wird hergestellt...",
@@ -240,7 +242,15 @@
     "noTitle": "Ohne Titel",
     "primarySigner": "Erstunterzeichner",
     "coSigner": "Mitunterzeichner",
-    "topic": "Thema"
+    "topic": "Thema",
+    "weightLabel": "Gewicht",
+    "weightsNote": "Die Gewichte der sechs Kriterien sind eine redaktionelle Entscheidung des Systems, für alle Abgeordneten identisch und öffentlich dokumentiert.",
+    "weightsLink": "So funktioniert es",
+    "simulateTitle": "Mit den Gewichten experimentieren",
+    "simulateDesc": "Verschieben Sie die Gewichte und beobachten Sie, wie sich der Autoritätswert zu diesem Thema ändern würde. Die Werte sind relativ und werden automatisch normalisiert.",
+    "simulateOfficialLabel": "Offiziell",
+    "simulateResult": "Mit Ihren Gewichten",
+    "simulateReset": "Offizielle Gewichte wiederherstellen"
   },
   "CompassCard": {
     "meaning": "Bedeutung:",
@@ -260,8 +270,10 @@
     "stanceLow": "niedrig = wenige Redebeiträge beziehen auf diesen Achsen Stellung",
     "stanceHigh": "hoch = Debatte stark entlang dieser Achsen gespalten",
     "weakStanceWarning": "Nur wenige Redebeiträge beziehen auf diesen Achsen klar Stellung: Die Gruppenpositionen sind wenig verlässlich.",
-    "stanceDisclaimer": "Positionen werden automatisch von einem Sprachmodell geschätzt, Beitrag für Beitrag, anhand der für diese Frage abgerufenen Redebeiträge: Sie sind Richtwerte und zertifizieren nicht die politische Positionierung der Fraktionen. Punkte in der Mitte beziehen keine Stellung.",
-    "disclaimer": "Der Kompass wird automatisch aus den für diese Frage abgerufenen Plenarreden erzeugt: Er beschreibt die Sprache der Reden und zertifiziert nicht die politische Positionierung der Fraktionen. Andere Fragen können andere Ergebnisse liefern."
+    "stanceDisclaimer": "Positionen automatisch von einem Sprachmodell geschätzt, Redebeitrag für Redebeitrag, auf den für diese Frage abgerufenen Plenarreden. Die Position einer Fraktion ist der Mittelwert nur der Redebeiträge, die auf jeder Achse Stellung beziehen, zur Mitte hin abgeschwächt, wenn es wenige sind: Der Tooltip zeigt, auf wie vielen Redebeiträgen jede Koordinate beruht. Punkte in der Mitte beziehen keine Stellung; nichts hier zertifiziert die politische Verortung der Fraktionen.",
+    "disclaimer": "Der Kompass wird automatisch aus den für diese Frage abgerufenen Plenarreden erzeugt: Er beschreibt die Sprache der Reden und zertifiziert nicht die politische Positionierung der Fraktionen. Andere Fragen können andere Ergebnisse liefern.",
+    "positionBasis": "Position basiert auf",
+    "methodLink": "So funktioniert es"
   },
   "TopicStatsModal": {
     "title": "Statistikdetails",
@@ -665,7 +677,13 @@
     "methodP2": "Lesen Sie ihn als interpretierbare Schätzung der Themenexpertise, nicht als objektives Maß für Autorität. Die Aufschlüsselung in jeder Zeile zeigt, was jede Position bestimmt: Sie können das Ranking beurteilen und hinterfragen.",
     "noResultsFiltered": "Keine Abgeordneten entsprechen den ausgewählten Filtern.",
     "errorFetch": "Fehler bei der Berechnung des Rankings",
-    "errorUnknown": "Unbekannter Fehler"
+    "errorUnknown": "Unbekannter Fehler",
+    "methodMore": "Vollständige Methode und Kriteriengewichte",
+    "weightsButton": "Gewichte",
+    "weightsPanelTitle": "Kriteriengewichte",
+    "weightsPanelDesc": "Die offiziellen Gewichte sind eine dokumentierte redaktionelle Entscheidung. Ändern Sie sie, um zu sehen, wie sich das Ranking verschiebt: Die Werte sind relativ und werden automatisch normalisiert.",
+    "weightsReset": "Offizielle Gewichte wiederherstellen",
+    "weightsCustom": "Eigene Gewichte"
   },
   "Transcript": {
     "breadcrumbTimeline": "Chronik",
@@ -886,7 +904,8 @@
     "dataBandCta": "Daten erkunden",
     "footerData": "Offene Daten (RDF)",
     "tocData": "Daten",
-    "footerGrants": "Finanzhilfe"
+    "footerGrants": "Finanzhilfe",
+    "footerMethod": "Methode"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",
@@ -969,7 +988,7 @@
     "fileVotesDesc": "Die Stimmen jedes Abgeordneten in jeder elektronischen Abstimmung der Legislaturperiode, einzeln erfasst.",
     "zenodoCta": "Von Zenodo herunterladen",
     "archiveLabel": "Langzeitarchiv:",
-    "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, CC-BY-Lizenz) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports.",
+    "licenseNote": "Die Daten stammen aus den offenen Daten der Abgeordnetenkammer (dati.camera.it, Lizenz CC BY-SA 4.0) und dem EuroVoc-Thesaurus des EU-Publikationsamts. Vektor-Embeddings, Nutzerkonversationen und KI-generierte Zusammenfassungen sind nicht Teil des Exports.",
     "downloadCta": "Datei herunterladen",
     "readyNote": "verfügbar",
     "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}",
@@ -1082,5 +1101,45 @@
     "varianceShort": "Var",
     "compassStable": "stabil",
     "compassUnstable": "instabil"
+  },
+  "Method": {
+    "backHome": "Zurück zur Startseite",
+    "title": "So funktioniert es",
+    "tagline": "Methode und redaktionelle Entscheidungen",
+    "introTitle": "Kurz gefasst",
+    "intro": "Die Antworten von ParliamentRAG werden von KI-Modellen aus den offiziellen Stenografieprotokollen der italienischen Abgeordnetenkammer (19. Legislaturperiode) generiert. Jedes Zitat wird Wort für Wort an der Quelle überprüft; die Auswahl der Quellen und die Synthese sind dagegen Entscheidungen des Systems, die den auf dieser Seite beschriebenen Kriterien folgen.",
+    "pipelineTitle": "Von der Frage zur Antwort",
+    "pipelineP1": "Jede Frage durchläuft eine mehrstufige Pipeline: Die Anfrage wird umgeschrieben und erweitert, das System ruft relevante Redebeiträge über hybride semantische Suche ab, berechnet die Autorität jedes Abgeordneten zum Thema, erzeugt einen Abschnitt pro Fraktion und integriert sie zu einer einzigen Antwort. Zitate werden positionsgenau aus dem Originaltext extrahiert: Stimmt ein Zitat nicht mit dem Protokoll überein, wird es verworfen.",
+    "pipelineP2": "Das Panel „Hinter den Kulissen“, das bei jeder Antwort verfügbar ist, zeigt Phasen, Zeiten und Modellaufrufe, die sie erzeugt haben.",
+    "authorityTitle": "Der Autoritätswert",
+    "authorityP1": "Die Autorität eines Abgeordneten zu einem Thema ist eine gewichtete Summe aus sechs Komponenten, jede zwischen 0 und 1 und bezogen auf die gestellte Frage berechnet: Es gibt keinen globalen Wert, nur einen Wert pro Thema.",
+    "thComponent": "Kriterium",
+    "thWeight": "Gewicht",
+    "wInterventions": "Redebeiträge im Plenum",
+    "dInterventions": "Wie viel und wie aktuell er oder sie im Plenum zum Thema gesprochen hat",
+    "wCommittee": "Ausschuss",
+    "dCommittee": "Relevanz des eigenen Ausschusses für das Thema",
+    "wActs": "Gesetzgebungsakte",
+    "dActs": "Zum Thema unterzeichnete Akte, nach Aktualität gewichtet",
+    "wProfession": "Beruf",
+    "dProfession": "Nähe zwischen beruflichem Hintergrund und Thema",
+    "wEducation": "Ausbildung",
+    "dEducation": "Nähe zwischen Bildungsabschlüssen und Thema",
+    "wRole": "Institutionelle Rolle",
+    "dRole": "Laufende institutionelle Ämter",
+    "authorityP2": "Diese Gewichte sind eine redaktionelle Entscheidung, kein neutrales Maß: Sie legen offen, welche Signale zählen und wie stark. Wir veröffentlichen sie, damit sie geprüft und angefochten werden können; auf der Seite zur <ranking>Autoritätsanalyse</ranking> können Sie sie ändern und beobachten, wie sich das Ranking verschiebt.",
+    "citationsTitle": "Exakte Zitate, deklarierte Auswahl",
+    "citationsP1": "Jedes Zitat wird positionsgenau aus dem Stenografieprotokoll extrahiert und Wort für Wort überprüft: Was in Anführungszeichen steht, wurde tatsächlich gesagt, und jedes Zitat verlinkt auf das offizielle Dokument.",
+    "citationsP2": "Exaktheit beseitigt die Auswahl nicht: Welche Passagen zitiert werden, und in welchem Rahmen, entscheidet das System. Ein authentisches Zitat kann gegenüber dem vollständigen Redebeitrag oder der Gesamtposition des Redners unvollständig bleiben. Der vollständige Kontext ist im offiziellen Protokoll immer nur einen Klick entfernt.",
+    "limitsTitle": "Grenzen",
+    "limitsP1": "Die Antworten sind generierte Inhalte und können Fehler oder Auslassungen enthalten: Ein relevanter Redebeitrag wird womöglich nicht gefunden, eine Position unvollständig zusammengefasst. ParliamentRAG ist ein unabhängiges Forschungsprojekt, weder mit der Abgeordnetenkammer verbunden noch von ihr gebilligt. Für alles, worauf es ankommt, prüfen Sie das offizielle Protokoll.",
+    "linksTitle": "Zum Vertiefen",
+    "linksIntro": "Architektur, Gewichte und Evaluation des Systems sind im wissenschaftlichen Paper dokumentiert:",
+    "linkPaper": "Paper (PDF)",
+    "linkArxiv": "arXiv",
+    "linkOrkg": "ORKG",
+    "compassTitle": "Der ideologische Kompass",
+    "compassP1": "Für jede Frage erzeugt das System zwei thematische Achsen und lässt ein Sprachmodell jeden abgerufenen Redebeitrag klassifizieren: eine Position zwischen −1 und +1 auf jeder Achse oder keine Position. Die Position einer Fraktion ist der Mittelwert nur ihrer Redebeiträge, die auf dieser Achse Stellung beziehen, zur Mitte hin abgeschwächt, wenn es wenige sind: Eine klare Position muss mit Zahlen verdient werden, nicht mit drei Sätzen.",
+    "compassP2": "Zwei Lesehinweise. Die Koordinaten einer Fraktion können für die beiden Achsen auf unterschiedlichen Mengen von Redebeiträgen beruhen; die Zahl der Redebeiträge hinter jeder Koordinate steht im Tooltip. Punkte in der Mitte beziehen keine Stellung: Der Kompass beschreibt, was die Fraktionen im Plenum zu dieser Frage argumentiert haben, er zertifiziert nicht ihre politische Verortung."
   }
 }
