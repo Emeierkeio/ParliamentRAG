@@ -22,8 +22,8 @@
     "originalLabel": "Original",
     "chamberTitle": "Chambre des députés — XIXe législature",
     "expertsTitle": "Sources sélectionnées par autorité",
-    "expertsSectionDesc": "Ces parlementaires ont été identifiés comme les voix les plus compétentes sur le sujet et utilisés comme sources prioritaires pour construire la réponse.",
-    "expertsTooltip": "Avant de récupérer les citations, le système identifie les parlementaires qui font le plus autorité sur le sujet. L'autorité est calculée sur 6 facteurs : interventions en séance, actes législatifs, commission d'appartenance, profession, formation et rôle institutionnel.",
+    "expertsSectionDesc": "Ces parlementaires ont été identifiés comme les voix les plus compétentes sur le sujet et utilisés comme sources prioritaires pour construire la réponse : l'autorité décide qui est cité pour chaque groupe, pas qui a raison. Le score combine six critères aux poids déclarés : lisez <method>comment ça marche</method> ou <ranking>expérimentez avec les poids dans l'analyse de l'autorité</ranking>.",
+    "expertsTooltip": "Avant de récupérer les citations, le système identifie les parlementaires les plus autorisés sur le sujet : l'autorité sert à choisir qui citer pour chaque groupe, pas à juger leurs positions. Elle est calculée sur 6 facteurs aux poids déclarés : interventions en séance, actes législatifs, commission, profession, formation et rôle institutionnel.",
     "citationsTitle": "Citations",
     "citationsTooltip": "Interventions parlementaires récupérées dans la base de données par recherche sémantique hybride (vectorielle + plein texte), provenant des parlementaires sélectionnés pour leur autorité sur le sujet.",
     "balanceTitle": "Équilibre",
@@ -47,7 +47,9 @@
     "deputiesSection": "Députés dans cette section",
     "altro": "Autre",
     "traceTitle": "Dans les coulisses",
-    "traceTooltip": "Phases, temps et appels aux modèles qui ont produit cette réponse, mesurés sur le serveur : de la récupération des preuves à la vérification des citations."
+    "traceTooltip": "Phases, temps et appels aux modèles qui ont produit cette réponse, mesurés sur le serveur : de la récupération des preuves à la vérification des citations.",
+    "aiDisclaimer": "Réponse générée par IA. Les citations sont vérifiées mot à mot sur le compte rendu officiel ; le choix des passages et la synthèse relèvent du système et peuvent omettre du contexte.",
+    "aiDisclaimerLink": "Comment ça marche"
   },
   "ProgressIndicator": {
     "connecting": "Connexion...",
@@ -240,7 +242,15 @@
     "noTitle": "Sans titre",
     "primarySigner": "1er signataire",
     "coSigner": "Cosignataire",
-    "topic": "Sujet"
+    "topic": "Sujet",
+    "weightLabel": "poids",
+    "weightsNote": "Les poids des six critères sont un choix éditorial du système, identique pour tous les députés et documenté publiquement.",
+    "weightsLink": "Comment ça marche",
+    "simulateTitle": "Expérimentez avec les poids",
+    "simulateDesc": "Déplacez les poids et observez comment le score d'autorité sur ce sujet changerait. Les valeurs sont relatives et normalisées automatiquement.",
+    "simulateOfficialLabel": "Officiel",
+    "simulateResult": "Avec vos poids",
+    "simulateReset": "Rétablir les poids officiels"
   },
   "CompassCard": {
     "meaning": "Signification :",
@@ -260,8 +270,10 @@
     "stanceLow": "faible = peu d'interventions prennent parti sur ces axes",
     "stanceHigh": "élevé = débat fortement clivé le long de ces axes",
     "weakStanceWarning": "Peu d'interventions prennent une position claire sur ces axes : les positions des groupes sont peu fiables.",
-    "stanceDisclaimer": "Positions estimées automatiquement par un modèle de langage, intervention par intervention, à partir des interventions en séance récupérées pour cette question : elles sont indicatives et ne certifient pas le positionnement politique des groupes. Les points au centre ne prennent pas position.",
-    "disclaimer": "Boussole générée automatiquement à partir des interventions en séance récupérées pour cette question : elle décrit le langage des discours et ne certifie pas le positionnement politique des groupes. Des questions différentes peuvent donner des résultats différents."
+    "stanceDisclaimer": "Positions estimées automatiquement par un modèle de langage, intervention par intervention, sur les interventions récupérées pour cette question. La position d'un groupe est la moyenne des seules interventions qui prennent position sur chaque axe, atténuée vers le centre quand elles sont peu nombreuses : l'infobulle indique sur combien d'interventions repose chaque coordonnée. Les points au centre ne prennent pas position ; rien ici ne certifie le positionnement politique des groupes.",
+    "disclaimer": "Boussole générée automatiquement à partir des interventions en séance récupérées pour cette question : elle décrit le langage des discours et ne certifie pas le positionnement politique des groupes. Des questions différentes peuvent donner des résultats différents.",
+    "positionBasis": "Position fondée sur",
+    "methodLink": "Comment ça marche"
   },
   "TopicStatsModal": {
     "title": "Détail des statistiques",
@@ -665,7 +677,13 @@
     "methodP2": "Lisez-le comme une estimation interprétable de l'expertise sur le thème, pas comme une mesure objective d'autorité. La décomposition sur chaque ligne montre ce qui détermine chaque position : vous pouvez juger le classement et le contester.",
     "noResultsFiltered": "Aucun député ne correspond aux filtres sélectionnés.",
     "errorFetch": "Erreur lors du calcul du classement",
-    "errorUnknown": "Erreur inconnue"
+    "errorUnknown": "Erreur inconnue",
+    "methodMore": "Méthode complète et poids des critères",
+    "weightsButton": "Poids",
+    "weightsPanelTitle": "Poids des critères",
+    "weightsPanelDesc": "Les poids officiels sont un choix éditorial documenté. Modifiez-les pour voir comment le classement change : les valeurs sont relatives et normalisées automatiquement.",
+    "weightsReset": "Rétablir les poids officiels",
+    "weightsCustom": "Poids personnalisés"
   },
   "Transcript": {
     "breadcrumbTimeline": "Chronologie",
@@ -886,7 +904,8 @@
     "dataBandCta": "Explorer les données",
     "footerData": "Données ouvertes (RDF)",
     "tocData": "Données",
-    "footerGrants": "subvention"
+    "footerGrants": "subvention",
+    "footerMethod": "Méthode"
   },
   "Privacy": {
     "title": "Confidentialité et mentions légales",
@@ -969,7 +988,7 @@
     "fileVotesDesc": "Les votes exprimés par chaque député dans chaque scrutin électronique de la législature, un par un.",
     "zenodoCta": "Télécharger sur Zenodo",
     "archiveLabel": "Archive pérenne :",
-    "licenseNote": "Les données proviennent des données ouvertes de la Chambre des députés (dati.camera.it, licence CC-BY) et du thésaurus EuroVoc de l'Office des publications de l'UE. Les embeddings vectoriels, les conversations des utilisateurs et les résumés générés par l'IA ne font pas partie de l'export.",
+    "licenseNote": "Les données proviennent des données ouvertes de la Chambre des députés (dati.camera.it, licence CC BY-SA 4.0) et du thésaurus EuroVoc de l'Office des publications de l'UE. Les embeddings vectoriels, les conversations des utilisateurs et les résumés générés par l'IA ne font pas partie de l'export.",
     "downloadCta": "Télécharger le fichier",
     "readyNote": "disponible",
     "heroGraphNote": "Nœuds et arcs réels du graphe — député {id}",
@@ -1082,5 +1101,45 @@
     "varianceShort": "var",
     "compassStable": "stable",
     "compassUnstable": "instable"
+  },
+  "Method": {
+    "backHome": "Retour à l'accueil",
+    "title": "Comment ça marche",
+    "tagline": "Méthode et choix éditoriaux",
+    "introTitle": "En bref",
+    "intro": "Les réponses de ParliamentRAG sont générées par des modèles d'IA à partir des comptes rendus officiels de la Chambre des députés italienne (XIXe législature). Chaque citation est vérifiée mot à mot sur la source ; la sélection des sources et la synthèse sont en revanche des choix du système, régis par les critères décrits sur cette page.",
+    "pipelineTitle": "De la question à la réponse",
+    "pipelineP1": "Chaque question traverse un pipeline par étapes : la requête est réécrite et enrichie, le système récupère les interventions pertinentes par recherche sémantique hybride, calcule l'autorité de chaque parlementaire sur le sujet, génère une section par groupe parlementaire puis les intègre en une seule réponse. Les citations sont extraites par position du texte original : si une citation ne coïncide pas avec le compte rendu, elle est écartée.",
+    "pipelineP2": "Le panneau « Dans les coulisses », disponible sur chaque réponse, montre les étapes, les temps et les appels aux modèles qui l'ont produite.",
+    "authorityTitle": "Le score d'autorité",
+    "authorityP1": "L'autorité d'un parlementaire sur un sujet est une somme pondérée de six composantes, chacune entre 0 et 1 et calculée par rapport à la question posée : il n'existe pas de score global, seulement un score par sujet.",
+    "thComponent": "Critère",
+    "thWeight": "Poids",
+    "wInterventions": "Interventions en séance",
+    "dInterventions": "Combien, et depuis quand, il ou elle a parlé du sujet dans l'hémicycle",
+    "wCommittee": "Commission",
+    "dCommittee": "Pertinence de sa commission par rapport au sujet",
+    "wActs": "Actes législatifs",
+    "dActs": "Actes signés sur le sujet, pondérés par récence",
+    "wProfession": "Profession",
+    "dProfession": "Affinité entre parcours professionnel et sujet",
+    "wEducation": "Formation",
+    "dEducation": "Affinité entre titres d'études et sujet",
+    "wRole": "Rôle institutionnel",
+    "dRole": "Fonctions institutionnelles en cours",
+    "authorityP2": "Ces poids sont un choix éditorial, pas une mesure neutre : ils déclarent quels signaux comptent et combien. Nous les publions pour qu'ils puissent être inspectés et contestés ; sur la page d'<ranking>analyse de l'autorité</ranking>, vous pouvez les modifier et observer comment le classement change.",
+    "citationsTitle": "Citations exactes, sélection déclarée",
+    "citationsP1": "Chaque citation est extraite par position du compte rendu et vérifiée mot à mot : ce qui apparaît entre guillemets a réellement été dit, et chaque citation renvoie au document officiel.",
+    "citationsP2": "L'exactitude ne supprime pas la sélection : quels passages citer, et dans quel cadre, c'est le système qui en décide. Une citation authentique peut rester partielle par rapport à l'intervention complète ou à la position d'ensemble de l'orateur. Le contexte intégral est toujours à un clic, dans le compte rendu officiel.",
+    "limitsTitle": "Limites",
+    "limitsP1": "Les réponses sont des contenus générés et peuvent contenir des erreurs ou des omissions : une intervention pertinente peut ne pas être récupérée, une position peut être résumée de façon incomplète. ParliamentRAG est un projet de recherche indépendant, ni affilié ni approuvé par la Chambre des députés. Pour tout usage qui compte, vérifiez sur le compte rendu officiel.",
+    "linksTitle": "Pour aller plus loin",
+    "linksIntro": "L'architecture, les poids et l'évaluation du système sont documentés dans l'article scientifique :",
+    "linkPaper": "Article (PDF)",
+    "linkArxiv": "arXiv",
+    "linkOrkg": "ORKG",
+    "compassTitle": "La boussole idéologique",
+    "compassP1": "Pour chaque question, le système génère deux axes thématiques et demande à un modèle de langage de classifier chaque intervention récupérée : une position entre −1 et +1 sur chaque axe, ou aucune position. La position d'un groupe est la moyenne de ses seules interventions qui prennent position sur cet axe, atténuée vers le centre quand elles sont peu nombreuses : une position nette se gagne avec les nombres, pas avec trois phrases.",
+    "compassP2": "Deux précautions de lecture. Les coordonnées d'un groupe peuvent reposer sur des ensembles différents d'interventions pour les deux axes, et le nombre d'interventions derrière chaque coordonnée est indiqué dans l'infobulle. Les points au centre ne prennent pas position : la boussole décrit ce que les groupes ont soutenu dans l'hémicycle sur cette question, elle ne certifie pas leur positionnement politique."
   }
 }

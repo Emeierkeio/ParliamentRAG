@@ -22,8 +22,8 @@
     "originalLabel": "Original",
     "chamberTitle": "Chamber of Deputies · 19th Legislature",
     "expertsTitle": "Sources selected by authority",
-    "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response.",
-    "expertsTooltip": "Before retrieving citations, the system identifies the most authoritative parliamentarians on the topic. Authority is calculated on 6 factors: floor speeches, legislative acts, committee membership, profession, education and institutional role.",
+    "expertsSectionDesc": "These parliamentarians were identified as the most competent voices on the topic and used as priority sources to build the response: authority decides who gets quoted for each group, not who is right. The score combines six criteria with declared weights: read <method>how it works</method> or <ranking>experiment with the weights in the authority analysis</ranking>.",
+    "expertsTooltip": "Before retrieving citations, the system identifies the most authoritative parliamentarians on the topic: authority is used to choose who gets quoted for each group, not to judge their positions. It is calculated on 6 factors with declared weights: floor speeches, legislative acts, committee membership, profession, education and institutional role.",
     "citationsTitle": "Citations",
     "citationsTooltip": "Parliamentary speeches retrieved from the database via hybrid semantic search (vector + full-text), from parliamentarians selected for authority on the topic.",
     "balanceTitle": "Balance",
@@ -47,7 +47,9 @@
     "deputiesSection": "Deputies in this section",
     "altro": "Other",
     "traceTitle": "Behind the scenes",
-    "traceTooltip": "Phases, timings and model calls behind this answer, measured on the server: from evidence retrieval to citation checking."
+    "traceTooltip": "Phases, timings and model calls behind this answer, measured on the server: from evidence retrieval to citation checking.",
+    "aiDisclaimer": "AI-generated answer. Quotations are verified word for word against the official record; the choice of passages and the synthesis are the system's and may omit context.",
+    "aiDisclaimerLink": "How it works"
   },
   "ProgressIndicator": {
     "connecting": "Connecting...",
@@ -241,7 +243,15 @@
     "noTitle": "Untitled",
     "primarySigner": "Primary signatory",
     "coSigner": "Co-signatory",
-    "topic": "Topic"
+    "topic": "Topic",
+    "weightLabel": "weight",
+    "weightsNote": "The weights of the six criteria are an editorial choice of the system, identical for all deputies and publicly documented.",
+    "weightsLink": "How it works",
+    "simulateTitle": "Experiment with the weights",
+    "simulateDesc": "Move the weights and watch how the authority score on this topic would change. Values are relative and normalised automatically.",
+    "simulateOfficialLabel": "Official",
+    "simulateResult": "With your weights",
+    "simulateReset": "Restore official weights"
   },
   "CompassCard": {
     "meaning": "Meaning:",
@@ -261,8 +271,10 @@
     "stanceLow": "low = few speeches take sides on these axes",
     "stanceHigh": "high = debate strongly divided along these axes",
     "weakStanceWarning": "Few speeches take a clear stance on these axes: group positions are unreliable.",
-    "stanceDisclaimer": "Positions estimated automatically by a language model, speech by speech, from the floor speeches retrieved for this question: they are indicative and do not certify the political positioning of the groups. Points at the center take no stance.",
-    "disclaimer": "Compass generated automatically from the floor speeches retrieved for this question: it describes the language of the speeches and does not certify the political positioning of the groups. Different questions may yield different results."
+    "stanceDisclaimer": "Positions estimated automatically by a language model, speech by speech, on the floor speeches retrieved for this question. A group's position is the mean of only the speeches that take a stance on each axis, attenuated toward the centre when they are few: the tooltip shows how many speeches each coordinate rests on. Points at the centre take no position; nothing here certifies the groups' political placement.",
+    "disclaimer": "Compass generated automatically from the floor speeches retrieved for this question: it describes the language of the speeches and does not certify the political positioning of the groups. Different questions may yield different results.",
+    "positionBasis": "Position based on",
+    "methodLink": "How it works"
   },
   "TopicStatsModal": {
     "title": "Statistics Detail",
@@ -709,7 +721,13 @@
     "methodP2": "Read it as an interpretable estimate of topic expertise, not as an objective measure of authority. The breakdown on each row shows what drives every position, so you can judge the ranking and challenge it.",
     "noResultsFiltered": "No deputies match the selected filters.",
     "errorFetch": "Error computing the ranking",
-    "errorUnknown": "Unknown error"
+    "errorUnknown": "Unknown error",
+    "methodMore": "Full method and criteria weights",
+    "weightsButton": "Weights",
+    "weightsPanelTitle": "Criteria weights",
+    "weightsPanelDesc": "The official weights are a documented editorial choice. Change them to see how the ranking shifts: values are relative and normalised automatically.",
+    "weightsReset": "Restore official weights",
+    "weightsCustom": "Custom weights"
   },
   "Transcript": {
     "breadcrumbTimeline": "Timeline",
@@ -930,7 +948,8 @@
     "dataBandCta": "Explore the data",
     "footerData": "Open data (RDF)",
     "tocData": "Data",
-    "footerGrants": "grant"
+    "footerGrants": "grant",
+    "footerMethod": "Method"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",
@@ -1013,7 +1032,7 @@
     "fileVotesDesc": "The votes cast by each deputy in every electronic ballot of the legislature, one by one.",
     "zenodoCta": "Download from Zenodo",
     "archiveLabel": "Long-term archive:",
-    "licenseNote": "The data derives from the open data of the Chamber of Deputies (dati.camera.it, CC-BY licence) and the EuroVoc thesaurus of the EU Publications Office. Vector embeddings, user conversations and AI-generated summaries are not part of the export.",
+    "licenseNote": "The data derives from the open data of the Chamber of Deputies (dati.camera.it, CC BY-SA 4.0 licence) and the EuroVoc thesaurus of the EU Publications Office. Vector embeddings, user conversations and AI-generated summaries are not part of the export.",
     "downloadCta": "Download file",
     "readyNote": "available",
     "heroGraphNote": "Real nodes and edges from the graph — deputy {id}",
@@ -1126,5 +1145,45 @@
     "varianceShort": "var",
     "compassStable": "stable",
     "compassUnstable": "unstable"
+  },
+  "Method": {
+    "backHome": "Back to home",
+    "title": "How it works",
+    "tagline": "Method and editorial choices",
+    "introTitle": "In short",
+    "intro": "ParliamentRAG's answers are generated by AI models from the official verbatim records of the Italian Chamber of Deputies (19th legislature). Every quotation is verified word for word against the source; the selection of sources and the synthesis are choices made by the system, governed by the criteria described on this page.",
+    "pipelineTitle": "From question to answer",
+    "pipelineP1": "Each question goes through a staged pipeline: the query is rewritten and expanded, the system retrieves relevant speeches through hybrid semantic search, computes each MP's authority on the topic, generates a section for every parliamentary group and integrates them into a single answer. Quotations are extracted by position from the original text: if a quotation does not match the record, it is discarded.",
+    "pipelineP2": "The “Behind the scenes” panel available on every answer shows the stages, timings and model calls that produced it.",
+    "authorityTitle": "The authority score",
+    "authorityP1": "An MP's authority on a topic is a weighted sum of six components, each between 0 and 1 and computed against the question asked: there is no global score, only a score per topic.",
+    "thComponent": "Criterion",
+    "thWeight": "Weight",
+    "wInterventions": "Floor speeches",
+    "dInterventions": "How much, and how recently, they spoke about the topic in the Chamber",
+    "wCommittee": "Committee",
+    "dCommittee": "Relevance of their committee to the topic",
+    "wActs": "Legislative acts",
+    "dActs": "Acts signed on the topic, weighted by recency",
+    "wProfession": "Profession",
+    "dProfession": "Affinity between professional background and topic",
+    "wEducation": "Education",
+    "dEducation": "Affinity between educational background and topic",
+    "wRole": "Institutional role",
+    "dRole": "Current institutional offices",
+    "authorityP2": "These weights are an editorial choice, not a neutral measure: they declare which signals count and by how much. We publish them so they can be inspected and challenged; on the <ranking>authority analysis</ranking> page you can change them and watch the ranking shift.",
+    "citationsTitle": "Exact quotations, declared selection",
+    "citationsP1": "Every quotation is extracted by position from the verbatim record and verified word for word: what appears in quotation marks was actually said, and each quotation links to the official document.",
+    "citationsP2": "Exactness does not remove selection: which passages to quote, and in what frame, is the system's decision. An authentic quotation can still be partial with respect to the full speech or the speaker's overall position. The full context is always one click away, in the official record.",
+    "limitsTitle": "Limitations",
+    "limitsP1": "Answers are generated content and can contain errors or omissions: a relevant speech may not be retrieved, a position may be summarised incompletely. ParliamentRAG is an independent research project, neither affiliated with nor endorsed by the Chamber of Deputies. For anything that matters, check the official record.",
+    "linksTitle": "Going deeper",
+    "linksIntro": "The system's architecture, weights and evaluation are documented in the scientific paper:",
+    "linkPaper": "Paper (PDF)",
+    "linkArxiv": "arXiv",
+    "linkOrkg": "ORKG",
+    "compassTitle": "The ideological compass",
+    "compassP1": "For each question the system generates two thematic axes and asks a language model to classify every retrieved speech: a position between −1 and +1 on each axis, or no position at all. A group's position is the mean of only its speeches that take a stance on that axis, attenuated toward the centre when they are few: a sharp position has to be earned with numbers, not with three sentences.",
+    "compassP2": "Two reading cautions. A group's coordinates can rest on different sets of speeches for the two axes, and the number of speeches behind each coordinate is shown in the tooltip. Points at the centre take no position: the compass describes what the groups argued in the Chamber on this question, it does not certify their political placement."
   }
 }

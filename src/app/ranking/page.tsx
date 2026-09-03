@@ -14,6 +14,7 @@ import type { Expert } from "@/types";
 import {
   Search,
   ArrowUpDown,
+  SlidersHorizontal,
   X,
   Users,
   ChevronDown,
@@ -27,6 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import {
   Popover,
   PopoverContent,
@@ -50,6 +52,19 @@ type SortKey =
   | "role";
 
 type CoalitionFilter = "all" | "majority" | "opposition";
+
+type ComponentKey = Exclude<SortKey, "authority_score">;
+
+// Pesi ufficiali: mirror di backend/config/default.yaml → authority.weights
+// (speeches nel breakdown corrisponde a "interventions" nel config)
+const DEFAULT_WEIGHTS: Record<ComponentKey, number> = {
+  speeches: 0.25,
+  committee: 0.25,
+  acts: 0.2,
+  profession: 0.15,
+  education: 0.1,
+  role: 0.05,
+};
 
 const GROUPS: { value: string; label: string; shortLabel: string }[] = [
   { value: "FRATELLI D'ITALIA", label: "Fratelli d'Italia", shortLabel: "FdI" },
@@ -89,6 +104,7 @@ export default function RankingPage() {
   const [committeeSearch, setCommitteeSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("authority_score");
   const [sortOpen, setSortOpen] = useState(false);
+  const [weights, setWeights] = useState<Record<ComponentKey, number>>(DEFAULT_WEIGHTS);
   const [groupsOpen, setGroupsOpen] = useState(false);
   const [groupSearch, setGroupSearch] = useState("");
   const [committeePopoverSearch, setCommitteePopoverSearch] = useState("");
@@ -204,6 +220,32 @@ export default function RankingPage() {
     return Array.from(set).sort();
   }, [deputies]);
 
+  // ── Pesi personalizzati ──
+  // Con i pesi ufficiali si usa il punteggio calcolato dal backend; con pesi
+  // custom si ricombinano le sei componenti del breakdown (normalizzando la
+  // somma), così la classifica reagisce senza rifare la query.
+  const weightsCustom = useMemo(
+    () =>
+      (Object.keys(DEFAULT_WEIGHTS) as ComponentKey[]).some(
+        (k) => Math.abs(weights[k] - DEFAULT_WEIGHTS[k]) > 1e-9
+      ),
+    [weights]
+  );
+
+  const effectiveScore = useCallback(
+    (d: RankingDeputy) => {
+      if (!weightsCustom) return d.authority_score;
+      const total = (Object.keys(weights) as ComponentKey[]).reduce((a, k) => a + weights[k], 0);
+      if (total <= 0) return 0;
+      let s = 0;
+      for (const k of Object.keys(weights) as ComponentKey[]) {
+        s += weights[k] * (d.score_breakdown?.[k] ?? 0);
+      }
+      return s / total;
+    },
+    [weights, weightsCustom]
+  );
+
   // ── Filtered and sorted deputies ──
   const filteredDeputies = useMemo(() => {
     let list = [...deputies];
@@ -241,7 +283,7 @@ export default function RankingPage() {
 
     list.sort((a, b) => {
       if (sortBy === "authority_score") {
-        return b.authority_score - a.authority_score;
+        return effectiveScore(b) - effectiveScore(a);
       }
       const aVal = a.score_breakdown?.[sortBy] ?? 0;
       const bVal = b.score_breakdown?.[sortBy] ?? 0;
@@ -249,7 +291,7 @@ export default function RankingPage() {
     });
 
     return list;
-  }, [deputies, coalitionFilter, selectedGroups, nameSearch, committeeSearch, sortBy]);
+  }, [deputies, coalitionFilter, selectedGroups, nameSearch, committeeSearch, sortBy, effectiveScore]);
 
   const hasResults = deputies.length > 0;
   const hasActiveFilters = coalitionFilter !== "all" || selectedGroups.length > 0 || nameSearch.trim() !== "" || committeeSearch !== "";
@@ -521,6 +563,77 @@ export default function RankingPage() {
               </PopoverContent>
             </Popover>
 
+            {/* Weights editor: la policy di autorità è editabile, non solo dichiarata */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className={cn("h-8 text-xs gap-1.5", weightsCustom && "border-primary text-primary")}
+                >
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  {t("weightsButton")}
+                  {weightsCustom && (
+                    <Badge className="ml-1 h-4 px-1 text-[10px] bg-primary text-primary-foreground">✎</Badge>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-3" align="end">
+                <p className="text-xs font-semibold text-foreground mb-1">{t("weightsPanelTitle")}</p>
+                <p className="text-[11px] leading-relaxed text-muted-foreground mb-3">
+                  {t("weightsPanelDesc")}{" "}
+                  <a
+                    href="/method"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-2 hover:text-primary/80"
+                  >
+                    {t("methodMore")}
+                  </a>
+                </p>
+                <div className="space-y-2.5">
+                  {(Object.keys(DEFAULT_WEIGHTS) as ComponentKey[]).map((k) => {
+                    const labelKey = {
+                      speeches: "sortSpeeches",
+                      acts: "sortActs",
+                      committee: "sortCommittee",
+                      profession: "sortProfession",
+                      education: "sortEducation",
+                      role: "sortRole",
+                    }[k] as string;
+                    return (
+                      <div key={k}>
+                        <div className="flex items-center justify-between text-[11px] mb-0.5">
+                          <span className="text-foreground/80">{t(labelKey)}</span>
+                          <span className="tabular-nums text-muted-foreground">
+                            {Math.round(weights[k] * 100)}%
+                          </span>
+                        </div>
+                        <Slider
+                          min={0}
+                          max={50}
+                          step={1}
+                          value={[Math.round(weights[k] * 100)]}
+                          onValueChange={([v]) =>
+                            setWeights((prev) => ({ ...prev, [k]: v / 100 }))
+                          }
+                          className="py-1"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {weightsCustom && (
+                  <button
+                    onClick={() => setWeights(DEFAULT_WEIGHTS)}
+                    className="mt-3 w-full text-center text-xs text-primary hover:underline pt-2 border-t border-border"
+                  >
+                    {t("weightsReset")}
+                  </button>
+                )}
+              </PopoverContent>
+            </Popover>
+
             {/* Clear all filters */}
             {hasActiveFilters && (
               <button
@@ -656,11 +769,16 @@ export default function RankingPage() {
             <div className="px-4 sm:px-6 py-4 max-w-6xl mx-auto w-full">
               {/* Results info */}
               <div className="flex items-center justify-between mb-3">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
                   {filteredDeputies.length === deputies.length
                     ? t("resultsAll", { count: deputies.length })
                     : t("resultsFiltered", { filtered: filteredDeputies.length, total: deputies.length })}
                   {computationTime > 0 && ` · ${(computationTime / 1000).toFixed(1)}s`}
+                  {weightsCustom && (
+                    <Badge variant="outline" className="text-[10px] h-4 px-1.5 border-primary/40 text-primary">
+                      {t("weightsCustom")}
+                    </Badge>
+                  )}
                 </p>
                 <FeedbackPulse tool="ranking" context={activeTopic} className="mt-0 pt-0 border-t-0 hidden sm:block" />
                 <Button variant="ghost" size="sm" onClick={handleReset} className="h-7 text-xs gap-1.5 sm:hidden">
@@ -678,6 +796,16 @@ export default function RankingPage() {
                 <div className="mt-3 max-w-3xl space-y-2 text-[13px] leading-relaxed text-muted-foreground">
                   <p>{t("methodP1")}</p>
                   <p>{t("methodP2")}</p>
+                  <p>
+                    <a
+                      href="/method"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"
+                    >
+                      {t("methodMore")}
+                    </a>
+                  </p>
                 </div>
               </details>
 
@@ -705,6 +833,7 @@ export default function RankingPage() {
                       index={index}
                       sortBy={sortBy}
                       sortLabel={SORT_OPTIONS.find((s) => s.value === sortBy)?.label || ""}
+                      scoreOverride={weightsCustom ? effectiveScore(deputy) : undefined}
                     />
                   ))}
                 </div>
@@ -756,9 +885,11 @@ interface RankingRowProps {
   index: number;
   sortBy: SortKey;
   sortLabel: string;
+  /** Punteggio ricombinato con pesi custom; il modal mostra sempre quello ufficiale */
+  scoreOverride?: number;
 }
 
-function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
+function RankingRow({ deputy, index, sortBy, sortLabel, scoreOverride }: RankingRowProps) {
   const t = useTranslations("RankingsPage");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -769,7 +900,7 @@ function RankingRow({ deputy, index, sortBy, sortLabel }: RankingRowProps) {
 
   const displayScore =
     sortBy === "authority_score"
-      ? deputy.authority_score
+      ? scoreOverride ?? deputy.authority_score
       : deputy.score_breakdown?.[sortBy] ?? 0;
 
   const scoreLevel =

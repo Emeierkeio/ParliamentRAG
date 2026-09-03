@@ -305,6 +305,12 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
                                        <span className="text-muted-foreground">{t("position")}</span>
                                        <span className="font-medium tabular-nums">{grp.position_x.toFixed(2)}, {dimensionality === 1 ? '—' : grp.position_y.toFixed(2)}</span>
                                    </div>
+                                   {typeof grp.stats?.n_x === "number" && (
+                                       <div className="flex items-baseline justify-between gap-6 text-xs">
+                                           <span className="text-muted-foreground">{t("positionBasis")}</span>
+                                           <span className="font-medium tabular-nums">x: {grp.stats.n_x} · y: {grp.stats.n_y}</span>
+                                       </div>
+                                   )}
                                </div>
                            </TooltipContent>
                        </Tooltip>
@@ -375,7 +381,15 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
 
           {/* Disclaimer — automated analysis, not a certified political placement */}
           <p className="mt-1.5 px-2 text-center text-[10px] leading-snug text-muted-foreground/70 shrink-0">
-              {isStance ? t("stanceDisclaimer") : t("disclaimer")}
+              {isStance ? t("stanceDisclaimer") : t("disclaimer")}{" "}
+              <a
+                href="/method"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"
+              >
+                  {t("methodLink")}
+              </a>
           </p>
     </div>
   );
