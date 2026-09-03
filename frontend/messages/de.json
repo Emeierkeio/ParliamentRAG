@@ -917,7 +917,8 @@
     "entPositionsDesc": "Wo die Fraktionen zu einem Thema stehen, mit Abdeckung und Quellen.",
     "entAuthority": "Wer sich auskennt",
     "entAuthorityDesc": "Die sachkundigsten Abgeordneten zu einem Thema, mit Begründung.",
-    "methodologyCta": "Die vollständige Methodik"
+    "methodologyCta": "Die vollständige Methodik",
+    "footerMethodology": "Methodik"
   },
   "Privacy": {
     "title": "Datenschutz & rechtliche Hinweise",

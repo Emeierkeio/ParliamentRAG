@@ -495,9 +495,7 @@ export default function LandingPage() {
               </span>
             </div>
             <nav className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
-              <FooterLink href="/parlamentari">{t("entDeputies")}</FooterLink>
-              <FooterLink href="/sedute">{t("entSessions")}</FooterLink>
-              <FooterLink href="/metodologia">{t("tocIter")}</FooterLink>
+              <FooterLink href="/metodologia">{t("footerMethodology")}</FooterLink>
               <FooterLink href="https://github.com/Emeierkeio/ParliamentRAG" external>
                 GitHub
               </FooterLink>

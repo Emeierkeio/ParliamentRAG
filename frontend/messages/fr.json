@@ -917,7 +917,8 @@
     "entPositionsDesc": "Où se situent les groupes sur un sujet, avec couverture et sources.",
     "entAuthority": "Qui en sait le plus",
     "entAuthorityDesc": "Les députés les plus compétents sur un sujet, avec le pourquoi.",
-    "methodologyCta": "La méthodologie complète"
+    "methodologyCta": "La méthodologie complète",
+    "footerMethodology": "Méthodologie"
   },
   "Privacy": {
     "title": "Confidentialité et mentions légales",

@@ -948,7 +948,8 @@
     "entPositionsDesc": "Dove si collocano i gruppi su un tema, con copertura e fonti.",
     "entAuthority": "Chi ne sa di più",
     "entAuthorityDesc": "I parlamentari più autorevoli su un tema, con il perché.",
-    "methodologyCta": "La metodologia completa"
+    "methodologyCta": "La metodologia completa",
+    "footerMethodology": "Metodologia"
   },
   "Privacy": {
     "title": "Privacy e note legali",

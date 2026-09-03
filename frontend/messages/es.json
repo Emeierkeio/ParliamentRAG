@@ -917,7 +917,8 @@
     "entPositionsDesc": "Dónde se sitúan los grupos sobre un tema, con cobertura y fuentes.",
     "entAuthority": "Quién sabe más",
     "entAuthorityDesc": "Los diputados más autorizados sobre un tema, con el porqué.",
-    "methodologyCta": "La metodología completa"
+    "methodologyCta": "La metodología completa",
+    "footerMethodology": "Metodología"
   },
   "Privacy": {
     "title": "Privacidad y avisos legales",

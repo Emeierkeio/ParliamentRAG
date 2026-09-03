@@ -961,7 +961,8 @@
     "entPositionsDesc": "Where groups stand on a topic, with coverage and sources.",
     "entAuthority": "Who knows it best",
     "entAuthorityDesc": "The most authoritative deputies on a topic, with the why.",
-    "methodologyCta": "The full methodology"
+    "methodologyCta": "The full methodology",
+    "footerMethodology": "Methodology"
   },
   "Privacy": {
     "title": "Privacy & Legal Notice",
