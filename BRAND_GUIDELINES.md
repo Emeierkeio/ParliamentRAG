@@ -73,10 +73,10 @@ Non creare altri sotto-brand. "Search", "Research" ecc. restano nomi di funzioni
 
 Primaria (IT / EN):
 
-> **Il Parlamento italiano, ricercabile e verificabile.**
-> **The Italian Parliament, searchable and verifiable.**
+> **Chiedi, esplora, verifica.**
+> **Ask, explore, verify.**
 
-Descrittore, non slogan: in pochi secondi dice cosa è il prodotto. Sostituisce "Dalla domanda alla fonte" (settembre 2026: giudicata evocativa ma non abbastanza esplicativa); quella formula resta utilizzabile come claim secondario nel racconto domanda→fonte.
+Tre verbi = il percorso d'uso del prodotto, nell'ordine in cui accade. Scelta finale di settembre 2026, dopo "Dalla domanda alla fonte" (evocativa ma poco esplicativa) e "Il Parlamento italiano, ricercabile e verificabile" (chiara ma da scheda tecnica).
 
 Alternative valutate (utilizzabili in contesti secondari):
 
