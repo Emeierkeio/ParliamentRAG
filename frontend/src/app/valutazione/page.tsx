@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MobileMenuButton } from "@/components/layout/Sidebar";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar, MobileMenuButton } from "@/components/layout/Sidebar";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { SurveyModal } from "@/components/survey/SurveyModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,8 +115,14 @@ export default function ValutazionePage() {
   }
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-background">
-      <AppHeader />
+    <div className="flex h-dvh overflow-hidden bg-background">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Header */}

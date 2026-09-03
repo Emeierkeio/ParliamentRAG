@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar } from "@/components/layout";
+import { useSidebar } from "@/hooks";
 
 const PAPER_URL = "/who-speaks-matters-iswc2026.pdf";
 const GITHUB_URL = "https://github.com/Emeierkeio/ParliamentRAG";
@@ -10,13 +11,20 @@ const GITHUB_URL = "https://github.com/Emeierkeio/ParliamentRAG";
 const STEPS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
 
 export default function MetodologiaPage() {
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const tm = useTranslations("Methodology");
   const tl = useTranslations("Landing");
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
-      <main className="flex-1">
+    <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
+      <main className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
           <h1 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-tight">
             {tm("pageTitle")}

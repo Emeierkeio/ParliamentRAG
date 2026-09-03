@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { MobileMenuButton } from "@/components/layout";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
 import { useSidebar, useChat } from "@/hooks";
 import { config } from "@/config";
@@ -73,8 +72,14 @@ export default function SharedChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
+    <div className="flex h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
       <main className="flex-1 overflow-hidden">
         <ChatArea
           messages={messages}

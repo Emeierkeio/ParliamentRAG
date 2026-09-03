@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar } from "@/components/layout";
+import { useSidebar } from "@/hooks";
 import { VotesList } from "@/components/timeline/VotesList";
 import { graphQuery } from "@/lib/graph";
 import { getSessionVotes } from "@/lib/timeline-api";
@@ -54,6 +55,7 @@ function cleanDebateTitle(title: string): string {
 }
 
 export default function SessionDetailPage() {
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const t = useTranslations("Entities");
   const locale = useLocale();
   const params = useParams();
@@ -127,9 +129,15 @@ export default function SessionDetailPage() {
   }, [session?.date, locale]);
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
-      <main className="flex-1">
+    <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
+      <main className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
           <Link
             href="/sedute"

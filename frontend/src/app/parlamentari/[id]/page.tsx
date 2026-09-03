@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar } from "@/components/layout";
+import { useSidebar } from "@/hooks";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
 import { graphQuery, deputyUriFromSlug } from "@/lib/graph";
 import { config, getGroupColor } from "@/config";
@@ -44,6 +45,7 @@ function profileCypher(uri: string): string {
 }
 
 export default function DeputyProfilePage() {
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const t = useTranslations("Entities");
   const tSidebar = useTranslations("Sidebar");
   const params = useParams();
@@ -112,9 +114,15 @@ export default function DeputyProfilePage() {
   const searchHref = `/search?q=${encodeURIComponent(fullName)}`;
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
-      <main className="flex-1">
+    <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
+      <main className="flex-1 overflow-y-auto">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
           {/* Torna all'elenco */}
           <a

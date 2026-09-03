@@ -5,8 +5,7 @@ import { useTranslations } from "next-intl";
 import { Loader2, ArrowUp, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { MobileMenuButton } from "@/components/layout";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { SessionCard } from "@/components/timeline/SessionCard";
@@ -48,8 +47,14 @@ export default function TimelinePage() {
   }, []);
 
   return (
-    <div className="flex flex-col h-dvh bg-background overflow-hidden pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
+    <div className="flex h-dvh bg-background overflow-hidden pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
 
       {/* relative: l'aria-live sr-only in fondo alla lista è position:absolute —
           senza un antenato posizionato scappa dal clip di overflow-y e allunga

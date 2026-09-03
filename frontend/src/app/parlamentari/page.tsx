@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar } from "@/components/layout";
+import { useSidebar } from "@/hooks";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
 import { graphQuery, deputySlug } from "@/lib/graph";
 
@@ -35,6 +36,7 @@ const DIRECTORY_CYPHER =
   "ORDER BY d.last_name, d.first_name";
 
 export default function DeputiesDirectoryPage() {
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const t = useTranslations("Entities");
 
   const [deputies, setDeputies] = useState<DeputyRow[] | null>(null);
@@ -79,9 +81,15 @@ export default function DeputiesDirectoryPage() {
   }, [deputies, search, groupFilter]);
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
-      <main className="flex-1">
+    <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
+      <main className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           {/* Intestazione */}
           <header className="space-y-2">

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MobileMenuButton } from "@/components/layout";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { ChatArea } from "@/components/chat";
 import { HistoryModal } from "@/components/shared/HistoryModal";
 import { useSidebar, useChat } from "@/hooks";
@@ -41,9 +40,15 @@ export default function Home() {
   }, [loadChat]);
 
   return (
-    <div className="flex flex-col h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+    <div className="flex h-dvh overflow-hidden bg-background w-full max-w-[100vw] pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
       {/* Sidebar */}
-      <AppHeader />
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
       <HistoryModal open={historyOpen} onClose={() => setHistoryOpen(false)} onLoadChat={loadChat} />
 
       {/* Main content */}

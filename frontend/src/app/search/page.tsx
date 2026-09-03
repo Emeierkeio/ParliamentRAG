@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { MobileMenuButton } from "@/components/layout";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
@@ -283,8 +282,14 @@ export default function SearchPage() {
     ].filter(Boolean).length;
 
     return (
-        <div className="flex flex-col h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
+        <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
 
              <main className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
                 {/* Header */}

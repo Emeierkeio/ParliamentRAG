@@ -24,6 +24,10 @@ import {
   Settings,
   Search,
   FileText,
+  Users,
+  Landmark,
+  ScrollText,
+  BookOpen,
   Database,
   X,
   Compass,
@@ -161,7 +165,25 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             />
 
             <NavButton
-              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
+              item={{ icon: Users, label: t('deputies'), href: "/parlamentari", isActive: pathname.startsWith("/parlamentari"), onClick: () => navTo("/parlamentari") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: Landmark, label: t('groups'), href: "/gruppi", isActive: pathname.startsWith("/gruppi"), onClick: () => navTo("/gruppi") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: ScrollText, label: t('acts'), href: "/atti", isActive: pathname.startsWith("/atti"), onClick: () => navTo("/atti") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/sedute", isActive: pathname.startsWith("/sedute"), onClick: () => navTo("/sedute") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
@@ -192,6 +214,10 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
           <nav className="flex flex-col gap-0.5 pt-2">
             <NavButton
                 item={{ icon: Database, label: t('openData'), href: "/data", isActive: pathname === "/data", onClick: () => navTo("/data") }}
+                isCollapsed={isCollapsed}
+            />
+            <NavButton
+                item={{ icon: BookOpen, label: t('methodology'), href: "/metodologia", isActive: pathname === "/metodologia", onClick: () => navTo("/metodologia") }}
                 isCollapsed={isCollapsed}
             />
             <LanguageSelector isCollapsed={isCollapsed} />

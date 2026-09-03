@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
-import { AppHeader } from "@/components/layout/AppHeader";
+import { Sidebar } from "@/components/layout";
+import { useSidebar } from "@/hooks";
 import { GroupMemberAvatar } from "@/components/entities/GroupMemberAvatar";
 import { graphQuery, deputySlug } from "@/lib/graph";
 import { config, getGroupAbbrev, getGroupColor } from "@/config";
@@ -53,6 +54,7 @@ type State =
   | { phase: "ready"; group: GroupRow; members: MemberRow[] };
 
 export default function GruppoDettaglioPage() {
+  const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const t = useTranslations("Entities");
   const params = useParams<{ slug: string }>();
   const slug = (params?.slug ?? "").toLowerCase();
@@ -88,9 +90,15 @@ export default function GruppoDettaglioPage() {
     state.phase === "ready" ? groupLabel(state.group.name) : null;
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
-      <AppHeader />
-      <main className="flex-1">
+    <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <Sidebar
+        isCollapsed={isCollapsed}
+        onToggle={toggle}
+        isMobile={isMobile}
+        isMobileOpen={isMobileOpen}
+        onCloseMobile={closeMobile}
+      />
+      <main className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           <Link
             href="/gruppi"
