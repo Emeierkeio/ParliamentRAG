@@ -99,6 +99,10 @@ compass:
     max_workers: 8          # parallel batch calls (25*8 = one wave for 200 fragments)
     max_fragments: 200      # classify at most this many (retrieval order)
     text_clip: 700          # chars of each fragment sent to the classifier
+    # Group position shrinkage: per-axis mean is multiplied by n/(n+k), so a
+    # position resting on few stance-taking fragments slides toward the
+    # neutral center instead of sitting at the extremes.
+    position_shrinkage_k: 3
 
   anchors:
     enabled: false  # Set to true to enable soft anchors for axis orientation

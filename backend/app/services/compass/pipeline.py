@@ -64,6 +64,8 @@ class CompassPipeline:
         self.scatter_random_seed = config.get("scatter_random_seed", 42)
         self.pole_purity_threshold = config.get("pole_purity_threshold", 0.30)
         self.tfidf_top_terms = config.get("tfidf_top_terms", 3)
+        self.stance_position_shrinkage_k = float(
+            (config.get("stance") or {}).get("position_shrinkage_k", 3.0))
 
         # Lazy-loaded labeler
         self._axis_labeler = None
@@ -249,17 +251,26 @@ class CompassPipeline:
 
         # IC-3 (stance): per-axis mean over the fragments scored on that axis,
         # so a fragment silent on one axis does not drag the group to 0 there.
+        # The mean is shrunk by n/(n+k) (credibility weighting): a position
+        # resting on few stance-taking fragments slides toward the neutral
+        # center instead of sitting at the extremes of the plane.
         groups_map: Dict[str, List[ProjectedFragment]] = {}
         for p in projected:
             groups_map.setdefault(p.group_id, []).append(p)
 
+        shrink_k = self.stance_position_shrinkage_k
         groups = []
         for group_id, group_frags in groups_map.items():
             centroid = []
+            n_axis = []
             for i in range(2):
                 vals = [p.stance[i] for p in group_frags if p.stance[i] is not None]
-                centroid.append(
-                    float(np.mean(vals)) * self.STANCE_PLOT_SCALE if vals else 0.0)
+                n_axis.append(len(vals))
+                if vals:
+                    shrunk = float(np.mean(vals)) * (len(vals) / (len(vals) + shrink_k))
+                    centroid.append(shrunk * self.STANCE_PLOT_SCALE)
+                else:
+                    centroid.append(0.0)
             group_n_stance = sum(1 for p in group_frags if not p.is_outlier)
             groups.append(GroupPosition(
                 group_id=group_id,
@@ -272,6 +283,8 @@ class CompassPipeline:
                 stats={
                     "n_fragments": len(group_frags),
                     "n_valid": group_n_stance,
+                    "n_x": n_axis[0],
+                    "n_y": n_axis[1],
                     "confidence": group_n_stance / len(group_frags) if group_frags else 0.0,
                 },
                 core_evidence_ids=[],
