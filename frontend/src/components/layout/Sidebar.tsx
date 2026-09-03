@@ -213,10 +213,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
         <div className="p-3 pb-5 border-t border-sidebar-border">
           <nav className="flex flex-col gap-0.5 pt-2">
             <NavButton
-                item={{ icon: Database, label: t('openData'), href: "/data", isActive: pathname === "/data", onClick: () => navTo("/data") }}
-                isCollapsed={isCollapsed}
-            />
-            <NavButton
                 item={{ icon: BookOpen, label: t('methodology'), href: "/metodologia", isActive: pathname === "/metodologia", onClick: () => navTo("/metodologia") }}
                 isCollapsed={isCollapsed}
             />
@@ -230,28 +226,35 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
                 isCollapsed={isCollapsed}
             />
 
-            {/* Data date — subtle footer line. Always mounted (icon-only when
-                collapsed) so the bottom stack never changes height on toggle.
-                Styled tooltip (like the nav icons) carries the full label. */}
+            {/* Riga della data = ingresso ai dati aperti: la voce di nav
+                dedicata e' stata rimossa, questo link la sostituisce.
+                Sempre montata (icona sola da collassata) cosi' lo stack in
+                basso non cambia altezza al toggle. */}
             <div className="mt-3 pt-3 border-t border-sidebar-border">
               {isCollapsed ? (
-                // Collapsed: icon-only box, tooltip carries the full label
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center justify-center w-9 h-9 mx-auto text-sidebar-foreground/35 cursor-default">
-                      <CalendarDays className="h-4 w-4 shrink-0" />
-                    </div>
+                    <button
+                      onClick={() => navTo("/data")}
+                      aria-label={`${t('dataUpdatedAt')} ${lastUpdate ?? ""} · ${t('openData')}`}
+                      className="flex items-center justify-center w-9 h-9 mx-auto text-sidebar-foreground/35 hover:text-sidebar-foreground transition-colors cursor-pointer"
+                    >
+                      <Database className="h-4 w-4 shrink-0" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="right" sideOffset={10} className="bg-popover text-popover-foreground border-border font-medium">
-                    {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"}`}
+                    {`${t('dataUpdatedAt')} ${lastUpdate ?? "…"} · ${t('openData')}`}
                   </TooltipContent>
                 </Tooltip>
               ) : (
-                // Expanded: the date is already readable — no tooltip
-                <div className="flex items-center h-8 gap-2 px-3 text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden cursor-default">
-                  <CalendarDays className="h-3 w-3 shrink-0" />
+                <button
+                  onClick={() => navTo("/data")}
+                  aria-label={`${t('dataUpdatedAt')} ${lastUpdate ?? ""} · ${t('openData')}`}
+                  className="flex items-center h-8 gap-2 px-3 w-full text-left text-[10px] uppercase tracking-wide text-sidebar-foreground/35 whitespace-nowrap overflow-hidden hover:text-sidebar-foreground transition-colors cursor-pointer min-tap-none"
+                >
+                  <Database className="h-3 w-3 shrink-0" />
                   <span className="truncate">{t('dataShort')} <strong className="text-sidebar-foreground/55 tabular-nums font-semibold">{lastUpdate || "--/--/----"}</strong></span>
-                </div>
+                </button>
               )}
             </div>
 
