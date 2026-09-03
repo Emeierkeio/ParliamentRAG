@@ -26,8 +26,8 @@ Deliberately excluded, same policy as export_rdf.py: embeddings (all
 `*embedding*` properties), Chunk nodes (retrieval artifacts — speeches keep the
 full text), ChatHistory (private), SpeakerDebateSummary (LLM-derived).
 
-License: source data from dati.camera.it is CC-BY 4.0, so the derived tables
-carry the same license; keep `license: cc-by-4.0` in the dataset card.
+License: source data from dati.camera.it is CC BY-SA 4.0, so the derived tables
+carry the same license; keep `license: cc-by-sa-4.0` in the dataset card.
 
 The dataset card is generated from build/hf_dataset_card.md: {{TOKEN}}
 placeholders (row counts, coverage date, recap coverage) are filled with

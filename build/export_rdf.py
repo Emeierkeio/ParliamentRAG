@@ -42,8 +42,8 @@ Deliberately excluded: embeddings (all `*embedding*` properties), Chunk nodes
 (retrieval artifacts — Speech keeps the full transcript text), ChatHistory
 (private), SpeakerDebateSummary (LLM-derived, not source knowledge).
 
-License: the dataset entity carries dcterms:license CC-BY 4.0 (source data
-from dati.camera.it is CC-BY, so attribution carries over to the derived
+License: the dataset entity carries dcterms:license CC BY-SA 4.0 (source data
+from dati.camera.it is CC BY-SA, so ShareAlike carries over to the derived
 graph); use the same license on the Zenodo record.
 
 Usage:
@@ -285,9 +285,9 @@ class RdfExporter:
         self.g.add((dataset, RDF.type, PROV.Entity))
         self.g.add((dataset, DCTERMS.title,
                     Literal("ParliamentRAG knowledge graph (Italian Chamber of Deputies, leg. 19)", lang="en")))
-        # CC-BY 4.0: source data from dati.camera.it is CC-BY, attribution must carry over
+        # CC BY-SA 4.0: source data from dati.camera.it is CC BY-SA, ShareAlike carries over
         self.g.add((dataset, DCTERMS.license,
-                    URIRef("https://creativecommons.org/licenses/by/4.0/")))
+                    URIRef("https://creativecommons.org/licenses/by-sa/4.0/")))
         self.g.add((dataset, DCTERMS.source, URIRef("http://dati.camera.it")))
         self.g.add((dataset, DCTERMS.rightsHolder,
                     Literal("Camera dei deputati (source data); ParliamentRAG (derived graph)", lang="en")))
