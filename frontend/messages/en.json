@@ -1209,6 +1209,19 @@
     "technicalBody": "The full architecture (hybrid retrieval, authority scoring, position mapping, citation verification) is described in the paper and in the source code.",
     "paperCta": "Read the paper",
     "githubCta": "Source code",
-    "dataCta": "Open data"
+    "dataCta": "Open data",
+    "paperNote": "The system is described in the paper \"Who Speaks Matters\", accepted at the ISWC 2026 In-Use Track.",
+    "authTitle": "Who speaks matters: authority depends on the topic",
+    "authBody": "For every question the system estimates how authoritative each deputy is on that topic, combining interpretable signals: floor speeches (25%), relevant committee (25%), signed acts (20%), profession (15%), education (10%) and institutional role (5%). Activity signals decay over time and group affiliation is resolved at the date of the speech, so coalition switches do not distort the score. All weights are public and adjustable in the settings.",
+    "quoteTitle": "Verbatim quotations by construction",
+    "quoteBody": "Every published quotation is verified to be an exact substring of the stenographic record: non-conforming quotations are rejected or remapped onto the original sentences. The language model can never introduce quotation text of its own.",
+    "kgTitle": "The knowledge graph behind the answers",
+    "kgBody": "The Chamber's open data is transformed into a graph (Neo4j) linking sittings, debates, speeches, text chunks, deputies, groups, committees and acts with temporal validity. At the February 2026 snapshot: 232,755 nodes and 488,487 relationships, 40,416 speeches in 151,073 chunks; the graph is continuously updated and re-exported as RDF with standard vocabularies.",
+    "evalTitle": "The evaluation",
+    "evalBody": "On 15 policy topics, ParliamentRAG was blindly compared with Google NotebookLM by six domain experts (parliamentary journalists and analysts), alongside automated metrics.",
+    "evalResults": "Quotation faithfulness: 1.00 vs 0.95. Groups quoted: 0.97 vs 0.95. Preferred on source coverage, relevance and authority; NotebookLM remains stronger on prose fluency and clarity.",
+    "orkgCta": "ORKG entry",
+    "zenodoCta": "Dataset on Zenodo",
+    "mcpCta": "MCP server"
   }
 }

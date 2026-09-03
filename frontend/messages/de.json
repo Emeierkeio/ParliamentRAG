@@ -1165,6 +1165,19 @@
     "technicalBody": "Die vollständige Architektur (hybrides Retrieval, Autoritätsbewertung, Positionskartierung, Zitatprüfung) ist im Paper und im Quellcode beschrieben.",
     "paperCta": "Paper lesen",
     "githubCta": "Quellcode",
-    "dataCta": "Offene Daten"
+    "dataCta": "Offene Daten",
+    "paperNote": "Das System ist im Paper \"Who Speaks Matters\" beschrieben, angenommen im In-Use Track der ISWC 2026.",
+    "authTitle": "Wer spricht, zählt: Autorität hängt vom Thema ab",
+    "authBody": "Für jede Frage schätzt das System, wie sachkundig jede:r Abgeordnete zu diesem Thema ist, mit interpretierbaren Signalen: Reden (25%), zuständiger Ausschuss (25%), unterzeichnete Akten (20%), Beruf (15%), Ausbildung (10%) und institutionelle Rolle (5%). Aktivitätssignale verfallen mit der Zeit; die Fraktionszugehörigkeit wird zum Datum der Rede aufgelöst. Alle Gewichte sind öffentlich und einstellbar.",
+    "quoteTitle": "Wörtliche Zitate per Konstruktion",
+    "quoteBody": "Jedes veröffentlichte Zitat wird als exakte Teilzeichenkette des Protokolls verifiziert: nicht konforme Zitate werden verworfen oder auf die Originalsätze abgebildet. Das Sprachmodell kann nie eigenen Zitattext einführen.",
+    "kgTitle": "Der Wissensgraph hinter den Antworten",
+    "kgBody": "Die offenen Daten der Kammer werden in einen Graphen (Neo4j) überführt, der Sitzungen, Debatten, Reden, Textabschnitte, Abgeordnete, Fraktionen, Ausschüsse und Akten mit zeitlicher Gültigkeit verknüpft. Stand Februar 2026: 232.755 Knoten und 488.487 Beziehungen, 40.416 Reden in 151.073 Abschnitten; laufend aktualisiert und als RDF exportiert.",
+    "evalTitle": "Die Evaluation",
+    "evalBody": "Auf 15 Politikthemen wurde ParliamentRAG von sechs Fachleuten blind mit Google NotebookLM verglichen, ergänzt durch automatische Metriken.",
+    "evalResults": "Zitattreue: 1,00 gegenüber 0,95. Zitierte Fraktionen: 0,97 gegenüber 0,95. Bevorzugt bei Quellenabdeckung, -relevanz und -autorität; NotebookLM bleibt bei der Prosa stärker.",
+    "orkgCta": "ORKG-Eintrag",
+    "zenodoCta": "Datensatz auf Zenodo",
+    "mcpCta": "MCP-Server"
   }
 }

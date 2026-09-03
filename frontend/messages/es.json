@@ -1165,6 +1165,19 @@
     "technicalBody": "La arquitectura completa (recuperación híbrida, puntuación de autoridad, mapeo de posiciones, verificación de citas) se describe en el artículo y en el código fuente.",
     "paperCta": "Leer el artículo",
     "githubCta": "Código fuente",
-    "dataCta": "Datos abiertos"
+    "dataCta": "Datos abiertos",
+    "paperNote": "El sistema se describe en el artículo \"Who Speaks Matters\", aceptado en la In-Use Track de ISWC 2026.",
+    "authTitle": "Quién habla importa: la autoridad depende del tema",
+    "authBody": "Para cada pregunta el sistema estima la autoridad de cada diputado en ese tema, combinando señales interpretables: intervenciones (25%), comisión competente (25%), actos firmados (20%), profesión (15%), formación (10%) y cargo institucional (5%). Las señales de actividad decaen con el tiempo y la afiliación se resuelve en la fecha de la intervención. Todos los pesos son públicos y ajustables.",
+    "quoteTitle": "Citas literales por construcción",
+    "quoteBody": "Cada cita publicada se verifica como subcadena exacta del acta: las citas no conformes se rechazan o se reasignan a las frases originales. El modelo nunca puede introducir texto de cita propio.",
+    "kgTitle": "El grafo de conocimiento detrás de las respuestas",
+    "kgBody": "Los datos abiertos de la Cámara se transforman en un grafo (Neo4j) que conecta sesiones, debates, intervenciones, fragmentos, diputados, grupos, comisiones y actos con validez temporal. En el snapshot de febrero de 2026: 232.755 nodos y 488.487 relaciones, 40.416 intervenciones en 151.073 fragmentos; el grafo se actualiza continuamente y se reexporta en RDF.",
+    "evalTitle": "La evaluación",
+    "evalBody": "En 15 temas de política, ParliamentRAG fue comparado a ciegas con Google NotebookLM por seis expertos del sector, junto con métricas automáticas.",
+    "evalResults": "Fidelidad de las citas: 1,00 frente a 0,95. Grupos citados: 0,97 frente a 0,95. Preferido en cobertura, relevancia y autoridad de las fuentes; NotebookLM sigue siendo más fuerte en la prosa.",
+    "orkgCta": "Ficha ORKG",
+    "zenodoCta": "Dataset en Zenodo",
+    "mcpCta": "Servidor MCP"
   }
 }

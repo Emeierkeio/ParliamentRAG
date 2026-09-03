@@ -1165,6 +1165,19 @@
     "technicalBody": "A arquitetura completa (recuperação híbrida, pontuação de autoridade, mapeamento de posições, verificação de citações) está descrita no artigo e no código-fonte.",
     "paperCta": "Ler o artigo",
     "githubCta": "Código-fonte",
-    "dataCta": "Dados abertos"
+    "dataCta": "Dados abertos",
+    "paperNote": "O sistema está descrito no artigo \"Who Speaks Matters\", aceite na In-Use Track da ISWC 2026.",
+    "authTitle": "Quem fala importa: a autoridade depende do tema",
+    "authBody": "Para cada pergunta o sistema estima a autoridade de cada deputado nesse tema, combinando sinais interpretáveis: intervenções (25%), comissão competente (25%), atos assinados (20%), profissão (15%), formação (10%) e cargo institucional (5%). Os sinais de atividade decaem com o tempo e a filiação é resolvida na data da intervenção. Todos os pesos são públicos e ajustáveis.",
+    "quoteTitle": "Citações literais por construção",
+    "quoteBody": "Cada citação publicada é verificada como substring exata do registo oficial: citações não conformes são rejeitadas ou remapeadas para as frases originais. O modelo nunca pode introduzir texto de citação próprio.",
+    "kgTitle": "O grafo de conhecimento por trás das respostas",
+    "kgBody": "Os dados abertos da Câmara são transformados num grafo (Neo4j) que liga sessões, debates, intervenções, fragmentos, deputados, grupos, comissões e atos com validade temporal. No snapshot de fevereiro de 2026: 232.755 nós e 488.487 relações, 40.416 intervenções em 151.073 fragmentos; o grafo é atualizado continuamente e reexportado em RDF.",
+    "evalTitle": "A avaliação",
+    "evalBody": "Em 15 temas de política, o ParliamentRAG foi comparado às cegas com o Google NotebookLM por seis especialistas, além de métricas automáticas.",
+    "evalResults": "Fidelidade das citações: 1,00 contra 0,95. Grupos citados: 0,97 contra 0,95. Preferido em cobertura, relevância e autoridade das fontes; o NotebookLM continua mais forte na prosa.",
+    "orkgCta": "Ficha ORKG",
+    "zenodoCta": "Dataset no Zenodo",
+    "mcpCta": "Servidor MCP"
   }
 }

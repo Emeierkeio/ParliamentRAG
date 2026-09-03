@@ -71,6 +71,39 @@ export default function MetodologiaPage() {
             </ol>
           </section>
 
+          {/* Approfondimenti dal paper ISWC 2026 "Who Speaks Matters":
+              autorevolezza per tema, garanzia verbatim, grafo, valutazione */}
+          <p className="mt-10 text-sm text-muted-foreground leading-relaxed max-w-[65ch] border-l-2 border-l-foreground/70 pl-3">
+            {tm("paperNote")}
+          </p>
+
+          {([
+            ["authTitle", "authBody"],
+            ["quoteTitle", "quoteBody"],
+            ["kgTitle", "kgBody"],
+          ] as const).map(([titleKey, bodyKey]) => (
+            <section className="mt-12" key={titleKey}>
+              <h2 className="[font-family:var(--font-display)] text-2xl font-semibold tracking-tight">
+                {tm(titleKey)}
+              </h2>
+              <p className="mt-3 text-muted-foreground leading-relaxed max-w-[65ch]">
+                {tm(bodyKey)}
+              </p>
+            </section>
+          ))}
+
+          <section className="mt-12">
+            <h2 className="[font-family:var(--font-display)] text-2xl font-semibold tracking-tight">
+              {tm("evalTitle")}
+            </h2>
+            <p className="mt-3 text-muted-foreground leading-relaxed max-w-[65ch]">
+              {tm("evalBody")}
+            </p>
+            <p className="mt-3 font-mono text-sm leading-relaxed max-w-[65ch]">
+              {tm("evalResults")}
+            </p>
+          </section>
+
           <section className="mt-14">
             <h2 className="[font-family:var(--font-display)] text-2xl font-semibold tracking-tight">
               {tm("technicalTitle")}
@@ -101,6 +134,30 @@ export default function MetodologiaPage() {
               >
                 {tm("dataCta")}
               </Link>
+              <a
+                href="https://orkg.org/papers/R1909763"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors border-b border-border hover:border-foreground pb-0.5"
+              >
+                {tm("orkgCta")}
+              </a>
+              <a
+                href="https://doi.org/10.5281/zenodo.21560331"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors border-b border-border hover:border-foreground pb-0.5"
+              >
+                {tm("zenodoCta")}
+              </a>
+              <a
+                href="https://mcp.parliamentrag.it"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors border-b border-border hover:border-foreground pb-0.5"
+              >
+                {tm("mcpCta")}
+              </a>
             </div>
           </section>
         </div>

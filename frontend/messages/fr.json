@@ -1165,6 +1165,19 @@
     "technicalBody": "L'architecture complète (récupération hybride, score d'autorité, cartographie des positions, vérification des citations) est décrite dans l'article et dans le code source.",
     "paperCta": "Lire l'article",
     "githubCta": "Code source",
-    "dataCta": "Données ouvertes"
+    "dataCta": "Données ouvertes",
+    "paperNote": "Le système est décrit dans l'article \"Who Speaks Matters\", accepté à la In-Use Track d'ISWC 2026.",
+    "authTitle": "Qui parle compte : l'autorité dépend du sujet",
+    "authBody": "Pour chaque question, le système estime l'autorité de chaque député sur ce sujet en combinant des signaux interprétables : interventions (25%), commission compétente (25%), actes signés (20%), profession (15%), formation (10%) et rôle institutionnel (5%). Les signaux d'activité décroissent dans le temps et l'affiliation est résolue à la date de l'intervention. Tous les poids sont publics et réglables.",
+    "quoteTitle": "Citations littérales par construction",
+    "quoteBody": "Chaque citation publiée est vérifiée comme sous-chaîne exacte du compte rendu : les citations non conformes sont rejetées ou réalignées sur les phrases originales. Le modèle ne peut jamais introduire son propre texte de citation.",
+    "kgTitle": "Le graphe de connaissances derrière les réponses",
+    "kgBody": "Les données ouvertes de la Chambre sont transformées en graphe (Neo4j) reliant séances, débats, interventions, fragments, députés, groupes, commissions et actes avec validité temporelle. Au snapshot de février 2026 : 232 755 nœuds et 488 487 relations, 40 416 interventions en 151 073 fragments ; le graphe est mis à jour en continu et réexporté en RDF.",
+    "evalTitle": "L'évaluation",
+    "evalBody": "Sur 15 sujets de politique publique, ParliamentRAG a été comparé en aveugle à Google NotebookLM par six experts du domaine, en plus de métriques automatiques.",
+    "evalResults": "Fidélité des citations : 1,00 contre 0,95. Groupes cités : 0,97 contre 0,95. Préféré sur la couverture, la pertinence et l'autorité des sources ; NotebookLM reste plus fort sur la fluidité de la prose.",
+    "orkgCta": "Fiche ORKG",
+    "zenodoCta": "Dataset sur Zenodo",
+    "mcpCta": "Serveur MCP"
   }
 }

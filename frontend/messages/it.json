@@ -1196,6 +1196,19 @@
     "technicalBody": "L'architettura completa (retrieval ibrido, authority scoring, mappatura delle posizioni, verifica delle citazioni) è descritta nel paper e nel codice sorgente.",
     "paperCta": "Leggi il paper",
     "githubCta": "Codice sorgente",
-    "dataCta": "Dati aperti"
+    "dataCta": "Dati aperti",
+    "paperNote": "Il sistema è descritto nel paper \"Who Speaks Matters\", accettato alla In-Use Track di ISWC 2026.",
+    "authTitle": "Chi parla conta: l'autorevolezza dipende dal tema",
+    "authBody": "Per ogni domanda il sistema stima quanto ogni parlamentare sia autorevole su quel tema, combinando segnali interpretabili: interventi in Aula (25%), commissione competente (25%), atti firmati (20%), professione (15%), formazione (10%) e ruolo istituzionale (5%). I segnali di attività decadono nel tempo e l'appartenenza al gruppo è risolta alla data dell'intervento, così i cambi di casacca non falsano il punteggio. Tutti i pesi sono pubblici e regolabili dalle impostazioni.",
+    "quoteTitle": "Citazioni letterali per costruzione",
+    "quoteBody": "Ogni citazione pubblicata è verificata come sottostringa esatta del resoconto stenografico: le citazioni non conformi vengono scartate o rimappate sulle frasi originali. Il modello linguistico non può introdurre testo di citazione proprio.",
+    "kgTitle": "Il knowledge graph dietro le risposte",
+    "kgBody": "I dati aperti della Camera sono trasformati in un grafo (Neo4j) che collega sedute, dibattiti, interventi, spezzoni di testo, deputati, gruppi, commissioni e atti con validità temporale. Allo snapshot di febbraio 2026: 232.755 nodi e 488.487 relazioni, 40.416 interventi in 151.073 spezzoni; il grafo è aggiornato in continuo e riesportato in RDF con vocabolari standard.",
+    "evalTitle": "La valutazione",
+    "evalBody": "Su 15 temi di policy, ParliamentRAG è stato confrontato alla cieca con Google NotebookLM da sei esperti del settore (giornalisti e analisti parlamentari), oltre che con metriche automatiche.",
+    "evalResults": "Fedeltà delle citazioni: 1.00 contro 0.95. Gruppi citati: 0.97 contro 0.95. Preferito su copertura, rilevanza e autorevolezza delle fonti; NotebookLM resta più forte su fluidità e chiarezza della prosa.",
+    "orkgCta": "Scheda ORKG",
+    "zenodoCta": "Dataset su Zenodo",
+    "mcpCta": "Server MCP"
   }
 }
