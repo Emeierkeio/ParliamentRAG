@@ -43,7 +43,7 @@ function mapRawToConfig(raw: any): SystemConfig {
       dense_similarity_threshold: raw.retrieval.dense_similarity_threshold,
       graph_lexical_min_match: raw.retrieval.graph_lexical_min_match,
       graph_semantic_threshold: raw.retrieval.graph_semantic_threshold,
-      graph_chunk_similarity_threshold: raw.retrieval.graph_chunk_similarity_threshold ?? 0.3,
+      graph_chunk_similarity_threshold: raw.retrieval.graph_chunk_similarity_threshold ?? 0.65,
       graph_max_acts_per_query: raw.retrieval.graph_max_acts_per_query ?? 100,
       merger_weights: raw.retrieval.merger_weights,
     },

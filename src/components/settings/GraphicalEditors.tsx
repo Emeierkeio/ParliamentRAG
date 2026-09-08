@@ -518,7 +518,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               <Input
                 type="number" step={0.05} min={0} max={1}
                 value={data.dense_similarity_threshold}
-                onChange={(e) => update({ dense_similarity_threshold: parseFloat(e.target.value) || 0.3 })}
+                onChange={(e) => update({ dense_similarity_threshold: parseFloat(e.target.value) || 0.55 })}
                 className="h-8 flex-1"
               />
             </FieldWithUnit>
@@ -558,7 +558,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
               <Input
                 type="number" step={0.05} min={0} max={1}
                 value={data.graph_chunk_similarity_threshold}
-                onChange={(e) => update({ graph_chunk_similarity_threshold: parseFloat(e.target.value) || 0.3 })}
+                onChange={(e) => update({ graph_chunk_similarity_threshold: parseFloat(e.target.value) || 0.65 })}
                 className="h-8 flex-1"
               />
             </FieldWithUnit>
