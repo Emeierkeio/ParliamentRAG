@@ -176,13 +176,10 @@ generation:
     # is still used by pipeline.py as the citation-repair fallback for
     # sections whose quotes fail verification.
 
-  # Exposed in the settings UI, not yet wired to the pipeline: each stage
-  # sets its own tuned temperature/max_tokens in code (analyst 0.1/2000,
-  # sectional 0.1/800, integrator 0.0/5000). Changing these has no effect.
-  parameters:
-    max_tokens: 4000
-    temperature: 0.3
-    top_p: 1.0
+  # Sampling parameters are intentionally NOT configurable: each stage sets
+  # its own tuned temperature/max_tokens in code (analyst 0.1/2000,
+  # sectional 0.1/800, integrator 0.0/5000), chosen for reproducible
+  # verbatim citations.
 
   # Position brief: provides group-level context to the sectional writer
   # so citations are selected consistently with the group's overall stance
@@ -192,14 +189,7 @@ generation:
     chars_per_chunk: 400   # Max chars per chunk in the brief
     context_chars: 500     # Context chars shown per evidence item
 
-  # All 10 parties must have sections
-  require_all_parties: true
   no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
-
-  # Exposed in the settings UI, not yet wired to the pipeline: Stage 3.5
-  # (convergence-divergence synthesis) was removed, so the flag is read but
-  # never acted upon. Changing it has no effect.
-  enable_synthesis: true
 
 # Coalition definitions for temporal authority logic.
 # Coalition crossing (maggioranza <-> opposizione) invalidates prior authority.
@@ -225,12 +215,10 @@ coalitions:
 
 # Citation extraction settings
 citation:
-  # Exposed in the settings UI, not yet wired to the pipeline: extraction is
-  # offset-based in code regardless of this value.
-  method: "offset"
+  # Display format only. The verbatim-substring verification is a pipeline
+  # invariant, not an option: every published quote is re-extracted from the
+  # source speech and must match exactly.
   format: "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
-  # Validation: re-extract must match stored quote_text
-  verify_on_insert: true
   # Semantic dedup threshold (cosine similarity, MMR-inspired)
   # Citations with similarity > threshold are considered duplicates
   dedup_similarity_threshold: 0.85

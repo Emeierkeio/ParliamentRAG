@@ -21,12 +21,6 @@ export interface SystemConfig {
   };
   generation: {
     models: Record<string, string>;
-    parameters: {
-      max_tokens: number;
-      temperature: number;
-      top_p: number;
-    };
-    enable_synthesis: boolean;
     position_brief: {
       enabled: boolean;
       max_chunks: number;
@@ -63,8 +57,6 @@ function mapRawToConfig(raw: any): SystemConfig {
     },
     generation: {
       models: raw.generation.models,
-      parameters: raw.generation.parameters ?? { max_tokens: 4000, temperature: 0.3, top_p: 1.0 },
-      enable_synthesis: raw.generation.enable_synthesis ?? true,
       position_brief: raw.generation.position_brief,
       no_evidence_message: raw.generation.no_evidence_message,
     },
