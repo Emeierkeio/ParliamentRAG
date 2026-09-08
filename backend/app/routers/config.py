@@ -345,7 +345,8 @@ async def update_configuration(update: ConfigUpdateRequest):
     Update system configuration (partial merge).
 
     Only retrieval, authority, and generation sections can be updated.
-    Changes are persisted to config/default.yaml.
+    Changes apply in-memory for the current process and are lost on restart;
+    config/default.yaml on disk stays the source of truth.
     """
     config = get_config()
     current = config.load_config()

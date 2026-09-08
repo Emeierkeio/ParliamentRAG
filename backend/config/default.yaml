@@ -49,12 +49,12 @@ retrieval:
 authority:
   weights:
     # Semantic signals (topic-specific, highest quality):
-    profession: 0.15   # Cosine sim query ↔ profession embedding  [was 0.10]
+    profession: 0.15   # Cosine sim query ↔ profession embedding
     education: 0.10    # Cosine sim query ↔ education embedding
-    committee: 0.25    # Cosine sim query ↔ committee embedding    [was 0.20]
+    committee: 0.25    # Cosine sim query ↔ committee embedding
     # Activity signals (count-based, not topic-filtered):
-    acts: 0.20         # Weighted act count (time-decayed)         [was 0.25]
-    interventions: 0.25 # Weighted speech count (time-decayed)     [was 0.30]
+    acts: 0.20         # Weighted act count (time-decayed)
+    interventions: 0.25 # Weighted speech count (time-decayed)
     # Structural signal:
     role: 0.05         # Institutional role (president/VP/secretary)
 
