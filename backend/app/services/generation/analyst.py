@@ -5,18 +5,13 @@ Decomposes the query into atomic claims with evidence requirements.
 """
 import json
 import logging
-from typing import List, Dict, Any, Optional
-
-import openai
+from typing import List, Dict, Any
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client
 from ...tracing import stage
 
 logger = logging.getLogger(__name__)
-
-MAX_RETRIES = 3
-RETRY_BASE_DELAY = 2.0  # seconds
 
 
 class ClaimAnalyst:
@@ -72,13 +67,8 @@ Rispondi SOLO in formato JSON valido con questa struttura:
         query: str,
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """
-        Synchronous analyze (used by main pipeline).
-        """
-        # Build evidence summary for the prompt
+        """Decompose the query into atomic claims (synchronous)."""
         evidence_summary = self._summarize_evidence(evidence_list)
-
-        # Get all parties represented
         parties_in_evidence = set(e.get("party", "MISTO") for e in evidence_list)
 
         user_prompt = self._build_prompt(query, parties_in_evidence, evidence_summary)
@@ -129,7 +119,6 @@ Rispondi SOLO in formato JSON valido con questa struttura:
 
             result = json.loads(response.choices[0].message.content)
 
-            # Validate structure
             if "claims" not in result:
                 result["claims"] = []
 

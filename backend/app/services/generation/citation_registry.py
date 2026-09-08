@@ -1,19 +1,12 @@
-"""
-Citation Registry for pipeline-wide citation tracking.
+"""Citation registry for pipeline-wide citation tracking.
 
-Maintains binding between:
-- Claims (from analyst)
-- Evidence (from retrieval)
-- Citation placeholders (in generated text)
-- Final formatted citations (from surgeon)
-
-This module provides complete traceability and verification
-of citations throughout the generation pipeline.
+Maintains the binding between retrieved evidence, citation placeholders in
+generated text, and the final formatted citations from the surgeon stage.
 """
 import re
 import logging
 from typing import Dict, List, Any, Optional, Set
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 
 logger = logging.getLogger(__name__)
@@ -54,31 +47,11 @@ class CitationBinding:
 
 
 class CitationRegistry:
-    """
-    Central registry for tracking citations through the pipeline.
+    """Track citations through the pipeline.
 
-    Usage:
-    1. Register all available evidence at start
-    2. Mark citations as bound when written into sections
-    3. Verify all placeholders present after integration
-    4. Track resolution status in surgeon stage
-    5. Final verification: all citations resolved
-
-    Example:
-        registry = CitationRegistry()
-        registry.register_evidence(evidence_list)
-
-        # During sectional writing
-        registry.bind_citation("e1", "PARTY", "Intro text...")
-
-        # After integration
-        report = registry.verify_placeholders_in_text(integrated_text)
-
-        # After surgeon
-        registry.mark_resolved("e1", success=True)
-
-        # Final report
-        final = registry.get_final_report()
+    Lifecycle: register_evidence at start, bind_citation during sectional
+    writing, verify_placeholders_in_text after integration, mark_resolved
+    in the surgeon stage, then get_final_report.
     """
 
     def __init__(self):
@@ -87,12 +60,7 @@ class CitationRegistry:
         self._pipeline_stage: str = "init"
 
     def register_evidence(self, evidence_list: List[Dict[str, Any]]) -> None:
-        """
-        Register all available evidence at pipeline start.
-
-        Args:
-            evidence_list: List of evidence dictionaries with evidence_id
-        """
+        """Register all available evidence at pipeline start."""
         self._pipeline_stage = "registration"
 
         for e in evidence_list:
@@ -116,17 +84,7 @@ class CitationRegistry:
         section_party: str,
         intro_text: str
     ) -> bool:
-        """
-        Mark a citation as bound to a text section.
-
-        Args:
-            evidence_id: The evidence ID being cited
-            section_party: The party section where this citation appears
-            intro_text: The introductory text leading to the citation
-
-        Returns:
-            True if binding was successful
-        """
+        """Mark a citation as bound to a party section."""
         if evidence_id not in self._bindings:
             logger.warning(f"Binding unknown evidence: {evidence_id}")
             self._bindings[evidence_id] = CitationBinding(
@@ -144,27 +102,16 @@ class CitationRegistry:
         return True
 
     def verify_placeholders_in_text(self, text: str) -> Dict[str, Any]:
-        """
-        Verify all expected citations have placeholders in text.
+        """Verify all expected [CIT:id] placeholders survived integration.
 
-        Called after integrator stage to ensure no citations were lost.
-
-        Args:
-            text: The integrated text with [CIT:id] placeholders
-
-        Returns:
-            Verification report with missing/unexpected citations
+        Returns a report with missing/unexpected citation IDs.
         """
         self._pipeline_stage = "placeholder_verification"
 
-        # Find all [CIT:id] in text
         found_ids = set(re.findall(r'\[CIT:([^\]]+)\]', text))
-
-        # Check expected vs found
         missing = self._expected_citations - found_ids
         unexpected = found_ids - self._expected_citations
 
-        # Update binding statuses
         for eid in found_ids:
             if eid in self._bindings:
                 self._bindings[eid].status = CitationStatus.IN_TEXT
@@ -195,14 +142,7 @@ class CitationRegistry:
         success: bool,
         error: Optional[str] = None
     ) -> None:
-        """
-        Mark a citation as resolved or failed.
-
-        Args:
-            evidence_id: The evidence ID that was processed
-            success: Whether resolution was successful
-            error: Optional error message if failed
-        """
+        """Mark a citation as resolved or failed."""
         if evidence_id in self._bindings:
             binding = self._bindings[evidence_id]
             binding.status = CitationStatus.RESOLVED if success else CitationStatus.FAILED
@@ -216,13 +156,7 @@ class CitationRegistry:
         evidence_id: str,
         score: float
     ) -> None:
-        """
-        Set the semantic coherence score for a citation.
-
-        Args:
-            evidence_id: The evidence ID
-            score: Coherence score between 0 and 1
-        """
+        """Set the semantic coherence score (0-1) for a citation."""
         if evidence_id in self._bindings:
             self._bindings[evidence_id].semantic_coherence_score = score
 
@@ -230,21 +164,11 @@ class CitationRegistry:
         """Get the set of expected citation IDs."""
         return self._expected_citations.copy()
 
-    def get_binding(self, evidence_id: str) -> Optional[CitationBinding]:
-        """Get a specific binding by evidence ID."""
-        return self._bindings.get(evidence_id)
-
     def get_final_report(self) -> Dict[str, Any]:
-        """
-        Generate final citation integrity report.
+        """Generate the final citation integrity report.
 
-        Returns:
-            Comprehensive report including:
-            - Total registered evidence
-            - Expected citations count
-            - Resolved/failed/orphaned counts
-            - Success rate
-            - Detailed breakdown by status
+        Includes resolved/failed/orphaned counts, success rate and a
+        per-status breakdown of bindings.
         """
         total = len(self._bindings)
         by_status: Dict[str, List[Dict[str, Any]]] = {}
@@ -280,24 +204,6 @@ class CitationRegistry:
             "by_status": by_status,
             "pipeline_stage": self._pipeline_stage
         }
-
-    def get_bindings(self) -> Dict[str, CitationBinding]:
-        """Get all bindings for debugging."""
-        return self._bindings.copy()
-
-    def get_failed_citations(self) -> List[Dict[str, Any]]:
-        """Get list of failed citations with details."""
-        failed = []
-        for binding in self._bindings.values():
-            if binding.status in (CitationStatus.FAILED, CitationStatus.ORPHANED):
-                failed.append({
-                    "evidence_id": binding.evidence_id,
-                    "status": binding.status.value,
-                    "speaker": binding.speaker_name,
-                    "party": binding.party,
-                    "error": binding.error_message
-                })
-        return failed
 
     def reset(self) -> None:
         """Reset the registry for a new pipeline run."""

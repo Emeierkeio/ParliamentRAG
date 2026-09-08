@@ -1,27 +1,13 @@
-"""
-Evidence-First Sectional Writer.
+"""Evidence-first sectional writer.
 
-Builds text AROUND citations rather than adding citations to text.
-This approach ensures 100% semantic coherence by construction.
-
-Instead of:
-1. Write text with placeholders
-2. Hope the LLM puts citations in the right place
-
-We do:
-1. Select the exact evidence to cite
-2. Extract the quote
-3. Ask LLM to write ONLY the intro that leads into this specific quote
-4. Assemble: intro + [CIT:id]
-
-This guarantees that the introductory text is semantically aligned
-with the citation because the LLM sees the actual quote before writing.
+Builds text around a pre-selected citation: the quote is fixed first, then
+the LLM writes only the introductory text leading into it, so intro and
+citation are semantically aligned by construction. Used by the pipeline to
+substitute hard-removed citations.
 """
 import re
 import logging
-from typing import List, Dict, Any, Optional
-
-import openai
+from typing import List, Dict, Any
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client
@@ -30,17 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class EvidenceFirstWriter:
-    """
-    Stage 2 Alternative: Evidence-First Generation.
-
-    For each party section:
-    1. Select top 1-2 evidence pieces
-    2. Extract the EXACT quote that will be cited
-    3. Ask LLM to write ONLY the introductory text that leads into the quote
-    4. Assemble: intro + [CIT:id]
-
-    This guarantees semantic coherence by construction.
-    """
+    """Write party sections around pre-selected quotes (intro-only LLM call)."""
 
     INTRO_GENERATION_PROMPT = """Sei un redattore parlamentare italiano.
 
@@ -96,22 +72,10 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
         evidence: List[Dict[str, Any]],
         max_citations: int = 2
     ) -> Dict[str, Any]:
-        """
-        Write section with evidence-first approach.
+        """Write a party section with the evidence-first approach.
 
-        Args:
-            query: The user's original query
-            party: The party name for this section
-            evidence: List of evidence for this party
-            max_citations: Maximum number of citations to include (default: 2)
-
-        Returns:
-            Section dictionary with:
-            - party: Party name
-            - content: Generated content with [CIT:id] placeholders
-            - citations: List of citation metadata
-            - has_evidence: Boolean
-            - citation_bindings: List of binding info for registry
+        Returns a section dict with party, content ([CIT:id] placeholders),
+        citations, has_evidence and citation_bindings.
         """
         if not evidence:
             return {
@@ -122,14 +86,12 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
                 "citation_bindings": []
             }
 
-        # Select top evidence pieces by similarity score
         selected_evidence = sorted(
             evidence,
             key=lambda e: e.get("similarity", 0),
             reverse=True
         )[:max_citations]
 
-        # Build section content
         content_parts = []
         citation_bindings = []
         citations = []
@@ -137,15 +99,11 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
         for e in selected_evidence:
             evidence_id = e.get("evidence_id", "")
             speaker_name = e.get("speaker_name", "")
-            # Extract surname for brevity
             speaker_surname = speaker_name.split()[-1] if speaker_name else "L'oratore"
             party_name = e.get("party", party)
             quote_text = e.get("quote_text") or e.get("chunk_text", "")
-
-            # Limit quote length for prompt
             quote_for_prompt = quote_text[:400] if len(quote_text) > 400 else quote_text
 
-            # Generate introduction text
             intro_text = await self._generate_introduction(
                 query=query,
                 speaker_name=speaker_name,
@@ -155,11 +113,9 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
                 evidence_id=evidence_id
             )
 
-            # Assemble with citation placeholder
             full_segment = f"{intro_text} [CIT:{evidence_id}]."
             content_parts.append(full_segment)
 
-            # Record binding for verification
             citation_bindings.append({
                 "evidence_id": evidence_id,
                 "intro_text": intro_text,
@@ -175,7 +131,6 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
                 "date": str(e.get("date", "")),
             })
 
-        # Add section header
         content = f"### {party}\n\n" + " ".join(content_parts)
 
         return {
@@ -195,20 +150,7 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
         quote_text: str,
         evidence_id: str
     ) -> str:
-        """
-        Generate introduction text for a specific citation.
-
-        Args:
-            query: User's query
-            speaker_name: Full speaker name
-            speaker_surname: Speaker's surname for brevity
-            party: Political party
-            quote_text: The actual quote to introduce
-            evidence_id: Evidence ID for logging
-
-        Returns:
-            Introduction text ready to be concatenated with [CIT:id]
-        """
+        """Generate the intro text to be concatenated with [CIT:id]."""
         prompt = self.INTRO_GENERATION_PROMPT.format(
             speaker_name=speaker_name,
             speaker_surname=speaker_surname,
@@ -227,19 +169,18 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
 
             intro = response.choices[0].message.content.strip()
 
-            # Clean up - remove any accidental citation markers
+            # Strip accidental citation markers and quote marks (straight and
+            # curly) the model may have added despite the prompt rules.
             intro = re.sub(r'\[CIT:[^\]]*\]', '', intro)
-
-            # Remove any quotes that might have been added
             intro = intro.replace('«', '').replace('»', '')
-            intro = intro.replace('"', '').replace('"', '').replace('"', '')
+            intro = intro.replace('"', '').replace('“', '').replace('”', '')
 
-            # Ensure it ends with an introductory construction
+            # If the intro does not end with an introductory connective,
+            # at least drop a trailing period so the quote can follow.
             if not any(intro.rstrip().endswith(ending) for ending in [
                 "che", "come", "quanto", "quando", "dove",
                 "quale", "quali", "perché"
             ]):
-                # If it ends with a period, remove it
                 intro = intro.rstrip('.')
 
             logger.debug(f"Generated intro for {evidence_id}: {intro[:50]}...")
@@ -248,20 +189,4 @@ ORA SCRIVI SOLO IL TESTO INTRODUTTIVO:"""
 
         except Exception as e:
             logger.error(f"Introduction generation failed for {evidence_id}: {e}")
-            # Fallback: generic introduction
             return f"**{speaker_surname}** interviene sul tema, affermando che"
-
-    def write_section_evidence_first_sync(
-        self,
-        query: str,
-        party: str,
-        evidence: List[Dict[str, Any]],
-        max_citations: int = 2
-    ) -> Dict[str, Any]:
-        """
-        Synchronous version of write_section_evidence_first.
-        """
-        import asyncio
-        return asyncio.run(
-            self.write_section_evidence_first(query, party, evidence, max_citations)
-        )

@@ -20,17 +20,13 @@ from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Pattern registry
-# ---------------------------------------------------------------------------
-
 # Strong patterns: high confidence of reported speech, especially at the
 # beginning of a chunk (opening_is_reported).
 _STRONG_PATTERNS = [
     # "ieri/oggi la collega/il collega X ha dichiarato che..."
     re.compile(
         r'\b(?:ieri|oggi|l\'altro\s+ieri)\s+'
-        r'(?:la\s+collega|il\s+collega|l\'onorevole|l\'on\.|il\s+collega|la\s+collega)\s+'
+        r'(?:la\s+collega|il\s+collega|l\'onorevole|l\'on\.)\s+'
         r'\w+\s+ha\s+\w+\s+che\b',
         re.IGNORECASE,
     ),
@@ -62,7 +58,7 @@ _REGULAR_PATTERNS = [
     ),
     # "secondo X" / "stando a X" where X is a noun phrase
     re.compile(
-        r'\b(?:secondo|stando\s+a)\s+(?:il|la|lo|i|gli|le|un|una|l\'|l\')\b',
+        r'\b(?:secondo|stando\s+a)\s+(?:il|la|lo|i|gli|le|un|una|l\')\b',
         re.IGNORECASE,
     ),
     # "l'onorevole / l'on. X ha [verb]"
@@ -82,10 +78,6 @@ _ATTRIBUTED_INLINE_QUOTE = re.compile(
     re.IGNORECASE,
 )
 
-
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
 
 def detect_reported_speech(text: str) -> Dict[str, Any]:
     """
@@ -141,11 +133,11 @@ def detect_reported_speech(text: str) -> Dict[str, Any]:
             opening_is_reported = True
             confidence = max(confidence, 0.90)
 
-    # Gate a 0.75: i pattern regular (0.60) da soli producevano troppi falsi
-    # positivi su posizioni dirette in prima persona («Noi chiediamo il pieno
-    # riconoscimento…» di Schlein flaggata, osservato 2026-07-23) — proprio il
-    # materiale sostanziale di PD/AVS. Da soli ora non bastano; servono i
-    # pattern strong (0.85-0.90) o l'attributed inline quote (0.85+).
+    # Gate at 0.75: regular patterns (0.60) alone produced too many false
+    # positives on direct first-person positions («Noi chiediamo il pieno
+    # riconoscimento…» by Schlein flagged, observed 2026-07-23) — exactly the
+    # substantive PD/AVS material. Alone they no longer suffice; a strong
+    # pattern (0.85-0.90) or an attributed inline quote (0.85+) is required.
     has_reported = confidence >= 0.75
 
     return {

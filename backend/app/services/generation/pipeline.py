@@ -1,23 +1,16 @@
-"""
-4-Stage Generation Pipeline Orchestrator.
+"""4-stage generation pipeline orchestrator.
 
-Coordinates:
-1. Analyst - Claim decomposition
-2. Sectional Writer - Per-party sections
-3. Narrative Integrator - Coherence
-4. Citation Surgeon - Verbatim citations
-
-Includes citation integrity system:
-- Citation Registry: tracks citations through pipeline
-- Coherence Validator: verifies semantic alignment
-- Integrator Guard: prevents citation loss during integration
-- Final Completeness Check: ensures all citations resolved
+Stage 1 (analyst) decomposes the query into claims, stage 2 (sectional
+writer) writes per-party sections, stage 3 (integrator) merges them into a
+coherent narrative, stage 4 (surgeon) resolves verbatim citations. A
+citation registry, a coherence validator and an integrator guard track
+citations through the stages and verify that all of them are resolved.
 """
 import re
 import time
 import asyncio
 import logging
-from typing import List, Dict, Any, Optional, AsyncIterator
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from .analyst import ClaimAnalyst
@@ -25,7 +18,6 @@ from .sectional import SectionalWriter
 from .evidence_first_writer import EvidenceFirstWriter
 from .integrator import NarrativeIntegrator
 from .surgeon import CitationSurgeon
-from .synthesis import ConvergenceDivergenceAnalyzer
 from .citation_registry import CitationRegistry
 from .coherence_validator import CoherenceValidator
 from ...config import get_config
@@ -35,36 +27,19 @@ logger = logging.getLogger(__name__)
 
 
 class GenerationPipeline:
-    """
-    Orchestrates the 4-stage generation pipeline with citation integrity.
-
-    Stage 1 (Analyst): Query → Atomic claims with evidence requirements
-    Stage 2 (Sectional): Claims + Evidence → Per-party sections
-    Stage 3 (Integrator): Sections → Coherent narrative (with guard)
-    Stage 4 (Surgeon): Narrative → Final text with verbatim citations
-
-    Citation Integrity System:
-    - Registry: Tracks all citations through the pipeline
-    - Coherence Validator: Ensures semantic alignment
-    - Integrator Guard: Prevents citation loss
-    - Final Check: Verifies all citations resolved
-    """
+    """Orchestrate the 4-stage generation pipeline with citation integrity."""
 
     def __init__(self):
         self.config = get_config()
         config_data = self.config.load_config()
         integrity_config = config_data.get("citation", {}).get("integrity", {})
 
-        gen_config = config_data.get("generation", {})
-        self.enable_synthesis = gen_config.get("enable_synthesis", True)
-
         self.analyst = ClaimAnalyst()
         self.sectional_writer = SectionalWriter()
-        # Sostituzione citazioni hard-removed: intro coerenti per costruzione
+        # Substitutes hard-removed citations: intros coherent by construction
         self.evidence_first_writer = EvidenceFirstWriter()
         self.integrator = NarrativeIntegrator()
         self.surgeon = CitationSurgeon()
-        self.synthesis_analyzer = ConvergenceDivergenceAnalyzer()
         self.coherence_validator = CoherenceValidator(
             min_coherence_score=integrity_config.get("min_coherence_score", 0.6),
             method=integrity_config.get("coherence_method", "embedding"),
@@ -78,16 +53,10 @@ class GenerationPipeline:
         stream_callback: Optional[callable] = None,
         query_context: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """
-        Run the complete generation pipeline with citation integrity.
+        """Run the complete generation pipeline with citation integrity.
 
-        Args:
-            query: User query
-            evidence_list: Retrieved evidence
-            stream_callback: Optional callback for streaming progress
-
-        Returns:
-            Complete response with text, citations, metadata, and integrity report
+        stream_callback, when given, receives progress events per stage.
+        Returns the final text with citations, metadata and integrity report.
         """
         start_time = datetime.now()
         pipeline_metadata = {
@@ -96,11 +65,10 @@ class GenerationPipeline:
             "citation_integrity": {}
         }
 
-        # Initialize Citation Registry for tracking
         registry = CitationRegistry()
         registry.register_evidence(evidence_list)
 
-        # === Stage 1: Analyst ===
+        # Stage 1: analyst
         if stream_callback:
             await stream_callback({
                 "type": "progress",
@@ -122,16 +90,13 @@ class GenerationPipeline:
 
         logger.info(f"Stage 1 complete: {len(claims)} claims identified")
 
-        # === Prepare evidence by party ===
         evidence_by_party = self._group_evidence_by_party(evidence_list)
         government_evidence = self._get_government_evidence(evidence_list)
-
-        # Build evidence map for surgeon
         evidence_map = {
             e.get("evidence_id"): e for e in evidence_list if e.get("evidence_id")
         }
 
-        # === Stage 2: Sectional Writer ===
+        # Stage 2: sectional writer
         if stream_callback:
             await stream_callback({
                 "type": "progress",
@@ -179,7 +144,7 @@ class GenerationPipeline:
         logger.info(f"Stage 2 complete: {len(sections)} sections written, "
                     f"{len(registry.get_expected_citations())} citations bound")
 
-        # === Stage 3: Narrative Integrator with Guard ===
+        # Stage 3: narrative integrator with citation guard
         if stream_callback:
             await stream_callback({
                 "type": "progress",
@@ -187,10 +152,8 @@ class GenerationPipeline:
                 "message": "Integrating narrative..."
             })
 
-        # Compute topic statistics for the introduction
         topic_statistics = self._compute_topic_statistics(evidence_list)
 
-        # Use integrate_with_guard to verify citation preservation
         _stage_t0 = time.perf_counter()
         integrated = self.integrator.integrate_with_guard(
             query, sections, registry, topic_statistics=topic_statistics
@@ -207,10 +170,10 @@ class GenerationPipeline:
         logger.info(f"Stage 3 complete: Narrative integrated, "
                     f"{integrated.get('citations_repaired', 0)} citations repaired")
 
-        # === Post-Integration: Party Name Completeness Check ===
-        # The Integrator LLM occasionally drops a party's "Per [Party Name]," prefix
-        # or uses an abbreviation.  Detect and inject the original section content
-        # as a fallback paragraph so the metric is not penalised unfairly.
+        # Party-name completeness check: the integrator LLM occasionally drops
+        # a party's "Per [Party Name]," prefix or uses an abbreviation. Detect
+        # and inject the original section content as a fallback paragraph so
+        # the metric is not penalised unfairly.
         integrated_text_after_guard = integrated.get("text", "")
         integrated_text_after_guard, injected_parties = self._inject_missing_party_paragraphs(
             integrated_text_after_guard, sections
@@ -218,15 +181,15 @@ class GenerationPipeline:
         if injected_parties:
             pipeline_metadata["stages"]["party_injection"] = {"injected_parties": injected_parties}
 
-        # L'integrator può duplicare la quote di un partito dentro il paragrafo
-        # di un ALTRO partito (sezioni citation-free "arricchite"): stesso
-        # [CIT:id] due volte = errore sempre, si tiene solo il paragrafo giusto.
+        # The integrator can duplicate one party's quote inside ANOTHER
+        # party's paragraph ("enriched" citation-free sections): the same
+        # [CIT:id] twice is always an error, keep only the right paragraph.
         integrated_text_after_guard = self._dedupe_citation_occurrences(
             integrated_text_after_guard, evidence_map
         )
         integrated["text"] = integrated_text_after_guard
 
-        # === Post-Integration: Balance Check (Coverage-based Fairness) ===
+        # Balance check (coverage-based fairness)
         balance_info = self._check_coalition_balance(integrated.get("text", ""))
         pipeline_metadata["stages"]["balance"] = balance_info
         if balance_info.get("balance_warning"):
@@ -237,13 +200,11 @@ class GenerationPipeline:
                 f"ratio={balance_info['ratio']:.1f}:1"
             )
 
-        # Stage 3.5 (Convergence-Divergence Analysis) removed
-
-        # === Pre-Surgeon: Coherence Validation ===
-        # Riversa le quote scelte dal picker in evidence_map PRIMA della
-        # validazione: il validator deve confrontare l'intro con la QUOTE
-        # scelta, non con l'embedding del chunk intero (~1200 char multi-tema)
-        # → score 0.15-0.20 e hard-remove sistematico (osservato 2026-07-23).
+        # Pre-surgeon coherence validation. Pour the picker-chosen quotes
+        # into evidence_map BEFORE validating: the validator must compare the
+        # intro against the chosen QUOTE, not the embedding of the whole
+        # chunk (~1200 multi-topic chars) → score 0.15-0.20 and systematic
+        # hard-removal (observed 2026-07-23).
         for section in sections:
             for pick_eid, pick_quote in (section.get("picked_quotes") or {}).items():
                 if pick_eid in evidence_map and pick_quote:
@@ -271,13 +232,13 @@ class GenerationPipeline:
 
             # Hard-remove citations with extreme mismatch (likely wrong source cited)
             HARD_REMOVE_THRESHOLD = 0.35
-            # Le quote VETTATE dal picker sono esenti dall'hard-remove: il
-            # writer costruisce l'intro ATTORNO alla quote obbligatoria, la
-            # coerenza è garantita per costruzione. La similarity embedding
-            # tra due testi corti è un giudice peggiore del contratto
-            # picker+writer: sulle query di nicchia scendeva sotto 0.35 per
-            # quasi tutte le citazioni buone innescando sostituzioni a catena
-            # (e sezioni senza quote dove il pool è sottile, 2026-07-24).
+            # Picker-VETTED quotes are exempt from hard-removal: the writer
+            # builds the intro AROUND the mandatory quote, so coherence is
+            # guaranteed by construction. Embedding similarity between two
+            # short texts is a worse judge than the picker+writer contract:
+            # on niche queries it dropped below 0.35 for almost all good
+            # citations, triggering chain substitutions (and quote-less
+            # sections where the pool is thin, 2026-07-24).
             hard_mismatches = [
                 ic for ic in incoherent
                 if ic.get("score", 1.0) < HARD_REMOVE_THRESHOLD
@@ -306,11 +267,11 @@ class GenerationPipeline:
                     # Also remove bare [CIT:id] if no inline quote preceded it
                     integrated_text = re.sub(rf'\[CIT:{re.escape(eid)}\]', '', integrated_text)
 
-                # Fase 2 (prima fetta) — SOSTITUZIONE prima della resa:
-                # per ogni citazione hard-removed prova l'evidenza successiva del
-                # partito via EvidenceFirstWriter (intro coerente per costruzione,
-                # era il suo scopo originario). Solo se non c'è alternativa si
-                # ripiega sul paragrafo senza citazione.
+                # Substitution before giving up: for each hard-removed
+                # citation try the party's next evidence via
+                # EvidenceFirstWriter (intro coherent by construction, its
+                # original purpose). Only when no alternative exists fall
+                # back to a citation-free paragraph.
                 if hard_mismatches:
                     removed_ids = {ic.get("evidence_id", "") for ic in hard_mismatches}
                     used_ids = set(re.findall(r'\[CIT:([^\]]+)\]', integrated_text))
@@ -325,7 +286,7 @@ class GenerationPipeline:
                             or removed_ev.get("speaker_role") == "GovernmentMember"
                         )
 
-                        # --- GOVERNO: sostituisci nella sezione dedicata ---
+                        # GOVERNO: substitute inside the dedicated section
                         if is_gov:
                             gov_alternatives = [
                                 e for e in government_evidence
@@ -333,10 +294,11 @@ class GenerationPipeline:
                                 and e.get("evidence_id") not in used_ids
                             ]
                             if gov_alternatives:
-                                # Anche la sostituzione passa dal quote picker
-                                # (2026-07-23: chunk_3 Meloni iniziava con la frase
-                                # sull'Ucraina — l'EvidenceFirstWriter la citava
-                                # bypassando ogni criterio di autosufficienza)
+                                # Substitutions also go through the quote
+                                # picker (2026-07-23: Meloni's chunk_3 opened
+                                # with the Ukraine sentence — the
+                                # EvidenceFirstWriter cited it, bypassing every
+                                # self-sufficiency criterion)
                                 pick_eid, pick_quote = await self.sectional_writer._pick_quote(
                                     query, gov_alternatives, query_context=query_context
                                 )
@@ -389,7 +351,7 @@ class GenerationPipeline:
                             continue
                         party_evidence = evidence_by_party.get(party, [])
 
-                        # --- PARTITO: prova la sostituzione con l'evidenza successiva ---
+                        # Party: try substitution with the next evidence
                         alternatives = [
                             e for e in party_evidence
                             if e.get("evidence_id") not in removed_ids
@@ -433,7 +395,7 @@ class GenerationPipeline:
                                     )
                                     continue
 
-                        # Nessuna alternativa: vecchio comportamento (paragrafo senza quote)
+                        # No alternative: old behavior (paragraph without quotes)
                         if party_evidence:
                             rewrite_tasks[party] = party_evidence
 
@@ -464,20 +426,18 @@ class GenerationPipeline:
                                 integrated_text, failed_rewrites
                             )
 
-        # === Dedup party paragraphs ===
         # The integrator LLM can emit the same party twice (observed 2026-07-23:
         # double Fratelli d'Italia, one smart-quoted ’ and one straight '), and
         # fallback injections can add a second paragraph when apostrophe
         # mismatches hid the original. One party = one paragraph, always.
         integrated_text = self._dedupe_party_paragraphs(integrated_text)
 
-        # Update registry with coherence scores
         for detail in coherence_report.get("details", []):
             eid = detail.get("evidence_id")
             score = detail.get("score", 0)
             registry.set_coherence_score(eid, score)
 
-        # === Stage 4: Citation Surgeon ===
+        # Stage 4: citation surgeon
         if stream_callback:
             await stream_callback({
                 "type": "progress",
@@ -492,7 +452,6 @@ class GenerationPipeline:
             query=query
         )
 
-        # Update registry with resolution status
         for cit in final_result.get("citations", []):
             registry.mark_resolved(cit.get("evidence_id"), success=True)
 
@@ -513,16 +472,16 @@ class GenerationPipeline:
             f"Stage 4 complete: {final_result.get('total_citations', 0)} citations inserted"
         )
 
-        # === Final Verification ===
+        # Final verification and cleanup
         final_text = final_result.get("text", "")
 
-        # Rete di sicurezza: gli splice della sostituzione post-coherence
-        # possono lasciare code orfane dello stesso link — «…»](id) senza
-        # apertura subito dopo il link completo (osservato 2026-07-24, Misto).
-        # Qualunque seconda occorrenza di ](id) è un residuo da rimuovere.
+        # Safety net: post-coherence substitution splices can leave orphaned
+        # tails of the same link — «…»](id) with no opening right after the
+        # complete link (observed 2026-07-24, Misto). Any second occurrence
+        # of ](id) is a leftover to remove.
         final_text = self._strip_residual_citation_fragments(final_text)
-        # "Ninety-one interventions" → "91 interventions" (solo intro):
-        # il prompt da solo non vince sulla convenzione stilistica inglese.
+        # "Ninety-one interventions" → "91 interventions" (intro only): the
+        # prompt alone does not beat the English stylistic convention.
         final_text = self._spelled_stats_to_digits(final_text)
         final_result["text"] = final_text
 
@@ -545,7 +504,7 @@ class GenerationPipeline:
                 f"{extra_citation_ids[:5]}"
             )
 
-        # === Post-Surgeon: Recover untracked citations ===
+        # Recover untracked citations after the surgeon.
         # The Integrator LLM sometimes outputs direct markdown links
         # [«quote»](evidence_id) instead of [CIT:id] placeholders.
         # These bypass the Surgeon's regex and are NOT in the citations list.
@@ -595,10 +554,11 @@ class GenerationPipeline:
             )
             final_text = re.sub(r'(?<!\[)«[^»]+»', '', final_text)
 
-        # Clean up verb-phrase artifacts left after removing a quote (bare or hard-removed).
-        # Runs unconditionally because hard-removal (lines 235-241) strips «quote»[CIT:id]
-        # but leaves attribution phrases like "**Lupi** afferma: ." intact — and since
-        # no bare «» remain afterwards, the bare_citations block above never fires.
+        # Clean up verb-phrase artifacts left after removing a quote (bare or
+        # hard-removed). Runs unconditionally because the coherence
+        # hard-removal above strips «quote»[CIT:id] but leaves attribution
+        # phrases like "**Lupi** afferma: ." intact — and since no bare «»
+        # remain afterwards, the bare_citations block above never fires.
         #
         # Three artifact patterns, applied in order:
         #
@@ -614,11 +574,10 @@ class GenerationPipeline:
         #    followed by a period (no object) is never a meaningful sentence here.
         final_text = re.sub(r'\*\*[^*\n]+\*\*\s+\w+\.', '', final_text)
 
-        # Check for unresolved [CIT:id] placeholders
+        # Replace unresolved [CIT:id] placeholders with an error marker
         remaining_placeholders = re.findall(r'\[CIT:([^\]]+)\]', final_text)
         if remaining_placeholders:
-            logger.error(f"UNRESOLVED CITATIONS: {remaining_placeholders}")
-            # Replace with error marker
+            logger.error(f"Unresolved citation placeholders: {remaining_placeholders}")
             for cit_id in remaining_placeholders:
                 final_text = final_text.replace(
                     f"[CIT:{cit_id}]",
@@ -629,16 +588,12 @@ class GenerationPipeline:
         # Save text with resolved placeholders (link stripping deferred to chat.py)
         final_result["text"] = final_text
 
-        # Extract unsupported claims (use existing method in surgeon)
         unsupported_claims = self.surgeon.extract_unsupported_claims(final_text)
-
-        # Get final registry report
         integrity_report = registry.get_final_report()
 
         pipeline_metadata["citation_integrity"]["final"] = integrity_report
         pipeline_metadata["citation_integrity"]["unsupported_claims"] = unsupported_claims
 
-        # === Finalize ===
         end_time = datetime.now()
         duration_ms = (end_time - start_time).total_seconds() * 1000
 
@@ -665,17 +620,6 @@ class GenerationPipeline:
                 "unresolved_placeholders": remaining_placeholders,
             }
         }
-
-    def generate_sync(
-        self,
-        query: str,
-        evidence_list: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
-        """
-        Synchronous version of generate.
-        """
-        import asyncio
-        return asyncio.run(self.generate(query, evidence_list))
 
     def _compute_topic_statistics(
         self,
@@ -736,7 +680,7 @@ class GenerationPipeline:
             if e.get("session_number")
         ]
 
-        # --- Detailed lists for frontend clickable stats ---
+        # Detailed lists for frontend clickable stats
 
         # Speakers: one entry per unique speaker with intervention count
         speaker_interventions: Dict[str, Dict[str, Any]] = {}
@@ -902,10 +846,10 @@ class GenerationPipeline:
             return text
         return '\n\n'.join(p for i, p in enumerate(parts) if i not in to_drop)
 
-    # Numeri inglesi scritti in lettere (1-99): il modello a inizio frase
-    # scrive "Ninety-one interventions" per convenzione stilistica anche se
-    # istruito a usare le cifre — e il frontend rende cliccabili le stats
-    # solo con \d+. Conversione deterministica, applicata alla sola intro.
+    # Spelled-out English numbers (1-99): at sentence start the model writes
+    # "Ninety-one interventions" by stylistic convention even when told to
+    # use digits — and the frontend makes stats clickable only via \d+.
+    # Deterministic conversion, applied to the intro only.
     _EN_UNITS = {
         "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
         "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
@@ -939,8 +883,8 @@ class GenerationPipeline:
                 return m.group(0)
             return f"{value} {m.group(2)}"
 
-        # Solo la sezione introduttiva (dal primo ## al secondo ##): le quote
-        # verbatim nelle sezioni partito non vanno MAI alterate.
+        # Intro section only (from the first ## to the second ##): verbatim
+        # quotes in the party sections must never be altered.
         first = re.search(r"^##\s", text, re.M)
         if not first:
             return text
@@ -956,12 +900,12 @@ class GenerationPipeline:
     def _strip_residual_citation_fragments(text: str) -> str:
         """Remove residual/duplicate occurrences of the same citation link.
 
-        Dopo il surgeon ogni citazione è un link [«quote»](chunk_id) e ogni
-        chunk_id deve comparire UNA volta. Gli splice della sostituzione
-        post-coherence possono lasciare code orfane («…»](id) senza apertura)
-        accodate al link completo. Si tiene la prima occorrenza completa e si
-        rimuove ogni altra ](id), estendendo a sinistra fino all'apertura del
-        frammento (« o confine di frase).
+        After the surgeon every citation is a [«quote»](chunk_id) link and
+        each chunk_id must appear once. Post-coherence substitution splices
+        can leave orphaned tails («…»](id) with no opening) appended to the
+        complete link. Keep the first complete occurrence and remove every
+        other ](id), extending leftward to the fragment opening (« or
+        sentence boundary).
         """
         link_re = re.compile(r'\[«[^»]{1,600}»\]\((leg1[89]_[^)\s]+)\)')
         first_span: Dict[str, tuple] = {}
@@ -974,9 +918,9 @@ class GenerationPipeline:
             eid = m.group(1)
             kept = first_span.get(eid)
             if kept and kept[0] <= m.start() < kept[1]:
-                continue  # è il link tenuto
+                continue  # this is the kept link
             if not kept:
-                continue  # occorrenza unica in formato inatteso: non toccare
+                continue  # single occurrence in unexpected format: leave alone
             start = m.start()
             idx_open = text.rfind('«', 0, start)
             idx_sent = max(text.rfind(ch, 0, start) for ch in '.!?\n')
@@ -1004,12 +948,12 @@ class GenerationPipeline:
     def _dedupe_citation_occurrences(text: str, evidence_map: Dict[str, Any]) -> str:
         """Remove duplicate occurrences of the same [CIT:id] across paragraphs.
 
-        L'integrator a volte "arricchisce" i paragrafi citation-free copiando
-        la quote+CIT di un ALTRO partito (osservato 2026-07-23: quote di
-        Bonetti/Azione attribuita al M5S con framing contraddittorio). Lo
-        stesso CIT id due volte è sempre un errore: si tiene l'occorrenza nel
-        paragrafo del partito dell'evidenza (fallback: la prima) e si rimuove
-        la frase intera nelle altre.
+        The integrator sometimes "enriches" citation-free paragraphs by
+        copying another party's quote+CIT (observed 2026-07-23: a
+        Bonetti/Azione quote attributed to M5S with contradictory framing).
+        The same CIT id twice is always an error: keep the occurrence in the
+        evidence's own party paragraph (fallback: the first) and remove the
+        whole sentence elsewhere.
         """
         ids = re.findall(r'\[CIT:([^\]]+)\]', text)
         dup_ids = {i for i in ids if ids.count(i) > 1}
@@ -1041,7 +985,7 @@ class GenerationPipeline:
                     '',
                     parts[i],
                 )
-                # fallback: CIT senza «» adiacenti (formato inatteso)
+                # Fallback: CIT without adjacent «» (unexpected format)
                 cleaned = cleaned.replace(f'[CIT:{eid}]', '')
                 parts[i] = re.sub(r'  +', ' ', cleaned).strip()
                 logger.warning(
@@ -1077,7 +1021,7 @@ class GenerationPipeline:
             if party in MAGGIORANZA:
                 magg_injections.append(para)
             elif party in MISTO:
-                # Il Misto ha un blocco proprio: non è ascrivibile a uno schieramento
+                # The Misto has its own block: not ascribable to either side
                 misto_injections.append(para)
             else:
                 opp_injections.append(para)
@@ -1125,10 +1069,10 @@ class GenerationPipeline:
     ) -> Dict[str, List[Dict[str, Any]]]:
         """Group evidence by parliamentary party.
 
-        SORTING STRATEGY — "most authoritative speaker first":
-        The goal is that per ogni gruppo parlamentare risponda la persona più
-        autorevole.  A pure linear score mix lets high-sim chunks from a
-        lower-authority speaker crowd out the capogruppo.  We prevent this
+        Sorting strategy — "most authoritative speaker first": the goal is
+        that each parliamentary group is answered by its most authoritative
+        person. A pure linear score mix lets high-similarity chunks from a
+        lower-authority speaker crowd out the capogruppo. We prevent this
         with a two-step speaker-first interleaving:
 
         1. Group chunks by speaker within each party.
@@ -1144,8 +1088,8 @@ class GenerationPipeline:
         position #2 to a different speaker, giving the sectional writer (and
         the semantic dedup) a genuinely diverse pair to work with.
 
-        IMPORTANT: Excludes government members (GovernmentMember) as they have
-        their own separate section.
+        Government members (GovernmentMember) are excluded: they have their
+        own separate section.
         """
         from collections import defaultdict
 
@@ -1186,7 +1130,7 @@ class GenerationPipeline:
                 continue
 
             # Step 1: ensure salience computed for all chunks
-            # (citability stored a index-time se presente, regex come fallback)
+            # (index-time citability score if present, neutral 0.5 otherwise)
             for e in chunks:
                 if e.get("salience") is None:
                     cit = e.get("citability_score")
@@ -1292,7 +1236,7 @@ class GenerationPipeline:
         "Alleanza Verdi e Sinistra": "alleanza verdi",
         "Azione - Popolari Europeisti Riformatori - Renew Europe": "azione",
         "Italia Viva - Casa Riformista": "italia viva",
-        # Denominazione precedente al rename dell'estate 2026
+        # Name in use before the summer 2026 rename
         "Italia Viva - Il Centro - Renew Europe": "italia viva",
         "Misto": "misto",
     }
@@ -1417,7 +1361,7 @@ class GenerationPipeline:
             return []
 
         # Ensure salience is computed for all chunks
-        # (citability stored a index-time se presente, regex come fallback)
+        # (index-time citability score if present, neutral 0.5 otherwise)
         for e in gov:
             if e.get("salience") is None:
                 cit = e.get("citability_score")

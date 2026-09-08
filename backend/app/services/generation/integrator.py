@@ -1,17 +1,12 @@
-"""
-Stage 3: Narrative Integrator
+"""Stage 3: narrative integrator.
 
-Ensures coherence across sections WITHOUT merging party positions.
-Each party's view must remain distinct and attributable.
-
-Includes citation guard functionality to verify citations
-are preserved during integration.
+Ensures coherence across sections without merging party positions: each
+party's view must remain distinct and attributable. Includes a citation
+guard that verifies citations are preserved during integration.
 """
 import re
 import logging
 from typing import List, Dict, Any, Optional, TYPE_CHECKING
-
-import openai
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client
@@ -24,14 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class NarrativeIntegrator:
-    """
-    Stage 3 of the generation pipeline.
-
-    Ensures narrative coherence while maintaining:
-    - Clear separation between party positions
-    - No synthesis that merges or confuses views
-    - Logical flow from government to opposition
-    """
+    """Merge party sections into one coherent document, positions kept distinct."""
 
     SYSTEM_PROMPT = """Sei un editor parlamentare. Crea un documento CONCISO e ben formattato.
 
@@ -49,7 +37,7 @@ Deriva il contenuto dalle sezioni dei partiti, ma SENZA anticipare le loro posiz
 
 FRASE 2 — LA SCALA:
 Numero di interventi analizzati, numero di deputati coinvolti e periodo temporale.
-⚠️ I numeri delle statistiche SEMPRE in CIFRE (91, 60), MAI in lettere
+IMPORTANTE: i numeri delle statistiche SEMPRE in CIFRE (91, 60), MAI in lettere
 ("novantuno", "Ninety-one") — in QUALUNQUE lingua e anche a inizio frase:
 il frontend li rende cliccabili solo se sono cifre. Se serve, riformula
 per non aprire la frase col numero ("Sono stati analizzati 91 interventi…" /
@@ -79,13 +67,13 @@ Mantieni l'attribuzione alle componenti indicata nella sezione di input («la
 componente X del gruppo Misto…») e NON presentare mai una posizione unitaria
 del Misto quando le componenti divergono.
 
-⚠️ IMPORTANTE - GOVERNO vs MAGGIORANZA:
+IMPORTANTE - GOVERNO vs MAGGIORANZA:
 - I membri del GOVERNO (ministri, presidente del consiglio) vanno in "Posizione del Governo"
 - I DEPUTATI dei partiti di maggioranza vanno in "Posizioni della Maggioranza"
 - Esempio: Meloni come Presidente del Consiglio → Governo
 - Esempio: Un deputato di Fratelli d'Italia → Maggioranza
 
-⚠️ FILTRO COMPETENZA - POSIZIONE DEL GOVERNO:
+FILTRO COMPETENZA - POSIZIONE DEL GOVERNO:
 In "## Posizione del Governo" includi SOLO:
 - Il Presidente del Consiglio (Meloni): sempre ammessa
 - Il/i Ministro/i con delega DIRETTAMENTE competente per il tema della query
@@ -100,7 +88,7 @@ la sezione "## Posizione del Governo".
 FORMATO:
 - NON usare titoli/header per i partiti (NO ###, NO MAIUSCOLE)
 - Le sezioni di input sono raggruppate in tag [BLOCCO: GOVERNO/MAGGIORANZA/OPPOSIZIONE/GRUPPO MISTO] e [PARTITO: Nome Partito]
-  ⚠️ QUESTI TAG SONO SOLO PER L'INPUT — NON copiarli nell'output. Scrivi tu i tuoi header ## ...
+  ATTENZIONE: QUESTI TAG SONO SOLO PER L'INPUT — NON copiarli nell'output. Scrivi tu i tuoi header ## ...
 - Ogni sezione di partito inizia con [PARTITO: Nome Partito]: usa quel nome per iniziare il paragrafo nell'output
 - Formato OBBLIGATORIO per il primo periodo: "Per [Nome Partito], [testo contestuale]..."
   Esempio: "Per Italia Viva - Casa Riformista, il gruppo sostiene con fermezza..."
@@ -113,30 +101,30 @@ STRUTTURA OBBLIGATORIA PER OGNI PARTITO (3 parti, preserva tutto il contenuto):
 2. CITAZIONE: la frase verbatim con il marcatore {CIT:N} (preserva esattamente dalla sezione input)
 3. POSIZIONAMENTO: 1-2 frasi sul posizionamento generale del gruppo (usa il testo di posizionamento dalla sezione input)
 
-⚠️ NON comprimere le sezioni: mantieni il contenuto completo di ciascuna sezione, solo integra il nome del partito all'inizio.
+VIETATO comprimere le sezioni: mantieni il contenuto completo di ciascuna sezione, solo integra il nome del partito all'inizio.
 
-⚠️ OGNI PARTITO ESATTAMENTE UNA VOLTA: un solo paragrafo "Per [Partito], ..." per
+OGNI PARTITO ESATTAMENTE UNA VOLTA: un solo paragrafo "Per [Partito], ..." per
 ciascun partito. MAI due paragrafi per lo stesso partito, nemmeno con nome scritto
 in modo leggermente diverso. Copia il nome del partito ESATTAMENTE dal tag
 [PARTITO: ...], apostrofi inclusi.
 
 COLLEGAMENTO TESTO-CITAZIONE (OBBLIGATORIO):
 Il marcatore {CIT:N} deve essere preceduto da un bridge verbale:
-✅ **Rossi** afferma che {CIT:3}
-✅ **Rossi** critica la riforma, sottolineando come {CIT:7}
-❌ **Rossi** critica la riforma. {CIT:3} ← SBAGLIATO
+GIUSTO: **Rossi** afferma che {CIT:3}
+GIUSTO: **Rossi** critica la riforma, sottolineando come {CIT:7}
+SBAGLIATO: **Rossi** critica la riforma. {CIT:3}
 
 REGOLE CITAZIONI:
-⚠️ {CIT:N} sono marcatori numerici - copiali ESATTAMENTE (es. {CIT:1}, {CIT:12})
-⚠️ TUTTI i marcatori {CIT:N} nell'input DEVONO apparire nell'output
-⚠️ NON aggiungere testo tra virgolette «» - il sistema inserirà la citazione
-⚠️ OGNI marcatore {CIT:N} appare UNA SOLA VOLTA, nella sezione del SUO partito.
-   Se una sezione input NON ha citazioni, il suo paragrafo output resta SENZA
-   citazioni: NON copiarci il {CIT:N} di un altro partito (attribuirebbe al
-   gruppo parole di un deputato di un altro gruppo).
+- {CIT:N} sono marcatori numerici - copiali ESATTAMENTE (es. {CIT:1}, {CIT:12})
+- TUTTI i marcatori {CIT:N} nell'input DEVONO apparire nell'output
+- VIETATO aggiungere testo tra virgolette «» - il sistema inserirà la citazione
+- OGNI marcatore {CIT:N} appare UNA SOLA VOLTA, nella sezione del SUO partito.
+  Se una sezione input NON ha citazioni, il suo paragrafo output resta SENZA
+  citazioni: VIETATO copiarci il {CIT:N} di un altro partito (attribuirebbe al
+  gruppo parole di un deputato di un altro gruppo).
 
 VARIAZIONE OBBLIGATORIA DEI BRIDGE VERBALI:
-⚠️ OGNI citazione DEVE usare un verbo introduttivo DIVERSO da tutte le altre. ZERO ripetizioni.
+OGNI citazione DEVE usare un verbo introduttivo DIVERSO da tutte le altre. ZERO ripetizioni.
 Prima di scrivere un bridge, verifica che NON sia già stato usato nel documento.
 
 Repertorio COMPLETO (scegli in base al TONO, ogni verbo usabile UNA SOLA VOLTA):
@@ -146,9 +134,9 @@ Repertorio COMPLETO (scegli in base al TONO, ogni verbo usabile UNA SOLA VOLTA):
 - Affermativo: afferma, sostiene, dichiara, ribadisce, conferma, assicura
 - Interrogativo: solleva interrogativi su, chiede conto di, domanda se
 
-❌ SBAGLIATO (verbo ripetuto):
+SBAGLIATO (verbo ripetuto):
 **Rossi** sottolineando che [CIT:1]... **Bianchi** sottolineando che [CIT:2] ← "sottolineando" usato 2 volte!
-✅ CORRETTO (verbi tutti diversi):
+CORRETTO (verbi tutti diversi):
 **Rossi** sottolineando che [CIT:1]... **Bianchi** contestando che [CIT:2] ← verbi diversi
 
 BILANCIAMENTO (Coverage-based Fairness):
@@ -172,7 +160,7 @@ REGOLE GENERALI:
         coalitions = self.config.coalitions
         self.MAGGIORANZA = coalitions.get("maggioranza", [])
         self.OPPOSIZIONE = coalitions.get("opposizione", [])
-        # Gruppo Misto: blocco proprio, fuori dallo schieramento binario
+        # Gruppo Misto gets its own block, outside the binary alignment
         self.MISTO = coalitions.get("misto", [])
 
     def _format_statistics(self, topic_statistics: Optional[Dict[str, Any]]) -> str:
@@ -252,22 +240,14 @@ REGOLE GENERALI:
         sections: List[Dict[str, Any]],
         topic_statistics: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """
-        Integrate sections into coherent narrative.
+        """Integrate party sections into a coherent narrative.
 
-        Args:
-            query: Original user query
-            sections: List of section dictionaries from Stage 2
-            topic_statistics: Optional statistics about the topic for the introduction
-
-        Returns:
-            Dictionary with integrated text and metadata
+        Returns a dict with the integrated text, collected citations and
+        section counts; on LLM failure falls back to plain concatenation.
         """
-        # Strip long citation IDs to short numeric placeholders before sending to LLM.
-        # This prevents the LLM from corrupting complex IDs during narrative rewriting.
+        # Long citation IDs are error-prone for the LLM to copy verbatim:
+        # swap them for short numeric placeholders before the call.
         stripped_sections, citation_mapping = self._strip_citations(sections)
-
-        # Build sections text using stripped content
         sections_text = self._build_sections_text(stripped_sections)
         stats_text = self._format_statistics(topic_statistics)
 
@@ -279,7 +259,7 @@ Sezioni:
 
 Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discussione — provvedimento e questioni in gioco; frase 2: interventi, deputati e periodo, con i numeri SEMPRE in cifre — 91, mai "novantuno"/"Ninety-one", in qualunque lingua e anche a inizio frase; MAI elenchi di sedute in prosa) + sezioni per coalizione.
 
-⚠️ CRITICO:
+REGOLE INDEROGABILI:
 1. Copia ESATTAMENTE ogni {{CIT:N}} carattere per carattere - NON modificare i numeri!
 2. Ogni citazione DEVE avere un bridge ("afferma che", "sostiene che") O due punti (:) prima della citazione
 3. Preserva **grassetto** e «virgolette»
@@ -298,11 +278,8 @@ Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discu
             )
 
             integrated_text = response.choices[0].message.content
-
-            # Restore original long citation IDs from numeric placeholders
             integrated_text = self._restore_citations(integrated_text, citation_mapping)
 
-            # Collect all citations from sections
             all_citations = []
             for section in sections:
                 all_citations.extend(section.get("citations", []))
@@ -374,8 +351,8 @@ Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discu
         if opp_parts:
             parts.append("[BLOCCO: OPPOSIZIONE]\n" + "\n\n".join(opp_parts))
 
-        # Gruppo Misto: blocco proprio (componenti opposte, mai fuso
-        # negli schieramenti)
+        # Gruppo Misto: own block (opposing components, never merged
+        # into the coalitions)
         misto_parts = []
         for party in self.MISTO:
             content = self._get_section_by_party(sections, party)
@@ -417,7 +394,7 @@ Crea documento CONCISO con Introduzione (frase 1: il MERITO concreto della discu
         if opp_parts:
             parts.append("## Posizioni dell'Opposizione\n\n" + "\n\n".join(opp_parts))
 
-        # Gruppo Misto: sezione propria
+        # Gruppo Misto: own section
         misto_parts = []
         for party in self.MISTO:
             content = self._get_section_by_party(sections, party)
@@ -436,9 +413,9 @@ DEVI includere TUTTE queste citazioni nel testo, copiando ESATTAMENTE gli ID:
 REGOLE:
 1. Gli ID [CIT:...] devono essere copiati CARATTERE PER CARATTERE, senza modifiche
 2. Ogni citazione DEVE essere introdotta con bridge ("afferma che", "sostiene che") O due punti (:)
-   ✅ **Rossi** afferma che «testo» [CIT:...]
-   ✅ **Rossi** critica: «testo» [CIT:...]
-   ❌ **Rossi** critica. «testo» [CIT:...]
+   GIUSTO: **Rossi** afferma che «testo» [CIT:...]
+   GIUSTO: **Rossi** critica: «testo» [CIT:...]
+   SBAGLIATO: **Rossi** critica. «testo» [CIT:...]
 
 Riscrivi il documento includendo TUTTE le citazioni sopra elencate.
 
@@ -457,33 +434,22 @@ Sezioni originali con citazioni:
         registry: Optional['CitationRegistry'] = None,
         topic_statistics: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
+        """Integrate with a citation guard.
+
+        Verifies citation preservation pre and post integration and retries
+        with a stricter prompt if citations were corrupted. The result dict
+        carries a citation_verification report.
         """
-        Integrate with citation guard.
-
-        Verifies citation preservation pre and post integration.
-        Retries with stricter prompt if citations are corrupted.
-
-        Args:
-            query: Original user query
-            sections: List of section dictionaries from Stage 2
-            registry: Optional CitationRegistry for tracking
-            topic_statistics: Optional statistics about the topic for the introduction
-
-        Returns:
-            Dictionary with integrated text, citations, and verification report
-        """
-        # Pre-integration: collect expected citations
         expected_citations = set()
-        citation_sentences: Dict[str, str] = {}  # Map citation ID to its containing sentence
+        citation_sentences: Dict[str, str] = {}  # citation ID → containing sentence
 
         for section in sections:
             content = section.get("content", "")
             found = re.findall(r'\[CIT:([^\]]+)\]', content)
             expected_citations.update(found)
 
-            # Store the sentence containing each citation for potential repair
+            # Keep the sentence containing each citation for potential repair
             for cit_id in found:
-                # Find the sentence containing this citation
                 pattern = rf'[^.!?]*\[CIT:{re.escape(cit_id)}\][^.!?]*[.!?]?'
                 matches = re.findall(pattern, content)
                 if matches:
@@ -491,10 +457,8 @@ Sezioni originali con citazioni:
 
         logger.info(f"Integrator guard: {len(expected_citations)} citations expected")
 
-        # Perform standard integration
         result = self.integrate(query, sections, topic_statistics=topic_statistics)
 
-        # Post-integration: verify citations preserved
         integrated_text = result.get("text", "")
         found_citations = set(re.findall(r'\[CIT:([^\]]+)\]', integrated_text))
 
@@ -507,13 +471,11 @@ Sezioni originali con citazioni:
                 sentence = citation_sentences.get(cit_id, "").replace("\n", " ")
                 logger.debug(f"  [CORRUPT] [{cit_id}] context: {sentence[:200]!r}")
 
-            # Retry with stricter prompt
             retried = True
             result = self._retry_integration(
                 query, sections, integrated_text, missing, citation_sentences
             )
 
-            # Check again after retry
             integrated_text = result.get("text", "")
             found_citations = set(re.findall(r'\[CIT:([^\]]+)\]', integrated_text))
             still_missing = expected_citations - found_citations

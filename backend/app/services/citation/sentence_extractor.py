@@ -18,14 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 class SentenceExtractor:
-    """
-    Extracts the most semantically relevant sentences from text.
+    """Extract the most query-relevant sentences via keyword-overlap scoring."""
 
-    Uses keyword overlap scoring for fast, efficient extraction
-    without requiring API calls.
-    """
-
-    # Italian stop words to ignore
+    # Italian stop words ignored during tokenization
     STOP_WORDS = {
         "il", "lo", "la", "i", "gli", "le", "un", "uno", "una",
         "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
@@ -48,13 +43,6 @@ class SentenceExtractor:
     }
 
     def __init__(self, max_sentences: int = 2, min_sentence_length: int = 30):
-        """
-        Initialize the extractor.
-
-        Args:
-            max_sentences: Maximum number of sentences to extract
-            min_sentence_length: Minimum characters for a valid sentence
-        """
         self.max_sentences = max_sentences
         self.min_sentence_length = min_sentence_length
 
@@ -64,30 +52,20 @@ class SentenceExtractor:
         query: str,
         max_total_chars: Optional[int] = 500
     ) -> str:
-        """
-        Extract the most relevant sentences from text.
+        """Extract the most query-relevant sentences from text.
 
-        Args:
-            text: Full text to extract from
-            query: Query to match against
-            max_total_chars: Maximum total characters (soft limit)
-
-        Returns:
-            Extracted relevant sentence(s)
+        Returns "" when no sentence passes the citability gate, so callers
+        can move to other evidence. max_total_chars is a soft limit.
         """
         if not text or not query:
             return text[:max_total_chars] if text and max_total_chars else text
 
-        # Split into sentences
         sentences = self._split_sentences(text)
 
         if not sentences:
             return text[:max_total_chars] if max_total_chars else text
 
-        # Score each sentence
         scored = self._score_sentences(sentences, query)
-
-        # Select best sentences
         selected = self._select_best(scored, max_total_chars)
 
         if not selected:
@@ -104,9 +82,6 @@ class SentenceExtractor:
         Handles leading fragments from sentence boundaries that were
         incorrectly split, such as adjectives or nouns that are
         continuations from a previous sentence.
-
-        See: BERTScore (Zhang et al., ICLR 2020) on contextual
-        completeness scoring for text generation quality.
         """
         text = text.strip()
 
@@ -141,10 +116,13 @@ class SentenceExtractor:
                 for w in first_words_lower
             )
             if not has_early_verb and len(first_words) > 2:
-                # Try removing words up to first verb or uppercase start
-                for i, word in enumerate(text):
-                    if word.isupper() and i > 0:
-                        text = text[i:]
+                # Drop leading words up to the first capitalized word, which
+                # usually marks the start of the real clause the fragment
+                # was leading into.
+                words = text.split()
+                for i, word in enumerate(words):
+                    if i > 0 and word[:1].isupper():
+                        text = " ".join(words[i:])
                         break
 
         # Capitalize first letter
@@ -168,20 +146,18 @@ class SentenceExtractor:
 
     # Regex for common Italian verb conjugation endings
     _VERB_ENDING_PATTERN = re.compile(
-        r'\b\w+(?:amo|ano|ono|ato|uto|ito|ando|endo|isce|isce|iamo|ono'
+        r'\b\w+(?:amo|ano|ono|ato|uto|ito|ando|endo|isce|iamo'
         r'|ava|evano|iva|ivano|ò|ì|arono|irono|erà|irà|eranno|iranno'
         r'|asse|assero|esse|essero|isse|issero'
-        r'|ando|endo|ato|uto|ito|ata|uta|ita|ati|uti|iti|ate|ute|ite)\b',
+        r'|ata|uta|ita|ati|uti|iti|ate|ute|ite)\b',
         re.IGNORECASE
     )
 
     def _has_verb(self, text: str) -> bool:
         """Check if text contains at least one Italian verb form."""
         words = set(re.findall(r'\b\w+\b', text.lower()))
-        # Check auxiliaries
         if words & self._VERB_AUXILIARIES:
             return True
-        # Check conjugation endings
         if self._VERB_ENDING_PATTERN.search(text):
             return True
         return False
@@ -306,9 +282,7 @@ class SentenceExtractor:
 
     def _tokenize(self, text: str) -> List[str]:
         """Tokenize text into words, removing stop words."""
-        # Lowercase and extract words
         words = re.findall(r'\b[a-zA-Zàèéìòù]{3,}\b', text.lower())
-        # Remove stop words
         return [w for w in words if w not in self.STOP_WORDS]
 
     def _score_sentences(
@@ -335,15 +309,11 @@ class SentenceExtractor:
                 scored.append((sentence, 0.0, i, False))
                 continue
 
-            # Calculate overlap score
             sentence_set = set(sentence_tokens)
             overlap = query_tokens & sentence_set
 
-            # Score = overlap ratio + position bonus (earlier = better)
             overlap_score = len(overlap) / len(query_tokens)
-            position_bonus = 0.1 * (1.0 / (i + 1))  # Small bonus for earlier sentences
-
-            # Density bonus - how many query words per sentence length
+            position_bonus = 0.1 * (1.0 / (i + 1))  # earlier sentences preferred
             density = len(overlap) / len(sentence_tokens) if sentence_tokens else 0
 
             completeness = self._syntactic_completeness_score(sentence)
@@ -375,9 +345,9 @@ class SentenceExtractor:
         truncating a longer sentence. Skips sentences whose completeness
         score is below MIN_QUALITY_SCORE when alternatives exist.
 
-        Citability gate: sentences with zero query overlap are NEVER
+        Citability gate: sentences with zero query overlap are never
         selected — if nothing passes, returns [] so callers can move to
-        other evidence. There is deliberately NO keep-at-least-one
+        other evidence. There is deliberately no keep-at-least-one
         fallback here.
         """
         if not scored:
@@ -466,7 +436,6 @@ class SentenceExtractor:
         return truncated.rstrip()
 
 
-# Module-level convenience function
 _extractor = None
 
 def extract_best_sentences(
@@ -475,20 +444,7 @@ def extract_best_sentences(
     max_sentences: int = 2,
     max_chars: int = 500
 ) -> str:
-    """
-    Extract the most relevant sentences from text.
-
-    Convenience function that uses a shared extractor instance.
-
-    Args:
-        text: Full text to extract from
-        query: Query to match against
-        max_sentences: Maximum sentences to extract
-        max_chars: Maximum total characters
-
-    Returns:
-        Extracted relevant sentence(s)
-    """
+    """Extract the most query-relevant sentences using a shared extractor."""
     global _extractor
     if _extractor is None or _extractor.max_sentences != max_sentences:
         _extractor = SentenceExtractor(max_sentences=max_sentences)

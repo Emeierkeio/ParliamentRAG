@@ -25,7 +25,6 @@ from typing import Dict, Any, List, Optional
 import numpy as np
 import openai
 
-from ...config import get_settings
 from ...key_pool import make_client
 from .reported_speech import detect_reported_speech
 
@@ -33,22 +32,12 @@ logger = logging.getLogger(__name__)
 
 
 class CoherenceValidator:
-    """
-    Validates semantic coherence between intro text and citations.
+    """Validate semantic coherence between intro text and citations.
 
-    Primary method: embedding cosine similarity (threshold 0.6)
-    Fallback method: Jaccard keyword overlap (threshold 0.2)
-
-    Example:
-        validator = CoherenceValidator(min_coherence_score=0.6)
-
-        result = validator.validate_coherence(
-            intro_text="Il deputato critica la gestione sanitaria",
-            quote_text="il sistema sanitario è in crisi per mancanza di fondi"
-        )
-
-        if not result["is_coherent"]:
-            print(f"Warning: {result['warning']}")
+    Primary method: embedding cosine similarity (threshold 0.6).
+    Fallback method: Jaccard keyword overlap (threshold 0.2).
+    validate_coherence returns a dict whose "is_coherent" flag combines
+    the similarity score with sentiment- and stance-mismatch checks.
     """
 
     # Italian stop words to filter out (for Jaccard fallback)
@@ -301,10 +290,10 @@ class CoherenceValidator:
                 set(self._tokenize(quote_text))
             )[:10]
 
-        # Fix 4 — Stance alignment check (reported speech penalty)
-        # Applied AFTER base similarity so that a topically-similar but
-        # directionally-inverted citation is penalised even when embedding
-        # similarity is above threshold.
+        # Stance alignment check (reported-speech penalty), applied after the
+        # base similarity so that a topically-similar but directionally
+        # inverted citation is penalised even when embedding similarity is
+        # above threshold.
         stance_result = self._stance_alignment_check(intro_text, quote_text, evidence)
         if stance_result["has_stance_issue"]:
             score = max(0.0, score - stance_result["penalty"])
@@ -354,29 +343,12 @@ class CoherenceValidator:
         return result
 
     def _tokenize(self, text: str) -> List[str]:
-        """
-        Tokenize and filter Italian text.
-
-        Args:
-            text: Input text
-
-        Returns:
-            List of meaningful tokens (no stop words, min 3 chars)
-        """
-        # Extract words with Italian accented characters
+        """Tokenize Italian text into meaningful tokens (no stop words)."""
         words = re.findall(r'\b[a-zA-ZàèéìòùÀÈÉÌÒÙ]{3,}\b', text.lower())
         return [w for w in words if w not in self.STOP_WORDS]
 
     def _detect_sentiment(self, text: str) -> Optional[str]:
-        """
-        Detect positive/negative sentiment indicators in text.
-
-        Args:
-            text: Input text
-
-        Returns:
-            "positive", "negative", or None if mixed/neutral
-        """
+        """Return "positive", "negative", or None if mixed/neutral."""
         text_lower = text.lower()
 
         has_positive = any(ind in text_lower for ind in self.POSITIVE_INDICATORS)
@@ -411,12 +383,10 @@ class CoherenceValidator:
         """
         results = []
 
-        # Find all citations with their context
-        # Match sentence containing [CIT:id].
-        # Le quote inline «...» contengono punteggiatura di fine frase: un
-        # pattern ingenuo [^.!?]* si ferma all'ultimo punto DENTRO la quote e
-        # l'intro degenerava in "»" (coerenza ~0.17 sistematica). Le span
-        # «...» vanno trattate come atomiche.
+        # Match the sentence containing each [CIT:id]. Inline «...» quotes
+        # contain sentence-ending punctuation: a naive [^.!?]* pattern stops
+        # at the last period inside the quote and the intro degenerated to
+        # "»" (systematic ~0.17 coherence). «...» spans must be atomic.
         pattern = r'((?:[^.!?«]|«[^»]*»)*\[CIT:([^\]]+)\])'
         matches = re.findall(pattern, text_with_citations)
 
@@ -432,13 +402,13 @@ class CoherenceValidator:
             evidence = evidence_map[evidence_id]
             quote_text = evidence.get("quote_text") or evidence.get("chunk_text", "")
 
-            # Extract intro: la proposizione che INTRODUCE la quote, cioè il
-            # testo prima dell'apertura «. La quote non va confrontata con sé.
+            # The intro is the clause that introduces the quote, i.e. the text
+            # before the opening « — the quote must not be compared to itself.
             parts = full_match.split(f"[CIT:{evidence_id}]")
             intro = parts[0].strip() if parts else ""
             if "«" in intro:
                 before_quote = intro.split("«", 1)[0].strip()
-                # se la quote apre la frase, tieni la frase senza le quote
+                # If the quote opens the sentence, keep the sentence minus quotes
                 intro = before_quote or re.sub(r'«[^»]*»', '', intro).strip()
 
             # Pass evidence dict so _stance_alignment_check can use pre-annotated
@@ -470,15 +440,7 @@ class CoherenceValidator:
         self,
         validation_report: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
-        """
-        Extract only incoherent citations from a validation report.
-
-        Args:
-            validation_report: Report from validate_all_citations()
-
-        Returns:
-            List of incoherent citation details
-        """
+        """Extract only incoherent citation details from a validation report."""
         return [
             detail for detail in validation_report.get("details", [])
             if not detail.get("is_coherent", True)

@@ -21,8 +21,7 @@ from .reported_speech import detect_reported_speech
 logger = logging.getLogger(__name__)
 
 
-# --- Direction detection patterns ---
-# Keyword-based approach: no LLM call, fast, deterministic.
+# Direction detection patterns. Keyword-based: no LLM call, fast, deterministic.
 
 # Patterns that signal explicit OPPOSITION to a proposal/policy
 _AGAINST_PATTERNS = [
@@ -34,7 +33,8 @@ _AGAINST_PATTERNS = [
     re.compile(r'\b(?:meglio la contrattazione|meglio i contratti collettivi|la contrattazione è sufficiente)\b', re.IGNORECASE),
     re.compile(r'\b(?:parere contrario|voto contrario)\b', re.IGNORECASE),
     re.compile(r'\b(?:non sono obbligati ad introdurre|non è rimesso alla legge)\b', re.IGNORECASE),
-    # Fix 5 — contrattazione collettiva vs. salario minimo legale (Lega/FdI pattern)
+    # "contrattazione collettiva" framed as the alternative to a legal minimum
+    # wage — recurring Lega/FdI phrasing that signals opposition
     re.compile(r'\b(?:contrattazione\s+collettiva)\s+(?:è|resta|rimane|deve\s+restare)\s+(?:la\s+)?(?:strada|soluzione|via|strumento)\b', re.IGNORECASE),
     re.compile(r'\b(?:lasciare|lasciamo|affidare|affidiamo)\s+(?:alla\s+)?contrattazione\b', re.IGNORECASE),
     re.compile(r'\b(?:salario\s+minimo\s+(?:per\s+legge|legale))\s+(?:non\s+è|non\s+sarebbe|non\s+può\s+essere|non\s+serve|non\s+aiuta)\b', re.IGNORECASE),
@@ -210,28 +210,27 @@ class PositionBriefBuilder:
             f"(pro={pro_hits}, contro={against_hits}, cond={cond_hits})"
         )
 
-        # Build direction label with visual emphasis for the LLM
+        # Direction label with textual emphasis for the LLM
         if direction == "CONTRARIO":
-            direction_label = "⛔ CONTRARIO alla proposta/politica"
+            direction_label = "CONTRARIO alla proposta/politica"
         elif direction == "FAVOREVOLE":
-            direction_label = "✅ FAVOREVOLE alla proposta/politica"
+            direction_label = "FAVOREVOLE alla proposta/politica"
         elif direction == "CONDIZIONALE":
-            direction_label = "⚠️ CONDIZIONALE / SFUMATO (né puramente pro né puramente contro)"
+            direction_label = "CONDIZIONALE / SFUMATO (né puramente pro né puramente contro)"
         else:
-            direction_label = "❓ NON DETERMINATO dai testi disponibili"
+            direction_label = "NON DETERMINATO dai testi disponibili"
 
         brief_lines = [
             f"POSIZIONE COMPLESSIVA DEL GRUPPO ({party}):",
             f"Orientamento stimato: {direction_label}",
-            f"⚠️ ATTENZIONE: scegli una citazione COERENTE con l'orientamento sopra.",
-            f"   Se l'orientamento è CONTRARIO, NON citare frasi che sembrano difendere la proposta.",
-            f"   Se l'orientamento è FAVOREVOLE, NON citare frasi che sembrano attaccarla.",
+            "ATTENZIONE: scegli una citazione COERENTE con l'orientamento sopra.",
+            "   Se l'orientamento è CONTRARIO, VIETATO citare frasi che sembrano difendere la proposta.",
+            "   Se l'orientamento è FAVOREVOLE, VIETATO citare frasi che sembrano attaccarla.",
             f"Principali oratori: {', '.join(speakers[:3])}",
         ]
 
-        # Fix 3 — Reported speech warning
         if reported_speech_count > 0:
-            warning_level = "🚨 ALTA PRIORITÀ" if reported_speech_opening_count > 0 else "⚠️ ATTENZIONE"
+            warning_level = "ALTA PRIORITÀ" if reported_speech_opening_count > 0 else "ATTENZIONE"
             brief_lines.append(
                 f"{warning_level} — DISCORSO RIPORTATO: {reported_speech_count} dei "
                 f"{len(top_evidence)} testi analizzati contengono citazioni di ALTRI soggetti "
@@ -239,7 +238,7 @@ class PositionBriefBuilder:
             )
             if reported_speech_opening_count > 0:
                 brief_lines.append(
-                    f"   ⛔ {reported_speech_opening_count} testo/i INIZIANO con discorso riportato: "
+                    f"   MASSIMA ATTENZIONE: {reported_speech_opening_count} testo/i INIZIANO con discorso riportato: "
                     f"massimo rischio di inversione di posizione. "
                     f"La posizione VERA del gruppo è nella RISPOSTA del deputato, "
                     f"NON nelle parole altrui che vengono citate."
