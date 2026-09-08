@@ -3,7 +3,6 @@ from .scorer import IdeologyScorer
 from .anchors import AnchorManager
 from .clustering import IdeologyClustering
 from .pipeline import CompassPipeline
-from .reference_axes import ReferenceAxesRegistry, REFERENCE_AXES
 from .axis_labeling import AxisLabeler
 
 __all__ = [
@@ -11,7 +10,5 @@ __all__ = [
     "AnchorManager",
     "IdeologyClustering",
     "CompassPipeline",
-    "ReferenceAxesRegistry",
-    "REFERENCE_AXES",
     "AxisLabeler",
 ]

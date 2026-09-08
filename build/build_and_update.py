@@ -42,11 +42,10 @@ BACKEND_DIR = os.path.join(BASE_DIR, "backend")
 sys.path.insert(0, SCRIPTS_DIR)
 sys.path.insert(0, BACKEND_DIR)
 
-from build_config import BuildConfig, load_config
+from build_config import load_config
 from xml_parser import StenograficoParser
 from db_builder import DatabaseBuilder
-from csv_loader import GOVERNMENT_GROUPS, parse_date_to_neo4j
-from download import download_new_xmls, get_last_xml_id
+from download import download_new_xmls
 from ingest_atti_parlamentari import AttiParlamentariIngester
 from senate_parser import SenateStenograficoParser
 from download_senate import download_senate_xmls

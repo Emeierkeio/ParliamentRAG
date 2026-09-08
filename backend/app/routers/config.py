@@ -34,7 +34,6 @@ class AuthorityConfig(BaseModel):
     time_decay_speeches_half_life: int
     acts_relevance_threshold: float
     interventions_relevance_threshold: float
-    normalization: str
     max_component_contribution: float
 
 
@@ -108,13 +107,12 @@ async def get_configuration():
     """
     Get effective system configuration.
 
-    Returns all configurable weights, thresholds, and settings.
-    Does NOT include secrets (API keys, passwords).
+    Returns all configurable weights, thresholds, and settings,
+    without secrets (API keys, passwords).
     """
     config = get_config()
     config_data = config.load_config()
 
-    # Retrieval config
     retrieval_data = config_data.get("retrieval", {})
     dense = retrieval_data.get("dense_channel", {})
     graph = retrieval_data.get("graph_channel", {})
@@ -136,7 +134,6 @@ async def get_configuration():
         }
     )
 
-    # Authority config
     authority_data = config_data.get("authority", {})
     time_decay = authority_data.get("time_decay", {})
 
@@ -146,11 +143,9 @@ async def get_configuration():
         time_decay_speeches_half_life=time_decay.get("speeches_half_life_days", 180),
         acts_relevance_threshold=authority_data.get("acts_relevance_threshold", 0.25),
         interventions_relevance_threshold=authority_data.get("interventions_relevance_threshold", 0.25),
-        normalization=authority_data.get("normalization", "percentile"),
         max_component_contribution=authority_data.get("max_component_contribution", 0.8),
     )
 
-    # Compass config
     compass_data = config_data.get("compass", {})
     anchors = compass_data.get("anchors", {})
 
@@ -165,7 +160,6 @@ async def get_configuration():
         unclassified_groups=compass_data.get("unclassified", []),
     )
 
-    # Generation config
     generation_data = config_data.get("generation", {})
     gen_params = generation_data.get("parameters", {})
     gen_pos_brief = generation_data.get("position_brief", {})
@@ -191,7 +185,6 @@ async def get_configuration():
         ),
     )
 
-    # Query rewriting config
     qr_data = config_data.get("query_rewriting", {})
     query_rewriting_config = QueryRewritingConfig(
         enabled=qr_data.get("enabled", True),
@@ -199,7 +192,6 @@ async def get_configuration():
         max_query_words=qr_data.get("max_query_words", 5),
     )
 
-    # Coalitions config
     coalitions_data = config_data.get("coalitions", {})
 
     coalitions_config = CoalitionsConfig(
@@ -207,7 +199,6 @@ async def get_configuration():
         opposizione=coalitions_data.get("opposizione", []),
     )
 
-    # Citation config
     citation_data = config_data.get("citation", {})
 
     citation_config = CitationConfig(
@@ -216,7 +207,6 @@ async def get_configuration():
         verify_on_insert=citation_data.get("verify_on_insert", True),
     )
 
-    # All parties
     all_parties = config.get_all_parties()
 
     return ConfigResponse(
@@ -306,8 +296,6 @@ def _apply_authority_update(current: Dict, update: Dict) -> Dict:
         authority["acts_relevance_threshold"] = update["acts_relevance_threshold"]
     if "interventions_relevance_threshold" in update:
         authority["interventions_relevance_threshold"] = update["interventions_relevance_threshold"]
-    if "normalization" in update:
-        authority["normalization"] = update["normalization"]
     if "max_component_contribution" in update:
         authority["max_component_contribution"] = update["max_component_contribution"]
 

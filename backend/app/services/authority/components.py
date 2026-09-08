@@ -33,31 +33,29 @@ def parse_neo4j_date(date_value: Any) -> Optional[date]:
     if date_value is None:
         return None
 
-    # Already a date object
     if isinstance(date_value, date):
         return date_value
 
-    # Neo4j Date object (has to_native method)
+    # Neo4j Date object
     if hasattr(date_value, 'to_native'):
         return date_value.to_native()
 
-    # Float or int (e.g., 20250612.0 or 20250612)
+    # Numeric YYYYMMDD, e.g. 20250612.0 or 20250612
     if isinstance(date_value, (float, int)):
         try:
             date_str = str(int(date_value))
-            if len(date_str) == 8:  # YYYYMMDD format
+            if len(date_str) == 8:
                 return datetime.strptime(date_str, "%Y%m%d").date()
         except (ValueError, OverflowError):
             pass
         logger.warning(f"Could not parse date number: {date_value}")
         return None
 
-    # String format - try common formats
     if isinstance(date_value, str):
         if not date_value.strip():
             return None
 
-        # Remove decimal part if present (e.g., "20250612.0" -> "20250612")
+        # Drop a decimal part if present, e.g. "20250612.0" -> "20250612"
         date_str = date_value.split('.')[0].strip()
 
         for fmt in ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%Y%m%d"):
@@ -85,7 +83,6 @@ def parse_embedding(embedding_value: Any) -> Optional[List[float]]:
     if embedding_value is None:
         return None
 
-    # Already a list
     if isinstance(embedding_value, list):
         try:
             return [float(x) for x in embedding_value]
@@ -93,26 +90,22 @@ def parse_embedding(embedding_value: Any) -> Optional[List[float]]:
             logger.warning(f"Could not convert list to floats: {type(embedding_value)}")
             return None
 
-    # NumPy array
     if isinstance(embedding_value, np.ndarray):
         return embedding_value.tolist()
 
-    # String representation
     if isinstance(embedding_value, str):
         if not embedding_value.strip():
             return None
 
         try:
-            # Try JSON parsing first
             parsed = json.loads(embedding_value)
             if isinstance(parsed, list):
                 return [float(x) for x in parsed]
         except json.JSONDecodeError:
             pass
 
-        # Try eval as last resort (for Python list repr)
+        # Last resort: Python list repr (single quotes etc. break json.loads)
         try:
-            # Clean up the string
             cleaned = embedding_value.strip()
             if cleaned.startswith('[') and cleaned.endswith(']'):
                 import ast
@@ -130,8 +123,7 @@ def parse_embedding(embedding_value: Any) -> Optional[List[float]]:
 
 
 def cosine_similarity(vec1: Union[List[float], Any], vec2: Union[List[float], Any]) -> float:
-    """Compute cosine similarity between two vectors."""
-    # Parse embeddings if needed
+    """Compute cosine similarity between two vectors, parsing raw DB values as needed."""
     v1 = parse_embedding(vec1) if not isinstance(vec1, list) or (vec1 and not isinstance(vec1[0], (int, float))) else vec1
     v2 = parse_embedding(vec2) if not isinstance(vec2, list) or (vec2 and not isinstance(vec2[0], (int, float))) else vec2
 
@@ -278,9 +270,6 @@ class CommitteeComponent(AuthorityComponent):
     _yaml_cache: Optional[Dict[str, Any]] = None
     _cache_lock = threading.Lock()
 
-    def __init__(self):
-        super().__init__()
-
     def compute(
         self,
         speaker_data: Dict[str, Any],
@@ -295,7 +284,6 @@ class CommitteeComponent(AuthorityComponent):
         committee_scores: List[tuple] = []  # (name, relevance)
 
         for membership in memberships:
-            # Check temporal validity - parse dates from Neo4j
             membership_start = parse_neo4j_date(membership.get("start_date"))
             membership_end = parse_neo4j_date(membership.get("end_date"))
 
@@ -343,14 +331,24 @@ class CommitteeComponent(AuthorityComponent):
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
                 data = yaml.safe_load(f)
-            with self._cache_lock:
-                CommitteeComponent._yaml_cache = data
-            return data
         except FileNotFoundError:
             logger.warning(f"Commission topics config not found: {config_path}")
-            with self._cache_lock:
-                CommitteeComponent._yaml_cache = {}
-            return {}
+            data = None
+        except yaml.YAMLError as exc:
+            logger.warning(f"Commission topics config is invalid YAML: {exc}")
+            data = None
+
+        # safe_load returns None for an empty file; callers expect a dict.
+        if not isinstance(data, dict):
+            if data is not None:
+                logger.warning(
+                    f"Commission topics config is not a mapping: {type(data).__name__}"
+                )
+            data = {}
+
+        with self._cache_lock:
+            CommitteeComponent._yaml_cache = data
+        return data
 
     def _compute_topic_relevance(
         self,
@@ -686,10 +684,9 @@ class RoleComponent(AuthorityComponent):
         query_embedding: List[float],
         reference_date: date
     ) -> float:
-        # Reset matched role label
         self.matched_role_label = None
 
-        # Check for government position first (GovernmentMember)
+        # Government positions (GovernmentMember) take precedence over committee roles.
         gov_position = speaker_data.get("government_position", "")
         if gov_position:
             for key, weight in self.GOVERNMENT_WEIGHTS.items():
@@ -697,7 +694,6 @@ class RoleComponent(AuthorityComponent):
                     self.matched_role_label = gov_position
                     return self.cap_score(weight)
 
-        # Get institutional roles from graph
         institutional_roles = [
             r for r in speaker_data.get("institutional_roles", [])
             if r.get("committee_name")
@@ -714,26 +710,22 @@ class RoleComponent(AuthorityComponent):
             role_start = parse_neo4j_date(role.get("start_date"))
             role_end = parse_neo4j_date(role.get("end_date"))
 
-            # Check temporal validity
             if role_start and role_start > reference_date:
                 continue
             if role_end and role_end < reference_date:
                 continue
 
-            # Get base weight for this role type
             base_weight = self.ROLE_BASE_WEIGHTS.get(role_type, 0.3)
 
-            # Calculate topic relevance bonus
             committee_embedding = role.get("committee_embedding")
             relevance_multiplier = 1.0
 
             if committee_embedding and query_embedding:
                 similarity = cosine_similarity(query_embedding, committee_embedding)
                 if similarity >= self.RELEVANCE_THRESHOLD:
-                    # Apply relevance bonus proportional to similarity
+                    # Bonus proportional to similarity
                     relevance_multiplier = 1.0 + (self.RELEVANCE_BONUS * similarity)
 
-            # Final score for this role
             role_score = base_weight * relevance_multiplier
             if role_score > max_role_score:
                 max_role_score = role_score

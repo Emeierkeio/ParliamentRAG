@@ -37,7 +37,7 @@ class EvidenceResponse(BaseModel):
 
     # Text content
     chunk_text: str  # Preview text
-    quote_text: str  # EXACT verbatim quote
+    quote_text: str  # exact verbatim quote
     text: Optional[str] = None  # Full intervention text (optional)
 
     # Offsets
@@ -82,7 +82,6 @@ async def get_evidence(
     """
     client = get_neo4j()
 
-    # Query for full evidence details
     cypher = """
     MATCH (c:Chunk {id: $evidence_id})
     MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
@@ -142,13 +141,11 @@ async def get_evidence(
             quote_text = data.get("chunk_text", "")[:200]  # Fallback to chunk preview
             citation_verified = False
 
-        # Determine coalition
         from ..services.authority.coalition_logic import CoalitionLogic
         coalition_logic = CoalitionLogic()
         party = data.get("party") or "MISTO"
         coalition = coalition_logic.get_coalition(party)
 
-        # Build speaker name
         first_name = data.get("first_name", "")
         last_name = data.get("last_name", "")
         speaker_name = f"{first_name} {last_name}".strip() or "Unknown"
@@ -210,7 +207,6 @@ async def verify_evidence(
             data.get("chunk_text", ""),
         )
 
-        # Verify
         try:
             quote_text = compute_quote_text(text, span_start, span_end)
             is_valid = True

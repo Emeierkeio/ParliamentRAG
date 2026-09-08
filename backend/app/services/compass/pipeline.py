@@ -26,7 +26,6 @@ from ...models.compass import (
     GroupPosition,
     CompassMetadata,
     CompassAnalysisResponse,
-    CompassRefusalError,
 )
 from ...config import get_config
 
@@ -53,7 +52,6 @@ class CompassPipeline:
             config = app_config.load_config().get("compass", {})
         self.config = config
 
-        # Configuration parameters with defaults
         self.max_weight_per_fragment = config.get("max_weight_per_fragment", 0.05)
         self.pc2_pc1_ratio_threshold = config.get("pc2_pc1_ratio_threshold", 0.40)
         self.min_variance_explained = config.get("min_variance_explained", 0.05)
@@ -67,8 +65,7 @@ class CompassPipeline:
         self.stance_position_shrinkage_k = float(
             (config.get("stance") or {}).get("position_shrinkage_k", 3.0))
 
-        # Lazy-loaded labeler
-        self._axis_labeler = None
+        self._axis_labeler = None  # lazy-loaded, spacy import is slow
 
     def run(
         self,
@@ -92,14 +89,11 @@ class CompassPipeline:
                 embeddings measure lexical similarity, not position.
 
         Returns:
-            CompassAnalysisResponse with all analysis results
-
-        Raises:
-            CompassRefusalError: If analysis cannot produce reliable results
+            CompassAnalysisResponse with all analysis results; a degraded
+            fallback response when the data is too thin or IC-1 fails.
         """
         warnings = []
 
-        # Check minimum fragments
         if len(fragments) < 3:
             return self._fallback_response(fragments, query, "Insufficient data (< 3 fragments)")
 
@@ -131,7 +125,6 @@ class CompassPipeline:
             if dimensionality == 1:
                 warnings.append("ONE_DIMENSIONAL_MODE: PC2/PC1 ratio < 0.40")
 
-        # Validation
         total_var = sum(evr[:2]) if len(evr) >= 2 else evr[0]
         if total_var < self.min_variance_explained:
             warnings.append(f"WEAK_SIGNAL: Variance explained {total_var:.2%} < {self.min_variance_explained:.0%}")
@@ -154,10 +147,8 @@ class CompassPipeline:
         else:
             axis_defs = self._ic6_interpretability(axis_defs, fragments, projected)
 
-        # Build scatter sample
         scatter_sample = self._build_scatter_sample(projected, dimensionality)
 
-        # Stability check
         is_stable = (
             len(fragments) >= 10 and
             total_var >= self.min_variance_explained and
@@ -357,7 +348,6 @@ class CompassPipeline:
         embeddings = np.array([f.embedding for f in fragments])
         group_ids = [f.group_id for f in fragments]
 
-        # Compute inverse frequency weights per group
         group_counts = Counter(group_ids)
         n_groups = len(group_counts)
 
@@ -367,24 +357,21 @@ class CompassPipeline:
             weights.append(min(w, self.max_weight_per_fragment))
 
         weights = np.array(weights)
-        weights /= weights.sum()  # Normalize to sum to 1
+        weights /= weights.sum()
 
-        # Weighted mean
         mu = np.average(embeddings, axis=0, weights=weights)
         X_centered = embeddings - mu
 
-        # Weighted SVD
         X_weighted = np.sqrt(weights)[:, np.newaxis] * X_centered
         U, S, Vt = np.linalg.svd(X_weighted, full_matrices=False)
 
-        # Principal components (rows of Vt)
         axes = Vt[:2]  # [2, D]
 
-        # Explained variance ratio
         total_var = np.sum(S ** 2)
         evr = (S ** 2) / total_var if total_var > 0 else np.zeros_like(S)
 
-        # Deterministic orientation based on skewness
+        # Flip each axis so projections skew positive: SVD sign is arbitrary,
+        # and without this the same data could render mirrored between runs.
         for i in range(min(2, len(axes))):
             proj = X_centered @ axes[i]
             skewness = np.mean(proj ** 3)
@@ -531,7 +518,6 @@ class CompassPipeline:
             x_c = np.array(f.embedding) - mu
             raw_coords = x_c @ axes.T  # [2]
 
-            # SCR (Subspace Contribution Ratio)
             x_c_norm = np.linalg.norm(x_c)
             proj_norm = np.linalg.norm(raw_coords)
             scr = (proj_norm ** 2) / (x_c_norm ** 2) if x_c_norm > 0 else 0
@@ -544,16 +530,14 @@ class CompassPipeline:
                 text=f.text,
             ))
 
-        # Z-score normalization
         all_raw = np.array([p.raw_coordinates for p in projected])
         mean_coords = all_raw.mean(axis=0)
         std_coords = all_raw.std(axis=0)
-        std_coords = np.where(std_coords < 1e-8, 1.0, std_coords)  # Avoid division by zero
+        std_coords = np.where(std_coords < 1e-8, 1.0, std_coords)  # avoid division by zero
 
         for p in projected:
             scaled = (np.array(p.raw_coordinates) - mean_coords) / std_coords
 
-            # Soft clipping with tanh beyond threshold
             threshold = self.z_score_clip_threshold
             scaled = np.where(
                 np.abs(scaled) > threshold,
@@ -561,13 +545,10 @@ class CompassPipeline:
                 scaled
             )
 
-            # In 1D mode, set Y to 0
             if dimensionality == 1:
                 scaled[1] = 0.0
 
             p.coordinates = tuple(scaled)
-
-            # Mark outliers
             p.is_outlier = p.confidence < self.scr_confidence_threshold
 
         logger.info(f"IC-2: Projected {len(projected)} fragments, "
@@ -585,7 +566,6 @@ class CompassPipeline:
 
         Uses KDE for groups with >= 3 points, mean for smaller groups.
         """
-        # Group by party
         groups_map: Dict[str, List[ProjectedFragment]] = {}
         for p in projected:
             if p.group_id not in groups_map:
@@ -595,22 +575,19 @@ class CompassPipeline:
         positions = []
 
         for group_id, group_frags in groups_map.items():
-            # Filter out outliers for centroid computation
             valid_frags = [p for p in group_frags if not p.is_outlier]
             if not valid_frags:
-                valid_frags = group_frags  # Fallback to all if all are outliers
+                valid_frags = group_frags  # fall back to all if every point is an outlier
 
             coords = np.array([p.coordinates for p in valid_frags])
             n_frags = len(valid_frags)
 
             if n_frags >= self.min_fragments_for_kde and dimensionality == 2:
-                # KDE for 2D with enough points
                 try:
                     centroid = self._kde_peak_2d(coords)
                 except Exception:
                     centroid = coords.mean(axis=0)
             elif n_frags >= self.min_fragments_for_kde and dimensionality == 1:
-                # KDE for 1D
                 try:
                     kde = stats.gaussian_kde(coords[:, 0])
                     x_grid = np.linspace(coords[:, 0].min(), coords[:, 0].max(), 100)
@@ -619,10 +596,8 @@ class CompassPipeline:
                 except Exception:
                     centroid = np.array([coords[:, 0].mean(), 0.0])
             else:
-                # Simple mean
                 centroid = coords.mean(axis=0)
 
-            # Compute mean confidence
             mean_confidence = np.mean([p.confidence for p in valid_frags])
 
             positions.append(GroupPosition(
@@ -656,7 +631,6 @@ class CompassPipeline:
         def neg_density(x):
             return -kde(x.reshape(-1, 1))[0]
 
-        # Start from mean
         x0 = coords.mean(axis=0)
         result = minimize(neg_density, x0, method='L-BFGS-B')
 
@@ -696,28 +670,24 @@ class CompassPipeline:
             coords = np.array([p.coordinates for p in valid_points])
             weights = np.array([p.confidence for p in valid_points])
 
-            # Normalize weights
             weights = weights / weights.sum() if weights.sum() > 0 else np.ones_like(weights) / len(weights)
 
-            # Weighted mean (should match centroid)
             mean = np.average(coords, axis=0, weights=weights)
 
-            # Weighted covariance
             centered = coords - mean
             cov = np.cov(centered.T, aweights=weights)
 
-            # Ensure cov is 2D
+            # np.cov degenerates to a scalar or 1D array for tiny inputs.
             if cov.ndim == 0:
                 cov = np.array([[cov, 0], [0, cov]])
             elif cov.shape == (2,):
                 cov = np.diag(cov)
 
-            # Eigendecomposition
             try:
                 eigenvalues, eigenvectors = np.linalg.eigh(cov)
-                eigenvalues = np.maximum(eigenvalues, 1e-6)  # Avoid negative
+                eigenvalues = np.maximum(eigenvalues, 1e-6)  # guard against negative eigenvalues
 
-                # Chi2 scaling for 50% mass containment
+                # Chi2 scaling: 1.386 = chi2.ppf(0.5, df=2), ellipse contains ~50% of mass.
                 chi2_scale = 1.386
 
                 radius_x = np.sqrt(eigenvalues[1]) * chi2_scale
@@ -756,10 +726,9 @@ class CompassPipeline:
         axis_defs = []
 
         for i in range(dimensionality):
-            # Sort by coordinate on this axis
             sorted_frags = sorted(projected, key=lambda p: p.coordinates[i])
 
-            # Top 50 at each pole (or 10% of total, whichever is smaller)
+            # Up to 50 fragments per pole, or 10% of total, whichever is smaller.
             n_pole = min(50, max(3, len(sorted_frags) // 10))
 
             negative_pole = [p.fragment_id for p in sorted_frags[:n_pole]]
@@ -772,7 +741,7 @@ class CompassPipeline:
                 negative_pole_fragments=negative_pole,
             ))
 
-        # If 1D, add placeholder for Y axis
+        # Placeholder Y axis in 1D mode.
         if dimensionality == 1:
             axis_defs.append(AxisDefinition(
                 index=1,
@@ -796,21 +765,18 @@ class CompassPipeline:
         Uses TF-IDF on pole fragments if axis_labeling module is available.
         Falls back to generic labels otherwise.
         """
-        # Build fragment text lookup
         text_lookup = {f.id: f.text for f in fragments}
 
         for axis_def in axis_defs:
             if not axis_def.positive_pole_fragments and not axis_def.negative_pole_fragments:
                 continue
 
-            # Get texts for poles
             pos_texts = [text_lookup.get(fid, "") for fid in axis_def.positive_pole_fragments]
             neg_texts = [text_lookup.get(fid, "") for fid in axis_def.negative_pole_fragments]
 
             pos_texts = [t for t in pos_texts if t]
             neg_texts = [t for t in neg_texts if t]
 
-            # Try to use axis labeler
             try:
                 if self._axis_labeler is None:
                     from .axis_labeling import AxisLabeler
@@ -880,7 +846,6 @@ class CompassPipeline:
         """
         random.seed(self.scatter_random_seed)
 
-        # Sample if too many
         if len(projected) > self.scatter_sample_size:
             sampled = random.sample(projected, self.scatter_sample_size)
         else:
@@ -908,20 +873,18 @@ class CompassPipeline:
         """Generate fallback response when analysis fails."""
         logger.warning(f"Compass fallback: {reason}")
 
-        # Group by party and use simple positioning
         groups_map: Dict[str, List[Fragment]] = {}
         for f in fragments:
             if f.group_id not in groups_map:
                 groups_map[f.group_id] = []
             groups_map[f.group_id].append(f)
 
-        # Simple left-right positioning based on group order
         group_list = list(groups_map.keys())
         positions = []
 
         for i, group_id in enumerate(group_list):
-            # Spread groups evenly on X axis
-            x = (i / max(len(group_list) - 1, 1)) * 4 - 2  # Range [-2, 2]
+            # Spread groups evenly along X in [-2, 2]; order carries no meaning.
+            x = (i / max(len(group_list) - 1, 1)) * 4 - 2
 
             positions.append(GroupPosition(
                 group_id=group_id,

@@ -1,11 +1,11 @@
 """
-Group-based ideological anchors for semi-supervised compass.
+Group-based ideological anchors for the semi-supervised compass.
 
-IMPORTANT: The compass is used for MULTI-VIEW COVERAGE, not ideology discovery.
-Anchors are SOFT constraints, fully configurable in config/default.yaml.
+The compass serves multi-view coverage, not ideology discovery. Anchors are
+soft constraints, fully configurable in config/default.yaml.
 """
 import logging
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 from ...config import get_config
 
@@ -50,11 +50,9 @@ class AnchorManager:
             "unclassified": [],
         }
 
-        # Load from config
         anchors_config = compass_config.get("anchors", {})
         self._anchors["enabled"] = anchors_config.get("enabled", False)
 
-        # Only load group mappings if anchors are enabled
         if not self._anchors["enabled"]:
             logger.info("Compass anchors disabled, using neutral positioning")
             return self._anchors
@@ -64,10 +62,8 @@ class AnchorManager:
             self._anchors[position]["groups"] = pos_config.get("groups", [])
             self._anchors[position]["confidence"] = pos_config.get("confidence", 0.7)
 
-        # Ambiguous groups (like M5S)
+        # Ambiguous groups (e.g. M5S) and unclassified ones (e.g. MISTO).
         self._anchors["ambiguous"] = compass_config.get("ambiguous", {})
-
-        # Unclassified groups (like MISTO)
         self._anchors["unclassified"] = compass_config.get("unclassified", [])
 
         return self._anchors
@@ -88,57 +84,19 @@ class AnchorManager:
         """
         anchors = self._load_anchors()
 
-        # Check explicit anchors
         for position in ["left", "center", "right"]:
             if group_name in anchors[position]["groups"]:
                 return position, anchors[position]["confidence"]
 
-        # Check ambiguous groups
         if group_name in anchors["ambiguous"]:
             amb_config = anchors["ambiguous"][group_name]
             return amb_config.get("default_position", "center"), amb_config.get("confidence", 0.5)
 
-        # Check unclassified
         if group_name in anchors["unclassified"]:
-            return "center", 0.3  # Low confidence center default
+            return "center", 0.3
 
-        # Unknown group
         logger.warning(f"Unknown group '{group_name}' for ideological positioning")
         return "center", 0.2
-
-    def get_anchor_groups(self, position: str) -> List[str]:
-        """Get all groups anchored to a position."""
-        anchors = self._load_anchors()
-        return anchors.get(position, {}).get("groups", [])
-
-    def get_all_positions(self) -> Dict[str, Tuple[str, float]]:
-        """
-        Get position and confidence for all known groups.
-
-        Returns:
-            Dictionary mapping group_name to (position, confidence)
-        """
-        anchors = self._load_anchors()
-        result = {}
-
-        # Explicit anchors
-        for position in ["left", "center", "right"]:
-            confidence = anchors[position]["confidence"]
-            for group in anchors[position]["groups"]:
-                result[group] = (position, confidence)
-
-        # Ambiguous groups
-        for group, config in anchors["ambiguous"].items():
-            result[group] = (
-                config.get("default_position", "center"),
-                config.get("confidence", 0.5)
-            )
-
-        # Unclassified
-        for group in anchors["unclassified"]:
-            result[group] = ("center", 0.3)
-
-        return result
 
     def position_to_numeric(self, position: str) -> float:
         """
@@ -153,16 +111,3 @@ class AnchorManager:
             "right": 3.0,
         }
         return mapping.get(position, 0.0)
-
-    def numeric_to_position(self, value: float) -> str:
-        """
-        Convert numeric value to position.
-
-        Uses thresholds: < -0.33 = left, > 0.33 = right, else center
-        """
-        if value < -0.33:
-            return "left"
-        elif value > 0.33:
-            return "right"
-        else:
-            return "center"

@@ -1,19 +1,18 @@
 """
 Evidence models for the Multi-View RAG system.
 
-CRITICAL: This module implements the UnifiedEvidence schema with CLEAR SEPARATION between:
-- chunk_text: used for retrieval preview (may be preprocessed)
-- quote_text: VERBATIM extraction from text using offsets
-
-Citation integrity is enforced through offset-based extraction ONLY.
-NO fuzzy matching is allowed.
+Citation integrity invariant: chunk_text is a retrieval preview and may be
+preprocessed, while quote_text is extracted verbatim from speech.text via
+offsets and is the only valid citation source. Citations are verified by
+re-extracting from offsets, never by comparing against chunk_text, and no
+fuzzy matching is involved.
 """
 from datetime import date as date_type
 from typing import Literal, Optional, List
 from pydantic import BaseModel, Field, field_validator
 
 
-# ── Name normalisation (deterministic, applied at retrieval time) ────────────
+# Name normalisation (deterministic, applied at retrieval time)
 
 PARTY_DISPLAY_NAMES: dict[str, str] = {
     "FRATELLI D'ITALIA": "Fratelli d'Italia",
@@ -26,9 +25,10 @@ PARTY_DISPLAY_NAMES: dict[str, str] = {
     "ITALIA VIVA-CASA RIFORMISTA (IV-CR)": "Italia Viva - Casa Riformista",
     "ITALIA VIVA-IL CENTRO-RENEW EUROPE": "Italia Viva - Il Centro - Renew Europe",
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
-    # Denominazioni storiche di gruppi rinominati (catena rinomina, non gruppi diversi):
-    # il gruppo congiunto Azione-IV si è rinominato in Azione-PER-RE quando IV è uscita
-    # (chi è uscito ha una nuova adesione; chi è rimasto conserva l'adesione con la label vecchia)
+    # Historical names of renamed groups (a rename chain, not distinct groups):
+    # the joint Azione-IV group renamed itself to Azione-PER-RE when IV left
+    # (those who left got a new membership; those who stayed keep the
+    # membership under the old label)
     "AZIONE - ITALIA VIVA - RENEW EUROPE": "Azione - Popolari Europeisti Riformatori - Renew Europe",
     "NOI MODERATI": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
     "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
@@ -61,13 +61,10 @@ class IdeologyScore(BaseModel):
 
 class UnifiedEvidence(BaseModel):
     """
-    Schema for evidence records with CLEAR SEPARATION between:
-    - chunk_text: used for retrieval preview (may be preprocessed)
-    - quote_text: VERBATIM extraction from text using offsets
+    Evidence record.
 
-    CRITICAL: quote_text is the ONLY valid citation source.
-    Citation validity = valid offsets + verbatim extraction.
-    DO NOT compare quote_text with chunk_text for verification.
+    See the module docstring for the chunk_text / quote_text citation
+    integrity invariant.
     """
     # Identifiers
     evidence_id: str = Field(description="Chunk ID - unique identifier")
@@ -87,13 +84,12 @@ class UnifiedEvidence(BaseModel):
     # Group-change transparency: True when the speaker has since moved to a different group
     party_changed: bool = Field(default=False, description="Whether speaker changed group after this speech")
     current_party: Optional[str] = Field(default=None, description="Current group name if party_changed is True")
-    # Componente del Gruppo Misto alla data del discorso (es. "+EUROPA -
-    # STATI UNITI D'EUROPA", "FUTURO NAZIONALE VANNACCI - FREE"): il Misto
-    # contiene componenti opposte, l'attribuzione va sempre alla componente.
+    # Gruppo Misto component at speech date (e.g. "+EUROPA - STATI UNITI
+    # D'EUROPA", "FUTURO NAZIONALE VANNACCI - FREE"): the Misto holds
+    # opposing components, so attribution always goes to the component.
     misto_component: Optional[str] = Field(default=None, description="Misto sub-component at speech date")
     date: date_type = Field(description="Date of the intervention")
 
-    # TEXT FIELDS - CLEARLY DISTINGUISHED
     chunk_text: str = Field(
         description="chunk.text - used for retrieval/preview ONLY. "
                     "May be preprocessed. NOT valid for citation."
@@ -119,15 +115,15 @@ class UnifiedEvidence(BaseModel):
     authority_score: float = Field(
         ge=0.0, le=1.0, default=0.0, description="Speaker authority score"
     )
-    # Salience computed by the merger (citability stored o regex fallback).
-    # Senza questo campo il valore veniva droppato alla costruzione del
-    # modello e ricalcolato con la regex in generation/pipeline.
+    # Salience computed by the merger (stored citability or regex fallback).
+    # Without this field the value was dropped at model construction and
+    # recomputed with the regex in generation/pipeline.
     salience: Optional[float] = Field(
         default=None, ge=0.0, le=1.0, description="Political salience score"
     )
 
-    # Citability pre-calcolata a index-time (PLAN_citation_quality Fase 1).
-    # None = chunk non ancora classificato → fallback regex a runtime.
+    # Citability pre-computed at index time (PLAN_citation_quality Phase 1).
+    # None = chunk not yet classified → regex fallback at runtime.
     citability_score: Optional[float] = Field(
         default=None, ge=0.0, le=1.0,
         description="Index-time citability score from batch LLM classification"
@@ -279,47 +275,15 @@ def verify_citation_integrity(
     span_end: Optional[int] = None
 ) -> bool:
     """
-    Verify citation is valid by re-extracting from source.
+    Verify a citation by re-extracting it from the source text.
 
-    CRITICAL: This DOES NOT compare with chunk_text - that would be incorrect.
-    Verification is done by re-extraction only.
-
-    Can be called in two ways:
-    1. verify_citation_integrity(evidence, text) - with UnifiedEvidence object
-    2. verify_citation_integrity(quote_text, text, start, end) - with individual params
-
-    Args:
-        quote_or_evidence: Either an UnifiedEvidence object or a quote string
-        speech_text: The raw speech text
-        span_start: Start offset (required if quote_or_evidence is a string)
-        span_end: End offset (required if quote_or_evidence is a string)
-
-    Returns:
-        True if re-extraction matches stored/provided quote_text
+    Accepts either a UnifiedEvidence (offsets read from the object) or a
+    quote string with explicit span_start/span_end. Returns True when the
+    re-extracted span matches the quote; False when offsets are missing.
     """
-    try:
-        # Check if first argument is an UnifiedEvidence object
-        if isinstance(quote_or_evidence, UnifiedEvidence):
-            evidence = quote_or_evidence
-            re_extracted = speech_text[evidence.span_start:evidence.span_end]
-            return re_extracted == evidence.quote_text
-        else:
-            # Individual parameters provided
-            if span_start is None or span_end is None:
-                raise ValueError("span_start and span_end required when quote is a string")
-            quote_text = quote_or_evidence
-            re_extracted = speech_text[span_start:span_end]
-            return re_extracted == quote_text
-    except (IndexError, ValueError):
+    if isinstance(quote_or_evidence, UnifiedEvidence):
+        evidence = quote_or_evidence
+        return speech_text[evidence.span_start:evidence.span_end] == evidence.quote_text
+    if span_start is None or span_end is None:
         return False
-
-
-class EvidenceBundle(BaseModel):
-    """Collection of evidence records for a query response."""
-    query: str = Field(description="Original query")
-    total_retrieved: int = Field(description="Total evidence pieces retrieved")
-    evidence: List[UnifiedEvidence] = Field(description="List of evidence records")
-    retrieval_channels: dict = Field(
-        default_factory=dict,
-        description="Metadata about retrieval channels used"
-    )
+    return speech_text[span_start:span_end] == quote_or_evidence

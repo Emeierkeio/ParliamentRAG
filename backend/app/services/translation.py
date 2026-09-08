@@ -26,24 +26,6 @@ def _lang_name(target_lang: str) -> str | None:
     """Return the prompt-friendly language name, or None if unsupported/it."""
     return LANG_NAMES.get(target_lang)
 
-# ---------------------------------------------------------------------------
-# Prompt
-# ---------------------------------------------------------------------------
-
-TRANSLATION_PROMPT = (
-    "Translate the following Italian parliamentary speech excerpts to English.\n"
-    "Preserve formal parliamentary register. Do not translate proper nouns\n"
-    "(speaker names, party names, place names, dates, session numbers).\n"
-    'Return ONLY valid JSON: {{"text": "...", "full_text": "..."}}\n\n'
-    "text: {text}\n"
-    "full_text: {full_text}"
-)
-
-
-# ---------------------------------------------------------------------------
-# Public API
-# ---------------------------------------------------------------------------
-
 async def translate_citation_batch(
     citations: list[dict],
     target_lang: str = "en",
@@ -80,10 +62,6 @@ async def translate_citation_batch(
             output.append(result)  # type: ignore[arg-type]
     return output
 
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
 
 async def translate_response_text(
     text: str,
@@ -199,10 +177,6 @@ async def translate_compass_axes(
         logger.warning("Compass axes translation failed; returning original. Error: %s", exc)
         return compass_data
 
-
-# ---------------------------------------------------------------------------
-# Internal helpers
-# ---------------------------------------------------------------------------
 
 def _translate_sys(target_lang: str) -> str:
     return (

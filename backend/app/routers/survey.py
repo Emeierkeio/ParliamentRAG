@@ -18,7 +18,6 @@ from app.models.survey import (
     SurveyWithChat,
     SurveyStats,
     SurveyListResponse,
-    CitationEvaluation,
     SURVEY_QUESTIONS,
     AB_DIMENSIONS,
     OPTIONAL_AB_DIMS,
@@ -60,10 +59,6 @@ def ensure_survey_constraint():
             logger.debug(f"Could not drop constraint {label}.chat_id: {e}")
 
 
-# ---------------------------------------------------------------------------
-# Evaluation set helpers
-# ---------------------------------------------------------------------------
-
 def _load_evaluation_set_raw() -> dict:
     """Load raw evaluation_set.json (values may be str or dict)."""
     try:
@@ -101,20 +96,6 @@ def _load_evaluation_set_full() -> Dict[str, dict]:
             result[topic] = {"baseline_answer": value, "baseline_experts": []}
     return result
 
-
-def _match_evaluation_set(query: str) -> Optional[tuple]:
-    """Return (topic, baseline_text) if query matches a topic in evaluation_set, else None."""
-    eval_set = _load_evaluation_set()
-    query_lower = query.lower()
-    for topic, baseline in eval_set.items():
-        if topic.lower() in query_lower:
-            return (topic, baseline)
-    return None
-
-
-# ---------------------------------------------------------------------------
-# Survey serialization helpers
-# ---------------------------------------------------------------------------
 
 def _survey_to_neo4j_params(survey: SurveyResponse) -> dict:
     """Convert a SurveyResponse to Neo4j node properties."""
@@ -195,9 +176,7 @@ def _neo4j_record_to_dict(r: dict) -> dict:
     return result
 
 
-# ---------------------------------------------------------------------------
-# Survey field list for Cypher queries
-# ---------------------------------------------------------------------------
+# Field list shared by all SurveyEvaluation Cypher queries.
 _SURVEY_FIELDS = (
     "s.id AS id, s.chat_id AS chat_id, s.timestamp AS timestamp, "
     "s.overall_satisfaction_a AS overall_satisfaction_a, "
@@ -228,10 +207,6 @@ def _load_surveys() -> List[dict]:
     """)
     return [_neo4j_record_to_dict(r) for r in results]
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 
 def _get_chat_by_id(chat_id: str) -> Optional[dict]:
     """Get a specific chat by ID from Neo4j."""
@@ -388,10 +363,6 @@ def _calculate_stats(surveys: List[dict]) -> SurveyStats:
     )
 
 
-# ---------------------------------------------------------------------------
-# Endpoints
-# ---------------------------------------------------------------------------
-
 @router.get("/questions")
 async def get_survey_questions():
     """Get the survey questions configuration."""
@@ -521,10 +492,8 @@ async def list_surveys(
 
     surveys = _load_surveys()
 
-    # Get chat IDs from surveys
     chat_ids = [s.get("chat_id") for s in surveys if s.get("chat_id")]
 
-    # Fetch chats from Neo4j
     chat_lookup = {}
     if chat_ids:
         client = _get_client()
@@ -534,7 +503,6 @@ async def list_surveys(
         """, {"ids": chat_ids})
         chat_lookup = {r["id"]: r for r in results}
 
-    # Build response with chat metadata
     surveys_with_chat = []
     for s in surveys:
         chat = chat_lookup.get(s.get("chat_id"))
@@ -548,14 +516,11 @@ async def list_surveys(
                 )
             )
 
-    # Sort by timestamp descending
     surveys_with_chat.sort(key=lambda x: x.survey.timestamp, reverse=True)
 
-    # Apply pagination
     total = len(surveys_with_chat)
     paginated = surveys_with_chat[offset : offset + limit]
 
-    # Calculate stats if requested
     stats = _calculate_stats(surveys) if include_stats else None
 
     return SurveyListResponse(
@@ -606,9 +571,6 @@ async def create_survey(survey_data: SurveyResponseCreate):
     )
 
     params = _survey_to_neo4j_params(survey)
-
-    # Build SET clause dynamically from dimension fields
-    dim_sets = ", ".join(f"{d}: ${d}" for d in AB_DIMENSIONS)
 
     client.query(f"""
         CREATE (s:SurveyEvaluation {{chat_id: $chat_id, evaluator_id: $evaluator_id}})

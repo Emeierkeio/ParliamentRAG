@@ -1,19 +1,19 @@
 # Multi-View RAG Configuration
-# All weights, thresholds, and settings are configurable here
+# All weights, thresholds, and settings are configurable here.
 #
-# IMPORTANT: Secrets (API keys, passwords) are in .env, NOT here.
-# This file can be committed to version control.
+# Secrets (API keys, passwords) live in .env, not here, so this file
+# can be committed to version control.
 
 retrieval:
   dense_channel:
     top_k: 200
-    similarity_threshold: 0.3
+    similarity_threshold: 0.3  # cosine similarity on text-embedding-3-small embeddings
     index_name: "chunk_embedding_index"
 
-  # Gate fuori-dominio (issue #22). Soglie tarate con
-  # build/calibrate_relevance_gate.py (21/08/2026): i 15 topic reali
-  # dell'eval set hanno minimo 15 chunk densi con similarità >= 0.78,
-  # le query fuori dominio massimo 6.
+  # Out-of-domain gate (issue #22). Thresholds calibrated with
+  # build/calibrate_relevance_gate.py (21/08/2026): the 15 real eval-set
+  # topics have at least 15 dense chunks with similarity >= 0.78,
+  # out-of-domain queries at most 6.
   relevance_gate:
     enabled: true
     chunk_similarity_floor: 0.78
@@ -31,7 +31,7 @@ retrieval:
     chunk_similarity_threshold: 0.3
 
   merger:
-    # NOTE: authority_weight is minimal because authority is computed POST-retrieval
+    # authority_weight is minimal because authority is computed post-retrieval
     # (the merger runs before AuthorityScorer). Real authority ranking happens
     # in pipeline.py _group_evidence_by_party (speaker-first interleaving).
     # The freed weight is redistributed to relevance and salience.
@@ -65,19 +65,19 @@ authority:
   acts_relevance_threshold: 0.25
 
   # Minimum cosine similarity between speech text_embedding and the query
-  # embedding for a speech to be counted.
+  # embedding for a speech to be counted (same text-embedding-3-small scale
+  # as acts_relevance_threshold above).
   # Speech embeddings are computed by build/precalculate_embeddings.py Phase 5
   # (first 2000 chars of preprocessed speech text).
   interventions_relevance_threshold: 0.25
 
-  normalization: "percentile"
   # Cap individual component contributions
   max_component_contribution: 0.8
 
-# SOFT ideological anchors - fully configurable
-# These are guidelines for multi-view coverage, NOT hard classifications
+# Soft ideological anchors - fully configurable.
+# These are guidelines for multi-view coverage, not hard classifications.
 compass:
-  purpose: "multi-view coverage"  # NOT ideology discovery
+  purpose: "multi-view coverage"  # coverage aid, not ideology discovery
 
   # Axis discovery: "semantic" (default) anchors the axes to two LLM-generated
   # pole pairs for the query (readable by construction, stable across time
@@ -161,20 +161,19 @@ compass:
   scatter_random_seed: 42        # Fixed seed for reproducibility
 
 generation:
-  # OpenAI models for 4-stage pipeline
-  
+  # OpenAI models for the 4-stage pipeline
   models:
     analyst: "gpt-4.1-mini"  # Stage 1: Claim decomposition (structured extraction — mini is enough)
     writer: "gpt-4.1"        # Stage 2: Sectional writing (verbatim citations — needs top instruction following)
     integrator: "gpt-4.1"    # Stage 3: Narrative integration (long rewrite preserving {CIT:N} markers)
-    # Stage 4 (Citation Surgeon) is deterministic, no LLM needed
-    # NOTE: synthesis (Stage 3.5) reuses the integrator model but the stage was
-    # removed from the pipeline; evidence_first_writer is unused legacy code.
+    # Stage 4 (Citation Surgeon) is deterministic, no LLM needed.
+    # Synthesis (Stage 3.5) was removed from the pipeline. EvidenceFirstWriter
+    # is still used by pipeline.py as the citation-repair fallback for
+    # sections whose quotes fail verification.
 
-  # NOT WIRED: the values below are NOT read by any pipeline stage — each stage
+  # Exposed in the settings UI, not yet wired to the pipeline: each stage
   # sets its own tuned temperature/max_tokens in code (analyst 0.1/2000,
-  # sectional 0.1/800, integrator 0.0/5000). Kept only for API compatibility
-  # with the settings UI. Changing them here has NO effect.
+  # sectional 0.1/800, integrator 0.0/5000). Changing these has no effect.
   parameters:
     max_tokens: 4000
     temperature: 0.3
@@ -192,12 +191,13 @@ generation:
   require_all_parties: true
   no_evidence_message: "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
 
-  # NOT WIRED: Stage 3.5 (convergence-divergence synthesis) was removed from the
-  # pipeline — this flag is read but never acted upon. Changing it has NO effect.
+  # Exposed in the settings UI, not yet wired to the pipeline: Stage 3.5
+  # (convergence-divergence synthesis) was removed, so the flag is read but
+  # never acted upon. Changing it has no effect.
   enable_synthesis: true
 
-# Coalition definitions for temporal authority logic
-# CRITICAL: Coalition crossing (maggioranza <-> opposizione) invalidates prior authority
+# Coalition definitions for temporal authority logic.
+# Coalition crossing (maggioranza <-> opposizione) invalidates prior authority.
 coalitions:
   maggioranza:
     - "Fratelli d'Italia"
@@ -212,16 +212,17 @@ coalitions:
     - "Azione - Popolari Europeisti Riformatori - Renew Europe"
     - "Italia Viva - Casa Riformista"
 
-  # Il Gruppo Misto NON è ascrivibile a uno schieramento: contiene componenti
-  # politiche di orientamento opposto (+Europa vs Futuro Nazionale Vannacci).
-  # Ha una sezione propria nella summary ed è escluso dal balance binario.
+  # The Gruppo Misto cannot be assigned to either side: it contains political
+  # components of opposing orientation (+Europa vs Futuro Nazionale Vannacci).
+  # It gets its own section in the summary and is excluded from the binary balance.
   misto:
     - "Misto"
 
 # Citation extraction settings
 citation:
-  # ONLY offset-based extraction allowed
-  method: "offset"  # NO fuzzy matching
+  # Exposed in the settings UI, not yet wired to the pipeline: extraction is
+  # offset-based in code regardless of this value.
+  method: "offset"
   format: "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"
   # Validation: re-extract must match stored quote_text
   verify_on_insert: true
@@ -243,9 +244,9 @@ citation:
 # Query rewriting: expand short/ambiguous queries before retrieval
 query_rewriting:
   enabled: true
-  # nano non conosce i termini politici di nicchia: espandeva "remigrazione"
-  # come migrazione degli uccelli e "ius scholae" come diritto allo studio,
-  # avvelenando embedding e keyword del retrieval (2026-07-24)
+  # nano does not know niche political terms: it expanded "remigrazione"
+  # as bird migration and "ius scholae" as right to education, poisoning
+  # the retrieval embeddings and keywords (2026-07-24)
   model: "gpt-4.1-mini"
   # Only rewrite queries with at most this many words.
   # Longer queries are already descriptive enough.

@@ -24,7 +24,7 @@ from app.models.evaluation import (
     CombinedEvaluation,
     EvaluationDashboardData,
 )
-from app.models.survey import SurveyResponse, SurveyStats, AB_DIMENSIONS, SimpleRatingResponse
+from app.models.survey import SurveyResponse, AB_DIMENSIONS, SimpleRatingResponse
 from app.routers.survey import _load_surveys, _calculate_stats
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ KNOWN_PARTIES = {
 
 # Keyword sets for each group — at least one keyword must appear in the answer text
 PARTY_KEYWORDS: List[List[str]] = [
-    ["Fratelli d'Italia", "Fratelli d'Italia", "FdI"],
+    ["Fratelli d'Italia", "FdI"],
     ["Lega"],
     ["Forza Italia"],
     ["Noi Moderati"],
@@ -140,22 +140,6 @@ def _fetch_all_chats() -> List[dict]:
             "baseline_answer": r.get("baseline_answer") or "",
         })
     return chats
-
-
-def _build_expert_score_lookup(chats: List[dict]) -> dict:
-    """Build a (first_name_lower, last_name_lower) → authority_score lookup from stored chat experts."""
-    lookup = {}
-    for chat in chats:
-        for expert in chat.get("experts", []):
-            fn = (expert.get("first_name") or "").strip().lower()
-            ln = (expert.get("last_name") or "").strip().lower()
-            score = expert.get("authority_score") or expert.get("total_score") or 0
-            if fn and ln and score:
-                key = (fn, ln)
-                # Keep the max score seen for this deputy across all chats
-                if key not in lookup or score > lookup[key]:
-                    lookup[key] = score
-    return lookup
 
 
 def _build_expert_full_lookup(chats: List[dict]) -> dict:
@@ -249,32 +233,6 @@ def _compute_baseline_authority_from_precomputed(
     return overall, by_group
 
 
-def _compute_baseline_authority_for_text(baseline_text: str, expert_lookup: dict) -> Optional[float]:
-    """
-    Estimate the average authority score of deputies mentioned in a baseline text.
-    Uses the pre-computed expert score lookup from existing chat data.
-    Returns None if no deputies could be matched.
-
-    Matching strategy (in order):
-    1. Full "first_name last_name" or "last_name first_name" substring match.
-    2. Surname-only word-boundary match (fallback, because Italian parliamentary text
-       typically uses only surnames: "onorevole Rossi", "il deputato Bianchi").
-       Surnames shorter than 4 characters are excluded to avoid false positives.
-    """
-    if not baseline_text or not expert_lookup:
-        return None
-    text_lower = baseline_text.lower()
-    matched_scores = []
-    for (fn, ln), score in expert_lookup.items():
-        if f"{fn} {ln}" in text_lower or f"{ln} {fn}" in text_lower:
-            matched_scores.append(score)
-        elif len(ln) >= 4 and re.search(r'\b' + re.escape(ln) + r'\b', text_lower):
-            matched_scores.append(score)
-    if not matched_scores:
-        return None
-    return sum(matched_scores) / len(matched_scores)
-
-
 def _fetch_chunk_texts(chunk_ids: List[str]) -> dict:
     """Batch-fetch chunk texts from Neo4j. Returns {chunk_id: text}."""
     if not chunk_ids:
@@ -353,13 +311,13 @@ def _compute_automated_metrics(
     ]
     avg_auth = sum(auth_scores) / len(auth_scores) if auth_scores else 0.0
 
-    # 4b. Per-group authority breakdown (system) — from the authority scores of deputies
-    # ACTUALLY CITED in the answer, not the top-retrieved expert per party.
+    # 4b. Per-group authority breakdown (system) — from the authority scores of
+    # deputies actually cited in the answer, not the top-retrieved expert per party.
     # Strategy:
     #   1. Build a (first_name, last_name) → score lookup from this chat's query-specific experts.
     #   2. Also build a party → (fn, ln, score) lookup for the stored top expert per party.
     #   3. For each citation, look up the cited deputy's score by name.
-    #   4. Fallback to the stored top expert for that party (query-specific, NOT global max).
+    #   4. Fallback to the stored top expert for that party (query-specific, not the global max).
     #      This ensures authority_by_group is always based on query-specific scores and
     #      stays consistent with the survey panel which also uses chatData.experts.
     expert_name_lookup: dict = {}
@@ -574,7 +532,6 @@ def _load_simple_ratings() -> List[dict]:
 @router.get("/dashboard", response_model=EvaluationDashboardData)
 async def get_dashboard():
     """Get full evaluation dashboard data with automated + human metrics."""
-    # Fetch all chats
     chats = _fetch_all_chats()
 
     # Batch-fetch chunk texts for verbatim match across all chats
@@ -629,7 +586,6 @@ async def get_dashboard():
                 return spread
         return None
 
-    # Compute automated metrics for each chat
     metrics_map = {}
     for chat in chats:
         try:
@@ -645,7 +601,6 @@ async def get_dashboard():
         except Exception as e:
             logger.warning(f"Failed to compute metrics for chat {chat['id']}: {e}")
 
-    # Load human A/B surveys
     surveys = _load_surveys()
     survey_map = {}
     for s in surveys:
@@ -656,7 +611,6 @@ async def get_dashboard():
             except Exception:
                 pass
 
-    # Load simple Likert ratings
     simple_ratings_raw = _load_simple_ratings()
     simple_map = {}
     for r in simple_ratings_raw:
@@ -667,7 +621,6 @@ async def get_dashboard():
             except Exception:
                 pass
 
-    # Build per-chat combined evaluations
     per_chat = []
     for chat in chats:
         cid = chat["id"]
@@ -812,7 +765,6 @@ async def get_chat_metrics(chat_id: str):
         "experts": json.loads(r["experts"]) if r.get("experts") else [],
     }
 
-    # Fetch chunk texts only for this chat's citations
     chunk_ids = [
         cit.get("evidence_id") or cit.get("chunk_id", "")
         for cit in chat["citations"]
@@ -828,7 +780,6 @@ async def export_csv():
     """Export all evaluation data as CSV for paper analysis."""
     chats = _fetch_all_chats()
 
-    # Batch fetch chunk texts for verbatim match
     all_chunk_ids = []
     for chat in chats:
         for cit in chat.get("citations", []):
@@ -848,14 +799,12 @@ async def export_csv():
 
     from app.routers.survey import _get_ab_assignment, _deblind_preference
 
-    # A/B dimension headers
     dim_headers = []
     for dim in AB_DIMENSIONS:
         dim_headers.extend([
             f"{dim}_system", f"{dim}_baseline", f"{dim}_preference"
         ])
 
-    # Simple rating headers
     simple_headers = [
         "simple_answer_clarity", "simple_answer_quality",
         "simple_balance_perception", "simple_balance_fairness",
@@ -916,7 +865,6 @@ async def export_csv():
             overall_base = ""
             overall_pref = ""
 
-        # Simple rating columns
         sr = simple_map.get(chat["id"], {})
         simple_values = [
             sr.get("answer_clarity", ""),

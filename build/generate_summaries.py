@@ -263,7 +263,6 @@ class SummaryGenerator:
 
         for session in sessions:
             s_id = session["id"]
-            s_date = session["date"]
             debates = self._fetch_debates_for_session(s_id)
             debate_titles = [d["title"] for d in debates if d.get("title")]
             total_chars += len("; ".join(debate_titles)) * 2  # IT + EN prompts (approx)
@@ -573,7 +572,6 @@ MERGE (sds)-[:FOR_DEBATE]->(d)
 
 if __name__ == "__main__":
     import argparse
-    import os
     import os
     import sys
 

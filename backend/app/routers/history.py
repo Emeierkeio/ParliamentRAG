@@ -45,7 +45,7 @@ class ChatHistoryItem(BaseModel):
     compass: Optional[Dict[str, Any]] = None
 
     topic_stats: Optional[Dict[str, Any]] = None
-    trace: Optional[Dict[str, Any]] = None  # pipeline trace: durate/contatori per stadio
+    trace: Optional[Dict[str, Any]] = None  # pipeline trace: per-stage durations/counters
 
     # A/B Baseline comparison fields (optional for backwards compatibility)
     baseline_answer: Optional[str] = None
@@ -63,7 +63,7 @@ def _get_client():
     except RuntimeError:
         # Global client not initialized yet - create and register it
         from ..config import get_settings
-        from ..services.neo4j_client import Neo4jClient, init_neo4j_client
+        from ..services.neo4j_client import init_neo4j_client
         settings = get_settings()
         return init_neo4j_client(
             uri=settings.neo4j_uri,
@@ -109,8 +109,6 @@ async def get_history() -> HistoryListResponse:
 async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
     """Save a chat session to history."""
     try:
-        logger.debug(f"[HISTORY-SAVE] id={chat.id} query='{chat.query[:80]}...' answer_len={len(chat.answer)} has_ab={chat.ab_assignment is not None}")
-
         clean_text = _strip_markdown(chat.answer)
         chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text
 
@@ -127,7 +125,6 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
         ab_assignment_json = json.dumps(chat.ab_assignment, ensure_ascii=False) if chat.ab_assignment else ""
 
         baseline_value = (chat.baseline_answer or "")[:50000]
-        logger.debug(f"[HISTORY-SAVE] Neo4j params: baseline_len={len(baseline_value)}, ab_assignment='{ab_assignment_json}'")
 
         client.query("""
             CREATE (c:ChatHistory {
@@ -162,16 +159,6 @@ async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
             "baseline_answer": baseline_value,
             "ab_assignment": ab_assignment_json,
         })
-
-        # Verify what was actually saved
-        verify = client.query("""
-            MATCH (c:ChatHistory {id: $id})
-            RETURN c.baseline_answer AS baseline_answer, c.ab_assignment AS ab_assignment
-        """, {"id": chat.id})
-        if not verify:
-            logger.warning(f"[HISTORY-SAVE] VERIFICATION FAILED: Could not find chat {chat.id} after save!")
-        else:
-            logger.debug(f"[HISTORY-SAVE] Verified in Neo4j: ab_assignment='{verify[0].get('ab_assignment', '')}'")
 
         # Keep only last 50 chats — skip chats that have associated survey evaluations
         client.query("""
@@ -296,7 +283,6 @@ async def _compute_experts_from_matched(
 ) -> List[Dict]:
     """
     Compute authority scores for a list of pre-matched deputies and return expert dicts.
-    Shared by get_baseline_experts and precalculate_baseline_experts.
 
     authority_cache: optional {speaker_id: expert_dict} from a previously computed
     run (e.g. stored in the chat's experts field). When provided, skips the heavy
@@ -478,86 +464,6 @@ async def get_baseline_experts(chat_id: str, body: BaselineExpertsRequest) -> Di
 
     experts = await _compute_experts_from_matched(query_text, matched, client, authority_cache)
     return {"experts": experts}
-
-
-@router.post("/history/precalculate-baseline-experts")
-async def precalculate_baseline_experts() -> Dict[str, Any]:
-    """
-    Pre-compute baseline experts for all topics in evaluation_set.json and cache them
-    in the JSON file itself. After running this, the frontend no longer needs to call
-    /baseline-experts at evaluation time — experts are served directly via /chats/pending.
-
-    Uses each topic name as the query embedding context.
-    Skips topics that already have cached experts.
-    """
-    import os
-
-    eval_set_path = os.path.normpath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "evaluation_set.json")
-    )
-
-    try:
-        with open(eval_set_path, "r", encoding="utf-8") as f:
-            raw = json.load(f)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="evaluation_set.json not found")
-
-    client = _get_client()
-
-    # Fetch all deputies once (shared across all topics for efficiency)
-    deputies_result = client.query("""
-        MATCH (d:Deputy)
-        WHERE d.first_name IS NOT NULL AND d.last_name IS NOT NULL
-        OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-        WHERE mg.end_date IS NULL
-        WITH d, collect(g.name)[0] AS group_name
-        RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name,
-               coalesce(group_name, 'MISTO') AS group_name,
-               d.deputy_card AS camera_profile_url,
-               d.photo AS photo,
-               d.profession AS profession, d.education AS education
-    """)
-    logger.info(f"[PRECALC] Loaded {len(deputies_result)} deputies from Neo4j")
-
-    enriched: Dict[str, Any] = {}
-    skipped = 0
-    computed = 0
-
-    for topic, val in raw.items():
-        # Support both old format (str) and new format (dict)
-        if isinstance(val, dict):
-            baseline_text = val.get("baseline_answer", "")
-            existing_experts = val.get("baseline_experts", [])
-        else:
-            baseline_text = val
-            existing_experts = []
-
-        # Skip if already computed
-        if existing_experts:
-            enriched[topic] = {"baseline_answer": baseline_text, "baseline_experts": existing_experts}
-            skipped += 1
-            logger.info(f"[PRECALC] SKIP '{topic}' (already has {len(existing_experts)} experts)")
-            continue
-
-        if not baseline_text:
-            enriched[topic] = {"baseline_answer": "", "baseline_experts": []}
-            continue
-
-        logger.info(f"[PRECALC] Computing experts for topic: '{topic}'")
-        matched = _match_deputies_in_text(baseline_text, deputies_result)
-        logger.info(f"[PRECALC] '{topic}': matched {len(matched)} deputies")
-
-        experts = await _compute_experts_from_matched(topic, matched, client)
-        enriched[topic] = {"baseline_answer": baseline_text, "baseline_experts": experts}
-        computed += 1
-        logger.info(f"[PRECALC] '{topic}': computed {len(experts)} experts with authority scores")
-
-    # Write back enriched JSON
-    with open(eval_set_path, "w", encoding="utf-8") as f:
-        json.dump(enriched, f, ensure_ascii=False, indent=2)
-
-    logger.info(f"[PRECALC] Done. computed={computed}, skipped={skipped}, topics={len(enriched)}")
-    return {"ok": True, "computed": computed, "skipped": skipped, "total": len(enriched)}
 
 
 @router.delete("/history/{chat_id}")

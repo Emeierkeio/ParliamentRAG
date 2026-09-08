@@ -1,6 +1,6 @@
 """Authority score models for the Multi-View RAG system."""
 from datetime import date
-from typing import Dict, List, Optional
+from typing import Dict, List
 from pydantic import BaseModel, Field
 
 
@@ -43,9 +43,9 @@ class AuthorityScore(BaseModel):
 
     AuthorityScore(speaker, query, date) ∈ [0, 1]
 
-    CRITICAL: Authority is computed dynamically per query.
-    Temporal coalition logic must be respected:
-    - If a deputy crosses MAGGIORANZA ↔ OPPOSIZIONE, prior authority is invalidated.
+    Authority is computed dynamically per query. Temporal coalition logic:
+    if a deputy crosses maggioranza ↔ opposizione, prior authority is
+    invalidated.
     """
     speaker_id: str = Field(description="Speaker identifier")
     speaker_name: str = Field(description="Full name")
@@ -108,11 +108,3 @@ class AuthorityScore(BaseModel):
                 "authority_invalidated_periods": []
             }
         }
-
-
-class SpeakerAuthorityBatch(BaseModel):
-    """Batch of authority scores for multiple speakers."""
-    query: str = Field(description="Query used for computation")
-    reference_date: date = Field(description="Reference date")
-    scores: List[AuthorityScore] = Field(description="Authority scores per speaker")
-    computation_time_ms: float = Field(description="Time taken to compute")

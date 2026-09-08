@@ -4,16 +4,9 @@ Compass data models for the ideological compass pipeline.
 Defines all Pydantic models used in the IC-1 to IC-6 pipeline.
 """
 from typing import List, Dict, Optional, Any
-from enum import Enum
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from pydantic import BaseModel, Field
-
-
-class CompassDimensionality(int, Enum):
-    """Dimensionality of the compass visualization."""
-    ONE_D = 1
-    TWO_D = 2
 
 
 class AxisSideDescription(BaseModel):

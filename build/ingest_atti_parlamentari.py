@@ -23,9 +23,6 @@ Schema Neo4j:
 
 import requests
 import time
-from neo4j import GraphDatabase
-import requests
-import time
 import csv
 import os
 from neo4j import GraphDatabase
@@ -40,7 +37,6 @@ NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD", "")
 SPARQL_CAMERA = "https://dati.camera.it/sparql"
 SPARQL_EUROVOC = "https://publications.europa.eu/webapi/rdf/sparql"
 
-# Rate limiting
 # Rate limiting
 REQUEST_DELAY = 0.3  # secondi tra le richieste
 CACHE_FILE = "data/eurovoc.csv"
@@ -117,17 +113,16 @@ class AttiParlamentariIngester:
             if endpoint == SPARQL_EUROVOC:
                 self.eurovoc_errors = 0
                 
-            # time.sleep(REQUEST_DELAY) # Spostato fuori o gestito diversamente se necessario
             return response.json()
         except Exception as e:
             if endpoint == SPARQL_EUROVOC:
                 self.eurovoc_errors += 1
-                print(f"⚠️ Errore EuroVoc ({self.eurovoc_errors}/{self.MAX_EUROVOC_ERRORS}): {e}")
+                print(f"ATTENZIONE: errore EuroVoc ({self.eurovoc_errors}/{self.MAX_EUROVOC_ERRORS}): {e}")
                 if self.eurovoc_errors >= self.MAX_EUROVOC_ERRORS:
-                    print("⛔️ Troppi errori consecutivi su EuroVoc. Disabilito il recupero delle label per questa sessione.")
+                    print("STOP: troppi errori consecutivi su EuroVoc. Disabilito il recupero delle label per questa sessione.")
                     self.eurovoc_disabled = True
             else:
-                print(f"❌ Errore query SPARQL ({endpoint}): {e}")
+                print(f"ERRORE: query SPARQL fallita ({endpoint}): {e}")
             return None
 
     def get_eurovoc_label(self, eurovoc_uri: str) -> str:

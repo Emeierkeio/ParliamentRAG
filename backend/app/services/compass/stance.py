@@ -17,9 +17,9 @@ from typing import Dict, List, Optional, Tuple
 
 from ...config import get_config
 from ...key_pool import make_client
-# Propaga il contesto (recorder trace + query id) nei thread dei batch:
-# con un ThreadPoolExecutor liscio le chiamate stance sarebbero invisibili
-# nel pannello "dietro le quinte"
+# Propagates context (recorder trace + query id) into the batch threads: with
+# a plain ThreadPoolExecutor the stance calls would be invisible in the
+# "behind the scenes" panel.
 from ...log_context import ContextPropagatingExecutor
 
 logger = logging.getLogger(__name__)

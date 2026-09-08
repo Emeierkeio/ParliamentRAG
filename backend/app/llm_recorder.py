@@ -1,19 +1,19 @@
 """
-Registratore per-query delle chiamate LLM.
+Per-query recorder of LLM calls.
 
-Un ContextVar attivato a inizio pipeline raccoglie ogni chiamata OpenAI
-(chat + embeddings) fatta durante la query: modello, durata, token,
-anteprime di prompt e risposta. I client di key_pool sono wrappati una
-volta sola; il wrapper consulta il ContextVar a ogni chiamata, quindi
-fuori da una query registrata è un passthrough puro.
+A ContextVar activated at pipeline start collects every OpenAI call
+(chat + embeddings) made during the query: model, duration, tokens,
+prompt and response previews. The key_pool clients are wrapped only
+once; the wrapper consults the ContextVar on every call, so outside a
+recorded query it is a pure passthrough.
 
-Si propaga attraverso gli await e, grazie a ContextPropagatingExecutor
-(default executor del loop), anche nei run_in_executor. I thread pool
-creati ad hoc nei singoli moduli restano fuori.
+It propagates through awaits and, thanks to ContextPropagatingExecutor
+(the loop's default executor), also into run_in_executor. Thread pools
+created ad hoc in individual modules stay out.
 
-Le anteprime sono troncate (_PREVIEW_CHARS) per tenere il payload del
-trace nell'ordine delle decine di KB: abbastanza per capire cosa ha fatto
-ogni chiamata, non un dump completo dei prompt.
+Previews are truncated (_PREVIEW_CHARS) to keep the trace payload in
+the tens of KB: enough to understand what each call did, not a full
+dump of the prompts.
 """
 import contextvars
 import logging
@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 
 _PREVIEW_CHARS = 600
 
-# USD per 1M token (input, output) — listino OpenAI, solo per la STIMA di
-# costo mostrata nel pannello trace. Prefix-match sul nome modello.
+# USD per 1M tokens (input, output) — OpenAI price list, only for the cost
+# estimate shown in the trace panel. Prefix-match on the model name.
 _PRICES_PER_MTOK = {
     "gpt-4o": (2.5, 10.0),
     "gpt-4.1-mini": (0.4, 1.6),
@@ -52,21 +52,21 @@ _recorder_var: contextvars.ContextVar[Optional["LlmCallRecorder"]] = contextvars
     "llm_recorder", default=None
 )
 
-# Etichetta di fase per l'attribuzione delle chiamate nel trace: con la
-# bussola in parallelo alla generazione le finestre temporali si
-# sovrappongono, quindi il tag esplicito batte l'inferenza per offset.
+# Stage label for attributing calls in the trace: with the compass running
+# in parallel with generation the time windows overlap, so the explicit tag
+# beats inference by offset.
 _stage_var: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
     "llm_stage", default=None
 )
 
 
 def set_llm_stage(stage: Optional[str]) -> None:
-    """Etichetta le prossime chiamate LLM di questo contesto con la fase data."""
+    """Tag this context's upcoming LLM calls with the given stage."""
     _stage_var.set(stage)
 
 
 class LlmCallRecorder:
-    """Raccoglie le chiamate LLM di una singola query."""
+    """Collect the LLM calls of a single query."""
 
     def __init__(self):
         self.t0 = time.perf_counter()
@@ -91,7 +91,7 @@ class LlmCallRecorder:
 
 
 def start_recording() -> LlmCallRecorder:
-    """Attiva un recorder nel contesto corrente e lo restituisce."""
+    """Activate a recorder in the current context and return it."""
     rec = LlmCallRecorder()
     _recorder_var.set(rec)
     return rec
@@ -134,8 +134,8 @@ def _record_chat(rec, kwargs, response, t_start, duration_ms, error=None) -> Non
                 "completion": getattr(usage, "completion_tokens", None),
                 "total": getattr(usage, "total_tokens", None),
             }
-            # prompt caching automatico OpenAI: quanti token del prompt erano
-            # in cache (prefissi >=1024 token ripetuti, scontati del 50%)
+            # OpenAI automatic prompt caching: how many prompt tokens were
+            # cached (repeated prefixes >=1024 tokens, discounted 50%)
             details = getattr(usage, "prompt_tokens_details", None)
             cached = getattr(details, "cached_tokens", None) if details else None
             if cached:
@@ -191,10 +191,10 @@ def _record_embeddings(rec, kwargs, response, t_start, duration_ms, error=None) 
 
 def wrap_recording(client):
     """
-    Wrappa chat.completions.create ed embeddings.create di un client OpenAI
-    (sync o async) per registrare le chiamate nel recorder attivo.
-    Da applicare DOPO il wrapper LangSmith, così misura il tempo totale
-    percepito dalla pipeline.
+    Wrap chat.completions.create and embeddings.create of an OpenAI client
+    (sync or async) to record calls in the active recorder.
+    Apply after the LangSmith wrapper, so it measures the total time as
+    perceived by the pipeline.
     """
     import openai
 

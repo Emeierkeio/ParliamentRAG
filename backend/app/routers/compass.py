@@ -7,7 +7,6 @@ without authority scoring or text generation.
 import time
 import logging
 import asyncio
-from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -32,8 +31,7 @@ async def compass_endpoint(request: CompassRequest, http_request: Request):
     locale = (http_request.headers.get("accept-language", "it") or "it").strip()[:2].lower()
 
     try:
-        # Step 1: Retrieve evidence (locale: query non italiane tradotte
-        # dal rewriter prima dell'embedding)
+        # Non-Italian queries are translated by the rewriter before embedding.
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
@@ -49,7 +47,6 @@ async def compass_endpoint(request: CompassRequest, http_request: Request):
                 d["embedding"] = e.embedding
             evidence_dicts.append(d)
 
-        # Step 2: Compute compass positions
         compass_result = await asyncio.get_running_loop().run_in_executor(
             None,
             lambda: services["ideology"].compute_2d_text_positions(

@@ -4,13 +4,10 @@ Authority scorer for query-dependent speaker authority.
 Orchestrates all authority components and applies:
 - Query-dependent weighting
 - Temporal coalition logic
-- Percentile-based normalization
 """
 import logging
-from datetime import date, datetime
-from typing import List, Dict, Any, Optional, Union
-
-import numpy as np
+from datetime import date
+from typing import List, Dict, Any, Optional
 
 from ..neo4j_client import Neo4jClient
 from .coalition_logic import CoalitionLogic
@@ -21,72 +18,19 @@ from .components import (
     ActsComponent,
     InterventionsComponent,
     RoleComponent,
+    parse_neo4j_date,
 )
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
 
-# Bound GLOBALE sulle fetch authority pesanti (embedding di atti/interventi,
-# fino a ~10MB/tx): con più pipeline concorrenti i ThreadPool per-pipeline si
-# sommavano e il pool transazioni Neo4j (2.1GiB) saturava, facendo fallire
-# task interi (osservato 2026-07-24 con 2 query simultanee). Il semaforo vale
-# attraverso TUTTE le pipeline del processo.
+# Global bound on the heavy authority fetches (act/speech embeddings, up to
+# ~10MB/tx): with several concurrent pipelines the per-pipeline ThreadPools
+# added up and the Neo4j transaction pool (2.1GiB) saturated, failing whole
+# tasks (observed 2026-07-24 with 2 simultaneous queries). The semaphore
+# applies across ALL pipelines in the process.
 import threading as _threading
 _FETCH_SEMAPHORE = _threading.Semaphore(4)
-
-
-def parse_neo4j_date(date_value: Any) -> Optional[date]:
-    """
-    Parse a date value from Neo4j to Python date.
-
-    Neo4j may return dates as:
-    - neo4j.time.Date objects
-    - Strings in DD/MM/YYYY or YYYYMMDD format
-    - Float/int values like 20250612.0
-    - datetime.date objects
-    - None
-    """
-    if date_value is None:
-        return None
-
-    # Already a date object
-    if isinstance(date_value, date):
-        return date_value
-
-    # Neo4j Date object (has to_native method)
-    if hasattr(date_value, 'to_native'):
-        return date_value.to_native()
-
-    # Float or int (e.g., 20250612.0 or 20250612)
-    if isinstance(date_value, (float, int)):
-        try:
-            date_str = str(int(date_value))
-            if len(date_str) == 8:  # YYYYMMDD format
-                return datetime.strptime(date_str, "%Y%m%d").date()
-        except (ValueError, OverflowError):
-            pass
-        logger.warning(f"Could not parse date number: {date_value}")
-        return None
-
-    # String format - try common formats
-    if isinstance(date_value, str):
-        # Handle empty strings
-        if not date_value.strip():
-            return None
-
-        # Remove decimal part if present (e.g., "20250612.0" -> "20250612")
-        date_str = date_value.split('.')[0].strip()
-
-        for fmt in ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%Y%m%d"):
-            try:
-                return datetime.strptime(date_str, fmt).date()
-            except ValueError:
-                continue
-        logger.warning(f"Could not parse date string: {date_value}")
-        return None
-
-    logger.warning(f"Unknown date type: {type(date_value)} - {date_value}")
-    return None
 
 
 class AuthorityScorer:
@@ -109,7 +53,6 @@ class AuthorityScorer:
         self.config = get_config()
         self.coalition_logic = CoalitionLogic()
 
-        # Initialize components
         self.components = {
             "profession": ProfessionComponent(),
             "education": EducationComponent(),
@@ -119,7 +62,6 @@ class AuthorityScorer:
             "role": RoleComponent(),
         }
 
-        # Load weights from config
         authority_config = self.config.load_config().get("authority", {})
         weights = authority_config.get("weights", {})
 
@@ -139,10 +81,10 @@ class AuthorityScorer:
         reference_date: Optional[date] = None
     ) -> Dict[str, Any]:
         """
-        Compute authority score for a speaker.
+        Compute the authority score for a single speaker.
 
         Args:
-            speaker_id: ID of the speaker (deputato or governo membro)
+            speaker_id: ID of the speaker (deputy or government member)
             query_embedding: Embedding of the query
             reference_date: Reference date (default: today)
 
@@ -152,9 +94,9 @@ class AuthorityScorer:
         if reference_date is None:
             reference_date = date.today()
 
-        # Fetch speaker data from database. Un TransientError residuo (pool
-        # transazioni saturo anche dopo i retry) NON deve far crashare la
-        # pipeline chiamante: authority di default come per speaker mancanti.
+        # A residual TransientError (transaction pool still saturated after
+        # the retries) must NOT crash the calling pipeline: fall back to the
+        # same default authority used for missing speakers.
         try:
             speaker_data = self._fetch_speaker_data(speaker_id, reference_date)
         except Exception as exc:
@@ -170,11 +112,9 @@ class AuthorityScorer:
                 "coalition": "unknown",
             }
 
-        # Apply coalition filtering to activities
         current_group = speaker_data.get("current_group", "MISTO")
         memberships = speaker_data.get("group_memberships", [])
 
-        # Filter acts and interventions by coalition
         speaker_data["acts"] = self.coalition_logic.filter_activities_by_coalition(
             speaker_data.get("acts", []),
             memberships,
@@ -189,22 +129,17 @@ class AuthorityScorer:
             current_group
         )
 
-        # Compute each component
         component_scores = {}
         for name, component in self.components.items():
             score = component.compute(speaker_data, query_embedding, reference_date)
             component_scores[name] = score
 
-        # Weighted sum
         total_score = sum(
             self.weights[name] * score
             for name, score in component_scores.items()
         )
-
-        # Ensure total is in [0, 1]
         total_score = max(0.0, min(1.0, total_score))
 
-        # Debug: log component breakdown per speaker
         name = f"{speaker_data.get('first_name', '')} {speaker_data.get('last_name', '')}".strip()
         component_summary = "  ".join(
             f"{k}={v:.2f}(w={self.weights[k]:.2f})"
@@ -214,7 +149,6 @@ class AuthorityScorer:
             f"AuthorityScorer [{name or speaker_id}] total={total_score:.3f} | {component_summary}"
         )
 
-        # Extract matched institutional role label from role component
         role_component = self.components.get("role")
         institutional_role = getattr(role_component, "matched_role_label", None)
 
@@ -227,23 +161,6 @@ class AuthorityScorer:
             "institutional_role": institutional_role,
         }
 
-    def compute_batch_authority(
-        self,
-        speaker_ids: List[str],
-        query_embedding: List[float],
-        reference_date: Optional[date] = None
-    ) -> Dict[str, float]:
-        """
-        Compute authority scores for multiple speakers.
-
-        Returns a dictionary mapping speaker_id to total_score.
-        """
-        scores = {}
-        for speaker_id in speaker_ids:
-            result = self.compute_authority(speaker_id, query_embedding, reference_date)
-            scores[speaker_id] = result["total_score"]
-        return scores
-
     def compute_all_authority(
         self,
         speaker_ids: List[str],
@@ -251,14 +168,15 @@ class AuthorityScorer:
         reference_date: Optional[date] = None,
     ) -> Dict[str, Dict[str, Any]]:
         """
-        Compute authority scores for ALL speakers using 2 batch DB queries.
+        Compute authority scores for many speakers with parallel fetch and scoring.
 
-        Replaces the previous pattern of N individual compute_authority() calls with:
-          1. _fetch_all_speakers_data_batch() — 2 Neo4j queries (Deputies + GovernmentMembers)
-             instead of N, using UNWIND + CALL subqueries and a 4-year date filter.
-          2. Parallel CPU-side component scoring via ThreadPoolExecutor.
+        Two phases: per-speaker DB fetches on a 4-worker ThreadPoolExecutor
+        (bounded further by the process-wide fetch semaphore), then CPU-side
+        component scoring on a second 4-worker pool. Speakers whose fetch or
+        scoring fails get the default result (total_score 0.5).
 
-        Returns {speaker_id: full_authority_result_dict} for every requested speaker.
+        Returns {speaker_id: full_authority_result_dict} for every requested
+        speaker.
         """
         import time as _time
         from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -275,11 +193,11 @@ class AuthorityScorer:
         # UNWIND+CALL batch queries execute CALL iterations sequentially in Neo4j,
         # giving ~0.8s/speaker × 48 = 39s. Parallel individual queries let Neo4j
         # process up to max_workers speakers simultaneously → ~5-10s total.
-        # max_workers 6→4: con 6 fetch concorrenti il pool transazioni Neo4j
-        # (2.1GiB) saturava e ~5-20/46 speaker cadevano con
-        # MemoryPoolOutOfMemoryError → authority di default 0.5 e ranking
-        # partiti degradato (osservato 2026-07-23). Retry e bound globale
-        # sono dentro _fetch_speaker_data (valgono per tutti i chiamanti).
+        # max_workers 6→4: with 6 concurrent fetches the Neo4j transaction pool
+        # (2.1GiB) saturated and ~5-20/46 speakers failed with
+        # MemoryPoolOutOfMemoryError → default authority 0.5 and degraded party
+        # ranking (observed 2026-07-23). Retry and the global bound live in
+        # _fetch_speaker_data (they apply to every caller).
         all_data: Dict[str, Any] = {}
         with ThreadPoolExecutor(max_workers=min(4, max(1, len(speaker_ids)))) as db_pool:
             db_futures = {
@@ -359,9 +277,9 @@ class AuthorityScorer:
                 "institutional_role": institutional_role,
             }
 
-        # Cap CPU-scoring workers at 4: the DB pool above already used 20 threads,
-        # and compute_all_authority runs inside asyncio's run_in_executor, so
-        # K concurrent requests would create K×n_workers threads for scoring.
+        # Cap CPU-scoring workers at 4: compute_all_authority runs inside
+        # asyncio's run_in_executor, so K concurrent requests would create
+        # K×n_workers threads for scoring.
         n_workers = min(4, max(1, len(all_data)))
         with ThreadPoolExecutor(max_workers=n_workers) as pool:
             futures = {pool.submit(_score_speaker, sid): sid for sid in all_data}
@@ -388,229 +306,6 @@ class AuthorityScorer:
 
         return results
 
-    def _fetch_all_speakers_data_batch(
-        self,
-        speaker_ids: List[str],
-        reference_date: date,
-    ) -> Dict[str, Dict[str, Any]]:
-        """
-        Fetch data for all speakers in 2 DB queries (Deputies + GovernmentMembers).
-
-        Uses UNWIND + CALL subqueries (Neo4j 4.1+) to collapse N individual
-        round-trips into a single batch query per node type.
-
-        A 4-year date filter on interventions and acts dramatically reduces the
-        amount of embedding data transferred from Neo4j (e.g. 500 speeches → ~150).
-        """
-        result: Dict[str, Dict[str, Any]] = {}
-
-        # ---- Deputies --------------------------------------------------------
-        cypher_deputies = """
-        UNWIND $speaker_ids AS target_id
-        CALL {
-            WITH target_id
-            MATCH (d:Deputy {id: target_id})
-
-            OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-            WITH d, target_id, collect(
-                CASE WHEN g IS NOT NULL
-                     THEN {group: g.name, start_date: mg.start_date, end_date: mg.end_date}
-                END
-            ) AS group_memberships
-
-            OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMMITTEE]->(c:Committee)
-            WITH d, target_id, group_memberships, collect(
-                CASE WHEN c IS NOT NULL
-                     THEN {committee_name: c.name, committee_embedding: c.embedding,
-                           start_date: mc.start_date, end_date: mc.end_date}
-                END
-            ) AS committee_memberships
-
-            OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
-            WITH d, target_id, group_memberships, committee_memberships, collect(
-                CASE WHEN cp IS NOT NULL
-                     THEN {role_type: 'president', committee_name: cp.name,
-                           committee_embedding: cp.embedding,
-                           start_date: rp.start_date, end_date: rp.end_date}
-                END
-            ) AS president_roles
-
-            OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
-            WITH d, target_id, group_memberships, committee_memberships, president_roles, collect(
-                CASE WHEN cv IS NOT NULL
-                     THEN {role_type: 'vice_president', committee_name: cv.name,
-                           committee_embedding: cv.embedding,
-                           start_date: rv.start_date, end_date: rv.end_date}
-                END
-            ) AS vice_president_roles
-
-            OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
-            WITH d, target_id, group_memberships, committee_memberships,
-                 president_roles, vice_president_roles, collect(
-                CASE WHEN cs IS NOT NULL
-                     THEN {role_type: 'secretary', committee_name: cs.name,
-                           committee_embedding: cs.embedding,
-                           start_date: rs.start_date, end_date: rs.end_date}
-                END
-            ) AS secretary_roles
-
-            // schema v2: ruoli ufficiali come proprietà su MEMBER_OF_COMMITTEE
-            OPTIONAL MATCH (d)-[rm:MEMBER_OF_COMMITTEE]->(cm:Committee)
-            WHERE rm.role IN ['president', 'vice_president', 'secretary']
-            WITH d, target_id, group_memberships, committee_memberships,
-                 president_roles, vice_president_roles, secretary_roles, collect(
-                CASE WHEN cm IS NOT NULL
-                     THEN {role_type: rm.role, committee_name: cm.name,
-                           committee_embedding: cm.embedding,
-                           start_date: rm.start_date, end_date: rm.end_date}
-                END
-            ) AS v2_officer_roles
-
-            WITH d, target_id, group_memberships, committee_memberships,
-                 president_roles + vice_president_roles + secretary_roles + v2_officer_roles AS institutional_roles
-
-            // Bound di memoria: come per gli interventi, gli embedding degli
-            // atti vanno limitati (deputati con 1500+ atti cofirmati = ~20MB/tx)
-            CALL {
-                WITH d
-                OPTIONAL MATCH (d)-[ar:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
-                WHERE a.presentation_date IS NULL OR a.presentation_date >= date() - duration({years: 4})
-                WITH a, ar ORDER BY a.presentation_date DESC LIMIT 500
-                RETURN collect(
-                    CASE WHEN a IS NOT NULL
-                         THEN {uri: a.uri, date: a.presentation_date,
-                               signatory_type: type(ar),
-                               description_embedding: a.description_embedding}
-                    END
-                ) AS acts
-            }
-            WITH d, target_id, group_memberships, committee_memberships, institutional_roles, acts
-
-            // Bound di memoria (2026-07-23): senza LIMIT questa fetch materializza
-            // gli embedding di TUTTI gli interventi di ogni speaker — con le liste
-            // native v2 ha mandato in OOM il container due volte. 300 interventi
-            // recenti bastano per la topic relevance e limitano a ~15MB/speaker.
-            CALL {
-                WITH d
-                OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
-                OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
-                WHERE s.date >= date() - duration({years: 4})
-                WITH i, s ORDER BY s.date DESC LIMIT 300
-                RETURN collect(
-                    CASE WHEN i IS NOT NULL
-                         THEN {speech_id: i.id, date: s.date, text_embedding: i.text_embedding}
-                    END
-                ) AS interventions
-            }
-            WITH d, target_id, group_memberships, committee_memberships,
-                 institutional_roles, acts, interventions
-
-            RETURN target_id AS tid,
-                   d.id AS speaker_id,
-                   d.first_name AS first_name,
-                   d.last_name AS last_name,
-                   d.profession_embedding AS profession_embedding,
-                   d.education_embedding AS education_embedding,
-                   group_memberships,
-                   committee_memberships,
-                   institutional_roles,
-                   acts,
-                   interventions
-        }
-        RETURN tid, speaker_id, first_name, last_name,
-               profession_embedding, education_embedding,
-               group_memberships, committee_memberships,
-               institutional_roles, acts, interventions
-        """
-
-        with self.client.session() as session:
-            for record in session.run(cypher_deputies, speaker_ids=speaker_ids):
-                data = dict(record)
-                speaker_id = data.get("speaker_id")
-                if not speaker_id:
-                    continue
-
-                current_group = "MISTO"
-                for membership in (data.get("group_memberships") or []):
-                    if not membership:
-                        continue
-                    start = parse_neo4j_date(membership.get("start_date"))
-                    end = parse_neo4j_date(membership.get("end_date"))
-                    if start and start <= reference_date:
-                        if not end or end >= reference_date:
-                            current_group = membership.get("group", "MISTO")
-                            break
-
-                data["current_group"] = current_group
-                result[speaker_id] = data
-
-        # ---- GovernmentMembers (IDs not found as Deputies) -------------------
-        missing = [sid for sid in speaker_ids if sid not in result]
-        if missing:
-            cypher_gov = """
-            UNWIND $speaker_ids AS target_id
-            MATCH (m:GovernmentMember {id: target_id})
-            OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(m)
-            OPTIONAL MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(:Debate)<-[:HAS_DEBATE]-(s:Session)
-            WHERE s.date >= date() - duration({years: 4})
-            WITH m, target_id, collect(
-                CASE WHEN i IS NOT NULL
-                     THEN {speech_id: i.id, date: s.date}
-                END
-            ) AS interventions
-            RETURN m.id AS speaker_id,
-                   m.first_name AS first_name,
-                   m.last_name AS last_name,
-                   m.institutional_role AS government_position,
-                   interventions
-            """
-
-            with self.client.session() as session:
-                for record in session.run(cypher_gov, speaker_ids=missing):
-                    data = dict(record)
-                    speaker_id = data.get("speaker_id")
-                    if not speaker_id:
-                        continue
-                    data.update({
-                        "group_memberships": [],
-                        "committee_memberships": [],
-                        "institutional_roles": [],
-                        "acts": [],
-                        "current_group": "GOVERNO",
-                    })
-                    result[speaker_id] = data
-
-        return result
-
-    def normalize_scores_percentile(
-        self,
-        scores: Dict[str, float]
-    ) -> Dict[str, float]:
-        """
-        Normalize scores using percentile-based normalization.
-
-        This prevents hyper-active deputies from dominating.
-        """
-        if not scores:
-            return {}
-
-        values = list(scores.values())
-
-        if len(values) == 1:
-            return {k: 0.5 for k in scores}
-
-        # Compute percentile ranks
-        sorted_values = sorted(values)
-        normalized = {}
-
-        for speaker_id, score in scores.items():
-            # Find percentile rank
-            rank = sorted_values.index(score)
-            percentile = rank / (len(sorted_values) - 1)
-            normalized[speaker_id] = percentile
-
-        return normalized
-
     def _fetch_speaker_data(
         self,
         speaker_id: str,
@@ -619,10 +314,10 @@ class AuthorityScorer:
     ) -> Optional[Dict[str, Any]]:
         """Fetch speaker data with global concurrency bound + transient retry.
 
-        Il semaforo globale limita le fetch pesanti attraverso TUTTE le
-        pipeline concorrenti; il retry copre i MemoryPoolOutOfMemoryError
-        residui (transitori: al retry le tx concorrenti hanno liberato
-        memoria). Vale per ogni chiamante (batch pool E compute_authority).
+        The global semaphore limits the heavy fetches across ALL concurrent
+        pipelines; the retry covers residual MemoryPoolOutOfMemoryErrors
+        (transient: by the retry, concurrent transactions have freed memory).
+        Applies to every caller (batch pool AND compute_authority).
         """
         import time as _t
         from neo4j.exceptions import TransientError
@@ -642,10 +337,7 @@ class AuthorityScorer:
         speaker_id: str,
         reference_date: date
     ) -> Optional[Dict[str, Any]]:
-        """
-        Fetch all necessary data for a speaker from Neo4j.
-        """
-        # Try Deputy first
+        """Fetch all data needed to score a speaker, trying Deputy then GovernmentMember."""
         cypher = """
         MATCH (d:Deputy {id: $speaker_id})
         OPTIONAL MATCH (d)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
@@ -663,7 +355,7 @@ class AuthorityScorer:
             end_date: mc.end_date
         }) AS committee_memberships
 
-        // Fetch institutional roles (President, Vice President, Secretary of committees)
+        // Institutional roles (president, vice president, secretary of committees)
         OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
         WITH d, group_memberships, committee_memberships, collect({
             role_type: 'president',
@@ -691,7 +383,7 @@ class AuthorityScorer:
             end_date: rs.end_date
         }) AS secretary_roles
 
-        // schema v2: ruoli ufficiali come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: official roles as properties on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rm:MEMBER_OF_COMMITTEE]->(cm:Committee)
         WHERE rm.role IN ['president', 'vice_president', 'secretary']
         WITH d, group_memberships, committee_memberships, president_roles, vice_president_roles, secretary_roles, collect(
@@ -719,6 +411,10 @@ class AuthorityScorer:
         }
         WITH d, group_memberships, committee_memberships, institutional_roles, acts
 
+        // Memory bound (2026-07-23): without LIMIT this fetch materializes the
+        // embeddings of EVERY speech of each speaker — with the v2 native lists
+        // it OOMed the container twice. 300 recent speeches are enough for
+        // topic relevance and cap the transfer at ~15MB/speaker.
         CALL {
             WITH d
             OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(d)
@@ -752,7 +448,6 @@ class AuthorityScorer:
             if record:
                 data = dict(record)
 
-                # Determine current group
                 current_group = "MISTO"
                 for membership in data.get("group_memberships", []):
                     start = parse_neo4j_date(membership.get("start_date"))
@@ -766,7 +461,6 @@ class AuthorityScorer:
                 data["current_group"] = current_group
                 return data
 
-        # Try GovernmentMember if not found as Deputy
         cypher_gov = """
         MATCH (m:GovernmentMember {id: $speaker_id})
         OPTIONAL MATCH (i:Speech)-[:SPOKEN_BY]->(m)

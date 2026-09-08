@@ -1,14 +1,10 @@
 """
 Configuration management for the Multi-View RAG system.
 
-This module loads configuration from:
-1. config/default.yaml - All weights, thresholds, and settings
-2. .env - Secrets only (API keys, passwords)
-
-This system uses OpenAI API for LLM inference.
-
+Loads configuration from:
+1. config/default.yaml - all weights, thresholds, and settings
+2. .env - secrets only (API keys, passwords)
 """
-import os
 import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
@@ -20,9 +16,8 @@ from pydantic_settings import BaseSettings
 
 logger = logging.getLogger(__name__)
 
-# ─── Maintenance mode ─────────────────────────────────────────────────────────
-# Change to True to block ALL API requests with 503.
-# Restart the backend after changing this value. MANUTENZIONE SETTA QUI!
+# Maintenance switch: set to True to answer every API request with 503.
+# Restart the backend after changing this value.
 MAINTENANCE_MODE: bool = False
 
 # Project root directory
@@ -40,10 +35,9 @@ if not _env_file.exists():
 
 
 class Settings(BaseSettings):
-    """
-    Application settings loaded from environment variables.
+    """Application settings loaded from environment variables.
 
-    ONLY secrets are stored here. All other configuration is in YAML.
+    Only secrets live here; all other configuration is in YAML.
     """
     # Neo4j Connection
     neo4j_uri: str = Field(
@@ -58,19 +52,14 @@ class Settings(BaseSettings):
         description="Neo4j password (REQUIRED)"
     )
 
-    # OpenAI API - ONLY provider for LLM inference
     openai_api_key: str = Field(
-        description="OpenAI API key (REQUIRED)"
+        description="OpenAI API key (required)"
     )
 
-    
-    # This system uses OpenAI for all LLM inference.
-    
-
-    # LangSmith observability (tracing attivo solo se la key è presente)
+    # LangSmith observability (tracing is active only when the key is present)
     langsmith_api_key: str = Field(
         default="",
-        description="LangSmith API key (vuota = tracing disabilitato)"
+        description="LangSmith API key (empty = tracing disabled)"
     )
     langsmith_project: str = Field(
         default="parliamentrag",
@@ -94,7 +83,6 @@ class ConfigLoader:
     def __init__(self, config_dir: Path = CONFIG_DIR):
         self.config_dir = config_dir
         self._config: Optional[Dict[str, Any]] = None
-        self._commissioni_topics: Optional[Dict[str, Any]] = None
 
     def load_config(self) -> Dict[str, Any]:
         """Load the main configuration file."""
@@ -112,24 +100,12 @@ class ConfigLoader:
 
         return self._config
 
-    def load_commissioni_topics(self) -> Dict[str, Any]:
-        """Load commission topic mapping."""
-        if self._commissioni_topics is not None:
-            return self._commissioni_topics
-
-        topics_path = self.config_dir / "commissioni_topics.yaml"
-        if not topics_path.exists():
-            logger.warning(f"Commission topics not found at {topics_path}")
-            self._commissioni_topics = {"commissioni": {}}
-        else:
-            with open(topics_path, "r", encoding="utf-8") as f:
-                self._commissioni_topics = yaml.safe_load(f)
-            logger.info(f"Loaded commission topics from {topics_path}")
-
-        return self._commissioni_topics
-
     def _get_default_config(self) -> Dict[str, Any]:
-        """Return default configuration if YAML not found."""
+        """Return the fallback configuration used only when default.yaml is missing.
+
+        Values must stay aligned with config/default.yaml (the source of truth,
+        matching the technical paper).
+        """
         return {
             "retrieval": {
                 "dense_channel": {
@@ -143,26 +119,25 @@ class ConfigLoader:
                 },
                 "merger": {
                     "diversity_weight": 0.15,
-                    "coverage_weight": 0.25,
-                    "authority_weight": 0.25,
-                    "relevance_weight": 0.15,
-                    "salience_weight": 0.20
+                    "coverage_weight": 0.20,
+                    "authority_weight": 0.05,
+                    "relevance_weight": 0.35,
+                    "salience_weight": 0.25
                 }
             },
             "authority": {
                 "weights": {
-                    "profession": 0.10,
+                    "profession": 0.15,
                     "education": 0.10,
-                    "committee": 0.20,
-                    "acts": 0.25,
-                    "interventions": 0.30,
+                    "committee": 0.25,
+                    "acts": 0.20,
+                    "interventions": 0.25,
                     "role": 0.05
                 },
                 "time_decay": {
-                    "acts_half_life_days": 365,
-                    "speeches_half_life_days": 365
+                    "acts_half_life_days": 548,
+                    "speeches_half_life_days": 548
                 },
-                "normalization": "percentile",
                 "max_component_contribution": 0.8
             },
             "compass": {
@@ -252,32 +227,26 @@ class ConfigLoader:
 
     @property
     def retrieval(self) -> Dict[str, Any]:
-        """Get retrieval configuration."""
         return self.load_config().get("retrieval", {})
 
     @property
     def authority(self) -> Dict[str, Any]:
-        """Get authority configuration."""
         return self.load_config().get("authority", {})
 
     @property
     def compass(self) -> Dict[str, Any]:
-        """Get compass configuration."""
         return self.load_config().get("compass", {})
 
     @property
     def generation(self) -> Dict[str, Any]:
-        """Get generation configuration."""
         return self.load_config().get("generation", {})
 
     @property
     def coalitions(self) -> Dict[str, List[str]]:
-        """Get coalition definitions."""
         return self.load_config().get("coalitions", {})
 
     @property
     def citation(self) -> Dict[str, Any]:
-        """Get citation configuration."""
         return self.load_config().get("citation", {})
 
     def get_coalition(self, group_name: str) -> str:
@@ -291,8 +260,8 @@ class ConfigLoader:
             group_name: Parliamentary group name
 
         Returns:
-            'maggioranza', 'opposizione' o 'misto' (il Gruppo Misto non è
-            ascrivibile a uno schieramento: contiene componenti opposte)
+            'maggioranza', 'opposizione' or 'misto' (the Gruppo Misto cannot be
+            assigned to either side: it contains opposing components)
         """
         if not group_name:
             return "opposizione"
@@ -306,7 +275,6 @@ class ConfigLoader:
             for g in groups:
                 if normalize(g) == group_norm:
                     return coalition
-        # Default to opposizione for unknown groups
         return "opposizione"
 
     def get_all_parties(self) -> List[str]:
@@ -318,7 +286,6 @@ class ConfigLoader:
         return all_parties
 
 
-# Global instances
 @lru_cache()
 def get_settings() -> Settings:
     """Get application settings (cached)."""
