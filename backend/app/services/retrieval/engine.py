@@ -278,6 +278,11 @@ class RetrievalEngine:
 
         return evidence_list
 
+    # A chunk starting within this many characters of the speech start is
+    # treated as introductory: Italian floor speeches typically open with
+    # topic framing, and the position statement follows in the next chunk.
+    _EARLY_SPEECH_SPAN_THRESHOLD = 600
+
     def _expand_neighbors(
         self,
         results: List[Dict[str, Any]],
@@ -289,12 +294,10 @@ class RetrievalEngine:
 
         - Low-salience chunks are REPLACED by an adjacent chunk (prev or next
           via the NEXT relationship) when that neighbor is more citable.
-        - Every other chunk is a candidate for APPEND: if its next chunk is
-          more citable, the next chunk is added alongside it. Retrieved chunks
-          often match on the introductory part of a speech (the topic is
-          named, the position follows), so the appended neighbor is where the
-          actual position statement tends to live. Span offsets are not
-          populated at retrieval time, so no positional pre-filter is applied.
+        - Early-in-speech chunks (span_start below the class threshold) get
+          their next chunk APPENDED when it is more citable: retrieved chunks
+          often match on the introductory framing of a speech, while the
+          actual position statement tends to live in the following chunk.
         """
         if not results:
             return results
@@ -306,7 +309,11 @@ class RetrievalEngine:
             r["salience"] = float(cit) if cit is not None else 0.5
 
         low_salience = [r for r in results if r.get("salience", 0) < salience_threshold]
-        early_speech = [r for r in results if r not in low_salience]
+        early_speech = [
+            r for r in results
+            if r.get("span_start", 0) < self._EARLY_SPEECH_SPAN_THRESHOLD
+            and r not in low_salience
+        ]
         candidates = low_salience + early_speech
 
         if not candidates:

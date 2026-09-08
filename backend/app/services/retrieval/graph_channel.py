@@ -14,7 +14,9 @@ from datetime import datetime
 import numpy as np
 
 from ..neo4j_client import Neo4jClient
-from ...models.evidence import normalize_speaker_name, normalize_party_name
+from ...models.evidence import (
+    normalize_speaker_name, normalize_party_name, compute_chunk_span,
+)
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
@@ -299,19 +301,18 @@ class GraphChannel:
         # Filter chunks by semantic similarity to the query.
         # Signatories may speak on many unrelated topics; this step removes
         # chunks that are topically irrelevant to the current query.
-        # chunk_similarity_threshold applies to the raw cosine; the stored
-        # similarity is then normalized to (1+cos)/2 so it is comparable with
-        # the dense channel's vector-index scores in the merger.
+        # Both the stored similarity and the threshold are on the normalized
+        # (1+cos)/2 scale shared with the dense channel.
         threshold = self.config.retrieval.get("graph_channel", {}).get(
-            "chunk_similarity_threshold", 0.3
+            "chunk_similarity_threshold", 0.65
         )
         filtered = []
         for chunk in processed:
             emb = chunk.get("embedding")
             if emb and len(emb) == len(query_embedding):
-                sim = cosine_similarity(query_embedding, emb)
-                chunk["similarity"] = (1.0 + sim) / 2.0
-                if sim >= threshold:
+                normalized = (1.0 + cosine_similarity(query_embedding, emb)) / 2.0
+                chunk["similarity"] = normalized
+                if normalized >= threshold:
                     filtered.append(chunk)
             else:
                 filtered.append(chunk)  # Keep chunks with missing embeddings
@@ -344,10 +345,13 @@ class GraphChannel:
         for row in results:
             try:
                 text = row.get("text", "")
-                # Use chunk_text directly as the citation source: spans are
-                # unknown at retrieval time (0/0) and the citation flow works
-                # on chunk_text, exact by construction (C8).
+                # chunk_text is the citation source, exact by construction
+                # (invariant C8); the span locates it inside the speech for
+                # position-aware heuristics and integrity checks.
                 quote_text = row.get("chunk_text", "") or text
+                span_start, span_end = compute_chunk_span(
+                    text, row.get("chunk_text", "")
+                )
 
                 # If party is NULL the speaker's current group doesn't cover
                 # this session date (e.g. they switched group after the debate).
@@ -398,8 +402,8 @@ class GraphChannel:
                     "chunk_text": row.get("chunk_text", ""),
                     "quote_text": quote_text,
                     "text": text,  # Full speech text — needed by surgeon for sentence expansion
-                    "span_start": 0,
-                    "span_end": 0,
+                    "span_start": span_start,
+                    "span_end": span_end,
                     "debate_title": row.get("debate_title"),
                     "session_number": row.get("session_number", 0),
                     # Neutral prior on the normalized (1+cos)/2 scale for

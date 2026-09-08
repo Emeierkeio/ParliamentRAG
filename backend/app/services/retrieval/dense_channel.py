@@ -11,7 +11,9 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime
 
 from ..neo4j_client import Neo4jClient
-from ...models.evidence import normalize_speaker_name, normalize_party_name
+from ...models.evidence import (
+    normalize_speaker_name, normalize_party_name, compute_chunk_span,
+)
 from ...config import get_config
 
 logger = logging.getLogger(__name__)
@@ -53,7 +55,7 @@ class DenseChannel:
         """
         retrieval_config = self.config.retrieval.get("dense_channel", {})
         top_k = top_k or retrieval_config.get("top_k", 200)
-        threshold = similarity_threshold or retrieval_config.get("similarity_threshold", 0.3)
+        threshold = similarity_threshold or retrieval_config.get("similarity_threshold", 0.55)
         index_name = retrieval_config.get("index_name", "chunk_embedding_index")
 
         logger.info(f"Dense channel: retrieving top {top_k} chunks (threshold={threshold})")
@@ -137,12 +139,15 @@ class DenseChannel:
         for row in results:
             try:
                 text = row.get("text", "")
-                # Use chunk_text directly as the citation source: spans are
-                # unknown at retrieval time (0/0) and the citation flow works
-                # on chunk_text, exact by construction (C8).
+                # chunk_text is the citation source, exact by construction
+                # (invariant C8); the span locates it inside the speech for
+                # position-aware heuristics and integrity checks.
                 quote_text = row.get("chunk_text", "") or text
                 if not quote_text:
                     logger.warning(f"Missing text for chunk {row.get('chunk_id')}")
+                span_start, span_end = compute_chunk_span(
+                    text, row.get("chunk_text", "")
+                )
 
                 # Determine coalition using the historical party (group at speech time).
                 # current_party is the group the speaker belongs to TODAY — used only
@@ -206,8 +211,8 @@ class DenseChannel:
                     "chunk_text": row.get("chunk_text", ""),
                     "quote_text": quote_text,
                     "text": text,  # Full speech text — needed by surgeon for sentence expansion
-                    "span_start": 0,
-                    "span_end": 0,
+                    "span_start": span_start,
+                    "span_end": span_end,
                     "debate_title": row.get("debate_title"),
                     "session_number": row.get("session_number", 0),
                     "similarity": row.get("similarity", 0.0),

@@ -7,7 +7,13 @@
 retrieval:
   dense_channel:
     top_k: 200
-    similarity_threshold: 0.3  # cosine similarity on text-embedding-3-small embeddings
+    # Pool-hygiene floor on the vector-index scale ((1+cos)/2). Calibrated
+    # 2026-09-08 on the 15 eval-set topics: the lowest similarity observed
+    # among retrieved in-domain chunks is 0.573, so 0.55 drops nothing
+    # legitimate. Per-chunk thresholds cannot separate in-domain from
+    # out-of-domain queries (the distributions overlap: OOD chunks reach
+    # 0.79); that separation is the relevance gate's job below.
+    similarity_threshold: 0.55
     index_name: "chunk_embedding_index"
 
   # Out-of-domain gate (issue #22). Thresholds calibrated with
@@ -27,8 +33,11 @@ retrieval:
     # Post-traversal chunk-level filter: discard chunks whose embedding
     # similarity to the query is below this threshold. Prevents off-topic
     # chunks from being included just because their speaker co-signed a
-    # relevant parliamentary act.
-    chunk_similarity_threshold: 0.3
+    # relevant parliamentary act. Same normalized (1+cos)/2 scale as the
+    # dense channel; 0.65 equals the previous raw-cosine 0.30 boundary,
+    # which the selected-chunk distribution starts at (p1 = 0.30 raw,
+    # measured 2026-09-08 on the eval-set topics).
+    chunk_similarity_threshold: 0.65
     # Signatory chunks: fetched wide (deterministic id order), then ranked by
     # query similarity in Python and capped, so the cap keeps the most
     # relevant candidates (issue #24).
