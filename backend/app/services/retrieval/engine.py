@@ -38,12 +38,7 @@ class RetrievalEngine:
     """
 
     def __init__(self, neo4j_client: Neo4jClient):
-        """
-        Initialize the retrieval engine.
-
-        Args:
-            neo4j_client: Neo4j database client
-        """
+        """Initialize channels, merger, rewriter and config."""
         self.client = neo4j_client
         self.dense_channel = DenseChannel(neo4j_client)
         self.graph_channel = GraphChannel(neo4j_client)
@@ -52,19 +47,10 @@ class RetrievalEngine:
         self.config = get_config()
         self.settings = get_settings()
 
-        # Initialize OpenAI client
         self.openai_client = make_client()
 
     def embed_query(self, query: str) -> List[float]:
-        """
-        Generate embedding for a query using OpenAI.
-
-        Args:
-            query: Query text
-
-        Returns:
-            Embedding vector (1536 dimensions)
-        """
+        """Generate the query embedding via OpenAI (1536 dimensions)."""
         llm_config = self.config.load_config().get("llm", {})
         model = llm_config.get("embedding_model", "text-embedding-3-small")
 
@@ -88,14 +74,8 @@ class RetrievalEngine:
         """
         Perform dual-channel retrieval (synchronous version).
 
-        OPTIMIZED: Dense and Graph channels run IN PARALLEL using ThreadPoolExecutor.
-
-        Args:
-            query: User query
-            top_k: Number of results to return
-            authority_scores: Optional pre-computed authority scores
-            date_start: Optional date filter start
-            date_end: Optional date filter end
+        Dense and graph channels run in parallel; wall-clock time is the
+        slower of the two rather than their sum.
 
         Returns:
             Dictionary with evidence list and metadata
@@ -109,17 +89,17 @@ class RetrievalEngine:
         # the original query is kept for logging and UI display.
         retrieval_query = self.query_rewriter.rewrite(query, locale=locale)
 
-        # Generate query embedding
         logger.info(f"Generating embedding for query: {query[:50]}...")
         query_embedding = self.embed_query(retrieval_query)
 
-        # Run both channels IN PARALLEL
         logger.info("Running dense and graph channels in parallel...")
 
         def run_dense():
             return self.dense_channel.retrieve(
                 query_embedding=query_embedding,
-                top_k=top_k * 2  # Over-retrieve for merging
+                top_k=top_k * 2,  # Over-retrieve for merging
+                date_start=date_start,
+                date_end=date_end
             )
 
         def run_graph():
@@ -139,7 +119,6 @@ class RetrievalEngine:
 
         logger.info(f"Channels complete: dense={len(dense_results)}, graph={len(graph_results)}")
 
-        # Merge channels
         logger.info("Merging channels...")
         merged_results = self.merger.merge(
             dense_results=dense_results,
@@ -148,17 +127,17 @@ class RetrievalEngine:
             top_k=top_k
         )
 
-        # Coverage fill: garanzia multi-view anche per i partiti SOTTO QUOTA,
-        # non solo per quelli assenti. Sui temi di nicchia i gruppi piccoli
-        # entravano nel pool con 2-4 chunk marginali → quote picker a secco
-        # anche con materiale ottimo nel corpus (osservato 2026-07-24 su
-        # 'remigrazione': Misto con 2 evidenze, Magi ha 22 chunk sul tema).
+        # Coverage fill: multi-view guarantee for parties below quota as well,
+        # not only for absent ones. On niche topics small groups entered the
+        # pool with 2-4 marginal chunks → quote picker came up empty even with
+        # excellent material in the corpus (observed 2026-07-24 on
+        # 'remigrazione': Misto with 2 evidences, Magi has 22 chunks on the topic).
         from collections import Counter
         min_per_party = self.config.retrieval.get("merger", {}).get("min_per_party", 5)
-        # Solo Deputy: i membri del Governo vanno nella sezione GOVERNO, non
-        # nelle sezioni partito — i ministri tecnici agganciati al MISTO
-        # gonfiavano il conteggio e il Misto risultava "a quota" con 4 chunk
-        # utili (osservato 2026-07-24).
+        # Deputies only: Government members belong in the GOVERNO section, not
+        # in the party sections — technical ministers attached to MISTO
+        # inflated the count and Misto appeared "at quota" with 4 usable
+        # chunks (observed 2026-07-24).
         party_counts = Counter(
             r.get("party") for r in merged_results
             if r.get("party") and r.get("speaker_role") != "GovernmentMember"
@@ -175,7 +154,8 @@ class RetrievalEngine:
                 f"({min_per_party}): {under_represented}"
             )
             fill_results = self._coverage_fill(
-                query_embedding, under_represented, chunks_per_party=min_per_party
+                query_embedding, under_represented, chunks_per_party=min_per_party,
+                date_start=date_start, date_end=date_end
             )
             if fill_results:
                 existing_ids = {r.get("evidence_id") for r in merged_results}
@@ -191,16 +171,14 @@ class RetrievalEngine:
         # adjacent chunk exists for the same speech
         merged_results = self._expand_neighbors(merged_results)
 
-        # Convert to UnifiedEvidence
         evidence_list = self._to_evidence_records(merged_results)
 
-        # Compute metadata
         processing_time = (time.time() - start_time) * 1000
         party_coverage = self._compute_party_coverage(evidence_list)
 
-        # Similarità del canale denso per il gate fuori-dominio (issue #22):
-        # stessa distribuzione usata da build/calibrate_relevance_gate.py
-        # per tarare le soglie, calcolata PRIMA di merge e coverage fill.
+        # Dense-channel similarities for the out-of-domain gate (issue #22):
+        # same distribution used by build/calibrate_relevance_gate.py to
+        # calibrate the thresholds, computed before merge and coverage fill.
         gate_cfg = self.config.retrieval.get("relevance_gate", {})
         gate_floor = gate_cfg.get("chunk_similarity_floor", 0.78)
         dense_sims = [r.get("similarity", 0.0) for r in dense_results]
@@ -218,9 +196,9 @@ class RetrievalEngine:
                 "merged_count": len(merged_results),
                 "party_coverage": party_coverage,
                 "processing_time_ms": processing_time,
-                # Query espansa dal rewriter: serve alla generazione (quote
-                # picker) per giudicare la pertinenza su termini di nicchia
-                # che il modello potrebbe non conoscere ("remigrazione").
+                # Query expanded by the rewriter: the generation stage (quote
+                # picker) needs it to judge relevance on niche terms the
+                # model may not know ("remigrazione").
                 "rewritten_query": retrieval_query if retrieval_query != query else None,
             }
         }
@@ -239,13 +217,6 @@ class RetrievalEngine:
 
         Runs retrieve_sync() in a thread-pool executor so the event loop
         is never blocked while embedding or querying the DB.
-
-        Args:
-            query: User query
-            top_k: Number of results to return
-            authority_scores: Optional pre-computed authority scores
-            date_start: Optional date filter start
-            date_end: Optional date filter end
 
         Returns:
             Dictionary with evidence list and metadata
@@ -281,6 +252,8 @@ class RetrievalEngine:
                     speaker_role=r.get("speaker_role", "Deputy"),
                     party=r.get("party", "MISTO"),
                     coalition=r.get("coalition", "opposizione"),
+                    party_changed=r.get("party_changed", False),
+                    current_party=r.get("current_party"),
                     date=r.get("date", date.today()),
                     chunk_text=r.get("chunk_text", ""),
                     quote_text=r.get("quote_text", ""),
@@ -305,12 +278,6 @@ class RetrievalEngine:
 
         return evidence_list
 
-    # Threshold below which span_start is considered "early in speech"
-    # (i.e., the chunk is likely an introduction, not a position statement).
-    # Speeches where the first meaningful position appears after ~500 chars
-    # are common in Italian parliamentary debate.
-    _EARLY_SPEECH_SPAN_THRESHOLD = 600
-
     def _expand_neighbors(
         self,
         results: List[Dict[str, Any]],
@@ -318,44 +285,33 @@ class RetrievalEngine:
     ) -> List[Dict[str, Any]]:
         """Expand to neighboring chunks when they have higher political salience.
 
-        For each retrieved chunk with low salience, checks the previous and
-        next chunks via the NEXT relationship. If a neighbor has higher
-        political salience, it replaces the original chunk.
+        Two complementary moves, both driven by the stored citability score:
 
-        EARLY-SPEECH EXPANSION: chunks whose span_start is below
-        _EARLY_SPEECH_SPAN_THRESHOLD are also considered for next-chunk
-        expansion even if their salience is above the threshold, because
-        early chunks tend to be introductory (topic contextualisation) and
-        the position statement is typically in the following chunk.
+        - Low-salience chunks are REPLACED by an adjacent chunk (prev or next
+          via the NEXT relationship) when that neighbor is more citable.
+        - Every other chunk is a candidate for APPEND: if its next chunk is
+          more citable, the next chunk is added alongside it. Retrieved chunks
+          often match on the introductory part of a speech (the topic is
+          named, the position follows), so the appended neighbor is where the
+          actual position statement tends to live. Span offsets are not
+          populated at retrieval time, so no positional pre-filter is applied.
         """
         if not results:
             return results
 
-        # Salience = stored index-time citability score (Fase 1);
+        # Salience = stored index-time citability score (Phase 1);
         # chunks without a score are treated as neutral (0.5).
         for r in results:
             cit = r.get("citability_score")
             r["salience"] = float(cit) if cit is not None else 0.5
 
-        # Candidates for expansion:
-        # 1. Low-salience chunks (original logic)
-        # 2. Early-in-speech chunks (new: span_start < threshold)
-        #    Early chunks are introductory even when salience is medium-high
-        #    because they mention the topic ("parliamo di salario minimo") which
-        #    triggers opinion patterns but contain no actual position statement.
         low_salience = [r for r in results if r.get("salience", 0) < salience_threshold]
-        early_speech = [
-            r for r in results
-            if r.get("span_start", 9999) < self._EARLY_SPEECH_SPAN_THRESHOLD
-            and r not in low_salience  # avoid duplicates in the candidate set
-        ]
+        early_speech = [r for r in results if r not in low_salience]
         candidates = low_salience + early_speech
 
         if not candidates:
-            logger.info("Neighbor expansion: all chunks above salience threshold and not early-speech, skipping")
             return results
 
-        # Collect chunk IDs to expand
         chunk_ids = [r.get("evidence_id") for r in candidates if r.get("evidence_id")]
         if not chunk_ids:
             return results
@@ -375,8 +331,14 @@ class RetrievalEngine:
             RETURN cid,
                    prev.id AS prev_id, prev.text AS prev_text,
                    prev.citability_score AS prev_citability,
+                   prev.citability_class AS prev_citability_class,
+                   prev.best_quote AS prev_best_quote,
+                   prev.embedding AS prev_embedding,
                    next.id AS next_id, next.text AS next_text,
                    next.citability_score AS next_citability,
+                   next.citability_class AS next_citability_class,
+                   next.best_quote AS next_best_quote,
+                   next.embedding AS next_embedding,
                    i.text AS speech_text
             """
             neighbor_rows = self.client.query(cypher, {"chunk_ids": chunk_ids})
@@ -384,15 +346,12 @@ class RetrievalEngine:
             logger.error(f"Neighbor expansion query failed: {e}")
             return results
 
-        # Build lookup: chunk_id -> neighbor info
         neighbor_map = {}
         for row in neighbor_rows:
             neighbor_map[row["cid"]] = row
 
-        # Existing evidence IDs to avoid duplicates
         existing_ids = {r.get("evidence_id") for r in results}
 
-        # Track early-speech IDs for special handling
         early_speech_ids = {r.get("evidence_id") for r in early_speech}
 
         replaced = 0
@@ -450,6 +409,13 @@ class RetrievalEngine:
                     r["span_start"] = new_start
                     r["span_end"] = new_end
                     r["salience"] = best_salience
+                    # Keep chunk-level metadata consistent with the new text:
+                    # a stale embedding/best_quote would poison the compass
+                    # projection and the citation dedup downstream.
+                    r["citability_score"] = nrow.get(f"{prefix}_citability")
+                    r["citability_class"] = nrow.get(f"{prefix}_citability_class")
+                    r["best_quote"] = nrow.get(f"{prefix}_best_quote")
+                    r["embedding"] = nrow.get(f"{prefix}_embedding")
                     existing_ids.add(new_id)
                     replaced += 1
 
@@ -487,6 +453,13 @@ class RetrievalEngine:
                 neighbor_evidence["span_start"] = next_start or 0
                 neighbor_evidence["span_end"] = next_end or 0
                 neighbor_evidence["salience"] = next_salience
+                # Chunk-level metadata must describe the appended chunk, not
+                # the parent it was cloned from (compass and citation dedup
+                # read these fields).
+                neighbor_evidence["citability_score"] = row.get("next_citability")
+                neighbor_evidence["citability_class"] = row.get("next_citability_class")
+                neighbor_evidence["best_quote"] = row.get("next_best_quote")
+                neighbor_evidence["embedding"] = row.get("next_embedding")
                 neighbor_evidence["retrieval_channel"] = "neighbor_expansion"
                 # Give a slight similarity boost to surface it near its parent
                 neighbor_evidence["similarity"] = r.get("similarity", 0.0) * 0.95
@@ -509,23 +482,37 @@ class RetrievalEngine:
         self,
         query_embedding: List[float],
         missing_parties: set,
-        chunks_per_party: int = 5
+        chunks_per_party: int = 5,
+        date_start: Optional[str] = None,
+        date_end: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Fill coverage gaps by doing targeted vector search for missing parties.
 
         For each missing party, queries the vector index and filters results
-        to only include speakers from that party.
+        to only include speakers from that party. Date bounds, when present,
+        are applied here too so the fill cannot reintroduce filtered-out
+        sessions.
         """
         config = get_config()
         retrieval_config = config.retrieval.get("dense_channel", {})
         index_name = retrieval_config.get("index_name", "chunk_embedding_index")
 
+        # s.date is a Neo4j Date: cast string bounds with date() (see channels).
+        date_filter = ""
+        date_params: Dict[str, Any] = {}
+        if date_start:
+            date_filter += " AND s.date >= date($date_start)"
+            date_params["date_start"] = date_start
+        if date_end:
+            date_filter += " AND s.date <= date($date_end)"
+            date_params["date_end"] = date_end
+
         fill_results = []
 
-        # Reverse della mappa display->DB: i nomi DB possono avere suffissi
-        # che la trasformazione meccanica non ricostruisce (es. il rename
-        # "ITALIA VIVA-CASA RIFORMISTA (IV-CR)" con l'acronimo in coda).
+        # Reverse of the display->DB map: DB names may carry suffixes that
+        # the mechanical transformation cannot reconstruct (e.g. the rename
+        # "ITALIA VIVA-CASA RIFORMISTA (IV-CR)" with the acronym at the end).
         from ...models.evidence import PARTY_DISPLAY_NAMES
         db_names_by_display: Dict[str, str] = {}
         for db_name, display in PARTY_DISPLAY_NAMES.items():
@@ -533,27 +520,27 @@ class RetrievalEngine:
 
         for party in missing_parties:
             try:
-                # DB storage format: uppercase senza spazi intorno ai trattini.
-                # Prima la mappa ufficiale, poi la trasformazione meccanica
-                # come fallback per nomi non mappati.
+                # DB storage format: uppercase without spaces around hyphens.
+                # Official map first, then the mechanical transformation as
+                # fallback for unmapped names.
                 normalized_party = db_names_by_display.get(
                     party,
                     party.upper().replace(" - ", "-").replace("- ", "-").replace(" -", "-"))
 
-                cypher = """
+                cypher = f"""
                 CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
                 YIELD node AS c, score
                 WHERE score >= 0.15
                 MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
                 MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-                // Solo membri ATTUALI del partito: la membership deve essere
-                // attiva sia alla data del discorso che oggi.
+                // Only current party members: membership must be active both
+                // at speech date and today.
                 MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
                 WHERE toLower(g.name) = toLower($party_name)
                 AND mg.start_date <= s.date
                 AND (mg.end_date IS NULL OR mg.end_date >= s.date)
-                AND (mg.end_date IS NULL OR mg.end_date >= date())
-                // Partito attuale (per calcolo party_changed in _process_results)
+                AND (mg.end_date IS NULL OR mg.end_date >= date()){date_filter}
+                // Current party (used to compute party_changed in _process_results)
                 OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
                 WHERE mg_now.end_date IS NULL
                 OPTIONAL MATCH (speaker)-[mcp:MEMBER_OF_COMPONENT]->(mcomp:MistoComponent)
@@ -587,7 +574,8 @@ class RetrievalEngine:
                     "top_k": 500,  # Search wider to find this party's chunks
                     "query_embedding": query_embedding,
                     "party_name": normalized_party,
-                    "limit": chunks_per_party
+                    "limit": chunks_per_party,
+                    **date_params
                 })
 
                 if results:

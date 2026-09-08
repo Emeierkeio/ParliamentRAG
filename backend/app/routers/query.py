@@ -29,11 +29,9 @@ logger = logging.getLogger(__name__)
 from ..log_context import new_query_id  # noqa: E402
 router = APIRouter(prefix="/api", tags=["Query"])
 
-# ---------------------------------------------------------------------------
-# Pipeline concurrency limiter
-# Shared across all requests in the same process.  With WORKERS=1 (Dockerfile
-# default) this enforces a single active pipeline across the entire server.
-# ---------------------------------------------------------------------------
+# Pipeline concurrency limiter, shared across all requests in the same
+# process. With WORKERS=1 (Dockerfile default) this enforces a single active
+# pipeline across the entire server.
 _MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "1"))
 _pipeline_semaphore: Optional[asyncio.Semaphore] = None
 
@@ -68,8 +66,8 @@ async def _rate_limited_query(
         yield f"data: {json.dumps({'type': 'error', 'code': 'rate_limited', 'message': usage_guard.block_message(scope, locale, retry_min)})}\n\n"
         return
 
-    # Correlation id: tutti i log di questa query (anche nei thread del
-    # default executor) portano lo stesso qid
+    # Correlation id: every log line of this query (including those from
+    # default-executor threads) carries the same qid
     qid = new_query_id()
     logger.info(f'Query accettata (qid={qid}, ip={ip}, locale={locale}): "{request.query[:150]}"')
 
@@ -99,14 +97,6 @@ class QueryRequest(BaseModel):
     stream: bool = Field(default=True, description="Enable SSE streaming")
 
 
-class ExpertInfo(BaseModel):
-    """Expert information for a party."""
-    speaker_id: str
-    speaker_name: str
-    authority_score: float
-    intervention_count: int
-
-
 class CitationInfo(BaseModel):
     """Citation information."""
     citation_id: str
@@ -120,10 +110,14 @@ class CitationInfo(BaseModel):
 
 
 class QueryResponse(BaseModel):
-    """Response model for non-streaming queries."""
+    """Response model for non-streaming queries.
+
+    `experts` uses the same per-party dict shape emitted by the streaming
+    `experts` SSE event (see _compute_experts), so both paths stay consistent.
+    """
     text: str
     citations: List[CitationInfo]
-    experts: Dict[str, ExpertInfo]
+    experts: List[Dict[str, Any]]
     compass: Optional[Dict[str, Any]]
     metadata: Dict[str, Any]
 
@@ -161,8 +155,8 @@ async def process_query_streaming(
         # Step 1: Progress - Starting
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Avvio retrieval...'})}\n\n"
 
-        # Step 2: Retrieval (locale: le query non italiane vengono tradotte
-        # dal rewriter prima dell'embedding, il corpus è italiano)
+        # Step 2: retrieval (locale: non-Italian queries are translated by
+        # the rewriter before embedding, the corpus is Italian)
         retrieval_result = await services["retrieval"].retrieve(
             query=request.query,
             top_k=request.top_k,
@@ -187,13 +181,13 @@ async def process_query_streaming(
                    else f'Trovate {len(evidence_list)} evidenze')
         yield f"data: {json.dumps({'type': 'progress', 'step': 2, 'message': _ev_msg})}\n\n"
 
-        # Out-of-domain gate (issue #22): blocca SOLO con entrambi i segnali,
-        # poche evidenze dense sopra soglia E domain check fuori dominio.
-        # L'evidenza sottile da sola non basta: i temi di nicchia legittimi
-        # (es. atti recenti con pochi dibattiti in Aula) proseguono e il
-        # writer gestisce la scarsità per gruppo. Falso positivo osservato
-        # 2026-08-22: "Cinema and audiovisual regulation" dai chip della
-        # welcome. Soglie: build/calibrate_relevance_gate.py.
+        # Out-of-domain gate (issue #22): blocks only when both signals agree,
+        # few dense evidences above threshold and domain check out of domain.
+        # Thin evidence alone is not enough: legitimate niche topics (e.g.
+        # recent acts with few floor debates) proceed and the writer handles
+        # per-group scarcity. False positive observed 2026-08-22: "Cinema and
+        # audiovisual regulation" from the welcome chips. Thresholds:
+        # build/calibrate_relevance_gate.py.
         gate_cfg = services["retrieval"].config.retrieval.get("relevance_gate", {})
         relevance = retrieval_result["metadata"].get("relevance", {})
         if (gate_cfg.get("enabled", True)
@@ -216,7 +210,6 @@ async def process_query_streaming(
         # Step 3: Authority scoring
         yield f"data: {json.dumps({'type': 'progress', 'step': 3, 'message': 'Computing authority scores...' if _en else 'Calcolo authority scores...'})}\n\n"
 
-        # Get unique speakers
         _authority_t0 = time.perf_counter()
         speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
         query_embedding = await asyncio.get_running_loop().run_in_executor(
@@ -237,22 +230,21 @@ async def process_query_streaming(
             sid = ed.get("speaker_id", "")
             ed["authority_score"] = authority_scores.get(sid, 0.0)
 
-        # Compute experts with full details for frontend
         experts = await _compute_experts(
             evidence_list, authority_scores, authority_details, services["neo4j"]
         )
 
         yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
 
-        # Check if client disconnected before compass
         if http_request and await http_request.is_disconnected():
             logger.info("[QUERY] Client disconnected before compass – aborting")
+            domain_task.cancel()
             return
 
-        # Step 4: Compass analysis (2D text-based positioning)
-        # La generazione non consuma l'output della bussola: parte qui in un
-        # thread e viene attesa solo A VALLE della generazione. Wall clock =
-        # max(bussola, generazione) invece della somma (~15-25s risparmiati).
+        # Step 4: compass analysis (2D text-based positioning)
+        # Generation does not consume the compass output: it starts here in a
+        # thread and is awaited only downstream of generation. Wall clock =
+        # max(compass, generation) instead of their sum (~15-25s saved).
         yield f"data: {json.dumps({'type': 'progress', 'step': 4, 'message': 'Ideological compass analysis...' if _en else 'Analisi compass ideologico...'})}\n\n"
 
         compass_ms = None
@@ -269,10 +261,16 @@ async def process_query_streaming(
             return result, (time.perf_counter() - _t0) * 1000
 
         compass_future = asyncio.get_running_loop().run_in_executor(None, _run_compass)
+        # If the generator exits early (client gone), the compass thread keeps
+        # running to completion: retrieve its result/exception so it never
+        # surfaces as an "exception was never retrieved" warning.
+        compass_future.add_done_callback(
+            lambda f: f.cancelled() or f.exception()
+        )
 
-        # Check if client disconnected before generation
         if http_request and await http_request.is_disconnected():
             logger.info("[QUERY] Client disconnected before generation – aborting")
+            domain_task.cancel()
             return
 
         # Step 5: Generation
@@ -290,8 +288,8 @@ async def process_query_streaming(
         logger.info(f"[QUERY] Generation done. citations={len(generation_result.get('citations', []))}, "
                      f"extra_citation_ids={len(generation_result.get('extra_citation_ids', []))}")
 
-        # Bussola: girava in parallelo alla generazione, a questo punto è
-        # (quasi sempre) già pronta — l'attesa residua è ~0
+        # Compass: it ran in parallel with generation, so by this point it is
+        # (almost always) already done — the residual wait is ~0
         try:
             compass_result, compass_ms = await compass_future
             compass_data = {
@@ -319,7 +317,7 @@ async def process_query_streaming(
         except Exception as _compass_err:
             logger.error(f"[COMPASS] Failed (pipeline continues): {_compass_err}", exc_info=True)
 
-        # === Send topic statistics for frontend clickable intro stats ===
+        # Send topic statistics for the frontend's clickable intro stats
         topic_stats = generation_result.get("topic_statistics")
         if topic_stats:
             # Enrich speakers_detail with profile URL, profession, education, committee from Neo4j
@@ -338,8 +336,8 @@ async def process_query_streaming(
                     if sid in enrichment_data:
                         info = enrichment_data[sid]
                         speaker["camera_profile_url"] = info.get("camera_profile_url")
-                        # La foto era già estratta dalla fetch ma mai applicata:
-                        # il modal statistiche mostrava le iniziali (2026-07-24)
+                        # The photo was already extracted by the fetch but never
+                        # applied: the stats modal showed initials (2026-07-24)
                         speaker["photo"] = info.get("photo")
                         speaker["profession"] = info.get("profession")
                         speaker["education"] = info.get("education")
@@ -382,7 +380,7 @@ async def process_query_streaming(
         logger.debug(f"[QUERY] Initial citations: {len(citations_data)} (from evidence_dicts[:20])")
         yield f"data: {json.dumps({'type': 'citations', 'data': citations_data}, default=str)}\n\n"
 
-        # === Resolve extra citation IDs via DB lookup ===
+        # Resolve extra citation IDs via DB lookup
         import re as _re
         final_text = generation_result.get("text", "")
         extra_citation_ids = generation_result.get("extra_citation_ids", [])
@@ -500,7 +498,7 @@ async def process_query_streaming(
         else:
             logger.debug("[QUERY:CITATIONS] No extra citation IDs to resolve")
 
-        # === Build complete citation_details ===
+        # Build complete citation_details
         text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
         evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
         evidence_map_for_cit.update(extra_evidence_map)
@@ -526,7 +524,7 @@ async def process_query_streaming(
             elif eid not in tracked_ids:
                 logger.warning(f"[QUERY:CITATIONS] ID in text but NOT in any map: {eid}")
 
-        # Send citation_details to update the sidebar with ALL cited chunks
+        # Send citation_details to update the sidebar with all cited chunks
         all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
         _verify_t0 = time.perf_counter()
         verified_citations = await asyncio.get_running_loop().run_in_executor(
@@ -539,7 +537,7 @@ async def process_query_streaming(
             verified_citations = await translate_citation_batch(verified_citations, target_lang=request_locale)
         yield f"data: {json.dumps({'type': 'citation_details', 'citations': verified_citations}, default=str)}\n\n"
 
-        # === Update experts: filter to cited parties and prefer cited speakers ===
+        # Update experts: filter to cited parties and prefer cited speakers.
         # The initial experts event (sent before generation) included the top-authority
         # speaker per party from the retrieved pool.  After generation we know which
         # parties were actually cited, and which specific speaker was cited per party.
@@ -610,7 +608,10 @@ async def process_query_streaming(
                             "group": party,
                             "coalition": coalition_logic_obj.get_coalition(party),
                             "authority_score": round(score, 2),
-                            "relevant_speeches_count": 0,
+                            "relevant_speeches_count": sum(
+                                1 for ev in all_evidence_for_verify
+                                if ev.get("speaker_id") == sid
+                            ),
                             "camera_profile_url": sp_info.get("camera_profile_url"),
                             "photo": sp_info.get("photo"),
                             "profession": sp_info.get("profession"),
@@ -632,7 +633,6 @@ async def process_query_streaming(
                 logger.info(f"[QUERY:EXPERTS] Updated experts after generation: {len(experts)} (from {len(cited_party_best)} cited parties)")
                 yield f"data: {json.dumps({'type': 'experts', 'data': final_experts}, default=str)}\n\n"
 
-        # Translate response text if needed
         if request_locale != "it":
             final_text = await translate_response_text(final_text, target_lang=request_locale)
 
@@ -654,8 +654,8 @@ async def process_query_streaming(
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
             await asyncio.sleep(0.02)  # Small delay for streaming effect
 
-        # === Trace: dietro le quinte della pipeline ===
-        # Solo durate e contatori: niente prompt, niente testi delle evidenze.
+        # Trace: behind the scenes of the pipeline.
+        # Durations and counters only: no prompts, no evidence texts.
         _r_meta = retrieval_result.get("metadata", {})
         _gen_stage_meta = generation_result.get("metadata", {}).get("stages", {})
 
@@ -701,13 +701,13 @@ async def process_query_streaming(
             ],
         }
 
-        # Chiamate LLM registrate (modello, durata, token, costo stimato,
-        # anteprime I/O)
+        # Recorded LLM calls (model, duration, tokens, estimated cost,
+        # I/O previews)
         trace["llm"] = llm_recorder.totals()
         trace["llm_calls"] = llm_recorder.sorted_calls()
 
-        # Campione del pool retrieval nell'ordine del merge: le componenti di
-        # score che decidono la selezione multi-view, evidenza per evidenza
+        # Sample of the retrieval pool in merge order: the score components
+        # that drive multi-view selection, evidence by evidence
         trace["retrieval_sample"] = [
             {
                 "id": d.get("evidence_id"),
@@ -725,15 +725,15 @@ async def process_query_streaming(
         trace["compass_meta"] = compass_meta_info
         trace["domain"] = {"in_domain": domain.get("in_domain", True)}
 
-        # Registro citazioni: lo stato di ogni citazione attraverso la
-        # pipeline (bound → in_text → resolved/failed), coerenza semantica
-        # e motivi di scarto. È il "perché" dietro ogni [«quote»].
+        # Citation ledger: the state of each citation through the pipeline
+        # (bound → in_text → resolved/failed), semantic coherence and
+        # discard reasons. It is the "why" behind every [«quote»].
         _integrity = generation_result.get("metadata", {}).get("citation_integrity", {})
         _final_rep = _integrity.get("final", {})
         _ledger = []
         for status_name, entries in (_final_rep.get("by_status") or {}).items():
-            # "registered" = evidenza recuperata ma mai candidata a citazione:
-            # è la quasi totalità del pool retrieval, solo rumore nel registro
+            # "registered" = evidence retrieved but never a citation candidate:
+            # nearly the whole retrieval pool, just noise in the ledger
             if status_name == "registered":
                 continue
             for e in entries:
@@ -761,7 +761,6 @@ async def process_query_streaming(
 
         yield f"data: {json.dumps({'type': 'trace', 'trace': trace}, default=str)}\n\n"
 
-        # Complete
         yield f"data: {json.dumps({'type': 'complete', 'metadata': retrieval_result['metadata']}, default=str)}\n\n"
 
     except Exception as e:
@@ -789,7 +788,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         WITH d
         OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
         WITH d, collect(DISTINCT CASE WHEN cp IS NULL THEN NULL ELSE {role: 'Presidente ' + cp.name, active: rp.end_date IS NULL OR rp.end_date >= date()} END) AS v1_president_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rpm:MEMBER_OF_COMMITTEE]->(cpm:Committee)
         WHERE rpm.role = 'president'
         WITH v1_president_roles, collect(DISTINCT CASE WHEN cpm IS NULL THEN NULL ELSE {role: 'Presidente ' + cpm.name, active: rpm.end_date IS NULL OR rpm.end_date >= date()} END) AS v2_president_roles
@@ -799,7 +798,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         WITH d
         OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
         WITH d, collect(DISTINCT CASE WHEN cv IS NULL THEN NULL ELSE {role: 'Vicepresidente ' + cv.name, active: rv.end_date IS NULL OR rv.end_date >= date()} END) AS v1_vice_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rvm:MEMBER_OF_COMMITTEE]->(cvm:Committee)
         WHERE rvm.role = 'vice_president'
         WITH v1_vice_roles, collect(DISTINCT CASE WHEN cvm IS NULL THEN NULL ELSE {role: 'Vicepresidente ' + cvm.name, active: rvm.end_date IS NULL OR rvm.end_date >= date()} END) AS v2_vice_roles
@@ -809,7 +808,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         WITH d
         OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
         WITH d, collect(DISTINCT CASE WHEN cs IS NULL THEN NULL ELSE {role: 'Segretario ' + cs.name, active: rs.end_date IS NULL OR rs.end_date >= date()} END) AS v1_secretary_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rsm:MEMBER_OF_COMMITTEE]->(csm:Committee)
         WHERE rsm.role = 'secretary'
         WITH v1_secretary_roles, collect(DISTINCT CASE WHEN csm IS NULL THEN NULL ELSE {role: 'Segretario ' + csm.name, active: rsm.end_date IS NULL OR rsm.end_date >= date()} END) AS v2_secretary_roles
@@ -888,14 +887,16 @@ async def _compute_experts(
         if speaker_id not in party_speakers[party]:
             party_speakers[party][speaker_id] = {
                 "speaker_name": speaker_name,
-                "authority_score": authority_scores.get(speaker_id, 0.5),
+                # 0.0 default, consistent with the evidence-injection default:
+                # compute_all_authority covers every retrieved speaker, so a
+                # miss means the id was absent from the batch, not "average".
+                "authority_score": authority_scores.get(speaker_id, 0.0),
                 "count": 0,
                 "party": party,
             }
 
         party_speakers[party][speaker_id]["count"] += 1
 
-    # Collect top speakers per party
     top_speakers_info = []
     for party, speakers in party_speakers.items():
         if speakers:
@@ -905,7 +906,6 @@ async def _compute_experts(
             )
             top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
-    # Fetch all speaker details in parallel
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
         detail_futures = [
@@ -1072,7 +1072,6 @@ def _build_citations_for_frontend(
     coalition_logic = CoalitionLogic()
     citations = []
 
-    # Batch-fetch deputy_card URLs, photos and government roles
     deputy_card_map: Dict[str, Dict[str, Any]] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
@@ -1152,7 +1151,6 @@ def _build_verified_citations(
     coalition_logic = CoalitionLogic()
     evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
 
-    # Batch-fetch deputy_card URLs, photos and government roles
     deputy_card_map: Dict[str, Dict[str, Any]] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
@@ -1248,7 +1246,6 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
         services = get_services()
 
         try:
-            # Retrieval
             retrieval_result = await services["retrieval"].retrieve(
                 query=request.query,
                 top_k=request.top_k,
@@ -1259,7 +1256,6 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
             evidence_list = retrieval_result["evidence"]
             evidence_dicts = [e.model_dump() for e in evidence_list]
 
-            # Authority
             speaker_ids = list(set(e.speaker_id for e in evidence_list if e.speaker_id))
             query_embedding = await asyncio.get_running_loop().run_in_executor(
                 None, lambda: services["retrieval"].embed_query(request.query)
@@ -1280,21 +1276,17 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                 if sid in authority_scores:
                     ed["authority_score"] = authority_scores[sid]
 
-            # Experts
             experts = await _compute_experts(
                 evidence_list, authority_scores, authority_details, services["neo4j"]
             )
 
-            # Compass
             coverage = services["ideology"].compute_coverage_metrics(evidence_dicts)
 
-            # Generation
             gen_result = await services["generation"].generate(
                 query=request.query,
                 evidence_list=evidence_dicts
             )
 
-            # Build citations
             citations = [
                 CitationInfo(
                     citation_id=f"cit_{i+1}",
@@ -1302,7 +1294,7 @@ async def query_endpoint(request: QueryRequest, http_request: Request):
                     quote_text=c.get("quote_text", ""),
                     speaker_name=c.get("speaker_name", ""),
                     party=c.get("party", ""),
-                    date=c.get("date", ""),
+                    date=str(c.get("date", "")),
                     span_start=c.get("span_start", 0),
                     span_end=c.get("span_end", 0),
                 )
@@ -1327,7 +1319,6 @@ async def health_check():
     """Health check endpoint."""
     try:
         services = get_services()
-        # Quick DB check
         services["neo4j"].verify_connectivity()
         return {"status": "healthy", "database": "connected"}
     except Exception as e:

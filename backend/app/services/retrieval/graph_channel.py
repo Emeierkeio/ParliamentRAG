@@ -1,11 +1,10 @@
 """
-Graph/metadata retrieval channel.
+Graph/metadata retrieval channel: finds evidence through parliamentary
+structure (acts, signatories, committees) rather than text similarity.
 
-This channel leverages parliamentary structure (acts, committees, party affiliations)
-to find relevant evidence through graph traversal.
-
-Uses hybrid Eurovoc matching: lexical + semantic on existing embeddings.
-NO new vector index required.
+Act matching is hybrid: lexical keyword match first, then a semantic rerank
+on the act embeddings already stored in the graph (title, Eurovoc,
+description), so no dedicated vector index is needed for this channel.
 """
 import logging
 import re
@@ -36,31 +35,17 @@ class GraphChannel:
     """
     Graph/metadata retrieval channel.
 
-    Finds evidence through:
-    1. Hybrid Eurovoc matching (lexical + semantic)
-    2. Graph traversal: Act -> Signatory -> Speech -> Chunk
-    3. Temporal filtering
-
-    Uses existing embeddings (title_embedding, eurovoc_embedding) on ParliamentaryAct.
-    NO new vector index required.
+    Traverses Act -> Signatory -> Speech -> Chunk, with hybrid act matching
+    (lexical + semantic on stored act embeddings) and optional date filtering.
     """
 
     def __init__(self, neo4j_client: Neo4jClient):
-        """
-        Initialize the graph retrieval channel.
-
-        Args:
-            neo4j_client: Neo4j database client
-        """
+        """Initialize with a Neo4j client and the app config."""
         self.client = neo4j_client
         self.config = get_config()
 
     def extract_keywords(self, query: str) -> List[str]:
-        """
-        Extract keywords from a query for lexical matching.
-
-        Simple keyword extraction - can be enhanced with NLP.
-        """
+        """Extract stopword-filtered keywords and bigrams for lexical act matching."""
         # Remove common Italian stopwords (including articulated prepositions)
         stopwords = {
             "il", "la", "lo", "i", "gli", "le", "un", "una", "uno",
@@ -80,7 +65,6 @@ class GraphChannel:
             "query", "originale",
         }
 
-        # Tokenize and filter
         words = re.findall(r'\b\w+\b', query.lower())
         keywords_raw = [w for w in words if w not in stopwords and len(w) > 2]
 
@@ -96,7 +80,7 @@ class GraphChannel:
         seen_bi: set = set()
         bigrams_dedup = [b for b in bigrams if not (b in seen_bi or seen_bi.add(b))]
 
-        return keywords + bigrams_dedup[:5]  # Limit bigrams
+        return keywords + bigrams_dedup[:5]
 
     def retrieve(
         self,
@@ -134,18 +118,15 @@ class GraphChannel:
             logger.warning("No keywords extracted, skipping graph channel")
             return []
 
-        # Step 1: Find relevant acts via lexical matching
         relevant_acts = self._find_relevant_acts(keywords, top_k=top_k)
 
         if not relevant_acts:
             logger.info("No relevant acts found via lexical search")
             return []
 
-        # Step 2: Semantic rerank using embeddings
         reranked_acts = self._semantic_rerank(relevant_acts, query_embedding)
 
-        # Step 3: Get chunks from signatories, filtered by chunk-level similarity
-        act_uris = [act["uri"] for act in reranked_acts[:50]]  # Limit
+        act_uris = [act["uri"] for act in reranked_acts[:50]]
         chunks = self._get_chunks_from_signatories(
             act_uris,
             query_embedding=query_embedding,
@@ -221,7 +202,6 @@ class GraphChannel:
             emb_eurovoc = act.get("eurovoc_embedding")
             emb_description = act.get("description_embedding")
 
-            # Compute similarity with available embeddings
             similarities = []
             if emb_title and len(emb_title) == len(query_embedding):
                 similarities.append(cosine_similarity(query_embedding, emb_title))
@@ -256,15 +236,16 @@ class GraphChannel:
         if not act_uris:
             return []
 
-        # Build date filter
         date_conditions = []
         params = {"act_uris": act_uris}
 
+        # s.date is a Neo4j Date: cast the string bounds with date() so the
+        # comparison is Date-vs-Date (string-vs-Date silently matches nothing).
         if date_start:
-            date_conditions.append("s.date >= $date_start")
+            date_conditions.append("s.date >= date($date_start)")
             params["date_start"] = date_start
         if date_end:
-            date_conditions.append("s.date <= $date_end")
+            date_conditions.append("s.date <= date($date_end)")
             params["date_end"] = date_end
 
         date_clause = " AND ".join(date_conditions) if date_conditions else "1=1"
@@ -299,6 +280,7 @@ class GraphChannel:
                c.citability_score AS citability_score,
                c.citability_class AS citability_class,
                c.best_quote AS best_quote
+        ORDER BY c.id
         LIMIT 200
         """
 
@@ -308,6 +290,9 @@ class GraphChannel:
         # Filter chunks by semantic similarity to the query.
         # Signatories may speak on many unrelated topics; this step removes
         # chunks that are topically irrelevant to the current query.
+        # chunk_similarity_threshold applies to the raw cosine; the stored
+        # similarity is then normalized to (1+cos)/2 so it is comparable with
+        # the dense channel's vector-index scores in the merger.
         threshold = self.config.retrieval.get("graph_channel", {}).get(
             "chunk_similarity_threshold", 0.3
         )
@@ -316,7 +301,7 @@ class GraphChannel:
             emb = chunk.get("embedding")
             if emb and len(emb) == len(query_embedding):
                 sim = cosine_similarity(query_embedding, emb)
-                chunk["similarity"] = sim
+                chunk["similarity"] = (1.0 + sim) / 2.0
                 if sim >= threshold:
                     filtered.append(chunk)
             else:
@@ -396,10 +381,14 @@ class GraphChannel:
                     "span_end": 0,
                     "debate_title": row.get("debate_title"),
                     "session_number": row.get("session_number", 0),
-                    "similarity": 0.5,  # Default for graph channel
+                    # Neutral prior on the normalized (1+cos)/2 scale for
+                    # chunks whose embedding is missing; overwritten with the
+                    # real normalized similarity in _get_chunks_from_signatories.
+                    "similarity": 0.5,
                     "embedding": row.get("embedding"),  # For compass PCA
-                    # Citability pre-calcolata a index-time (Fase 1); None su
-                    # chunk non ancora classificati → fallback regex nel merger
+                    # Citability pre-computed at index time (Phase 1); None on
+                    # chunks not yet classified, treated as neutral (0.5) by
+                    # the merger
                     "citability_score": row.get("citability_score"),
                     "citability_class": row.get("citability_class"),
                     "best_quote": row.get("best_quote"),

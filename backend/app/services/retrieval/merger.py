@@ -40,18 +40,11 @@ class ChannelMerger:
         """
         Merge results from dense and graph channels.
 
-        Args:
-            dense_results: Results from dense channel
-            graph_results: Results from graph channel
-            authority_scores: Optional speaker authority scores
-            top_k: Number of final results
-
         Returns:
             Merged and reranked results
         """
         merger_config = self.config.retrieval.get("merger", {})
 
-        # Get weights
         relevance_weight = merger_config.get("relevance_weight", 0.15)
         diversity_weight = merger_config.get("diversity_weight", 0.15)
         coverage_weight = merger_config.get("coverage_weight", 0.25)
@@ -62,11 +55,9 @@ class ChannelMerger:
             f"Merging {len(dense_results)} dense + {len(graph_results)} graph results"
         )
 
-        # Combine and deduplicate by evidence_id
         all_results = self._deduplicate(dense_results, graph_results)
         logger.info(f"After deduplication: {len(all_results)} unique results")
 
-        # Compute final scores
         scored_results = self._compute_scores(
             all_results,
             authority_scores,
@@ -77,10 +68,8 @@ class ChannelMerger:
             salience_weight
         )
 
-        # Sort and select top_k with diversity
         final_results = self._select_diverse(scored_results, top_k)
 
-        # Log coverage stats
         self._log_coverage(final_results)
 
         return final_results
@@ -117,10 +106,7 @@ class ChannelMerger:
         authority_weight: float,
         salience_weight: float = 0.20
     ) -> List[Dict[str, Any]]:
-        """
-        Compute final scores for all results.
-        """
-        # Count occurrences per speaker and party
+        """Compute final scores for all results."""
         speaker_counts: Dict[str, int] = defaultdict(int)
         party_counts: Dict[str, int] = defaultdict(int)
 
@@ -128,15 +114,12 @@ class ChannelMerger:
             speaker_counts[r.get("speaker_id", "")] += 1
             party_counts[r.get("party", "")] += 1
 
-        # Normalize counts
         max_speaker_count = max(speaker_counts.values()) if speaker_counts else 1
         max_party_count = max(party_counts.values()) if party_counts else 1
 
-        # All parties
         all_parties = set(self.config.get_all_parties())
 
         for result in results:
-            # Base relevance score
             relevance = result.get("similarity", 0.5)
 
             # Diversity penalty (reduce score for over-represented speakers)
@@ -149,22 +132,20 @@ class ChannelMerger:
             party_freq = party_counts.get(party, 1) / max_party_count
             coverage = 1.0 - (0.5 * party_freq)  # Soft bonus for rare parties
 
-            # Authority score
             authority = 0.5  # Default
             if authority_scores and speaker_id in authority_scores:
                 authority = authority_scores[speaker_id]
 
-            # Political salience score: citability stored a index-time (Fase 1).
-            # Il fallback regex è stato rimosso (Fase 3): l'intero corpus è
-            # classificato e la pipeline classifica a index-time; un chunk
-            # senza score è neutro (0.5).
+            # Political salience score: citability stored at index time (Phase 1).
+            # The regex fallback was removed (Phase 3): the whole corpus is
+            # classified and the pipeline classifies at index time; a chunk
+            # without a score is neutral (0.5).
             salience = result.get("salience")
             if salience is None:
                 citability = result.get("citability_score")
                 salience = float(citability) if citability is not None else 0.5
                 result["salience"] = salience
 
-            # Final score
             final_score = (
                 relevance_weight * relevance +
                 diversity_weight * diversity +
@@ -194,7 +175,6 @@ class ChannelMerger:
 
         Uses a greedy approach that balances score with diversity.
         """
-        # Sort by final score
         sorted_results = sorted(results, key=lambda x: x.get("final_score", 0), reverse=True)
 
         selected: List[Dict[str, Any]] = []
@@ -211,7 +191,6 @@ class ChannelMerger:
             speaker_id = result.get("speaker_id", "")
             party = result.get("party", "")
 
-            # Check limits
             if speaker_selected[speaker_id] >= max_per_speaker:
                 continue
             if party_selected[party] >= max_per_party:
@@ -223,15 +202,15 @@ class ChannelMerger:
             speaker_selected[speaker_id] += 1
             party_selected[party] += 1
 
-        # === Quota MINIMA per partito (garanzia multi-view) ===
-        # Il greedy ha un massimo per partito ma nessun minimo: sui temi di
-        # nicchia i gruppi grandi saturano il pool e i piccoli arrivano al
-        # quote picker con 2-4 evidenze → sezioni senza citazioni anche quando
-        # il corpus ha materiale ottimo (osservato 2026-07-24 su
-        # 'remigrazione': Misto con 2 evidenze mentre la componente Futuro
-        # Nazionale ne parla spesso e Magi ha 22 chunk substance sul tema).
-        # Top-up dai migliori candidati del partito, espellendo i peggiori
-        # dei partiti sovra-rappresentati per restare a top_k.
+        # Minimum per-party quota (multi-view guarantee). The greedy pass has
+        # a per-party maximum but no minimum: on niche topics the large groups
+        # saturate the pool and the small ones reach the quote picker with 2-4
+        # evidences → sections without citations even when the corpus has
+        # excellent material (observed 2026-07-24 on 'remigrazione': Misto
+        # with 2 evidences while the Futuro Nazionale component speaks about
+        # it often and Magi has 22 substance chunks on the topic).
+        # Top up from the party's best candidates, evicting the worst ones
+        # from over-represented parties to stay at top_k.
         min_per_party = self.config.retrieval.get("merger", {}).get("min_per_party", 5)
         known_parties = set(self.config.get_all_parties())
         selected_ids = {r.get("evidence_id") for r in selected}
@@ -247,15 +226,15 @@ class ChannelMerger:
                 if speaker_selected[candidate.get("speaker_id", "")] >= max_per_speaker:
                     continue
                 if len(selected) >= top_k:
-                    # vittima: il selezionato con score più basso di un partito
-                    # che resta sopra la quota minima anche dopo la rimozione
+                    # victim: the lowest-scoring selected item from a party
+                    # that stays above the minimum quota even after removal
                     victim = next(
                         (r for r in reversed(selected)
                          if party_selected[r.get("party", "")] > min_per_party),
                         None,
                     )
                     if victim is None:
-                        break  # nessun donatore: non sforare top_k
+                        break  # no donor party: never exceed top_k
                     selected.remove(victim)
                     party_selected[victim.get("party", "")] -= 1
                     speaker_selected[victim.get("speaker_id", "")] -= 1

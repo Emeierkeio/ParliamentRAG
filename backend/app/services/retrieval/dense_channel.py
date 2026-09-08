@@ -1,11 +1,10 @@
 """
-Dense retrieval channel using vector similarity search.
+Dense retrieval channel: semantic search on pre-computed chunk embeddings
+via Neo4j's native vector index.
 
-This channel performs semantic search on pre-computed chunk embeddings
-using Neo4j's native vector index.
-
-CRITICAL: Uses correct Neo4j vector query syntax.
-NO MATCH clause before db.index.vector.queryNodes.
+Similarity scores are on the Neo4j vector-index scale, cosine mapped to
+[0,1] as (1+cos)/2. The graph channel normalizes to the same scale so the
+merger can compare the two channels.
 """
 import logging
 from typing import List, Dict, Any, Optional
@@ -26,12 +25,7 @@ class DenseChannel:
     """
 
     def __init__(self, neo4j_client: Neo4jClient):
-        """
-        Initialize the dense retrieval channel.
-
-        Args:
-            neo4j_client: Neo4j database client
-        """
+        """Initialize with a Neo4j client and the app config."""
         self.client = neo4j_client
         self.config = get_config()
 
@@ -39,17 +33,20 @@ class DenseChannel:
         self,
         query_embedding: List[float],
         top_k: Optional[int] = None,
-        similarity_threshold: Optional[float] = None
+        similarity_threshold: Optional[float] = None,
+        date_start: Optional[str] = None,
+        date_end: Optional[str] = None
     ) -> List[Dict[str, Any]]:
         """
         Perform vector similarity search.
 
-        CRITICAL: Uses correct Neo4j syntax - NO MATCH before vector query.
-
         Args:
             query_embedding: Query embedding vector (1536 dimensions)
             top_k: Number of results to return
-            similarity_threshold: Minimum similarity score
+            similarity_threshold: Minimum similarity score, on the Neo4j
+                vector-index scale (cosine mapped to [0,1] as (1+cos)/2)
+            date_start: Optional session-date lower bound, "YYYY-MM-DD"
+            date_end: Optional session-date upper bound, "YYYY-MM-DD"
 
         Returns:
             List of evidence candidates with metadata
@@ -61,25 +58,42 @@ class DenseChannel:
 
         logger.info(f"Dense channel: retrieving top {top_k} chunks (threshold={threshold})")
 
-        # CORRECT Neo4j vector search syntax
-        # NO MATCH clause before db.index.vector.queryNodes
-        cypher = """
+        # s.date is a Neo4j Date: cast the string bounds with date() so the
+        # comparison is Date-vs-Date (string-vs-Date silently matches nothing).
+        date_filter = ""
+        params: Dict[str, Any] = {
+            "index_name": index_name,
+            "top_k": top_k,
+            "query_embedding": query_embedding,
+            "threshold": threshold
+        }
+        if date_start:
+            date_filter += " AND s.date >= date($date_start)"
+            params["date_start"] = date_start
+        if date_end:
+            date_filter += " AND s.date <= date($date_end)"
+            params["date_end"] = date_end
+
+        # No MATCH clause may precede db.index.vector.queryNodes: the index
+        # procedure must be the first clause or Neo4j falls back to a scan.
+        cypher = f"""
         CALL db.index.vector.queryNodes($index_name, $top_k, $query_embedding)
         YIELD node AS c, score
         WHERE score >= $threshold
         MATCH (c)<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
         MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-        // Partito corrente del deputato: solo se la membership è ancora attiva oggi.
-        // Se il deputato ha cambiato gruppo (mg.end_date < date()), il chunk viene
-        // attribuito al nuovo gruppo o scartato — mai al gruppo precedente.
+        WHERE 1=1{date_filter}
+        // Deputy's party: only if the membership is still active today.
+        // If the deputy switched group (mg.end_date < date()), the chunk is
+        // attributed to the new group or discarded — never to the previous group.
         OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
         WHERE mg.start_date <= s.date AND (mg.end_date IS NULL OR mg.end_date >= date())
-        // Partito attuale: gruppo corrente (membership ancora aperta).
+        // Current party: present group (membership still open).
         OPTIONAL MATCH (speaker)-[mg_now:MEMBER_OF_GROUP]->(g_now:ParliamentaryGroup)
         WHERE mg_now.end_date IS NULL
-        // Componente del Gruppo Misto alla data del discorso: il Misto
-        // contiene componenti opposte (+Europa vs Futuro Nazionale Vannacci),
-        // l'attribuzione va alla componente, mai al Misto monolitico.
+        // Gruppo Misto component at speech date: the Misto contains opposed
+        // components (+Europa vs Futuro Nazionale Vannacci), so attribution
+        // goes to the component, never to the monolithic Misto.
         OPTIONAL MATCH (speaker)-[mcp:MEMBER_OF_COMPONENT]->(mcomp:MistoComponent)
         WHERE mcp.start_date <= s.date AND (mcp.end_date IS NULL OR mcp.end_date >= s.date)
         RETURN c.id AS chunk_id,
@@ -106,15 +120,7 @@ class DenseChannel:
         ORDER BY score DESC
         """
 
-        results = self.client.query(
-            cypher,
-            {
-                "index_name": index_name,
-                "top_k": top_k,
-                "query_embedding": query_embedding,
-                "threshold": threshold
-            }
-        )
+        results = self.client.query(cypher, params)
 
         logger.info(f"Dense channel: retrieved {len(results)} chunks")
         return self._process_results(results)
@@ -130,7 +136,6 @@ class DenseChannel:
 
         for row in results:
             try:
-                # Extract quote using offsets - CRITICAL for citation integrity
                 text = row.get("text", "")
                 # Use chunk_text directly as the citation source: spans are
                 # unknown at retrieval time (0/0) and the citation flow works
@@ -142,12 +147,12 @@ class DenseChannel:
                 # Determine coalition using the historical party (group at speech time).
                 # current_party is the group the speaker belongs to TODAY — used only
                 # to compute party_changed, never for attribution or coalition assignment.
-                party = row.get("party")           # storico (alla data del discorso)
-                current_party_raw = row.get("current_party")  # attuale
+                party = row.get("party")           # historical (at speech date)
+                current_party_raw = row.get("current_party")  # today's group
                 speaker_role = row.get("speaker_type", "Deputy")
 
                 if party is None and speaker_role != "GovernmentMember":
-                    # Chunk privo di attribuzione storica (dati mancanti nel DB): salta.
+                    # Chunk with no historical attribution (missing DB data): skip.
                     logger.debug(
                         f"Skipping chunk {row.get('chunk_id')}: no historical group found "
                         f"for speaker {row.get('speaker_last_name')} at {row.get('session_date')}"
@@ -163,7 +168,7 @@ class DenseChannel:
                     coalition = config.get_coalition(party) if party else "opposizione"
                     historical_display = normalize_party_name(party)
                     current_party_display = normalize_party_name(current_party_raw) if current_party_raw else None
-                    # Cambiamento se il gruppo attuale è diverso da quello storico
+                    # Changed if today's group differs from the historical one
                     party_changed = bool(
                         current_party_display and current_party_display != historical_display
                     )
@@ -194,7 +199,7 @@ class DenseChannel:
                     "speaker_role": row.get("speaker_type", "Deputy"),
                     "party": normalize_party_name(party),
                     "coalition": coalition,
-                    # Trasparenza cambio gruppo: se True, current_party mostra il gruppo attuale
+                    # Group-switch transparency: if True, current_party shows today's group
                     "party_changed": party_changed,
                     "current_party": current_party_display if party_changed else None,
                     "date": date_obj,
@@ -207,8 +212,9 @@ class DenseChannel:
                     "session_number": row.get("session_number", 0),
                     "similarity": row.get("similarity", 0.0),
                     "embedding": row.get("embedding"),  # For compass PCA
-                    # Citability pre-calcolata a index-time (Fase 1); None su
-                    # chunk non ancora classificati → fallback regex nel merger
+                    # Citability pre-computed at index time (Phase 1); None on
+                    # chunks not yet classified, treated as neutral (0.5) by
+                    # the merger
                     "citability_score": row.get("citability_score"),
                     "citability_class": row.get("citability_class"),
                     "best_quote": row.get("best_quote"),
