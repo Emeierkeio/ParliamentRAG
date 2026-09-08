@@ -42,12 +42,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const DIMENSION_LABELS: Record<string, string> = {
-  answer_quality: "Qualita risposta",
+  answer_quality: "Qualità risposta",
   answer_clarity: "Chiarezza",
   answer_completeness: "Completezza",
   citations_relevance: "Pertinenza citazioni",
   balance_perception: "Bilanciamento percepito",
-  balance_fairness: "Equita",
+  balance_fairness: "Equità",
 };
 
 export default function ValutazionePage() {
