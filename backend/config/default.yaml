@@ -29,6 +29,11 @@ retrieval:
     # chunks from being included just because their speaker co-signed a
     # relevant parliamentary act.
     chunk_similarity_threshold: 0.3
+    # Signatory chunks: fetched wide (deterministic id order), then ranked by
+    # query similarity in Python and capped, so the cap keeps the most
+    # relevant candidates (issue #24).
+    signatory_candidate_limit: 500
+    signatory_chunk_cap: 200
 
   merger:
     # authority_weight is minimal because authority is computed post-retrieval

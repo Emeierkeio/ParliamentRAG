@@ -250,6 +250,15 @@ class GraphChannel:
 
         date_clause = " AND ".join(date_conditions) if date_conditions else "1=1"
 
+        graph_cfg = self.config.retrieval.get("graph_channel", {})
+        # Candidates are fetched wide and capped AFTER similarity ranking:
+        # the production Neo4j predates vector.similarity.cosine(), so the
+        # relevance ordering happens in Python on the returned embeddings.
+        # ORDER BY c.id only makes the wide fetch deterministic.
+        candidate_limit = graph_cfg.get("signatory_candidate_limit", 500)
+        chunk_cap = graph_cfg.get("signatory_chunk_cap", 200)
+        params["candidate_limit"] = candidate_limit
+
         cypher = f"""
         MATCH (speaker)-[:PRIMARY_SIGNATORY|CO_SIGNATORY]->(a:ParliamentaryAct)
         WHERE a.uri IN $act_uris
@@ -281,7 +290,7 @@ class GraphChannel:
                c.citability_class AS citability_class,
                c.best_quote AS best_quote
         ORDER BY c.id
-        LIMIT 200
+        LIMIT $candidate_limit
         """
 
         results = self.client.query(cypher, params)
@@ -313,6 +322,18 @@ class GraphChannel:
                 f"Graph channel: dropped {n_dropped}/{len(processed)} chunks "
                 f"below chunk_similarity_threshold={threshold}"
             )
+
+        # Cap AFTER ranking by similarity, so the cap keeps the most relevant
+        # candidates instead of an arbitrary id-ordered subset (issue #24).
+        # Chunks without an embedding carry the 0.5 neutral prior and sort
+        # accordingly.
+        if len(filtered) > chunk_cap:
+            filtered.sort(key=lambda ch: ch.get("similarity", 0.0), reverse=True)
+            logger.info(
+                f"Graph channel: capping {len(filtered)} candidates to the "
+                f"{chunk_cap} most similar"
+            )
+            filtered = filtered[:chunk_cap]
         return filtered
 
     def _process_results(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
