@@ -7,7 +7,7 @@ import type {
   SurveyResponse,
   SurveyResponseCreate,
   SurveyListResponse,
-  SurveyQuestion,
+  
   PendingChatsResponse,
   SurveyStats,
   SimpleRatingResponse,
@@ -15,17 +15,6 @@ import type {
 } from "@/types/survey";
 
 const BASE_URL = `${config.api.baseUrl}/surveys`;
-
-/**
- * Get survey questions configuration
- */
-export async function getSurveyQuestions(): Promise<{ questions: SurveyQuestion[] }> {
-  const response = await fetch(`${BASE_URL}/questions`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch survey questions: ${response.statusText}`);
-  }
-  return response.json();
-}
 
 /**
  * Create a new survey response

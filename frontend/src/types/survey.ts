@@ -175,9 +175,9 @@ export type SimpleDimension = typeof SIMPLE_DIMENSIONS[number];
 
 export const SIMPLE_DIMENSION_LABELS: Record<SimpleDimension, string> = {
   answer_clarity: "Chiarezza espositiva",
-  answer_quality: "Qualita complessiva percepita",
+  answer_quality: "Qualità complessiva percepita",
   balance_perception: "Bilanciamento percepito",
-  balance_fairness: "Equita rappresentazione",
+  balance_fairness: "Equità rappresentazione",
 };
 
 export interface SimpleRatingFormState {
@@ -262,19 +262,19 @@ export interface SurveyFormState {
 export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "answer_quality",
-    category: "Qualita Risposta",
-    question: "Qualita complessiva della risposta",
-    description: "Considera l'utilita pratica per il lavoro giornalistico",
+    category: "Qualità Risposta",
+    question: "Qualità complessiva della risposta",
+    description: "Considera l'utilità pratica per il lavoro giornalistico",
   },
   {
     id: "answer_clarity",
-    category: "Qualita Risposta",
-    question: "Chiarezza e leggibilita della risposta",
-    description: "Valuta la struttura, il linguaggio e la facilita di comprensione",
+    category: "Qualità Risposta",
+    question: "Chiarezza e leggibilità della risposta",
+    description: "Valuta la struttura, il linguaggio e la facilità di comprensione",
   },
   {
     id: "answer_completeness",
-    category: "Qualita Risposta",
+    category: "Qualità Risposta",
     question: "Completezza delle informazioni",
     description: "Considera se mancano informazioni importanti",
   },
@@ -293,8 +293,8 @@ export const SURVEY_QUESTIONS: SurveyQuestion[] = [
   {
     id: "balance_fairness",
     category: "Bilanciamento Politico",
-    question: "Equita nella rappresentazione",
-    description: "Considera se c'e imparzialita nella presentazione",
+    question: "Equità nella rappresentazione",
+    description: "Considera se c'è imparzialità nella presentazione",
   },
   // Authority dimensions — Autorità Esperti category
   // Based on: TREC Expert Finding (Craswell et al. 2005), DQI (Steenbergen et al. 2003),
