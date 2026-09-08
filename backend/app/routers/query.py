@@ -22,6 +22,8 @@ from ..services.deps import get_services
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.domain_check import check_domain
 from ..services.relevance_gate import gate_payload, domain_notice
+from ..services.retrieval.commission_matcher import get_commission_matcher
+from ..services.task_store import get_task_store
 from ..config import get_config
 
 logger = logging.getLogger(__name__)
@@ -43,7 +45,62 @@ def _get_pipeline_semaphore() -> asyncio.Semaphore:
     return _pipeline_semaphore
 
 
+def _task_cancelled(task_id: Optional[str]) -> bool:
+    """Check whether the client cancelled this task via DELETE /api/chat/task/{id}."""
+    if not task_id:
+        return False
+    try:
+        return get_task_store().is_cancelled(task_id)
+    except Exception:
+        return False
+
+
 async def _rate_limited_query(
+    request: "QueryRequest",
+    http_request: Optional[Request] = None,
+) -> "AsyncGenerator[str, None]":
+    """Mirror pipeline events to the task store while streaming them to the client.
+
+    With a client-provided task_id, every SSE event also lands in the task
+    store so GET/DELETE /api/chat/task/{task_id} can replay or cancel the run.
+    The direct stream has priority: any store failure is logged and skipped,
+    never propagated.
+    """
+    store = None
+    if request.task_id:
+        try:
+            store = get_task_store()
+            await store.cleanup_expired()
+            await store.create_task(request.task_id)
+        except Exception as exc:
+            logger.warning(f"[TaskStore] create_task failed for {request.task_id}: {exc}")
+            store = None
+
+    error_message: Optional[str] = None
+    async for event in _semaphore_gated_query(request, http_request):
+        if store:
+            try:
+                payload = json.loads(event.split("data: ", 1)[1])
+                if payload.get("type") == "error":
+                    error_message = str(payload.get("message", "pipeline error"))
+                await store.add_event(request.task_id, payload)
+            except Exception as exc:
+                logger.warning(f"[TaskStore] add_event failed for {request.task_id}: {exc}")
+        yield event
+
+    if store:
+        try:
+            # cancel_task already set the terminal status; do not overwrite it
+            if not store.is_cancelled(request.task_id):
+                if error_message is not None:
+                    await store.fail_task(request.task_id, error_message)
+                else:
+                    await store.complete_task(request.task_id)
+        except Exception as exc:
+            logger.warning(f"[TaskStore] finalize failed for {request.task_id}: {exc}")
+
+
+async def _semaphore_gated_query(
     request: "QueryRequest",
     http_request: Optional[Request] = None,
 ) -> "AsyncGenerator[str, None]":
@@ -95,6 +152,7 @@ class QueryRequest(BaseModel):
     date_start: Optional[str] = Field(default=None, description="Start date filter (YYYY-MM-DD)")
     date_end: Optional[str] = Field(default=None, description="End date filter (YYYY-MM-DD)")
     stream: bool = Field(default=True, description="Enable SSE streaming")
+    task_id: Optional[str] = Field(default=None, description="Client-provided task ID for cancellation/reconnection")
 
 
 class CitationInfo(BaseModel):
@@ -154,6 +212,21 @@ async def process_query_streaming(
 
         # Step 1: Progress - Starting
         yield f"data: {json.dumps({'type': 'progress', 'step': 1, 'message': 'Query analysis and retrieval...' if _en else 'Avvio retrieval...'})}\n\n"
+
+        # Commission surfacing (issue #26): keyword match over an in-memory
+        # mapping, no I/O per call, so it runs inline before retrieval.
+        # Display only — the retrieval boost is decided elsewhere.
+        _commissions_t0 = time.perf_counter()
+        commissions_at = round((_commissions_t0 - pipeline_t0) * 1000, 1)
+        relevant_commissions: List[Dict[str, Any]] = []
+        try:
+            relevant_commissions = get_commission_matcher().find_relevant_commissions(
+                query=request.query, top_k=3, min_score=0.1
+            )
+            yield f"data: {json.dumps({'type': 'commissioni', 'commissioni': relevant_commissions}, default=str)}\n\n"
+        except Exception as exc:
+            logger.error(f"[COMMISSIONS] Matching failed (pipeline continues): {exc}", exc_info=True)
+        commissions_ms = (time.perf_counter() - _commissions_t0) * 1000
 
         # Step 2: retrieval (locale: non-Italian queries are translated by
         # the rewriter before embedding, the corpus is Italian)
@@ -236,8 +309,8 @@ async def process_query_streaming(
 
         yield f"data: {json.dumps({'type': 'experts', 'data': experts}, default=str)}\n\n"
 
-        if http_request and await http_request.is_disconnected():
-            logger.info("[QUERY] Client disconnected before compass – aborting")
+        if (http_request and await http_request.is_disconnected()) or _task_cancelled(request.task_id):
+            logger.info("[QUERY] Client disconnected or task cancelled before compass – aborting")
             domain_task.cancel()
             return
 
@@ -268,8 +341,8 @@ async def process_query_streaming(
             lambda f: f.cancelled() or f.exception()
         )
 
-        if http_request and await http_request.is_disconnected():
-            logger.info("[QUERY] Client disconnected before generation – aborting")
+        if (http_request and await http_request.is_disconnected()) or _task_cancelled(request.task_id):
+            logger.info("[QUERY] Client disconnected or task cancelled before generation – aborting")
             domain_task.cancel()
             return
 
@@ -647,8 +720,8 @@ async def process_query_streaming(
         # Step 7: Stream text chunks
         chunk_size = 100
         for i in range(0, len(final_text), chunk_size):
-            if http_request and await http_request.is_disconnected():
-                logger.info("[QUERY] Client disconnected during text streaming – aborting")
+            if (http_request and await http_request.is_disconnected()) or _task_cancelled(request.task_id):
+                logger.info("[QUERY] Client disconnected or task cancelled during text streaming – aborting")
                 return
             chunk = final_text[i:i+chunk_size]
             yield f"data: {json.dumps({'type': 'chunk', 'data': chunk})}\n\n"
@@ -670,6 +743,8 @@ async def process_query_streaming(
             "total_ms": round((time.perf_counter() - pipeline_t0) * 1000),
             "rewritten_query": _r_meta.get("rewritten_query"),
             "stages": [
+                {"key": "commissions", "ms": round(commissions_ms, 1), "at": commissions_at,
+                 "info": {"matched": len(relevant_commissions)}},
                 {"key": "retrieval", "ms": round(_r_meta.get("processing_time_ms") or 0, 1), "at": 0,
                  "info": {"dense": _r_meta.get("dense_channel_count", 0),
                           "graph": _r_meta.get("graph_channel_count", 0),
