@@ -992,7 +992,8 @@
     "downloadCta": "Descargar el archivo",
     "readyNote": "disponible",
     "heroGraphNote": "Nodos y aristas reales del grafo — diputado {id}",
-    "updatedAt": "actualizado el {date}"
+    "updatedAt": "actualizado el {date}",
+    "archivedSnapshot": "snapshot de Zenodo · {date}"
   },
   "Feedback": {
     "prompt": "¿Te ha sido útil?",

@@ -1036,7 +1036,8 @@
     "downloadCta": "Download file",
     "readyNote": "available",
     "heroGraphNote": "Real nodes and edges from the graph — deputy {id}",
-    "updatedAt": "updated {date}"
+    "updatedAt": "updated {date}",
+    "archivedSnapshot": "Zenodo snapshot · {date}"
   },
   "Feedback": {
     "prompt": "Was this useful?",

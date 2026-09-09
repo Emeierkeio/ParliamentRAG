@@ -992,7 +992,8 @@
     "downloadCta": "Télécharger le fichier",
     "readyNote": "disponible",
     "heroGraphNote": "Nœuds et arcs réels du graphe — député {id}",
-    "updatedAt": "mis à jour le {date}"
+    "updatedAt": "mis à jour le {date}",
+    "archivedSnapshot": "instantané Zenodo · {date}"
   },
   "Feedback": {
     "prompt": "Cela vous a été utile ?",

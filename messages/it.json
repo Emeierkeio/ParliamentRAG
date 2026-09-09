@@ -1023,7 +1023,8 @@
     "downloadCta": "Scarica il file",
     "readyNote": "disponibile",
     "heroGraphNote": "Nodi e archi reali del grafo — deputato {id}",
-    "updatedAt": "aggiornato al {date}"
+    "updatedAt": "aggiornato al {date}",
+    "archivedSnapshot": "snapshot Zenodo · {date}"
   },
   "Feedback": {
     "prompt": "Ti è stato utile?",

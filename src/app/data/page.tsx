@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Fraunces } from "next/font/google";
 import { ArrowLeft, ArrowUpRight, Download } from "lucide-react";
 import { useKgStats } from "@/hooks/use-kg-stats";
+import { useLastUpdate } from "@/hooks/use-last-update";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -173,17 +174,25 @@ function useRdfManifest() {
 
 export default function DataPage() {
   const t = useTranslations("DataPage");
+  const tl = useTranslations("Landing");
   const locale = useLocale();
   const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
   const stats = useKgStats();
   const { sample: graphSample, loaded: graphLoaded } = useGraphSample();
-  const zenodoUpdatedLabel = t("updatedAt", {
-    date: new Intl.DateTimeFormat(locale, {
+  const lastUpdate = useLastUpdate();
+  const formatLongDate = (iso: string) =>
+    new Intl.DateTimeFormat(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",
-    }).format(new Date(`${ZENODO_UPDATED}T12:00:00`)),
+    }).format(new Date(`${iso}T12:00:00`));
+  // The cards offer the Zenodo archive, which lags the live graph on
+  // purpose: the label must say "snapshot", not "updated", while the live
+  // freshness is stated once at section level.
+  const zenodoUpdatedLabel = t("archivedSnapshot", {
+    date: formatLongDate(ZENODO_UPDATED),
   });
+  const liveEditionLabel = tl("edition", { date: formatLongDate(lastUpdate) });
   const updatedNote = (file?: RdfFile) =>
     file?.modified
       ? t("updatedAt", {
@@ -420,6 +429,10 @@ export default function DataPage() {
           <TermRule index="05" title={t("sec5Title")} />
           <p className="mt-6 text-primary-foreground/65 max-w-2xl">
             {t("sec5Intro")}
+          </p>
+          <p className="mt-4 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wide text-primary-foreground/60">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4" />
+            {liveEditionLabel}
           </p>
 
           <div className="mt-10 grid md:grid-cols-2 gap-6">
