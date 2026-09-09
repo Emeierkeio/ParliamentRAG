@@ -992,7 +992,8 @@
     "downloadCta": "Datei herunterladen",
     "readyNote": "verfügbar",
     "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen — Abgeordneter {id}",
-    "updatedAt": "Stand {date}"
+    "updatedAt": "Stand {date}",
+    "archivedSnapshot": "Zenodo-Snapshot · {date}"
   },
   "Feedback": {
     "prompt": "War das hilfreich?",

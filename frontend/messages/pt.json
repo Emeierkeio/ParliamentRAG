@@ -992,7 +992,8 @@
     "downloadCta": "Baixar o arquivo",
     "readyNote": "disponível",
     "heroGraphNote": "Nós e arestas reais do grafo — deputado {id}",
-    "updatedAt": "atualizado em {date}"
+    "updatedAt": "atualizado em {date}",
+    "archivedSnapshot": "snapshot do Zenodo · {date}"
   },
   "Feedback": {
     "prompt": "Isto foi útil?",
