@@ -544,7 +544,7 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
           <p className="text-[11px] leading-relaxed text-muted-foreground/70">
             {t('aiDisclaimer')}{" "}
             <a
-              href="/method"
+              href="/metodologia#limiti"
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"
@@ -683,7 +683,7 @@ function AssistantMetadata({ message, highlightedChunkId, hoveredChunkId }: Assi
                 {t.rich('expertsSectionDesc', {
                   method: (chunks) => (
                     <a
-                      href="/method"
+                      href="/metodologia#autorevolezza"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline underline-offset-2 hover:text-primary transition-colors"

@@ -514,7 +514,6 @@ export default function LandingPage() {
               <FooterLink href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19" external>
                 Hugging Face
               </FooterLink>
-              <FooterLink href="/method">{t("footerMethod")}</FooterLink>
               <FooterLink href="/data">{t("footerData")}</FooterLink>
               <FooterLink href="/privacy">{t("footerPrivacy")}</FooterLink>
             </nav>

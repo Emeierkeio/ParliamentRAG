@@ -590,7 +590,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
             <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/70">
                 {t("weightsNote")}{" "}
                 <a
-                  href="/method"
+                  href="/metodologia#autorevolezza"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"

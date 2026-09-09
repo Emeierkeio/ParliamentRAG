@@ -603,7 +603,7 @@ export default function RankingPage() {
                 <p className="text-[11px] leading-relaxed text-muted-foreground mb-3">
                   {t("weightsPanelDesc")}{" "}
                   <a
-                    href="/method"
+                    href="/metodologia#autorevolezza"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary underline underline-offset-2 hover:text-primary/80"
@@ -818,7 +818,7 @@ export default function RankingPage() {
                   <p>{t("methodP2")}</p>
                   <p>
                     <a
-                      href="/method"
+                      href="/metodologia#autorevolezza"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors"

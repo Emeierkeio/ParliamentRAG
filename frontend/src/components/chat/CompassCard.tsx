@@ -354,7 +354,7 @@ export function CompassCard({ data, fill = false }: CompassCardProps) {
           <p className="mt-1.5 px-2 text-center text-[10px] leading-snug text-muted-foreground/70 shrink-0">
               {isStance ? t("stanceDisclaimer") : t("disclaimer")}{" "}
               <a
-                href="/method"
+                href="/metodologia#bussola"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"
