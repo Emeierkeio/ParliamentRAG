@@ -26,8 +26,10 @@ interface DeputyProfile {
 
 interface RecentSpeech {
   id: string;
-  text: string;
+  text: string | null;
   date: string;
+  session_number: number | null;
+  debate_title: string | null;
 }
 
 const SLUG_RE = /^p\d+$/;
@@ -37,7 +39,7 @@ function profileCypher(uri: string): string {
     `MATCH (d:Deputy {id: "${uri}"}) ` +
     "OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) WITH d, g " +
     "OPTIONAL MATCH (s:Speech)-[:SPOKEN_BY]->(d) WITH d, g, count(s) AS speeches " +
-    "OPTIONAL MATCH (a:ParliamentaryAct)-[:PRIMARY_SIGNATORY]->(d) " +
+    "OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a:ParliamentaryAct) " +
     "RETURN d.first_name AS first_name, d.last_name AS last_name, d.photo AS photo, " +
     "d.deputy_card AS deputy_card, d.profession AS profession, d.education AS education, " +
     "d.institutional_role AS institutional_role, g.name AS group, speeches, count(a) AS acts"
@@ -82,23 +84,27 @@ export default function DeputyProfilePage() {
     load();
   }, [load]);
 
-  // Interventi recenti: best effort via ricerca ibrida filtrata per deputato.
-  // Se la chiamata fallisce o non trova nulla, la lista resta vuota e si
-  // mostra solo il link alla ricerca completa.
+  // Interventi recenti via Cypher diretto: la ricerca ibrida non puo' farlo,
+  // perche' esige una query testuale e il nome del deputato non compare nel
+  // testo dei suoi interventi. Se la chiamata fallisce la lista resta vuota
+  // e si mostra solo il link alla ricerca completa.
   useEffect(() => {
     if (!profile || !validSlug) return;
     let cancelled = false;
-    const fullName = toTitleCase(`${profile.first_name} ${profile.last_name}`);
     const uri = deputyUriFromSlug(slug);
-    const url =
-      `${config.api.baseUrl}/search/results?q=${encodeURIComponent(fullName)}` +
-      `&search_type=hybrid&doc_type=speech&sort_by=date_desc&page=1&page_size=5` +
-      `&deputy_id=${encodeURIComponent(uri)}`;
-    fetch(url)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: { results?: RecentSpeech[] } | null) => {
-        if (cancelled || !data?.results) return;
-        setRecent(data.results.slice(0, 5));
+    const cypher =
+      `MATCH (i:Speech)-[:SPOKEN_BY]->(d:Deputy {id: "${uri}"}) ` +
+      "MATCH (i)<-[:CONTAINS_SPEECH]-(:Phase)<-[:HAS_PHASE]-(dib:Debate)<-[:HAS_DEBATE]-(s:Session) " +
+      "WITH i, s, dib ORDER BY s.date DESC LIMIT 5 " +
+      "OPTIONAL MATCH (i)-[:HAS_CHUNK]->(c:Chunk) " +
+      "WITH i, s, dib, c ORDER BY c.index ASC " +
+      "WITH i, s, dib, collect(c.text)[0] AS text " +
+      "RETURN i.id AS id, text, toString(s.date) AS date, " +
+      "s.number AS session_number, dib.title AS debate_title " +
+      "ORDER BY date DESC";
+    graphQuery<RecentSpeech>(cypher)
+      .then((rows) => {
+        if (!cancelled) setRecent(rows);
       })
       .catch(() => {
         /* lista nascosta, resta il link viewAllSpeeches */
@@ -235,15 +241,25 @@ export default function DeputyProfilePage() {
                     {recent.map((s) => (
                       <a
                         key={s.id}
-                        href={searchHref}
+                        href={s.session_number != null ? `/sedute/${s.session_number}` : searchHref}
                         className="block border-b border-border py-3.5 transition-colors hover:bg-muted/40"
                       >
                         <span className="font-mono text-xs text-muted-foreground">
                           {formatDate(s.date)}
+                          {s.session_number != null && (
+                            <> · {t("sessionTitle", { number: s.session_number })}</>
+                          )}
                         </span>
-                        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-foreground">
-                          {s.text}
-                        </p>
+                        {s.debate_title && (
+                          <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+                            {s.debate_title}
+                          </p>
+                        )}
+                        {s.text && (
+                          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-foreground">
+                            {s.text}
+                          </p>
+                        )}
                       </a>
                     ))}
                   </div>

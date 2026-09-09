@@ -29,9 +29,9 @@ export function TimelineSearch({
   hasActiveFilters,
 }: TimelineSearchProps) {
   const t = useTranslations("Timeline");
-  // The hook mounts the page on the last-month window, so the matching
-  // chip starts lit; it goes dark as soon as the dates are edited by hand.
-  const [activePreset, setActivePreset] = useState<Preset>("month");
+  // The hook mounts the page with no date window (recess-proof default),
+  // so no chip starts lit; one lights up when its preset is applied.
+  const [activePreset, setActivePreset] = useState<Preset>(null);
   // On phones the date inputs live behind the calendar toggle: the presets
   // cover the common cases and the sticky filter block must stay short.
   const [showDates, setShowDates] = useState(false);
@@ -64,8 +64,8 @@ export function TimelineSearch({
   );
 
   const handleClear = useCallback(() => {
-    // Clearing returns to the default view, which is the last-month window
-    setActivePreset("month");
+    // Clearing returns to the default view, which has no date window
+    setActivePreset(null);
     onClear();
   }, [onClear]);
 

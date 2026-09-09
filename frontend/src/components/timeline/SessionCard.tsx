@@ -2,6 +2,7 @@
 
 import { useState, useId } from "react";
 import React from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ChevronRight, Vote } from "lucide-react";
 
@@ -174,6 +175,18 @@ export function SessionCard({ session, searchTerm }: SessionCardProps) {
                 );
               })}
             </div>
+
+            {/* Permalink: only Chamber sittings have a dedicated page,
+                the detail route resolves numbers against camera.it */}
+            {session.chamber !== "senato" && (
+              <Link
+                href={`/sedute/${session.number}`}
+                className="group mt-1 inline-flex items-center gap-1.5 py-1.5 px-3 -mx-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t("openSessionPage")}
+                <ChevronRight className="h-3 w-3 shrink-0 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            )}
 
             {procedural.length > 0 && (
               <Collapsible open={proceduralOpen} onOpenChange={setProceduralOpen}>

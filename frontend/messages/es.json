@@ -644,10 +644,11 @@
     "loadingMore": "Cargando más sesiones...",
     "errorHeading": "No se pudieron cargar las sesiones",
     "errorBody": "Se ha producido un error al cargar la cronología parlamentaria. Actualice la página.",
-    "parliamentaryTimeline": "Cronología Parlamentaria"
+    "parliamentaryTimeline": "Cronología Parlamentaria",
+    "openSessionPage": "Página de la sesión"
   },
   "RankingsPage": {
-    "headerTitle": "Análisis de Autoridad",
+    "headerTitle": "Quién sabe más",
     "historyTitle": "Historial",
     "historyHeading": "Historial de búsquedas",
     "historyEmpty": "Ninguna búsqueda guardada",

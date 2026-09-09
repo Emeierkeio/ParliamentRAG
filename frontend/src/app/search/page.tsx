@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
@@ -93,23 +93,24 @@ export default function SearchPage() {
     };
 
     // Filter state
-    // La query può arrivare via URL (/search?q=..., usata da profili
-    // deputato, gruppi e command palette): prefill senza auto-invio
-    const [query, setQuery] = useState(() => {
-        if (typeof window === "undefined") return "";
-        return new URLSearchParams(window.location.search).get("q") ?? "";
-    });
+    // Query e filtro tipo possono arrivare via URL (/search?q=... dai profili
+    // e dalla command palette, /search?doc_type=act dal redirect di /atti):
+    // letti in un effect post-mount, non negli initializer, perche' il markup
+    // SSR non conosce la query string e divergerebbe in hydration.
+    const [query, setQuery] = useState("");
     const [selectedDeputies, setSelectedDeputies] = useState<Deputy[]>([]);
     const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
-    // Il filtro tipo può arrivare via URL (es. /search?doc_type=act, usato
-    // dal redirect di /atti): lo si legge solo al primo render.
-    const [docType, setDocType] = useState<"all" | "speech" | "act">(() => {
-        if (typeof window === "undefined") return "all";
-        const fromUrl = new URLSearchParams(window.location.search).get("doc_type");
-        return fromUrl === "act" || fromUrl === "speech" ? fromUrl : "all";
-    });
+    const [docType, setDocType] = useState<"all" | "speech" | "act">("all");
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get("q");
+        if (q) setQuery(q);
+        const dt = params.get("doc_type");
+        if (dt === "act" || dt === "speech") setDocType(dt);
+    }, []);
     const [authorFilterMode, setAuthorFilterMode] = useState<"all" | "deputy" | "group">("all");
 
     // Sort state

@@ -688,10 +688,11 @@
     "proceduralItemsHide": "Hide procedural items",
     "phasesNoSpeeches": "+ {count, plural, one {# phase without speeches} other {# phases without speeches}}",
     "phasesHeading": "Agenda",
-    "voteMistoComponents": "Mixed Group components"
+    "voteMistoComponents": "Mixed Group components",
+    "openSessionPage": "Session page"
   },
   "RankingsPage": {
-    "headerTitle": "Authority Analysis",
+    "headerTitle": "Who knows it best",
     "historyTitle": "History",
     "historyHeading": "Search history",
     "historyEmpty": "No saved searches",

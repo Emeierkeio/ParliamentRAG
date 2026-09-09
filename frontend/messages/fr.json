@@ -644,10 +644,11 @@
     "loadingMore": "Chargement d'autres séances...",
     "errorHeading": "Impossible de charger les séances",
     "errorBody": "Une erreur s'est produite lors du chargement de la chronologie parlementaire. Actualisez la page.",
-    "parliamentaryTimeline": "Chronologie parlementaire"
+    "parliamentaryTimeline": "Chronologie parlementaire",
+    "openSessionPage": "Page de la séance"
   },
   "RankingsPage": {
-    "headerTitle": "Analyse d'autorité",
+    "headerTitle": "Qui en sait le plus",
     "historyTitle": "Historique",
     "historyHeading": "Historique des recherches",
     "historyEmpty": "Aucune recherche enregistrée",

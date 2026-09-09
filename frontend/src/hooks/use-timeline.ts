@@ -22,19 +22,16 @@ interface UseTimelineReturn {
   hasActiveFilters: boolean;
 }
 
-// The page opens on the last month of sessions, not the whole legislature:
-// the recent ones are what people come for, and the full list stays a
-// date-filter edit away. Same window (and same date math) as the "last
-// month" preset chip in TimelineSearch, so that chip lights up on load.
+// The page opens on the most recent sessions with no date window: a
+// calendar-based "last 30 days" default turns into an empty page during
+// recess periods (e.g. August), when the newest sitting is older than the
+// window. Presets and date inputs stay available as explicit filters.
 function makeDefaultFilters(): TimelineFilters {
-  const today = new Date();
-  const from = new Date(today);
-  from.setDate(today.getDate() - 30);
   return {
     chamber: 'both',
     search: '',
-    fromDate: from.toISOString().slice(0, 10),
-    toDate: today.toISOString().slice(0, 10),
+    fromDate: '',
+    toDate: '',
   };
 }
 

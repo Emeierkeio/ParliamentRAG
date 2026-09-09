@@ -688,10 +688,11 @@
     "proceduralItemsHide": "Nascondi punti procedurali",
     "phasesNoSpeeches": "+ {count, plural, one {# fase senza interventi} other {# fasi senza interventi}}",
     "phasesHeading": "Ordine dei lavori",
-    "voteMistoComponents": "Componenti del Gruppo Misto"
+    "voteMistoComponents": "Componenti del Gruppo Misto",
+    "openSessionPage": "Pagina della seduta"
   },
   "RankingsPage": {
-    "headerTitle": "Analisi Autorità",
+    "headerTitle": "Chi ne sa di più",
     "historyTitle": "Cronologia",
     "historyHeading": "Cronologia ricerche",
     "historyEmpty": "Nessuna ricerca salvata",

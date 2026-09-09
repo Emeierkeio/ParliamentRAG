@@ -644,10 +644,11 @@
     "loadingMore": "Weitere Sitzungen werden geladen...",
     "errorHeading": "Sitzungen konnten nicht geladen werden",
     "errorBody": "Beim Laden der parlamentarischen Chronik ist ein Fehler aufgetreten. Aktualisieren Sie die Seite.",
-    "parliamentaryTimeline": "Parlamentarische Chronik"
+    "parliamentaryTimeline": "Parlamentarische Chronik",
+    "openSessionPage": "Seite der Sitzung"
   },
   "RankingsPage": {
-    "headerTitle": "Autoritätsanalyse",
+    "headerTitle": "Wer sich auskennt",
     "historyTitle": "Verlauf",
     "historyHeading": "Suchverlauf",
     "historyEmpty": "Keine gespeicherten Suchen",
