@@ -1,7 +1,7 @@
 """
 Authority ranking endpoint.
 
-Given a topic, computes authority scores for ALL deputies and returns
+Given a topic, computes authority scores for every deputy and returns
 them ranked by score (descending).
 """
 import asyncio
@@ -11,7 +11,7 @@ from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from ..config import get_settings
@@ -163,19 +163,17 @@ async def _compute_ranking(topic: str) -> Dict[str, Any]:
 
     t0 = time.time()
 
-    # 1. Embed the topic (run in executor — synchronous HTTP call to OpenAI)
+    # Embed in an executor: the OpenAI HTTP call is synchronous.
     query_embedding = await asyncio.get_running_loop().run_in_executor(
         None, lambda: retrieval_engine.embed_query(topic)
     )
     logger.info(f"[RANKING] Embedded topic in {(time.time()-t0)*1000:.0f}ms")
 
-    # 2. Get all deputy IDs
     deputy_ids = await asyncio.get_running_loop().run_in_executor(
         None, _fetch_all_deputy_ids, neo4j_client
     )
     logger.info(f"[RANKING] Found {len(deputy_ids)} deputies")
 
-    # 3. Compute authority scores in parallel
     t1 = time.time()
 
     def _compute_single(sid: str):
@@ -188,14 +186,12 @@ async def _compute_ranking(topic: str) -> Dict[str, Any]:
 
     logger.info(f"[RANKING] Authority scores computed in {(time.time()-t1)*1000:.0f}ms")
 
-    # 4. Fetch deputy details in batch
     t2 = time.time()
     details_map = await asyncio.get_running_loop().run_in_executor(
         None, _fetch_deputy_details_batch, neo4j_client, deputy_ids
     )
     logger.info(f"[RANKING] Details fetched in {(time.time()-t2)*1000:.0f}ms")
 
-    # 5. Build response list
     deputies = []
     for sid, auth_result in results:
         details = details_map.get(sid, {})
@@ -229,7 +225,6 @@ async def _compute_ranking(topic: str) -> Dict[str, Any]:
             "institutional_role": auth_result.get("institutional_role") or details.get("institutional_role"),
         })
 
-    # Sort by authority_score descending
     deputies.sort(key=lambda d: d["authority_score"], reverse=True)
 
     total_time = time.time() - t0

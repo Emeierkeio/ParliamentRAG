@@ -7,19 +7,9 @@ Simple evaluation: users rate only the system response on 4 Likert dimensions.
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any, Literal
+from typing import Optional, List, Dict, Literal
 from datetime import datetime
 from uuid import uuid4
-from enum import Enum
-
-
-class RatingScale(int, Enum):
-    """1-5 star rating scale"""
-    VERY_POOR = 1
-    POOR = 2
-    AVERAGE = 3
-    GOOD = 4
-    EXCELLENT = 5
 
 
 # Valid issue tags for individual citation evaluation
@@ -155,9 +145,8 @@ class SurveyResponseCreate(BaseModel):
     )
 
 
-# ── Simple Likert Evaluation (for queries without a predefined baseline) ──────
+# Simple Likert evaluation (for queries without a predefined baseline)
 
-# Dimensions for simple Likert evaluation
 SIMPLE_DIMENSIONS = [
     "answer_clarity",
     "answer_quality",
@@ -261,19 +250,19 @@ class SurveyListResponse(BaseModel):
 SURVEY_QUESTIONS = [
     {
         "id": "answer_quality",
-        "category": "Qualita Risposta",
-        "question": "Qualita complessiva della risposta",
-        "description": "Considera l'utilita pratica per il lavoro giornalistico"
+        "category": "Qualità Risposta",
+        "question": "Qualità complessiva della risposta",
+        "description": "Considera l'utilità pratica per il lavoro giornalistico"
     },
     {
         "id": "answer_clarity",
-        "category": "Qualita Risposta",
-        "question": "Chiarezza e leggibilita della risposta",
-        "description": "Valuta la struttura, il linguaggio e la facilita di comprensione"
+        "category": "Qualità Risposta",
+        "question": "Chiarezza e leggibilità della risposta",
+        "description": "Valuta la struttura, il linguaggio e la facilità di comprensione"
     },
     {
         "id": "answer_completeness",
-        "category": "Qualita Risposta",
+        "category": "Qualità Risposta",
         "question": "Completezza delle informazioni",
         "description": "Considera se mancano informazioni importanti"
     },
@@ -292,8 +281,8 @@ SURVEY_QUESTIONS = [
     {
         "id": "balance_fairness",
         "category": "Bilanciamento Politico",
-        "question": "Equita nella rappresentazione",
-        "description": "Considera se c'e imparzialita nella presentazione"
+        "question": "Equità nella rappresentazione",
+        "description": "Considera se c'è imparzialità nella presentazione"
     },
     {
         "id": "source_relevance",

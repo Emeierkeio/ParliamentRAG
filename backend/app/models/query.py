@@ -106,40 +106,35 @@ class MultiViewResponse(BaseModel):
     """
     Complete response for a multi-view RAG query.
 
-    CRITICAL: All 10 parliamentary groups must have a section.
+    Every one of the 10 parliamentary groups must have a section.
     If no evidence exists for a party, has_evidence=False and content
     contains the standard "no evidence" message.
     """
     query: str = Field(description="Original query")
     reference_date: date = Field(description="Reference date used for the query")
 
-    # Multi-view sections - ALL 10 parties must be present
+    # Multi-view sections: all 10 parties must be present
     party_sections: List[PartySection] = Field(
         min_length=10,
         max_length=10,
         description="One section per parliamentary group (all 10 required)"
     )
 
-    # Government section
     government_section: GovernmentSection = Field(
         description="Section for government members"
     )
 
-    # Overview/summary
     overview: str = Field(description="High-level summary integrating all views")
 
-    # Evidence bundle
     evidence: List[UnifiedEvidence] = Field(
         description="All evidence used in the response"
     )
 
-    # Analysis results
     compass: Optional[CompassResult] = Field(
         default=None,
         description="Ideological compass analysis"
     )
 
-    # Metadata
     retrieval_metadata: RetrievalMetadata = Field(
         description="Information about the retrieval process"
     )

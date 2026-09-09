@@ -1,15 +1,10 @@
-"""
-Chat endpoint compatible with the existing frontend.
-
-Matches the SSE event format expected by the tesi frontend.
-Includes comprehensive timing logs for performance monitoring.
-"""
+"""Chat endpoints streaming pipeline results in the SSE format the frontend expects."""
 import json
 import logging
 import asyncio
 import os
 import time
-from datetime import date, datetime
+from datetime import date
 from typing import Optional, List, Dict, Any, AsyncGenerator
 
 from fastapi import APIRouter, HTTPException, Request
@@ -22,7 +17,7 @@ from ..services.compass import IdeologyScorer
 from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
 from ..services.deps import get_services
-from ..config import get_config, get_settings
+from ..config import get_config
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["Chat"])
@@ -88,15 +83,12 @@ async def _acquire_pipeline_slot(
     max_wait: int = 300,   # 5-minute hard timeout
     check_every: int = 10,  # send position update every N seconds
 ) -> bool:
-    """
-    Acquire a pipeline slot, sending periodic queue-position updates to the client.
+    """Acquire a pipeline slot, emitting periodic queue-position updates.
 
-    Returns True if the slot was acquired, False if the max_wait timeout expired.
-    The approach is correct: asyncio.wait_for cancels the acquire() coroutine on
-    timeout (properly removing us from the waiters list), then we re-queue.
-
-    Position tracking uses an ordered list so each task knows its exact rank even
-    as tasks ahead of it complete and leave the queue.
+    Returns True if the slot was acquired, False if max_wait expired.
+    asyncio.wait_for cancels the acquire() coroutine on timeout, which removes
+    us from the semaphore waiters list before we retry. Position tracking uses
+    an ordered list so each task knows its rank as tasks ahead of it finish.
     """
     global _waiting_queue, _pipeline_active
     lock = _get_counter_lock()
@@ -188,11 +180,9 @@ async def process_chat_background(request: ChatRequest, task_id: str):
     pipeline_start = time.time()
     step_times: Dict[str, float] = {}
 
-    logger.info("=" * 60)
     logger.info(f"[PIPELINE START] Task: {task_id}")
     logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
     logger.info(f"[PIPELINE START] Mode: {request.mode}, Locale: {request.locale}")
-    logger.info("=" * 60)
 
     _en = request.locale != "it"
     def _t(it: str, en: str) -> str:
@@ -208,14 +198,12 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         return
 
     try:
-        # === Step 1: Analisi query ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 1, "total": 8, "message": _t("Analisi query", "Query analysis")})
         step_times["step_1_init"] = time.time() - step_start
         logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
 
-        # === Step 2: Commissioni ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 2, "total": 8, "message": _t("Commissioni", "Committees")})
@@ -228,7 +216,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         step_times["step_2_commissioni"] = time.time() - step_start
         logger.info(f"[TIMING] Step 2 (Commissioni): {step_times['step_2_commissioni']*1000:.1f}ms - {len(relevant_commissions)} found")
 
-        # === Step 3: Esperti (Authority) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 3, "total": 8, "message": _t("Esperti", "Authoritative sources")})
@@ -254,8 +241,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         logger.info(f"[RETRIEVAL] Dense: {retrieval_result['metadata'].get('dense_channel_count', 0)}, "
                    f"Graph: {retrieval_result['metadata'].get('graph_channel_count', 0)}")
 
-        # Dettaglio preciso per lo step 1 della UI (Analisi query): cosa è
-        # stato fatto davvero — embedding + retrieval ibrido coi conteggi.
+        # UI step 1 detail: report what actually happened — query embedding
+        # plus hybrid retrieval with per-channel counts.
         _dense_n = retrieval_result['metadata'].get('dense_channel_count', 0)
         _graph_n = retrieval_result['metadata'].get('graph_channel_count', 0)
         await emit("step_result", {
@@ -321,7 +308,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
 
         await emit("experts", {"experts": experts})
 
-        # === Step 4: Interventi (Citations) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 4, "total": 8, "message": _t("Interventi", "Speeches")})
@@ -330,14 +316,13 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
         )
         if citations:
-            logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
-                       f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
-                       f"text_len={len(citations[0].get('text', ''))}")
+            logger.debug(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
+                        f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
+                        f"text_len={len(citations[0].get('text', ''))}")
         await emit("citations", {"citations": citations})
         step_times["step_4_citations"] = time.time() - step_start
         logger.info(f"[TIMING] Step 4 (Interventi): {step_times['step_4_citations']*1000:.1f}ms - {len(citations)} citations")
 
-        # === Step 5: Statistiche (Balance) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 5, "total": 8, "message": _t("Statistiche", "Statistics")})
@@ -350,7 +335,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                    f"Opposizione: {balance.get('opposizione_percentage', 0):.1f}%, "
                    f"Bias: {balance.get('bias_score', 0):.2f}")
 
-        # === Step 6: Bussola Ideologica (Compass) ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 6, "total": 8, "message": _t("Bussola Ideologica", "Ideological Compass")})
@@ -367,7 +351,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         step_times["step_6_compass"] = time.time() - step_start
         logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
 
-        # === Step 7: Generazione ===
         _raise_if_cancelled(task_id, store)
         step_start = time.time()
         await emit("progress", {"step": 7, "total": 8, "message": _t("Generazione", "Generation")})
@@ -385,7 +368,7 @@ async def process_chat_background(request: ChatRequest, task_id: str):
 
         final_text = generation_result.get("text", "")
 
-        # Dettaglio preciso per lo step 7 della UI (Generazione)
+        # UI step 7 detail
         _gen_stages = generation_result.get("metadata", {}).get("stages", {})
         _n_sections = _gen_stages.get("sectional", {}).get("sections_count", 0)
         _n_cits = _gen_stages.get("surgeon", {}).get("citations_inserted", 0)
@@ -399,7 +382,6 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             ),
         })
 
-        # === Send topic statistics ===
         topic_stats = generation_result.get("topic_statistics")
         if topic_stats:
             # Enrich speakers/interventions with photo URLs from Neo4j
@@ -445,7 +427,9 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                 f"{len(ts_payload['sessions_detail'])} sessions"
             )
 
-        # === Resolve extra citation IDs via DB lookup ===
+        # The writer may cite chunk IDs outside the initial evidence list:
+        # verify them against Neo4j and fetch their metadata, stripping links
+        # whose IDs do not exist.
         import re as _re
         extra_citation_ids = generation_result.get("extra_citation_ids", [])
         extra_evidence_map: Dict[str, Dict[str, Any]] = {}
@@ -554,11 +538,9 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                     final_text
                 )
 
-        # Translate response text if needed
         if request.locale != "it":
             final_text = await translate_response_text(final_text, target_lang=request.locale)
 
-        # Stream text content in chunks
         chunk_size = 50
         logger.info(f"[GENERATION] Generated {len(final_text)} chars, streaming in {len(final_text)//chunk_size + 1} chunks")
 
@@ -570,7 +552,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         step_times["step_7_generation"] = time.time() - step_start
         logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
 
-        # === Citation details (verified citations) ===
+        # Build the complete citation list, recovering IDs that appear in the
+        # text but were not tracked by the generation stage.
         text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
         evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
         evidence_map_for_cit.update(extra_evidence_map)
@@ -606,22 +589,19 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             verified_citations = await translate_citation_batch(verified_citations, target_lang=request.locale)
         await emit("citation_details", {"citations": verified_citations})
 
-        # === Step 8: Valutazione (if high_quality mode) ===
         if request.mode == "high_quality":
             _raise_if_cancelled(task_id, store)
             step_start = time.time()
             await emit("progress", {"step": 8, "total": 8, "message": _t("Valutazione", "Evaluation")})
             await emit("hq_variants", {
-                "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
+                "variants": [{"text": final_text}]
             })
             step_times["step_8_valutazione"] = time.time() - step_start
             logger.info(f"[TIMING] Step 8 (Valutazione): {step_times['step_8_valutazione']*1000:.1f}ms")
 
-        # === Complete ===
         total_time = time.time() - pipeline_start
         step_times["total"] = total_time
 
-        logger.info("=" * 60)
         logger.info("[PIPELINE COMPLETE] Summary:")
         logger.info(f"  Total time: {total_time*1000:.1f}ms ({total_time:.2f}s)")
         logger.info(f"  Evidence: {len(evidence_list)} pieces from {len(speaker_ids)} speakers")
@@ -632,9 +612,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             if step_name != "total":
                 pct = (step_time / total_time) * 100 if total_time > 0 else 0
                 logger.info(f"  {step_name}: {step_time*1000:.1f}ms ({pct:.1f}%)")
-        logger.info("=" * 60)
 
-        # Dettaglio preciso per lo step 8 della UI (Salvataggio)
+        # UI step 8 detail
         await emit("step_result", {
             "step": 8,
             "detail": _t(
@@ -645,8 +624,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
             ),
         })
 
-        # === Trace: dietro le quinte della pipeline ===
-        # Solo durate e contatori: niente prompt, niente testi delle evidenze.
+        # Behind-the-scenes pipeline trace: durations and counters only, no
+        # prompts and no evidence texts.
         _gen_stage_meta = generation_result.get("metadata", {}).get("stages", {})
 
         def _gen_child(key: str, info: Dict[str, Any]) -> Dict[str, Any]:
@@ -747,484 +726,6 @@ async def stream_from_task(task_id: str) -> AsyncGenerator[str, None]:
             break
 
 
-async def process_chat_streaming(request: ChatRequest) -> AsyncGenerator[str, None]:
-    """
-    Process chat with SSE streaming matching frontend format.
-
-    Events: progress, commissioni, experts, citations, balance, compass,
-            citation_details, chunk, complete, error
-
-    Timing logs are prefixed with [TIMING] for easy filtering.
-    """
-    services = get_services()
-    pipeline_start = time.time()
-    step_times: Dict[str, float] = {}
-
-    logger.info("=" * 60)
-    logger.info(f"[PIPELINE START] Query: {request.query[:80]}...")
-    logger.info(f"[PIPELINE START] Mode: {request.mode}")
-    logger.info("=" * 60)
-
-    try:
-        # === Step 1: Analisi query ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 1, "total": 8, "message": "Analisi query"})
-        await asyncio.sleep(0)  # Flush immediately
-        step_times["step_1_init"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 1 (Init): {step_times['step_1_init']*1000:.1f}ms")
-
-        # === Step 2: Commissioni ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 2, "total": 8, "message": "Commissioni"})
-        await asyncio.sleep(0)  # Flush
-
-        # Find relevant commissions based on query keywords
-        commission_matcher = get_commission_matcher()
-        relevant_commissions = commission_matcher.find_relevant_commissions(
-            query=request.query,
-            top_k=3,
-            min_score=0.1
-        )
-
-        yield sse_event("commissioni", {"commissioni": relevant_commissions})
-        await asyncio.sleep(0)  # Flush
-        step_times["step_2_commissioni"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 2 (Commissioni): {step_times['step_2_commissioni']*1000:.1f}ms - {len(relevant_commissions)} found")
-
-        # === Step 3: Esperti (Authority) ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 3, "total": 8, "message": "Esperti"})
-        await asyncio.sleep(0)  # Flush before long retrieval operation
-
-        # Retrieval - use sync wrapper to run in thread pool
-        logger.info("[RETRIEVAL] Starting dual-channel retrieval...")
-        retrieval_start = time.time()
-
-        def _do_retrieval():
-            return services["retrieval"].retrieve_sync(
-                query=request.query,
-                top_k=100
-            )
-
-        retrieval_result = await asyncio.get_running_loop().run_in_executor(
-            None, _do_retrieval
-        )
-
-        retrieval_time = time.time() - retrieval_start
-        logger.info(f"[TIMING] Retrieval completed: {retrieval_time*1000:.1f}ms")
-
-        evidence_list = retrieval_result["evidence"]
-        # Include embedding for compass PCA (normally excluded from API responses)
-        evidence_dicts = []
-        for e in evidence_list:
-            d = e.model_dump()
-            d["embedding"] = e.embedding  # Explicitly add embedding for compass
-            evidence_dicts.append(d)
-
-        logger.info(f"[RETRIEVAL] Retrieved {len(evidence_list)} evidence pieces")
-        logger.info(f"[RETRIEVAL] Dense: {retrieval_result['metadata'].get('dense_channel_count', 0)}, "
-                   f"Graph: {retrieval_result['metadata'].get('graph_channel_count', 0)}")
-
-        # Compute authority scores with detailed breakdown (exclude GovernmentMember)
-        speaker_ids = list(set(
-            e.speaker_id for e in evidence_list
-            if e.speaker_id and e.speaker_role == "Deputy"
-        ))
-        logger.info(f"[AUTHORITY] Computing scores for {len(speaker_ids)} unique speakers...")
-        authority_start = time.time()
-
-        query_embedding = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: services["retrieval"].embed_query(request.query)
-        )
-
-        authority_scores = {}
-        authority_details = {}  # Store detailed breakdowns
-        if speaker_ids:
-            # Run authority scoring in parallel using ThreadPoolExecutor
-            # to avoid blocking the event loop
-            from concurrent.futures import ThreadPoolExecutor
-
-            def _compute_single(sid):
-                return sid, services["authority"].compute_authority(sid, query_embedding)
-
-            loop = asyncio.get_running_loop()
-            with ThreadPoolExecutor(max_workers=min(10, len(speaker_ids))) as pool:
-                futures = [
-                    loop.run_in_executor(pool, _compute_single, sid)
-                    for sid in speaker_ids
-                ]
-                results = await asyncio.gather(*futures)
-
-            for sid, result in results:
-                authority_scores[sid] = result["total_score"]
-                authority_details[sid] = result
-
-        # Write computed authority scores back into evidence_dicts so that the
-        # generation pipeline can use real scores for per-party citation ranking.
-        for d in evidence_dicts:
-            sid = d.get("speaker_id", "")
-            if sid in authority_scores:
-                d["authority_score"] = authority_scores[sid]
-
-        authority_time = time.time() - authority_start
-        step_times["step_3_authority"] = time.time() - step_start
-        logger.info(f"[TIMING] Authority scoring: {authority_time*1000:.1f}ms")
-        logger.info(f"[TIMING] Step 3 (Esperti) total: {step_times['step_3_authority']*1000:.1f}ms")
-
-        # Compute experts per coalition with detailed info
-        experts = await _compute_experts_for_frontend(
-            evidence_list, authority_scores, authority_details, services["neo4j"]
-        )
-        maggioranza_experts = sum(1 for e in experts if e.get("coalizione") == "maggioranza")
-        opposizione_experts = sum(1 for e in experts if e.get("coalizione") == "opposizione")
-        logger.info(f"[EXPERTS] Found {len(experts)} experts: {maggioranza_experts} maggioranza, {opposizione_experts} opposizione")
-
-        yield sse_event("experts", {"experts": experts})
-        await asyncio.sleep(0)  # Flush
-
-        # === Step 4: Interventi (Citations) ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 4, "total": 8, "message": "Interventi"})
-        await asyncio.sleep(0)  # Flush
-
-        # Build citations list for frontend (run in executor to avoid blocking)
-        citations = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: _build_citations_for_frontend(evidence_dicts, neo4j_client=services["neo4j"])
-        )
-        if citations:
-            logger.info(f"[CITATIONS] Sample citation[0]: deputy={citations[0].get('deputy_first_name')} {citations[0].get('deputy_last_name')}, "
-                       f"group={citations[0].get('group')}, coalition={citations[0].get('coalition')}, "
-                       f"text_len={len(citations[0].get('text', ''))}")
-        yield sse_event("citations", {"citations": citations})
-        await asyncio.sleep(0)  # Flush
-        step_times["step_4_citations"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 4 (Interventi): {step_times['step_4_citations']*1000:.1f}ms - {len(citations)} citations")
-
-        # === Step 5: Statistiche (Balance) ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 5, "total": 8, "message": "Statistiche"})
-        await asyncio.sleep(0)  # Flush
-
-        balance = _compute_balance_metrics(evidence_dicts)
-        yield sse_event("balance", balance)
-        await asyncio.sleep(0)  # Flush
-        step_times["step_5_balance"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 5 (Statistiche): {step_times['step_5_balance']*1000:.1f}ms")
-        logger.info(f"[BALANCE] Maggioranza: {balance.get('maggioranza_percentage', 0):.1f}%, "
-                   f"Opposizione: {balance.get('opposizione_percentage', 0):.1f}%, "
-                   f"Bias: {balance.get('bias_score', 0):.2f}")
-
-        # === Step 6: Bussola Ideologica (Compass) ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 6, "total": 8, "message": "Bussola Ideologica"})
-        await asyncio.sleep(0)  # Flush
-
-        compass_data = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: _compute_compass_data(services["ideology"], evidence_dicts, query=request.query)
-        )
-        logger.info(f"[COMPASS] meta={compass_data.get('meta', {})}, "
-                   f"groups_count={len(compass_data.get('groups', []))}, "
-                   f"axes_keys={list(compass_data.get('axes', {}).keys())}")
-        yield sse_event("compass", compass_data)
-        await asyncio.sleep(0)  # Flush
-        step_times["step_6_compass"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 6 (Bussola): {step_times['step_6_compass']*1000:.1f}ms")
-
-        # === Step 7: Generazione ===
-        step_start = time.time()
-        yield sse_event("progress", {"step": 7, "total": 8, "message": "Generazione"})
-        await asyncio.sleep(0)  # Flush before long generation operation
-
-        logger.info("[GENERATION] Starting 4-stage generation pipeline...")
-        generation_start = time.time()
-
-        # Generation is truly async (uses async for internally)
-        generation_result = await services["generation"].generate(
-            query=request.query,
-            evidence_list=evidence_dicts,
-            query_context=retrieval_result.get("metadata", {}).get("rewritten_query"),
-        )
-
-        generation_time = time.time() - generation_start
-        logger.info(f"[TIMING] Generation pipeline: {generation_time*1000:.1f}ms")
-
-        final_text = generation_result.get("text", "")
-
-        # === Send topic statistics for frontend clickable intro stats ===
-        topic_stats = generation_result.get("topic_statistics")
-        if topic_stats:
-            # Enrich speakers/interventions with photo URLs from Neo4j
-            speakers_detail = topic_stats.get("speakers_detail", [])
-            interventions_detail = topic_stats.get("interventions_detail", [])
-            neo4j = services.get("neo4j")
-            if neo4j:
-                all_sids = list(set(
-                    s.get("speaker_id", "") for s in speakers_detail
-                ) | set(
-                    i.get("speaker_id", "") for i in interventions_detail
-                    if i.get("speaker_id")
-                ))
-                photo_map = await asyncio.get_running_loop().run_in_executor(
-                    None, lambda: _batch_fetch_photos(neo4j, [s for s in all_sids if s])
-                )
-                for s in speakers_detail:
-                    s["photo"] = photo_map.get(s.get("speaker_id", ""))
-                for i in interventions_detail:
-                    i["photo"] = photo_map.get(i.get("speaker_id", ""))
-
-            # Serialize dates to strings for JSON
-            ts_payload = {
-                "intervention_count": topic_stats.get("intervention_count", 0),
-                "speaker_count": topic_stats.get("speaker_count", 0),
-                "first_date": (
-                    topic_stats["first_date"].strftime("%Y-%m-%d")
-                    if hasattr(topic_stats.get("first_date"), "strftime")
-                    else str(topic_stats.get("first_date", ""))
-                ),
-                "last_date": (
-                    topic_stats["last_date"].strftime("%Y-%m-%d")
-                    if hasattr(topic_stats.get("last_date"), "strftime")
-                    else str(topic_stats.get("last_date", ""))
-                ),
-                "speakers_detail": speakers_detail,
-                "interventions_detail": interventions_detail,
-                "sessions_detail": topic_stats.get("sessions_detail", []),
-            }
-            yield sse_event("topic_stats", ts_payload)
-            await asyncio.sleep(0)  # Flush
-            logger.info(
-                f"[TOPIC_STATS] Sent: {ts_payload['intervention_count']} interventions, "
-                f"{ts_payload['speaker_count']} speakers, "
-                f"{len(ts_payload['sessions_detail'])} sessions"
-            )
-
-        # === Resolve extra citation IDs via DB lookup ===
-        # The pipeline found citation links in the text whose IDs are not in
-        # the initial evidence_list (e.g. the LLM cited chunks from broader
-        # context).  Query Neo4j to verify they exist and fetch metadata.
-        import re as _re
-        extra_citation_ids = generation_result.get("extra_citation_ids", [])
-        extra_evidence_map: Dict[str, Dict[str, Any]] = {}
-
-        if extra_citation_ids:
-            logger.info(f"[CITATIONS] Resolving {len(extra_citation_ids)} extra citation IDs from DB...")
-            try:
-                db_rows = await asyncio.get_running_loop().run_in_executor(
-                    None,
-                    lambda: services["neo4j"].query(
-                        """
-                        UNWIND $chunk_ids AS cid
-                        MATCH (c:Chunk {id: cid})<-[:HAS_CHUNK]-(i:Speech)-[:SPOKEN_BY]->(speaker)
-                        MATCH (i)<-[:CONTAINS_SPEECH]-(f:Phase)<-[:HAS_PHASE]-(d:Debate)<-[:HAS_DEBATE]-(s:Session)
-                        OPTIONAL MATCH (speaker)-[mg:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
-                          WHERE mg.start_date <= s.date
-                            AND (mg.end_date IS NULL OR mg.end_date >= s.date)
-                        RETURN c.id AS chunk_id,
-                               c.text AS chunk_text,
-                               i.id AS speech_id,
-                               i.text AS text,
-                               speaker.id AS speaker_id,
-                               speaker.first_name AS speaker_first_name,
-                               speaker.last_name AS speaker_last_name,
-                               CASE WHEN 'GovernmentMember' IN labels(speaker)
-                                    THEN 'GovernmentMember' ELSE 'Deputy' END AS speaker_type,
-                               g.name AS party,
-                               s.id AS session_id,
-                               s.date AS session_date,
-                               coalesce(d.parent_debate_title, d.title) AS debate_title
-                        """,
-                        {"chunk_ids": extra_citation_ids}
-                    )
-                )
-                from ..models.evidence import (
-                    normalize_speaker_name, normalize_party_name, compute_chunk_span,
-                )
-                config = get_config()
-                for row in db_rows:
-                    eid = row.get("chunk_id", "")
-                    party = normalize_party_name(row.get("party") or "MISTO")
-                    session_date = row.get("session_date")
-                    if session_date is not None and hasattr(session_date, 'to_native'):
-                        date_obj = session_date.to_native()
-                    elif isinstance(session_date, str) and session_date:
-                        from datetime import datetime as _dt
-                        try:
-                            date_obj = _dt.strptime(session_date, "%d/%m/%Y").date()
-                        except ValueError:
-                            date_obj = _dt.now().date()
-                    else:
-                        date_obj = date.today()
-
-                    span_start, span_end = compute_chunk_span(
-                        row.get("text", "") or "",
-                        row.get("chunk_text", "") or "",
-                    )
-                    extra_evidence_map[eid] = {
-                        "evidence_id": eid,
-                        "chunk_text": row.get("chunk_text", ""),
-                        "quote_text": row.get("chunk_text", ""),
-                        "speech_id": row.get("speech_id", ""),
-                        "speaker_id": row.get("speaker_id", ""),
-                        "speaker_name": normalize_speaker_name(
-                            row.get("speaker_first_name", ""),
-                            row.get("speaker_last_name", "")
-                        ),
-                        "speaker_role": row.get("speaker_type", "Deputy"),
-                        "party": party,
-                        "coalition": config.get_coalition(party),
-                        "date": date_obj,
-                        "span_start": span_start,
-                        "span_end": span_end,
-                        "debate_title": row.get("debate_title", ""),
-                        "session_id": row.get("session_id", ""),
-                    }
-                found_ids = set(extra_evidence_map.keys())
-                missing_ids = set(extra_citation_ids) - found_ids
-                logger.info(
-                    f"[CITATIONS] DB lookup: {len(found_ids)} found, "
-                    f"{len(missing_ids)} not in DB"
-                )
-
-                # Strip links for IDs that truly don't exist in DB
-                if missing_ids:
-                    def _strip_missing(match):
-                        href = match.group(2)
-                        if href in missing_ids:
-                            logger.warning(f"[CITATIONS] Stripping non-existent ID: {href}")
-                            return match.group(1)  # keep display text only
-                        return match.group(0)
-                    final_text = _re.sub(
-                        r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
-                        _strip_missing,
-                        final_text
-                    )
-            except Exception as e:
-                logger.error(f"[CITATIONS] DB lookup failed: {e}", exc_info=True)
-                # On failure, strip all extra IDs to avoid broken links
-                extra_ids_set = set(extra_citation_ids)
-                def _strip_extra(match):
-                    if match.group(2) in extra_ids_set:
-                        return match.group(1)
-                    return match.group(0)
-                final_text = _re.sub(
-                    r'\[([^\]]+)\]\((leg1[89]_[^)]+)\)',
-                    _strip_extra,
-                    final_text
-                )
-
-        # Stream text content in chunks
-        chunk_size = 50  # Characters per chunk
-        logger.info(f"[GENERATION] Generated {len(final_text)} chars, streaming in {len(final_text)//chunk_size + 1} chunks")
-
-        for i in range(0, len(final_text), chunk_size):
-            chunk = final_text[i:i+chunk_size]
-            yield sse_event("chunk", {"content": chunk})
-            await asyncio.sleep(0.02)
-
-        step_times["step_7_generation"] = time.time() - step_start
-        logger.info(f"[TIMING] Step 7 (Generazione) total: {step_times['step_7_generation']*1000:.1f}ms")
-
-        # === Citation details (verified citations) ===
-        # Build the complete citation list including DB-resolved extra IDs.
-        text_evidence_ids = set(_re.findall(r'\]\((leg1[89]_[^)]+)\)', final_text))
-        evidence_map_for_cit = {e.get("evidence_id"): e for e in evidence_dicts}
-        # Merge extra evidence from DB lookup
-        evidence_map_for_cit.update(extra_evidence_map)
-
-        gen_citations = generation_result.get("citations", [])
-        tracked_ids = {c.get("evidence_id") for c in gen_citations}
-
-        # Add any evidence IDs found in text but not yet tracked
-        for eid in text_evidence_ids:
-            if eid not in tracked_ids and eid in evidence_map_for_cit:
-                ev = evidence_map_for_cit[eid]
-                gen_citations.append({
-                    "evidence_id": eid,
-                    "quote_text": ev.get("quote_text", "") or ev.get("chunk_text", ""),
-                    "speaker_name": ev.get("speaker_name", ""),
-                    "party": ev.get("party", ""),
-                    "date": str(ev.get("date", "")),
-                    "span_start": ev.get("span_start", 0),
-                    "span_end": ev.get("span_end", 0),
-                })
-                tracked_ids.add(eid)
-                logger.info(f"[CITATIONS] Recovered from text scan: {eid}")
-
-        logger.info(f"[CITATIONS] {len(gen_citations)} total citations ({len(text_evidence_ids)} in text, {len(tracked_ids)} tracked)")
-
-        # Combine original + extra evidence for building verified citations
-        all_evidence_for_verify = evidence_dicts + list(extra_evidence_map.values())
-        verified_citations = await asyncio.get_running_loop().run_in_executor(
-            None, lambda: _build_verified_citations(gen_citations, all_evidence_for_verify, neo4j_client=services["neo4j"])
-        )
-        logger.info(f"[CITATIONS] {len(verified_citations)} verified citations to send")
-        yield sse_event("citation_details", {"citations": verified_citations})
-        await asyncio.sleep(0)  # Flush
-
-        # === Patch experts: re-emit if the cited speaker differs from the top-ranked one ===
-        # The pre-generation ranking may pick a different speaker than who the writer
-        # actually cites. Correct the expert panel to always show the cited speaker.
-        try:
-            patched_experts = await _patch_experts_for_cited_speakers(
-                experts=experts,
-                gen_citations=gen_citations,
-                evidence_dicts=evidence_dicts + list(extra_evidence_map.values()),
-                authority_scores=authority_scores,
-                authority_details=authority_details,
-                neo4j_client=services["neo4j"],
-            )
-            if patched_experts is not None:
-                logger.info(
-                    f"[EXPERTS] Post-generation patch: {sum(1 for a, b in zip(experts, patched_experts) if a.get('id') != b.get('id'))} "
-                    f"expert(s) corrected to match cited speakers"
-                )
-                experts = patched_experts
-                yield sse_event("experts", {"experts": experts})
-                await asyncio.sleep(0)  # Flush
-        except Exception as _patch_err:
-            logger.warning(f"[EXPERTS] Post-generation patch failed (non-critical): {_patch_err}")
-
-        # === Step 8: Valutazione (if high_quality mode) ===
-        if request.mode == "high_quality":
-            step_start = time.time()
-            yield sse_event("progress", {"step": 8, "total": 8, "message": "Valutazione"})
-            yield sse_event("hq_variants", {
-                "variants": [{"text": final_text, "score": 8.5, "is_best": True}]
-            })
-            step_times["step_8_valutazione"] = time.time() - step_start
-            logger.info(f"[TIMING] Step 8 (Valutazione): {step_times['step_8_valutazione']*1000:.1f}ms")
-
-        # === Complete ===
-        total_time = time.time() - pipeline_start
-        step_times["total"] = total_time
-
-        # Log final summary
-        logger.info("=" * 60)
-        logger.info("[PIPELINE COMPLETE] Summary:")
-        logger.info(f"  Total time: {total_time*1000:.1f}ms ({total_time:.2f}s)")
-        logger.info(f"  Evidence: {len(evidence_list)} pieces from {len(speaker_ids)} speakers")
-        logger.info(f"  Balance: {balance.get('maggioranza_percentage', 0):.1f}% / {balance.get('opposizione_percentage', 0):.1f}%")
-        logger.info(f"  Generated: {len(final_text)} chars, {len(verified_citations)} citations")
-        logger.info("[TIMING BREAKDOWN]:")
-        for step_name, step_time in step_times.items():
-            if step_name != "total":
-                pct = (step_time / total_time) * 100 if total_time > 0 else 0
-                logger.info(f"  {step_name}: {step_time*1000:.1f}ms ({pct:.1f}%)")
-        logger.info("=" * 60)
-
-        yield sse_event("complete", {
-            "metadata": {
-                **retrieval_result.get("metadata", {}),
-                "timing": {k: round(v * 1000, 1) for k, v in step_times.items()},
-            }
-        })
-
-    except Exception as e:
-        total_time = time.time() - pipeline_start
-        logger.error(f"[PIPELINE ERROR] Failed after {total_time*1000:.1f}ms: {e}", exc_info=True)
-        yield sse_event("error", {"message": str(e)})
-
-
 def _batch_fetch_deputy_cards(neo4j_client: Neo4jClient, speaker_ids: List[str]) -> Dict[str, str]:
     """Batch-fetch deputy_card URLs for a list of speaker IDs. Returns {speaker_id: url}."""
     if not speaker_ids:
@@ -1308,7 +809,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         OPTIONAL MATCH (d)-[rp:IS_PRESIDENT]->(cp:Committee)
         WHERE rp.end_date IS NULL OR rp.end_date >= date()
         WITH d, collect(DISTINCT 'Presidente ' + cp.name) AS v1_president_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role stored as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rpm:MEMBER_OF_COMMITTEE]->(cpm:Committee)
         WHERE rpm.role = 'president'
           AND (rpm.end_date IS NULL OR rpm.end_date >= date())
@@ -1320,7 +821,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         OPTIONAL MATCH (d)-[rv:IS_VICE_PRESIDENT]->(cv:Committee)
         WHERE rv.end_date IS NULL OR rv.end_date >= date()
         WITH d, collect(DISTINCT 'Vicepresidente ' + cv.name) AS v1_vice_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role stored as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rvm:MEMBER_OF_COMMITTEE]->(cvm:Committee)
         WHERE rvm.role = 'vice_president'
           AND (rvm.end_date IS NULL OR rvm.end_date >= date())
@@ -1332,7 +833,7 @@ def _fetch_speaker_details(neo4j_client: Neo4jClient, speaker_id: str) -> Dict[s
         OPTIONAL MATCH (d)-[rs:IS_SECRETARY]->(cs:Committee)
         WHERE rs.end_date IS NULL OR rs.end_date >= date()
         WITH d, collect(DISTINCT 'Segretario ' + cs.name) AS v1_secretary_roles
-        // schema v2: ruolo come proprietà su MEMBER_OF_COMMITTEE
+        // schema v2: role stored as a property on MEMBER_OF_COMMITTEE
         OPTIONAL MATCH (d)-[rsm:MEMBER_OF_COMMITTEE]->(csm:Committee)
         WHERE rsm.role = 'secretary'
           AND (rsm.end_date IS NULL OR rsm.end_date >= date())
@@ -1419,10 +920,8 @@ async def _patch_experts_for_cited_speakers(
         if ev and ev.get("speaker_id"):
             party_to_cited[party] = ev
 
-    # Index current experts by party
     party_to_idx: Dict[str, int] = {e.get("group", ""): i for i, e in enumerate(experts)}
 
-    # Find mismatches
     to_update = []  # (expert_idx, cited_ev)
     for party, cited_ev in party_to_cited.items():
         idx = party_to_idx.get(party)
@@ -1543,7 +1042,6 @@ async def _compute_experts_for_frontend(
             top_speaker_id = max(speakers.keys(), key=_combined_score)
             top_speakers_info.append((party, top_speaker_id, speakers[top_speaker_id]))
 
-    # Fetch all speaker details in parallel
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor(max_workers=min(10, max(1, len(top_speakers_info)))) as pool:
         detail_futures = [
@@ -1556,12 +1054,10 @@ async def _compute_experts_for_frontend(
     for (party, top_speaker_id, top_speaker), speaker_info in zip(top_speakers_info, speaker_details_list):
         coalition = coalition_logic.get_coalition(party)
 
-        # Split name into first_name/last_name if possible
         name_parts = top_speaker["speaker_name"].split(" ", 1)
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
 
-        # Get detailed authority breakdown
         details = authority_details.get(top_speaker_id, {})
         components = details.get("components", {})
 
@@ -1610,17 +1106,17 @@ def _build_citations_for_frontend(
 
     if evidence_dicts:
         sample = evidence_dicts[0]
-        logger.info(f"[CITATIONS_DEBUG] evidence_dicts[0] keys: {list(sample.keys())}")
-        logger.info(f"[CITATIONS_DEBUG] speaker_name={sample.get('speaker_name')}, "
-                   f"party={sample.get('party')}, coalition={sample.get('coalition')}")
+        logger.debug(f"[CITATIONS_DEBUG] evidence_dicts[0] keys: {list(sample.keys())}")
+        logger.debug(f"[CITATIONS_DEBUG] speaker_name={sample.get('speaker_name')}, "
+                    f"party={sample.get('party')}, coalition={sample.get('coalition')}")
 
-    # Batch-fetch deputy_card URLs and government roles
     deputy_card_map: Dict[str, str] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
         speaker_ids = [e.get("speaker_id", "") for e in evidence_dicts[:20] if e.get("speaker_id")]
         deputy_card_map = _batch_fetch_deputy_cards(neo4j_client, speaker_ids)
-        # Check ALL speakers for government roles (Deputies who are also ministers)
+        # Look up government roles for every speaker, not just GovernmentMembers:
+        # deputies may also hold government office (e.g. ministers who are MPs).
         gov_role_map = _batch_fetch_gov_roles(neo4j_client, speaker_ids)
 
     for i, e in enumerate(evidence_dicts[:20]):  # Limit for UI
@@ -1637,7 +1133,6 @@ def _build_citations_for_frontend(
             group = party
             coalition = coalition_logic.get_coalition(party)
 
-        # Split name into first_name/last_name
         name_parts = speaker_name.split(" ", 1)
         first_name = name_parts[0] if name_parts else ""
         last_name = name_parts[1] if len(name_parts) > 1 else ""
@@ -1661,13 +1156,13 @@ def _build_citations_for_frontend(
             "intervention_id": e.get("speech_id", ""),
             "camera_profile_url": deputy_card_map.get(speaker_id),
         }
-        # Trasparenza cambio gruppo: mostra sempre se il deputato ha cambiato partito
+        # Group-change transparency: always show when the deputy switched party.
         if e.get("party_changed") and e.get("current_party"):
             cit_data["party_changed"] = True
             cit_data["current_party"] = e["current_party"]
-        # Componente del Gruppo Misto alla data del discorso: senza questa il
-        # frontend attribuirebbe al "Misto" posizioni di componenti opposte
-        # (+Europa vs Futuro Nazionale Vannacci)
+        # Gruppo Misto component at the speech date: without it the frontend
+        # would attribute positions of opposing components (+Europa vs Futuro
+        # Nazionale Vannacci) to the monolithic "Misto".
         if e.get("misto_component"):
             cit_data["misto_component"] = e["misto_component"]
         if is_government:
@@ -1707,8 +1202,8 @@ def _compute_balance_metrics(
         if coalition == "maggioranza":
             maggioranza_count += 1
         elif coalition == "misto":
-            # Il Gruppo Misto non è ascrivibile a uno schieramento
-            # (componenti opposte): escluso dal balance binario.
+            # The Gruppo Misto cannot be assigned to either side (it holds
+            # opposing components): excluded from the binary balance.
             continue
         else:
             opposizione_count += 1
@@ -1735,19 +1230,12 @@ def _compute_compass_data(
     evidence_dicts: List[Dict[str, Any]],
     query: str = "",
 ) -> Dict[str, Any]:
-    """
-    Compute compass data in frontend-expected format.
+    """Compute compass data in the frontend-expected format.
 
-    Uses PCA on TEXT EMBEDDINGS to derive 2D positions.
-    Positions are based on SEMANTIC CONTENT, not party membership.
-
-    Frontend expects:
-    - meta: query, explained_variance_ratio, dimensionality, is_stable, warnings
-    - axes: x (AxisDef), y (AxisDef)
-    - groups: array with position_x, position_y, dispersion, stats, core_evidence_ids
-    - scatter_sample: array of {x, y, group_id, text}
+    2D positions come from the semantic content of the evidence texts
+    (see IdeologyScorer.compute_2d_text_positions), not from party membership.
+    Returns the meta/axes/groups/scatter_sample structure the compass UI reads.
     """
-    # Use the new text-based 2D positioning method
     compass_result = ideology_scorer.compute_2d_text_positions(evidence_dicts, query=query)
 
     return {
@@ -1773,7 +1261,6 @@ def _build_verified_citations(
     coalition_logic = CoalitionLogic()
     evidence_map = {e.get("evidence_id"): e for e in evidence_dicts}
 
-    # Batch-fetch deputy_card URLs and government roles
     deputy_card_map: Dict[str, str] = {}
     gov_role_map: Dict[str, str] = {}
     if neo4j_client:
@@ -1804,7 +1291,6 @@ def _build_verified_citations(
             group = party
             coalition = coalition_logic.get_coalition(party)
 
-        # Split name into first_name/last_name
         speaker_name = cit.get("speaker_name", evidence.get("speaker_name", ""))
         name_parts = speaker_name.split(" ", 1)
         first_name = name_parts[0] if name_parts else ""
@@ -1827,7 +1313,7 @@ def _build_verified_citations(
             "camera_profile_url": deputy_card_map.get(speaker_id),
             "verified": True,
         }
-        # Trasparenza cambio gruppo: leggi da evidence (già popolato da _process_results)
+        # Group-change transparency: read from evidence (already populated by _process_results).
         party_changed = evidence.get("party_changed") or cit.get("party_changed", False)
         current_party = evidence.get("current_party") or cit.get("current_party")
         if party_changed and current_party:
@@ -1864,7 +1350,6 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
     disconnects (e.g. mobile browser going to background).
     The client can poll GET /api/chat/task/{task_id} to recover results.
     """
-    # Read locale from Accept-Language header and inject into request
     accept_lang = http_request.headers.get("accept-language", "it")
     from ..services.translation import LANG_NAMES
     _code = accept_lang.strip()[:2].lower()
@@ -1873,17 +1358,14 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
 
     store = get_task_store()
 
-    # Cleanup expired tasks periodically
     await store.cleanup_expired()
 
-    # Use client-provided task_id or generate one
     task_id = request.task_id or store.generate_task_id()
     await store.create_task(task_id)
 
     # Launch pipeline in background (runs independently of this response)
     asyncio.create_task(process_chat_background(request, task_id))
 
-    # Stream events from the background task to the client
     async def stream_with_task_id():
         # Send task_id as the first event so the client can use it for reconnection
         yield sse_event("task_id", {"task_id": task_id})

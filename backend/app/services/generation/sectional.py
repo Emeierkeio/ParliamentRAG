@@ -1,25 +1,18 @@
+"""Stage 2: sectional writer.
+
+Writes one section per party + government, using only retrieved evidence;
+all 10 parties get a section. Citations are picked and verified before the
+LLM writes the text, so the introductory text matches the actual citation
+content. Cross-speaker duplicates are detected with embedding cosine
+similarity (MMR-inspired: Carbonell & Goldstein, SIGIR 1998; Sentence-BERT:
+Reimers & Gurevych, EMNLP 2019).
 """
-Stage 2: Sectional Writer
-
-Writes one section per party + government, using ONLY retrieved evidence.
-All 10 parties must have sections.
-
-CITATION-FIRST APPROACH:
-Citations are pre-extracted BEFORE the LLM writes the text.
-This ensures the introductory text matches the actual citation content.
-
-SEMANTIC DEDUPLICATION (MMR-inspired):
-Uses embedding cosine similarity instead of exact string match to detect
-paraphrased duplicates across speakers. Based on MMR (Carbonell & Goldstein,
-SIGIR 1998) and Sentence-BERT (Reimers & Gurevych, EMNLP 2019).
-"""
-import json
+import asyncio
 import logging
 import re
 from typing import List, Dict, Any, Optional, AsyncIterator
 
 import numpy as np
-import openai
 
 from ...config import get_config, get_settings
 from ...key_pool import make_client, make_async_client
@@ -32,17 +25,15 @@ logger = logging.getLogger(__name__)
 
 
 class SectionalWriter:
-    """
-    Stage 2 of the generation pipeline.
+    """Write one section per party from retrieved evidence only.
 
-    Writes one section per party using ONLY the retrieved evidence.
-    If no evidence exists for a party, writes the configured "no evidence" message.
+    Parties without evidence get the configured "no evidence" message.
     """
 
     SYSTEM_PROMPT = """Sei un redattore parlamentare italiano esperto.
 Scrivi sezioni ANALITICHE (max 4-5 frasi per sezione).
 
-⚠️ APPROCCIO CITATION-INTEGRATED:
+APPROCCIO CITATION-INTEGRATED:
 Per ogni evidenza trovi un TESTO DISPONIBILE. Leggilo, scegli la parte più
 incisiva e scrivila VERBATIM tra «». Metti [CIT:id] subito dopo la «» di chiusura.
 
@@ -127,18 +118,18 @@ un ALTRO soggetto (avversari parlamentari, ministri, media, portavoce stranieri,
 per contestarle, confutarle o rispondervi.
 Segnali tipici: "ieri/oggi la collega X ha dichiarato che...", "secondo X...",
 "come ha detto Y...", "X ha affermato che...", "X sostiene che...".
-⚠️ Le parole riportate SONO DELL'ALTRA PERSONA, non del deputato che parla.
+ATTENZIONE: le parole riportate SONO DELL'ALTRA PERSONA, non del deputato che parla.
 NON usarle come citazione della posizione del gruppo.
 Scegli SOLO frasi dette IN PRIMA PERSONA dal deputato — quelle FUORI dalle
 virgolette di attribuzione nel testo, che esprimono la sua risposta/posizione.
 ESEMPI:
-✗ SBAGLIATO — TESTO: "ieri la collega Gribaudo ha dichiarato che per il centrodestra
+SBAGLIATO — TESTO: "ieri la collega Gribaudo ha dichiarato che per il centrodestra
   vengono prima i corrotti, vengono prima gli evasori e i lavoratori vengono per ultimi"
   → NON usare «vengono prima i corrotti» — sono parole di Gribaudo, non di Nisini!
   → Cerca invece la risposta di Nisini: "noi riteniamo che...", "non è così perché...", ecc.
-✗ SBAGLIATO — TESTO contiene: «ha dichiarato Peskov: «l'espansione è necessaria»»
+SBAGLIATO — TESTO contiene: «ha dichiarato Peskov: «l'espansione è necessaria»»
   → NON usare «l'espansione è necessaria» — è la voce del Cremlino, non del deputato.
-⚠️ Se il TESTO DISPONIBILE è contrassegnato con "⚠️ DISCORSO RIPORTATO RILEVATO", presta
+Se il TESTO DISPONIBILE è contrassegnato con "DISCORSO RIPORTATO RILEVATO", presta
   attenzione massima: il rischio di inversione di posizione è elevato.
 
 REGOLA DI PERTINENZA:
@@ -165,15 +156,15 @@ NON usare frasi che:
     «possiamo permetterci di sospendere gli aiuti? No, le armi sono indispensabili»
   → Oppure scegli un'affermazione diretta dallo stesso testo.
 ESEMPI di citazioni VALIDE (contengono posizione esplicita):
-✓ "non siamo obbligati ad introdurre un salario minimo legale" → posizione chiara CONTRO
-✓ "serve una soglia di dignità di 9 euro lordi" → posizione chiara PRO
-✓ "è indispensabile ma bisogna trovare risorse" → posizione CONDIZIONALE esplicita
-✓ "possiamo sospendere gli aiuti? No, le armi sono indispensabili" → domanda + risposta
+- [OK] "non siamo obbligati ad introdurre un salario minimo legale" → posizione chiara CONTRO
+- [OK] "serve una soglia di dignità di 9 euro lordi" → posizione chiara PRO
+- [OK] "è indispensabile ma bisogna trovare risorse" → posizione CONDIZIONALE esplicita
+- [OK] "possiamo sospendere gli aiuti? No, le armi sono indispensabili" → domanda + risposta
 ESEMPI di citazioni NON VALIDE (nessuna posizione esplicita):
-✗ "siamo qui oggi a parlare del salario minimo, cioè del livello minimo di retribuzione"
-✗ "cooperative che sfruttano i lavoratori immigrati, che non vengono pagati"
-✗ "in molti casi salari più alti di una ipotetica soglia" (frammento senza soggetto)
-✗ "possiamo permetterci di sospendere gli aiuti militari?" (domanda retorica senza risposta)
+- [NO] "siamo qui oggi a parlare del salario minimo, cioè del livello minimo di retribuzione"
+- [NO] "cooperative che sfruttano i lavoratori immigrati, che non vengono pagati"
+- [NO] "in molti casi salari più alti di una ipotetica soglia" (frammento senza soggetto)
+- [NO] "possiamo permetterci di sospendere gli aiuti militari?" (domanda retorica senza risposta)
 Se il TESTO DISPONIBILE non contiene frasi con posizione esplicita, usa le evidenze
 restanti per costruire il posizionamento con parole tue (senza «» né [CIT:]).
 
@@ -207,10 +198,10 @@ STRUTTURA OUTPUT:
 
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("writer", "gpt-4o")
-        # Quote picker (Fase 2.1): call dedicato e vincolato per la selezione
-        # della citazione — separato dalla scrittura della sezione.
-        # gpt-4o (non mini): il criterio di autosufficienza richiede giudizio —
-        # mini sceglieva ancora frasi anaforiche (test 2026-07-23). ~0.3c/call.
+        # Quote picker: dedicated, constrained call for citation selection,
+        # separate from section writing. gpt-4o (not mini): the
+        # self-sufficiency criterion requires judgement — mini still picked
+        # anaphoric sentences (tested 2026-07-23). ~0.3c/call.
         self.quote_picker_model = gen_config.get("models", {}).get(
             "quote_picker", "gpt-4o"
         )
@@ -242,7 +233,6 @@ STRUTTURA OUTPUT:
         Only bold names are targeted (**Name**) — plain text references
         are left untouched since they are less likely to imply direct quotes.
         """
-        import re
         result = content
         for speaker in all_speaker_names:
             if not speaker or speaker in cited_speaker_names:
@@ -266,7 +256,6 @@ STRUTTURA OUTPUT:
             Input:  **Rossi** dice «frase A» [CIT:x]. **Bianchi** aggiunge «frase B» [CIT:y].
             Output: **Rossi** dice «frase A» [CIT:x]. **Bianchi** aggiunge «frase B».
         """
-        import re
         pattern = re.compile(r'«([^»]+)»\s*\[CIT:[^\]]+\]')
         matches = list(pattern.finditer(content))
         if len(matches) <= 1:
@@ -453,8 +442,6 @@ STRUTTURA OUTPUT:
         Yields:
             Section dictionaries with party, content, citations
         """
-        import asyncio
-
         # Deduplicate citations across all speakers before writing sections
         all_evidence = []
         if government_evidence:
@@ -469,11 +456,8 @@ STRUTTURA OUTPUT:
         # visible warnings for the LLM.
         annotate_evidence_with_reported_speech(all_evidence)
 
-        # Build all tasks for parallel execution
+        # Build all tasks: government first, then parties
         tasks = []
-        task_order = []  # Track order: government first, then parties
-
-        # Government section task (if evidence exists)
         if government_evidence:
             tasks.append(self._write_section(
                 query=query,
@@ -483,9 +467,7 @@ STRUTTURA OUTPUT:
                 is_government=True,
                 query_context=query_context,
             ))
-            task_order.append("GOVERNO")
 
-        # Party section tasks
         for party in self.all_parties:
             evidence = evidence_by_party.get(party, [])
             tasks.append(self._write_section(
@@ -496,13 +478,10 @@ STRUTTURA OUTPUT:
                 is_government=False,
                 query_context=query_context,
             ))
-            task_order.append(party)
 
-        # Execute ALL sections in parallel
         logger.info(f"Writing {len(tasks)} sections in parallel...")
         sections = await asyncio.gather(*tasks)
 
-        # Yield results in order
         for section in sections:
             yield section
 
@@ -512,7 +491,7 @@ Dal TESTO scegli LA migliore citazione verbatim (1-2 frasi consecutive, 80-350
 caratteri) che soddisfi TUTTI questi criteri:
 1. PERTINENZA: risponde direttamente alla DOMANDA esprimendo la posizione del partito
    (favorevole/contraria/condizionale) — non descrizioni neutre, non altri argomenti.
-   ⚠️ La posizione CONTRARIA è pertinente quanto quella favorevole: per una domanda
+   ATTENZIONE: la posizione CONTRARIA è pertinente quanto quella favorevole: per una domanda
    sul supporto a X, una critica a X, alle politiche del Governo su X o una difesa
    della controparte di X È la posizione del partito sulla domanda (es. DOMANDA sul
    supporto a Israele → «chiediamo lo stop alle forniture militari» o «mai una parola
@@ -532,7 +511,7 @@ caratteri) che soddisfi TUTTI questi criteri:
    ringraziamenti, gestione d'aula. AMMESSI invece i verbi di dire con cui
    l'oratore introduce la PROPRIA posizione («ho detto che noi sosteniamo...»,
    «ribadisco che...»): conta il contenuto, non il verbo introduttivo.
-   ✓ VALIDA: «su Israele ho anche detto che noi sosteniamo diverse iniziative,
+   [OK] VALIDA: «su Israele ho anche detto che noi sosteniamo diverse iniziative,
    a partire dalle sanzioni verso i coloni» → posizione esplicita e sul tema.
 4. NON inizia con connettivi (quindi, dunque, perciò, e, ma, infatti, per questo...).
 6. NON è testo che l'oratore sta LEGGENDO da un documento: riformulazioni di
@@ -544,12 +523,12 @@ caratteri) che soddisfi TUTTI questi criteri:
    Vice Ministro, NON una sua dichiarazione — VIETATA.
 
 ESEMPI DI VALUTAZIONE:
-✓ «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
+- [OK] «con questa mozione oggi vi chiediamo di interromperlo, perché contrario ai
   principi della nostra Costituzione» → VALIDA se il testo rende chiaro che "lo"
   è un accordo sul tema della domanda (l'intro del paragrafo lo espliciterà).
-✗ «sosteniamo attivamente la sua difesa e la ricostruzione» → VIETATA: "sua" può
+- [NO] «sosteniamo attivamente la sua difesa e la ricostruzione» → VIETATA: "sua" può
   riferirsi a un altro Paese/tema (era l'Ucraina) — rischio attribuzione errata.
-✗ «il segnale che chiediamo da questo Parlamento è un voto unanime» → VIETATA:
+- [NO] «il segnale che chiediamo da questo Parlamento è un voto unanime» → VIETATA:
   meta-parlamentare, parla del voto in aula e non del tema.
 
 Rispondi SOLO con la citazione, copiata ESATTAMENTE carattere per carattere dal
@@ -567,8 +546,8 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
 
         Tries up to max_attempts evidence pieces (authority-ordered). Each pick
         is verified verbatim (whitespace-normalized substring); NONE or a failed
-        verification moves to the next evidence — la rete di scalata che il
-        section writer non aveva.
+        verification moves on to the next evidence — the fallback ladder the
+        section writer did not have.
 
         Returns:
             (evidence_id, quote) or (None, None).
@@ -576,8 +555,8 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         for e in evidence[:max_attempts]:
             if e.get("citation_duplicate_of"):
                 continue
-            # Filtro hard Fase 1: chunk classificati procedural/rhetoric a
-            # index-time contribuiscono al contesto ma NON diventano citazioni.
+            # Hard filter: chunks classified procedural/rhetoric at index
+            # time contribute to context but never become citations.
             citability_class = e.get("citability_class")
             if citability_class in ("procedural", "rhetoric"):
                 logger.info(
@@ -589,9 +568,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
             text = (e.get("quote_text") or e.get("chunk_text") or "").strip()
             if not text or len(text) < 80:
                 continue
-            # best_quote pre-estratta a index-time: offerta al picker come
-            # candidata preferita — resta da verificare solo la pertinenza
-            # alla DOMANDA (l'autosufficienza è già stata vagliata al batch).
+            # best_quote pre-extracted at index time: offered to the picker as
+            # preferred candidate — only relevance to the question remains to
+            # be checked (self-sufficiency was already vetted in the batch).
             best_quote = (e.get("best_quote") or "").strip()
             candidate_block = (
                 f"\n\nCANDIDATA PREFERITA (già verificata come autosufficiente; "
@@ -600,9 +579,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                 if best_quote
                 else ""
             )
-            # Su query di nicchia ("remigrazione") il modello può non conoscere
-            # il termine e bocciare quote pertinenti: i termini espansi dal
-            # query rewriter definiscono l'ambito del tema per la PERTINENZA.
+            # On niche queries ("remigrazione") the model may not know the
+            # term and reject relevant quotes: the query rewriter's expanded
+            # terms define the topic scope for the relevance check.
             context_block = (
                 f"TERMINI DEL TEMA (l'ambito della DOMANDA — usali per "
                 f"giudicare la pertinenza): {query_context}\n\n"
@@ -622,8 +601,8 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                     ],
                     temperature=0.0,
                     max_tokens=200,
-                    # call piccolo: un hang non deve congelare la pipeline
-                    # (timeout client default 180s x2 retry = fino a 9 min)
+                    # Small call: a hang must not freeze the pipeline
+                    # (default client timeout 180s x2 retries = up to 9 min)
                     timeout=30.0,
                 )
                 picked = (response.choices[0].message.content or "").strip()
@@ -636,9 +615,9 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                 logger.info(f"Quote picker: no citable quote in {eid}, trying next evidence")
                 continue
 
-            # Verifica verbatim (whitespace-normalizzata); se il modello ha
-            # alterato la punteggiatura, usa il pick come LOCATORE e ricostruisci
-            # il testo esatto dalle frasi originali del chunk.
+            # Verbatim check (whitespace-normalized); if the model altered
+            # punctuation, use the pick as a locator and rebuild the exact
+            # text from the chunk's original sentences.
             norm_text = " ".join(text.split())
             norm_picked = " ".join(picked.split())
             if norm_picked not in norm_text:
@@ -692,7 +671,6 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         """Write a single section for a party or government."""
 
         if not evidence:
-            # No evidence - return standard message
             return {
                 "party": party,
                 "content": f"## {party}\n\n{self.no_evidence_message}",
@@ -704,17 +682,18 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
         # max_evidence=3: LLM cites 1 verbatim + uses 2 for analysis without citation
         evidence_context = self._build_evidence_context(evidence, query, max_evidence=3)
 
-        # Fase 2.1 — Quote picker: la citazione viene scelta da un call dedicato
-        # e vincolato PRIMA della scrittura. Il section writer la riceve come
-        # obbligatoria: se non può scegliere, non può sbagliare.
+        # Quote picker: the citation is chosen by a dedicated, constrained
+        # call BEFORE writing. The section writer receives it as mandatory:
+        # if it cannot choose, it cannot get it wrong.
         picked_eid, picked_quote = await self._pick_quote(
             query, evidence, query_context=query_context
         )
 
-        # Falla chiusa (2026-07-23): se il picker rifiuta TUTTE le evidenze,
-        # la sezione va scritta SENZA citazione — non in modalità libera, dove
-        # il writer ripescava da solo le quote anaforiche già bocciate (M5S
-        # «interromperlo»). Policy unica: ogni quote in pagina è vettata.
+        # Loophole closed (2026-07-23): if the picker rejects all evidence,
+        # the section must be written without a citation — not in free mode,
+        # where the writer re-fished the already-rejected anaphoric quotes
+        # (M5S «interromperlo»). Single policy: every quote on the page is
+        # vetted.
         if not picked_eid:
             logger.info(
                 f"Quote picker exhausted for '{party}': section will be citation-free"
@@ -737,18 +716,19 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                 (e for e in evidence if e.get("evidence_id") == picked_eid), {}
             )
             picked_speaker = picked_ev.get("speaker_name", "")
-            # CRITICO: aggiorna quote_text sull'evidenza CONDIVISA (stesso dict
-            # in evidence_map). Senza questo, il coherence validator confronta
-            # l'intro con l'embedding del CHUNK INTERO (~1200 char multi-tema)
-            # invece che con la quote scelta → score 0.15-0.20 → hard-remove
-            # sistematico di 9/11 citazioni buone (osservato 2026-07-23).
+            # Update quote_text on the SHARED evidence dict (same object in
+            # evidence_map). Without this, the coherence validator compares
+            # the intro against the embedding of the WHOLE chunk (~1200
+            # multi-topic chars) instead of the chosen quote → score
+            # 0.15-0.20 → systematic hard-removal of 9/11 good citations
+            # (observed 2026-07-23).
             if picked_ev:
                 picked_ev["quote_text"] = picked_quote
-                # Il surgeon NON deve ri-estrarre da una quote già vettata dal
-                # picker: la ri-estrazione keyword-based la trita in frammenti.
+                # The surgeon must not re-extract from a picker-vetted quote:
+                # keyword-based re-extraction shreds it into fragments.
                 picked_ev["quote_vetted"] = True
             mandatory_quote_block = f"""
-⚠️ CITAZIONE OBBLIGATORIA (già selezionata e verificata — NON sceglierne un'altra):
+CITAZIONE OBBLIGATORIA (già selezionata e verificata — VIETATO sceglierne un'altra):
 Oratore: {picked_speaker}
 Data dell'intervento: {picked_ev.get('date', '')} — se le altre evidenze del gruppo
 mostrano una posizione diversa in un altro periodo, colloca questa citazione nel suo
@@ -756,19 +736,16 @@ momento e racconta l'evoluzione (regola di evoluzione temporale).
 Citazione da usare ESATTAMENTE, carattere per carattere:
 «{picked_quote}» [CIT:{picked_eid}]
 Costruisci l'introduzione e il posizionamento ATTORNO a questa citazione.
-⚠️ La sezione resta COMPLETA in 3 parti (NON accorciarla):
+IMPORTANTE: la sezione resta COMPLETA in 3 parti (NON accorciarla):
 1. [1-2 frasi introduttive che preparano questa citazione]
 2. **{picked_speaker}** [verbo], «citazione obbligatoria» [CIT:{picked_eid}].
 3. [1-2 frasi di posizionamento generale del gruppo sul tema]
 """
 
-        # Dichiarazione esplicita per la pipeline (la mutazione in-place può
-        # perdersi nei re-ordering delle liste evidenza): la pipeline riversa
-        # queste quote in evidence_map PRIMA del coherence validator.
+        # Explicit hand-off to the pipeline (the in-place mutation can get
+        # lost when evidence lists are re-ordered): the pipeline pours these
+        # quotes into evidence_map BEFORE the coherence validator runs.
         section_picked = {picked_eid: picked_quote} if picked_eid else {}
-
-        # Build claims relevant to this party
-        party_claims = [c for c in claims if c.get("party") == party or c.get("party") is None]
 
         user_prompt = f"""Domanda: {query}
 
@@ -778,17 +755,17 @@ Partito: {party}
 Evidenze disponibili (ordinate per autorità, usa la PRIMA per la citazione verbatim; le altre per l'analisi):
 {evidence_context}
 {mandatory_quote_block}
-⚠️ ISTRUZIONI CITATION-INTEGRATED:
+ISTRUZIONI CITATION-INTEGRATED:
 1. LEGGI la POSIZIONE COMPLESSIVA DEL GRUPPO per capire la direzione generale
 2. Scegli UNA SOLA evidenza per la citazione verbatim (la più autorevole/incisiva)
 3. Scrivila VERBATIM tra «» seguita immediatamente da [CIT:ID_COMPLETO]
 4. Usa le evidenze restanti SOLO per costruire analisi e contesto — senza «» né [CIT:]
 5. Scegli il verbo introduttivo in base al TONO della citazione scelta
-6. ⚠️ RILEVANZA + POSIZIONAMENTO OBBLIGATORI: la citazione deve (a) rispondere DIRETTAMENTE
+6. RILEVANZA + POSIZIONAMENTO OBBLIGATORI: la citazione deve (a) rispondere DIRETTAMENTE
    a "{query}" E (b) esprimere una posizione ESPLICITA del gruppo (favorevole/contraria/condizionale).
    NON usare frasi descrittive, introduttive o retoriche senza posizione.
    Se il testo tocca altri argomenti, scegli ESCLUSIVAMENTE frasi su "{query}".
-   ⚠️ COERENZA CON L'ORIENTAMENTO: la citazione DEVE essere coerente con l'Orientamento
+   COERENZA CON L'ORIENTAMENTO: la citazione DEVE essere coerente con l'Orientamento
    stimato indicato nella POSIZIONE COMPLESSIVA DEL GRUPPO. Una citazione che sembra
    contraddire l'orientamento del gruppo è quasi sempre una premessa retorica, NON la posizione.
 
@@ -797,16 +774,14 @@ FORMATO OUTPUT (rispetta questo ordine):
 2. **Nome Cognome** [verbo], «frase verbatim dal testo» [CIT:id].
 3. [1-2 frasi — posizionamento generale del gruppo sul tema della domanda]
 
-✓ GIUSTO:
+GIUSTO:
 Il gruppo sostiene la necessità di una riforma fiscale equa, concentrandosi sull'impatto sui lavoratori dipendenti.
 **Rossi** chiarisce che «la flat tax non riduce le tasse ai lavoratori dipendenti già soggetti ad aliquote proporzionali» [CIT:id].
 Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, distanziandosi nettamente dalla proposta governativa.
 
-⚠️ SBAGLIATO: **Rossi** contesta la misura [CIT:id]. ← MANCANO LE «»!
-⚠️ SBAGLIATO: Il gruppo discute di economia. **Rossi** «...» [CIT:id]. Il gruppo è preoccupato per l'ambiente. ← intro scollegata dalla citazione!
+SBAGLIATO: **Rossi** contesta la misura [CIT:id]. ← MANCANO LE «»!
+SBAGLIATO: Il gruppo discute di economia. **Rossi** «...» [CIT:id]. Il gruppo è preoccupato per l'ambiente. ← intro scollegata dalla citazione!
 """
-
-        import re
 
         # Determine if there is citeable evidence before entering the retry loop.
         # A section with available, non-duplicate, substantive evidence MUST produce
@@ -827,7 +802,7 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                 attempt_prompt = user_prompt
             else:
                 attempt_prompt = (
-                    "⚠️ SECONDO TENTATIVO: il tuo output precedente NON conteneva nessuna "
+                    "SECONDO TENTATIVO: il tuo output precedente NON conteneva nessuna "
                     "citazione verbatim «» con [CIT:id], nonostante le evidenze disponibili.\n"
                     "Devi OBBLIGATORIAMENTE includere:\n"
                     "  **Nome Cognome** [verbo] «frase esatta copiata dal TESTO DISPONIBILE» [CIT:ID_COMPLETO]\n"
@@ -849,24 +824,18 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
 
                 content = response.choices[0].message.content
 
-                # Enforce single citation: strip extra [CIT:id] markers after the first.
-                # This is code-level insurance — the prompt rule alone is not reliable.
+                # Code-level insurance — the prompt rule alone is not reliable.
                 content = self._enforce_single_citation(content)
 
-                # Extract citation IDs - primarily [CIT:id] format
+                # [CIT:id] format plus any legacy ["text"](id) links
                 citation_ids = re.findall(r'\[CIT:([^\]]+)\]', content)
-
-                # Also catch any legacy ["text"](id) format and extract just the ID
                 legacy_ids = re.findall(r'\]\(([^)]+)\)', content)
                 citation_ids.extend(legacy_ids)
 
-                # Build valid evidence IDs set for validation
                 valid_evidence_ids = {e.get("evidence_id") for e in evidence}
-
-                # Build a map from evidence_id → party for cross-party guard
+                # evidence_id → party, for the cross-party guard
                 evidence_party_map = {e.get("evidence_id"): e.get("party", "") for e in evidence}
 
-                # Validate and filter citation IDs
                 validated_ids = []
                 invalid_ids = []
                 for cit_id in citation_ids:
@@ -1048,20 +1017,20 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
                 )
                 continue
 
-            # Nota cambio gruppo: visibile all'LLM per qualsiasi tipo di trasferimento
+            # Group-change note: visible to the LLM for any kind of transfer
             party_changed = e.get("party_changed", False)
             current_party = e.get("current_party")
             group_change_note = ""
             if party_changed and current_party:
-                group_change_note = f"\n⚠️ CAMBIO GRUPPO: al momento del discorso era in {speaker_party}, ora è in {current_party}. Aggiungi nel testo: «(allora in {speaker_party})» dopo il nome del deputato."
+                group_change_note = f"\nATTENZIONE — CAMBIO GRUPPO: al momento del discorso era in {speaker_party}, ora è in {current_party}. Aggiungi nel testo: «(allora in {speaker_party})» dopo il nome del deputato."
 
-            # Componente del Gruppo Misto: il Misto contiene componenti
-            # politicamente OPPOSTE (+Europa vs Futuro Nazionale Vannacci) —
-            # la posizione va attribuita alla componente, mai al Misto intero.
+            # Gruppo Misto component: the Misto contains politically OPPOSED
+            # components (+Europa vs Futuro Nazionale Vannacci) — positions
+            # must be attributed to the component, never to the whole Misto.
             misto_component = e.get("misto_component")
             if misto_component:
                 group_change_note += (
-                    f"\n⚠️ COMPONENTE DEL GRUPPO MISTO: {misto_component}. "
+                    f"\nATTENZIONE — COMPONENTE DEL GRUPPO MISTO: {misto_component}. "
                     f"Attribuisci la posizione alla componente («la componente "
                     f"{misto_component} del gruppo Misto…»), MAI al gruppo Misto "
                     f"nel suo insieme: contiene componenti di orientamento opposto."
@@ -1074,14 +1043,14 @@ Il partito propone un sistema progressivo che tuteli i redditi medio-bassi, dist
             if rs_info.get("has_reported_speech"):
                 if rs_info.get("opening_is_reported"):
                     rs_warning = (
-                        "\n⚠️ DISCORSO RIPORTATO RILEVATO: questo testo INIZIA con il deputato "
+                        "\nDISCORSO RIPORTATO RILEVATO: questo testo INIZIA con il deputato "
                         "che cita le parole di un'ALTRA persona (avversario, collega, media). "
-                        "NON usare le parole riportate come posizione del gruppo. "
+                        "VIETATO usare le parole riportate come posizione del gruppo. "
                         "Cerca la risposta/posizione del deputato più avanti nel testo."
                     )
                 else:
                     rs_warning = (
-                        "\n⚠️ DISCORSO RIPORTATO RILEVATO: questo testo contiene citazioni "
+                        "\nDISCORSO RIPORTATO RILEVATO: questo testo contiene citazioni "
                         "di ALTRI soggetti. Verifica che la frase scelta sia del deputato, "
                         "non di chi viene citato."
                     )
@@ -1162,27 +1131,3 @@ TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
         except Exception as e:
             logger.error(f"write_section_without_citation failed for {party}: {e}")
             return ""
-
-    def write_sections_sync(
-        self,
-        query: str,
-        claims: List[Dict[str, Any]],
-        evidence_by_party: Dict[str, List[Dict[str, Any]]],
-        government_evidence: Optional[List[Dict[str, Any]]] = None
-    ) -> List[Dict[str, Any]]:
-        """
-        Synchronous version of write_sections.
-
-        Returns all sections as a list.
-        """
-        import asyncio
-
-        async def collect():
-            sections = []
-            async for section in self.write_sections(
-                query, claims, evidence_by_party, government_evidence
-            ):
-                sections.append(section)
-            return sections
-
-        return asyncio.run(collect())

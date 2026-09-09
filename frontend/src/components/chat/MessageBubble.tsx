@@ -538,6 +538,21 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
             }
           />
         )}
+        {/* Disclaimer contenuti generati: le quote sono verificate, la
+            selezione e la sintesi no — va detto dove l'utente legge */}
+        {!isUser && message.status === "complete" && !message.gate && message.content && (
+          <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+            {t('aiDisclaimer')}{" "}
+            <a
+              href="/method"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"
+            >
+              {t('aiDisclaimerLink')}
+            </a>
+          </p>
+        )}
         {/* Additional metadata for assistant messages — show progressively once text is visible */}
         {!isUser && message.content && (message.status === "complete" || message.status === "streaming") && (
           <AssistantMetadata
@@ -665,7 +680,28 @@ function AssistantMetadata({ message, highlightedChunkId, hoveredChunkId }: Assi
         >
             <div className="pt-1 px-1 pb-2">
               <p className="text-[11px] text-muted-foreground/70 leading-relaxed mb-4">
-                {t('expertsSectionDesc')}
+                {t.rich('expertsSectionDesc', {
+                  method: (chunks) => (
+                    <a
+                      href="/method"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-primary transition-colors"
+                    >
+                      {chunks}
+                    </a>
+                  ),
+                  ranking: (chunks) => (
+                    <a
+                      href="/ranking"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-primary transition-colors"
+                    >
+                      {chunks}
+                    </a>
+                  ),
+                })}
               </p>
               {message.experts && (
                <div className="space-y-6">

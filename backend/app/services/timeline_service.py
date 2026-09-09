@@ -9,7 +9,7 @@ Provides three async functions consumed by the timeline router:
 All functions accept a Neo4jClient instance (injected by FastAPI Depends) and
 a locale string ("it" or "en") to select the correct recap/summary field.
 
-Pitfall notes (from RESEARCH.md):
+Implementation notes:
   - Neo4j returns dates as neo4j.time.Date objects → convert with str(record["date"])
   - Speakers can be Deputy OR GovernmentMember nodes → use coalesce(d, g) pattern
   - Fetch limit+1 rows to detect whether more pages exist (cursor-based pagination)
@@ -43,11 +43,11 @@ from .neo4j_client import Neo4jClient
 def _act_public_url(uri: str | None) -> str | None:
     """Public camera.it page for a ParliamentaryAct URI, when derivable.
 
-    - attocamera.rdf/ac19_2735          → scheda dell'atto (PDL/DDL)
-    - aic.rdf/aic9_01492_027_19         → scheda AIC (ODG/mozione/risoluzione)
-      con il testo integrale; il numero si ricostruisce dai segmenti dell'URI
-      ("9_02911_A_028" → "9/02911-A/028": le lettere sono suffissi del
-      segmento precedente).
+    - attocamera.rdf/ac19_2735          → act page (PDL/DDL bills)
+    - aic.rdf/aic9_01492_027_19         → AIC page (ODG/motion/resolution)
+      with the full text; the number is rebuilt from the URI segments
+      ("9_02911_A_028" → "9/02911-A/028": letters are suffixes of the
+      previous segment).
     """
     if not uri:
         return None
@@ -217,9 +217,7 @@ async def get_debate_detail(
       - Parliamentary acts (Debate-[:DISCUSSES]->ParliamentaryAct)
     """
     recap_field = "recapEn" if locale == "en" else "recapIt"
-    summary_field = "summaryEn" if locale == "en" else "summaryIt"  # noqa: F841 — used in speaker summary
 
-    # --- Debate metadata ---
     debate_row = neo4j.query_single(
         f"""
         MATCH (d:Debate {{id: $debate_id}})
@@ -230,13 +228,11 @@ async def get_debate_detail(
         {"debate_id": debate_id},
     )
     if not debate_row:
-        # Return empty response if debate not found
         return DebateDetailResponse(
             id=debate_id, title="", recap=None,
             phases=[], speakers=[], votes=[], acts=[],
         )
 
-    # --- Phases ---
     phase_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)
@@ -260,9 +256,8 @@ async def get_debate_detail(
         for r in phase_rows
     ]
 
-    # --- Speakers (chronological, Deputy or GovernmentMember via coalesce) ---
-    # Party comes from MEMBER_OF_GROUP relationship (not a direct property).
-    # speakingRole lives on Speech, not on the speaker node — collect first distinct role.
+    # Party comes from the MEMBER_OF_GROUP relationship (not a direct property).
+    # speakingRole lives on Speech, not on the speaker node — collect the first distinct role.
     speaker_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
@@ -312,8 +307,7 @@ async def get_debate_detail(
         for r in speaker_rows
     ]
 
-    # --- Interventions (chronological: one row per speech slot, so a
-    #     deputy who takes the floor twice appears twice, in order) ---
+    # One row per speech slot: a deputy who takes the floor twice appears twice, in order.
     intervention_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(sess:Session)
@@ -354,7 +348,7 @@ async def get_debate_detail(
         for r in intervention_rows
     ]
 
-    # --- Votes (via session, not direct from debate) ---
+    # Votes hang off the Session, not the Debate.
     vote_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})<-[:HAS_DEBATE]-(s:Session)-[:HAS_VOTE]->(v:Vote)
@@ -386,7 +380,6 @@ async def get_debate_detail(
         for r in vote_rows
     ]
 
-    # --- Parliamentary acts ---
     act_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})-[:DISCUSSES]->(a:ParliamentaryAct)
@@ -568,11 +561,10 @@ async def get_vote_detail(
         reverse=True,
     )
 
-    # Atti collegati: prima l'oggetto votato (ODG/mozione via aic.rdf), poi il
-    # disegno di legge di contesto. I titoli dall'ingest atti hanno padding.
-    # Gli AIC senza dc:title nel dataset non hanno neanche la scheda su
-    # aic.camera.it (il link darebbe "FILE NON TROVATO"): niente titolo,
-    # niente link.
+    # Linked acts: the voted object first (ODG/motion via aic.rdf), then the
+    # context bill. Titles from the acts ingest carry padding. AICs without a
+    # dc:title in the dataset also lack a page on aic.camera.it (the link
+    # would give "FILE NON TROVATO"): no title, no link.
     act_refs = []
     for a in meta["acts"]:
         if not a.get("uri"):
@@ -611,14 +603,12 @@ async def get_vote_detail(
     )
 
 
-# ---------------------------------------------------------------------------
-# Testo votato (Allegato A del resoconto di seduta)
-# ---------------------------------------------------------------------------
+# Voted text (Allegato A of the sitting record)
 
 def _annex_url(chamber: str | None, legislature: int | None, session_number: int | None) -> str | None:
-    """URL dell'Allegato A su documenti.camera.it: testi integrali di
-    emendamenti, articoli e odg votati nella seduta. Derivabile da
-    legislatura + numero seduta (zero-pad a 4 cifre); solo Camera."""
+    """URL of Allegato A on documenti.camera.it: full texts of amendments,
+    articles and agenda items voted in the sitting. Derivable from
+    legislature + sitting number (zero-padded to 4 digits); Camera only."""
     if chamber != "camera" or not session_number:
         return None
     leg = legislature or 19
@@ -629,16 +619,16 @@ def _annex_url(chamber: str | None, legislature: int | None, session_number: int
     )
 
 
-# Allegato A parsato, per URL. Pochi elementi (400-700 KB l'uno): FIFO corta.
+# Parsed Allegato A, keyed by URL. Few entries (400-700 KB each): short FIFO.
 _ANNEX_CACHE: dict[str, list[tuple[str | None, str]]] = {}
 _ANNEX_CACHE_MAX = 8
 
 
 def _fetch_annex_paragraphs(url: str) -> list[tuple[str | None, str]]:
-    """Scarica l'Allegato A e lo riduce a [(id, testo)] per ogni <p>.
+    """Download Allegato A and reduce it to [(id, text)] per <p>.
 
-    Il documento è HTML statico ben formato: paragrafi piatti, con id
-    ancorati ("eme.6.21._ac.2987-A", "ac.80-A.art_2") nelle sedute recenti.
+    The document is well-formed static HTML: flat paragraphs, with anchored
+    ids ("eme.6.21._ac.2987-A", "ac.80-A.art_2") in recent sittings.
     """
     import html as html_mod
     import urllib.request
@@ -665,16 +655,16 @@ def _fetch_annex_paragraphs(url: str) -> list[tuple[str | None, str]]:
 
 
 def _annex_target(subject: str | None, description: str | None) -> tuple[str, str] | None:
-    """(kind, numero) di ciò che la votazione delibera, da subject/descrizione.
+    """(kind, number) of what the vote decides, from subject/description.
 
-    kind: "amendment" (emendamenti, articoli aggiuntivi/premissivi,
-    subemendamenti — nell'Allegato A sono tutti blocchi "eme") oppure
-    "article". None per tutto il resto (odg, finali, mozioni...).
+    kind: "amendment" (amendments, additional/premissive articles,
+    sub-amendments — all are "eme" blocks in Allegato A) or "article".
+    None for everything else (agenda items, final votes, motions...).
     """
     s = f"{subject or ''} {description or ''}"
     up = s.upper()
     num = re.search(r"\d+(?:\.\d+)+", s)
-    # Anche le sigle senza punti delle sedute recenti: ART AGG, SUBEM, ART PREM.
+    # Also match the dotless abbreviations of recent sittings: ART AGG, SUBEM, ART PREM.
     if num and (
         "EMENDAMENTO" in up
         or "SUBEM" in up
@@ -693,8 +683,8 @@ def _annex_target(subject: str | None, description: str | None) -> tuple[str, st
 
 def _extract_amendment(paras: list[tuple[str | None, str]], num: str) -> list[str] | None:
     esc = re.escape(num)
-    # Il blocco si chiude con "6.21. Proponenti." (spesso dopo un <br> nello
-    # stesso paragrafo), quindi il terminatore può stare ovunque nel testo.
+    # The block ends with "6.21. Proponenti." (often after a <br> in the same
+    # paragraph), so the terminator may appear anywhere in the text.
     term = re.compile(rf"(?:^|\s){esc}\.\s+[A-ZÀ-Ù]")
     id_re = re.compile(rf"^eme\.{esc}\._")
     start = next((i for i, (p, _) in enumerate(paras) if p and id_re.match(p)), None)
@@ -706,8 +696,8 @@ def _extract_amendment(paras: list[tuple[str | None, str]], num: str) -> list[st
             if term.search(text):
                 return seg
         return None
-    # Formato vecchio (senza id per emendamento): trova il terminatore e
-    # risali fino al confine del blocco precedente.
+    # Old format (no per-amendment id): find the terminator and walk back to
+    # the boundary of the previous block.
     ti = next((i for i, (_, t) in enumerate(paras) if term.search(t)), None)
     if ti is None:
         return None
@@ -732,7 +722,7 @@ def _extract_article(paras: list[tuple[str | None, str]], num: str) -> list[str]
         return None
     seg: list[str] = []
     for k, (pid, text) in enumerate(paras[start:start + 80]):
-        if k > 0 and pid:  # inizia il blocco ancorato successivo
+        if k > 0 and pid:  # next anchored block starts
             break
         if text:
             seg.append(text)
@@ -743,11 +733,11 @@ async def get_vote_act_text(
     neo4j: Neo4jClient,
     vote_id: str,
 ) -> VoteActTextResponse | None:
-    """Estrae dall'Allegato A il testo dell'emendamento/articolo votato.
+    """Extract the text of the voted amendment/article from Allegato A.
 
-    None quando la votazione non delibera un emendamento/articolo, la seduta
-    non ha Allegato A raggiungibile, o il blocco non si trova (formati vecchi
-    senza ancore e testi non pubblicati)."""
+    None when the vote does not decide an amendment/article, the sitting has
+    no reachable Allegato A, or the block cannot be found (old formats
+    without anchors, unpublished texts)."""
     meta = neo4j.query_single(
         """
         MATCH (s:Session)-[:HAS_VOTE]->(v:Vote {id: $vote_id})
@@ -817,7 +807,6 @@ async def get_speaker_summary(
         s_count = row["speech_count"] or 0
         s_phases = [p for p in (row["phases"] or []) if p]
 
-    # --- Fetch full speech texts for this speaker in this debate ---
     speech_rows = neo4j.query(
         """
         MATCH (d:Debate {id: $debate_id})-[:HAS_PHASE]->(p:Phase)

@@ -14,7 +14,6 @@ from ..key_pool import make_client
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/search", tags=["Search"])
 
-# Global client instance
 _neo4j_client: Optional[Neo4jClient] = None
 _openai_client = None
 _act_index_ensured = False
@@ -214,7 +213,7 @@ def _search_acts_text(
         result = session.run(cypher, **params)
         records = []
         for record in result:
-            # v1: 'YYYYMMDD' → riformatta; v2: toString(date) è già ISO
+            # v1: 'YYYYMMDD' → reformat; v2: toString(date) is already ISO
             date_raw = record["date_raw"] or ""
             if len(date_raw) == 8 and date_raw.isdigit():
                 formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
@@ -412,7 +411,7 @@ def _search_acts_semantic(
     records = []
     for r in results:
         date_raw = r.get("date_raw") or ""
-        # v1: 'YYYYMMDD' string → riformatta; v2: date nativa → toString dà già ISO
+        # v1: 'YYYYMMDD' string → reformat; v2: native date → toString is already ISO
         if len(date_raw) == 8 and date_raw.isdigit():
             formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"
         else:
@@ -472,7 +471,6 @@ async def search_results(
         search_speeches = doc_type in ("all", "speech")
         search_acts = doc_type in ("all", "act")
 
-        # Text search
         if search_type in ("text", "hybrid"):
             if search_speeches:
                 speech_text = _search_speeches_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
@@ -481,7 +479,6 @@ async def search_results(
                 act_text = _search_acts_text(client, q, fetch_limit, deputy_id, group, start_date, end_date)
                 all_results.extend(act_text)
 
-        # Semantic search
         if search_type in ("semantic", "hybrid"):
             try:
                 embedding = _generate_embedding(q)
@@ -542,7 +539,6 @@ async def search_results(
         total = len(unique_results)
         exact_count = sum(1 for r in unique_results if r.get("is_exact"))
 
-        # Paginate
         start = (page - 1) * page_size
         end = start + page_size
         page_results = unique_results[start:end]
@@ -743,7 +739,7 @@ async def get_act_detail(act_uri: str) -> Dict[str, Any]:
             if not record:
                 raise HTTPException(status_code=404, detail=f"Act {act_uri} not found")
 
-            # v1: 'YYYYMMDD' → riformatta; v2: toString(date) è già ISO
+            # v1: 'YYYYMMDD' → reformat; v2: toString(date) is already ISO
             date_raw = record["date_raw"] or ""
             if len(date_raw) == 8 and date_raw.isdigit():
                 formatted_date = f"{date_raw[:4]}-{date_raw[4:6]}-{date_raw[6:8]}"

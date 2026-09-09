@@ -2,7 +2,7 @@
 Graph exploration endpoints for Neo4j schema and queries.
 """
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -55,10 +55,8 @@ def serialize_neo4j_value(value: Any) -> Any:
     # Handle Neo4j Duration
     if hasattr(value, 'months') and hasattr(value, 'days') and hasattr(value, 'seconds'):
         return str(value)
-    # Handle lists
     if isinstance(value, list):
         return [serialize_neo4j_value(v) for v in value]
-    # Handle dicts
     if isinstance(value, dict):
         return {k: serialize_neo4j_value(v) for k, v in value.items()}
     return value
@@ -79,26 +77,22 @@ async def get_graph_schema() -> Dict[str, Any]:
     client = get_client()
 
     try:
-        # Get node labels (filter to English only)
         with client.session() as session:
             labels_result = session.run("CALL db.labels()")
             all_labels = [record["label"] for record in labels_result]
             labels = [l for l in all_labels if l in ENGLISH_LABELS]
 
-        # Get relationship types (filter to English only)
         with client.session() as session:
             rel_result = session.run("CALL db.relationshipTypes()")
             all_rels = [record["relationshipType"] for record in rel_result]
             relationship_types = [r for r in all_rels if r in ENGLISH_RELATIONSHIPS]
 
-        # Get property keys
         with client.session() as session:
             props_result = session.run("CALL db.propertyKeys()")
             property_keys = [record["propertyKey"] for record in props_result]
 
-        # Get sample properties per label
         node_schemas = {}
-        for label in labels:  # Already filtered to English
+        for label in labels:
             with client.session() as session:
                 query = f"""
                 MATCH (n:{label})
@@ -135,23 +129,19 @@ async def get_graph_stats() -> Dict[str, Any]:
     client = get_client()
 
     try:
-        stats = {}
-
-        # Get node counts by label (English only)
         with client.session() as session:
             labels_result = session.run("CALL db.labels()")
             all_labels = [record["label"] for record in labels_result]
             labels = [l for l in all_labels if l in ENGLISH_LABELS]
 
         node_counts = {}
-        for label in labels:  # Already filtered to English
+        for label in labels:
             with client.session() as session:
                 result = session.run(f"MATCH (n:{label}) RETURN count(n) AS count")
                 record = result.single()
                 if record:
                     node_counts[label] = record["count"]
 
-        # Get total counts
         with client.session() as session:
             total_nodes = session.run("MATCH (n) RETURN count(n) AS count").single()["count"]
             total_rels = session.run("MATCH ()-[r]->() RETURN count(r) AS count").single()["count"]

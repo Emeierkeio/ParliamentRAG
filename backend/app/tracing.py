@@ -1,14 +1,14 @@
 """
-LangSmith tracing bootstrap (SDK standalone, nessuna dipendenza da LangChain).
+LangSmith tracing bootstrap (standalone SDK, no LangChain dependency).
 
-Attivo solo se LANGSMITH_API_KEY è presente in .env. I client OpenAI creati
-da key_pool vengono wrappati con wrap_openai, quindi ogni chiamata LLM è
-tracciata (modello, token, costo, latenza). Gli stadi della pipeline sono
-annotati con @stage(...) per ottenere la waterfall annidata per query.
+Active only if LANGSMITH_API_KEY is present in .env. OpenAI clients created
+by key_pool are wrapped with wrap_openai, so every LLM call is traced
+(model, tokens, cost, latency). Pipeline stages are annotated with
+@stage(...) to get the nested per-query waterfall.
 
-Settings carica il .env via pydantic-settings con extra="ignore", quindi
-l'SDK non vedrebbe mai LANGSMITH_* da solo: init_tracing() copia i valori
-in os.environ prima che venga creato il primo client.
+Settings loads .env via pydantic-settings with extra="ignore", so the SDK
+would never see LANGSMITH_* by itself: init_tracing() copies the values
+into os.environ before the first client is created.
 """
 import logging
 import os
@@ -27,7 +27,7 @@ _enabled: Optional[bool] = None
 
 
 def init_tracing() -> bool:
-    """Esporta LANGSMITH_* in os.environ dai Settings. Idempotente."""
+    """Export LANGSMITH_* into os.environ from Settings. Idempotent."""
     global _enabled
     if _enabled is not None:
         return _enabled
@@ -36,7 +36,7 @@ def init_tracing() -> bool:
         _enabled = False
         return False
 
-    # Import lazy per evitare cicli (stesso pattern di key_pool)
+    # Lazy import to avoid cycles (same pattern as key_pool)
     from .config import get_settings
     settings = get_settings()
 
@@ -58,12 +58,12 @@ def init_tracing() -> bool:
 
 
 def wrap_llm_client(client):
-    """Wrappa un client OpenAI per il tracing; passthrough se disabilitato."""
+    """Wrap an OpenAI client for tracing; passthrough when disabled."""
     if not init_tracing():
         return client
     client = _wrap_openai(client)
-    # wrap_openai (langsmith 0.11) copre chat/completions ma non embeddings:
-    # la pipeline chiama embeddings in engine, coherence_validator e dedup
+    # wrap_openai (langsmith 0.11) covers chat/completions but not embeddings:
+    # the pipeline calls embeddings in engine, coherence_validator and dedup
     if not hasattr(client.embeddings.create, "__wrapped__"):
         client.embeddings.create = _traceable(
             name="openai_embeddings", run_type="embedding"
@@ -77,9 +77,9 @@ def _drop_self(inputs: dict) -> dict:
 
 def stage(name: str):
     """
-    Decorator per gli stadi della pipeline: crea un run annidato con il nome
-    dato. No-op se langsmith non è installato o il tracing è disabilitato
-    (traceable non registra nulla senza LANGSMITH_TRACING in ambiente).
+    Decorator for pipeline stages: creates a nested run with the given name.
+    No-op if langsmith is not installed or tracing is disabled
+    (traceable records nothing without LANGSMITH_TRACING in the environment).
     """
     def deco(fn):
         if not _LANGSMITH_AVAILABLE:

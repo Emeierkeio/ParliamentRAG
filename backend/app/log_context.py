@@ -1,13 +1,13 @@
 """
-Correlation ID per query nei log.
+Per-query correlation ID in logs.
 
-query_id_var è un ContextVar: si propaga da solo attraverso gli await dello
-stesso task, quindi tutto ciò che la pipeline fa in async eredita l'id.
-NON attraversa i thread: per questo il lifespan installa
-ContextPropagatingExecutor come default executor del loop, così anche i
-run_in_executor(None, ...) (retrieval, authority, compass) mantengono l'id.
-I ThreadPoolExecutor creati ad hoc nei singoli moduli restano fuori: i loro
-log mostrano "-".
+query_id_var is a ContextVar: it propagates by itself through the awaits of
+the same task, so everything the pipeline does in async inherits the id.
+It does NOT cross threads: that is why the lifespan installs
+ContextPropagatingExecutor as the loop's default executor, so that
+run_in_executor(None, ...) calls (retrieval, authority, compass) keep the id
+too. ThreadPoolExecutors created ad hoc in individual modules stay out:
+their logs show "-".
 """
 import contextvars
 import functools
@@ -20,14 +20,14 @@ query_id_var: contextvars.ContextVar[str] = contextvars.ContextVar(
 
 
 def new_query_id() -> str:
-    """Genera e attiva un id breve per la query corrente."""
+    """Generate and activate a short id for the current query."""
     qid = uuid.uuid4().hex[:6]
     query_id_var.set(qid)
     return qid
 
 
 class ContextPropagatingExecutor(ThreadPoolExecutor):
-    """ThreadPoolExecutor che esegue ogni task nel contesto del chiamante."""
+    """ThreadPoolExecutor that runs each task in the caller's context."""
 
     def submit(self, fn, /, *args, **kwargs):
         ctx = contextvars.copy_context()

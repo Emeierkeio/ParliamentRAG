@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 import { config, getGroupColor } from "@/config";
 import type { Expert } from "@/types";
+import { Slider } from "@/components/ui/slider";
 import {
   User,
   Award,
@@ -30,7 +31,8 @@ import {
   Layers,
   ChevronRight,
   FileText,
-  ExternalLink
+  ExternalLink,
+  SlidersHorizontal
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslations } from "next-intl";
@@ -39,6 +41,19 @@ interface ExpertCardProps {
   expert: Expert;
   className?: string;
 }
+
+type BreakdownKey = "speeches" | "acts" | "committee" | "profession" | "education" | "role";
+
+// Pesi ufficiali: mirror di backend/config/default.yaml → authority.weights
+// (speeches nel breakdown corrisponde a "interventions" nel config)
+const DEFAULT_WEIGHTS: Record<BreakdownKey, number> = {
+  speeches: 0.25,
+  committee: 0.25,
+  acts: 0.2,
+  profession: 0.15,
+  education: 0.1,
+  role: 0.05,
+};
 
 export function ExpertCard({ expert, className }: ExpertCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -256,23 +271,28 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
   const groupColor = getGroupColor(expert.group);
   const groupLabel = groupConfig?.label || expert.group;
 
+  // I pesi rispecchiano backend/config/default.yaml → authority.weights
+  // (speeches nel breakdown corrisponde a "interventions" nel config)
   const scoreBreakdown = [
     {
       icon: MessageSquare,
       label: t("speeches"),
       value: expert.score_breakdown?.speeches || 0,
+      weight: 0.25,
       description: t("speechesDesc"),
     },
     {
       icon: Target,
       label: t("acts"),
       value: expert.score_breakdown?.acts || 0,
+      weight: 0.2,
       description: t("actsDesc"),
     },
     {
       icon: Network,
       label: t("committee"),
       value: expert.score_breakdown?.committee || 0,
+      weight: 0.25,
       description: t("committeeDesc"),
       tooltip: (expert.committees && expert.committees.length > 0) ? expert.committees : (expert.committee ? [expert.committee] : [t("committeeNotAssigned")])
     },
@@ -280,6 +300,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
       icon: User,
       label: t("profession"),
       value: expert.score_breakdown?.profession || 0,
+      weight: 0.15,
       description: t("professionDesc"),
       tooltip: [expert.profession || t("professionNotFound")]
     },
@@ -287,6 +308,7 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
       icon: Layers,
       label: t("education"),
       value: expert.score_breakdown?.education || 0,
+      weight: 0.1,
       description: t("educationDesc"),
       tooltip: [expert.education || t("educationNotFound")]
     },
@@ -294,12 +316,31 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
       icon: Award,
       label: t("role"),
       value: expert.score_breakdown?.role || 0,
+      weight: 0.05,
       description: t("roleDesc"),
       tooltip: [expert.institutional_role || t("defaultRole")]
     },
   ];
 
   const [selectedDetail, setSelectedDetail] = useState<"atti" | null>(null);
+
+  // Simulatore pesi: ricombina le sei componenti con pesi scelti dall'utente
+  // (somma normalizzata). Con i pesi ufficiali mostra il punteggio del backend.
+  const [showSim, setShowSim] = useState(false);
+  const [simWeights, setSimWeights] = useState<Record<BreakdownKey, number>>(DEFAULT_WEIGHTS);
+  const simCustom = (Object.keys(DEFAULT_WEIGHTS) as BreakdownKey[]).some(
+    (k) => Math.abs(simWeights[k] - DEFAULT_WEIGHTS[k]) > 1e-9
+  );
+  const simTotal = (Object.keys(simWeights) as BreakdownKey[]).reduce((a, k) => a + simWeights[k], 0);
+  const simScore = !simCustom
+    ? expert.authority_score
+    : simTotal <= 0
+      ? 0
+      : (Object.keys(simWeights) as BreakdownKey[]).reduce(
+          (a, k) => a + simWeights[k] * (expert.score_breakdown?.[k] ?? 0),
+          0
+        ) / simTotal;
+  const simDelta = Math.round(simScore * 100) - Math.round(expert.authority_score * 100);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -401,10 +442,13 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                             )}
                             onClick={() => hasDetails && setSelectedDetail("atti")}
                          >
-                            <div className="flex items-center gap-2 mb-2">
-                                 <item.icon className={cn("w-4 h-4", hasDetails ? "text-primary" : "text-primary/70")} />
-                                 <span className="text-sm font-medium text-foreground">{item.label}</span>
-                                 {hasDetails && <ChevronRight className="w-3 h-3 ml-auto text-muted-foreground" />}
+                            <div className="flex items-start gap-2 mb-2">
+                                 <item.icon className={cn("w-4 h-4 mt-0.5 shrink-0", hasDetails ? "text-primary" : "text-primary/70")} />
+                                 <span className="text-sm font-medium text-foreground leading-tight">{item.label}</span>
+                                 <span className="ml-auto mt-0.5 text-[10px] text-muted-foreground/70 tabular-nums whitespace-nowrap shrink-0">
+                                     {t("weightLabel")} {Math.round(item.weight * 100)}%
+                                 </span>
+                                 {hasDetails && <ChevronRight className="w-3 h-3 mt-1 shrink-0 text-muted-foreground" />}
                             </div>
                             <div className="flex items-end justify-between gap-2 mb-1">
                                 <span className="text-xs text-muted-foreground">{item.description}</span>
@@ -452,6 +496,108 @@ export function ExpertModal({ expert, isOpen, onClose, hideScore = false }: Expe
                     return <div key={item.label} className="h-full">{content}</div>;
                 })}
             </div>
+            {/* Simulatore: la policy dei pesi è editabile, non solo dichiarata */}
+            {!hideScore && (
+              <div className="mt-4 rounded-xl border border-border/40 bg-muted/10 overflow-hidden">
+                <button
+                  onClick={() => setShowSim((v) => !v)}
+                  className="w-full flex items-center gap-2 px-4 py-3 text-sm font-medium text-foreground hover:bg-muted/30 transition-colors"
+                >
+                  <SlidersHorizontal className="w-4 h-4 text-primary" />
+                  {t("simulateTitle")}
+                  <ChevronRight
+                    className={cn(
+                      "w-4 h-4 ml-auto text-muted-foreground transition-transform",
+                      showSim && "rotate-90"
+                    )}
+                  />
+                </button>
+                {showSim && (
+                  <div className="px-4 pb-4 space-y-3">
+                    <p className="text-[11px] leading-relaxed text-muted-foreground">
+                      {t("simulateDesc")}
+                    </p>
+                    <div className="space-y-2.5">
+                      {(Object.keys(DEFAULT_WEIGHTS) as BreakdownKey[]).map((k) => (
+                        <div key={k}>
+                          <div className="flex items-center justify-between text-[11px] mb-0.5">
+                            <span className="text-foreground/80">{t(k === "speeches" ? "speeches" : k)}</span>
+                            <span className="tabular-nums text-muted-foreground">
+                              {Math.round(simWeights[k] * 100)}%
+                            </span>
+                          </div>
+                          <Slider
+                            min={0}
+                            max={50}
+                            step={1}
+                            value={[Math.round(simWeights[k] * 100)]}
+                            onValueChange={([v]) =>
+                              setSimWeights((prev) => ({ ...prev, [k]: v / 100 }))
+                            }
+                            className="py-1"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between gap-4 rounded-lg bg-muted/30 border border-border/40 px-3 py-2.5">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {t("simulateOfficialLabel")}
+                        </span>
+                        <span className="text-lg font-semibold text-muted-foreground tabular-nums">
+                          {Math.round(expert.authority_score * 100)}
+                        </span>
+                      </div>
+                      <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-primary rounded-full transition-all duration-300"
+                          style={{ width: `${simScore * 100}%` }}
+                        />
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          {t("simulateResult")}
+                        </span>
+                        <span className="text-lg font-bold text-primary tabular-nums">
+                          {Math.round(simScore * 100)}
+                          {simCustom && simDelta !== 0 && (
+                            <span
+                              className={cn(
+                                "ml-1.5 text-xs font-semibold",
+                                simDelta > 0 ? "text-green-600" : "text-red-500"
+                              )}
+                            >
+                              {simDelta > 0 ? "+" : ""}
+                              {simDelta}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                    {simCustom && (
+                      <button
+                        onClick={() => setSimWeights(DEFAULT_WEIGHTS)}
+                        className="w-full text-center text-xs text-primary hover:underline"
+                      >
+                        {t("simulateReset")}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground/70">
+                {t("weightsNote")}{" "}
+                <a
+                  href="/method"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-primary transition-colors whitespace-nowrap"
+                >
+                    {t("weightsLink")}
+                </a>
+            </p>
           </div>
 
           {/* Details Panel (Conditional) */}

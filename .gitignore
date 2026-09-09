@@ -265,3 +265,8 @@ research-proposals/
 
 # Tracker locale dei follow-up (solo locale, mai su GitHub)
 FOLLOWUP_TRACKER.md
+
+# ===========================================
+# Vault di memoria (repo git privato separato, mai su GitHub pubblico)
+# ===========================================
+vault/

@@ -31,12 +31,12 @@ from .config import MAINTENANCE_MODE, get_config, get_settings
 
 
 class _ContextEnricher(logging.Filter):
-    """
-    Arricchisce ogni record con:
-    - qid: correlation id della query corrente ("-" fuori da una query)
-    - shortname: logger name senza i prefissi app.services./app.routers./app.
-      così le righe restano allineate e leggibili (i nomi di librerie terze
-      passano invariati: langsmith.client, uvicorn.access, ...)
+    """Enrich every record with:
+
+    - qid: correlation id of the current query ("-" outside a query)
+    - shortname: logger name without the app.services./app.routers./app.
+      prefixes, so lines stay aligned and readable (third-party logger
+      names pass through unchanged: langsmith.client, uvicorn.access, ...)
     """
     _PREFIXES = ("app.services.", "app.routers.", "app.")
 
@@ -52,16 +52,16 @@ class _ContextEnricher(logging.Filter):
 
 
 class _RepeatSuppressFilter(logging.Filter):
-    """
-    Sopprime le ripetizioni dello stesso messaggio entro una finestra.
-    Il primo passa; le repliche identiche vengono contate e riassunte
-    al passaggio successivo. Pensato per langsmith.client, che in caso
-    di key invalida ripete lo stesso 403 a ogni batch di trace.
+    """Suppress repetitions of the same message within a time window.
+
+    The first occurrence passes; identical replicas are counted and
+    summarised on the next pass. Built for langsmith.client, which on an
+    invalid key repeats the same 403 for every trace batch.
     """
     def __init__(self, window_seconds: float = 300.0):
         super().__init__()
         self.window = window_seconds
-        self._seen: dict = {}  # (levelno, msg[:100]) -> [ultimo_pass, soppressi]
+        self._seen: dict = {}  # (levelno, msg[:100]) -> [last_pass, suppressed_count]
 
     def filter(self, record: logging.LogRecord) -> bool:
         key = (record.levelno, record.getMessage()[:100])
@@ -73,7 +73,7 @@ class _RepeatSuppressFilter(logging.Filter):
             if suppressed:
                 record.msg = (
                     f"{record.getMessage()} "
-                    f"[+{suppressed} ripetizioni identiche soppresse]"
+                    f"[+{suppressed} identical repetitions suppressed]"
                 )
                 record.args = ()
             return True
@@ -82,21 +82,18 @@ class _RepeatSuppressFilter(logging.Filter):
 
 
 def setup_logging():
-    """
-    Configure logging to console and two rotating log files:
+    """Configure logging to the console and two rotating log files.
 
-    - logs/app_TIMESTAMP.log   : INFO+  — log operativo pulito, niente rumore da librerie
-    - logs/debug_TIMESTAMP.log : DEBUG+ — traccia completa per investigazione
+    - logs/app_TIMESTAMP.log   : INFO+  — clean operational log, no library noise
+    - logs/debug_TIMESTAMP.log : DEBUG+ — full trace for investigation
 
-    Formato riga: timestamp.millis [LIVELLO ] [qid] modulo - messaggio
-    dove qid è il correlation id della query ("-" per i log di startup/infra).
+    Line format: timestamp.millis [LEVEL] [qid] module - message,
+    where qid is the query correlation id ("-" for startup/infra logs).
 
-    Librerie rumorose (httpx, urllib3, ecc.) vengono silenziate a WARNING;
-    uvicorn viene reindirizzato sui nostri handler così tutto il processo
-    logga con un unico formato.
-
-    Moduli sotto investigazione attiva vengono portati a DEBUG esplicitamente
-    così i loro log di dettaglio finiscono nel debug file.
+    Noisy libraries (httpx, urllib3, ...) are silenced to WARNING; uvicorn is
+    redirected to our handlers so the whole process logs in one format.
+    Modules under active investigation are raised to DEBUG explicitly so
+    their detail ends up in the debug file.
     """
     log_dir = Path(__file__).parent.parent / "logs"
     log_dir.mkdir(exist_ok=True)
@@ -105,22 +102,22 @@ def setup_logging():
     app_log_file   = log_dir / f"app_{timestamp}.log"
     debug_log_file = log_dir / f"debug_{timestamp}.log"
 
-    # Millisecondi via %(msecs)03d: datefmt non supporta %f
+    # Milliseconds via %(msecs)03d: datefmt does not support %f
     fmt = "%(asctime)s.%(msecs)03d [%(levelname)-8s] [%(qid)s] %(shortname)-30s %(message)s"
     formatter = logging.Formatter(fmt, datefmt="%Y-%m-%d %H:%M:%S")
     enricher = _ContextEnricher()
 
-    # Il root logger deve stare a DEBUG: i singoli handler/logger filtrano il resto
+    # The root logger must stay at DEBUG: individual handlers/loggers filter the rest
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
 
-    # --- Console: INFO+ (visibile durante lo sviluppo) ---
+    # Console: INFO+ (visible during development)
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(logging.INFO)
     console_handler.setFormatter(formatter)
     console_handler.addFilter(enricher)
 
-    # --- app log: INFO+, 20 MB rotating, 10 backup ---
+    # App log: INFO+, 20 MB rotating, 10 backups
     app_handler = RotatingFileHandler(
         app_log_file,
         maxBytes=20 * 1024 * 1024,
@@ -131,7 +128,7 @@ def setup_logging():
     app_handler.setFormatter(formatter)
     app_handler.addFilter(enricher)
 
-    # --- debug log: DEBUG+, 50 MB rotating, 5 backup ---
+    # Debug log: DEBUG+, 50 MB rotating, 5 backups
     debug_handler = RotatingFileHandler(
         debug_log_file,
         maxBytes=50 * 1024 * 1024,
@@ -146,10 +143,8 @@ def setup_logging():
     root_logger.addHandler(app_handler)
     root_logger.addHandler(debug_handler)
 
-    # ------------------------------------------------------------------
-    # Silenzia librerie di terze parti rumorose (a livello di logger,
-    # quindi il filtro vale per tutti gli handler in modo uniforme)
-    # ------------------------------------------------------------------
+    # Silence noisy third-party libraries at the logger level, so the
+    # filter applies uniformly to every handler.
     _NOISY_LIBS = (
         "httpx",
         "httpcore",
@@ -159,29 +154,25 @@ def setup_logging():
     )
     for lib in _NOISY_LIBS:
         logging.getLogger(lib).setLevel(logging.WARNING)
-    # Le notification 01N42 (proprietà/relazioni assenti) sono rumore ATTESO
-    # finché il backend è dual-compat v1/v2: ogni DB ignora i rami dell'altro.
+    # 01N42 notifications (missing properties/relationships) are expected
+    # noise while the backend is dual-compat v1/v2: each DB ignores the
+    # other's branches.
     logging.getLogger("neo4j.notifications").setLevel(logging.ERROR)
 
-    # langsmith ritenta l'invio dei trace a ogni batch: se la key è invalida
-    # ripete lo stesso 403 decine di volte per query. Primo warning passa,
-    # le repliche vengono contate e riassunte ogni 5 minuti.
+    # langsmith retries trace uploads on every batch: with an invalid key it
+    # repeats the same 403 dozens of times per query. The first warning passes,
+    # replicas are counted and summarised every 5 minutes.
     logging.getLogger("langsmith.client").addFilter(_RepeatSuppressFilter())
 
-    # ------------------------------------------------------------------
-    # Uvicorn: rimuovi i suoi handler e lascia propagare al root, così
-    # server, access log e app loggano con lo stesso formato
-    # ------------------------------------------------------------------
+    # Uvicorn: drop its handlers and let records propagate to root, so the
+    # server, access log and app all log in the same format.
     for uv_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
         uv_logger = logging.getLogger(uv_name)
         uv_logger.handlers.clear()
         uv_logger.propagate = True
 
-    # ------------------------------------------------------------------
-    # Moduli sotto investigazione attiva → DEBUG esplicito
-    # I loro log di dettaglio finiscono nel debug file senza spam nel
-    # log operativo (che resta a INFO)
-    # ------------------------------------------------------------------
+    # Modules under active investigation → explicit DEBUG: their detail goes
+    # to the debug file without spamming the operational log (which stays at INFO).
     _DEBUG_MODULES = (
         "app.services.generation.integrator",       # corrupt citations context
         "app.services.generation.coherence_validator",  # embedding scores raw
@@ -192,13 +183,12 @@ def setup_logging():
     return app_log_file, debug_log_file
 
 
-# Setup logging
 _app_log, _debug_log = setup_logging()
 logger = logging.getLogger(__name__)
 logger.info(f"[STARTUP] App log  : {_app_log}")
 logger.info(f"[STARTUP] Debug log: {_debug_log}")
 
-# LangSmith tracing: va inizializzato prima della creazione dei client OpenAI
+# LangSmith tracing must be initialised before any OpenAI client is created.
 from .tracing import init_tracing  # noqa: E402
 init_tracing()
 
@@ -206,12 +196,11 @@ init_tracing()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan handler."""
-    # Startup
     logger.info("Starting Multi-View RAG API...")
 
-    # Default executor che propaga i contextvars: i log emessi nei thread
-    # di run_in_executor (retrieval, authority, compass) mantengono il
-    # query id invece di mostrare "-"
+    # Default executor that propagates contextvars: logs emitted in
+    # run_in_executor threads (retrieval, authority, compass) keep the
+    # query id instead of showing "-"
     import asyncio
     from .log_context import ContextPropagatingExecutor
     asyncio.get_running_loop().set_default_executor(ContextPropagatingExecutor())
@@ -229,7 +218,6 @@ async def lifespan(app: FastAPI):
     # Warm up Neo4j vector index to avoid cold start latency
     await _warmup_neo4j_index(settings)
 
-    # Ensure Neo4j constraints exist
     from .routers.history import ensure_constraint
     ensure_constraint()
     from .routers.survey import ensure_survey_constraint
@@ -237,7 +225,6 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Shutdown
     logger.info("Shutting down Multi-View RAG API...")
 
 
@@ -248,7 +235,6 @@ async def _warmup_neo4j_index(settings):
     This forces Neo4j to load the vector index into memory,
     eliminating the 15-18s cold start penalty on first real query.
     """
-    import time
     from .services.neo4j_client import Neo4jClient
 
     logger.info("[WARMUP] Starting Neo4j vector index warmup...")
@@ -274,7 +260,7 @@ async def _warmup_neo4j_index(settings):
         RETURN count(node) as cnt
         """
 
-        result = client.query(warmup_query, {"embedding": dummy_embedding})
+        client.query(warmup_query, {"embedding": dummy_embedding})
 
         elapsed = (time.time() - start_time) * 1000
         logger.info(f"[WARMUP] Neo4j vector index loaded in {elapsed:.1f}ms")
@@ -285,7 +271,6 @@ async def _warmup_neo4j_index(settings):
         logger.warning(f"[WARMUP] Neo4j warmup failed (non-critical): {e}")
 
 
-# Create FastAPI app
 app = FastAPI(
     title="Multi-View RAG API",
     description="""
@@ -304,17 +289,16 @@ app = FastAPI(
     - `GET /api/config` - Get system configuration
 
     ## Citation Integrity
-    All citations are extracted via exact offset-based extraction.
-    NO fuzzy matching is used.
+    All citations are extracted via exact offset-based extraction;
+    no fuzzy matching is used.
     """,
     version="1.0.0",
     lifespan=lifespan,
 )
 
-# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=["*"],  # demo deployment serves multiple origins; tighten before any non-demo use
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -335,7 +319,6 @@ async def maintenance_middleware(request: Request, call_next):
     return await call_next(request)
 
 
-# Include routers
 app.include_router(query_router)
 app.include_router(evidence_router)
 app.include_router(config_router)

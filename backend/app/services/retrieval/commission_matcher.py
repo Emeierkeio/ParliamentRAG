@@ -27,9 +27,9 @@ class CommissionMatcher:
 
     def _load_config(self) -> None:
         """Load commission topics from YAML config."""
-        # 3 livelli sopra retrieval/ = backend/ (come components.py:341).
-        # Con 4 livelli il path puntava fuori dal backend → load fallito
-        # in silenzio e commissioni SEMPRE vuote (osservato 2026-07-24).
+        # 3 levels above retrieval/ = backend/ (same as components.py:341).
+        # With 4 levels the path pointed outside the backend → load failed
+        # silently and commissions were always empty (observed 2026-07-24).
         config_path = os.path.join(
             os.path.dirname(__file__),
             "../../../config/commissioni_topics.yaml"
@@ -100,7 +100,6 @@ class CommissionMatcher:
             keywords = data.get("keywords", [])
             categories = data.get("topic_categories", [])
 
-            # Calculate keyword match score
             matched_keywords = []
             query_words = set(query_normalized.split())
 
@@ -119,17 +118,16 @@ class CommissionMatcher:
                     matched_keywords.append(kw)
 
             if matched_keywords:
-                # Score sul numero ASSOLUTO di match: dividere per il totale
-                # delle keyword puniva le commissioni con vocabolario ricco
-                # (18 keyword → un match esatto scorava 0.06 e finiva sotto
-                # min_score). Un match esatto è già un segnale forte.
+                # Score on the absolute number of matches: dividing by the
+                # total keyword count punished commissions with a rich
+                # vocabulary (18 keywords → one exact match scored 0.06 and
+                # fell below min_score). One exact match is already a strong
+                # signal.
                 score = min(1.0, 0.5 + 0.2 * (len(matched_keywords) - 1))
                 results.append((commission_name, score, matched_keywords))
 
-        # Sort by score descending
         results.sort(key=lambda x: x[1], reverse=True)
 
-        # Format output
         output = []
         for name, score, matched in results[:top_k]:
             if score >= min_score:

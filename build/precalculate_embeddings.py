@@ -2,8 +2,6 @@
 import logging
 import os
 import time
-from typing import List, Dict
-import numpy as np
 from dotenv import load_dotenv
 
 # Carica .env dalla root del progetto

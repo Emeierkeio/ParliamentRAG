@@ -83,7 +83,7 @@ const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  "Qualita Risposta": <MessageSquare className="w-3.5 h-3.5" />,
+  "Qualità Risposta": <MessageSquare className="w-3.5 h-3.5" />,
   "Citazioni": <Quote className="w-3.5 h-3.5" />,
   "Bilanciamento Politico": <Scale className="w-3.5 h-3.5" />,
   "Autorità Esperti": <UserCheck className="w-3.5 h-3.5" />,
@@ -91,7 +91,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_SHORT_LABELS: Record<string, string> = {
-  "Qualita Risposta": "Qualità",
+  "Qualità Risposta": "Qualità",
   "Citazioni": "Citazioni",
   "Bilanciamento Politico": "Bilanciamento",
   "Autorità Esperti": "Autorità",
@@ -515,7 +515,7 @@ function MiniGroupSlider({
 
 // ─── Per-category instruction text ────────────────────────────────────────────
 const CATEGORY_INSTRUCTIONS: Record<string, { title: string; description: string }> = {
-  "Qualita Risposta": {
+  "Qualità Risposta": {
     title: "Come valutare la qualità",
     description: "Assegna da 1 a 5 stelle sia alla Risposta A che alla Risposta B. Il punteggio riflette la qualità percepita di quella risposta per questa dimensione specifica.",
   },

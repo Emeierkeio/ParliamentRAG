@@ -1,5 +1,5 @@
 ---
-license: cc-by-4.0
+license: cc-by-sa-4.0
 language:
   - it
 pretty_name: "ParliamentRAG — Italian Chamber of Deputies, 19th legislature"
@@ -82,7 +82,7 @@ votes = load_dataset("emeierkeio/parliamentrag-camera-leg19", "votes", split="tr
 
 Sources:
 
-- [dati.camera.it](https://dati.camera.it) SPARQL endpoint (OCD ontology): deputies, mandates, groups, committees, acts, votes — CC-BY 4.0.
+- [dati.camera.it](https://dati.camera.it) SPARQL endpoint (OCD ontology): deputies, mandates, groups, committees, acts, votes — CC BY-SA 4.0.
 - Stenographic reports of the Chamber (XML): speech transcripts, debate structure.
 - [EuroVoc](https://eurovoc.europa.eu): multilingual subject thesaurus of the EU.
 
@@ -97,7 +97,7 @@ Known limits:
 
 ## License and attribution
 
-CC-BY 4.0, inherited from the source data of the Camera dei deputati. If you use this dataset, attribute both the Chamber (source data) and ParliamentRAG (derived dataset), and cite:
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), inherited from the source data of the Camera dei deputati (ShareAlike: derivatives of this dataset must keep the same license). If you use this dataset, attribute both the Chamber (source data) and ParliamentRAG (derived dataset), and cite:
 
 ```bibtex
 @inproceedings{tritella2026parliamentrag,

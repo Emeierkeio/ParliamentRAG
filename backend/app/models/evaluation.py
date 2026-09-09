@@ -5,7 +5,6 @@ Designed for scientific evaluation in thesis/paper context.
 
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Tuple, Any
-from datetime import datetime
 
 from .survey import SurveyResponse, SurveyStats, SimpleRatingResponse
 

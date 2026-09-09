@@ -11,7 +11,7 @@
   <a href="https://doi.org/10.5281/zenodo.21560331"><img alt="RDF dataset on Zenodo" src="https://img.shields.io/badge/Dataset-Zenodo_DOI-1682D4?style=flat-square&logo=zenodo&logoColor=white"></a>
   <a href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19"><img alt="Dataset on Hugging Face" src="https://img.shields.io/badge/Dataset-Hugging_Face-FFD21E?style=flat-square&logo=huggingface&logoColor=black"></a>
   <a href="LICENSE"><img alt="Code license Apache 2.0" src="https://img.shields.io/badge/Code-Apache_2.0-0969DA?style=flat-square"></a>
-  <a href="https://creativecommons.org/licenses/by/4.0/"><img alt="Data license CC BY 4.0" src="https://img.shields.io/badge/Data-CC_BY_4.0-97CA00?style=flat-square&logo=creativecommons&logoColor=white"></a>
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Data license CC BY-SA 4.0" src="https://img.shields.io/badge/Data-CC_BY--SA_4.0-97CA00?style=flat-square&logo=creativecommons&logoColor=white"></a>
 </p>
 
 **Balanced, verifiable answers about Italian parliamentary debate, grounded in what was actually said and by whom.**
@@ -20,7 +20,7 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **174k+ text chunks** from **705 plenary sessions**, updated through 2026-08-20
+- **174k+ text chunks** from **705 plenary sessions**, updated through 2026-09-03
 - **17.3k roll-call votes** with **6.9M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the system picks the most credible speaker per party for the specific question asked
@@ -90,13 +90,13 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature, data as of 2026-08-20** (updated incrementally): 705 sessions · 46.9k speeches · 174k+ chunks · 35.6k acts · 17.3k roll calls with 6.9M individual votes
+- **XIX Legislature, data as of 2026-09-03** (updated incrementally): 705 sessions · 46.9k speeches · 174k+ chunks · 35.7k acts · 17.3k roll calls with 6.9M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
 - Every build/update ends with an **invariant validation gate** (`build/validate_db.py`): string embeddings, orphan speeches, broken chunk offsets or malformed URIs fail the build
-- **RDF export**: the whole graph is serialized back to RDF (`make export-rdf`; Turtle, plus the 6.3M individual votes in N-Triples) and archived on Zenodo under CC-BY 4.0 with DOI [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331); project terms use the [w3id.org/parliamentrag](https://w3id.org/parliamentrag/) namespace
-- **Hugging Face dataset**: the corpus is also published in tabular form as [emeierkeio/parliamentrag-camera-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19) (CC-BY 4.0), refreshed via `make export-hf`
+- **RDF export**: the whole graph is serialized back to RDF (`make export-rdf`; Turtle, plus the 6.3M individual votes in N-Triples) and archived on Zenodo under CC BY-SA 4.0 with DOI [10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331); project terms use the [w3id.org/parliamentrag](https://w3id.org/parliamentrag/) namespace
+- **Hugging Face dataset**: the corpus is also published in tabular form as [emeierkeio/parliamentrag-camera-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19) (CC BY-SA 4.0), refreshed via `make export-hf`
 
 The construction pipeline lives in [`build/`](build/README.md):
 
@@ -233,7 +233,7 @@ In the original study against Google NotebookLM (6 domain experts), the system s
 
 ## Data attribution
 
-Parliamentary data are sourced from the **Camera dei Deputati open data** program ([dati.camera.it](https://dati.camera.it/)): stenographic reports and SPARQL endpoints, released under their respective open licenses. ParliamentRAG is an independent project and is not affiliated with or endorsed by the Camera dei Deputati.
+Parliamentary data are sourced from the **Camera dei Deputati open data** program ([dati.camera.it](https://dati.camera.it/)), released under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); the derived RDF and Hugging Face datasets keep the same license. The texts of stenographic reports are official acts of the Italian State and as such are not subject to copyright (art. 5, L. 633/1941). ParliamentRAG is an independent project and is not affiliated with or endorsed by the Camera dei Deputati.
 
 ---
 

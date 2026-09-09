@@ -1,17 +1,13 @@
 """
 Ideology scorer for multi-view coverage.
 
-PURPOSE: Ensure balanced representation of political perspectives in retrieval
-and generation.
-
-Methods:
-1. Anchor-based: Use parliamentary group membership as SOFT anchors (legacy)
-2. Text-based 2D: Use PCA on text embeddings via IC-1 to IC-6 pipeline (new)
+Ensures balanced representation of political perspectives in retrieval and
+generation. Two methods:
+1. Anchor-based: parliamentary group membership as soft anchors (legacy)
+2. Text-based 2D: IC-1 to IC-6 pipeline on text embeddings
 """
 import logging
-from typing import List, Dict, Any, Optional, Tuple
-
-import numpy as np
+from typing import List, Dict, Any, Optional
 
 from ..neo4j_client import Neo4jClient
 from .anchors import AnchorManager
@@ -23,11 +19,11 @@ from ...models.evidence import IdeologyScore
 
 logger = logging.getLogger(__name__)
 
-# Gruppi rinominati in corso di legislatura: nel grafo esistono con entrambe le
-# denominazioni perché l'attribuzione degli interventi è storicamente accurata
-# (il gruppo al momento del discorso). La bussola però li deve fondere, o lo
-# stesso soggetto politico compare due volte (due "IV" in mappa). Il match è
-# per sottostringa: le denominazioni portano suffissi e spaziature variabili.
+# Groups renamed mid-legislature exist in the graph under both names, because
+# speech attribution is historically accurate (the group at the time of the
+# speech). The compass must merge them, or the same political subject shows up
+# twice on the map (two "IV" dots). Matching is by substring: the names carry
+# variable suffixes and spacing.
 RENAMED_GROUP_PATTERNS = [
     ("ITALIA VIVA", "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"),
 ]
@@ -43,56 +39,28 @@ def canonical_group(party: str) -> str:
 
 class IdeologyScorer:
     """
-    Computes ideological positions for multi-view coverage.
+    Compute ideological positions for multi-view coverage.
 
-    NOT used for:
-    - Discovering ideology from scratch
-    - Political analysis or classification
-    - Definitive position labeling
-
-    USED for:
-    - Ensuring all perspectives are represented
-    - Balancing retrieval across political spectrum
-    - Labeling evidence for multi-view generation
+    Used to ensure all perspectives are represented and to label evidence for
+    multi-view generation — not for ideology discovery or definitive
+    political classification.
     """
 
     def __init__(self, neo4j_client: Neo4jClient):
         self.client = neo4j_client
         self.config = get_config()
         self.anchor_manager = AnchorManager()
-
-        # Get clustering config
-        compass_config = self.config.load_config().get("compass", {})
-        clustering_config = compass_config.get("clustering", {})
-
-        self.clustering = IdeologyClustering(
-            bandwidth=clustering_config.get("kde_bandwidth", "scott")
-        )
-
-        self.min_fragments_for_kde = clustering_config.get("min_fragments_for_kde", 3)
+        self.clustering = IdeologyClustering()
 
     def score_evidence(
         self,
         evidence: Dict[str, Any]
     ) -> IdeologyScore:
-        """
-        Compute ideology score for a piece of evidence.
-
-        Args:
-            evidence: Evidence dictionary with party field
-
-        Returns:
-            IdeologyScore with left/center/right scores and confidence
-        """
+        """Compute the anchor-based left/center/right score for one evidence dict."""
         party = evidence.get("party", "MISTO")
 
-        # Get position from anchors
         position, confidence = self.anchor_manager.get_position_for_group(party)
-
-        # Convert to numeric
         numeric_position = self.anchor_manager.position_to_numeric(position)
-
-        # Compute multi-view scores
         scores = self.clustering.compute_multi_view_scores(
             numeric_position, confidence
         )
@@ -105,25 +73,11 @@ class IdeologyScorer:
             method="anchor"
         )
 
-    def score_evidence_batch(
-        self,
-        evidence_list: List[Dict[str, Any]]
-    ) -> List[IdeologyScore]:
-        """
-        Compute ideology scores for multiple evidence pieces.
-        """
-        return [self.score_evidence(e) for e in evidence_list]
-
     def compute_coverage_metrics(
         self,
         evidence_list: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """
-        Compute multi-view coverage metrics for evidence set.
-
-        Returns metrics showing how well the evidence covers
-        different political perspectives.
-        """
+        """Measure how well an evidence set covers the political spectrum."""
         if not evidence_list:
             return {
                 "total_evidence": 0,
@@ -137,7 +91,6 @@ class IdeologyScorer:
                 "missing_positions": ["left", "center", "right"],
             }
 
-        # Count by party
         party_counts: Dict[str, int] = {}
         position_counts = {"left": 0, "center": 0, "right": 0}
 
@@ -145,23 +98,20 @@ class IdeologyScorer:
             party = evidence.get("party", "MISTO")
             party_counts[party] = party_counts.get(party, 0) + 1
 
-            # Get position for party
             position, _ = self.anchor_manager.get_position_for_group(party)
             position_counts[position] += 1
 
-        # Compute balance score
-        # Perfect balance = 1.0, complete imbalance = 0.0
+        # Balance score: 1.0 = perfectly even split, 0.0 = complete imbalance.
         total = sum(position_counts.values())
         if total > 0:
             ideal = total / 3
             deviations = [abs(count - ideal) for count in position_counts.values()]
-            max_deviation = 2 * ideal * 3  # Maximum possible deviation
+            max_deviation = 2 * ideal * 3
             actual_deviation = sum(deviations)
             balance_score = 1.0 - (actual_deviation / max_deviation)
         else:
             balance_score = 0.0
 
-        # Find missing positions
         missing = [pos for pos, count in position_counts.items() if count == 0]
 
         return {
@@ -172,123 +122,21 @@ class IdeologyScorer:
             "missing_positions": missing,
         }
 
-    def rebalance_evidence(
-        self,
-        evidence_list: List[Dict[str, Any]],
-        target_count: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Rebalance evidence to improve multi-view coverage.
-
-        Prioritizes under-represented positions while maintaining
-        relevance ordering.
-
-        Args:
-            evidence_list: List of evidence with scores
-            target_count: Target number of evidence pieces
-
-        Returns:
-            Rebalanced list with better position coverage
-        """
-        if len(evidence_list) <= target_count:
-            return evidence_list
-
-        # Group by position
-        by_position: Dict[str, List[Dict]] = {
-            "left": [],
-            "center": [],
-            "right": [],
-        }
-
-        for evidence in evidence_list:
-            party = evidence.get("party", "MISTO")
-            position, _ = self.anchor_manager.get_position_for_group(party)
-            by_position[position].append(evidence)
-
-        # Sort each group by relevance
-        for position in by_position:
-            by_position[position].sort(
-                key=lambda x: x.get("similarity", 0) + x.get("authority_score", 0),
-                reverse=True
-            )
-
-        # Distribute target count across positions
-        per_position = target_count // 3
-        remainder = target_count % 3
-
-        selected = []
-
-        # Select from each position
-        for i, position in enumerate(["left", "center", "right"]):
-            count = per_position + (1 if i < remainder else 0)
-            available = by_position[position]
-
-            # Take up to count from this position
-            selected.extend(available[:count])
-
-        # If we have room, add more from any position (by score)
-        remaining = target_count - len(selected)
-        if remaining > 0:
-            # Collect remaining evidence
-            all_remaining = []
-            for position in by_position:
-                count_taken = per_position + (1 if ["left", "center", "right"].index(position) < remainder else 0)
-                all_remaining.extend(by_position[position][count_taken:])
-
-            # Sort by score and take remaining
-            all_remaining.sort(
-                key=lambda x: x.get("similarity", 0) + x.get("authority_score", 0),
-                reverse=True
-            )
-            selected.extend(all_remaining[:remaining])
-
-        return selected
-
-    def get_anchor_centroids(
-        self,
-        query_embedding: List[float]
-    ) -> Dict[str, Dict[str, Any]]:
-        """
-        Get centroid information for each anchor position.
-
-        This can be used for visualization or debugging.
-        """
-        centroids = {}
-
-        for position in ["left", "center", "right"]:
-            groups = self.anchor_manager.get_anchor_groups(position)
-
-            centroids[position] = {
-                "groups": groups,
-                "confidence": self.anchor_manager._load_anchors()[position]["confidence"],
-            }
-
-        return centroids
-
     def compute_2d_text_positions(
         self,
         evidence_list: List[Dict[str, Any]],
         query: str = ""
     ) -> Dict[str, Any]:
         """
-        Compute 2D positions for evidence using the IC-1 to IC-6 pipeline.
-
-        This method uses weighted PCA with advanced features:
-        - IC-1: Weighted PCA (inverse group frequency)
-        - IC-2: SCR confidence + Z-score normalization
-        - IC-3: KDE clustering for group centroids
-        - IC-4: Eigendecomposition for dispersion ellipses
-        - IC-5: Evidence binding to axis poles
-        - IC-6: TF-IDF axis labeling
+        Compute 2D positions for evidence via the IC-1 to IC-6 pipeline.
 
         Args:
-            evidence_list: List of evidence dictionaries with 'embedding' field
+            evidence_list: Evidence dictionaries with an 'embedding' field
             query: Original query string for metadata
 
         Returns:
-            Dictionary compatible with frontend CompassCard component
+            Dictionary compatible with the frontend CompassCard component
         """
-        # Convert evidence to Fragment objects
         fragments = self._evidence_to_fragments(evidence_list)
 
         # Exclude unclassified groups (config compass.unclassified, e.g. Misto):
@@ -304,7 +152,6 @@ class IdeologyScorer:
             logger.warning(f"Only {len(fragments)} fragments, need at least 3 for PCA")
             return self._fallback_compass_data(evidence_list)
 
-        # Run the IC-1 to IC-6 pipeline
         try:
             full_config = self.config.load_config()
             compass_config = full_config.get("compass", {})
@@ -340,7 +187,6 @@ class IdeologyScorer:
                 fragments, query=query, semantic_axes=semantic_axes,
                 stance_scores=stance_scores)
 
-            # Convert to frontend-compatible format
             return self._pipeline_result_to_dict(result)
 
         except CompassRefusalError as e:
@@ -354,7 +200,7 @@ class IdeologyScorer:
         self,
         evidence_list: List[Dict[str, Any]]
     ) -> List[Fragment]:
-        """Convert evidence dictionaries to Fragment objects for pipeline."""
+        """Convert evidence dictionaries to Fragment objects for the pipeline."""
         import json
 
         fragments = []
@@ -364,7 +210,7 @@ class IdeologyScorer:
             if emb is None:
                 continue
 
-            # Handle string embeddings (JSON)
+            # Embeddings may arrive as JSON strings from the DB.
             if isinstance(emb, str):
                 try:
                     emb = json.loads(emb)
@@ -386,7 +232,7 @@ class IdeologyScorer:
         return fragments
 
     def _pipeline_result_to_dict(self, result) -> Dict[str, Any]:
-        """Convert CompassAnalysisResponse to frontend-compatible dict."""
+        """Convert CompassAnalysisResponse to a frontend-compatible dict."""
         return {
             "groups": [
                 {
@@ -469,10 +315,7 @@ class IdeologyScorer:
         evidence_list: List[Dict[str, Any]],
         warning: Optional[str] = None
     ) -> Dict[str, Any]:
-        """
-        Fallback when not enough data for PCA or pipeline fails.
-        Uses anchor-based positioning instead.
-        """
+        """Build anchor-based compass data when the pipeline fails or data is too thin."""
         import random
 
         groups = []
@@ -487,7 +330,7 @@ class IdeologyScorer:
             position, confidence = self.anchor_manager.get_position_for_group(party)
             numeric_pos = self.anchor_manager.position_to_numeric(position)
 
-            # Add jitter for visualization
+            # Jitter so co-anchored groups don't overlap in the chart.
             x = numeric_pos + (random.random() - 0.5) * 0.6
             y = (random.random() - 0.5) * 1.0
 

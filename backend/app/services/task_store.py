@@ -67,7 +67,7 @@ class TaskStore:
                 logger.info(f"[TaskStore] Task {task_id} completed with {len(state.events)} events")
         queue = self._queues.get(task_id)
         if queue:
-            await queue.put(None)  # Sentinel to signal completion
+            await queue.put(None)  # None sentinel unblocks the queue reader
 
     async def fail_task(self, task_id: str, error: str):
         async with self._lock:
@@ -78,7 +78,7 @@ class TaskStore:
                 logger.error(f"[TaskStore] Task {task_id} failed: {error}")
         queue = self._queues.get(task_id)
         if queue:
-            await queue.put(None)  # Sentinel
+            await queue.put(None)  # None sentinel unblocks the queue reader
 
     async def cancel_task(self, task_id: str):
         """Mark a task as cancelled and unblock any queue reader."""

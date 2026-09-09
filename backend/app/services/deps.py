@@ -72,3 +72,25 @@ def get_services() -> dict:
         "ideology": _ideology_scorer,
         "generation": _generation_pipeline,
     }
+
+
+def rebuild_config_bound_services() -> None:
+    """Recreate the services that copy config values in their constructors.
+
+    Pipelines read models, position-brief limits and the no-evidence message
+    at __init__ time, so a config update via the API would otherwise apply
+    only after a process restart. The Neo4j client is deliberately kept:
+    connection settings come from the environment, not from the editable
+    config.
+    """
+    global _retrieval_engine, _authority_scorer, _ideology_scorer
+    global _generation_pipeline
+
+    if _neo4j_client is None:
+        return  # services never initialized: nothing to rebuild
+
+    _retrieval_engine = RetrievalEngine(_neo4j_client)
+    _authority_scorer = AuthorityScorer(_neo4j_client)
+    _ideology_scorer = IdeologyScorer(_neo4j_client)
+    _generation_pipeline = GenerationPipeline()
+    logger.info("Config-bound services rebuilt after configuration update")

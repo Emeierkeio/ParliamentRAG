@@ -34,7 +34,6 @@ class AuthorityConfig(BaseModel):
     time_decay_speeches_half_life: int
     acts_relevance_threshold: float
     interventions_relevance_threshold: float
-    normalization: str
     max_component_contribution: float
 
 
@@ -46,13 +45,6 @@ class CompassConfig(BaseModel):
     unclassified_groups: List[str]
 
 
-class GenerationParameters(BaseModel):
-    """LLM generation parameters."""
-    max_tokens: int
-    temperature: float
-    top_p: float
-
-
 class PositionBriefConfig(BaseModel):
     """Position brief configuration."""
     enabled: bool
@@ -62,12 +54,13 @@ class PositionBriefConfig(BaseModel):
 
 
 class GenerationConfig(BaseModel):
-    """Generation pipeline configuration."""
+    """Generation pipeline configuration.
+
+    Only knobs the pipeline actually reads are exposed here; anything else
+    would let API consumers change values that have no effect.
+    """
     models: Dict[str, str]
-    parameters: GenerationParameters
     position_brief: PositionBriefConfig
-    require_all_parties: bool
-    enable_synthesis: bool
     no_evidence_message: str
 
 
@@ -85,10 +78,9 @@ class CoalitionsConfig(BaseModel):
 
 
 class CitationConfig(BaseModel):
-    """Citation configuration."""
-    method: str
+    """Citation configuration (display format only: the verbatim-substring
+    verification is an invariant of the pipeline, not an option)."""
     format: str
-    verify_on_insert: bool
 
 
 class ConfigResponse(BaseModel):
@@ -108,13 +100,12 @@ async def get_configuration():
     """
     Get effective system configuration.
 
-    Returns all configurable weights, thresholds, and settings.
-    Does NOT include secrets (API keys, passwords).
+    Returns all configurable weights, thresholds, and settings,
+    without secrets (API keys, passwords).
     """
     config = get_config()
     config_data = config.load_config()
 
-    # Retrieval config
     retrieval_data = config_data.get("retrieval", {})
     dense = retrieval_data.get("dense_channel", {})
     graph = retrieval_data.get("graph_channel", {})
@@ -136,7 +127,6 @@ async def get_configuration():
         }
     )
 
-    # Authority config
     authority_data = config_data.get("authority", {})
     time_decay = authority_data.get("time_decay", {})
 
@@ -146,11 +136,9 @@ async def get_configuration():
         time_decay_speeches_half_life=time_decay.get("speeches_half_life_days", 180),
         acts_relevance_threshold=authority_data.get("acts_relevance_threshold", 0.25),
         interventions_relevance_threshold=authority_data.get("interventions_relevance_threshold", 0.25),
-        normalization=authority_data.get("normalization", "percentile"),
         max_component_contribution=authority_data.get("max_component_contribution", 0.8),
     )
 
-    # Compass config
     compass_data = config_data.get("compass", {})
     anchors = compass_data.get("anchors", {})
 
@@ -165,33 +153,23 @@ async def get_configuration():
         unclassified_groups=compass_data.get("unclassified", []),
     )
 
-    # Generation config
     generation_data = config_data.get("generation", {})
-    gen_params = generation_data.get("parameters", {})
     gen_pos_brief = generation_data.get("position_brief", {})
 
     generation_config = GenerationConfig(
         models=generation_data.get("models", {}),
-        parameters=GenerationParameters(
-            max_tokens=gen_params.get("max_tokens", 4000),
-            temperature=gen_params.get("temperature", 0.3),
-            top_p=gen_params.get("top_p", 1.0),
-        ),
         position_brief=PositionBriefConfig(
             enabled=gen_pos_brief.get("enabled", True),
             max_chunks=gen_pos_brief.get("max_chunks", 5),
             chars_per_chunk=gen_pos_brief.get("chars_per_chunk", 200),
             context_chars=gen_pos_brief.get("context_chars", 500),
         ),
-        require_all_parties=generation_data.get("require_all_parties", True),
-        enable_synthesis=generation_data.get("enable_synthesis", True),
         no_evidence_message=generation_data.get(
             "no_evidence_message",
             "Nel corpus analizzato non risultano interventi rilevanti su questo tema."
         ),
     )
 
-    # Query rewriting config
     qr_data = config_data.get("query_rewriting", {})
     query_rewriting_config = QueryRewritingConfig(
         enabled=qr_data.get("enabled", True),
@@ -199,7 +177,6 @@ async def get_configuration():
         max_query_words=qr_data.get("max_query_words", 5),
     )
 
-    # Coalitions config
     coalitions_data = config_data.get("coalitions", {})
 
     coalitions_config = CoalitionsConfig(
@@ -207,16 +184,12 @@ async def get_configuration():
         opposizione=coalitions_data.get("opposizione", []),
     )
 
-    # Citation config
     citation_data = config_data.get("citation", {})
 
     citation_config = CitationConfig(
-        method=citation_data.get("method", "offset"),
         format=citation_data.get("format", "«{quote}» [{speaker}, {party}, {date}, ID:{id}]"),
-        verify_on_insert=citation_data.get("verify_on_insert", True),
     )
 
-    # All parties
     all_parties = config.get_all_parties()
 
     return ConfigResponse(
@@ -306,8 +279,6 @@ def _apply_authority_update(current: Dict, update: Dict) -> Dict:
         authority["acts_relevance_threshold"] = update["acts_relevance_threshold"]
     if "interventions_relevance_threshold" in update:
         authority["interventions_relevance_threshold"] = update["interventions_relevance_threshold"]
-    if "normalization" in update:
-        authority["normalization"] = update["normalization"]
     if "max_component_contribution" in update:
         authority["max_component_contribution"] = update["max_component_contribution"]
 
@@ -321,14 +292,8 @@ def _apply_generation_update(current: Dict, update: Dict) -> Dict:
 
     if "models" in update:
         generation["models"] = _deep_merge(generation.get("models", {}), update["models"])
-    if "parameters" in update:
-        generation["parameters"] = _deep_merge(generation.get("parameters", {}), update["parameters"])
     if "position_brief" in update:
         generation["position_brief"] = _deep_merge(generation.get("position_brief", {}), update["position_brief"])
-    if "require_all_parties" in update:
-        generation["require_all_parties"] = update["require_all_parties"]
-    if "enable_synthesis" in update:
-        generation["enable_synthesis"] = update["enable_synthesis"]
     if "no_evidence_message" in update:
         generation["no_evidence_message"] = update["no_evidence_message"]
 
@@ -357,7 +322,8 @@ async def update_configuration(update: ConfigUpdateRequest):
     Update system configuration (partial merge).
 
     Only retrieval, authority, and generation sections can be updated.
-    Changes are persisted to config/default.yaml.
+    Changes apply in-memory for the current process and are lost on restart;
+    config/default.yaml on disk stays the source of truth.
     """
     config = get_config()
     current = config.load_config()
@@ -372,6 +338,10 @@ async def update_configuration(update: ConfigUpdateRequest):
         current = _apply_query_rewriting_update(current, update.query_rewriting)
 
     config.save_config(current)
+    # Pipelines copy several config values in their constructors: rebuild
+    # them so the update takes effect from the next query, as the UI states.
+    from ..services.deps import rebuild_config_bound_services
+    rebuild_config_bound_services()
     logger.info("Configuration updated via API")
 
     return await get_configuration()
@@ -387,6 +357,8 @@ async def reload_configuration():
     """
     config = get_config()
     config._config = None  # Clear in-memory cache
+    from ..services.deps import rebuild_config_bound_services
+    rebuild_config_bound_services()
     logger.info("Configuration cache cleared — reloading from disk")
     return await get_configuration()
 

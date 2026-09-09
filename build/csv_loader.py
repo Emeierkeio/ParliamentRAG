@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "parse_date_to_neo4j",
-    "format_date_ddmmyyyy",
     "clean_generic_label",
     "extract_group_info",
     "GOVERNMENT_GROUPS",

@@ -1,18 +1,14 @@
-"""
-Stage 4: Citation Surgeon
+"""Stage 4: citation surgeon.
 
-Inserts verbatim citations with verification.
-Primary path: «inline» [CIT:id] format — quote verified as literal substring of source.
-Fallback: extract_best_sentences (semantic) when verbatim check fails.
-
-CITATION-FIRST APPROACH:
-If pre_extracted_citation is available in evidence (from Stage 2),
-use it directly. This ensures the citation matches what the LLM
-saw when writing the introductory text.
+Inserts verbatim citations with verification. Primary path: «inline» [CIT:id]
+format, with the quote verified as a literal substring of the source.
+Fallback: extract_best_sentences (keyword-based) when the verbatim check
+fails. Quotes already vetted by the quote picker (quote_vetted) are used
+as-is, so the citation matches what the LLM saw when writing the intro.
 """
 import re
 import logging
-from typing import List, Dict, Any, Tuple, Optional, Callable
+from typing import List, Dict, Any, Tuple, Optional
 
 from ...config import get_config
 from ...tracing import stage
@@ -22,16 +18,14 @@ logger = logging.getLogger(__name__)
 
 
 class CitationSurgeon:
-    """
-    Stage 4 of the generation pipeline.
+    """Resolve citation placeholders into formatted, verified quote links.
 
-    INVIOLABLE RULES:
-    1. Quote extraction ONLY via: text[span_start:span_end]
-    2. NEVER compare extracted quote with chunk_text for verification
-    3. Citation validity = valid offsets + successful extraction
-    4. chunk_text is ONLY for retrieval preview, NOT for citation
-
-    If a citation cannot be verified, it is marked as unsupported.
+    Quote sources, in order of preference: the vetted quote_text set by the
+    pipeline, span-based extraction from the full speech text, and
+    chunk_text as last resort. Inline «» quotes are accepted only when they
+    appear literally in the source; otherwise a keyword-based re-extraction
+    is used. Citations that cannot be resolved are reported in
+    failed_citations.
     """
 
     # Citation patterns - ordered by priority:
@@ -143,8 +137,7 @@ class CitationSurgeon:
             if quote_text is None:
                 return f'«{inline_quote}» [Citazione non disponibile]'
 
-            # Debug log: full chunk vs LLM-chosen citation
-            logger.info(
+            logger.debug(
                 f"[CITATION_DEBUG] {evidence_id} | "
                 f"chunk_start='{quote_text[:80]}...' | "
                 f"llm_chose='{inline_quote[:80]}...'"
@@ -186,7 +179,7 @@ class CitationSurgeon:
                         quote_text,
                     )
                     if verified_quote != inline_quote:
-                        logger.info(
+                        logger.debug(
                             f"[CITATION_DEBUG] Expanded mid-sentence quote for {evidence_id}: "
                             f"added {len(verified_quote) - len(inline_quote)} chars | "
                             f"result='{verified_quote[:100]}...'"
@@ -194,10 +187,10 @@ class CitationSurgeon:
                     else:
                         logger.debug(f"Inline quote at sentence boundary for {evidence_id}")
 
-                    # Cintura anti-frammento: se anche dopo l'espansione la quote
-                    # resta sotto i 60 char (il writer ha citato un pezzetto della
-                    # quote obbligatoria), usa l'intera quote_text quando è essa
-                    # stessa una quote vettata (≤450 char, non un chunk intero).
+                    # Anti-fragment belt: if even after expansion the quote is
+                    # under 60 chars (the writer cited a sliver of the mandatory
+                    # quote), use the whole quote_text when it is itself a
+                    # vetted quote (≤450 chars, not a full chunk).
                     if len(verified_quote) < 60 and 60 <= len(quote_text) <= 450:
                         logger.warning(
                             f"Fragment quote ({len(verified_quote)} chars) for "
@@ -211,7 +204,7 @@ class CitationSurgeon:
                     if verified_quote.rstrip().endswith('?'):
                         expanded = self._expand_rhetorical_answer(verified_quote, quote_text)
                         if expanded != verified_quote:
-                            logger.info(
+                            logger.debug(
                                 f"[CITATION_DEBUG] Expanded rhetorical question for {evidence_id}: "
                                 f"result='{expanded[:120]}...'"
                             )
@@ -251,11 +244,11 @@ class CitationSurgeon:
 
             track_citation(evidence_id, quote_text, evidence)
 
-            # quote_vetted: quote_text È la quote scelta dal picker LLM
-            # (riversata dalla pipeline) — usarla tale e quale. Ri-estrarre
-            # con lo scoring keyword la trita in frammenti (osservato
-            # 2026-07-24: «israele del diritto all'esistenza» da una frase
-            # vettata di 290 char).
+            # quote_vetted: quote_text IS the quote chosen by the picker LLM
+            # (poured back by the pipeline) — use it as-is. Re-extracting with
+            # keyword scoring shreds it into fragments (observed 2026-07-24:
+            # «israele del diritto all'esistenza» out of a vetted 290-char
+            # sentence).
             return self._format_citation(
                 quote=quote_text,
                 speaker=evidence.get("speaker_name", ""),
@@ -318,19 +311,9 @@ class CitationSurgeon:
         span_start: int,
         span_end: int
     ) -> Optional[str]:
-        """
-        Extract EXACT quote using offsets from text.
+        """Extract the exact quote text[span_start:span_end].
 
-        CRITICAL: This is the ONLY valid citation source.
-        DO NOT use chunk_text for verification or comparison.
-
-        Args:
-            text: Speech text
-            span_start: Start offset
-            span_end: End offset
-
-        Returns:
-            Extracted quote or None if invalid
+        Returns None when the offsets are invalid for the given text.
         """
         if span_start < 0:
             logger.error(f"Invalid span_start: {span_start}")
@@ -358,30 +341,20 @@ class CitationSurgeon:
         pre_extracted: str = "",
         session_number: Optional[int] = None
     ) -> str:
+        """Format a citation as a clickable markdown link.
+
+        Output: [«quote»](evidence_id). If pre_extracted is provided (quote
+        vetted upstream), it is used directly so the intro text and the
+        citation stay consistent.
         """
-        Format citation according to configured format.
-
-        Format: [«quote» — Speaker, Seduta N. X, DD/MM/YYYY](evidence_id)
-        The entire citation is a clickable markdown link.
-        Full metadata is also available in the sidebar when clicked.
-
-        Includes session reference for academic traceability.
-        See: ALCE (Gao et al., EMNLP 2023) on citation traceability;
-        Abercrombie & Batista-Navarro (2019) on parliamentary metadata standards.
-
-        CITATION-FIRST: If pre_extracted is provided (from Stage 2),
-        use it directly. This ensures consistency between the LLM's
-        introductory text and the actual citation.
-        """
-        # CITATION-FIRST: Use pre-extracted citation if available
         if pre_extracted:
             quote = pre_extracted
         else:
-            # Fallback: Extract on-the-fly (legacy behavior).
-            # Guardia "or quote": il gate di citabilità (fase 0) ritorna ""
-            # quando nessuna frase ha overlap con la query — es. quote del
-            # picker sul popolo palestinese per una domanda su Israele
-            # (pertinente ma zero keyword) → senza guardia usciva [«»](id).
+            # Fallback: extract on the fly (legacy behavior).
+            # "or quote" guard: the citability gate returns "" when no
+            # sentence overlaps the query — e.g. a picker quote about the
+            # Palestinian people for a question on Israel (relevant but zero
+            # keywords) → without the guard the output was [«»](id).
             query = getattr(self, '_current_query', '')
             if query and len(quote) > 80:
                 quote = extract_best_sentences(
@@ -392,18 +365,14 @@ class CitationSurgeon:
                 ) or quote
         original_quote = quote
 
-        # NOTE (Fase 3): the regex-based procedural gate that used to live here
-        # was removed — procedural/rhetoric chunks are now filtered upstream via
-        # the stored Chunk.citability_class (index-time classification), and the
-        # quote picker selects from pre-extracted best_quote candidates.
+        # Procedural/rhetoric filtering happens upstream via the stored
+        # Chunk.citability_class (index-time classification); no gate here.
 
-        # Clean up whitespace
         quote = " ".join(quote.split())
 
         # Remove parenthetical content (e.g., applausi, interruzioni)
         quote = re.sub(r'\s*\([^)]*\)\s*', '', quote)
         quote = quote.strip()
-
 
         # Strip trailing sentence punctuation — citations are always embedded
         # in narrative text inside «», so a trailing "." would read as:
@@ -445,8 +414,8 @@ class CitationSurgeon:
             prev = quote
             quote = dangling.sub('', quote)
 
-        # Cintura finale: se il processing ha svuotato la quote (gate + trimming
-        # possono ridurla a ""), ripiega sull'originale ripulito — mai [«»](id).
+        # Final belt: if processing emptied the quote (gate + trimming can
+        # reduce it to ""), fall back to the cleaned original — never [«»](id).
         if len(quote) < 20:
             fallback = " ".join(original_quote.split())
             fallback = re.sub(r'\s*\([^)]*\)\s*', ' ', fallback).strip()
@@ -502,7 +471,7 @@ class CitationSurgeon:
         if pos < 0:
             return inline_quote
 
-        # --- Case 1: pos > 0 — mid-sentence within source_text ---
+        # Case 1: pos > 0 — mid-sentence within source_text
         if pos > 0:
             char_before = source_text[pos - 1]
 
@@ -526,10 +495,11 @@ class CitationSurgeon:
 
             expansion_len = pos - sentence_start
             if expansion_len > max_expansion:
-                # Cap 160→320 (2026-07-24): le frasi parlamentari sono lunghe —
-                # «Israele del diritto all'esistenza» stava a ~160 char
-                # dall'inizio frase e il cap restituiva il frammento ROTTO
-                # invece di espandere. Se anche 320 non basta, meglio saperlo.
+                # Cap raised 160→320 (2026-07-24): parliamentary sentences are
+                # long — «Israele del diritto all'esistenza» sat ~160 chars
+                # from the sentence start and the cap returned the broken
+                # fragment instead of expanding. If even 320 is not enough,
+                # better to know via the warning.
                 logger.warning(
                     f"Sentence-start expansion aborted: needs {expansion_len} chars "
                     f"(cap {max_expansion}) — keeping mid-sentence fragment "
@@ -539,7 +509,7 @@ class CitationSurgeon:
 
             return source_text[sentence_start: pos + len(inline_quote)]
 
-        # --- Case 2: pos == 0 — source_text starts mid-sentence ---
+        # Case 2: pos == 0 — source_text starts mid-sentence
         # The chunk boundary (span_start) cut the sentence; expand using full_text.
         if not full_text or span_start <= 0:
             return inline_quote
@@ -661,10 +631,11 @@ class CitationSurgeon:
         Looks for text patterns that suggest unsupported assertions.
         """
         unsupported = []
-        # Gli id nei link [«quote»](leg19_sed..._tit00070.sub00010...) contengono
-        # punti: lo split per frase li spezzerebbe a metà, e la coda della frase
-        # citata (senza più « né link) verrebbe marcata come claim senza fonte.
-        # Sostituire i link con un segnaposto « » preserva il marker di citazione.
+        # IDs in [«quote»](leg19_sed..._tit00070.sub00010...) links contain
+        # periods: sentence splitting would cut them in half and the tail of
+        # the cited sentence (with no « or link left) would be flagged as an
+        # unsourced claim. Replacing links with a «» placeholder preserves
+        # the citation marker.
         text = re.sub(r'\[«[^\]]*»\]\([^)]+\)', '«»', text)
         text = self.CITATION_PATTERN_MARKDOWN.sub('«»', text)
         sentences = re.split(r'[.!?]', text)
