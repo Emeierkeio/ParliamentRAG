@@ -9,8 +9,13 @@ import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, ArrowRight, HelpCircle, History, Loader2 } from "lucide-react";
+import { Landmark, ArrowRight, ChevronRight, HelpCircle, History, Loader2 } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -58,9 +63,14 @@ export function ChatArea({
 
   return (
     <div className={cn("flex h-full flex-col bg-background", className)}>
-      {/* Top Search Area - Minimal & Clean */}
+      {/* Top search area: expanded on the welcome screen (new-search mode),
+          compact while reading an answer — the sticky bar must not compete
+          with the research result below it */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="mx-auto max-w-3xl p-3 py-4 md:p-4 md:py-5">
+        <div className={cn(
+          "mx-auto max-w-3xl px-3 md:px-4",
+          hasMessages ? "py-2 md:py-2.5" : "py-4 md:py-5"
+        )}>
           <div className="flex items-center gap-2">
             {mobileMenuButton}
             <ChatInput
@@ -76,21 +86,24 @@ export function ChatArea({
                 size="icon"
                 onClick={onOpenHistory}
                 className="h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
-                title="Cronologia"
+                title={t("historyLabel")}
+                aria-label={t("historyLabel")}
               >
                 <History className="h-4 w-4" />
               </Button>
             )}
           </div>
-          <p className="mt-1.5 px-1 text-[10px] leading-tight text-muted-foreground/60">
-            {t("researchNote")}{" "}
-            <a
-              href="/privacy"
-              className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
-            >
-              Privacy
-            </a>
-          </p>
+          {!hasMessages && (
+            <p className="mt-1.5 px-1 text-[10px] leading-tight text-muted-foreground/60">
+              {t("researchNote")}{" "}
+              <a
+                href="/privacy"
+                className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+              >
+                Privacy
+              </a>
+            </p>
+          )}
         </div>
       </div>
 
@@ -123,9 +136,13 @@ export function ChatArea({
                   if (message.role === "user" && nextMsg?.gate) return null;
                   const chatId = message.role === "user" && nextMsg?.chatId ? nextMsg.chatId : undefined;
                   const answerTrace = message.role === "user" ? nextMsg?.trace : undefined;
+                  const answerStats = message.role === "user" ? nextMsg?.topicStats : undefined;
                   const isLastUserMsg = message.role === "user" && (idx === messages.length - 1 || idx === messages.length - 2);
 
-                  // Show progress stepper below the last user message (only when streaming text or completed)
+                  // Progress below the last user message: live stepper while
+                  // streaming; once complete, the pipeline is methodology and
+                  // collapses behind a quiet disclosure instead of dominating
+                  // the finished research page.
                   let progressSlot: React.ReactNode = null;
                   if (isLastUserMsg) {
                     if (isLoading && progress && progress.stepResults?.some(r => r.step === 7)) {
@@ -136,8 +153,8 @@ export function ChatArea({
                       );
                     } else if (!isLoading && lastCompletedProgress) {
                       progressSlot = (
-                        <div className="pt-4">
-                          <CompletedProgressStepper progress={lastCompletedProgress} />
+                        <div className="pt-3">
+                          <CompletedMethodDisclosure progress={lastCompletedProgress} />
                         </div>
                       );
                     }
@@ -152,7 +169,7 @@ export function ChatArea({
                       : undefined;
 
                   return (
-                    <MessageBubble key={message.id} message={message} chatId={chatId} answerTrace={answerTrace} progressSlot={progressSlot} onSuggestionClick={onSendMessage} queryText={queryText} />
+                    <MessageBubble key={message.id} message={message} chatId={chatId} answerTrace={answerTrace} answerStats={answerStats} progressSlot={progressSlot} onSuggestionClick={onSendMessage} queryText={queryText} />
                   );
                 })}
 
@@ -163,6 +180,32 @@ export function ChatArea({
         )}
       </ScrollArea>
     </div>
+  );
+}
+
+/** Completed pipeline behind a quiet disclosure: transparency on demand,
+    without the execution log competing with the research result. */
+function CompletedMethodDisclosure({ progress }: { progress: ProcessingProgress }) {
+  const tPi = useTranslations("ProgressIndicator");
+  const [open, setOpen] = useState(false);
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger asChild>
+        <button
+          className="group inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 hover:text-primary transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-expanded={open}
+        >
+          <ChevronRight
+            className={cn("h-3 w-3 transition-transform duration-200", open && "rotate-90")}
+            aria-hidden="true"
+          />
+          {tPi("howBuilt")}
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pt-3">
+        <CompletedProgressStepper progress={progress} />
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
