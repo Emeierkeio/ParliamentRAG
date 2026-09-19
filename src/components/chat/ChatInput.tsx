@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { config } from "@/config";
 import { Send, Square } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -23,6 +29,7 @@ export function ChatInput({
   className,
   placeholder,
 }: ChatInputProps) {
+  const t = useTranslations("Chat");
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -77,27 +84,38 @@ export function ChatInput({
             )}
           />
 
-          {/* Action button */}
+          {/* Action button. Cancelling loses no saved work (the analysis can
+              be re-run), so the stop acts immediately — but it must read as
+              "stop the analysis", never as an error state. */}
           {isLoading ? (
-            <Button
-              size="icon"
-              variant="destructive"
-              onClick={handleCancel}
-              className="h-9 w-9 shrink-0 rounded-xl"
-            >
-              <Square className="h-4 w-4" />
-            </Button>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  onClick={handleCancel}
+                  aria-label={t("stopAnalysis")}
+                  className="h-9 w-9 shrink-0 rounded-xl"
+                >
+                  <Square className="h-4 w-4" aria-hidden="true" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                <p className="text-[11px]">{t("stopAnalysis")}</p>
+              </TooltipContent>
+            </Tooltip>
           ) : (
             <Button
               size="icon"
               onClick={handleSubmit}
               disabled={disabled || !value.trim() || isOverLimit}
+              aria-label={t("placeholder")}
               className={cn(
                 "h-9 w-9 shrink-0 rounded-xl transition-all",
-                value.trim() ? "opacity-100 scale-100" : "opacity-0 scale-90 w-0 h-0 p-0 overflow-hidden" 
+                value.trim() ? "opacity-100 scale-100" : "opacity-0 scale-90 w-0 h-0 p-0 overflow-hidden"
               )}
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-4 w-4" aria-hidden="true" />
             </Button>
           )}
         </div>

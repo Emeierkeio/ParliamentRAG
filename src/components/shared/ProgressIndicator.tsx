@@ -17,7 +17,6 @@ import {
   Compass,
   PenTool,
   Target,
-  Clock,
 } from "lucide-react";
 import {
   Tooltip,
@@ -408,197 +407,112 @@ export function ProgressFullPage({ progress, query, className }: ProgressFullPag
 
     return (
       <div className={cn(
-        "flex flex-col items-center justify-center w-full min-h-[50vh] md:min-h-[60vh] py-10 px-6 text-center",
+        "flex flex-col items-center justify-center w-full min-h-[55vh] md:min-h-[60vh] py-10 px-5",
         className
       )}>
-
-        {/* Icon */}
-        <div className="relative mb-6">
-          {isNext ? (
-            <>
-              <div className="absolute -inset-3 rounded-full bg-green-400/20 animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-green-50 border border-green-200 text-green-600 shadow-sm">
-                <Clock className="h-8 w-8" />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="absolute -inset-4 rounded-full bg-amber-400/10 animate-ping" style={{ animationDuration: "2s" }} />
-              <div className="absolute -inset-2 rounded-full bg-amber-400/8 animate-pulse" />
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 shadow-sm">
-                <Clock className="h-8 w-8" />
-              </div>
-            </>
+        <div className="w-full max-w-xl">
+          {/* The query is the context of the wait: it leads the screen */}
+          {query && (
+            <div className="text-center mb-7">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                {tPi('yourRequest')}
+              </p>
+              <p className="[font-family:var(--font-display)] text-xl sm:text-2xl font-medium tracking-tight leading-snug text-foreground line-clamp-2 [text-wrap:balance]">
+                {query}
+              </p>
+            </div>
           )}
-        </div>
 
-        {/* Primary message */}
-        {isNext ? (
-          <>
-            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-green-700 mb-1">
-              {tPi('youreNext')}
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              {tPi('youreNextDesc')}
-            </p>
-          </>
-        ) : ahead != null ? (
-          <>
-            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-foreground mb-1">
-              {tPi('systemFull')}
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              {ahead === 1
-                ? <><span className="font-semibold text-amber-600">{tPi('systemFullOneAhead', { ahead })}</span></>
-                : <><span className="font-semibold text-amber-600">{tPi('systemFullManyAhead', { ahead })}</span></>
-              }
-              {" "}{tPi('systemFullWillProcess')}
-            </p>
-          </>
-        ) : (
-          <>
-            <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight text-foreground mb-1">
-              {tPi('systemFull')}
-            </h2>
-            <p className="text-sm text-muted-foreground max-w-xs mb-6">
-              {tPi('systemFullQueued')}
-            </p>
-          </>
-        )}
-
-        {/* Queue visualizer: people ahead → arrow → YOU */}
-        {(ahead != null || active > 0) && (
-          <div className="flex items-center gap-2 mb-6">
-            {/* Ahead slots (max 5 shown) */}
-            {ahead != null && ahead > 0 && (() => {
-              const show = Math.min(ahead, 5);
-              const extra = ahead > 5 ? ahead - 5 : 0;
-              return (
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: show }).map((_, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60">
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                      </div>
-                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">{tPi('waitingSlot')}</span>
-                    </div>
-                  ))}
-                  {extra > 0 && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border/60 text-muted-foreground text-xs font-semibold">
-                        +{extra}
-                      </div>
-                      <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wide">{tPi('waitingSlot')}</span>
-                    </div>
-                  )}
-                  {/* Arrow */}
-                  <svg width="16" height="10" viewBox="0 0 20 12" className="mx-1 text-muted-foreground/30 fill-current shrink-0">
-                    <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
-                  </svg>
-                </div>
-              );
-            })()}
-
-            {/* Active processing slots */}
-            {active > 0 && (() => {
-              const showActive = Math.min(active, 3);
-              const extraActive = active > 3 ? active - 3 : 0;
-              return (
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: showActive }).map((_, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                      </div>
-                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">{tPi('processingSlot')}</span>
-                    </div>
-                  ))}
-                  {extraActive > 0 && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary text-xs font-semibold">
-                        +{extraActive}
-                      </div>
-                      <span className="text-[8px] text-primary/60 uppercase tracking-wide font-medium">{tPi('processingSlot')}</span>
-                    </div>
-                  )}
-                  {/* Arrow to user */}
-                  <svg width="16" height="10" viewBox="0 0 20 12" className="mx-1 text-muted-foreground/30 fill-current shrink-0">
-                    <path d="M13.5 0L20 6l-6.5 6V8H0V4h13.5V0z" />
-                  </svg>
-                </div>
-              );
-            })()}
-
-            {/* User slot */}
-            <div className="flex flex-col items-center gap-1">
-              <div className={cn(
-                "relative flex h-10 w-10 items-center justify-center rounded-xl border-2 ring-4",
-                isNext
-                  ? "bg-green-50 border-green-400 ring-green-400/20"
-                  : "bg-amber-50 border-amber-400 ring-amber-400/20"
-              )}>
-                {!isNext && <div className="absolute inset-0 rounded-xl bg-amber-400/20 animate-pulse" />}
-                {pos !== undefined ? (
-                  <span className={cn("relative text-xs font-bold", isNext ? "text-green-700" : "text-amber-700")}>
-                    #{pos}
-                  </span>
-                ) : (
-                  <Clock className="h-4 w-4 text-amber-600" />
-                )}
+          {/* Status card. The aria-live region wraps only title+description:
+              they change on the waiting → next transition, while the facts
+              row below ticks every second and must stay out of it, or the
+              screen reader would announce the timer continuously. */}
+          <div className="rounded-xl border border-border/60 bg-card px-5 py-4">
+            <div role="status" aria-live="polite">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
+                  <span
+                    className={cn(
+                      "absolute inline-flex h-full w-full rounded-full opacity-50 motion-safe:animate-ping",
+                      isNext ? "bg-primary" : "bg-muted-foreground/50"
+                    )}
+                    style={{ animationDuration: "2s" }}
+                  />
+                  <span className={cn(
+                    "relative inline-flex h-2 w-2 rounded-full",
+                    isNext ? "bg-primary" : "bg-muted-foreground/70"
+                  )} />
+                </span>
+                <p className="text-sm font-semibold text-foreground">
+                  {isNext ? tPi('youreNext') : tPi('systemFull')}
+                </p>
               </div>
-              <span className={cn(
-                "text-[8px] font-semibold uppercase tracking-wide",
-                isNext ? "text-green-600" : "text-amber-600"
-              )}>{tPi('you')}</span>
+              <p className="text-[13px] text-muted-foreground leading-relaxed mt-1.5">
+                {isNext ? tPi('youreNextDesc') : tPi('systemFullQueued')}
+              </p>
+            </div>
+
+            {/* Facts: only values the backend really sent */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 pt-3 border-t border-border/40 text-xs text-muted-foreground tabular-nums">
+              {pos !== undefined && !isNext && (
+                <span>
+                  <span className="font-semibold text-foreground">#{pos}</span>{" "}
+                  {tPi('queuePositionLabel')}
+                </span>
+              )}
+              {ahead != null && ahead > 0 && (
+                <span>
+                  {ahead === 1
+                    ? tPi('systemFullOneAhead', { ahead })
+                    : tPi('systemFullManyAhead', { ahead })}
+                </span>
+              )}
+              {active > 0 && <span>{tPi('processingNow', { active })}</span>}
+              <span>
+                {tPi('waitingFor')}{" "}
+                <span className="font-semibold">{formatElapsed(localElapsed)}</span>
+              </span>
+              {estimatedSec != null && (
+                <span>
+                  {tPi('estimate')}:{" "}
+                  <span className="font-semibold">{formatEstimate(estimatedSec)}</span>
+                </span>
+              )}
+            </div>
+
+            {/* Indeterminate activity line: the system is alive, no fake progress */}
+            <div className="mt-3.5 h-[3px] w-full rounded-full bg-muted overflow-hidden" aria-hidden="true">
+              <div className="h-full w-1/3 rounded-full bg-primary/50 motion-safe:animate-[queue-slide_2.2s_ease-in-out_infinite] motion-reduce:w-full motion-reduce:bg-primary/20" />
             </div>
           </div>
-        )}
 
-        {/* Stats row */}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground mb-5">
-          <div className="flex items-center gap-1.5">
-            <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" />
-            <span>{tPi('waitingFor')} <span className="font-semibold tabular-nums">{formatElapsed(localElapsed)}</span></span>
-          </div>
-          {estimatedSec != null && (
-            <>
-              <div className="h-3 w-px bg-border" />
-              <div className="flex items-center gap-1.5">
-                <Clock className="h-3 w-3" />
-                <span>{tPi('estimate')}: <span className="font-semibold tabular-nums">{formatEstimate(estimatedSec)}</span></span>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Reassuring note */}
-        <p className="text-xs text-muted-foreground/50 max-w-xs leading-relaxed mb-10">
-          {tPi('dontClose')}
-        </p>
-
-        {/* System tour while waiting */}
-        <div className="w-full max-w-lg border-t border-border/30 pt-7">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/50 mb-4 text-center">
-            {tPi('discoverWhileWaiting')}
+          <p className="text-[11px] text-muted-foreground/60 text-center mt-3 leading-relaxed">
+            {tPi('dontClose')}
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {SYSTEM_TOUR_FEATURES_CONFIG.map((feat) => {
-              const Icon = feat.icon;
-              return (
-                <div
-                  key={feat.titleKey}
-                  className="flex flex-col gap-2 rounded-xl bg-muted/40 border border-border/40 px-3 py-3 text-left hover:bg-muted/70 transition-colors"
-                >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-3.5 w-3.5" />
+
+          {/* Capabilities: secondary section, subordinate to the status above */}
+          <div className="mt-10 pt-6 border-t border-border/40">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/50 mb-4">
+              {tPi('discoverWhileWaiting')}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 text-left">
+              {SYSTEM_TOUR_FEATURES_CONFIG.map((feat) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={feat.titleKey} className="flex items-start gap-2.5">
+                    <Icon className="h-3.5 w-3.5 text-primary/70 mt-0.5 shrink-0" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-foreground leading-tight">
+                        {tPi(feat.titleKey as Parameters<typeof tPi>[0])}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
+                        {tPi(feat.descKey as Parameters<typeof tPi>[0])}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-semibold text-foreground leading-tight">{tPi(feat.titleKey as Parameters<typeof tPi>[0])}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{tPi(feat.descKey as Parameters<typeof tPi>[0])}</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
