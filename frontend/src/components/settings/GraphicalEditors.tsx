@@ -89,10 +89,12 @@ const STR = {
     stageAnalyst: "Analista",
     stageWriter: "Scrittore",
     stageIntegrator: "Integratore",
-    modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — gpt-4.1-mini è sufficiente ed economico.",
+    stagePicker: "Quote Picker",
+    modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — un modello piccolo è sufficiente ed economico.",
     modelInfoWriter: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
     modelInfoIntegrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
-    tempNote: "Temperatura e max token sono fissi per stadio (Analista 0.1, Scrittore 0.1, Integratore 0.0), tarati nel codice per avere citazioni verbatim riproducibili. Da qui si cambia solo il modello, che vale dalla query successiva.",
+    modelInfoPicker: "Seleziona la citazione verbatim per ogni sezione. I pick errati vengono scartati dalla verifica substring a valle, quindi un errore costa una citazione in meno, mai una citazione falsa — un modello piccolo è sicuro.",
+    tempNote: "Temperatura e max token sono fissi per stadio (Analista 0.1, Scrittore 0.1, Integratore 0.0; i modelli gpt-5.6 usano la temperatura di default), tarati nel codice per avere citazioni verbatim riproducibili. Da qui si cambia solo il modello, che vale dalla query successiva.",
     positionBrief: "Position Brief",
     enabledM: "Abilitato",
     positionBriefInfo: "Fornisce allo scrittore un riassunto della posizione complessiva del gruppo parlamentare (top N chunk) prima che scriva la sezione. Migliora la coerenza ideologica delle citazioni selezionate.",
@@ -113,7 +115,7 @@ const STR = {
     enabledF: "Abilitata",
     qrEnabledInfo: "Se abilitata, le query brevi vengono riformulate e arricchite con termini correlati prima di essere inviate al retrieval. Migliora il recall per query ambigue o troppo sintetiche.",
     qrModel: "Modello",
-    qrModelInfo: "Modello LLM usato per riscrivere le query. gpt-4.1-mini è raccomandato: i modelli più piccoli non conoscono i termini politici di nicchia (es. \"remigrazione\", \"ius scholae\") e li espandono in modo errato, degradando il retrieval.",
+    qrModelInfo: "Modello LLM usato per riscrivere le query. Attenzione ai modelli piccoli di vecchia generazione: gpt-4.1-nano non conosceva i termini politici di nicchia (es. \"remigrazione\", \"ius scholae\") e li espandeva in modo errato, degradando il retrieval; gpt-5.6-luna li gestisce correttamente.",
     maxWords: "Max Parole per Riscrittura",
     maxWordsInfo: "Soglia massima di parole: query con un numero di parole uguale o inferiore vengono riscritte. Query già descrittive (più lunghe) vengono passate direttamente al retrieval.",
     unitWords: "parole",
@@ -167,10 +169,12 @@ const STR = {
     stageAnalyst: "Analyst",
     stageWriter: "Writer",
     stageIntegrator: "Integrator",
-    modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task — gpt-4.1-mini is sufficient and cost-effective.",
+    stagePicker: "Quote Picker",
+    modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task — a small model is sufficient and cost-effective.",
     modelInfoWriter: "Stage 2: writes the sections for each parliamentary group from the retrieved chunks. Requires high narrative quality and verbatim citation fidelity — gpt-4.1 recommended.",
     modelInfoIntegrator: "Stage 3: integrates the sections into a coherent, balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use an LLM.",
-    tempNote: "Temperature and max tokens are fixed per stage (Analyst 0.1, Writer 0.1, Integrator 0.0), tuned in code for reproducible verbatim citations. Only the model can be changed here; it applies from the next query.",
+    modelInfoPicker: "Selects the verbatim quote for each section. Bad picks are dropped by the downstream substring verification, so a mistake costs a missing citation, never a false one — a small model is safe here.",
+    tempNote: "Temperature and max tokens are fixed per stage (Analyst 0.1, Writer 0.1, Integrator 0.0; gpt-5.6 models use the default temperature), tuned in code for reproducible verbatim citations. Only the model can be changed here; it applies from the next query.",
     positionBrief: "Position Brief",
     enabledM: "Enabled",
     positionBriefInfo: "Provides the writer with a summary of the parliamentary group's overall position (top N chunks) before it writes the section. Improves the ideological coherence of the selected citations.",
@@ -191,7 +195,7 @@ const STR = {
     enabledF: "Enabled",
     qrEnabledInfo: "If enabled, short queries are reformulated and enriched with related terms before being sent to retrieval. Improves recall for ambiguous or overly terse queries.",
     qrModel: "Model",
-    qrModelInfo: "LLM model used to rewrite queries. gpt-4.1-mini is recommended: smaller models do not know niche political terms (e.g. \"remigrazione\", \"ius scholae\") and expand them incorrectly, degrading retrieval.",
+    qrModelInfo: "LLM model used to rewrite queries. Beware of older-generation small models: gpt-4.1-nano did not know niche political terms (e.g. \"remigrazione\", \"ius scholae\") and expanded them incorrectly, degrading retrieval; gpt-5.6-luna handles them correctly.",
     maxWords: "Max Words for Rewriting",
     maxWordsInfo: "Maximum word threshold: queries with this many words or fewer are rewritten. Already descriptive (longer) queries are passed directly to retrieval.",
     unitWords: "words",
@@ -748,13 +752,12 @@ interface GenerationEditorProps {
 }
 
 const MODEL_OPTIONS = [
+  "gpt-6-astra",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-5.6-luna",
   "gpt-4.1",
   "gpt-4.1-mini",
-  "gpt-4.1-nano",
-  "gpt-4o",
-  "gpt-4o-mini",
-  "gpt-4-turbo",
-  "gpt-3.5-turbo",
 ];
 
 export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
@@ -765,6 +768,14 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
     analyst: S.modelInfoAnalyst,
     writer: S.modelInfoWriter,
     integrator: S.modelInfoIntegrator,
+    quote_picker: S.modelInfoPicker,
+  };
+
+  const stageLabels: Record<string, string> = {
+    analyst: S.stageAnalyst,
+    writer: S.stageWriter,
+    integrator: S.stageIntegrator,
+    quote_picker: S.stagePicker,
   };
 
   const updateModel = (stage: string, model: string) => {
@@ -793,7 +804,7 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
               <div key={stage} className="flex items-center gap-3">
                 <div className="w-28 flex items-center gap-1 shrink-0">
                   <Label className="text-sm">
-                    {stage === "analyst" ? S.stageAnalyst : stage === "writer" ? S.stageWriter : S.stageIntegrator}
+                    {stageLabels[stage] ?? stage}
                   </Label>
                   {modelInfo[stage] && <InfoPopover text={modelInfo[stage]} />}
                 </div>
@@ -896,7 +907,7 @@ interface QueryRewritingEditorProps {
   onChange: (data: SystemConfig["query_rewriting"]) => void;
 }
 
-const QR_MODEL_OPTIONS = ["gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o-mini", "gpt-4o", "gpt-3.5-turbo"];
+const QR_MODEL_OPTIONS = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-4.1", "gpt-4.1-mini"];
 
 export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorProps) {
   const lang = useLang();
