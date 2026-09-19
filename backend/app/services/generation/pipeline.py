@@ -574,6 +574,18 @@ class GenerationPipeline:
         #    followed by a period (no object) is never a meaningful sentence here.
         final_text = re.sub(r'\*\*[^*\n]+\*\*\s+\w+\.', '', final_text)
 
+        # Attribution enforcement: a deputy's bold name may only appear in a
+        # sentence that carries their citation. The writer prompt states the
+        # rule and the sectional stage anonymizes, but the LLM integrator can
+        # still move names into citation-free sentences.
+        final_text, attribution_fixes = self._enforce_bold_name_attribution(
+            final_text, evidence_map
+        )
+        if attribution_fixes:
+            pipeline_metadata["stages"]["attribution_enforcement"] = {
+                "names_anonymized": attribution_fixes,
+            }
+
         # Replace unresolved [CIT:id] placeholders with an error marker
         remaining_placeholders = re.findall(r'\[CIT:([^\]]+)\]', final_text)
         if remaining_placeholders:
@@ -895,6 +907,60 @@ class GenerationPipeline:
         if converted != intro:
             logger.info("[INTRO] Spelled-out stat numbers converted to digits")
         return converted + text[end:]
+
+    @staticmethod
+    def _enforce_bold_name_attribution(
+        text: str,
+        evidence_map: Dict[str, Any],
+    ) -> tuple:
+        """Anonymize bold speaker names in sentences without their citation.
+
+        A bold **Name** implies "these are their words": without a citation
+        link in the same sentence the attribution is unverifiable, so the
+        name becomes a generic group reference. Only names of known evidence
+        speakers are touched — other bold text is left alone. Link IDs
+        contain periods, so sentence boundaries are computed on a masked
+        copy where every link is padded out.
+
+        Returns (possibly modified text, number of anonymized names).
+        """
+        names = set()
+        for e in evidence_map.values():
+            full = (e.get("speaker_name") or "").strip()
+            if full:
+                names.add(full)
+                names.add(full.split()[-1])
+        if not names:
+            return text, 0
+
+        link_re = re.compile(r'\[«[^\]]*»\]\([^)\s]+\)')
+        masked_chars = list(text)
+        for m in link_re.finditer(text):
+            for i in range(m.start(), m.end()):
+                masked_chars[i] = '\x01'
+        masked = ''.join(masked_chars)
+
+        replacements = []
+        for m in re.finditer(r'\*\*([^*\n]+)\*\*', text):
+            if m.group(1).strip() not in names:
+                continue
+            start = max(masked.rfind(ch, 0, m.start()) for ch in '.!?\n') + 1
+            ends = [
+                idx for idx in (masked.find(ch, m.end()) for ch in '.!?\n')
+                if idx != -1
+            ]
+            end = min(ends) if ends else len(masked)
+            sentence = masked[start:end]
+            if '\x01' in sentence or '[CIT:' in sentence or '«' in sentence:
+                continue
+            replacements.append((m.start(), m.end(), m.group(1).strip()))
+
+        for a, b, name in reversed(replacements):
+            replacement = 'Il gruppo' if a == 0 or text[a - 1] in '.!?\n' else 'il gruppo'
+            text = text[:a] + replacement + text[b:]
+            logger.info(f"Attribution enforcement: anonymized bold name {name!r}")
+
+        return text, len(replacements)
 
     @staticmethod
     def _strip_residual_citation_fragments(text: str) -> str:

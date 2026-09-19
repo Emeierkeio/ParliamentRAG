@@ -195,6 +195,13 @@ generation:
   # sectional 0.1/800, integrator 0.0/5000), chosen for reproducible
   # verbatim citations.
 
+  # Stage 3 integration mode:
+  # - "assembler": sections are assembled deterministically into coalition
+  #   blocks; the LLM writes only the introduction (which carries no citation
+  #   markers). Citations/attributions preserved by construction.
+  # - "llm": legacy full-document rewrite with citation guard and retry.
+  integrator_mode: "assembler"
+
   # Position brief: provides group-level context to the sectional writer
   # so citations are selected consistently with the group's overall stance
   position_brief:

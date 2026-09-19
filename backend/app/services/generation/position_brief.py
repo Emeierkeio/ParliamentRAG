@@ -149,6 +149,27 @@ class PositionBriefBuilder:
             return truncated[:pos].rstrip()
         return truncated.rstrip()
 
+    @staticmethod
+    def _direction_by_period(evidence_texts: List[tuple]) -> Dict[str, str]:
+        """Detect the stance direction separately for each year.
+
+        Args:
+            evidence_texts: list of (year_or_None, text) tuples
+
+        Returns:
+            {year: direction_label} for years with at least one dated text.
+        """
+        by_year: Dict[str, List[str]] = {}
+        for year, text in evidence_texts:
+            if year:
+                by_year.setdefault(year, []).append(text)
+
+        directions = {}
+        for year, texts in sorted(by_year.items()):
+            label, _, _, _ = _detect_direction(texts)
+            directions[year] = label
+        return directions
+
     def build_brief(
         self,
         evidence: List[Dict[str, Any]],
@@ -156,6 +177,10 @@ class PositionBriefBuilder:
     ) -> str:
         """
         Build a position brief from the party's evidence.
+
+        The brief is an EDITORIAL HYPOTHESIS derived from lexical patterns,
+        not ground truth: the wording tells the LLM to double-check apparent
+        contradictions against the evidence instead of discarding them.
 
         Args:
             evidence: Evidence list sorted by authority_score (descending)
@@ -181,6 +206,7 @@ class PositionBriefBuilder:
         # Extract key passages from each chunk, annotating reported speech
         key_passages = []
         full_texts = []  # full text for direction detection (not truncated)
+        dated_texts = []  # (year, text) for the per-period direction
         reported_speech_count = 0
         reported_speech_opening_count = 0
         for e in top_evidence:
@@ -188,6 +214,8 @@ class PositionBriefBuilder:
             if not text:
                 continue
             full_texts.append(text)
+            year = str(e.get("date", ""))[:4] or None
+            dated_texts.append((year if year and year.isdigit() else None, text))
             passage = self._truncate_at_boundary(text, self.chars_per_chunk)
             if passage:
                 key_passages.append(passage)
@@ -202,16 +230,44 @@ class PositionBriefBuilder:
         if not key_passages:
             return ""
 
-        # Detect direction from full texts
+        # Detect direction from full texts, overall and per period
         direction, pro_hits, against_hits, cond_hits = _detect_direction(full_texts)
+        period_directions = self._direction_by_period(dated_texts)
+        determined_periods = {
+            y: d for y, d in period_directions.items()
+            if d in ("FAVOREVOLE", "CONTRARIO", "CONDIZIONALE")
+        }
+        evolving = len(set(determined_periods.values())) > 1
+
+        # Same-window mixed signals without a clear majority: conflicting,
+        # not averageable into a single stance.
+        conflicting = (
+            not evolving
+            and pro_hits > 0 and against_hits > 0
+            and abs(pro_hits - against_hits) <= 1
+        )
 
         logger.info(
             f"[POSITION_BRIEF] {party}: direction={direction} "
-            f"(pro={pro_hits}, contro={against_hits}, cond={cond_hits})"
+            f"(pro={pro_hits}, contro={against_hits}, cond={cond_hits}, "
+            f"periods={period_directions}, evolving={evolving})"
         )
 
         # Direction label with textual emphasis for the LLM
-        if direction == "CONTRARIO":
+        if evolving:
+            timeline = "; ".join(
+                f"{y}: {d}" for y, d in sorted(determined_periods.items())
+            )
+            direction_label = (
+                f"IN EVOLUZIONE nel tempo ({timeline}) — NON fondere i periodi "
+                f"in una posizione media, racconta l'evoluzione ancorata alle date"
+            )
+        elif conflicting:
+            direction_label = (
+                "CONFLITTUALE (segnali contrastanti nello stesso periodo) — "
+                "NON forzare una sintesi unica, riporta la tensione interna"
+            )
+        elif direction == "CONTRARIO":
             direction_label = "CONTRARIO alla proposta/politica"
         elif direction == "FAVOREVOLE":
             direction_label = "FAVOREVOLE alla proposta/politica"
@@ -221,11 +277,13 @@ class PositionBriefBuilder:
             direction_label = "NON DETERMINATO dai testi disponibili"
 
         brief_lines = [
-            f"POSIZIONE COMPLESSIVA DEL GRUPPO ({party}):",
+            f"IPOTESI DI POSIZIONE DEL GRUPPO ({party}) — stima preliminare "
+            f"derivata da pattern lessicali, NON un fatto verificato:",
             f"Orientamento stimato: {direction_label}",
-            "ATTENZIONE: scegli una citazione COERENTE con l'orientamento sopra.",
-            "   Se l'orientamento è CONTRARIO, VIETATO citare frasi che sembrano difendere la proposta.",
-            "   Se l'orientamento è FAVOREVOLE, VIETATO citare frasi che sembrano attaccarla.",
+            "Usa questa ipotesi come contesto, non come vincolo: se la citazione",
+            "   selezionata sembra contraddire l'orientamento stimato, verifica nel",
+            "   testo se è la posizione reale (critica e sostegno sono entrambe",
+            "   evidenze valide) o una premessa retorica/discorso riportato.",
             f"Principali oratori: {', '.join(speakers[:3])}",
         ]
 

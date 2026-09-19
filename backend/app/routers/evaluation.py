@@ -91,6 +91,30 @@ def _normalize_apostrophes(text: str) -> str:
     return text
 
 
+_CLAIM_VERBS = re.compile(
+    r'\b(?:sostiene|afferma|dichiara|propone|critica|vuole|chiede|denuncia|'
+    r'contesta|ribadisce|respinge|difende)\b',
+    re.IGNORECASE,
+)
+
+
+def _compute_unsupported_claim_rate(answer: str) -> Tuple[float, int, int]:
+    """Share of claim-verb sentences that carry no citation.
+
+    Citation links are masked to a «» marker before sentence splitting
+    (their IDs contain periods). Deterministic proxy: synthesis sentences
+    legitimately exist, so the target is a low rate, not zero.
+    """
+    if not answer:
+        return 0.0, 0, 0
+    masked = re.sub(r'\[«[^\]]*»\]\([^)]+\)', '«»', answer)
+    sentences = [s.strip() for s in re.split(r'[.!?]', masked) if s.strip()]
+    claim_sentences = [s for s in sentences if _CLAIM_VERBS.search(s)]
+    unsupported = [s for s in claim_sentences if '«' not in s]
+    rate = len(unsupported) / len(claim_sentences) if claim_sentences else 0.0
+    return rate, len(unsupported), len(claim_sentences)
+
+
 def _count_parties_in_text(answer: str) -> int:
     """Count how many of the 10 known parliamentary groups are mentioned in the answer text."""
     answer_norm = _normalize_apostrophes(unicodedata.normalize("NFKC", answer)).lower()
@@ -376,6 +400,9 @@ def _compute_automated_metrics(
     parties_in_text = _count_parties_in_text(answer)
     completeness = min(parties_in_text / ALL_PARTIES, 1.0)
 
+    # 6b. Unsupported claim rate (deterministic text proxy)
+    ucr, ucr_count, claim_count = _compute_unsupported_claim_rate(answer)
+
     # 7. Baseline authority (per-chat, per-group)
     # Prefer pre-computed baseline experts (query-specific scores) for an accurate
     # apples-to-apples comparison with the system's authority_by_group.
@@ -406,6 +433,9 @@ def _compute_automated_metrics(
         experts_count=len(experts),
         authority_discrimination=round(auth_discrimination, 4),
         response_completeness=round(completeness, 4),
+        unsupported_claim_rate=round(ucr, 4),
+        unsupported_claim_count=ucr_count,
+        claim_sentence_count=claim_count,
         authority_by_group=authority_by_group,
         baseline_authority=baseline_authority,
         baseline_authority_by_group=baseline_authority_by_group,
@@ -488,6 +518,10 @@ def _compute_aggregated(
         ci_authority_discrimination=_compute_ci_unbounded(ad),
         ci_response_completeness=_compute_ci(rc),
     )
+
+    ucr = [m.unsupported_claim_rate for m in metrics_list]
+    result.avg_unsupported_claim_rate = round(sum(ucr) / n, 4)
+    result.ci_unsupported_claim_rate = _compute_ci(ucr)
 
     # Baseline comparison metrics (optional, pre-computed by enrich_evaluation_set.py)
     if baseline_party_coverage_list and len(baseline_party_coverage_list) > 0:

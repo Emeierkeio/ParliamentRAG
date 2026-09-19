@@ -163,7 +163,10 @@ class IdeologyScorer:
             if query and compass_config.get("axis_method", "semantic") == "semantic":
                 try:
                     from .semantic_axes import SemanticAxisGenerator
-                    semantic_axes = SemanticAxisGenerator(full_config).generate(query)
+                    semantic_axes = SemanticAxisGenerator(full_config).generate(
+                        query,
+                        evidence_texts=self._axis_evidence_sample(fragments),
+                    )
                 except Exception as e:
                     logger.warning(f"Semantic axes failed, falling back to PCA: {e}")
 
@@ -195,6 +198,31 @@ class IdeologyScorer:
         except Exception as e:
             logger.error(f"Compass pipeline failed: {e}")
             return self._fallback_compass_data(evidence_list, warning=str(e))
+
+    @staticmethod
+    def _axis_evidence_sample(fragments: List[Fragment], max_texts: int = 12) -> List[str]:
+        """Group-diverse fragment sample for evidence-grounded axis generation.
+
+        Round-robin across groups (retrieval order within each group) so the
+        axes see the actual spread of the debate, not just the dominant group.
+        """
+        by_group: Dict[str, List[Fragment]] = {}
+        for f in fragments:
+            if f.text:
+                by_group.setdefault(f.group_id, []).append(f)
+
+        sample: List[str] = []
+        depth = 0
+        while len(sample) < max_texts:
+            added = False
+            for group_fragments in by_group.values():
+                if depth < len(group_fragments) and len(sample) < max_texts:
+                    sample.append(group_fragments[depth].text)
+                    added = True
+            if not added:
+                break
+            depth += 1
+        return sample
 
     def _evidence_to_fragments(
         self,

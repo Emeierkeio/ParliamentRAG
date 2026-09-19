@@ -1,5 +1,13 @@
 # ParliamentRAG — Prompts
 
+> **2026-09-19 — branch `feat/generation-verifiability`**: every generation
+> prompt was restructured (candidate-based quote picker, assembler
+> integrator with intro-only LLM call, evidence-grounded analyst, data
+> delimiters in all prompts). The transcriptions below predate that refactor:
+> until this document is regenerated, the code is the source of truth. See
+> `docs/design/generation-verifiability.md` for the rationale and the new
+> prompt inventory.
+
 Prompts of the ParliamentRAG system, reproduced verbatim from the current
 code. Each section names the source file (paths relative to the repository
 root) and the model that executes the prompt, as configured in

@@ -29,6 +29,12 @@ class AutomatedMetrics(BaseModel):
     # Response Completeness: sections (## headers) / 10 parties
     response_completeness: float = Field(..., ge=0, le=1)
 
+    # Unsupported Claim Rate: claim-verb sentences without a citation /
+    # claim-verb sentences (lower is better; deterministic text proxy)
+    unsupported_claim_rate: float = Field(0.0, ge=0, le=1)
+    unsupported_claim_count: int = 0
+    claim_sentence_count: int = 0
+
     # Authority Utilization: mean authority_score of cited experts
     authority_utilization: float = Field(..., ge=0, le=1)
     experts_count: int = 0
@@ -62,6 +68,10 @@ class AggregatedMetrics(BaseModel):
     ci_response_completeness: Tuple[float, float]
     ci_authority_utilization: Tuple[float, float]
     ci_authority_discrimination: Tuple[float, float]
+
+    # Unsupported claim rate (additive: absent on payloads from older code)
+    avg_unsupported_claim_rate: Optional[float] = None
+    ci_unsupported_claim_rate: Optional[Tuple[float, float]] = None
 
     # Baseline comparison metrics (computed from evaluation_set.json)
     avg_baseline_party_coverage: Optional[float] = None
