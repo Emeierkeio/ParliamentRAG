@@ -16,6 +16,12 @@ from ..services.translation import translate_citation_batch, translate_response_
 from ..services.compass import IdeologyScorer
 from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
+from ..services.response_cache import (
+    build_cache_key,
+    config_fingerprint,
+    get_inflight_registry,
+    get_response_cache,
+)
 from ..services.deps import get_services
 from ..config import get_config
 
@@ -159,12 +165,116 @@ async def _acquire_pipeline_slot(
                 pass
 
 
-async def process_chat_background(request: ChatRequest, task_id: str):
+# Data-version anchor for the response cache, refreshed at most every 10
+# minutes: it moves only at `make update-data` (SchemaMeta.updated_at), so a
+# short in-process cache avoids one Neo4j round-trip per chat request.
+_DATA_VERSION_TTL_S = 600
+_data_version_cache: tuple = (0.0, None)  # (monotonic timestamp, version)
+
+
+async def _get_data_version() -> Optional[str]:
+    """Return the corpus data version, or None (→ cache bypass) on failure."""
+    global _data_version_cache
+    now = time.monotonic()
+    ts, cached = _data_version_cache
+    if cached is not None and now - ts < _DATA_VERSION_TTL_S:
+        return cached
+
+    def _query():
+        return get_services()["neo4j"].query(
+            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+            "WITH m.updated_at AS stamped "
+            "OPTIONAL MATCH (s:Session) "
+            "WITH stamped, max(s.date) AS newest "
+            "RETURN coalesce(toString(stamped), toString(newest)) AS v"
+        )
+
+    try:
+        rows = await asyncio.get_running_loop().run_in_executor(None, _query)
+        version = rows[0]["v"] if rows and rows[0].get("v") else None
+    except Exception as e:
+        logger.warning("[RESPONSE_CACHE] data version lookup failed: %s", e)
+        version = None
+    if version:
+        _data_version_cache = (now, version)
+    return version
+
+
+async def _replay_cached_events(task_id: str, events: List[Dict[str, Any]]):
+    """Replay a cached run into a fresh task: instant, no queue, no pipeline."""
+    store = get_task_store()
+    for event in events:
+        await store.add_event(task_id, event)
+    await store.complete_task(task_id)
+
+
+async def _mirror_inflight_task(
+    follower_id: str,
+    leader_id: str,
+    locale: str = "it",
+    poll_interval: float = 0.25,
+    max_wait: float = 900.0,
+):
+    """Forward a running leader task's events to a follower task.
+
+    In-flight deduplication: identical concurrent requests share one
+    pipeline. The TaskStore queue has a single consumer, so followers
+    mirror the leader's persisted event list instead of reading its queue.
+    """
+    store = get_task_store()
+    forwarded = 0
+    waited = 0.0
+    leader = await store.get_task(leader_id)
+    while leader is not None and waited <= max_wait:
+        for event in leader.events[forwarded:]:
+            await store.add_event(follower_id, event)
+        forwarded = len(leader.events)
+        if leader.status != "processing":
+            break
+        await asyncio.sleep(poll_interval)
+        waited += poll_interval
+        leader = await store.get_task(leader_id)
+
+    if leader is None or leader.status == "processing":
+        msg = (
+            "L'analisi condivisa non è più disponibile. Riprova."
+            if locale == "it"
+            else "The shared analysis is no longer available. Please retry."
+        )
+        await store.add_event(follower_id, {"type": "error", "message": msg})
+        await store.fail_task(follower_id, "inflight leader unavailable")
+        return
+
+    # Forward any tail emitted between the last poll and the status flip
+    for event in leader.events[forwarded:]:
+        await store.add_event(follower_id, event)
+
+    if leader.status == "completed":
+        await store.complete_task(follower_id)
+    elif leader.status == "cancelled":
+        msg = (
+            "L'analisi è stata interrotta. Riprova."
+            if locale == "it"
+            else "The analysis was interrupted. Please retry."
+        )
+        await store.add_event(follower_id, {"type": "error", "message": msg})
+        await store.fail_task(follower_id, "inflight leader cancelled")
+    else:
+        await store.fail_task(follower_id, leader.error_message or "inflight leader failed")
+
+
+async def process_chat_background(
+    request: ChatRequest,
+    task_id: str,
+    cache_key: Optional[str] = None,
+):
     """
     Process chat pipeline in the background, storing events in TaskStore.
 
     This runs independently of the SSE connection so that mobile browsers
-    can disconnect without losing results.
+    can disconnect without losing results. When cache_key is given, this
+    run is the in-flight leader for that key: the completed event list is
+    stored in the response cache and the key is released at the end.
     """
     store = get_task_store()
 
@@ -195,6 +305,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
                  "The system is too busy right now. Please try again in a few minutes.")
         await emit("error", {"message": msg})
         await store.fail_task(task_id, "Timeout in coda")
+        if cache_key:
+            await get_inflight_registry().release(cache_key, task_id)
         return
 
     try:
@@ -682,6 +794,11 @@ async def process_chat_background(request: ChatRequest, task_id: str):
 
         await store.complete_task(task_id)
 
+        if cache_key:
+            state = await store.get_task(task_id)
+            if state and state.status == "completed":
+                await get_response_cache().store(cache_key, state.events)
+
     except TaskCancelledError:
         total_time = time.time() - pipeline_start
         logger.info(f"[PIPELINE] Task {task_id} cancelled after {total_time*1000:.1f}ms")
@@ -696,6 +813,8 @@ async def process_chat_background(request: ChatRequest, task_id: str):
         async with _get_counter_lock():
             _pipeline_active = max(0, _pipeline_active - 1)
         semaphore.release()
+        if cache_key:
+            await get_inflight_registry().release(cache_key, task_id)
         logger.info(f"[PIPELINE] Semaphore released for task {task_id} "
                     f"(active={_pipeline_active}, waiting={len(_waiting_queue)})")
 
@@ -1361,26 +1480,65 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
     await store.cleanup_expired()
 
     task_id = request.task_id or store.generate_task_id()
+
+    def _task_stream_response() -> StreamingResponse:
+        async def stream_with_task_id():
+            # Send task_id as the first event so the client can use it for reconnection
+            yield sse_event("task_id", {"task_id": task_id})
+            async for chunk in stream_from_task(task_id):
+                yield chunk
+
+        return StreamingResponse(
+            stream_with_task_id(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            }
+        )
+
+    # Response cache + in-flight dedup: the lookup happens BEFORE task
+    # creation and queue entry, so a hit never occupies a pipeline slot and
+    # never shows the queue screen. Reconnection requests (client-provided
+    # task_id) bypass the cache: they resume an existing task.
+    cache = get_response_cache()
+    if cache.enabled and not request.task_id:
+        data_version = await _get_data_version()
+        if data_version:
+            cache_key = build_cache_key(
+                query=request.query,
+                locale=request.locale,
+                mode=request.mode,
+                data_version=data_version,
+                config_fingerprint=config_fingerprint(get_config().load_config()),
+            )
+
+            cached_events = await cache.lookup(cache_key)
+            if cached_events is not None:
+                await store.create_task(task_id)
+                asyncio.create_task(_replay_cached_events(task_id, cached_events))
+                return _task_stream_response()
+
+            leader_id = await get_inflight_registry().claim(cache_key, task_id)
+            if leader_id is not None:
+                await store.create_task(task_id)
+                asyncio.create_task(
+                    _mirror_inflight_task(task_id, leader_id, locale=request.locale)
+                )
+                return _task_stream_response()
+
+            # Leader for this key: run the pipeline and store on success
+            await store.create_task(task_id)
+            asyncio.create_task(process_chat_background(request, task_id, cache_key=cache_key))
+            return _task_stream_response()
+
     await store.create_task(task_id)
 
     # Launch pipeline in background (runs independently of this response)
     asyncio.create_task(process_chat_background(request, task_id))
 
-    async def stream_with_task_id():
-        # Send task_id as the first event so the client can use it for reconnection
-        yield sse_event("task_id", {"task_id": task_id})
-        async for chunk in stream_from_task(task_id):
-            yield chunk
-
-    return StreamingResponse(
-        stream_with_task_id(),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "X-Accel-Buffering": "no",
-        }
-    )
+    return _task_stream_response()
 
 
 @router.get("/chat/task/{task_id}")
