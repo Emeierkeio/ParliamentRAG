@@ -196,6 +196,18 @@
 .animate-trace-grow {
   animation: trace-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* Linea di attività indeterminata della coda: un segmento che scorre,
+   nessun progresso simulato. Con reduced-motion il segmento diventa una
+   barra statica piena (gestito dalle utility motion-reduce nel componente) */
+@keyframes queue-slide {
+  from {
+    margin-left: -33%;
+  }
+  to {
+    margin-left: 100%;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .hemicycle-dot {
     animation: none;
