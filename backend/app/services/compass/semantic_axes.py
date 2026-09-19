@@ -119,8 +119,7 @@ class SemanticAxisGenerator:
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": PROMPT.replace("{query}", query)}],
-            temperature=0.0,
-            max_tokens=600,
+            max_completion_tokens=600,
             response_format={"type": "json_object"},
         )
         payload = json.loads(response.choices[0].message.content)

@@ -27,6 +27,10 @@ _PREVIEW_CHARS = 600
 # USD per 1M tokens (input, output) — OpenAI price list, only for the cost
 # estimate shown in the trace panel. Prefix-match on the model name.
 _PRICES_PER_MTOK = {
+    "gpt-6-astra": (10.0, 50.0),
+    "gpt-5.6-sol": (4.0, 20.0),
+    "gpt-5.6-terra": (2.0, 12.0),
+    "gpt-5.6-luna": (0.2, 1.2),
     "gpt-4o": (2.5, 10.0),
     "gpt-4.1-mini": (0.4, 1.6),
     "gpt-4.1-nano": (0.1, 0.4),

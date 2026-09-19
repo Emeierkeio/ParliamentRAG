@@ -79,7 +79,7 @@ async def translate_response_text(
     client = make_async_client()
     try:
         response = await client.chat.completions.create(
-            model="gpt-4.1-mini",
+            model="gpt-5.6-luna",
             messages=[
                 {
                     "role": "system",
@@ -96,7 +96,6 @@ async def translate_response_text(
                 },
                 {"role": "user", "content": text},
             ],
-            temperature=0,
         )
         translated = response.choices[0].message.content
         return translated if translated else text
@@ -151,9 +150,8 @@ async def translate_compass_axes(
             + json.dumps(labels_to_translate, ensure_ascii=False)
         )
         response = await client.chat.completions.create(
-            model="gpt-4.1-nano",
+            model="gpt-5.6-luna",
             messages=[{"role": "user", "content": prompt}],
-            temperature=0,
             response_format={"type": "json_object"},
         )
         raw = response.choices[0].message.content
@@ -191,13 +189,12 @@ async def _translate_text(client, text: str, max_tokens: int = 2000, target_lang
     if not text:
         return ""
     resp = await client.chat.completions.create(
-        model="gpt-4.1-nano",
+        model="gpt-5.6-luna",
         messages=[
             {"role": "system", "content": _translate_sys(target_lang)},
             {"role": "user", "content": text},
         ],
-        temperature=0,
-        max_tokens=max_tokens,
+        max_completion_tokens=max_tokens,
     )
     return resp.choices[0].message.content or text
 
@@ -223,7 +220,7 @@ async def _translate_one(citation: dict, client, target_lang: str = "en") -> dic
             payload["full_text"] = full_text
 
         resp = await client.chat.completions.create(
-            model="gpt-4.1-nano",
+            model="gpt-5.6-luna",
             messages=[
                 {
                     "role": "system",
@@ -234,7 +231,6 @@ async def _translate_one(citation: dict, client, target_lang: str = "en") -> dic
                 },
                 {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
             ],
-            temperature=0,
             response_format={"type": "json_object"},
         )
         raw = resp.choices[0].message.content or ""

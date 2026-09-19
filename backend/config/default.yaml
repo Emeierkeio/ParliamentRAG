@@ -99,7 +99,7 @@ compass:
   # legacy post-hoc discovery. Semantic falls back to PCA on any LLM failure.
   axis_method: "semantic"
   semantic_axes:
-    model: "gpt-4.1-mini"   # pole generation (temperature 0, JSON mode)
+    model: "gpt-5.6-luna"   # pole generation (temperature 0, JSON mode)
     max_axis_cos: 0.85      # above this the two axes are near-duplicates -> warning
 
   # LLM stance scoring: positions come from what each speaker argues, scored
@@ -108,7 +108,7 @@ compass:
   # on any failure.
   stance:
     enabled: true
-    model: "gpt-4.1-mini"   # temperature 0, JSON mode, batched
+    model: "gpt-5.6-luna"   # temperature 0, JSON mode, batched
     batch_size: 25          # fragments per LLM call
     max_workers: 8          # parallel batch calls (25*8 = one wave for 200 fragments)
     max_fragments: 200      # classify at most this many (retrieval order)
@@ -180,6 +180,11 @@ generation:
     analyst: "gpt-4.1-mini"  # Stage 1: Claim decomposition (structured extraction — mini is enough)
     writer: "gpt-4.1"        # Stage 2: Sectional writing (verbatim citations — needs top instruction following)
     integrator: "gpt-4.1"    # Stage 3: Narrative integration (long rewrite preserving {CIT:N} markers)
+    # Quote selection, not writing: bad picks are dropped by the downstream
+    # substring verification, so a small model fails safe. gpt-4.1-mini was
+    # rejected 2026-07-23 (anaphoric picks); gpt-4o held until it left the
+    # OpenAI lineup; gpt-5.6-luna under trial since 2026-09-19.
+    quote_picker: "gpt-5.6-luna"
     # Stage 4 (Citation Surgeon) is deterministic, no LLM needed.
     # Synthesis (Stage 3.5) was removed from the pipeline. EvidenceFirstWriter
     # is still used by pipeline.py as the citation-repair fallback for
@@ -248,8 +253,10 @@ query_rewriting:
   enabled: true
   # nano does not know niche political terms: it expanded "remigrazione"
   # as bird migration and "ius scholae" as right to education, poisoning
-  # the retrieval embeddings and keywords (2026-07-24)
-  model: "gpt-4.1-mini"
+  # the retrieval embeddings and keywords (2026-07-24). gpt-5.6-luna under
+  # trial since 2026-09-19: newer generation, to be re-checked on the same
+  # niche terms before promoting.
+  model: "gpt-5.6-luna"
   # Only rewrite queries with at most this many words.
   # Longer queries are already descriptive enough.
   max_query_words: 5

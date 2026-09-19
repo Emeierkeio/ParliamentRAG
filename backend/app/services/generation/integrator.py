@@ -273,7 +273,7 @@ REGOLE INDEROGABILI:
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.0,
-                max_tokens=5000,
+                max_completion_tokens=5000,
                 seed=42
             )
 
@@ -533,7 +533,7 @@ Sezioni originali con citazioni:
                     {"role": "user", "content": retry_prompt}
                 ],
                 temperature=0.1,  # Even lower for retry
-                max_tokens=2500,
+                max_completion_tokens=2500,
                 seed=42
             )
 

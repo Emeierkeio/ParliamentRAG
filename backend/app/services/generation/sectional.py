@@ -199,11 +199,12 @@ STRUTTURA OUTPUT:
         gen_config = self.config.load_config().get("generation", {})
         self.model = gen_config.get("models", {}).get("writer", "gpt-4o")
         # Quote picker: dedicated, constrained call for citation selection,
-        # separate from section writing. gpt-4o (not mini): the
-        # self-sufficiency criterion requires judgement — mini still picked
-        # anaphoric sentences (tested 2026-07-23). ~0.3c/call.
+        # separate from section writing. The self-sufficiency criterion
+        # requires judgement — gpt-4.1-mini still picked anaphoric sentences
+        # (tested 2026-07-23); gpt-4o held until it left the OpenAI lineup,
+        # gpt-5.6-luna under trial since 2026-09-19.
         self.quote_picker_model = gen_config.get("models", {}).get(
-            "quote_picker", "gpt-4o"
+            "quote_picker", "gpt-5.6-luna"
         )
         self.no_evidence_message = gen_config.get(
             "no_evidence_message",
@@ -599,8 +600,7 @@ Se nessuna frase soddisfa i criteri, rispondi esattamente: NONE"""
                                     f"TESTO:\n{text[:3000]}"
                                     f"{candidate_block}"},
                     ],
-                    temperature=0.0,
-                    max_tokens=200,
+                    max_completion_tokens=200,
                     # Small call: a hang must not freeze the pipeline
                     # (default client timeout 180s x2 retries = up to 9 min)
                     timeout=30.0,
@@ -818,7 +818,7 @@ SBAGLIATO: Il gruppo discute di economia. **Rossi** «...» [CIT:id]. Il gruppo 
                         {"role": "user", "content": attempt_prompt}
                     ],
                     temperature=0.1,
-                    max_tokens=800,
+                    max_completion_tokens=800,
                     seed=42
                 )
 
@@ -1124,7 +1124,7 @@ TESTO DISPONIBILE (scegli la parte più incisiva, copiala VERBATIM tra «»):
                     {"role": "user", "content": user_prompt},
                 ],
                 temperature=0.2,
-                max_tokens=300,
+                max_completion_tokens=300,
                 seed=42,
             )
             return response.choices[0].message.content.strip()

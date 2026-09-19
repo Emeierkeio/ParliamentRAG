@@ -46,8 +46,8 @@ class QueryRewriter:
     """
     Expands short/ambiguous queries with related parliamentary terms.
 
-    Uses a cheap, fast model (gpt-4.1-nano) and always falls back to the
-    original query on any error so retrieval is never blocked.
+    Uses a cheap, fast model and always falls back to the original query
+    on any error so retrieval is never blocked.
     """
 
     def __init__(self) -> None:
@@ -74,7 +74,7 @@ class QueryRewriter:
         if locale == "it" and len(query.split()) > max_words:
             return query
 
-        model = cfg.get("model", "gpt-4.1-nano")
+        model = cfg.get("model", "gpt-5.6-luna")
 
         try:
             response = self._client.chat.completions.create(
@@ -83,8 +83,7 @@ class QueryRewriter:
                     {"role": "system", "content": _SYSTEM_PROMPT},
                     {"role": "user", "content": query},
                 ],
-                max_tokens=60,
-                temperature=0,
+                max_completion_tokens=60,
             )
             rewritten = response.choices[0].message.content.strip()
             if rewritten:

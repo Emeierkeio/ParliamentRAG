@@ -55,13 +55,12 @@ async def check_domain(query: str, locale: str = "it") -> dict:
     try:
         client = make_async_client()
         response = await client.chat.completions.create(
-            model="gpt-4.1-nano",
+            model="gpt-5.6-luna",
             messages=[{
                 "role": "user",
                 "content": _PROMPT.format(lang=lang, query=query),
             }],
-            temperature=0,
-            max_tokens=150,
+            max_completion_tokens=150,
             response_format={"type": "json_object"},
         )
         data = json.loads(response.choices[0].message.content)

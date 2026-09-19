@@ -470,7 +470,7 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
     lang_name = lang_names.get(lang, lang)
     llm = make_async_client()
     resp = await llm.chat.completions.create(
-        model="gpt-4.1-nano",
+        model="gpt-5.6-luna",
         messages=[
             {"role": "system", "content": (
                 "You label Italian parliamentary act titles. For each title "
@@ -491,8 +491,7 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
             )},
             {"role": "user", "content": _json.dumps(titles, ensure_ascii=False)},
         ],
-        temperature=0,
-        max_tokens=700,
+        max_completion_tokens=700,
     )
     raw = (resp.choices[0].message.content or "").strip()
     raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.M).strip()

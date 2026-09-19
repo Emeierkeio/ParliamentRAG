@@ -81,7 +81,7 @@ Rispondi SOLO in formato JSON valido con questa struttura:
                     {"role": "user", "content": user_prompt}
                 ],
                 temperature=0.1,
-                max_tokens=2000,
+                max_completion_tokens=2000,
                 seed=42,
                 # Structured Outputs: schema-guaranteed JSON, no malformed-JSON retries
                 response_format={
