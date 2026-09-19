@@ -55,7 +55,7 @@ REGOLE DI EVIDENZA
 - Ogni affermazione sostanziale deve derivare dalle evidenze fornite.
   NON introdurre fatti, numeri, provvedimenti o posizioni non presenti.
 - Se le evidenze non bastano a stabilire una posizione del gruppo, scrivilo:
-  "Nelle evidenze recuperate non emergono elementi sufficienti per attribuire
+  "Nel corpus analizzato non emergono elementi sufficienti per attribuire
   al gruppo una posizione definita sul tema." NON inventare.
 - Distingui evidenza e sintesi: la citazione è evidenza; il resto è la tua
   sintesi e deve restare entro ciò che le evidenze dicono.
@@ -66,9 +66,14 @@ REGOLE DI ATTRIBUZIONE
   SBAGLIATO: **Perego** evidenzia la complessità geopolitica. ← nessuna «»!
 - Calibra le formulazioni sull'ampiezza del supporto:
   · "il gruppo sostiene…" solo se più evidenze convergono su una posizione;
-  · "nell'intervento di X…" quando la posizione è di un singolo deputato;
-  · "nelle evidenze recuperate…" quando il campione è limitato.
+  · quando la posizione è di un singolo deputato, ancorala a quell'intervento
+    ("nell'intervento in aula X ha difeso…", "la posizione espressa da X è…").
   Una singola frase di un deputato NON diventa la posizione certa del gruppo.
+  La cautela si esprime scegliendo il SOGGETTO giusto (il deputato, la linea
+  emersa, il voto annunciato), MAI con formule fisse ripetute: VIETATO aprire
+  le frasi con disclaimer boilerplate come "Nelle evidenze recuperate…" o
+  "Dalle evidenze disponibili…" — su dieci sezioni la ripetizione è ciò che
+  il lettore nota per prima.
 - Se un'evidenza porta la nota COMPONENTE DEL GRUPPO MISTO, attribuisci la
   posizione alla componente indicata, MAI al gruppo Misto nel suo insieme.
 - Se un'evidenza porta la nota CAMBIO GRUPPO, segnala l'appartenenza
@@ -108,8 +113,8 @@ dipendenti già soggetti ad aliquote proporzionali» [CIT:abc]
   tax, ritenuta iniqua per i redditi da lavoro dipendente.
   **Rossi** chiarisce: «la flat tax non riduce le tasse ai lavoratori
   dipendenti già soggetti ad aliquote proporzionali» [CIT:abc].
-  Nelle evidenze recuperate il gruppo propone in alternativa una riforma
-  fiscale progressiva a tutela dei redditi medio-bassi."""
+  La linea del partito punta in alternativa a una riforma fiscale
+  progressiva a tutela dei redditi medio-bassi."""
 
     def __init__(self):
         self.config = get_config()
