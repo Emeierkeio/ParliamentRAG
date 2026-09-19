@@ -56,8 +56,13 @@ def build_cache_key(
     pipeline_version: str = PIPELINE_VERSION,
     config_fingerprint: str = "",
     legislature: str = LEGISLATURE,
+    extra: Optional[Dict[str, Any]] = None,
 ) -> str:
-    """Versioned cache key: same answer only if every dimension matches."""
+    """Versioned cache key: same answer only if every dimension matches.
+
+    `extra` carries endpoint-specific request parameters that change the
+    answer (e.g. top_k, date filters on /api/query).
+    """
     payload = json.dumps(
         {
             "q": normalize_query(query),
@@ -67,9 +72,11 @@ def build_cache_key(
             "data_version": data_version,
             "pipeline_version": pipeline_version,
             "config": config_fingerprint,
+            "extra": extra or {},
         },
         sort_keys=True,
         ensure_ascii=False,
+        default=str,
     )
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
@@ -222,6 +229,107 @@ class InFlightRegistry:
         async with self._lock:
             if self._leaders.get(key) == task_id:
                 del self._leaders[key]
+
+
+# Data-version anchor, refreshed at most every 10 minutes: it moves only at
+# `make update-data` (SchemaMeta.updated_at), so a short in-process cache
+# avoids one Neo4j round-trip per chat request.
+_DATA_VERSION_TTL_S = 600
+_data_version_cache: tuple = (0.0, None)  # (monotonic timestamp, version)
+
+
+async def get_data_version() -> Optional[str]:
+    """Return the corpus data version, or None (→ cache bypass) on failure."""
+    global _data_version_cache
+    now = time.monotonic()
+    ts, cached = _data_version_cache
+    if cached is not None and now - ts < _DATA_VERSION_TTL_S:
+        return cached
+
+    def _query():
+        from .deps import get_services
+        return get_services()["neo4j"].query(
+            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
+            "WITH m.updated_at AS stamped "
+            "OPTIONAL MATCH (s:Session) "
+            "WITH stamped, max(s.date) AS newest "
+            "RETURN coalesce(toString(stamped), toString(newest)) AS v"
+        )
+
+    try:
+        rows = await asyncio.get_running_loop().run_in_executor(None, _query)
+        version = rows[0]["v"] if rows and rows[0].get("v") else None
+    except Exception as e:
+        logger.warning("[RESPONSE_CACHE] data version lookup failed: %s", e)
+        version = None
+    if version:
+        _data_version_cache = (now, version)
+    return version
+
+
+async def replay_into_task(task_id: str, events: List[Dict[str, Any]]):
+    """Replay a cached run into a fresh task: instant, no queue, no pipeline."""
+    from .task_store import get_task_store
+    store = get_task_store()
+    for event in events:
+        await store.add_event(task_id, event)
+    await store.complete_task(task_id)
+
+
+async def mirror_task(
+    follower_id: str,
+    leader_id: str,
+    locale: str = "it",
+    poll_interval: float = 0.25,
+    max_wait: float = 900.0,
+):
+    """Forward a running leader task's events to a follower task.
+
+    In-flight deduplication: identical concurrent requests share one
+    pipeline. The TaskStore queue has a single consumer, so followers
+    mirror the leader's persisted event list instead of reading its queue.
+    """
+    from .task_store import get_task_store
+    store = get_task_store()
+    forwarded = 0
+    waited = 0.0
+    leader = await store.get_task(leader_id)
+    while leader is not None and waited <= max_wait:
+        for event in leader.events[forwarded:]:
+            await store.add_event(follower_id, event)
+        forwarded = len(leader.events)
+        if leader.status != "processing":
+            break
+        await asyncio.sleep(poll_interval)
+        waited += poll_interval
+        leader = await store.get_task(leader_id)
+
+    if leader is None or leader.status == "processing":
+        msg = (
+            "L'analisi condivisa non è più disponibile. Riprova."
+            if locale == "it"
+            else "The shared analysis is no longer available. Please retry."
+        )
+        await store.add_event(follower_id, {"type": "error", "message": msg})
+        await store.fail_task(follower_id, "inflight leader unavailable")
+        return
+
+    # Forward any tail emitted between the last poll and the status flip
+    for event in leader.events[forwarded:]:
+        await store.add_event(follower_id, event)
+
+    if leader.status == "completed":
+        await store.complete_task(follower_id)
+    elif leader.status == "cancelled":
+        msg = (
+            "L'analisi è stata interrotta. Riprova."
+            if locale == "it"
+            else "The analysis was interrupted. Please retry."
+        )
+        await store.add_event(follower_id, {"type": "error", "message": msg})
+        await store.fail_task(follower_id, "inflight leader cancelled")
+    else:
+        await store.fail_task(follower_id, leader.error_message or "inflight leader failed")
 
 
 _response_cache: Optional[ResponseCache] = None

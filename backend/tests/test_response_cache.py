@@ -5,6 +5,8 @@ queue scenario (A processing, B waiting #1, C waiting #2) at unit level:
 the same _acquire_pipeline_slot the endpoint uses, with a local semaphore.
 """
 import asyncio
+import json
+import time
 
 from app.services.response_cache import (
     InFlightRegistry,
@@ -146,11 +148,10 @@ class TestInFlightDeduplication:
     def test_followers_receive_the_leader_result(self):
         # A, B, C same query: one pipeline (leader), B and C mirror its
         # events and complete when it completes.
-        from app.routers.chat import _mirror_inflight_task
+        from app.services.response_cache import mirror_task
 
         async def scenario():
             store = TaskStore()
-            import app.routers.chat as chat_router
             import app.services.task_store as task_store_module
             original = task_store_module._store
             task_store_module._store = store
@@ -158,7 +159,7 @@ class TestInFlightDeduplication:
                 await store.create_task("leader")
                 await store.create_task("follower")
                 mirror = asyncio.create_task(
-                    _mirror_inflight_task("follower", "leader", poll_interval=0.02)
+                    mirror_task("follower", "leader", poll_interval=0.02)
                 )
                 for event in COMPLETE_EVENTS:
                     await store.add_event("leader", event)
@@ -180,7 +181,7 @@ class TestCacheHitPath:
         # stays untouched and the task completes with exactly the cached
         # events (citations and metadata included).
         import app.routers.chat as chat_router
-        from app.routers.chat import _replay_cached_events
+        from app.services.response_cache import replay_into_task
         import app.services.task_store as task_store_module
 
         async def scenario():
@@ -190,7 +191,7 @@ class TestCacheHitPath:
             chat_router._waiting_queue.clear()
             try:
                 await store.create_task("hit_task")
-                await _replay_cached_events("hit_task", COMPLETE_EVENTS)
+                await replay_into_task("hit_task", COMPLETE_EVENTS)
                 state = await store.get_task("hit_task")
                 return state, list(chat_router._waiting_queue)
             finally:
@@ -202,6 +203,57 @@ class TestCacheHitPath:
         assert state.events == COMPLETE_EVENTS
         # No waiting/progress event reaches the frontend on a hit
         assert all(e["type"] not in ("waiting", "progress") for e in state.events)
+
+
+class TestQueryEndpointCacheHit:
+    def test_stream_serves_cached_events_without_pipeline(self):
+        # /api/query is the router the frontend actually calls: a HIT must
+        # stream the stored events verbatim, without touching the pipeline
+        # (which would blow up here — no LLM, no Neo4j mocked).
+        import app.services.response_cache as rc
+        import app.services.task_store as tsm
+        from app.routers.query import _rate_limited_query, QueryRequest
+        from app.config import get_config
+
+        async def scenario():
+            original_cache = rc._response_cache
+            original_dv = rc._data_version_cache
+            original_store = tsm._store
+            rc._response_cache = ResponseCache(
+                backend=InMemoryCacheBackend(), enabled=True, ttl_seconds=60
+            )
+            rc._data_version_cache = (time.monotonic(), "vtest")
+            tsm._store = TaskStore()
+            try:
+                key = rc.build_cache_key(
+                    query="Legge elettorale",
+                    locale="it",
+                    mode="standard",
+                    data_version="vtest",
+                    config_fingerprint=rc.config_fingerprint(
+                        get_config().load_config()
+                    ),
+                    extra={"top_k": 100, "date_start": None, "date_end": None},
+                )
+                await rc._response_cache.store(key, COMPLETE_EVENTS)
+
+                lines = []
+                async for line in _rate_limited_query(
+                    QueryRequest(query="Legge elettorale"), None
+                ):
+                    lines.append(line)
+                return lines
+            finally:
+                rc._response_cache = original_cache
+                rc._data_version_cache = original_dv
+                tsm._store = original_store
+
+        lines = asyncio.run(scenario())
+        payloads = [
+            json.loads(line.split("data: ", 1)[1])
+            for line in lines if line.startswith("data: ")
+        ]
+        assert payloads == COMPLETE_EVENTS
 
 
 class TestQueueSlots:

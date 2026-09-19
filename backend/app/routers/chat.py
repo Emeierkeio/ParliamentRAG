@@ -19,8 +19,11 @@ from ..services.task_store import get_task_store
 from ..services.response_cache import (
     build_cache_key,
     config_fingerprint,
+    get_data_version,
     get_inflight_registry,
     get_response_cache,
+    mirror_task,
+    replay_into_task,
 )
 from ..services.deps import get_services
 from ..config import get_config
@@ -163,104 +166,6 @@ async def _acquire_pipeline_slot(
                 _waiting_queue.remove(task_id)
             except ValueError:
                 pass
-
-
-# Data-version anchor for the response cache, refreshed at most every 10
-# minutes: it moves only at `make update-data` (SchemaMeta.updated_at), so a
-# short in-process cache avoids one Neo4j round-trip per chat request.
-_DATA_VERSION_TTL_S = 600
-_data_version_cache: tuple = (0.0, None)  # (monotonic timestamp, version)
-
-
-async def _get_data_version() -> Optional[str]:
-    """Return the corpus data version, or None (→ cache bypass) on failure."""
-    global _data_version_cache
-    now = time.monotonic()
-    ts, cached = _data_version_cache
-    if cached is not None and now - ts < _DATA_VERSION_TTL_S:
-        return cached
-
-    def _query():
-        return get_services()["neo4j"].query(
-            "OPTIONAL MATCH (m:SchemaMeta {id: 'singleton'}) "
-            "WITH m.updated_at AS stamped "
-            "OPTIONAL MATCH (s:Session) "
-            "WITH stamped, max(s.date) AS newest "
-            "RETURN coalesce(toString(stamped), toString(newest)) AS v"
-        )
-
-    try:
-        rows = await asyncio.get_running_loop().run_in_executor(None, _query)
-        version = rows[0]["v"] if rows and rows[0].get("v") else None
-    except Exception as e:
-        logger.warning("[RESPONSE_CACHE] data version lookup failed: %s", e)
-        version = None
-    if version:
-        _data_version_cache = (now, version)
-    return version
-
-
-async def _replay_cached_events(task_id: str, events: List[Dict[str, Any]]):
-    """Replay a cached run into a fresh task: instant, no queue, no pipeline."""
-    store = get_task_store()
-    for event in events:
-        await store.add_event(task_id, event)
-    await store.complete_task(task_id)
-
-
-async def _mirror_inflight_task(
-    follower_id: str,
-    leader_id: str,
-    locale: str = "it",
-    poll_interval: float = 0.25,
-    max_wait: float = 900.0,
-):
-    """Forward a running leader task's events to a follower task.
-
-    In-flight deduplication: identical concurrent requests share one
-    pipeline. The TaskStore queue has a single consumer, so followers
-    mirror the leader's persisted event list instead of reading its queue.
-    """
-    store = get_task_store()
-    forwarded = 0
-    waited = 0.0
-    leader = await store.get_task(leader_id)
-    while leader is not None and waited <= max_wait:
-        for event in leader.events[forwarded:]:
-            await store.add_event(follower_id, event)
-        forwarded = len(leader.events)
-        if leader.status != "processing":
-            break
-        await asyncio.sleep(poll_interval)
-        waited += poll_interval
-        leader = await store.get_task(leader_id)
-
-    if leader is None or leader.status == "processing":
-        msg = (
-            "L'analisi condivisa non è più disponibile. Riprova."
-            if locale == "it"
-            else "The shared analysis is no longer available. Please retry."
-        )
-        await store.add_event(follower_id, {"type": "error", "message": msg})
-        await store.fail_task(follower_id, "inflight leader unavailable")
-        return
-
-    # Forward any tail emitted between the last poll and the status flip
-    for event in leader.events[forwarded:]:
-        await store.add_event(follower_id, event)
-
-    if leader.status == "completed":
-        await store.complete_task(follower_id)
-    elif leader.status == "cancelled":
-        msg = (
-            "L'analisi è stata interrotta. Riprova."
-            if locale == "it"
-            else "The analysis was interrupted. Please retry."
-        )
-        await store.add_event(follower_id, {"type": "error", "message": msg})
-        await store.fail_task(follower_id, "inflight leader cancelled")
-    else:
-        await store.fail_task(follower_id, leader.error_message or "inflight leader failed")
 
 
 async def process_chat_background(
@@ -1500,11 +1405,12 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
 
     # Response cache + in-flight dedup: the lookup happens BEFORE task
     # creation and queue entry, so a hit never occupies a pipeline slot and
-    # never shows the queue screen. Reconnection requests (client-provided
-    # task_id) bypass the cache: they resume an existing task.
+    # never shows the queue screen. A POST is always a new request — the
+    # client-provided task_id only names the task (reconnection goes through
+    # GET /api/chat/task/{id}).
     cache = get_response_cache()
-    if cache.enabled and not request.task_id:
-        data_version = await _get_data_version()
+    if cache.enabled:
+        data_version = await get_data_version()
         if data_version:
             cache_key = build_cache_key(
                 query=request.query,
@@ -1517,14 +1423,14 @@ async def chat_endpoint(request: ChatRequest, http_request: Request):
             cached_events = await cache.lookup(cache_key)
             if cached_events is not None:
                 await store.create_task(task_id)
-                asyncio.create_task(_replay_cached_events(task_id, cached_events))
+                asyncio.create_task(replay_into_task(task_id, cached_events))
                 return _task_stream_response()
 
             leader_id = await get_inflight_registry().claim(cache_key, task_id)
             if leader_id is not None:
                 await store.create_task(task_id)
                 asyncio.create_task(
-                    _mirror_inflight_task(task_id, leader_id, locale=request.locale)
+                    mirror_task(task_id, leader_id, locale=request.locale)
                 )
                 return _task_stream_response()
 

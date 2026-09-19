@@ -134,7 +134,10 @@ class StanceClassifier:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": header + "\n".join(lines)}],
-                max_completion_tokens=40 * len(batch) + 100,
+                # 40/item starved gpt-5.6-luna into empty content on full
+                # batches (all 4 batches failed, 2026-09-19): the cap is a
+                # ceiling, unused headroom costs nothing.
+                max_completion_tokens=120 * len(batch) + 500,
                 response_format={"type": "json_object"},
             )
             payload = json.loads(response.choices[0].message.content)

@@ -22,6 +22,15 @@ from ..services.deps import get_services
 from ..services.translation import translate_citation_batch, translate_response_text, translate_compass_axes
 from ..services.domain_check import check_domain
 from ..services.relevance_gate import gate_payload, domain_notice
+from ..services.response_cache import (
+    build_cache_key,
+    config_fingerprint,
+    get_data_version,
+    get_inflight_registry,
+    get_response_cache,
+    mirror_task,
+    replay_into_task,
+)
 from ..services.retrieval.commission_matcher import get_commission_matcher
 from ..services.task_store import get_task_store
 from ..config import get_config
@@ -55,6 +64,31 @@ def _task_cancelled(task_id: Optional[str]) -> bool:
         return False
 
 
+def _request_locale_from_headers(http_request: Optional[Request]) -> str:
+    from ..services.translation import LANG_NAMES
+    code = (
+        http_request.headers.get("accept-language", "it") if http_request else "it"
+    ).strip()[:2].lower()
+    return code if code in LANG_NAMES else "it"
+
+
+async def _stream_task_queue(task_id: str) -> "AsyncGenerator[str, None]":
+    """Yield a task's queued events as SSE lines until the None sentinel."""
+    store = get_task_store()
+    queue = store.get_queue(task_id)
+    if not queue:
+        return
+    while True:
+        try:
+            event = await asyncio.wait_for(queue.get(), timeout=60.0)
+        except asyncio.TimeoutError:
+            yield ": keepalive\n\n"
+            continue
+        if event is None:
+            break
+        yield f"data: {json.dumps(event, default=str)}\n\n"
+
+
 async def _rate_limited_query(
     request: "QueryRequest",
     http_request: Optional[Request] = None,
@@ -65,7 +99,54 @@ async def _rate_limited_query(
     store so GET/DELETE /api/chat/task/{task_id} can replay or cancel the run.
     The direct stream has priority: any store failure is logged and skipped,
     never propagated.
+
+    Response cache and in-flight dedup sit BEFORE the semaphore: a cache hit
+    replays the stored events instantly (no pipeline, no queue slot, no
+    waiting screen); an identical in-flight request follows the leader task
+    instead of running a second pipeline.
     """
+    cache = get_response_cache()
+    inflight = get_inflight_registry()
+    cache_key: Optional[str] = None
+    my_task_id = request.task_id or get_task_store().generate_task_id()
+
+    if cache.enabled:
+        data_version = await get_data_version()
+        if data_version:
+            cache_key = build_cache_key(
+                query=request.query,
+                locale=_request_locale_from_headers(http_request),
+                mode="standard",
+                data_version=data_version,
+                config_fingerprint=config_fingerprint(get_config().load_config()),
+                extra={
+                    "top_k": request.top_k,
+                    "date_start": request.date_start,
+                    "date_end": request.date_end,
+                },
+            )
+
+            cached_events = await cache.lookup(cache_key)
+            if cached_events is not None:
+                store = get_task_store()
+                await store.create_task(my_task_id)
+                await replay_into_task(my_task_id, cached_events)
+                async for line in _stream_task_queue(my_task_id):
+                    yield line
+                return
+
+            leader_id = await inflight.claim(cache_key, my_task_id)
+            if leader_id is not None:
+                store = get_task_store()
+                await store.create_task(my_task_id)
+                asyncio.create_task(mirror_task(
+                    my_task_id, leader_id,
+                    locale=_request_locale_from_headers(http_request),
+                ))
+                async for line in _stream_task_queue(my_task_id):
+                    yield line
+                return
+
     store = None
     if request.task_id:
         try:
@@ -77,27 +158,44 @@ async def _rate_limited_query(
             store = None
 
     error_message: Optional[str] = None
-    async for event in _semaphore_gated_query(request, http_request):
+    collected_events: list = []
+    try:
+        async for event in _semaphore_gated_query(request, http_request):
+            if store or cache_key:
+                try:
+                    payload = json.loads(event.split("data: ", 1)[1])
+                    if payload.get("type") == "error":
+                        error_message = str(payload.get("message", "pipeline error"))
+                    if cache_key:
+                        collected_events.append(payload)
+                    if store:
+                        await store.add_event(request.task_id, payload)
+                except Exception as exc:
+                    logger.warning(f"[TaskStore] add_event failed for {request.task_id}: {exc}")
+            yield event
+
         if store:
             try:
-                payload = json.loads(event.split("data: ", 1)[1])
-                if payload.get("type") == "error":
-                    error_message = str(payload.get("message", "pipeline error"))
-                await store.add_event(request.task_id, payload)
+                # cancel_task already set the terminal status; do not overwrite it
+                if not store.is_cancelled(request.task_id):
+                    if error_message is not None:
+                        await store.fail_task(request.task_id, error_message)
+                    else:
+                        await store.complete_task(request.task_id)
             except Exception as exc:
-                logger.warning(f"[TaskStore] add_event failed for {request.task_id}: {exc}")
-        yield event
+                logger.warning(f"[TaskStore] finalize failed for {request.task_id}: {exc}")
 
-    if store:
-        try:
-            # cancel_task already set the terminal status; do not overwrite it
-            if not store.is_cancelled(request.task_id):
-                if error_message is not None:
-                    await store.fail_task(request.task_id, error_message)
-                else:
-                    await store.complete_task(request.task_id)
-        except Exception as exc:
-            logger.warning(f"[TaskStore] finalize failed for {request.task_id}: {exc}")
+        # Store on clean completion only. Partial runs (client disconnect,
+        # cancellation) carry no "complete" event and are refused by store().
+        if (
+            cache_key
+            and error_message is None
+            and not (store and store.is_cancelled(request.task_id))
+        ):
+            await cache.store(cache_key, collected_events)
+    finally:
+        if cache_key:
+            await inflight.release(cache_key, my_task_id)
 
 
 async def _semaphore_gated_query(
