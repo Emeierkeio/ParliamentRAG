@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -201,8 +201,10 @@ function ShareButton({ chatId }: { chatId: string }) {
   return (
     <button
       onClick={handleShare}
+      aria-label={copied ? t('linkCopied') : t('share')}
       className={cn(
         "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all shrink-0",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         copied
           ? "text-green-600 bg-green-50 dark:bg-green-950/30"
           : "text-muted-foreground hover:text-primary hover:bg-muted/50"
@@ -229,24 +231,40 @@ interface MessageBubbleProps {
   chatId?: string;
   /** Trace della risposta associata: mostrato come bottone accanto a Condividi */
   answerTrace?: TraceData;
+  /** Statistiche del tema della risposta associata: la scala dell'evidenza
+      (interventi, deputati, periodo) va nell'header della ricerca, non solo
+      in fondo alla risposta */
+  answerStats?: Message["topicStats"];
   progressSlot?: React.ReactNode;
   onSuggestionClick?: (query: string) => void;
   queryText?: string;
 }
 
-export function MessageBubble({ message, className, chatId, answerTrace, progressSlot, onSuggestionClick, queryText }: MessageBubbleProps) {
+export function MessageBubble({ message, className, chatId, answerTrace, answerStats, progressSlot, onSuggestionClick, queryText }: MessageBubbleProps) {
   const isUser = message.role === "user";
   const isStreaming = message.status === "streaming";
   const isError = message.status === "error";
   const [highlightedChunkId, setHighlightedChunkId] = useState<string | null>(null);
   const [statsModalView, setStatsModalView] = useState<"interventions" | "speakers" | "sessions" | null>(null);
   const t = useTranslations('MessageBubble');
+  const locale = useLocale();
 
   if (isUser) {
+    const formatDay = (iso?: string | null) => {
+      if (!iso) return "";
+      try {
+        return new Intl.DateTimeFormat(locale, {
+          day: "2-digit", month: "2-digit", year: "numeric",
+        }).format(new Date(iso));
+      } catch {
+        return String(iso);
+      }
+    };
+    const hasScale = !!answerStats && (answerStats.intervention_count ?? 0) > 0;
     return (
       <div className={cn("py-6 border-b border-border/50", className)}>
         <div className="flex items-start justify-between gap-2 min-w-0">
-          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-[1.75rem] font-semibold tracking-tight leading-tight text-foreground mb-2.5 break-words min-w-0">
+          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-[1.75rem] font-semibold tracking-tight leading-tight text-foreground mb-2.5 break-words min-w-0 [text-wrap:balance]">
             {message.content}
           </h2>
           <div className="flex items-center gap-1 shrink-0">
@@ -254,16 +272,38 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
             {chatId && <ShareButton chatId={chatId} />}
           </div>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Landmark className="h-3.5 w-3.5" />
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+          <Landmark className="h-3.5 w-3.5" aria-hidden="true" />
           <span className="font-medium">{t('chamberTitle')}</span>
-          <span className="text-muted-foreground/40">•</span>
-          <span className="tabular-nums">
-            {message.timestamp.toLocaleTimeString("it-IT", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </span>
+          {hasScale ? (
+            <>
+              <span className="text-muted-foreground/40" aria-hidden="true">·</span>
+              <span className="tabular-nums">
+                {t('evidenceScale', {
+                  interventions: answerStats!.intervention_count,
+                  deputies: answerStats!.speaker_count,
+                })}
+              </span>
+              {answerStats!.first_date && answerStats!.last_date && (
+                <>
+                  <span className="text-muted-foreground/40" aria-hidden="true">·</span>
+                  <span className="tabular-nums">
+                    {formatDay(String(answerStats!.first_date))} → {formatDay(String(answerStats!.last_date))}
+                  </span>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <span className="text-muted-foreground/40" aria-hidden="true">•</span>
+              <span className="tabular-nums">
+                {message.timestamp.toLocaleTimeString("it-IT", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </>
+          )}
         </div>
         {progressSlot}
       </div>
@@ -324,7 +364,7 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
 
         {/* Content */}
         {message.content && (
-          <div className="prose prose-sm max-w-none prose-neutral dark:prose-invert overflow-hidden break-words [overflow-wrap:anywhere]">
+          <div className="prose prose-sm max-w-[70ch] prose-neutral dark:prose-invert overflow-hidden break-words [overflow-wrap:anywhere]">
             <ReactMarkdown
               components={{
                 p: ({ children }) => (
@@ -434,8 +474,16 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
                     const view = href.replace("#stats-", "") as "interventions" | "speakers" | "sessions";
                     return (
                       <span
-                        className="inline cursor-pointer rounded-[3px] px-0.5 text-primary font-medium underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px] hover:bg-primary/10 hover:decoration-primary/70 transition-colors duration-150"
+                        role="button"
+                        tabIndex={0}
+                        className="inline cursor-pointer rounded-[3px] px-0.5 text-primary font-medium underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px] hover:bg-primary/10 hover:decoration-primary/70 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         onClick={() => setStatsModalView(view)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setStatsModalView(view);
+                          }
+                        }}
                         title={t('clickForDetail')}
                       >
                         {children}
@@ -460,23 +508,37 @@ export function MessageBubble({ message, className, chatId, answerTrace, progres
                       ? matchedCitation.quote_text || matchedCitation.text
                       : null;
 
+                    // Evidence mark, not a hyperlink: primary-source words get
+                    // the display serif in italic (same register as
+                    // blockquotes) over a faint tint, so synthesis (sans) and
+                    // evidence (serif) read as two distinct semantic layers.
                     const citationSpan = (
                       <span
+                        role="button"
+                        tabIndex={0}
                         className={cn(
-                          "inline cursor-pointer rounded-[3px] px-0.5",
-                          "text-primary underline decoration-primary/35 decoration-[1.5px] underline-offset-[3px]",
-                          "hover:bg-primary/10 hover:decoration-primary/70",
+                          "inline cursor-pointer rounded-[3px] px-1 -mx-px",
+                          "[font-family:var(--font-display)] italic",
+                          "bg-primary/[0.06] text-foreground/90 border-b border-primary/30",
+                          "hover:bg-primary/10 hover:border-primary/60",
                           "transition-colors duration-150",
-                          highlightedChunkId === href && "bg-yellow-400/30 decoration-yellow-500 text-yellow-800 dark:text-yellow-300"
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          highlightedChunkId === href && "bg-yellow-400/30 border-yellow-500 text-yellow-800 dark:text-yellow-300"
                         )}
                         onClick={() => {
                           setHighlightedChunkId(href);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setHighlightedChunkId(href);
+                          }
                         }}
                         title={originalQuote ? undefined : t('clickHighlight')}
                       >
                         {children}
                         {originalQuote && (
-                          <Languages className="inline h-3 w-3 ml-0.5 align-[-1px] text-muted-foreground/60" />
+                          <Languages className="inline h-3 w-3 ml-0.5 align-[-1px] text-muted-foreground/60" aria-hidden="true" />
                         )}
                       </span>
                     );
@@ -920,7 +982,7 @@ function BalanceSection({ metrics }: BalanceSectionProps) {
               variant={isBalanced ? "default" : "secondary"}
               className={cn(
                 "text-xs",
-                isBalanced && "bg-green-500/20 text-green-400",
+                isBalanced && "bg-green-500/15 text-green-700 dark:text-green-400",
               )}
             >
               {balancePercentage}%

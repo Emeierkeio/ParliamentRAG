@@ -801,9 +801,10 @@ export function TraceButton({ trace }: { trace?: TraceData }) {
         <button
           aria-label={t("traceTitle")}
           title={t("traceTitle")}
-          className="group inline-flex items-center justify-center h-9 w-9 rounded-full transition-all shrink-0 border border-primary/20 bg-primary/[0.04] text-primary/80 hover:text-primary hover:bg-primary/10 hover:border-primary/35"
+          className="group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-sm font-medium transition-all shrink-0 text-muted-foreground hover:text-primary hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <LangChainGlyph className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
+          <LangChainGlyph className="h-4 w-4" />
+          <span className="hidden sm:inline">{t("traceTitle")}</span>
         </button>
       </DialogTrigger>
       <DialogContent className="w-[min(96vw,64rem)] sm:max-w-5xl max-h-[88vh] overflow-y-auto">
