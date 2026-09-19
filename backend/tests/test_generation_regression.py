@@ -70,10 +70,23 @@ class TestQuoteCandidates:
 
     def test_procedural_opening_rejected(self):
         text = (
-            "Grazie Presidente, onorevoli colleghi, oggi discutiamo un tema "
-            "importante per il futuro del nostro Paese e delle famiglie."
+            "Presentiamo una mozione che impegna il Governo su questo tema "
+            "davanti a tutta l'Aula della Camera dei Deputati oggi stesso."
         )
         assert extract_quote_candidates(text) == []
+
+    def test_leading_vocative_stripped_not_rejected(self):
+        # Transcripts open substantive stances with vocatives: the vocative
+        # is cut, the remainder survives as an exact substring.
+        text = (
+            "Signor Presidente, onorevoli colleghi, come Fratelli d'Italia "
+            "siamo estremi difensori del Servizio sanitario nazionale "
+            "universale e riteniamo fondamentale difendere questo modello."
+        )
+        candidates = extract_quote_candidates(text, query="riforma sanitaria")
+        assert candidates
+        assert candidates[0].startswith("come Fratelli d'Italia")
+        assert candidates[0] in text
 
     def test_length_band(self):
         candidates = extract_quote_candidates("Frase corta.", query="frase")

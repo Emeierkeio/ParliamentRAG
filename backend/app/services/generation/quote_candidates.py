@@ -28,13 +28,28 @@ _LEADING_CONNECTIVE = re.compile(
     re.IGNORECASE,
 )
 
+# Leading vocatives: transcripts open substantive sentences with them all
+# the time («Signor Presidente, onorevoli colleghi, come Fratelli d'Italia
+# siamo…»). Rejecting the whole sentence loses the best quotes (observed
+# 2026-09-19 on "riforma sanitaria"): the vocative is stripped and the
+# remainder — still an exact substring of the source — stays a candidate.
+_VOCATIVE_PREFIX = re.compile(
+    r'^(?:grazie,?\s+(?:signor[a]?\s+president[ea]|president[ea])[.,]?\s*|'
+    r'grazie[.,]\s*|'
+    r'signor[a]?\s+president[ea][.,]?\s*|'
+    r'president[ea],\s*|'
+    r'onorevol[ie]\s+collegh[ie](?:\s+e\s+collegh[ie])?[.,]?\s*)+',
+    re.IGNORECASE,
+)
+
 # Procedural/meta-parliamentary openings: floor management, motion
-# announcements, thanks — never the group's position on the topic.
+# announcements — never the group's position on the topic.
 _PROCEDURAL_OPENING = re.compile(
-    r'^(?:grazie|ringrazio|signor\s+presidente|presidente,|onorevoli\s+colleghi|'
+    r'^(?:ringrazio|'
     r'presentiamo\s+(?:una|la)\s+mozione|annuncio\s+il\s+voto|'
-    r'dichiaro\s+(?:aperta|chiusa)|passiamo\s+(?:alla|al)|'
-    r'chiedo\s+di\s+(?:parlare|intervenire))',
+    r'dichiaro\s+(?:aperta|chiusa)|passiamo\s+(?:alla|al|all\')|'
+    r'chiedo\s+di\s+(?:parlare|intervenire)|'
+    r'l\'ordine\s+dei\s+lavori)',
     re.IGNORECASE,
 )
 
@@ -116,6 +131,11 @@ def extract_quote_candidates(
             if i + span > len(sentences):
                 break
             candidate = ' '.join(sentences[i:i + span]).strip()
+            # Strip leading vocatives; the remainder is still a contiguous
+            # span of the source, so the exact-substring property holds.
+            stripped = _VOCATIVE_PREFIX.sub('', candidate)
+            vocative_cut = stripped != candidate
+            candidate = stripped.strip()
             if not (min_chars <= len(candidate) <= max_chars):
                 continue
             if candidate in seen:
@@ -133,10 +153,15 @@ def extract_quote_candidates(
             if _PROCEDURAL_OPENING.match(candidate):
                 continue
             # Fragments starting with a lowercase letter usually depend on
-            # a previous clause the splitter could not resolve.
+            # a previous clause the splitter could not resolve — unless the
+            # lowercase start is our own deliberate vocative cut.
             first_alpha = next((c for c in candidate if c.isalpha()), '')
-            if first_alpha and first_alpha.islower() and not candidate.startswith(
-                ('è', 'noi', 'non', 'il', 'la', 'lo', 'serve', 'occorre', 'bisogna')
+            if (
+                not vocative_cut
+                and first_alpha and first_alpha.islower()
+                and not candidate.startswith(
+                    ('è', 'noi', 'non', 'il', 'la', 'lo', 'serve', 'occorre', 'bisogna')
+                )
             ):
                 continue
             pos = text.find(candidate)
