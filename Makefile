@@ -30,7 +30,16 @@ UVICORN      := $(BACKEND_DIR)/venv/bin/uvicorn
 V2_DIR       ?= .
 DEMO_NEO4J   ?= bolt://localhost:7690
 SSH_HOST     := root@89.167.54.206
-TUNNEL_CMD   := ssh -f -N -L 7690:localhost:7687 $(SSH_HOST)
+# ExitOnForwardFailure + ServerAlive make a broken tunnel terminate itself
+# instead of lingering as a listener with a dead forward behind it.
+# autossh (when installed) restarts the tunnel on its own after a drop;
+# AUTOSSH_GATETIME=0 keeps -f working and is ignored by plain ssh.
+TUNNEL_BIN   := $(shell command -v autossh >/dev/null 2>&1 && echo "autossh -M 0" || echo ssh)
+TUNNEL_CMD   := AUTOSSH_GATETIME=0 $(TUNNEL_BIN) -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 7690:localhost:7687 $(SSH_HOST)
+# Real end-to-end probe: send a Bolt handshake (magic + version proposals)
+# and expect the 4-byte reply. `nc -z` only proves the LOCAL listener is up,
+# which a half-dead tunnel still passes.
+BOLT_PROBE   := printf '\140\140\260\027\000\000\004\004\000\000\000\000\000\000\000\000\000\000\000\000' | nc -w 3 localhost 7690 | wc -c | tr -d ' '
 
 # Remote Neo4j (deployed demo) and local staging copy
 REMOTE_NEO4J_CONTAINER := parliament-neo4j-v2
@@ -230,8 +239,8 @@ zenodo-update:
 ## a network change) by probing the bolt port, and reopens them.
 tunnel:
 	@if lsof -ti tcp:7690 >/dev/null 2>&1; then \
-		if nc -z -w 3 localhost 7690 >/dev/null 2>&1; then \
-			echo "Tunnel up on :7690."; \
+		if [ "$$($(BOLT_PROBE))" -ge 4 ] 2>/dev/null; then \
+			echo "Tunnel up on :7690 (bolt handshake ok)."; \
 		else \
 			echo "Stale tunnel on :7690 (probe failed) — reopening..."; \
 			lsof -ti tcp:7690 | xargs kill 2>/dev/null || true; \
