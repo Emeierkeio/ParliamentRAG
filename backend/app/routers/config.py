@@ -476,12 +476,16 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
                 "You label Italian parliamentary act titles. For each title "
                 "return a JSON object with two fields, BOTH strictly written "
                 f"in {lang_name} (translate if needed):\n"
-                '- "label": a theme label, 2-4 words and at most 35 characters, lowercase, clear on its '
-                "own, and distinct from the labels of the other acts (when "
-                "two acts share a theme, name the specific aspect of each);\n"
-                '- "query": a noun phrase of 8-18 words describing precisely '
-                "what the measure is about. No lead-in such as \"the position "
-                "of parliamentary groups\": the phrase will be inserted into "
+                '- "label": a broad policy-theme label, 2-4 words and at most 35 characters, lowercase, '
+                "clear on its own. Acts about the same measure OR the same "
+                "policy area must share the SAME label, as an identical "
+                "string: the caller groups acts by label. Use distinct "
+                "labels only for genuinely different policy areas. Never "
+                "use presenter names in labels;\n"
+                '- "query": a noun phrase of 8-18 words describing the '
+                "policy theme; acts sharing a label must repeat the SAME "
+                "query string. No lead-in such as \"the position of "
+                "parliamentary groups\": the phrase will be inserted into "
                 "that sentence by the caller.\n"
                 "Some titles carry no subject (just an act number and the "
                 "presenter): for those, derive label and query from the "
@@ -491,7 +495,7 @@ async def _label_acts(titles: list[str], lang: str) -> list[dict]:
             )},
             {"role": "user", "content": _json.dumps(titles, ensure_ascii=False)},
         ],
-        max_completion_tokens=700,
+        max_completion_tokens=1200,
     )
     raw = (resp.choices[0].message.content or "").strip()
     raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.M).strip()
@@ -560,61 +564,75 @@ async def get_recent_topics(lang: str = "it", refresh: bool = False):
                 "OPTIONAL MATCH (a)-[:HAS_SUBJECT]->(c:EurovocConcept) "
                 "WITH a, sd, prio, collect(c.label_it) AS subjects "
                 "RETURN a.title AS title, toString(sd) AS date, a.type AS type, subjects "
-                "ORDER BY prio, date DESC LIMIT 6",
+                "ORDER BY prio, date DESC LIMIT 15",
                 {"days": days},
             )
-            if len(act_rows) >= 2:
-                acts = [
-                    {
-                        "title": re.sub(r"<[^>]+>", "", r["title"]),
-                        "date": r["date"],
-                        "type": r["type"],
-                    }
-                    for r in act_rows
+            if len(act_rows) < 2:
+                continue
+            # Fewer acts than target themes cannot fill the rail: widen
+            # without burning an LLM call, unless this is the last window
+            if len(act_rows) < 5 and days < 90:
+                continue
+            cand_acts = [
+                {
+                    "title": re.sub(r"<[^>]+>", "", r["title"]),
+                    "date": r["date"],
+                    "type": r["type"],
+                }
+                for r in act_rows
+            ]
+            cand_subjects = [r["subjects"] or [] for r in act_rows]
+            try:
+                # Mozioni/risoluzioni have number-only titles: append their
+                # EuroVoc subjects so the label names the topic, not the form
+                llm_inputs = [
+                    a["title"] + (f" — soggetti: {'; '.join(subs[:6])}" if subs else "")
+                    for a, subs in zip(cand_acts, cand_subjects)
                 ]
-                subjects_by_act = [r["subjects"] or [] for r in act_rows]
-                since_row = neo4j.query(
-                    "RETURN toString(date() - duration({days: $days})) AS since",
-                    {"days": days},
-                )
-                since = since_row[0]["since"] if since_row else None
-                break
+                items = await _label_acts(llm_inputs, lang)
+                # Acts cluster into themes: a window can be rich in acts yet
+                # poor in themes (many bills on one measure), so the stop
+                # criterion is distinct themes, not act count
+                distinct = {i["label"].lower() for i in items if i["label"]}
+                if len(distinct) < 5 and days < 90:
+                    continue
+                acts, subjects_by_act = cand_acts, cand_subjects
+                labelled = True
+                # Per-act label in the tooltip: the official title alone is
+                # unreadable legalese, the label says what the act is about
+                for act, item in zip(acts, items):
+                    act["topic"] = item["label"] or None
+                seen: set = set()
+                for item in items:
+                    if item["label"] and item["label"].lower() not in seen and len(topics) < 8:
+                        seen.add(item["label"].lower())
+                        topics.append({
+                            "label": item["label"],
+                            "query": item["query"] or item["label"],
+                        })
+            except Exception as e:
+                logger.warning("Recent-topics labelling failed, EuroVoc fallback: %s", e)
+                # Max 2 subjects per act so one multi-subject act cannot
+                # monopolise the list (Italian only — no LLM available here)
+                acts, subjects_by_act = cand_acts, cand_subjects
+                seen = set()
+                for act, subjects in zip(acts, subjects_by_act):
+                    act["topic"] = subjects[0] if subjects else None
+                    for subject in subjects[:2]:
+                        if subject and subject not in seen and len(topics) < 8:
+                            seen.add(subject)
+                            topics.append({"label": subject, "query": subject})
+            since_row = neo4j.query(
+                "RETURN toString(date() - duration({days: $days})) AS since",
+                {"days": days},
+            )
+            since = since_row[0]["since"] if since_row else None
+            break
     except Exception as e:
         logger.warning("Failed to get recent topics: %s", e)
-    if acts:
-        try:
-            # Mozioni/risoluzioni have number-only titles: append their
-            # EuroVoc subjects so the label names the topic, not the form
-            llm_inputs = [
-                a["title"] + (f" — soggetti: {'; '.join(subs[:6])}" if subs else "")
-                for a, subs in zip(acts, subjects_by_act)
-            ]
-            items = await _label_acts(llm_inputs, lang)
-            labelled = True
-            # Per-act label in the tooltip: the official title alone is
-            # unreadable legalese, the label says what the measure is about
-            for act, item in zip(acts, items):
-                act["topic"] = item["label"] or None
-            seen: set = set()
-            for item in items:
-                if item["label"] and item["label"].lower() not in seen and len(topics) < 6:
-                    seen.add(item["label"].lower())
-                    topics.append({
-                        "label": item["label"],
-                        "query": item["query"] or item["label"],
-                    })
-        except Exception as e:
-            logger.warning("Recent-topics labelling failed, EuroVoc fallback: %s", e)
-            # Max 2 subjects per act so one multi-subject act cannot
-            # monopolise the list (Italian only — no LLM available here)
-            seen = set()
-            for act, subjects in zip(acts, subjects_by_act):
-                act["topic"] = subjects[0] if subjects else None
-                for subject in subjects[:2]:
-                    if subject and subject not in seen and len(topics) < 6:
-                        seen.add(subject)
-                        topics.append({"label": subject, "query": subject})
-    data = {"topics": topics, "since": since, "acts": acts[:4]}
+    # All acts go out: the frontend rail pairs each topic with its source
+    # act, so truncating here would strip provenance from later topics
+    data = {"topics": topics, "since": since, "acts": acts}
     _recent_topics_cache[lang] = {"at": _time.time(), "data": data}
     # Persist only fully-labelled results: freezing the EuroVoc fallback in
     # Neo4j would pin degraded labels until the next data update, while a
