@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { ScopePicker } from "@/components/chat/ScopePicker";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
@@ -121,6 +122,7 @@ export default function CompassPage() {
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
+                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {hasResults && !loading && (

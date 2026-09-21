@@ -8,8 +8,9 @@ import { ArrowLeft } from "lucide-react";
 import { Sidebar } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { GroupMemberAvatar } from "@/components/entities/GroupMemberAvatar";
+import { GroupLogo } from "@/components/entities/GroupLogo";
 import { graphQuery, deputySlug } from "@/lib/graph";
-import { config, getGroupAbbrev, getGroupColor } from "@/config";
+import { config, getGroupAbbrev } from "@/config";
 import { toTitleCase } from "@/lib/utils";
 
 interface GroupRow {
@@ -155,11 +156,7 @@ export default function GruppoDettaglioPage() {
             <>
               <header className="mt-8">
                 <div className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full inline-block shrink-0"
-                    style={{ backgroundColor: getGroupColor(state.group.name) }}
-                    aria-hidden
-                  />
+                  <GroupLogo group={state.group.name} size={36} />
                   <h1 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-tight">
                     {label}
                   </h1>
@@ -170,12 +167,6 @@ export default function GruppoDettaglioPage() {
               </header>
 
               <nav className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t pt-4 text-sm">
-                <Link
-                  href="/compass"
-                  className="text-muted-foreground transition-colors hover:text-foreground hover:underline underline-offset-4"
-                >
-                  {t("positionsOf")}
-                </Link>
                 <Link
                   href="/ranking"
                   className="text-muted-foreground transition-colors hover:text-foreground hover:underline underline-offset-4"

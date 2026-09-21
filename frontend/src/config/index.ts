@@ -133,6 +133,27 @@ export function getGroupAbbrev(groupName: string): string {
   return needle ? PARTY_ABBREV[needle] : groupName.slice(0, 6);
 }
 
+/* Party logos from the Wikipedia infobox images (see public/groups/).
+   Groups without one (Misto, components) have no entry: callers fall
+   back to the color dot. */
+const PARTY_LOGO: Record<string, string> = {
+  "FRATELLI D'ITALIA": "/groups/fdi.png",
+  "PARTITO DEMOCRATICO": "/groups/pd.png",
+  "MOVIMENTO 5 STELLE": "/groups/m5s.png",
+  "ALLEANZA VERDI": "/groups/avs.png",
+  "FORZA ITALIA": "/groups/fi.png",
+  "AZIONE": "/groups/azione.jpg",
+  "ITALIA VIVA": "/groups/iv.png",
+  "NOI MODERATI": "/groups/nm.png",
+  "LEGA": "/groups/lega.png",
+};
+
+export function getGroupLogo(groupName: string): string | null {
+  const upper = groupName.toUpperCase();
+  const needle = Object.keys(PARTY_LOGO).find((n) => upper.includes(n));
+  return needle ? PARTY_LOGO[needle] : null;
+}
+
 // Type exports for configuration
 export type Config = typeof config;
 export type PoliticalGroup = keyof typeof config.politicalGroups;

@@ -151,9 +151,9 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Topic Search",
+    "topicSearch": "Ask the House",
     "tools": "Tools",
-    "actsSearch": "Acts Search",
+    "actsSearch": "Search the records",
     "parliamentaryTimeline": "Chamber Proceedings",
     "authorityAnalysis": "Authority Analysis",
     "ideologicalCompass": "Ideological Compass",
@@ -1247,6 +1247,12 @@
     "askAboutGroup": "Ask Parliament",
     "positionsOf": "Positions on a topic",
     "whoKnowsMost": "Who knows it best",
-    "actsOfGroup": "Group acts"
+    "actsOfGroup": "Group acts",
+    "groupHistoryTitle": "Parliamentary groups",
+    "committeesTitle": "Committees",
+    "sinceDate": "since {date}",
+    "periodFromTo": "{from} - {to}",
+    "allLetters": "All",
+    "letterIndex": "Alphabetical index"
   }
 }

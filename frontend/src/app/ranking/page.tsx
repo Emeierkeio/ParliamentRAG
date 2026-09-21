@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {useTranslations, useLocale } from "next-intl";
+import { ScopePicker } from "@/components/chat/ScopePicker";
+import { graphQuery } from "@/lib/graph";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
@@ -211,14 +213,25 @@ export default function RankingPage() {
   };
 
   // ── Available committees ──
+  // Before the first query there are no result-derived committees, so the
+  // full list comes from the graph and result-derived names replace it later
+  const [allCommittees, setAllCommittees] = useState<string[]>([]);
+  useEffect(() => {
+    graphQuery<{ name: string }>(
+      "MATCH (c:Committee) RETURN c.name AS name ORDER BY name"
+    )
+      .then((rows) => setAllCommittees(rows.map((r) => r.name)))
+      .catch(() => {});
+  }, []);
   const availableCommittees = useMemo(() => {
     const set = new Set<string>();
     deputies.forEach((d) => {
       d.committees?.forEach((c) => set.add(c));
       if (d.committee) set.add(d.committee);
     });
-    return Array.from(set).sort();
-  }, [deputies]);
+    const derived = Array.from(set).sort();
+    return derived.length > 0 ? derived : allCommittees;
+  }, [deputies, allCommittees]);
 
   // ── Pesi personalizzati ──
   // Con i pesi ufficiali si usa il punteggio calcolato dal backend; con pesi
@@ -295,7 +308,9 @@ export default function RankingPage() {
 
   const hasResults = deputies.length > 0;
   const hasActiveFilters = coalitionFilter !== "all" || selectedGroups.length > 0 || nameSearch.trim() !== "" || committeeSearch !== "";
-  const filtersEnabled = hasResults && !loading;
+  // The filter bar also shows before the query runs: chosen filters
+  // simply apply to the ranking when it arrives
+  const filtersEnabled = !loading;
 
   const toggleGroup = (value: string) => {
     setSelectedGroups((prev) =>
@@ -320,6 +335,7 @@ export default function RankingPage() {
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("headerTitle")}</h1>
+                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {activeTopic && !loading && (

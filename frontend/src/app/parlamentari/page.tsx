@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Sidebar } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
+import { GroupLogo } from "@/components/entities/GroupLogo";
 import { graphQuery, deputySlug } from "@/lib/graph";
 
 // Nomi gruppo dal grafo in maiuscolo: la label canonica vive in config,
@@ -28,12 +29,25 @@ interface DeputyRow {
   group: string | null;
 }
 
+// One row per deputy: whoever changed group has several memberships, so
+// the current one (no end_date) is collected first and the rest dropped
 const DIRECTORY_CYPHER =
   "MATCH (d:Deputy) " +
-  "OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) " +
+  "OPTIONAL MATCH (d)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) " +
+  "WITH d, g, m ORDER BY m.end_date IS NOT NULL, m.start_date DESC " +
+  "WITH d, collect(g.name)[0] AS group " +
   "RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name, " +
-  "d.photo AS photo, d.profession AS profession, g.name AS group " +
+  "d.photo AS photo, d.profession AS profession, group " +
   "ORDER BY d.last_name, d.first_name";
+
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+function lastNameInitial(lastName: string): string {
+  return (lastName.trim().charAt(0) || "")
+    .normalize("NFD")
+    .charAt(0)
+    .toUpperCase();
+}
 
 export default function DeputiesDirectoryPage() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
@@ -43,6 +57,9 @@ export default function DeputiesDirectoryPage() {
   const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
   const [groupFilter, setGroupFilter] = useState("");
+  // 400+ rows with photos are a wall: the index opens on the A surnames,
+  // null = the whole directory. Typing in the search bypasses the letter.
+  const [letter, setLetter] = useState<string | null>("A");
 
   const load = useCallback(async () => {
     setError(false);
@@ -68,17 +85,25 @@ export default function DeputiesDirectoryPage() {
     return Array.from(distinct).sort((a, b) => a.localeCompare(b, "it"));
   }, [deputies]);
 
+  const presentLetters = useMemo(() => {
+    if (!deputies) return new Set<string>();
+    return new Set(deputies.map((d) => lastNameInitial(d.last_name)));
+  }, [deputies]);
+
   const filtered = useMemo(() => {
     if (!deputies) return [];
     const needle = search.trim().toLowerCase();
     return deputies.filter((d) => {
       if (groupFilter && d.group !== groupFilter) return false;
-      if (!needle) return true;
-      const fullName = `${d.first_name} ${d.last_name}`.toLowerCase();
-      const reversed = `${d.last_name} ${d.first_name}`.toLowerCase();
-      return fullName.includes(needle) || reversed.includes(needle);
+      if (needle) {
+        const fullName = `${d.first_name} ${d.last_name}`.toLowerCase();
+        const reversed = `${d.last_name} ${d.first_name}`.toLowerCase();
+        return fullName.includes(needle) || reversed.includes(needle);
+      }
+      if (letter) return lastNameInitial(d.last_name) === letter;
+      return true;
     });
-  }, [deputies, search, groupFilter]);
+  }, [deputies, search, groupFilter, letter]);
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background pb-[calc(4.75rem+env(safe-area-inset-bottom))] md:pb-0">
@@ -123,6 +148,44 @@ export default function DeputiesDirectoryPage() {
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Indice alfabetico per cognome; la ricerca testuale lo scavalca */}
+          <div className="mt-4 flex flex-wrap gap-1" role="group" aria-label={t("letterIndex")}>
+            {LETTERS.map((L) => {
+              const enabled = presentLetters.has(L);
+              const active = letter === L && !search.trim();
+              return (
+                <button
+                  key={L}
+                  type="button"
+                  disabled={!enabled}
+                  onClick={() => setLetter(L)}
+                  aria-pressed={active}
+                  className={`h-8 w-8 rounded-md text-sm tabular-nums transition-colors ${
+                    active
+                      ? "bg-primary font-medium text-primary-foreground"
+                      : enabled
+                        ? "text-foreground/70 hover:bg-muted hover:text-foreground cursor-pointer"
+                        : "text-muted-foreground/30"
+                  }`}
+                >
+                  {L}
+                </button>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => setLetter(null)}
+              aria-pressed={letter === null && !search.trim()}
+              className={`h-8 rounded-md px-2.5 text-sm transition-colors ${
+                letter === null && !search.trim()
+                  ? "bg-primary font-medium text-primary-foreground"
+                  : "text-foreground/70 hover:bg-muted hover:text-foreground cursor-pointer"
+              }`}
+            >
+              {t("allLetters")}
+            </button>
           </div>
 
           {/* Stati: caricamento / errore / lista */}
@@ -174,10 +237,7 @@ export default function DeputiesDirectoryPage() {
                           </p>
                           {d.group && (
                             <p className="mt-0.5 flex items-center gap-2 text-sm text-muted-foreground">
-                              <span
-                                className="h-2 w-2 shrink-0 rounded-full"
-                                style={{ backgroundColor: getGroupColor(d.group) }}
-                              />
+                              <GroupLogo group={d.group} size={16} />
                               <span className="truncate">{groupLabel(d.group)}</span>
                             </p>
                           )}

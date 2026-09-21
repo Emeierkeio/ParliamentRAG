@@ -82,9 +82,15 @@ def _search_speeches_text(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
-    """Text search on Speech chunks."""
-    where_clauses = ["toLower(c.text) CONTAINS toLower($search_text)"]
-    params: Dict[str, Any] = {"search_text": q, "limit": limit}
+    """Text search on Speech chunks; with an empty query it lists the
+    author's speeches (first chunk only, or every chunk would be a row)."""
+    where_clauses = []
+    params: Dict[str, Any] = {"limit": limit}
+    if q:
+        where_clauses.append("toLower(c.text) CONTAINS toLower($search_text)")
+        params["search_text"] = q
+    else:
+        where_clauses.append("c.index = 0")
 
     if deputy_id:
         where_clauses.append("d.id = $deputy_id")
@@ -157,11 +163,15 @@ def _search_acts_text(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
-    """Text search on ParliamentaryAct title and description."""
-    where_clauses = [
-        "(toLower(a.title) CONTAINS toLower($search_text) OR toLower(a.description) CONTAINS toLower($search_text))"
-    ]
-    params: Dict[str, Any] = {"search_text": q, "limit": limit}
+    """Text search on ParliamentaryAct title and description; with an
+    empty query it lists the author's acts."""
+    where_clauses = []
+    params: Dict[str, Any] = {"limit": limit}
+    if q:
+        where_clauses.append(
+            "(toLower(a.title) CONTAINS toLower($search_text) OR toLower(a.description) CONTAINS toLower($search_text))"
+        )
+        params["search_text"] = q
 
     if deputy_id:
         where_clauses.append("d.id = $deputy_id")
@@ -177,7 +187,8 @@ def _search_acts_text(
             "replace(toString(a.presentation_date), '-', '') <= $end_date_act")
         params["end_date_act"] = end_date.replace("-", "")
 
-    where_clause = " AND ".join(where_clauses)
+    # Browse mode with a group-only filter leaves no act-level clause
+    where_clause = " AND ".join(where_clauses) if where_clauses else "true"
 
     # Group filter handled separately since it's on the signatory's group
     group_filter = ""
@@ -441,7 +452,7 @@ def _search_acts_semantic(
 
 @router.get("/results")
 async def search_results(
-    q: str = Query(..., min_length=2, description="Search query"),
+    q: str = Query("", description="Search query; optional with an author filter (browse mode)"),
     deputy_id: Optional[str] = Query(None, description="Filter by deputy ID"),
     group: Optional[List[str]] = Query(None, description="Filter by parliamentary group(s)"),
     start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
@@ -463,6 +474,16 @@ async def search_results(
     """
     client = get_client()
     all_results: List[Dict[str, Any]] = []
+
+    # Browse mode: no query, but an author filter — list that author's
+    # record by date. Without any filter the empty query stays rejected.
+    q = q.strip()
+    if not q:
+        if not (deputy_id or group):
+            raise HTTPException(status_code=422, detail="A query or an author filter is required")
+        search_type = "text"
+        if sort_by == "relevance":
+            sort_by = "date_desc"
 
     # Fetch enough results to allow proper pagination
     fetch_limit = 500
