@@ -23,6 +23,7 @@ interface MemberRow {
   first_name: string;
   last_name: string;
   photo: string | null;
+  component: string | null;
 }
 
 const DIRECTORY_QUERY =
@@ -73,9 +74,12 @@ export default function GruppoDettaglioPage() {
         }
         const membersQuery =
           `MATCH (g:ParliamentaryGroup {name: "${escapeCypherString(group.name)}"})` +
-          "<-[:MEMBER_OF_GROUP]-(d:Deputy) " +
-          "RETURN d.id AS id, d.first_name AS first_name, d.last_name AS last_name, " +
-          "d.photo AS photo ORDER BY d.last_name, d.first_name";
+          "<-[mm:MEMBER_OF_GROUP]-(d:Deputy) " +
+          "WHERE mm.end_date IS NULL " +
+          "OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMPONENT]->(c:MistoComponent) " +
+          "WHERE mc.end_date IS NULL " +
+          "RETURN DISTINCT d.id AS id, d.first_name AS first_name, d.last_name AS last_name, " +
+          "d.photo AS photo, c.name AS component ORDER BY d.last_name, d.first_name";
         return graphQuery<MemberRow>(membersQuery).then((members) =>
           setState({ phase: "ready", group, members })
         );
@@ -183,26 +187,65 @@ export default function GruppoDettaglioPage() {
                     {t("noResults")}
                   </p>
                 ) : (
-                  <ul className="mt-4 grid gap-x-8 sm:grid-cols-2">
-                    {state.members.map((m) => {
-                      const name = toTitleCase(
-                        `${m.first_name} ${m.last_name}`.trim()
-                      );
-                      return (
-                        <li key={m.id}>
-                          <Link
-                            href={`/parlamentari/${deputySlug(m.id)}`}
-                            className="group flex items-center gap-3 border-b py-3 transition-colors hover:bg-muted/40"
-                          >
-                            <GroupMemberAvatar photo={m.photo} name={name} />
-                            <span className="min-w-0 truncate group-hover:underline underline-offset-4">
-                              {name}
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  (() => {
+                    const renderList = (items: MemberRow[]) => (
+                      <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
+                        {items.map((m) => {
+                          const name = toTitleCase(
+                            `${m.first_name} ${m.last_name}`.trim()
+                          );
+                          return (
+                            <li key={m.id}>
+                              <Link
+                                href={`/parlamentari/${deputySlug(m.id)}`}
+                                className="group flex items-center gap-3 border-b py-3 transition-colors hover:bg-muted/40"
+                              >
+                                <GroupMemberAvatar photo={m.photo} name={name} />
+                                <span className="min-w-0 truncate group-hover:underline underline-offset-4">
+                                  {name}
+                                </span>
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    );
+                    // Solo il Misto ha componenti: per gli altri gruppi tutte
+                    // le righe hanno component null e la lista resta piatta
+                    const withComponent = state.members.filter((m) => m.component);
+                    if (withComponent.length === 0) return renderList(state.members);
+                    const sections = new Map<string, MemberRow[]>();
+                    for (const m of withComponent) {
+                      const list = sections.get(m.component as string) ?? [];
+                      list.push(m);
+                      sections.set(m.component as string, list);
+                    }
+                    const rest = state.members.filter((m) => !m.component);
+                    return (
+                      <>
+                        {[...sections.entries()]
+                          .sort((a, b) => b[1].length - a[1].length)
+                          .map(([cname, items]) => (
+                            <div key={cname} className="mt-6">
+                              <h3 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                                {toTitleCase(cname)}
+                                <span className="ml-1.5 font-mono tabular-nums">{items.length}</span>
+                              </h3>
+                              {renderList(items)}
+                            </div>
+                          ))}
+                        {rest.length > 0 && (
+                          <div className="mt-6">
+                            <h3 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                              {t("noComponent")}
+                              <span className="ml-1.5 font-mono tabular-nums">{rest.length}</span>
+                            </h3>
+                            {renderList(rest)}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()
                 )}
               </section>
             </>

@@ -1244,6 +1244,7 @@
     "sinceDate": "dal {date}",
     "periodFromTo": "{from} - {to}",
     "allLetters": "Tutti",
-    "letterIndex": "Indice alfabetico"
+    "letterIndex": "Indice alfabetico",
+    "noComponent": "Non iscritti a una componente"
   }
 }

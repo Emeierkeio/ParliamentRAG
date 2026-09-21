@@ -15,9 +15,12 @@ interface GroupRow {
   members: number;
 }
 
+// Solo le appartenenze correnti: chi e' transitato da un gruppo a inizio
+// legislatura non deve comparire ne' nei conteggi ne' negli elenchi
 const DIRECTORY_QUERY =
-  "MATCH (g:ParliamentaryGroup)<-[:MEMBER_OF_GROUP]-(d:Deputy) " +
-  "RETURN g.name AS name, count(d) AS members ORDER BY members DESC";
+  "MATCH (g:ParliamentaryGroup)<-[m:MEMBER_OF_GROUP]-(d:Deputy) " +
+  "WHERE m.end_date IS NULL " +
+  "RETURN g.name AS name, count(DISTINCT d) AS members ORDER BY members DESC";
 
 function groupLabel(name: string): string {
   const known = (
