@@ -177,7 +177,11 @@
     "navAuthority": "Autoridad",
     "navCompass": "Brújula",
     "navMore": "Más",
-    "navTimeline": "Pleno"
+    "navTimeline": "Pleno",
+    "deputies": "Diputados",
+    "groups": "Grupos",
+    "explore": "Explorar",
+    "analyze": "Analizar"
   },
   "Chat": {
     "placeholder": "Pregunte algo sobre los debates parlamentarios...",
@@ -1169,5 +1173,36 @@
     "compassTitle": "La brújula ideológica",
     "compassP1": "Para cada pregunta el sistema genera dos ejes temáticos y pide a un modelo de lenguaje clasificar cada intervención recuperada: una posición entre −1 y +1 en cada eje, o ninguna posición. La posición de un grupo es la media de solo sus intervenciones que se posicionan en ese eje, atenuada hacia el centro cuando son pocas: una posición nítida se gana con los números, no con tres frases.",
     "compassP2": "Dos cautelas de lectura. Las coordenadas de un grupo pueden apoyarse en conjuntos distintos de intervenciones para los dos ejes, y el número de intervenciones detrás de cada coordenada se indica en el tooltip. Los puntos en el centro no toman posición: la brújula describe lo que los grupos argumentaron en el hemiciclo sobre esta pregunta, no certifica su posicionamiento político."
+  },
+  "Entities": {
+    "deputiesTitle": "Diputados",
+    "deputiesIntro": "Los diputados de la XIX Legislatura: grupo, profesión y actividad en el Pleno.",
+    "searchDeputyPlaceholder": "Busca un diputado…",
+    "allGroups": "Todos los grupos",
+    "groupsTitle": "Grupos parlamentarios",
+    "groupsIntro": "Los grupos de la Cámara: miembros, actividad y posiciones.",
+    "membersCount": "{count} miembros",
+    "speechesCount": "{count} intervenciones",
+    "actsCount": "{count} actos presentados",
+    "profession": "Profesión",
+    "education": "Formación",
+    "role": "Cargo",
+    "officialCard": "Ficha oficial de la Cámara",
+    "recentSpeeches": "Intervenciones recientes",
+    "viewAllSpeeches": "Todas las intervenciones",
+    "sessionTitle": "Sesión n.º {number}",
+    "debatesTitle": "Debates",
+    "votesTitle": "Votaciones",
+    "membersTitle": "Miembros",
+    "backToList": "Volver a la lista",
+    "errorLoad": "No hemos podido cargar estos datos.",
+    "retry": "Reintentar",
+    "noResults": "Sin resultados",
+    "exploreTitle": "Explora el Parlamento",
+    "openSource": "Abrir el acta oficial",
+    "askAboutGroup": "Pregunta al Parlamento",
+    "positionsOf": "Posiciones sobre el tema",
+    "whoKnowsMost": "Quién sabe más",
+    "actsOfGroup": "Actos del grupo"
   }
 }

@@ -18,6 +18,8 @@ import {
   Compass,
   BarChart3,
   CalendarDays,
+  Users,
+  Landmark,
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
@@ -128,9 +130,9 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
               disabled={isQueryRunning}
             />
 
-            {/* Strumenti */}
+            {/* Esplora: the record itself (acts, people, groups, sittings) */}
             {!isCollapsed && (
-              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('tools')}</p>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('explore')}</p>
             )}
             {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
 
@@ -141,6 +143,30 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             />
 
             <NavButton
+              item={{ icon: Users, label: t('deputies'), href: "/parlamentari", isActive: pathname.startsWith("/parlamentari"), onClick: () => navTo("/parlamentari") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: Landmark, label: t('groups'), href: "/gruppi", isActive: pathname.startsWith("/gruppi"), onClick: () => navTo("/gruppi") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            <NavButton
+              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
+              isCollapsed={isCollapsed}
+              disabled={false}
+            />
+
+            {/* Analizza: the system's readings over the record */}
+            {!isCollapsed && (
+              <p className="text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40 mt-6 mb-2 px-3">{t('analyze')}</p>
+            )}
+            {isCollapsed && <div className="mt-4 mb-1 mx-auto w-5 border-t border-sidebar-border" />}
+
+            <NavButton
               item={{ icon: BarChart3, label: t('authorityAnalysis'), href: "/ranking", isActive: pathname === "/ranking", onClick: () => navTo("/ranking") }}
               isCollapsed={isCollapsed}
               disabled={false}
@@ -148,12 +174,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
 
             <NavButton
               item={{ icon: Compass, label: t('ideologicalCompass'), href: "/compass", isActive: pathname === "/compass", onClick: () => navTo("/compass") }}
-              isCollapsed={isCollapsed}
-              disabled={false}
-            />
-
-            <NavButton
-              item={{ icon: CalendarDays, label: t('parliamentaryTimeline'), href: "/timeline", isActive: pathname === "/timeline", onClick: () => navTo("/timeline") }}
               isCollapsed={isCollapsed}
               disabled={false}
             />
