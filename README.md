@@ -20,8 +20,8 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **174k+ text chunks** from **705 plenary sessions**, updated through 2026-09-03
-- **17.3k roll-call votes** with **6.9M individual vote records** linked to deputies
+- **175k+ text chunks** from **709 plenary sessions**, updated through 2026-09-16
+- **17.4k roll-call votes** with **6.9M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the system picks the most credible speaker per party for the specific question asked
 - **6 languages** (IT / EN / FR / DE / ES / PT), editorial newspaper-style UI
@@ -50,7 +50,7 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 4. **Multi-view retrieval**: a dense channel (vector similarity over `text-embedding-3-small` embeddings) and a graph channel (lexical + semantic matching over the knowledge graph) are fused by a weighted merger balancing relevance, party coverage, speaker diversity, and political salience.
 5. **Balance metrics**: coverage and balance statistics are computed over the retrieved evidence.
 6. **Ideological compass**: parliamentary groups are placed on two axes anchored to the question. The opposing poles of each axis (e.g. "more public spending" vs. "budget rigour") are generated per query and embedded with the same model as the evidence, so the axes are readable by construction and stable across recomputations.
-7. **Generation**: a multi-stage writer produces a narrative that explicitly represents both majority and opposition positions.
+7. **Generation**: a multi-stage writer produces a narrative that explicitly represents both majority and opposition positions. Quotes are picked from a deterministic set of verbatim candidates, and the final assembly preserves citation markers by construction.
 8. **Citation verification**: every quotation is matched verbatim against its source chunk and coherence-scored; anything that cannot be verified is stripped from the answer.
 
 ### Models
@@ -59,7 +59,8 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 |---|---|
 | Writer / Integrator | `gpt-4.1` |
 | Analyst (claim decomposition) | `gpt-4.1-mini` |
-| Query rewriter | `gpt-4.1-mini` |
+| Quote picker (verbatim candidate selection) | `gpt-5.6-luna` |
+| Query rewriter / compass poles | `gpt-5.6-luna` |
 | UI translations | `gpt-4.1-nano` |
 | Embeddings (all semantic operations) | `text-embedding-3-small` (1536-d, Neo4j native vector index) |
 
@@ -71,7 +72,9 @@ Each question runs through a single streamed pipeline; the frontend renders prog
 |---|---|
 | `/` | Landing page |
 | `/home` (chat) | Ask questions; streamed 8-step progress, per-party sections, **verified citation cards** with full stenographic text in a modal, **expert cards** with authority-score breakdown, inline ideological compass |
-| `/search` | Search parliamentary acts and records |
+| `/search` | Search acts and records; filter by deputy or group, or browse an author's full record without a query |
+| `/parlamentari` | Deputy directory (alphabetical index) and profiles: group history with periods, committees and offices, floor activity, recent speeches expandable in place |
+| `/gruppi` | Parliamentary groups with official logos, membership counts, and per-group member lists |
 | `/ranking` | Topic-dependent authority rankings of deputies |
 | `/compass` | Standalone ideological compass for any topic |
 | `/timeline` | **Lavori d'Aula**: browse sessions → debates → phases → speakers, with AI-generated IT/EN recaps per session and debate, per-speaker position summaries, roll-call detail (per-group breakdown + individual votes, searchable), infinite scroll, and search + date filters |
@@ -90,7 +93,7 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature, data as of 2026-09-03** (updated incrementally): 705 sessions · 46.9k speeches · 174k+ chunks · 35.7k acts · 17.3k roll calls with 6.9M individual votes
+- **XIX Legislature, data as of 2026-09-16** (updated incrementally): 709 sessions · 47k speeches · 175k+ chunks · 36.1k acts · 17.4k roll calls with 6.9M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
