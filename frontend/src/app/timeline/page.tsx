@@ -67,7 +67,13 @@ export default function TimelinePage() {
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
             <FeedbackPulse tool="timeline" className="mt-0 pt-0 border-t-0 ml-auto hidden sm:block" />
           </div>
-          <div className="px-4 sm:px-6 pb-3 mx-auto w-full max-w-4xl">
+        </header>
+
+        <div className="px-4 sm:px-6 pt-6 mx-auto w-full max-w-4xl">
+          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">
+            {t("actionTitle")}
+          </h2>
+          <div className="mt-5">
             <TimelineSearch
               filters={filters}
               onFiltersChange={setFilters}
@@ -75,12 +81,6 @@ export default function TimelinePage() {
               hasActiveFilters={hasActiveFilters}
             />
           </div>
-        </header>
-
-        <div className="px-4 sm:px-6 pt-6 mx-auto w-full max-w-4xl">
-          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">
-            {t("actionTitle")}
-          </h2>
         </div>
 
         {/* Session list — width-capped reading column */}
