@@ -183,9 +183,6 @@ export default function GruppoDettaglioPage() {
 
 
               <section className="mt-10">
-                <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight">
-                  {t("membersTitle")}
-                </h2>
                 {state.members.length === 0 ? (
                   <p className="mt-4 border-b py-8 text-center text-muted-foreground">
                     {t("noResults")}
@@ -259,7 +256,12 @@ export default function GruppoDettaglioPage() {
                           </div>
                         )}
                         {withComponent.length === 0 ? (
-                          renderList(others)
+                          <div className="mt-6">
+                            <h3 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                              {t("membersTitle")}
+                            </h3>
+                            {renderList(others)}
+                          </div>
                         ) : (
                           <>
                         {[...sections.entries()]
