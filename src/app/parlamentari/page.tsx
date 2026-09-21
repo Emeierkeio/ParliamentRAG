@@ -152,7 +152,7 @@ export default function DeputiesDirectoryPage() {
           </div>
 
           {/* Indice alfabetico per cognome; la ricerca testuale lo scavalca */}
-          <div className="mt-4 flex flex-wrap gap-1" role="group" aria-label={t("letterIndex")}>
+          <div className="mt-4 flex gap-1 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible sm:pb-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="group" aria-label={t("letterIndex")}>
             {LETTERS.map((L) => {
               const enabled = presentLetters.has(L);
               const active = letter === L && !search.trim();
@@ -163,7 +163,7 @@ export default function DeputiesDirectoryPage() {
                   disabled={!enabled}
                   onClick={() => setLetter(L)}
                   aria-pressed={active}
-                  className={`h-8 w-8 rounded-md text-sm tabular-nums transition-colors ${
+                  className={`h-8 w-8 shrink-0 rounded-md text-sm tabular-nums transition-colors ${
                     active
                       ? "bg-primary font-medium text-primary-foreground"
                       : enabled
@@ -179,7 +179,7 @@ export default function DeputiesDirectoryPage() {
               type="button"
               onClick={() => setLetter(null)}
               aria-pressed={letter === null && !search.trim()}
-              className={`h-8 rounded-md px-2.5 text-sm transition-colors ${
+              className={`h-8 shrink-0 rounded-md px-2.5 text-sm transition-colors ${
                 letter === null && !search.trim()
                   ? "bg-primary font-medium text-primary-foreground"
                   : "text-foreground/70 hover:bg-muted hover:text-foreground cursor-pointer"
