@@ -1223,11 +1223,11 @@
   },
   "Entities": {
     "deputiesTitle": "Deputies",
-    "deputiesIntro": "Search for a deputy or filter by group and initial, then open the profile: groups, committees and floor speeches.",
+    "deputiesIntro": "Find a deputy and open groups, committees and speeches",
     "searchDeputyPlaceholder": "Search a deputy…",
     "allGroups": "All groups",
     "groupsTitle": "Parliamentary groups",
-    "groupsIntro": "Open a group to see its members and jump to their profiles and speeches.",
+    "groupsIntro": "Open a group and jump to its members' profiles",
     "membersCount": "{count} members",
     "speechesCount": "{count} speeches",
     "actsCount": "{count} acts filed",
