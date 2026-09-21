@@ -22,6 +22,7 @@ import {
   AuthorityEditor,
   GenerationEditor,
   QueryRewritingEditor,
+  weightsSumValid,
 } from "./GraphicalEditors";
 
 interface SettingsModalProps {
@@ -45,6 +46,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     configData !== null &&
     originalData !== null &&
     JSON.stringify(configData) !== JSON.stringify(originalData);
+
+  const weightsValid =
+    configData === null ||
+    (weightsSumValid(configData.retrieval.merger_weights) &&
+      weightsSumValid(configData.authority.weights));
 
   const loadConfig = async () => {
     setIsLoading(true);
@@ -190,12 +196,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 {activeTab === "generation" && (
                   <GenerationEditor
                     data={configData.generation}
+                    baselineModels={originalData?.generation.models}
                     onChange={(generation) => setConfigData({ ...configData, generation })}
                   />
                 )}
                 {activeTab === "rewriting" && (
                   <QueryRewritingEditor
                     data={configData.query_rewriting}
+                    baselineModel={originalData?.query_rewriting.model}
                     onChange={(query_rewriting) => setConfigData({ ...configData, query_rewriting })}
                   />
                 )}
@@ -209,19 +217,24 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </div>
 
         <DialogFooter className="shrink-0 flex-row flex-wrap items-center gap-2">
-          <div className="flex-1 flex justify-start">
+          <div className="flex-1 flex items-center gap-3 justify-start min-w-0">
             <Button variant="outline" size="sm" onClick={handleReload} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 sm:mr-2 ${isLoading ? "animate-spin" : ""}`} />
               <span className="hidden sm:inline">{t("reloadYaml")}</span>
             </Button>
+            {!weightsValid && (
+              <span className="hidden sm:inline text-xs text-destructive truncate">
+                {t("weightsInvalid")}
+              </span>
+            )}
           </div>
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
             {t("cancel")}
           </Button>
           <Button
             onClick={handleSave}
-            disabled={isLoading || !hasUnsavedChanges}
-            className={hasUnsavedChanges ? "" : "opacity-50"}
+            disabled={isLoading || !hasUnsavedChanges || !weightsValid}
+            className={hasUnsavedChanges && weightsValid ? "" : "opacity-50"}
           >
             {isLoading ? (
               <>
