@@ -151,9 +151,9 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Themensuche",
+    "topicSearch": "Die Kammer befragen",
     "tools": "Werkzeuge",
-    "actsSearch": "Aktensuche",
+    "actsSearch": "Protokolle durchsuchen",
     "parliamentaryTimeline": "Plenarsitzungen",
     "authorityAnalysis": "Autoritätsanalyse",
     "ideologicalCompass": "Ideologischer Kompass",
@@ -1203,6 +1203,12 @@
     "askAboutGroup": "Das Parlament fragen",
     "positionsOf": "Positionen zum Thema",
     "whoKnowsMost": "Wer sich auskennt",
-    "actsOfGroup": "Akten der Fraktion"
+    "actsOfGroup": "Akten der Fraktion",
+    "groupHistoryTitle": "Fraktionen",
+    "committeesTitle": "Ausschüsse",
+    "sinceDate": "seit {date}",
+    "periodFromTo": "{from} - {to}",
+    "allLetters": "Alle",
+    "letterIndex": "Alphabetischer Index"
   }
 }

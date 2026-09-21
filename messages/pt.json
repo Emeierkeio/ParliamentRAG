@@ -151,9 +151,9 @@
     }
   },
   "Sidebar": {
-    "topicSearch": "Pesquisa de Temas",
+    "topicSearch": "Pergunte à Câmara",
     "tools": "Ferramentas",
-    "actsSearch": "Pesquisa de Atos",
+    "actsSearch": "Pesquisar nas atas",
     "parliamentaryTimeline": "Trabalhos do Plenário",
     "authorityAnalysis": "Análise de Autoridade",
     "ideologicalCompass": "Bússola Ideológica",
@@ -1203,6 +1203,12 @@
     "askAboutGroup": "Pergunte ao Parlamento",
     "positionsOf": "Posições sobre o tema",
     "whoKnowsMost": "Quem sabe mais",
-    "actsOfGroup": "Atos do grupo"
+    "actsOfGroup": "Atos do grupo",
+    "groupHistoryTitle": "Grupos parlamentares",
+    "committeesTitle": "Comissões",
+    "sinceDate": "desde {date}",
+    "periodFromTo": "{from} - {to}",
+    "allLetters": "Todos",
+    "letterIndex": "Índice alfabético"
   }
 }

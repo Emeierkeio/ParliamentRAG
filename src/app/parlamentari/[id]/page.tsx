@@ -7,8 +7,9 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Sidebar } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
+import { GroupLogo } from "@/components/entities/GroupLogo";
 import { graphQuery, deputyUriFromSlug } from "@/lib/graph";
-import { config, getGroupColor } from "@/config";
+import { config } from "@/config";
 import { formatDate, toTitleCase } from "@/lib/utils";
 
 interface DeputyProfile {
@@ -32,24 +33,40 @@ interface RecentSpeech {
   debate_title: string | null;
 }
 
+interface GroupMembership {
+  name: string;
+  start_date: string | null;
+  end_date: string | null;
+}
+
+interface CommitteeMembership {
+  name: string;
+  start_date: string | null;
+  end_date: string | null;
+  officer_role: string | null;
+}
+
 const SLUG_RE = /^p\d+$/;
 
 function profileCypher(uri: string): string {
+  // Current membership only (no end_date, most recent first): deputies who
+  // changed group would otherwise produce one row per membership
   return (
     `MATCH (d:Deputy {id: "${uri}"}) ` +
-    "OPTIONAL MATCH (d)-[:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) WITH d, g " +
-    "OPTIONAL MATCH (s:Speech)-[:SPOKEN_BY]->(d) WITH d, g, count(s) AS speeches " +
+    "OPTIONAL MATCH (d)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) " +
+    "WITH d, g, m ORDER BY m.end_date IS NOT NULL, m.start_date DESC " +
+    "WITH d, collect(g.name)[0] AS group " +
+    "OPTIONAL MATCH (s:Speech)-[:SPOKEN_BY]->(d) WITH d, group, count(s) AS speeches " +
     "OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a:ParliamentaryAct) " +
     "RETURN d.first_name AS first_name, d.last_name AS last_name, d.photo AS photo, " +
     "d.deputy_card AS deputy_card, d.profession AS profession, d.education AS education, " +
-    "d.institutional_role AS institutional_role, g.name AS group, speeches, count(a) AS acts"
+    "d.institutional_role AS institutional_role, group, speeches, count(a) AS acts"
   );
 }
 
 export default function DeputyProfilePage() {
   const { isCollapsed, toggle, isMobile, isMobileOpen, closeMobile } = useSidebar();
   const t = useTranslations("Entities");
-  const tSidebar = useTranslations("Sidebar");
   const params = useParams();
   const slug = typeof params.id === "string" ? params.id : "";
   const validSlug = SLUG_RE.test(slug);
@@ -59,6 +76,8 @@ export default function DeputyProfilePage() {
   const [error, setError] = useState(!validSlug);
   const [recent, setRecent] = useState<RecentSpeech[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [groupHistory, setGroupHistory] = useState<GroupMembership[]>([]);
+  const [committees, setCommittees] = useState<CommitteeMembership[]>([]);
 
   const load = useCallback(async () => {
     if (!validSlug) return;
@@ -109,10 +128,45 @@ export default function DeputyProfilePage() {
       .catch(() => {
         /* lista nascosta, resta il link viewAllSpeeches */
       });
+
+    // Storico gruppi (chi e' uscito da un gruppo ha end_date sulla membership)
+    const groupsCypher =
+      `MATCH (d:Deputy {id: "${uri}"})-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) ` +
+      "RETURN g.name AS name, toString(m.start_date) AS start_date, " +
+      "toString(m.end_date) AS end_date " +
+      "ORDER BY m.end_date IS NOT NULL, m.start_date DESC";
+    graphQuery<GroupMembership>(groupsCypher)
+      .then((rows) => {
+        if (!cancelled) setGroupHistory(rows);
+      })
+      .catch(() => {
+        /* sezione nascosta */
+      });
+
+    const committeesCypher =
+      `MATCH (d:Deputy {id: "${uri}"})-[m:MEMBER_OF_COMMITTEE]->(c:Committee) ` +
+      "RETURN c.name AS name, toString(m.start_date) AS start_date, " +
+      "toString(m.end_date) AS end_date, m.officerRole AS officer_role " +
+      "ORDER BY m.end_date IS NOT NULL, m.start_date DESC";
+    graphQuery<CommitteeMembership>(committeesCypher)
+      .then((rows) => {
+        if (!cancelled) setCommittees(rows);
+      })
+      .catch(() => {
+        /* sezione nascosta */
+      });
+
     return () => {
       cancelled = true;
     };
   }, [profile, slug, validSlug]);
+
+  const membershipPeriod = (m: { start_date: string | null; end_date: string | null }) => {
+    if (m.start_date && m.end_date)
+      return t("periodFromTo", { from: formatDate(m.start_date), to: formatDate(m.end_date) });
+    if (m.start_date) return t("sinceDate", { date: formatDate(m.start_date) });
+    return null;
+  };
 
   const fullName = profile
     ? toTitleCase(`${profile.first_name} ${profile.last_name}`)
@@ -180,10 +234,7 @@ export default function DeputyProfilePage() {
                   </h1>
                   {profile.group && (
                     <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: getGroupColor(profile.group) }}
-                      />
+                      <GroupLogo group={profile.group} size={18} />
                       <span>{(config.politicalGroups as Record<string, { label?: string }>)[profile.group]?.label ?? toTitleCase(profile.group)}</span>
                     </p>
                   )}
@@ -234,6 +285,70 @@ export default function DeputyProfilePage() {
                 <span className="mx-2 text-muted-foreground/50">·</span>
                 {t("actsCount", { count: profile.acts })}
               </p>
+
+              {/* Gruppi parlamentari: appartenenza attuale e storico */}
+              {groupHistory.length > 0 && (
+                <section className="mt-12">
+                  <h2 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    {t("groupHistoryTitle")}
+                  </h2>
+                  <ul className="mt-2 border-t border-border">
+                    {groupHistory.map((g, i) => {
+                      const current = !g.end_date;
+                      return (
+                        <li
+                          key={`${g.name}-${i}`}
+                          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border py-3"
+                        >
+                          <span className="flex items-center gap-2 text-sm">
+                            <GroupLogo group={g.name} size={16} />
+                            <span className={current ? "font-medium text-foreground" : "text-muted-foreground"}>
+                              {(config.politicalGroups as Record<string, { label?: string }>)[g.name]?.label ?? toTitleCase(g.name)}
+                            </span>
+                          </span>
+                          <span className="font-mono text-xs text-muted-foreground tabular-nums">
+                            {membershipPeriod(g)}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              )}
+
+              {/* Commissioni e giunte, con eventuale carica ricoperta */}
+              {committees.length > 0 && (
+                <section className="mt-12">
+                  <h2 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    {t("committeesTitle")}
+                  </h2>
+                  <ul className="mt-2 border-t border-border">
+                    {committees.map((c, i) => {
+                      const current = !c.end_date;
+                      return (
+                        <li
+                          key={`${c.name}-${i}`}
+                          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border py-3"
+                        >
+                          <span className="min-w-0 text-sm">
+                            <span className={current ? "text-foreground" : "text-muted-foreground"}>
+                              {toTitleCase(c.name)}
+                            </span>
+                            {c.officer_role && (
+                              <span className="ml-2 rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground">
+                                {toTitleCase(c.officer_role)}
+                              </span>
+                            )}
+                          </span>
+                          <span className="font-mono text-xs text-muted-foreground tabular-nums">
+                            {membershipPeriod(c)}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              )}
 
               {/* Interventi recenti */}
               <section className="mt-12">
@@ -286,16 +401,6 @@ export default function DeputyProfilePage() {
                 </a>
               </section>
 
-              {/* Rimando all'analisi di autorevolezza */}
-              <div className="mt-10 border-t border-border pt-5">
-                <a
-                  href="/ranking"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {tSidebar("authorityAnalysis")}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </a>
-              </div>
             </>
           )}
         </div>

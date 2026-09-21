@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { Sidebar } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { graphQuery } from "@/lib/graph";
-import { config, getGroupAbbrev, getGroupColor } from "@/config";
+import { GroupLogo } from "@/components/entities/GroupLogo";
+import { config, getGroupAbbrev } from "@/config";
 import { toTitleCase } from "@/lib/utils";
 
 interface GroupRow {
@@ -114,11 +115,9 @@ export default function GruppiPage() {
                       href={`/gruppi/${groupSlug(g.name)}`}
                       className="group flex items-baseline gap-3 border-b py-4 transition-colors hover:bg-muted/40"
                     >
-                      <span
-                        className="h-2.5 w-2.5 rounded-full inline-block self-center shrink-0"
-                        style={{ backgroundColor: getGroupColor(g.name) }}
-                        aria-hidden
-                      />
+                      <span className="self-center inline-flex shrink-0">
+                        <GroupLogo group={g.name} size={22} />
+                      </span>
                       <span className="min-w-0 truncate group-hover:underline underline-offset-4">
                         {groupLabel(g.name)}
                       </span>

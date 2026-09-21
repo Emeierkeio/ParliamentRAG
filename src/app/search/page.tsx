@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { ScopePicker } from "@/components/chat/ScopePicker";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
@@ -114,27 +115,45 @@ export default function SearchPage() {
     const [hasSearched, setHasSearched] = useState(false);
 
     // Deep link from the entity pages: ?deputy=p123&fn=..&ln=.. preselects
-    // the author filter on that deputy, ?group=<name> the group one. The
-    // query stays manual: the backend requires a textual query, so the
-    // reader still types the topic to search within the author's record.
+    // the author filter on that deputy, ?group=<name> the group one, and
+    // the browse search runs at once (empty query = list by date).
     useEffect(() => {
         const sp = new URLSearchParams(window.location.search);
         const dep = sp.get("deputy");
         const group = sp.get("group");
-        if (dep) {
-            setAuthorFilterMode("deputy");
-            setSelectedDeputies([
-                {
-                    id: deputyUriFromSlug(dep),
-                    first_name: sp.get("fn") ?? "",
-                    last_name: sp.get("ln") ?? "",
-                },
-            ]);
-            setDocType("speech");
-        } else if (group) {
-            setAuthorFilterMode("group");
-            setSelectedGroups([group]);
-        }
+        if (!dep && !group) return;
+        const seeded: SearchHistoryData = dep
+            ? {
+                  query: "",
+                  authorFilterMode: "deputy",
+                  selectedDeputies: [
+                      {
+                          id: deputyUriFromSlug(dep),
+                          first_name: sp.get("fn") ?? "",
+                          last_name: sp.get("ln") ?? "",
+                      },
+                  ],
+                  selectedGroups: [],
+                  startDate: "",
+                  endDate: "",
+                  docType: "speech",
+              }
+            : {
+                  query: "",
+                  authorFilterMode: "group",
+                  selectedDeputies: [],
+                  selectedGroups: [group as string],
+                  startDate: "",
+                  endDate: "",
+                  docType: "all",
+              };
+        setAuthorFilterMode(seeded.authorFilterMode);
+        setSelectedDeputies(seeded.selectedDeputies);
+        setSelectedGroups(seeded.selectedGroups);
+        setDocType(seeded.docType);
+        setHasSearched(true);
+        fetchPage(1, seeded);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Mobile filter sheet state
@@ -158,7 +177,11 @@ export default function SearchPage() {
         const dt = override?.docType ?? docType;
         const sb = overrideSortBy ?? sortBy;
 
-        if (!q.trim()) return;
+        // Browse mode: an author filter alone lists that author's record
+        const hasAuthor =
+            (mode === "deputy" && deputies.length > 0) ||
+            (mode === "group" && groups.length > 0);
+        if (!q.trim() && !hasAuthor) return;
 
         setLoading(true);
         setResults([]);
@@ -195,6 +218,10 @@ export default function SearchPage() {
             setLoading(false);
         }
     };
+
+    const hasAuthorFilter =
+        (authorFilterMode === "deputy" && selectedDeputies.length > 0) ||
+        (authorFilterMode === "group" && selectedGroups.length > 0);
 
     const handleSearch = async () => {
         setHasSearched(true);
@@ -305,6 +332,7 @@ export default function SearchPage() {
                     <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
                         <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
+                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
                         <div className="flex items-center gap-2 ml-auto shrink-0">
                             {/* Mobile: apre bottom sheet */}
                             <button
@@ -602,7 +630,7 @@ export default function SearchPage() {
                                 </Button>
                                 <Button
                                     size="lg"
-                                    disabled={!query.trim() || loading}
+                                    disabled={(!query.trim() && !hasAuthorFilter) || loading}
                                     onClick={handleSearch}
                                     // While searching the button must read "working",
                                     // not "washed out": keep the primary fill
