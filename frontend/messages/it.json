@@ -1246,6 +1246,11 @@
     "allLetters": "Tutti",
     "letterIndex": "Indice alfabetico",
     "noComponent": "Non iscritti a una componente",
-    "groupLeader": "Capogruppo"
+    "groupLeader": "Capogruppo",
+    "boardTitle": "Direttivo",
+    "role_president": "Capogruppo",
+    "role_vice_president": "Vicepresidente",
+    "role_treasurer": "Tesoriere",
+    "role_secretary": "Segretario"
   }
 }

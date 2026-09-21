@@ -192,10 +192,11 @@ export default function GruppoDettaglioPage() {
                   </p>
                 ) : (
                   (() => {
-                    const president = state.members.find((m) => m.role === "president");
-                    const others = president
-                      ? state.members.filter((m) => m.id !== president.id)
-                      : state.members;
+                    const ROLE_ORDER = ["president", "vice_president", "treasurer", "secretary"];
+                    const officers = state.members
+                      .filter((m) => m.role && ROLE_ORDER.includes(m.role))
+                      .sort((a, b) => ROLE_ORDER.indexOf(a.role as string) - ROLE_ORDER.indexOf(b.role as string));
+                    const others = state.members.filter((m) => !officers.includes(m));
                     const renderList = (items: MemberRow[]) => (
                       <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
                         {items.map((m) => {
@@ -231,12 +232,30 @@ export default function GruppoDettaglioPage() {
                     const rest = others.filter((m) => !m.component);
                     return (
                       <>
-                        {president && (
+                        {officers.length > 0 && (
                           <div className="mt-4">
                             <h3 className="text-[11px] uppercase tracking-wide text-muted-foreground">
-                              {t("groupLeader")}
+                              {t("boardTitle")}
                             </h3>
-                            {renderList([president])}
+                            <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
+                              {officers.map((m) => {
+                                const name = toTitleCase(`${m.first_name} ${m.last_name}`.trim());
+                                return (
+                                  <li key={m.id}>
+                                    <Link
+                                      href={`/parlamentari/${deputySlug(m.id)}`}
+                                      className="group flex items-center gap-3 border-b py-3 transition-colors hover:bg-muted/40"
+                                    >
+                                      <GroupMemberAvatar photo={m.photo} name={name} />
+                                      <span className="min-w-0 truncate group-hover:underline underline-offset-4">{name}</span>
+                                      <span className="ml-auto shrink-0 rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground">
+                                        {t(`role_${m.role}` as never) as string}
+                                      </span>
+                                    </Link>
+                                  </li>
+                                );
+                              })}
+                            </ul>
                           </div>
                         )}
                         {withComponent.length === 0 ? (

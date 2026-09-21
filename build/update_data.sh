@@ -249,6 +249,16 @@ if [ -n "$LOCAL_UP" ]; then
 		|| warn "placeholder resolution failed on local snapshot"
 fi
 
+# ── Cariche di gruppo (direttivo) ────────────────────────────────────────────
+# Presidenti, vice, tesorieri e segretari dei gruppi da dati.camera.it:
+# finiscono come role sulla MEMBER_OF_GROUP attiva (wipe & reapply).
+run "Group offices (direttivo)" "$PY" build/ingest_group_offices.py \
+	--neo4j-uri "$DEMO_NEO4J" --neo4j-user neo4j --neo4j-password "$NEO4J_PASS_VAL"
+if [ "$LOCAL_SYNC" = "1" ]; then
+	run "Group offices (locale)" "$PY" build/ingest_group_offices.py \
+		--neo4j-uri "$LOCAL_NEO4J" --neo4j-user neo4j --neo4j-password "$NEO4J_PASS_VAL"
+fi
+
 # ── Dataset Hugging Face ─────────────────────────────────────────────────────
 # A differenza di Zenodo (snapshot congelato) segue il DB vivo: rigenera i
 # parquet + card dallo snapshot locale e ricarica il repo. Non blocca.
