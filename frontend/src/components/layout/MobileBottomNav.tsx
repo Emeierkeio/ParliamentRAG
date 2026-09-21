@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import {
   MessageSquare,
   Search,
+  Users,
+  Landmark,
   BarChart3,
   Compass,
   Menu,
@@ -24,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SettingsModal } from "@/components/settings/SettingsModal";
+import { ScopePicker } from "@/components/chat/ScopePicker";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { config } from "@/config";
 import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
@@ -43,6 +46,8 @@ const VISIBLE_PREFIXES = [
   "/ranking",
   "/compass",
   "/timeline",
+  "/parlamentari",
+  "/gruppi",
   "/chat",
   "/explorer",
   "/valutazione",
@@ -186,15 +191,42 @@ function MoreSheetContent({ onOpenSettings }: { onOpenSettings: () => void }) {
           starts straight from the language section */}
       <SheetTitle className="sr-only">{config.app.name}</SheetTitle>
 
-      {/* Header row: section label left, close right — same baseline */}
+      {/* Header row: destinations without a slot in the bar, close right */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-          {tLang("switchTo")}
+          {t("explore")}
         </p>
         <SheetClose className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">
           <X className="h-4 w-4" />
           <span className="sr-only">{config.app.name}</span>
         </SheetClose>
+      </div>
+      <div className="grid grid-cols-2 gap-1.5">
+        <a
+          href="/parlamentari"
+          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-sm text-foreground/80 transition-colors hover:bg-muted/50"
+        >
+          <Users className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <span className="truncate">{t("deputies")}</span>
+        </a>
+        <a
+          href="/gruppi"
+          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-sm text-foreground/80 transition-colors hover:bg-muted/50"
+        >
+          <Landmark className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <span className="truncate">{t("groups")}</span>
+        </a>
+      </div>
+
+      {/* Copertura dati: su mobile la sidebar non esiste, il selettore vive qui */}
+      <div className="mt-4">
+        <ScopePicker />
+      </div>
+
+      <div className="mt-4 mb-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+          {tLang("switchTo")}
+        </p>
       </div>
       <div className="grid grid-cols-3 gap-1.5">
         {LOCALES.map((l) => (
