@@ -177,7 +177,11 @@
     "navAuthority": "Autorität",
     "navCompass": "Kompass",
     "navMore": "Mehr",
-    "navTimeline": "Sitzungen"
+    "navTimeline": "Sitzungen",
+    "deputies": "Abgeordnete",
+    "groups": "Fraktionen",
+    "explore": "Erkunden",
+    "analyze": "Analysieren"
   },
   "Chat": {
     "placeholder": "Stellen Sie eine Frage zu den Parlamentsdebatten...",
@@ -1169,5 +1173,36 @@
     "compassTitle": "Der ideologische Kompass",
     "compassP1": "Für jede Frage erzeugt das System zwei thematische Achsen und lässt ein Sprachmodell jeden abgerufenen Redebeitrag klassifizieren: eine Position zwischen −1 und +1 auf jeder Achse oder keine Position. Die Position einer Fraktion ist der Mittelwert nur ihrer Redebeiträge, die auf dieser Achse Stellung beziehen, zur Mitte hin abgeschwächt, wenn es wenige sind: Eine klare Position muss mit Zahlen verdient werden, nicht mit drei Sätzen.",
     "compassP2": "Zwei Lesehinweise. Die Koordinaten einer Fraktion können für die beiden Achsen auf unterschiedlichen Mengen von Redebeiträgen beruhen; die Zahl der Redebeiträge hinter jeder Koordinate steht im Tooltip. Punkte in der Mitte beziehen keine Stellung: Der Kompass beschreibt, was die Fraktionen im Plenum zu dieser Frage argumentiert haben, er zertifiziert nicht ihre politische Verortung."
+  },
+  "Entities": {
+    "deputiesTitle": "Abgeordnete",
+    "deputiesIntro": "Die Abgeordneten der 19. Legislaturperiode: Fraktion, Beruf und Plenaraktivität.",
+    "searchDeputyPlaceholder": "Abgeordnete suchen…",
+    "allGroups": "Alle Fraktionen",
+    "groupsTitle": "Fraktionen",
+    "groupsIntro": "Die Fraktionen der Kammer: Mitglieder, Aktivität und Positionen.",
+    "membersCount": "{count} Mitglieder",
+    "speechesCount": "{count} Reden",
+    "actsCount": "{count} eingebrachte Akten",
+    "profession": "Beruf",
+    "education": "Ausbildung",
+    "role": "Rolle",
+    "officialCard": "Offizielles Kammerprofil",
+    "recentSpeeches": "Aktuelle Reden",
+    "viewAllSpeeches": "Alle Reden",
+    "sessionTitle": "Sitzung Nr. {number}",
+    "debatesTitle": "Debatten",
+    "votesTitle": "Abstimmungen",
+    "membersTitle": "Mitglieder",
+    "backToList": "Zurück zur Liste",
+    "errorLoad": "Diese Daten konnten nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "noResults": "Keine Ergebnisse",
+    "exploreTitle": "Das Parlament erkunden",
+    "openSource": "Offizielles Protokoll öffnen",
+    "askAboutGroup": "Das Parlament fragen",
+    "positionsOf": "Positionen zum Thema",
+    "whoKnowsMost": "Wer sich auskennt",
+    "actsOfGroup": "Akten der Fraktion"
   }
 }

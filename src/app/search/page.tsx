@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
 import { DeputySelector, Deputy } from "@/components/search/DeputySelector";
+import { deputyUriFromSlug } from "@/lib/graph";
 import { GroupSelector } from "@/components/search/GroupSelector";
 import { ResultsList, ResultsSkeleton, SearchResultItem } from "@/components/search/ResultsList";
 import { Input } from "@/components/ui/input";
@@ -111,6 +112,30 @@ export default function SearchPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
+
+    // Deep link from the entity pages: ?deputy=p123&fn=..&ln=.. preselects
+    // the author filter on that deputy, ?group=<name> the group one. The
+    // query stays manual: the backend requires a textual query, so the
+    // reader still types the topic to search within the author's record.
+    useEffect(() => {
+        const sp = new URLSearchParams(window.location.search);
+        const dep = sp.get("deputy");
+        const group = sp.get("group");
+        if (dep) {
+            setAuthorFilterMode("deputy");
+            setSelectedDeputies([
+                {
+                    id: deputyUriFromSlug(dep),
+                    first_name: sp.get("fn") ?? "",
+                    last_name: sp.get("ln") ?? "",
+                },
+            ]);
+            setDocType("speech");
+        } else if (group) {
+            setAuthorFilterMode("group");
+            setSelectedGroups([group]);
+        }
+    }, []);
 
     // Mobile filter sheet state
     const [filterSheetOpen, setFilterSheetOpen] = useState(false);

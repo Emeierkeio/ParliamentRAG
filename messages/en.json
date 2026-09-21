@@ -177,7 +177,11 @@
     "navAuthority": "Authority",
     "navCompass": "Compass",
     "navMore": "More",
-    "navTimeline": "Sessions"
+    "navTimeline": "Sessions",
+    "deputies": "Deputies",
+    "groups": "Groups",
+    "explore": "Explore",
+    "analyze": "Analyze"
   },
   "Chat": {
     "placeholder": "Ask something about parliamentary debates...",
@@ -1213,5 +1217,36 @@
     "compassTitle": "The ideological compass",
     "compassP1": "For each question the system generates two thematic axes and asks a language model to classify every retrieved speech: a position between −1 and +1 on each axis, or no position at all. A group's position is the mean of only its speeches that take a stance on that axis, attenuated toward the centre when they are few: a sharp position has to be earned with numbers, not with three sentences.",
     "compassP2": "Two reading cautions. A group's coordinates can rest on different sets of speeches for the two axes, and the number of speeches behind each coordinate is shown in the tooltip. Points at the centre take no position: the compass describes what the groups argued in the Chamber on this question, it does not certify their political placement."
+  },
+  "Entities": {
+    "deputiesTitle": "Deputies",
+    "deputiesIntro": "The deputies of the 19th Legislature, with group, profession and floor activity.",
+    "searchDeputyPlaceholder": "Search a deputy…",
+    "allGroups": "All groups",
+    "groupsTitle": "Parliamentary groups",
+    "groupsIntro": "The Chamber's groups: members, activity and positions.",
+    "membersCount": "{count} members",
+    "speechesCount": "{count} speeches",
+    "actsCount": "{count} acts filed",
+    "profession": "Profession",
+    "education": "Education",
+    "role": "Role",
+    "officialCard": "Official Chamber profile",
+    "recentSpeeches": "Recent speeches",
+    "viewAllSpeeches": "All speeches",
+    "sessionTitle": "Sitting no. {number}",
+    "debatesTitle": "Debates",
+    "votesTitle": "Votes",
+    "membersTitle": "Members",
+    "backToList": "Back to the list",
+    "errorLoad": "We could not load this data.",
+    "retry": "Retry",
+    "noResults": "No results",
+    "exploreTitle": "Explore Parliament",
+    "openSource": "Open the official record",
+    "askAboutGroup": "Ask Parliament",
+    "positionsOf": "Positions on a topic",
+    "whoKnowsMost": "Who knows it best",
+    "actsOfGroup": "Group acts"
   }
 }

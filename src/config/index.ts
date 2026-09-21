@@ -96,6 +96,43 @@ export const config = {
   },
 } as const;
 
+/* Fuzzy group matching for graph spellings that differ from the canonical
+   politicalGroups keys (needle order matters: first hit wins). Colors stay
+   the canonical ones above so charts and entity pages agree. */
+const PARTY_ABBREV: Record<string, string> = {
+  "FRATELLI D'ITALIA": "FdI",
+  "PARTITO DEMOCRATICO": "PD",
+  "MOVIMENTO 5 STELLE": "M5S",
+  "ALLEANZA VERDI": "AVS",
+  "FORZA ITALIA": "FI",
+  "AZIONE": "Az",
+  "ITALIA VIVA": "IV",
+  "NOI MODERATI": "NM",
+  "LEGA": "Lega",
+  "GOVERNO": "Gov",
+  "MISTO": "Misto",
+};
+
+export function getGroupColor(groupName: string): string {
+  const exact = (config.politicalGroups as Record<string, { color: string }>)[groupName];
+  if (exact) return exact.color;
+  const upper = groupName.toUpperCase();
+  const needle = Object.keys(PARTY_ABBREV).find((n) => upper.includes(n));
+  if (needle) {
+    const entry = Object.entries(config.politicalGroups).find(([k]) =>
+      k.toUpperCase().includes(needle)
+    );
+    if (entry) return (entry[1] as { color: string }).color;
+  }
+  return "#9E9E9E";
+}
+
+export function getGroupAbbrev(groupName: string): string {
+  const upper = groupName.toUpperCase();
+  const needle = Object.keys(PARTY_ABBREV).find((n) => upper.includes(n));
+  return needle ? PARTY_ABBREV[needle] : groupName.slice(0, 6);
+}
+
 // Type exports for configuration
 export type Config = typeof config;
 export type PoliticalGroup = keyof typeof config.politicalGroups;
