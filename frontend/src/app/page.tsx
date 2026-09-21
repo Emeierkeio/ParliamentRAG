@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
 import { Fraunces } from "next/font/google";
 import { ArrowRight, ArrowUpRight, Globe, Check, Award, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { config } from "@/config";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LOCALES } from "@/components/layout/LanguageSelector";
 import { useKgStats } from "@/hooks/use-kg-stats";
@@ -41,69 +43,143 @@ function useSyncedRotation(length: number, intervalMs = 7000) {
   return { index, isAnimating };
 }
 
-/* ── Real quotes from the DB — verbatim, aligned 1:1 with ROTATING_TOPICS ── */
+/* ── Real quotes from the DB — verbatim, aligned 1:1 with ROTATING_TOPICS.
+   `group` must match a key of config.politicalGroups (aliases included) so
+   the quote rule picks up the official group color used across the app. ── */
 const QUOTES = [
   {
     text: "«[…] il PNRR rappresentava un'occasione straordinaria, forse irripetibile, per colmare finalmente il divario che ci separa dagli altri Paesi europei.»",
     who: "Valentina Grippo",
-    meta: "· Azione · Camera, seduta n. 608 · 4 febbraio 2026",
+    group: "Azione",
+    meta: "Azione · Camera, seduta n. 608 · 4 febbraio 2026",
   },
   {
     text: "«[…] il sistema non riesce ad intercettarli, […] le liste di attesa scoraggiano, […] la consapevolezza della patologia è ancora insufficiente, […] lo stigma sociale frena ogni richiesta di aiuto.»",
     who: "Ilenia Malavasi",
-    meta: "· Partito Democratico · Camera, seduta n. 668 · 3 giugno 2026",
+    group: "Partito Democratico",
+    meta: "Partito Democratico · Camera, seduta n. 668 · 3 giugno 2026",
   },
   {
     text: "«[…] la discussione sull'atomo in Italia non è onesta, non è competente ed è soprattutto surreale. Si parla, deliberatamente, di tecnologie che addirittura non saranno in commercio se non tra più di 30, 40 anni.»",
     who: "Marco Grimaldi",
-    meta: "· Alleanza Verdi e Sinistra · Camera, seduta n. 665 · 26 maggio 2026",
+    group: "Alleanza Verdi e Sinistra",
+    meta: "Alleanza Verdi e Sinistra · Camera, seduta n. 665 · 26 maggio 2026",
   },
   {
     text: "«Sono tantissimi i lavoratori il cui reddito è al di sotto della soglia di povertà, pur essendo regolarmente occupati. […] Noi pensiamo che tutto questo sia veramente inaccettabile per uno Stato civile.»",
     who: "Davide Aiello",
-    meta: "· MoVimento 5 Stelle · Camera, seduta n. 15 · 29 novembre 2022",
+    group: "Movimento 5 Stelle",
+    meta: "MoVimento 5 Stelle · Camera, seduta n. 15 · 29 novembre 2022",
   },
   {
     text: "«[…] oggi non è in gioco solo la sovranità del popolo ucraino, ma gli stessi fondamenti della nostra civiltà: diritto, sapere, umanesimo del lavoro, solidarietà, socialità, radici giudaico-cristiane, democrazia.»",
     who: "Fabio Rampelli",
-    meta: "· Fratelli d'Italia · Camera, seduta n. 673 · 11 giugno 2026",
+    group: "Fratelli d'Italia",
+    meta: "Fratelli d'Italia · Camera, seduta n. 673 · 11 giugno 2026",
   },
   {
     text: "«[…] la pressione fiscale ai massimi da 11 anni. La colpa non è di Bruxelles, la colpa è del vostro Governo di centrodestra. Dovete assumervene le responsabilità.»",
     who: "Piero De Luca",
-    meta: "· Partito Democratico · Camera, seduta n. 683 · 30 giugno 2026",
+    group: "Partito Democratico",
+    meta: "Partito Democratico · Camera, seduta n. 683 · 30 giugno 2026",
   },
   {
     text: "«[…] oggi il vostro Governo ha presentato una proposta di riforma dell'autonomia differenziata che va esattamente nella direzione opposta a quella da lei auspicata.»",
     who: "Maria Elena Boschi",
-    meta: "· Italia Viva · Camera, seduta n. 683 · 30 giugno 2026",
+    group: "Italia Viva",
+    meta: "Italia Viva · Camera, seduta n. 683 · 30 giugno 2026",
   },
   {
     text: "«L'aspettavano gli avvocati, ma l'aspettavano soprattutto […] 500.000 cittadini che tutti gli anni vengono prosciolti, assolti in Italia, con fascicoli archiviati.»",
     who: "Gianluca Vinci",
-    meta: "· Fratelli d'Italia · Camera, seduta n. 667 · 28 maggio 2026",
+    group: "Fratelli d'Italia",
+    meta: "Fratelli d'Italia · Camera, seduta n. 667 · 28 maggio 2026",
   },
   {
     text: "«[…] una strategia molto più ampia che il Governo sta portando avanti fin dall'inizio della legislatura per restituire allo Stato la capacità di governare i flussi migratori e di far rispettare le proprie regole.»",
     who: "Simona Bordonali",
-    meta: "· Lega · Camera, seduta n. 676 · 16 giugno 2026",
+    group: "Lega",
+    meta: "Lega · Camera, seduta n. 676 · 16 giugno 2026",
   },
   {
     text: "«È una scelta che rischia di snaturare la funzione di un investimento finanziato con risorse pubbliche e pensato per garantire il diritto allo studio.»",
     who: "Roberto Giachetti",
-    meta: "· Italia Viva · Camera, seduta n. 684 · 1 luglio 2026",
+    group: "Italia Viva",
+    meta: "Italia Viva · Camera, seduta n. 684 · 1 luglio 2026",
   },
   {
     text: "«Nel solo 2025 si stima che il cambiamento climatico abbia portato a 24.400 decessi in Europa a causa del caldo estremo. Di questi, ben 4.597 sono attribuiti all'Italia.»",
     who: "Patrizia Prestipino",
-    meta: "· Partito Democratico · Camera, seduta n. 675 · 15 giugno 2026",
+    group: "Partito Democratico",
+    meta: "Partito Democratico · Camera, seduta n. 675 · 15 giugno 2026",
   },
   {
     text: "«Poi avete proposto il Ponte sullo Stretto, e lì veramente c'è stata la prima pietra tombale di un qualcosa che non si farà.»",
     who: "Agostino Santillo",
-    meta: "· MoVimento 5 Stelle · Camera, seduta n. 681 · 23 giugno 2026",
+    group: "Movimento 5 Stelle",
+    meta: "MoVimento 5 Stelle · Camera, seduta n. 681 · 23 giugno 2026",
   },
 ];
+
+const groupColor = (g: string) =>
+  (config.politicalGroups as Record<string, { color: string }>)[g]?.color ?? "#9E9E9E";
+
+/* ── Scroll reveal — IntersectionObserver, fires once per element.
+   Reduced-motion users get the content immediately, no hidden state. ── */
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInView(true);
+      return;
+    }
+    const el = ref.current;
+    if (!el) {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.05 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return { ref, inView };
+}
+
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: inView ? `${delay}ms` : undefined }}
+      className={cn(
+        "transition-[opacity,transform] duration-700 ease-out",
+        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 /* ── Data freshness line (masthead) — latest session in the DB ── */
 function useEditionDate() {
@@ -159,11 +235,7 @@ export default function LandingPage() {
           {/* Edition line */}
           <div className="flex items-center justify-between gap-3 py-2 text-[10px] sm:text-[11px] uppercase tracking-[0.14em] sm:tracking-[0.2em] text-muted-foreground border-b border-border">
             <span className="min-w-0">{edition || " "}</span>
-            <span className="hidden sm:inline">
-              {t("mastheadInstitution")}
-            </span>
-            <span className="inline-flex shrink-0 items-center gap-3 sm:gap-5 whitespace-nowrap">
-              <span>{t("mastheadLeg")}</span>
+            <span className="inline-flex shrink-0 items-center whitespace-nowrap">
               <LanguageMenu />
             </span>
           </div>
@@ -180,7 +252,7 @@ export default function LandingPage() {
               onClick={() => setLeaving(true)}
               className="group hidden sm:inline-flex w-auto justify-center items-center gap-2 whitespace-nowrap bg-primary text-primary-foreground px-4 py-2.5 text-[13px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
             >
-              {t("accessCta")}
+              {t("ctaPrimary")}
               {goCta("h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5")}
             </Link>
           </div>
@@ -207,7 +279,7 @@ export default function LandingPage() {
 
       {/* ── Front page ─────────────────────────────────────────── */}
       <section id="hero" className="px-6 pt-14 sm:pt-20 pb-16">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 lg:gap-8 items-start motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-700">
           {/* Headline column */}
           <div className="lg:col-span-7">
             <RotatingHero index={topicIndex} isAnimating={isAnimating} />
@@ -298,23 +370,27 @@ export default function LandingPage() {
                       visibility: active ? "visible" : "hidden",
                     }}
                   >
-                    <blockquote className="text-lg sm:text-xl leading-[1.55] text-foreground/90">
-                      {locale === "it" ? q.text : t(`q${i + 1}`)}
-                    </blockquote>
-                    <figcaption className="mt-4 text-sm not-italic font-sans">
-                      <span className="font-medium text-foreground">{q.who}</span>
-                      <span className="text-muted-foreground"> {q.meta}</span>
-                      {locale !== "it" && (
-                        <span className="text-muted-foreground/60"> · {t("quoteTranslatedNote")}</span>
-                      )}
-                    </figcaption>
+                    <div
+                      className="border-l-[3px] pl-5"
+                      style={{ borderColor: groupColor(q.group) }}
+                    >
+                      <blockquote className="text-lg sm:text-xl leading-[1.55] text-foreground/90">
+                        {locale === "it" ? q.text : t(`q${i + 1}`)}
+                      </blockquote>
+                      <figcaption className="mt-4 text-sm not-italic font-sans">
+                        <span className="font-medium text-foreground">{q.who}</span>
+                        <span className="text-muted-foreground"> · {q.meta}</span>
+                        {locale !== "it" && (
+                          <span className="text-muted-foreground/60"> · {t("quoteTranslatedNote")}</span>
+                        )}
+                      </figcaption>
+                    </div>
                   </figure>
                 );
               })}
             </div>
-            <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+            <div className="mt-6 pt-4 border-t border-border text-xs text-muted-foreground">
               <span>{t("quoteLinkNote")}</span>
-              <span className="inline-block h-2 w-2 rounded-full bg-chart-4" />
             </div>
             <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
               {t("quotesExplainer")}
@@ -328,7 +404,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="I" title={t("sec1Title")} />
 
-          <div className="mt-2">
+          <Reveal className="mt-2">
             <IndexRow
               numeral="01"
               title={t("idx1Title")}
@@ -370,41 +446,43 @@ export default function LandingPage() {
               onNavigate={() => setLeaving(true)}
               last
             />
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── Garanzie ───────────────────────────────────────────── */}
-      <section id="garanzie" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
+      {/* ── Garanzie — typeset clauses, the page's single ink band is §IV ── */}
+      <section id="garanzie" className="px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <SectionRule numeral="II" title={t("sec2Title")} inverted />
+          <SectionRule numeral="II" title={t("sec2Title")} />
 
-          <div className="mt-12 grid md:grid-cols-3 gap-x-12 gap-y-10">
-            <Guarantee
-              index="a"
-              title={t("g1Title")}
-              body={t("g1Body")}
-            />
-            <Guarantee
-              index="b"
-              title={t("g2Title")}
-              body={t("g2Body")}
-            />
-            <Guarantee
-              index="c"
-              title={t("g3Title")}
-              body={t("g3Body")}
-            />
+          <div className="mt-12 max-w-3xl space-y-10 sm:space-y-12">
+            {(["g1", "g2", "g3"] as const).map((g, i) => (
+              <Reveal key={g} delay={i * 120}>
+                <div className="flex gap-5 sm:gap-6">
+                  <span className="[font-family:var(--font-display)] italic text-2xl text-primary/60 leading-8 select-none">
+                    {String.fromCharCode(97 + i)})
+                  </span>
+                  <div>
+                    <h3 className="[font-family:var(--font-display)] text-xl sm:text-2xl font-medium tracking-tight mb-2">
+                      {t(`${g}Title`)}
+                    </h3>
+                    <p className="text-[15px] leading-relaxed text-muted-foreground max-w-[62ch]">
+                      {t(`${g}Body`)}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
           </div>
 
           {/* Colophon line */}
-          <p className="mt-16 pt-6 border-t border-primary-foreground/20 text-sm text-primary-foreground/70 leading-relaxed">
+          <p className="mt-14 pt-6 border-t border-border text-sm text-muted-foreground leading-relaxed">
             {t("colophonStats")}
           </p>
         </div>
       </section>
 
-      {/* ── L'iter di ogni domanda ─────────────────────────────── */}
+      {/* ── L'iter di ogni domanda — three acts instead of a flat list ── */}
       <section id="pipeline" className="px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="III" title={t("sec3Title")} />
@@ -412,25 +490,43 @@ export default function LandingPage() {
             {t("iterIntro")}
           </p>
 
-          <ol className="mt-12 grid sm:grid-cols-2 gap-x-16">
-            {([1, 2, 3, 4, 5, 6, 7, 8] as const).map((n, i) => {
-              const item = { title: t(`iter${n}Title` as never) as string, desc: t(`iter${n}Desc` as never) as string };
-              return (
-              <li
-                key={item.title}
-                className="flex gap-5 py-4 border-b border-border"
-              >
-                <span className="[font-family:var(--font-display)] text-lg text-primary/50 tabular-nums leading-6 select-none">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="text-[15px] leading-relaxed">
-                  <span className="font-medium">{item.title}</span>
-                  <span className="text-muted-foreground"> — {item.desc}</span>
-                </p>
-              </li>
-              );
-            })}
-          </ol>
+          <div className="mt-12 grid gap-12 lg:grid-cols-3 lg:gap-10">
+            {(
+              [
+                { key: "iterActResearch", steps: [1, 2, 3, 4] },
+                { key: "iterActAnalysis", steps: [5, 6] },
+                { key: "iterActWriting", steps: [7, 8] },
+              ] as const
+            ).map((act, ai) => (
+              <Reveal key={act.key} delay={ai * 120}>
+                <div className="flex items-baseline gap-3 border-b border-foreground/70 pb-2.5">
+                  <span className="[font-family:var(--font-display)] italic text-lg text-primary/60 select-none">
+                    {ai + 1}.
+                  </span>
+                  <h3 className="[font-family:var(--font-display)] text-xl font-medium tracking-tight">
+                    {t(act.key as never) as string}
+                  </h3>
+                </div>
+                <ol className="mt-5 space-y-5">
+                  {act.steps.map((n) => (
+                    <li key={n} className="flex gap-4">
+                      <span className="[font-family:var(--font-display)] text-base text-primary/40 tabular-nums leading-6 select-none">
+                        {String(n).padStart(2, "0")}
+                      </span>
+                      <div>
+                        <p className="text-[15px] font-medium leading-6">
+                          {t(`iter${n}Title` as never) as string}
+                        </p>
+                        <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">
+                          {t(`iter${n}Desc` as never) as string}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -438,7 +534,7 @@ export default function LandingPage() {
       <section id="dati" className="px-6 py-14 sm:py-20 bg-primary text-primary-foreground">
         <div className="max-w-6xl mx-auto">
           <SectionRule numeral="IV" title={t("dataBandKicker")} inverted />
-          <div className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
+          <Reveal className="mt-10 grid lg:grid-cols-12 gap-10 lg:gap-8 items-start">
             <div className="lg:col-span-7">
               <h3 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-medium tracking-tight leading-[1.12] text-balance">
                 {t("dataBandTitle")}
@@ -459,7 +555,7 @@ export default function LandingPage() {
             <aside className="lg:col-span-5 lg:pl-8 lg:border-l border-primary-foreground/15">
               <DataStats inverted />
             </aside>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -476,7 +572,7 @@ export default function LandingPage() {
                 onClick={() => setLeaving(true)}
                 className="group inline-flex w-full sm:w-auto justify-center items-center gap-3 bg-primary text-primary-foreground px-7 py-3.5 text-[15px] font-medium tracking-wide hover:bg-foreground transition-colors cursor-pointer"
               >
-                {t("ctaStart")}
+                {t("ctaPrimary")}
                 {goCta("h-4 w-4 transition-transform group-hover:translate-x-1")}
               </Link>
             </div>
@@ -703,33 +799,6 @@ function IndexRow({
   );
 }
 
-/* ── Guarantee — annotated clause on ink background ────────────── */
-function Guarantee({
-  index,
-  title,
-  body,
-}: {
-  index: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div className="flex gap-4">
-      <span className="[font-family:var(--font-display)] italic text-lg text-primary-foreground/50 leading-7 select-none">
-        {index})
-      </span>
-      <div>
-        <h3 className="[font-family:var(--font-display)] text-xl font-medium mb-2">
-          {title}
-        </h3>
-        <p className="text-sm leading-relaxed text-primary-foreground/75">
-          {body}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 /* ── Rotating headline — typeset fill-in on a ruled line ───────── */
 /* All topics are stacked in the same grid cell so the headline always
    reserves the height of the tallest one — no layout shift on rotation. */
@@ -786,42 +855,74 @@ const TOC_ITEMS = [
 
 function SideTOC() {
   const t = useTranslations("Landing");
+  const navRef = useRef<HTMLElement | null>(null);
   const [active, setActive] = useState<string>("hero");
   const [visible, setVisible] = useState(false);
-  const [overInverted, setOverInverted] = useState(false);
+  // Per-item inversion: at the edges of the ink band part of the TOC sits
+  // on navy and part on paper, so a single boolean can never color all
+  // items right. Fine-grained thresholds on the band report its viewport
+  // rect at ~1%-of-height granularity without any scroll listener.
+  const [invertedIds, setInvertedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const sectionEls = TOC_ITEMS.map(({ id }) =>
       document.getElementById(id)
     ).filter(Boolean) as HTMLElement[];
 
-    const onScroll = () => {
-      setVisible(window.scrollY > 200);
-      const scrollY = window.scrollY + window.innerHeight / 3;
-      let current: string = TOC_ITEMS[0].id;
-      for (const el of sectionEls) {
-        if (el.offsetTop <= scrollY) {
-          current = el.id;
+    // Active section: the one crossing the upper third of the viewport
+    const activeIO = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id);
         }
-      }
-      setActive(current);
+      },
+      { rootMargin: "-25% 0px -65% 0px" }
+    );
+    sectionEls.forEach((el) => activeIO.observe(el));
 
-      // The TOC is vertically centered: swap to light colors while its
-      // midpoint overlaps one of the dark sections (bg-primary)
-      const midY = window.scrollY + window.innerHeight / 2;
-      setOverInverted(
-        ["garanzie", "dati"].some((id) => {
-          const el = document.getElementById(id);
-          return el
-            ? midY >= el.offsetTop && midY <= el.offsetTop + el.offsetHeight
-            : false;
-        })
-      );
+    // TOC appears once the hero has mostly scrolled away
+    const hero = document.getElementById("hero");
+    const visibleIO = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { rootMargin: "-200px 0px 0px 0px" }
+    );
+    if (hero) visibleIO.observe(hero);
+
+    const dark = document.getElementById("dati");
+    const invertedIO = dark
+      ? new IntersectionObserver(
+          ([entry]) => {
+            const rect = entry.boundingClientRect;
+            const nav = navRef.current;
+            if (!nav) return;
+            const next = new Set<string>();
+            if (entry.isIntersecting) {
+              nav
+                .querySelectorAll<HTMLElement>("[data-toc-id]")
+                .forEach((el) => {
+                  const r = el.getBoundingClientRect();
+                  const cy = r.top + r.height / 2;
+                  if (cy >= rect.top && cy <= rect.bottom) {
+                    next.add(el.dataset.tocId as string);
+                  }
+                });
+            }
+            setInvertedIds((prev) =>
+              prev.size === next.size && [...next].every((id) => prev.has(id))
+                ? prev
+                : next
+            );
+          },
+          { threshold: Array.from({ length: 101 }, (_, i) => i / 100) }
+        )
+      : null;
+    if (dark && invertedIO) invertedIO.observe(dark);
+
+    return () => {
+      activeIO.disconnect();
+      visibleIO.disconnect();
+      invertedIO?.disconnect();
     };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const scrollTo = (id: string) => {
@@ -833,6 +934,7 @@ function SideTOC() {
 
   return (
     <nav
+      ref={navRef}
       className="fixed left-6 top-1/2 -translate-y-1/2 z-40 hidden xl:flex flex-col items-start gap-0.5 transition-opacity duration-300"
       style={{ opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none" }}
       aria-label="Navigazione sezioni"
@@ -840,9 +942,11 @@ function SideTOC() {
       {TOC_ITEMS.map(({ id, labelKey, numeral }) => {
         const label = t(labelKey as never) as string;
         const isActive = active === id;
+        const inverted = invertedIds.has(id);
         return (
           <button
             key={id}
+            data-toc-id={id}
             onClick={() => scrollTo(id)}
             className="group flex items-center gap-3 py-1.5 cursor-pointer"
             aria-current={isActive ? "true" : undefined}
@@ -850,10 +954,10 @@ function SideTOC() {
             <span
               className={`[font-family:var(--font-display)] italic w-5 text-right text-sm transition-colors duration-200 ${
                 isActive
-                  ? overInverted
+                  ? inverted
                     ? "text-primary-foreground"
                     : "text-primary"
-                  : overInverted
+                  : inverted
                     ? "text-primary-foreground/40 group-hover:text-primary-foreground/80"
                     : "text-muted-foreground/40 group-hover:text-muted-foreground"
               }`}
@@ -863,9 +967,9 @@ function SideTOC() {
             <span
               className={`text-[11px] font-medium transition-all duration-200 ${
                 isActive
-                  ? `opacity-100 translate-x-0 ${overInverted ? "text-primary-foreground" : "text-foreground"}`
+                  ? `opacity-100 translate-x-0 ${inverted ? "text-primary-foreground" : "text-foreground"}`
                   : `opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 ${
-                      overInverted
+                      inverted
                         ? "text-primary-foreground/60"
                         : "text-muted-foreground/60"
                     }`
