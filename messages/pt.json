@@ -1179,11 +1179,11 @@
   },
   "Entities": {
     "deputiesTitle": "Deputados",
-    "deputiesIntro": "Procure um deputado ou filtre por grupo e inicial, e abra o perfil: grupos, comissões e intervenções em plenário.",
+    "deputiesIntro": "Procure um deputado e abra grupos, comissões e intervenções",
     "searchDeputyPlaceholder": "Pesquisar um deputado…",
     "allGroups": "Todos os grupos",
     "groupsTitle": "Grupos parlamentares",
-    "groupsIntro": "Abra um grupo para ver os seus membros e passar aos perfis e intervenções.",
+    "groupsIntro": "Abra um grupo e passe aos perfis dos seus membros",
     "membersCount": "{count} membros",
     "speechesCount": "{count} intervenções",
     "actsCount": "{count} atos apresentados",

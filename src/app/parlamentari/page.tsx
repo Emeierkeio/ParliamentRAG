@@ -123,7 +123,7 @@ export default function DeputiesDirectoryPage() {
         </header>
         <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-          <p className="text-muted-foreground">{t("deputiesIntro")}</p>
+          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">{t("deputiesIntro")}</h2>
 
           {/* Filtri */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">

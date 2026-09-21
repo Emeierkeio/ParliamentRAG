@@ -1179,11 +1179,11 @@
   },
   "Entities": {
     "deputiesTitle": "Abgeordnete",
-    "deputiesIntro": "Suche eine Abgeordnete oder einen Abgeordneten, filtere nach Fraktion und Anfangsbuchstabe und öffne das Profil: Fraktionen, Ausschüsse und Plenarreden.",
+    "deputiesIntro": "Finde Abgeordnete und öffne Fraktionen, Ausschüsse und Reden",
     "searchDeputyPlaceholder": "Abgeordnete suchen…",
     "allGroups": "Alle Fraktionen",
     "groupsTitle": "Fraktionen",
-    "groupsIntro": "Öffne eine Fraktion, um ihre Mitglieder zu sehen und zu Profilen und Reden zu springen.",
+    "groupsIntro": "Öffne eine Fraktion und springe zu den Profilen ihrer Mitglieder",
     "membersCount": "{count} Mitglieder",
     "speechesCount": "{count} Reden",
     "actsCount": "{count} eingebrachte Akten",
