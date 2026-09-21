@@ -656,7 +656,8 @@
     "loadingMore": "Weitere Sitzungen werden geladen...",
     "errorHeading": "Sitzungen konnten nicht geladen werden",
     "errorBody": "Beim Laden der parlamentarischen Chronik ist ein Fehler aufgetreten. Aktualisieren Sie die Seite.",
-    "parliamentaryTimeline": "Parlamentarische Chronik"
+    "parliamentaryTimeline": "Parlamentarische Chronik",
+    "actionTitle": "Blättere durch die Plenarsitzungen, mit Debatten- und Abstimmungsüberblick"
   },
   "RankingsPage": {
     "headerTitle": "Autoritätsanalyse",

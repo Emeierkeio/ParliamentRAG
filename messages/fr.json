@@ -656,7 +656,8 @@
     "loadingMore": "Chargement d'autres séances...",
     "errorHeading": "Impossible de charger les séances",
     "errorBody": "Une erreur s'est produite lors du chargement de la chronologie parlementaire. Actualisez la page.",
-    "parliamentaryTimeline": "Chronologie parlementaire"
+    "parliamentaryTimeline": "Chronologie parlementaire",
+    "actionTitle": "Parcourez les séances de l'Assemblée, avec résumés des débats et des votes"
   },
   "RankingsPage": {
     "headerTitle": "Analyse d'autorité",

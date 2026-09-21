@@ -77,6 +77,12 @@ export default function TimelinePage() {
           </div>
         </header>
 
+        <div className="px-4 sm:px-6 pt-6 mx-auto w-full max-w-4xl">
+          <h2 className="[font-family:var(--font-display)] text-2xl sm:text-3xl font-medium tracking-tight text-foreground leading-tight">
+            {t("actionTitle")}
+          </h2>
+        </div>
+
         {/* Session list — width-capped reading column */}
         <div className="px-4 sm:px-6 py-4 flex-1 mx-auto w-full max-w-4xl">
           {isLoading ? (

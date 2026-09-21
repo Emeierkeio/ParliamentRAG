@@ -700,7 +700,8 @@
     "proceduralItemsHide": "Hide procedural items",
     "phasesNoSpeeches": "+ {count, plural, one {# phase without speeches} other {# phases without speeches}}",
     "phasesHeading": "Agenda",
-    "voteMistoComponents": "Mixed Group components"
+    "voteMistoComponents": "Mixed Group components",
+    "actionTitle": "Browse the sittings of the House, with debate and vote recaps"
   },
   "RankingsPage": {
     "headerTitle": "Authority Analysis",
