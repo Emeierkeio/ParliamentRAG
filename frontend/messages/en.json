@@ -1257,6 +1257,7 @@
     "sinceDate": "since {date}",
     "periodFromTo": "{from} - {to}",
     "allLetters": "All",
-    "letterIndex": "Alphabetical index"
+    "letterIndex": "Alphabetical index",
+    "noComponent": "Not part of a component"
   }
 }

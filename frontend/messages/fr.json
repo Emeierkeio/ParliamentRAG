@@ -1213,6 +1213,7 @@
     "sinceDate": "depuis le {date}",
     "periodFromTo": "{from} - {to}",
     "allLetters": "Tous",
-    "letterIndex": "Index alphabétique"
+    "letterIndex": "Index alphabétique",
+    "noComponent": "Hors composante"
   }
 }
