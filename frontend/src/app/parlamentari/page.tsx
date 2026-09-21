@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Search } from "lucide-react";
-import { Sidebar } from "@/components/layout";
+import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { DeputyAvatar } from "@/components/entities/DeputyAvatar";
 import { GroupLogo } from "@/components/entities/GroupLogo";
@@ -114,15 +114,16 @@ export default function DeputiesDirectoryPage() {
         isMobileOpen={isMobileOpen}
         onCloseMobile={closeMobile}
       />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm shrink-0">
+          <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
+            <MobileMenuButton onClick={toggle} />
+            <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("deputiesTitle")}</h1>
+          </div>
+        </header>
+        <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-          {/* Intestazione */}
-          <header className="space-y-2">
-            <h1 className="[font-family:var(--font-display)] text-3xl sm:text-4xl font-semibold tracking-tight">
-              {t("deputiesTitle")}
-            </h1>
-            <p className="text-muted-foreground">{t("deputiesIntro")}</p>
-          </header>
+          <p className="text-muted-foreground">{t("deputiesIntro")}</p>
 
           {/* Filtri */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -254,6 +255,7 @@ export default function DeputiesDirectoryPage() {
               </>
             )}
           </div>
+        </div>
         </div>
       </main>
     </div>
