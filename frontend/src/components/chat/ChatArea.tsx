@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
-import { ScopePicker } from "./ScopePicker";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import {
@@ -278,9 +277,6 @@ function WelcomeScreen({ onSendMessage, onCancelRequest, isLoading }: WelcomeScr
         {/* Question + search: the page's one action sits where reading
             starts, top-left, directly under the promise it fulfills */}
         <div className={hasRecent ? "lg:col-span-7" : "lg:col-span-12"}>
-          <div className="mb-4">
-            <ScopePicker />
-          </div>
           <h1 className="[font-family:var(--font-display)] text-[1.9rem] sm:text-4xl md:text-[2.9rem] font-medium tracking-tight text-foreground leading-[1.08] max-w-xl [text-wrap:balance]">
             {t.rich("title", {
               em: (chunks) => <span className="italic text-primary">{chunks}</span>,
