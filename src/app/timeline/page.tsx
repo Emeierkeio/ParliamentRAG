@@ -114,8 +114,10 @@ export default function TimelinePage() {
                       <div className="relative z-10 flex flex-col items-center shrink-0 w-6 sm:w-10">
                         {/* Dot on the line */}
                         <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-background mt-5" />
-                        {/* Date label (desktop) */}
-                        <div className="hidden sm:flex flex-col items-center mt-2">
+                        {/* Date label (desktop) — solid backdrop: the rail
+                            line runs behind this column and would show
+                            through the glyphs */}
+                        <div className="hidden sm:flex flex-col items-center mt-2 rounded-sm bg-background px-1.5 py-1">
                           <span className="[font-family:var(--font-display)] text-base font-medium text-foreground/80 tabular-nums leading-none">
                             {day}
                           </span>
