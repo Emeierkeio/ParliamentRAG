@@ -87,7 +87,7 @@ export function ScopePicker({
             aria-hidden="true"
           />
           <span className={variant === "sidebar" ? "truncate" : undefined}>
-            {t("badge")}
+            {variant === "sidebar" ? t("badgeShort") : t("badge")}
           </span>
           {variant === "meta" ? (
             <Info className="h-3 w-3 opacity-60" aria-hidden="true" />
