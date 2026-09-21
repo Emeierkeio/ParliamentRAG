@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { ScopePicker } from "@/components/chat/ScopePicker";
 import { Loader2, ArrowUp, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -66,7 +65,6 @@ export default function TimelinePage() {
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
-                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
             <FeedbackPulse tool="timeline" className="mt-0 pt-0 border-t-0 ml-auto hidden sm:block" />
           </div>
           <div className="px-4 sm:px-6 pb-3 mx-auto w-full max-w-4xl">

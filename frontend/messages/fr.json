@@ -1176,7 +1176,7 @@
   },
   "Entities": {
     "deputiesTitle": "Députés",
-    "deputiesIntro": "Les députés de la XIXe législature : groupe, profession et activité en séance.",
+    "deputiesIntro": "Groupe, profession et activité en séance pour chaque député.",
     "searchDeputyPlaceholder": "Chercher un député…",
     "allGroups": "Tous les groupes",
     "groupsTitle": "Groupes parlementaires",

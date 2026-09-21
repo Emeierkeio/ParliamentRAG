@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { config } from "@/config";
 import { SettingsModal } from "@/components/settings/SettingsModal";
+import { ScopePicker } from "@/components/chat/ScopePicker";
 import { LanguageSelector } from "@/components/layout/LanguageSelector";
 import { useLastUpdate, formatLastUpdateShort } from "@/hooks/use-last-update";
 
@@ -118,6 +119,13 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
             )}
           </div>
         </div>
+
+        {/* Copertura dati: contesto globale dell'app, una sola collocazione */}
+        {!isCollapsed && (
+          <div className="px-4 pb-1">
+            <ScopePicker variant="sidebar" />
+          </div>
+        )}
 
         {/* Navigation */}
         <ScrollArea className="flex-1 py-6 px-3">

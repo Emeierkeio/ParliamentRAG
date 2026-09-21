@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {useTranslations, useLocale } from "next-intl";
-import { ScopePicker } from "@/components/chat/ScopePicker";
 import { graphQuery } from "@/lib/graph";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
@@ -335,7 +334,6 @@ export default function RankingPage() {
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
             <MobileMenuButton onClick={toggle} />
             <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("headerTitle")}</h1>
-                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
 
             <div className="flex items-center gap-2 ml-auto shrink-0">
               {activeTopic && !loading && (
@@ -387,7 +385,7 @@ export default function RankingPage() {
         </header>
 
         {/* ── Barra filtri persistente (solo quando ci sono risultati) ── */}
-        {filtersEnabled && <div className="sticky top-14 z-20 border-b border-border/50 bg-muted/30 backdrop-blur-sm px-4 sm:px-6 py-2.5 shrink-0">
+        {filtersEnabled && <div className="sticky top-14 z-20 border-b border-border bg-background/95 backdrop-blur-sm px-4 sm:px-6 py-3 shrink-0">
           <div className="flex flex-wrap items-center gap-2 max-w-6xl">
             {/* Coalition toggle */}
             <div className="flex rounded-lg border border-border overflow-hidden text-xs font-medium">
@@ -426,7 +424,7 @@ export default function RankingPage() {
             {/* Group filter */}
             <Popover open={groupsOpen} onOpenChange={(open) => { setGroupsOpen(open); if (!open) setGroupSearch(""); }}>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                <Button variant="outline" size="sm" className={cn("h-9 text-xs gap-1.5", selectedGroups.length > 0 && "border-primary bg-primary/10 text-primary hover:bg-primary/15")}>
                   <Users className="h-3.5 w-3.5" />
                   {t("groupFilter")}
                   {selectedGroups.length > 0 && (
@@ -493,7 +491,7 @@ export default function RankingPage() {
             {availableCommittees.length > 0 && (
               <Popover onOpenChange={(open) => { if (!open) setCommitteePopoverSearch(""); }}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                  <Button variant="outline" size="sm" className={cn("h-9 text-xs gap-1.5", committeeSearch !== "" && "border-primary bg-primary/10 text-primary hover:bg-primary/15")}>
                     <Landmark className="h-3.5 w-3.5" />
                     {t("committeeFilter")}
                     {committeeSearch && (
