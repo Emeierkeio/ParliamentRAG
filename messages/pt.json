@@ -1214,6 +1214,7 @@
     "periodFromTo": "{from} - {to}",
     "allLetters": "Todos",
     "letterIndex": "Índice alfabético",
-    "noComponent": "Sem componente"
+    "noComponent": "Sem componente",
+    "groupLeader": "Líder do grupo"
   }
 }

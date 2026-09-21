@@ -1214,6 +1214,7 @@
     "periodFromTo": "{from} - {to}",
     "allLetters": "Alle",
     "letterIndex": "Alphabetischer Index",
-    "noComponent": "Keiner Komponente zugeordnet"
+    "noComponent": "Keiner Komponente zugeordnet",
+    "groupLeader": "Fraktionsvorsitz"
   }
 }

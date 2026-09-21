@@ -24,6 +24,7 @@ interface MemberRow {
   last_name: string;
   photo: string | null;
   component: string | null;
+  role: string | null;
 }
 
 // Stessa regola dell'elenco: contano solo le membership correnti
@@ -81,7 +82,8 @@ export default function GruppoDettaglioPage() {
           "OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMPONENT]->(c:MistoComponent) " +
           "WHERE mc.end_date IS NULL " +
           "RETURN DISTINCT d.id AS id, d.first_name AS first_name, d.last_name AS last_name, " +
-          "d.photo AS photo, c.name AS component ORDER BY d.last_name, d.first_name";
+          "d.photo AS photo, c.name AS component, mm.role AS role " +
+          "ORDER BY d.last_name, d.first_name";
         return graphQuery<MemberRow>(membersQuery).then((members) =>
           setState({ phase: "ready", group, members })
         );
@@ -190,6 +192,10 @@ export default function GruppoDettaglioPage() {
                   </p>
                 ) : (
                   (() => {
+                    const president = state.members.find((m) => m.role === "president");
+                    const others = president
+                      ? state.members.filter((m) => m.id !== president.id)
+                      : state.members;
                     const renderList = (items: MemberRow[]) => (
                       <ul className="mt-3 grid gap-x-8 sm:grid-cols-2">
                         {items.map((m) => {
@@ -214,17 +220,29 @@ export default function GruppoDettaglioPage() {
                     );
                     // Solo il Misto ha componenti: per gli altri gruppi tutte
                     // le righe hanno component null e la lista resta piatta
-                    const withComponent = state.members.filter((m) => m.component);
-                    if (withComponent.length === 0) return renderList(state.members);
+                    const withComponent = others.filter((m) => m.component);
+                    
                     const sections = new Map<string, MemberRow[]>();
                     for (const m of withComponent) {
                       const list = sections.get(m.component as string) ?? [];
                       list.push(m);
                       sections.set(m.component as string, list);
                     }
-                    const rest = state.members.filter((m) => !m.component);
+                    const rest = others.filter((m) => !m.component);
                     return (
                       <>
+                        {president && (
+                          <div className="mt-4">
+                            <h3 className="text-[11px] uppercase tracking-wide text-muted-foreground">
+                              {t("groupLeader")}
+                            </h3>
+                            {renderList([president])}
+                          </div>
+                        )}
+                        {withComponent.length === 0 ? (
+                          renderList(others)
+                        ) : (
+                          <>
                         {[...sections.entries()]
                           .sort((a, b) => b[1].length - a[1].length)
                           .map(([cname, items]) => (
@@ -244,6 +262,8 @@ export default function GruppoDettaglioPage() {
                             </h3>
                             {renderList(rest)}
                           </div>
+                        )}
+                          </>
                         )}
                       </>
                     );
