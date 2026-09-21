@@ -755,7 +755,9 @@
     "weightsPanelTitle": "Pesi dei criteri",
     "weightsPanelDesc": "I pesi ufficiali sono una scelta editoriale documentata. Modificali per vedere come cambia la classifica: i valori sono relativi e vengono normalizzati automaticamente.",
     "weightsReset": "Ripristina pesi ufficiali",
-    "weightsCustom": "Pesi personalizzati"
+    "weightsCustom": "Pesi personalizzati",
+    "coalitionLabel": "Coalizione",
+    "allCommitteesOption": "Tutte le commissioni"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronologia",

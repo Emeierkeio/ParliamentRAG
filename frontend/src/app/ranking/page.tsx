@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {useTranslations, useLocale } from "next-intl";
 import { graphQuery } from "@/lib/graph";
+import { GroupLogo } from "@/components/entities/GroupLogo";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { useSidebar } from "@/hooks";
 import { useLocalHistory } from "@/hooks/use-local-history";
@@ -466,10 +467,7 @@ export default function RankingPage() {
                           selected ? "bg-primary/10 text-foreground" : "hover:bg-muted text-muted-foreground"
                         )}
                       >
-                        <div
-                          className="h-2.5 w-2.5 rounded-full shrink-0"
-                          style={{ backgroundColor: color }}
-                        />
+                        <GroupLogo group={g.value} size={18} />
                         <span className="truncate flex-1">{g.label}</span>
                         {selected && <span className="text-primary text-[10px] font-bold">✓</span>}
                       </button>
@@ -721,6 +719,73 @@ export default function RankingPage() {
                       {t("searchButton")}
                     </Button>
                   </form>
+                </div>
+
+                {/* Filtri strutturati prima della query, stessa grammatica di
+                    /search: la classifica arriva già filtrata */}
+                <div className="w-full max-w-md mx-auto rounded-lg border border-border bg-card p-4 text-left space-y-4">
+                  <div>
+                    <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{t("coalitionLabel")}</p>
+                    <div className="flex gap-1.5">
+                      {(["all", "majority", "opposition"] as const).map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => setCoalitionFilter(c)}
+                          className={cn(
+                            "flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors cursor-pointer",
+                            coalitionFilter === c
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          {c === "all" ? t("coalitionAll") : c === "majority" ? t("coalitionMajority") : t("coalitionOpposition")}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{t("groupFilter")}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {GROUPS.map((g) => {
+                        const selected = selectedGroups.includes(g.value);
+                        return (
+                          <button
+                            key={g.value}
+                            type="button"
+                            onClick={() =>
+                              setSelectedGroups(
+                                selected
+                                  ? selectedGroups.filter((v) => v !== g.value)
+                                  : [...selectedGroups, g.value]
+                              )
+                            }
+                            className={cn(
+                              "rounded-full border px-2.5 py-1 text-xs transition-colors cursor-pointer",
+                              selected
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            {g.shortLabel}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{t("committeeFilter")}</p>
+                    <select
+                      value={committeeSearch}
+                      onChange={(e) => setCommitteeSearch(e.target.value)}
+                      className="h-9 w-full rounded-md border border-border bg-background px-2.5 text-sm outline-none focus-visible:border-foreground/40"
+                    >
+                      <option value="">{t("allCommitteesOption")}</option>
+                      {availableCommittees.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 {/* Topic chips */}

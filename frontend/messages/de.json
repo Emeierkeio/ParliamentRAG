@@ -711,7 +711,9 @@
     "weightsPanelTitle": "Kriteriengewichte",
     "weightsPanelDesc": "Die offiziellen Gewichte sind eine dokumentierte redaktionelle Entscheidung. Ändern Sie sie, um zu sehen, wie sich das Ranking verschiebt: Die Werte sind relativ und werden automatisch normalisiert.",
     "weightsReset": "Offizielle Gewichte wiederherstellen",
-    "weightsCustom": "Eigene Gewichte"
+    "weightsCustom": "Eigene Gewichte",
+    "coalitionLabel": "Koalition",
+    "allCommitteesOption": "Alle Ausschüsse"
   },
   "Transcript": {
     "breadcrumbTimeline": "Chronik",

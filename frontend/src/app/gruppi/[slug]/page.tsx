@@ -166,20 +166,6 @@ export default function GruppoDettaglioPage() {
                 </p>
               </header>
 
-              <nav className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t pt-4 text-sm">
-                <Link
-                  href="/ranking"
-                  className="text-muted-foreground transition-colors hover:text-foreground hover:underline underline-offset-4"
-                >
-                  {t("whoKnowsMost")}
-                </Link>
-                <Link
-                  href={`/search?group=${encodeURIComponent(state.group.name)}`}
-                  className="text-muted-foreground transition-colors hover:text-foreground hover:underline underline-offset-4"
-                >
-                  {t("actsOfGroup")}
-                </Link>
-              </nav>
 
               <section className="mt-10">
                 <h2 className="[font-family:var(--font-display)] text-xl font-semibold tracking-tight">
