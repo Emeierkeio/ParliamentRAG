@@ -20,7 +20,7 @@ ParliamentRAG is an authority-aware, multi-view Retrieval-Augmented Generation s
 
 <!-- screenshot: chat view with expert cards, citations, and ideological compass -->
 
-- **175k+ text chunks** from **709 plenary sessions**, updated through 2026-09-16
+- **176k+ text chunks** from **712 plenary sessions**, updated through 2026-09-21
 - **17.4k roll-call votes** with **6.9M individual vote records** linked to deputies
 - **Verified citations**: every quote is checked verbatim against its source chunk; unverifiable quotes are removed
 - **Topic-aware authority scoring**: the system picks the most credible speaker per party for the specific question asked
@@ -93,7 +93,7 @@ reports (Akoma Ntoso) and the SPARQL endpoints of
 [dati.camera.it](https://dati.camera.it/) (deputies, groups, committees, acts,
 roles, votes), with EuroVoc subject links for parliamentary acts.
 
-- **XIX Legislature, data as of 2026-09-16** (updated incrementally): 709 sessions · 47k speeches · 175k+ chunks · 36.1k acts · 17.4k roll calls with 6.9M individual votes
+- **XIX Legislature, data as of 2026-09-21** (updated incrementally): 712 sessions · 47.2k speeches · 176k+ chunks · 36.2k acts · 17.4k roll calls with 6.9M individual votes
 - **Speaker model**: every speaker is a `Person` (labels `Deputy` / `GovernmentMember`), with date-aware group membership; deputies in the Gruppo Misto are attributed to their political component
 - **Native types throughout**: embeddings as float arrays in Neo4j vector indexes, dates as `date()` values; every `Chunk` is an exact substring of its `Speech` (verified invariant)
 - **Linked Data**: entity URIs conform to the source datasets (dati.camera.it/ocd/…, eurovoc.europa.eu/…) and are dereferenceable
