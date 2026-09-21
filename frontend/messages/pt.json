@@ -656,7 +656,8 @@
     "loadingMore": "A carregar mais sessões...",
     "errorHeading": "Não foi possível carregar as sessões",
     "errorBody": "Ocorreu um erro durante o carregamento da cronologia parlamentar. Atualize a página.",
-    "parliamentaryTimeline": "Cronologia Parlamentar"
+    "parliamentaryTimeline": "Cronologia Parlamentar",
+    "actionTitle": "Percorra as sessões do plenário, com resumos de debates e votações"
   },
   "RankingsPage": {
     "headerTitle": "Análise de Autoridade",
