@@ -755,7 +755,9 @@
     "weightsPanelTitle": "Criteria weights",
     "weightsPanelDesc": "The official weights are a documented editorial choice. Change them to see how the ranking shifts: values are relative and normalised automatically.",
     "weightsReset": "Restore official weights",
-    "weightsCustom": "Custom weights"
+    "weightsCustom": "Custom weights",
+    "coalitionLabel": "Coalition",
+    "allCommitteesOption": "All committees"
   },
   "Transcript": {
     "breadcrumbTimeline": "Timeline",

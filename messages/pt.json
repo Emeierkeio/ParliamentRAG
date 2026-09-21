@@ -711,7 +711,9 @@
     "weightsPanelTitle": "Pesos dos critérios",
     "weightsPanelDesc": "Os pesos oficiais são uma escolha editorial documentada. Modifique-os para ver como o ranking muda: os valores são relativos e normalizados automaticamente.",
     "weightsReset": "Restaurar pesos oficiais",
-    "weightsCustom": "Pesos personalizados"
+    "weightsCustom": "Pesos personalizados",
+    "coalitionLabel": "Coligação",
+    "allCommitteesOption": "Todas as comissões"
   },
   "Transcript": {
     "breadcrumbTimeline": "Cronologia",
