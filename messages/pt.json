@@ -1179,11 +1179,11 @@
   },
   "Entities": {
     "deputiesTitle": "Deputados",
-    "deputiesIntro": "Grupo, profissão e atividade em plenário de cada deputado.",
+    "deputiesIntro": "Procure um deputado ou filtre por grupo e inicial, e abra o perfil: grupos, comissões e intervenções em plenário.",
     "searchDeputyPlaceholder": "Pesquisar um deputado…",
     "allGroups": "Todos os grupos",
     "groupsTitle": "Grupos parlamentares",
-    "groupsIntro": "Os grupos da Câmara: membros, atividade e posições.",
+    "groupsIntro": "Abra um grupo para ver os seus membros e passar aos perfis e intervenções.",
     "membersCount": "{count} membros",
     "speechesCount": "{count} intervenções",
     "actsCount": "{count} atos apresentados",
