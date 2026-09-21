@@ -1259,6 +1259,11 @@
     "allLetters": "All",
     "letterIndex": "Alphabetical index",
     "noComponent": "Not part of a component",
-    "groupLeader": "Group leader"
+    "groupLeader": "Group leader",
+    "boardTitle": "Leadership",
+    "role_president": "Group leader",
+    "role_vice_president": "Vice president",
+    "role_treasurer": "Treasurer",
+    "role_secretary": "Secretary"
   }
 }

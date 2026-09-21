@@ -1215,6 +1215,11 @@
     "allLetters": "Tous",
     "letterIndex": "Index alphabétique",
     "noComponent": "Hors composante",
-    "groupLeader": "Président du groupe"
+    "groupLeader": "Président du groupe",
+    "boardTitle": "Bureau",
+    "role_president": "Président du groupe",
+    "role_vice_president": "Vice-président",
+    "role_treasurer": "Trésorier",
+    "role_secretary": "Secrétaire"
   }
 }

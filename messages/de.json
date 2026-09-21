@@ -1215,6 +1215,11 @@
     "allLetters": "Alle",
     "letterIndex": "Alphabetischer Index",
     "noComponent": "Keiner Komponente zugeordnet",
-    "groupLeader": "Fraktionsvorsitz"
+    "groupLeader": "Fraktionsvorsitz",
+    "boardTitle": "Vorstand",
+    "role_president": "Fraktionsvorsitz",
+    "role_vice_president": "Stellvertretender Vorsitz",
+    "role_treasurer": "Schatzmeister",
+    "role_secretary": "Schriftführer"
   }
 }

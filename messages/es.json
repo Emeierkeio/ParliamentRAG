@@ -1215,6 +1215,11 @@
     "allLetters": "Todos",
     "letterIndex": "Índice alfabético",
     "noComponent": "Sin componente",
-    "groupLeader": "Portavoz del grupo"
+    "groupLeader": "Portavoz del grupo",
+    "boardTitle": "Directiva",
+    "role_president": "Portavoz",
+    "role_vice_president": "Vicepresidente",
+    "role_treasurer": "Tesorero",
+    "role_secretary": "Secretario"
   }
 }
