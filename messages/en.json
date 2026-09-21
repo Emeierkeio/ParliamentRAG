@@ -1220,7 +1220,7 @@
   },
   "Entities": {
     "deputiesTitle": "Deputies",
-    "deputiesIntro": "The deputies of the 19th Legislature, with group, profession and floor activity.",
+    "deputiesIntro": "Group, profession and floor activity for every deputy.",
     "searchDeputyPlaceholder": "Search a deputy…",
     "allGroups": "All groups",
     "groupsTitle": "Parliamentary groups",

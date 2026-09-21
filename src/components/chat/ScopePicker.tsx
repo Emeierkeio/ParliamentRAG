@@ -62,8 +62,9 @@ export function ScopePicker({
       option rows) because the scope will become choosable there. "meta"
       sits in a report metadata row where the answer is already built on a
       fixed corpus, so it must read as provenance: Info icon, no option
-      rows, plain disclosure text. */
-  variant?: "hero" | "meta";
+      rows, plain disclosure text. "sidebar" is the app-wide placement in
+      the dark rail: same selector semantics as "hero", sidebar tokens. */
+  variant?: "hero" | "meta" | "sidebar";
 }) {
   const t = useTranslations("WelcomeScreen");
   return (
@@ -72,28 +73,36 @@ export function ScopePicker({
         <button
           aria-label={t("scopeAria")}
           className={cn(
-            "group inline-flex items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
-            variant === "hero"
-              ? "gap-2 px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em]"
-              : "gap-1.5 px-2.5 py-0.5 text-xs font-medium"
+            "group inline-flex items-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer",
+            variant === "hero" &&
+              "gap-2 rounded-full border border-border px-3.5 py-1.5 text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+            variant === "meta" &&
+              "gap-1.5 rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+            variant === "sidebar" &&
+              "w-full gap-2 rounded-md border border-sidebar-border px-2.5 py-1.5 text-[10px] uppercase tracking-[0.12em] text-sidebar-foreground/60 hover:border-sidebar-foreground/30 hover:text-sidebar-foreground"
           )}
         >
           <Landmark
-            className={variant === "hero" ? "h-3.5 w-3.5" : "h-3 w-3"}
+            className={variant === "meta" ? "h-3 w-3" : "h-3.5 w-3.5 shrink-0"}
             aria-hidden="true"
           />
-          {t("badge")}
-          {variant === "hero" ? (
+          <span className={variant === "sidebar" ? "truncate" : undefined}>
+            {t("badge")}
+          </span>
+          {variant === "meta" ? (
+            <Info className="h-3 w-3 opacity-60" aria-hidden="true" />
+          ) : (
             <ChevronDown
-              className="h-3 w-3 opacity-60 transition-transform group-data-[state=open]:rotate-180"
+              className={cn(
+                "h-3 w-3 opacity-60 transition-transform group-data-[state=open]:rotate-180",
+                variant === "sidebar" && "ml-auto shrink-0"
+              )}
               aria-hidden="true"
             />
-          ) : (
-            <Info className="h-3 w-3 opacity-60" aria-hidden="true" />
           )}
         </button>
       </PopoverTrigger>
-      {variant === "hero" ? (
+      {variant !== "meta" ? (
         <PopoverContent
           align="center"
           sideOffset={8}

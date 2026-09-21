@@ -1176,7 +1176,7 @@
   },
   "Entities": {
     "deputiesTitle": "Abgeordnete",
-    "deputiesIntro": "Die Abgeordneten der 19. Legislaturperiode: Fraktion, Beruf und Plenaraktivität.",
+    "deputiesIntro": "Fraktion, Beruf und Aktivität im Plenum je Abgeordnetem.",
     "searchDeputyPlaceholder": "Abgeordnete suchen…",
     "allGroups": "Alle Fraktionen",
     "groupsTitle": "Fraktionen",

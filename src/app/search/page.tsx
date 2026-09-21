@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ScopePicker } from "@/components/chat/ScopePicker";
 import { Sidebar, MobileMenuButton } from "@/components/layout";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { useSidebar } from "@/hooks";
@@ -332,7 +331,6 @@ export default function SearchPage() {
                     <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
                         <MobileMenuButton onClick={toggle} />
                         <h1 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight whitespace-nowrap">{t("pageTitle")}</h1>
-                        <span className="hidden md:inline-flex"><ScopePicker variant="meta" /></span>
                         <div className="flex items-center gap-2 ml-auto shrink-0">
                             {/* Mobile: apre bottom sheet */}
                             <button

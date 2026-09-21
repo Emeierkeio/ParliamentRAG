@@ -1176,7 +1176,7 @@
   },
   "Entities": {
     "deputiesTitle": "Deputados",
-    "deputiesIntro": "Os deputados da XIX Legislatura: grupo, profissão e atividade no Plenário.",
+    "deputiesIntro": "Grupo, profissão e atividade em plenário de cada deputado.",
     "searchDeputyPlaceholder": "Pesquisar um deputado…",
     "allGroups": "Todos os grupos",
     "groupsTitle": "Grupos parlamentares",
