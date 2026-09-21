@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { MessageBubble } from "./MessageBubble";
 import { ChatInput } from "./ChatInput";
+import { ScopePicker } from "./ScopePicker";
 import { ProgressIndicator, ProgressBanner, CompletedProgressStepper, ProgressFullPage } from "@/components/shared/ProgressIndicator";
 import { TranslationBanner } from "@/components/shared/TranslationBanner";
 import {
@@ -15,7 +16,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import type { Message, ProcessingProgress } from "@/types";
-import { Landmark, ArrowRight, ChevronRight, HelpCircle, History, Loader2 } from "lucide-react";
+import { ChevronRight, HelpCircle, History } from "lucide-react";
 import { TOPICS } from "@/lib/constants";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -63,23 +64,30 @@ export function ChatArea({
 
   return (
     <div className={cn("flex h-full flex-col bg-background", className)}>
-      {/* Top search area: expanded on the welcome screen (new-search mode),
-          compact while reading an answer — the sticky bar must not compete
-          with the research result below it */}
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className={cn(
-          "mx-auto max-w-3xl px-3 md:px-4",
-          hasMessages ? "py-2 md:py-2.5" : "py-4 md:py-5"
-        )}>
+      {/* Top bar: compact search while reading an answer. On the welcome
+          screen the input lives inside the hero (the page's one action sits
+          under the headline, not detached at the top), so here only the
+          mobile menu and history remain. */}
+      <div
+        className={cn(
+          "sticky top-0 z-10",
+          hasMessages && "bg-background/80 backdrop-blur-xl border-b border-border/40"
+        )}
+      >
+        <div className="mx-auto max-w-3xl px-3 md:px-4 py-2 md:py-2.5">
           <div className="flex items-center gap-2">
             {mobileMenuButton}
-            <ChatInput
-              onSend={onSendMessage}
-              onCancel={onCancelRequest}
-              isLoading={isLoading}
-              placeholder={t("searchPlaceholder")}
-              className="flex-1"
-            />
+            {hasMessages ? (
+              <ChatInput
+                onSend={onSendMessage}
+                onCancel={onCancelRequest}
+                isLoading={isLoading}
+                placeholder={t("searchPlaceholder")}
+                className="flex-1"
+              />
+            ) : (
+              <span className="flex-1" aria-hidden="true" />
+            )}
             {onOpenHistory && (
               <Button
                 variant="ghost"
@@ -93,17 +101,6 @@ export function ChatArea({
               </Button>
             )}
           </div>
-          {!hasMessages && (
-            <p className="mt-1.5 px-1 text-[10px] leading-tight text-muted-foreground/60">
-              {t("researchNote")}{" "}
-              <a
-                href="/privacy"
-                className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
-              >
-                Privacy
-              </a>
-            </p>
-          )}
         </div>
       </div>
 
@@ -124,7 +121,11 @@ export function ChatArea({
           <div className="mx-auto max-w-3xl px-4 pb-12 overflow-x-hidden">
             <TranslationBanner hasCitations={hasCitations} />
             {!hasMessages ? (
-              <WelcomeScreen onSendMessage={onSendMessage} />
+              <WelcomeScreen
+                onSendMessage={onSendMessage}
+                onCancelRequest={onCancelRequest}
+                isLoading={isLoading}
+              />
             ) : (
               <div className="space-y-0 min-h-[50vh]">
                 {messages.map((message, idx) => {
@@ -211,6 +212,8 @@ function CompletedMethodDisclosure({ progress }: { progress: ProcessingProgress 
 
 interface WelcomeScreenProps {
   onSendMessage: (message: string) => void;
+  onCancelRequest: () => void;
+  isLoading: boolean;
 }
 
 interface RecentTopics {
@@ -232,7 +235,7 @@ function formatDate(iso: string | null, locale: string): string {
   }
 }
 
-function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
+function WelcomeScreen({ onSendMessage, onCancelRequest, isLoading }: WelcomeScreenProps) {
   // Latest subjects actually on the floor (EuroVoc of recent acts), served in
   // the UI language and cached per locale so the section doesn't pop in on
   // every visit
@@ -266,64 +269,67 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
   }, [locale]);
 
   const t = useTranslations("WelcomeScreen");
-  // Mobile shows one topic list at a time (the stacked sections make the
-  // page two screens long); desktop keeps the two-column grid untouched.
-  const [mobileTab, setMobileTab] = useState<"recent" | "trending">("recent");
+  const hasRecent = recent === null || recent.topics.length > 0;
+  const askTopic = (topic: string) => onSendMessage(t("topicQuery", { topic }));
   return (
-    <div className="flex flex-col items-center justify-center pt-4 sm:pt-16 pb-2 sm:pb-12 text-center px-4">
+    <div className="pt-6 sm:pt-14 pb-10 text-left">
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-8 items-start">
 
-      {/* Hero — tight on phones: with the search bar and the bottom nav the
-          content zone is ~600px and the page must not scroll when idle */}
-      <div className="mb-5 sm:mb-10 max-w-lg space-y-2.5 sm:space-y-3">
-        <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:mb-2">
-          <Landmark className="w-3.5 h-3.5" />
-          {t("badge")}
-        </div>
-        <h1 className="[font-family:var(--font-display)] text-[1.7rem] sm:text-4xl md:text-[2.75rem] font-medium tracking-tight text-foreground leading-[1.1]">
-          {t.rich("title", {
-            em: (chunks) => <span className="italic text-primary">{chunks}</span>,
-          })}
-        </h1>
-        <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mx-auto">
-          {t.rich("subtitle", {
-            bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
-          })}
-        </p>
-      </div>
-
-      {/* Topics: latest subjects from the live KG (left, skeleton while
-          loading) and the curated legislature list (right). Same chip
-          affordance for both — the source difference lives in the headers.
-          The layout collapses to a single centered list only when the
-          endpoint resolves with no data. */}
-      {recent === null || recent.topics.length > 0 ? (
-        <>
-          <div className="mb-4 flex w-full max-w-3xl gap-1.5 sm:hidden">
-            {(
-              [
-                ["recent", t("lastTopicsTab")],
-                ["trending", t("trendingTab")],
-              ] as const
-            ).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setMobileTab(key)}
-                className={cn(
-                  "flex-1 rounded-lg border px-2 py-2 text-[13px] transition-colors",
-                  mobileTab === key
-                    ? "border-primary/40 bg-primary/5 text-primary font-medium"
-                    : "border-border text-muted-foreground"
-                )}
-              >
-                {label}
-              </button>
-            ))}
+        {/* Question + search: the page's one action sits where reading
+            starts, top-left, directly under the promise it fulfills */}
+        <div className={hasRecent ? "lg:col-span-7" : "lg:col-span-12"}>
+          <div className="mb-4">
+            <ScopePicker />
           </div>
-          <div className="w-full max-w-3xl grid sm:grid-cols-2 gap-y-10 sm:gap-x-10 text-left">
-          <section className={cn(mobileTab !== "recent" && "hidden sm:block")}>
-            <p className="hidden sm:flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
+          <h1 className="[font-family:var(--font-display)] text-[1.9rem] sm:text-4xl md:text-[2.9rem] font-medium tracking-tight text-foreground leading-[1.08] max-w-xl [text-wrap:balance]">
+            {t.rich("title", {
+              em: (chunks) => <span className="italic text-primary">{chunks}</span>,
+            })}
+          </h1>
+          <p className="mt-3 text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md">
+            {t.rich("subtitle", {
+              bold: (chunks) => <span className="text-foreground font-medium">{chunks}</span>,
+            })}
+          </p>
+
+          <div className="mt-6 max-w-xl">
+            <ChatInput
+              onSend={onSendMessage}
+              onCancel={onCancelRequest}
+              isLoading={isLoading}
+              placeholder={t("searchPlaceholder")}
+            />
+            <p className="mt-2 text-[10px] leading-tight text-muted-foreground/60">
+              {t("researchNote")}{" "}
+              <a
+                href="/privacy"
+                className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+              >
+                Privacy
+              </a>
+            </p>
+          </div>
+
+          <div className="mt-10">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">
+              {t("trendingTopics")}
+            </p>
+            <div className="flex flex-wrap gap-2 max-w-xl">
+              {TOPICS.map((topic) => (
+                <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Live rail: what the floor is actually discussing. The acts used
+            to live inside a tooltip; they are real content and read as the
+            newspaper's right-hand column instead. */}
+        {hasRecent && (
+          <aside className="lg:col-span-5 lg:border-l lg:border-border lg:pl-8">
+            <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
               {t("lastTopics")}
-              {recent !== null && recent.acts.length > 0 && (
+              {recent !== null && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
@@ -336,95 +342,59 @@ function WelcomeScreen({ onSendMessage }: WelcomeScreenProps) {
                   <TooltipContent
                     side="bottom"
                     align="start"
-                    className="max-w-sm p-3.5 text-left normal-case tracking-normal"
+                    className="max-w-sm p-3 text-left normal-case tracking-normal"
                   >
-                    <p className="text-[11px] leading-snug opacity-75 mb-2.5">
+                    <p className="text-[11px] leading-snug">
                       {t("lastTopicsHint", { date: formatDate(recent.since, locale) })}
                     </p>
-                    <p className="text-[11px] font-semibold mb-2">{t("lastTopicsHintActs")}</p>
-                    <ul className="space-y-3">
-                      {recent.acts.map((act) => (
-                        <li key={act.title} className="leading-snug">
-                          <span className="flex items-baseline justify-between gap-3 mb-0.5">
-                            <span className="text-xs font-semibold">
-                              {act.topic
-                                ? act.topic.charAt(0).toUpperCase() + act.topic.slice(1)
-                                : formatDate(act.date, locale)}
-                            </span>
-                            {act.topic && (
-                              <span className="shrink-0 text-[10px] tabular-nums opacity-60">
-                                {formatDate(act.date, locale)}
-                              </span>
-                            )}
-                          </span>
-                          <span className="line-clamp-2 text-[11px] opacity-70">{act.title}</span>
-                        </li>
-                      ))}
-                    </ul>
                   </TooltipContent>
                 </Tooltip>
               )}
             </p>
-            {recent === null && (
-              <p className="flex items-center gap-1.5 mb-3 text-[11px] italic text-muted-foreground/70">
-                <Loader2 className="w-3 h-3 motion-safe:animate-spin" aria-hidden />
-                {t("lastTopicsLoading")}
-              </p>
+            {recent === null ? (
+              <ul className="space-y-5">
+                {[0, 1, 2, 3].map((i) => (
+                  <li key={i} className="space-y-1.5">
+                    <span className="block h-4 w-40 rounded-sm bg-muted/60 motion-safe:animate-pulse" />
+                    <span className="block h-3 w-full max-w-[16rem] rounded-sm bg-muted/40 motion-safe:animate-pulse" />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              /* One topic-centric list: the acts are the source of the
+                 topics, so listing them separately duplicated the same
+                 subjects. Each entry pairs the topic with one act as its
+                 provenance line. */
+              <ul className="space-y-5">
+                {recent.topics.map((topic) => {
+                  const act = recent.acts.find(
+                    (a) => a.topic?.toLowerCase() === topic.label.toLowerCase()
+                  );
+                  return (
+                    <li key={topic.label}>
+                      <button
+                        onClick={() => askTopic(topic.query)}
+                        className="group block w-full text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                      >
+                        <span className="text-[15px] font-semibold leading-snug tracking-tight text-foreground transition-colors group-hover:text-primary">
+                          {topic.label.charAt(0).toUpperCase() + topic.label.slice(1)}
+                        </span>
+                        {act && (
+                          <span className="mt-1 block text-[11px] leading-snug text-muted-foreground line-clamp-1">
+                            <span className="tabular-nums">{formatDate(act.date, locale)}</span>
+                            {" · "}
+                            {act.title}
+                          </span>
+                        )}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
-            <div className="flex flex-wrap gap-x-6 gap-y-3">
-              {recent === null
-                ? ["w-28", "w-16", "w-32", "w-24", "w-36", "w-24"].map((w, i) => (
-                    <span
-                      key={i}
-                      className={cn(
-                        "h-4 mb-1 rounded-sm bg-muted/60 motion-safe:animate-pulse",
-                        w,
-                        // the sixth row would push the list past the fold on phones
-                        i >= 5 && "hidden sm:block"
-                      )}
-                    />
-                  ))
-                : recent.topics.map((topic, i) => (
-                    <TopicPill
-                      key={topic.label}
-                      topic={topic.label}
-                      queryText={topic.query}
-                      raw
-                      onClick={onSendMessage}
-                      className={i >= 5 ? "hidden sm:inline-flex" : undefined}
-                    />
-                  ))}
-            </div>
-          </section>
-          <section
-            className={cn(
-              "sm:border-l sm:border-border sm:pl-10",
-              mobileTab !== "trending" && "hidden sm:block"
-            )}
-          >
-            <p className="hidden sm:block text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-              {t("trendingTopics")}
-            </p>
-            <div className="flex flex-wrap gap-x-6 gap-y-3">
-              {TOPICS.map((topic) => (
-                <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
-              ))}
-            </div>
-          </section>
-          </div>
-        </>
-      ) : (
-        <div className="w-full max-w-2xl">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
-            {t("trendingTopics")}
-          </p>
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
-            {TOPICS.map((topic) => (
-              <TopicPill key={topic} topic={topic} onClick={onSendMessage} />
-            ))}
-          </div>
-        </div>
-      )}
+          </aside>
+        )}
+      </div>
     </div>
   );
 }
@@ -453,13 +423,12 @@ function TopicPill({ topic, onClick, raw = false, queryText, className }: TopicP
   return (
     <button
       className={cn(
-        "group inline-flex items-center gap-1.5 border-b border-border pb-1 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer",
+        "inline-flex items-center rounded-full border border-border px-3.5 py-1.5 text-sm text-left text-foreground/80 transition-colors duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer",
         className
       )}
       onClick={() => onClick(query)}
     >
-      <span>{displayName}</span>
-      <ArrowRight className="w-3 h-3 text-muted-foreground/40 transition-colors duration-200 group-hover:text-foreground" />
+      {displayName}
     </button>
   );
 }
