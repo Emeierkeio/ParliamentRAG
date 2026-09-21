@@ -87,11 +87,11 @@ def main() -> None:
     applied = missed = 0
     with driver.session() as s:
         # Wipe then reapply: officeholders change, stale roles must not survive
-        s.run("MATCH (:Deputy)-[m:MEMBER_OF_GROUP]->() REMOVE m.role")
+        s.run("MATCH (:Person)-[m:MEMBER_OF_GROUP]->() REMOVE m.role")
         for o in offices:
             res = s.run(
                 """
-                MATCH (d:Deputy)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
+                MATCH (d:Person)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup)
                 WHERE m.end_date IS NULL
                   AND (toUpper(d.first_name + ' ' + d.last_name) = $person
                        OR toUpper(d.last_name + ' ' + d.first_name) = $person)
@@ -110,7 +110,7 @@ def main() -> None:
                 # the officeholder presides the successor group they sit in
                 res = s.run(
                     """
-                    MATCH (d:Deputy)-[m:MEMBER_OF_GROUP]->(:ParliamentaryGroup)
+                    MATCH (d:Person)-[m:MEMBER_OF_GROUP]->(:ParliamentaryGroup)
                     WHERE m.end_date IS NULL
                       AND (toUpper(d.first_name + ' ' + d.last_name) = $person
                            OR toUpper(d.last_name + ' ' + d.first_name) = $person)
