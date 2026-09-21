@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
 import { CitationCard } from "./CitationCard";
+import { ScopePicker } from "./ScopePicker";
+import { getGroupColor, getGroupShortLabel } from "@/components/search/ResultsList";
 import { ExpertCard, ExpertRow } from "./ExpertCard";
 import { TraceButton } from "./TraceCard";
 import type { TraceData } from "@/types";
@@ -33,7 +35,6 @@ import {
   Sparkles,
   Trophy,
   Info,
-  Landmark,
   Share2,
   Languages,
   ArrowRight,
@@ -129,12 +130,12 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
           </span>
         </TooltipTrigger>
         <TooltipContent side="right" className="max-w-[350px]">
-          <p className="font-semibold text-xs mb-1.5">{t('governoSection')}</p>
-          <div className="space-y-1">
+          <p className="font-semibold text-xs mb-2">{t('governoSection')}</p>
+          <div className="space-y-1.5">
             {speakers.map((s) => (
-              <div key={s.name} className="text-[11px]">
-                <span className="font-semibold text-foreground">{s.name}</span>
-                {s.role && <span className="text-muted-foreground"> — {s.role}</span>}
+              <div key={s.name}>
+                <p className="text-xs font-medium text-foreground">{s.name}</p>
+                {s.role && <p className="text-[11px] text-muted-foreground">{s.role}</p>}
               </div>
             ))}
           </div>
@@ -160,12 +161,19 @@ function SpeakersTooltip({ speakers, iconSize, sectionTitle }: { speakers: Speak
         </span>
       </TooltipTrigger>
       <TooltipContent side="right" className="max-w-[350px]">
-        <p className="font-semibold text-xs mb-1.5">{t('deputiesSection')}</p>
-        <div className="space-y-1.5">
+        <p className="font-semibold text-xs mb-2">{t('deputiesSection')}</p>
+        <div className="space-y-2">
           {groups.map(([group, names]) => (
-            <div key={group}>
-              <p className="text-[11px] font-semibold text-foreground">{group}</p>
-              <p className="text-[11px] text-muted-foreground">{names.join(", ")}</p>
+            <div key={group} className="flex items-start gap-2">
+              <span
+                className="mt-[5px] h-2 w-2 shrink-0 rounded-full"
+                style={{ backgroundColor: getGroupColor(group) }}
+                aria-hidden="true"
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-foreground">{names.join(", ")}</p>
+                <p className="text-[11px] text-muted-foreground">{getGroupShortLabel(group)}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -273,11 +281,9 @@ export function MessageBubble({ message, className, chatId, answerTrace, answerS
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-          <Landmark className="h-3.5 w-3.5" aria-hidden="true" />
-          <span className="font-medium">{t('chamberTitle')}</span>
+          <ScopePicker variant="meta" />
           {hasScale ? (
             <>
-              <span className="text-muted-foreground/40" aria-hidden="true">·</span>
               <span className="tabular-nums">
                 {t('evidenceScale', {
                   interventions: answerStats!.intervention_count,
@@ -295,7 +301,6 @@ export function MessageBubble({ message, className, chatId, answerTrace, answerS
             </>
           ) : (
             <>
-              <span className="text-muted-foreground/40" aria-hidden="true">•</span>
               <span className="tabular-nums">
                 {message.timestamp.toLocaleTimeString("it-IT", {
                   hour: "2-digit",
@@ -731,7 +736,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
           icon={Users}
           title={t('expertsTitle')}
           count={message.experts!.length}
-          defaultOpen={true}
+          defaultOpen={false}
           infoTooltip={t('expertsTooltip')}
         >
             <div className="pt-1 px-1 pb-2">
@@ -844,7 +849,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
           icon={Quote}
           title={t('citationsTitle')}
           count={message.citations!.length}
-          defaultOpen={true}
+          defaultOpen={false}
           forceOpen={!!highlightedChunkId}
           infoTooltip={t('citationsTooltip')}
         >
@@ -870,7 +875,7 @@ function AssistantMetadata({ message, highlightedChunkId }: AssistantMetadataPro
             icon={Compass}
             title={t('compassTitle')}
             count={message.compass?.groups?.length ?? 0}
-            defaultOpen={true}
+            defaultOpen={false}
             infoTooltip={t('compassTooltip')}
         >
              <CompassCard data={message.compass} />
