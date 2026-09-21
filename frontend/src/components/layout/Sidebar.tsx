@@ -5,16 +5,8 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import Image from "next/image";
 import {
   MessageSquare,
@@ -23,9 +15,7 @@ import {
   Github,
   Settings,
   Search,
-  X,
   Compass,
-  Menu,
   BarChart3,
   CalendarDays,
 } from "lucide-react";
@@ -53,7 +43,6 @@ export function MobileMenuButton(_props: { onClick: () => void; className?: stri
 export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueuing = false, isMobile = false, isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const t = useTranslations('Sidebar');
   const pathname = usePathname();
-  const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   // Cached pre-paint in the shared hook, so full-page navigations render the
   // date instantly and the footer never flashes a placeholder.
@@ -232,9 +221,6 @@ export function Sidebar({ isCollapsed, onToggle, isQueryRunning = false, isQueui
         </div>
       </aside>
 
-      {/* Info Modal */}
-      <InfoModal open={infoOpen} onClose={() => setInfoOpen(false)} />
-
       {/* Settings Modal */}
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
@@ -265,16 +251,16 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       variant="ghost"
       disabled={disabled}
       className={cn(
-        "w-full justify-start transition-all duration-200",
-        // Primary: full-size nav item
-        isPrimary && "gap-3 h-10 mb-1",
+        "relative w-full justify-start transition-all duration-200",
+        // Primary: the app's action, boxed apart from the browse tools
+        isPrimary && "gap-3 h-10 mb-1 border border-sidebar-border bg-sidebar-accent/25",
         // Default (strumenti): compact
         !isPrimary && "gap-2.5 h-8 mb-0.5 text-[13px]",
         // Default State
         "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
         // Active State
         item.isActive && !isPrimary && "bg-sidebar-accent/60 text-sidebar-foreground font-medium",
-        // Primary Variant - subtle highlight, no heavy box
+        // Primary Variant
         isPrimary && "text-sidebar-foreground font-semibold hover:bg-sidebar-accent/50",
         isPrimary && item.isActive && "bg-sidebar-accent/40",
         // Collapsed Logic
@@ -286,6 +272,14 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
       )}
       onClick={item.onClick}
     >
+      {/* Active marker: the tinted background alone was too quiet to find
+          the current page at a glance */}
+      {item.isActive && !isCollapsed && (
+        <span
+          className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-sidebar-foreground/80"
+          aria-hidden="true"
+        />
+      )}
       <item.icon className={cn(
         "shrink-0",
         isPrimary ? "h-5 w-5 text-sidebar-foreground" : "h-4 w-4 text-current"
@@ -310,64 +304,4 @@ function NavButton({ item, isCollapsed, variant = "default", disabled = false }:
   return button;
 }
 
-// Info Modal
-function InfoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="" width={24} height={24} />
-            {config.app.name}
-          </DialogTitle>
-          <DialogDescription>
-            Versione {config.app.version}
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Sistema RAG innovativo per l&apos;analisi bilanciata dei dibattiti parlamentari italiani.
-            Fornisce risposte che rappresentano tutte le forze politiche presenti in Parlamento.
-          </p>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Caratteristiche principali</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• Analisi bilanciata maggioranza/opposizione</li>
-              <li>• Identificazione automatica degli esperti per tema</li>
-              <li>• Citazioni verificabili dagli interventi parlamentari</li>
-              <li>• Metriche di bilanciamento politico</li>
-            </ul>
-          </div>
-
-          <Separator />
-
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium">Tecnologie</h4>
-            <div className="flex flex-wrap gap-2">
-              {["Next.js", "FastAPI", "Neo4j", "OpenAI", "LangChain"].map((tech) => (
-                <span
-                  key={tech}
-                  className="px-2 py-1 text-xs bg-muted rounded-md text-muted-foreground"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <Separator />
-
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Dati aggiornati al:</span>
-            <span className="font-medium">4 febbraio 2026</span>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
