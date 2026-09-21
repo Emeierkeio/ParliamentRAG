@@ -26,9 +26,11 @@ interface MemberRow {
   component: string | null;
 }
 
+// Stessa regola dell'elenco: contano solo le membership correnti
 const DIRECTORY_QUERY =
-  "MATCH (g:ParliamentaryGroup)<-[:MEMBER_OF_GROUP]-(d:Deputy) " +
-  "RETURN g.name AS name, count(d) AS members ORDER BY members DESC";
+  "MATCH (g:ParliamentaryGroup)<-[m:MEMBER_OF_GROUP]-(d:Deputy) " +
+  "WHERE m.end_date IS NULL " +
+  "RETURN g.name AS name, count(DISTINCT d) AS members ORDER BY members DESC";
 
 function groupLabel(name: string): string {
   const known = (
@@ -173,7 +175,7 @@ export default function GruppoDettaglioPage() {
                   </h1>
                 </div>
                 <p className="mt-2 font-mono text-sm text-muted-foreground tabular-nums">
-                  {t("membersCount", { count: state.group.members })}
+                  {t("membersCount", { count: state.members.length })}
                 </p>
               </header>
 
