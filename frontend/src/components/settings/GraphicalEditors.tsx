@@ -44,12 +44,12 @@ const STR = {
     // Retrieval
     retrievalTitle: "Recupero Informazioni",
     retrievalDesc: "Parametri dei due canali di ricerca e del merger dei risultati",
-    denseChannel: "Canale Denso — Embedding",
+    denseChannel: "Canale Denso · Embedding",
     topK: "Top-K Risultati",
     topKInfo: "Numero massimo di chunk recuperati per similarità semantica (embedding). Valori più alti aumentano il recall ma incrementano latenza e costo computazionale.",
     simThreshold: "Soglia Similarità",
     simThresholdInfo: "Soglia minima di similarità coseno per il canale denso. Chunk con similarità inferiore vengono scartati prima del ranking. Range tipico: 0.20–0.45.",
-    graphChannel: "Canale Grafo — EuroVoc",
+    graphChannel: "Canale Grafo · EuroVoc",
     minLexMatch: "Min Match Lessicale",
     minLexMatchInfo: "Numero minimo di keyword EuroVoc che devono matchare lessicalmente per includere un atto parlamentare nella ricerca grafo. Valore 1 = basta una keyword.",
     eurovocThreshold: "Soglia Semantica EuroVoc",
@@ -58,8 +58,9 @@ const STR = {
     graphChunkThresholdInfo: "Soglia minima di similarità per i chunk recuperati tramite traversata del grafo. Previene l'inclusione di chunk off-topic recuperati solo per co-firma di atti rilevanti.",
     maxActs: "Max Atti per Query",
     maxActsInfo: "Numero massimo di atti parlamentari da recuperare per query tramite il canale grafo. Limita il carico computazionale della traversata del grafo Neo4j.",
-    mergerWeights: "Pesi Fusione — Merger",
+    mergerWeights: "Pesi Fusione · Merger",
     weightsMustSum: "I pesi devono sommare a 1.00",
+    normalize: "Normalizza a 1.00",
     unitChunk: "chunk",
     unitKeyword: "keyword",
     unitActs: "atti",
@@ -85,15 +86,15 @@ const STR = {
     // Generation
     generationTitle: "Generazione",
     generationDesc: "Modelli LLM della pipeline di generazione a 4 stadi",
-    modelsSection: "Modelli LLM — Pipeline 4 Stadi",
+    modelsSection: "Modelli LLM · Pipeline a 4 stadi",
     stageAnalyst: "Analista",
     stageWriter: "Scrittore",
     stageIntegrator: "Integratore",
     stagePicker: "Quote Picker",
-    modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo — un modello piccolo è sufficiente ed economico.",
-    modelInfoWriter: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni — gpt-4.1 raccomandato.",
+    modelInfoAnalyst: "Stadio 1: decompone la query in claim tematici per partito. Task strutturato e ripetitivo: un modello piccolo è sufficiente ed economico.",
+    modelInfoWriter: "Stadio 2: scrive le sezioni per ogni gruppo parlamentare a partire dai chunk recuperati. Richiede alta qualità narrativa e fedeltà verbatim delle citazioni: gpt-4.1 raccomandato.",
     modelInfoIntegrator: "Stadio 3: integra le sezioni in un testo coerente e bilanciato. Lo Stadio 4 (Citation Surgeon) è deterministico e non usa LLM.",
-    modelInfoPicker: "Seleziona la citazione verbatim per ogni sezione. I pick errati vengono scartati dalla verifica substring a valle, quindi un errore costa una citazione in meno, mai una citazione falsa — un modello piccolo è sicuro.",
+    modelInfoPicker: "Seleziona la citazione verbatim per ogni sezione. I pick errati vengono scartati dalla verifica substring a valle, quindi un errore costa una citazione in meno, mai una citazione falsa: un modello piccolo è sicuro.",
     tempNote: "Temperatura e max token sono fissi per stadio (Analista 0.1, Scrittore 0.1, Integratore 0.0; i modelli gpt-5.6 usano la temperatura di default), tarati nel codice per avere citazioni verbatim riproducibili. Da qui si cambia solo il modello, che vale dalla query successiva.",
     positionBrief: "Position Brief",
     enabledM: "Abilitato",
@@ -124,12 +125,12 @@ const STR = {
     // Retrieval
     retrievalTitle: "Information Retrieval",
     retrievalDesc: "Parameters of the two retrieval channels and the result merger",
-    denseChannel: "Dense Channel — Embedding",
+    denseChannel: "Dense Channel · Embedding",
     topK: "Top-K Results",
     topKInfo: "Maximum number of chunks retrieved by semantic similarity (embedding). Higher values increase recall but raise latency and computational cost.",
     simThreshold: "Similarity Threshold",
     simThresholdInfo: "Minimum cosine similarity threshold for the dense channel. Chunks with lower similarity are discarded before ranking. Typical range: 0.20–0.45.",
-    graphChannel: "Graph Channel — EuroVoc",
+    graphChannel: "Graph Channel · EuroVoc",
     minLexMatch: "Min Lexical Match",
     minLexMatchInfo: "Minimum number of EuroVoc keywords that must match lexically to include a parliamentary act in the graph search. Value 1 = a single keyword is enough.",
     eurovocThreshold: "EuroVoc Semantic Threshold",
@@ -138,8 +139,9 @@ const STR = {
     graphChunkThresholdInfo: "Minimum similarity threshold for chunks retrieved via graph traversal. Prevents the inclusion of off-topic chunks retrieved only through co-signing of relevant acts.",
     maxActs: "Max Acts per Query",
     maxActsInfo: "Maximum number of parliamentary acts to retrieve per query through the graph channel. Limits the computational load of the Neo4j graph traversal.",
-    mergerWeights: "Fusion Weights — Merger",
+    mergerWeights: "Fusion Weights · Merger",
     weightsMustSum: "Weights must sum to 1.00",
+    normalize: "Normalize to 1.00",
     unitChunk: "chunks",
     unitKeyword: "keywords",
     unitActs: "acts",
@@ -165,15 +167,15 @@ const STR = {
     // Generation
     generationTitle: "Generation",
     generationDesc: "LLM models of the 4-stage generation pipeline",
-    modelsSection: "LLM Models — 4-Stage Pipeline",
+    modelsSection: "LLM Models · 4-Stage Pipeline",
     stageAnalyst: "Analyst",
     stageWriter: "Writer",
     stageIntegrator: "Integrator",
     stagePicker: "Quote Picker",
-    modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task — a small model is sufficient and cost-effective.",
-    modelInfoWriter: "Stage 2: writes the sections for each parliamentary group from the retrieved chunks. Requires high narrative quality and verbatim citation fidelity — gpt-4.1 recommended.",
+    modelInfoAnalyst: "Stage 1: decomposes the query into thematic claims per party. Structured, repetitive task: a small model is sufficient and cost-effective.",
+    modelInfoWriter: "Stage 2: writes the sections for each parliamentary group from the retrieved chunks. Requires high narrative quality and verbatim citation fidelity: gpt-4.1 recommended.",
     modelInfoIntegrator: "Stage 3: integrates the sections into a coherent, balanced text. Stage 4 (Citation Surgeon) is deterministic and does not use an LLM.",
-    modelInfoPicker: "Selects the verbatim quote for each section. Bad picks are dropped by the downstream substring verification, so a mistake costs a missing citation, never a false one — a small model is safe here.",
+    modelInfoPicker: "Selects the verbatim quote for each section. Bad picks are dropped by the downstream substring verification, so a mistake costs a missing citation, never a false one: a small model is safe here.",
     tempNote: "Temperature and max tokens are fixed per stage (Analyst 0.1, Writer 0.1, Integrator 0.0; gpt-5.6 models use the default temperature), tuned in code for reproducible verbatim citations. Only the model can be changed here; it applies from the next query.",
     positionBrief: "Position Brief",
     enabledM: "Enabled",
@@ -366,6 +368,7 @@ function WeightSlider({
   min = 0,
   max = 1,
   disabled,
+  segmentClass,
 }: {
   label: string;
   value: number;
@@ -376,10 +379,18 @@ function WeightSlider({
   min?: number;
   max?: number;
   disabled?: boolean;
+  /** Ties the row to its segment in the composition bar above */
+  segmentClass?: string;
 }) {
   const percent = Math.round(((value - min) / (max - min)) * 100);
   return (
     <div className={`flex items-center gap-3 ${disabled ? "opacity-50" : ""}`}>
+      {segmentClass && (
+        <span
+          className={`h-2.5 w-2.5 shrink-0 rounded-[3px] ${segmentClass}`}
+          aria-hidden="true"
+        />
+      )}
       {Icon && <Icon className="h-4 w-4 text-muted-foreground shrink-0" />}
       <div className="w-28 flex items-center gap-1 shrink-0">
         <Label className="text-sm leading-tight">{label}</Label>
@@ -417,18 +428,99 @@ function WeightSlider({
   );
 }
 
-// ─── WeightSumBadge ───────────────────────────────────────────
+// ─── Weight-sum helpers ──────────────────────────────────────
 
-function WeightSumBadge({ weights }: { weights: Record<string, number> }) {
+export function weightsSumValid(weights: Record<string, number>): boolean {
   const sum = Object.values(weights).reduce((a, b) => a + b, 0);
-  const isValid = Math.abs(sum - 1.0) < 0.02;
+  return Math.abs(sum - 1.0) < 0.02;
+}
+
+/** Proportional rescale to sum 1.00; rounding drift lands on the largest
+    weight so the displayed two-decimal values add up exactly. */
+function normalizeWeights(weights: Record<string, number>): Record<string, number> {
+  const sum = Object.values(weights).reduce((a, b) => a + b, 0);
+  if (sum <= 0) return weights;
+  const rounded = Object.entries(weights).map(
+    ([k, v]) => [k, Math.round((v / sum) * 100) / 100] as const
+  );
+  const drift = Math.round((1 - rounded.reduce((a, [, v]) => a + v, 0)) * 100) / 100;
+  let largest = rounded[0];
+  for (const entry of rounded) {
+    if (entry[1] > largest[1]) largest = entry;
+  }
+  return Object.fromEntries(
+    rounded.map(([k, v]) => [k, k === largest[0] ? Math.round((v + drift) * 100) / 100 : v])
+  );
+}
+
+/* Shared segment palette: slider rows and the composition bar below must
+   agree on the color per weight, keyed by object-entry order. */
+const SEGMENT_CLASSES = [
+  "bg-chart-1",
+  "bg-chart-2",
+  "bg-chart-3",
+  "bg-chart-4",
+  "bg-chart-5",
+  "bg-primary/50",
+];
+
+function WeightSumBadge({
+  weights,
+  onNormalize,
+  normalizeLabel,
+}: {
+  weights: Record<string, number>;
+  onNormalize?: (next: Record<string, number>) => void;
+  normalizeLabel?: string;
+}) {
+  const sum = Object.values(weights).reduce((a, b) => a + b, 0);
+  const isValid = weightsSumValid(weights);
   return (
-    <Badge
-      variant={isValid ? "default" : "destructive"}
-      className="text-xs font-mono tabular-nums"
+    <span className="inline-flex items-center gap-2.5">
+      {!isValid && onNormalize && normalizeLabel && (
+        <button
+          type="button"
+          onClick={() => onNormalize(normalizeWeights(weights))}
+          className="text-xs font-medium text-primary underline underline-offset-2 hover:no-underline cursor-pointer"
+        >
+          {normalizeLabel}
+        </button>
+      )}
+      <Badge
+        variant={isValid ? "default" : "destructive"}
+        className="text-xs font-mono tabular-nums"
+      >
+        Σ = {sum.toFixed(2)}
+      </Badge>
+    </span>
+  );
+}
+
+/** The weights are shares of a whole: the stacked bar gives the composition
+    at a glance, while the sliders below stay the precise controls. */
+function WeightCompositionBar({
+  weights,
+  labels,
+}: {
+  weights: Record<string, number>;
+  labels: Record<string, { label: string }>;
+}) {
+  const sum = Object.values(weights).reduce((a, b) => a + b, 0);
+  if (sum <= 0) return null;
+  return (
+    <div
+      className="flex h-2 w-full overflow-hidden rounded-full bg-muted"
+      aria-hidden="true"
     >
-      Σ = {sum.toFixed(2)}
-    </Badge>
+      {Object.entries(weights).map(([key, value], i) => (
+        <div
+          key={key}
+          title={`${labels[key]?.label ?? key}: ${value.toFixed(2)}`}
+          className={`${SEGMENT_CLASSES[i % SEGMENT_CLASSES.length]} transition-[width] duration-300`}
+          style={{ width: `${(value / sum) * 100}%` }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -585,10 +677,15 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
         <SubSection icon={Layers} title={S.mergerWeights}>
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">{S.weightsMustSum}</span>
-            <WeightSumBadge weights={data.merger_weights} />
+            <WeightSumBadge
+              weights={data.merger_weights}
+              normalizeLabel={S.normalize}
+              onNormalize={(merger_weights) => onChange({ ...data, merger_weights })}
+            />
           </div>
+          <WeightCompositionBar weights={data.merger_weights} labels={mergerLabels} />
           <div className="space-y-2">
-            {Object.entries(data.merger_weights).map(([key, value]) => {
+            {Object.entries(data.merger_weights).map(([key, value], i) => {
               const meta = mergerLabels[key];
               return (
                 <WeightSlider
@@ -598,6 +695,7 @@ export function RetrievalEditor({ data, onChange }: RetrievalEditorProps) {
                   info={meta?.description}
                   onChange={(v) => updateMergerWeight(key, v)}
                   icon={MERGER_ICONS[key]}
+                  segmentClass={SEGMENT_CLASSES[i % SEGMENT_CLASSES.length]}
                 />
               );
             })}
@@ -644,10 +742,15 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
         <SubSection icon={BarChart3} title={S.componentWeights}>
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">{S.weightsMustSum}</span>
-            <WeightSumBadge weights={data.weights} />
+            <WeightSumBadge
+              weights={data.weights}
+              normalizeLabel={S.normalize}
+              onNormalize={(weights) => onChange({ ...data, weights })}
+            />
           </div>
+          <WeightCompositionBar weights={data.weights} labels={weightLabels} />
           <div className="space-y-2">
-            {Object.entries(data.weights).map(([key, value]) => {
+            {Object.entries(data.weights).map(([key, value], i) => {
               const meta = weightLabels[key];
               return (
                 <WeightSlider
@@ -657,6 +760,7 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
                   info={meta?.description}
                   onChange={(v) => updateWeight(key, v)}
                   icon={WEIGHT_ICONS[key]}
+                  segmentClass={SEGMENT_CLASSES[i % SEGMENT_CLASSES.length]}
                 />
               );
             })}
@@ -749,6 +853,8 @@ export function AuthorityEditor({ data, onChange }: AuthorityEditorProps) {
 interface GenerationEditorProps {
   data: SystemConfig["generation"];
   onChange: (data: SystemConfig["generation"]) => void;
+  /** Server-saved models at modal open: the gating ceiling per stage */
+  baselineModels?: Record<string, string>;
 }
 
 const MODEL_OPTIONS = [
@@ -760,7 +866,29 @@ const MODEL_OPTIONS = [
   "gpt-4.1-mini",
 ];
 
-export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
+/* Capability ladder for gating: each select allows the server-saved
+   baseline model and anything below it; better models stay visible but
+   not selectable. Unknown models gate nothing, so a config value outside
+   this list can never lock the user out. */
+const MODEL_TIER: Record<string, number> = {
+  "gpt-6-astra": 700,
+  "gpt-5.6-sol": 663,
+  "gpt-5.6-terra": 662,
+  "gpt-5.6-luna": 661,
+  "gpt-4.1": 410,
+  "gpt-4.1-mini": 405,
+  "gpt-4.1-nano": 401,
+};
+
+function modelOptionDisabled(opt: string, baseline?: string): boolean {
+  if (!baseline) return false;
+  const b = MODEL_TIER[baseline];
+  const o = MODEL_TIER[opt];
+  if (b === undefined || o === undefined) return false;
+  return o > b;
+}
+
+export function GenerationEditor({ data, onChange, baselineModels }: GenerationEditorProps) {
   const lang = useLang();
   const S = STR[lang];
 
@@ -814,7 +942,13 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
                   className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {MODEL_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option
+                      key={opt}
+                      value={opt}
+                      disabled={modelOptionDisabled(opt, baselineModels?.[stage])}
+                    >
+                      {opt}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -905,11 +1039,13 @@ export function GenerationEditor({ data, onChange }: GenerationEditorProps) {
 interface QueryRewritingEditorProps {
   data: SystemConfig["query_rewriting"];
   onChange: (data: SystemConfig["query_rewriting"]) => void;
+  /** Server-saved model at modal open: the gating ceiling */
+  baselineModel?: string;
 }
 
 const QR_MODEL_OPTIONS = ["gpt-5.6-luna", "gpt-5.6-terra", "gpt-4.1", "gpt-4.1-mini"];
 
-export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorProps) {
+export function QueryRewritingEditor({ data, onChange, baselineModel }: QueryRewritingEditorProps) {
   const lang = useLang();
   const S = STR[lang];
 
@@ -951,7 +1087,13 @@ export function QueryRewritingEditor({ data, onChange }: QueryRewritingEditorPro
                 className="w-40 h-8 shrink-0 rounded-md border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {QR_MODEL_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
+                  <option
+                    key={opt}
+                    value={opt}
+                    disabled={modelOptionDisabled(opt, baselineModel)}
+                  >
+                    {opt}
+                  </option>
                 ))}
               </select>
             </div>
