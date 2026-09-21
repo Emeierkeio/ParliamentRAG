@@ -10,7 +10,7 @@ import { useLocalHistory } from "@/hooks/use-local-history";
 import { ExpertModal } from "@/components/chat/ExpertCard";
 import { FeedbackPulse } from "@/components/feedback/FeedbackPulse";
 import { config } from "@/config";
-import { cn } from "@/lib/utils";
+import { cn, toTitleCase } from "@/lib/utils";
 import { getTopics } from "@/lib/constants";
 import type { Expert } from "@/types";
 import {
@@ -104,6 +104,8 @@ export default function RankingPage() {
   const [coalitionFilter, setCoalitionFilter] = useState<CoalitionFilter>("all");
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [committeeSearch, setCommitteeSearch] = useState("");
+  // Panel combobox: typing filters, picking sets committeeSearch
+  const [committeeQuery, setCommitteeQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("authority_score");
   const [sortOpen, setSortOpen] = useState(false);
   const [weights, setWeights] = useState<Record<ComponentKey, number>>(DEFAULT_WEIGHTS);
@@ -308,9 +310,9 @@ export default function RankingPage() {
 
   const hasResults = deputies.length > 0;
   const hasActiveFilters = coalitionFilter !== "all" || selectedGroups.length > 0 || nameSearch.trim() !== "" || committeeSearch !== "";
-  // The filter bar also shows before the query runs: chosen filters
-  // simply apply to the ranking when it arrives
-  const filtersEnabled = !loading;
+  // Pre-query filtering lives in the structured panel inside the empty
+  // state; the sticky bar appears only alongside results
+  const filtersEnabled = hasResults && !loading;
 
   const toggleGroup = (value: string) => {
     setSelectedGroups((prev) =>
@@ -775,16 +777,43 @@ export default function RankingPage() {
                   </div>
                   <div>
                     <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{t("committeeFilter")}</p>
-                    <select
-                      value={committeeSearch}
-                      onChange={(e) => setCommitteeSearch(e.target.value)}
-                      className="h-9 w-full rounded-md border border-border bg-background px-2.5 text-sm outline-none focus-visible:border-foreground/40"
-                    >
-                      <option value="">{t("allCommitteesOption")}</option>
-                      {availableCommittees.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
+                    {committeeSearch ? (
+                      <button
+                        type="button"
+                        onClick={() => setCommitteeSearch("")}
+                        title={t("committeeRemoveFilter")}
+                        className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-2.5 py-1 text-xs text-primary cursor-pointer"
+                      >
+                        <span className="truncate">{toTitleCase(committeeSearch)}</span>
+                        <X className="h-3 w-3 shrink-0" />
+                      </button>
+                    ) : (
+                      <>
+                        <Input
+                          value={committeeQuery}
+                          onChange={(e) => setCommitteeQuery(e.target.value)}
+                          placeholder={t("committeeSearchPlaceholder")}
+                          className="h-9 text-sm"
+                        />
+                        {committeeQuery.trim() && (
+                          <div className="mt-1.5 max-h-44 overflow-y-auto rounded-md border border-border">
+                            {availableCommittees
+                              .filter((c) => c.toLowerCase().includes(committeeQuery.trim().toLowerCase()))
+                              .slice(0, 30)
+                              .map((c) => (
+                                <button
+                                  key={c}
+                                  type="button"
+                                  onClick={() => { setCommitteeSearch(c); setCommitteeQuery(""); }}
+                                  className="block w-full border-b border-border/60 px-2.5 py-1.5 text-left text-xs text-muted-foreground transition-colors last:border-b-0 hover:bg-muted hover:text-foreground cursor-pointer"
+                                >
+                                  {toTitleCase(c)}
+                                </button>
+                              ))}
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
 
