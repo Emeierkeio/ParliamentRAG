@@ -115,7 +115,7 @@ export function DeputySelector({ selectedDeputies, onSelect }: DeputySelectorPro
         <div className="relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Cerca deputato (es. Giuseppe Conte)..."
+            placeholder="Cerca deputato..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
