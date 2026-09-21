@@ -68,18 +68,26 @@ const DEFAULT_WEIGHTS: Record<ComponentKey, number> = {
   role: 0.05,
 };
 
-const GROUPS: { value: string; label: string; shortLabel: string }[] = [
-  { value: "FRATELLI D'ITALIA", label: "Fratelli d'Italia", shortLabel: "FdI" },
-  { value: "LEGA - SALVINI PREMIER", label: "Lega - Salvini Premier", shortLabel: "Lega" },
-  { value: "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE", label: "Forza Italia", shortLabel: "FI" },
-  { value: "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE", label: "Noi Moderati", shortLabel: "NM" },
-  { value: "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA", label: "PD", shortLabel: "PD" },
-  { value: "MOVIMENTO 5 STELLE", label: "M5S", shortLabel: "M5S" },
-  { value: "ALLEANZA VERDI E SINISTRA", label: "AVS", shortLabel: "AVS" },
-  { value: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", shortLabel: "Azione" },
-  { value: "ITALIA VIVA-CASA RIFORMISTA (IV-CR)", label: "Italia Viva", shortLabel: "IV" },
-  { value: "MISTO", label: "Misto", shortLabel: "Misto" },
+// coalition mirrors backend/config/default.yaml; Misto is mixed by nature
+// and stays selectable under either coalition
+const GROUPS: { value: string; label: string; shortLabel: string; coalition: "majority" | "opposition" | "mixed" }[] = [
+  { value: "FRATELLI D'ITALIA", label: "Fratelli d'Italia", shortLabel: "FdI", coalition: "majority" },
+  { value: "LEGA - SALVINI PREMIER", label: "Lega - Salvini Premier", shortLabel: "Lega", coalition: "majority" },
+  { value: "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE", label: "Forza Italia", shortLabel: "FI", coalition: "majority" },
+  { value: "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE", label: "Noi Moderati", shortLabel: "NM", coalition: "majority" },
+  { value: "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA", label: "PD", shortLabel: "PD", coalition: "opposition" },
+  { value: "MOVIMENTO 5 STELLE", label: "M5S", shortLabel: "M5S", coalition: "opposition" },
+  { value: "ALLEANZA VERDI E SINISTRA", label: "AVS", shortLabel: "AVS", coalition: "opposition" },
+  { value: "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE", label: "Azione", shortLabel: "Azione", coalition: "opposition" },
+  { value: "ITALIA VIVA-CASA RIFORMISTA (IV-CR)", label: "Italia Viva", shortLabel: "IV", coalition: "opposition" },
+  { value: "MISTO", label: "Misto", shortLabel: "Misto", coalition: "mixed" },
 ];
+
+function groupAllowedInCoalition(value: string, coalition: CoalitionFilter): boolean {
+  if (coalition === "all") return true;
+  const entry = GROUPS.find((g) => g.value === value);
+  return !entry || entry.coalition === "mixed" || entry.coalition === coalition;
+}
 
 // ── Page ───────────────────────────────────────────────────────
 
@@ -733,7 +741,10 @@ export default function RankingPage() {
                         <button
                           key={c}
                           type="button"
-                          onClick={() => setCoalitionFilter(c)}
+                          onClick={() => {
+                            setCoalitionFilter(c);
+                            setSelectedGroups(selectedGroups.filter((v) => groupAllowedInCoalition(v, c)));
+                          }}
                           className={cn(
                             "flex-1 rounded-md border px-2 py-1.5 text-xs transition-colors cursor-pointer",
                             coalitionFilter === c
@@ -751,10 +762,12 @@ export default function RankingPage() {
                     <div className="flex flex-wrap gap-1.5">
                       {GROUPS.map((g) => {
                         const selected = selectedGroups.includes(g.value);
+                        const allowed = groupAllowedInCoalition(g.value, coalitionFilter);
                         return (
                           <button
                             key={g.value}
                             type="button"
+                            disabled={!allowed}
                             onClick={() =>
                               setSelectedGroups(
                                 selected
@@ -763,10 +776,12 @@ export default function RankingPage() {
                               )
                             }
                             className={cn(
-                              "rounded-full border px-2.5 py-1 text-xs transition-colors cursor-pointer",
-                              selected
-                                ? "border-primary bg-primary/10 text-primary"
-                                : "border-border text-muted-foreground hover:text-foreground"
+                              "rounded-full border px-2.5 py-1 text-xs transition-colors",
+                              !allowed
+                                ? "border-border/50 text-muted-foreground/30"
+                                : selected
+                                  ? "border-primary bg-primary/10 text-primary cursor-pointer"
+                                  : "border-border text-muted-foreground hover:text-foreground cursor-pointer"
                             )}
                           >
                             {g.shortLabel}
