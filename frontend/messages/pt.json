@@ -50,7 +50,9 @@
     "traceTitle": "Nos bastidores",
     "traceTooltip": "Fases, tempos e chamadas aos modelos que produziram esta resposta, medidos no servidor: da recuperação de evidências à verificação de citações.",
     "aiDisclaimer": "Resposta gerada por IA. As citações são verificadas palavra por palavra na ata oficial; a seleção das passagens e a síntese são do sistema e podem omitir contexto.",
-    "aiDisclaimerLink": "Como funciona"
+    "aiDisclaimerLink": "Como funciona",
+    "cachedNotice": "Esta pergunta já tinha sido analisada: a resposta vem do arquivo (análise de {date}), sem repetir o processamento.",
+    "cachedNoticeNoDate": "Esta pergunta foi analisada recentemente: a resposta vem do arquivo, sem repetir o processamento."
   },
   "ProgressIndicator": {
     "connecting": "A ligar...",

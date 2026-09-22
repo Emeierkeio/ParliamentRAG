@@ -50,7 +50,9 @@
     "traceTitle": "Dans les coulisses",
     "traceTooltip": "Phases, temps et appels aux modèles qui ont produit cette réponse, mesurés sur le serveur : de la récupération des preuves à la vérification des citations.",
     "aiDisclaimer": "Réponse générée par IA. Les citations sont vérifiées mot à mot sur le compte rendu officiel ; le choix des passages et la synthèse relèvent du système et peuvent omettre du contexte.",
-    "aiDisclaimerLink": "Comment ça marche"
+    "aiDisclaimerLink": "Comment ça marche",
+    "cachedNotice": "Cette question avait déjà été analysée : la réponse provient de l'archive (analyse du {date}), sans relancer le traitement.",
+    "cachedNoticeNoDate": "Cette question a été analysée récemment : la réponse provient de l'archive, sans relancer le traitement."
   },
   "ProgressIndicator": {
     "connecting": "Connexion...",

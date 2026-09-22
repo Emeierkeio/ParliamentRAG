@@ -87,9 +87,12 @@ class TestResponseCache:
             return await cache.lookup(_key())
 
         cached = asyncio.run(scenario())
-        # Citations, compass, trace and metadata survive byte-identical;
-        # transient queue/progress events never enter the cache.
-        assert cached == COMPLETE_EVENTS
+        # A hit is announced by a replay-time `cached` marker; after it,
+        # citations, compass, trace and metadata survive byte-identical
+        # and transient queue/progress events never enter the cache.
+        assert cached[0]["type"] == "cached"
+        assert cached[0]["generated_at"]
+        assert cached[1:] == COMPLETE_EVENTS
 
     def test_expired_entry_is_miss(self):
         cache = _cache(ttl=0.05)
@@ -253,7 +256,8 @@ class TestQueryEndpointCacheHit:
             json.loads(line.split("data: ", 1)[1])
             for line in lines if line.startswith("data: ")
         ]
-        assert payloads == COMPLETE_EVENTS
+        assert payloads[0]["type"] == "cached"
+        assert payloads[1:] == COMPLETE_EVENTS
 
 
 class TestQueueSlots:

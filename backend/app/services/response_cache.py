@@ -24,6 +24,7 @@ import re
 import time
 from abc import ABC, abstractmethod
 from collections import OrderedDict
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
@@ -37,8 +38,9 @@ PIPELINE_VERSION = "2026-09-19.1"
 LEGISLATURE = "leg19"
 
 # Transient events never worth replaying: queue state and step progress
-# belong to the run that produced them, not to the answer.
-NON_CACHEABLE_EVENT_TYPES = {"waiting", "progress", "step_result"}
+# belong to the run that produced them, not to the answer. The `cached`
+# marker is minted per-replay by lookup() and must never be persisted.
+NON_CACHEABLE_EVENT_TYPES = {"waiting", "progress", "step_result", "cached"}
 
 
 def normalize_query(query: str) -> str:
@@ -171,13 +173,25 @@ class ResponseCache:
         self._backend = backend or InMemoryCacheBackend(max_entries=max_entries)
 
     async def lookup(self, key: str) -> Optional[List[Dict[str, Any]]]:
-        """Return cached events for key, logging hit/miss."""
+        """Return cached events for key, logging hit/miss.
+
+        A hit is prepended with a `cached` marker event carrying the
+        original generation timestamp, so the frontend can tell an instant
+        archive replay apart from a live pipeline run and explain it.
+        """
         value = await self._backend.get(key)
         if value is not None:
+            events = value["events"]
+            marker = {
+                "type": "cached",
+                "generated_at": datetime.fromtimestamp(
+                    value["stored_at"], tz=timezone.utc
+                ).isoformat(),
+            }
             logger.info(
-                "[RESPONSE_CACHE] CACHE_HIT key=%s events=%d", key[:16], len(value)
+                "[RESPONSE_CACHE] CACHE_HIT key=%s events=%d", key[:16], len(events)
             )
-            return value
+            return [marker, *events]
         logger.info("[RESPONSE_CACHE] CACHE_MISS key=%s", key[:16])
         return None
 
@@ -189,7 +203,8 @@ class ResponseCache:
                 "[RESPONSE_CACHE] refusing to store incomplete run key=%s", key[:16]
             )
             return
-        await self._backend.set(key, cacheable, self.ttl_seconds)
+        entry = {"stored_at": time.time(), "events": cacheable}
+        await self._backend.set(key, entry, self.ttl_seconds)
         logger.info(
             "[RESPONSE_CACHE] CACHE_STORE key=%s events=%d ttl=%.0fs",
             key[:16], len(cacheable), self.ttl_seconds,

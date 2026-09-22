@@ -50,7 +50,9 @@
     "traceTitle": "Behind the scenes",
     "traceTooltip": "Phases, timings and model calls behind this answer, measured on the server: from evidence retrieval to citation checking.",
     "aiDisclaimer": "AI-generated answer. Quotations are verified word for word against the official record; the choice of passages and the synthesis are the system's and may omit context.",
-    "aiDisclaimerLink": "How it works"
+    "aiDisclaimerLink": "How it works",
+    "cachedNotice": "This question was already analyzed: the answer comes from the archive (analysis of {date}), without re-running the processing.",
+    "cachedNoticeNoDate": "This question was recently analyzed: the answer comes from the archive, without re-running the processing."
   },
   "ProgressIndicator": {
     "connecting": "Connecting...",

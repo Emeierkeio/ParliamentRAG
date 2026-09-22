@@ -50,7 +50,9 @@
     "traceTitle": "Dietro le quinte",
     "traceTooltip": "Fasi, tempi e chiamate ai modelli che hanno prodotto questa risposta, misurati sul server: dal recupero delle evidenze alla verifica delle citazioni.",
     "aiDisclaimer": "Risposta generata dall'IA. Le citazioni sono verificate parola per parola sul resoconto ufficiale; la selezione dei passaggi e la sintesi sono del sistema e possono omettere contesto.",
-    "aiDisclaimerLink": "Come funziona"
+    "aiDisclaimerLink": "Come funziona",
+    "cachedNotice": "Questa domanda era già stata analizzata: la risposta arriva dall'archivio (analisi del {date}), senza rieseguire l'elaborazione.",
+    "cachedNoticeNoDate": "Questa domanda era già stata analizzata di recente: la risposta arriva dall'archivio, senza rieseguire l'elaborazione."
   },
   "ProgressIndicator": {
     "connecting": "Connessione...",

@@ -241,6 +241,10 @@ export interface Message {
   trace?: TraceData;
   // Relevance gate (tema non trovato): sostituisce il contenuto markdown
   gate?: GateInfo;
+  // Replay dall'archivio risposte: la stessa domanda era già stata
+  // analizzata e il backend ha rimandato gli eventi salvati; il campo
+  // spiega all'utente perché la risposta è arrivata all'istante.
+  cached?: { generatedAt?: string | null };
   // History ID for sharing
   chatId?: string;
 }
