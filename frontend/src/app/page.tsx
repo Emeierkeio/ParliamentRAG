@@ -51,7 +51,7 @@ const QUOTES = [
     text: "«[…] il PNRR rappresentava un'occasione straordinaria, forse irripetibile, per colmare finalmente il divario che ci separa dagli altri Paesi europei.»",
     who: "Valentina Grippo",
     group: "Azione",
-    meta: "Azione · Camera, seduta n. 608 · 4 febbraio 2026",
+    meta: "Azione - Popolari Europeisti Riformatori - Renew Europe · Camera, seduta n. 608 · 4 febbraio 2026",
   },
   {
     text: "«[…] il sistema non riesce ad intercettarli, […] le liste di attesa scoraggiano, […] la consapevolezza della patologia è ancora insufficiente, […] lo stigma sociale frena ogni richiesta di aiuto.»",
