@@ -50,7 +50,9 @@
     "traceTitle": "Hinter den Kulissen",
     "traceTooltip": "Phasen, Zeiten und Modellaufrufe hinter dieser Antwort, gemessen auf dem Server: vom Evidenz-Abruf bis zur Zitatprüfung.",
     "aiDisclaimer": "KI-generierte Antwort. Die Zitate sind Wort für Wort am offiziellen Protokoll überprüft; die Auswahl der Passagen und die Synthese stammen vom System und können Kontext auslassen.",
-    "aiDisclaimerLink": "So funktioniert es"
+    "aiDisclaimerLink": "So funktioniert es",
+    "cachedNotice": "Diese Frage wurde bereits analysiert: Die Antwort stammt aus dem Archiv (Analyse vom {date}), ohne die Verarbeitung erneut auszuführen.",
+    "cachedNoticeNoDate": "Diese Frage wurde kürzlich analysiert: Die Antwort stammt aus dem Archiv, ohne die Verarbeitung erneut auszuführen."
   },
   "ProgressIndicator": {
     "connecting": "Verbindung wird hergestellt...",

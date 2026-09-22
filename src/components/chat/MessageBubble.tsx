@@ -39,6 +39,7 @@ import {
   Languages,
   ArrowRight,
   SearchX,
+  History,
   Check as CheckIcon,
 } from "lucide-react";
 import {
@@ -364,6 +365,28 @@ export function MessageBubble({ message, className, chatId, answerTrace, answerS
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Replay dall'archivio: spiega perché la risposta è apparsa subito */}
+        {message.cached && !isError && message.content && (
+          <div className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-[13px] leading-5 text-muted-foreground max-w-[70ch]">
+            <History className="h-4 w-4 shrink-0 mt-0.5" strokeWidth={1.75} aria-hidden="true" />
+            <span>
+              {(() => {
+                const iso = message.cached?.generatedAt;
+                if (!iso) return t('cachedNoticeNoDate');
+                try {
+                  const when = new Intl.DateTimeFormat(locale, {
+                    day: "numeric", month: "long",
+                    hour: "2-digit", minute: "2-digit",
+                  }).format(new Date(iso));
+                  return t('cachedNotice', { date: when });
+                } catch {
+                  return t('cachedNoticeNoDate');
+                }
+              })()}
+            </span>
           </div>
         )}
 

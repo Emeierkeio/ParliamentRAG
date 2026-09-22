@@ -50,7 +50,9 @@
     "traceTitle": "Entre bastidores",
     "traceTooltip": "Fases, tiempos y llamadas a los modelos que produjeron esta respuesta, medidos en el servidor: de la recuperación de evidencias a la verificación de citas.",
     "aiDisclaimer": "Respuesta generada por IA. Las citas se verifican palabra por palabra contra el acta oficial; la selección de pasajes y la síntesis son del sistema y pueden omitir contexto.",
-    "aiDisclaimerLink": "Cómo funciona"
+    "aiDisclaimerLink": "Cómo funciona",
+    "cachedNotice": "Esta pregunta ya había sido analizada: la respuesta proviene del archivo (análisis del {date}), sin repetir el procesamiento.",
+    "cachedNoticeNoDate": "Esta pregunta fue analizada recientemente: la respuesta proviene del archivo, sin repetir el procesamiento."
   },
   "ProgressIndicator": {
     "connecting": "Conectando...",

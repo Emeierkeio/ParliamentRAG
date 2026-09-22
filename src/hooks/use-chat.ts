@@ -244,6 +244,16 @@ export function useChat(options: UseChatOptions = {}) {
                 // Server confirmed the task ID
                 break;
 
+              case "cached":
+                // Replay dall'archivio: tutti gli eventi arrivano subito,
+                // quindi via lo stepper (mostrerebbe un lampo di "connessione")
+                // e si marca il messaggio perché la UI spieghi l'istantaneità.
+                setProgress(null);
+                updateLastAssistantMessage({
+                  cached: { generatedAt: data.generated_at || null },
+                });
+                break;
+
               case "waiting":
                 setProgress({
                   currentStep: 0,
