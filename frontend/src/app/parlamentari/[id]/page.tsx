@@ -21,6 +21,7 @@ interface DeputyProfile {
   education: string | null;
   institutional_role: string | null;
   group: string | null;
+  component: string | null;
   speeches: number;
   acts: number;
 }
@@ -35,6 +36,7 @@ interface RecentSpeech {
 
 interface GroupMembership {
   name: string;
+  component: string | null;
   start_date: string | null;
   end_date: string | null;
 }
@@ -56,11 +58,13 @@ function profileCypher(uri: string): string {
     "OPTIONAL MATCH (d)-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) " +
     "WITH d, g, m ORDER BY m.end_date IS NOT NULL, m.start_date DESC " +
     "WITH d, collect(g.name)[0] AS group " +
-    "OPTIONAL MATCH (s:Speech)-[:SPOKEN_BY]->(d) WITH d, group, count(s) AS speeches " +
+    "OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMPONENT]->(c:MistoComponent) WHERE group = 'MISTO' AND mc.end_date IS NULL " +
+    "WITH d, group, collect(c.name)[0] AS component " +
+    "OPTIONAL MATCH (s:Speech)-[:SPOKEN_BY]->(d) WITH d, group, component, count(s) AS speeches " +
     "OPTIONAL MATCH (d)-[:PRIMARY_SIGNATORY]->(a:ParliamentaryAct) " +
     "RETURN d.first_name AS first_name, d.last_name AS last_name, d.photo AS photo, " +
     "d.deputy_card AS deputy_card, d.profession AS profession, d.education AS education, " +
-    "d.institutional_role AS institutional_role, group, speeches, count(a) AS acts"
+    "d.institutional_role AS institutional_role, group, component, speeches, count(a) AS acts"
   );
 }
 
@@ -132,7 +136,12 @@ export default function DeputyProfilePage() {
     // Storico gruppi (chi e' uscito da un gruppo ha end_date sulla membership)
     const groupsCypher =
       `MATCH (d:Deputy {id: "${uri}"})-[m:MEMBER_OF_GROUP]->(g:ParliamentaryGroup) ` +
-      "RETURN g.name AS name, toString(m.start_date) AS start_date, " +
+      // Misto is split into political components: show the one held during this membership
+      "OPTIONAL MATCH (d)-[mc:MEMBER_OF_COMPONENT]->(c:MistoComponent) " +
+      "WHERE g.name = 'MISTO' AND mc.start_date >= m.start_date " +
+      "AND (m.end_date IS NULL OR mc.start_date <= m.end_date) " +
+      "WITH g, m, collect(c.name)[0] AS component " +
+      "RETURN g.name AS name, component, toString(m.start_date) AS start_date, " +
       "toString(m.end_date) AS end_date " +
       "ORDER BY m.end_date IS NOT NULL, m.start_date DESC";
     graphQuery<GroupMembership>(groupsCypher)
@@ -242,7 +251,10 @@ export default function DeputyProfilePage() {
                   {profile.group && (
                     <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                       <GroupLogo group={profile.group} size={18} />
-                      <span>{(config.politicalGroups as Record<string, { label?: string }>)[profile.group]?.label ?? toTitleCase(profile.group)}</span>
+                      <span>
+                        {(config.politicalGroups as Record<string, { label?: string }>)[profile.group]?.label ?? toTitleCase(profile.group)}
+                        {profile.component && <> · {profile.component}</>}
+                      </span>
                     </p>
                   )}
                   {profile.institutional_role && (
@@ -311,6 +323,7 @@ export default function DeputyProfilePage() {
                             <GroupLogo group={g.name} size={16} />
                             <span className={current ? "font-medium text-foreground" : "text-muted-foreground"}>
                               {(config.politicalGroups as Record<string, { label?: string }>)[g.name]?.label ?? toTitleCase(g.name)}
+                              {g.component && <span className="font-normal text-muted-foreground"> · {g.component}</span>}
                             </span>
                           </span>
                           <span className="font-mono text-xs text-muted-foreground tabular-nums">
