@@ -173,7 +173,7 @@ run "Sync ORKG entry statistics" "$PY" build/update_orkg_stats.py --neo4j-uri "$
 # Stesso update incrementale sullo snapshot locale (:$LOCAL_BOLT_PORT) così la
 # copia non deriva mai dal demo DB. Download e embeddings colpiscono le cache
 # del giro remoto, quindi il replay è economico. Tutto ciò che arriva al remoto
-# per altre vie (recap, citability, ChatHistory/survey, componenti Misto) NON
+# per altre vie (recap, citability, ChatHistory/survey) NON
 # passa dalla pipeline: lo copia sync_local_snapshot.py subito dopo.
 LOCAL_UP=
 if [ "$LOCAL_SYNC" = "0" ] || [ "$DEMO_NEO4J" = "$LOCAL_NEO4J" ]; then
@@ -258,6 +258,20 @@ if [ -n "$LOCAL_UP" ]; then
 	run "Group offices (locale)" "$PY" build/ingest_group_offices.py \
 		--neo4j-uri "$LOCAL_NEO4J" --neo4j-user neo4j --neo4j-password "$NEO4J_PASS_VAL" \
 		|| warn "group offices (locale) failed — snapshot da riallineare al prossimo giro"
+fi
+
+# ── Componenti del Gruppo Misto ──────────────────────────────────────────────
+# Adesioni datate alle componenti (Futuro Nazionale, +Europa, ...) da
+# dati.camera.it. Va dopo l'ingest: la componente si aggancia al Deputy già
+# spostato nel Misto dal refresh dei CSV.
+misto_ingest() { # $1 = neo4j uri
+	NEO4J_URI="$1" NEO4J_USER="${NEO4J_USER_VAL:-neo4j}" NEO4J_PASSWORD="$NEO4J_PASS_VAL" \
+		"$PY" build/ingest_misto_componenti.py
+}
+run "Componenti Misto" misto_ingest "$DEMO_NEO4J" || die
+if [ -n "$LOCAL_UP" ]; then
+	run "Componenti Misto (locale)" misto_ingest "$LOCAL_NEO4J" \
+		|| warn "componenti Misto (locale) failed — snapshot da riallineare al prossimo giro"
 fi
 
 # ── Dataset Hugging Face ─────────────────────────────────────────────────────
