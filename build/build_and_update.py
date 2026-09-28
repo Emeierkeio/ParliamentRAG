@@ -50,6 +50,7 @@ from ingest_atti_parlamentari import AttiParlamentariIngester
 from senate_parser import SenateStenograficoParser
 from download_senate import download_senate_xmls
 from download_senators_csv import main as download_senators_csv_main
+from download_deputies_csv import main as download_deputies_csv_main
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -373,7 +374,12 @@ def do_update(
 
     try:
         # 1. Refresh CSV data
-        logger.info("Step 1: Refreshing CSV data")
+        if skip_download:
+            logger.info("Step 1: Skipping deputy CSV download (--skip-download)")
+        else:
+            # Without this the CSVs on disk go stale and group switches never reach the graph.
+            logger.info("Step 1: Refreshing deputy CSV data from dati.camera.it")
+            download_deputies_csv_main(legislature)
         builder.create_constraints()
         builder.load_deputies(DATA_DIR, legislature=legislature)
         builder.load_groups(DATA_DIR, legislature=legislature)
