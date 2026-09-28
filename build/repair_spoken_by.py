@@ -200,6 +200,11 @@ def repair_db(neo4j_uri: str, neo4j_user: str, neo4j_password: str,
                 WHERE surname <> ''
                 MATCH (dep:Deputy)
                 WHERE toUpper(dep.last_name) = toUpper(surname)
+                  // A Camera id on the speech that points elsewhere means a
+                  // namesake (Marina vs Tommaso Calderone): never link it.
+                  AND (sp.deputatoId IS NULL OR sp.deputatoId STARTS WITH 'http'
+                       OR dep.id ENDS WITH ('p' + sp.deputatoId)
+                       OR dep.id CONTAINS ('/d' + sp.deputatoId + '_'))
                 WITH sp, dep,
                      toUpper(sp.speakerName) AS full,
                      toUpper(dep.last_name) AS dep_surname

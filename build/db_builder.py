@@ -111,6 +111,18 @@ GROUP_RENAMES = {
         "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
 }
 
+# Government members who are not deputies and have a compound given name: the
+# deputy CSV cannot disambiguate them, and "last word = given name" gives e.g.
+# "CALDERONE MARINA" + "ELVIRA".
+_GOV_NAME_SPLITS = {
+    "ALBERTI CASELLATI MARIA ELISABETTA": ("ALBERTI CASELLATI", "MARIA ELISABETTA"),
+    "BERNINI ANNA MARIA": ("BERNINI", "ANNA MARIA"),
+    "CALDERONE MARINA ELVIRA": ("CALDERONE", "MARINA ELVIRA"),
+    "LA PIETRA PATRIZIO GIACOMO": ("LA PIETRA", "PATRIZIO GIACOMO"),
+    "SISTO FRANCESCO PAOLO": ("SISTO", "FRANCESCO PAOLO"),
+}
+
+
 def _split_gov_full_name(full_name: str, dep_df=None) -> tuple[str, str]:
     """Split di una chiave GOVERNMENT_GROUPS "COGNOME NOME" in (cognome, nome).
 
@@ -121,6 +133,8 @@ def _split_gov_full_name(full_name: str, dep_df=None) -> tuple[str, str]:
     dei deputati si prova ogni punto di taglio contro cognome/nome reali;
     l'euristica resta solo come fallback (non-deputati: senatori, tecnici).
     """
+    if full_name.upper() in _GOV_NAME_SPLITS:
+        return _GOV_NAME_SPLITS[full_name.upper()]
     parts = full_name.split()
     if dep_df is not None and len(parts) > 2:
         csv_pairs = {
