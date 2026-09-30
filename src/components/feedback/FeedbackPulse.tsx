@@ -132,9 +132,6 @@ export function FeedbackPulse({ tool, context, className }: FeedbackPulseProps) 
 // della sessione resta manuale.
 
 const AUTO_OPEN_KEY = "prag-answer-feedback-declined";
-// Dwell before opening: long enough to skip readers scrolling past, short
-// enough to catch the end of the reading.
-const AUTO_OPEN_DWELL_MS = 1500;
 
 function autoOpenDeclined(): boolean {
   try {
@@ -188,18 +185,14 @@ export function AnswerFeedback({ context, fresh = false, className }: AnswerFeed
   useEffect(() => {
     const el = rootRef.current;
     if (!fresh || !el || autoOpenDeclined()) return;
-    let timer: ReturnType<typeof setTimeout> | undefined;
     const observer = new IntersectionObserver(([entry]) => {
-      clearTimeout(timer);
       if (!entry.isIntersecting) return;
-      timer = setTimeout(() => {
-        observer.disconnect();
-        if (autoOpenDeclined()) return;
-        void openDialog();
-      }, AUTO_OPEN_DWELL_MS);
+      observer.disconnect();
+      if (autoOpenDeclined()) return;
+      void openDialog();
     }, { threshold: 1 });
     observer.observe(el);
-    return () => { clearTimeout(timer); observer.disconnect(); };
+    return () => observer.disconnect();
   }, [fresh, openDialog]);
 
   const vote = useCallback((value: Vote) => {
