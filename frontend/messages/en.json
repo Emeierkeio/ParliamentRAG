@@ -1117,7 +1117,9 @@
     "checkInbox": "Check your inbox: confirm the subscription from the link we sent.",
     "optional": "optional",
     "submitSubscribe": "Subscribe",
-    "submitBoth": "Send and subscribe"
+    "submitBoth": "Send and subscribe",
+    "subtitle": "One click is enough. We use votes to improve the answers.",
+    "close": "Close"
   },
   "Booth": {
     "title": "Your two minutes on ParliamentRAG",

@@ -1,9 +1,10 @@
 "use client";
 
 import { useId, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ThumbsUp, ThumbsDown, Lock } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ThumbsUp, ThumbsDown, Lock, Mail, X } from "lucide-react";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { REASONS, type Reason, type Vote } from "./api";
 
@@ -78,7 +79,7 @@ export function AnswerFeedbackDialog({
     onClose();
   };
 
-  const voteButton = (value: Vote) => {
+  const voteButton = (value: Vote, delay: string) => {
     const Icon = value === "up" ? ThumbsUp : ThumbsDown;
     const selected = vote === value;
     const dimmed = vote !== null && !selected;
@@ -89,6 +90,8 @@ export function AnswerFeedbackDialog({
         aria-pressed={selected}
         className={cn(
           "group flex flex-col items-center justify-center gap-2 h-24 border text-sm font-medium",
+          "animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both motion-reduce:animate-none",
+          delay,
           "transition-[background-color,border-color,color,opacity] duration-200 cursor-pointer active:scale-[0.98]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           selected
@@ -117,147 +120,168 @@ export function AnswerFeedbackDialog({
         // "Useful" reads as a preselected answer
         onOpenAutoFocus={(e) => { e.preventDefault(); (e.currentTarget as HTMLElement).focus(); }}
         className={cn(
-          "sm:max-w-md gap-0 p-6 max-h-[88dvh] overflow-y-auto outline-none",
+          "sm:max-w-md gap-0 p-0 max-h-[88dvh] overflow-y-auto overflow-x-hidden outline-none",
           // Below 640px: bottom sheet, a centred modal jumps when the keyboard opens
           "max-sm:!top-auto max-sm:!bottom-0 max-sm:!left-0 max-sm:!right-0",
           "max-sm:!translate-x-0 max-sm:!translate-y-0 max-sm:!max-w-full",
           "max-sm:!rounded-b-none max-sm:rounded-t-lg max-sm:border-x-0 max-sm:border-b-0",
           "max-sm:data-[state=open]:!slide-in-from-bottom-6 max-sm:data-[state=open]:!zoom-in-100",
-          "max-sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]",
         )}
+        showCloseButton={false}
       >
-        <DialogHeader className="mb-5 pr-6">
-          <DialogTitle className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight leading-tight text-left">
+        <header className="relative isolate overflow-hidden bg-primary px-6 pt-7 pb-6 text-primary-foreground">
+          <Image
+            src="/logo.svg"
+            alt=""
+            width={224}
+            height={156}
+            aria-hidden
+            className="pointer-events-none absolute -right-10 -bottom-12 -z-10 w-56 opacity-[0.09]"
+          />
+          <DialogTitle className="pr-8 [font-family:var(--font-display)] text-2xl font-medium tracking-tight leading-tight text-left">
             {t("title")}
           </DialogTitle>
-          <DialogDescription className="sr-only">{t("srDescription")}</DialogDescription>
-        </DialogHeader>
+          <DialogDescription className="mt-2 text-sm leading-relaxed text-primary-foreground/75">
+            {t("subtitle")}
+          </DialogDescription>
+          <DialogClose
+            className="absolute top-4 right-4 p-1 text-primary-foreground/60 hover:text-primary-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/60"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">{t("close")}</span>
+          </DialogClose>
+        </header>
 
-        <div className="grid grid-cols-2 gap-3">
-          {voteButton("up")}
-          {voteButton("down")}
-        </div>
-
-        {vote === "down" && (
-          <fieldset className="mt-5 animate-in fade-in slide-in-from-top-1 duration-200">
-            <legend className="text-[13px] text-foreground mb-2">{t("reasonsLabel")}</legend>
-            <div className="flex flex-wrap gap-2">
-              {REASONS.map((r) => {
-                const on = reasons.includes(r);
-                return (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => toggleReason(r)}
-                    aria-pressed={on}
-                    className={cn(
-                      "px-3 py-1.5 border text-[13px] transition-colors cursor-pointer",
-                      on
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
-                    )}
-                  >
-                    {t(`reason_${r}`)}
-                  </button>
-                );
-              })}
-            </div>
-          </fieldset>
-        )}
-
-        {vote && (
-          <div className="mt-5 grid gap-2 animate-in fade-in duration-200">
-            <label htmlFor={`${ids}-comment`} className="text-[13px] text-foreground">
-              {t("commentLabel")}
-            </label>
-            <textarea
-              id={`${ids}-comment`}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              maxLength={1000}
-              rows={2}
-              placeholder={t(vote === "down" ? "commentPlaceholderDown" : "commentPlaceholderUp")}
-              className="w-full bg-background border border-border p-2.5 text-[13px] leading-5 text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow] resize-none"
-            />
+        <div className="px-6 pt-5 pb-6 max-sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+          <div className="grid grid-cols-2 gap-3">
+            {voteButton("up", "delay-100")}
+            {voteButton("down", "delay-200")}
           </div>
-        )}
 
-        {showNewsletter && (
-          <section className="mt-6 border-l-2 border-primary/40 bg-primary/[0.04] px-4 py-4 grid gap-3">
-            <div>
-              <h3 className="flex items-baseline justify-between gap-3 text-sm font-medium text-foreground">
-                {t("newsletterTitle")}
-                <span className="text-[11px] font-normal text-muted-foreground">{t("optional")}</span>
-              </h3>
-              <p className="mt-1 text-[13px] leading-5 text-muted-foreground">{t("newsletterBody")}</p>
-            </div>
-            <div className="grid gap-1.5">
-              <label htmlFor={`${ids}-email`} className="text-[12px] text-foreground">
-                {t("emailLabel")}
+          {vote === "down" && (
+            <fieldset className="mt-5 animate-in fade-in slide-in-from-top-1 duration-200">
+              <legend className="text-[13px] text-foreground mb-2">{t("reasonsLabel")}</legend>
+              <div className="flex flex-wrap gap-2">
+                {REASONS.map((r) => {
+                  const on = reasons.includes(r);
+                  return (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => toggleReason(r)}
+                      aria-pressed={on}
+                      className={cn(
+                        "px-3 py-1.5 border text-[13px] transition-colors cursor-pointer",
+                        on
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
+                      )}
+                    >
+                      {t(`reason_${r}`)}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+          )}
+
+          {vote && (
+            <div className="mt-5 grid gap-2 animate-in fade-in duration-200">
+              <label htmlFor={`${ids}-comment`} className="text-[13px] text-foreground">
+                {t("commentLabel")}
               </label>
-              <input
-                id={`${ids}-email`}
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setError(null); }}
-                maxLength={254}
-                placeholder={t("emailPlaceholder")}
-                className="h-10 w-full bg-background border border-border px-3 text-sm text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow]"
+              <textarea
+                id={`${ids}-comment`}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                maxLength={1000}
+                rows={2}
+                placeholder={t(vote === "down" ? "commentPlaceholderDown" : "commentPlaceholderUp")}
+                className="w-full bg-background border border-border p-2.5 text-[13px] leading-5 text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow] resize-none"
               />
             </div>
-            {/* Consent only matters once there is an address to consent for */}
-            {trimmedEmail && (
-              <label htmlFor={`${ids}-consent`} className="flex items-start gap-2.5 text-[12px] leading-5 text-muted-foreground cursor-pointer animate-in fade-in slide-in-from-top-1 duration-200">
-                <input
-                  id={`${ids}-consent`}
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => { setConsent(e.target.checked); setError(null); }}
-                  className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[var(--primary)] cursor-pointer"
-                />
-                <span>
-                  {t.rich("consent", {
-                    link: (chunks) => (
-                      <a
-                        href="/privacy#newsletter"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline underline-offset-2 text-foreground hover:text-primary"
-                      >
-                        {chunks}
-                      </a>
-                    ),
-                  })}
-                </span>
-              </label>
-            )}
-          </section>
-        )}
-
-        {error && (
-          <p role="alert" className="mt-3 text-[13px] text-destructive">{error}</p>
-        )}
-
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!canSubmit}
-          className={cn(
-            "mt-5 w-full h-11 text-sm font-medium tracking-wide transition-colors",
-            canSubmit
-              ? "bg-primary text-primary-foreground hover:bg-foreground cursor-pointer active:scale-[0.99]"
-              : "bg-muted text-muted-foreground cursor-not-allowed",
           )}
-        >
-          {submitLabel}
-        </button>
 
-        <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-4 text-muted-foreground">
-          <Lock className="mt-px h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden />
-          {t("anonNote")}
-        </p>
+          {showNewsletter && (
+            <section className="mt-6 border-l-2 border-primary/40 bg-primary/[0.04] px-4 py-4 grid gap-3">
+              <div>
+                <h3 className="flex items-baseline justify-between gap-3 text-sm font-medium text-foreground">
+                  <span className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden />
+                    {t("newsletterTitle")}
+                  </span>
+                  <span className="text-[11px] font-normal text-muted-foreground">{t("optional")}</span>
+                </h3>
+                <p className="mt-1 text-[13px] leading-5 text-muted-foreground">{t("newsletterBody")}</p>
+              </div>
+              <div className="grid gap-1.5">
+                <label htmlFor={`${ids}-email`} className="text-[12px] text-foreground">
+                  {t("emailLabel")}
+                </label>
+                <input
+                  id={`${ids}-email`}
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); setError(null); }}
+                  maxLength={254}
+                  placeholder={t("emailPlaceholder")}
+                  className="h-10 w-full bg-background border border-border px-3 text-sm text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow]"
+                />
+              </div>
+              {/* Consent only matters once there is an address to consent for */}
+              {trimmedEmail && (
+                <label htmlFor={`${ids}-consent`} className="flex items-start gap-2.5 text-[12px] leading-5 text-muted-foreground cursor-pointer animate-in fade-in slide-in-from-top-1 duration-200">
+                  <input
+                    id={`${ids}-consent`}
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => { setConsent(e.target.checked); setError(null); }}
+                    className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[var(--primary)] cursor-pointer"
+                  />
+                  <span>
+                    {t.rich("consent", {
+                      link: (chunks) => (
+                        <a
+                          href="/privacy#newsletter"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-2 text-foreground hover:text-primary"
+                        >
+                          {chunks}
+                        </a>
+                      ),
+                    })}
+                  </span>
+                </label>
+              )}
+            </section>
+          )}
+
+          {error && (
+            <p role="alert" className="mt-3 text-[13px] text-destructive">{error}</p>
+          )}
+
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!canSubmit}
+            className={cn(
+              "mt-5 w-full h-11 text-sm font-medium tracking-wide transition-colors",
+              canSubmit
+                ? "bg-primary text-primary-foreground hover:bg-foreground cursor-pointer active:scale-[0.99]"
+                : "bg-muted text-muted-foreground cursor-not-allowed",
+            )}
+          >
+            {submitLabel}
+          </button>
+
+          <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-4 text-muted-foreground">
+            <Lock className="mt-px h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden />
+            {t("anonNote")}
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );

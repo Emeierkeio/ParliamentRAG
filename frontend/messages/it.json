@@ -1104,7 +1104,9 @@
     "checkInbox": "Ti abbiamo scritto: conferma l'iscrizione dal link nella email.",
     "optional": "facoltativo",
     "submitSubscribe": "Iscriviti",
-    "submitBoth": "Invia e iscriviti"
+    "submitBoth": "Invia e iscriviti",
+    "subtitle": "Basta un clic. Usiamo i voti per migliorare le risposte.",
+    "close": "Chiudi"
   },
   "Booth": {
     "title": "Due minuti su ParliamentRAG",
