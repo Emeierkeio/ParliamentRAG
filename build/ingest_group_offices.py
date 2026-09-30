@@ -34,7 +34,9 @@ QUERY = """
 PREFIX ocd: <http://dati.camera.it/ocd/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?lab WHERE {
-  ?u ocd:rif_gruppoParlamentare ?g ; rdfs:label ?lab .
+  # rif_gruppoParlamentare also hangs off ~14.4M ocd:voto nodes (2026-09-30):
+  # without the class the REGEX scans them all and the endpoint returns 504
+  ?u a ocd:incarico ; ocd:rif_gruppoParlamentare ?g ; rdfs:label ?lab .
   ?g ocd:rif_leg <http://dati.camera.it/ocd/legislatura.rdf/repubblica_%(leg)s> .
   FILTER(REGEX(STR(?lab), "^(PRESIDENTE|VICEPRESIDENTE|TESORIERE|SEGRETARIO) del gruppo"))
 }
