@@ -1060,8 +1060,8 @@
     "commentPlaceholderUp": "Qu'est-ce qui vous a servi ?",
     "commentPlaceholderDown": "Qu'attendiez-vous ?",
     "newsletterTitle": "Suivre ParliamentRAG",
-    "newsletterBody": "Nouvelles du projet et enquêtes d'évaluation par e-mail. Nous envoyons un lien de confirmation ; désinscription en un clic.",
-    "emailLabel": "E-mail (facultatif)",
+    "newsletterBody": "Nouvelles du projet et enquêtes d'évaluation. Vous confirmez via le lien envoyé ; désinscription en un clic.",
+    "emailLabel": "E-mail",
     "emailPlaceholder": "nom@exemple.fr",
     "consent": "J'ai lu la <link>politique de confidentialité</link> et j'accepte de recevoir des e-mails de ParliamentRAG.",
     "errorEmail": "Vérifiez l'adresse e-mail.",
@@ -1070,7 +1070,10 @@
     "sending": "Envoi…",
     "submit": "Envoyer",
     "anonNote": "Le retour reste anonyme. Nous stockons l'e-mail à part, sans jamais le relier à vos questions.",
-    "checkInbox": "Vérifiez votre boîte : confirmez l'inscription avec le lien reçu."
+    "checkInbox": "Vérifiez votre boîte : confirmez l'inscription avec le lien reçu.",
+    "optional": "facultatif",
+    "submitSubscribe": "S'inscrire",
+    "submitBoth": "Envoyer et s'inscrire"
   },
   "Booth": {
     "title": "Vos deux minutes sur ParliamentRAG",
@@ -1257,6 +1260,21 @@
     "title": "Inscription confirmée",
     "body": "Vous recevrez les nouvelles de ParliamentRAG et les enquêtes d'évaluation. Chaque e-mail se termine par un lien de désinscription.",
     "cta": "Poser une question",
-    "backHome": "Retour à l'accueil"
+    "backHome": "Retour à l'accueil",
+    "nextTitle": "En attendant, explorez",
+    "next": {
+      "deputies": {
+        "title": "Députés",
+        "body": "Groupes, commissions et interventions de chaque député."
+      },
+      "groups": {
+        "title": "Groupes",
+        "body": "Composition des groupes et profils des membres."
+      },
+      "method": {
+        "title": "Fonctionnement",
+        "body": "D'où viennent les réponses et comment nous choisissons qui citer."
+      }
+    }
   }
 }
