@@ -1060,8 +1060,8 @@
     "commentPlaceholderUp": "O que foi útil para você?",
     "commentPlaceholderDown": "O que você esperava?",
     "newsletterTitle": "Novidades do ParliamentRAG",
-    "newsletterBody": "Notícias do projeto e pesquisas de avaliação por email. Enviamos um link de confirmação; cancele com um clique.",
-    "emailLabel": "Email (opcional)",
+    "newsletterBody": "Notícias do projeto e pesquisas de avaliação. Você confirma pelo link que enviamos; cancela com um clique.",
+    "emailLabel": "Email",
     "emailPlaceholder": "nome@exemplo.com",
     "consent": "Li a <link>política de privacidade</link> e aceito receber emails do ParliamentRAG.",
     "errorEmail": "Verifique o endereço de email.",
@@ -1070,7 +1070,10 @@
     "sending": "Enviando…",
     "submit": "Enviar",
     "anonNote": "A avaliação é anônima. Guardamos o email à parte e nunca o ligamos às suas perguntas.",
-    "checkInbox": "Verifique seu email: confirme a inscrição pelo link que enviamos."
+    "checkInbox": "Verifique seu email: confirme a inscrição pelo link que enviamos.",
+    "optional": "opcional",
+    "submitSubscribe": "Inscrever-me",
+    "submitBoth": "Enviar e inscrever-me"
   },
   "Booth": {
     "title": "Seus dois minutos sobre o ParliamentRAG",
@@ -1257,6 +1260,21 @@
     "title": "Inscrição confirmada",
     "body": "Você vai receber as novidades do ParliamentRAG e as pesquisas de avaliação. Cada email termina com um link para cancelar.",
     "cta": "Faça uma pergunta",
-    "backHome": "Voltar ao início"
+    "backHome": "Voltar ao início",
+    "nextTitle": "Enquanto isso, explore",
+    "next": {
+      "deputies": {
+        "title": "Deputados",
+        "body": "Grupos, comissões e discursos de cada deputado."
+      },
+      "groups": {
+        "title": "Grupos",
+        "body": "Composição dos grupos e perfis dos membros."
+      },
+      "method": {
+        "title": "Como funciona",
+        "body": "De onde vêm as respostas e como escolhemos quem citar."
+      }
+    }
   }
 }

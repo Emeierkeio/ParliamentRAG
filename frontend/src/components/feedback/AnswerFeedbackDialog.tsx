@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Lock } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { REASONS, type Reason, type Vote } from "./api";
@@ -43,6 +43,11 @@ export function AnswerFeedbackDialog({
 
   const trimmedEmail = email.trim();
   const canSubmit = !sending && (vote !== null || trimmedEmail.length > 0);
+  const submitLabel = sending
+    ? t("sending")
+    : trimmedEmail
+      ? t(vote ? "submitBoth" : "submitSubscribe")
+      : t("submit");
 
   const toggleReason = (r: Reason) =>
     setReasons((cur) => (cur.includes(r) ? cur.filter((x) => x !== r) : [...cur, r]));
@@ -76,20 +81,30 @@ export function AnswerFeedbackDialog({
   const voteButton = (value: Vote) => {
     const Icon = value === "up" ? ThumbsUp : ThumbsDown;
     const selected = vote === value;
+    const dimmed = vote !== null && !selected;
     return (
       <button
         type="button"
         onClick={() => onVote(value)}
         aria-pressed={selected}
         className={cn(
-          "flex items-center justify-center gap-2 h-11 border text-sm transition-colors cursor-pointer",
-          "active:scale-[0.98]",
+          "group flex flex-col items-center justify-center gap-2 h-24 border text-sm font-medium",
+          "transition-[background-color,border-color,color,opacity] duration-200 cursor-pointer active:scale-[0.98]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           selected
-            ? "border-primary bg-primary/10 text-foreground"
-            : "border-border text-muted-foreground hover:border-foreground hover:text-foreground",
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/[0.04]",
+          dimmed && "opacity-55 hover:opacity-100",
         )}
       >
-        <Icon className={cn("h-4 w-4", selected && "fill-current text-primary")} strokeWidth={1.75} />
+        <Icon
+          className={cn(
+            "h-6 w-6 transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none",
+            selected ? "scale-110 fill-current" : "text-primary group-hover:-translate-y-0.5",
+            selected && (value === "up" ? "-rotate-12" : "rotate-12"),
+          )}
+          strokeWidth={1.5}
+        />
         {t(value === "up" ? "voteUp" : "voteDown")}
       </button>
     );
@@ -111,14 +126,14 @@ export function AnswerFeedbackDialog({
           "max-sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]",
         )}
       >
-        <DialogHeader className="mb-4 pr-6">
-          <DialogTitle className="[font-family:var(--font-display)] text-xl font-medium tracking-tight text-left">
+        <DialogHeader className="mb-5 pr-6">
+          <DialogTitle className="[font-family:var(--font-display)] text-2xl font-medium tracking-tight leading-tight text-left">
             {t("title")}
           </DialogTitle>
           <DialogDescription className="sr-only">{t("srDescription")}</DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-3">
           {voteButton("up")}
           {voteButton("down")}
         </div>
@@ -162,19 +177,22 @@ export function AnswerFeedbackDialog({
               maxLength={1000}
               rows={2}
               placeholder={t(vote === "down" ? "commentPlaceholderDown" : "commentPlaceholderUp")}
-              className="w-full bg-transparent border border-border p-2.5 text-[13px] leading-5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors resize-none"
+              className="w-full bg-background border border-border p-2.5 text-[13px] leading-5 text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow] resize-none"
             />
           </div>
         )}
 
         {showNewsletter && (
-          <div className="mt-6 pt-5 border-t border-border grid gap-3">
+          <section className="mt-6 border-l-2 border-primary/40 bg-primary/[0.04] px-4 py-4 grid gap-3">
             <div>
-              <h3 className="text-sm font-medium text-foreground">{t("newsletterTitle")}</h3>
+              <h3 className="flex items-baseline justify-between gap-3 text-sm font-medium text-foreground">
+                {t("newsletterTitle")}
+                <span className="text-[11px] font-normal text-muted-foreground">{t("optional")}</span>
+              </h3>
               <p className="mt-1 text-[13px] leading-5 text-muted-foreground">{t("newsletterBody")}</p>
             </div>
-            <div className="grid gap-2">
-              <label htmlFor={`${ids}-email`} className="text-[13px] text-foreground">
+            <div className="grid gap-1.5">
+              <label htmlFor={`${ids}-email`} className="text-[12px] text-foreground">
                 {t("emailLabel")}
               </label>
               <input
@@ -186,33 +204,36 @@ export function AnswerFeedbackDialog({
                 onChange={(e) => { setEmail(e.target.value); setError(null); }}
                 maxLength={254}
                 placeholder={t("emailPlaceholder")}
-                className="h-10 w-full bg-transparent border border-border px-2.5 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground transition-colors"
+                className="h-10 w-full bg-background border border-border px-3 text-sm text-foreground placeholder:text-muted-foreground/80 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-[border-color,box-shadow]"
               />
             </div>
-            <label htmlFor={`${ids}-consent`} className="flex items-start gap-2.5 text-[12px] leading-5 text-muted-foreground cursor-pointer">
-              <input
-                id={`${ids}-consent`}
-                type="checkbox"
-                checked={consent}
-                onChange={(e) => { setConsent(e.target.checked); setError(null); }}
-                className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[var(--primary)] cursor-pointer"
-              />
-              <span>
-                {t.rich("consent", {
-                  link: (chunks) => (
-                    <a
-                      href="/privacy#newsletter"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-2 text-foreground hover:text-primary"
-                    >
-                      {chunks}
-                    </a>
-                  ),
-                })}
-              </span>
-            </label>
-          </div>
+            {/* Consent only matters once there is an address to consent for */}
+            {trimmedEmail && (
+              <label htmlFor={`${ids}-consent`} className="flex items-start gap-2.5 text-[12px] leading-5 text-muted-foreground cursor-pointer animate-in fade-in slide-in-from-top-1 duration-200">
+                <input
+                  id={`${ids}-consent`}
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => { setConsent(e.target.checked); setError(null); }}
+                  className="mt-[3px] h-3.5 w-3.5 shrink-0 accent-[var(--primary)] cursor-pointer"
+                />
+                <span>
+                  {t.rich("consent", {
+                    link: (chunks) => (
+                      <a
+                        href="/privacy#newsletter"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 text-foreground hover:text-primary"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                  })}
+                </span>
+              </label>
+            )}
+          </section>
         )}
 
         {error && (
@@ -224,16 +245,19 @@ export function AnswerFeedbackDialog({
           onClick={submit}
           disabled={!canSubmit}
           className={cn(
-            "mt-5 w-full py-3 sm:py-2.5 text-sm font-medium tracking-wide transition-colors",
+            "mt-5 w-full h-11 text-sm font-medium tracking-wide transition-colors",
             canSubmit
               ? "bg-primary text-primary-foreground hover:bg-foreground cursor-pointer active:scale-[0.99]"
               : "bg-muted text-muted-foreground cursor-not-allowed",
           )}
         >
-          {sending ? t("sending") : t("submit")}
+          {submitLabel}
         </button>
 
-        <p className="mt-3 text-[11px] leading-4 text-muted-foreground">{t("anonNote")}</p>
+        <p className="mt-3 flex items-start gap-1.5 text-[11px] leading-4 text-muted-foreground">
+          <Lock className="mt-px h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden />
+          {t("anonNote")}
+        </p>
       </DialogContent>
     </Dialog>
   );

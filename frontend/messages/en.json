@@ -1104,8 +1104,8 @@
     "commentPlaceholderUp": "What helped you?",
     "commentPlaceholderDown": "What did you expect?",
     "newsletterTitle": "Get ParliamentRAG updates",
-    "newsletterBody": "Project news and evaluation surveys by email. We send a confirmation link; one click to unsubscribe.",
-    "emailLabel": "Email (optional)",
+    "newsletterBody": "Project news and evaluation surveys. Confirm from the link we send you; unsubscribe in one click.",
+    "emailLabel": "Email",
     "emailPlaceholder": "name@example.com",
     "consent": "I have read the <link>privacy notice</link> and agree to receive emails from ParliamentRAG.",
     "errorEmail": "Check the email address.",
@@ -1114,7 +1114,10 @@
     "sending": "Sending…",
     "submit": "Send",
     "anonNote": "Feedback stays anonymous. We store your email separately and never link it to your questions.",
-    "checkInbox": "Check your inbox: confirm the subscription from the link we sent."
+    "checkInbox": "Check your inbox: confirm the subscription from the link we sent.",
+    "optional": "optional",
+    "submitSubscribe": "Subscribe",
+    "submitBoth": "Send and subscribe"
   },
   "Booth": {
     "title": "Your two minutes on ParliamentRAG",
@@ -1301,6 +1304,21 @@
     "title": "Subscription confirmed",
     "body": "You will receive ParliamentRAG news and evaluation surveys. Every email ends with an unsubscribe link.",
     "cta": "Ask a question",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "nextTitle": "Meanwhile, explore",
+    "next": {
+      "deputies": {
+        "title": "Deputies",
+        "body": "Groups, committees and speeches of every deputy."
+      },
+      "groups": {
+        "title": "Groups",
+        "body": "Group membership and member profiles."
+      },
+      "method": {
+        "title": "How it works",
+        "body": "Where answers come from and how we pick who to quote."
+      }
+    }
   }
 }

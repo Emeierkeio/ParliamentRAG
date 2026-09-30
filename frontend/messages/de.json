@@ -1060,8 +1060,8 @@
     "commentPlaceholderUp": "Was hat Ihnen geholfen?",
     "commentPlaceholderDown": "Was haben Sie erwartet?",
     "newsletterTitle": "Neuigkeiten zu ParliamentRAG",
-    "newsletterBody": "Projektneuigkeiten und Bewertungsumfragen per E-Mail. Sie erhalten einen Bestätigungslink; Abmeldung mit einem Klick.",
-    "emailLabel": "E-Mail (optional)",
+    "newsletterBody": "Projektneuigkeiten und Bewertungsumfragen. Sie bestätigen über den zugesandten Link; Abmeldung mit einem Klick.",
+    "emailLabel": "E-Mail",
     "emailPlaceholder": "name@beispiel.de",
     "consent": "Ich habe die <link>Datenschutzhinweise</link> gelesen und willige ein, E-Mails von ParliamentRAG zu erhalten.",
     "errorEmail": "Bitte prüfen Sie die E-Mail-Adresse.",
@@ -1070,7 +1070,10 @@
     "sending": "Wird gesendet…",
     "submit": "Senden",
     "anonNote": "Das Feedback bleibt anonym. Die E-Mail speichern wir getrennt und verknüpfen sie nie mit Ihren Fragen.",
-    "checkInbox": "Bitte prüfen Sie Ihr Postfach und bestätigen Sie die Anmeldung über den Link."
+    "checkInbox": "Bitte prüfen Sie Ihr Postfach und bestätigen Sie die Anmeldung über den Link.",
+    "optional": "optional",
+    "submitSubscribe": "Anmelden",
+    "submitBoth": "Senden und anmelden"
   },
   "Booth": {
     "title": "Ihre zwei Minuten zu ParliamentRAG",
@@ -1257,6 +1260,21 @@
     "title": "Anmeldung bestätigt",
     "body": "Sie erhalten Neuigkeiten zu ParliamentRAG und Bewertungsumfragen. Jede E-Mail endet mit einem Abmeldelink.",
     "cta": "Eine Frage stellen",
-    "backHome": "Zur Startseite"
+    "backHome": "Zur Startseite",
+    "nextTitle": "Inzwischen entdecken",
+    "next": {
+      "deputies": {
+        "title": "Abgeordnete",
+        "body": "Fraktionen, Ausschüsse und Reden jedes Abgeordneten."
+      },
+      "groups": {
+        "title": "Fraktionen",
+        "body": "Zusammensetzung der Fraktionen und Profile der Mitglieder."
+      },
+      "method": {
+        "title": "So funktioniert es",
+        "body": "Woher die Antworten stammen und wen wir zitieren."
+      }
+    }
   }
 }
