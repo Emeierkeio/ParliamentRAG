@@ -5,7 +5,10 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 
-const SECTIONS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
+const SECTIONS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"] as const;
+
+// Anchor targeted by the consent checkbox in the answer feedback dialog
+const ANCHORS: Partial<Record<(typeof SECTIONS)[number], string>> = { s9: "newsletter" };
 
 export default function PrivacyPage() {
   const t = useTranslations("Privacy");
@@ -48,7 +51,7 @@ export default function PrivacyPage() {
 
           <div className="mt-10 space-y-8">
             {SECTIONS.map((s, i) => (
-              <section key={s}>
+              <section key={s} id={ANCHORS[s]} className="scroll-mt-8">
                 <h2 className="[font-family:var(--font-display)] text-lg font-medium tracking-tight flex items-baseline gap-3">
                   <span className="text-primary/40 text-sm tabular-nums">
                     {String(i + 1).padStart(2, "0")}

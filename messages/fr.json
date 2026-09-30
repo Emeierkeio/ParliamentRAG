@@ -946,7 +946,7 @@
   },
   "Privacy": {
     "title": "Confidentialité et mentions légales",
-    "updated": "Dernière mise à jour : 24 juillet 2026",
+    "updated": "Dernière mise à jour : 30 septembre 2026",
     "introTitle": "En bref",
     "intro": "ParliamentRAG est un projet de recherche académique sans but commercial. Le site n'utilise ni analytics, ni publicité, ni profilage — uniquement des cookies techniques. Les questions posées dans le chat sont conservées sur notre serveur à des fins de recherche scientifique.",
     "s1t": "Responsable du traitement",
@@ -965,6 +965,8 @@
     "s7b": "Les réponses sont générées par intelligence artificielle et peuvent contenir des erreurs malgré la vérification des citations. ParliamentRAG est un projet de recherche indépendant, non affilié à la Camera dei Deputati. Vérifiez toujours les citations dans le compte rendu officiel lié.",
     "s8t": "Vos droits",
     "s8b": "Le site ne demande aucun compte et ne relie pas les conversations à votre identité : les données conservées sont donc, en général, anonymes. Vous pouvez supprimer vous-même une conversation — également de notre serveur — via l'icône corbeille dans l'historique du chat. Pour toute autre demande (accès, rectification ou effacement de données personnelles éventuellement incluses dans une question), écrivez à m.tritella@campus.unimib.it. Vous conservez le droit de déposer une réclamation auprès de l'autorité de contrôle.",
+    "s9t": "Retours et nouvelles par e-mail",
+    "s9b": "Sous chaque réponse, vous pouvez laisser un retour : un vote, des motifs et un commentaire facultatif. Nous le conservons avec une référence à la conversation, sans données qui vous identifient, pour les finalités de recherche décrites plus haut. Si vous souhaitez recevoir des nouvelles du projet et des enquêtes d'évaluation, vous pouvez laisser votre adresse e-mail. Nous la traitons sur la base de votre consentement (art. 6(1)(a) RGPD). L'adresse ne passe pas par notre base de données : nous la transmettons à Brevo SAS (France, UE), le service qui gère la liste en tant que sous-traitant (art. 28 RGPD). Brevo vous envoie un e-mail de confirmation et enregistre la date et l'adresse IP de la confirmation comme preuve du consentement. Nous ne relions jamais l'adresse à vos questions ni à vos retours, nous ne la cédons à personne et nous ne suivons ni les ouvertures ni les clics. Chaque e-mail contient un lien de désinscription : un clic et vous quittez la liste. Vous pouvez aussi retirer votre consentement en écrivant à m.tritella@campus.unimib.it. À la fin du projet, nous supprimons toute la liste. Laisser votre e-mail est facultatif et ne change rien à l'utilisation du site.",
     "backHome": "Retour à l'accueil"
   },
   "DataPage": {
@@ -1042,6 +1044,33 @@
     "voteUpAria": "Utile",
     "voteDownAria": "Pas utile",
     "dismissAria": "Masquer"
+  },
+  "AnswerFeedback": {
+    "title": "Cette réponse vous a-t-elle aidé ?",
+    "srDescription": "Évaluez la réponse et, si vous le souhaitez, laissez votre e-mail pour recevoir des nouvelles.",
+    "voteUp": "Utile",
+    "voteDown": "Pas utile",
+    "reasonsLabel": "Qu'est-ce qui n'allait pas ?",
+    "reason_citations": "Citations hors sujet",
+    "reason_missing_group": "Il manque un groupe",
+    "reason_incomplete": "Réponse incomplète",
+    "reason_off_topic": "Hors sujet",
+    "reason_slow": "Trop lente",
+    "commentLabel": "Commentaire (facultatif)",
+    "commentPlaceholderUp": "Qu'est-ce qui vous a servi ?",
+    "commentPlaceholderDown": "Qu'attendiez-vous ?",
+    "newsletterTitle": "Suivre ParliamentRAG",
+    "newsletterBody": "Nouvelles du projet et enquêtes d'évaluation par e-mail. Nous envoyons un lien de confirmation ; désinscription en un clic.",
+    "emailLabel": "E-mail (facultatif)",
+    "emailPlaceholder": "nom@exemple.fr",
+    "consent": "J'ai lu la <link>politique de confidentialité</link> et j'accepte de recevoir des e-mails de ParliamentRAG.",
+    "errorEmail": "Vérifiez l'adresse e-mail.",
+    "errorConsent": "Pour vous inscrire, acceptez la politique de confidentialité.",
+    "errorServer": "Inscription impossible. Réessayez dans un instant.",
+    "sending": "Envoi…",
+    "submit": "Envoyer",
+    "anonNote": "Le retour reste anonyme. Nous stockons l'e-mail à part, sans jamais le relier à vos questions.",
+    "checkInbox": "Vérifiez votre boîte : confirmez l'inscription avec le lien reçu."
   },
   "Booth": {
     "title": "Vos deux minutes sur ParliamentRAG",
@@ -1223,5 +1252,11 @@
     "role_vice_president": "Vice-président",
     "role_treasurer": "Trésorier",
     "role_secretary": "Secrétaire"
+  },
+  "NewsletterConfirmed": {
+    "title": "Inscription confirmée",
+    "body": "Vous recevrez les nouvelles de ParliamentRAG et les enquêtes d'évaluation. Chaque e-mail se termine par un lien de désinscription.",
+    "cta": "Poser une question",
+    "backHome": "Retour à l'accueil"
   }
 }
