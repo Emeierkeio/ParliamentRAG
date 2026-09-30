@@ -127,15 +127,16 @@ export function FeedbackPulse({ tool, context, className }: FeedbackPulseProps) 
 }
 
 // Pollici per risposta nella chat: sempre visibili, senza snooze. Il
-// dialog si apre da solo una volta per sessione, quando chi legge arriva
-// in fondo a una risposta appena generata; chiuderlo è sempre possibile.
+// dialog si apre da solo quando chi legge arriva in fondo a una risposta
+// appena generata; se lo chiude senza votare né iscriversi, per il resto
+// della sessione resta manuale.
 
-const AUTO_OPEN_KEY = "prag-answer-feedback-auto";
+const AUTO_OPEN_KEY = "prag-answer-feedback-declined";
 // Dwell before opening: long enough to skip readers scrolling past, short
 // enough to catch the end of the reading.
 const AUTO_OPEN_DWELL_MS = 1500;
 
-function autoOpenUsed(): boolean {
+function autoOpenDeclined(): boolean {
   try {
     return sessionStorage.getItem(AUTO_OPEN_KEY) === "1";
   } catch {
@@ -143,7 +144,7 @@ function autoOpenUsed(): boolean {
   }
 }
 
-function markAutoOpenUsed() {
+function markAutoOpenDeclined() {
   try {
     sessionStorage.setItem(AUTO_OPEN_KEY, "1");
   } catch {
@@ -186,15 +187,14 @@ export function AnswerFeedback({ context, fresh = false, className }: AnswerFeed
 
   useEffect(() => {
     const el = rootRef.current;
-    if (!fresh || !el || autoOpenUsed()) return;
+    if (!fresh || !el || autoOpenDeclined()) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const observer = new IntersectionObserver(([entry]) => {
       clearTimeout(timer);
       if (!entry.isIntersecting) return;
       timer = setTimeout(() => {
-        if (autoOpenUsed()) return;
-        markAutoOpenUsed();
         observer.disconnect();
+        if (autoOpenDeclined()) return;
         void openDialog();
       }, AUTO_OPEN_DWELL_MS);
     }, { threshold: 1 });
@@ -236,6 +236,7 @@ export function AnswerFeedback({ context, fresh = false, className }: AnswerFeed
 
   const close = useCallback(() => {
     setDialogOpen(false);
+    if (!voted && !subscribedNowRef.current) markAutoOpenDeclined();
     if (subscribedNowRef.current) {
       subscribedNowRef.current = false;
       setThanks("checkInbox");
