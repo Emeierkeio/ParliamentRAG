@@ -1,11 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ThumbsUp, ThumbsDown, X } from "lucide-react";
-import { config } from "@/config";
 import { cn } from "@/lib/utils";
 import { FeedbackDialog } from "./FeedbackDialog";
+import { AnswerFeedbackDialog, type AnswerFeedbackPayload } from "./AnswerFeedbackDialog";
+import {
+  fetchNewsletterEnabled, isSubscribed, markSubscribed, postDetails, postVote, subscribeNewsletter,
+  type Vote,
+} from "./api";
 
 // Feedback per strumento: il pollice registra subito il voto, poi un
 // dialog (la versione compatta del survey /iswc) raccoglie il resto da
@@ -35,18 +39,6 @@ function snooze(tool: string, status: "given" | "dismissed") {
     localStorage.setItem(storageKey(tool), JSON.stringify({ status, at: Date.now() }));
   } catch {
     // storage pieno o bloccato: il widget si ripresenterà, pazienza
-  }
-}
-
-async function postVote(tool: string, vote: "up" | "down", context: string | undefined, locale: string) {
-  try {
-    await fetch(`${config.api.baseUrl}/feedback`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tool, vote, context, locale }),
-    });
-  } catch {
-    // il voto si perde in silenzio: mai bloccare l'utente per un feedback
   }
 }
 
@@ -135,29 +127,132 @@ export function FeedbackPulse({ tool, context, className }: FeedbackPulseProps) 
 }
 
 // Pollici per risposta nella chat: sempre visibili, senza snooze. Il
-// pollice scelto resta pieno; il dialog raccoglie il resto.
+// dialog si apre da solo una volta per sessione, quando chi legge arriva
+// in fondo a una risposta appena generata; chiuderlo è sempre possibile.
 
-export function AnswerFeedback({ context, className }: { context?: string; className?: string }) {
+const AUTO_OPEN_KEY = "prag-answer-feedback-auto";
+// Dwell before opening: long enough to skip readers scrolling past, short
+// enough to catch the end of the reading.
+const AUTO_OPEN_DWELL_MS = 1500;
+
+function autoOpenUsed(): boolean {
+  try {
+    return sessionStorage.getItem(AUTO_OPEN_KEY) === "1";
+  } catch {
+    return true;
+  }
+}
+
+function markAutoOpenUsed() {
+  try {
+    sessionStorage.setItem(AUTO_OPEN_KEY, "1");
+  } catch {
+    // without storage the dialog stays manual
+  }
+}
+
+interface AnswerFeedbackProps {
+  context?: string;
+  /** True only for an answer generated in this view, not one reloaded from history. */
+  fresh?: boolean;
+  className?: string;
+}
+
+export function AnswerFeedback({ context, fresh = false, className }: AnswerFeedbackProps) {
   const t = useTranslations("Feedback");
   const locale = useLocale();
-  const [voted, setVoted] = useState<"up" | "down" | null>(null);
+  const [voted, setVoted] = useState<Vote | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [showThanks, setShowThanks] = useState(false);
+  const [thanks, setThanks] = useState<"thanks" | "checkInbox" | null>(null);
+  const [showNewsletter, setShowNewsletter] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const idRef = useRef<Promise<string | null> | null>(null);
+  const postedVoteRef = useRef<Vote | null>(null);
+
+  const ta = useTranslations("AnswerFeedback");
+  const subscribedNowRef = useRef(false);
 
   useEffect(() => {
-    if (!showThanks) return;
-    const timer = setTimeout(() => setShowThanks(false), 2500);
+    if (!thanks) return;
+    const timer = setTimeout(() => setThanks(null), thanks === "checkInbox" ? 8000 : 2500);
     return () => clearTimeout(timer);
-  }, [showThanks]);
+  }, [thanks]);
 
-  const vote = useCallback((value: "up" | "down") => {
-    setVoted(value);
+  const openDialog = useCallback(async () => {
+    const enabled = !isSubscribed() && (await fetchNewsletterEnabled());
+    setShowNewsletter(enabled);
     setDialogOpen(true);
-    void postVote("chat", value, context, locale);
+  }, []);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!fresh || !el || autoOpenUsed()) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      clearTimeout(timer);
+      if (!entry.isIntersecting) return;
+      timer = setTimeout(() => {
+        if (autoOpenUsed()) return;
+        markAutoOpenUsed();
+        observer.disconnect();
+        void openDialog();
+      }, AUTO_OPEN_DWELL_MS);
+    }, { threshold: 1 });
+    observer.observe(el);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [fresh, openDialog]);
+
+  const vote = useCallback((value: Vote) => {
+    setVoted(value);
+    if (!idRef.current) {
+      postedVoteRef.current = value;
+      idRef.current = postVote("chat", value, context, locale);
+    }
   }, [context, locale]);
+
+  const voteInline = useCallback((value: Vote) => {
+    vote(value);
+    void openDialog();
+  }, [vote, openDialog]);
+
+  const submit = useCallback(async ({ reasons, comment, email }: AnswerFeedbackPayload) => {
+    const id = idRef.current ? await idRef.current : null;
+    const voteChanged = voted !== null && voted !== postedVoteRef.current;
+    if (id && (reasons.length > 0 || comment || voteChanged)) {
+      await postDetails(id, {
+        vote: voteChanged ? voted : undefined,
+        reasons: reasons.length > 0 ? reasons : undefined,
+        comment: comment || undefined,
+      });
+      postedVoteRef.current = voted;
+    }
+    if (email) {
+      if (!(await subscribeNewsletter(email))) return "email_failed";
+      markSubscribed();
+      subscribedNowRef.current = true;
+    }
+    return "ok";
+  }, [voted]);
+
+  const close = useCallback(() => {
+    setDialogOpen(false);
+    if (subscribedNowRef.current) {
+      subscribedNowRef.current = false;
+      setThanks("checkInbox");
+    } else if (voted) {
+      setThanks("thanks");
+    }
+    if (!voted) return;
+    const pending = idRef.current;
+    if (pending && voted !== postedVoteRef.current) {
+      postedVoteRef.current = voted;
+      void pending.then((id) => { if (id) void postDetails(id, { vote: voted }); });
+    }
+  }, [voted]);
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         "mt-5 inline-block border border-border bg-muted/40 px-4 py-2.5",
         "animate-in fade-in slide-in-from-bottom-1 duration-500",
@@ -168,7 +263,7 @@ export function AnswerFeedback({ context, className }: { context?: string; class
         {!voted && <span className="text-[13px] text-foreground">{t("prompt")}</span>}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => !voted && vote("up")}
+            onClick={() => !voted && voteInline("up")}
             disabled={voted !== null}
             aria-label={t("voteUpAria")}
             className={cn(
@@ -181,7 +276,7 @@ export function AnswerFeedback({ context, className }: { context?: string; class
             <ThumbsUp className={cn("h-4 w-4", voted === "up" && "fill-current")} strokeWidth={1.75} />
           </button>
           <button
-            onClick={() => !voted && vote("down")}
+            onClick={() => !voted && voteInline("down")}
             disabled={voted !== null}
             aria-label={t("voteDownAria")}
             className={cn(
@@ -194,16 +289,20 @@ export function AnswerFeedback({ context, className }: { context?: string; class
             <ThumbsDown className={cn("h-4 w-4", voted === "down" && "fill-current")} strokeWidth={1.75} />
           </button>
         </div>
-        {showThanks && (
-          <span className="text-[13px] text-muted-foreground animate-in fade-in duration-300">{t("thanks")}</span>
+        {thanks && (
+          <span role="status" className="text-[13px] text-muted-foreground animate-in fade-in duration-300">
+            {thanks === "checkInbox" ? ta("checkInbox") : t("thanks")}
+          </span>
         )}
       </div>
 
-      <FeedbackDialog
+      <AnswerFeedbackDialog
         open={dialogOpen}
-        onClose={() => { setDialogOpen(false); setShowThanks(true); }}
-        tool="chat"
-        context={context}
+        vote={voted}
+        showNewsletter={showNewsletter}
+        onVote={vote}
+        onSubmit={submit}
+        onClose={close}
       />
     </div>
   );

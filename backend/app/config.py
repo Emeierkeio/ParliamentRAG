@@ -66,6 +66,19 @@ class Settings(BaseSettings):
         description="LangSmith project name"
     )
 
+    # Brevo mailing list (newsletter opt-in is hidden when the key is empty)
+    brevo_api_key: str = Field(default="", description="Brevo API key")
+    # Strings, not ints: an empty value copied from .env.example must not crash startup
+    brevo_list_id: str = Field(default="", description="Brevo list for confirmed subscribers")
+    brevo_doi_template_id: str = Field(
+        default="",
+        description="Brevo double opt-in template (must contain the {{ doubleoptin }} link)"
+    )
+    public_site_url: str = Field(
+        default="https://www.parliamentrag.it",
+        description="Public site base URL, target of the confirmation redirect"
+    )
+
     # Debug settings
     debug: bool = Field(default=False, description="Enable debug mode")
     log_level: str = Field(default="INFO", description="Logging level")

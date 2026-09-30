@@ -1,8 +1,8 @@
 """In-app feedback per strumento (issue #21).
 
-Raccoglie micro-feedback (pollice + commento facoltativo) dal widget
-FeedbackPulse del frontend. Due chiamate: il voto parte subito al click,
-il commento arriva dopo se l'utente lo scrive. Nessun dato personale:
+Raccoglie micro-feedback (pollice, motivi, commento facoltativo) dai widget
+del frontend. Due chiamate: il voto parte subito al click, i dettagli
+arrivano dopo se l'utente li scrive. Nessun dato personale:
 solo strumento, voto, lingua e un contesto breve (topic o chat id).
 """
 import logging
@@ -18,6 +18,7 @@ router = APIRouter(prefix="/api/feedback", tags=["Feedback"])
 
 TOOLS = {"chat", "search", "ranking", "compass", "timeline", "explorer", "data"}
 VOTES = {"up", "down"}
+REASONS = {"citations", "missing_group", "incomplete", "off_topic", "slow"}
 
 
 def _get_client():
@@ -42,8 +43,10 @@ class FeedbackCreate(BaseModel):
     locale: Optional[str] = Field(default=None, max_length=5)
 
 
-class FeedbackComment(BaseModel):
-    comment: str = Field(..., min_length=1, max_length=500)
+class FeedbackDetails(BaseModel):
+    vote: Optional[str] = Field(default=None, max_length=10)
+    reasons: Optional[list[str]] = Field(default=None, max_length=len(REASONS))
+    comment: Optional[str] = Field(default=None, max_length=1000)
 
 
 @router.post("")
@@ -77,17 +80,29 @@ async def create_feedback(payload: FeedbackCreate):
     return {"id": feedback_id}
 
 
-@router.post("/{feedback_id}/comment")
-async def add_comment(feedback_id: str, payload: FeedbackComment):
-    """Aggiunge il commento facoltativo a un voto già registrato."""
+@router.post("/{feedback_id}/details")
+async def add_details(feedback_id: str, payload: FeedbackDetails):
+    """Completa un voto già registrato: voto corretto, motivi, commento."""
+    if payload.vote is not None and payload.vote not in VOTES:
+        raise HTTPException(status_code=400, detail="unknown vote")
+    reasons = sorted(set(payload.reasons or []))
+    if any(r not in REASONS for r in reasons):
+        raise HTTPException(status_code=400, detail="unknown reason")
     client = _get_client()
     rows = client.query(
         """
         MATCH (f:UserFeedback {id: $id})
-        SET f.comment = $comment
+        SET f.vote = coalesce($vote, f.vote),
+            f.reasons = CASE WHEN size($reasons) > 0 THEN $reasons ELSE f.reasons END,
+            f.comment = coalesce($comment, f.comment)
         RETURN f.id AS id
         """,
-        {"id": feedback_id, "comment": payload.comment.strip()[:500]},
+        {
+            "id": feedback_id,
+            "vote": payload.vote,
+            "reasons": reasons,
+            "comment": (payload.comment or "").strip()[:1000] or None,
+        },
     )
     if not rows:
         raise HTTPException(status_code=404, detail="feedback not found")
@@ -108,7 +123,15 @@ async def feedback_stats():
         ORDER BY tool
         """
     )
-    return {"tools": rows}
+    reasons = client.query(
+        """
+        MATCH (f:UserFeedback) WHERE f.reasons IS NOT NULL
+        UNWIND f.reasons AS reason
+        RETURN f.tool AS tool, reason, count(*) AS n
+        ORDER BY tool, n DESC
+        """
+    )
+    return {"tools": rows, "reasons": reasons}
 
 
 # ---------------------------------------------------------------------------

@@ -257,6 +257,8 @@ export function MessageBubble({ message, className, chatId, answerTrace, answerS
   const [statsModalView, setStatsModalView] = useState<"interventions" | "speakers" | "sessions" | null>(null);
   const t = useTranslations('MessageBubble');
   const locale = useLocale();
+  // Reloaded chats mount already complete: only live answers auto-open feedback
+  const [generatedHere] = useState(() => message.status !== "complete");
 
   if (isUser) {
     const formatDay = (iso?: string | null) => {
@@ -618,6 +620,7 @@ export function MessageBubble({ message, className, chatId, answerTrace, answerS
             sezioni di approfondimento — a fondo pagina non li vede nessuno */}
         {!isUser && message.status === "complete" && !message.gate && message.content && (
           <AnswerFeedback
+            fresh={generatedHere}
             context={
               message.chatId || chatId ||
               (queryText ? `q:${queryText.slice(0, 280)}` : undefined)

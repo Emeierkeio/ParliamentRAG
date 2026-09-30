@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!-- Brevo double opt-in template (ID 2). Source of truth: edit here, then push
+     with the Brevo API (PUT /v3/smtp/templates/2). {{ doubleoptin }} is
+     replaced by Brevo with the confirmation link. Header image is served from
+     frontend/public/email/. Fraunces and Geist load only in clients that
+     accept web fonts (Apple Mail, iOS); Gmail and Outlook fall back to
+     Georgia and Helvetica. -->
+<html lang="it" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>Conferma l'iscrizione a ParliamentRAG</title>
+<!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 0; background: #F6F2EC; }
+  .title { font-variation-settings: "opsz" 144; }
+  .url { font-variation-settings: "opsz" 24; }
+  @media (max-width: 600px) {
+    .card-pad { padding: 32px 24px !important; }
+    .title { font-size: 30px !important; line-height: 32px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#F6F2EC;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#F6F2EC;">Un clic per confermare.&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F6F2EC;">
+  <tr>
+    <td align="center" style="padding:24px 12px 40px 12px;">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;">
+
+        <tr>
+          <td align="center" style="padding:0;">
+            <a href="https://www.parliamentrag.it" style="text-decoration:none;">
+              <img src="https://www.parliamentrag.it/email/header@2x.png" width="560" alt="ParliamentRAG" style="display:block;width:100%;max-width:560px;height:auto;border:0;font-family:Georgia,serif;font-size:26px;font-weight:600;color:#1B3A5C;text-align:center;">
+            </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="background:#FFFFFF;border:1px solid #E4E0D8;border-radius:14px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="card-pad" style="padding:40px 44px 40px 44px;">
+
+                  <h1 class="title" style="margin:0;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:600;font-size:34px;line-height:37px;letter-spacing:0;color:#111827;">
+                    Conferma l'iscrizione<br><span style="color:#1B3A5C;">a ParliamentRAG</span>
+                  </h1>
+
+                  <p style="margin:20px 0 0 0;font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:25px;color:#111827;">
+                    Hai chiesto di ricevere novità e sondaggi di valutazione di ParliamentRAG. Conferma il tuo indirizzo per attivare l'iscrizione.
+                  </p>
+
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 0 0;">
+                    <tr>
+                      <td align="center" bgcolor="#1B3A5C" style="border-radius:10px;background:#1B3A5C;">
+                        <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" href="{{ doubleoptin }}" style="height:50px;v-text-anchor:middle;width:240px;" arcsize="20%" stroke="f" fillcolor="#1B3A5C"><w:anchorlock/><center style="color:#FFFFFF;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:600;">Conferma iscrizione</center></v:roundrect><![endif]-->
+                        <!--[if !mso]><!-->
+                        <a href="{{ doubleoptin }}" style="display:inline-block;padding:15px 30px;font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:20px;font-weight:600;color:#FFFFFF;text-decoration:none;border-radius:10px;">Conferma iscrizione</a>
+                        <!--<![endif]-->
+                      </td>
+                    </tr>
+                  </table>
+
+                  <p style="margin:28px 0 0 0;padding-top:20px;border-top:1px solid #E4E0D8;font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#6B7280;">
+                    Se non hai chiesto tu l'iscrizione, ignora questa email e non riceverai altro.
+                  </p>
+
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" style="padding:28px 24px 0 24px;">
+            <a href="https://www.parliamentrag.it" class="url" style="font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:16px;line-height:22px;color:#1B3A5C;text-decoration:none;">www.parliamentrag.it</a>
+            <p style="margin:8px 0 0 0;font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;line-height:18px;color:#6B7280;">
+              Progetto di ricerca dell'Università di Milano-Bicocca.<br>
+              <a href="https://www.parliamentrag.it/privacy#newsletter" style="color:#6B7280;text-decoration:underline;">Informativa privacy</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
