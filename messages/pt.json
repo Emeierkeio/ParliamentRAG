@@ -1073,7 +1073,9 @@
     "checkInbox": "Verifique seu email: confirme a inscrição pelo link que enviamos.",
     "optional": "opcional",
     "submitSubscribe": "Inscrever-me",
-    "submitBoth": "Enviar e inscrever-me"
+    "submitBoth": "Enviar e inscrever-me",
+    "subtitle": "Basta um clique. Usamos os votos para melhorar as respostas.",
+    "close": "Fechar"
   },
   "Booth": {
     "title": "Seus dois minutos sobre o ParliamentRAG",
