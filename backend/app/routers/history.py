@@ -108,6 +108,9 @@ async def get_history() -> HistoryListResponse:
 @router.post("/history")
 async def save_chat(chat: ChatHistoryItem) -> ChatHistoryItem:
     """Save a chat session to history."""
+    # The id is the only access control on GET /history/{id}: always a fresh
+    # server-side UUID4, never one chosen by the client
+    chat.id = str(uuid4())
     try:
         clean_text = _strip_markdown(chat.answer)
         chat.preview = clean_text[:100] + "..." if len(clean_text) > 100 else clean_text

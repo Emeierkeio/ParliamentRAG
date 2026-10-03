@@ -3,6 +3,7 @@ Multi-View RAG API for Italian Parliamentary Data.
 
 FastAPI application entry point.
 """
+import os
 import sys
 import time
 import logging
@@ -29,6 +30,7 @@ from .routers.compass import router as compass_router
 from .routers.timeline import router as timeline_router
 from .routers.data import router as data_router
 from .config import MAINTENANCE_MODE, get_config, get_settings
+from .services.api_keys import api_key_middleware
 
 
 class _ContextEnricher(logging.Filter):
@@ -297,10 +299,23 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# The site calls the backend through its own Next.js proxy (server to
+# server), so CORS only matters for direct browser calls during development.
+# CORS_EXTRA_ORIGINS adds comma-separated origins without a code change.
+_CORS_ORIGINS = [
+    "https://parliamentrag.it",
+    "https://www.parliamentrag.it",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+] + [o.strip() for o in os.getenv("CORS_EXTRA_ORIGINS", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # demo deployment serves multiple origins; tighten before any non-demo use
-    allow_credentials=True,
+    allow_origins=_CORS_ORIGINS,
+    # Railway service and PR preview domains of this project
+    allow_origin_regex=r"^https://parliamentrag[a-z0-9-]*\.up\.railway\.app$",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -318,6 +333,10 @@ async def maintenance_middleware(request: Request, call_next):
             headers={"Retry-After": "3600"},
         )
     return await call_next(request)
+
+
+# Admin-only endpoints need an admin X-API-Key; denied when none is configured
+app.middleware("http")(api_key_middleware)
 
 
 app.include_router(query_router)

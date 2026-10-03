@@ -15,7 +15,7 @@ import {
   ABComparisonChart,
   WinRateChart,
 } from "@/components/evaluation/EvaluationCharts";
-import { getDashboardData, getExportCsvUrl } from "@/lib/evaluation-api";
+import { getDashboardData, downloadExportCsv } from "@/lib/evaluation-api";
 import type { EvaluationDashboardData, CombinedEvaluation } from "@/types/evaluation";
 import { AB_DIMENSIONS, SIMPLE_DIMENSION_LABELS } from "@/types/survey";
 import type { ABRating, SimpleDimension } from "@/types/survey";
@@ -94,7 +94,7 @@ export default function ValutazionePage() {
   }, [loadData, evaluatorId]);
 
   const handleExportCsv = () => {
-    window.open(getExportCsvUrl(), "_blank");
+    downloadExportCsv().catch((err) => console.error(err));
   };
 
   // Not yet determined — avoid flash of dashboard
