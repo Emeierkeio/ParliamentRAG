@@ -16,8 +16,9 @@ Oggi le promesse le mantiene il codice di Fascicoli, e chi legge deve fidarsi. Q
 lo fa girare ottiene lo stesso rapporto. Il verificatore controlla qualsiasi sistema che produca il formato
 descritto qui sotto: Fascicoli, Stenografo, un assistente collegato al nostro server MCP, un sistema di altri.
 
-Il verificatore e la pipeline dei dati sono la parte aperta di ParliamentRAG. Fascicoli, Stenografo e Scranno
-restano fuori da questo repository.
+ParliamentRAG è il centro di ricerca: metodo, dati e verifica dei criteri. Il verificatore e la pipeline dei
+dati sono la sua parte aperta. Stenografo (domande su lavori, atti e voti), Fascicoli (riassunto di un tema
+nei vincoli di ParliamentRAG) e Scranno (l'Aula in prima persona) restano fuori da questo repository.
 
 ## Cosa esiste già
 
@@ -46,27 +47,29 @@ restano fuori da questo repository.
 ## Il formato della risposta verificabile
 
 Un sistema che vuole farsi verificare produce un JSON con la domanda, il periodo considerato e le
-affermazioni. Bozza dello schema (`schema/risposta-verificabile.v1.json`):
+affermazioni. I campi sono in inglese, così lo schema funziona anche per sistemi esterni e per l'articolo.
+Bozza (`schema/verifiable-answer.v1.json`):
 
 ```json
 {
-  "schema": "https://w3id.org/parliamentrag/verifica/v1",
-  "sistema": { "nome": "Fascicoli", "versione": "2026-10-06" },
-  "domanda": "Cosa pensano i gruppi del salario minimo?",
-  "periodo": { "dal": "2022-10-13", "al": "2026-10-05" },
-  "gruppi_dichiarati_assenti": [
-    { "gruppo": "https://dati.camera.it/ocd/gruppoParlamentare.rdf/gp…", "motivo": "nessun intervento" }
+  "schema": "https://w3id.org/parliamentrag/verify/v1",
+  "system": { "name": "Fascicoli", "version": "2026-10-06" },
+  "question": "Cosa pensano i gruppi del salario minimo?",
+  "period": { "from": "2022-10-13", "to": "2026-10-05" },
+  "data_version": "2026-10-05",
+  "declared_absent": [
+    { "group": "https://dati.camera.it/ocd/gruppoParlamentare.rdf/gp…", "reason": "no_speeches" }
   ],
-  "affermazioni": [
+  "claims": [
     {
-      "gruppo": "https://dati.camera.it/ocd/gruppoParlamentare.rdf/gp…",
-      "deputato": "https://dati.camera.it/ocd/persona.rdf/p…",
-      "intervento": "leg19_sed0123_…",
-      "citazione": "il salario minimo non è una misura sufficiente",
+      "group": "https://dati.camera.it/ocd/gruppoParlamentare.rdf/gp…",
+      "deputy": "https://dati.camera.it/ocd/persona.rdf/p…",
+      "speech": "leg19_sed0123_…",
+      "quote": "il salario minimo non è una misura sufficiente",
       "link": "https://www.camera.it/leg19/410?idSeduta=0123&tipo=stenografico#…"
     }
   ],
-  "testo": "Il testo della risposta come lo vede l'utente, facoltativo"
+  "text": "Il testo della risposta come lo vede l'utente, facoltativo"
 }
 ```
 
@@ -100,10 +103,12 @@ Per ogni affermazione il verificatore controlla, nell'ordine:
 Esiti possibili per ogni citazione: `esatta`, `esatta_dopo_normalizzazione`, `non_trovata`,
 `parole_di_terzi`, `oratore_errato`, `gruppo_errato`, `link_errato`, `intervento_inesistente`.
 
-Un punto da chiarire subito. Fascicoli verifica sul testo dei chunk, che è preprocessato; il dataset
-pubblica il testo integrale degli interventi. Prima di tutto bisogna misurare quante citazioni oggi
-accettate da Fascicoli non si trovano nel testo integrale. Se sono poche, il verificatore usa il testo
-integrale. Se sono molte, il preprocessamento va reso reversibile o pubblicato.
+Misura del 6 ottobre 2026: tutti i 177.843 chunk del grafo sono sottostringhe esatte del testo integrale
+dell'intervento, quindi verificare sul testo integrale pubblicato equivale a verificare sui chunk. Su 626
+citazioni salvate da Fascicoli, 18 recenti non erano letterali: 9 tradotte in inglese, 7 con la
+punteggiatura corretta, 2 cucite togliendo una parentesi. Le tre cause sono corrette in Fascicoli
+(branch `fix/citazioni-e-gruppi`), che ora applica la stessa regola del verificatore
+(`services/citation/verbatim.py`).
 
 Più avanti c'è un secondo livello: confronto con il resoconto stenografico ufficiale su camera.it, scaricato
 e conservato con data e hash. Fa la differenza tra «esatta rispetto ai nostri dati» ed «esatta rispetto alla
@@ -186,7 +191,7 @@ ParliamentRAG/
 │   ├── gruppi.py
 │   ├── autorevolezza.py
 │   └── rapporto.py
-├── schema/                risposta-verificabile.v1.json, rapporto.v1.json
+├── schema/                verifiable-answer.v1.json, report.v1.json
 ├── dati/                  pipeline dei dati, spostata da parliamentrag-iswc/build
 ├── tests/fixtures/        risposte vere e casi costruiti, con il rapporto atteso
 └── src/                   il sito, come oggi
@@ -221,17 +226,28 @@ Con il verificatore, le tre garanzie diventano misure confrontabili tra sistemi 
 È il contributo per l'estensione su rivista dell'articolo In-Use: un metodo che chiunque può applicare a
 qualunque sistema, non solo al nostro.
 
-## Decisioni da prendere
+## Decisioni
 
-1. **Licenza del verificatore.** Apache 2.0 come il codice di ricerca, oppure EUPL.
-2. **Lingua dello schema.** Nomi dei campi in italiano (come sopra) o in inglese, più adatto a sistemi
-   esterni e alla rivista.
-3. **Pubblicare gli embedding.** Sono derivati da un modello OpenAI: va controllato che i termini d'uso ne
-   permettano la ridistribuzione.
-4. **Normalizzazione delle citazioni.** L'elenco chiuso proposto nel controllo 1 va approvato e poi
-   congelato in v1.
-5. **Elenco dei gruppi in Fascicoli.** Se il verificatore ricava i gruppi dal grafo, anche Fascicoli
-   dovrebbe smettere di usare la lista fissa di `default.yaml`, altrimenti i due possono divergere.
+Prese il 6 ottobre 2026:
+
+1. **Licenza del verificatore:** aperta, Apache 2.0 come il codice di ricerca.
+2. **Nomi dei campi:** in inglese.
+
+Ancora aperte:
+
+3. **Embedding per l'autorevolezza.** Il ricalcolo indipendente dell'autorevolezza ha bisogno degli
+   embedding di passaggi, atti, professioni e titoli di studio. Se non li pubblichiamo, chi verifica deve
+   chiamare un nostro endpoint (strada B) e fidarsi del nostro server. Pubblicarli (strada A) rende il
+   ricalcolo indipendente, ma prima va controllato che i termini di OpenAI permettano di ridistribuire
+   vettori prodotti dai loro modelli. Se non lo permettono, resta la strada C: un modello aperto.
+4. **Le due differenze ammesse nelle citazioni.** Una citazione è valida se compare alla lettera
+   nell'intervento, con due sole eccezioni: gli spazi multipli contano come uno, e la prima lettera può
+   cambiare maiuscola («noi» per «Noi», quando la citazione segue «afferma che»). Tutto il resto conta come
+   modifica: punteggiatura corretta, parole saltate, puntini di sospensione, traduzioni. Fascicoli applica
+   già questa regola; va confermata e poi congelata nella versione 1 dello schema.
+5. **Elenco dei gruppi.** Risolta in Fascicoli: i gruppi e il loro lato (maggioranza, opposizione, Misto)
+   vengono dal grafo, nessun elenco scritto a mano. Il verificatore userà la stessa regola: un gruppo è in
+   maggioranza se un suo membro ha un incarico nel governo in carica.
 
 ## Rischi
 

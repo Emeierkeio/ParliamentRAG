@@ -1,28 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-label="ParliamentRAG: ricerca aperta sui dati del Parlamento italiano. Università di Milano-Bicocca.">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-label="ParliamentRAG: metodo, dati e verifica per l'AI sul Parlamento. Centro di ricerca, Università di Milano-Bicocca.">
 <rect width="1280" height="440" rx="28" fill="#0F1714"/>
 <svg x="70" y="126" width="122" height="90" viewBox="0 8 224 166"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="#ECF0EC" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="#2d5f8f"/></svg>
 <text x="214" y="196" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="66" font-weight="700" letter-spacing="-2.6" fill="#ECF0EC">ParliamentRAG</text>
-<text x="70" y="290" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#ECF0EC">Ricerca aperta sui dati</text>
-<text x="70" y="326" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#ECF0EC">del Parlamento italiano.</text>
-<text x="70" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#A9B5B0">Università di Milano-Bicocca</text>
+<text x="70" y="290" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#ECF0EC">Metodo, dati e verifica</text>
+<text x="70" y="326" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#ECF0EC">per l’AI sul Parlamento.</text>
+<text x="70" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#A9B5B0">Centro di ricerca · Università di Milano-Bicocca</text>
 <rect x="760" y="92" width="456" height="256" rx="20" fill="#16201C" stroke="#26302C" stroke-width="2"/>
 <rect x="788" y="116" width="78" height="26" rx="13" fill="#12302A"/>
 <text x="827" y="134" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#55B29E">Grafo</text>
 <text x="880" y="135" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#ECF0EC">Un grafo, tre sistemi</text>
 <svg x="790" y="232" width="54" height="40" viewBox="0 8 224 166"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="#ECF0EC" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="#2d5f8f"/></svg>
-<path d="M856 252 C 880 252, 876 192, 900 192" fill="none" stroke="#33403B" stroke-width="2"/>
-<path d="M856 252 C 880 252, 876 252, 900 252" fill="none" stroke="#33403B" stroke-width="2"/>
-<path d="M856 252 C 880 252, 876 312, 900 312" fill="none" stroke="#33403B" stroke-width="2"/>
-<rect x="900" y="168" width="292" height="48" rx="12" fill="#1E2A25"/>
-<svg x="912" y="177" width="30" height="30" viewBox="3 4 56 58"><path d="M10 42C12 23 29 16 33.5 27C37 36 24 42 27.5 49.5C31 56.5 46 52 48.5 28" fill="none" stroke="#ECF0EC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="15" r="6.6" fill="#167A68"/></svg>
-<text x="956" y="189" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Stenografo</text>
-<text x="956" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">Un fatto, con la fonte ufficiale</text>
-<rect x="900" y="228" width="292" height="48" rx="12" fill="#1E2A25"/>
-<svg x="912" y="237" width="30" height="30" viewBox="-6 -4 64 70"><g transform="rotate(-30 28 32)"><path d="M14 14V44a14 14 0 0 0 28 0V18a7 7 0 0 0-14 0V40" fill="none" stroke="#ECF0EC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="6.6" fill="#167A68"/></g></svg>
-<text x="956" y="249" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Fascicoli</text>
-<text x="956" y="267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">Un tema, tutti i gruppi</text>
-<rect x="900" y="288" width="292" height="48" rx="12" fill="#1E2A25"/>
-<svg x="912" y="297" width="30" height="30" viewBox="3 1 56 60"><path d="M18 12C18 24 18 32 20 36C22 40 30 40 42 40C46 40 47 43 47 50M24 40V50" fill="none" stroke="#ECF0EC" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="24" r="6.4" fill="#167A68"/></svg>
-<text x="956" y="309" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Scranno</text>
-<text x="956" y="327" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">L'Aula, posto per posto</text>
+<path d="M856 252 C 872 252, 868 192, 888 192" fill="none" stroke="#33403B" stroke-width="2"/>
+<path d="M856 252 C 872 252, 868 252, 888 252" fill="none" stroke="#33403B" stroke-width="2"/>
+<path d="M856 252 C 872 252, 868 312, 888 312" fill="none" stroke="#33403B" stroke-width="2"/>
+<rect x="888" y="168" width="304" height="48" rx="12" fill="#1E2A25"/>
+<svg x="900" y="177" width="30" height="30" viewBox="3 4 56 58"><path d="M10 42C12 23 29 16 33.5 27C37 36 24 42 27.5 49.5C31 56.5 46 52 48.5 28" fill="none" stroke="#ECF0EC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="15" r="6.6" fill="#167A68"/></svg>
+<text x="944" y="189" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Stenografo</text>
+<text x="944" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">Domande su lavori, atti e voti</text>
+<rect x="888" y="228" width="304" height="48" rx="12" fill="#1E2A25"/>
+<svg x="900" y="237" width="30" height="30" viewBox="-6 -4 64 70"><g transform="rotate(-30 28 32)"><path d="M14 14V44a14 14 0 0 0 28 0V18a7 7 0 0 0-14 0V40" fill="none" stroke="#ECF0EC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="6.6" fill="#167A68"/></g></svg>
+<text x="944" y="249" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Fascicoli</text>
+<text x="944" y="267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">Un tema, nei vincoli di ParliamentRAG</text>
+<rect x="888" y="288" width="304" height="48" rx="12" fill="#1E2A25"/>
+<svg x="900" y="297" width="30" height="30" viewBox="3 1 56 60"><path d="M18 12C18 24 18 32 20 36C22 40 30 40 42 40C46 40 47 43 47 50M24 40V50" fill="none" stroke="#ECF0EC" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="24" r="6.4" fill="#167A68"/></svg>
+<text x="944" y="309" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#ECF0EC">Scranno</text>
+<text x="944" y="327" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#A9B5B0">L'Aula in prima persona</text>
 </svg>

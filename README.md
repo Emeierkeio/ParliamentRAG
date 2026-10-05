@@ -7,7 +7,7 @@
 
 <br>
 
-**Il sito del progetto di ricerca: i sistemi, le pubblicazioni, il metodo e i dati aperti della Camera dei Deputati.**
+**Il centro di ricerca che definisce come un'AI deve parlare del Parlamento, apre i dati e verifica che le regole siano rispettate.**
 
 <br>
 
@@ -73,14 +73,26 @@
 
 ## Cosa fa
 
-ParliamentRAG studia come leggere i lavori parlamentari con l'intelligenza artificiale senza perdere le
-fonti. Il progetto è dell'Università di Milano-Bicocca e parte da un knowledge graph della Camera dei
-Deputati, XIX legislatura, costruito dagli open data ufficiali.
+ParliamentRAG è un centro di ricerca dell'Università di Milano-Bicocca. Studia come usare l'intelligenza
+artificiale sui lavori parlamentari senza perdere le fonti, e lavora su tre fronti:
 
-Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it), che presenta il
-progetto e rimanda ai tre sistemi costruiti sullo stesso grafo. Un fatto preciso lo chiedi a
-[Stenografo](https://www.stenografo.it). Le posizioni dei gruppi su un tema le trovi in
-[Fascicoli](https://www.fascicoli.it), l'Aula posto per posto in [Scranno](https://www.scranno.it).
+- **Metodo.** Fissa i criteri che una risposta sul Parlamento deve rispettare: dare voce a tutti i gruppi,
+  scegliere per ognuno chi conosce il tema, citare solo testo detto in Aula con il link al resoconto.
+- **Dati.** Costruisce dagli open data ufficiali un knowledge graph della Camera dei Deputati, XIX
+  legislatura, e lo pubblica intero.
+- **Verifica.** Prepara un verificatore pubblico che controlla quei criteri su qualunque risposta: il
+  piano è in [`docs/piano-verifica.md`](docs/piano-verifica.md).
+
+Sullo stesso grafo lavorano tre sistemi, ognuno con un compito:
+
+| Sistema | Cosa fa |
+|---|---|
+| [Stenografo](https://www.stenografo.it) | Risponde a domande sui lavori della Camera: sedute, atti, voti |
+| [Fascicoli](https://www.fascicoli.it) | Riassume un tema rispettando i criteri fissati da ParliamentRAG |
+| [Scranno](https://www.scranno.it) | Ti porta in prima persona nell'Aula di Montecitorio, a vedere il lavoro di ognuno di quelli che ci lavorano ogni giorno |
+
+Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it), la guida al
+[server MCP](docs/mcp.md) e il piano della verifica.
 
 <table>
   <tr>
@@ -127,7 +139,7 @@ nei paper. Stenografo, Fascicoli e Scranno non sono in questa tabella.
 | | Dove | Licenza |
 |---|---|---|
 | **Grafo in RDF** | Zenodo, [DOI 10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331). Turtle, voti individuali in N-Triples a parte | CC BY-SA 4.0 |
-| **Grafo in tabelle** | Hugging Face, [emeierkeio/parliamentrag-camera-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19), aggiornato con i dati | CC BY 4.0 |
+| **Grafo in tabelle** | Hugging Face, [emeierkeio/parliamentrag-camera-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19), aggiornato con i dati | CC BY-SA 4.0 |
 | **Server MCP** | `https://mcp.parliamentrag.it/mcp`: interventi, sedute, votazioni voto per voto, emicicli | accesso libero |
 | **Sistema di ricerca** | [Emeierkeio/parliamentrag-iswc](https://github.com/Emeierkeio/parliamentrag-iswc): pipeline dei dati, retrieval, autorevolezza, prompt. Archiviato su Zenodo, [DOI 10.5281/zenodo.23173703](https://doi.org/10.5281/zenodo.23173703) | Apache 2.0 |
 
