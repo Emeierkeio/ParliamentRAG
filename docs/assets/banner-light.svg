@@ -9,24 +9,20 @@
 <rect x="788" y="116" width="78" height="26" rx="13" fill="#EFF8F5"/>
 <text x="827" y="134" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#167A68">Grafo</text>
 <text x="880" y="135" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#14201C">Un grafo, tre sistemi</text>
-<line x1="988" y1="245" x2="850" y2="185" stroke="#D5DBD7" stroke-width="2"/>
-<line x1="988" y1="245" x2="850" y2="245" stroke="#D5DBD7" stroke-width="2"/>
-<line x1="988" y1="245" x2="850" y2="305" stroke="#D5DBD7" stroke-width="2"/>
-<line x1="988" y1="245" x2="1126" y2="185" stroke="#D5DBD7" stroke-width="2"/>
-<line x1="988" y1="245" x2="1126" y2="245" stroke="#D5DBD7" stroke-width="2"/>
-<line x1="988" y1="245" x2="1126" y2="305" stroke="#D5DBD7" stroke-width="2"/>
-<rect x="809.8" y="170" width="80.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="850" y="190" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Gruppo</text>
-<rect x="793.0" y="230" width="114.0" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="850" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Intervento</text>
-<rect x="788.8" y="290" width="122.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="850" y="310" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Commissione</text>
-<rect x="1094.2" y="170" width="63.6" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="1126" y="190" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Atto</text>
-<rect x="1073.2" y="230" width="105.6" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="1126" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Votazione</text>
-<rect x="1085.8" y="290" width="80.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
-<text x="1126" y="310" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Seduta</text>
-<rect x="939.4" y="230" width="97.2" height="30" rx="15" fill="#167A68"/>
-<text x="988" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF">Deputato</text>
+<svg x="790" y="232" width="54" height="40" viewBox="0 8 224 166"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="#14201C" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="#2d5f8f"/></svg>
+<path d="M856 252 C 880 252, 876 192, 900 192" fill="none" stroke="#D5DBD7" stroke-width="2"/>
+<path d="M856 252 C 880 252, 876 252, 900 252" fill="none" stroke="#D5DBD7" stroke-width="2"/>
+<path d="M856 252 C 880 252, 876 312, 900 312" fill="none" stroke="#D5DBD7" stroke-width="2"/>
+<rect x="900" y="168" width="292" height="48" rx="12" fill="#F1F4F1"/>
+<svg x="912" y="177" width="30" height="30" viewBox="3 4 56 58"><path d="M10 42C12 23 29 16 33.5 27C37 36 24 42 27.5 49.5C31 56.5 46 52 48.5 28" fill="none" stroke="#14201C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="15" r="6.6" fill="#167A68"/></svg>
+<text x="956" y="189" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#14201C">Stenografo</text>
+<text x="956" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#5E6B66">Un fatto, con la fonte ufficiale</text>
+<rect x="900" y="228" width="292" height="48" rx="12" fill="#F1F4F1"/>
+<svg x="912" y="237" width="30" height="30" viewBox="-6 -4 64 70"><g transform="rotate(-30 28 32)"><path d="M14 14V44a14 14 0 0 0 28 0V18a7 7 0 0 0-14 0V40" fill="none" stroke="#14201C" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="6.6" fill="#167A68"/></g></svg>
+<text x="956" y="249" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#14201C">Fascicoli</text>
+<text x="956" y="267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#5E6B66">Un tema, tutti i gruppi</text>
+<rect x="900" y="288" width="292" height="48" rx="12" fill="#F1F4F1"/>
+<svg x="912" y="297" width="30" height="30" viewBox="3 1 56 60"><path d="M18 12C18 24 18 32 20 36C22 40 30 40 42 40C46 40 47 43 47 50M24 40V50" fill="none" stroke="#14201C" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="24" r="6.4" fill="#167A68"/></svg>
+<text x="956" y="309" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#14201C">Scranno</text>
+<text x="956" y="327" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" fill="#5E6B66">L'Aula, posto per posto</text>
 </svg>

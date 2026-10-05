@@ -12,18 +12,16 @@ THEMES = {
 }
 BRAND_DOT = "#2d5f8f"
 
-# Il grafo: un deputato al centro, collegato a ciò che fa e a dove sta.
-CENTER = ("Deputato", 988, 245)
-NODES = [("Gruppo", 850, 185), ("Intervento", 850, 245), ("Commissione", 850, 305),
-         ("Atto", 1126, 185), ("Votazione", 1126, 245), ("Seduta", 1126, 305)]
-
-
-def pill(label, cx, cy, fill, color, weight=500, stroke=None):
-    w = len(label) * 8.4 + 30
-    s = f' stroke="{stroke}" stroke-width="2"' if stroke else ""
-    return (f'<rect x="{cx - w / 2:.1f}" y="{cy - 15}" width="{w:.1f}" height="30" rx="15" fill="{fill}"{s}/>\n'
-            f'<text x="{cx}" y="{cy + 5}" text-anchor="middle" font-family="{FONT}" font-size="15" '
-            f'font-weight="{weight}" fill="{color}">{label}</text>')
+# I tre sistemi che leggono il grafo: marchio (viewBox, contenuto), nome, cosa fa.
+SYSTEMS = [
+    ("3 4 56 58", '<path d="M10 42C12 23 29 16 33.5 27C37 36 24 42 27.5 49.5C31 56.5 46 52 48.5 28" fill="none" stroke="{ink}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="15" r="6.6" fill="#167A68"/>',
+     "Stenografo", "Un fatto, con la fonte ufficiale"),
+    ("-6 -4 64 70", '<g transform="rotate(-30 28 32)"><path d="M14 14V44a14 14 0 0 0 28 0V18a7 7 0 0 0-14 0V40" fill="none" stroke="{ink}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="2" r="6.6" fill="#167A68"/></g>',
+     "Fascicoli", "Un tema, tutti i gruppi"),
+    ("3 1 56 60", '<path d="M18 12C18 24 18 32 20 36C22 40 30 40 42 40C46 40 47 43 47 50M24 40V50" fill="none" stroke="{ink}" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="24" r="6.4" fill="#167A68"/>',
+     "Scranno", "L'Aula, posto per posto"),
+]
+ROWS_Y = [192, 252, 312]
 
 
 def banner(t):
@@ -40,12 +38,16 @@ def banner(t):
            f'<rect x="788" y="116" width="78" height="26" rx="13" fill="{t["chip"]}"/>',
            f'<text x="827" y="134" text-anchor="middle" font-family="{FONT}" font-size="15" font-weight="600" fill="{t["accent"]}">Grafo</text>',
            f'<text x="880" y="135" font-family="{FONT}" font-size="17" font-weight="600" fill="{t["ink"]}">Un grafo, tre sistemi</text>']
-    _, cx, cy = CENTER
-    for _, x, y in NODES:
-        out.append(f'<line x1="{cx}" y1="{cy}" x2="{x}" y2="{y}" stroke="{t["edge"]}" stroke-width="2"/>')
-    for label, x, y in NODES:
-        out.append(pill(label, x, y, t["pill"], t["ink"], stroke=t["edge"]))
-    out.append(pill(CENTER[0], cx, cy, t["accent"], t["card"], weight=600))
+    # il grafo: il marchio di ParliamentRAG, da cui partono tre collegamenti
+    out.append(f'<svg x="790" y="232" width="54" height="40" viewBox="0 8 224 166"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" '
+               f'fill="none" stroke="{t["ink"]}" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="{BRAND_DOT}"/></svg>')
+    for y in ROWS_Y:
+        out.append(f'<path d="M856 252 C 880 252, 876 {y}, 900 {y}" fill="none" stroke="{t["edge"]}" stroke-width="2"/>')
+    for (vb, body, name, job), y in zip(SYSTEMS, ROWS_Y):
+        out.append(f'<rect x="900" y="{y - 24}" width="292" height="48" rx="12" fill="{t["pill"]}"/>')
+        out.append(f'<svg x="912" y="{y - 15}" width="30" height="30" viewBox="{vb}">{body.format(ink=t["ink"])}</svg>')
+        out.append(f'<text x="956" y="{y - 3}" font-family="{FONT}" font-size="16" font-weight="600" fill="{t["ink"]}">{name}</text>')
+        out.append(f'<text x="956" y="{y + 15}" font-family="{FONT}" font-size="13.5" fill="{t["muted"]}">{job}</text>')
     out.append("</svg>\n")
     return "\n".join(out)
 
