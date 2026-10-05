@@ -1245,7 +1245,8 @@
     "readyNote": "disponibile",
     "heroGraphNote": "Nodi e archi reali del grafo, deputato {id}",
     "updatedAt": "aggiornato al {date}",
-    "archivedSnapshot": "snapshot Zenodo · {date}"
+    "archivedSnapshot": "snapshot Zenodo · {date}",
+    "datesNote": "Il grafo è aggiornato al {live}. I file qui sotto sono lo snapshot archiviato su Zenodo il {zenodo}: ne pubblichiamo uno nuovo nei passaggi importanti, non a ogni aggiornamento."
   },
   "Feedback": {
     "prompt": "Ti è stato utile?",

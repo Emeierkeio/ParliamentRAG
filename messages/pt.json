@@ -1214,7 +1214,8 @@
     "readyNote": "disponível",
     "heroGraphNote": "Nós e arestas reais do grafo, deputado {id}",
     "updatedAt": "atualizado em {date}",
-    "archivedSnapshot": "snapshot do Zenodo · {date}"
+    "archivedSnapshot": "snapshot do Zenodo · {date}",
+    "datesNote": "O grafo está atualizado a {live}. Os ficheiros abaixo são o instantâneo arquivado no Zenodo a {zenodo}: publicamos um novo nos momentos importantes, não a cada atualização."
   },
   "Feedback": {
     "prompt": "Isto foi útil?",

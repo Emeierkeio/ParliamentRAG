@@ -148,7 +148,6 @@ function useRdfManifest() {
 
 export default function DataPage() {
   const t = useTranslations("DataPage");
-  const tl = useTranslations("Landing");
   const locale = useLocale();
   const { files: manifest, loaded: manifestLoaded } = useRdfManifest();
   const stats = useKgStats();
@@ -166,17 +165,8 @@ export default function DataPage() {
   const zenodoUpdatedLabel = t("archivedSnapshot", {
     date: formatLongDate(ZENODO_UPDATED),
   });
-  const liveEditionLabel = tl("edition", { date: formatLongDate(lastUpdate) });
-  const updatedNote = (file?: RdfFile) =>
-    file?.modified
-      ? t("updatedAt", {
-          date: new Intl.DateTimeFormat(locale, {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }).format(new Date(`${file.modified}T12:00:00`)),
-        })
-      : undefined;
+  // Two dates on purpose: the live graph and the Zenodo snapshot the files come from.
+  const datesNote = t("datesNote", { live: formatLongDate(lastUpdate), zenodo: formatLongDate(ZENODO_UPDATED) });
 
   return (
     <div className="min-h-[100dvh] bg-bg text-fg">
@@ -336,7 +326,7 @@ export default function DataPage() {
         <div className="container-page">
           <SectionHeading title={t("sec5Title")} />
           <p className="mt-6 max-w-prose leading-relaxed text-fg-secondary">{t("sec5Intro")}</p>
-          <p className="mt-3 font-mono text-caption text-fg-muted">{liveEditionLabel}</p>
+          <p className="mt-3 max-w-prose text-sm leading-relaxed text-fg-muted">{datesNote}</p>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <FileCard
@@ -348,8 +338,6 @@ export default function DataPage() {
               fallbackSize="172 MB"
               locale={locale}
               downloadLabel={t("downloadCta")}
-              readyNote={t("readyNote")}
-              updatedNote={updatedNote(manifest["parliamentrag_kg.ttl"])}
               archivedNote={zenodoUpdatedLabel}
               zenodoLabel={t("zenodoCta")}
             />
@@ -362,8 +350,6 @@ export default function DataPage() {
               fallbackSize={`${formatStat(3.8, locale)} GB`}
               locale={locale}
               downloadLabel={t("downloadCta")}
-              readyNote={t("readyNote")}
-              updatedNote={updatedNote(manifest["parliamentrag_votes.nt"])}
               archivedNote={zenodoUpdatedLabel}
               zenodoLabel={t("zenodoCta")}
             />
@@ -533,8 +519,6 @@ function FileCard({
   fallbackSize,
   locale,
   downloadLabel,
-  readyNote,
-  updatedNote,
   archivedNote,
   zenodoLabel,
 }: {
@@ -546,8 +530,6 @@ function FileCard({
   fallbackSize: string;
   locale: string;
   downloadLabel: string;
-  readyNote: string;
-  updatedNote?: string;
   archivedNote?: string;
   zenodoLabel: string;
 }) {
@@ -570,17 +552,13 @@ function FileCard({
       {!resolved ? (
         <div className="mt-5 h-11" aria-hidden />
       ) : file ? (
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-5">
           <Button asChild className="h-11">
             <a href={file.url} download={file.filename}>
               <Download aria-hidden />
               {downloadLabel}
             </a>
           </Button>
-          <span className="font-mono text-caption text-fg-muted">
-            {readyNote}
-            {updatedNote ? ` · ${updatedNote}` : null}
-          </span>
         </div>
       ) : (
         <div className="mt-5">

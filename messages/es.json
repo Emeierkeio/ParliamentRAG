@@ -1214,7 +1214,8 @@
     "readyNote": "disponible",
     "heroGraphNote": "Nodos y aristas reales del grafo, diputado {id}",
     "updatedAt": "actualizado el {date}",
-    "archivedSnapshot": "snapshot de Zenodo · {date}"
+    "archivedSnapshot": "snapshot de Zenodo · {date}",
+    "datesNote": "El grafo está actualizado al {live}. Los archivos de abajo son la instantánea archivada en Zenodo el {zenodo}: publicamos una nueva en los momentos clave, no en cada actualización."
   },
   "Feedback": {
     "prompt": "¿Te ha sido útil?",

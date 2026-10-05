@@ -1258,7 +1258,8 @@
     "readyNote": "available",
     "heroGraphNote": "Real nodes and edges from the graph, deputy {id}",
     "updatedAt": "updated {date}",
-    "archivedSnapshot": "Zenodo snapshot · {date}"
+    "archivedSnapshot": "Zenodo snapshot · {date}",
+    "datesNote": "The graph is updated to {live}. The files below are the snapshot archived on Zenodo on {zenodo}: we publish a new one at key milestones, not at every update."
   },
   "Feedback": {
     "prompt": "Was this useful?",

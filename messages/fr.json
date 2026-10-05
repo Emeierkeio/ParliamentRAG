@@ -1214,7 +1214,8 @@
     "readyNote": "disponible",
     "heroGraphNote": "Nœuds et arcs réels du graphe, député {id}",
     "updatedAt": "mis à jour le {date}",
-    "archivedSnapshot": "instantané Zenodo · {date}"
+    "archivedSnapshot": "instantané Zenodo · {date}",
+    "datesNote": "Le graphe est à jour au {live}. Les fichiers ci-dessous sont l'instantané archivé sur Zenodo le {zenodo} : nous en publions un nouveau aux étapes importantes, pas à chaque mise à jour."
   },
   "Feedback": {
     "prompt": "Cela vous a été utile ?",

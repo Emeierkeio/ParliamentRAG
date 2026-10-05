@@ -1214,7 +1214,8 @@
     "readyNote": "verfügbar",
     "heroGraphNote": "Echte Knoten und Kanten aus dem Graphen, Abgeordneter {id}",
     "updatedAt": "Stand {date}",
-    "archivedSnapshot": "Zenodo-Snapshot · {date}"
+    "archivedSnapshot": "Zenodo-Snapshot · {date}",
+    "datesNote": "Der Graph ist auf dem Stand vom {live}. Die Dateien unten sind der am {zenodo} auf Zenodo archivierte Stand: Einen neuen veröffentlichen wir zu wichtigen Meilensteinen, nicht bei jeder Aktualisierung."
   },
   "Feedback": {
     "prompt": "War das hilfreich?",
