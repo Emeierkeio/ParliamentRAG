@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-label="ParliamentRAG: ricerca aperta sui dati del Parlamento italiano. Università di Milano-Bicocca.">
+<rect width="1280" height="440" rx="28" fill="#F7F8F5"/>
+<svg x="70" y="126" width="122" height="90" viewBox="0 8 224 166"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="#14201C" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="#2d5f8f"/></svg>
+<text x="214" y="196" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="66" font-weight="700" letter-spacing="-2.6" fill="#14201C">ParliamentRAG</text>
+<text x="70" y="290" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#14201C">Ricerca aperta sui dati</text>
+<text x="70" y="326" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="27" font-weight="500" letter-spacing="-0.4" fill="#14201C">del Parlamento italiano.</text>
+<text x="70" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" fill="#5E6B66">Università di Milano-Bicocca</text>
+<rect x="760" y="92" width="456" height="256" rx="20" fill="#FFFFFF" stroke="#E4E8E4" stroke-width="2"/>
+<rect x="788" y="116" width="78" height="26" rx="13" fill="#EFF8F5"/>
+<text x="827" y="134" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#167A68">Grafo</text>
+<text x="880" y="135" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#14201C">Un grafo, tre sistemi</text>
+<line x1="988" y1="245" x2="850" y2="185" stroke="#D5DBD7" stroke-width="2"/>
+<line x1="988" y1="245" x2="850" y2="245" stroke="#D5DBD7" stroke-width="2"/>
+<line x1="988" y1="245" x2="850" y2="305" stroke="#D5DBD7" stroke-width="2"/>
+<line x1="988" y1="245" x2="1126" y2="185" stroke="#D5DBD7" stroke-width="2"/>
+<line x1="988" y1="245" x2="1126" y2="245" stroke="#D5DBD7" stroke-width="2"/>
+<line x1="988" y1="245" x2="1126" y2="305" stroke="#D5DBD7" stroke-width="2"/>
+<rect x="809.8" y="170" width="80.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="850" y="190" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Gruppo</text>
+<rect x="793.0" y="230" width="114.0" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="850" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Intervento</text>
+<rect x="788.8" y="290" width="122.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="850" y="310" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Commissione</text>
+<rect x="1094.2" y="170" width="63.6" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="1126" y="190" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Atto</text>
+<rect x="1073.2" y="230" width="105.6" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="1126" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Votazione</text>
+<rect x="1085.8" y="290" width="80.4" height="30" rx="15" fill="#F1F4F1" stroke="#D5DBD7" stroke-width="2"/>
+<text x="1126" y="310" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill="#14201C">Seduta</text>
+<rect x="939.4" y="230" width="97.2" height="30" rx="15" fill="#167A68"/>
+<text x="988" y="250" text-anchor="middle" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF">Deputato</text>
+</svg>

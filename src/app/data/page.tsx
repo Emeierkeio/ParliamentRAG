@@ -372,7 +372,7 @@ export default function DataPage() {
           <p className="mt-8 max-w-prose text-sm leading-relaxed text-fg-muted">
             {t("licenseNote")}{" "}
             <a
-              href="https://github.com/Emeierkeio/ParliamentRAG"
+              href="https://github.com/Emeierkeio/parliamentrag-iswc"
               target="_blank"
               rel="noopener noreferrer"
               className="link inline-flex min-h-11 items-center gap-0.5"
