@@ -15,6 +15,8 @@ import { useKgStats } from "@/hooks/use-kg-stats";
 import { useLastUpdate } from "@/hooks/use-last-update";
 
 const PILLARS = ["pillar1", "pillar2", "pillar3"] as const;
+const WORK = ["work1", "work2", "work3"] as const;
+const VERIFY_PLAN = "https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md";
 
 function useNumber() {
   const locale = useLocale();
@@ -38,8 +40,8 @@ function useNewsletterEnabled() {
 }
 
 /*
- * Desktop scrolls as one long page. Below md the same content becomes six
- * snapped screens (hero, one per system, papers, newsletter): the parts that
+ * Desktop scrolls as one long page. Below md the same content becomes seven
+ * snapped screens (hero, why, one per system, papers, newsletter): the parts that
  * would overfill a phone screen (stats, pillars, open data) are desktop-only.
  */
 export default function HomePage() {
@@ -48,6 +50,7 @@ export default function HomePage() {
   const screens = useMemo(
     () => [
       { id: "s-intro", label: "ParliamentRAG" },
+      { id: "s-perche", label: t("whyKicker") },
       ...SYSTEMS.map((s) => ({ id: `s-${s.id}`, label: s.name })),
       { id: "s-pubblicazioni", label: t("navPublications") },
       ...(newsletter ? [{ id: "s-newsletter", label: t("navUpdates") }] : []),
@@ -58,6 +61,7 @@ export default function HomePage() {
     <CentroPage reveal>
       <Hero />
       <StatsStrip />
+      <Mission />
       <Systems />
       <SystemScreens />
       <Publications />
@@ -143,6 +147,50 @@ function StatsStrip() {
         <p className="text-sm text-fg-muted sm:ml-auto">{tl("statsAsOf", { date })}</p>
       </div>
     </div>
+  );
+}
+
+/** Why the centre exists and its three lines of work: method, data, verification. */
+function Mission() {
+  const t = useTranslations("Centro");
+  return (
+    <section
+      id="s-perche"
+      className="container-page snap-screen grid content-center gap-10 py-14 md:content-start md:py-24 lg:grid-cols-12 lg:gap-12"
+      aria-labelledby="perche-title"
+    >
+      <div className="lg:col-span-6">
+        <p className="label-mono">{t("whyKicker")}</p>
+        <h2 id="perche-title" className="serif-display mt-4 text-[clamp(1.75rem,5vw,2.5rem)] leading-[1.12] text-fg">
+          {t("whyTitle")}
+        </h2>
+        <p className="mt-5 text-base leading-relaxed text-fg-secondary sm:text-[17px]">{t("whyBody1")}</p>
+        <p className="mt-4 hidden text-base leading-relaxed text-fg-secondary sm:block sm:text-[17px]">{t("whyBody2")}</p>
+      </div>
+      <div className="lg:col-span-6">
+        <p className="label-mono">{t("workKicker")}</p>
+        <ol className="mt-4 divide-y divide-line border-y border-line">
+          {WORK.map((w, i) => (
+            <li key={w} className="flex gap-4 py-4 sm:py-5">
+              <span className="tabular font-mono text-caption leading-6 text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
+              <div>
+                <p className="font-semibold leading-6 text-fg">{t(`${w}Title`)}</p>
+                <p className="mt-1 hidden text-[15px] leading-relaxed text-fg-secondary sm:block">{t(`${w}Body`)}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <a
+          href={VERIFY_PLAN}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-5 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium text-brand-fg"
+        >
+          {t("workLink")}
+          <ArrowUpRight className="size-4" aria-hidden />
+        </a>
+      </div>
+    </section>
   );
 }
 

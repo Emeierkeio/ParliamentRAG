@@ -232,19 +232,13 @@ Prese il 6 ottobre 2026:
 
 1. **Licenza del verificatore:** aperta, Apache 2.0 come il codice di ricerca.
 2. **Nomi dei campi:** in inglese.
-
-Ancora aperte:
-
-3. **Embedding per l'autorevolezza.** Il ricalcolo indipendente dell'autorevolezza ha bisogno degli
-   embedding di passaggi, atti, professioni e titoli di studio. Se non li pubblichiamo, chi verifica deve
-   chiamare un nostro endpoint (strada B) e fidarsi del nostro server. Pubblicarli (strada A) rende il
-   ricalcolo indipendente, ma prima va controllato che i termini di OpenAI permettano di ridistribuire
-   vettori prodotti dai loro modelli. Se non lo permettono, resta la strada C: un modello aperto.
-4. **Le due differenze ammesse nelle citazioni.** Una citazione è valida se compare alla lettera
-   nell'intervento, con due sole eccezioni: gli spazi multipli contano come uno, e la prima lettera può
-   cambiare maiuscola («noi» per «Noi», quando la citazione segue «afferma che»). Tutto il resto conta come
-   modifica: punteggiatura corretta, parole saltate, puntini di sospensione, traduzioni. Fascicoli applica
-   già questa regola; va confermata e poi congelata nella versione 1 dello schema.
+3. **Le due differenze ammesse nelle citazioni**, congelate nella versione 1: gli spazi multipli contano
+   come uno e la prima lettera può cambiare maiuscola. Tutto il resto conta come modifica: punteggiatura
+   corretta, parole saltate, puntini di sospensione, traduzioni. Fascicoli applica già questa regola
+   (`services/citation/verbatim.py`).
+4. **Embedding per l'autorevolezza:** li pubblichiamo (strada A), con versione, su Hugging Face e Zenodo.
+   I termini d'uso di OpenAI assegnano all'utente la proprietà dell'output, embedding compresi. L'endpoint
+   (strada B) resta come scorciatoia; il modello aperto (strada C) diventa un esperimento per la rivista.
 5. **Elenco dei gruppi.** Risolta in Fascicoli: i gruppi e il loro lato (maggioranza, opposizione, Misto)
    vengono dal grafo, nessun elenco scritto a mano. Il verificatore userà la stessa regola: un gruppo è in
    maggioranza se un suo membro ha un incarico nel governo in carica.
