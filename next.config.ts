@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 // The operational tool moved to Fascicoli; temporary until that domain is live.
 const FASCICOLI_URL = 'https://www.fascicoli.it';
 const MOVED_TO_FASCICOLI = [
+  '/iswc',
   '/home',
   '/chat',
   '/tema',
