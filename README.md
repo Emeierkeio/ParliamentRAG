@@ -78,24 +78,24 @@ ParliamentRAG studia come leggere i lavori parlamentari con l'intelligenza artif
 fonti. Il progetto è dell'Università di Milano-Bicocca e parte da un knowledge graph della Camera dei
 Deputati, XIX legislatura, costruito dagli open data ufficiali.
 
-Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it). Il sito non risponde
-a domande: presenta il progetto e manda ai tre sistemi che leggono lo stesso grafo. Per un fatto preciso
-c'è [Stenografo](https://www.stenografo.it), per le posizioni dei gruppi su un tema
-[Fascicoli](https://www.fascicoli.it), per l'Aula posto per posto [Scranno](https://www.scranno.it).
+Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it), che presenta il
+progetto e rimanda ai tre sistemi costruiti sullo stesso grafo. Un fatto preciso lo chiedi a
+[Stenografo](https://www.stenografo.it). Le posizioni dei gruppi su un tema le trovi in
+[Fascicoli](https://www.fascicoli.it), l'Aula posto per posto in [Scranno](https://www.scranno.it).
 
 <table>
   <tr>
     <td width="33%" valign="top">
       <h3>Sistemi</h3>
-      <code>/sistemi</code>: cosa fa ognuno dei tre sistemi, per chi è pensato e come passano la domanda l'uno all'altro.
+      <code>/sistemi</code>: cosa fa ognuno dei tre sistemi e come si passano la domanda.
     </td>
     <td width="33%" valign="top">
       <h3>Pubblicazioni</h3>
-      <code>/pubblicazioni</code>: i due articoli di ISWC 2026 con PDF e BibTeX, gli interventi pubblici, il link alla demo.
+      <code>/pubblicazioni</code>: i due articoli di ISWC 2026 con PDF e BibTeX, gli interventi pubblici e il link alla demo.
     </td>
     <td width="33%" valign="top">
       <h3>Metodo</h3>
-      <code>/method</code>: come si scelgono le fonti, come si pesa l'autorevolezza di chi parla, come si verificano le citazioni.
+      <code>/method</code>: il criterio per scegliere le fonti, i sei pesi dell'autorevolezza, il controllo delle citazioni sul resoconto.
     </td>
   </tr>
   <tr>
@@ -122,7 +122,8 @@ classifica, bussola, ricerca) reindirizzano a Fascicoli: l'elenco sta in `next.c
 
 ## Cosa è aperto
 
-Sono aperti i dati e il modo di controllarli. I sistemi costruiti sopra non lo sono per forza.
+Puoi scaricare il grafo intero, interrogarlo da un assistente AI e leggere il codice del sistema descritto
+nei paper. Stenografo, Fascicoli e Scranno non sono in questa tabella.
 
 | | Dove | Licenza |
 |---|---|---|
@@ -149,10 +150,10 @@ ParliamentRAG/
 └── docs/assets/          grafiche di questo README (build_banner.py)
 ```
 
-Il sito non ha un backend. Le parti dinamiche sono due route:
+Il sito gira senza backend, con due sole route dinamiche:
 
-- `/api/newsletter/subscribe` iscrive alla newsletter con doppio consenso su Brevo. Il sito passa
-  l'indirizzo a Brevo e non lo salva.
+- `/api/newsletter/subscribe` passa l'indirizzo a Brevo, che gestisce il doppio consenso. Il sito non
+  salva l'indirizzo.
 - `/api/feedback/booth` salva in Postgres le risposte al questionario di `/iswc`.
 
 I numeri del grafo, la data dell'ultimo aggiornamento e gli esempi di `/data` stanno in
@@ -190,7 +191,7 @@ Per la build di produzione: `npm run build` e poi `npm run start` (server Next s
 
 <br>
 
-Tutte facoltative in locale. Il modello è in `.env.example`.
+In locale puoi lasciarle vuote. Il modello sta in `.env.example`.
 
 | Variabile | Note |
 |---|---|
@@ -228,12 +229,12 @@ Il codice del sistema presentato sta in [Emeierkeio/parliamentrag-iswc](https://
 il tag `iswc2026-eval` è il codice delle risposte valutate nel paper, il tag `iswc2026-demo` è la versione
 della demo, che risponde su
 [truthful-amazement-production.up.railway.app](https://truthful-amazement-production.up.railway.app).
-Entrambi i tag sono archiviati su Zenodo: [DOI 10.5281/zenodo.23173703](https://doi.org/10.5281/zenodo.23173703).
+Zenodo archivia entrambi i tag: [DOI 10.5281/zenodo.23173703](https://doi.org/10.5281/zenodo.23173703).
 
 > [!NOTE]
-> I paper citano `github.com/Emeierkeio/ParliamentRAG`, che fino a ottobre 2026 era il repository del
-> sistema di ricerca. Ora quel nome è di questo repository. Il codice citato, con il tag `iswc2026-eval`,
-> è in [parliamentrag-iswc](https://github.com/Emeierkeio/parliamentrag-iswc/tree/iswc2026-eval).
+> I paper citano `github.com/Emeierkeio/ParliamentRAG`. Fino a ottobre 2026 quel nome apparteneva al
+> repository del sistema di ricerca; dal 6 ottobre appartiene al sito. Il codice citato, con il tag
+> `iswc2026-eval`, lo trovi in [parliamentrag-iswc](https://github.com/Emeierkeio/parliamentrag-iswc/tree/iswc2026-eval).
 
 <details>
 <summary><b>BibTeX</b></summary>
@@ -255,8 +256,8 @@ Entrambi i tag sono archiviati su Zenodo: [DOI 10.5281/zenodo.23173703](https://
 
 </details>
 
-Il progetto è di Mirko Tritella, Riccardo Pozzi e Matteo Palmonari, Università di Milano-Bicocca, con il
-sostegno del programma Horizon Europe (grant [101189771](https://doi.org/10.3030/101189771), DataPACT).
+Mirko Tritella, Riccardo Pozzi e Matteo Palmonari conducono il progetto all'Università di Milano-Bicocca.
+Lo finanzia il programma Horizon Europe (grant [101189771](https://doi.org/10.3030/101189771), DataPACT).
 
 <br>
 

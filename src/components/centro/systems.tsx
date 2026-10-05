@@ -91,12 +91,14 @@ export const PAPER_DEMO_PDF = "https://emeierkeio.github.io/papers/parliamentrag
    ISWC 2026 proceedings are published (checked 2026-10-03). Swap the button back then. */
 export const PAPER_IN_USE_DOI = "https://doi.org/10.1007/978-3-032-42029-9_24";
 export const PAPER_IN_USE_ARXIV = "https://arxiv.org/abs/2608.13410";
-export const GITHUB_URL = "https://github.com/Emeierkeio/parliamentrag-iswc";
+export const GITHUB_URL = "https://github.com/Emeierkeio/ParliamentRAG";
+/* The graph pipeline and the MCP server code live in the research repo of the ISWC 2026 papers. */
+export const PIPELINE_URL = "https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/build";
 export const ZENODO_URL = "https://doi.org/10.5281/zenodo.21560331";
 export const HF_URL = "https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19";
 export const ORKG_URL = "https://orkg.org/papers/R1909763";
 export const MCP_ENDPOINT = "https://mcp.parliamentrag.it/mcp";
-export const MCP_README = "https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/mcp";
+export const MCP_README = "https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/mcp.md";
 
 export const PAPER_IN_USE_TITLE =
   "Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings";

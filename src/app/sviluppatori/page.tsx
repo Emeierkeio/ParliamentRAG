@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowRight, ArrowUpRight, Check, Copy, KeyRound, Mail } from "lucide-react";
 import { CentroPage, PageIntro } from "@/components/centro/CentroPage";
-import { GITHUB_URL, HF_URL, MCP_ENDPOINT, MCP_README, ZENODO_URL } from "@/components/centro/systems";
+import { HF_URL, MCP_ENDPOINT, MCP_README, PIPELINE_URL, ZENODO_URL } from "@/components/centro/systems";
 
 /* Tool names exposed by mcp/server.py, as listed in mcp/README.md. */
 const MCP_TOOLS = [
@@ -23,7 +23,8 @@ const API_OFFER = ["apiOffer1", "apiOffer2", "apiOffer3", "apiOffer4"] as const;
 const API_CONTACT = "contatti@parliamentrag.it";
 const API_MAILTO = `mailto:${API_CONTACT}?subject=${encodeURIComponent("Richiesta token API ParliamentRAG")}`;
 
-const LOCAL_CMD = "claude mcp add parliamentrag -- uv run /path/to/ParliamentRAG/mcp/server.py";
+const LOCAL_CMD =
+  'claude mcp add parliamentrag -- uvx --from "git+https://github.com/Emeierkeio/parliamentrag-iswc.git#subdirectory=mcp" parliamentrag-mcp';
 
 function CodeLine({ code, label }: { code: string; label: string }) {
   const t = useTranslations("Centro");
@@ -155,7 +156,7 @@ export default function SviluppatoriPage() {
             {[
               { href: ZENODO_URL, label: t("dumpZenodo") },
               { href: HF_URL, label: t("dumpHf") },
-              { href: GITHUB_URL, label: t("dumpCode") },
+              { href: PIPELINE_URL, label: t("dumpCode") },
             ].map((l) => (
               <li key={l.href}>
                 <a href={l.href} target="_blank" rel="noopener noreferrer" className="flex min-h-14 items-center justify-between gap-4 text-[15px] text-fg hover:text-brand-fg">
