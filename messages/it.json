@@ -966,7 +966,7 @@
     "footerBy": "Un progetto di <link>{name}</link>",
     "footerOn": "{name} su {network}",
     "footerSystems": "Sistemi",
-    "footerCentre": "Centro di ricerca",
+    "footerCentre": "Progetto di ricerca",
     "footerLicense": "Licenza CC BY-SA 4.0",
     "footerDisclaimer": "Progetto indipendente: non è affiliato alla Camera dei Deputati e non parla a suo nome.",
     "footerAuthors": "Prof. Matteo Palmonari · Dott. Riccardo Pozzi",
@@ -1681,12 +1681,12 @@
     "stenografoJob": "Risponde a domande sui lavori della Camera: sedute, atti, voti. Ogni risposta ha la fonte ufficiale.",
     "fascicoliJob": "Riassume un tema rispettando i tre criteri di ParliamentRAG: tutti i gruppi, voci autorevoli, citazioni esatte.",
     "scrannoJob": "Ti porta in prima persona nell'Aula di Montecitorio, a vedere il lavoro di ognuno di quelli che ci lavorano ogni giorno.",
-    "homeKicker": "Centro di ricerca · Università di Milano-Bicocca",
-    "homeTitle": "Metodo, dati e verifica per l'AI sul Parlamento.",
-    "homeLead": "Fissiamo i criteri che una risposta sul Parlamento deve rispettare, costruiamo i dati per rispettarli e un modo pubblico per controllarli.",
+    "homeKicker": "Progetto di ricerca · Università di Milano-Bicocca",
+    "homeTitle": "Metodo, dati e verifica per l'AI sui dibattiti delle istituzioni italiane.",
+    "homeLead": "Fissiamo le garanzie che chiediamo a ogni risposta su questi dibattiti, costruiamo i dati per rispettarle e un modo pubblico per controllarle.",
     "homeCtaSystems": "Scopri i sistemi",
     "homeCtaPapers": "Leggi le pubblicazioni",
-    "pillarsLabel": "I tre criteri",
+    "pillarsLabel": "Quali dovrebbero essere le garanzie?",
     "pillar1Title": "Tutti i gruppi",
     "pillar1Body": "Nessun gruppo parlamentare lasciato fuori in silenzio. Se un gruppo non ha parlato del tema, la risposta lo dice.",
     "pillar2Title": "Voci autorevoli",
@@ -1831,6 +1831,11 @@
     "work2Body": "Dagli open data della Camera costruiamo un knowledge graph della XIX legislatura: sedute, interventi, atti, voti, deputati. Lo pubblichiamo intero, in RDF e in tabelle.",
     "work3Title": "Verifica",
     "work3Body": "Stiamo costruendo un verificatore pubblico: gli dai una risposta e ti restituisce un rapporto sui tre criteri. Vale per qualsiasi sistema, compresi i nostri.",
-    "workLink": "Il piano della verifica"
+    "workLink": "Il piano della verifica",
+    "pillarsHow": "Nei nostri sistemi",
+    "pillarsMore": "Leggi il metodo",
+    "pillar1How": "In Fascicoli ogni gruppo ha la sua sezione. In Stenografo citiamo un intervento solo insieme a uno dell'altra parte, maggioranza e opposizione.",
+    "pillar2How": "Scegliamo chi parla con un punteggio di sei componenti e pesi pubblici. In Stenografo citiamo solo relatori, governo e i primi cinque di ogni gruppo.",
+    "pillar3How": "Prendiamo la citazione dal resoconto e la confrontiamo parola per parola: se non coincide, la togliamo."
   }
 }

@@ -966,7 +966,7 @@
     "footerBy": "A project by <link>{name}</link>",
     "footerOn": "{name} on {network}",
     "footerSystems": "Systems",
-    "footerCentre": "Research centre",
+    "footerCentre": "Research project",
     "footerLicense": "CC BY-SA 4.0 licence",
     "footerDisclaimer": "Independent project: not affiliated with the Chamber of Deputies and does not speak on its behalf.",
     "footerAuthors": "Prof. Matteo Palmonari · Dr. Riccardo Pozzi",
@@ -1694,12 +1694,12 @@
     "stenografoJob": "Answers questions about the work of the Chamber: sittings, acts, votes. Every answer carries the official source.",
     "fascicoliJob": "Summarises a topic within ParliamentRAG's three criteria: every group, authoritative voices, exact quotes.",
     "scrannoJob": "Takes you inside the Montecitorio chamber in first person, to see the work of each person who works there every day.",
-    "homeKicker": "Research centre · University of Milano-Bicocca",
-    "homeTitle": "Method, data and verification for AI on Parliament.",
-    "homeLead": "We set the criteria an answer about Parliament must meet, build the data to meet them and a public way to check them.",
+    "homeKicker": "Research project · University of Milano-Bicocca",
+    "homeTitle": "Method, data and verification for AI on the debates of Italian institutions.",
+    "homeLead": "We set the guarantees we ask of every answer about these debates, build the data to meet them and a public way to check them.",
     "homeCtaSystems": "Explore the systems",
     "homeCtaPapers": "Read the publications",
-    "pillarsLabel": "The three criteria",
+    "pillarsLabel": "What should the guarantees be?",
     "pillar1Title": "Every group",
     "pillar1Body": "No parliamentary group silently left out. If a group never spoke on the topic, the answer says so.",
     "pillar2Title": "Authoritative voices",
@@ -1844,6 +1844,11 @@
     "work2Body": "From the Chamber's open data we build a knowledge graph of the 19th legislature: sittings, speeches, acts, votes, deputies. We publish all of it, in RDF and as tables.",
     "work3Title": "Verification",
     "work3Body": "We are building a public verifier: give it an answer and it returns a report on the three criteria. It works for any system, ours included.",
-    "workLink": "The verification plan"
+    "workLink": "The verification plan",
+    "pillarsHow": "In our systems",
+    "pillarsMore": "Read the method",
+    "pillar1How": "In Fascicoli every group has its own section. In Stenografo we quote a speech only alongside one from the other side, majority and opposition.",
+    "pillar2How": "We pick who speaks with a six-component score and public weights. In Stenografo we quote only rapporteurs, the government and each group's top five.",
+    "pillar3How": "We take the quote from the record and compare it word by word: if it does not match, we drop it."
   }
 }

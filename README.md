@@ -7,7 +7,7 @@
 
 <br>
 
-**Il centro di ricerca che definisce come un'AI deve parlare del Parlamento, apre i dati e verifica che le regole siano rispettate.**
+**Il progetto di ricerca che fissa le garanzie per un'AI che parla dei dibattiti delle istituzioni italiane, apre i dati e ne verifica il rispetto.**
 
 <br>
 
@@ -73,7 +73,7 @@
 
 ## Cosa fa
 
-ParliamentRAG è un centro di ricerca dell'Università di Milano-Bicocca. Studia come usare l'intelligenza
+ParliamentRAG è un progetto di ricerca dell'Università di Milano-Bicocca. Studia come usare l'intelligenza
 artificiale sui lavori parlamentari senza perdere le fonti, e lavora su tre fronti:
 
 - **Metodo.** Fissa i criteri che una risposta sul Parlamento deve rispettare: dare voce a tutti i gruppi,
