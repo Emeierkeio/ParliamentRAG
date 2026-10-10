@@ -80,7 +80,7 @@ function Hero() {
   const t = useTranslations("Centro");
   return (
     <section id="s-intro" className="container-page snap-screen grid content-center gap-10 pt-10 pb-14 sm:pt-16 md:content-start lg:grid-cols-12 lg:gap-12 lg:pt-24 lg:pb-20">
-      <div className="lg:col-span-7">
+      <div className="lg:col-span-7 lg:self-center">
         <p className="label-mono rise">{t("homeKicker")}</p>
         <h1 className="serif-display rise mt-5 text-[clamp(2.375rem,9vw,4.25rem)] leading-[1.04] text-fg" style={{ "--i": 1 } as React.CSSProperties}>
           {t("homeTitle")}
@@ -107,25 +107,24 @@ function Hero() {
 
       <aside className="rise hidden md:block lg:col-span-5 lg:pt-3" style={{ "--i": 4 } as React.CSSProperties} aria-labelledby="pillars-title">
         <div className="rounded-lg border border-line bg-surface">
-          <h2 id="pillars-title" className="serif-display border-b border-line px-5 py-4 text-[1.375rem] leading-snug text-fg sm:px-6">
+          <h2 id="pillars-title" className="serif-display border-b border-line px-5 py-3.5 text-[1.3125rem] leading-snug text-fg sm:px-6">
             {t("pillarsLabel")}
           </h2>
           <ol className="divide-y divide-line">
             {PILLARS.map((p, i) => (
-              <li key={p} className="flex gap-4 p-5 sm:px-6">
+              <li key={p} className="flex gap-4 px-5 py-4 sm:px-6">
                 <span className="tabular font-mono text-caption leading-6 text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <p className="font-semibold leading-6 text-fg">{t(`${p}Title`)}</p>
                   <p className="mt-1 text-[15px] leading-relaxed text-fg-secondary">{t(`${p}Body`)}</p>
-                  <p className="mt-3 border-l-2 border-brand pl-3 text-sm leading-relaxed text-fg-secondary">
-                    <span className="label-mono mb-1 block text-brand-fg">{t("pillarsHow")}</span>
-                    {t(`${p}How`)}
+                  <p className="mt-2 border-l-2 border-brand pl-3 text-sm leading-relaxed text-fg-secondary">
+                    <span className="font-medium text-brand-fg">{t("pillarsHow")}.</span> {t(`${p}How`)}
                   </p>
                 </div>
               </li>
             ))}
           </ol>
-          <Link href="/method" className="group flex items-center gap-2 border-t border-line px-5 py-4 text-[15px] font-medium text-brand-fg sm:px-6">
+          <Link href="/method" className="group flex items-center gap-2 border-t border-line px-5 py-3 text-[15px] font-medium text-brand-fg sm:px-6">
             {t("pillarsMore")}
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
           </Link>

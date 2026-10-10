@@ -1847,8 +1847,8 @@
     "workLink": "The verification plan",
     "pillarsHow": "In our systems",
     "pillarsMore": "Read the method",
-    "pillar1How": "In Fascicoli every group has its own section. In Stenografo we quote a speech only alongside one from the other side, majority and opposition.",
-    "pillar2How": "We pick who speaks with a six-component score and public weights. In Stenografo we quote only rapporteurs, the government and each group's top five.",
-    "pillar3How": "We take the quote from the record and compare it word by word: if it does not match, we drop it."
+    "pillar1How": "In Fascicoli every group has its own section. In Stenografo we quote majority and opposition together.",
+    "pillar2How": "We pick who speaks with six criteria and public weights. In Stenografo we quote only rapporteurs, the government and each group's top five.",
+    "pillar3How": "We compare the quote with the record word by word: if it does not match, we drop it."
   }
 }

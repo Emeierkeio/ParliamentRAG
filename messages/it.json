@@ -1834,8 +1834,8 @@
     "workLink": "Il piano della verifica",
     "pillarsHow": "Nei nostri sistemi",
     "pillarsMore": "Leggi il metodo",
-    "pillar1How": "In Fascicoli ogni gruppo ha la sua sezione. In Stenografo citiamo un intervento solo insieme a uno dell'altra parte, maggioranza e opposizione.",
-    "pillar2How": "Scegliamo chi parla con un punteggio di sei componenti e pesi pubblici. In Stenografo citiamo solo relatori, governo e i primi cinque di ogni gruppo.",
-    "pillar3How": "Prendiamo la citazione dal resoconto e la confrontiamo parola per parola: se non coincide, la togliamo."
+    "pillar1How": "In Fascicoli ogni gruppo ha la sua sezione. In Stenografo citiamo maggioranza e opposizione insieme.",
+    "pillar2How": "Scegliamo chi parla con sei criteri a pesi pubblici. In Stenografo citiamo solo relatori, governo e i primi cinque per gruppo.",
+    "pillar3How": "Confrontiamo la citazione con il resoconto parola per parola: se non coincide, la togliamo."
   }
 }
