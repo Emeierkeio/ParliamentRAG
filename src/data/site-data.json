@@ -2,12 +2,12 @@
   "people": 555,
   "speeches": 47763,
   "sessions": 724,
-  "acts": 36903,
+  "acts": 36923,
   "votes": 17575,
   "individual_votes": 7004800,
-  "eurovoc_concepts": 1902,
+  "eurovoc_concepts": 1916,
   "chunks": 178601,
-  "last_update": "2026-10-10",
+  "last_update": "2026-10-11",
   "triples": 863834,
-  "snapshot_at": "2026-10-10"
+  "snapshot_at": "2026-10-11"
 }
