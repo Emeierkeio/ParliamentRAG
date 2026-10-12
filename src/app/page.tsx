@@ -330,11 +330,11 @@ function Paths() {
   );
 }
 
-/** What the data covers and what it does not, and where to report a mistake. */
+/** What the data covers, what comes next, and where to report a mistake. */
 function Coverage() {
   const t = useTranslations("Centro");
   const yes = [1, 2, 3, 4].map((n) => t(`coverYes${n}`));
-  const no = [1, 2, 3, 4].map((n) => t(`coverNo${n}`));
+  const soon = [t("coverNo1")];
   return (
     <section id="s-copertura" className="snap-screen md:container-page md:py-24" aria-labelledby="copertura-title">
       <div data-reveal data-reveal-amount="0.3">
@@ -343,7 +343,7 @@ function Coverage() {
       <div className="mt-6 grid gap-6 md:mt-10 md:grid-cols-12 md:gap-12" data-reveal="group" data-reveal-delay="0.1">
         {[
           { title: t("coverYesTitle"), items: yes, mark: "+" },
-          { title: t("coverNoTitle"), items: no, mark: "–" },
+          { title: t("coverNoTitle"), items: soon, mark: "→" },
         ].map((col) => (
           <div key={col.title} className="md:col-span-4" data-reveal-item>
             <p className="label-mono">{col.title}</p>
