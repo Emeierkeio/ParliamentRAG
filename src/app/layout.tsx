@@ -94,7 +94,7 @@ function startupImages() {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.parliamentrag.it"),
   title: {
-    default: "ParliamentRAG · Risposte AI sul Parlamento, verificabili",
+    default: "ParliamentRAG",
     template: "%s · ParliamentRAG",
   },
   description:
