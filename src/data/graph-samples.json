@@ -1,6 +1,21 @@
 [
  {
   "person": {
+   "id": "p308781",
+   "first_name": "FEDERICA",
+   "last_name": "ONORI"
+  },
+  "group": "AZ",
+  "group_slug": "az",
+  "membership_start": "2024-02-01",
+  "mandate": "mc19_308781_20221004",
+  "speech": "leg19_sed247_tit00090.sub00010.int01530",
+  "act": "aic4_08230_19",
+  "topic": "autodeterminazione",
+  "vote": "leg19_sed38_vot_16"
+ },
+ {
+  "person": {
    "id": "p308912",
    "first_name": "GIAN ANTONIO",
    "last_name": "GIRELLI"
@@ -10,69 +25,9 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_308912_20221010",
   "speech": "leg19_sed134_tit00050.sub00010.int00300",
-  "act": "aic3_00586_19",
-  "topic": "protezione civile",
+  "act": "aic5_05320_19",
+  "topic": "brevetto",
   "vote": "leg19_sed38_vot_53"
- },
- {
-  "person": {
-   "id": "p307348",
-   "first_name": "LEONARDO",
-   "last_name": "DONNO"
-  },
-  "group": "M5S",
-  "group_slug": "m5s",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_307348_20221008",
-  "speech": "leg19_sed260_tit00090.sub00010.int00460",
-  "act": "aic2_00739_19",
-  "topic": "minore età civile",
-  "vote": "leg19_sed38_vot_58"
- },
- {
-  "person": {
-   "id": "p306521",
-   "first_name": "FILIBERTO",
-   "last_name": "ZARATTI"
-  },
-  "group": "ALLEANZA VERDI E SINISTRA",
-  "group_slug": "alleanza-verdi-e-sinistr",
-  "membership_start": "2022-10-27",
-  "mandate": "mc19_306521_20221008",
-  "speech": "leg19_sed460_tit00070.sub00170.int00020",
-  "act": "aic4_00759_19",
-  "topic": "sequestro di beni",
-  "vote": "leg19_sed33_vot_51"
- },
- {
-  "person": {
-   "id": "p302838",
-   "first_name": "MICHELA VITTORIA",
-   "last_name": "BRAMBILLA"
-  },
-  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-  "group_slug": "noi-moderati-noi-con-l-i",
-  "membership_start": "2023-03-02",
-  "mandate": "mc19_302838_20220930",
-  "speech": "leg19_sed85_tit00050.int00060",
-  "act": "aic9_01038_A_057_19",
-  "topic": "animale domestico",
-  "vote": "leg19_sed43_vot_23"
- },
- {
-  "person": {
-   "id": "p301459",
-   "first_name": "LAURA",
-   "last_name": "RAVETTO"
-  },
-  "group": "MISTO",
-  "group_slug": "misto",
-  "membership_start": "2026-05-20",
-  "mandate": "mc19_301459_20221003",
-  "speech": "leg19_sed604_tit00040.sub00010.int00140",
-  "act": "aic9_02822_B_035_19",
-  "topic": "partiti politici",
-  "vote": "leg19_sed38_vot_50"
  },
  {
   "person": {
@@ -85,9 +40,24 @@
   "membership_start": "2023-11-20",
   "mandate": "mc19_300480_20221008",
   "speech": "leg19_sed333_tit00030.sub00020.int00160",
-  "act": "aic4_04287_19",
-  "topic": "professioni del settore delle comunicazioni",
+  "act": "aic4_00479_19",
+  "topic": "diritto alla salute",
   "vote": "leg19_sed38_vot_35"
+ },
+ {
+  "person": {
+   "id": "p302838",
+   "first_name": "MICHELA VITTORIA",
+   "last_name": "BRAMBILLA"
+  },
+  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+  "group_slug": "noi-moderati-noi-con-l-i",
+  "membership_start": "2023-03-02",
+  "mandate": "mc19_302838_20220930",
+  "speech": "leg19_sed85_tit00050.int00060",
+  "act": "aic4_05043_19",
+  "topic": "animale domestico",
+  "vote": "leg19_sed43_vot_23"
  },
  {
   "person": {
@@ -100,9 +70,24 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_307683_20221003",
   "speech": "leg19_sed73_tit00070.sub00080.int00080",
-  "act": "aic9_02750_146_19",
-  "topic": "protezione del consumatore",
+  "act": "aic4_01438_19",
+  "topic": "giudice",
   "vote": "leg19_sed33_vot_60"
+ },
+ {
+  "person": {
+   "id": "p306521",
+   "first_name": "FILIBERTO",
+   "last_name": "ZARATTI"
+  },
+  "group": "ALLEANZA VERDI E SINISTRA",
+  "group_slug": "alleanza-verdi-e-sinistr",
+  "membership_start": "2022-10-27",
+  "mandate": "mc19_306521_20221008",
+  "speech": "leg19_sed460_tit00070.sub00170.int00020",
+  "act": "aic9_02669_A_017_19",
+  "topic": "impatto ambientale",
+  "vote": "leg19_sed33_vot_51"
  },
  {
   "person": {
@@ -115,9 +100,39 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_308889_20221010",
   "speech": "leg19_sed388_tit00100.sub00010.int00020",
-  "act": "aic1_00439_19",
-  "topic": "contraffazione",
+  "act": "aic9_01633_A_136_19",
+  "topic": "competenza amministrativa",
   "vote": "leg19_sed37_vot_2"
+ },
+ {
+  "person": {
+   "id": "p307348",
+   "first_name": "LEONARDO",
+   "last_name": "DONNO"
+  },
+  "group": "M5S",
+  "group_slug": "m5s",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307348_20221008",
+  "speech": "leg19_sed260_tit00090.sub00010.int00460",
+  "act": "aic9_02183_A_078_19",
+  "topic": "casa editrice",
+  "vote": "leg19_sed38_vot_58"
+ },
+ {
+  "person": {
+   "id": "p301459",
+   "first_name": "LAURA",
+   "last_name": "RAVETTO"
+  },
+  "group": "MISTO",
+  "group_slug": "misto",
+  "membership_start": "2026-05-20",
+  "mandate": "mc19_301459_20221003",
+  "speech": "leg19_sed604_tit00040.sub00010.int00140",
+  "act": "aic9_03045_A_014_19",
+  "topic": "industria del gas",
+  "vote": "leg19_sed38_vot_50"
  },
  {
   "person": {
@@ -130,23 +145,8 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_307657_20221003",
   "speech": "leg19_sed46_tit00080.int00500",
-  "act": "aic9_03083_A_024_19",
-  "topic": "diritto di voto",
+  "act": "aic5_03843_19",
+  "topic": "trasporto ferroviario",
   "vote": "leg19_sed38_vot_22"
- },
- {
-  "person": {
-   "id": "p308781",
-   "first_name": "FEDERICA",
-   "last_name": "ONORI"
-  },
-  "group": "AZ",
-  "group_slug": "az",
-  "membership_start": "2024-02-01",
-  "mandate": "mc19_308781_20221004",
-  "speech": "leg19_sed247_tit00090.sub00010.int01530",
-  "act": "aic9_01114_A_122_19",
-  "topic": "accesso all'occupazione",
-  "vote": "leg19_sed38_vot_16"
  }
 ]
