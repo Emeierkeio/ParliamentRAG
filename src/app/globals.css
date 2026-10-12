@@ -192,6 +192,50 @@
   animation-delay: calc(var(--i, 0) * 70ms);
 }
 
+/*
+ * Entrance animations (components/motion/reveal.ts). Only html.motion-ready
+ * hides anything, and that class is set before paint only when motion is
+ * allowed and JS runs: otherwise the content shows at its final state.
+ */
+.motion-ready [data-reveal]:not([data-reveal="words"], [data-reveal="group"]):not([data-revealed]),
+.motion-ready [data-reveal="group"]:not([data-revealed]) [data-reveal-item] {
+  opacity: 0;
+}
+.motion-ready [data-reveal="words"]:not([data-revealed]) .rv-word {
+  opacity: 0;
+  transform: translateY(115%);
+}
+.rv-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  /* Room for descenders and italic overhang inside the clip box */
+  padding: 0 0.06em 0.14em;
+  margin: 0 -0.06em -0.14em;
+}
+.rv-word {
+  display: inline-block;
+}
+
+/*
+ * Light-to-dark section (components/motion/ThemeShift.tsx). --page-bg is
+ * resolved on :root, so inside the data-theme="dark" wrapper it still holds
+ * the page colour while --bg holds the dark one; --shift mixes the two.
+ */
+:root {
+  --page-bg: var(--bg);
+}
+.theme-shift {
+  --shift: 1;
+  background-color: color-mix(in oklab, var(--page-bg), var(--bg) calc(var(--shift) * 100%));
+  color: var(--fg);
+}
+.theme-shift [data-shift-reveal] {
+  opacity: clamp(0, calc((var(--shift) - 0.45) * 2.2), 1);
+  transform: translateY(calc((1 - var(--shift)) * 44px));
+  filter: blur(calc(max(0, 0.7 - var(--shift)) * 12px));
+}
+
 @utility z-raised { z-index: var(--z-raised); }
 @utility z-dock { z-index: var(--z-dock); }
 @utility z-header { z-index: var(--z-header); }

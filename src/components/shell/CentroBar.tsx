@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -39,6 +39,25 @@ function useIsDark() {
   return { isDark, toggle: () => setTheme(isDark ? "light" : "dark") };
 }
 
+/** True once the page has left the top: the bar turns to glass from there. */
+function useScrolled() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    let frame = 0;
+    const read = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setScrolled(window.scrollY > 8));
+    };
+    read();
+    window.addEventListener("scroll", read, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", read);
+    };
+  }, []);
+  return scrolled;
+}
+
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -50,6 +69,7 @@ export function CentroBar() {
   const locale = useLocale();
   const pathname = usePathname();
   const { isDark, toggle } = useIsDark();
+  const scrolled = useScrolled();
   const [open, setOpen] = useState(false);
   const [openedAt, setOpenedAt] = useState(pathname);
   // Closing on navigation: the sheet records the path it was opened on.
@@ -61,7 +81,12 @@ export function CentroBar() {
   const current = LOCALES.find((l) => l.code === locale) ?? LOCALES[0];
 
   return (
-    <header className="sticky top-0 z-header border-b border-line bg-bg/90 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
+    <header
+      className={cn(
+        "sticky top-0 z-header border-b pt-[env(safe-area-inset-top)] transition-[background-color,border-color,backdrop-filter] duration-500 ease-[cubic-bezier(.16,1,.3,1)]",
+        scrolled ? "border-line bg-bg/70 backdrop-blur-2xl backdrop-saturate-150" : "border-transparent bg-bg backdrop-blur-none",
+      )}
+    >
       <div className="container-page flex h-[var(--header-h)] items-center gap-4">
         <Link
           href="/"

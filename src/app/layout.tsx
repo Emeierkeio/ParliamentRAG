@@ -9,6 +9,7 @@ import { SidebarStateProvider } from '@/components/layout/SidebarStateProvider';
 import { Suspense } from "react";
 import { UrlParamSync } from "@/components/layout/UrlParamSync";
 import { LaunchScreen } from "@/components/brand/LaunchScreen";
+import { MOTION_READY_SCRIPT } from "@/components/motion/ready-script";
 import "./globals.css";
 
 // ─── Maintenance mode ────────────────────────────────────────────────────────
@@ -93,11 +94,11 @@ function startupImages() {
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.parliamentrag.it"),
   title: {
-    default: "ParliamentRAG",
+    default: "ParliamentRAG · Risposte AI sul Parlamento, verificabili",
     template: "%s · ParliamentRAG",
   },
   description:
-    "Progetto di ricerca dell'Università di Milano-Bicocca sui dati del Parlamento italiano: knowledge graph della Camera dei Deputati, retrieval che tiene conto dell'autorevolezza di chi parla, dati aperti. Casa di Stenografo, Fascicoli e Scranno.",
+    "Progetto di ricerca dell'Università di Milano-Bicocca: tre sistemi gratuiti e dati aperti per risposte dell'AI sulla Camera con fonti da controllare.",
   keywords: [
     "parlamento italiano",
     "camera dei deputati",
@@ -170,6 +171,8 @@ export default async function RootLayout({
         // safe-area strip with the body background
         className="antialiased bg-background text-foreground"
       >
+        {/* Before any content paints: arms the entrance animations (reveal.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_READY_SCRIPT }} />
         <ThemeProvider>
         <LaunchScreen />
         {MAINTENANCE_MODE ? (

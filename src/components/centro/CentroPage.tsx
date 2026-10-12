@@ -5,10 +5,12 @@ import { useTranslations } from "next-intl";
 import { CentroBar } from "@/components/shell/CentroBar";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { cn } from "@/lib/utils";
+import { useReveals } from "@/components/motion/useReveals";
 
 /** Chrome shared by every page of the research site. */
 export function CentroPage({ children, reveal = false }: { children: ReactNode; reveal?: boolean }) {
   const t = useTranslations("Centro");
+  useReveals();
   return (
     <div className="flex min-h-[100dvh] flex-col bg-bg text-fg">
       <a
