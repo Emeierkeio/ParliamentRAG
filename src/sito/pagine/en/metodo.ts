@@ -57,7 +57,7 @@ const contenuto: Contenuto = {
             <span class="passo__nodo" aria-hidden="true">2</span>
             <div class="passo__corpo">
               <h3>Search in the speeches</h3>
-              <p>A hybrid search, by meaning and by words, finds the relevant speeches in the Chamber.</p>
+              <p>A hybrid search, by meaning and by words, finds the relevant floor speeches.</p>
               <span class="passo__esce">out: the candidate speeches</span>
             </div>
           </li>
@@ -65,7 +65,7 @@ const contenuto: Contenuto = {
             <span class="passo__nodo" aria-hidden="true">3</span>
             <div class="passo__corpo">
               <h3>Authority</h3>
-              <p>For every deputy who appears, we compute how much they work on the topic of this question.</p>
+              <p>For every member of Parliament who appears, we compute how much they work on the topic of this question.</p>
               <span class="passo__esce">out: who speaks for each group</span>
             </div>
           </li>
@@ -128,7 +128,7 @@ const contenuto: Contenuto = {
           </div>
           <div>
             <span class="etichetta">How to check it</span>
-            <p>Count the groups named in the answer and compare them with those sitting in the Chamber. For each missing group, look for the sentence that explains why it is missing.</p>
+            <p>Count the groups named in the answer and compare them with those sitting in the house. For each missing group, look for the sentence that explains why it is missing.</p>
             <p><a class="collegamento" href="/en/verification">Try the check on the Verification page</a></p>
           </div>
         </div>
@@ -165,7 +165,7 @@ const contenuto: Contenuto = {
         </div>
 
         <h3 class="titolo-3 compare" style="margin-top:var(--s-7)">Six criteria, one weighted sum</h3>
-        <p class="compare tenue" style="margin-top:var(--s-3);max-width:60ch">Each criterion is worth between 0 and 1 and is measured against the question. A deputy's score is the sum of the six, each multiplied by its weight.</p>
+        <p class="compare tenue" style="margin-top:var(--s-3);max-width:60ch">Each criterion is worth between 0 and 1 and is measured against the question. A member's score is the sum of the six, each multiplied by its weight.</p>
         <div class="tabella-scorri compare tabella-pesi">
           <table class="tabella">
             <thead><tr><th scope="col">Criterion</th><th scope="col" class="num">Weight</th><th scope="col">What it measures</th></tr></thead>
@@ -206,7 +206,7 @@ const contenuto: Contenuto = {
               </div>
               <div class="chiave" id="chiave"></div>
               <p class="scarti" id="scarti" aria-live="polite"></p>
-              <p class="nota">Only the distribution of the weight changes here. We do not recompute the ranking of the deputies: that would need the data of a real question.</p>
+              <p class="nota">Only the distribution of the weight changes here. We do not recompute the ranking of the members of Parliament: that would need the data of a real question.</p>
             </div>
           </div>
         </div>
@@ -221,7 +221,7 @@ const contenuto: Contenuto = {
           <span class="garanzia__cifra" aria-hidden="true">03</span>
           <h2 class="titolo-2" id="t-esatte">Exact quotes</h2>
         </div>
-        <p class="garanzia__dice compare">What is in quotation marks was said in the Chamber, by the person we attribute it to, in those words.</p>
+        <p class="garanzia__dice compare">What is in quotation marks was said on the floor, by the person we attribute it to, in those words.</p>
 
         <div class="tre-colonne compare">
           <div>
@@ -237,7 +237,7 @@ const contenuto: Contenuto = {
           </div>
           <div>
             <span class="etichetta">How to check it</span>
-            <p>Every quote links to the official document of the Chamber, at the exact point of the speech. One click is enough.</p>
+            <p>Every quote links to the official record of the Chamber or the Senate. One click is enough.</p>
           </div>
         </div>
 
@@ -256,7 +256,7 @@ const contenuto: Contenuto = {
       <section class="capitolo" id="bussola" aria-labelledby="t-bussola">
         <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">The compass, in the research demo</p></div>
         <h2 class="titolo-2 compare" id="t-bussola">Where the groups stand, on that question.</h2>
-        <p class="attacco compare">The compass describes what the groups argued in the Chamber on a precise question. It does not certify their political position.</p>
+        <p class="attacco compare">The compass describes what the groups argued on the floor on a precise question. It does not certify their political position.</p>
 
         <div class="bussola">
           <ol class="compare">
@@ -282,10 +282,10 @@ const contenuto: Contenuto = {
           <h2 class="titolo-2" id="t-limiti">Before you use an answer, know this.</h2>
           <ol>
             <li><div><p>The generated text can contain errors or omissions.</p><p>The guarantees check groups, voices and quotes. The rest of the answer is written by a model.</p></div></li>
-            <li><div><p>A relevant speech may not be retrieved.</p><p>The search finds a lot, not everything. An absence in the answer does not prove an absence in the Chamber.</p></div></li>
+            <li><div><p>A relevant speech may not be retrieved.</p><p>The search finds a lot, not everything. An absence in the answer does not prove that nobody spoke about it on the floor.</p></div></li>
             <li><div><p>An exact quote is still a choice.</p><p>The system chooses the passage and the frame. The context is in the record.</p></div></li>
             <li><div><p>Authority depends on our weights.</p><p>With different weights, other people would speak. That is why we publish them.</p></div></li>
-            <li><div><p>It is an independent project.</p><p>It is not affiliated with the Chamber of Deputies, which does not endorse it and is not responsible for it.</p></div></li>
+            <li><div><p>It is an independent project.</p><p>It is not affiliated with the Chamber of Deputies or the Senate of the Republic, which do not endorse it and are not responsible for it.</p></div></li>
             <li><div><p>When it matters, check the official record.</p><p>Every quote has the link. Use it.</p></div></li>
           </ol>
           <p class="limiti__piede">Found an error? Write to <a href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a> with the link to the answer.</p>

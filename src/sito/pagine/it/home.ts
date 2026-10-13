@@ -47,8 +47,8 @@ const contenuto: Contenuto = {
       <div class="problema">
         <h2 class="titolo-2 compare">Sempre più persone chiedono all'AI cosa succede in Parlamento.</h2>
         <div class="problema__testo compare" style="--ritardo:120ms">
-          <p>Un assistente può lasciare fuori un gruppo, far parlare chi del tema non si occupa, mettere in bocca a un deputato parole mai dette. <strong>Chi legge non ha modo di accorgersene.</strong></p>
-          <p>I dati per controllare esistono: la Camera pubblica resoconti, atti e voti. Mancano un metodo che dica cosa controllare e uno strumento che lo faccia. ParliamentRAG lavora su entrambi.</p>
+          <p>Un assistente può lasciare fuori un gruppo, far parlare chi del tema non si occupa, mettere in bocca a un parlamentare parole mai dette. <strong>Chi legge non ha modo di accorgersene.</strong></p>
+          <p>I dati per controllare esistono: Camera e Senato pubblicano resoconti, atti e voti. Mancano un metodo che dica cosa controllare e uno strumento che lo faccia. ParliamentRAG lavora su entrambi.</p>
         </div>
       </div>
     </div>
@@ -151,13 +151,13 @@ const contenuto: Contenuto = {
   <section class="sezione numeri">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Nel grafo, al <span id="data-agg">{{dataAgg}}</span></p></div>
-      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">La XIX legislatura della Camera, collegata fatto per fatto.</h2>
+      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">La XIX legislatura di Camera e Senato, collegata fatto per fatto.</h2>
       <div class="numeri__griglia" id="numeri">{{numeri}}</div>
       <div class="fila compare" style="margin-top:var(--s-7)">
         <a class="btn btn--linea" href="/dati">Scarica il grafo</a>
         <a class="btn btn--linea" href="/sviluppatori">Collega un assistente AI</a>
       </div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Fonte: open data della Camera dei Deputati e thesaurus EuroVoc. Licenza CC BY-SA 4.0.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Fonti: open data della Camera dei Deputati e del Senato della Repubblica, thesaurus EuroVoc. Licenza CC BY-SA 4.0.</p>
     </div>
   </section>
 
@@ -190,16 +190,16 @@ const contenuto: Contenuto = {
         <div class="compare">
           <h3>Copre</h3>
           <ul>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Camera dei Deputati, XIX legislatura, dal 13 ottobre 2022</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Camera dei Deputati e Senato della Repubblica nella XIX legislatura, dal 13 ottobre 2022</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Resoconti delle sedute in Aula, con il testo integrale</li>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Atti e votazioni elettroniche, con il voto di ogni deputato</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Atti e votazioni elettroniche, con il voto di ogni parlamentare</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Aggiornamento a ogni nuova seduta</li>
           </ul>
         </div>
         <div class="compare presto" style="--ritardo:100ms">
           <h3>Prossimamente</h3>
           <ul>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>Senato della Repubblica, XIX legislatura</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>Le legislature precedenti alla XIX</li>
           </ul>
         </div>
         <div class="compare" style="--ritardo:200ms">
@@ -211,7 +211,7 @@ const contenuto: Contenuto = {
       <div style="margin-top:var(--s-8)">
         <h2 class="titolo-3 compare">Domande frequenti</h2>
         <div class="compare" style="margin-top:var(--s-4);border-top:1px solid var(--filetto)">
-          <details class="domanda"><summary>È un servizio ufficiale della Camera?</summary><p class="domanda__r">No. È un progetto di ricerca indipendente nato all'Università di Milano-Bicocca. Usa gli open data che la Camera pubblica su dati.camera.it, ma non è affiliato alla Camera e non parla a suo nome.</p></details>
+          <details class="domanda"><summary>È un servizio ufficiale del Parlamento?</summary><p class="domanda__r">No. È un progetto di ricerca indipendente nato all'Università di Milano-Bicocca. Usa gli open data che Camera e Senato pubblicano su dati.camera.it e dati.senato.it, ma non è affiliato al Parlamento e non parla a suo nome.</p></details>
           <details class="domanda"><summary>Posso fidarmi delle citazioni?</summary><p class="domanda__r">Delle parole sì: ogni citazione è confrontata con il resoconto e ha il link alla fonte. Il resto della risposta lo scrive un modello di AI, che può omettere qualcosa o sbagliare. Per un uso che conta, controlla sul resoconto.</p></details>
           <details class="domanda"><summary>È gratis?</summary><p class="domanda__r">Sì. Stenografo, Fascicoli e Scranno si usano senza account e senza pagare. I dati si scaricano liberamente.</p></details>
           <details class="domanda"><summary>Posso usare una risposta in un articolo?</summary><p class="domanda__r">Sì. Cita la fonte ufficiale linkata accanto a ogni frase, non il testo generato. Se scrivi del progetto, nella pagina Ricerca trovi il riferimento in BibTeX.</p></details>

@@ -1,8 +1,8 @@
 # Server MCP di ParliamentRAG
 
-Con il server MCP il tuo assistente AI legge i dati della Camera dei Deputati, XIX legislatura: cerca
-negli interventi e negli atti, apre le sedute con il riassunto, mostra come ha votato ogni deputato e
-riporta il testo esatto degli emendamenti votati. Funziona con Claude e con qualunque client
+Con il server MCP il tuo assistente AI legge i dati del Parlamento (Camera e Senato), XIX legislatura:
+cerca negli interventi e negli atti, apre le sedute con il riassunto, mostra come ha votato ogni
+parlamentare e riporta il testo esatto degli emendamenti votati. Funziona con Claude e con qualunque client
 [MCP](https://modelcontextprotocol.io).
 
 Il server legge l'API di ParliamentRAG e non scrive nulla. Non ti servono credenziali né un database.
@@ -18,13 +18,14 @@ Aggiungi `https://mcp.parliamentrag.it/mcp` ai connettori del tuo assistente. No
 
 | Tool | Cosa fa |
 |---|---|
-| `search_parliament` | Ricerca full-text e semantica su interventi in Aula e atti parlamentari |
-| `list_sessions` | Sedute con riassunto, dibattiti e conteggi, a pagine |
+| `search_parliament` | Ricerca full-text e semantica su interventi in Aula e atti parlamentari. Con `chamber` scegli `"camera"`, `"senato"` o `"both"` (predefinito) |
+| `list_sessions` | Sedute con riassunto, dibattiti e conteggi, a pagine. Accetta `chamber` come `search_parliament` |
 | `get_session_votes` | Le votazioni di una seduta |
-| `get_vote_details` | Una votazione: totali, voti per gruppo, atto collegato con scheda e PDF, voto di ogni deputato, scrutinio segreto |
+| `get_vote_details` | Una votazione: totali, voti per gruppo, atto collegato con scheda e PDF, voto di ogni parlamentare, scrutinio segreto |
 | `get_voted_text` | Il testo dell'emendamento o dell'articolo votato, dall'Allegato A del resoconto |
 | `get_debate` | Un dibattito: riassunto, atti discussi, oratori |
-| `get_vote_hemicycle` | L'emiciclo della votazione come immagine, un punto per deputato colorato per voto |
+| `get_vote_hemicycle` | L'emiciclo della votazione come immagine, un punto per deputato o senatore colorato per voto |
+| `verify_answer` | Controlla una risposta sulle tre garanzie: tutti i gruppi, voci autorevoli, citazioni esatte. Con `chamber` (`"camera"`, `"senato"` o `"both"`, predefinito) dici di quale ramo parla la risposta |
 
 ## Installazione in locale
 
@@ -76,4 +77,4 @@ claude mcp add parliamentrag -- parliamentrag-mcp
 
 <br>
 
-<sub>Dati: Camera dei Deputati, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it">CC BY-SA 4.0</a>. Progetto indipendente, non affiliato alla Camera dei Deputati.</sub>
+<sub>Dati: Camera dei Deputati, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it">CC BY-SA 4.0</a>; Senato della Repubblica, <a href="https://creativecommons.org/licenses/by/3.0/it/">CC BY 3.0</a>. Progetto indipendente, non affiliato al Parlamento.</sub>

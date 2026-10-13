@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Research project · University of Milano-Bicocca</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms;font-size:clamp(2.5rem,1.3rem + 3.9vw,5rem);line-height:.98;letter-spacing:-.03em">Talking about Parliament needs <em>guarantees</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">A debate in the Chamber is reported correctly only if every party has a voice, if the people speaking know the topic and if the words in quotation marks were really said. ParliamentRAG checks these three guarantees in AI answers about the institutions, and applies them in free tools for anyone.</p>
+        <p class="attacco compare" style="--ritardo:160ms">A parliamentary debate is reported correctly only if every party has a voice, if the people speaking know the topic and if the words in quotation marks were really said. ParliamentRAG checks these three guarantees in AI answers about the institutions, and applies them in free tools for anyone.</p>
         <div class="fila apertura__azioni compare" style="--ritardo:240ms">
           <a class="btn btn--accento" href="https://www.stenografo.it">Ask a question <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
           <a class="btn btn--linea" href="#garanzie">The three guarantees</a>
@@ -47,8 +47,8 @@ const contenuto: Contenuto = {
       <div class="problema">
         <h2 class="titolo-2 compare">More and more people ask AI what is happening in Parliament.</h2>
         <div class="problema__testo compare" style="--ritardo:120ms">
-          <p>An assistant can leave a group out, let someone who does not work on the topic speak for it, put words a deputy never said into their mouth. <strong>Readers have no way to notice.</strong></p>
-          <p>The data to check exists: the Chamber publishes records, acts and votes. What is missing is a method that says what to check and a tool that does it. ParliamentRAG works on both.</p>
+          <p>An assistant can leave a group out, let someone who does not work on the topic speak for it, put words a member of Parliament never said into their mouth. <strong>Readers have no way to notice.</strong></p>
+          <p>The data to check exists: the Chamber and the Senate publish records, acts and votes. What is missing is a method that says what to check and a tool that does it. ParliamentRAG works on both.</p>
         </div>
       </div>
     </div>
@@ -81,7 +81,7 @@ const contenuto: Contenuto = {
           <p class="garanzia__come"><span class="etichetta">Why the weights are public</span>They are an editorial choice, not a neutral measure. We publish them so that anyone can challenge them.</p>
         </div>
         <div class="pesi compare" style="--ritardo:120ms" aria-label="Weights of the six authority criteria">
-          <div class="peso"><span class="peso__nome">Speeches in the Chamber<small>how much, and how recently, they spoke about the topic</small></span><span class="peso__barra"><i style="--w:100%;--ritardo:0ms"></i></span><span class="peso__v">0.25</span></div>
+          <div class="peso"><span class="peso__nome">Speeches on the floor<small>how much, and how recently, they spoke about the topic</small></span><span class="peso__barra"><i style="--w:100%;--ritardo:0ms"></i></span><span class="peso__v">0.25</span></div>
           <div class="peso"><span class="peso__nome">Committee<small>how close their committee is to the topic</small></span><span class="peso__barra"><i style="--w:100%;--ritardo:80ms"></i></span><span class="peso__v">0.25</span></div>
           <div class="peso"><span class="peso__nome">Signed acts<small>bills and acts on the topic, weighted by recency</small></span><span class="peso__barra"><i style="--w:80%;--ritardo:160ms"></i></span><span class="peso__v">0.20</span></div>
           <div class="peso"><span class="peso__nome">Profession<small>affinity between their work and the topic</small></span><span class="peso__barra"><i style="--w:60%;--ritardo:240ms"></i></span><span class="peso__v">0.15</span></div>
@@ -94,7 +94,7 @@ const contenuto: Contenuto = {
         <div class="compare">
           <p class="garanzia__n">03</p>
           <h3 class="titolo-2">Exact quotes</h3>
-          <p class="garanzia__testo">What is in quotation marks was said in the Chamber, by the person we attribute it to. We compare every quote with the record word for word: if it does not match, we remove it.</p>
+          <p class="garanzia__testo">What is in quotation marks was said on the floor, by the person we attribute it to. We compare every quote with the record word for word: if it does not match, we remove it.</p>
           <p class="garanzia__come"><span class="etichetta">Try it</span>Change even a single word of the quote next to this text and see what happens.</p>
         </div>
         <div class="confronto compare" style="--ritardo:120ms">
@@ -151,13 +151,13 @@ const contenuto: Contenuto = {
   <section class="sezione numeri">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">In the graph, as of <span id="data-agg">{{dataAgg}}</span></p></div>
-      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">The Chamber's 19th legislature, linked fact by fact.</h2>
+      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">The 19th legislature of the Chamber and the Senate, linked fact by fact.</h2>
       <div class="numeri__griglia" id="numeri">{{numeri}}</div>
       <div class="fila compare" style="margin-top:var(--s-7)">
         <a class="btn btn--linea" href="/en/data">Download the graph</a>
         <a class="btn btn--linea" href="/en/developers">Connect an AI assistant</a>
       </div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Source: open data of the Chamber of Deputies and the EuroVoc thesaurus. Licence CC BY-SA 4.0.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Sources: open data of the Chamber of Deputies and the Senate of the Republic, EuroVoc thesaurus. Licence CC BY-SA 4.0.</p>
     </div>
   </section>
 
@@ -190,16 +190,16 @@ const contenuto: Contenuto = {
         <div class="compare">
           <h3>Covers</h3>
           <ul>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Chamber of Deputies, 19th legislature, from 13 October 2022</li>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Records of the sittings in the Chamber, with the full text</li>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Acts and electronic votes, with the vote of every deputy</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Chamber of Deputies and Senate of the Republic in the 19th legislature, from 13 October 2022</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Records of the plenary sittings, with the full text</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Acts and electronic votes, with the vote of every member of Parliament</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Updated after every new sitting</li>
           </ul>
         </div>
         <div class="compare presto" style="--ritardo:100ms">
           <h3>Coming soon</h3>
           <ul>
-            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>Senate of the Republic, 19th legislature</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>Legislatures before the 19th</li>
           </ul>
         </div>
         <div class="compare" style="--ritardo:200ms">
@@ -211,7 +211,7 @@ const contenuto: Contenuto = {
       <div style="margin-top:var(--s-8)">
         <h2 class="titolo-3 compare">Frequently asked questions</h2>
         <div class="compare" style="margin-top:var(--s-4);border-top:1px solid var(--filetto)">
-          <details class="domanda"><summary>Is it an official service of the Chamber?</summary><p class="domanda__r">No. It is an independent research project started at the University of Milano-Bicocca. It uses the open data the Chamber publishes on dati.camera.it, but it is not affiliated with the Chamber and does not speak on its behalf.</p></details>
+          <details class="domanda"><summary>Is it an official service of Parliament?</summary><p class="domanda__r">No. It is an independent research project started at the University of Milano-Bicocca. It uses the open data the Chamber and the Senate publish on dati.camera.it and dati.senato.it, but it is not affiliated with Parliament and does not speak on its behalf.</p></details>
           <details class="domanda"><summary>Can I trust the quotes?</summary><p class="domanda__r">The words, yes: every quote is compared with the record and links to the source. The rest of the answer is written by an AI model, which can leave something out or make mistakes. When it matters, check the record.</p></details>
           <details class="domanda"><summary>Is it free?</summary><p class="domanda__r">Yes. Stenografo, Fascicoli and Scranno work without an account and without paying. The data can be downloaded freely.</p></details>
           <details class="domanda"><summary>Can I use an answer in an article?</summary><p class="domanda__r">Yes. Cite the official source linked next to every sentence, not the generated text. If you write about the project, the Research page has the BibTeX reference.</p></details>

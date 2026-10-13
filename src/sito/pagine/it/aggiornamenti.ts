@@ -29,6 +29,21 @@ const contenuto: Contenuto = {
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em" id="conteggio" aria-live="polite">Ottobre 2026</p></div>
 
       <ol class="cronaca" id="cronaca">
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-14">14 ott. 2026</time>
+            <span class="sigla">Sistemi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Arriva il Senato</h2>
+            <p>Fascicoli, la ricerca e il connettore per gli assistenti AI coprono ora Camera e Senato della XIX legislatura.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.fascicoli.it">Apri Fascicoli</a>
+              <a class="collegamento" href="/sviluppatori">Collega il connettore</a>
+            </div>
+          </div>
+        </li>
+
         <li class="notizia compare" data-tipo="pubblicazioni">
           <div class="notizia__quando">
             <time datetime="2026-10-25">25–29 ott. 2026</time>

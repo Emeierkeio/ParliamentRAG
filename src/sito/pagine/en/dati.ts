@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Data · ParliamentRAG",
-  descrizione: "The graph of the Chamber's 19th legislature in RDF: deputies, groups, acts, sittings, speeches and votes, under the CC BY-SA 4.0 licence.",
+  descrizione: "The graph of the 19th legislature of the Chamber and the Senate in RDF: members of Parliament, groups, acts, sittings, speeches and votes, under the CC BY-SA 4.0 licence.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Open data · CC BY-SA 4.0</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">The graph, ready to <em>download</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">The Chamber's 19th legislature as an RDF graph. Deputies, groups, acts, sittings, speeches and votes, linked to each other and to EuroVoc topics. It is the same graph that Stenografo, Fascicoli and Scranno use.</p>
+        <p class="attacco compare" style="--ritardo:160ms">The 19th legislature of the Chamber and the Senate as an RDF graph. Members of Parliament, groups, acts, sittings, speeches and votes, linked to each other and to EuroVoc topics. It is the same graph that Stenografo, Fascicoli and Scranno use.</p>
         <div class="fila apertura__azioni compare" style="--ritardo:240ms">
           <a class="btn btn--accento" href="#scarica">Download <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
           <a class="btn btn--linea" href="#deputato">How it is built</a>
@@ -25,7 +25,7 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">In the graph, as of <span id="data-agg">{{dataAgg}}</span></p></div>
       <div class="registro" id="registro">{{registro}}</div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Source: open data of the Chamber of Deputies (dati.camera.it) and the EuroVoc thesaurus. The figures update with the graph, after every new sitting.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Sources: open data of the Chamber (dati.camera.it) and the Senate (dati.senato.it), EuroVoc thesaurus. The figures update with the graph, after every new sitting.</p>
     </div>
   </section>
 
@@ -38,7 +38,7 @@ const contenuto: Contenuto = {
         <article class="idea compare">
           <span class="idea__n">01</span>
           <h3 class="titolo-3">Everything has an address</h3>
-          <p>People, acts, sittings, speeches and votes have a stable URI. For people we use the Chamber's own: anyone who already has its data links it to ours without conversion tables.</p>
+          <p>People, acts, sittings, speeches and votes have a stable URI. For people we use the official one: dati.camera.it for deputies, dati.senato.it for senators. Anyone who already has that data links it to ours without conversion tables.</p>
           <div class="idea__vista" aria-label="Example of an address">
             <span class="mono">http://dati.camera.it/ocd/persona.rdf/p308912</span>
             <span class="freccia-giu" aria-hidden="true">↓</span>
@@ -107,7 +107,7 @@ const contenuto: Contenuto = {
 
         <ol class="note compare" style="--ritardo:120ms" id="note">
           <li tabindex="0" data-n="1"><div><strong>Prefixes</strong><p>Abbreviations of the vocabularies used. All except <span class="mono">pro:</span> already exist and are maintained by others.</p></div></li>
-          <li tabindex="0" data-n="2"><div><strong>The person</strong><p>The URI is the one of the Chamber's official profile. The same address works in any other dataset that uses it.</p></div></li>
+          <li tabindex="0" data-n="2"><div><strong>The person</strong><p>The URI is the one of the Chamber's official profile. For senators it is the one on dati.senato.it. The same address works in any other dataset that uses it.</p></div></li>
           <li tabindex="0" data-n="3"><div><strong>Two types at once</strong><p>A person for anyone using FOAF, and a deputy in the Chamber's open data vocabulary.</p></div></li>
           <li tabindex="0" data-n="4"><div><strong>The group</strong><p>An organisation in the W3C ORG sense, the same model used for parties, public bodies and companies.</p></div></li>
           <li tabindex="0" data-n="5"><div><strong>The membership</strong><p>Links person and group with a start date, and an end date when there is one. If a deputy changes group, a new membership is created: the history stays in the graph.</p></div></li>
@@ -142,7 +142,7 @@ const contenuto: Contenuto = {
         <table class="tabella">
           <thead><tr><th scope="col">In the graph</th><th scope="col">Vocabulary</th><th scope="col">What it allows</th></tr></thead>
           <tbody>
-            <tr><td>Deputy</td><td class="mono">ocd:deputato, foaf:Person</td><td>The Chamber's own official record, reusable anywhere.</td></tr>
+            <tr><td>Deputy</td><td class="mono">ocd:deputato, foaf:Person</td><td>The Chamber's own official record, reusable anywhere. For senators, the one on dati.senato.it.</td></tr>
             <tr><td>Parliamentary group, committee</td><td class="mono">org:Organization</td><td>The W3C model for organisations.</td></tr>
             <tr><td>Membership of a group</td><td class="mono">org:Membership</td><td>Start and end: changes of group stay on record.</td></tr>
             <tr><td>Topic of an act</td><td class="mono">EuroVoc, via SKOS</td><td>The same topics in 24 languages.</td></tr>
@@ -176,7 +176,7 @@ const contenuto: Contenuto = {
               <span class="sigla">Turtle</span>
             </div>
             <div class="file">
-              <div><p class="file__nome">Individual votes</p><p class="file__cosa">In a separate file, because it is the largest: the vote of every deputy in every roll call.</p></div>
+              <div><p class="file__nome">Individual votes</p><p class="file__cosa">In a separate file, because it is the largest: the vote of every member of Parliament in every roll call.</p></div>
               <span class="sigla">RDF</span>
             </div>
           </div>
@@ -195,7 +195,7 @@ const contenuto: Contenuto = {
               <span class="sigla">Tables</span>
             </div>
             <div class="file">
-              <div><p class="file__nome">parliamentrag-iswc / build</p><p class="file__cosa">The code that builds the graph from the Chamber's open data. Anyone can rebuild it from scratch and compare.</p></div>
+              <div><p class="file__nome">parliamentrag-iswc / build</p><p class="file__cosa">The code that builds the graph from the open data of the Chamber and the Senate. Anyone can rebuild it from scratch and compare.</p></div>
               <span class="sigla">Code</span>
             </div>
           </div>
@@ -209,7 +209,7 @@ const contenuto: Contenuto = {
       <div class="avvisi compare">
         <div>
           <h3>Licence</h3>
-          <p>The data is released under the <a class="collegamento" href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" rel="noopener">CC BY-SA 4.0</a> licence. You can copy, modify and redistribute it, commercially too, if you credit the source and use the same licence.</p>
+          <p>The data is released under the <a class="collegamento" href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" rel="noopener">CC BY-SA 4.0</a> licence. You can copy, modify and redistribute it, commercially too, if you credit the source and use the same licence. The sources are the open data of the Chamber (CC BY-SA 4.0) and the Senate (<a class="collegamento" href="https://creativecommons.org/licenses/by/3.0/it/" rel="noopener">CC BY 3.0</a>).</p>
         </div>
         <div>
           <h3>Snapshots</h3>
@@ -234,11 +234,11 @@ const contenuto: Contenuto = {
         <a class="btn btn--linea" style="margin-top:var(--s-5)" href="/en/developers">Connect an assistant <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
       </div>
       <ul class="strumenti compare" style="--ritardo:120ms" aria-label="Tools of the MCP server">
-        <li><code>search_parliament</code><span>searches the speeches in the Chamber</span></li>
+        <li><code>search_parliament</code><span>searches the floor speeches</span></li>
         <li><code>list_sessions</code><span>lists the sittings</span></li>
         <li><code>get_debate</code><span>opens a debate</span></li>
         <li><code>get_session_votes</code><span>the votes of a sitting</span></li>
-        <li><code>get_vote_details</code><span>the vote by group and by deputy</span></li>
+        <li><code>get_vote_details</code><span>the vote by group and by member of Parliament</span></li>
         <li><code>get_vote_hemicycle</code><span>the hemicycle of a vote</span></li>
         <li><code>get_voted_text</code><span>the text put to the vote</span></li>
       </ul>

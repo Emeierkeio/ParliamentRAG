@@ -37,7 +37,7 @@ function ancora(s: string): string {
 /* Email e indirizzi web nel testo diventano link */
 function collega(testo: string): string {
   return esc(testo).replace(
-    /([\w.+-]+@[\w-]+\.[\w.]+[a-z])|\b((?:www\.)[\w-]+(?:\.[\w-]+)+(?:\/[\w/-]*)?|dati\.camera\.it)/g,
+    /([\w.+-]+@[\w-]+\.[\w.]+[a-z])|\b((?:www\.)[\w-]+(?:\.[\w-]+)+(?:\/[\w/-]*)?|dati\.(?:camera|senato)\.it)/g,
     (_, email: string | undefined, web: string | undefined) =>
       email ? `<a href="mailto:${email}">${email}</a>` : `<a href="https://${web}" rel="noopener">${web}</a>`,
   );

@@ -1019,7 +1019,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Informativa sulla privacy",
-    "updated": "Ultimo aggiornamento: 13 ottobre 2026",
+    "updated": "Ultimo aggiornamento: 14 ottobre 2026",
     "sections": [
       {
         "h": "Chi tratta i dati",
@@ -1115,7 +1115,7 @@
       {
         "h": "Dati sui parlamentari",
         "p": [
-          "ParliamentRAG mostra dati su deputati e membri del Governo: nomi, interventi, voti e incarichi. Li prendiamo dagli open data ufficiali della Camera dei Deputati (dati.camera.it) e li trattiamo per il ruolo pubblico di queste persone.",
+          "ParliamentRAG mostra dati su deputati, senatori e membri del Governo: nomi, interventi, voti e incarichi. Li prendiamo dagli open data ufficiali di Camera e Senato (dati.camera.it, dati.senato.it) e li trattiamo per il ruolo pubblico di queste persone.",
           "Se trovi un errore che ti riguarda, scrivi a privacy@parliamentrag.it: lo verifichiamo e lo correggiamo."
         ]
       },
@@ -1130,7 +1130,7 @@
   "Terms": {
     "metaTitle": "Termini",
     "title": "Termini d'uso",
-    "updated": "Ultimo aggiornamento: 3 ottobre 2026",
+    "updated": "Ultimo aggiornamento: 14 ottobre 2026",
     "sections": [
       {
         "h": "Chi gestisce il sito",
@@ -1148,7 +1148,7 @@
       {
         "h": "Dati e licenza",
         "p": [
-          "I dati parlamentari provengono da dati.camera.it, che li pubblica con licenza CC BY-SA 4.0. Se riusi i dati, cita la Camera dei Deputati come fonte e rispetta la licenza."
+          "I dati della Camera provengono da dati.camera.it, che li pubblica con licenza CC BY-SA 4.0. I dati del Senato provengono da dati.senato.it, che li pubblica con licenza CC BY 3.0. Se riusi i dati, cita come fonte la Camera dei Deputati o il Senato della Repubblica e rispetta la licenza di ciascuno."
         ]
       },
       {
@@ -1649,9 +1649,9 @@
     "errorServer": "Non riesco a completare l'iscrizione adesso. Riprova tra poco.",
     "checkInbox": "Controlla la posta: ti abbiamo inviato un link per confermare l'iscrizione.",
     "panelTitle": "Resta aggiornato su ParliamentRAG",
-    "panelLead": "Lascia la tua email: ti scriviamo quando arrivano funzioni nuove o nuovi dati della Camera.",
+    "panelLead": "Lascia la tua email: ti scriviamo quando arrivano funzioni nuove o nuovi dati del Parlamento.",
     "panelPoint1": "Le nuove funzioni, appena escono",
-    "panelPoint2": "Gli aggiornamenti sui dati della Camera",
+    "panelPoint2": "Gli aggiornamenti sui dati del Parlamento",
     "panelPoint3": "Poche email, ti disiscrivi con un clic",
     "panelPrivacy": "Usiamo Brevo per l'invio. La tua email non viene collegata alle domande che fai."
   },

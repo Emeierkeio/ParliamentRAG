@@ -134,12 +134,12 @@ function confermata(l: Lingua): Contenuto {
   const voci: [IdPagina, string, string][] = it
     ? [
         ["metodo", "Metodo", "Come verifichiamo una risposta sul Parlamento."],
-        ["dati", "Dati", "Il grafo della Camera, da scaricare."],
+        ["dati", "Dati", "Il grafo di Camera e Senato, da scaricare."],
         ["ricerca", "Ricerca", "Gli articoli a ISWC 2026 e come citarli."],
       ]
     : [
         ["metodo", "Method", "How we check an answer about Parliament."],
-        ["dati", "Data", "The Chamber's graph, ready to download."],
+        ["dati", "Data", "The graph of the Chamber and the Senate, ready to download."],
         ["ricerca", "Research", "The ISWC 2026 papers and how to cite them."],
       ];
   return {

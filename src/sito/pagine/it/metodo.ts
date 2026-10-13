@@ -65,7 +65,7 @@ const contenuto: Contenuto = {
             <span class="passo__nodo" aria-hidden="true">3</span>
             <div class="passo__corpo">
               <h3>Autorevolezza</h3>
-              <p>Per ogni deputato che compare calcoliamo quanto si occupa del tema di questa domanda.</p>
+              <p>Per ogni parlamentare che compare calcoliamo quanto si occupa del tema di questa domanda.</p>
               <span class="passo__esce">esce: chi parla per ogni gruppo</span>
             </div>
           </li>
@@ -165,7 +165,7 @@ const contenuto: Contenuto = {
         </div>
 
         <h3 class="titolo-3 compare" style="margin-top:var(--s-7)">Sei criteri, una somma pesata</h3>
-        <p class="compare tenue" style="margin-top:var(--s-3);max-width:60ch">Ogni criterio vale tra 0 e 1 ed è misurato rispetto alla domanda. Il punteggio di un deputato è la somma dei sei, ciascuno moltiplicato per il suo peso.</p>
+        <p class="compare tenue" style="margin-top:var(--s-3);max-width:60ch">Ogni criterio vale tra 0 e 1 ed è misurato rispetto alla domanda. Il punteggio di un parlamentare è la somma dei sei, ciascuno moltiplicato per il suo peso.</p>
         <div class="tabella-scorri compare tabella-pesi">
           <table class="tabella">
             <thead><tr><th scope="col">Criterio</th><th scope="col" class="num">Peso</th><th scope="col">Cosa misura</th></tr></thead>
@@ -206,7 +206,7 @@ const contenuto: Contenuto = {
               </div>
               <div class="chiave" id="chiave"></div>
               <p class="scarti" id="scarti" aria-live="polite"></p>
-              <p class="nota">Qui cambia solo come si distribuisce il peso. Non ricalcoliamo la classifica dei deputati: servirebbero i dati di una domanda vera.</p>
+              <p class="nota">Qui cambia solo come si distribuisce il peso. Non ricalcoliamo la classifica dei parlamentari: servirebbero i dati di una domanda vera.</p>
             </div>
           </div>
         </div>
@@ -237,7 +237,7 @@ const contenuto: Contenuto = {
           </div>
           <div>
             <span class="etichetta">Come si controlla</span>
-            <p>Ogni citazione porta il link al documento ufficiale della Camera, al punto esatto dell'intervento. Basta un clic.</p>
+            <p>Ogni citazione porta il link al resoconto ufficiale della Camera o del Senato. Basta un clic.</p>
           </div>
         </div>
 
@@ -285,7 +285,7 @@ const contenuto: Contenuto = {
             <li><div><p>Un intervento pertinente può non essere recuperato.</p><p>La ricerca trova molto, non tutto. Un'assenza nella risposta non prova un'assenza in Aula.</p></div></li>
             <li><div><p>Una citazione esatta resta una scelta.</p><p>Il passaggio e la cornice li sceglie il sistema. Il contesto è sul resoconto.</p></div></li>
             <li><div><p>L'autorevolezza dipende dai nostri pesi.</p><p>Con pesi diversi parlerebbero altre persone. Per questo li pubblichiamo.</p></div></li>
-            <li><div><p>È un progetto indipendente.</p><p>Non è affiliato alla Camera dei Deputati, che non lo approva e non ne risponde.</p></div></li>
+            <li><div><p>È un progetto indipendente.</p><p>Non è affiliato alla Camera dei Deputati né al Senato della Repubblica, che non lo approvano e non ne rispondono.</p></div></li>
             <li><div><p>Per un uso che conta, controlla il resoconto ufficiale.</p><p>Ogni citazione ha il link. Usalo.</p></div></li>
           </ol>
           <p class="limiti__piede">Hai trovato un errore? Scrivi a <a href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a> con il link alla risposta.</p>

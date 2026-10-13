@@ -1032,7 +1032,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Privacy notice",
-    "updated": "Last updated: 13 October 2026",
+    "updated": "Last updated: 14 October 2026",
     "sections": [
       {
         "h": "Who processes the data",
@@ -1128,7 +1128,7 @@
       {
         "h": "Data about members of Parliament",
         "p": [
-          "ParliamentRAG shows data about deputies and members of the Government: names, speeches, votes and roles. We take it from the official open data of the Chamber of Deputies (dati.camera.it) and process it because of these people's public role.",
+          "ParliamentRAG shows data about deputies, senators and members of the Government: names, speeches, votes and roles. We take it from the official open data of the Chamber and the Senate (dati.camera.it, dati.senato.it) and process it because of these people's public role.",
           "If you find an error about you, write to privacy@parliamentrag.it: we will check it and correct it."
         ]
       },
@@ -1143,7 +1143,7 @@
   "Terms": {
     "metaTitle": "Terms",
     "title": "Terms of use",
-    "updated": "Last updated: 3 October 2026",
+    "updated": "Last updated: 14 October 2026",
     "sections": [
       {
         "h": "Who runs the site",
@@ -1161,7 +1161,7 @@
       {
         "h": "Data and licence",
         "p": [
-          "Parliamentary data comes from dati.camera.it, which publishes it under the CC BY-SA 4.0 licence. If you reuse the data, credit the Chamber of Deputies as the source and respect the licence."
+          "Chamber data comes from dati.camera.it, which publishes it under the CC BY-SA 4.0 licence. Senate data comes from dati.senato.it, which publishes it under the CC BY 3.0 licence. If you reuse the data, credit the Chamber of Deputies or the Senate of the Republic as the source and respect each licence."
         ]
       },
       {
@@ -1662,9 +1662,9 @@
     "errorServer": "I can't complete the signup right now. Try again shortly.",
     "checkInbox": "Check your inbox: we sent you a link to confirm your subscription.",
     "panelTitle": "Stay up to date with ParliamentRAG",
-    "panelLead": "Leave your email: we'll write when new features or new Chamber data arrive.",
+    "panelLead": "Leave your email: we'll write when new features or new data on Parliament arrive.",
     "panelPoint1": "New features, as soon as they ship",
-    "panelPoint2": "Updates on the Chamber's data",
+    "panelPoint2": "Updates on the data about Parliament",
     "panelPoint3": "Few emails, unsubscribe in one click",
     "panelPrivacy": "We send with Brevo. Your email is never linked to the questions you ask."
   },

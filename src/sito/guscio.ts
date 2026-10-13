@@ -63,7 +63,7 @@ const T = {
     tema: "Cambia tema",
     menu: "Apri il menu",
     piedeChi: "Progetto di ricerca per l'AI sui dibattiti delle istituzioni italiane. Università di Milano-Bicocca.",
-    piedeNota: "Progetto indipendente: non è affiliato alla Camera dei Deputati e non parla a suo nome.",
+    piedeNota: "Progetto indipendente: non è affiliato alla Camera dei Deputati né al Senato della Repubblica e non parla a loro nome.",
     sistemi: "Sistemi",
     progetto: "Progetto",
     legali: "Note legali",
@@ -83,7 +83,7 @@ const T = {
     tema: "Change theme",
     menu: "Open the menu",
     piedeChi: "Research project on AI for the debates of Italian institutions. University of Milano-Bicocca.",
-    piedeNota: "Independent project: it is not affiliated with the Chamber of Deputies and does not speak on its behalf.",
+    piedeNota: "Independent project: it is not affiliated with the Chamber of Deputies or the Senate of the Republic and does not speak on their behalf.",
     sistemi: "Systems",
     progetto: "Project",
     legali: "Legal",
@@ -154,6 +154,7 @@ function piede(lingua: Lingua): string {
     `<li><a href="${p("termini")}">${lingua === "it" ? "Termini" : "Terms"}</a></li>` +
     `<li><a href="${t.licenzaUrl}" rel="noopener">${t.licenza}</a></li>` +
     '<li><a href="https://dati.camera.it/" rel="noopener">dati.camera.it</a></li>' +
+    '<li><a href="https://dati.senato.it/" rel="noopener">dati.senato.it</a></li>' +
     '<li><a href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a></li>' +
     "</ul></div>" +
     "</div>" +

@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Sviluppatori · ParliamentRAG",
-  descrizione: "Server MCP per collegare un assistente AI ai dati ufficiali della Camera, API HTTP su richiesta e dump del grafo con DOI.",
+  descrizione: "Server MCP per collegare un assistente AI ai dati ufficiali di Camera e Senato, API HTTP su richiesta e dump del grafo con DOI.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Sviluppatori</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">Collega il tuo assistente AI ai <em>resoconti</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">Il server MCP di ParliamentRAG dà al tuo assistente gli atti ufficiali della Camera: interventi, atti, sedute, voti. Ogni risultato porta il link alla fonte.</p>
+        <p class="attacco compare" style="--ritardo:160ms">Il server MCP di ParliamentRAG dà al tuo assistente gli atti ufficiali di Camera e Senato: interventi, atti, sedute, voti. Ogni risultato porta il link alla fonte.</p>
         <div class="fila clienti compare" style="--ritardo:220ms" aria-label="Client compatibili">
           <span class="sigla">Claude</span><span class="sigla">ChatGPT</span><span class="sigla">Cursor</span><span class="sigla">VS Code</span><span class="sigla">e altri client MCP</span>
         </div>
@@ -62,8 +62,8 @@ const contenuto: Contenuto = {
           <h2 class="titolo-3">Sette strumenti</h2>
           <p class="tenue piccolo" style="margin-top:var(--s-2);margin-bottom:var(--s-4)">L'assistente li sceglie da solo in base alla domanda.</p>
           <ol class="strumenti" id="strumenti">
-            <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Ricerca ibrida su interventi e atti.</span></li>
-            <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sedute con riassunto e dibattiti.</span></li>
+            <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Ricerca ibrida su interventi e atti di Camera e Senato.</span></li>
+            <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sedute di Camera e Senato, con riassunto e dibattiti.</span></li>
             <li class="strumento" data-s="get_debate"><code>get_debate</code><span>Un dibattito: riassunto, atti, oratori.</span></li>
             <li class="strumento" data-s="get_session_votes"><code>get_session_votes</code><span>Le votazioni di una seduta.</span></li>
             <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>Una votazione: esiti per gruppo e voti dei singoli.</span></li>
@@ -101,7 +101,7 @@ const contenuto: Contenuto = {
         <ul class="offre compare">
           <li><strong>Ricerca</strong>Ricerca ibrida sugli interventi in Aula e sugli atti.</li>
           <li><strong>Sedute e dibattiti</strong>Riassunti, atti discussi e oratori.</li>
-          <li><strong>Votazioni</strong>Esiti per gruppo e voto di ogni deputato.</li>
+          <li><strong>Votazioni</strong>Esiti per gruppo e voto di ogni parlamentare.</li>
           <li><strong>Statistiche</strong>Numeri del grafo e indice dei dati aperti.</li>
         </ul>
         <div class="token compare" style="--ritardo:120ms">
@@ -153,9 +153,9 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Licenza</p></div>
       <div class="licenza">
-        <h2 class="titolo-3 compare">I dati restano della Camera, con la sua licenza.</h2>
+        <h2 class="titolo-3 compare">I dati restano di Camera e Senato, con le loro licenze.</h2>
         <div class="prosa compare" style="--ritardo:120ms">
-          <p>I dati vengono dagli open data della Camera dei Deputati e restano sotto licenza <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="noopener">CC BY-SA 4.0</a>. Se li riusi, cita la Camera dei Deputati come fonte e condividi i lavori derivati con la stessa licenza.</p>
+          <p>I dati vengono dagli open data della Camera dei Deputati, con licenza <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="noopener">CC BY-SA 4.0</a>, e del Senato della Repubblica, con licenza <a href="https://creativecommons.org/licenses/by/3.0/it/" rel="noopener">CC BY 3.0</a>. Se li riusi, cita come fonte la Camera o il Senato. Per i dati della Camera condividi i lavori derivati con la stessa licenza.</p>
           <p>Le regole d'uso del servizio sono nei <a href="/termini">termini</a>. Per un accesso automatico, chiedi un token invece di scaricare le pagine.</p>
         </div>
       </div>

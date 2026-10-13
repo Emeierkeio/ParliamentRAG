@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Dati · ParliamentRAG",
-  descrizione: "Il grafo della XIX legislatura della Camera in RDF: deputati, gruppi, atti, sedute, interventi e voti, con licenza CC BY-SA 4.0.",
+  descrizione: "Il grafo della XIX legislatura di Camera e Senato in RDF: parlamentari, gruppi, atti, sedute, interventi e voti, con licenza CC BY-SA 4.0.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Dati aperti · CC BY-SA 4.0</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">Il grafo, da <em>scaricare</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">La XIX legislatura della Camera come grafo RDF. Deputati, gruppi, atti, sedute, interventi e voti, collegati tra loro e ai temi EuroVoc. È lo stesso grafo che usano Stenografo, Fascicoli e Scranno.</p>
+        <p class="attacco compare" style="--ritardo:160ms">La XIX legislatura di Camera e Senato come grafo RDF. Parlamentari, gruppi, atti, sedute, interventi e voti, collegati tra loro e ai temi EuroVoc. È lo stesso grafo che usano Stenografo, Fascicoli e Scranno.</p>
         <div class="fila apertura__azioni compare" style="--ritardo:240ms">
           <a class="btn btn--accento" href="#scarica">Scarica <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
           <a class="btn btn--linea" href="#deputato">Com'è fatto</a>
@@ -25,7 +25,7 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Nel grafo, al <span id="data-agg">{{dataAgg}}</span></p></div>
       <div class="registro" id="registro">{{registro}}</div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Fonte: open data della Camera dei Deputati (dati.camera.it) e thesaurus EuroVoc. I numeri si aggiornano con il grafo, a ogni nuova seduta.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Fonti: open data della Camera (dati.camera.it) e del Senato (dati.senato.it), thesaurus EuroVoc. I numeri si aggiornano con il grafo, a ogni nuova seduta.</p>
     </div>
   </section>
 
@@ -38,7 +38,7 @@ const contenuto: Contenuto = {
         <article class="idea compare">
           <span class="idea__n">01</span>
           <h3 class="titolo-3">Ogni cosa ha un indirizzo</h3>
-          <p>Persone, atti, sedute, interventi e voti hanno un URI stabile. Per le persone usiamo quello della Camera: chi ha già i suoi dati li collega ai nostri senza tabelle di conversione.</p>
+          <p>Persone, atti, sedute, interventi e voti hanno un URI stabile. Per le persone usiamo quello ufficiale: dati.camera.it per i deputati, dati.senato.it per i senatori. Chi ha già quei dati li collega ai nostri senza tabelle di conversione.</p>
           <div class="idea__vista" aria-label="Esempio di indirizzo">
             <span class="mono">http://dati.camera.it/ocd/persona.rdf/p308912</span>
             <span class="freccia-giu" aria-hidden="true">↓</span>
@@ -107,7 +107,7 @@ const contenuto: Contenuto = {
 
         <ol class="note compare" style="--ritardo:120ms" id="note">
           <li tabindex="0" data-n="1"><div><strong>Prefissi</strong><p>Abbreviazioni dei vocabolari usati. Tutti tranne <span class="mono">pro:</span> esistono già e sono mantenuti da altri.</p></div></li>
-          <li tabindex="0" data-n="2"><div><strong>La persona</strong><p>L'URI è quello della scheda ufficiale della Camera. Lo stesso indirizzo vale in qualsiasi altro dataset che lo usi.</p></div></li>
+          <li tabindex="0" data-n="2"><div><strong>La persona</strong><p>L'URI è quello della scheda ufficiale della Camera. Per i senatori è quello di dati.senato.it. Lo stesso indirizzo vale in qualsiasi altro dataset che lo usi.</p></div></li>
           <li tabindex="0" data-n="3"><div><strong>Due tipi insieme</strong><p>È una persona per chiunque usi FOAF, ed è un deputato nel vocabolario open data della Camera.</p></div></li>
           <li tabindex="0" data-n="4"><div><strong>Il gruppo</strong><p>Un'organizzazione secondo W3C ORG, lo stesso modello usato per partiti, enti e aziende.</p></div></li>
           <li tabindex="0" data-n="5"><div><strong>L'appartenenza</strong><p>Collega persona e gruppo con una data di inizio, e di fine quando c'è. Se un deputato cambia gruppo nasce un'altra appartenenza: la storia resta nel grafo.</p></div></li>
@@ -142,7 +142,7 @@ const contenuto: Contenuto = {
         <table class="tabella">
           <thead><tr><th scope="col">Nel grafo</th><th scope="col">Vocabolario</th><th scope="col">Cosa permette</th></tr></thead>
           <tbody>
-            <tr><td>Deputato</td><td class="mono">ocd:deputato, foaf:Person</td><td>Lo stesso record ufficiale della Camera, riusabile ovunque.</td></tr>
+            <tr><td>Deputato</td><td class="mono">ocd:deputato, foaf:Person</td><td>Lo stesso record ufficiale della Camera, riusabile ovunque. Per i senatori, quello di dati.senato.it.</td></tr>
             <tr><td>Gruppo parlamentare, commissione</td><td class="mono">org:Organization</td><td>Il modello W3C per le organizzazioni.</td></tr>
             <tr><td>Appartenenza a un gruppo</td><td class="mono">org:Membership</td><td>Inizio e fine: i cambi di gruppo restano tracciati.</td></tr>
             <tr><td>Tema di un atto</td><td class="mono">EuroVoc, via SKOS</td><td>Gli stessi temi in 24 lingue.</td></tr>
@@ -176,7 +176,7 @@ const contenuto: Contenuto = {
               <span class="sigla">Turtle</span>
             </div>
             <div class="file">
-              <div><p class="file__nome">Voti individuali</p><p class="file__cosa">In un file a parte, perché è il più grande: il voto di ogni deputato in ogni votazione.</p></div>
+              <div><p class="file__nome">Voti individuali</p><p class="file__cosa">In un file a parte, perché è il più grande: il voto di ogni parlamentare in ogni votazione.</p></div>
               <span class="sigla">RDF</span>
             </div>
           </div>
@@ -195,7 +195,7 @@ const contenuto: Contenuto = {
               <span class="sigla">Tabelle</span>
             </div>
             <div class="file">
-              <div><p class="file__nome">parliamentrag-iswc / build</p><p class="file__cosa">Il codice che costruisce il grafo dagli open data della Camera. Chi vuole può rifarlo da capo e confrontare.</p></div>
+              <div><p class="file__nome">parliamentrag-iswc / build</p><p class="file__cosa">Il codice che costruisce il grafo dagli open data di Camera e Senato. Chi vuole può rifarlo da capo e confrontare.</p></div>
               <span class="sigla">Codice</span>
             </div>
           </div>
@@ -209,7 +209,7 @@ const contenuto: Contenuto = {
       <div class="avvisi compare">
         <div>
           <h3>Licenza</h3>
-          <p>I dati sono rilasciati con licenza <a class="collegamento" href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="noopener">CC BY-SA 4.0</a>. Puoi copiarli, modificarli e ridistribuirli, anche per uso commerciale, citando la fonte e usando la stessa licenza.</p>
+          <p>I dati sono rilasciati con licenza <a class="collegamento" href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="noopener">CC BY-SA 4.0</a>. Puoi copiarli, modificarli e ridistribuirli, anche per uso commerciale, citando la fonte e usando la stessa licenza. Le fonti sono gli open data della Camera (CC BY-SA 4.0) e del Senato (<a class="collegamento" href="https://creativecommons.org/licenses/by/3.0/it/" rel="noopener">CC BY 3.0</a>).</p>
         </div>
         <div>
           <h3>Istantanee</h3>
@@ -238,7 +238,7 @@ const contenuto: Contenuto = {
         <li><code>list_sessions</code><span>elenca le sedute</span></li>
         <li><code>get_debate</code><span>apre un dibattito</span></li>
         <li><code>get_session_votes</code><span>le votazioni di una seduta</span></li>
-        <li><code>get_vote_details</code><span>il voto per gruppo e per deputato</span></li>
+        <li><code>get_vote_details</code><span>il voto per gruppo e per parlamentare</span></li>
         <li><code>get_vote_hemicycle</code><span>l'emiciclo di una votazione</span></li>
         <li><code>get_voted_text</code><span>il testo messo ai voti</span></li>
       </ul>

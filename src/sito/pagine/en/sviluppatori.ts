@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Developers · ParliamentRAG",
-  descrizione: "MCP server to connect an AI assistant to the official data of the Chamber, HTTP API on request and graph dumps with a DOI.",
+  descrizione: "MCP server to connect an AI assistant to the official data of the Chamber and the Senate, HTTP API on request and graph dumps with a DOI.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Developers</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">Connect your AI assistant to the <em>records</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">The ParliamentRAG MCP server gives your assistant the official records of the Chamber: speeches, acts, sittings, votes. Every result links to the source.</p>
+        <p class="attacco compare" style="--ritardo:160ms">The ParliamentRAG MCP server gives your assistant the official records of the Chamber and the Senate: speeches, acts, sittings, votes. Every result links to the source.</p>
         <div class="fila clienti compare" style="--ritardo:220ms" aria-label="Compatible clients">
           <span class="sigla">Claude</span><span class="sigla">ChatGPT</span><span class="sigla">Cursor</span><span class="sigla">VS Code</span><span class="sigla">and other MCP clients</span>
         </div>
@@ -62,8 +62,8 @@ const contenuto: Contenuto = {
           <h2 class="titolo-3">Seven tools</h2>
           <p class="tenue piccolo" style="margin-top:var(--s-2);margin-bottom:var(--s-4)">The assistant picks them on its own, based on the question.</p>
           <ol class="strumenti" id="strumenti">
-            <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Hybrid search over speeches and acts.</span></li>
-            <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sittings with summary and debates.</span></li>
+            <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Hybrid search over speeches and acts of the Chamber and the Senate.</span></li>
+            <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sittings of the Chamber and the Senate, with summary and debates.</span></li>
             <li class="strumento" data-s="get_debate"><code>get_debate</code><span>A debate: summary, acts, speakers.</span></li>
             <li class="strumento" data-s="get_session_votes"><code>get_session_votes</code><span>The votes of a sitting.</span></li>
             <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>A vote: results by group and individual votes.</span></li>
@@ -99,9 +99,9 @@ const contenuto: Contenuto = {
       <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">The same queries our systems use, in JSON.</h2>
       <div class="api">
         <ul class="offre compare">
-          <li><strong>Search</strong>Hybrid search over speeches in the Chamber and acts.</li>
+          <li><strong>Search</strong>Hybrid search over floor speeches and acts.</li>
           <li><strong>Sittings and debates</strong>Summaries, acts discussed and speakers.</li>
-          <li><strong>Votes</strong>Results by group and the vote of every deputy.</li>
+          <li><strong>Votes</strong>Results by group and the vote of every member of Parliament.</li>
           <li><strong>Statistics</strong>Graph figures and the index of the open data.</li>
         </ul>
         <div class="token compare" style="--ritardo:120ms">
@@ -153,9 +153,9 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Licence</p></div>
       <div class="licenza">
-        <h2 class="titolo-3 compare">The data stays the Chamber's, under its licence.</h2>
+        <h2 class="titolo-3 compare">The data stays the Chamber's and the Senate's, under their licences.</h2>
         <div class="prosa compare" style="--ritardo:120ms">
-          <p>The data comes from the open data of the Chamber of Deputies and stays under the <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" rel="noopener">CC BY-SA 4.0</a> licence. If you reuse it, credit the Chamber of Deputies as the source and share derived work under the same licence.</p>
+          <p>The data comes from the open data of the Chamber of Deputies, under the <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" rel="noopener">CC BY-SA 4.0</a> licence, and of the Senate of the Republic, under the <a href="https://creativecommons.org/licenses/by/3.0/it/deed.en" rel="noopener">CC BY 3.0</a> licence. If you reuse it, credit the Chamber or the Senate as the source. For Chamber data, share derived work under the same licence.</p>
           <p>The rules for using the service are in the <a href="/en/terms">terms</a>. For automated access, ask for a token instead of downloading the pages.</p>
         </div>
       </div>

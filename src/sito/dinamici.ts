@@ -69,21 +69,21 @@ function seggi(): Seggio[] {
 const CIFRE: Record<Lingua, [keyof Stats, string][]> = {
   it: [
     ["speeches", "interventi in Aula, con testo integrale"],
-    ["individual_votes", "voti individuali, uno per deputato"],
+    ["individual_votes", "voti individuali, uno per parlamentare"],
     ["acts", "atti parlamentari"],
     ["votes", "votazioni elettroniche"],
     ["sessions", "sedute"],
-    ["people", "deputati e membri del Governo"],
+    ["people", "parlamentari e membri del Governo"],
     ["eurovoc_concepts", "temi EuroVoc collegati agli atti"],
     ["triples", "triple RDF nell'export"],
   ],
   en: [
-    ["speeches", "speeches in the Chamber, with full text"],
-    ["individual_votes", "individual votes, one per deputy"],
+    ["speeches", "speeches on the floor, with full text"],
+    ["individual_votes", "individual votes, one per member of Parliament"],
     ["acts", "parliamentary acts"],
     ["votes", "electronic votes"],
     ["sessions", "sittings"],
-    ["people", "deputies and members of the Government"],
+    ["people", "members of Parliament and of the Government"],
     ["eurovoc_concepts", "EuroVoc topics linked to the acts"],
     ["triples", "RDF triples in the export"],
   ],
@@ -92,21 +92,21 @@ const CIFRE: Record<Lingua, [keyof Stats, string][]> = {
 const REGISTRO: Record<Lingua, string[]> = {
   it: [
     "interventi in Aula, con il testo integrale",
-    "voti individuali, uno per deputato e votazione",
+    "voti individuali, uno per parlamentare e votazione",
     "atti parlamentari",
     "votazioni elettroniche",
     "sedute",
-    "deputati e membri del Governo",
+    "parlamentari e membri del Governo",
     "temi EuroVoc collegati agli atti",
     "triple RDF nell'export",
   ],
   en: [
-    "speeches in the Chamber, with the full text",
-    "individual votes, one per deputy and vote",
+    "speeches on the floor, with the full text",
+    "individual votes, one per member of Parliament and vote",
     "parliamentary acts",
     "electronic votes",
     "sittings",
-    "deputies and members of the Government",
+    "members of Parliament and of the Government",
     "EuroVoc topics linked to the acts",
     "RDF triples in the export",
   ],
@@ -185,15 +185,15 @@ function dati(l: Lingua): Record<string, string> {
   return {
     frontespizio:
       l === "en"
-        ? riga("Coverage", "Chamber of Deputies, 19th legislature") +
+        ? riga("Coverage", "Chamber of Deputies and Senate of the Republic, 19th legislature") +
           riga("Format", "RDF Turtle, plus tables on Hugging Face") +
-          riga("Sources", "dati.camera.it, EuroVoc") +
+          riga("Sources", "dati.camera.it, dati.senato.it, EuroVoc") +
           riga("Licence", "CC BY-SA 4.0") +
           riga("Updated", agg) +
           riga("Ontology", onto)
-        : riga("Copertura", "Camera dei Deputati, XIX legislatura") +
+        : riga("Copertura", "Camera dei Deputati e Senato della Repubblica, XIX legislatura") +
           riga("Formato", "RDF Turtle, più tabelle su Hugging Face") +
-          riga("Fonti", "dati.camera.it, EuroVoc") +
+          riga("Fonti", "dati.camera.it, dati.senato.it, EuroVoc") +
           riga("Licenza", "CC BY-SA 4.0") +
           riga("Aggiornato", agg) +
           riga("Ontologia", onto),

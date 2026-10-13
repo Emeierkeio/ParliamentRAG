@@ -13,6 +13,7 @@
 
 ![Sito](https://img.shields.io/badge/sito-parliamentrag.it-167A68?style=flat-square)
 ![Dati](https://img.shields.io/badge/dati-dati.camera.it-167A68?style=flat-square)
+![Dati](https://img.shields.io/badge/dati-dati.senato.it-167A68?style=flat-square)
 ![Legislatura](https://img.shields.io/badge/legislatura-XIX-14201C?style=flat-square)
 ![Licenza dati](https://img.shields.io/badge/licenza%20dati-CC%20BY--SA%204.0-5E6B66?style=flat-square)
 ![ISWC 2026](https://img.shields.io/badge/ISWC-2026-2D5F8F?style=flat-square)
@@ -78,8 +79,8 @@ artificiale sui lavori parlamentari senza perdere le fonti, e lavora su tre fron
 
 - **Metodo.** Fissa i criteri che una risposta sul Parlamento deve rispettare: dare voce a tutti i gruppi,
   scegliere per ognuno chi conosce il tema, citare solo testo detto in Aula con il link al resoconto.
-- **Dati.** Costruisce dagli open data ufficiali un knowledge graph della Camera dei Deputati, XIX
-  legislatura, e lo pubblica intero.
+- **Dati.** Costruisce dagli open data ufficiali un knowledge graph del Parlamento (Camera e Senato),
+  XIX legislatura, e lo pubblica intero.
 - **Verifica.** Prepara un verificatore pubblico che controlla quei criteri su qualunque risposta: il
   piano è in [`docs/piano-verifica.md`](docs/piano-verifica.md).
 
@@ -264,8 +265,8 @@ Lo finanzia il programma Horizon Europe (grant [101189771](https://doi.org/10.30
 
 <div align="center">
 <sub>
-Dati: Camera dei Deputati, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it">CC BY-SA 4.0</a>.
+Dati: Camera dei Deputati, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.it">CC BY-SA 4.0</a>; Senato della Repubblica, <a href="https://creativecommons.org/licenses/by/3.0/it/">CC BY 3.0</a>.
 <br>
-Progetto indipendente: non è affiliato alla Camera dei Deputati e non ne rappresenta la posizione.
+Progetto indipendente: non è affiliato alla Camera dei Deputati né al Senato della Repubblica e non ne rappresenta la posizione.
 </sub>
 </div>
