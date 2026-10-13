@@ -197,6 +197,11 @@
       ? (EN ? "<p>I cannot find " + mancanti.map(function (g) { return esc(sigla(g.key)); }).join(", ").replace(/\.$/, "") + ". A complete answer names them, or says that they did not speak on the topic.</p>"
             : "<p>Non trovo " + mancanti.map(function (g) { return esc(g.key); }).join(", ").replace(/\.$/, "") + ". Una risposta completa li nomina, o dice che sul tema non hanno parlato.</p>")
       : (EN ? "<p>Every voice is named or quoted at least once.</p>" : "<p>Ogni voce è nominata o citata almeno una volta.</p>");
+    (G.mismatches || []).forEach(function (m) {
+      h += '<p class="chi-dice">' + (EN
+        ? "The answer writes " + esc(m.name) + " (" + esc(m.group_written) + "), but they belong to " + esc(sigla(m.voice || m.group)) + "."
+        : "La risposta scrive " + esc(m.name) + " (" + esc(m.group_written) + "), ma è di " + esc(m.voice || m.group) + ".") + "</p>";
+    });
     h += "</section>";
 
     /* 02 Voci autorevoli */
@@ -208,7 +213,7 @@
     if (!A.available) {
       h += "<p>" + (EN ? "Authority on the topic could not be computed right now: try again in a minute." : "In questo momento non riesco a calcolare l'autorevolezza sul tema: riprova tra un minuto.") + "</p>";
     } else if (!A.voices.length) {
-      h += "<p>" + (EN ? "Authority is checked on the people of the exact quotes. This answer has none." : "L'autorevolezza si controlla su chi è citato con parole esatte. Questa risposta non ne ha.") + "</p>";
+      h += "<p>" + (EN ? "Authority is checked on the deputies and members of the Government quoted or named in the answer. This answer has none." : "L'autorevolezza si controlla sui deputati e sui membri del Governo citati o nominati nella risposta. Questa risposta non ne ha.") + "</p>";
     } else {
       h += '<ul class="appello">' + A.voices.map(function (v) {
         var ok = v.authoritative;
@@ -217,7 +222,8 @@
           : v.rank ? v.rank + (EN ? (v.rank === 1 ? "st" : v.rank === 2 ? "nd" : v.rank === 3 ? "rd" : "th") + " of " : "° su ") + v.group_size
           : (EN ? "not ranked" : "senza punteggio");
         return '<li data-c="' + (ok ? "si" : "no") + '">' + (ok ? SPUNTA : CROCE) +
-          '<span class="appello__nome">' + esc(v.name) + ' <span class="sigla">' + esc(sigla(v.voice || v.group)) + "</span></span>" +
+          '<span class="appello__nome">' + esc(v.name) + ' <span class="sigla">' + esc(sigla(v.voice || v.group)) + "</span>" +
+          (v.source === "named" ? ' <span class="nota">' + (EN ? "named" : "nominato") + "</span>" : "") + "</span>" +
           '<span class="appello__come">' + esc(perche) + "</span></li>";
       }).join("") + "</ul>";
       h += "<p>" + (EN ? "A voice is authoritative if it speaks for the Government, is the rapporteur of the bill or is among the top five of its group on the topic: the number is the rank within the group. " : "Una voce è autorevole se parla per il Governo, è relatore del provvedimento o è tra i primi cinque del suo gruppo sul tema: il numero è la posizione nel gruppo. ") + tema + "</p>";
