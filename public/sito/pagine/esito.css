@@ -1,0 +1,49 @@
+/* Pagine brevi con un esito: conferma della newsletter, pagina non trovata */
+.esito-pagina {
+  padding-block: clamp(64px, 10vw, 144px) clamp(80px, 10vw, 160px);
+  min-height: 60vh;
+}
+.esito-pagina h1 {
+  margin-top: var(--s-5);
+  max-width: 18ch;
+}
+.esito-pagina .attacco {
+  margin-top: var(--s-5);
+}
+.esito-pagina__azioni {
+  margin-top: var(--s-6);
+}
+.esito-pagina__poi {
+  margin-top: var(--s-9);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--filetto);
+}
+.esito-pagina__poi ul {
+  margin-top: var(--s-4);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+.esito-pagina__poi a {
+  display: grid;
+  gap: var(--s-1);
+  text-decoration: none;
+  color: var(--inchiostro-2);
+  font-size: var(--t-piccolo);
+}
+.esito-pagina__poi strong {
+  color: var(--inchiostro);
+  font-weight: 600;
+  font-size: var(--t-corpo);
+  transition: color var(--d-1);
+}
+.esito-pagina__poi a:hover strong {
+  color: var(--accento);
+}
+@media (max-width: 760px) {
+  .esito-pagina__poi ul {
+    grid-template-columns: 1fr;
+  }
+}

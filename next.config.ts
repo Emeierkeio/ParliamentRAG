@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
 
-// The operational tool moved to Fascicoli; temporary until that domain is live.
+// The operational tool moved to Fascicoli.
 const FASCICOLI_URL = 'https://www.fascicoli.it';
 const MOVED_TO_FASCICOLI = [
   '/iswc',
@@ -18,13 +17,49 @@ const MOVED_TO_FASCICOLI = [
   '/valutazione',
 ];
 
+// Pages of the previous site (Italian and English shared one URL) and of the
+// static prototype (*.html), with their new address.
+const OLD_PAGES: [string, string][] = [
+  ['/method', '/metodo'],
+  ['/data', '/dati'],
+  ['/pubblicazioni', '/ricerca'],
+  ['/sistemi', '/#sistemi'],
+  ['/index.html', '/'],
+  ['/metodo.html', '/metodo'],
+  ['/verifica.html', '/verifica'],
+  ['/dati.html', '/dati'],
+  ['/ricerca.html', '/ricerca'],
+  ['/sviluppatori.html', '/sviluppatori'],
+  ['/aggiornamenti.html', '/aggiornamenti'],
+  ['/privacy.html', '/privacy'],
+  ['/termini.html', '/termini'],
+  // Italian slugs typed under /en
+  ['/en/metodo', '/en/method'],
+  ['/en/verifica', '/en/verification'],
+  ['/en/dati', '/en/data'],
+  ['/en/ricerca', '/en/research'],
+  ['/en/pubblicazioni', '/en/research'],
+  ['/en/sviluppatori', '/en/developers'],
+  ['/en/aggiornamenti', '/en/updates'],
+  ['/en/termini', '/en/terms'],
+  ['/en/sistemi', '/en#sistemi'],
+  ['/it', '/'],
+];
+
 const nextConfig: NextConfig = {
-  async headers() {
-    return process.env.NOINDEX === "1"
-      ? [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }]
-      : [];
-  },
   output: 'standalone',
+  async headers() {
+    return [
+      // Font files never change under the same name
+      {
+        source: '/sito/font/:file*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      ...(process.env.NOINDEX === "1"
+        ? [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] }]
+        : []),
+    ];
+  },
   async redirects() {
     return [
       // Canonical host: the apex domain redirects to www
@@ -48,9 +83,9 @@ const nextConfig: NextConfig = {
         destination: `${FASCICOLI_URL}${route}/:path*`,
         permanent: false,
       })),
+      ...OLD_PAGES.map(([source, destination]) => ({ source, destination, permanent: true })),
     ];
   },
 };
 
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
-export default withNextIntl(nextConfig);
+export default nextConfig;

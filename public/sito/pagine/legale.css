@@ -1,0 +1,159 @@
+
+  /*
+   * Pagina legale. Il testo viene da centro/messages/it.json e non si riscrive:
+   * qui cambiano solo impaginazione, indice e collegamenti.
+   */
+
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(32px, 4vw, 56px);
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 18ch;
+  }
+  .apertura__agg {
+    margin-top: var(--s-5);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+
+  /* ---------- Documento: indice a sinistra, articoli a destra ---------- */
+  .documento {
+    display: grid;
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: start;
+    padding-bottom: clamp(var(--s-8), 8vw, var(--s-10));
+  }
+  .indice {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 64px + var(--s-5));
+    max-height: calc(100vh - 64px - var(--s-7));
+    overflow-y: auto;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .indice ol {
+    margin-top: var(--s-3);
+    padding: 0;
+    list-style: none;
+    display: grid;
+  }
+  .indice a {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: var(--s-1);
+    padding: 7px 8px 7px 0;
+    min-height: 36px;
+    align-items: baseline;
+    font-size: var(--t-nota);
+    line-height: 1.35;
+    color: var(--inchiostro-3);
+    text-decoration: none;
+    border-radius: var(--r-1);
+    transition: color var(--d-1);
+  }
+  .indice a span {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-4);
+  }
+  .indice a:hover {
+    color: var(--inchiostro);
+  }
+  .indice a[aria-current="true"] {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  .indice a[aria-current="true"] span {
+    color: var(--accento);
+  }
+
+  .articoli-legali {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .articolo-legale {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--filetto);
+    scroll-margin-top: calc(64px + var(--s-4));
+  }
+  .articolo-legale h2 {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+  .articolo-legale__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    letter-spacing: 0;
+    color: var(--accento);
+  }
+  .articolo-legale .prosa {
+    margin-top: var(--s-4);
+    margin-left: 3rem;
+    color: var(--inchiostro-2);
+  }
+  .articolo-legale .prosa a {
+    overflow-wrap: anywhere;
+  }
+  /* Le voci della memoria del browser: stesso testo, con la chiave in evidenza */
+  .prosa .chiave {
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--filetto-forte);
+  }
+  .prosa .chiave + .chiave {
+    margin-top: var(--s-2);
+  }
+  .prosa code {
+    font-family: var(--f-mono);
+    font-size: 0.86em;
+    color: var(--inchiostro);
+    background: var(--carta-2);
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-1);
+    padding: 0 4px;
+  }
+  .documento__fine {
+    margin-top: var(--s-6);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-6);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .documento__fine .mono {
+    font-size: var(--t-nota);
+  }
+
+  @media (max-width: 900px) {
+    .documento {
+      grid-template-columns: 1fr;
+    }
+    .indice {
+      position: static;
+      max-height: none;
+    }
+    .indice ol {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-4);
+    }
+  }
+  @media (max-width: 560px) {
+    .indice ol {
+      grid-template-columns: 1fr;
+    }
+    .articolo-legale h2 {
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+    }
+    .articolo-legale .prosa {
+      margin-left: 0;
+    }
+  }

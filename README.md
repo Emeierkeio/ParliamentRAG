@@ -94,40 +94,22 @@ Sullo stesso grafo lavorano tre sistemi, ognuno con un compito:
 Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it), la guida al
 [server MCP](docs/mcp.md) e il piano della verifica.
 
-<table>
-  <tr>
-    <td width="33%" valign="top">
-      <h3>Sistemi</h3>
-      <code>/sistemi</code>: cosa fa ognuno dei tre sistemi e come si passano la domanda.
-    </td>
-    <td width="33%" valign="top">
-      <h3>Pubblicazioni</h3>
-      <code>/pubblicazioni</code>: i due articoli di ISWC 2026 con PDF e BibTeX, gli interventi pubblici e il link alla demo.
-    </td>
-    <td width="33%" valign="top">
-      <h3>Metodo</h3>
-      <code>/method</code>: il criterio per scegliere le fonti, i sei pesi dell'autorevolezza, il controllo delle citazioni sul resoconto.
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <h3>Dati aperti</h3>
-      <code>/data</code>: i numeri del grafo, esempi di entità, l'allineamento ai vocabolari standard e i dump RDF.
-    </td>
-    <td valign="top">
-      <h3>Sviluppatori</h3>
-      <code>/sviluppatori</code>: il server MCP per gli assistenti AI, i dump e i dataset, le API HTTP su richiesta.
-    </td>
-    <td valign="top">
-      <h3>Aggiornamenti</h3>
-      <code>/aggiornamenti</code>: le novità del progetto e l'iscrizione alla newsletter.
-    </td>
-  </tr>
-</table>
+Le pagine, in italiano alla radice e in inglese sotto `/en`:
 
-Completano il sito `/privacy` e `/termini`. Le vecchie pagine operative (chat, temi, timeline,
-parlamentari, gruppi, classifica, bussola, ricerca) e il questionario della demo `/iswc` reindirizzano a
-Fascicoli: l'elenco sta in `next.config.ts`.
+| Pagina | Italiano | Inglese |
+|---|---|---|
+| Home: il problema, le tre garanzie, i sistemi, i numeri del grafo | `/` | `/en` |
+| Metodo: il percorso di una domanda, i sei pesi dell'autorevolezza, la bussola, i limiti | `/metodo` | `/en/method` |
+| Verifica: l'anteprima del verificatore delle tre garanzie | `/verifica` | `/en/verification` |
+| Dati: il grafo RDF, lo schema, i vocabolari, i download | `/dati` | `/en/data` |
+| Ricerca: gli articoli di ISWC 2026 con BibTeX, gli interventi pubblici | `/ricerca` | `/en/research` |
+| Sviluppatori: il server MCP, le API su richiesta, i dump | `/sviluppatori` | `/en/developers` |
+| Aggiornamenti: le novità e l'iscrizione alla newsletter | `/aggiornamenti` | `/en/updates` |
+| Privacy e termini | `/privacy`, `/termini` | `/en/privacy`, `/en/terms` |
+
+Gli indirizzi del sito precedente (`/method`, `/data`, `/pubblicazioni`, `/sistemi`) reindirizzano alle pagine
+nuove; le vecchie pagine operative (chat, temi, timeline, parlamentari, gruppi, classifica, bussola, ricerca) e il
+questionario della demo `/iswc` reindirizzano a Fascicoli. L'elenco sta in `next.config.ts`.
 
 <br>
 
@@ -150,27 +132,37 @@ I termini propri del progetto e gli URI delle entità usano il namespace persist
 
 ## Come è fatto
 
+Il sito usa il design system «Resoconto» della famiglia: HTML, CSS e piccoli script senza framework. Next.js
+serve le pagine come documenti statici generati al build (route handler, niente React nel browser), più la route
+della newsletter e quella dei numeri del grafo.
+
 ```
 ParliamentRAG/
-├── src/app/              pagine Next.js 16 (next-intl, sei lingue)
-├── src/app/api/          la route della newsletter
-├── src/data/             numeri del grafo ed esempi di /data, rigenerati a mano
-├── messages/             testi del sito: it, en, fr, de, es, pt
-├── public/               loghi, immagini dell'Aula, PDF dei paper
+├── src/sito/             guscio delle pagine (testata, piede, metadati), indirizzi, contenuti it/en
+│   ├── pagine/it, en/    il contenuto di ogni pagina nelle due lingue
+│   ├── dinamici.ts       parti scritte dai dati al build: citazioni, seggi, numeri
+│   ├── legale.ts         privacy e termini, dal testo in messages/<lingua>.json
+│   └── dati-base.json    le 11 citazioni verificate del tema d'esempio
+├── src/app/              un route handler per pagina, /sito/dati.js, /api/newsletter
+├── public/sito/          famiglia.css, famiglia.js, font, script e stili delle pagine, aula.js
+├── src/data/             fotografia notturna del grafo (site-data.json)
+├── messages/             testi di privacy e termini (e della newsletter) in it ed en
 ├── scripts/              snapshot dei dati e schermate di avvio iOS
 └── docs/assets/          grafiche di questo README (build_banner.py)
 ```
 
-Il sito gira senza backend e senza database. L'unica route dinamica, `/api/newsletter/subscribe`, passa
-l'indirizzo a Brevo, che gestisce il doppio consenso; il sito non lo salva.
+L'unica route con dati personali, `/api/newsletter/subscribe`, passa l'indirizzo a Brevo, che gestisce il doppio
+consenso; il sito non lo salva.
 
-I numeri del grafo, la data dell'ultimo aggiornamento e gli esempi di `/data` stanno in
-`src/data/site-data.json` e `src/data/graph-samples.json`. Prima di pubblicare li rigeneri dall'API di
-ParliamentRAG:
+I numeri del grafo arrivano a ogni pagina da `/sito/dati.js`: le citazioni di `src/sito/dati-base.json` più i
+numeri letti da `/api/data/stats` del backend, rigenerati al massimo ogni 10 minuti. Se il backend non risponde
+restano quelli di `src/data/site-data.json`, che il job notturno aggiorna con:
 
 ```bash
 node scripts/snapshot-data.mjs            # oppure: node scripts/snapshot-data.mjs <api_base>
 ```
+
+La stessa fotografia finisce nell'HTML al build, così le pagine nascono già con i numeri e non si spostano.
 
 <br>
 
@@ -203,8 +195,9 @@ In locale puoi lasciarle vuote. Il modello sta in `.env.example`.
 
 | Variabile | Note |
 |---|---|
-| `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_DOI_TEMPLATE_ID` | newsletter; senza, il modulo non compare |
-| `PUBLIC_SITE_URL` | URL pubblico, default `https://www.parliamentrag.it` |
+| `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_DOI_TEMPLATE_ID` | newsletter; senza, il modulo risponde che l'iscrizione non è disponibile |
+| `PUBLIC_SITE_URL` | URL pubblico, default `https://www.parliamentrag.it` (canonical, hreflang, sitemap) |
+| `PARLIAMENTRAG_API` | backend per i numeri del grafo, default `https://thesis-parliamentrag-production.up.railway.app` |
 | `NOINDEX` | `1` aggiunge `X-Robots-Tag: noindex` (anteprime) |
 | `HOSTNAME` | `0.0.0.0` in produzione, serve al server standalone |
 

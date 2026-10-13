@@ -1,0 +1,624 @@
+
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(48px, 6vw, 88px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--s-6) clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+  .apertura__azioni {
+    margin-top: var(--s-6);
+  }
+  @media (max-width: 900px) {
+    .apertura__griglia {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  /* Scheda del deposito: come il frontespizio di un dataset */
+  .frontespizio {
+    display: grid;
+    gap: 0;
+    font-size: var(--t-nota);
+  }
+  .frontespizio > div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .frontespizio > div:first-child {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .frontespizio dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--inchiostro-3);
+    padding-top: 2px;
+  }
+  .frontespizio dd {
+    color: var(--inchiostro-2);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- § 1 Numeri, come un registro ---------- */
+  .registro {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(32px, 5vw, 80px);
+  }
+  .registro__riga {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .registro__riga:nth-child(-n + 2) {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .registro__l {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 22ch;
+  }
+  .registro__n {
+    font-family: var(--f-titolo);
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+  .registro__riga:first-child .registro__n,
+  .registro__riga:nth-child(2) .registro__n {
+    color: var(--accento);
+  }
+  @media (max-width: 760px) {
+    .registro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .registro__riga:nth-child(2) {
+      border-top: 0;
+    }
+  }
+
+  /* ---------- § 2 Tre idee ---------- */
+  .idee {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  .idea {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .idea__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+  }
+  .idea p {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .idea__vista {
+    margin-top: auto;
+    padding: var(--s-4);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    border: 1px solid var(--filetto);
+    min-height: 132px;
+    display: grid;
+    align-content: center;
+    gap: var(--s-2);
+    font-size: var(--t-nota);
+  }
+  .idea__vista .mono {
+    font-size: var(--t-micro);
+    overflow-wrap: anywhere;
+    color: var(--inchiostro);
+  }
+  .idea__vista .freccia-giu {
+    color: var(--inchiostro-4);
+    font-family: var(--f-mono);
+  }
+  .vocabolari-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tripla {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+  }
+  .tripla span {
+    padding: 6px;
+    border-radius: var(--r-1);
+    background: var(--foglio);
+    border: 1px solid var(--filetto-forte);
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .tripla span:nth-child(3) {
+    border-color: color-mix(in oklab, var(--accento) 40%, transparent);
+    color: var(--accento);
+    background: var(--accento-tenue);
+  }
+  .tripla i {
+    font-style: normal;
+    color: var(--inchiostro-4);
+  }
+  .tripla em {
+    font-style: normal;
+    font-family: var(--f-testo);
+    color: var(--inchiostro-3);
+    text-align: center;
+  }
+  .tripla span {
+    white-space: nowrap;
+  }
+  .tripla-l {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+    gap: 6px;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    text-align: center;
+  }
+  @media (max-width: 960px) {
+    .idee {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .idea__vista {
+      min-height: 0;
+    }
+  }
+
+  /* ---------- § 3 Un deputato nel grafo: codice e note affiancati ---------- */
+  .estratto {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .estratto {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .estratto__codice {
+    position: relative;
+  }
+  .estratto .codice {
+    padding-top: var(--s-6);
+    font-size: 0.78rem;
+  }
+  .estratto .codice .blocco {
+    display: block;
+    margin-inline: calc(-1 * var(--s-5));
+    padding-inline: var(--s-5);
+    border-left: 2px solid transparent;
+    transition: background var(--d-2), border-color var(--d-2);
+  }
+  .estratto .codice .blocco[data-attiva] {
+    background: rgba(255, 255, 255, 0.07);
+    border-left-color: #9cc2e6;
+  }
+  .estratto .codice .m {
+    color: #e9c46a;
+  }
+  .estratto__titolo {
+    position: absolute;
+    top: 10px;
+    left: var(--s-5);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8f9a9f;
+    z-index: 1;
+  }
+  .note {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: n;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--inchiostro);
+  }
+  .note li {
+    counter-increment: n;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-3) var(--s-4) 0;
+    border-bottom: 1px solid var(--filetto);
+    cursor: default;
+    transition: background var(--d-1);
+    border-radius: var(--r-1);
+  }
+  .note li::before {
+    content: counter(n);
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--filetto-forte);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    transition: background var(--d-1), color var(--d-1), border-color var(--d-1);
+  }
+  .note li[data-attiva] {
+    background: var(--accento-tenue);
+  }
+  .note li[data-attiva]::before {
+    background: var(--accento);
+    border-color: var(--accento);
+    color: var(--su-accento);
+  }
+  .note li:focus-visible {
+    outline-offset: 0;
+  }
+  .note strong {
+    display: block;
+    font-weight: 600;
+    font-size: var(--t-piccolo);
+  }
+  .note p {
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+
+  /* ---------- § 4 Schema del grafo ---------- */
+  .schema {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .schema {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .schema__figura {
+    padding: var(--s-4);
+  }
+  .schema__scorri {
+    overflow-x: auto;
+  }
+  .schema svg {
+    width: 100%;
+    min-width: 560px;
+    height: auto;
+  }
+  .schema .arco {
+    fill: none;
+    stroke: var(--filetto-forte);
+    stroke-width: 1.4;
+    transition: stroke var(--d-2), stroke-width var(--d-2);
+  }
+  .schema .arco-l {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    fill: var(--inchiostro-4);
+    transition: fill var(--d-2);
+  }
+  .schema .nodo rect {
+    fill: var(--foglio);
+    stroke: var(--filetto-forte);
+    stroke-width: 1.2;
+    transition: fill var(--d-2), stroke var(--d-2);
+  }
+  .schema .nodo text {
+    font-family: var(--f-testo);
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--inchiostro);
+    pointer-events: none;
+  }
+  .schema .nodo {
+    cursor: pointer;
+    outline: none;
+  }
+  .schema .nodo[data-centro] rect {
+    fill: var(--accento-tenue);
+    stroke: var(--accento);
+  }
+  .schema[data-scelto] .nodo rect {
+    opacity: 0.45;
+  }
+  .schema[data-scelto] .nodo[data-vicino] rect,
+  .schema[data-scelto] .nodo[data-attivo] rect {
+    opacity: 1;
+  }
+  .schema .nodo[data-attivo] rect {
+    fill: var(--accento);
+    stroke: var(--accento);
+  }
+  .schema .nodo[data-attivo] text {
+    fill: var(--su-accento);
+  }
+  .schema .nodo:focus-visible rect {
+    stroke: var(--inchiostro);
+    stroke-width: 2;
+  }
+  .schema .arco[data-on] {
+    stroke: var(--accento);
+    stroke-width: 2;
+  }
+  .schema .arco-l[data-on] {
+    fill: var(--accento);
+  }
+  .schema-desc {
+    min-height: 220px;
+  }
+  .schema-desc h3 {
+    margin-top: var(--s-2);
+  }
+  .schema-desc p {
+    margin-top: var(--s-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .schema-desc .classe {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .relazioni {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-4);
+    display: grid;
+    gap: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .relazioni .mono {
+    color: var(--accento);
+    font-size: var(--t-micro);
+  }
+  .schema-desc .quanti {
+    margin-top: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .schema-desc .quanti b {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--inchiostro);
+    margin-right: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- § 5 Vocabolari ---------- */
+  .vocabolari {
+    margin-top: var(--s-6);
+  }
+  .vocabolari td:first-child {
+    font-weight: 500;
+  }
+  .vocabolari td:nth-child(2) {
+    white-space: nowrap;
+  }
+  .vocabolari td:nth-child(3) {
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 700px) {
+    .vocabolari thead {
+      display: none;
+    }
+    .vocabolari tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .vocabolari tr {
+      display: grid;
+      gap: 6px;
+      padding-block: var(--s-4);
+      border-bottom: 1px solid var(--filetto);
+    }
+    .vocabolari td {
+      border: 0;
+      padding: 0;
+    }
+    .vocabolari td:nth-child(2) {
+      white-space: normal;
+    }
+  }
+  .prefissi {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .prefissi span {
+    overflow-wrap: anywhere;
+  }
+  .prefissi b {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    color: var(--inchiostro);
+    margin-right: 4px;
+  }
+
+  /* ---------- § 6 Scarica ---------- */
+  .scarica {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  @media (max-width: 860px) {
+    .scarica {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .deposito {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+  .deposito__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .deposito__corpo {
+    flex: 1;
+    display: grid;
+    gap: 0;
+    padding: 0 var(--s-5);
+  }
+  .file {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-2) var(--s-4);
+    align-items: start;
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .file:last-child {
+    border-bottom: 0;
+  }
+  .file__nome {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .file__cosa {
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .file .sigla {
+    margin-top: 2px;
+  }
+  .deposito__piede {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    border-top: 1px dashed var(--filetto-forte);
+  }
+  .doi {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    margin-right: auto;
+  }
+  .avvisi {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .avvisi > div {
+    padding: var(--s-4) var(--s-5) var(--s-4) 0;
+  }
+  .avvisi > div + div {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .avvisi h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+  }
+  .avvisi p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 860px) {
+    .avvisi {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .avvisi > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--filetto);
+    }
+  }
+
+  /* ---------- § 7 Interrogalo ---------- */
+  .interroga {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .interroga {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .strumenti {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--inchiostro);
+  }
+  .strumenti li {
+    display: grid;
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: var(--s-4);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .strumenti code {
+    font-family: var(--f-mono);
+    color: var(--inchiostro);
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 520px) {
+    .strumenti li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
+  }

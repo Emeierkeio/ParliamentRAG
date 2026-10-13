@@ -1,0 +1,882 @@
+
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(40px, 5vw, 72px);
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 14ch;
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+  }
+  /* Le tre garanzie in apertura: un sommario, non un riassunto */
+  .sommario {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--inchiostro);
+  }
+  .sommario a {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4) var(--s-5) var(--s-5) 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--filetto);
+    transition: background var(--d-1);
+  }
+  .sommario a + a {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .sommario__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+  }
+  .sommario__t {
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    transition: color var(--d-1);
+  }
+  .sommario a:hover .sommario__t {
+    color: var(--accento);
+  }
+  .sommario__d {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    max-width: 34ch;
+  }
+  @media (max-width: 760px) {
+    .sommario {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .sommario a + a {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  /* ---------- Impaginato: indice a sinistra, testo a destra ---------- */
+  .impaginato {
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    gap: clamp(32px, 4vw, 72px);
+    align-items: start;
+    padding-bottom: var(--s-9);
+  }
+  .indice {
+    position: sticky;
+    top: calc(64px + var(--s-6));
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .indice ol {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-3) 0 0;
+    display: grid;
+    gap: 2px;
+    counter-reset: voce;
+  }
+  .indice a {
+    display: flex;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-3);
+    text-decoration: none;
+    transition: color var(--d-1);
+  }
+  .indice a::before {
+    counter-increment: voce;
+    content: "§ " counter(voce);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    min-width: 2.4em;
+    color: var(--inchiostro-4);
+  }
+  .indice a:hover {
+    color: var(--inchiostro);
+  }
+  .indice a[aria-current="true"] {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  .indice a[aria-current="true"]::before {
+    color: var(--accento);
+  }
+  @media (max-width: 1060px) {
+    .impaginato {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .indice {
+      position: static;
+    }
+    .indice ol {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      column-gap: var(--s-4);
+    }
+    .indice a {
+      min-height: 40px;
+      align-items: center;
+      border-bottom: 1px solid var(--filetto);
+    }
+  }
+
+  /* Sezioni del corpo: non usano .pagina, stanno già dentro */
+  .capitolo {
+    padding-top: clamp(var(--s-7), 6vw, var(--s-9));
+    scroll-margin-top: 88px;
+  }
+  .capitolo > h2 {
+    margin-top: var(--s-6);
+    max-width: 20ch;
+  }
+  .capitolo > .attacco {
+    margin-top: var(--s-4);
+    max-width: 52ch;
+  }
+
+  /* ---------- § 1 Il percorso della domanda ---------- */
+  /*
+   * Sei passaggi su una linea. Sul desktop la linea è orizzontale e si riempie
+   * mentre la figura sale nello schermo; sul telefono è verticale e ogni
+   * passaggio si accende quando ci arrivi.
+   */
+  .condotto {
+    --p: 0;
+    position: relative;
+    list-style: none;
+    padding: 0;
+    margin: var(--s-7) 0 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-4);
+  }
+  .condotto::before,
+  .condotto::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 13px;
+    height: 2px;
+    background: var(--filetto);
+    transform-origin: left center;
+  }
+  .condotto::after {
+    background: var(--accento);
+    transform: scaleX(var(--p));
+    transition: transform var(--d-3) var(--e-uscita);
+  }
+  .passo {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .passo__corpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .passo__esce {
+    margin-top: auto !important;
+  }
+  .passo__corpo > p:last-of-type {
+    margin-bottom: var(--s-3);
+  }
+  .passo__nodo {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--filetto-forte);
+    background: var(--carta);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    transition: background var(--d-3) var(--e-uscita), border-color var(--d-3), color var(--d-3), transform var(--d-3) var(--e-uscita);
+  }
+  .passo[data-acceso] .passo__nodo {
+    background: var(--accento);
+    border-color: var(--accento);
+    color: var(--su-accento);
+    transform: scale(1.08);
+  }
+  .passo__corpo {
+    margin-top: var(--s-4);
+    opacity: 0.38;
+    transition: opacity var(--d-3) var(--e-uscita);
+  }
+  .passo[data-acceso] .passo__corpo {
+    opacity: 1;
+  }
+  .passo h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .passo p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    line-height: 1.5;
+  }
+  .passo__esce {
+    display: block;
+    margin-top: var(--s-3);
+    padding-top: var(--s-2);
+    border-top: 1px dashed var(--filetto-forte);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.02em;
+    color: var(--inchiostro-3);
+    line-height: 1.45;
+  }
+  /* Passo 4: una sezione per ogni gruppo, si aprono a ventaglio */
+  .ventaglio {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ventaglio .sigla {
+    padding: 1px 5px;
+    font-size: 0.625rem;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--d-2) var(--e-uscita), transform var(--d-2) var(--e-uscita);
+    transition-delay: calc(var(--i) * 45ms);
+  }
+  .passo[data-acceso] .ventaglio .sigla {
+    opacity: 1;
+    transform: none;
+  }
+  /* Passo 6: le parole controllate una per una */
+  .parole-mini {
+    margin-top: var(--s-3);
+    font-family: var(--f-titolo);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .parole-mini span {
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: box-shadow var(--d-2) var(--e-uscita);
+    transition-delay: calc(var(--i) * 70ms + 200ms);
+  }
+  .passo[data-acceso] .parole-mini span {
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--verificato) 60%, transparent);
+  }
+  .quinte {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: start;
+    padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .quinte .etichetta {
+    padding-top: 3px;
+  }
+  @media (max-width: 960px) {
+    .condotto {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-6);
+    }
+    .condotto::before,
+    .condotto::after {
+      left: 13px;
+      right: auto;
+      top: 14px;
+      bottom: 14px;
+      width: 2px;
+      height: auto;
+      transform-origin: center top;
+    }
+    .condotto::after {
+      transform: scaleY(var(--p));
+    }
+    .passo {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: var(--s-4);
+    }
+    .passo__corpo {
+      margin-top: 2px;
+      max-width: 48ch;
+    }
+    .quinte {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }
+
+  /* ---------- Garanzie ---------- */
+  .garanzia__testa {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-5);
+    align-items: end;
+    margin-top: var(--s-6);
+  }
+  .garanzia__cifra {
+    font-family: var(--f-titolo);
+    font-size: clamp(4rem, 2.6rem + 5vw, 7.5rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    color: var(--accento);
+    font-variant-numeric: lining-nums;
+  }
+  .garanzia__testa h2 {
+    max-width: 16ch;
+  }
+  .garanzia__dice {
+    margin-top: var(--s-5);
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.32;
+    letter-spacing: -0.01em;
+    max-width: 36ch;
+  }
+  /* Tre colonne: cosa vuol dire, come la applichiamo, come si controlla */
+  .tre-colonne {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .tre-colonne > div {
+    padding: var(--s-4) var(--s-5) var(--s-5) 0;
+  }
+  .tre-colonne > div + div {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .tre-colonne .etichetta {
+    display: block;
+    margin-bottom: var(--s-3);
+  }
+  .tre-colonne p,
+  .tre-colonne li {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    line-height: 1.55;
+  }
+  .tre-colonne p + p {
+    margin-top: var(--s-3);
+  }
+  .tre-colonne ul {
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .tre-colonne li strong {
+    color: var(--inchiostro);
+    font-weight: 600;
+  }
+  @media (max-width: 860px) {
+    .tre-colonne {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tre-colonne > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--filetto);
+    }
+  }
+
+  /* 01: la fila delle voci del tema d'esempio */
+  .fila-voci {
+    margin-top: var(--s-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .fila-voci .sigla svg {
+    width: 12px;
+    height: 12px;
+    color: var(--verificato);
+  }
+
+  /* 02: tabella dei pesi e giocattolo dei cursori */
+  .tabella-pesi {
+    margin-top: var(--s-6);
+  }
+  .tabella-pesi td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .tabella-pesi .barretta {
+    display: inline-block;
+    height: 8px;
+    width: calc(var(--w) * 4);
+    max-width: 100%;
+    background: var(--accento);
+    border-radius: 1px;
+    vertical-align: 1px;
+    margin-left: var(--s-3);
+  }
+  .tabella-pesi td.num {
+    white-space: nowrap;
+  }
+  /* Sul telefono ogni criterio diventa una scheda: nome e peso, poi cosa misura */
+  @media (max-width: 640px) {
+    .tabella-pesi thead {
+      display: none;
+    }
+    .tabella-pesi tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      border-bottom: 1px solid var(--filetto);
+      padding-block: var(--s-3);
+    }
+    .tabella-pesi tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .tabella-pesi td {
+      border: 0;
+      padding: 0;
+    }
+    .tabella-pesi td:last-child {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      font-size: var(--t-nota);
+      color: var(--inchiostro-3);
+    }
+    .tabella-pesi .barretta {
+      width: calc(var(--w) * 2.4);
+    }
+  }
+  .riquadro {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  @media (max-width: 860px) {
+    .riquadro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .decadimento svg {
+    width: 100%;
+    height: auto;
+    margin-top: var(--s-3);
+  }
+  .decadimento .assi {
+    stroke: var(--filetto-forte);
+    stroke-width: 1;
+  }
+  .decadimento .guida {
+    stroke: var(--filetto);
+    stroke-dasharray: 3 4;
+  }
+  .decadimento .curva {
+    fill: none;
+    stroke: var(--accento);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .decadimento .area {
+    fill: var(--accento-tenue);
+  }
+  .decadimento .punto-c {
+    fill: var(--foglio);
+    stroke: var(--accento);
+    stroke-width: 2;
+  }
+  .decadimento text {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    fill: var(--inchiostro-3);
+  }
+  .decadimento text.forte {
+    fill: var(--inchiostro);
+    font-weight: 500;
+  }
+
+  .giocattolo {
+    margin-top: var(--s-6);
+    padding: 0;
+    overflow: hidden;
+  }
+  .giocattolo__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .giocattolo__corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    padding: var(--s-5);
+  }
+  @media (max-width: 860px) {
+    .giocattolo__corpo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .cursore {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.6rem 3.2rem;
+    gap: 2px var(--s-3);
+    align-items: center;
+    padding-block: 6px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .cursore label {
+    font-size: var(--t-piccolo);
+    font-weight: 500;
+  }
+  .cursore input[type="range"] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    accent-color: var(--accento);
+    cursor: pointer;
+  }
+  .cursore output,
+  .cursore .norm {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .cursore .norm {
+    color: var(--inchiostro-3);
+  }
+  .somma {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-2);
+    padding-top: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .somma strong {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    color: var(--inchiostro);
+  }
+  .somma[data-zero] strong {
+    color: var(--errore);
+  }
+  .barre {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .barra-pila {
+    display: flex;
+    height: 44px;
+    border-radius: var(--r-1);
+    overflow: hidden;
+    background: var(--carta-2);
+    margin-top: var(--s-2);
+  }
+  .barra-pila span {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    overflow: hidden;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--c-testo, var(--su-accento));
+    background: var(--c);
+    transition: flex-basis var(--d-3) var(--e-uscita);
+    white-space: nowrap;
+  }
+  .barra-pila span + span {
+    box-shadow: inset 1px 0 0 var(--foglio);
+  }
+  .chiave {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px var(--s-4);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .chiave span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chiave i {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--c);
+    flex-shrink: 0;
+  }
+  .chiave b {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-weight: 400;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+  }
+  .scarti {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    min-height: 3em;
+  }
+
+  /* 03: una citazione con la sua provenienza */
+  .provenienza {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  .provenienza dl {
+    display: grid;
+    gap: 0;
+    font-size: var(--t-nota);
+    border-top: 1px solid var(--filetto);
+  }
+  .provenienza dl > div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .provenienza dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--inchiostro-3);
+    padding-top: 2px;
+  }
+  .provenienza dd {
+    color: var(--inchiostro-2);
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 860px) {
+    .provenienza {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .avvertenza {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    border-left: 3px solid var(--accento);
+    background: var(--accento-tenue);
+    border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  .avvertenza h3 {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+  .avvertenza p {
+    margin-top: var(--s-3);
+    color: var(--inchiostro-2);
+    max-width: 62ch;
+  }
+
+  /* ---------- § 5 Bussola ---------- */
+  .bussola {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .bussola {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .bussola ol {
+    padding: 0;
+    list-style: none;
+    counter-reset: b;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .bussola li {
+    counter-increment: b;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: var(--s-2);
+    color: var(--inchiostro-2);
+    font-size: var(--t-piccolo);
+  }
+  .bussola li::before {
+    content: counter(b, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+    padding-top: 2px;
+  }
+  .piano svg {
+    width: 100%;
+    height: auto;
+  }
+  .piano .griglia-p {
+    stroke: var(--filetto);
+  }
+  .piano .asse {
+    stroke: var(--inchiostro-3);
+    stroke-width: 1.2;
+  }
+  .piano .intervento {
+    fill: var(--inchiostro-4);
+    opacity: 0.55;
+  }
+  .piano .media {
+    fill: none;
+    stroke: var(--inchiostro-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 3;
+  }
+  .piano .ristretta {
+    fill: var(--accento);
+  }
+  .piano .freccia-p {
+    stroke: var(--accento);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .piano text {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    fill: var(--inchiostro-3);
+  }
+
+  /* ---------- § 6 Limiti: in evidenza, non in nota ---------- */
+  .limiti {
+    margin-top: var(--s-6);
+    padding: clamp(var(--s-5), 4vw, var(--s-7));
+    background: var(--inchiostro);
+    color: var(--carta);
+    border-radius: var(--r-3);
+  }
+  :root[data-theme="dark"] .limiti {
+    background: var(--carta-3);
+    color: var(--inchiostro);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .limiti {
+      background: var(--carta-3);
+      color: var(--inchiostro);
+    }
+  }
+  .limiti h2 {
+    max-width: 18ch;
+  }
+  .limiti ol {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-6);
+    counter-reset: l;
+  }
+  .limiti li {
+    counter-increment: l;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: var(--s-4);
+    border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+  }
+  .limiti li::before {
+    content: counter(l, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    opacity: 0.6;
+    padding-top: 4px;
+  }
+  .limiti li p {
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+  .limiti li p + p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    opacity: 0.7;
+  }
+  .limiti__piede {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+    font-size: var(--t-piccolo);
+    opacity: 0.85;
+  }
+  .limiti a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+  @media (max-width: 760px) {
+    .limiti ol {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ---------- § 7 Fonti ---------- */
+  .fonti {
+    margin-top: var(--s-6);
+    border-top: 1px solid var(--filetto);
+  }
+  .fonte {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) auto;
+    gap: var(--s-4);
+    align-items: baseline;
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+    text-decoration: none;
+  }
+  .fonte__t {
+    font-family: var(--f-titolo);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    transition: color var(--d-1);
+  }
+  .fonte:hover .fonte__t {
+    color: var(--accento);
+  }
+  .fonte__d {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  @media (max-width: 700px) {
+    .fonte {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }

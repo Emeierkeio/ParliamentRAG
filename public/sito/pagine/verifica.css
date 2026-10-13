@@ -1,0 +1,497 @@
+
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(32px, 4vw, 56px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--s-6) clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 13ch;
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+  @media (max-width: 900px) {
+    .apertura__griglia {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  /* Cartello «in costruzione»: discreto, ma il primo che si legge */
+  .cantiere {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border: 1px dashed var(--filetto-forte);
+    border-radius: var(--r-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .cantiere__stato {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cantiere__stato i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--voto-ast);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--voto-ast) 22%, transparent);
+  }
+
+  /* ---------- Banco di prova: testo a sinistra, esito a destra ---------- */
+  .banco {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 1000px) {
+    .banco {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .banco__input {
+    position: sticky;
+    top: calc(64px + var(--s-5));
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (max-width: 1000px) {
+    .banco__input {
+      position: static;
+    }
+  }
+  .banco__input .campo--area textarea {
+    min-height: 340px;
+    font-size: var(--t-piccolo);
+  }
+  .banco__conta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-2);
+    border-top: 1px solid var(--filetto);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-4);
+  }
+  @media (hover: none), (max-width: 600px) {
+    .scorciatoia {
+      display: none;
+    }
+  }
+  .banco__azioni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .banco__azioni .btn--accento {
+    margin-right: auto;
+  }
+  @media (max-width: 480px) {
+    .banco__azioni .btn {
+      flex: 1 1 auto;
+    }
+    .banco__azioni .btn--accento {
+      flex-basis: 100%;
+      margin-right: 0;
+    }
+  }
+
+  /* Esito */
+  .esito-box {
+    padding: 0;
+    overflow: hidden;
+    min-height: 420px;
+  }
+  .esito-box__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .esito-box__corpo {
+    padding: var(--s-5);
+  }
+  .vuoto {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    gap: var(--s-4);
+    min-height: 340px;
+    color: var(--inchiostro-3);
+    font-size: var(--t-piccolo);
+  }
+  .vuoto p {
+    max-width: 34ch;
+  }
+  .attesa {
+    display: grid;
+    gap: var(--s-3);
+    min-height: 340px;
+    align-content: center;
+    justify-items: center;
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .attesa__riga {
+    width: min(280px, 80%);
+    height: 2px;
+    background: var(--filetto);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .attesa__riga i {
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: var(--accento);
+    animation: scorre 0.9s var(--e-std) infinite;
+  }
+  @keyframes scorre {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(260%); }
+  }
+
+  /* Sigillo: in anteprima c'è anche il terzo stato, «non verificabile» */
+  .sigillo__voce[data-esito="nd"] svg {
+    color: var(--inchiostro-4);
+  }
+  .sigillo__voce[data-esito="nd"] {
+    color: var(--inchiostro-3);
+  }
+  .sigillo__voce b {
+    font-family: var(--f-mono);
+    font-weight: 400;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+  }
+  .riassunto {
+    margin-top: var(--s-4);
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    max-width: 34ch;
+  }
+
+  /* Un blocco per garanzia */
+  .prova {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .prova__testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+  }
+  .prova__testa h3 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+  .prova__testa h3 span {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    font-weight: 400;
+    color: var(--accento);
+  }
+  .prova__conto {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .prova__conto[data-esito="ok"] {
+    color: var(--verificato);
+  }
+  .prova__conto[data-esito="no"] {
+    color: var(--errore);
+  }
+  .prova > p {
+    margin-top: var(--s-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 60ch;
+  }
+  .prova[data-entra] {
+    animation: entra var(--d-4) var(--e-uscita) both;
+    animation-delay: var(--ritardo, 0ms);
+  }
+  @keyframes entra {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* (a) Elenco dei gruppi trovati e mancanti */
+  .appello {
+    margin-top: var(--s-4);
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-5);
+  }
+  @media (max-width: 560px) {
+    .appello {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .appello li {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    gap: var(--s-3);
+    align-items: center;
+    min-height: 40px;
+    padding-block: 6px;
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+  }
+  .appello svg {
+    width: 16px;
+    height: 16px;
+  }
+  .appello [data-c="si"] svg {
+    color: var(--verificato);
+  }
+  .appello [data-c="no"] svg {
+    color: var(--errore);
+  }
+  .appello [data-c="no"] .appello__nome {
+    color: var(--errore);
+  }
+  .appello__nome {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .appello__come {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    white-space: nowrap;
+    max-width: 14ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* (b) Citazioni, una per una */
+  .citate {
+    margin-top: var(--s-4);
+    display: grid;
+    gap: var(--s-4);
+  }
+  .citata {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-2);
+    background: var(--carta);
+  }
+  .citata__esito {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    font-size: var(--t-nota);
+    font-weight: 500;
+  }
+  .citata__esito svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .citata[data-esito="ok"] .citata__esito {
+    color: var(--verificato);
+  }
+  .citata[data-esito="no"] {
+    border-color: color-mix(in oklab, var(--errore) 35%, var(--filetto));
+  }
+  .citata[data-esito="no"] .citata__esito {
+    color: var(--errore);
+  }
+  .citata[data-esito="nd"] .citata__esito {
+    color: var(--inchiostro-3);
+  }
+  .citata__esito span {
+    font-weight: 400;
+    color: var(--inchiostro-3);
+  }
+  .citata .cit__testo {
+    font-size: 1.125rem;
+    line-height: 1.45;
+  }
+  .citata .cit {
+    padding-left: var(--s-4);
+  }
+  .diff {
+    font-family: var(--f-titolo);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .diff span {
+    border-radius: 2px;
+  }
+  .diff span[data-s="ok"] {
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--verificato) 45%, transparent);
+  }
+  .diff span[data-s="no"] {
+    color: var(--inchiostro-3);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .diff span[data-s="nuovo"] {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+    padding-inline: 2px;
+  }
+  .diff-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    font-size: var(--t-micro);
+    font-family: var(--f-mono);
+    color: var(--inchiostro-3);
+  }
+  .diff-legenda s {
+    text-decoration-thickness: 1px;
+  }
+  .diff-legenda mark {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+    padding-inline: 2px;
+  }
+  .chi-dice {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .chi-dice .bollino {
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  .brevi {
+    margin-top: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+
+  /* (c) Voci autorevoli: cosa farà la versione pubblica */
+  .futuro {
+    margin-top: var(--s-4);
+    padding: var(--s-4);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .futuro ol {
+    margin-top: var(--s-3);
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--s-2);
+  }
+  .futuro .citati {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* Nomi riconosciuti */
+  .alias {
+    margin-top: var(--s-5);
+    border-top: 1px solid var(--filetto);
+  }
+  .alias summary {
+    padding-block: var(--s-3);
+    font-size: var(--t-nota);
+  }
+  .alias summary::after {
+    font-size: var(--t-piccolo);
+  }
+  .alias .tabella {
+    font-size: var(--t-nota);
+  }
+
+  /* ---------- Anteprima e versione pubblica a confronto ---------- */
+  .confronto-v {
+    margin-top: var(--s-6);
+  }
+  .confronto-v td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .confronto-v td {
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 700px) {
+    .confronto-v thead {
+      display: none;
+    }
+    .confronto-v tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .confronto-v tr {
+      display: grid;
+      gap: var(--s-2);
+      padding-block: var(--s-4);
+      border-bottom: 1px solid var(--filetto);
+    }
+    .confronto-v td {
+      border: 0;
+      padding: 0;
+    }
+    .confronto-v td[data-l]::before {
+      content: attr(data-l);
+      display: block;
+      font-family: var(--f-mono);
+      font-size: var(--t-micro);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--inchiostro-3);
+      margin-bottom: 2px;
+    }
+  }
+
+  /* ---------- Perché ---------- */
+  .perche {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    margin-top: var(--s-6);
+  }
+  .perche__testo {
+    display: grid;
+    gap: var(--s-4);
+    font-size: 1.1875rem;
+    color: var(--inchiostro-2);
+    max-width: 56ch;
+  }
+  .perche__testo strong {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  @media (max-width: 860px) {
+    .perche {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
