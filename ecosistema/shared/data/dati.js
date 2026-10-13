@@ -1,0 +1,236 @@
+window.DATI={
+ "stats": {
+  "people": 555,
+  "speeches": 47782,
+  "sessions": 725,
+  "acts": 36926,
+  "votes": 17575,
+  "individual_votes": 7004800,
+  "eurovoc_concepts": 1927,
+  "chunks": 178806,
+  "last_update": "2026-10-13",
+  "triples": 863834,
+  "fonte": "grafo di Fascicoli e ParliamentRAG, /api/data/stats"
+ },
+ "tema": {
+  "titolo": "Salario minimo",
+  "citazioni": [
+   {
+    "group": "FdI",
+    "name": "Marcello Coppo",
+    "date": "2025-07-14",
+    "session": 510,
+    "id": "leg19_sed510_tit00040.sub00010.int00080",
+    "quote": "Siamo contrari all'idea di un salario minimo legale, fissato per legge, che rischia di diventare un tetto e non certo un pavimento per le retribuzioni.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0510&tipo=stenografico#sed0510.stenografico.tit00040.sub00010.int00080",
+    "verified": true,
+    "groupName": "Fratelli d'Italia",
+    "debate": "Mozione Scotto, Barzotti, Mari ed altri n. 1-00444 sulla povertà lavorativa"
+   },
+   {
+    "group": "PD",
+    "name": "Maria Cecilia Guerra",
+    "date": "2026-06-10",
+    "session": 672,
+    "id": "leg19_sed672_tit00110.sub00020.int00170",
+    "quote": "Per rispettare l'articolo 36 della Costituzione, secondo noi, è allora indispensabile che il salario tabellare minimo non possa mai andare sotto un livello definito per legge",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00110.sub00020.int00170",
+    "verified": true,
+    "groupName": "Partito Democratico - Italia Democratica e Progressista",
+    "debate": "Disegno di legge n. 2911-A"
+   },
+   {
+    "group": "Lega",
+    "name": "Tiziana Nisini",
+    "date": "2022-11-30",
+    "session": 16,
+    "id": "leg19_sed16_tit00040.sub00020.int00120",
+    "quote": "la contrattazione collettiva - non lo dice la Lega e non lo dice il centrodestra - nel nostro Paese tutela il 97 per cento dei lavoratori.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00120",
+    "verified": true,
+    "groupName": "Lega - Salvini Premier",
+    "debate": "Mozioni sull'introduzione del salario minimo"
+   },
+   {
+    "group": "M5S",
+    "name": "Davide Aiello",
+    "date": "2023-07-12",
+    "session": 138,
+    "id": "leg19_sed138_tit00120.sub00040.int00020",
+    "quote": "Tutto ciò rende evidente la necessità di definire un salario minimo per legge, questo lo dicono anche l'Istat, l'OCSE e la direttiva dell'Unione europea sul salario minimo.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0138&tipo=stenografico#sed0138.stenografico.tit00120.sub00040.int00020",
+    "verified": true,
+    "groupName": "Movimento 5 Stelle",
+    "debate": "Interrogazioni a risposta immediata"
+   },
+   {
+    "group": "FI",
+    "name": "Chiara Tenerini",
+    "date": "2023-12-06",
+    "session": 210,
+    "id": "leg19_sed210_tit00030.sub00010.int00180",
+    "quote": "Il salario minimo potrebbe, infatti, agire come un catalizzatore al ribasso, indebolendo, invece di rafforzare, il potere contrattuale dei sindacati",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0210&tipo=stenografico#sed0210.stenografico.tit00030.sub00010.int00180",
+    "verified": true,
+    "groupName": "Forza Italia - Berlusconi Presidente - PPE",
+    "debate": "Proposta di legge Conte ed altri sul salario minimo (A.C. 1275-A)"
+   },
+   {
+    "group": "AVS",
+    "name": "Francesco Mari",
+    "date": "2022-11-30",
+    "session": 16,
+    "id": "leg19_sed16_tit00040.sub00020.int00040",
+    "quote": "la fissazione di un salario minimo legale è - e rimane - un tassello indispensabile all'interno di questo disegno, per rendere più dignitoso il lavoro in questo Paese.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00040",
+    "verified": true,
+    "groupName": "Alleanza Verdi e Sinistra",
+    "debate": "Mozioni sull'introduzione del salario minimo"
+   },
+   {
+    "group": "Azione",
+    "name": "Matteo Richetti",
+    "date": "2026-06-10",
+    "session": 672,
+    "id": "leg19_sed672_tit00110.sub00010.int00320",
+    "quote": "Serve un pavimento minimo che dica che qualunque forma di impiego ha la dignità di vedersi riconosciuto un salario minimo.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00110.sub00010.int00320",
+    "verified": true,
+    "groupName": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "debate": "Disegno di legge n. 2911-A"
+   },
+   {
+    "group": "IV",
+    "name": "Roberto Giachetti",
+    "date": "2026-06-10",
+    "session": 672,
+    "id": "leg19_sed672_tit00110.sub00020.int00030",
+    "quote": "il salario minimo è una misura necessaria, non certo contro la contrattazione collettiva, ma a suo complemento.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00110.sub00020.int00030",
+    "verified": true,
+    "groupName": "Italia Viva - Casa Riformista",
+    "debate": "Disegno di legge n. 2911-A"
+   },
+   {
+    "group": "NM",
+    "name": "Ilaria Cavo",
+    "date": "2026-06-10",
+    "session": 672,
+    "id": "leg19_sed672_tit00040.sub00010.int00040",
+    "quote": "Noi non vogliamo abbassare la contrattazione collettiva al livello di un minimo legale; vogliamo rafforzarla",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00040.sub00010.int00040",
+    "verified": true,
+    "groupName": "Noi Moderati - MAIE - Centro Popolare",
+    "debate": "Disegno di legge n. 2911-A"
+   },
+   {
+    "group": "+Europa",
+    "name": "Riccardo Magi",
+    "date": "2023-07-27",
+    "session": 148,
+    "id": "leg19_sed148_tit00020.sub00010.int00470",
+    "quote": "un salario minimo serve a far crescere i salari degli inquadramenti più bassi, più che proporzionalmente rispetto agli altri livelli salariali",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0148&tipo=stenografico#sed0148.stenografico.tit00020.sub00010.int00470",
+    "verified": true,
+    "groupName": "+Europa (Gruppo Misto)",
+    "debate": "Proposta di legge Conte ed altri sul salario minimo (A.C. 1275)"
+   },
+   {
+    "group": "Governo",
+    "name": "Claudio Durigon",
+    "date": "2022-11-29",
+    "session": 15,
+    "id": "leg19_sed15_tit00070.sub00020.int00020",
+    "quote": "Nel nostro ordinamento, la determinazione del salario minimo non è rimessa alla legge, ma è demandata alla libera negoziazione delle parti sociali attraverso lo strumento della contrattazione collettiva.",
+    "url": "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00020.int00020",
+    "verified": true,
+    "groupName": "Governo",
+    "debate": "Mozioni sul salario minimo"
+   }
+  ],
+  "voto": {
+   "id": "leg19_sed209_vot_1",
+   "date": "2023-12-05",
+   "subject": "Emendamento 1.1000 Conte (M5S) alla PDL 1275, salario minimo",
+   "outcome": "respinto",
+   "in_favor": 111,
+   "against": 149,
+   "abstained": 3,
+   "act_url": "https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=1275",
+   "groups": {
+    "FdI": [
+     0,
+     82,
+     0,
+     36
+    ],
+    "PD": [
+     54,
+     0,
+     0,
+     15
+    ],
+    "Lega": [
+     0,
+     33,
+     0,
+     32
+    ],
+    "M5S": [
+     36,
+     0,
+     0,
+     16
+    ],
+    "FI": [
+     0,
+     24,
+     0,
+     20
+    ],
+    "Azione": [
+     8,
+     0,
+     0,
+     4
+    ],
+    "AVS": [
+     8,
+     0,
+     0,
+     3
+    ],
+    "NM": [
+     0,
+     6,
+     0,
+     4
+    ],
+    "IV": [
+     0,
+     4,
+     0,
+     5
+    ],
+    "Minoranze linguistiche": [
+     1,
+     0,
+     3,
+     0
+    ],
+    "+Europa": [
+     2,
+     0,
+     0,
+     1
+    ],
+    "Misto": [
+     2,
+     0,
+     0,
+     0
+    ]
+   }
+  }
+ }
+};

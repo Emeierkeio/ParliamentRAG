@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="fascicoli" data-pagina="tema" data-prodotto="sistema">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fascicoli</title>
+<meta name="description" content="Scegli un tema e ricevi un riassunto con la posizione di ogni gruppo, le voci più autorevoli di ciascuno e citazioni esatte dagli interventi alla Camera.">
+<link rel="icon" href="../shared/favicon-fascicoli.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /*
+   * Fascicoli: due viste nella stessa pagina.
+   * Senza hash la pagina dei temi; con #salario-minimo il fascicolo,
+   * con #salario-minimo/<gruppo> il fascicolo aperto sulla sezione di quel gruppo.
+   */
+
+  /* ---------- Vista temi: apertura ---------- */
+  .avvio {
+    padding-block: clamp(48px, 8vw, 112px) clamp(48px, 6vw, 88px);
+  }
+  .avvio__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: end;
+  }
+  .avvio h1 {
+    margin-top: var(--s-5);
+    max-width: 14ch;
+  }
+  .avvio .attacco {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+  }
+  .cerca {
+    margin-top: var(--s-6);
+    max-width: 36rem;
+  }
+  .cerca label {
+    display: block;
+    margin-bottom: var(--s-2);
+  }
+  .esito-tema {
+    margin-top: var(--s-4);
+    max-width: 36rem;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .esito-tema:empty {
+    display: none;
+  }
+  .avviso {
+    display: flex;
+    gap: var(--s-3);
+    align-items: flex-start;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-2);
+    border: 1px solid var(--filetto);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .avviso svg {
+    width: 16px;
+    height: 16px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    color: var(--inchiostro-3);
+  }
+  .avviso[data-tipo="ok"] {
+    border-color: color-mix(in oklab, var(--verificato) 35%, transparent);
+    background: color-mix(in oklab, var(--verificato) 7%, transparent);
+  }
+  .avviso[data-tipo="ok"] svg {
+    color: var(--verificato);
+  }
+
+  /* Rinvio a Stenografo quando il testo è una domanda su un fatto */
+  .rinvio {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-4);
+    border: 1px solid var(--filetto-forte);
+    border-radius: var(--r-3);
+    background: var(--foglio);
+  }
+  .rinvio__marchio svg {
+    height: 28px;
+    width: auto;
+    overflow: visible;
+    color: var(--inchiostro);
+  }
+  .rinvio p {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .rinvio .btn {
+    justify-self: start;
+    margin-top: var(--s-2);
+  }
+
+  /* Indice tipo: cosa contiene un fascicolo */
+  .indice-tipo {
+    padding: 0;
+    overflow: hidden;
+  }
+  .indice-tipo__testa {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .indice-tipo ol {
+    list-style: none;
+    padding: var(--s-2) var(--s-5) var(--s-4);
+    margin: 0;
+    counter-reset: voce;
+  }
+  .indice-tipo li {
+    counter-increment: voce;
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--s-2);
+    padding-block: var(--s-3);
+    border-bottom: 1px dashed var(--filetto-forte);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .indice-tipo li:last-child {
+    border-bottom: 0;
+  }
+  .indice-tipo li::before {
+    content: "§ " counter(voce);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    padding-top: 2px;
+  }
+  @media (max-width: 960px) {
+    .avvio__griglia {
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  /* ---------- Vista temi: temi pronti ---------- */
+  .temi {
+    margin-top: var(--s-6);
+    border-top: 1px solid var(--filetto);
+  }
+  .tema-voce {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-3) var(--s-6);
+    align-items: center;
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--filetto);
+    text-decoration: none;
+  }
+  .tema-voce__t {
+    font-family: var(--f-titolo);
+    font-size: var(--t-2);
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    transition: color var(--d-1);
+  }
+  .tema-voce:hover .tema-voce__t {
+    color: var(--accento);
+  }
+  .tema-voce__meta {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .tema-voce__meta span + span::before {
+    content: "·";
+    margin-right: var(--s-4);
+    color: var(--inchiostro-4);
+  }
+  .tema-voce__voto {
+    margin-top: var(--s-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .tema-voce:hover .freccia {
+    transform: translateX(3px);
+  }
+  @media (max-width: 640px) {
+    .tema-voce {
+      grid-template-columns: 1fr;
+    }
+    .tema-voce .btn {
+      justify-self: start;
+    }
+  }
+
+  /* ---------- Fascicolo: copertina ---------- */
+  .copertina {
+    padding-block: clamp(32px, 5vw, 72px) var(--s-7);
+  }
+  .copertina__barra {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--inchiostro);
+  }
+  .copertina__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    padding-top: clamp(32px, 5vw, 64px);
+    align-items: end;
+  }
+  .copertina h1 {
+    margin-top: var(--s-4);
+  }
+  .copertina h1:focus {
+    outline: none;
+  }
+  .copertina__meta {
+    margin-top: var(--s-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .copertina__meta span + span::before {
+    content: "·";
+    margin-right: var(--s-4);
+    color: var(--inchiostro-4);
+  }
+  @media (max-width: 560px) {
+    .copertina__meta,
+    .tema-voce__meta {
+      flex-direction: column;
+      gap: 2px;
+    }
+    .copertina__meta span + span::before,
+    .tema-voce__meta span + span::before {
+      display: none;
+    }
+  }
+  .copertina .sigillo {
+    margin-top: var(--s-5);
+  }
+
+  /* Scheda di registro, come il frontespizio di un fascicolo d'archivio */
+  .registro {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    border-top: 1px solid var(--filetto-forte);
+    font-size: var(--t-nota);
+  }
+  .registro dt,
+  .registro dd {
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .registro dt {
+    padding-right: var(--s-4);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inchiostro-3);
+    padding-top: 12px;
+  }
+  .registro dd {
+    color: var(--inchiostro);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Le tre garanzie, per esteso */
+  .garanzie {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--filetto);
+  }
+  .garanzie > div {
+    padding: var(--s-5) var(--s-5) var(--s-5) 0;
+  }
+  .garanzie > div + div {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .garanzie h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+  }
+  .garanzie h2 svg {
+    width: 15px;
+    height: 15px;
+    color: var(--verificato);
+  }
+  .garanzie p {
+    margin-top: var(--s-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .garanzie__sigle {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  @media (max-width: 860px) {
+    .copertina__griglia {
+      grid-template-columns: 1fr;
+    }
+    .garanzie {
+      grid-template-columns: 1fr;
+    }
+    .garanzie > div,
+    .garanzie > div + div {
+      padding: var(--s-4) 0;
+      border-left: 0;
+    }
+    .garanzie > div + div {
+      border-top: 1px solid var(--filetto);
+    }
+  }
+
+  /* Utilità sotto la copertina */
+  .utilita {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-6);
+  }
+  .torna {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    text-decoration: none;
+  }
+  .torna:hover {
+    color: var(--inchiostro);
+  }
+  .torna svg {
+    transform: rotate(180deg);
+  }
+
+  /* ---------- Fascicolo: corpo con indice laterale ---------- */
+  .corpo {
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+    padding-bottom: var(--s-9);
+  }
+  .indice {
+    position: sticky;
+    top: 88px;
+    font-size: var(--t-nota);
+    max-height: calc(100vh - 104px);
+    overflow-y: auto;
+    padding-bottom: var(--s-4);
+  }
+  .indice__titolo {
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--inchiostro);
+  }
+  .indice ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .indice__parte {
+    margin-top: var(--s-4);
+    margin-bottom: var(--s-1);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inchiostro-4);
+  }
+  .indice a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    padding: 6px 0 6px 12px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: var(--inchiostro-3);
+    text-decoration: none;
+    line-height: 1.35;
+    transition: color var(--d-1), border-color var(--d-2);
+  }
+  .indice a:hover {
+    color: var(--inchiostro);
+  }
+  .indice a[aria-current="true"] {
+    color: var(--inchiostro);
+    border-left-color: var(--accento);
+  }
+  .indice__lista {
+    border-left: 1px solid var(--filetto);
+  }
+  .indice a .sigla-testo {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.04em;
+    min-width: 4.6em;
+  }
+  .indice a .nome {
+    font-size: var(--t-nota);
+  }
+
+  /* Su schermi stretti l'indice diventa una fila di pastiglie che scorre */
+  .pastiglie {
+    display: none;
+  }
+  @media (max-width: 960px) {
+    .corpo {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+    .indice {
+      display: none;
+    }
+    .pastiglie {
+      display: flex;
+      gap: 6px;
+      position: sticky;
+      top: 64px;
+      z-index: 30;
+      margin-inline: calc(-1 * var(--margine));
+      padding: 10px var(--margine);
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: color-mix(in oklab, var(--carta) 92%, transparent);
+      backdrop-filter: saturate(1.4) blur(14px);
+      -webkit-backdrop-filter: saturate(1.4) blur(14px);
+      border-bottom: 1px solid var(--filetto);
+    }
+    .pastiglie::-webkit-scrollbar {
+      display: none;
+    }
+    .pastiglie a {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--filetto-forte);
+      border-radius: var(--r-pill);
+      font-family: var(--f-mono);
+      font-size: var(--t-micro);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--inchiostro-2);
+      background: var(--foglio);
+      white-space: nowrap;
+      transition: background var(--d-1), color var(--d-1), border-color var(--d-1);
+    }
+    .pastiglie a[aria-current="true"] {
+      background: var(--inchiostro);
+      border-color: var(--inchiostro);
+      color: var(--carta);
+    }
+  }
+
+  /* Sezioni del fascicolo: l'ancora non finisce sotto la testata */
+  .parte {
+    scroll-margin-top: 96px;
+  }
+  .parte + .parte {
+    margin-top: var(--s-9);
+  }
+  .parte .testata + * {
+    margin-top: var(--s-6);
+  }
+  @media (max-width: 960px) {
+    .parte {
+      scroll-margin-top: 136px;
+    }
+    .parte:first-child {
+      margin-top: var(--s-6);
+    }
+  }
+
+  /* ---------- § 1 Il voto ---------- */
+  .voto__titolo {
+    max-width: 22ch;
+  }
+  .voto__sotto {
+    margin-top: var(--s-3);
+    color: var(--inchiostro-2);
+    max-width: 60ch;
+  }
+  .voto__cifre {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  .voto__cifre .cifra {
+    padding-top: var(--s-3);
+    border-top: 3px solid var(--c);
+  }
+  .esito-voto {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: var(--r-1);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--voto-no);
+    border: 1px solid color-mix(in oklab, var(--voto-no) 40%, transparent);
+    background: color-mix(in oklab, var(--voto-no) 8%, transparent);
+  }
+
+  /* Grafico a barre impilate, una riga per gruppo, scala comune */
+  .grafico {
+    margin-top: var(--s-7);
+  }
+  .grafico__testa,
+  .riga {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) repeat(4, 2.75rem);
+    gap: var(--s-3);
+    align-items: center;
+  }
+  .grafico__testa {
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--inchiostro);
+  }
+  .grafico__testa .etichetta:nth-child(n + 3) {
+    text-align: right;
+  }
+  .grafico__parte {
+    padding-top: var(--s-4);
+    padding-bottom: var(--s-1);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inchiostro-4);
+  }
+  .riga {
+    padding-block: 9px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .riga__nome {
+    font-size: var(--t-piccolo);
+    line-height: 1.25;
+  }
+  .riga__nome small {
+    display: block;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    font-family: var(--f-mono);
+    letter-spacing: 0.04em;
+  }
+  .barra {
+    display: flex;
+    height: 14px;
+    gap: 1px;
+  }
+  .barra i {
+    display: block;
+    height: 100%;
+    flex: none;
+    width: 0;
+    transition: width 1s var(--e-uscita);
+    transition-delay: var(--ritardo, 0ms);
+  }
+  .barra i:first-child {
+    border-radius: 2px 0 0 2px;
+  }
+  .barra i:last-child {
+    border-radius: 0 2px 2px 0;
+  }
+  [data-visto="true"] .barra i,
+  .barra--ferma i {
+    width: var(--w);
+  }
+  .barra .si { background: var(--voto-si); }
+  .barra .no { background: var(--voto-no); }
+  .barra .ast { background: var(--voto-ast); }
+  .barra .ass { background: var(--voto-ass); }
+  .riga__n {
+    text-align: right;
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    font-variant-numeric: tabular-nums;
+  }
+  .riga__n[data-zero] {
+    color: var(--inchiostro-4);
+  }
+  .grafico__piede {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3) var(--s-5);
+  }
+  .legenda i.q {
+    border-radius: 2px;
+  }
+  @media (max-width: 640px) {
+    .grafico__testa,
+    .riga {
+      grid-template-columns: minmax(0, 1fr) repeat(4, 2.25rem);
+      gap: 6px var(--s-2);
+    }
+    .grafico__testa .etichetta:nth-child(2) {
+      display: none;
+    }
+    .riga .barra {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .voto__cifre {
+      gap: var(--s-3);
+    }
+  }
+
+  /* Tabella del voto: nascosta alla vista, sempre leggibile dagli screen reader */
+  .tabella-voto[data-chiusa="true"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .tabella-voto {
+    margin-top: var(--s-5);
+  }
+  .tabella caption {
+    text-align: left;
+    caption-side: top;
+    padding-bottom: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+
+  .fonti-voto {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--filetto);
+  }
+  .fonti-voto > a {
+    display: grid;
+    gap: 4px;
+    padding: var(--s-4) var(--s-4) var(--s-4) 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .fonti-voto > a + a {
+    padding-left: var(--s-4);
+    border-left: 1px solid var(--filetto);
+  }
+  .fonti-voto strong {
+    font-weight: 500;
+    font-size: var(--t-piccolo);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color var(--d-1);
+  }
+  .fonti-voto > a:hover strong {
+    color: var(--accento);
+  }
+  .fonti-voto span.nota {
+    display: block;
+  }
+  @media (max-width: 760px) {
+    .fonti-voto {
+      grid-template-columns: 1fr;
+    }
+    .fonti-voto > a + a {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  /* ---------- § 2 Le posizioni ---------- */
+  .schieramento {
+    margin-top: var(--s-7);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--filetto-forte);
+  }
+  .schieramento h3 {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    letter-spacing: -0.012em;
+  }
+  .gruppo {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--filetto);
+    scroll-margin-top: 96px;
+  }
+  @media (max-width: 960px) {
+    .gruppo {
+      scroll-margin-top: 136px;
+    }
+  }
+  .gruppo__testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+  }
+  .gruppo__testa .copia-link {
+    margin-left: auto;
+  }
+  .gruppo h4 {
+    margin-top: var(--s-3);
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+    max-width: 34ch;
+  }
+  .gruppo__voto {
+    margin-top: var(--s-4);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 9rem;
+    gap: var(--s-4);
+    align-items: center;
+    max-width: 46rem;
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .gruppo__voto .barra {
+    height: 8px;
+  }
+  .gruppo__voto[data-senza-voto] {
+    grid-template-columns: 1fr;
+  }
+  .gruppo .cit {
+    margin-top: var(--s-5);
+    max-width: 46rem;
+  }
+  .gruppo .cit__dibattito {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .gruppo__azioni {
+    margin-top: var(--s-4);
+    padding-left: var(--s-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    font-size: var(--t-nota);
+  }
+  .gruppo__azioni a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 32px;
+  }
+  .copia-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-pill);
+    background: transparent;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    cursor: pointer;
+    transition: color var(--d-1), border-color var(--d-1), background var(--d-1);
+  }
+  .copia-link:hover {
+    color: var(--inchiostro);
+    border-color: var(--filetto-forte);
+    background: var(--foglio);
+  }
+  .copia-link svg {
+    width: 14px;
+    height: 14px;
+  }
+  .copia-link[data-fatto] {
+    color: var(--verificato);
+  }
+  @media (max-width: 560px) {
+    .gruppo__voto {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+    }
+    .gruppo__voto .barra {
+      max-width: 12rem;
+    }
+    .gruppo__azioni {
+      padding-left: 0;
+    }
+    /* Nella testata del gruppo resta solo l'icona: il nome accessibile è in aria-label */
+    .gruppo__testa {
+      position: relative;
+      padding-right: 48px;
+      min-height: 40px;
+    }
+    .gruppo__testa .copia-link {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 40px;
+      min-height: 40px;
+      padding: 0;
+      justify-content: center;
+    }
+    .gruppo__testa .copia-link span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+  }
+
+  /* ---------- § 3 Come è composto ---------- */
+  .composizione {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5) clamp(24px, 4vw, 56px);
+  }
+  .composizione h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+  }
+  .composizione p {
+    margin-top: var(--s-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 52ch;
+  }
+  .composizione__errore {
+    margin-top: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 760px) {
+    .composizione {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Messaggi per i lettori di schermo (copia, cambi di vista) */
+  #annuncio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  /* ---------- Stampa: il fascicolo si stampa come un documento ---------- */
+  @media print {
+    :root,
+    :root[data-theme="dark"],
+    :root:not([data-theme="light"]) {
+      --carta: #ffffff;
+      --carta-2: #f3f2ee;
+      --foglio: #ffffff;
+      --inchiostro: #111111;
+      --inchiostro-2: #333333;
+      --inchiostro-3: #555555;
+      --inchiostro-4: #777777;
+      --filetto: #d6d4cc;
+      --filetto-forte: #b9b7ae;
+      --verde: #167a68;
+      --accento: #167a68;
+      --voto-si: #1f7a55;
+      --voto-no: #b4442c;
+      --voto-ast: #b88a1e;
+      --voto-ass: #c9c7bf;
+      --verificato: #1f7a55;
+      color-scheme: light;
+    }
+    @page {
+      margin: 18mm 16mm;
+    }
+    * {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      font-size: 11pt;
+    }
+    .famiglia,
+    .sito,
+    .piede,
+    .salta,
+    .indice,
+    .pastiglie,
+    .utilita,
+    .copia-link,
+    .grafico__piede .btn,
+    .gruppo__azioni,
+    #vista-temi {
+      display: none !important;
+    }
+    .compare {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+    }
+    .barra i {
+      width: var(--w) !important;
+      transition: none !important;
+    }
+    .corpo {
+      display: block;
+    }
+    .copertina {
+      padding-top: 0;
+    }
+    .titolo-mega {
+      font-size: 54pt;
+    }
+    .parte + .parte {
+      margin-top: 28pt;
+    }
+    #composizione {
+      break-before: page;
+    }
+    .gruppo,
+    .riga,
+    .cit,
+    .garanzie > div {
+      break-inside: avoid;
+    }
+    .tabella-voto[data-chiusa="true"] {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+    .grafico {
+      display: none;
+    }
+    a.bollino::after {
+      content: " " attr(href);
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--inchiostro-3);
+      word-break: break-all;
+    }
+  }
+
+  /* Anteprima di un fascicolo nell'apertura: si vede cosa si ottiene */
+  .prova {
+    margin-top: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+  }
+  .prova .sigla {
+    text-decoration: none;
+    font-size: var(--t-nota);
+    padding: 4px 10px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--f-testo);
+  }
+  .anteprima {
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    padding: 0;
+    transition: border-color var(--d-2), transform var(--d-2) var(--e-uscita);
+  }
+  .anteprima:hover {
+    border-color: var(--inchiostro-3);
+    transform: translateY(-2px);
+  }
+  .anteprima__testa {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .anteprima__tema {
+    font-family: var(--f-titolo);
+    font-size: 1.25rem;
+  }
+  .anteprima__contesto {
+    display: block;
+    padding: var(--s-3) var(--s-5) 0;
+  }
+  .anteprima__righe {
+    display: block;
+  }
+  .anteprima__riga {
+    display: block;
+    padding: var(--s-4) var(--s-5);
+    border-bottom: 1px dashed var(--filetto-forte);
+  }
+  .anteprima__chi {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-3);
+    font-size: var(--t-nota);
+  }
+  .anteprima__partito {
+    font-weight: 600;
+  }
+  .anteprima__voto {
+    color: var(--inchiostro-3);
+  }
+  .anteprima__frase {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--f-titolo);
+    font-size: 1.0625rem;
+    line-height: 1.4;
+  }
+  .anteprima__fonte {
+    display: inline-flex;
+    margin-top: 6px;
+  }
+  .anteprima__piede {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: var(--s-4) var(--s-5);
+    font-size: var(--t-piccolo);
+    font-weight: 500;
+    color: var(--accento);
+  }
+  .anteprima:hover .freccia {
+    transform: translateX(3px);
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto" data-salta>Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto" tabindex="-1">
+
+  <!-- ============ Vista temi (nessun hash) ============ -->
+  <div id="vista-temi">
+    <section class="avvio">
+      <div class="pagina avvio__griglia">
+        <div>
+          <p class="etichetta compare">Fascicoli · gratuito, senza account</p>
+          <h1 class="titolo-1 compare" style="--ritardo:80ms" tabindex="-1" id="titolo-temi">Cosa pensano <em>tutti i partiti</em> su un tema.</h1>
+          <p class="attacco compare" style="--ritardo:160ms">Scrivi un argomento. Ti mostriamo cosa hanno detto i partiti alla Camera, chi ha parlato per ciascuno e come hanno votato. Le frasi tra virgolette sono copiate dal verbale ufficiale, con il link per controllare.</p>
+
+          <form class="cerca compare" id="cerca" style="--ritardo:240ms" novalidate role="search">
+            <label class="etichetta" for="tema">Scrivi un argomento</label>
+            <div class="campo">
+              <input id="tema" name="tema" type="text" autocomplete="off" spellcheck="false" placeholder="Ad esempio: salario minimo" aria-describedby="esito-tema">
+              <button class="btn btn--accento" type="submit">Apri il fascicolo</button>
+            </div>
+          </form>
+          <p class="prova compare" style="--ritardo:300ms">Oppure apri un esempio: <a class="sigla sigla--accento" href="#salario-minimo">Salario minimo</a></p>
+          <div class="esito-tema" id="esito-tema" aria-live="polite"></div>
+        </div>
+
+        <a class="foglio anteprima compare" style="--ritardo:200ms" href="#salario-minimo" aria-label="Esempio di fascicolo: salario minimo. Apri il fascicolo completo">
+          <span class="anteprima__testa"><span class="etichetta">Esempio di fascicolo</span><span class="anteprima__tema">Salario minimo</span></span>
+          <span class="anteprima__contesto nota">Il voto è quello del 5 dicembre 2023 sulla proposta di salario minimo a 9 euro.</span><span class="anteprima__righe" id="anteprima-righe"></span>
+          <span class="anteprima__piede">E così per tutti i partiti e il Governo. Apri il fascicolo <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+      </div>
+    </section>
+
+    <section class="sezione-stretta" style="padding-top:0">
+      <div class="pagina">
+        <div class="testata compare"><span class="testata__n">§ 1</span><h2 class="etichetta" style="padding-top:.55em">Temi pronti</h2></div>
+        <div class="temi compare" id="temi"></div>
+        <p class="nota compare" style="margin-top:var(--s-4)">In questa versione locale c'è un solo fascicolo pronto. Gli altri temi richiedono il collegamento al grafo, che qui non c'è.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ Vista fascicolo (#salario-minimo) ============ -->
+  <div id="vista-fascicolo" hidden></div>
+
+  <p id="annuncio" aria-live="polite"></p>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var T = window.DATI.tema;
+  var V = T.voto;
+  var SPUNTA = window.ICONE.spunta, FRECCIA = window.ICONE.freccia, ESTERNO = window.ICONE.esterno;
+  var INFO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M8 7.2v4M8 4.8v.2"/></svg>';
+  var LINK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.8 9.2a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-.8.8"/><path d="M9.2 6.8a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l.8-.8"/></svg>';
+  var ridotto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var SLUG = "salario-minimo";
+
+  /* ---------- Dati derivati ---------- */
+
+  function dataIt(s) {
+    return new Date(s + "T12:00:00").toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+  var cit = {};
+  T.citazioni.forEach(function (q) { cit[q.group] = q; });
+  var date = T.citazioni.map(function (q) { return q.date; }).sort();
+  var nVoci = T.citazioni.length;
+  var nGruppi = T.citazioni.filter(function (q) { return q.group !== "Governo"; }).length;
+  var nVerificate = T.citazioni.filter(function (q) { return q.verified; }).length;
+  var periodo = dataIt(date[0]) + " – " + dataIt(date[date.length - 1]);
+
+  /* Schieramenti: chi sostiene il Governo e chi no. Il Governo ha una sezione sua. */
+  var MAGGIORANZA = ["FdI", "Lega", "FI", "NM"];
+  var OPPOSIZIONE = ["PD", "M5S", "AVS", "Azione", "IV", "+Europa"];
+  var ORDINE = MAGGIORANZA.concat(["Governo"], OPPOSIZIONE);
+  var slug = function (g) { return g === "+Europa" ? "piu-europa" : g.toLowerCase(); };
+  var daSlug = {};
+  ORDINE.forEach(function (g) { daSlug[slug(g)] = g; });
+  function lato(g) {
+    if (g === "Governo") return "Governo";
+    return MAGGIORANZA.indexOf(g) >= 0 ? "Maggioranza" : "Opposizione";
+  }
+
+  /* Voti per gruppo: [favorevoli, contrari, astenuti, assenti] */
+  var totale = function (v) { return v[0] + v[1] + v[2] + v[3]; };
+  var MAX = Math.max.apply(null, Object.keys(V.groups).map(function (k) { return totale(V.groups[k]); }));
+
+  function plurale(n, uno, molti) { return n + " " + (n === 1 ? uno : molti); }
+  function contaVoto(v) {
+    var p = [];
+    if (v[0]) p.push(plurale(v[0], "favorevole", "favorevoli"));
+    if (v[1]) p.push(plurale(v[1], "contrario", "contrari"));
+    if (v[2]) p.push(plurale(v[2], "astenuto", "astenuti"));
+    if (v[3]) p.push(plurale(v[3], "assente", "assenti"));
+    return p.join(", ");
+  }
+  /* Una riga di fatti, nessuna interpretazione */
+  function attaccoVoto(g) {
+    var v = V.groups[g];
+    if (g === "Governo") return "Il Governo non vota in Aula: sull'emendamento Conte non c'è un suo voto da riportare.";
+    if (!v) return "Voto del gruppo non disponibile in questi dati.";
+    var verso = v[0] && !v[1] ? "ha votato a favore" : v[1] && !v[0] ? "ha votato contro" : "si è diviso";
+    return "Sull'emendamento Conte " + verso + ": " + contaVoto(v) + ".";
+  }
+  function barra(v, scala, ritardo) {
+    var w = function (n) { return (n / scala * 100).toFixed(2) + "%"; };
+    return '<span class="barra" aria-hidden="true">' +
+      [["si", v[0]], ["no", v[1]], ["ast", v[2]], ["ass", v[3]]].filter(function (x) { return x[1] > 0; }).map(function (x) {
+        return '<i class="' + x[0] + '" style="--w:' + w(x[1]) + ";--ritardo:" + (ritardo || 0) + 'ms"></i>';
+      }).join("") + "</span>";
+  }
+
+  /* ---------- Vista temi ---------- */
+
+  document.getElementById("temi").innerHTML =
+    '<a class="tema-voce" href="#' + SLUG + '">' +
+    "<div>" +
+    '<p class="tema-voce__t">' + esc(T.titolo) + "</p>" +
+    '<p class="tema-voce__meta"><span>' + nVoci + " voci</span><span>" + nGruppi + " gruppi e il Governo</span><span>" + periodo + "</span></p>" +
+    '<p class="tema-voce__voto">Voto collegato: emendamento Conte, ' + dataIt(V.date) + ", " + esc(V.outcome) + ".</p>" +
+    "</div>" +
+    '<span class="btn btn--linea">Apri il fascicolo ' + FRECCIA + "</span>" +
+    "</a>";
+
+  var campo = document.getElementById("tema");
+  var esito = document.getElementById("esito-tema");
+  var MESI = "gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre";
+
+  function normalizza(s) {
+    return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’`]/g, "'").replace(/\s+/g, " ").trim();
+  }
+  /* Domanda su un fatto preciso: va a Stenografo, non a Fascicoli */
+  function domandaFattuale(s) {
+    var n = normalizza(s);
+    if (/^(chi|quando|quanti|quante|com'e andat[oa]|come e andat[oa])\b/.test(n)) return true;
+    var haVoto = /\bvot(o|ato|ata|ati|ate|azione)\b/.test(n);
+    var haData = /\b\d{1,2}[\/.\-]\d{1,2}([\/.\-]\d{2,4})?\b/.test(n) || /\b(19|20)\d{2}\b/.test(n) || new RegExp("\\b\\d{1,2}\\s+(" + MESI + ")\\b").test(n) || /\b(ieri|oggi)\b/.test(n);
+    return haVoto && haData;
+  }
+  function eSalario(s) {
+    return /salari[oa]? minim|minimo salariale/.test(normalizza(s));
+  }
+
+  function mostraEsito() {
+    var s = campo.value.trim();
+    if (s.length < 3) { esito.innerHTML = ""; return; }
+    var html = "";
+    if (eSalario(s)) {
+      html = '<p class="avviso" data-tipo="ok">' + SPUNTA + '<span>C\'è un fascicolo pronto su questo tema: <a class="collegamento" href="#' + SLUG + '">' + esc(T.titolo) + "</a>.</span></p>";
+    } else {
+      if (domandaFattuale(s)) {
+        html += '<div class="rinvio">' +
+          '<span class="rinvio__marchio">' + window.MARCHI.stenografo(false) + "</span>" +
+          "<div><p><strong>Sembra una domanda su un fatto preciso.</strong> Per sedute, atti e voti c'è Stenografo: risponde in breve, con il resoconto accanto a ogni frase.</p>" +
+          '<a class="btn btn--linea btn--piccolo" href="../stenografo/index.html?q=' + encodeURIComponent(s) + '">Chiedi a Stenografo ' + FRECCIA + "</a></div>" +
+          "</div>";
+      }
+      html += '<p class="avviso">' + INFO + '<span>In questa versione locale c\'è un solo fascicolo pronto: <a class="collegamento" href="#' + SLUG + '">' + esc(T.titolo) + "</a>.</span></p>";
+    }
+    esito.innerHTML = html;
+  }
+  var attesa;
+  campo.addEventListener("input", function () {
+    clearTimeout(attesa);
+    attesa = setTimeout(mostraEsito, 220);
+  });
+  document.getElementById("cerca").addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearTimeout(attesa);
+    if (eSalario(campo.value)) { location.hash = SLUG; return; }
+    if (!campo.value.trim()) { campo.focus(); return; }
+    mostraEsito();
+  });
+
+  /* Da Stenografo la domanda arriva già compilata: ?q=… */
+  var qIniziale = new URLSearchParams(location.search).get("q");
+  if (qIniziale) { campo.value = qIniziale; mostraEsito(); }
+
+  /* ---------- Vista fascicolo ---------- */
+
+  var vistaTemi = document.getElementById("vista-temi");
+  var vistaFasc = document.getElementById("vista-fascicolo");
+  var disegnato = false;
+
+  function sezioneGruppo(g, i) {
+    var q = cit[g];
+    var v = V.groups[g];
+    var nomeVoto = g === "+Europa" ? "Opposizione · componente del Gruppo Misto" : lato(g);
+    return (
+      '<article class="gruppo compare" id="g-' + slug(g) + '" aria-labelledby="g-' + slug(g) + '-t" data-voce="g-' + slug(g) + '">' +
+      '<div class="gruppo__testa">' +
+      '<span class="sigla">' + esc(g) + "</span>" +
+      (g === "Governo" ? "" : '<span class="etichetta">' + esc(nomeVoto) + "</span>") +
+      '<button class="copia-link" type="button" data-link="' + slug(g) + '" aria-label="Copia il link alla sezione ' + esc(g) + '">' + LINK + "<span>Copia il link</span></button>" +
+      "</div>" +
+      '<h4 id="g-' + slug(g) + '-t">' + esc(q.groupName) + "</h4>" +
+      '<p class="gruppo__voto"' + (v ? "" : " data-senza-voto") + "><span>" + esc(attaccoVoto(g)) + "</span>" + (v ? barra(v, totale(v), 120) : "") + "</p>" +
+      '<blockquote class="cit">' +
+      '<p class="cit__testo">' + esc(q.quote) + "</p>" +
+      '<footer class="cit__fonte">' +
+      '<span class="cit__chi">' + esc(q.name) + "</span>" +
+      "<span>" + dataIt(q.date) + "</span>" +
+      '<span class="mono">Seduta ' + q.session + "</span>" +
+      '<a class="bollino" href="' + esc(q.url) + '" rel="noopener" title="La citazione coincide con il resoconto, parola per parola">' + SPUNTA + "Resoconto</a>" +
+      "</footer>" +
+      '<p class="cit__dibattito">' + esc(q.debate) + "</p>" +
+      "</blockquote>" +
+      '<div class="gruppo__azioni">' +
+      '<a class="collegamento" href="../stenografo/index.html?chi=' + encodeURIComponent(q.name) + '">Chiedi a Stenografo cosa ha detto ' + esc(q.name) + "</a>" +
+      "</div>" +
+      "</article>"
+    );
+  }
+
+  function righeVoto() {
+    /* Stessa divisione delle posizioni; le altre componenti del Misto in fondo */
+    var blocchi = [
+      ["Maggioranza", MAGGIORANZA],
+      ["Opposizione", OPPOSIZIONE],
+      ["Altre componenti del Gruppo Misto", ["Minoranze linguistiche", "Misto"]],
+    ];
+    var etichette = { "+Europa": ["+Europa", "Gruppo Misto"], "Minoranze linguistiche": ["Minoranze linguistiche", "Gruppo Misto"], "Misto": ["Altri deputati", "Gruppo Misto"] };
+    var r = 0;
+    return blocchi.map(function (b) {
+      var gruppi = b[1].filter(function (g) { return V.groups[g]; }).sort(function (a, c) { return totale(V.groups[c]) - totale(V.groups[a]); });
+      return '<p class="grafico__parte">' + b[0] + "</p>" + gruppi.map(function (g) {
+        var v = V.groups[g];
+        var et = etichette[g] || [g, ""];
+        var celle = v.map(function (n) { return '<span class="riga__n"' + (n ? "" : " data-zero") + ">" + (n || "–") + "</span>"; }).join("");
+        return '<div class="riga"><span class="riga__nome">' + esc(et[0]) + (et[1] ? "<small>" + esc(et[1]) + "</small>" : "") + "</span>" + barra(v, MAX, 60 * r++) + celle + "</div>";
+      }).join("");
+    }).join("");
+  }
+
+  function tabellaVoto() {
+    var nomi = { "Misto": "Gruppo Misto, altri deputati", "Minoranze linguistiche": "Gruppo Misto, Minoranze linguistiche", "+Europa": "Gruppo Misto, +Europa" };
+    var gruppi = MAGGIORANZA.concat(OPPOSIZIONE, ["Minoranze linguistiche", "Misto"]);
+    return (
+      '<table class="tabella"><caption>Emendamento 1.1000 Conte, ' + dataIt(V.date) + ": voti per gruppo</caption>" +
+      '<thead><tr><th scope="col">Gruppo</th><th scope="col" class="num">Favorevoli</th><th scope="col" class="num">Contrari</th><th scope="col" class="num">Astenuti</th><th scope="col" class="num">Assenti</th></tr></thead><tbody>' +
+      gruppi.map(function (g) {
+        var v = V.groups[g];
+        return '<tr><th scope="row" style="font-family:var(--f-testo);font-size:var(--t-piccolo);text-transform:none;letter-spacing:0;color:var(--inchiostro);border-bottom-color:var(--filetto)">' + esc(nomi[g] || g) + "</th>" + v.map(function (n) { return '<td class="num">' + n + "</td>"; }).join("") + "</tr>";
+      }).join("") +
+      '</tbody><tfoot><tr><th scope="row" style="border-bottom:0">Totale</th><td class="num">' + V.in_favor + '</td><td class="num">' + V.against + '</td><td class="num">' + V.abstained + "</td><td></td></tr></tfoot></table>"
+    );
+  }
+
+  function disegnaFascicolo() {
+    var garanziaSigle = ORDINE.map(function (g) { return '<span class="sigla">' + esc(g) + "</span>"; }).join("");
+    var voceIndice = function (g) {
+      var q = cit[g];
+      return '<li><a href="#' + SLUG + "/" + slug(g) + '" data-vai="g-' + slug(g) + '"><span class="sigla-testo">' + esc(g) + '</span><span class="nome">' + esc(q.name) + "</span></a></li>";
+    };
+
+    vistaFasc.innerHTML =
+      /* Copertina */
+      '<header class="copertina">' +
+      '<div class="pagina">' +
+      '<div class="copertina__barra">' +
+      '<span class="etichetta">Fascicolo · Camera dei Deputati · XIX legislatura</span>' +
+      '<span class="etichetta" style="color:var(--accento)">Esempio · citazioni reali, verificate sul resoconto</span>' +
+      "</div>" +
+      '<div class="copertina__griglia">' +
+      "<div>" +
+      '<p class="etichetta compare">Tema</p>' +
+      '<h1 class="titolo-mega compare" style="--ritardo:80ms" tabindex="-1" id="titolo-fascicolo">' + esc(T.titolo) + "</h1>" +
+      '<p class="copertina__meta compare" style="--ritardo:160ms"><span>' + nVoci + " voci</span><span>" + nGruppi + " gruppi e il Governo</span><span>" + periodo + "</span></p>" +
+      '<div class="sigillo compare" style="--ritardo:240ms" aria-label="Tre garanzie rispettate">' +
+      '<span class="sigillo__da">Verifica</span>' +
+      '<span class="sigillo__voce">' + SPUNTA + "Tutti i gruppi</span>" +
+      '<span class="sigillo__voce">' + SPUNTA + "Voci autorevoli</span>" +
+      '<span class="sigillo__voce">' + SPUNTA + "Citazioni esatte</span>" +
+      "</div>" +
+      "</div>" +
+      '<dl class="registro compare" style="--ritardo:200ms">' +
+      "<dt>Fonte</dt><dd>Resoconti stenografici della Camera</dd>" +
+      "<dt>Periodo</dt><dd>" + periodo + "</dd>" +
+      "<dt>Voci</dt><dd>" + nVoci + ", una per gruppo e una per il Governo</dd>" +
+      "<dt>Voto</dt><dd>Emendamento 1.1000 Conte, " + dataIt(V.date) + "</dd>" +
+      "<dt>Dati al</dt><dd>" + dataIt(window.DATI.stats.last_update) + "</dd>" +
+      "</dl>" +
+      "</div>" +
+
+      '<div class="garanzie compare">' +
+      "<div><h2>" + SPUNTA + "Tutti i gruppi</h2><p>" + nGruppi + " gruppi e il Governo. Nessuno resta fuori.</p>" +
+      '<div class="garanzie__sigle">' + garanziaSigle + "</div></div>" +
+      "<div><h2>" + SPUNTA + "Voci autorevoli</h2><p>Per ogni gruppo parla chi del tema si occupa di più, secondo i nostri criteri: interventi, commissione, atti firmati, professione, formazione, ruolo.</p></div>" +
+      "<div><h2>" + SPUNTA + "Citazioni esatte</h2><p>" + nVerificate + " su " + nVoci + " coincidono con il resoconto, parola per parola. Ognuna ha il link al punto esatto della seduta.</p></div>" +
+      "</div>" +
+
+      '<div class="utilita">' +
+      '<a class="torna" href="#">' + FRECCIA + "Torna ai temi</a>" +
+      '<span style="flex:1"></span>' +
+      '<button class="copia-link" type="button" data-link="" aria-label="Copia il link al fascicolo">' + LINK + "<span>Copia il link</span></button>" +
+      '<button class="copia-link" type="button" id="stampa"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6V2.5h7V6M4.5 11.5h-2v-5h11v5h-2M4.5 9.5h7v4h-7z"/></svg><span>Stampa</span></button>' +
+      "</div>" +
+      "</div>" +
+      "</header>" +
+
+      /* Corpo con indice */
+      '<div class="pagina corpo">' +
+      '<nav class="indice" aria-label="Indice del fascicolo">' +
+      '<p class="etichetta indice__titolo">Indice</p>' +
+      '<ul class="indice__lista" style="margin-top:var(--s-3)">' +
+      '<li><a href="#' + SLUG + '/voto" data-vai="voto"><span class="sigla-testo">§ 1</span><span class="nome">Il voto</span></a></li>' +
+      "</ul>" +
+      '<p class="indice__parte">§ 2 · Maggioranza</p><ul class="indice__lista">' + MAGGIORANZA.map(voceIndice).join("") + "</ul>" +
+      '<p class="indice__parte">Governo</p><ul class="indice__lista">' + voceIndice("Governo") + "</ul>" +
+      '<p class="indice__parte">§ 2 · Opposizione</p><ul class="indice__lista">' + OPPOSIZIONE.map(voceIndice).join("") + "</ul>" +
+      '<ul class="indice__lista" style="margin-top:var(--s-4)">' +
+      '<li><a href="#' + SLUG + '/composizione" data-vai="composizione"><span class="sigla-testo">§ 3</span><span class="nome">Come è composto</span></a></li>' +
+      "</ul>" +
+      "</nav>" +
+
+      "<div>" +
+      '<nav class="pastiglie" aria-label="Sezioni del fascicolo">' +
+      '<a href="#' + SLUG + '/voto" data-vai="voto">Il voto</a>' +
+      ORDINE.map(function (g) { return '<a href="#' + SLUG + "/" + slug(g) + '" data-vai="g-' + slug(g) + '">' + esc(g) + "</a>"; }).join("") +
+      '<a href="#' + SLUG + '/composizione" data-vai="composizione">Come è composto</a>' +
+      "</nav>" +
+
+      /* § 1 Il voto */
+      '<section class="parte" id="voto" data-voce="voto" aria-labelledby="voto-t">' +
+      '<div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Il voto</p></div>' +
+      '<div class="compare">' +
+      '<p><span class="esito-voto">' + esc(V.outcome) + "</span></p>" +
+      '<h2 class="titolo-2 voto__titolo" id="voto-t" style="margin-top:var(--s-4)">L\'Aula respinge l\'emendamento Conte sul salario minimo.</h2>' +
+      '<p class="voto__sotto">Emendamento 1.1000 Conte (M5S) alla proposta di legge C. 1275. Votazione elettronica del ' + dataIt(V.date) + ", seduta 209.</p>" +
+      "</div>" +
+      '<div class="voto__cifre compare">' +
+      '<div class="cifra" style="--c:var(--voto-no)"><p class="cifra__n">' + V.against + '</p><p class="cifra__l">contrari</p></div>' +
+      '<div class="cifra" style="--c:var(--voto-si)"><p class="cifra__n">' + V.in_favor + '</p><p class="cifra__l">favorevoli</p></div>' +
+      '<div class="cifra" style="--c:var(--voto-ast)"><p class="cifra__n">' + V.abstained + '</p><p class="cifra__l">astenuti</p></div>' +
+      "</div>" +
+
+      '<figure class="grafico compare" aria-labelledby="grafico-t">' +
+      '<figcaption class="sr" id="grafico-t">Voti per gruppo sull\'emendamento Conte. Gli stessi dati sono nella tabella che segue.</figcaption>' +
+      '<div aria-hidden="true">' +
+      '<div class="grafico__testa"><span class="etichetta">Gruppo</span><span class="etichetta">Deputati del gruppo, stessa scala</span><span class="etichetta">Sì</span><span class="etichetta">No</span><span class="etichetta">Ast.</span><span class="etichetta">Ass.</span></div>' +
+      righeVoto() +
+      "</div>" +
+      '<div class="grafico__piede">' +
+      '<div class="legenda" aria-hidden="true"><span><i class="q" style="background:var(--voto-si)"></i>Favorevoli</span><span><i class="q" style="background:var(--voto-no)"></i>Contrari</span><span><i class="q" style="background:var(--voto-ast)"></i>Astenuti</span><span><i class="q" style="background:var(--voto-ass)"></i>Assenti</span></div>' +
+      '<button class="btn btn--linea btn--piccolo" type="button" id="mostra-tabella" aria-expanded="false" aria-controls="tabella-voto">Mostra la tabella</button>' +
+      "</div>" +
+      "</figure>" +
+      '<div class="tabella-scorri tabella-voto" id="tabella-voto" data-chiusa="true">' + tabellaVoto() + "</div>" +
+
+      '<div class="fonti-voto compare">' +
+      '<a href="' + esc(V.act_url) + '" rel="noopener"><strong>Proposta di legge C. 1275 ' + ESTERNO + '</strong><span class="nota">Scheda dell\'atto sul sito della Camera</span></a>' +
+      '<a href="https://www.camera.it/leg19/410?idSeduta=0209&amp;tipo=stenografico" rel="noopener"><strong>Resoconto della seduta 209 ' + ESTERNO + '</strong><span class="nota">' + dataIt(V.date) + ", resoconto stenografico</span></a>" +
+      '<a href="../scranno/index.html"><strong>Vedi l\'Aula in Scranno ' + FRECCIA + '</strong><span class="nota">Scranno mostra l\'Aula di oggi, seggio per seggio. Questo voto lì non è ancora caricato.</span></a>' +
+      "</div>" +
+      "</section>" +
+
+      /* § 2 Le posizioni */
+      '<section class="parte" id="posizioni" aria-labelledby="posizioni-t">' +
+      '<div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Le posizioni</p></div>' +
+      '<h2 class="titolo-2 compare" id="posizioni-t" style="max-width:24ch">Ogni gruppo, con le parole dette in Aula.</h2>' +
+      '<p class="nota compare" style="margin-top:var(--s-3);max-width:60ch">Per ogni gruppo: come ha votato sull\'emendamento Conte e una citazione testuale. Nessun riassunto nostro: le parole sono quelle del resoconto.</p>' +
+      '<div class="schieramento"><h3>Maggioranza e Governo</h3><span class="etichetta">' + MAGGIORANZA.length + " gruppi e il Governo</span></div>" +
+      MAGGIORANZA.concat(["Governo"]).map(sezioneGruppo).join("") +
+      '<div class="schieramento"><h3>Opposizione</h3><span class="etichetta">' + OPPOSIZIONE.length + " gruppi</span></div>" +
+      OPPOSIZIONE.map(sezioneGruppo).join("") +
+      "</section>" +
+
+      /* § 3 Come è composto */
+      '<section class="parte" id="composizione" data-voce="composizione" aria-labelledby="composizione-t">' +
+      '<div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Come è composto</p></div>' +
+      '<h2 class="titolo-3 compare" id="composizione-t" style="max-width:30ch">Cosa abbiamo fatto noi e cosa viene dal resoconto.</h2>' +
+      '<div class="composizione compare" style="margin-top:var(--s-5)">' +
+      "<div><h3>Fonti</h3><p>Resoconti stenografici delle sedute della Camera dei Deputati, XIX legislatura, e votazioni elettroniche dagli open data della Camera.</p></div>" +
+      "<div><h3>Citazioni</h3><p>Ogni citazione è confrontata parola per parola con il resoconto. " + nVerificate + " su " + nVoci + " coincidono. Se una non coincidesse, la toglieremmo.</p></div>" +
+      "<div><h3>Scelta dei passaggi</h3><p>Quale intervento e quale frase mostrare è una scelta del sistema, fatta secondo i nostri criteri. Un altro passaggio dello stesso deputato può dire cose diverse: il link al resoconto serve a leggerlo tutto.</p></div>" +
+      "<div><h3>Metodo</h3><p>Criteri, pesi e controlli sono pubblici. <a class=\"collegamento\" href=\"../parliamentrag/metodo.html\">Leggi il metodo su ParliamentRAG</a>.</p></div>" +
+      "</div>" +
+      '<p class="composizione__errore compare">Hai trovato un errore? Scrivi a <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a> con il link alla sezione. Lo controlliamo sul resoconto.</p>' +
+      '<p style="margin-top:var(--s-6)"><a class="torna" href="#">' + FRECCIA + "Torna ai temi</a></p>" +
+      "</section>" +
+      "</div>" +
+      "</div>";
+
+    attivaFascicolo();
+    window.osservaComparse();
+    disegnato = true;
+  }
+
+  /* ---------- Interazioni del fascicolo ---------- */
+
+  var annuncio = document.getElementById("annuncio");
+  function annuncia(t) { annuncio.textContent = ""; setTimeout(function () { annuncio.textContent = t; }, 30); }
+
+  /* Spazio occupato in alto da testata e, su mobile, dalla fila di pastiglie */
+  function margineAlto() {
+    var h = 0;
+    var sito = document.querySelector(".sito");
+    if (sito) h += sito.getBoundingClientRect().height;
+    var p = vistaFasc.querySelector(".pastiglie");
+    if (p && getComputedStyle(p).display !== "none") h += p.getBoundingClientRect().height;
+    return h + 16;
+  }
+  function vaiA(id, liscio) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    /* offsetTop e non getBoundingClientRect: le comparse hanno ancora il translateY */
+    var y = 0;
+    for (var n = el; n; n = n.offsetParent) y += n.offsetTop;
+    y -= margineAlto();
+    window.scrollTo({ top: Math.max(0, y), behavior: liscio && !ridotto ? "smooth" : "instant" });
+  }
+
+  function attivaFascicolo() {
+    /* Indice e pastiglie: scorrono senza cambiare vista; l'hash resta condivisibile */
+    vistaFasc.addEventListener("click", function (e) {
+      var a = e.target.closest("[data-vai]");
+      if (a) {
+        e.preventDefault();
+        history.replaceState(null, "", a.getAttribute("href"));
+        vaiA(a.dataset.vai, true);
+        return;
+      }
+      var c = e.target.closest(".copia-link[data-link]");
+      if (c) copiaLink(c);
+    });
+
+    document.getElementById("stampa").addEventListener("click", function () { window.print(); });
+
+    var bt = document.getElementById("mostra-tabella");
+    var tab = document.getElementById("tabella-voto");
+    bt.addEventListener("click", function () {
+      var chiusa = tab.dataset.chiusa === "true";
+      tab.dataset.chiusa = chiusa ? "false" : "true";
+      bt.setAttribute("aria-expanded", chiusa ? "true" : "false");
+      bt.textContent = chiusa ? "Nascondi la tabella" : "Mostra la tabella";
+    });
+
+    /* Sezione corrente: si accende la voce corrispondente in indice e pastiglie */
+    var voci = vistaFasc.querySelectorAll("[data-vai]");
+    var fila = vistaFasc.querySelector(".pastiglie");
+    function accendi(id) {
+      voci.forEach(function (a) {
+        if (a.dataset.vai === id) a.setAttribute("aria-current", "true");
+        else a.removeAttribute("aria-current");
+      });
+      var chip = fila.querySelector('[data-vai="' + id + '"]');
+      if (chip && getComputedStyle(fila).display !== "none") {
+        var x = chip.offsetLeft - (fila.clientWidth - chip.offsetWidth) / 2;
+        fila.scrollTo({ left: Math.max(0, x), behavior: ridotto ? "instant" : "smooth" });
+      }
+    }
+    var visibili = {};
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { visibili[en.target.dataset.voce] = en.isIntersecting ? en.target.getBoundingClientRect().top : null; });
+      /* La prima sezione, in ordine di pagina, che occupa la fascia di lettura */
+      var scelta = null;
+      vistaFasc.querySelectorAll("[data-voce]").forEach(function (s) {
+        if (!scelta && visibili[s.dataset.voce] != null) scelta = s.dataset.voce;
+      });
+      if (scelta) accendi(scelta);
+    }, { rootMargin: "-25% 0px -60% 0px", threshold: 0 });
+    vistaFasc.querySelectorAll("[data-voce]").forEach(function (s) { io.observe(s); });
+    accendi("voto");
+  }
+
+  function urlCondivisibile(sezione) {
+    return location.origin + location.pathname + "#" + SLUG + (sezione ? "/" + sezione : "");
+  }
+  function copiaLink(b) {
+    var url = urlCondivisibile(b.dataset.link);
+    var testo = b.querySelector("span");
+    var prima = testo.textContent;
+    var fine = function (ok) {
+      b.setAttribute("data-fatto", "");
+      testo.textContent = ok ? "Link copiato" : "Link nella barra degli indirizzi";
+      if (!ok) history.replaceState(null, "", url);
+      annuncia(ok ? "Link copiato negli appunti." : "Copia non riuscita: il link è nella barra degli indirizzi.");
+      setTimeout(function () { testo.textContent = prima; b.removeAttribute("data-fatto"); }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { fine(true); }, function () { fine(false); });
+    } else {
+      fine(false);
+    }
+  }
+
+  /* ---------- Instradamento con l'hash ---------- */
+
+  function instrada() {
+    var h = decodeURIComponent(location.hash.slice(1));
+    var parti = h.split("/");
+    if (h === "contenuto") return; /* link «Vai al contenuto»: nessun cambio di vista */
+
+    if (parti[0] === SLUG) {
+      var eraAperto = !vistaFasc.hidden;
+      if (!disegnato) disegnaFascicolo();
+      vistaTemi.hidden = true;
+      vistaFasc.hidden = false;
+      document.title = T.titolo + " · Fascicoli";
+      var dove = parti[1] === "voto" || parti[1] === "composizione" ? parti[1] : daSlug[parti[1]] ? "g-" + parti[1] : null;
+      if (dove) {
+        /* Aspetta l'impaginazione prima di misurare */
+        requestAnimationFrame(function () { vaiA(dove, eraAperto); });
+        /* Al primo caricamento i font cambiano le altezze: si riallinea quando sono pronti */
+        if (!eraAperto && document.fonts) document.fonts.ready.then(function () { vaiA(dove, false); });
+      } else if (!eraAperto) {
+        window.scrollTo({ top: 0, behavior: "instant" });
+        document.getElementById("titolo-fascicolo").focus({ preventScroll: true });
+        annuncia("Fascicolo aperto: " + T.titolo + ".");
+      }
+      return;
+    }
+
+    var eraFascicolo = !vistaFasc.hidden;
+    vistaFasc.hidden = true;
+    vistaTemi.hidden = false;
+    document.title = "Fascicoli";
+    if (eraFascicolo) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      document.getElementById("titolo-temi").focus({ preventScroll: true });
+    }
+    /* Un hash che non corrisponde a un fascicolo: lo diciamo, con il campo già compilato */
+    if (h && parti[0] !== SLUG) {
+      campo.value = h.replace(/-/g, " ");
+      mostraEsito();
+    }
+  }
+
+  /* «Torna ai temi» porta a href="#": togliamo l'hash vuoto dall'indirizzo */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a.torna');
+    if (!a) return;
+    e.preventDefault();
+    history.pushState(null, "", location.pathname + location.search);
+    instrada();
+  });
+  /* «Vai al contenuto» sposta il fuoco senza toccare l'hash */
+  document.querySelector("[data-salta]").addEventListener("click", function (e) {
+    e.preventDefault();
+    var m = document.getElementById("contenuto");
+    m.focus({ preventScroll: true });
+    vaiA("contenuto", false);
+  });
+
+  window.addEventListener("hashchange", instrada);
+  window.addEventListener("popstate", instrada);
+  instrada();
+})();
+</script>
+
+<script>
+/* Anteprima in apertura: tre voci reali, una della maggioranza, una dell'opposizione, il Governo */
+(function () {
+  var box = document.getElementById("anteprima-righe");
+  if (!box) return;
+  var T = window.DATI.tema, V = T.voto.groups;
+  var nomi = { FdI: "Fratelli d'Italia", PD: "Partito Democratico", M5S: "Movimento 5 Stelle" };
+  function voto(k) {
+    var v = V[k];
+    if (!v) return "";
+    return v[0] > v[1] ? "votato a favore" : "votato contro";
+  }
+  box.innerHTML = ["FdI", "PD", "M5S"].map(function (k) {
+    var q = T.citazioni.filter(function (c) { return c.group === k; })[0];
+    var frase = q.quote.split(" ").slice(0, 16).join(" ") + "…";
+    return '<span class="anteprima__riga"><span class="anteprima__chi"><span class="anteprima__partito">' + esc(nomi[k]) + '</span><span class="anteprima__voto">' + voto(k) + "</span></span>" +
+      '<span class="anteprima__frase">«' + esc(frase) + "»</span>" +
+      '<span class="nota">' + esc(q.name) + ' · <span class="bollino anteprima__fonte">' + window.ICONE.spunta + "Verbale ufficiale</span></span></span>";
+  }).join("");
+})();
+</script>
+</body>
+</html>

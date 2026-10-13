@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="scranno" data-pagina="aula" data-prodotto="sistema">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scranno · L'Aula di Montecitorio</title>
+<meta name="description" content="L'Aula di Montecitorio in prima persona, con i seggi reali. Ogni seggio porta al deputato che lo occupa, alle sue commissioni e al suo voto.">
+<link rel="icon" href="../shared/favicon-scranno.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<link rel="stylesheet" href="scranno.css">
+</head>
+<body>
+<a class="salta" href="#aula-blocco">Vai all'Aula</a>
+<div data-famiglia></div>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura: titolo e comandi in una riga, l'Aula subito sotto -->
+  <section class="apertura">
+    <div class="pagina apertura__riga">
+      <div class="apertura__testo">
+        <p class="etichetta">Scranno · gratuito, senza account</p>
+        <h1 class="titolo-2">Entra nell'Aula della Camera.</h1>
+        <p class="apertura__attacco">Guardati intorno come se fossi seduto lì. Clicca su un posto per sapere chi è il deputato, di quale partito fa parte e come ha votato.</p>
+      </div>
+      <div class="comandi" role="toolbar" aria-label="Comandi dell'Aula">
+        <div class="schede" role="tablist" aria-label="Cosa mostrare sui seggi">
+          <button type="button" role="tab" id="scheda-gruppi" aria-selected="true" aria-controls="striscia-gruppi" data-modo="gruppi">Partiti</button>
+          <button type="button" role="tab" id="scheda-voto" aria-selected="false" aria-controls="striscia-voto" data-modo="voto">Voti</button>
+        </div>
+        <div class="cerca">
+          <label class="sr" for="cerca">Cerca un deputato</label>
+          <div class="campo cerca__campo">
+            <svg class="cerca__icona" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5l3.2 3.2"/></svg>
+            <input id="cerca" type="text" placeholder="Cerca un deputato" autocomplete="off" spellcheck="false"
+              role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="proposte">
+            <kbd class="cerca__tasto" aria-hidden="true">/</kbd>
+          </div>
+          <ul class="proposte foglio galleggia" id="proposte" role="listbox" aria-label="Deputati trovati" hidden></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- L'Aula -->
+  <section class="aula-sezione" aria-labelledby="aula-titolo">
+    <h2 class="sr" id="aula-titolo">L'Aula</h2>
+    <div class="pagina">
+      <div class="aula-blocco" id="aula-blocco" data-vista="aula">
+        <div class="vista-barra">
+          <div class="schede" role="tablist" aria-label="Vista dell'Aula">
+            <button type="button" role="tab" id="vista-aula" aria-selected="true" aria-controls="scena" data-vista="aula">In Aula</button>
+            <button type="button" role="tab" id="vista-pianta" aria-selected="false" aria-controls="scena" data-vista="pianta" tabindex="-1">Pianta</button>
+          </div>
+          <p class="etichetta vista-barra__dove" id="vista-dove" aria-live="polite">Dal banco della Presidenza</p>
+        </div>
+        <div class="voto-testa" id="voto-testa" hidden>
+          <div class="voto-testa__testo">
+            <p class="etichetta voto-meta" id="voto-meta">&nbsp;</p>
+            <p class="voto-titolo" id="voto-titolo">&nbsp;</p>
+          </div>
+          <div class="voto-testa__lato">
+            <span class="esito-voto" id="esito-voto"></span>
+            <button class="btn btn--linea btn--piccolo" type="button" id="voto-cambia" aria-controls="scegli-voto">Cambia votazione</button>
+          </div>
+        </div>
+        <div class="scena" id="scena" data-zoom="no">
+          <div class="aula3d" id="aula3d" tabindex="0" role="application" aria-roledescription="vista 3D"
+            aria-label="L'Aula di Montecitorio in 3D, in prima persona" aria-describedby="aula3d-aiuto">
+            <div class="aula3d__attesa" id="aula3d-attesa" role="status"><span class="aula3d__punto" aria-hidden="true"></span>Preparo l'Aula</div>
+            <div class="aula3d__guida" id="aula3d-guida" hidden>
+              <p class="etichetta"><span class="solo-puntatore">Trascina per guardarti intorno · WASD o frecce per camminare · Ctrl + rotella per lo zoom</span><span class="solo-tocco">Trascina per guardare · joystick per camminare</span></p>
+              <button class="aula3d__chiudi" type="button" id="aula3d-guida-chiudi" aria-label="Chiudi le istruzioni"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
+          </div>
+          <p class="messaggio aula3d__fallback" id="aula3d-fallback" data-tipo="info" hidden>Questo browser non mostra l'Aula in 3D: WebGL non è disponibile. Qui sotto trovi la pianta, con gli stessi dati.</p>
+          <svg class="emiciclo aula" id="aula" data-modo="gruppi" role="group"
+            aria-label="Pianta dell'Aula di Montecitorio" aria-describedby="aula-aiuto"></svg>
+          <p class="scena__avviso" id="avviso" aria-hidden="true"></p>
+        </div>
+        <div class="scena__piede" id="piede-aula">
+          <p class="nota aula-aiuto" id="aula3d-aiuto"><span class="solo-puntatore">Passa su un seggio per vedere chi lo occupa, fai clic per aprire la scheda. Da tastiera è più comoda la Pianta: lì ti sposti tra i seggi con le frecce.</span><span class="solo-tocco">Tocca un seggio per aprire la scheda. Con il joystick in basso a sinistra cammini tra i banchi.</span></p>
+          <div class="zoom" role="group" aria-label="Vista in 3D">
+            <button class="btn btn--linea btn--piccolo" type="button" id="aula3d-riadatta" hidden>Riadatta</button>
+            <button class="btn btn--linea btn--icona zoom__btn" type="button" id="aula3d-meno" aria-label="Allarga lo sguardo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+            <button class="btn btn--linea btn--icona zoom__btn" type="button" id="aula3d-piu" aria-label="Avvicina lo sguardo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
+          </div>
+        </div>
+        <div class="scena__piede" id="piede-pianta">
+          <p class="nota aula-aiuto" id="aula-aiuto"><span class="solo-puntatore">Passa su un seggio per vedere chi lo occupa, fai clic per aprire la scheda. Da tastiera: Tab per entrare nell'Aula, frecce per spostarti tra i seggi, Invio per aprire.</span><span class="solo-tocco">Tocca un seggio per aprire la scheda. Con due dita ingrandisci e sposti la pianta.</span></p>
+          <div class="zoom" role="group" aria-label="Ingrandimento">
+            <button class="btn btn--linea btn--piccolo zoom__riadatta" type="button" id="zoom-riadatta" hidden>Riadatta</button>
+            <button class="btn btn--linea btn--icona zoom__btn" type="button" id="zoom-meno" aria-label="Riduci"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+            <button class="btn btn--linea btn--icona zoom__btn" type="button" id="zoom-piu" aria-label="Ingrandisci"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Gruppi -->
+        <div class="striscia" id="striscia-gruppi" role="tabpanel" aria-labelledby="scheda-gruppi">
+          <div class="gruppi" id="gruppi" role="group" aria-label="Gruppi parlamentari, da sinistra a destra come siedono in Aula"></div>
+          <div class="gruppo-info" id="gruppo-info" aria-live="polite"></div>
+        </div>
+
+        <!-- Voti -->
+        <div class="striscia" id="striscia-voto" role="tabpanel" aria-labelledby="scheda-voto" hidden>
+          <div class="voti" id="voti" role="group" aria-label="Voti sui seggi: scegli una voce per evidenziarla"></div>
+          <div class="voto-griglia">
+            <div class="voto-note">
+              <div class="messaggio voto-avviso" id="voto-avviso" hidden></div>
+              <p id="voto-ufficiale"></p>
+              <p id="voto-nd" class="tenue"></p>
+              <p class="fila voto-link" id="voto-link"></p>
+            </div>
+
+            <section class="scegli" id="scegli-voto" aria-labelledby="scegli-titolo" data-passo="sedute">
+              <div class="scegli__testa">
+                <h3 class="etichetta" id="scegli-titolo">Scegli una votazione</h3>
+                <button class="btn btn--linea btn--icona scegli__chiudi" type="button" id="scegli-chiudi" aria-label="Chiudi l'elenco delle votazioni"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+              <form class="scegli__cerca" id="scegli-cerca" role="search">
+                <label class="sr" for="cerca-sedute">Cerca le sedute per tema</label>
+                <div class="campo">
+                  <svg class="cerca__icona" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5l3.2 3.2"/></svg>
+                  <input id="cerca-sedute" type="search" placeholder="Cerca un tema nei dibattiti" autocomplete="off" spellcheck="false" enterkeyhint="search">
+                </div>
+              </form>
+              <div class="scegli__colonne">
+                <div class="scegli__col scegli__col--sedute">
+                  <p class="etichetta scegli__sotto" id="sedute-titolo">Sedute con votazioni</p>
+                  <ul class="scegli__lista" id="lista-sedute" aria-labelledby="sedute-titolo" aria-busy="false"></ul>
+                  <div class="scegli__stato" id="sedute-stato" role="status"></div>
+                  <button class="btn btn--linea btn--piccolo scegli__altre" type="button" id="sedute-altre" hidden>Carica sedute precedenti</button>
+                </div>
+                <div class="scegli__col scegli__col--voti">
+                  <div class="scegli__sotto scegli__voti-testa">
+                    <button class="scegli__indietro" type="button" id="scegli-indietro"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Sedute</button>
+                    <p class="etichetta" id="voti-titolo">Votazioni</p>
+                  </div>
+                  <ul class="scegli__lista" id="lista-voti" aria-labelledby="voti-titolo" aria-busy="false"></ul>
+                  <div class="scegli__stato" id="voti-stato" role="status"></div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <p class="sr" id="voto-annuncio" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cosa mostra -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Cosa mostra Scranno</p></div>
+      <div class="spiega">
+        <h2 class="titolo-2 compare">Chi siede dove, e cosa fa.</h2>
+        <div class="spiega__testo compare" style="--ritardo:120ms">
+          <p>L'Aula in 3D e la pianta usano le coordinate dei seggi pubblicate dalla Camera. La ricostruzione dell'Aula segue le misure del progetto di Basile; arredi e decorazioni sono semplificati. Nella pianta ogni cerchio pieno è un deputato in carica, nel posto che occupa oggi. I cerchi vuoti sono posti senza un deputato assegnato: l'Aula ha <span id="n-posti"></span> posti nei settori dei deputati, la Camera dalla XIX legislatura ha 400 deputati.</p>
+          <p>Dalla scheda di un deputato vedi il gruppo, le commissioni in cui lavora, quante volte ha preso la parola in Aula e come ha votato nella votazione che scegli. Per sapere cosa ha detto, la domanda passa a Stenografo.</p>
+        </div>
+      </div>
+
+      <dl class="dati compare">
+        <div class="dati__voce">
+          <dt class="etichetta">Seggi</dt>
+          <dd><span id="dati-seggi"></span> da <a class="collegamento" href="https://www.camera.it/deputati/" rel="noopener">camera.it</a></dd>
+        </div>
+        <div class="dati__voce">
+          <dt class="etichetta">Voti</dt>
+          <dd>Votazioni elettroniche della XIX legislatura, da <a class="collegamento" href="https://dati.camera.it/" rel="noopener">dati.camera.it</a> nel grafo di ParliamentRAG. Se il servizio non risponde, la pagina mostra la fiducia del 7 ottobre 2026, salvata qui.</dd>
+        </div>
+        <div class="dati__voce">
+          <dt class="etichetta">Commissioni e attività</dt>
+          <dd>Open data della Camera nel grafo di <a class="collegamento" href="../parliamentrag/dati.html">ParliamentRAG</a>, dati al <span id="dati-dep"></span></dd>
+        </div>
+      </dl>
+
+      <div class="percorsi compare">
+        <a class="percorso" href="../fascicoli/index.html">
+          <span class="percorso__marchio" data-marchio="fascicoli"></span>
+          <span class="percorso__nome">Fascicoli</span>
+          <span class="percorso__cosa">Per un tema: la posizione di ogni gruppo, le voci più autorevoli, i voti collegati.</span>
+          <span class="percorso__vai">Apri un fascicolo <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="percorso" href="../stenografo/index.html">
+          <span class="percorso__marchio" data-marchio="stenografo"></span>
+          <span class="percorso__nome">Stenografo</span>
+          <span class="percorso__cosa">Per un fatto preciso: cosa ha detto un deputato, quando, con il resoconto accanto.</span>
+          <span class="percorso__vai">Fai una domanda <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Scheda del deputato: barra in basso (colonne affiancate da 721px, foglio su telefono) -->
+<aside class="cassetto" id="cassetto" role="dialog" aria-modal="false" aria-labelledby="dep-nome" hidden>
+  <div class="cassetto__maniglia" aria-hidden="true"></div>
+  <div class="cassetto__testa">
+    <span class="etichetta" id="dep-seggio"></span>
+    <button class="btn btn--linea btn--piccolo cassetto__dettagli" type="button" id="cassetto-dettagli" aria-expanded="false" aria-controls="cassetto-corpo">Dettagli</button>
+    <button class="btn btn--linea btn--icona" type="button" id="cassetto-chiudi" aria-label="Chiudi la scheda"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="cassetto__corpo" id="cassetto-corpo"></div>
+</aside>
+
+<div class="fumetto" id="fumetto" role="presentation" hidden></div>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/aula.js"></script>
+<script src="data/seggi3d.js"></script>
+<script src="aula3d.js"></script>
+<script src="deputati.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script src="scranno.js"></script>
+</body>
+</html>

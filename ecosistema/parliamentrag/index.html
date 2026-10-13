@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="home">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ParliamentRAG</title>
+<meta name="description" content="Progetto di ricerca per l'AI sui dibattiti delle istituzioni italiane: tre garanzie per ogni risposta sul Parlamento, dati aperti e un metodo per verificarle.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 8vw, 112px) clamp(64px, 8vw, 120px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: center;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+  }
+  .apertura__azioni {
+    margin-top: var(--s-6);
+  }
+  @media (max-width: 960px) {
+    .apertura__griglia {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Campione: una risposta con le tre garanzie */
+  .campione {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+  }
+  .campione__testa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    border-bottom: 1px solid var(--filetto);
+    background: var(--carta-2);
+  }
+  .campione__testa .etichetta {
+    white-space: nowrap;
+  }
+  .campione__corpo {
+    padding: var(--s-5);
+  }
+  .campione__domanda {
+    font-family: var(--f-titolo);
+    font-size: 1.4rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .campione__risposta {
+    margin-top: var(--s-4);
+    color: var(--inchiostro-2);
+    font-size: var(--t-piccolo);
+    line-height: 1.65;
+  }
+  .campione__gruppi {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .campione__gruppi .sigla {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--d-2) var(--e-uscita), transform var(--d-2) var(--e-uscita), background var(--d-2), border-color var(--d-2), color var(--d-2);
+  }
+  .campione__gruppi .sigla[data-ok] {
+    opacity: 1;
+    transform: none;
+  }
+  /* Una citazione per gruppo, a rotazione. Stanno tutte nella stessa cella:
+     il riquadro prende l'altezza della più lunga e non salta. */
+  .campione__voci {
+    display: grid;
+    margin-top: var(--s-5);
+  }
+  .campione__voci .cit {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity var(--d-3) var(--e-uscita), transform var(--d-3) var(--e-uscita), visibility 0s linear var(--d-3);
+  }
+  .campione__voci .cit[data-on] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity var(--d-3) var(--e-uscita), transform var(--d-3) var(--e-uscita), visibility 0s;
+  }
+  .campione__gruppi button.sigla {
+    cursor: pointer;
+    font: inherit;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.04em;
+  }
+  .campione__gruppi button.sigla:hover {
+    border-color: var(--inchiostro-3);
+  }
+  .campione__gruppi button.sigla[aria-pressed="true"] {
+    border-color: color-mix(in oklab, var(--accento) 50%, transparent);
+    color: var(--accento);
+    background: var(--accento-tenue);
+  }
+  .campione__piede {
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    border-top: 1px dashed var(--filetto-forte);
+  }
+  .campione .sigillo__voce svg {
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity var(--d-2), transform var(--d-3) var(--e-uscita);
+  }
+  .campione .sigillo__voce[data-ok] svg {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Il problema ---------- */
+  .problema {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    margin-top: var(--s-6);
+  }
+  .problema__testo {
+    display: grid;
+    gap: var(--s-4);
+    font-size: 1.1875rem;
+    color: var(--inchiostro-2);
+    max-width: 56ch;
+  }
+  .problema__testo strong {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  @media (max-width: 860px) {
+    .problema {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Garanzie ---------- */
+  .garanzia {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    padding-block: var(--s-8);
+    border-top: 1px solid var(--filetto);
+  }
+  .garanzia:first-of-type {
+    border-top: 0;
+  }
+  .garanzia__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+  }
+  .garanzia h3 {
+    margin-top: var(--s-3);
+  }
+  .garanzia__testo {
+    margin-top: var(--s-4);
+    color: var(--inchiostro-2);
+    max-width: 44ch;
+  }
+  .garanzia__come {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--filetto);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 44ch;
+  }
+  .garanzia__come .etichetta {
+    display: block;
+    margin-bottom: var(--s-2);
+  }
+  @media (max-width: 860px) {
+    .garanzia {
+      grid-template-columns: 1fr;
+      padding-block: var(--s-7);
+    }
+  }
+
+  /* 01: tutti i gruppi, sull'Aula vera */
+  .aula-demo {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .aula-demo > svg {
+    width: 100%;
+    height: auto;
+  }
+  .aula-demo .emiciclo circle {
+    fill: var(--filetto-forte);
+  }
+  .aula-demo .emiciclo circle[data-g=""] {
+    fill: none;
+    stroke: var(--filetto-forte);
+    stroke-width: 3;
+  }
+  .aula-demo .emiciclo[data-scelto] circle {
+    fill: var(--carta-3);
+  }
+  .aula-demo .emiciclo[data-scelto] circle[data-on] {
+    fill: var(--accento);
+  }
+  .gruppi-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .gruppi-lista button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2);
+    padding: 10px 12px 10px 0;
+    border: 0;
+    border-bottom: 1px solid var(--filetto);
+    background: none;
+    text-align: left;
+    font-size: var(--t-nota);
+    cursor: pointer;
+    color: var(--inchiostro-2);
+    transition: color var(--d-1);
+  }
+  .gruppi-lista button:hover,
+  .gruppi-lista button[aria-pressed="true"] {
+    color: var(--inchiostro);
+  }
+  .gruppi-lista button svg {
+    width: 14px;
+    height: 14px;
+    color: var(--verificato);
+    flex-shrink: 0;
+  }
+  .gruppi-lista .n {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    margin-left: auto;
+  }
+  .gruppo-voce {
+    min-height: 168px;
+  }
+  .gruppo-voce .cit__testo {
+    font-size: 1.1875rem;
+    line-height: 1.45;
+  }
+
+  /* 02: i pesi */
+  .pesi {
+    display: grid;
+    gap: 0;
+  }
+  .peso {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 3rem;
+    gap: var(--s-4);
+    align-items: center;
+    padding-block: 14px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .peso:first-child {
+    border-top: 1px solid var(--filetto);
+  }
+  .peso__nome {
+    font-weight: 500;
+    font-size: var(--t-piccolo);
+  }
+  .peso__nome small {
+    display: block;
+    font-weight: 400;
+    color: var(--inchiostro-3);
+    font-size: var(--t-nota);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+  .peso__barra {
+    height: 10px;
+    background: var(--carta-2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .peso__barra i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accento);
+    transition: width 1.1s var(--e-uscita);
+    transition-delay: var(--ritardo, 0ms);
+  }
+  [data-visto="true"] .peso__barra i {
+    width: var(--w);
+  }
+  .peso__v {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 560px) {
+    .peso {
+      grid-template-columns: 1fr 3rem;
+    }
+    .peso__barra {
+      grid-column: 1 / -1;
+      order: 3;
+    }
+  }
+
+  /* 03: confronto parola per parola */
+  .confronto {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .confronto__parole {
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+  }
+  .confronto__parole span {
+    transition: background var(--d-2), color var(--d-2), box-shadow var(--d-2);
+    border-radius: 2px;
+  }
+  .confronto__parole span[data-s="ok"] {
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--verificato) 55%, transparent);
+  }
+  .confronto__parole span[data-s="no"] {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .confronto__parole span[data-s="nuovo"] {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+  }
+  .esito {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: var(--r-2);
+    font-size: var(--t-piccolo);
+    border: 1px solid var(--filetto);
+    background: var(--carta-2);
+  }
+  .esito svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .esito[data-esito="ok"] {
+    color: var(--verificato);
+    border-color: color-mix(in oklab, var(--verificato) 35%, transparent);
+    background: color-mix(in oklab, var(--verificato) 8%, transparent);
+  }
+  .esito[data-esito="no"] {
+    color: var(--errore);
+    border-color: color-mix(in oklab, var(--errore) 35%, transparent);
+    background: color-mix(in oklab, var(--errore) 8%, transparent);
+  }
+  .esito span {
+    color: var(--inchiostro-2);
+  }
+
+  /* ---------- Sistemi ---------- */
+  .sistemi {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+    margin-top: var(--s-7);
+  }
+  .sistema {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    text-decoration: none;
+    transition: border-color var(--d-2), transform var(--d-2) var(--e-uscita);
+    --accento: var(--verde);
+    --accento-tenue: var(--verde-tenue);
+  }
+  .sistema:hover {
+    border-color: var(--inchiostro-3);
+    transform: translateY(-2px);
+  }
+  .sistema__marchio svg {
+    height: 44px;
+    width: auto;
+    color: var(--inchiostro);
+    overflow: visible;
+  }
+  .sistema__nome {
+    font-family: var(--f-testo);
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.035em;
+  }
+  .sistema__cosa {
+    color: var(--inchiostro-2);
+    font-size: var(--t-piccolo);
+    flex: 1;
+  }
+  .sistema__per {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--filetto);
+  }
+  .sistema__vai {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--t-piccolo);
+    font-weight: 500;
+    color: var(--verde);
+  }
+  .sistema:hover .freccia {
+    transform: translateX(3px);
+  }
+  @media (max-width: 960px) {
+    .sistemi {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Numeri ---------- */
+  .numeri {
+    background: var(--inchiostro);
+    color: var(--carta);
+  }
+  .numeri .etichetta,
+  .numeri .cifra__l,
+  .numeri .nota {
+    color: color-mix(in oklab, var(--carta) 62%, transparent);
+  }
+  .numeri .testata {
+    border-top-color: var(--carta);
+  }
+  .numeri__griglia {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-7) var(--s-5);
+  }
+  .numeri .cifra__n {
+    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.75rem);
+  }
+  .numeri .cifra {
+    padding-top: var(--s-4);
+    border-top: 1px solid color-mix(in oklab, var(--carta) 20%, transparent);
+  }
+  .numeri .btn--linea {
+    --btn-fg: var(--carta);
+    border-color: color-mix(in oklab, var(--carta) 30%, transparent);
+  }
+  .numeri .btn--linea:hover {
+    --btn-bg: color-mix(in oklab, var(--carta) 10%, transparent);
+  }
+  :root[data-theme="dark"] .numeri {
+    background: var(--carta-2);
+    color: var(--inchiostro);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .numeri {
+      background: var(--carta-2);
+      color: var(--inchiostro);
+    }
+  }
+  @media (max-width: 860px) {
+    .numeri__griglia {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- Ricerca ---------- */
+  .articoli {
+    margin-top: var(--s-6);
+    display: grid;
+    gap: 0;
+  }
+  .articolo {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr) auto;
+    gap: var(--s-5);
+    align-items: baseline;
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--filetto);
+    text-decoration: none;
+  }
+  .articolo:first-child {
+    border-top: 1px solid var(--filetto);
+  }
+  .articolo__t {
+    font-family: var(--f-titolo);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    transition: color var(--d-1);
+  }
+  .articolo:hover .articolo__t {
+    color: var(--accento);
+  }
+  .articolo__a {
+    margin-top: 6px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  @media (max-width: 760px) {
+    .articolo {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+    }
+  }
+
+  /* ---------- Copertura e domande ---------- */
+  .copre {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+    margin-top: var(--s-6);
+  }
+  .copre h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+    margin-bottom: var(--s-3);
+  }
+  .copre ul {
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .copre li {
+    display: flex;
+    gap: 10px;
+  }
+  .copre li svg {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    color: var(--verificato);
+  }
+  .copre .presto li svg {
+    color: var(--inchiostro-4);
+  }
+  @media (max-width: 860px) {
+    .copre {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Newsletter ---------- */
+  .iscriviti {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .iscriviti form {
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (max-width: 860px) {
+    .iscriviti {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina apertura__griglia">
+      <div>
+        <p class="etichetta compare">Progetto di ricerca · Università di Milano-Bicocca</p>
+        <h1 class="titolo-1 compare" style="--ritardo:80ms;font-size:clamp(2.5rem,1.3rem + 3.9vw,5rem);line-height:.98;letter-spacing:-.03em">Quando si parla del Parlamento servono <em>garanzie</em>.</h1>
+        <p class="attacco compare" style="--ritardo:160ms">Un dibattito in Aula si racconta in modo corretto solo se c'è la voce di tutti i partiti, se parla chi conosce il tema e se le parole tra virgolette sono state dette davvero. ParliamentRAG accerta queste tre garanzie nelle risposte dell'AI sulle istituzioni, e le applica in strumenti gratuiti per chiunque.</p>
+        <div class="fila apertura__azioni compare" style="--ritardo:240ms">
+          <a class="btn btn--accento" href="../stenografo/index.html">Fai una domanda <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <a class="btn btn--linea" href="#garanzie">Le tre garanzie</a>
+        </div>
+      </div>
+
+      <figure class="foglio galleggia campione compare" style="--ritardo:200ms" aria-label="Esempio di risposta controllata">
+        <div class="campione__testa">
+          <span class="etichetta">Esempio · citazioni reali</span>
+          <span class="etichetta" id="campione-stato">Controllo in corso</span>
+        </div>
+        <div class="campione__corpo">
+          <p class="campione__domanda">Cosa dicono i partiti sul salario minimo?</p>
+          <p class="campione__risposta">Le opposizioni chiedono una soglia fissata per legge; la maggioranza punta sulla contrattazione collettiva. Il 5 dicembre 2023 l'Aula ha respinto l'emendamento Conte con 149 voti contrari e 111 favorevoli.</p>
+          <div class="campione__gruppi" id="campione-gruppi" aria-label="Gruppi considerati"></div>
+          <div class="campione__voci" id="campione-voci" aria-live="polite"></div>
+        </div>
+        <div class="campione__piede">
+          <div class="sigillo" id="campione-sigillo">
+            <span class="sigillo__da">Verifica</span>
+            <span class="sigillo__voce"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Tutti i partiti</span>
+            <span class="sigillo__voce"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Voci autorevoli</span>
+            <span class="sigillo__voce"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>Citazioni esatte</span>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Il problema -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Il problema</p></div>
+      <div class="problema">
+        <h2 class="titolo-2 compare">Sempre più persone chiedono all'AI cosa succede in Parlamento.</h2>
+        <div class="problema__testo compare" style="--ritardo:120ms">
+          <p>Un assistente può lasciare fuori un gruppo, far parlare chi del tema non si occupa, mettere in bocca a un deputato parole mai dette. <strong>Chi legge non ha modo di accorgersene.</strong></p>
+          <p>I dati per controllare esistono: la Camera pubblica resoconti, atti e voti. Mancano un metodo che dica cosa controllare e uno strumento che lo faccia. ParliamentRAG lavora su entrambi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Le tre garanzie -->
+  <section class="sezione-stretta" id="garanzie">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Tre garanzie per ogni risposta</p></div>
+
+      <article class="garanzia">
+        <div class="compare">
+          <p class="garanzia__n">01</p>
+          <h3 class="titolo-2">Tutti i gruppi</h3>
+          <p class="garanzia__testo">Nessun gruppo resta fuori in silenzio. Se un gruppo non ha parlato del tema, la risposta lo dice.</p>
+          <p class="garanzia__come"><span class="etichetta">Prova</span>Scegli un gruppo: si accendono i suoi seggi nell'Aula di oggi e compare quello che ha detto sul salario minimo, con il link al resoconto.</p>
+        </div>
+        <div class="aula-demo compare" style="--ritardo:120ms">
+          <svg class="emiciclo" id="aula" viewBox="0 0 2560 1760" role="img" aria-label="Seggi dell'Aula di Montecitorio, XIX legislatura"></svg>
+          <div class="gruppi-lista" id="gruppi" role="group" aria-label="Gruppi parlamentari"></div>
+          <div class="gruppo-voce" id="gruppo-voce" aria-live="polite"></div>
+        </div>
+      </article>
+
+      <article class="garanzia">
+        <div class="compare">
+          <p class="garanzia__n">02</p>
+          <h3 class="titolo-2">Voci autorevoli</h3>
+          <p class="garanzia__testo">Per ogni gruppo parla chi del tema si occupa davvero. Lo misuriamo con sei criteri e pesi pubblici, ricalcolati per ogni domanda.</p>
+          <p class="garanzia__come"><span class="etichetta">Perché i pesi sono pubblici</span>Sono una scelta editoriale, non una misura neutrale. Li pubblichiamo perché chiunque possa contestarli.</p>
+        </div>
+        <div class="pesi compare" style="--ritardo:120ms" aria-label="Pesi dei sei criteri di autorevolezza">
+          <div class="peso"><span class="peso__nome">Interventi in Aula<small>quanto, e quanto di recente, ha parlato del tema</small></span><span class="peso__barra"><i style="--w:100%;--ritardo:0ms"></i></span><span class="peso__v">0,25</span></div>
+          <div class="peso"><span class="peso__nome">Commissione<small>vicinanza della sua commissione al tema</small></span><span class="peso__barra"><i style="--w:100%;--ritardo:80ms"></i></span><span class="peso__v">0,25</span></div>
+          <div class="peso"><span class="peso__nome">Atti firmati<small>proposte e atti sul tema, pesati per recenza</small></span><span class="peso__barra"><i style="--w:80%;--ritardo:160ms"></i></span><span class="peso__v">0,20</span></div>
+          <div class="peso"><span class="peso__nome">Professione<small>affinità tra il suo lavoro e il tema</small></span><span class="peso__barra"><i style="--w:60%;--ritardo:240ms"></i></span><span class="peso__v">0,15</span></div>
+          <div class="peso"><span class="peso__nome">Formazione<small>affinità tra i titoli di studio e il tema</small></span><span class="peso__barra"><i style="--w:40%;--ritardo:320ms"></i></span><span class="peso__v">0,10</span></div>
+          <div class="peso"><span class="peso__nome">Ruolo<small>incarichi istituzionali in corso</small></span><span class="peso__barra"><i style="--w:20%;--ritardo:400ms"></i></span><span class="peso__v">0,05</span></div>
+        </div>
+      </article>
+
+      <article class="garanzia">
+        <div class="compare">
+          <p class="garanzia__n">03</p>
+          <h3 class="titolo-2">Citazioni esatte</h3>
+          <p class="garanzia__testo">Quello che sta tra virgolette è stato detto in Aula, dalla persona a cui lo attribuiamo. Confrontiamo ogni citazione con il resoconto parola per parola: se non coincide, la togliamo.</p>
+          <p class="garanzia__come"><span class="etichetta">Prova</span>Cambia anche una sola parola della citazione qui accanto e guarda cosa succede.</p>
+        </div>
+        <div class="confronto compare" style="--ritardo:120ms">
+          <p class="etichetta">Citazione proposta dal modello</p>
+          <div class="campo campo--area">
+            <textarea id="confronto-input" rows="3" spellcheck="false" aria-label="Citazione da confrontare">Siamo contrari all'idea di un salario minimo legale, fissato per legge, che rischia di diventare un tetto e non certo un pavimento per le retribuzioni.</textarea>
+          </div>
+          <p class="etichetta" style="margin-top:var(--s-3)">Confronto con il resoconto · Marcello Coppo, FdI, 14 luglio 2025</p>
+          <p class="confronto__parole" id="confronto-parole" aria-live="polite"></p>
+          <div class="esito" id="confronto-esito" role="status"></div>
+          <div class="fila">
+            <button class="btn btn--linea btn--piccolo" type="button" id="confronto-ripristina">Ripristina</button>
+            <a class="collegamento piccolo" href="https://www.camera.it/leg19/410?idSeduta=0510&tipo=stenografico#sed0510.stenografico.tit00040.sub00010.int00080" rel="noopener">Apri il resoconto della seduta 510</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Sistemi -->
+  <section class="sezione-stretta" id="sistemi">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Dove le applichiamo</p></div>
+      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:16ch">Tre sistemi gratuiti, un solo grafo.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4)">Ognuno fa una cosa sola e porta il sigillo delle tre garanzie. Si usano senza account.</p>
+
+      <div class="sistemi">
+        <a class="foglio sistema compare" href="../stenografo/index.html">
+          <span class="sistema__marchio" data-marchio="stenografo"></span>
+          <span class="sistema__nome">Stenografo</span>
+          <span class="sistema__cosa">Fai una domanda su una seduta, un atto o un voto. Ricevi una risposta breve, con il resoconto ufficiale accanto a ogni frase.</span>
+          <span class="sistema__per">Per chi cerca un fatto preciso: giornalisti, uffici studi, cittadini.</span>
+          <span class="sistema__vai">Fai una domanda <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="foglio sistema compare" style="--ritardo:100ms" href="../fascicoli/index.html">
+          <span class="sistema__marchio" data-marchio="fascicoli"></span>
+          <span class="sistema__nome">Fascicoli</span>
+          <span class="sistema__cosa">Scegli un tema. Ricevi la posizione di ogni gruppo, le voci più autorevoli di ciascuno, le citazioni esatte e i voti collegati.</span>
+          <span class="sistema__per">Per chi deve capire un dibattito intero: ricercatori, analisti, redazioni.</span>
+          <span class="sistema__vai">Apri un fascicolo <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+        <a class="foglio sistema compare" style="--ritardo:200ms" href="../scranno/index.html">
+          <span class="sistema__marchio" data-marchio="scranno"></span>
+          <span class="sistema__nome">Scranno</span>
+          <span class="sistema__cosa">Entri nell'Aula di Montecitorio. Ogni seggio porta al deputato che lo occupa e al suo lavoro: interventi, atti, voti.</span>
+          <span class="sistema__per">Per chi vuole sapere chi siede dove, e come ha votato.</span>
+          <span class="sistema__vai">Entra in Aula <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Numeri -->
+  <section class="sezione numeri">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Nel grafo, al <span id="data-agg"></span></p></div>
+      <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">La XIX legislatura della Camera, collegata fatto per fatto.</h2>
+      <div class="numeri__griglia" id="numeri"></div>
+      <div class="fila compare" style="margin-top:var(--s-7)">
+        <a class="btn btn--linea" href="dati.html">Scarica il grafo</a>
+        <a class="btn btn--linea" href="sviluppatori.html">Collega un assistente AI</a>
+      </div>
+      <p class="nota compare" style="margin-top:var(--s-4)">Fonte: open data della Camera dei Deputati e thesaurus EuroVoc. Licenza CC BY-SA 4.0.</p>
+    </div>
+  </section>
+
+  <!-- Ricerca -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">Ricerca</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6)">Due articoli a ISWC 2026, Bari, 25–29 ottobre.</h2>
+      <div class="articoli compare">
+        <a class="articolo" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">
+          <span class="etichetta">In-Use Track · LNCS 17128</span>
+          <span><span class="articolo__t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
+          <span class="etichetta">PDF ↗</span>
+        </a>
+        <a class="articolo" href="https://emeierkeio.github.io/papers/parliamentrag-demo-iswc2026.pdf" rel="noopener">
+          <span class="etichetta">Posters &amp; Demos</span>
+          <span><span class="articolo__t">ParliamentRAG: An Authority-Aware Multi-View RAG System for Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
+          <span class="etichetta">PDF ↗</span>
+        </a>
+      </div>
+      <p class="compare" style="margin-top:var(--s-5)"><a class="collegamento" href="ricerca.html">Come citarli, e gli interventi pubblici</a></p>
+    </div>
+  </section>
+
+  <!-- Cosa copre -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 6</span><p class="etichetta" style="padding-top:.55em">Prima di usare una risposta</p></div>
+      <div class="copre">
+        <div class="compare">
+          <h3>Copre</h3>
+          <ul>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Camera dei Deputati, XIX legislatura, dal 13 ottobre 2022</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Resoconti delle sedute in Aula, con il testo integrale</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Atti e votazioni elettroniche, con il voto di ogni deputato</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Aggiornamento a ogni nuova seduta</li>
+          </ul>
+        </div>
+        <div class="compare presto" style="--ritardo:100ms">
+          <h3>Prossimamente</h3>
+          <ul>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5"/></svg>Senato della Repubblica, XIX legislatura</li>
+          </ul>
+        </div>
+        <div class="compare" style="--ritardo:200ms">
+          <h3>Hai trovato un errore?</h3>
+          <p class="piccolo tenue">Scrivi a <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a> con il link alla risposta. Lo controlliamo sul resoconto e lo correggiamo.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:var(--s-8)">
+        <h2 class="titolo-3 compare">Domande frequenti</h2>
+        <div class="compare" style="margin-top:var(--s-4);border-top:1px solid var(--filetto)">
+          <details class="domanda"><summary>È un servizio ufficiale della Camera?</summary><p class="domanda__r">No. È un progetto di ricerca indipendente nato all'Università di Milano-Bicocca. Usa gli open data che la Camera pubblica su dati.camera.it, ma non è affiliato alla Camera e non parla a suo nome.</p></details>
+          <details class="domanda"><summary>Posso fidarmi delle citazioni?</summary><p class="domanda__r">Delle parole sì: ogni citazione è confrontata con il resoconto e ha il link alla fonte. Il resto della risposta lo scrive un modello di AI, che può omettere qualcosa o sbagliare. Per un uso che conta, controlla sul resoconto.</p></details>
+          <details class="domanda"><summary>È gratis?</summary><p class="domanda__r">Sì. Stenografo, Fascicoli e Scranno si usano senza account e senza pagare. I dati si scaricano liberamente.</p></details>
+          <details class="domanda"><summary>Posso usare una risposta in un articolo?</summary><p class="domanda__r">Sì. Cita la fonte ufficiale linkata accanto a ogni frase, non il testo generato. Se scrivi del progetto, nella pagina Ricerca trovi il riferimento in BibTeX.</p></details>
+          <details class="domanda"><summary>Cosa fate dei miei dati?</summary><p class="domanda__r">Su questo sito non serve un account e non usiamo strumenti di analisi o pubblicità. Se ti iscrivi agli aggiornamenti, l'email resta su Brevo e non la colleghiamo alle domande che fai. <a class="collegamento" href="privacy.html">Leggi l'informativa</a>.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Iscrizione -->
+  <section class="sezione-stretta" style="background:var(--carta-2);border-top:1px solid var(--filetto)">
+    <div class="pagina iscriviti">
+      <div class="compare">
+        <h2 class="titolo-2">Nuovi sistemi, nuovi dati, nuovi articoli.</h2>
+        <p class="tenue" style="margin-top:var(--s-3);max-width:44ch">Poche email, quando c'è qualcosa da dire. Ti disiscrivi con un clic.</p>
+      </div>
+      <form class="compare" id="iscrizione" novalidate style="--ritardo:120ms">
+        <label class="sr" for="email">La tua email</label>
+        <div class="campo">
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="nome@esempio.it" required>
+          <button class="btn btn--accento" type="submit">Iscriviti</button>
+        </div>
+        <label class="spunta"><input type="checkbox" id="consenso"> <span>Ho letto l'<a class="collegamento" href="privacy.html">informativa privacy</a> e accetto di ricevere aggiornamenti su ParliamentRAG.</span></label>
+        <p class="messaggio" id="iscrizione-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/data/aula.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DATI, A = window.AULA;
+  var SPUNTA = window.ICONE.spunta, CROCE = window.ICONE.croce;
+
+  /* Marchi nelle schede dei sistemi */
+  document.querySelectorAll("[data-marchio]").forEach(function (el) {
+    el.innerHTML = window.MARCHI[el.dataset.marchio](false);
+  });
+
+  /* ---------- Campione in apertura: i controlli si accendono uno alla volta ---------- */
+  var ordine = ["FdI", "PD", "Lega", "M5S", "FI", "AVS", "Azione", "IV", "NM", "+Europa", "Governo"];
+  var box = document.getElementById("campione-gruppi");
+  box.innerHTML = ordine.map(function (g, i) { return '<button type="button" class="sigla" aria-pressed="false" data-i="' + i + '" title="Mostra la citazione di ' + esc(g) + '">' + esc(g) + "</button>"; }).join("");
+  var sigle = box.querySelectorAll(".sigla");
+  var voci = document.querySelectorAll("#campione-sigillo .sigillo__voce");
+  var stato = document.getElementById("campione-stato");
+  var ridotto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function accendi() {
+    sigle.forEach(function (s, i) {
+      setTimeout(function () { s.setAttribute("data-ok", ""); }, ridotto ? 0 : 500 + i * 70);
+    });
+    voci.forEach(function (v, i) {
+      setTimeout(function () { v.setAttribute("data-ok", ""); }, ridotto ? 0 : 1400 + i * 380);
+    });
+    setTimeout(function () { stato.textContent = "3 garanzie su 3"; stato.style.color = "var(--verificato)"; }, ridotto ? 0 : 2600);
+  }
+  accendi();
+
+  /* Una citazione verificata per ogni gruppo, a rotazione; clic su una sigla per sceglierla */
+  var BREVE = { FdI: "Fratelli d'Italia", PD: "Partito Democratico", Lega: "Lega", M5S: "Movimento 5 Stelle", FI: "Forza Italia", AVS: "Alleanza Verdi e Sinistra", Azione: "Azione", IV: "Italia Viva", NM: "Noi Moderati", "+Europa": "+Europa", Governo: "Governo" };
+  var perGruppo = {};
+  D.tema.citazioni.forEach(function (q) { perGruppo[q.group] = q; });
+  var vociBox = document.getElementById("campione-voci");
+  vociBox.innerHTML = ordine.map(function (g) {
+    var q = perGruppo[g];
+    var d = new Date(q.date).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+    return '<blockquote class="cit cit--piccola"><p class="cit__testo">' + esc(q.quote) + "</p>" +
+      '<footer class="cit__fonte"><span class="cit__chi">' + esc(q.name) + "</span><span>" + esc(BREVE[g]) + "</span><span>" + d + "</span>" +
+      '<a class="bollino" href="' + q.url + '" rel="noopener">' + SPUNTA + "Verbale ufficiale</a></footer></blockquote>";
+  }).join("");
+  var citazioni = vociBox.querySelectorAll(".cit");
+  var corrente = -1, giro = null, fermo = false;
+  function mostra(i) {
+    corrente = (i + ordine.length) % ordine.length;
+    citazioni.forEach(function (c, k) { if (k === corrente) c.setAttribute("data-on", ""); else c.removeAttribute("data-on"); });
+    sigle.forEach(function (b, k) { b.setAttribute("aria-pressed", k === corrente ? "true" : "false"); });
+  }
+  function avvia() {
+    clearInterval(giro);
+    if (ridotto) return;
+    giro = setInterval(function () { if (!fermo && !document.hidden) mostra(corrente + 1); }, 6000);
+  }
+  box.addEventListener("click", function (e) {
+    var b = e.target.closest("button.sigla");
+    if (!b) return;
+    mostra(+b.dataset.i);
+    avvia();
+  });
+  var campione = document.querySelector(".campione");
+  campione.addEventListener("mouseenter", function () { fermo = true; });
+  campione.addEventListener("mouseleave", function () { fermo = false; });
+  campione.addEventListener("focusin", function () { fermo = true; });
+  campione.addEventListener("focusout", function () { fermo = false; });
+  mostra(0);
+  avvia();
+
+  /* ---------- 01: Aula vera, seggi per gruppo ---------- */
+  var svg = document.getElementById("aula");
+  var NS = "http://www.w3.org/2000/svg";
+  var conta = {};
+  A.seats.forEach(function (s) {
+    var c = document.createElementNS(NS, "circle");
+    c.setAttribute("cx", s.x);
+    c.setAttribute("cy", s.y);
+    c.setAttribute("r", 17);
+    c.setAttribute("data-g", s.g || "");
+    svg.appendChild(c);
+    if (s.g) conta[s.g] = (conta[s.g] || 0) + 1;
+  });
+
+  var cit = {};
+  D.tema.citazioni.forEach(function (q) { cit[q.group] = q; });
+  /* Seggi del gruppo: +Europa siede nel Misto, il Governo ai banchi del Governo */
+  var gruppi = [
+    { k: "AVS", seggi: "AVS" }, { k: "M5S", seggi: "M5S" }, { k: "PD", seggi: "PD" }, { k: "Azione", seggi: "Azione" },
+    { k: "IV", seggi: "IV" }, { k: "+Europa", seggi: "Misto", nota: "componente del Gruppo Misto" }, { k: "NM", seggi: "NM" },
+    { k: "FI", seggi: "FI" }, { k: "Lega", seggi: "Lega" }, { k: "FdI", seggi: "FdI" }, { k: "Governo", seggi: null, nota: "banchi del Governo" }
+  ];
+  var lista = document.getElementById("gruppi");
+  lista.innerHTML = gruppi.map(function (g) {
+    var n = g.seggi ? conta[g.seggi] : null;
+    return '<button type="button" aria-pressed="false" data-k="' + esc(g.k) + '">' + SPUNTA + "<span>" + esc(g.k) + "</span>" +
+      (n ? '<span class="n">' + n + "</span>" : '<span class="n">—</span>') + "</button>";
+  }).join("");
+  var voce = document.getElementById("gruppo-voce");
+
+  function scegli(k) {
+    var g = gruppi.filter(function (x) { return x.k === k; })[0];
+    lista.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"); });
+    svg.setAttribute("data-scelto", k);
+    svg.querySelectorAll("circle").forEach(function (c) {
+      var on = g.seggi ? c.getAttribute("data-g") === g.seggi : c.getAttribute("data-g") === "";
+      if (on) c.setAttribute("data-on", ""); else c.removeAttribute("data-on");
+    });
+    var q = cit[k];
+    var d = new Date(q.date).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+    voce.innerHTML =
+      '<blockquote class="cit cit--piccola" style="margin-top:var(--s-3)"><p class="cit__testo">' + esc(q.quote) + "</p>" +
+      '<footer class="cit__fonte"><span class="cit__chi">' + esc(q.name) + "</span><span>" + esc(q.groupName) + "</span><span>" + d + "</span>" +
+      '<a class="bollino" href="' + q.url + '" rel="noopener">' + SPUNTA + "Verbale ufficiale</a></footer></blockquote>" +
+      (g.nota ? '<p class="nota" style="margin-top:var(--s-2);padding-left:var(--s-5)">Seggi evidenziati: ' + g.nota + ".</p>" : "");
+  }
+  lista.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (b) scegli(b.dataset.k);
+  });
+  scegli("PD");
+
+  /* ---------- 03: confronto parola per parola ---------- */
+  var ORIGINALE = "Siamo contrari all'idea di un salario minimo legale, fissato per legge, che rischia di diventare un tetto e non certo un pavimento per le retribuzioni.";
+  var input = document.getElementById("confronto-input");
+  var out = document.getElementById("confronto-parole");
+  var esito = document.getElementById("confronto-esito");
+  function parole(s) { return s.trim().split(/\s+/).filter(Boolean); }
+
+  /* LCS sulle parole: abbastanza per citazioni di qualche decina di parole */
+  function confronta(a, b) {
+    var n = a.length, m = b.length, t = [];
+    for (var i = 0; i <= n; i++) { t.push(new Array(m + 1).fill(0)); }
+    for (i = n - 1; i >= 0; i--) for (var j = m - 1; j >= 0; j--)
+      t[i][j] = a[i] === b[j] ? t[i + 1][j + 1] + 1 : Math.max(t[i + 1][j], t[i][j + 1]);
+    var r = []; i = 0; j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { r.push({ w: b[j], s: "ok" }); i++; j++; }
+      else if (t[i + 1][j] >= t[i][j + 1]) { r.push({ w: a[i], s: "no" }); i++; }
+      else { r.push({ w: b[j], s: "nuovo" }); j++; }
+    }
+    while (i < n) r.push({ w: a[i++], s: "no" });
+    while (j < m) r.push({ w: b[j++], s: "nuovo" });
+    return r;
+  }
+  var timer;
+  function aggiorna(anima) {
+    clearTimeout(timer);
+    var r = confronta(parole(ORIGINALE), parole(input.value));
+    var diverse = r.filter(function (x) { return x.s !== "ok"; }).length;
+    out.innerHTML = r.map(function (x) { return '<span data-s="' + (anima ? "" : x.s) + '" data-fin="' + x.s + '">' + esc(x.w) + "</span>"; }).join(" ");
+    var span = out.querySelectorAll("span");
+    var fine = function () {
+      if (diverse === 0) {
+        esito.setAttribute("data-esito", "ok");
+        esito.innerHTML = SPUNTA + "<strong>Coincide con il resoconto.</strong> <span>La citazione resta, con il link alla seduta 510.</span>";
+      } else {
+        esito.setAttribute("data-esito", "no");
+        esito.innerHTML = CROCE + "<strong>Non coincide: " + diverse + (diverse === 1 ? " parola diversa" : " parole diverse") + ".</strong> <span>La citazione viene tolta dalla risposta.</span>";
+      }
+    };
+    if (anima && !ridotto) {
+      esito.removeAttribute("data-esito");
+      esito.innerHTML = '<span class="mono">Confronto in corso…</span>';
+      span.forEach(function (s, i) { timer = setTimeout(function () { s.setAttribute("data-s", s.dataset.fin); if (i === span.length - 1) fine(); }, 40 * i); });
+    } else {
+      span.forEach(function (s) { s.setAttribute("data-s", s.dataset.fin); });
+      fine();
+    }
+  }
+  input.addEventListener("input", function () { aggiorna(false); });
+  document.getElementById("confronto-ripristina").addEventListener("click", function () { input.value = ORIGINALE; aggiorna(true); });
+  var avviato = false;
+  new IntersectionObserver(function (v, io) {
+    if (v[0].isIntersecting && !avviato) { avviato = true; aggiorna(true); io.disconnect(); }
+  }, { threshold: 0.4 }).observe(out);
+  aggiorna(false);
+
+  /* ---------- Numeri del grafo ---------- */
+  var S = D.stats;
+  document.getElementById("data-agg").textContent = new Date(S.last_update).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  var cifre = [
+    [S.speeches, "interventi in Aula, con testo integrale"],
+    [S.individual_votes, "voti individuali, uno per deputato"],
+    [S.acts, "atti parlamentari"],
+    [S.votes, "votazioni elettroniche"],
+    [S.sessions, "sedute"],
+    [S.people, "deputati e membri del Governo"],
+    [S.eurovoc_concepts, "temi EuroVoc collegati agli atti"],
+    [S.triples, "triple RDF nell'export"]
+  ];
+  document.getElementById("numeri").innerHTML = cifre.map(function (c, i) {
+    return '<div class="cifra compare" style="--ritardo:' + (i % 4) * 80 + 'ms"><p class="cifra__n" data-n="' + c[0] + '">' + numero(c[0]) + '</p><p class="cifra__l">' + c[1] + "</p></div>";
+  }).join("");
+  window.osservaComparse();
+
+  /* ---------- Iscrizione (in locale non parte nulla) ---------- */
+  document.getElementById("iscrizione").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = document.getElementById("iscrizione-msg");
+    var email = document.getElementById("email").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.dataset.tipo = "errore"; msg.textContent = "Scrivi un indirizzo email completo, ad esempio nome@esempio.it."; return; }
+    if (!document.getElementById("consenso").checked) { msg.dataset.tipo = "errore"; msg.textContent = "Per iscriverti devi accettare l'informativa."; return; }
+    msg.dataset.tipo = "ok";
+    msg.textContent = "Versione locale: l'iscrizione non viene inviata. In produzione arriva un'email di conferma da Brevo.";
+  });
+})();
+</script>
+</body>
+</html>

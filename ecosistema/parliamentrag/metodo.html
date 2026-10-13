@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="metodo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metodo · ParliamentRAG</title>
+<meta name="description" content="Come verifichiamo una risposta sul Parlamento: il percorso della domanda, le tre garanzie, i pesi dell'autorevolezza, la bussola e i limiti.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(40px, 5vw, 72px);
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 14ch;
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+  }
+  /* Le tre garanzie in apertura: un sommario, non un riassunto */
+  .sommario {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--inchiostro);
+  }
+  .sommario a {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-4) var(--s-5) var(--s-5) 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--filetto);
+    transition: background var(--d-1);
+  }
+  .sommario a + a {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .sommario__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+  }
+  .sommario__t {
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    transition: color var(--d-1);
+  }
+  .sommario a:hover .sommario__t {
+    color: var(--accento);
+  }
+  .sommario__d {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    max-width: 34ch;
+  }
+  @media (max-width: 760px) {
+    .sommario {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .sommario a + a {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  /* ---------- Impaginato: indice a sinistra, testo a destra ---------- */
+  .impaginato {
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+    gap: clamp(32px, 4vw, 72px);
+    align-items: start;
+    padding-bottom: var(--s-9);
+  }
+  .indice {
+    position: sticky;
+    top: calc(64px + var(--s-6));
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .indice ol {
+    list-style: none;
+    padding: 0;
+    margin: var(--s-3) 0 0;
+    display: grid;
+    gap: 2px;
+    counter-reset: voce;
+  }
+  .indice a {
+    display: flex;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-3);
+    text-decoration: none;
+    transition: color var(--d-1);
+  }
+  .indice a::before {
+    counter-increment: voce;
+    content: "§ " counter(voce);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    min-width: 2.4em;
+    color: var(--inchiostro-4);
+  }
+  .indice a:hover {
+    color: var(--inchiostro);
+  }
+  .indice a[aria-current="true"] {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  .indice a[aria-current="true"]::before {
+    color: var(--accento);
+  }
+  @media (max-width: 1060px) {
+    .impaginato {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .indice {
+      position: static;
+    }
+    .indice ol {
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      column-gap: var(--s-4);
+    }
+    .indice a {
+      min-height: 40px;
+      align-items: center;
+      border-bottom: 1px solid var(--filetto);
+    }
+  }
+
+  /* Sezioni del corpo: non usano .pagina, stanno già dentro */
+  .capitolo {
+    padding-top: clamp(var(--s-7), 6vw, var(--s-9));
+    scroll-margin-top: 88px;
+  }
+  .capitolo > h2 {
+    margin-top: var(--s-6);
+    max-width: 20ch;
+  }
+  .capitolo > .attacco {
+    margin-top: var(--s-4);
+    max-width: 52ch;
+  }
+
+  /* ---------- § 1 Il percorso della domanda ---------- */
+  /*
+   * Sei passaggi su una linea. Sul desktop la linea è orizzontale e si riempie
+   * mentre la figura sale nello schermo; sul telefono è verticale e ogni
+   * passaggio si accende quando ci arrivi.
+   */
+  .condotto {
+    --p: 0;
+    position: relative;
+    list-style: none;
+    padding: 0;
+    margin: var(--s-7) 0 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-4);
+  }
+  .condotto::before,
+  .condotto::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 13px;
+    height: 2px;
+    background: var(--filetto);
+    transform-origin: left center;
+  }
+  .condotto::after {
+    background: var(--accento);
+    transform: scaleX(var(--p));
+    transition: transform var(--d-3) var(--e-uscita);
+  }
+  .passo {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .passo__corpo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .passo__esce {
+    margin-top: auto !important;
+  }
+  .passo__corpo > p:last-of-type {
+    margin-bottom: var(--s-3);
+  }
+  .passo__nodo {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid var(--filetto-forte);
+    background: var(--carta);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    transition: background var(--d-3) var(--e-uscita), border-color var(--d-3), color var(--d-3), transform var(--d-3) var(--e-uscita);
+  }
+  .passo[data-acceso] .passo__nodo {
+    background: var(--accento);
+    border-color: var(--accento);
+    color: var(--su-accento);
+    transform: scale(1.08);
+  }
+  .passo__corpo {
+    margin-top: var(--s-4);
+    opacity: 0.38;
+    transition: opacity var(--d-3) var(--e-uscita);
+  }
+  .passo[data-acceso] .passo__corpo {
+    opacity: 1;
+  }
+  .passo h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .passo p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    line-height: 1.5;
+  }
+  .passo__esce {
+    display: block;
+    margin-top: var(--s-3);
+    padding-top: var(--s-2);
+    border-top: 1px dashed var(--filetto-forte);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.02em;
+    color: var(--inchiostro-3);
+    line-height: 1.45;
+  }
+  /* Passo 4: una sezione per ogni gruppo, si aprono a ventaglio */
+  .ventaglio {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ventaglio .sigla {
+    padding: 1px 5px;
+    font-size: 0.625rem;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--d-2) var(--e-uscita), transform var(--d-2) var(--e-uscita);
+    transition-delay: calc(var(--i) * 45ms);
+  }
+  .passo[data-acceso] .ventaglio .sigla {
+    opacity: 1;
+    transform: none;
+  }
+  /* Passo 6: le parole controllate una per una */
+  .parole-mini {
+    margin-top: var(--s-3);
+    font-family: var(--f-titolo);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .parole-mini span {
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: box-shadow var(--d-2) var(--e-uscita);
+    transition-delay: calc(var(--i) * 70ms + 200ms);
+  }
+  .passo[data-acceso] .parole-mini span {
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--verificato) 60%, transparent);
+  }
+  .quinte {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: start;
+    padding: var(--s-4) var(--s-5);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .quinte .etichetta {
+    padding-top: 3px;
+  }
+  @media (max-width: 960px) {
+    .condotto {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-6);
+    }
+    .condotto::before,
+    .condotto::after {
+      left: 13px;
+      right: auto;
+      top: 14px;
+      bottom: 14px;
+      width: 2px;
+      height: auto;
+      transform-origin: center top;
+    }
+    .condotto::after {
+      transform: scaleY(var(--p));
+    }
+    .passo {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: var(--s-4);
+    }
+    .passo__corpo {
+      margin-top: 2px;
+      max-width: 48ch;
+    }
+    .quinte {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }
+
+  /* ---------- Garanzie ---------- */
+  .garanzia__testa {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--s-5);
+    align-items: end;
+    margin-top: var(--s-6);
+  }
+  .garanzia__cifra {
+    font-family: var(--f-titolo);
+    font-size: clamp(4rem, 2.6rem + 5vw, 7.5rem);
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    color: var(--accento);
+    font-variant-numeric: lining-nums;
+  }
+  .garanzia__testa h2 {
+    max-width: 16ch;
+  }
+  .garanzia__dice {
+    margin-top: var(--s-5);
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.32;
+    letter-spacing: -0.01em;
+    max-width: 36ch;
+  }
+  /* Tre colonne: cosa vuol dire, come la applichiamo, come si controlla */
+  .tre-colonne {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .tre-colonne > div {
+    padding: var(--s-4) var(--s-5) var(--s-5) 0;
+  }
+  .tre-colonne > div + div {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .tre-colonne .etichetta {
+    display: block;
+    margin-bottom: var(--s-3);
+  }
+  .tre-colonne p,
+  .tre-colonne li {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    line-height: 1.55;
+  }
+  .tre-colonne p + p {
+    margin-top: var(--s-3);
+  }
+  .tre-colonne ul {
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .tre-colonne li strong {
+    color: var(--inchiostro);
+    font-weight: 600;
+  }
+  @media (max-width: 860px) {
+    .tre-colonne {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .tre-colonne > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--filetto);
+    }
+  }
+
+  /* 01: la fila delle voci del tema d'esempio */
+  .fila-voci {
+    margin-top: var(--s-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .fila-voci .sigla svg {
+    width: 12px;
+    height: 12px;
+    color: var(--verificato);
+  }
+
+  /* 02: tabella dei pesi e giocattolo dei cursori */
+  .tabella-pesi {
+    margin-top: var(--s-6);
+  }
+  .tabella-pesi td:first-child {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .tabella-pesi .barretta {
+    display: inline-block;
+    height: 8px;
+    width: calc(var(--w) * 4);
+    max-width: 100%;
+    background: var(--accento);
+    border-radius: 1px;
+    vertical-align: 1px;
+    margin-left: var(--s-3);
+  }
+  .tabella-pesi td.num {
+    white-space: nowrap;
+  }
+  /* Sul telefono ogni criterio diventa una scheda: nome e peso, poi cosa misura */
+  @media (max-width: 640px) {
+    .tabella-pesi thead {
+      display: none;
+    }
+    .tabella-pesi tr {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      border-bottom: 1px solid var(--filetto);
+      padding-block: var(--s-3);
+    }
+    .tabella-pesi tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .tabella-pesi td {
+      border: 0;
+      padding: 0;
+    }
+    .tabella-pesi td:last-child {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      font-size: var(--t-nota);
+      color: var(--inchiostro-3);
+    }
+    .tabella-pesi .barretta {
+      width: calc(var(--w) * 2.4);
+    }
+  }
+  .riquadro {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  @media (max-width: 860px) {
+    .riquadro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .decadimento svg {
+    width: 100%;
+    height: auto;
+    margin-top: var(--s-3);
+  }
+  .decadimento .assi {
+    stroke: var(--filetto-forte);
+    stroke-width: 1;
+  }
+  .decadimento .guida {
+    stroke: var(--filetto);
+    stroke-dasharray: 3 4;
+  }
+  .decadimento .curva {
+    fill: none;
+    stroke: var(--accento);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .decadimento .area {
+    fill: var(--accento-tenue);
+  }
+  .decadimento .punto-c {
+    fill: var(--foglio);
+    stroke: var(--accento);
+    stroke-width: 2;
+  }
+  .decadimento text {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    fill: var(--inchiostro-3);
+  }
+  .decadimento text.forte {
+    fill: var(--inchiostro);
+    font-weight: 500;
+  }
+
+  .giocattolo {
+    margin-top: var(--s-6);
+    padding: 0;
+    overflow: hidden;
+  }
+  .giocattolo__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .giocattolo__corpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    padding: var(--s-5);
+  }
+  @media (max-width: 860px) {
+    .giocattolo__corpo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .cursore {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.6rem 3.2rem;
+    gap: 2px var(--s-3);
+    align-items: center;
+    padding-block: 6px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .cursore label {
+    font-size: var(--t-piccolo);
+    font-weight: 500;
+  }
+  .cursore input[type="range"] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    height: 32px;
+    margin: 0;
+    accent-color: var(--accento);
+    cursor: pointer;
+  }
+  .cursore output,
+  .cursore .norm {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .cursore .norm {
+    color: var(--inchiostro-3);
+  }
+  .somma {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-2);
+    padding-top: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .somma strong {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    color: var(--inchiostro);
+  }
+  .somma[data-zero] strong {
+    color: var(--errore);
+  }
+  .barre {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .barra-pila {
+    display: flex;
+    height: 44px;
+    border-radius: var(--r-1);
+    overflow: hidden;
+    background: var(--carta-2);
+    margin-top: var(--s-2);
+  }
+  .barra-pila span {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    overflow: hidden;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--c-testo, var(--su-accento));
+    background: var(--c);
+    transition: flex-basis var(--d-3) var(--e-uscita);
+    white-space: nowrap;
+  }
+  .barra-pila span + span {
+    box-shadow: inset 1px 0 0 var(--foglio);
+  }
+  .chiave {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px var(--s-4);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .chiave span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .chiave i {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: var(--c);
+    flex-shrink: 0;
+  }
+  .chiave b {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-weight: 400;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+  }
+  .scarti {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    min-height: 3em;
+  }
+
+  /* 03: una citazione con la sua provenienza */
+  .provenienza {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  .provenienza dl {
+    display: grid;
+    gap: 0;
+    font-size: var(--t-nota);
+    border-top: 1px solid var(--filetto);
+  }
+  .provenienza dl > div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .provenienza dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--inchiostro-3);
+    padding-top: 2px;
+  }
+  .provenienza dd {
+    color: var(--inchiostro-2);
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 860px) {
+    .provenienza {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .avvertenza {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    border-left: 3px solid var(--accento);
+    background: var(--accento-tenue);
+    border-radius: 0 var(--r-2) var(--r-2) 0;
+  }
+  .avvertenza h3 {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+  .avvertenza p {
+    margin-top: var(--s-3);
+    color: var(--inchiostro-2);
+    max-width: 62ch;
+  }
+
+  /* ---------- § 5 Bussola ---------- */
+  .bussola {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 860px) {
+    .bussola {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .bussola ol {
+    padding: 0;
+    list-style: none;
+    counter-reset: b;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .bussola li {
+    counter-increment: b;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: var(--s-2);
+    color: var(--inchiostro-2);
+    font-size: var(--t-piccolo);
+  }
+  .bussola li::before {
+    content: counter(b, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+    padding-top: 2px;
+  }
+  .piano svg {
+    width: 100%;
+    height: auto;
+  }
+  .piano .griglia-p {
+    stroke: var(--filetto);
+  }
+  .piano .asse {
+    stroke: var(--inchiostro-3);
+    stroke-width: 1.2;
+  }
+  .piano .intervento {
+    fill: var(--inchiostro-4);
+    opacity: 0.55;
+  }
+  .piano .media {
+    fill: none;
+    stroke: var(--inchiostro-3);
+    stroke-width: 1.5;
+    stroke-dasharray: 3 3;
+  }
+  .piano .ristretta {
+    fill: var(--accento);
+  }
+  .piano .freccia-p {
+    stroke: var(--accento);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .piano text {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    fill: var(--inchiostro-3);
+  }
+
+  /* ---------- § 6 Limiti: in evidenza, non in nota ---------- */
+  .limiti {
+    margin-top: var(--s-6);
+    padding: clamp(var(--s-5), 4vw, var(--s-7));
+    background: var(--inchiostro);
+    color: var(--carta);
+    border-radius: var(--r-3);
+  }
+  :root[data-theme="dark"] .limiti {
+    background: var(--carta-3);
+    color: var(--inchiostro);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .limiti {
+      background: var(--carta-3);
+      color: var(--inchiostro);
+    }
+  }
+  .limiti h2 {
+    max-width: 18ch;
+  }
+  .limiti ol {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-6);
+    counter-reset: l;
+  }
+  .limiti li {
+    counter-increment: l;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: var(--s-4);
+    border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+  }
+  .limiti li::before {
+    content: counter(l, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    opacity: 0.6;
+    padding-top: 4px;
+  }
+  .limiti li p {
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+  .limiti li p + p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    opacity: 0.7;
+  }
+  .limiti__piede {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid color-mix(in oklab, currentColor 22%, transparent);
+    font-size: var(--t-piccolo);
+    opacity: 0.85;
+  }
+  .limiti a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+  @media (max-width: 760px) {
+    .limiti ol {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ---------- § 7 Fonti ---------- */
+  .fonti {
+    margin-top: var(--s-6);
+    border-top: 1px solid var(--filetto);
+  }
+  .fonte {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1fr) auto;
+    gap: var(--s-4);
+    align-items: baseline;
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+    text-decoration: none;
+  }
+  .fonte__t {
+    font-family: var(--f-titolo);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    transition: color var(--d-1);
+  }
+  .fonte:hover .fonte__t {
+    color: var(--accento);
+  }
+  .fonte__d {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  @media (max-width: 700px) {
+    .fonte {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-2);
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina">
+      <p class="etichetta compare">Metodo</p>
+      <h1 class="titolo-1 compare" style="--ritardo:80ms">Come verifichiamo una <em>risposta</em>.</h1>
+      <p class="attacco compare" style="--ritardo:160ms">Un modello di AI scrive la risposta. Prima che arrivi a chi legge, controlliamo tre cose: che ci siano tutti i gruppi, che parli chi del tema si occupa, che le parole tra virgolette siano quelle del resoconto.</p>
+      <p class="nota compare" style="--ritardo:200ms;margin-top:var(--s-4)">Il metodo ha dei limiti. Li trovi nel <a class="collegamento" href="#limiti">§ 6</a>, prima di usare una risposta.</p>
+
+      <nav class="sommario compare" style="--ritardo:240ms" aria-label="Le tre garanzie">
+        <a href="#gruppi"><span class="sommario__n">01</span><span class="sommario__t">Tutti i gruppi</span><span class="sommario__d">Nessun gruppo resta fuori senza che la risposta lo dica.</span></a>
+        <a href="#autorevoli"><span class="sommario__n">02</span><span class="sommario__t">Voci autorevoli</span><span class="sommario__d">Per ogni gruppo parla chi del tema si occupa, secondo criteri pubblici.</span></a>
+        <a href="#esatte"><span class="sommario__n">03</span><span class="sommario__t">Citazioni esatte</span><span class="sommario__d">Tra virgolette solo parole che coincidono con il resoconto.</span></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="pagina impaginato">
+
+    <!-- Indice: fisso sul desktop, elenco in testa sul telefono -->
+    <aside class="indice" aria-label="In questa pagina">
+      <p class="etichetta">In questa pagina</p>
+      <ol id="indice">
+        <li><a href="#percorso">Il percorso</a></li>
+        <li><a href="#gruppi">Tutti i gruppi</a></li>
+        <li><a href="#autorevoli">Voci autorevoli</a></li>
+        <li><a href="#esatte">Citazioni esatte</a></li>
+        <li><a href="#bussola">La bussola</a></li>
+        <li><a href="#limiti">Limiti</a></li>
+        <li><a href="#fonti">Fonti</a></li>
+      </ol>
+    </aside>
+
+    <div class="corpo">
+
+      <!-- § 1 Il percorso di una domanda -->
+      <section class="capitolo" id="percorso" aria-labelledby="t-percorso" style="padding-top:0">
+        <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Il percorso di una domanda</p></div>
+        <h2 class="titolo-2 compare" id="t-percorso">Dalla domanda alla risposta, in sei passaggi.</h2>
+        <p class="attacco compare">Ogni passaggio prende il risultato del precedente. L'ultimo è un controllo: se una citazione non passa, non arriva a chi legge.</p>
+
+        <ol class="condotto" id="condotto">
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">1</span>
+            <div class="passo__corpo">
+              <h3>Domanda riscritta</h3>
+              <p>La domanda viene riformulata ed estesa con i termini che il dibattito usa davvero.</p>
+              <span class="passo__esce">esce: la domanda e i suoi sinonimi</span>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">2</span>
+            <div class="passo__corpo">
+              <h3>Ricerca negli interventi</h3>
+              <p>Una ricerca ibrida, per significato e per parole, trova gli interventi in Aula pertinenti.</p>
+              <span class="passo__esce">esce: gli interventi candidati</span>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">3</span>
+            <div class="passo__corpo">
+              <h3>Autorevolezza</h3>
+              <p>Per ogni deputato che compare calcoliamo quanto si occupa del tema di questa domanda.</p>
+              <span class="passo__esce">esce: chi parla per ogni gruppo</span>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">4</span>
+            <div class="passo__corpo">
+              <h3>Una sezione per gruppo</h3>
+              <p>Il modello scrive una sezione per ciascun gruppo, solo con gli interventi di quel gruppo.</p>
+              <div class="ventaglio" id="ventaglio" aria-hidden="true"></div>
+              <span class="passo__esce">esce: una sezione per gruppo</span>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">5</span>
+            <div class="passo__corpo">
+              <h3>Integrazione</h3>
+              <p>Le sezioni diventano una risposta sola, con i punti di accordo e di disaccordo.</p>
+              <span class="passo__esce">esce: la bozza della risposta</span>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__nodo" aria-hidden="true">6</span>
+            <div class="passo__corpo">
+              <h3>Controllo parola per parola</h3>
+              <p>Ogni citazione è estratta per posizione dal testo originale e confrontata. Se non coincide, la togliamo.</p>
+              <p class="parole-mini" aria-hidden="true"><span style="--i:0">vogliamo</span> <span style="--i:1">rafforzarla</span></p>
+              <span class="passo__esce">esce: solo citazioni che coincidono</span>
+            </div>
+          </li>
+        </ol>
+
+        <div class="quinte compare">
+          <span class="etichetta">Dietro le quinte</span>
+          <p>Nella demo di ricerca un pannello mostra le fasi di ogni risposta, quanto è durata ciascuna e quali chiamate al modello ha fatto. Serve a chi studia il sistema e a chi vuole capire da dove viene una frase.</p>
+        </div>
+      </section>
+
+      <!-- § 2 Tutti i gruppi -->
+      <section class="capitolo" id="gruppi" aria-labelledby="t-gruppi">
+        <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Prima garanzia</p></div>
+        <div class="garanzia__testa compare">
+          <span class="garanzia__cifra" aria-hidden="true">01</span>
+          <h2 class="titolo-2" id="t-gruppi">Tutti i gruppi</h2>
+        </div>
+        <p class="garanzia__dice compare">Una risposta su un dibattito riporta la posizione di ogni gruppo. Se un gruppo del tema non ha parlato, la risposta lo dice.</p>
+
+        <div class="tre-colonne compare">
+          <div>
+            <span class="etichetta">Cosa vuol dire</span>
+            <p>Un assistente che riassume un dibattito tende a seguire chi ha parlato di più. I gruppi piccoli spariscono senza che nessuno lo noti.</p>
+            <p>Questa garanzia chiede che l'assenza sia dichiarata, non decisa in silenzio dal modello.</p>
+          </div>
+          <div>
+            <span class="etichetta">Come la applichiamo</span>
+            <ul>
+              <li><strong>Fascicoli</strong> dà a ogni gruppo la sua sezione, anche quando ha parlato poco.</li>
+              <li><strong>Stenografo</strong> risponde a domande puntuali: cita insieme la maggioranza, o il Governo, e l'opposizione. Mai una parte sola.</li>
+              <li>Il Gruppo Misto si attribuisce alla componente: +Europa, non «il Misto».</li>
+            </ul>
+          </div>
+          <div>
+            <span class="etichetta">Come si controlla</span>
+            <p>Si contano i gruppi nominati nella risposta e si confrontano con quelli che siedono in Aula. Per ogni gruppo mancante si cerca la frase che spiega perché manca.</p>
+            <p><a class="collegamento" href="verifica.html">Prova il controllo sulla pagina Verifica</a></p>
+          </div>
+        </div>
+
+        <p class="etichetta compare" style="margin-top:var(--s-6)">Nel tema d'esempio, salario minimo: dieci voci di gruppo e il Governo</p>
+        <div class="fila-voci compare" id="fila-voci"></div>
+      </section>
+
+      <!-- § 3 Voci autorevoli -->
+      <section class="capitolo" id="autorevoli" aria-labelledby="t-autorevoli">
+        <div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Seconda garanzia</p></div>
+        <div class="garanzia__testa compare">
+          <span class="garanzia__cifra" aria-hidden="true">02</span>
+          <h2 class="titolo-2" id="t-autorevoli">Voci autorevoli</h2>
+        </div>
+        <p class="garanzia__dice compare">Per ogni gruppo parla chi del tema si occupa, secondo i nostri criteri. Non chi ha parlato più spesso in generale.</p>
+
+        <div class="tre-colonne compare">
+          <div>
+            <span class="etichetta">Cosa vuol dire</span>
+            <p>L'autorevolezza si calcola per ogni domanda. Non esiste un punteggio globale: chi è autorevole sulla sanità può non esserlo sul fisco.</p>
+          </div>
+          <div>
+            <span class="etichetta">Come la applichiamo</span>
+            <ul>
+              <li><strong>Stenografo</strong> cita solo relatori, membri del Governo e i primi cinque di ogni gruppo per autorevolezza.</li>
+              <li>Se queste condizioni non si possono rispettare, preferisce non citare nessun intervento.</li>
+            </ul>
+          </div>
+          <div>
+            <span class="etichetta">Come si controlla</span>
+            <p>Criteri e pesi sono pubblici. Chi vuole può ricalcolare la classifica sui dati aperti e confrontarla con le voci citate.</p>
+          </div>
+        </div>
+
+        <h3 class="titolo-3 compare" style="margin-top:var(--s-7)">Sei criteri, una somma pesata</h3>
+        <p class="compare tenue" style="margin-top:var(--s-3);max-width:60ch">Ogni criterio vale tra 0 e 1 ed è misurato rispetto alla domanda. Il punteggio di un deputato è la somma dei sei, ciascuno moltiplicato per il suo peso.</p>
+        <div class="tabella-scorri compare tabella-pesi">
+          <table class="tabella">
+            <thead><tr><th scope="col">Criterio</th><th scope="col" class="num">Peso</th><th scope="col">Cosa misura</th></tr></thead>
+            <tbody id="tabella-pesi"></tbody>
+          </table>
+        </div>
+
+        <div class="riquadro">
+          <div class="compare">
+            <h3 class="titolo-4">Il tempo conta</h3>
+            <p class="tenue piccolo" style="margin-top:var(--s-2);max-width:48ch">Interventi e atti perdono peso con l'età, con un tempo di dimezzamento di 18 mesi (548 giorni). Un intervento di un anno e mezzo fa vale la metà di uno di oggi.</p>
+          </div>
+          <figure class="decadimento compare" style="--ritardo:120ms" aria-label="Curva di decadimento: peso 1 oggi, 0,5 a 18 mesi, 0,25 a 36 mesi">
+            <p class="etichetta">Peso di un intervento secondo la sua età</p>
+            <svg id="decadimento" viewBox="0 0 520 210" role="img" aria-hidden="true"></svg>
+          </figure>
+        </div>
+
+        <!-- Giocattolo: cambia la distribuzione dei pesi, non la classifica -->
+        <div class="foglio giocattolo compare" id="giocattolo">
+          <div class="giocattolo__testa">
+            <span class="etichetta">Prova · sposta i pesi</span>
+            <button class="btn btn--linea btn--piccolo" type="button" id="pesi-ripristina">Ripristina i pesi pubblicati</button>
+          </div>
+          <div class="giocattolo__corpo">
+            <div>
+              <div id="cursori"></div>
+              <p class="somma" id="somma" aria-live="polite"></p>
+            </div>
+            <div class="barre">
+              <div>
+                <p class="etichetta">Pesi pubblicati</p>
+                <div class="barra-pila" id="barra-pubblicati" aria-hidden="true"></div>
+              </div>
+              <div>
+                <p class="etichetta">I tuoi pesi, riportati a somma 1</p>
+                <div class="barra-pila" id="barra-tuoi" aria-hidden="true"></div>
+              </div>
+              <div class="chiave" id="chiave"></div>
+              <p class="scarti" id="scarti" aria-live="polite"></p>
+              <p class="nota">Qui cambia solo come si distribuisce il peso. Non ricalcoliamo la classifica dei deputati: servirebbero i dati di una domanda vera.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="compare" style="margin-top:var(--s-5);max-width:62ch;color:var(--inchiostro-2)">I pesi sono una scelta editoriale. Li pubblichiamo perché si possano leggere, discutere e contestare. Una scelta diversa produce voci diverse: è giusto che chi legge lo sappia.</p>
+      </section>
+
+      <!-- § 4 Citazioni esatte -->
+      <section class="capitolo" id="esatte" aria-labelledby="t-esatte">
+        <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Terza garanzia</p></div>
+        <div class="garanzia__testa compare">
+          <span class="garanzia__cifra" aria-hidden="true">03</span>
+          <h2 class="titolo-2" id="t-esatte">Citazioni esatte</h2>
+        </div>
+        <p class="garanzia__dice compare">Quello che sta tra virgolette è stato detto in Aula, dalla persona a cui lo attribuiamo, con quelle parole.</p>
+
+        <div class="tre-colonne compare">
+          <div>
+            <span class="etichetta">Cosa vuol dire</span>
+            <p>Un modello di linguaggio tende a parafrasare anche quando mette le virgolette. Una parola cambiata può cambiare il senso di una frase.</p>
+          </div>
+          <div>
+            <span class="etichetta">Come la applichiamo</span>
+            <ul>
+              <li>Il modello indica dove inizia e dove finisce il passaggio. Il testo lo prendiamo noi, per posizione, dal resoconto.</li>
+              <li>Poi lo confrontiamo parola per parola. Se non coincide, la citazione viene tolta.</li>
+            </ul>
+          </div>
+          <div>
+            <span class="etichetta">Come si controlla</span>
+            <p>Ogni citazione porta il link al documento ufficiale della Camera, al punto esatto dell'intervento. Basta un clic.</p>
+          </div>
+        </div>
+
+        <div class="provenienza">
+          <blockquote class="cit compare" id="cit-esempio"></blockquote>
+          <dl class="compare" style="--ritardo:120ms" id="cit-scheda"></dl>
+        </div>
+
+        <aside class="avvertenza compare" aria-labelledby="t-scelta">
+          <h3 id="t-scelta">Esatta non vuol dire neutrale.</h3>
+          <p>Le parole coincidono, ma la scelta del passaggio resta del sistema: quale frase, in quale cornice, accanto a quale altra. Una citazione può essere parziale rispetto all'intervento intero. Per questo il contesto completo è sempre a un clic, sul resoconto.</p>
+        </aside>
+      </section>
+
+      <!-- § 5 Bussola -->
+      <section class="capitolo" id="bussola" aria-labelledby="t-bussola">
+        <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">La bussola, nella demo di ricerca</p></div>
+        <h2 class="titolo-2 compare" id="t-bussola">Dove si collocano i gruppi, su quella domanda.</h2>
+        <p class="attacco compare">La bussola descrive cosa hanno sostenuto i gruppi in Aula su una domanda precisa. Non certifica il loro posizionamento politico.</p>
+
+        <div class="bussola">
+          <ol class="compare">
+            <li><span>Per ogni domanda il sistema propone due assi tematici. Per il salario minimo, ad esempio, uno potrebbe andare da «per legge» a «per contratto».</span></li>
+            <li><span>Un modello di linguaggio legge ogni intervento recuperato e gli assegna una posizione tra −1 e +1 su ciascun asse. Se l'intervento non prende posizione, resta senza.</span></li>
+            <li><span>La posizione di un gruppo è la media dei suoi interventi con una posizione.</span></li>
+            <li><span>Quando gli interventi sono pochi, la media viene avvicinata al centro: due frasi non bastano per collocare un gruppo.</span></li>
+          </ol>
+          <figure class="piano compare" style="--ritardo:120ms">
+            <svg viewBox="0 0 360 300" role="img" aria-labelledby="piano-t">
+              <title id="piano-t">Schema: interventi su due assi, media del gruppo e media avvicinata al centro</title>
+              <g id="piano"></g>
+            </svg>
+            <figcaption class="nota" style="margin-top:var(--s-2)">Schema, senza dati reali. I punti grigi sono interventi di un gruppo; il cerchio tratteggiato è la loro media; il punto pieno è la media avvicinata al centro perché gli interventi sono pochi.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- § 6 Limiti -->
+      <section class="capitolo" id="limiti" aria-labelledby="t-limiti">
+        <div class="testata compare"><span class="testata__n">§ 6</span><p class="etichetta" style="padding-top:.55em">Limiti</p></div>
+        <div class="limiti compare">
+          <h2 class="titolo-2" id="t-limiti">Prima di usare una risposta, sappi questo.</h2>
+          <ol>
+            <li><div><p>Il testo generato può contenere errori o omissioni.</p><p>Le garanzie controllano gruppi, voci e citazioni. Il resto della risposta lo scrive un modello.</p></div></li>
+            <li><div><p>Un intervento pertinente può non essere recuperato.</p><p>La ricerca trova molto, non tutto. Un'assenza nella risposta non prova un'assenza in Aula.</p></div></li>
+            <li><div><p>Una citazione esatta resta una scelta.</p><p>Il passaggio e la cornice li sceglie il sistema. Il contesto è sul resoconto.</p></div></li>
+            <li><div><p>L'autorevolezza dipende dai nostri pesi.</p><p>Con pesi diversi parlerebbero altre persone. Per questo li pubblichiamo.</p></div></li>
+            <li><div><p>È un progetto indipendente.</p><p>Non è affiliato alla Camera dei Deputati, che non lo approva e non ne risponde.</p></div></li>
+            <li><div><p>Per un uso che conta, controlla il resoconto ufficiale.</p><p>Ogni citazione ha il link. Usalo.</p></div></li>
+          </ol>
+          <p class="limiti__piede">Hai trovato un errore? Scrivi a <a href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a> con il link alla risposta.</p>
+        </div>
+      </section>
+
+      <!-- § 7 Fonti -->
+      <section class="capitolo" id="fonti" aria-labelledby="t-fonti">
+        <div class="testata compare"><span class="testata__n">§ 7</span><p class="etichetta" style="padding-top:.55em">Fonti</p></div>
+        <h2 class="titolo-2 compare" id="t-fonti">Il metodo per esteso.</h2>
+        <div class="fonti compare">
+          <a class="fonte" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">
+            <span class="etichetta">Articolo · ISWC 2026</span>
+            <span><span class="fonte__t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</span><span class="fonte__d">M. Tritella, R. Pozzi, M. Palmonari. Pipeline, pesi e valutazione.</span></span>
+            <span class="etichetta">PDF ↗</span>
+          </a>
+          <a class="fonte" href="https://arxiv.org/abs/2608.13410" rel="noopener">
+            <span class="etichetta">Preprint</span>
+            <span><span class="fonte__t">arXiv 2608.13410</span><span class="fonte__d">La stessa ricerca, in accesso aperto.</span></span>
+            <span class="etichetta">arXiv ↗</span>
+          </a>
+          <a class="fonte" href="https://orkg.org/papers/R1909763" rel="noopener">
+            <span class="etichetta">Scheda strutturata</span>
+            <span><span class="fonte__t">Open Research Knowledge Graph</span><span class="fonte__d">Problema, metodo e risultati in forma confrontabile con altri lavori.</span></span>
+            <span class="etichetta">ORKG ↗</span>
+          </a>
+          <a class="fonte" href="verifica.html">
+            <span class="etichetta">Su questo sito</span>
+            <span><span class="fonte__t">Verifica</span><span class="fonte__d">Il verificatore pubblico delle tre garanzie, in costruzione.</span></span>
+            <span class="etichetta">→</span>
+          </a>
+          <a class="fonte" href="dati.html">
+            <span class="etichetta">Su questo sito</span>
+            <span><span class="fonte__t">Dati</span><span class="fonte__d">Il grafo su cui il metodo lavora, da scaricare.</span></span>
+            <span class="etichetta">→</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DATI;
+  var SPUNTA = window.ICONE.spunta;
+  var NS = "http://www.w3.org/2000/svg";
+  var ridotto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var virgola = function (n, d) { return n.toFixed(d).replace(".", ","); };
+  function dataIt(s) {
+    var p = s.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  /* ---------- Indice: segna la sezione che stai leggendo ---------- */
+  var voci = document.querySelectorAll("#indice a");
+  var capitoli = Array.prototype.map.call(voci, function (a) { return document.querySelector(a.getAttribute("href")); });
+  function segna() {
+    var soglia = window.innerHeight * 0.3, attivo = 0;
+    capitoli.forEach(function (c, i) { if (c.getBoundingClientRect().top <= soglia) attivo = i; });
+    voci.forEach(function (a, i) { if (i === attivo) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+  }
+
+  /* ---------- § 1 Condotto: i passaggi si accendono scorrendo ---------- */
+  var ordine = ["FdI", "PD", "Lega", "M5S", "FI", "AVS", "Azione", "IV", "NM", "+Europa", "Governo"];
+  document.getElementById("ventaglio").innerHTML = ordine.map(function (g, i) {
+    return '<span class="sigla" style="--i:' + i + '">' + esc(g) + "</span>";
+  }).join("");
+
+  var condotto = document.getElementById("condotto");
+  var passi = condotto.querySelectorAll(".passo");
+  var stretto = window.matchMedia("(max-width: 960px)");
+  function accendiPassi() {
+    var vh = window.innerHeight, n = 0;
+    if (stretto.matches) {
+      /* Verticale: acceso ogni passo che ha superato i due terzi dello schermo */
+      passi.forEach(function (p, i) { if (p.getBoundingClientRect().top < vh * 0.68) n = i + 1; });
+    } else {
+      /* Orizzontale: la figura sale da fondo schermo a metà, i passi seguono */
+      var r = condotto.getBoundingClientRect();
+      var t = (vh * 0.92 - r.top) / (vh * 0.5);
+      n = Math.max(0, Math.min(6, Math.floor(t * 6 + 0.4)));
+    }
+    if (ridotto) n = 6;
+    passi.forEach(function (p, i) { if (i < n) p.setAttribute("data-acceso", ""); else p.removeAttribute("data-acceso"); });
+    condotto.style.setProperty("--p", n <= 1 ? 0 : (n - 1) / 5);
+  }
+
+  var inCoda = false;
+  function alloScorrere() {
+    if (inCoda) return;
+    inCoda = true;
+    requestAnimationFrame(function () { inCoda = false; segna(); accendiPassi(); });
+  }
+  window.addEventListener("scroll", alloScorrere, { passive: true });
+  window.addEventListener("resize", alloScorrere);
+  alloScorrere();
+
+  /* ---------- § 2 Le voci del tema d'esempio ---------- */
+  document.getElementById("fila-voci").innerHTML = D.tema.citazioni.map(function (q) {
+    return '<span class="sigla" title="' + esc(q.groupName) + '">' + SPUNTA + esc(q.group) + "</span>";
+  }).join("");
+
+  /* ---------- § 3 Tabella dei pesi ---------- */
+  var CRITERI = [
+    { k: "interventi", t: "Interventi in Aula", p: 0.25, d: "Quanto, e quanto di recente, ha parlato del tema in Aula." },
+    { k: "commissione", t: "Commissione", p: 0.25, d: "Quanto la sua commissione è vicina al tema." },
+    { k: "atti", t: "Atti firmati", p: 0.20, d: "Proposte e altri atti sul tema che ha firmato, pesati per recenza." },
+    { k: "professione", t: "Professione", p: 0.15, d: "Affinità tra il suo lavoro fuori dall'Aula e il tema." },
+    { k: "formazione", t: "Formazione", p: 0.10, d: "Affinità tra i suoi titoli di studio e il tema." },
+    { k: "ruolo", t: "Ruolo istituzionale", p: 0.05, d: "Incarichi in corso, per esempio in Governo o in commissione." }
+  ];
+  /* Sei toni dello stesso accento: i criteri si distinguono, i gruppi no */
+  var TONI = [100, 82, 64, 48, 34, 22];
+  CRITERI.forEach(function (c, i) {
+    c.c = "color-mix(in oklab, var(--accento) " + TONI[i] + "%, var(--carta-2))";
+    c.testo = TONI[i] >= 48 ? "var(--su-accento)" : "var(--inchiostro)";
+  });
+  document.getElementById("tabella-pesi").innerHTML = CRITERI.map(function (c) {
+    return "<tr><td>" + esc(c.t) + '</td><td class="num">' + virgola(c.p, 2) + '<span class="barretta" style="--w:' + c.p * 100 + 'px" aria-hidden="true"></span></td><td>' + esc(c.d) + "</td></tr>";
+  }).join("");
+
+  /* ---------- § 3 Curva di decadimento, 18 mesi di dimezzamento ---------- */
+  (function () {
+    var svg = document.getElementById("decadimento");
+    var x0 = 40, x1 = 500, y0 = 170, y1 = 20, mesi = 48;
+    var X = function (m) { return x0 + (m / mesi) * (x1 - x0); };
+    var Y = function (v) { return y0 - v * (y0 - y1); };
+    var punti = [];
+    for (var m = 0; m <= mesi; m += 1) punti.push(X(m).toFixed(1) + "," + Y(Math.pow(0.5, m / 18)).toFixed(1));
+    var h = "";
+    h += '<path class="area" d="M' + X(0) + "," + y0 + " L" + punti.join(" L") + " L" + X(mesi) + "," + y0 + ' Z" opacity=".55"/>';
+    h += '<line class="assi" x1="' + x0 + '" y1="' + y0 + '" x2="' + x1 + '" y2="' + y0 + '"/>';
+    h += '<line class="assi" x1="' + x0 + '" y1="' + y0 + '" x2="' + x0 + '" y2="' + y1 + '"/>';
+    [[18, 0.5], [36, 0.25]].forEach(function (g) {
+      h += '<line class="guida" x1="' + X(g[0]) + '" y1="' + y0 + '" x2="' + X(g[0]) + '" y2="' + Y(g[1]) + '"/>';
+      h += '<line class="guida" x1="' + x0 + '" y1="' + Y(g[1]) + '" x2="' + X(g[0]) + '" y2="' + Y(g[1]) + '"/>';
+    });
+    h += '<polyline class="curva" id="curva" points="' + punti.join(" ") + '"/>';
+    [[0, 1], [18, 0.5], [36, 0.25]].forEach(function (g) {
+      h += '<circle class="punto-c" cx="' + X(g[0]) + '" cy="' + Y(g[1]) + '" r="4.5"/>';
+    });
+    h += '<text x="' + (x0 - 8) + '" y="' + (Y(1) + 4) + '" text-anchor="end">1</text>';
+    h += '<text x="' + (x0 - 8) + '" y="' + (Y(0.5) + 4) + '" text-anchor="end">0,5</text>';
+    h += '<text x="' + (x0 - 8) + '" y="' + (Y(0.25) + 4) + '" text-anchor="end">0,25</text>';
+    [0, 12, 18, 24, 36, 48].forEach(function (m) {
+      h += '<text x="' + X(m) + '" y="' + (y0 + 18) + '" text-anchor="middle"' + (m === 18 ? ' class="forte"' : "") + ">" + m + "</text>";
+    });
+    h += '<text x="' + x1 + '" y="' + (y0 + 36) + '" text-anchor="end">mesi dall\'intervento</text>';
+    h += '<text x="' + (X(18) + 8) + '" y="' + (Y(0.5) - 10) + '" class="forte">metà del peso a 18 mesi</text>';
+    svg.innerHTML = h;
+
+    /* La curva si disegna quando entra nello schermo */
+    var curva = document.getElementById("curva");
+    if (!ridotto && "IntersectionObserver" in window) {
+      var L = curva.getTotalLength();
+      curva.style.strokeDasharray = L;
+      curva.style.strokeDashoffset = L;
+      new IntersectionObserver(function (v, io) {
+        if (v[0].isIntersecting) {
+          curva.style.transition = "stroke-dashoffset 1.4s var(--e-std)";
+          curva.style.strokeDashoffset = 0;
+          io.disconnect();
+        }
+      }, { threshold: 0.5 }).observe(svg);
+    }
+  })();
+
+  /* ---------- § 3 Sposta i pesi ---------- */
+  var cursori = document.getElementById("cursori");
+  cursori.innerHTML = CRITERI.map(function (c) {
+    var v = Math.round(c.p * 100);
+    return '<div class="cursore"><label for="c-' + c.k + '">' + esc(c.t) + '</label>' +
+      '<output for="c-' + c.k + '" id="o-' + c.k + '">' + v + "</output>" +
+      '<span class="norm" id="n-' + c.k + '"></span>' +
+      '<input type="range" id="c-' + c.k + '" min="0" max="100" step="1" value="' + v + '" aria-describedby="somma"></div>';
+  }).join("");
+
+  function pila(el, valori) {
+    el.innerHTML = CRITERI.map(function (c, i) {
+      var q = valori[i];
+      return '<span style="flex:0 0 ' + (q * 100).toFixed(2) + "%;--c:" + c.c + ";--c-testo:" + c.testo + '">' + (q >= 0.07 ? Math.round(q * 100) + "%" : "") + "</span>";
+    }).join("");
+  }
+  pila(document.getElementById("barra-pubblicati"), CRITERI.map(function (c) { return c.p; }));
+  var barraTuoi = document.getElementById("barra-tuoi");
+  var chiave = document.getElementById("chiave");
+  var somma = document.getElementById("somma");
+  var scarti = document.getElementById("scarti");
+
+  function ricalcola() {
+    var grezzi = CRITERI.map(function (c) { return +document.getElementById("c-" + c.k).value; });
+    var tot = grezzi.reduce(function (a, b) { return a + b; }, 0);
+    var norm = grezzi.map(function (v) { return tot ? v / tot : 0; });
+    CRITERI.forEach(function (c, i) {
+      document.getElementById("o-" + c.k).textContent = grezzi[i];
+      document.getElementById("n-" + c.k).textContent = tot ? virgola(norm[i], 2) : "–";
+    });
+    if (!tot) {
+      somma.setAttribute("data-zero", "");
+      somma.innerHTML = "<span>Somma dei cursori</span><strong>0</strong><span>Almeno un criterio deve pesare più di zero.</span>";
+      barraTuoi.innerHTML = "";
+      chiave.innerHTML = "";
+      scarti.textContent = "";
+      return;
+    }
+    somma.removeAttribute("data-zero");
+    somma.innerHTML = "<span>Somma dei cursori <strong>" + tot + "</strong></span><span>Ogni peso diviso per " + tot + ": la somma torna <strong>1,00</strong></span>";
+    pila(barraTuoi, norm);
+    chiave.innerHTML = CRITERI.map(function (c, i) {
+      return '<span><i style="--c:' + c.c + '"></i>' + esc(c.t) + "<b>" + virgola(norm[i], 2) + "</b></span>";
+    }).join("");
+
+    /* Le due differenze più grandi rispetto ai pesi pubblicati */
+    var diff = CRITERI.map(function (c, i) { return { t: c.t, d: norm[i] - c.p }; })
+      .filter(function (x) { return Math.abs(x.d) >= 0.005; })
+      .sort(function (a, b) { return Math.abs(b.d) - Math.abs(a.d); });
+    if (!diff.length) {
+      scarti.textContent = "Sono i pesi pubblicati.";
+    } else {
+      scarti.innerHTML = "Rispetto ai pesi pubblicati: " + diff.slice(0, 2).map(function (x) {
+        return "<strong>" + esc(x.t) + "</strong> " + (x.d > 0 ? "+" : "−") + virgola(Math.abs(x.d), 2);
+      }).join(", ") + (diff.length > 2 ? ", e altri " + (diff.length - 2) + "." : ".");
+    }
+  }
+  cursori.addEventListener("input", ricalcola);
+  document.getElementById("pesi-ripristina").addEventListener("click", function () {
+    CRITERI.forEach(function (c) { document.getElementById("c-" + c.k).value = Math.round(c.p * 100); });
+    ricalcola();
+  });
+  ricalcola();
+
+  /* ---------- § 4 Una citazione e la sua provenienza ---------- */
+  var q = D.tema.citazioni.filter(function (x) { return x.group === "NM"; })[0];
+  var parole = q.quote.trim().split(/\s+/).length;
+  document.getElementById("cit-esempio").innerHTML =
+    '<p class="cit__testo">' + esc(q.quote) + "</p>" +
+    '<footer class="cit__fonte"><span class="cit__chi">' + esc(q.name) + "</span><span>" + esc(q.groupName) + "</span><span>" + dataIt(q.date) + "</span>" +
+    '<a class="bollino" href="' + esc(q.url) + '" rel="noopener">' + SPUNTA + "Resoconto</a></footer>";
+  var riga = function (t, v) { return "<div><dt>" + t + "</dt><dd>" + v + "</dd></div>"; };
+  document.getElementById("cit-scheda").innerHTML =
+    riga("Seduta", "n. " + q.session + ", " + dataIt(q.date)) +
+    riga("Dibattito", esc(q.debate)) +
+    riga("Intervento", '<span class="mono">' + esc(q.id) + "</span>") +
+    riga("Confronto", parole + " parole su " + parole + " coincidono") +
+    riga("Fonte", '<a class="collegamento" href="' + esc(q.url) + '" rel="noopener">camera.it, resoconto stenografico</a>');
+
+  /* ---------- § 5 Piano della bussola (schema) ---------- */
+  (function () {
+    var g = document.getElementById("piano");
+    var c = 150, x0 = 30, r = 120;
+    var X = function (v) { return c + x0 + v * r; };
+    var Y = function (v) { return c - v * r; };
+    var h = "";
+    [-0.5, 0.5].forEach(function (v) {
+      h += '<line class="griglia-p" x1="' + X(v) + '" y1="' + Y(1) + '" x2="' + X(v) + '" y2="' + Y(-1) + '"/>';
+      h += '<line class="griglia-p" x1="' + X(-1) + '" y1="' + Y(v) + '" x2="' + X(1) + '" y2="' + Y(v) + '"/>';
+    });
+    h += '<rect x="' + X(-1) + '" y="' + Y(1) + '" width="' + 2 * r + '" height="' + 2 * r + '" fill="none" class="griglia-p"/>';
+    h += '<line class="asse" x1="' + X(-1) + '" y1="' + Y(0) + '" x2="' + X(1) + '" y2="' + Y(0) + '"/>';
+    h += '<line class="asse" x1="' + X(0) + '" y1="' + Y(1) + '" x2="' + X(0) + '" y2="' + Y(-1) + '"/>';
+    h += '<text x="' + X(-1) + '" y="' + (Y(0) - 6) + '">−1</text>';
+    h += '<text x="' + X(1) + '" y="' + (Y(0) - 6) + '" text-anchor="end">+1</text>';
+    h += '<text x="' + (X(0) + 6) + '" y="' + (Y(1) + 12) + '">+1</text>';
+    h += '<text x="' + (X(0) + 6) + '" y="' + (Y(-1) - 4) + '">−1</text>';
+    h += '<text x="' + X(1) + '" y="' + (Y(-1) + 22) + '" text-anchor="end">asse A</text>';
+    h += '<text x="' + (X(-1) - 8) + '" y="' + Y(1) + '" text-anchor="end" transform="rotate(-90 ' + (X(-1) - 8) + " " + Y(1) + ')">asse B</text>';
+    /* Tre interventi di forma: la media cade in alto a destra */
+    var pts = [[0.82, 0.58], [0.56, 0.84], [0.72, 0.4]];
+    pts.forEach(function (p) { h += '<circle class="intervento" cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="6"/>'; });
+    var mx = 0.7, my = 0.6, k = 0.55;
+    h += '<circle class="media" cx="' + X(mx) + '" cy="' + Y(my) + '" r="9"/>';
+    h += '<line class="freccia-p" x1="' + X(mx * 0.93) + '" y1="' + Y(my * 0.93) + '" x2="' + X(mx * k * 1.12) + '" y2="' + Y(my * k * 1.12) + '" marker-end="url(#punta)"/>';
+    h += '<circle class="ristretta" cx="' + X(mx * k) + '" cy="' + Y(my * k) + '" r="7"/>';
+    h = '<defs><marker id="punta" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1l5 3-5 3" fill="none" stroke="var(--accento)" stroke-width="1.4"/></marker></defs>' + h;
+    g.innerHTML = h;
+  })();
+
+  window.osservaComparse();
+})();
+</script>
+</body>
+</html>

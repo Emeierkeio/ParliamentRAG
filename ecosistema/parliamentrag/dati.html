@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="dati">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dati · ParliamentRAG</title>
+<meta name="description" content="Il grafo della XIX legislatura della Camera in RDF: deputati, gruppi, atti, sedute, interventi e voti, con licenza CC BY-SA 4.0.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(48px, 6vw, 88px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: var(--s-6) clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+  .apertura__azioni {
+    margin-top: var(--s-6);
+  }
+  @media (max-width: 900px) {
+    .apertura__griglia {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  /* Scheda del deposito: come il frontespizio di un dataset */
+  .frontespizio {
+    display: grid;
+    gap: 0;
+    font-size: var(--t-nota);
+  }
+  .frontespizio > div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .frontespizio > div:first-child {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .frontespizio dt {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--inchiostro-3);
+    padding-top: 2px;
+  }
+  .frontespizio dd {
+    color: var(--inchiostro-2);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- § 1 Numeri, come un registro ---------- */
+  .registro {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(32px, 5vw, 80px);
+  }
+  .registro__riga {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .registro__riga:nth-child(-n + 2) {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .registro__l {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 22ch;
+  }
+  .registro__n {
+    font-family: var(--f-titolo);
+    font-size: clamp(2rem, 1.4rem + 2.2vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+  .registro__riga:first-child .registro__n,
+  .registro__riga:nth-child(2) .registro__n {
+    color: var(--accento);
+  }
+  @media (max-width: 760px) {
+    .registro {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .registro__riga:nth-child(2) {
+      border-top: 0;
+    }
+  }
+
+  /* ---------- § 2 Tre idee ---------- */
+  .idee {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  .idea {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+  }
+  .idea__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--accento);
+  }
+  .idea p {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .idea__vista {
+    margin-top: auto;
+    padding: var(--s-4);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    border: 1px solid var(--filetto);
+    min-height: 132px;
+    display: grid;
+    align-content: center;
+    gap: var(--s-2);
+    font-size: var(--t-nota);
+  }
+  .idea__vista .mono {
+    font-size: var(--t-micro);
+    overflow-wrap: anywhere;
+    color: var(--inchiostro);
+  }
+  .idea__vista .freccia-giu {
+    color: var(--inchiostro-4);
+    font-family: var(--f-mono);
+  }
+  .vocabolari-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tripla {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+  }
+  .tripla span {
+    padding: 6px;
+    border-radius: var(--r-1);
+    background: var(--foglio);
+    border: 1px solid var(--filetto-forte);
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .tripla span:nth-child(3) {
+    border-color: color-mix(in oklab, var(--accento) 40%, transparent);
+    color: var(--accento);
+    background: var(--accento-tenue);
+  }
+  .tripla i {
+    font-style: normal;
+    color: var(--inchiostro-4);
+  }
+  .tripla em {
+    font-style: normal;
+    font-family: var(--f-testo);
+    color: var(--inchiostro-3);
+    text-align: center;
+  }
+  .tripla span {
+    white-space: nowrap;
+  }
+  .tripla-l {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
+    gap: 6px;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    text-align: center;
+  }
+  @media (max-width: 960px) {
+    .idee {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .idea__vista {
+      min-height: 0;
+    }
+  }
+
+  /* ---------- § 3 Un deputato nel grafo: codice e note affiancati ---------- */
+  .estratto {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .estratto {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .estratto__codice {
+    position: relative;
+  }
+  .estratto .codice {
+    padding-top: var(--s-6);
+    font-size: 0.78rem;
+  }
+  .estratto .codice .blocco {
+    display: block;
+    margin-inline: calc(-1 * var(--s-5));
+    padding-inline: var(--s-5);
+    border-left: 2px solid transparent;
+    transition: background var(--d-2), border-color var(--d-2);
+  }
+  .estratto .codice .blocco[data-attiva] {
+    background: rgba(255, 255, 255, 0.07);
+    border-left-color: #9cc2e6;
+  }
+  .estratto .codice .m {
+    color: #e9c46a;
+  }
+  .estratto__titolo {
+    position: absolute;
+    top: 10px;
+    left: var(--s-5);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8f9a9f;
+    z-index: 1;
+  }
+  .note {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: n;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--inchiostro);
+  }
+  .note li {
+    counter-increment: n;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-3) var(--s-4) 0;
+    border-bottom: 1px solid var(--filetto);
+    cursor: default;
+    transition: background var(--d-1);
+    border-radius: var(--r-1);
+  }
+  .note li::before {
+    content: counter(n);
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--filetto-forte);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    transition: background var(--d-1), color var(--d-1), border-color var(--d-1);
+  }
+  .note li[data-attiva] {
+    background: var(--accento-tenue);
+  }
+  .note li[data-attiva]::before {
+    background: var(--accento);
+    border-color: var(--accento);
+    color: var(--su-accento);
+  }
+  .note li:focus-visible {
+    outline-offset: 0;
+  }
+  .note strong {
+    display: block;
+    font-weight: 600;
+    font-size: var(--t-piccolo);
+  }
+  .note p {
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+
+  /* ---------- § 4 Schema del grafo ---------- */
+  .schema {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 960px) {
+    .schema {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .schema__figura {
+    padding: var(--s-4);
+  }
+  .schema__scorri {
+    overflow-x: auto;
+  }
+  .schema svg {
+    width: 100%;
+    min-width: 560px;
+    height: auto;
+  }
+  .schema .arco {
+    fill: none;
+    stroke: var(--filetto-forte);
+    stroke-width: 1.4;
+    transition: stroke var(--d-2), stroke-width var(--d-2);
+  }
+  .schema .arco-l {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    fill: var(--inchiostro-4);
+    transition: fill var(--d-2);
+  }
+  .schema .nodo rect {
+    fill: var(--foglio);
+    stroke: var(--filetto-forte);
+    stroke-width: 1.2;
+    transition: fill var(--d-2), stroke var(--d-2);
+  }
+  .schema .nodo text {
+    font-family: var(--f-testo);
+    font-size: 13px;
+    font-weight: 500;
+    fill: var(--inchiostro);
+    pointer-events: none;
+  }
+  .schema .nodo {
+    cursor: pointer;
+    outline: none;
+  }
+  .schema .nodo[data-centro] rect {
+    fill: var(--accento-tenue);
+    stroke: var(--accento);
+  }
+  .schema[data-scelto] .nodo rect {
+    opacity: 0.45;
+  }
+  .schema[data-scelto] .nodo[data-vicino] rect,
+  .schema[data-scelto] .nodo[data-attivo] rect {
+    opacity: 1;
+  }
+  .schema .nodo[data-attivo] rect {
+    fill: var(--accento);
+    stroke: var(--accento);
+  }
+  .schema .nodo[data-attivo] text {
+    fill: var(--su-accento);
+  }
+  .schema .nodo:focus-visible rect {
+    stroke: var(--inchiostro);
+    stroke-width: 2;
+  }
+  .schema .arco[data-on] {
+    stroke: var(--accento);
+    stroke-width: 2;
+  }
+  .schema .arco-l[data-on] {
+    fill: var(--accento);
+  }
+  .schema-desc {
+    min-height: 220px;
+  }
+  .schema-desc h3 {
+    margin-top: var(--s-2);
+  }
+  .schema-desc p {
+    margin-top: var(--s-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .schema-desc .classe {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .relazioni {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-4);
+    display: grid;
+    gap: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .relazioni .mono {
+    color: var(--accento);
+    font-size: var(--t-micro);
+  }
+  .schema-desc .quanti {
+    margin-top: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .schema-desc .quanti b {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--inchiostro);
+    margin-right: 6px;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- § 5 Vocabolari ---------- */
+  .vocabolari {
+    margin-top: var(--s-6);
+  }
+  .vocabolari td:first-child {
+    font-weight: 500;
+  }
+  .vocabolari td:nth-child(2) {
+    white-space: nowrap;
+  }
+  .vocabolari td:nth-child(3) {
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 700px) {
+    .vocabolari thead {
+      display: none;
+    }
+    .vocabolari tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .vocabolari tr {
+      display: grid;
+      gap: 6px;
+      padding-block: var(--s-4);
+      border-bottom: 1px solid var(--filetto);
+    }
+    .vocabolari td {
+      border: 0;
+      padding: 0;
+    }
+    .vocabolari td:nth-child(2) {
+      white-space: normal;
+    }
+  }
+  .prefissi {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .prefissi span {
+    overflow-wrap: anywhere;
+  }
+  .prefissi b {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    color: var(--inchiostro);
+    margin-right: 4px;
+  }
+
+  /* ---------- § 6 Scarica ---------- */
+  .scarica {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  @media (max-width: 860px) {
+    .scarica {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .deposito {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+  .deposito__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .deposito__corpo {
+    flex: 1;
+    display: grid;
+    gap: 0;
+    padding: 0 var(--s-5);
+  }
+  .file {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-2) var(--s-4);
+    align-items: start;
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .file:last-child {
+    border-bottom: 0;
+  }
+  .file__nome {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  .file__cosa {
+    margin-top: 4px;
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .file .sigla {
+    margin-top: 2px;
+  }
+  .deposito__piede {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    align-items: center;
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    border-top: 1px dashed var(--filetto-forte);
+  }
+  .doi {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    margin-right: auto;
+  }
+  .avvisi {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .avvisi > div {
+    padding: var(--s-4) var(--s-5) var(--s-4) 0;
+  }
+  .avvisi > div + div {
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+  }
+  .avvisi h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+  }
+  .avvisi p {
+    margin-top: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 860px) {
+    .avvisi {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .avvisi > div + div {
+      padding-left: 0;
+      border-left: 0;
+      border-top: 1px solid var(--filetto);
+    }
+  }
+
+  /* ---------- § 7 Interrogalo ---------- */
+  .interroga {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+  @media (max-width: 860px) {
+    .interroga {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .strumenti {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--inchiostro);
+  }
+  .strumenti li {
+    display: grid;
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+    gap: var(--s-4);
+    padding-block: 10px;
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .strumenti code {
+    font-family: var(--f-mono);
+    color: var(--inchiostro);
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 520px) {
+    .strumenti li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina apertura__griglia">
+      <div>
+        <p class="etichetta compare">Dati aperti · CC BY-SA 4.0</p>
+        <h1 class="titolo-1 compare" style="--ritardo:80ms">Il grafo, da <em>scaricare</em>.</h1>
+        <p class="attacco compare" style="--ritardo:160ms">La XIX legislatura della Camera come grafo RDF. Deputati, gruppi, atti, sedute, interventi e voti, collegati tra loro e ai temi EuroVoc. È lo stesso grafo che usano Stenografo, Fascicoli e Scranno.</p>
+        <div class="fila apertura__azioni compare" style="--ritardo:240ms">
+          <a class="btn btn--accento" href="#scarica">Scarica <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          <a class="btn btn--linea" href="#deputato">Com'è fatto</a>
+        </div>
+      </div>
+      <dl class="frontespizio compare" style="--ritardo:200ms" id="frontespizio"></dl>
+    </div>
+  </section>
+
+  <!-- § 1 Numeri -->
+  <section class="sezione-stretta" style="padding-top:0">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Nel grafo, al <span id="data-agg"></span></p></div>
+      <div class="registro" id="registro"></div>
+      <p class="nota compare" style="margin-top:var(--s-4)">Fonte: open data della Camera dei Deputati (dati.camera.it) e thesaurus EuroVoc. I numeri si aggiornano con il grafo, a ogni nuova seduta.</p>
+    </div>
+  </section>
+
+  <!-- § 2 Tre idee -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Come è pensato</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Un grafo che altri possono leggere senza chiederci niente.</h2>
+      <div class="idee">
+        <article class="idea compare">
+          <span class="idea__n">01</span>
+          <h3 class="titolo-3">Ogni cosa ha un indirizzo</h3>
+          <p>Persone, atti, sedute, interventi e voti hanno un URI stabile. Per le persone usiamo quello della Camera: chi ha già i suoi dati li collega ai nostri senza tabelle di conversione.</p>
+          <div class="idea__vista" aria-label="Esempio di indirizzo">
+            <span class="mono">http://dati.camera.it/ocd/persona.rdf/p308912</span>
+            <span class="freccia-giu" aria-hidden="true">↓</span>
+            <span>Gian Antonio Girelli, deputato</span>
+          </div>
+        </article>
+        <article class="idea compare" style="--ritardo:100ms">
+          <span class="idea__n">02</span>
+          <h3 class="titolo-3">Vocabolari condivisi</h3>
+          <p>Usiamo vocabolari che esistono già. Un programma che conosce W3C ORG capisce i nostri gruppi; uno che conosce EuroVoc legge i temi degli atti in 24 lingue.</p>
+          <div class="idea__vista">
+            <div class="vocabolari-mini"><span class="sigla">foaf</span><span class="sigla">org</span><span class="sigla">ocd</span><span class="sigla">skos</span><span class="sigla">prov</span><span class="sigla">eurovoc</span></div>
+            <span class="nota">Il nostro spazio di nomi copre solo quello che manca: <span class="mono">w3id.org/parliamentrag/ontology#</span></span>
+          </div>
+        </article>
+        <article class="idea compare" style="--ritardo:200ms">
+          <span class="idea__n">03</span>
+          <h3 class="titolo-3">Fatti elementari</h3>
+          <p>Ogni informazione è una tripla: soggetto, relazione, oggetto. Le triple si contano, si filtrano e si uniscono ad altri dati. Nell'export sono <span id="triple-n"></span>.</p>
+          <div class="idea__vista" aria-label="Esempio di tripla">
+            <div class="tripla"><span>appartenenza</span><i aria-hidden="true">→</i><span>org:organization</span><i aria-hidden="true">→</i><span>gruppo AZ</span>
+              <em>soggetto</em><em></em><em>relazione</em><em></em><em>oggetto</em></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 3 Un deputato nel grafo -->
+  <section class="sezione-stretta" id="deputato" style="scroll-margin-top:72px">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Un deputato nel grafo</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Gian Antonio Girelli, nel gruppo PD dal 18 ottobre 2022.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">Così appare nel file Turtle. Passa sopra a una nota, o sceglila con la tastiera, per vedere le righe a cui si riferisce.</p>
+
+      <div class="estratto">
+        <div class="estratto__codice compare">
+          <span class="estratto__titolo">Estratto abbreviato, URI accorciati</span>
+          <pre class="codice" id="ttl"><span class="blocco" data-n="1"><span class="k">@prefix</span> foaf: <span class="s">&lt;http://xmlns.com/foaf/0.1/&gt;</span> .
+<span class="k">@prefix</span> org:  <span class="s">&lt;http://www.w3.org/ns/org#&gt;</span> .
+<span class="k">@prefix</span> ocd:  <span class="s">&lt;http://dati.camera.it/ocd/&gt;</span> .
+<span class="k">@prefix</span> skos: <span class="s">&lt;http://www.w3.org/2004/02/skos/core#&gt;</span> .
+<span class="k">@prefix</span> pro:  <span class="s">&lt;https://w3id.org/parliamentrag/ontology#&gt;</span> .
+<span class="k">@prefix</span> xsd:  <span class="s">&lt;http://www.w3.org/2001/XMLSchema#&gt;</span> .
+<span class="k">@base</span>   <span class="s">&lt;https://w3id.org/parliamentrag/resource/&gt;</span> .
+</span>
+<span class="blocco" data-n="2"><span class="c"># Il deputato: l'indirizzo è quello della Camera</span>
+<span class="m">&lt;http://dati.camera.it/ocd/persona.rdf/p308912&gt;</span>
+</span><span class="blocco" data-n="3">    <span class="k">a</span> foaf:Person, ocd:deputato ;
+</span><span class="blocco" data-n="2">    foaf:givenName  <span class="s">"GIAN ANTONIO"</span> ;
+    foaf:familyName <span class="s">"GIRELLI"</span> .
+</span>
+<span class="blocco" data-n="4"><span class="c"># Il gruppo</span>
+<span class="m">&lt;group/pd&gt;</span>
+    <span class="k">a</span> org:Organization, ocd:gruppoParlamentare ;
+    skos:altLabel <span class="s">"PD"</span> .
+</span>
+<span class="blocco" data-n="5"><span class="c"># L'appartenenza: un fatto a sé, con la sua data</span>
+<span class="m">&lt;membership/p308912_pd_2022-10-18&gt;</span>
+    <span class="k">a</span> org:Membership ;
+    org:member       <span class="m">&lt;http://dati.camera.it/ocd/persona.rdf/p308912&gt;</span> ;
+    org:organization <span class="m">&lt;group/pd&gt;</span> ;
+    pro:startDate    <span class="s">"2022-10-18"</span>^^xsd:date .</span></pre>
+          <button class="copia" type="button" data-copia="ttl">Copia</button>
+        </div>
+
+        <ol class="note compare" style="--ritardo:120ms" id="note">
+          <li tabindex="0" data-n="1"><div><strong>Prefissi</strong><p>Abbreviazioni dei vocabolari usati. Tutti tranne <span class="mono">pro:</span> esistono già e sono mantenuti da altri.</p></div></li>
+          <li tabindex="0" data-n="2"><div><strong>La persona</strong><p>L'URI è quello della scheda ufficiale della Camera. Lo stesso indirizzo vale in qualsiasi altro dataset che lo usi.</p></div></li>
+          <li tabindex="0" data-n="3"><div><strong>Due tipi insieme</strong><p>È una persona per chiunque usi FOAF, ed è un deputato nel vocabolario open data della Camera.</p></div></li>
+          <li tabindex="0" data-n="4"><div><strong>Il gruppo</strong><p>Un'organizzazione secondo W3C ORG, lo stesso modello usato per partiti, enti e aziende.</p></div></li>
+          <li tabindex="0" data-n="5"><div><strong>L'appartenenza</strong><p>Collega persona e gruppo con una data di inizio, e di fine quando c'è. Se un deputato cambia gruppo nasce un'altra appartenenza: la storia resta nel grafo.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 4 Schema -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Lo schema</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Nove tipi di nodo, e come si tengono.</h2>
+      <div class="schema" id="schema">
+        <figure class="foglio schema__figura compare">
+          <p class="etichetta" style="margin-bottom:var(--s-3)">Schema, non dati · scegli un nodo</p>
+          <div class="schema__scorri">
+            <svg viewBox="0 62 720 362" id="schema-svg" role="group" aria-label="Schema del grafo: nove tipi di nodo e le relazioni tra loro"></svg>
+          </div>
+        </figure>
+        <div class="schema-desc compare" style="--ritardo:120ms" id="schema-desc" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 5 Vocabolari -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">Vocabolari</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Ogni parte del grafo parla una lingua che esiste già.</h2>
+      <div class="tabella-scorri compare vocabolari">
+        <table class="tabella">
+          <thead><tr><th scope="col">Nel grafo</th><th scope="col">Vocabolario</th><th scope="col">Cosa permette</th></tr></thead>
+          <tbody>
+            <tr><td>Deputato</td><td class="mono">ocd:deputato, foaf:Person</td><td>Lo stesso record ufficiale della Camera, riusabile ovunque.</td></tr>
+            <tr><td>Gruppo parlamentare, commissione</td><td class="mono">org:Organization</td><td>Il modello W3C per le organizzazioni.</td></tr>
+            <tr><td>Appartenenza a un gruppo</td><td class="mono">org:Membership</td><td>Inizio e fine: i cambi di gruppo restano tracciati.</td></tr>
+            <tr><td>Tema di un atto</td><td class="mono">EuroVoc, via SKOS</td><td>Gli stessi temi in 24 lingue.</td></tr>
+            <tr><td>Seduta, dibattito, intervento</td><td>Lo standard internazionale degli atti parlamentari</td><td>Una struttura che altri parlamenti già usano.</td></tr>
+            <tr><td>Votazione e voto individuale</td><td class="mono">ocd</td><td>Il vocabolario open data della Camera.</td></tr>
+            <tr><td>Provenienza</td><td class="mono">prov</td><td>Ogni costruzione dichiara quando è stata fatta e da quali fonti.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="prefissi compare">
+        <span><b>foaf</b>http://xmlns.com/foaf/0.1/</span>
+        <span><b>org</b>http://www.w3.org/ns/org#</span>
+        <span><b>ocd</b>http://dati.camera.it/ocd/</span>
+        <span><b>pro</b>https://w3id.org/parliamentrag/ontology#</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- § 6 Scarica -->
+  <section class="sezione-stretta" id="scarica" style="background:var(--carta-2);border-top:1px solid var(--filetto);scroll-margin-top:64px">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 6</span><p class="etichetta" style="padding-top:.55em">Scarica</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Due depositi, un codice sorgente.</h2>
+
+      <div class="scarica">
+        <article class="foglio deposito compare">
+          <div class="deposito__testa"><span class="etichetta">Zenodo · RDF</span><span class="sigla sigla--accento">DOI</span></div>
+          <div class="deposito__corpo">
+            <div class="file">
+              <div><p class="file__nome">parliamentrag_kg.ttl</p><p class="file__cosa">Il grafo in Turtle: persone, gruppi, commissioni, atti, temi EuroVoc, sedute, dibattiti e interventi con il testo integrale.</p></div>
+              <span class="sigla">Turtle</span>
+            </div>
+            <div class="file">
+              <div><p class="file__nome">Voti individuali</p><p class="file__cosa">In un file a parte, perché è il più grande: il voto di ogni deputato in ogni votazione.</p></div>
+              <span class="sigla">RDF</span>
+            </div>
+          </div>
+          <div class="deposito__piede">
+            <span class="doi" id="doi">10.5281/zenodo.21560331</span>
+            <button class="btn btn--linea btn--piccolo" type="button" data-copia="doi">Copia il DOI</button>
+            <a class="btn btn--accento btn--piccolo" href="https://doi.org/10.5281/zenodo.21560331" rel="noopener">Apri su Zenodo <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+          </div>
+        </article>
+
+        <article class="foglio deposito compare" style="--ritardo:100ms">
+          <div class="deposito__testa"><span class="etichetta">Hugging Face · tabelle</span></div>
+          <div class="deposito__corpo">
+            <div class="file">
+              <div><p class="file__nome">emeierkeio/parliamentrag-camera-leg19</p><p class="file__cosa">I dati della XIX legislatura in forma tabellare, per chi lavora con pandas, R o un foglio di calcolo e non con RDF.</p></div>
+              <span class="sigla">Tabelle</span>
+            </div>
+            <div class="file">
+              <div><p class="file__nome">parliamentrag-iswc / build</p><p class="file__cosa">Il codice che costruisce il grafo dagli open data della Camera. Chi vuole può rifarlo da capo e confrontare.</p></div>
+              <span class="sigla">Codice</span>
+            </div>
+          </div>
+          <div class="deposito__piede">
+            <a class="btn btn--accento btn--piccolo" href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19" rel="noopener">Apri su Hugging Face <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--linea btn--piccolo" href="https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/build" rel="noopener">La pipeline su GitHub <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+          </div>
+        </article>
+      </div>
+
+      <div class="avvisi compare">
+        <div>
+          <h3>Licenza</h3>
+          <p>I dati sono rilasciati con licenza <a class="collegamento" href="https://creativecommons.org/licenses/by-sa/4.0/deed.it" rel="noopener">CC BY-SA 4.0</a>. Puoi copiarli, modificarli e ridistribuirli, anche per uso commerciale, citando la fonte e usando la stessa licenza.</p>
+        </div>
+        <div>
+          <h3>Istantanee</h3>
+          <p>Su Zenodo pubblichiamo un'istantanea alle tappe importanti, non a ogni aggiornamento. Il grafo usato dai sistemi è più recente dell'ultima istantanea.</p>
+        </div>
+        <div>
+          <h3>Cosa non c'è</h3>
+          <p>L'export non contiene gli embedding, le conversazioni degli utenti né i riassunti scritti dall'AI. Solo dati pubblici e le loro relazioni.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 7 Interrogalo -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 7</span><p class="etichetta" style="padding-top:.55em">Interrogalo</p></div>
+      <div class="interroga" style="margin-top:var(--s-6)">
+      <div class="compare">
+        <h2 class="titolo-2">Non serve scaricarlo per usarlo.</h2>
+        <p class="tenue" style="margin-top:var(--s-4);max-width:46ch">Un server MCP espone il grafo agli assistenti AI che lo supportano. L'assistente cerca negli interventi, apre un dibattito, legge un voto, e ogni risultato porta il link al resoconto.</p>
+        <a class="btn btn--linea" style="margin-top:var(--s-5)" href="sviluppatori.html">Collega un assistente <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <ul class="strumenti compare" style="--ritardo:120ms" aria-label="Strumenti del server MCP">
+        <li><code>search_parliament</code><span>cerca negli interventi in Aula</span></li>
+        <li><code>list_sessions</code><span>elenca le sedute</span></li>
+        <li><code>get_debate</code><span>apre un dibattito</span></li>
+        <li><code>get_session_votes</code><span>le votazioni di una seduta</span></li>
+        <li><code>get_vote_details</code><span>il voto per gruppo e per deputato</span></li>
+        <li><code>get_vote_hemicycle</code><span>l'emiciclo di una votazione</span></li>
+        <li><code>get_voted_text</code><span>il testo messo ai voti</span></li>
+      </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var S = window.DATI.stats;
+  var NS = "http://www.w3.org/2000/svg";
+  function dataIt(s) {
+    var p = s.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  /* ---------- Frontespizio e registro dei numeri ---------- */
+  var riga = function (t, v) { return "<div><dt>" + t + "</dt><dd>" + v + "</dd></div>"; };
+  document.getElementById("frontespizio").innerHTML =
+    riga("Copertura", "Camera dei Deputati, XIX legislatura") +
+    riga("Formato", "RDF Turtle, più tabelle su Hugging Face") +
+    riga("Fonti", "dati.camera.it, EuroVoc") +
+    riga("Licenza", "CC BY-SA 4.0") +
+    riga("Aggiornato", dataIt(S.last_update)) +
+    riga("Ontologia", '<span class="mono">w3id.org/parliamentrag/ontology#</span>');
+
+  document.getElementById("data-agg").textContent = dataIt(S.last_update);
+  var cifre = [
+    [S.speeches, "interventi in Aula, con il testo integrale"],
+    [S.individual_votes, "voti individuali, uno per deputato e votazione"],
+    [S.acts, "atti parlamentari"],
+    [S.votes, "votazioni elettroniche"],
+    [S.sessions, "sedute"],
+    [S.people, "deputati e membri del Governo"],
+    [S.eurovoc_concepts, "temi EuroVoc collegati agli atti"],
+    [S.triples, "triple RDF nell'export"]
+  ];
+  document.getElementById("registro").innerHTML = cifre.map(function (c, i) {
+    return '<div class="registro__riga compare" style="--ritardo:' + (i % 2) * 80 + 'ms"><span class="registro__l">' + c[1] + '</span><span class="registro__n">' + numero(c[0]) + "</span></div>";
+  }).join("");
+  document.getElementById("triple-n").textContent = numero(S.triples);
+
+  /* ---------- § 3 Note e righe del Turtle, collegate nei due sensi ---------- */
+  var note = document.querySelectorAll("#note li");
+  var blocchi = document.querySelectorAll("#ttl .blocco");
+  function accendi(n) {
+    note.forEach(function (li) { if (li.dataset.n === n) li.setAttribute("data-attiva", ""); else li.removeAttribute("data-attiva"); });
+    blocchi.forEach(function (b) { if (b.dataset.n === n) b.setAttribute("data-attiva", ""); else b.removeAttribute("data-attiva"); });
+  }
+  note.forEach(function (li) {
+    li.addEventListener("mouseenter", function () { accendi(li.dataset.n); });
+    li.addEventListener("focus", function () { accendi(li.dataset.n); });
+  });
+  blocchi.forEach(function (b) {
+    b.addEventListener("mouseenter", function () { accendi(b.dataset.n); });
+  });
+  document.getElementById("note").addEventListener("mouseleave", function () { accendi("5"); });
+  accendi("5");
+
+  /* ---------- § 4 Schema: nodi disegnati a mano, archi con il loro nome ---------- */
+  var NODI = {
+    deputato: { t: "Deputato", x: 360, y: 200, w: 112, classe: ["foaf:Person", "ocd:deputato"], n: S.people, nl: "deputati e membri del Governo", d: "Una persona, con il suo mandato. L'indirizzo è quello della scheda ufficiale della Camera." },
+    appartenenza: { t: "Appartenenza", x: 190, y: 96, w: 128, classe: ["org:Membership"], d: "Lega una persona a un gruppo o a una commissione, con data di inizio e, se c'è, di fine. Un cambio di gruppo produce una nuova appartenenza." },
+    gruppo: { t: "Gruppo", x: 70, y: 200, w: 96, classe: ["org:Organization", "ocd:gruppoParlamentare"], d: "Un gruppo parlamentare. Le componenti del Gruppo Misto sono organizzazioni a sé, così +Europa resta +Europa." },
+    intervento: { t: "Intervento", x: 540, y: 96, w: 116, classe: [], n: S.speeches, nl: "interventi in Aula", d: "Quello che un deputato ha detto in Aula, con il testo integrale del resoconto stenografico." },
+    seduta: { t: "Seduta", x: 660, y: 200, w: 92, classe: [], n: S.sessions, nl: "sedute", d: "Una seduta dell'Aula, divisa in dibattiti. Ogni intervento sta in un dibattito di una seduta." },
+    atto: { t: "Atto", x: 190, y: 306, w: 80, classe: ["ocd:atto"], n: S.acts, nl: "atti parlamentari", d: "Un atto parlamentare, con i suoi firmatari. Gli atti firmati sul tema sono uno dei sei criteri di autorevolezza." },
+    tema: { t: "Tema EuroVoc", x: 70, y: 380, w: 124, classe: ["skos:Concept"], n: S.eurovoc_concepts, nl: "temi EuroVoc collegati agli atti", d: "Un concetto del thesaurus EuroVoc dell'Unione europea, con le etichette in 24 lingue." },
+    voto: { t: "Voto", x: 540, y: 306, w: 80, classe: ["ocd:voto"], n: S.individual_votes, nl: "voti individuali, in un file a parte", d: "Il voto di un deputato in una votazione: favorevole, contrario, astenuto." },
+    votazione: { t: "Votazione", x: 660, y: 380, w: 108, classe: ["ocd:votazione"], n: S.votes, nl: "votazioni elettroniche", d: "Una votazione elettronica dell'Aula, con l'esito e l'atto su cui si vota." }
+  };
+  var ARCHI = [
+    ["appartenenza", "deputato", "membro"],
+    ["appartenenza", "gruppo", "organizzazione"],
+    ["intervento", "deputato", "detto da"],
+    ["intervento", "seduta", "nella seduta"],
+    ["atto", "deputato", "firmato da"],
+    ["atto", "tema", "tema"],
+    ["voto", "deputato", "espresso da"],
+    ["voto", "votazione", "nella votazione"],
+    ["votazione", "atto", "sull'atto"]
+  ];
+  var svg = document.getElementById("schema-svg");
+  var h = '<defs><marker id="pt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1l6 3-6 3" fill="none" stroke="context-stroke" stroke-width="1.3"/></marker></defs>';
+  /* Punto sul bordo del rettangolo del nodo, nella direzione dell'altro nodo */
+  function bordo(n, verso) {
+    var dx = verso.x - n.x, dy = verso.y - n.y, hw = n.w / 2 + 4, hh = 20;
+    var s = Math.min(hw / Math.abs(dx || 1e-6), hh / Math.abs(dy || 1e-6));
+    return { x: n.x + dx * s, y: n.y + dy * s };
+  }
+  ARCHI.forEach(function (a, i) {
+    var A = NODI[a[0]], B = NODI[a[1]], p = bordo(A, B), q = bordo(B, A);
+    var d, lx, ly;
+    if (a[0] === "votazione") {
+      /* passa sotto, per non attraversare il centro */
+      d = "M" + (A.x - A.w / 2 - 4) + "," + A.y + " C 520,420 330,420 " + (B.x + B.w / 2 + 4) + "," + B.y;
+      lx = 430; ly = 404;
+    } else {
+      d = "M" + p.x.toFixed(1) + "," + p.y.toFixed(1) + " L" + q.x.toFixed(1) + "," + q.y.toFixed(1);
+      lx = (p.x + q.x) / 2; ly = (p.y + q.y) / 2 - 8;
+    }
+    h += '<path class="arco" data-a="' + a[0] + '" data-b="' + a[1] + '" d="' + d + '" marker-end="url(#pt)"/>';
+    h += '<text class="arco-l" data-a="' + a[0] + '" data-b="' + a[1] + '" x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '" text-anchor="middle" style="paint-order:stroke;stroke:var(--foglio);stroke-width:5px;stroke-linejoin:round">' + a[2] + "</text>";
+  });
+  Object.keys(NODI).forEach(function (k) {
+    var n = NODI[k];
+    h += '<g class="nodo" data-k="' + k + '"' + (k === "deputato" ? " data-centro" : "") + ' tabindex="0" role="button" aria-label="' + n.t + '">' +
+      '<rect x="' + (n.x - n.w / 2) + '" y="' + (n.y - 17) + '" width="' + n.w + '" height="34" rx="17"/>' +
+      '<text x="' + n.x + '" y="' + (n.y + 4.5) + '" text-anchor="middle">' + n.t + "</text></g>";
+  });
+  svg.setAttribute("viewBox", "0 62 720 362");
+  svg.innerHTML = h;
+
+  var schema = document.getElementById("schema");
+  var desc = document.getElementById("schema-desc");
+  function scegli(k) {
+    var n = NODI[k];
+    schema.setAttribute("data-scelto", k);
+    var vicini = {};
+    svg.querySelectorAll(".arco, .arco-l").forEach(function (e) {
+      var on = e.dataset.a === k || e.dataset.b === k;
+      if (on) { e.setAttribute("data-on", ""); vicini[e.dataset.a] = vicini[e.dataset.b] = true; } else e.removeAttribute("data-on");
+    });
+    svg.querySelectorAll(".nodo").forEach(function (g) {
+      if (g.dataset.k === k) g.setAttribute("data-attivo", ""); else g.removeAttribute("data-attivo");
+      if (vicini[g.dataset.k]) g.setAttribute("data-vicino", ""); else g.removeAttribute("data-vicino");
+    });
+    var collegati = ARCHI.filter(function (a) { return a[0] === k || a[1] === k; }).map(function (a) {
+      return "<li>" + esc(NODI[a[0]].t) + ' <span class="mono">→ ' + esc(a[2]) + " →</span> " + esc(NODI[a[1]].t) + "</li>";
+    });
+    desc.innerHTML =
+      '<p class="etichetta">Nodo</p><h3 class="titolo-3">' + esc(n.t) + "</h3><p>" + esc(n.d) + "</p>" +
+      (n.classe.length ? '<div class="classe">' + n.classe.map(function (c) { return '<span class="sigla">' + esc(c) + "</span>"; }).join("") + "</div>" : "") +
+      '<ul class="relazioni">' + collegati.join("") + "</ul>" +
+      (n.n ? '<p class="quanti"><b>' + numero(n.n) + "</b>" + esc(n.nl) + ", al " + dataIt(S.last_update) + "</p>" : "");
+  }
+  svg.addEventListener("mouseover", function (e) { var g = e.target.closest(".nodo"); if (g) scegli(g.dataset.k); });
+  svg.addEventListener("click", function (e) { var g = e.target.closest(".nodo"); if (g) scegli(g.dataset.k); });
+  svg.addEventListener("focusin", function (e) { var g = e.target.closest(".nodo"); if (g) scegli(g.dataset.k); });
+  svg.addEventListener("keydown", function (e) {
+    var g = e.target.closest(".nodo");
+    if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); scegli(g.dataset.k); }
+  });
+  scegli("deputato");
+
+  window.osservaComparse();
+})();
+</script>
+</body>
+</html>

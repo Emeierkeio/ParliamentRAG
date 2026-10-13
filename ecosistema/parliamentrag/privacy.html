@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy · ParliamentRAG</title>
+<meta name="description" content="Informativa sulla privacy di ParliamentRAG: dati trattati, finalità, fornitori, conservazione e diritti.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /*
+   * Pagina legale. Il testo viene da centro/messages/it.json e non si riscrive:
+   * qui cambiano solo impaginazione, indice e collegamenti.
+   */
+
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(32px, 4vw, 56px);
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 18ch;
+  }
+  .apertura__agg {
+    margin-top: var(--s-5);
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+
+  /* ---------- Documento: indice a sinistra, articoli a destra ---------- */
+  .documento {
+    display: grid;
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: start;
+    padding-bottom: clamp(var(--s-8), 8vw, var(--s-10));
+  }
+  .indice {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 64px + var(--s-5));
+    max-height: calc(100vh - 64px - var(--s-7));
+    overflow-y: auto;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .indice ol {
+    margin-top: var(--s-3);
+    padding: 0;
+    list-style: none;
+    display: grid;
+  }
+  .indice a {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: var(--s-1);
+    padding: 7px 8px 7px 0;
+    min-height: 36px;
+    align-items: baseline;
+    font-size: var(--t-nota);
+    line-height: 1.35;
+    color: var(--inchiostro-3);
+    text-decoration: none;
+    border-radius: var(--r-1);
+    transition: color var(--d-1);
+  }
+  .indice a span {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-4);
+  }
+  .indice a:hover {
+    color: var(--inchiostro);
+  }
+  .indice a[aria-current="true"] {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  .indice a[aria-current="true"] span {
+    color: var(--accento);
+  }
+
+  .articoli-legali {
+    border-top: 1px solid var(--inchiostro);
+  }
+  .articolo-legale {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid var(--filetto);
+    scroll-margin-top: calc(64px + var(--s-4));
+  }
+  .articolo-legale h2 {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    align-items: baseline;
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+  .articolo-legale__n {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    letter-spacing: 0;
+    color: var(--accento);
+  }
+  .articolo-legale .prosa {
+    margin-top: var(--s-4);
+    margin-left: 3rem;
+    color: var(--inchiostro-2);
+  }
+  .articolo-legale .prosa a {
+    overflow-wrap: anywhere;
+  }
+  /* Le voci della memoria del browser: stesso testo, con la chiave in evidenza */
+  .prosa .chiave {
+    padding-left: var(--s-4);
+    border-left: 2px solid var(--filetto-forte);
+  }
+  .prosa .chiave + .chiave {
+    margin-top: var(--s-2);
+  }
+  .prosa code {
+    font-family: var(--f-mono);
+    font-size: 0.86em;
+    color: var(--inchiostro);
+    background: var(--carta-2);
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-1);
+    padding: 0 4px;
+  }
+  .documento__fine {
+    margin-top: var(--s-6);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-3) var(--s-6);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .documento__fine .mono {
+    font-size: var(--t-nota);
+  }
+
+  @media (max-width: 900px) {
+    .documento {
+      grid-template-columns: 1fr;
+    }
+    .indice {
+      position: static;
+      max-height: none;
+    }
+    .indice ol {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--s-4);
+    }
+  }
+  @media (max-width: 560px) {
+    .indice ol {
+      grid-template-columns: 1fr;
+    }
+    .articolo-legale h2 {
+      grid-template-columns: 2.25rem minmax(0, 1fr);
+    }
+    .articolo-legale .prosa {
+      margin-left: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina">
+      <p class="etichetta compare">Note legali</p>
+      <h1 class="titolo-1 compare" style="--ritardo:80ms">Informativa sulla privacy</h1>
+      <p class="apertura__agg compare" style="--ritardo:160ms">Ultimo aggiornamento: 5 ottobre 2026</p>
+    </div>
+  </section>
+
+  <!-- Documento -->
+  <div class="pagina documento">
+    <nav class="indice" aria-label="Indice">
+      <p class="etichetta">Indice</p>
+      <ol id="indice">
+          <li><a href="#chi-tratta-i-dati"><span>01</span>Chi tratta i dati</a></li>
+          <li><a href="#quali-dati-trattiamo"><span>02</span>Quali dati trattiamo</a></li>
+          <li><a href="#perche-e-su-quale-base"><span>03</span>Perché e su quale base</a></li>
+          <li><a href="#a-chi-arrivano-i-dati"><span>04</span>A chi arrivano i dati</a></li>
+          <li><a href="#trasferimenti-fuori-dall-ue"><span>05</span>Trasferimenti fuori dall'UE</a></li>
+          <li><a href="#per-quanto-tempo"><span>06</span>Per quanto tempo</a></li>
+          <li><a href="#cookie-e-memoria-del-browser"><span>07</span>Cookie e memoria del browser</a></li>
+          <li><a href="#newsletter"><span>08</span>Newsletter</a></li>
+          <li><a href="#i-tuoi-diritti"><span>09</span>I tuoi diritti</a></li>
+          <li><a href="#altre-informazioni"><span>10</span>Altre informazioni</a></li>
+          <li><a href="#dati-sui-parlamentari"><span>11</span>Dati sui parlamentari</a></li>
+          <li><a href="#modifiche"><span>12</span>Modifiche</a></li>
+      </ol>
+    </nav>
+
+    <article class="articoli-legali" id="articoli">
+      <section class="articolo-legale" id="chi-tratta-i-dati" aria-labelledby="chi-tratta-i-dati-h">
+        <h2 id="chi-tratta-i-dati-h"><span class="articolo-legale__n">01</span>Chi tratta i dati</h2>
+        <div class="prosa">
+          <p>Titolare del trattamento è Mirko Tritella, persona fisica, domiciliato per il progetto presso Università degli Studi di Milano-Bicocca, Laboratorio DataAI, Edificio U14, Viale Sarca 336, 20126 Milano. Email: <a href="mailto:privacy@parliamentrag.it">privacy@parliamentrag.it</a></p>
+          <p>L'Università è solo l'indirizzo del progetto. Non è titolare del trattamento e non decide come usiamo i dati.</p>
+          <p><a href="https://www.parliamentrag.it" rel="noopener">www.parliamentrag.it</a> è il sito di ParliamentRAG, un progetto di ricerca senza fini commerciali. Per le domande che non riguardano la privacy scrivi a <a href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a>.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="quali-dati-trattiamo" aria-labelledby="quali-dati-trattiamo-h">
+        <h2 id="quali-dati-trattiamo-h"><span class="articolo-legale__n">02</span>Quali dati trattiamo</h2>
+        <div class="prosa">
+          <p>Per usare ParliamentRAG non serve un account. Trattiamo questi dati:</p>
+          <p>Dati tecnici di navigazione: indirizzo IP, data e ora, pagina richiesta e tipo di browser. Il fornitore di hosting li registra per far funzionare il sito e per sicurezza.</p>
+          <p>Risposte ai questionari facoltativi, come quello della demo: i punteggi, il ruolo che indichi e il commento, se lo scrivi.</p>
+          <p>Indirizzo email, se ti iscrivi alla newsletter. Lo gestisce Brevo (vedi «Newsletter»).</p>
+          <p>Richieste di token per le API, se ce le mandi: nome, email e il token che ti assegniamo. Per le domande che invii alle API vale l'informativa di Fascicoli (<a href="https://www.fascicoli.it/privacy" rel="noopener">www.fascicoli.it/privacy</a>).</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="perche-e-su-quale-base" aria-labelledby="perche-e-su-quale-base-h">
+        <h2 id="perche-e-su-quale-base-h"><span class="articolo-legale__n">03</span>Perché e su quale base</h2>
+        <div class="prosa">
+          <p>Facciamo funzionare il servizio e lo proteggiamo da abusi e attacchi. La base giuridica è il nostro legittimo interesse (art. 6, par. 1, lett. f del GDPR).</p>
+          <p>Se ci lasci domande, giudizi o risposte a un questionario, li usiamo per valutare il sistema, migliorarlo e pubblicare ricerca scientifica. La base giuridica è il legittimo interesse, con le garanzie per la ricerca dell'art. 89 del GDPR.</p>
+          <p>Ti mandiamo la newsletter solo con il tuo consenso (art. 6, par. 1, lett. a del GDPR). Puoi revocarlo quando vuoi.</p>
+          <p>Quando scrivi una domanda o un commento, non inserire dati personali, tuoi o di altre persone, e non indicare le tue opinioni politiche. Non servono per rispondere e li salveremmo insieme al testo.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="a-chi-arrivano-i-dati" aria-labelledby="a-chi-arrivano-i-dati-h">
+        <h2 id="a-chi-arrivano-i-dati-h"><span class="articolo-legale__n">04</span>A chi arrivano i dati</h2>
+        <div class="prosa">
+          <p>Ci affidiamo a questi fornitori. Trattano i dati per conto nostro, come responsabili del trattamento (art. 28 del GDPR).</p>
+          <p>Railway Corp. (Stati Uniti): ospita il sito e, su server nell'Unione europea, il database con le risposte ai questionari.</p>
+          <p>Hetzner Online GmbH (Germania): conserva, su un server in Finlandia, le risposte ai questionari arrivate fino al 5 ottobre 2026.</p>
+          <p>Sendinblue SAS, marchio Brevo (Francia): gestisce la newsletter.</p>
+          <p>Non vendiamo i dati e non li cediamo a terzi per pubblicità. Li comunichiamo alle autorità solo se la legge lo impone.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="trasferimenti-fuori-dall-ue" aria-labelledby="trasferimenti-fuori-dall-ue-h">
+        <h2 id="trasferimenti-fuori-dall-ue-h"><span class="articolo-legale__n">05</span>Trasferimenti fuori dall'UE</h2>
+        <div class="prosa">
+          <p>Alcuni fornitori hanno sede negli Stati Uniti. Per questi trasferimenti ci basiamo sull'EU-US Data Privacy Framework o sulle clausole contrattuali standard approvate dalla Commissione europea.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="per-quanto-tempo" aria-labelledby="per-quanto-tempo-h">
+        <h2 id="per-quanto-tempo-h"><span class="articolo-legale__n">06</span>Per quanto tempo</h2>
+        <div class="prosa">
+          <p>Risposte ai questionari: fino al 31 dicembre 2027.</p>
+          <p>Richieste di token: finché il token resta attivo, al massimo fino al 31 dicembre 2027.</p>
+          <p>Dati tecnici di navigazione: per il tempo di conservazione dei log del fornitore di hosting, al massimo 30 giorni.</p>
+          <p>Dopo queste scadenze cancelliamo i dati.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="cookie-e-memoria-del-browser" aria-labelledby="cookie-e-memoria-del-browser-h">
+        <h2 id="cookie-e-memoria-del-browser-h"><span class="articolo-legale__n">07</span>Cookie e memoria del browser</h2>
+        <div class="prosa">
+          <p>ParliamentRAG usa solo strumenti tecnici di prima parte: servono a far funzionare il sito e a ricordare le tue scelte. Non usiamo strumenti di analisi, pubblicità o profilazione.</p>
+          <p>Per questi strumenti non serve il tuo consenso, quindi non trovi un banner (linee guida del Garante del 10 giugno 2021).</p>
+          <p>La memoria locale del browser resta finché non la cancelli. La memoria di sessione sparisce quando chiudi la scheda. Nel tuo browser salviamo:</p>
+          <p class="chiave"><code>NEXT_LOCALE</code> (cookie, 1 anno): la lingua che scegli.</p>
+          <p class="chiave"><code>prag-newsletter</code> (memoria locale): ricorda che ti sei iscritto alla newsletter, così non ti riproponiamo il modulo.</p>
+          <p class="chiave"><code>kgStatsCache</code> e <code>lastUpdateIso</code> (memoria locale): una copia dei numeri del database e della data dell'ultimo aggiornamento, per mostrare la pagina più in fretta.</p>
+          <p class="chiave"><code>launched</code> e <code>logoDrawn</code> (memoria di sessione): evitano di ripetere l'animazione di apertura.</p>
+          <p>Puoi cancellare questi dati dalle impostazioni del browser. Il sito continua a funzionare.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="newsletter" aria-labelledby="newsletter-h">
+        <h2 id="newsletter-h"><span class="articolo-legale__n">08</span>Newsletter</h2>
+        <div class="prosa">
+          <p>Puoi iscriverti alla newsletter di ParliamentRAG dai siti del progetto. La lista la gestisce Brevo (Sendinblue SAS, Francia). Non salviamo il tuo indirizzo email nei nostri sistemi e non lo colleghiamo alle domande che fai.</p>
+          <p>L'iscrizione richiede una conferma via email (doppio opt-in). Brevo registra la data e l'indirizzo IP della conferma come prova del consenso.</p>
+          <p>Ogni email contiene il link per disiscriverti. Puoi revocare il consenso anche scrivendo a <a href="mailto:privacy@parliamentrag.it">privacy@parliamentrag.it</a>. Teniamo l'indirizzo finché resti iscritto.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="i-tuoi-diritti" aria-labelledby="i-tuoi-diritti-h">
+        <h2 id="i-tuoi-diritti-h"><span class="articolo-legale__n">09</span>I tuoi diritti</h2>
+        <div class="prosa">
+          <p>Puoi chiedere l'accesso ai tuoi dati, la rettifica, la cancellazione, la limitazione del trattamento e la portabilità (artt. 15-22 del GDPR).</p>
+          <p>Puoi opporti in ogni momento ai trattamenti basati sul legittimo interesse (art. 21 del GDPR).</p>
+          <p>Scrivi a <a href="mailto:privacy@parliamentrag.it">privacy@parliamentrag.it</a>. Senza account non sappiamo chi ha scritto cosa: per trovare i tuoi dati indicaci il testo della domanda, la data o il link. Ti rispondiamo entro un mese.</p>
+          <p>Se pensi che trattiamo i tuoi dati in modo illecito, puoi presentare reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" rel="noopener">www.garanteprivacy.it</a>).</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="altre-informazioni" aria-labelledby="altre-informazioni-h">
+        <h2 id="altre-informazioni-h"><span class="articolo-legale__n">10</span>Altre informazioni</h2>
+        <div class="prosa">
+          <p>Darci i dati è facoltativo. Senza i dati tecnici di navigazione, però, il sito non può funzionare.</p>
+          <p>Non prendiamo decisioni automatizzate che producano effetti giuridici su di te (art. 22 del GDPR).</p>
+          <p>ParliamentRAG è rivolto a chi ha almeno 14 anni.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="dati-sui-parlamentari" aria-labelledby="dati-sui-parlamentari-h">
+        <h2 id="dati-sui-parlamentari-h"><span class="articolo-legale__n">11</span>Dati sui parlamentari</h2>
+        <div class="prosa">
+          <p>ParliamentRAG mostra dati su deputati e membri del Governo: nomi, interventi, voti e incarichi. Li prendiamo dagli open data ufficiali della Camera dei Deputati (<a href="https://dati.camera.it" rel="noopener">dati.camera.it</a>) e li trattiamo per il ruolo pubblico di queste persone.</p>
+          <p>Se trovi un errore che ti riguarda, scrivi a <a href="mailto:privacy@parliamentrag.it">privacy@parliamentrag.it</a>: lo verifichiamo e lo correggiamo.</p>
+        </div>
+      </section>
+
+      <section class="articolo-legale" id="modifiche" aria-labelledby="modifiche-h">
+        <h2 id="modifiche-h"><span class="articolo-legale__n">12</span>Modifiche</h2>
+        <div class="prosa">
+          <p>Se cambiamo questa informativa, aggiorniamo la data in cima alla pagina.</p>
+        </div>
+      </section>
+
+      <div class="documento__fine">
+        <p class="mono">Ultimo aggiornamento: 5 ottobre 2026</p>
+        <p><a class="collegamento" href="termini.html">Termini d'uso</a></p>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Indice: segna la sezione che stai leggendo ---------- */
+  var voci = {};
+  document.querySelectorAll("#indice a").forEach(function (a) { voci[a.getAttribute("href").slice(1)] = a; });
+  var sezioni = Array.prototype.slice.call(document.querySelectorAll(".articolo-legale"));
+  var attesa = false;
+  function segna() {
+    attesa = false;
+    /* Corrente = l'ultima sezione il cui titolo è salito sopra un terzo dello schermo */
+    var soglia = window.innerHeight / 3, corrente = null;
+    sezioni.forEach(function (s) { if (s.getBoundingClientRect().top <= soglia) corrente = s.id; });
+    /* In fondo alla pagina l'ultima sezione può non salire fin lassù */
+    if (corrente && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) corrente = sezioni[sezioni.length - 1].id;
+    Object.keys(voci).forEach(function (k) {
+      if (k === corrente) voci[k].setAttribute("aria-current", "true");
+      else voci[k].removeAttribute("aria-current");
+    });
+  }
+  window.addEventListener("scroll", function () {
+    if (!attesa) { attesa = true; requestAnimationFrame(segna); }
+  }, { passive: true });
+  segna();
+})();
+</script>
+</body>
+</html>

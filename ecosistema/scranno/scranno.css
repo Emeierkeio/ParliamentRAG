@@ -1,0 +1,1813 @@
+/*
+ * Scranno: stili della pagina dell'Aula. Solo token di famiglia.
+ * Rapporto della pianta (viewBox) = 2580 / 1860.
+ */
+
+:root {
+  --pianta: 1.387;
+  --cassetto: 420px;
+}
+
+/* ---------- Apertura ---------- */
+
+.apertura {
+  padding-block: clamp(20px, 3vw, 36px) var(--s-4);
+}
+.apertura__riga {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+}
+.apertura__testo {
+  flex: 1 1 380px;
+  min-width: 0;
+}
+.apertura h1 {
+  margin-top: var(--s-2);
+}
+.apertura__attacco {
+  margin-top: var(--s-2);
+  color: var(--inchiostro-2);
+  font-size: var(--t-piccolo);
+  max-width: 52ch;
+}
+.comandi {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--s-3);
+}
+.comandi .schede button {
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+/* Ricerca con proposte */
+.cerca {
+  position: relative;
+  width: min(320px, 100%);
+}
+.cerca__campo {
+  padding: 2px 6px 2px 14px;
+}
+.cerca__campo input {
+  padding: 8px 0;
+  font-size: var(--t-piccolo);
+}
+.cerca__icona {
+  color: var(--inchiostro-3);
+  flex-shrink: 0;
+}
+.cerca__tasto {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--inchiostro-3);
+  border: 1px solid var(--filetto-forte);
+  border-radius: var(--r-1);
+  padding: 1px 6px;
+  margin-right: 4px;
+}
+.cerca__campo:focus-within .cerca__tasto {
+  visibility: hidden;
+}
+.proposte {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: min(360px, 60vh);
+  overflow-y: auto;
+}
+.proposte li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px var(--s-3);
+  align-items: baseline;
+  padding: 8px 10px;
+  border-radius: var(--r-2);
+  cursor: pointer;
+  font-size: var(--t-piccolo);
+}
+.proposte li[aria-selected="true"],
+.proposte li:hover {
+  background: var(--carta-2);
+}
+.proposte li[aria-selected="true"] {
+  box-shadow: inset 2px 0 0 var(--accento);
+}
+.proposte mark {
+  background: none;
+  color: inherit;
+  font-weight: 600;
+}
+.proposte .chi-g {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.04em;
+  color: var(--inchiostro-3);
+  white-space: nowrap;
+}
+.proposte .vuoto {
+  cursor: default;
+  color: var(--inchiostro-3);
+  font-size: var(--t-nota);
+}
+.proposte .vuoto:hover {
+  background: none;
+}
+
+@media (max-width: 720px) {
+  .comandi {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .cerca {
+    width: 100%;
+    order: -1;
+  }
+  .comandi .schede {
+    width: 100%;
+  }
+  .comandi .schede button {
+    flex: 1;
+  }
+}
+
+/* ---------- Scena dell'Aula ---------- */
+
+.aula-sezione {
+  padding-bottom: var(--s-7);
+}
+.aula-blocco {
+  width: min(100%, max(600px, calc((100svh - 330px) * var(--pianta))));
+  margin-inline: auto;
+  transition: transform var(--d-3) var(--e-uscita);
+}
+.scena {
+  position: relative;
+  border-radius: var(--r-3);
+}
+.aula {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2580 / 1860;
+  overflow: hidden;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.scena[data-zoom="si"] .aula {
+  touch-action: none;
+  cursor: grab;
+}
+.scena[data-zoom="si"] .aula[data-trascina] {
+  cursor: grabbing;
+}
+.scena[data-zoom="si"] {
+  background: var(--carta-2);
+  box-shadow: inset 0 0 0 1px var(--filetto);
+}
+
+/* Pianta: muri, corsie, etichette */
+.aula .muro {
+  fill: none;
+  stroke: var(--filetto);
+  stroke-width: 2;
+}
+.aula .corsia {
+  stroke: var(--filetto);
+  stroke-width: 2;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+}
+.aula .area {
+  font-family: var(--f-mono);
+  font-size: 30px;
+  letter-spacing: 0.14em;
+  fill: var(--inchiostro-4);
+  text-anchor: middle;
+  pointer-events: none;
+}
+.aula .area--piccola {
+  font-size: 24px;
+}
+
+/* Seggi */
+.seggio {
+  fill: var(--inchiostro-4);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.seggio[data-k="g"],
+.seggio[data-k="p"],
+.seggio[data-k="c"],
+.seggio[data-k="a"] {
+  stroke-width: 2.5;
+}
+.emiciclo .seggio[data-vuoto][data-k="g"],
+.emiciclo .seggio[data-vuoto][data-k="p"],
+.emiciclo .seggio[data-vuoto][data-k="c"],
+.emiciclo .seggio[data-vuoto][data-k="a"] {
+  stroke: var(--inchiostro-4);
+  stroke-dasharray: 5 5;
+}
+.seggio[data-occ] {
+  cursor: pointer;
+}
+.seggio[data-sopra],
+.seggio:focus-visible {
+  stroke: var(--inchiostro);
+  stroke-width: 5;
+  outline: none;
+}
+.seggio:focus-visible {
+  stroke: var(--accento);
+  stroke-width: 7;
+}
+.seggio[data-sel] {
+  stroke: var(--inchiostro);
+  stroke-width: 6;
+}
+.anello {
+  fill: none;
+  stroke: var(--accento);
+  stroke-width: 4;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.anello[data-pulsa] {
+  animation: anello 1.1s var(--e-uscita);
+}
+@keyframes anello {
+  from {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Gruppi: niente colori, un gruppo alla volta in verde */
+.aula[data-luce] .seggio[data-occ] {
+  fill: var(--carta-3);
+}
+.aula[data-luce] .seggio[data-on] {
+  fill: var(--accento);
+}
+:root[data-theme="dark"] .aula[data-luce] .seggio[data-occ]:not([data-on]) {
+  fill: var(--filetto-forte);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .aula[data-luce] .seggio[data-occ]:not([data-on]) {
+    fill: var(--filetto-forte);
+  }
+}
+
+/* Il seggio aperto resta leggibile anche fuori dal gruppo acceso */
+.aula[data-luce] .seggio[data-sel]:not([data-on]) {
+  fill: var(--inchiostro-3);
+}
+
+/* Voto: filtro per voce della legenda */
+.aula[data-filtro] .seggio[data-occ]:not([data-on]) {
+  opacity: 0.16;
+}
+
+/* Spazzata al cambio di modalità e comparsa iniziale */
+.aula[data-spazza] .seggio {
+  transition-delay: var(--sw, 0ms);
+}
+.aula[data-entra] .seggio {
+  animation: entra 560ms var(--e-uscita) both;
+  animation-delay: var(--rit, 0ms);
+}
+.aula[data-entra] .muro,
+.aula[data-entra] .corsia,
+.aula[data-entra] .area {
+  animation: compari 900ms var(--e-std) both 300ms;
+}
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes compari {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Piede della scena: aiuto a sinistra, ingrandimento a destra */
+.scena__piede {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+  margin-top: var(--s-3);
+}
+.zoom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.zoom .btn[disabled] {
+  opacity: 0.35;
+}
+.scena__avviso {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--inchiostro);
+  color: var(--carta);
+  font-size: var(--t-nota);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--d-2);
+  white-space: nowrap;
+}
+.scena__avviso[data-mostra] {
+  opacity: 0.92;
+}
+.aula-aiuto {
+  max-width: 62ch;
+}
+@media (max-width: 720px) {
+  .scena__piede {
+    align-items: flex-start;
+  }
+}
+
+/* Fumetto al passaggio */
+.fumetto {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 70;
+  pointer-events: none;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: var(--r-2);
+  background: var(--inchiostro);
+  color: var(--carta);
+  font-size: var(--t-nota);
+  line-height: 1.35;
+  box-shadow: var(--ombra);
+}
+.fumetto strong {
+  display: block;
+  font-weight: 600;
+}
+.fumetto span {
+  color: color-mix(in oklab, var(--carta) 72%, transparent);
+}
+.fumetto .fumetto__voto {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: var(--carta);
+}
+
+/* ---------- Strisce sotto la pianta ---------- */
+
+.striscia {
+  margin-top: var(--s-5);
+}
+.gruppi {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  border-top: 1px solid var(--inchiostro);
+}
+.gruppi button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 56px;
+  padding: 10px 8px 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--filetto);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--inchiostro-2);
+  position: relative;
+  transition: color var(--d-1);
+}
+.gruppi button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 8px;
+  top: -1px;
+  height: 3px;
+  background: var(--accento);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--d-2) var(--e-uscita);
+}
+.gruppi button:hover,
+.gruppi button[aria-pressed="true"] {
+  color: var(--inchiostro);
+}
+.gruppi button[aria-pressed="true"]::before {
+  transform: none;
+}
+.gruppi .g-sigla {
+  font-weight: 600;
+  font-size: var(--t-piccolo);
+  letter-spacing: -0.01em;
+}
+.gruppi .g-n {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--inchiostro-3);
+  font-variant-numeric: tabular-nums;
+}
+.gruppo-info {
+  min-height: 3.2em;
+  padding-top: var(--s-3);
+  font-size: var(--t-piccolo);
+  color: var(--inchiostro-2);
+}
+.gruppo-info strong {
+  color: var(--inchiostro);
+  font-weight: 500;
+}
+.componenti {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s-2);
+}
+.componenti button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid var(--filetto-forte);
+  border-radius: var(--r-pill);
+  background: var(--foglio);
+  font-size: var(--t-nota);
+  cursor: pointer;
+  transition: border-color var(--d-1), background var(--d-1);
+}
+.componenti button:hover {
+  border-color: var(--inchiostro-3);
+}
+.componenti button[aria-pressed="true"] {
+  border-color: color-mix(in oklab, var(--accento) 50%, transparent);
+  background: var(--accento-tenue);
+  color: var(--accento-scuro);
+}
+.componenti .n {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--inchiostro-3);
+}
+@media (max-width: 720px) {
+  .gruppi {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Voto: testata sopra l'Aula, altezza fissa (nessuno spostamento mentre carica) */
+.voto-testa {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--s-2) var(--s-4);
+  margin-bottom: var(--s-3);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--inchiostro);
+}
+.voto-testa__testo {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.voto-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.voto-titolo {
+  margin-top: 4px;
+  font-family: var(--f-titolo);
+  font-size: 1.375rem;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 1.3em;
+}
+.voto-titolo .mono {
+  font-family: var(--f-mono);
+  font-size: var(--t-nota);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.voto-errore {
+  font-family: var(--f-testo);
+  font-size: var(--t-piccolo);
+  color: var(--errore);
+}
+.voto-testa__lato {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-shrink: 0;
+}
+.esito-voto {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--inchiostro-2);
+  white-space: nowrap;
+}
+.esito-voto .tenue {
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-family: var(--f-testo);
+  font-size: var(--t-nota);
+}
+@media (max-width: 720px) {
+  .voto-testa {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .voto-titolo {
+    font-size: 1.125rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    min-height: 2.6em;
+  }
+  .voto-testa__lato {
+    justify-content: space-between;
+  }
+}
+
+/* Righe in attesa */
+.riga-attesa {
+  display: block;
+  width: 72%;
+  height: 0.8em;
+  margin-block: 0.25em;
+  border-radius: var(--r-1);
+  background: var(--carta-3);
+  animation: attesa 1.2s var(--e-std) infinite alternate;
+}
+.voto-titolo .riga-attesa {
+  width: min(28ch, 70%);
+  height: 0.9em;
+  margin-block: 0.2em;
+}
+.riga-attesa--corta {
+  width: 40%;
+  height: 0.65em;
+}
+.riga-attesa--n {
+  display: inline-block;
+  width: 2.2ch;
+  height: 0.8em;
+  vertical-align: middle;
+}
+@keyframes attesa {
+  from {
+    opacity: 0.45;
+  }
+}
+.aula[data-carica] .seggio[data-occ] {
+  fill: var(--carta-3);
+}
+.emiciclo .seggio[data-v="segreto"] {
+  fill: var(--inchiostro-4);
+}
+.voti {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.voti button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 8px;
+  align-items: center;
+  min-height: 64px;
+  padding: 10px 8px 10px 0;
+  border: 0;
+  border-bottom: 1px solid var(--filetto);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--inchiostro-2);
+  transition: color var(--d-1), opacity var(--d-2);
+}
+.voti button:hover,
+.voti button[aria-pressed="true"] {
+  color: var(--inchiostro);
+}
+.voti[data-filtro] button[aria-pressed="false"] {
+  opacity: 0.5;
+}
+.voti .v-n {
+  grid-column: 2;
+  font-family: var(--f-titolo);
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--inchiostro);
+}
+.voti .v-l {
+  grid-column: 2;
+  font-size: var(--t-nota);
+}
+.voti .v-p {
+  grid-row: 1 / 3;
+}
+.voti[data-n="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.voti button:disabled {
+  cursor: default;
+}
+.pallino {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.pallino[data-v="favor"] {
+  background: var(--voto-si);
+}
+.pallino[data-v="against"] {
+  background: var(--voto-no);
+}
+.pallino[data-v="abstain"] {
+  background: var(--voto-ast);
+}
+.pallino[data-v="absent"],
+.pallino[data-v="n.d."] {
+  background: var(--voto-ass);
+}
+.pallino[data-v="n.d."] {
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--voto-ass);
+}
+.pallino[data-v="segreto"] {
+  background: var(--inchiostro-4);
+}
+.fumetto .pallino[data-v="absent"],
+.fumetto .pallino[data-v="n.d."] {
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--carta) 50%, transparent);
+}
+.voto-griglia {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+  gap: var(--s-5) var(--s-7);
+  align-items: start;
+  padding-top: var(--s-4);
+}
+.voto-note {
+  display: grid;
+  gap: var(--s-2);
+  font-size: var(--t-piccolo);
+  color: var(--inchiostro-2);
+  max-width: 72ch;
+}
+.voto-avviso {
+  margin: 0;
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-2);
+  background: var(--carta-2);
+  color: var(--inchiostro-2);
+  font-size: var(--t-piccolo);
+}
+.voto-avviso strong {
+  color: var(--inchiostro);
+  font-weight: 500;
+}
+.voto-avviso .btn {
+  vertical-align: middle;
+}
+.voto-link {
+  --fila: var(--s-2) var(--s-5);
+  margin-top: var(--s-2);
+}
+.voto-link svg {
+  display: inline-block;
+  vertical-align: -1px;
+  margin-left: 4px;
+}
+@media (max-width: 720px) {
+  .voti {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .voti button {
+    min-height: 56px;
+  }
+}
+
+/* Scelta della votazione: sedute e votazioni */
+.scegli {
+  border: 1px solid var(--filetto);
+  border-radius: var(--r-3);
+  background: var(--foglio);
+  padding: var(--s-4);
+  min-width: 0;
+}
+.scegli__testa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  min-height: 24px;
+}
+.scegli__chiudi {
+  display: none;
+}
+.scegli__cerca {
+  margin-block: var(--s-3);
+}
+.scegli__cerca .campo {
+  padding: 2px 6px 2px 14px;
+}
+.scegli__cerca input {
+  padding: 8px 0;
+  font-size: var(--t-piccolo);
+}
+.scegli__cerca input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+.scegli__colonne {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
+  gap: var(--s-4);
+}
+.scegli__col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.scegli__sotto {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--inchiostro);
+}
+.scegli__indietro {
+  display: none;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  padding: 0 8px 0 2px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font-size: var(--t-nota);
+  color: var(--accento);
+  cursor: pointer;
+}
+.scegli__indietro:hover {
+  background: var(--carta-2);
+}
+.scegli__indietro:focus-visible {
+  outline: 2px solid var(--accento);
+  outline-offset: 1px;
+}
+.scegli__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 400px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.scegli__lista:empty {
+  height: auto;
+}
+.scegli__attesa {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--filetto);
+}
+.scegli__stato:empty {
+  display: none;
+}
+.scegli__stato {
+  padding-top: var(--s-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+.scegli__stato .messaggio {
+  margin: 0;
+}
+.scegli__altre {
+  margin-top: var(--s-3);
+  align-self: flex-start;
+}
+.voce {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  min-height: 48px;
+  padding: 9px 10px;
+  border: 0;
+  border-bottom: 1px solid var(--filetto);
+  background: none;
+  text-align: left;
+  color: var(--inchiostro-2);
+  cursor: pointer;
+  transition: background var(--d-1);
+}
+.voce:hover {
+  background: var(--carta-2);
+}
+.voce[aria-current="true"] {
+  background: var(--accento-tenue);
+  box-shadow: inset 3px 0 0 var(--accento);
+  color: var(--inchiostro);
+}
+.voce:focus-visible {
+  outline: 2px solid var(--accento);
+  outline-offset: -2px;
+}
+.voce__t {
+  font-size: var(--t-piccolo);
+  font-weight: 500;
+  color: var(--inchiostro);
+  line-height: 1.35;
+}
+.voce__d {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.02em;
+  color: var(--inchiostro-3);
+  font-variant-numeric: tabular-nums;
+}
+.voce__tema {
+  margin-top: 2px;
+  font-size: var(--t-nota);
+  color: var(--inchiostro-3);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.voce--voto {
+  grid-template-columns: 2.4em minmax(0, 1fr);
+  gap: 0 8px;
+  align-items: baseline;
+}
+.voce__n {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  color: var(--inchiostro-3);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.voce__corpo {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.voce__esito {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--inchiostro-2);
+}
+.voce__esito .pallino {
+  width: 8px;
+  height: 8px;
+}
+.voce__finale {
+  padding: 0 6px;
+  border: 1px solid color-mix(in oklab, var(--accento) 55%, transparent);
+  border-radius: var(--r-pill);
+  color: var(--accento-scuro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+}
+
+/* Fino a 960px: una colonna, sedute e votazioni a passi */
+@media (max-width: 960px) {
+  .voto-griglia {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scegli__colonne {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scegli[data-passo="sedute"] .scegli__col--voti,
+  .scegli[data-passo="voti"] .scegli__col--sedute {
+    display: none;
+  }
+  .scegli__indietro {
+    display: inline-flex;
+  }
+}
+
+/* Telefono: foglio dal basso */
+@media (max-width: 720px) {
+  .scegli {
+    position: fixed;
+    z-index: 65;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 84dvh;
+    height: 84dvh;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--r-3) var(--r-3) 0 0;
+    border-bottom: 0;
+    padding: var(--s-4) var(--s-4) calc(var(--s-3) + env(safe-area-inset-bottom, 0px));
+    box-shadow: var(--ombra);
+    transform: translateY(104%);
+    visibility: hidden;
+    transition: transform var(--d-3) var(--e-uscita), visibility 0s linear var(--d-3);
+  }
+  .scegli[data-aperto] {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--d-3) var(--e-uscita), visibility 0s;
+  }
+  .scegli__chiudi {
+    display: inline-flex;
+  }
+  .scegli__colonne,
+  .scegli__col {
+    flex: 1;
+    min-height: 0;
+  }
+  .scegli__lista {
+    flex: 1;
+    height: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .riga-attesa {
+    animation: none;
+  }
+  .scegli {
+    transition: none;
+  }
+}
+
+/* In modalità voto, i seggi n.d. restano cerchi aperti per distinguerli dagli assenti */
+.emiciclo .seggio[data-v="n.d."] {
+  fill: var(--carta);
+  stroke: var(--voto-ass);
+  stroke-width: 5;
+}
+
+/* ---------- Cassetto del deputato ---------- */
+
+.cassetto {
+  position: fixed;
+  z-index: 60;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(var(--cassetto), 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--foglio);
+  border-left: 1px solid var(--filetto);
+  box-shadow: var(--ombra);
+  transform: translateX(104%);
+  transition: transform var(--d-3) var(--e-uscita), visibility 0s linear var(--d-3);
+  visibility: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.cassetto[data-aperto] {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--d-3) var(--e-uscita), visibility 0s;
+}
+.cassetto__maniglia {
+  display: none;
+}
+.cassetto__testa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4) var(--s-3) var(--s-5);
+  border-bottom: 1px solid var(--filetto);
+}
+.cassetto__corpo {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--s-5) var(--s-5) calc(var(--s-6) + env(safe-area-inset-bottom, 0px));
+}
+.dep-chi {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: var(--s-4);
+  align-items: start;
+}
+.dep-foto {
+  width: 88px;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--r-2);
+  background: var(--carta-2);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 1px var(--filetto);
+}
+.dep-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.dep-foto .iniziali {
+  font-family: var(--f-titolo);
+  font-size: 2rem;
+  color: var(--inchiostro-3);
+}
+.dep-nome {
+  font-family: var(--f-titolo);
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+.dep-gruppo {
+  margin-top: var(--s-2);
+  font-size: var(--t-piccolo);
+  color: var(--inchiostro-2);
+  line-height: 1.4;
+}
+.dep-gruppo .sigla {
+  margin-right: 6px;
+  vertical-align: 1px;
+}
+.dep-ruolo {
+  margin-top: 4px;
+  font-size: var(--t-nota);
+  color: var(--inchiostro-3);
+}
+.dep-blocco {
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--filetto);
+}
+.dep-blocco > .etichetta {
+  display: block;
+  margin-bottom: var(--s-2);
+}
+.dep-voto {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--t-corpo);
+  font-weight: 500;
+}
+.dep-voto .pallino {
+  width: 12px;
+  height: 12px;
+}
+.dep-voto-nota {
+  margin-top: 4px;
+}
+.dep-cifre {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+.dep-cifre .cifra__n {
+  font-size: 1.75rem;
+}
+.dep-cifre .cifra__l {
+  margin-top: 4px;
+  font-size: var(--t-micro);
+  line-height: 1.35;
+}
+.organi {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+}
+.organi li {
+  display: grid;
+  gap: 2px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--filetto);
+  font-size: var(--t-nota);
+  line-height: 1.4;
+  color: var(--inchiostro-2);
+}
+.organi li:last-child {
+  border-bottom: 0;
+}
+.organi .ruolo {
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accento);
+}
+.organi-altri {
+  margin-top: 4px;
+  border: 0;
+  background: none;
+  padding: 6px 0;
+  font-size: var(--t-nota);
+  color: var(--accento);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in oklab, var(--accento) 40%, transparent);
+}
+.storia {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  font-size: var(--t-nota);
+  color: var(--inchiostro-2);
+}
+.storia li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.dep-azioni {
+  display: grid;
+  gap: var(--s-2);
+  margin-top: var(--s-5);
+}
+.dep-azioni .btn {
+  width: 100%;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+.dep-fonte {
+  margin-top: var(--s-4);
+}
+
+@media (max-width: 720px) {
+  .cassetto {
+    top: auto;
+    left: 0;
+    width: 100%;
+    max-height: 78dvh;
+    border-left: 0;
+    border-top: 1px solid var(--filetto);
+    border-radius: var(--r-3) var(--r-3) 0 0;
+    transform: translateY(104%);
+    padding-top: 0;
+  }
+  .cassetto__maniglia {
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 2px;
+    background: var(--filetto-forte);
+  }
+  .cassetto__testa {
+    padding: var(--s-2) var(--s-3) var(--s-2) var(--s-4);
+  }
+  .cassetto__corpo {
+    padding: var(--s-4) var(--s-4) calc(var(--s-5) + env(safe-area-inset-bottom, 0px));
+  }
+  .dep-chi {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+  .dep-foto {
+    width: 72px;
+  }
+  .dep-nome {
+    font-size: 1.5rem;
+  }
+}
+
+/* ---------- Sezione sotto ---------- */
+
+.spiega {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--s-6) clamp(32px, 6vw, 96px);
+  margin-top: var(--s-6);
+}
+.spiega__testo {
+  display: grid;
+  gap: var(--s-4);
+  color: var(--inchiostro-2);
+  max-width: 58ch;
+}
+.dati {
+  margin: var(--s-7) 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 var(--s-5);
+  border-top: 1px solid var(--filetto);
+}
+.dati__voce {
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--filetto);
+}
+.dati dd {
+  margin-top: var(--s-2);
+  font-size: var(--t-piccolo);
+  color: var(--inchiostro-2);
+}
+.percorsi {
+  margin-top: var(--s-7);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-5);
+}
+.percorso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px var(--s-4);
+  align-items: center;
+  padding: var(--s-5);
+  border: 1px solid var(--filetto);
+  border-radius: var(--r-3);
+  background: var(--foglio);
+  text-decoration: none;
+  transition: border-color var(--d-2), transform var(--d-2) var(--e-uscita);
+}
+.percorso:hover {
+  border-color: var(--inchiostro-3);
+  transform: translateY(-2px);
+}
+.percorso__marchio {
+  grid-row: 1 / 4;
+  align-self: start;
+}
+.percorso__marchio svg {
+  height: 32px;
+  width: auto;
+  color: var(--inchiostro);
+  overflow: visible;
+}
+.percorso__nome {
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+.percorso__cosa {
+  font-size: var(--t-piccolo);
+  color: var(--inchiostro-2);
+}
+.percorso__vai {
+  margin-top: var(--s-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--t-piccolo);
+  font-weight: 500;
+  color: var(--accento);
+}
+.percorso:hover .freccia {
+  transform: translateX(3px);
+}
+@media (max-width: 860px) {
+  .spiega,
+  .dati,
+  .percorsi {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aula-blocco {
+    transition: none;
+  }
+}
+
+/* Testi diversi per puntatore e tocco */
+.solo-tocco {
+  display: none;
+}
+@media (hover: none) {
+  .solo-puntatore,
+  .cerca__tasto {
+    display: none;
+  }
+  .solo-tocco {
+    display: inline;
+  }
+}
+
+/* ---------- Vista: In Aula (3D) e Pianta ---------- */
+
+.vista-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-3);
+}
+.vista-barra .schede button {
+  min-height: 36px;
+}
+.vista-barra__dove {
+  color: var(--inchiostro-3);
+}
+.aula-blocco[data-vista="aula"] {
+  width: 100%;
+}
+.aula-blocco[data-vista="aula"] .aula,
+.aula-blocco[data-vista="aula"] #piede-pianta,
+.aula-blocco[data-vista="pianta"] .aula3d,
+.aula-blocco[data-vista="pianta"] #piede-aula,
+.aula-blocco[data-vista="pianta"] .vista-barra__dove {
+  display: none;
+}
+
+.aula3d {
+  position: relative;
+  height: clamp(360px, calc(100svh - 300px), 760px);
+  border-radius: var(--r-3);
+  overflow: hidden;
+  background: var(--carta-2);
+  box-shadow: inset 0 0 0 1px var(--filetto);
+  outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.aula3d:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--filetto), 0 0 0 2px var(--carta), 0 0 0 4px var(--accento);
+}
+.aula3d__tela {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.aula3d__tela[data-trascina] {
+  cursor: grabbing;
+}
+.aula3d__attesa {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  font-family: var(--f-mono);
+  font-size: var(--t-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--inchiostro-3);
+  background: var(--carta-2);
+  transition: opacity var(--d-3) var(--e-std);
+  z-index: 2;
+}
+.aula3d__attesa[data-fatto] {
+  opacity: 0;
+  pointer-events: none;
+}
+.aula3d__punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accento);
+  animation: punto 1.1s var(--e-std) infinite alternate;
+}
+@keyframes punto {
+  from {
+    opacity: 0.25;
+  }
+}
+.aula3d__guida {
+  position: absolute;
+  left: var(--s-3);
+  top: var(--s-3);
+  max-width: calc(100% - 2 * var(--s-3));
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 6px 6px 12px;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--carta) 88%, transparent);
+  border: 1px solid var(--filetto);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  z-index: 3;
+}
+.aula3d__guida .etichetta {
+  color: var(--inchiostro-2);
+  line-height: 1.4;
+}
+.aula3d__chiudi {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--inchiostro-3);
+  cursor: pointer;
+}
+.aula3d__chiudi:hover {
+  background: var(--carta-2);
+  color: var(--inchiostro);
+}
+.aula3d__chiudi:focus-visible {
+  outline: 2px solid var(--accento);
+  outline-offset: 1px;
+}
+.aula3d__fallback {
+  margin: 0 0 var(--s-3);
+  color: var(--inchiostro-2);
+}
+.aula3d .scena__avviso,
+.scena .scena__avviso {
+  z-index: 4;
+}
+
+/* Joystick sul tocco, come in Scranno di produzione */
+.joy {
+  position: absolute;
+  left: var(--s-3);
+  bottom: var(--s-3);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--carta) 72%, transparent);
+  border: 1px solid var(--filetto-forte);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  touch-action: none;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+}
+.joy__pomo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--inchiostro);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.dep-azioni .dep-siediti {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 720px) {
+  .aula3d {
+    height: clamp(340px, 62svh, 560px);
+  }
+  .aula3d__guida {
+    left: var(--s-2);
+    top: var(--s-2);
+    max-width: calc(100% - 2 * var(--s-2));
+  }
+  .aula3d__guida .etichetta {
+    font-size: 10.5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aula3d__punto {
+    animation: none;
+  }
+}
+@media (max-width: 720px) {
+  /* Con l'Aula in 3D il foglio resta più basso: sopra si vede il seggio */
+  body[data-vista="aula"] .cassetto {
+    max-height: 58dvh;
+  }
+}
+
+
+/* ---------- Da 1100px: il selettore delle votazioni accanto all'Aula ---------- */
+/* In modalità Voti la vista e l'elenco stanno affiancati: si cambia votazione
+   guardando l'Aula. La colonna resta ferma mentre la pagina scorre. */
+@media (min-width: 1100px) {
+  .aula-blocco:has(#striscia-voto:not([hidden])) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 380px);
+    column-gap: var(--s-5);
+    align-items: start;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) > * {
+    grid-column: 1;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) #striscia-voto,
+  .aula-blocco:has(#striscia-voto:not([hidden])) .voto-griglia {
+    display: contents;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .voti,
+  .aula-blocco:has(#striscia-voto:not([hidden])) .voto-note {
+    grid-column: 1;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .voto-note {
+    padding-top: var(--s-4);
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    position: sticky;
+    top: 80px;
+    height: min(calc(100svh - 104px), 820px);
+    display: flex;
+    flex-direction: column;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli__colonne {
+    grid-template-columns: minmax(0, 1fr);
+    flex: 1;
+    min-height: 0;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli__col {
+    min-height: 0;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli[data-passo="sedute"] .scegli__col--voti,
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli[data-passo="voti"] .scegli__col--sedute {
+    display: none;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli__indietro {
+    display: inline-flex;
+  }
+  .aula-blocco:has(#striscia-voto:not([hidden])) .scegli__lista {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+  /* L'elenco è sempre visibile: il pulsante per aprirlo non serve */
+  .aula-blocco:has(#striscia-voto:not([hidden])) #voto-cambia {
+    display: none;
+  }
+}
+
+
+/* ---------- Da 721px: la scheda del deputato è una barra in basso ---------- */
+/* Non copre il selettore delle votazioni e lascia l'Aula al suo posto:
+   le sezioni della scheda stanno affiancate in colonne. */
+@media (min-width: 721px) {
+  .cassetto {
+    top: auto;
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    width: min(calc(var(--larghezza) + 2 * var(--margine)), 100%);
+    max-height: min(46vh, 420px);
+    border-left: 1px solid var(--filetto);
+    border-right: 1px solid var(--filetto);
+    border-top: 1px solid var(--filetto);
+    border-radius: var(--r-3) var(--r-3) 0 0;
+    transform: translate(-50%, 104%);
+    padding-top: 0;
+  }
+  .cassetto[data-aperto] {
+    transform: translate(-50%, 0);
+  }
+  .cassetto__testa {
+    padding: var(--s-2) var(--s-3) var(--s-2) var(--s-5);
+  }
+  .cassetto__corpo {
+    display: grid;
+    grid-template-columns: minmax(250px, 1.3fr) repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0 var(--s-5);
+    align-items: start;
+    padding: var(--s-4) var(--s-5) calc(var(--s-4) + env(safe-area-inset-bottom, 0px));
+  }
+  .cassetto__corpo > .dep-blocco,
+  .cassetto__corpo > .dep-azioni {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+    padding-left: var(--s-5);
+    border-left: 1px solid var(--filetto);
+    min-width: 0;
+  }
+  .cassetto__corpo > .dep-fonte {
+    grid-column: 1 / -1;
+    margin-top: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--filetto);
+  }
+  .dep-chi {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+  .dep-foto {
+    width: 72px;
+  }
+  .dep-nome {
+    font-size: 1.5rem;
+  }
+  .dep-cifre {
+    grid-template-columns: repeat(3, minmax(0, auto));
+    gap: var(--s-3) var(--s-4);
+  }
+  .dep-cifre .cifra__n {
+    font-size: 1.375rem;
+  }
+  .dep-azioni .btn {
+    min-height: 38px;
+    font-size: var(--t-nota);
+  }
+}
+
+
+/* ---------- Da 721px: la scheda dentro il riquadro dell'Aula ---------- */
+@media (min-width: 721px) {
+  .scena > .cassetto {
+    position: absolute;
+    z-index: 20;
+    top: auto;
+    left: var(--s-3);
+    right: var(--s-3);
+    bottom: var(--s-3);
+    width: auto;
+    max-height: calc(100% - 2 * var(--s-3));
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-3);
+    transform: translateY(calc(100% + 2 * var(--s-3)));
+    opacity: 0;
+    transition: transform var(--d-3) var(--e-uscita), opacity var(--d-2), visibility 0s linear var(--d-3);
+  }
+  .scena > .cassetto[data-aperto] {
+    transform: none;
+    opacity: 1;
+    transition: transform var(--d-3) var(--e-uscita), opacity var(--d-2), visibility 0s;
+  }
+}
+
+
+/* Scheda compatta nel riquadro: chi è, il voto, le azioni. «Dettagli» apre il resto. */
+.cassetto__dettagli {
+  display: none;
+  margin-left: auto;
+}
+@media (min-width: 721px) {
+  .scena > .cassetto .cassetto__dettagli {
+    display: inline-flex;
+  }
+  .scena > .cassetto .cassetto__testa {
+    padding: 6px var(--s-2) 6px var(--s-4);
+  }
+  .scena > .cassetto .cassetto__testa .btn--icona {
+    width: 34px;
+    min-height: 34px;
+  }
+  .scena > .cassetto:not([data-esteso]) .cassetto__corpo {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
+    align-items: center;
+    padding: var(--s-3) var(--s-4);
+  }
+  .scena > .cassetto:not([data-esteso]) .cassetto__corpo > .dep-blocco ~ .dep-blocco,
+  .scena > .cassetto:not([data-esteso]) .cassetto__corpo > .dep-fonte,
+  .scena > .cassetto:not([data-esteso]) .dep-voto-nota {
+    display: none;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-chi {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: var(--s-3);
+    align-items: center;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-foto {
+    width: 52px;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-nome {
+    font-size: 1.25rem;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-gruppo {
+    margin-top: 4px;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-blocco > .etichetta {
+    margin-bottom: 4px;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-azioni {
+    border-left: 0;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .scena > .cassetto:not([data-esteso]) .dep-azioni .btn {
+    min-height: 32px;
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+  .scena > .cassetto[data-esteso] {
+    overflow: hidden;
+  }
+}
+
+
+/* ---------- Da 1100px, modalità Partiti: la scheda nella colonna a destra ---------- */
+@media (min-width: 1100px) {
+  .aula-blocco:has(> .cassetto[data-aperto]) {
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 26vw, 380px);
+    column-gap: var(--s-5);
+    align-items: start;
+  }
+  .aula-blocco:has(> .cassetto[data-aperto]) > * {
+    grid-column: 1;
+  }
+  .aula-blocco:has(> .cassetto[data-aperto]) > .cassetto {
+    grid-column: 2;
+  }
+  .aula-blocco > .cassetto {
+    position: sticky;
+    z-index: 5;
+    top: 80px;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: auto;
+    max-height: none;
+    height: min(calc(100svh - 104px), 820px);
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-3);
+    box-shadow: none;
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+  .aula-blocco > .cassetto:not([data-aperto]) {
+    display: none;
+  }
+  /* Nella colonna la scheda è verticale e completa: «Dettagli» non serve */
+  .aula-blocco > .cassetto .cassetto__dettagli {
+    display: none;
+  }
+  .aula-blocco > .cassetto .cassetto__corpo {
+    display: block;
+    padding: var(--s-4) var(--s-4) var(--s-5);
+  }
+  .aula-blocco > .cassetto .cassetto__corpo > .dep-blocco,
+  .aula-blocco > .cassetto .cassetto__corpo > .dep-azioni {
+    margin-top: var(--s-4);
+    padding-top: var(--s-4);
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--filetto);
+  }
+  .aula-blocco > .cassetto .cassetto__corpo > .dep-fonte {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .aula-blocco > .cassetto .dep-cifre {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

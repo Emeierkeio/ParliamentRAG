@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="verifica">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verifica · ParliamentRAG</title>
+<meta name="description" content="Il verificatore pubblico delle tre garanzie, in costruzione: incolla una risposta sul Parlamento e controlla gruppi, voci e citazioni.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(32px, 4vw, 56px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: var(--s-6) clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 13ch;
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+  @media (max-width: 900px) {
+    .apertura__griglia {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  /* Cartello «in costruzione»: discreto, ma il primo che si legge */
+  .cantiere {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border: 1px dashed var(--filetto-forte);
+    border-radius: var(--r-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .cantiere__stato {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cantiere__stato i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--voto-ast);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--voto-ast) 22%, transparent);
+  }
+
+  /* ---------- Banco di prova: testo a sinistra, esito a destra ---------- */
+  .banco {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6);
+    align-items: start;
+  }
+  @media (max-width: 1000px) {
+    .banco {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .banco__input {
+    position: sticky;
+    top: calc(64px + var(--s-5));
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (max-width: 1000px) {
+    .banco__input {
+      position: static;
+    }
+  }
+  .banco__input .campo--area textarea {
+    min-height: 340px;
+    font-size: var(--t-piccolo);
+  }
+  .banco__conta {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-2);
+    border-top: 1px solid var(--filetto);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-4);
+  }
+  @media (hover: none), (max-width: 600px) {
+    .scorciatoia {
+      display: none;
+    }
+  }
+  .banco__azioni {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .banco__azioni .btn--accento {
+    margin-right: auto;
+  }
+  @media (max-width: 480px) {
+    .banco__azioni .btn {
+      flex: 1 1 auto;
+    }
+    .banco__azioni .btn--accento {
+      flex-basis: 100%;
+      margin-right: 0;
+    }
+  }
+
+  /* Esito */
+  .esito-box {
+    padding: 0;
+    overflow: hidden;
+    min-height: 420px;
+  }
+  .esito-box__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-5);
+    background: var(--carta-2);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .esito-box__corpo {
+    padding: var(--s-5);
+  }
+  .vuoto {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    gap: var(--s-4);
+    min-height: 340px;
+    color: var(--inchiostro-3);
+    font-size: var(--t-piccolo);
+  }
+  .vuoto p {
+    max-width: 34ch;
+  }
+  .attesa {
+    display: grid;
+    gap: var(--s-3);
+    min-height: 340px;
+    align-content: center;
+    justify-items: center;
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .attesa__riga {
+    width: min(280px, 80%);
+    height: 2px;
+    background: var(--filetto);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .attesa__riga i {
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: var(--accento);
+    animation: scorre 0.9s var(--e-std) infinite;
+  }
+  @keyframes scorre {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(260%); }
+  }
+
+  /* Sigillo: in anteprima c'è anche il terzo stato, «non verificabile» */
+  .sigillo__voce[data-esito="nd"] svg {
+    color: var(--inchiostro-4);
+  }
+  .sigillo__voce[data-esito="nd"] {
+    color: var(--inchiostro-3);
+  }
+  .sigillo__voce b {
+    font-family: var(--f-mono);
+    font-weight: 400;
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+  }
+  .riassunto {
+    margin-top: var(--s-4);
+    font-family: var(--f-titolo);
+    font-size: var(--t-3);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    max-width: 34ch;
+  }
+
+  /* Un blocco per garanzia */
+  .prova {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .prova__testa {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+  }
+  .prova__testa h3 {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+  }
+  .prova__testa h3 span {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    font-weight: 400;
+    color: var(--accento);
+  }
+  .prova__conto {
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .prova__conto[data-esito="ok"] {
+    color: var(--verificato);
+  }
+  .prova__conto[data-esito="no"] {
+    color: var(--errore);
+  }
+  .prova > p {
+    margin-top: var(--s-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    max-width: 60ch;
+  }
+  .prova[data-entra] {
+    animation: entra var(--d-4) var(--e-uscita) both;
+    animation-delay: var(--ritardo, 0ms);
+  }
+  @keyframes entra {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* (a) Elenco dei gruppi trovati e mancanti */
+  .appello {
+    margin-top: var(--s-4);
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--s-5);
+  }
+  @media (max-width: 560px) {
+    .appello {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .appello li {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    gap: var(--s-3);
+    align-items: center;
+    min-height: 40px;
+    padding-block: 6px;
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-nota);
+  }
+  .appello svg {
+    width: 16px;
+    height: 16px;
+  }
+  .appello [data-c="si"] svg {
+    color: var(--verificato);
+  }
+  .appello [data-c="no"] svg {
+    color: var(--errore);
+  }
+  .appello [data-c="no"] .appello__nome {
+    color: var(--errore);
+  }
+  .appello__nome {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .appello__come {
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    white-space: nowrap;
+    max-width: 14ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* (b) Citazioni, una per una */
+  .citate {
+    margin-top: var(--s-4);
+    display: grid;
+    gap: var(--s-4);
+  }
+  .citata {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-4);
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-2);
+    background: var(--carta);
+  }
+  .citata__esito {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-3);
+    font-size: var(--t-nota);
+    font-weight: 500;
+  }
+  .citata__esito svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .citata[data-esito="ok"] .citata__esito {
+    color: var(--verificato);
+  }
+  .citata[data-esito="no"] {
+    border-color: color-mix(in oklab, var(--errore) 35%, var(--filetto));
+  }
+  .citata[data-esito="no"] .citata__esito {
+    color: var(--errore);
+  }
+  .citata[data-esito="nd"] .citata__esito {
+    color: var(--inchiostro-3);
+  }
+  .citata__esito span {
+    font-weight: 400;
+    color: var(--inchiostro-3);
+  }
+  .citata .cit__testo {
+    font-size: 1.125rem;
+    line-height: 1.45;
+  }
+  .citata .cit {
+    padding-left: var(--s-4);
+  }
+  .diff {
+    font-family: var(--f-titolo);
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+  .diff span {
+    border-radius: 2px;
+  }
+  .diff span[data-s="ok"] {
+    box-shadow: inset 0 -2px 0 color-mix(in oklab, var(--verificato) 45%, transparent);
+  }
+  .diff span[data-s="no"] {
+    color: var(--inchiostro-3);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .diff span[data-s="nuovo"] {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+    padding-inline: 2px;
+  }
+  .diff-legenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-4);
+    font-size: var(--t-micro);
+    font-family: var(--f-mono);
+    color: var(--inchiostro-3);
+  }
+  .diff-legenda s {
+    text-decoration-thickness: 1px;
+  }
+  .diff-legenda mark {
+    background: color-mix(in oklab, var(--errore) 16%, transparent);
+    color: var(--errore);
+    padding-inline: 2px;
+  }
+  .chi-dice {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .chi-dice .bollino {
+    margin-left: 6px;
+    white-space: nowrap;
+  }
+  .brevi {
+    margin-top: var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+
+  /* (c) Voci autorevoli: cosa farà la versione pubblica */
+  .futuro {
+    margin-top: var(--s-4);
+    padding: var(--s-4);
+    border-radius: var(--r-2);
+    background: var(--carta-2);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .futuro ol {
+    margin-top: var(--s-3);
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--s-2);
+  }
+  .futuro .citati {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* Nomi riconosciuti */
+  .alias {
+    margin-top: var(--s-5);
+    border-top: 1px solid var(--filetto);
+  }
+  .alias summary {
+    padding-block: var(--s-3);
+    font-size: var(--t-nota);
+  }
+  .alias summary::after {
+    font-size: var(--t-piccolo);
+  }
+  .alias .tabella {
+    font-size: var(--t-nota);
+  }
+
+  /* ---------- Anteprima e versione pubblica a confronto ---------- */
+  .confronto-v {
+    margin-top: var(--s-6);
+  }
+  .confronto-v td:first-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .confronto-v td {
+    color: var(--inchiostro-2);
+  }
+  @media (max-width: 700px) {
+    .confronto-v thead {
+      display: none;
+    }
+    .confronto-v tbody {
+      display: block;
+      border-top: 1px solid var(--inchiostro);
+    }
+    .confronto-v tr {
+      display: grid;
+      gap: var(--s-2);
+      padding-block: var(--s-4);
+      border-bottom: 1px solid var(--filetto);
+    }
+    .confronto-v td {
+      border: 0;
+      padding: 0;
+    }
+    .confronto-v td[data-l]::before {
+      content: attr(data-l);
+      display: block;
+      font-family: var(--f-mono);
+      font-size: var(--t-micro);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--inchiostro-3);
+      margin-bottom: 2px;
+    }
+  }
+
+  /* ---------- Perché ---------- */
+  .perche {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    margin-top: var(--s-6);
+  }
+  .perche__testo {
+    display: grid;
+    gap: var(--s-4);
+    font-size: 1.1875rem;
+    color: var(--inchiostro-2);
+    max-width: 56ch;
+  }
+  .perche__testo strong {
+    color: var(--inchiostro);
+    font-weight: 500;
+  }
+  @media (max-width: 860px) {
+    .perche {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina apertura__griglia">
+      <div>
+        <p class="etichetta compare">Verifica</p>
+        <h1 class="titolo-1 compare" style="--ritardo:80ms">Una risposta, <em>tre</em> controlli.</h1>
+        <p class="attacco compare" style="--ritardo:160ms">Stiamo costruendo un verificatore pubblico: gli dai una risposta sul Parlamento e ti dice se rispetta le tre garanzie. Funzionerà con le risposte di qualsiasi sistema, anche le nostre.</p>
+      </div>
+      <div class="cantiere compare" style="--ritardo:240ms">
+        <span class="etichetta cantiere__stato"><i aria-hidden="true"></i>In costruzione</span>
+        <p>Qui sotto c'è un'anteprima che gira nel tuo browser. Lavora su un solo tema, il salario minimo, e conosce solo le 11 citazioni verificate dell'esempio.</p>
+        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Leggi il piano della verifica</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 1 Prova -->
+  <section class="sezione-stretta" style="padding-top:0" id="prova">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Anteprima · tema salario minimo</p></div>
+
+      <div class="banco">
+        <form class="banco__input compare" id="modulo" novalidate>
+          <label class="titolo-4" for="risposta">La risposta da controllare</label>
+          <div class="campo campo--area">
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui una risposta sul salario minimo. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
+            <div class="banco__conta"><span id="conta">0 parole</span><span class="scorciatoia">⌘/Ctrl + Invio per verificare</span></div>
+          </div>
+          <div class="banco__azioni">
+            <button class="btn btn--accento" type="submit" id="verifica">Verifica</button>
+            <button class="btn btn--linea btn--piccolo" type="button" id="esempio">Incolla un esempio</button>
+            <button class="btn btn--linea btn--piccolo" type="button" id="svuota">Svuota</button>
+          </div>
+          <p class="messaggio" id="msg" role="status"></p>
+          <p class="nota">Il testo resta nel tuo browser: l'anteprima non lo invia a nessun server.</p>
+        </form>
+
+        <div class="foglio esito-box compare" style="--ritardo:120ms">
+          <div class="esito-box__testa">
+            <span class="etichetta">Esito</span>
+            <span class="etichetta" id="stato">In attesa</span>
+          </div>
+          <div class="esito-box__corpo" id="esito" aria-live="polite" aria-busy="false">
+            <div class="vuoto">
+              <div class="sigillo" aria-hidden="true">
+                <span class="sigillo__da">Verifica</span>
+                <span class="sigillo__voce" data-esito="nd">Tutti i gruppi</span>
+                <span class="sigillo__voce" data-esito="nd">Voci autorevoli</span>
+                <span class="sigillo__voce" data-esito="nd">Citazioni esatte</span>
+              </div>
+              <p>Incolla una risposta, o usa l'esempio, e premi Verifica. L'esito compare qui, garanzia per garanzia.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 2 Anteprima e versione pubblica -->
+  <section class="sezione-stretta">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Cosa controlla, e come</p></div>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">L'anteprima fa due controlli su tre, su un corpus piccolo.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">La versione pubblica userà tutto il grafo della XIX legislatura. Qui sotto, per ogni garanzia, cosa fa oggi la pagina e cosa farà il verificatore.</p>
+      <div class="tabella-scorri compare confronto-v">
+        <table class="tabella">
+          <thead><tr><th scope="col">Garanzia</th><th scope="col">Anteprima, in questa pagina</th><th scope="col">Verificatore pubblico</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Tutti i gruppi</td>
+              <td data-l="Anteprima">Cerca nel testo la sigla o il nome di ciascuno dei dieci gruppi del tema e del Governo. Una parola uguale a un nome conta come menzione anche se è usata in altro senso.</td>
+              <td data-l="Verificatore pubblico">Confronta i gruppi citati con quelli in carica alla data della domanda, componenti del Misto comprese, e cerca la frase che dichiara un gruppo assente.</td>
+            </tr>
+            <tr>
+              <td>Citazioni esatte</td>
+              <td data-l="Anteprima">Estrae il testo tra «…» o tra "…", normalizza spazi e apostrofi e lo confronta parola per parola con le 11 citazioni dell'esempio. Vale anche una parte di citazione.</td>
+              <td data-l="Verificatore pubblico">Cerca ogni citazione in tutti gli interventi in Aula, controlla che l'oratore sia quello indicato e restituisce il link al resoconto.</td>
+            </tr>
+            <tr>
+              <td>Voci autorevoli</td>
+              <td data-l="Anteprima">Non la controlla. Servono i punteggi di autorevolezza per la domanda, che qui non abbiamo.</td>
+              <td data-l="Verificatore pubblico">Calcola l'autorevolezza sul tema con i sei criteri pubblici e controlla che per ogni gruppo parli un relatore, un membro del Governo o uno dei primi cinque.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <details class="domanda alias compare">
+        <summary>Nomi con cui l'anteprima riconosce i gruppi</summary>
+        <div class="tabella-scorri">
+          <table class="tabella">
+            <thead><tr><th scope="col">Voce</th><th scope="col">Sigle, solo come scritte</th><th scope="col">Nomi, maiuscole libere</th></tr></thead>
+            <tbody id="alias"></tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- § 3 Perché -->
+  <section class="sezione-stretta" style="background:var(--carta-2);border-top:1px solid var(--filetto)">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Perché un verificatore</p></div>
+      <div class="perche">
+        <h2 class="titolo-2 compare">I dati sono pubblici. Le garanzie, finora, no.</h2>
+        <div class="perche__testo compare" style="--ritardo:120ms">
+          <p>La Camera pubblica resoconti, atti e voti. Chi riceve una risposta da un assistente AI non ha però un modo semplice per sapere se manca un gruppo o se una citazione è stata ritoccata.</p>
+          <p><strong>Un controllo che dipende da chi ha scritto la risposta non basta.</strong> Per questo il verificatore sarà separato dai nostri sistemi e funzionerà con le risposte di chiunque.</p>
+          <p>Il metodo è descritto nel piano della verifica. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
+          <div class="fila" style="margin-top:var(--s-2)">
+            <a class="btn btn--accento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Il piano della verifica <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--linea" href="metodo.html">Come applichiamo le garanzie</a>
+          </div>
+          <p class="nota">Scrivi a <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DATI;
+  var CIT = D.tema.citazioni;
+  var SPUNTA = window.ICONE.spunta, CROCE = window.ICONE.croce;
+  var FORSE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.5 8h5"/></svg>';
+  var ridotto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function dataIt(s) {
+    var p = s.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  /* ---------- Gruppi del tema e nomi con cui li riconosciamo ----------
+   * Le sigle valgono solo in maiuscolo come le scriviamo (FI, Lega, Azione),
+   * così «lega la proposta» o «un'azione» non contano. I nomi estesi valgono
+   * con qualsiasi maiuscola. */
+  var GRUPPI = [
+    { k: "FdI", nome: "Fratelli d'Italia", sigle: ["FdI", "FDI"], nomi: ["Fratelli d'Italia"] },
+    { k: "PD", nome: "Partito Democratico", sigle: ["PD", "Pd"], nomi: ["Partito Democratico", "Italia Democratica e Progressista"] },
+    { k: "Lega", nome: "Lega - Salvini Premier", sigle: ["Lega"], nomi: ["Lega Salvini", "Salvini Premier"] },
+    { k: "M5S", nome: "Movimento 5 Stelle", sigle: ["M5S"], nomi: ["Movimento 5 Stelle", "Movimento Cinque Stelle", "5 Stelle", "Cinque Stelle"] },
+    { k: "FI", nome: "Forza Italia", sigle: ["FI"], nomi: ["Forza Italia"] },
+    { k: "AVS", nome: "Alleanza Verdi e Sinistra", sigle: ["AVS"], nomi: ["Alleanza Verdi e Sinistra", "Verdi e Sinistra"] },
+    { k: "Azione", nome: "Azione - PER", sigle: ["Azione", "AZ"], nomi: ["Popolari Europeisti Riformatori"] },
+    { k: "IV", nome: "Italia Viva - Casa Riformista", sigle: ["IV"], nomi: ["Italia Viva", "Casa Riformista"] },
+    { k: "NM", nome: "Noi Moderati", sigle: ["NM"], nomi: ["Noi Moderati", "MAIE", "Centro Popolare"] },
+    { k: "+Europa", nome: "+Europa (Misto)", sigle: ["+Europa"], nomi: ["Più Europa", "+ Europa"] },
+    { k: "Governo", nome: "Governo", sigle: [], nomi: ["Governo", "Esecutivo", "ministro", "ministra", "sottosegretario", "sottosegretaria"] }
+  ];
+
+  function apostrofi(s) { return s.replace(/[’‘ʼ`´]/g, "'"); }
+  function regexEsc(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  /* Confini di parola che funzionano anche con «+Europa» e con le lettere accentate */
+  function cerca(testo, alias, maiuscole) {
+    var re = new RegExp("(^|[^\\p{L}\\p{N}+])(" + regexEsc(apostrofi(alias)) + ")(?=$|[^\\p{L}\\p{N}])", maiuscole ? "u" : "iu");
+    var m = re.exec(testo);
+    return m ? m[2] : null;
+  }
+  function trovaGruppi(testo) {
+    testo = apostrofi(testo);
+    return GRUPPI.map(function (g) {
+      var trovato = null;
+      g.sigle.some(function (a) { trovato = cerca(testo, a, true); return trovato; });
+      if (!trovato) g.nomi.some(function (a) { trovato = cerca(testo, a, false); return trovato; });
+      return { g: g, come: trovato };
+    });
+  }
+
+  /* ---------- Citazioni: estrazione e confronto ---------- */
+  function norm(s) {
+    return apostrofi(s).replace(/\s+/g, " ").trim();
+  }
+  function bordi(s) {
+    return s.replace(/^[\s.,;:…]+|[\s.,;:…]+$/g, "");
+  }
+  function parole(s) { return norm(s).split(" ").filter(Boolean); }
+  function estrai(testo) {
+    var re = /«([^«»]+)»|“([^“”]+)”|"([^"]+)"/g, out = [], m;
+    while ((m = re.exec(testo))) out.push({ t: m[1] || m[2] || m[3], da: m.index, a: m.index + m[0].length });
+    return out;
+  }
+  /* Una citazione può saltare un pezzo con «…» o «[...]»: ogni frammento va trovato, in ordine */
+  function coincide(frase, nota) {
+    var pezzi = norm(frase).split(/\s*(?:\[\s*(?:…|\.\.\.)\s*\]|…|\.\.\.)\s*/).map(bordi).filter(Boolean);
+    if (!pezzi.length) return false;
+    var dove = 0, n = norm(nota);
+    return pezzi.every(function (p) {
+      var i = n.indexOf(p, dove);
+      if (i < 0) {
+        /* la prima lettera può cambiare maiuscola se la citazione inizia a metà frase */
+        var alt = p.charAt(0) === p.charAt(0).toUpperCase() ? p.charAt(0).toLowerCase() + p.slice(1) : p.charAt(0).toUpperCase() + p.slice(1);
+        i = n.indexOf(alt, dove);
+      }
+      if (i < 0) return false;
+      dove = i + p.length;
+      return true;
+    });
+  }
+  /* LCS sulle parole, come nella pagina iniziale */
+  function allinea(a, b) {
+    var n = a.length, m = b.length, t = [], i, j;
+    for (i = 0; i <= n; i++) t.push(new Array(m + 1).fill(0));
+    for (i = n - 1; i >= 0; i--) for (j = m - 1; j >= 0; j--)
+      t[i][j] = a[i] === b[j] ? t[i + 1][j + 1] + 1 : Math.max(t[i + 1][j], t[i][j + 1]);
+    var r = []; i = 0; j = 0;
+    while (i < n && j < m) {
+      if (a[i] === b[j]) { r.push({ w: b[j], s: "ok" }); i++; j++; }
+      else if (t[i + 1][j] >= t[i][j + 1]) { r.push({ w: a[i], s: "no" }); i++; }
+      else { r.push({ w: b[j], s: "nuovo" }); j++; }
+    }
+    while (i < n) r.push({ w: a[i++], s: "no" });
+    while (j < m) r.push({ w: b[j++], s: "nuovo" });
+    /* La citazione può essere una parte dell'intervento: togliamo le parole
+       del resoconto prima della prima coincidenza e dopo l'ultima */
+    var primo = -1, ultimo = -1, uguali = 0;
+    r.forEach(function (x, k) { if (x.s !== "no") { if (primo < 0) primo = k; ultimo = k; } if (x.s === "ok") uguali++; });
+    if (!uguali) return { r: r, uguali: 0 };
+    var tagliato = r.filter(function (x, k) { return !(x.s === "no" && (k < primo || k > ultimo)); });
+    return { r: tagliato, uguali: uguali };
+  }
+  function piuVicina(frase) {
+    var b = parole(bordi(frase)), meglio = null;
+    CIT.forEach(function (q) {
+      var al = allinea(parole(q.quote), b);
+      var quota = b.length ? al.uguali / b.length : 0;
+      if (!meglio || quota > meglio.quota) meglio = { q: q, al: al, quota: quota };
+    });
+    return meglio;
+  }
+  /* Il cognome di chi parla compare vicino alla citazione? */
+  function attribuita(testo, c, q) {
+    var cognome = q.name.split(" ").slice(-1)[0];
+    var intorno = testo.slice(Math.max(0, c.da - 180), Math.min(testo.length, c.a + 80));
+    return new RegExp("(^|[^\\p{L}])" + regexEsc(cognome) + "(?=$|[^\\p{L}])", "iu").test(intorno);
+  }
+
+  /* ---------- Interfaccia ---------- */
+  var area = document.getElementById("risposta");
+  var esito = document.getElementById("esito");
+  var stato = document.getElementById("stato");
+  var msg = document.getElementById("msg");
+  var conta = document.getElementById("conta");
+
+  /* Esempio scritto da noi: due citazioni esatte, una con una parola cambiata
+     («lavoratori» al posto di «sindacati»). IV, NM e +Europa non compaiono. */
+  function q(g) { return CIT.filter(function (x) { return x.group === g; })[0]; }
+  var ESEMPIO =
+    "Sul salario minimo la Camera è divisa. Le opposizioni chiedono una soglia fissata per legge; la maggioranza e il Governo puntano sulla contrattazione collettiva.\n\n" +
+    "Fratelli d'Italia è contraria. Per Marcello Coppo: «" + q("FdI").quote + "»\n\n" +
+    "Il PD lega la proposta all'articolo 36 della Costituzione. Maria Cecilia Guerra: «" + q("PD").quote + "».\n\n" +
+    "Forza Italia teme effetti sulla contrattazione. Chiara Tenerini: «" + q("FI").quote.replace("dei sindacati", "dei lavoratori") + "».\n\n" +
+    "La Lega ricorda quanti lavoratori sono già coperti dai contratti collettivi. M5S, AVS e Azione sostengono una soglia legale. Per il Governo la materia spetta alle parti sociali.";
+
+  function contaParole() {
+    var n = area.value.trim() ? area.value.trim().split(/\s+/).length : 0;
+    conta.textContent = n === 1 ? "1 parola" : numero(n) + " parole";
+  }
+  area.addEventListener("input", function () { contaParole(); msg.textContent = ""; });
+  area.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); verifica(); }
+  });
+  document.getElementById("esempio").addEventListener("click", function () {
+    area.value = ESEMPIO;
+    contaParole();
+    msg.removeAttribute("data-tipo");
+    msg.textContent = "Esempio inserito. Contiene tre citazioni: una ha una parola cambiata.";
+    document.getElementById("verifica").focus();
+  });
+  document.getElementById("svuota").addEventListener("click", function () {
+    area.value = "";
+    contaParole();
+    msg.textContent = "";
+    esito.innerHTML = vuoto;
+    stato.textContent = "In attesa";
+    stato.style.color = "";
+    area.focus();
+  });
+  var vuoto = esito.innerHTML;
+  document.getElementById("modulo").addEventListener("submit", function (e) { e.preventDefault(); verifica(); });
+
+  function voce(nome, esito, extra) {
+    var icona = esito === "ok" ? SPUNTA : esito === "no" ? CROCE : FORSE;
+    return '<span class="sigillo__voce" data-esito="' + esito + '">' + icona + nome + (extra ? " <b>" + extra + "</b>" : "") + "</span>";
+  }
+
+  function verifica() {
+    var testo = area.value;
+    if (!testo.trim()) {
+      msg.dataset.tipo = "errore";
+      msg.textContent = "Incolla una risposta prima di verificare, oppure usa l'esempio.";
+      area.focus();
+      return;
+    }
+    msg.textContent = "";
+    esito.setAttribute("aria-busy", "true");
+    stato.textContent = "Controllo in corso";
+    stato.style.color = "";
+    esito.innerHTML = '<div class="attesa"><span>Confronto con il corpus locale…</span><span class="attesa__riga"><i></i></span></div>';
+    setTimeout(function () { mostra(testo); }, ridotto ? 0 : 650);
+  }
+
+  function mostra(testo) {
+    /* (a) Gruppi */
+    var gruppi = trovaGruppi(testo);
+    var presenti = gruppi.filter(function (x) { return x.come; });
+    var mancanti = gruppi.filter(function (x) { return !x.come; });
+    var esitoG = mancanti.length ? "no" : "ok";
+
+    /* (b) Citazioni */
+    var tutte = estrai(testo);
+    var brevi = [], citazioni = [];
+    tutte.forEach(function (c) { (parole(c.t).length < 4 ? brevi : citazioni).push(c); });
+    citazioni.forEach(function (c) {
+      var nota = CIT.filter(function (q) { return coincide(c.t, q.quote); })[0];
+      if (nota) { c.esito = "ok"; c.q = nota; c.attr = attribuita(testo, c, nota); return; }
+      var v = piuVicina(c.t);
+      if (v && v.quota >= 0.5) { c.esito = "no"; c.q = v.q; c.al = v.al; c.attr = attribuita(testo, c, v.q); }
+      else c.esito = "nd";
+    });
+    var ok = citazioni.filter(function (c) { return c.esito === "ok"; }).length;
+    var no = citazioni.filter(function (c) { return c.esito === "no"; }).length;
+    var nd = citazioni.length - ok - no;
+    var esitoC = no ? "no" : citazioni.length && !nd ? "ok" : "nd";
+
+    /* Sigillo e riassunto */
+    var h = '<div class="sigillo">' + '<span class="sigillo__da">Anteprima</span>' +
+      voce("Tutti i gruppi", esitoG, presenti.length + "/" + gruppi.length) +
+      voce("Voci autorevoli", "nd", "n.v.") +
+      voce("Citazioni esatte", esitoC, citazioni.length ? ok + "/" + citazioni.length : "–") + "</div>";
+    var frasi = [];
+    frasi.push(mancanti.length ? "Mancano " + mancanti.length + (mancanti.length === 1 ? " voce" : " voci") + " su " + gruppi.length + "." : "Ci sono tutti i gruppi del tema e il Governo.");
+    if (no) frasi.push(no === 1 ? "Una citazione non coincide con il resoconto." : no + " citazioni non coincidono con il resoconto.");
+    else if (citazioni.length && !nd) frasi.push("Le citazioni coincidono con il resoconto.");
+    else if (!citazioni.length) frasi.push("Non ci sono citazioni da controllare.");
+    if (nd) frasi.push(nd === 1 ? "Una citazione non è nel corpus locale." : nd + " citazioni non sono nel corpus locale.");
+    h += '<p class="riassunto">' + frasi.join(" ") + "</p>";
+
+    /* Blocco (a) */
+    h += '<section class="prova" data-entra style="--ritardo:80ms" aria-labelledby="p-a"><div class="prova__testa"><h3 class="titolo-4" id="p-a"><span>01</span>Tutti i gruppi</h3>' +
+      '<span class="prova__conto" data-esito="' + esitoG + '">' + presenti.length + " su " + gruppi.length + " nominati</span></div>";
+    h += '<ul class="appello">' + gruppi.map(function (x) {
+      return '<li data-c="' + (x.come ? "si" : "no") + '">' + (x.come ? SPUNTA : CROCE) +
+        '<span class="appello__nome"><span class="sigla">' + esc(x.g.k) + "</span> " + esc(x.g.nome) + "</span>" +
+        '<span class="appello__come">' + (x.come ? "«" + esc(x.come) + "»" : "assente") + "</span></li>";
+    }).join("") + "</ul>";
+    h += mancanti.length
+      ? "<p>Non trovo " + mancanti.map(function (x) { return esc(x.g.k); }).join(", ") + ". Una risposta completa li nomina, o dice che sul tema non hanno parlato.</p>"
+      : "<p>Ogni gruppo del tema e il Governo sono nominati almeno una volta.</p>";
+    h += "</section>";
+
+    var citati = [];
+    citazioni.forEach(function (c) { if (c.q && citati.indexOf(c.q) < 0) citati.push(c.q); });
+    /* Blocco (c) */
+    h += '<section class="prova" data-entra style="--ritardo:200ms" aria-labelledby="p-c"><div class="prova__testa"><h3 class="titolo-4" id="p-c"><span>02</span>Voci autorevoli</h3>' +
+      '<span class="prova__conto">non verificabile in questa anteprima</span></div>' +
+      "<p>Per dire se chi è citato è una voce autorevole sul tema servono i punteggi calcolati per la domanda. In questa pagina non li abbiamo, quindi non diamo un esito.</p>" +
+      '<div class="futuro"><strong>Il verificatore pubblico</strong><ol>' +
+      "<li>riconoscerà chi è citato e per quale gruppo;</li>" +
+      "<li>calcolerà l'autorevolezza sul tema con i sei criteri e i pesi pubblici;</li>" +
+      "<li>controllerà che per ogni gruppo parli un relatore, un membro del Governo o uno dei primi cinque.</li></ol>" +
+      (citati.length ? '<div class="citati"><span class="nota">Citati in questa risposta:</span>' + citati.map(function (q) { return '<span class="sigla">' + esc(q.name) + " · " + esc(q.group) + "</span>"; }).join("") + "</div>" : "") +
+      "</div></section>";
+
+    /* Blocco (b) */
+    h += '<section class="prova" data-entra style="--ritardo:320ms" aria-labelledby="p-b"><div class="prova__testa"><h3 class="titolo-4" id="p-b"><span>03</span>Citazioni esatte</h3>' +
+      '<span class="prova__conto" data-esito="' + esitoC + '">' + (citazioni.length ? ok + " su " + citazioni.length + " coincidono" : "nessuna citazione") + "</span></div>";
+    if (!citazioni.length) {
+      h += "<p>Non ho trovato testo tra «…» o tra \"…\" lungo almeno quattro parole.</p>";
+    } else {
+      h += '<div class="citate">' + citazioni.map(scheda).join("") + "</div>";
+    }
+    if (brevi.length) {
+      h += '<p class="brevi">Tra virgolette ma troppo brevi per essere citazioni: ' + brevi.map(function (c) { return "«" + esc(c.t) + "»"; }).join(", ") + ".</p>";
+    }
+    h += "</section>";
+
+    esito.innerHTML = h;
+    esito.setAttribute("aria-busy", "false");
+    var tot = [esitoG, "nd", esitoC];
+    var passate = tot.filter(function (x) { return x === "ok"; }).length;
+    stato.textContent = passate + " su 3 superate · 1 non verificabile";
+    stato.style.color = tot.indexOf("no") >= 0 ? "var(--errore)" : "";
+  }
+
+  function scheda(c) {
+    var q = c.q;
+    var fonte = q ? '<p class="chi-dice">' + (c.esito === "ok" ? "" : "La più vicina tra quelle note: ") +
+      "<strong>" + esc(q.name) + "</strong>, " + esc(q.groupName) + ", " + dataIt(q.date) +
+      ' <a class="bollino" href="' + esc(q.url) + '" rel="noopener">' + SPUNTA + "Resoconto</a></p>" : "";
+    var nomeVicino = q ? (c.attr ? "" : '<p class="chi-dice">Il cognome di ' + esc(q.name) + " non compare vicino alla citazione: controlla a chi è attribuita.</p>") : "";
+    if (c.esito === "ok") {
+      return '<article class="citata" data-esito="ok"><p class="citata__esito">' + SPUNTA + "Coincide <span>con il resoconto, parola per parola</span></p>" +
+        '<blockquote class="cit cit--piccola"><p class="cit__testo">' + esc(bordi(norm(c.t))) + "</p></blockquote>" + fonte + nomeVicino + "</article>";
+    }
+    if (c.esito === "no") {
+      var diverse = c.al.r.filter(function (x) { return x.s !== "ok"; });
+      var nuove = diverse.filter(function (x) { return x.s === "nuovo"; }).length;
+      var tolte = diverse.length - nuove;
+      var quanto = [];
+      if (nuove) quanto.push(nuove === 1 ? "1 parola che il resoconto non ha" : nuove + " parole che il resoconto non ha");
+      if (tolte) quanto.push(tolte === 1 ? "1 parola del resoconto che manca" : tolte + " parole del resoconto che mancano");
+      return '<article class="citata" data-esito="no"><p class="citata__esito">' + CROCE + "Non coincide <span>" + quanto.join(", ") + "</span></p>" +
+        '<p class="diff">«' + c.al.r.map(function (x) { return '<span data-s="' + x.s + '">' + esc(x.w) + "</span>"; }).join(" ") + "»</p>" +
+        '<p class="diff-legenda"><span>sottolineato: coincide</span><span><mark>evidenziato</mark>: solo nella risposta</span><span><s>barrato</s>: solo nel resoconto</span></p>' +
+        fonte + "</article>";
+    }
+    return '<article class="citata" data-esito="nd"><p class="citata__esito">' + FORSE + "Non trovata <span>nel corpus locale di 11 citazioni</span></p>" +
+      '<blockquote class="cit cit--piccola"><p class="cit__testo">' + esc(bordi(norm(c.t))) + "</p></blockquote>" +
+      '<p class="chi-dice">Non vuol dire che sia falsa. Il verificatore pubblico la cercherà in tutti gli interventi della legislatura.</p></article>';
+  }
+
+  document.getElementById("alias").innerHTML = GRUPPI.map(function (g) {
+    return "<tr><td>" + esc(g.nome) + '</td><td class="mono">' + (g.sigle.map(esc).join(", ") || "–") + "</td><td>" + g.nomi.map(esc).join(", ") + "</td></tr>";
+  }).join("");
+
+  contaParole();
+  window.osservaComparse();
+})();
+</script>
+</body>
+</html>

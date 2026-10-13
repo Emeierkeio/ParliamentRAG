@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="aggiornamenti">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aggiornamenti · ParliamentRAG</title>
+<meta name="description" content="Cosa cambia in ParliamentRAG: articoli, sistemi, interventi pubblici. Con l'iscrizione agli aggiornamenti via email.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(40px, 5vw, 72px);
+  }
+  .apertura__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-5) var(--s-6);
+    align-items: end;
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 44ch;
+  }
+  @media (max-width: 760px) {
+    .apertura__griglia {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Cronaca: data in margine, filo verticale, notizia ---------- */
+  .cronaca {
+    position: relative;
+    margin-top: var(--s-5);
+    padding: 0;
+    list-style: none;
+  }
+  .cronaca::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: var(--s-7);
+    bottom: var(--s-7);
+    width: 1px;
+    background: var(--filetto-forte);
+  }
+  .notizia {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: var(--s-4) clamp(32px, 6vw, 96px);
+    padding-block: var(--s-7);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .notizia__quando {
+    position: relative;
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding-left: var(--s-5);
+  }
+  .notizia__quando::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.45em;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--carta);
+    border: 1.5px solid var(--accento);
+  }
+  .notizia:first-child .notizia__quando::before {
+    background: var(--accento);
+  }
+  .notizia__quando time {
+    font-family: var(--f-mono);
+    font-size: var(--t-piccolo);
+    letter-spacing: -0.01em;
+    color: var(--inchiostro);
+    font-variant-numeric: tabular-nums;
+  }
+  .notizia__quando .sigla {
+    justify-self: start;
+  }
+  .notizia__corpo {
+    max-width: 62ch;
+  }
+  .notizia h2 {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-2);
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+  .notizia p {
+    margin-top: var(--s-4);
+    color: var(--inchiostro-2);
+  }
+  .notizia__link {
+    margin-top: var(--s-5);
+    --fila: var(--s-5);
+    font-size: var(--t-piccolo);
+  }
+  .notizia__link a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .notizia[data-nascosta] {
+    display: none;
+  }
+  .cronaca__vuota {
+    padding-block: var(--s-7);
+    color: var(--inchiostro-3);
+  }
+  @media (max-width: 760px) {
+    .notizia {
+      grid-template-columns: 1fr;
+      padding-block: var(--s-6);
+    }
+    .cronaca::before {
+      display: none;
+    }
+    .notizia__quando {
+      grid-auto-flow: column;
+      justify-content: start;
+      align-items: center;
+      gap: var(--s-3);
+    }
+  }
+
+  /* ---------- Newsletter (stessa logica della home) ---------- */
+  .iscriviti {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .iscriviti form {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .iscriviti__regole {
+    margin-top: var(--s-5);
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: var(--s-2);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+  }
+  .iscriviti__regole li {
+    display: flex;
+    gap: 10px;
+  }
+  .iscriviti__regole svg {
+    width: 15px;
+    height: 15px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    color: var(--verificato);
+  }
+  @media (max-width: 860px) {
+    .iscriviti {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 420px) {
+    .iscriviti .campo .btn {
+      padding: 0 16px;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina apertura__griglia">
+      <div>
+        <p class="etichetta compare">Aggiornamenti</p>
+        <h1 class="titolo-1 compare" style="--ritardo:80ms">Cosa cambia nel progetto.</h1>
+        <p class="attacco compare" style="--ritardo:160ms">Articoli, sistemi nuovi, interventi pubblici. In ordine, dal più recente.</p>
+      </div>
+      <div class="compare" style="--ritardo:220ms">
+        <div class="schede" role="group" aria-label="Filtra per tipo" id="filtro">
+          <button type="button" aria-pressed="true" aria-selected="true" data-tipo="">Tutti</button>
+          <button type="button" aria-pressed="false" aria-selected="false" data-tipo="pubblicazioni">Pubblicazioni</button>
+          <button type="button" aria-pressed="false" aria-selected="false" data-tipo="sistemi">Sistemi</button>
+          <button type="button" aria-pressed="false" aria-selected="false" data-tipo="interventi">Interventi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cronaca -->
+  <section class="sezione-stretta" style="padding-top:0">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em" id="conteggio" aria-live="polite">Ottobre 2026</p></div>
+
+      <ol class="cronaca" id="cronaca">
+        <li class="notizia compare" data-tipo="pubblicazioni">
+          <div class="notizia__quando">
+            <time datetime="2026-10-25">25–29 ott. 2026</time>
+            <span class="sigla">Pubblicazioni</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Due articoli accettati a ISWC 2026</h2>
+            <p>L'articolo dell'In-Use Track e la demo di ParliamentRAG sono stati accettati alla International Semantic Web Conference. Li presentiamo a Bari, dal 25 al 29 ottobre.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="ricerca.html">Leggi gli articoli e come citarli</a>
+              <a class="collegamento" href="https://iswc2026.semanticweb.org/#/program/acceptedpapers" rel="noopener">Programma della conferenza <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-03">3 ott. 2026</time>
+            <span class="sigla">Sistemi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Fascicoli è online</h2>
+            <p>I fascicoli su un tema ora sono un sistema a sé, su fascicoli.it. Per ogni tema trovi la posizione di ogni gruppo, le voci autorevoli e le citazioni esatte. Il Senato arriverà più avanti.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="../fascicoli/index.html">Apri Fascicoli</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="interventi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-01">1 ott. 2026</time>
+            <span class="sigla">Interventi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>ParliamentRAG alla Milano Digital Week</h2>
+            <p>Abbiamo presentato il progetto alla Milano Digital Week 2026, all'Università di Milano-Bicocca.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.milanodigitalweek.com/event/parliamentrag-navigare-gli-atti-parlamentari-con-lia-affidabile" rel="noopener">Pagina dell'evento <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            </div>
+          </div>
+        </li>
+      </ol>
+      <p class="cronaca__vuota" id="vuota" hidden>Nessun aggiornamento di questo tipo, per ora.</p>
+    </div>
+  </section>
+
+  <!-- Iscrizione -->
+  <section class="sezione-stretta" id="iscriviti" style="background:var(--carta-2);border-top:1px solid var(--filetto)">
+    <div class="pagina iscriviti">
+      <div class="compare">
+        <h2 class="titolo-2">Ricevi gli aggiornamenti per email.</h2>
+        <p class="tenue" style="margin-top:var(--s-3);max-width:44ch">Poche email, quando c'è qualcosa da dire. Ti disiscrivi con un clic.</p>
+        <ul class="iscriviti__regole">
+          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Confermi l'iscrizione da un'email che ti mandiamo.</li>
+          <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>L'indirizzo resta su Brevo. Non lo colleghiamo alle domande che fai.</li>
+        </ul>
+      </div>
+      <form class="compare" id="iscrizione" novalidate style="--ritardo:120ms">
+        <label class="sr" for="email">La tua email</label>
+        <div class="campo">
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="nome@esempio.it" required>
+          <button class="btn btn--accento" type="submit">Iscriviti</button>
+        </div>
+        <label class="spunta"><input type="checkbox" id="consenso"> <span>Ho letto l'<a class="collegamento" href="privacy.html#newsletter">informativa privacy</a> e accetto di ricevere aggiornamenti su ParliamentRAG.</span></label>
+        <p class="messaggio" id="iscrizione-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Filtro per tipo ---------- */
+  var filtro = document.getElementById("filtro");
+  var notizie = document.querySelectorAll("#cronaca .notizia");
+  var vuota = document.getElementById("vuota");
+  var conteggio = document.getElementById("conteggio");
+  filtro.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    var tipo = b.dataset.tipo;
+    filtro.querySelectorAll("button").forEach(function (x) {
+      var on = x === b;
+      x.setAttribute("aria-pressed", on ? "true" : "false");
+      x.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    var n = 0;
+    notizie.forEach(function (el) {
+      var mostra = !tipo || el.dataset.tipo === tipo;
+      if (mostra) { el.removeAttribute("data-nascosta"); el.setAttribute("data-visto", "true"); n++; }
+      else el.setAttribute("data-nascosta", "");
+    });
+    vuota.hidden = n > 0;
+    conteggio.textContent = tipo ? b.textContent + " · " + n + (n === 1 ? " voce" : " voci") : "Ottobre 2026";
+  });
+
+  /* ---------- Iscrizione (in locale non parte nulla) ---------- */
+  document.getElementById("iscrizione").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = document.getElementById("iscrizione-msg");
+    var email = document.getElementById("email").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.dataset.tipo = "errore"; msg.textContent = "Scrivi un indirizzo email completo, ad esempio nome@esempio.it."; return; }
+    if (!document.getElementById("consenso").checked) { msg.dataset.tipo = "errore"; msg.textContent = "Per iscriverti devi accettare l'informativa."; return; }
+    msg.dataset.tipo = "ok";
+    msg.textContent = "Versione locale: l'iscrizione non viene inviata. In produzione arriva un'email di conferma da Brevo.";
+  });
+})();
+</script>
+</body>
+</html>

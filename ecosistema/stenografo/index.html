@@ -1,0 +1,1431 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="stenografo" data-pagina="chiedi" data-prodotto="sistema">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stenografo</title>
+<meta name="description" content="Fai una domanda su una seduta, un atto o un voto della Camera. Ricevi una risposta breve con il resoconto ufficiale accanto a ogni frase.">
+<link rel="icon" href="../shared/favicon-stenografo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura: la domanda ---------- */
+  .avvio {
+    padding-block: clamp(40px, 7vw, 104px) clamp(56px, 7vw, 112px);
+  }
+  .avvio__griglia {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.75fr);
+    gap: var(--s-7) clamp(40px, 6vw, 104px);
+    align-items: start;
+  }
+  .avvio h1 {
+    margin-top: var(--s-4);
+  }
+  .avvio .attacco {
+    margin-top: var(--s-4);
+    max-width: 44ch;
+  }
+  .copertura {
+    margin-top: var(--s-4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px var(--s-3);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .copertura span + span::before {
+    content: "·";
+    margin-right: var(--s-3);
+    color: var(--inchiostro-4);
+  }
+  .avvio__campo {
+    margin-top: var(--s-6);
+  }
+  @media (max-width: 960px) {
+    .avvio__griglia {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Il compositore: lo stesso modulo in apertura e poi ancorato in basso */
+  .compositore .campo--area textarea {
+    resize: none;
+    font-size: 1.1875rem;
+  }
+  .compositore__piede {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: var(--s-2);
+  }
+  .compositore__aiuto kbd {
+    font-family: var(--f-mono);
+    font-size: 0.92em;
+    padding: 1px 5px;
+    border: 1px solid var(--filetto);
+    border-radius: var(--r-1);
+    background: var(--carta);
+  }
+  .compositore__invia {
+    margin-left: auto;
+  }
+  @media (hover: none), (max-width: 560px) {
+    .compositore__aiuto {
+      visibility: hidden;
+    }
+  }
+  @media (max-width: 560px) {
+    .copertura {
+      flex-direction: column;
+    }
+    .copertura span + span::before {
+      display: none;
+    }
+  }
+
+  /* Domande d'esempio */
+  .esempi {
+    margin-top: var(--s-5);
+  }
+  .esempi__lista {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+  .esempio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 8px 16px;
+    border: 1px solid var(--filetto-forte);
+    border-radius: 20px;
+    background: var(--foglio);
+    color: var(--inchiostro-2);
+    font-size: var(--t-nota);
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--d-1), color var(--d-1), background var(--d-1);
+  }
+  .esempio:hover {
+    border-color: var(--accento);
+    color: var(--inchiostro);
+    background: var(--accento-tenue);
+  }
+  .esempio .freccia {
+    flex-shrink: 0;
+    color: var(--accento);
+    transition: transform var(--d-2) var(--e-uscita);
+  }
+  .esempio:hover .freccia {
+    transform: translateX(3px);
+  }
+
+  /* Margine: come si legge una risposta */
+  .lettura {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .lettura__campione {
+    margin-top: var(--s-4);
+    font-size: var(--t-piccolo);
+    line-height: 1.7;
+  }
+  .lettura__fonte {
+    margin-top: var(--s-3);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px dashed var(--filetto-forte);
+    font-size: var(--t-nota);
+  }
+  .lettura__fonte .mono {
+    color: var(--inchiostro-3);
+  }
+  .lettura__testo {
+    margin-top: var(--s-4);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-2);
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  /* ---------- Conversazione ---------- */
+  .conversa {
+    padding-block: clamp(32px, 5vw, 64px) var(--s-7);
+  }
+  .scambio + .scambio {
+    margin-top: clamp(56px, 8vw, 104px);
+  }
+  .scambio__testa {
+    scroll-margin-top: 88px;
+  }
+  .scambio__q {
+    margin-top: var(--s-2);
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.375rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    max-width: 30ch;
+  }
+  .scambio__q:focus {
+    outline: none;
+  }
+  .scambio__corpo {
+    margin-top: var(--s-5);
+    margin-left: calc(4.5rem + var(--s-5));
+  }
+  @media (max-width: 640px) {
+    .scambio__corpo {
+      margin-left: 0;
+    }
+  }
+
+  /* Traccia: i passaggi scorrono come i tasti di una stenotipia */
+  .traccia {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 4px;
+    font-family: var(--f-mono);
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    max-width: 44rem;
+  }
+  .passo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 24px;
+    transition: opacity var(--d-2);
+  }
+  .passo[data-stato="attesa"] {
+    opacity: 0;
+  }
+  .passo__n {
+    color: var(--inchiostro-4);
+    font-size: var(--t-micro);
+  }
+  .passo__t {
+    color: var(--inchiostro-2);
+    white-space: nowrap;
+  }
+  .passo[data-stato="corso"] .passo__t::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: -2px;
+    background: var(--accento);
+    animation: lampeggia 0.9s steps(2) infinite;
+  }
+  .passo__riga {
+    flex: 1;
+    min-width: var(--s-4);
+    height: 1px;
+    background-image: linear-gradient(to right, var(--filetto-forte) 50%, transparent 50%);
+    background-size: 4px 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--d-3) var(--e-uscita);
+  }
+  .passo[data-stato="fatto"] .passo__riga {
+    transform: none;
+  }
+  .passo__esito {
+    color: var(--inchiostro);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity var(--d-2);
+  }
+  .passo[data-stato="fatto"] .passo__esito {
+    opacity: 1;
+  }
+  .passo svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--verificato);
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity var(--d-2), transform var(--d-3) var(--e-uscita);
+  }
+  .passo[data-stato="fatto"] svg {
+    opacity: 1;
+    transform: none;
+  }
+  .traccia[data-fine] {
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--filetto);
+  }
+  @keyframes lampeggia {
+    to {
+      visibility: hidden;
+    }
+  }
+  @media (max-width: 640px) {
+    .passo {
+      flex-wrap: wrap;
+      gap: 0 10px;
+      align-items: baseline;
+    }
+    .passo__t {
+      white-space: normal;
+      flex: 1;
+    }
+    .passo__riga {
+      display: none;
+    }
+    .passo svg {
+      order: -1;
+      align-self: center;
+    }
+    .passo__n {
+      display: none;
+    }
+    .passo__esito {
+      flex-basis: 100%;
+      padding-left: 24px;
+      white-space: normal;
+    }
+  }
+
+  /* Risposta: il testo come un foglio di resoconto, le fonti a margine */
+  .risposta {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
+    grid-template-areas: "testo fonti" "piede fonti";
+    grid-template-rows: auto 1fr;
+    gap: var(--s-6) clamp(32px, 5vw, 72px);
+    align-items: start;
+  }
+  .risposta[data-sole] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "testo" "piede";
+  }
+  .risposta__testo {
+    grid-area: testo;
+    display: grid;
+    gap: var(--s-4);
+    min-width: 0;
+  }
+  .risposta__testo > p {
+    font-size: var(--t-4);
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+  .risposta__testo > :not([data-scrivi]) {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity var(--d-3) var(--e-uscita), transform var(--d-3) var(--e-uscita);
+  }
+  .risposta__testo > [data-visto] {
+    opacity: 1;
+    transform: none;
+  }
+  .risposta__testo .rif + .rif {
+    margin-left: 3px;
+  }
+  .cursore {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    margin-left: 1px;
+    vertical-align: -3px;
+    background: var(--accento);
+  }
+  .risposta__piede {
+    grid-area: piede;
+    display: grid;
+    gap: var(--s-4);
+    padding-top: var(--s-5);
+    border-top: 1px dashed var(--filetto-forte);
+    opacity: 0;
+    transition: opacity var(--d-3) var(--e-uscita);
+  }
+  .risposta__piede[data-visto] {
+    opacity: 1;
+  }
+
+  /* Fonti numerate */
+  .fonti {
+    grid-area: fonti;
+    position: sticky;
+    top: calc(64px + var(--s-4));
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--inchiostro);
+  }
+  .fonti ol {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-3);
+  }
+  .fonte {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-2) var(--s-3) 0;
+    border-bottom: 1px solid var(--filetto);
+    border-radius: var(--r-1);
+    scroll-margin-top: 96px;
+    opacity: 0.32;
+    transition: opacity var(--d-3) var(--e-uscita), background var(--d-1);
+  }
+  .fonte[data-acceso] {
+    opacity: 1;
+  }
+  .fonte[data-attiva] {
+    background: var(--accento-tenue);
+  }
+  .fonte__n {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-left: var(--s-1);
+    border: 1px solid var(--filetto-forte);
+    border-radius: var(--r-1);
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    background: var(--foglio);
+    transition: border-color var(--d-1), color var(--d-1), background var(--d-1);
+  }
+  .fonte[data-acceso] .fonte__n {
+    border-color: color-mix(in oklab, var(--accento) 50%, transparent);
+    color: var(--accento);
+  }
+  .fonte[data-attiva] .fonte__n {
+    background: var(--accento);
+    border-color: var(--accento);
+    color: var(--su-accento);
+  }
+  .fonte__tipo {
+    display: block;
+  }
+  .fonte__t {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--t-piccolo);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .fonte__id {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--f-mono);
+    font-size: var(--t-micro);
+    color: var(--inchiostro-3);
+    overflow-wrap: anywhere;
+  }
+  .fonte__vai {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: var(--t-nota);
+  }
+  .fonte-in-linea[data-attiva] {
+    background-color: var(--accento-tenue);
+  }
+  @media (max-width: 960px) {
+    .risposta {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "testo" "fonti" "piede";
+      grid-template-rows: auto;
+    }
+    .fonti {
+      position: static;
+    }
+  }
+
+  /* Sigillo: una voce non in gioco si mostra neutra, non come un errore */
+  .sigillo__voce[data-esito="neutro"] {
+    color: var(--inchiostro-3);
+  }
+  .sigillo__voce[data-esito="neutro"] svg {
+    color: var(--inchiostro-4);
+  }
+  @media (max-width: 720px) {
+    .risposta .sigillo {
+      display: flex;
+      flex-direction: column;
+    }
+    .risposta .sigillo__da {
+      width: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--filetto);
+    }
+    .risposta .sigillo__voce {
+      white-space: normal;
+      border-left: 0;
+      margin-left: 0;
+      box-shadow: none;
+    }
+    .risposta .sigillo__voce + .sigillo__voce {
+      border-left: 0;
+      border-top: 1px solid var(--filetto);
+    }
+  }
+  .azioni {
+    --fila: var(--s-2);
+  }
+  .azioni .btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Emiciclo nella risposta sul voto */
+  .aula {
+    padding: var(--s-5) var(--s-5) var(--s-4);
+  }
+  .aula svg {
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    margin-inline: auto;
+  }
+  .aula .emiciclo circle:not([data-v]):not([data-vuoto]) {
+    fill: var(--carta-3);
+  }
+  .aula .emiciclo [data-vuoto] {
+    fill: var(--filetto);
+    stroke: none;
+  }
+  .aula .emiciclo [data-v="n.d."] {
+    fill: var(--foglio);
+    stroke: var(--inchiostro-3);
+    stroke-width: 4;
+  }
+  .aula figcaption {
+    margin-top: var(--s-4);
+    display: grid;
+    gap: var(--s-3);
+  }
+  .legenda b {
+    font-family: var(--f-mono);
+    font-weight: 500;
+    font-size: 0.95em;
+    color: var(--inchiostro);
+  }
+  .legenda i.nd {
+    background: var(--foglio);
+    box-shadow: inset 0 0 0 1.5px var(--inchiostro-3);
+  }
+  .aula__testa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-4);
+    margin-bottom: var(--s-3);
+  }
+
+  /* Tabella dei voti per gruppo */
+  .voto-gruppi th[scope="row"] {
+    font-family: var(--f-testo);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro);
+    font-weight: 400;
+    border-bottom: 1px solid var(--filetto);
+  }
+  .voto-gruppi th[scope="row"] .sigla {
+    margin-right: var(--s-3);
+    vertical-align: 1px;
+  }
+  .voto-gruppi .gruppo-nome {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+    line-height: 1.35;
+  }
+  .voto-gruppi .num[data-v="si"] {
+    color: var(--voto-si);
+    font-weight: 500;
+  }
+  .voto-gruppi .num[data-v="no"] {
+    color: var(--voto-no);
+    font-weight: 500;
+  }
+  .voto-gruppi .num[data-v="ast"] {
+    color: var(--voto-ast);
+    font-weight: 500;
+  }
+  .voto-gruppi .num[data-v="zero"] {
+    color: var(--inchiostro-4);
+  }
+  .voto-gruppi tfoot th[scope="row"],
+  .voto-gruppi tfoot td {
+    border-bottom: 0;
+    border-top: 1px solid var(--inchiostro);
+    font-weight: 500;
+    color: var(--inchiostro);
+  }
+  .voto-gruppi th.num {
+    text-align: right;
+  }
+  .voto-gruppi td:last-child,
+  .voto-gruppi th:last-child {
+    padding-right: 0;
+  }
+  .corto {
+    display: none;
+  }
+  @media (max-width: 560px) {
+    .voto-gruppi .gruppo-nome {
+      display: none;
+    }
+    .lungo {
+      display: none;
+    }
+    .corto {
+      display: inline;
+    }
+    .voto-gruppi th,
+    .voto-gruppi td {
+      padding-right: var(--s-3);
+    }
+  }
+
+  /* Passaggio a Fascicoli */
+  .passaggio {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 40rem;
+  }
+  .passaggio__marchio svg {
+    height: 36px;
+    width: auto;
+    color: var(--inchiostro);
+    overflow: visible;
+  }
+  .passaggio p {
+    color: var(--inchiostro-2);
+  }
+  .passaggio .btn {
+    justify-self: start;
+    white-space: normal;
+    text-align: left;
+    min-height: 46px;
+    padding-block: 10px;
+  }
+
+  /* ---------- Molo: il compositore ancorato in basso ---------- */
+  .molo {
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    padding-block: var(--s-3) calc(var(--s-3) + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in oklab, var(--carta) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-top: 1px solid var(--filetto);
+  }
+  .molo__in {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--s-3);
+  }
+  .molo__campo {
+    flex: 1;
+    min-width: 0;
+  }
+  .molo .compositore .campo--area {
+    flex-direction: row;
+    align-items: flex-end;
+    padding: 5px 5px 5px 18px;
+    border-radius: 24px;
+  }
+  .molo .compositore .campo--area textarea {
+    min-height: 0;
+    max-height: 160px;
+    padding: 9px 0;
+    font-size: var(--t-corpo);
+  }
+  .molo .compositore__piede {
+    margin-top: 0;
+  }
+  .molo .compositore__aiuto {
+    display: none;
+  }
+  .molo .compositore__invia {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+  .molo__nuova {
+    min-height: 50px;
+  }
+  @media (max-width: 640px) {
+    .molo__nuova span,
+    .molo .compositore__invia span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .molo__nuova {
+      width: 50px;
+      padding: 0;
+    }
+    .molo .compositore__invia {
+      width: 40px;
+      padding: 0;
+    }
+  }
+
+  /* Stampa: resta il foglio, senza molo né pulsanti */
+  @media print {
+    .molo,
+    .azioni,
+    .traccia {
+      display: none !important;
+    }
+    .risposta__testo > *,
+    .risposta__piede,
+    .fonte {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .fonti {
+      position: static;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura: una domanda sola, calma -->
+  <section class="avvio" id="avvio">
+    <div class="pagina avvio__griglia">
+      <div>
+        <p class="etichetta compare">Stenografo · gratuito, senza account</p>
+        <h1 class="titolo-1 compare" style="--ritardo:80ms">Chiedi cosa ha fatto <em>la Camera</em>.</h1>
+        <p class="attacco compare" style="--ritardo:160ms">Una legge, un voto, una giornata in Aula. Rispondiamo in poche righe e accanto a ogni frase mettiamo il link al documento ufficiale, così puoi controllare.</p>
+        <p class="copertura compare" style="--ritardo:200ms"><span>Camera dei Deputati, XIX legislatura, dal 13 ottobre 2022</span><span>dati aggiornati al <span id="data-agg"></span></span></p>
+
+        <div class="avvio__campo compare" style="--ritardo:240ms" id="avvio-campo">
+          <form class="compositore" id="compositore" novalidate>
+            <label class="sr" for="domanda">La tua domanda</label>
+            <div class="campo campo--area">
+              <textarea id="domanda" rows="3" autocomplete="off" enterkeyhint="send" placeholder="Ad esempio: com'è finito il voto di fiducia del 7 ottobre?"></textarea>
+              <div class="compositore__piede">
+                <span class="nota compositore__aiuto"><kbd>Invio</kbd> per chiedere · <kbd>Maiusc</kbd> + <kbd>Invio</kbd> per andare a capo</span>
+                <button class="btn btn--accento compositore__invia" type="submit" disabled><span>Chiedi</span> <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="esempi compare" style="--ritardo:300ms">
+          <p class="etichetta">Domande d'esempio</p>
+          <div class="esempi__lista" data-esempi></div>
+        </div>
+      </div>
+
+      <aside class="lettura compare" style="--ritardo:360ms" aria-labelledby="lettura-t">
+        <p class="etichetta" id="lettura-t">Come si legge una risposta</p>
+        <p class="lettura__campione"><span class="fonte-in-linea" tabindex="0">Il 5 dicembre 2023 l'Aula ha respinto l'emendamento Conte sul salario minimo.</span><span class="rif">1</span></p>
+        <p class="lettura__fonte"><span class="mono" style="color:var(--accento)">1</span><span>Resoconto stenografico, seduta n. 209<br><span class="mono">leg19 · sed0209</span></span></p>
+        <div class="lettura__testo">
+          <p>Ogni frase porta il numero della sua fonte. La fonte è il resoconto, l'atto o la votazione ufficiale della Camera.</p>
+          <p>Le parole tra virgolette coincidono con il resoconto. Se non coincidono, la citazione non compare.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Conversazione: le domande si accumulano, una sotto l'altra -->
+  <section class="conversa" id="conversa" aria-label="Domande e risposte" hidden>
+    <div class="pagina">
+      <div id="lista" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Molo: il compositore resta in basso per le domande successive -->
+  <div class="molo" id="molo" hidden>
+    <div class="pagina molo__in">
+      <button class="btn btn--linea molo__nuova" type="button" data-nuova aria-label="Ricomincia: cancella le risposte e torna all'inizio" title="Cancella le risposte e torna all'inizio"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8a5 5 0 1 0 1.5-3.6"/><path d="M3 2.5v2.6h2.6"/></svg><span>Ricomincia</span></button>
+      <div class="molo__campo" id="molo-campo"></div>
+    </div>
+  </div>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/data/dati.js"></script>
+<script src="../shared/data/aula.js"></script>
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.DATI, A = window.AULA, esc = window.esc, numero = window.numero;
+  var SPUNTA = window.ICONE.spunta, FRECCIA = window.ICONE.freccia, ESTERNO = window.ICONE.esterno;
+  var NEUTRO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.4 8h5.2"/></svg>';
+  var LINK = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 9.4l2.8-2.8M7.2 4.6l1.1-1.1a2.6 2.6 0 0 1 3.7 3.7l-1.1 1.1M8.8 11.4l-1.1 1.1a2.6 2.6 0 0 1-3.7-3.7l1.1-1.1"/></svg>';
+  var ridotto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Utilità ---------- */
+
+  function data(iso) {
+    return new Date(iso + "T12:00:00").toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+  }
+  function norm(s) {
+    return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[’']/g, " ").replace(/[^a-z0-9+.\s]/g, " ").replace(/\s+/g, " ").trim();
+  }
+  function contieneParola(testo, parola) {
+    return (" " + testo + " ").indexOf(" " + parola + " ") !== -1;
+  }
+  function resoconto(n) {
+    return "https://www.camera.it/leg19/410?idSeduta=" + ("000" + n).slice(-4) + "&tipo=stenografico";
+  }
+  function elenco(v) {
+    return v.length < 2 ? v.join("") : v.slice(0, -1).join(", ") + " e " + v[v.length - 1];
+  }
+
+  document.getElementById("data-agg").textContent = data(D.stats.last_update);
+
+  /* Nomi dei gruppi: prima quelli delle citazioni, poi quelli dell'Aula. Il Misto si scrive per componente. */
+  var NOMI = {};
+  A.groups.forEach(function (g) { NOMI[g.acronym] = g.name; });
+  D.tema.citazioni.forEach(function (q) { NOMI[q.group] = q.groupName; });
+  NOMI["Minoranze linguistiche"] = "Minoranze linguistiche (Gruppo Misto)";
+  NOMI["Misto"] = "Gruppo Misto, altre componenti";
+  var SIGLE = { "Minoranze linguistiche": "Min. ling.", "Misto": "Altri Misto" };
+
+  var VOTO_TESTO = { favor: "Favorevole", against: "Contrario", abstain: "Astenuto", absent: "Assente", "n.d.": "Voto non associato al seggio" };
+
+  /* ---------- Domande d'esempio ---------- */
+
+  var ESEMPI = [
+    "Com'è andata la fiducia sulla legge elettorale il 7 ottobre?",
+    "Chi ha votato a favore dell'emendamento Conte sul salario minimo?",
+    "Cosa pensano i gruppi del salario minimo?"
+  ];
+  function bottoniEsempi(lista) {
+    return (lista || ESEMPI).map(function (q) {
+      return '<button class="esempio" type="button" data-esempio="' + esc(q) + '"><span>' + esc(q) + "</span>" + FRECCIA + "</button>";
+    }).join("");
+  }
+  document.querySelector("[data-esempi]").innerHTML = bottoniEsempi();
+
+  /* ---------- Pezzi della risposta ---------- */
+
+  /* Frase generata con le sue fonti: sottolineatura a puntini e numeri in apice */
+  function frase(testo, rif, id) {
+    return '<span class="fonte-in-linea" tabindex="0" data-rif="' + rif.join(" ") + '">' + esc(testo) + "</span>" +
+      rif.map(function (r) { return '<a class="rif" href="#' + id + "-f" + r + '" aria-label="Fonte ' + r + '">' + r + "</a>"; }).join("");
+  }
+  function sigillo(voci) {
+    return '<div class="sigillo"><span class="sigillo__da">Verifica</span>' + voci.map(function (v) {
+      return '<span class="sigillo__voce" data-esito="' + (v[0] ? "si" : "neutro") + '">' + (v[0] ? SPUNTA : NEUTRO) + esc(v[1]) + "</span>";
+    }).join("") + "</div>";
+  }
+  function bottoneLink() {
+    return '<button class="btn btn--linea btn--piccolo" type="button" data-link>' + LINK + "<span>Copia il link</span></button>";
+  }
+  var FONTE_VOTO_FIDUCIA = {
+    tipo: "Votazione", titolo: "Votazione n. 34 della seduta 722: " + A.vote.description, id: A.vote.id,
+    href: "../scranno/index.html#voto=camera_leg19_sed722_v034", vai: "Apri in Scranno", interno: true
+  };
+
+  /* a) Fiducia sulla legge elettorale: numeri dal voto ufficiale, seggi dall'Aula */
+  function rispostaFiducia(id) {
+    var v = A.vote;
+    var conta = { favor: 0, against: 0, abstain: 0, absent: 0, "n.d.": 0 };
+    A.seats.forEach(function (s) { if (s.id && s.v in conta) conta[s.v]++; });
+    var scarto = v.in_favor - conta.favor;
+
+    /* Seggi: il colore arriva in un'onda da sinistra a destra, come sul tabellone */
+    var cerchi = A.seats.map(function (s) {
+      var ang = Math.atan2(1760 - s.y, s.x - 1280);
+      var ritardo = Math.round((1 - ang / Math.PI) * 700);
+      if (!s.id) return '<circle cx="' + s.x + '" cy="' + s.y + '" r="9" data-vuoto></circle>';
+      var gruppo = s.c || s.g;
+      return '<circle cx="' + s.x + '" cy="' + s.y + '" r="17" data-voto="' + s.v + '" style="transition-delay:' + ritardo + 'ms"><title>' +
+        esc(s.n + " · " + gruppo + " · " + VOTO_TESTO[s.v]) + "</title></circle>";
+    }).join("");
+
+    var leg = [
+      ["var(--voto-si)", "Favorevoli", conta.favor, ""],
+      ["var(--voto-no)", "Contrari", conta.against, ""],
+      ["var(--voto-ast)", "Astenuti", conta.abstain, ""],
+      ["var(--voto-ass)", "Assenti", conta.absent, ""],
+      ["", "n.d.", conta["n.d."], "nd"]
+    ];
+
+    return {
+      etichetta: "Esempio · dati reali",
+      passi: [
+        ["Cerco nei resoconti", "seduta 722, " + data(A.date)],
+        ["Controllo i numeri sul voto ufficiale", numero(v.in_favor) + " · " + numero(v.against) + " · " + numero(v.abstained)],
+        ["Verifico le fonti", "3 fonti collegate"]
+      ],
+      fonti: [
+        { tipo: "Resoconto stenografico", titolo: "Seduta n. 722, " + data(A.date), id: "leg19 · sed0722", href: resoconto(722), vai: "camera.it" },
+        { tipo: "Atto", titolo: "Proposta di legge C. 2822-B", id: "leg19 · C. 2822", href: "https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=2822", vai: "camera.it" },
+        FONTE_VOTO_FIDUCIA
+      ],
+      testo:
+        '<p data-scrivi>' +
+          frase("Il " + data(A.date) + " la Camera ha votato la fiducia sull'articolo 3 della proposta di legge C. 2822-B, la legge elettorale.", [1, 2], id) + " " +
+          frase("La fiducia è stata approvata con " + v.in_favor + " voti favorevoli, " + v.against + " contrari e " + v.abstained + " astenuti.", [3], id) + " " +
+          frase("I presenti erano " + v.present + " e la maggioranza richiesta " + v.majority + ".", [3], id) +
+        "</p>" +
+        '<figure class="foglio aula" data-emiciclo>' +
+          '<div class="aula__testa"><p class="etichetta">Il voto seggio per seggio</p><a class="collegamento piccolo" href="../scranno/index.html#voto=camera_leg19_sed722_v034">Apri il voto in Scranno</a></div>' +
+          '<svg class="emiciclo" viewBox="0 0 2560 1760" role="img" aria-label="Emiciclo della Camera: ' + conta.favor + " favorevoli, " + conta.against + " contrari, " + conta.abstain + " astenuti, " + conta.absent + " assenti, " + conta["n.d."] + ' non associati al seggio">' + cerchi + "</svg>" +
+          '<figcaption><div class="legenda">' + leg.map(function (l) {
+            return '<span><i class="' + l[3] + '"' + (l[0] ? ' style="background:' + l[0] + '"' : "") + "></i>" + l[1] + " <b>" + numero(l[2]) + "</b></span>";
+          }).join("") + "</div>" +
+          '<p class="nota">Conteggi dai seggi. n.d.: voto non associato al seggio, per esempio dei membri del Governo e della Presidenza. Contrari e astenuti coincidono con il conteggio ufficiale; ' + scarto + " voti favorevoli non hanno un seggio associato, per questo nei seggi i favorevoli sono " + conta.favor + " e non " + v.in_favor + ".</p>" +
+          "</figcaption></figure>",
+      sigillo: sigillo([[true, "Tutti i gruppi"], [false, "Voci autorevoli: nessun intervento"], [false, "Citazioni: nessuna citazione di interventi"]]),
+      notaSigillo: "Risposta su un voto: parlano i numeri ufficiali, senza citazioni di interventi.",
+      azioni: '<a class="btn btn--accento btn--piccolo" href="../scranno/index.html#voto=camera_leg19_sed722_v034">Apri il voto in Scranno ' + FRECCIA + "</a>" + bottoneLink()
+    };
+  }
+
+  /* b) Emendamento Conte: il voto per gruppo */
+  function rispostaConte(id) {
+    var v = D.tema.voto, G = v.groups;
+    var chiavi = Object.keys(G).sort(function (a, b) { return (G[b][0] - G[a][0]) || (G[b][1] - G[a][1]) || (G[b][2] - G[a][2]); });
+    var tot = [0, 0, 0, 0];
+    chiavi.forEach(function (k) { G[k].forEach(function (n, i) { tot[i] += n; }); });
+    function nome(k) { return k === "Misto" ? "altre componenti del Misto" : k; }
+    var si = [], no = [], divisi = [];
+    chiavi.forEach(function (k) {
+      var g = G[k];
+      if (g[0] && !g[1] && !g[2]) si.push(nome(k) + " (" + g[0] + ")");
+      else if (g[1] && !g[0] && !g[2]) no.push(nome(k) + " (" + g[1] + ")");
+      else if (g[0] + g[1] + g[2]) divisi.push(k);
+    });
+    var frasiDivisi = divisi.map(function (k) {
+      var g = G[k], p = [];
+      if (g[0]) p.push(g[0] + (g[0] === 1 ? " favorevole" : " favorevoli"));
+      if (g[1]) p.push(g[1] + (g[1] === 1 ? " contrario" : " contrari"));
+      if (g[2]) p.push(g[2] + (g[2] === 1 ? " astenuto" : " astenuti"));
+      return frase(nome(k) + ": " + elenco(p) + ".", [3], id);
+    }).join(" ");
+
+    function cella(n, tipo) {
+      return '<td class="num" data-v="' + (n ? tipo : "zero") + '">' + numero(n) + "</td>";
+    }
+    var righe = chiavi.map(function (k) {
+      var g = G[k];
+      return '<tr><th scope="row"><span class="sigla">' + esc(SIGLE[k] || k) + '</span><span class="gruppo-nome">' + esc(NOMI[k] || k) + "</span></th>" +
+        cella(g[0], "si") + cella(g[1], "no") + cella(g[2], "ast") + '<td class="num" data-v="zero">' + numero(g[3]) + "</td></tr>";
+    }).join("");
+
+    return {
+      etichetta: "Esempio · dati reali",
+      passi: [
+        ["Cerco nei resoconti", "seduta 209, " + data(v.date)],
+        ["Controllo i numeri sul voto ufficiale", v.in_favor + " · " + v.against + " · " + v.abstained + ", " + chiavi.length + " gruppi e componenti"],
+        ["Verifico le fonti", "3 fonti collegate"]
+      ],
+      fonti: [
+        { tipo: "Resoconto stenografico", titolo: "Seduta n. 209, " + data(v.date), id: "leg19 · sed0209", href: resoconto(209), vai: "camera.it" },
+        { tipo: "Atto", titolo: "Proposta di legge C. 1275, salario minimo", id: "leg19 · C. 1275", href: v.act_url, vai: "camera.it" },
+        { tipo: "Votazione", titolo: v.subject, id: v.id }
+      ],
+      testo:
+        '<p data-scrivi>' +
+          frase("Il " + data(v.date) + " l'Aula ha respinto l'emendamento 1.1000 Conte (M5S) alla proposta di legge C. 1275 sul salario minimo.", [1, 2], id) + " " +
+          frase("I contrari sono stati " + v.against + ", i favorevoli " + v.in_favor + ", gli astenuti " + v.abstained + ".", [3], id) +
+        "</p>" +
+        '<p data-scrivi>' +
+          frase("A favore hanno votato " + elenco(si) + ".", [3], id) + " " +
+          frase("Contro hanno votato " + elenco(no) + ".", [3], id) + (frasiDivisi ? " " + frasiDivisi : "") +
+        "</p>" +
+        '<div class="tabella-scorri"><table class="tabella voto-gruppi">' +
+          '<caption class="sr">Voto per gruppo sull\'emendamento 1.1000 Conte, ' + data(v.date) + "</caption>" +
+          '<thead><tr><th scope="col">Gruppo</th><th scope="col" class="num">Sì</th><th scope="col" class="num">No</th>' +
+          '<th scope="col" class="num"><span class="lungo">Astenuti</span><span class="corto" aria-hidden="true">Ast.</span></th>' +
+          '<th scope="col" class="num"><span class="lungo">Assenti</span><span class="corto" aria-hidden="true">Ass.</span></th></tr></thead>' +
+          "<tbody>" + righe + "</tbody>" +
+          '<tfoot><tr><th scope="row">Totale</th>' + tot.map(function (n) { return '<td class="num">' + numero(n) + "</td>"; }).join("") + "</tr></tfoot>" +
+        "</table></div>" +
+        '<p class="nota" style="font-size:var(--t-nota)">Assenti: deputati del gruppo che non risultano tra i votanti. Il Gruppo Misto è diviso per componente.</p>',
+      sigillo: sigillo([[true, "Tutti i gruppi"], [false, "Voci autorevoli: nessun intervento"], [false, "Citazioni: nessuna citazione di interventi"]]),
+      notaSigillo: "Risposta su un voto: parlano i numeri ufficiali, senza citazioni di interventi.",
+      azioni: '<a class="btn btn--linea btn--piccolo" href="../fascicoli/index.html#salario-minimo">Il tema in Fascicoli ' + FRECCIA + "</a>" + bottoneLink()
+    };
+  }
+
+  /* c) Domanda su un tema: passa a Fascicoli */
+  function rispostaTema() {
+    var cit = D.tema.citazioni;
+    var gruppi = cit.filter(function (q) { return q.group !== "Governo"; }).length;
+    return {
+      etichetta: "Domanda su un tema",
+      passi: [
+        ["Leggo la domanda", "un tema, non un fatto"],
+        ["Cerco il fascicolo", "«" + D.tema.titolo + "»"]
+      ],
+      sola: true,
+      testo:
+        '<p data-scrivi>Questa è una domanda su un tema. Stenografo risponde su fatti puntuali: una seduta, un atto, un voto.</p>' +
+        '<div class="foglio foglio--pad passaggio">' +
+          '<span class="passaggio__marchio">' + window.MARCHI.fascicoli(false) + "</span>" +
+          '<p class="etichetta">Passa a Fascicoli</p>' +
+          "<p>Fascicoli mette in fila la posizione di ogni gruppo, con la voce più autorevole di ciascuno secondo i nostri criteri, le citazioni esatte e i voti collegati.</p>" +
+          '<a class="btn btn--accento" href="../fascicoli/index.html#salario-minimo">Apri il fascicolo «' + esc(D.tema.titolo) + "» " + FRECCIA + "</a>" +
+          '<p class="nota">Nel fascicolo: ' + gruppi + " gruppi e componenti più il Governo, " + cit.length + " citazioni verificate sul resoconto.</p>" +
+        "</div>" +
+        '<div class="pila" style="--pila:var(--s-3)"><p class="etichetta">Oppure chiedi un fatto</p><div class="esempi__lista" style="margin-top:0">' + bottoniEsempi([ESEMPI[1]]) + "</div></div>",
+      azioni: bottoneLink()
+    };
+  }
+
+  /* d) Una persona: citazione verificata e voto nella fiducia, se ci sono */
+  function rispostaPersona(p, id) {
+    var q = p.cit, s = p.seggio, nome = p.nome;
+    var fonti = [], passi = [], testo = "", n = 0;
+    passi.push(["Cerco gli interventi di " + nome, q ? "1 intervento nei dati d'esempio" : "nessun intervento nei dati d'esempio"]);
+    if (q) {
+      passi.push(["Confronto la citazione con il resoconto", "coincide parola per parola"]);
+      fonti.push({ tipo: "Resoconto stenografico", titolo: "Seduta n. " + q.session + ", " + data(q.date), id: q.id, href: q.url, vai: "Apri l'intervento" });
+      var nq = ++n;
+      testo +=
+        '<p data-scrivi>' +
+          frase("Sul salario minimo, nei dati d'esempio c'è un intervento di " + nome + " (" + q.group + ") nella seduta n. " + q.session + " del " + data(q.date) + ".", [nq], id) + " " +
+          frase("Il dibattito: " + q.debate + ".", [nq], id) +
+        "</p>" +
+        '<blockquote class="cit"><p class="cit__testo">' + esc(q.quote) + "</p>" +
+          '<footer class="cit__fonte"><span class="cit__chi">' + esc(q.name) + "</span><span>" + esc(q.groupName) + "</span><span>" + data(q.date) + "</span>" +
+          '<a class="bollino" href="' + esc(q.url) + '" rel="noopener">' + SPUNTA + "Resoconto</a></footer></blockquote>";
+    }
+    if (s) {
+      var esito = {
+        favor: "il voto di " + nome + " è stato favorevole",
+        against: "il voto di " + nome + " è stato contrario",
+        abstain: "il voto di " + nome + " è stato di astensione",
+        absent: nome + " risulta assente",
+        "n.d.": "il voto di " + nome + " non è associato al seggio, come per i membri del Governo e della Presidenza"
+      }[s.v];
+      passi.push(["Controllo il voto del " + data(A.date), VOTO_TESTO[s.v].toLowerCase()]);
+      fonti.push(FONTE_VOTO_FIDUCIA);
+      var nv = ++n;
+      testo += '<p data-scrivi>' + frase("Nella fiducia del " + data(A.date) + " sulla legge elettorale " + esito + ".", [nv], id) + "</p>";
+    }
+    if (q) {
+      testo += '<p data-scrivi>Le posizioni degli altri gruppi sul salario minimo sono nel <a class="collegamento" href="../fascicoli/index.html#salario-minimo">fascicolo</a>.</p>';
+    }
+    return {
+      etichetta: q ? "Esempio · citazioni reali" : "Esempio · dati reali",
+      passi: passi,
+      fonti: fonti,
+      testo: testo,
+      sigillo: sigillo([[false, "Tutti i gruppi: domanda su una persona"], [false, "Voci: scelta nella domanda"], q ? [true, "Citazione esatta"] : [false, "Citazioni: nessuna citazione di interventi"]]),
+      notaSigillo: q ? "La citazione coincide con il resoconto parola per parola. Il link porta all'intervento." : "Nei dati d'esempio non ci sono interventi di " + nome + ": meglio nessuna citazione che una citazione incerta.",
+      azioni: (s ? '<a class="btn btn--linea btn--piccolo" href="../scranno/index.html#voto=camera_leg19_sed722_v034">Apri il voto in Scranno ' + FRECCIA + "</a>" : "") + bottoneLink()
+    };
+  }
+
+  /* e) Tutto il resto: niente fatti inventati */
+  function rispostaNessuna(chi) {
+    return {
+      etichetta: "Versione locale",
+      passi: [[chi ? "Cerco " + chi + " nei dati d'esempio" : "Cerco tra le domande d'esempio", "nessuna corrispondenza"]],
+      sola: true,
+      testo:
+        "<p data-scrivi>" + (chi
+          ? "In questa versione locale Stenografo ha solo i dati d'esempio. Per " + esc(chi) + " non ci sono interventi né voti caricati."
+          : "In questa versione locale Stenografo risponde solo alle domande d'esempio.") +
+        " Senza una fonte non risponde.</p>" +
+        '<div class="esempi__lista">' + bottoniEsempi() + "</div>"
+    };
+  }
+
+  /* ---------- Riconoscere la domanda ---------- */
+
+  /* Persona: nome completo (citazioni e seggi) oppure cognome scritto con la maiuscola */
+  function trovaPersona(testo, chi) {
+    var t = norm(chi || testo);
+    var cit = D.tema.citazioni.filter(function (q) {
+      var n = norm(q.name);
+      if (chi) return n === t || contieneParola(t, n) || contieneParola(n, t);
+      if (contieneParola(t, n)) return true;
+      var cognome = q.name.split(" ").pop();
+      return cognome.length > 3 && new RegExp("(^|[^\\wÀ-ÿ])" + cognome + "($|[^\\wÀ-ÿ])").test(testo);
+    })[0];
+    var nome = cit ? cit.name : null;
+    var seggio = A.seats.filter(function (s) {
+      if (!s.n) return false;
+      var n = norm(s.n);
+      return nome ? s.n === nome : (n === t || contieneParola(t, n) || (chi && contieneParola(n, t) && t.length > 4));
+    })[0];
+    if (!nome && seggio) nome = seggio.n;
+    return nome ? { nome: nome, cit: cit, seggio: seggio } : null;
+  }
+
+  function rispondi(testo, chi, id) {
+    var t = norm(testo);
+    var p = trovaPersona(testo, chi);
+    if (p) return rispostaPersona(p, id);
+    if (chi) return rispostaNessuna(chi);
+    if (/fiducia|legge elettorale|2822|7 ottobre/.test(t)) return rispostaFiducia(id);
+    if (/emendamento|conte|1275|5 dicembre/.test(t)) return rispostaConte(id);
+    if (/salario minimo|gruppi|posizion|pensano/.test(t)) return rispostaTema();
+    return rispostaNessuna();
+  }
+
+  /* ---------- Ritmo: tutti i tempi passano da qui, così si può saltare ---------- */
+
+  function Ritmo() {
+    this.rapido = ridotto;
+    this.t = null;
+    this.cb = null;
+  }
+  Ritmo.prototype.dopo = function (ms, cb) {
+    if (this.rapido) return cb();
+    var self = this;
+    self.cb = cb;
+    self.t = setTimeout(function () { self.t = null; self.cb = null; cb(); }, ms);
+  };
+  Ritmo.prototype.salta = function () {
+    this.rapido = true;
+    if (this.t) {
+      clearTimeout(this.t);
+      var cb = this.cb;
+      this.t = null;
+      this.cb = null;
+      cb();
+    }
+  };
+
+  /* Scrittura progressiva: svuota i nodi di testo e li riempie a colpi di 2-5 lettere */
+  function prepara(el) {
+    var nodi = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) nodi.push(w.currentNode);
+    el._nodi = nodi;
+    el._testi = nodi.map(function (n) { return n.nodeValue; });
+    nodi.forEach(function (n) { n.nodeValue = ""; });
+  }
+  function scrivi(el, ritmo, accendi, fatto) {
+    var nodi = el._nodi, testi = el._testi, i = 0, j = 0;
+    var cursore = document.createElement("span");
+    cursore.className = "cursore";
+    cursore.setAttribute("aria-hidden", "true");
+    function chiudiNodo(k) {
+      var r = nodi[k].parentNode && nodi[k].parentNode.closest && nodi[k].parentNode.closest(".rif");
+      if (r) accendi(r.textContent);
+    }
+    function passo() {
+      if (ritmo.rapido) {
+        for (; i < nodi.length; i++) { nodi[i].nodeValue = testi[i]; chiudiNodo(i); }
+        cursore.remove();
+        return fatto();
+      }
+      if (i >= nodi.length) { cursore.remove(); return fatto(); }
+      j = Math.min(testi[i].length, j + 2 + Math.floor(Math.random() * 4));
+      nodi[i].nodeValue = testi[i].slice(0, j);
+      nodi[i].parentNode.insertBefore(cursore, nodi[i].nextSibling);
+      if (j >= testi[i].length) { chiudiNodo(i); i++; j = 0; }
+      ritmo.dopo(16 + Math.random() * 26, passo);
+    }
+    passo();
+  }
+
+  /* Traccia: ogni passo si batte a accordi, come su una stenotipia, poi arriva l'esito */
+  function eseguiTraccia(ol, passi, ritmo, fatto) {
+    ol.innerHTML = passi.map(function (p, i) {
+      return '<li class="passo" data-stato="attesa">' + SPUNTA + '<span class="passo__n">' + ("0" + (i + 1)).slice(-2) + '</span><span class="passo__t"></span><span class="passo__riga"></span><span class="passo__esito">' + esc(p[1]) + "</span></li>";
+    }).join("");
+    var li = ol.querySelectorAll(".passo"), k = 0;
+    function prossimo() {
+      if (k >= passi.length) { ol.setAttribute("data-fine", ""); return fatto(); }
+      var el = li[k], t = el.querySelector(".passo__t"), testo = passi[k][0], c = 0;
+      el.setAttribute("data-stato", "corso");
+      (function accordo() {
+        if (ritmo.rapido) c = testo.length;
+        else c = Math.min(testo.length, c + 3 + Math.floor(Math.random() * 4));
+        t.textContent = testo.slice(0, c);
+        if (c < testo.length) return ritmo.dopo(60 + Math.random() * 70, accordo);
+        ritmo.dopo(260, function () {
+          el.setAttribute("data-stato", "fatto");
+          k++;
+          ritmo.dopo(320, prossimo);
+        });
+      })();
+    }
+    prossimo();
+  }
+
+  /* ---------- Conversazione ---------- */
+
+  var avvio = document.getElementById("avvio");
+  var conversa = document.getElementById("conversa");
+  var lista = document.getElementById("lista");
+  var molo = document.getElementById("molo");
+  var form = document.getElementById("compositore");
+  var area = document.getElementById("domanda");
+  var invia = form.querySelector('[type="submit"]');
+  var conta = 0, corrente = null;
+  var PLACEHOLDER = area.placeholder;
+
+  function scorriA(el) {
+    var testata = document.querySelector(".sito");
+    var y = el.getBoundingClientRect().top + window.scrollY - (testata ? testata.offsetHeight : 64) - 24;
+    window.scrollTo({ top: Math.max(0, y), behavior: ridotto ? "auto" : "smooth" });
+  }
+
+  function linkDi(testo, chi) {
+    return location.origin + location.pathname + (chi ? "?chi=" + encodeURIComponent(chi) : "?q=" + encodeURIComponent(testo));
+  }
+
+  function inConversazione() {
+    if (!conversa.hidden) return;
+    avvio.hidden = true;
+    conversa.hidden = false;
+    molo.hidden = false;
+    document.getElementById("molo-campo").appendChild(form);
+    area.rows = 1;
+    area.placeholder = "Fai un'altra domanda";
+    adatta();
+  }
+
+  function chiedi(testo, chi) {
+    testo = testo.trim();
+    if (!testo) return;
+    if (corrente) corrente.salta();
+    inConversazione();
+
+    var id = "d" + (++conta);
+    var r = rispondi(testo, chi, id);
+    var link = linkDi(testo, chi);
+    try { history.replaceState(null, "", link); } catch (e) {}
+
+    var art = document.createElement("article");
+    art.className = "scambio";
+    art.id = id;
+    art.setAttribute("aria-labelledby", id + "-q");
+    art.setAttribute("aria-busy", "true");
+    art.innerHTML =
+      '<header class="testata scambio__testa"><span class="testata__n">§ ' + conta + "</span>" +
+        '<div><p class="etichetta" style="padding-top:.55em">Domanda · ' + esc(r.etichetta) + "</p>" +
+        '<h2 class="scambio__q" id="' + id + '-q" tabindex="-1">' + esc(testo) + "</h2></div></header>" +
+      '<div class="scambio__corpo">' +
+        '<ol class="traccia" aria-label="Passaggi della ricerca"></ol>' +
+        '<div class="risposta"' + (r.fonti && r.fonti.length ? "" : " data-sole") + " hidden>" +
+          '<div class="risposta__testo">' + r.testo + "</div>" +
+          (r.fonti && r.fonti.length ? fontiHtml(r.fonti, id) : "") +
+          '<footer class="risposta__piede">' +
+            (r.sigillo ? '<div class="pila" style="--pila:var(--s-2)">' + r.sigillo + (r.notaSigillo ? '<p class="nota">' + esc(r.notaSigillo) + "</p>" : "") + "</div>" : "") +
+            (r.azioni ? '<div class="fila azioni">' + r.azioni + "</div>" : "") +
+          "</footer>" +
+        "</div>" +
+      "</div>";
+    art.querySelectorAll("[data-link]").forEach(function (b) { b.setAttribute("data-link", link); });
+    if (!art.querySelector(".risposta__piede").children.length) art.querySelector(".risposta__piede").remove();
+    lista.appendChild(art);
+    if (conta > 1) scorriA(art); else window.scrollTo({ top: 0, behavior: "auto" });
+
+    var ritmo = new Ritmo();
+    corrente = ritmo;
+    eseguiTraccia(art.querySelector(".traccia"), r.passi, ritmo, function () {
+      ritmo.dopo(200, function () { mostraRisposta(art, ritmo); });
+    });
+  }
+
+  function fontiHtml(fonti, id) {
+    return '<aside class="fonti" aria-label="Fonti"><p class="etichetta">Fonti · ' + fonti.length + "</p><ol>" + fonti.map(function (f, i) {
+      var n = i + 1;
+      return '<li class="fonte" id="' + id + "-f" + n + '" data-n="' + n + '" tabindex="-1">' +
+        '<span class="fonte__n" aria-hidden="true">' + n + "</span>" +
+        '<div><span class="etichetta fonte__tipo"><span class="sr">Fonte ' + n + ": </span>" + esc(f.tipo) + "</span>" +
+        '<span class="fonte__t">' + esc(f.titolo) + "</span>" +
+        '<span class="fonte__id">' + esc(f.id) + "</span>" +
+        (f.href ? '<a class="collegamento fonte__vai" href="' + esc(f.href) + '"' + (f.interno ? "" : ' rel="noopener"') + ">" + esc(f.vai) + (f.interno ? "" : " " + ESTERNO) + "</a>" : "") +
+        "</div></li>";
+    }).join("") + "</ol></aside>";
+  }
+
+  function mostraRisposta(art, ritmo) {
+    var risposta = art.querySelector(".risposta");
+    var blocchi = Array.prototype.slice.call(risposta.querySelector(".risposta__testo").children);
+    blocchi.forEach(function (b) { if (b.hasAttribute("data-scrivi")) prepara(b); });
+    risposta.hidden = false;
+
+    function accendi(n) {
+      var f = art.querySelector('.fonte[data-n="' + String(n).trim() + '"]');
+      if (f) f.setAttribute("data-acceso", "");
+    }
+    var k = 0;
+    function prossimo() {
+      if (k >= blocchi.length) return finale();
+      var b = blocchi[k++];
+      if (b.hasAttribute("data-scrivi")) return scrivi(b, ritmo, accendi, function () { ritmo.dopo(180, prossimo); });
+      b.setAttribute("data-visto", "");
+      b.querySelectorAll(".rif").forEach(function (r) { accendi(r.textContent); });
+      if (b.hasAttribute("data-emiciclo")) {
+        /* l'onda dei colori parte dopo la comparsa del foglio */
+        ritmo.dopo(ridotto ? 0 : 120, function () {
+          b.querySelectorAll("[data-voto]").forEach(function (c) { c.setAttribute("data-v", c.getAttribute("data-voto")); });
+          ritmo.dopo(900, prossimo);
+        });
+        return;
+      }
+      ritmo.dopo(380, prossimo);
+    }
+    function finale() {
+      art.querySelectorAll(".fonte").forEach(function (f) { f.setAttribute("data-acceso", ""); });
+      var piede = art.querySelector(".risposta__piede");
+      if (piede) piede.setAttribute("data-visto", "");
+      art.setAttribute("aria-busy", "false");
+      if (corrente === ritmo) corrente = null;
+    }
+    prossimo();
+  }
+
+  function nuovaDomanda() {
+    if (corrente) corrente.salta();
+    corrente = null;
+    lista.innerHTML = "";
+    conta = 0;
+    conversa.hidden = true;
+    molo.hidden = true;
+    avvio.hidden = false;
+    document.getElementById("avvio-campo").appendChild(form);
+    area.rows = 3;
+    area.placeholder = PLACEHOLDER;
+    area.value = "";
+    area.style.height = "";
+    aggiornaInvio();
+    try { history.replaceState(null, "", location.pathname); } catch (e) {}
+    window.scrollTo({ top: 0, behavior: "auto" });
+    area.focus({ preventScroll: true });
+  }
+
+  /* ---------- Compositore ---------- */
+
+  function adatta() {
+    if (conversa.hidden) { area.style.height = ""; return; }
+    area.style.height = "auto";
+    area.style.height = Math.min(area.scrollHeight, 160) + "px";
+  }
+  function aggiornaInvio() {
+    invia.disabled = !area.value.trim();
+  }
+  area.addEventListener("input", function () { adatta(); aggiornaInvio(); });
+  area.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      if (typeof form.requestSubmit === "function") form.requestSubmit();
+      else form.dispatchEvent(new Event("submit", { cancelable: true }));
+    }
+  });
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var testo = area.value;
+    if (!testo.trim()) return;
+    area.value = "";
+    aggiornaInvio();
+    chiedi(testo);
+    adatta();
+    /* su touch si lascia leggere la risposta senza tastiera aperta */
+    if (window.matchMedia("(pointer: fine)").matches) area.focus({ preventScroll: true });
+    else area.blur();
+  });
+
+  document.addEventListener("click", function (e) {
+    var es = e.target.closest("[data-esempio]");
+    if (es) { chiedi(es.getAttribute("data-esempio")); return; }
+    if (e.target.closest("[data-nuova]")) { nuovaDomanda(); return; }
+    var l = e.target.closest("[data-link]");
+    if (l) {
+      var url = l.getAttribute("data-link"), etichetta = l.querySelector("span");
+      var fatto = function (ok) {
+        etichetta.textContent = ok ? "Link copiato" : url;
+        setTimeout(function () { etichetta.textContent = "Copia il link"; }, ok ? 1600 : 4000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { fatto(true); }, function () { fatto(false); });
+      else fatto(false);
+    }
+  });
+
+  /* Esc salta l'animazione della risposta in corso */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && corrente) corrente.salta();
+  });
+
+  /* ---------- Frase e fonte si illuminano a vicenda ---------- */
+
+  function evidenzia(art, numeri, on) {
+    art.querySelectorAll(".fonte").forEach(function (f) {
+      if (numeri.indexOf(f.dataset.n) !== -1 && on) f.setAttribute("data-attiva", "");
+      else f.removeAttribute("data-attiva");
+    });
+    art.querySelectorAll(".risposta .fonte-in-linea").forEach(function (s) {
+      var tocca = s.dataset.rif.split(" ").some(function (n) { return numeri.indexOf(n) !== -1; });
+      if (tocca && on) s.setAttribute("data-attiva", "");
+      else s.removeAttribute("data-attiva");
+    });
+  }
+  function bersaglio(el) {
+    var s = el.closest && el.closest(".risposta .fonte-in-linea, .fonte, .risposta .rif");
+    if (!s) return null;
+    var art = s.closest(".scambio");
+    if (s.classList.contains("fonte")) return { el: s, art: art, n: [s.dataset.n] };
+    if (s.classList.contains("rif")) return { el: s, art: art, n: [s.textContent.trim()] };
+    return { el: s, art: art, n: s.dataset.rif.split(" ") };
+  }
+  function entra(e) {
+    var b = bersaglio(e.target);
+    if (b) evidenzia(b.art, b.n, true);
+  }
+  function esce(e) {
+    var b = bersaglio(e.target);
+    if (!b) return;
+    var verso = e.relatedTarget && bersaglio(e.relatedTarget);
+    if (verso && verso.el === b.el) return;
+    evidenzia(b.art, b.n, false);
+  }
+  lista.addEventListener("mouseover", entra);
+  lista.addEventListener("mouseout", esce);
+  lista.addEventListener("focusin", entra);
+  lista.addEventListener("focusout", esce);
+  /* Dal numero in apice alla fonte: il fuoco segue il salto */
+  lista.addEventListener("click", function (e) {
+    var r = e.target.closest(".rif");
+    if (!r) return;
+    var f = document.getElementById(r.getAttribute("href").slice(1));
+    if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 0);
+  });
+
+  /* ---------- Avvio da link: ?q= dalla condivisione, ?chi= da Scranno ---------- */
+
+  var par = new URLSearchParams(location.search);
+  var chi = (par.get("chi") || "").trim(), q = (par.get("q") || "").trim();
+  if (chi) {
+    area.value = "Cosa ha detto in Aula " + chi + "?";
+    chiedi(area.value, chi);
+    area.value = "";
+  } else if (q) {
+    area.value = q;
+    chiedi(q);
+    area.value = "";
+  }
+  aggiornaInvio();
+})();
+</script>
+</body>
+</html>

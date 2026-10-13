@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="it" class="no-js" data-sito="parliamentrag" data-pagina="ricerca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ricerca · ParliamentRAG</title>
+<meta name="description" content="Gli articoli di ParliamentRAG a ISWC 2026, il codice con DOI, gli interventi pubblici e il finanziamento del progetto.">
+<link rel="icon" href="../shared/favicon-parliamentrag.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/famiglia.css">
+<style>
+  /* ---------- Apertura ---------- */
+  .apertura {
+    padding-block: clamp(48px, 7vw, 104px) clamp(48px, 6vw, 88px);
+  }
+  .apertura h1 {
+    margin-top: var(--s-5);
+    max-width: 15ch;
+  }
+  .apertura .attacco {
+    margin-top: var(--s-5);
+    max-width: 46ch;
+  }
+
+  /* ---------- Articoli ---------- */
+  .lavoro {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: var(--s-5) clamp(24px, 4vw, 64px);
+    padding-block: var(--s-7);
+    border-bottom: 1px solid var(--filetto);
+  }
+  .lavoro:first-of-type {
+    margin-top: var(--s-5);
+  }
+  .lavoro__dove {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+  }
+  .lavoro__dove .sigla {
+    justify-self: start;
+  }
+  .lavoro__dove .mono {
+    font-size: var(--t-nota);
+    color: var(--inchiostro-3);
+  }
+  .lavoro__t {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.15rem + 1.2vw, 2.125rem);
+    line-height: 1.16;
+    letter-spacing: -0.016em;
+    max-width: 30ch;
+  }
+  .lavoro__chi {
+    margin-top: var(--s-3);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .lavoro__cosa {
+    margin-top: var(--s-4);
+    color: var(--inchiostro-2);
+    max-width: 58ch;
+  }
+  .lavoro__azioni {
+    margin-top: var(--s-5);
+    --fila: var(--s-2);
+  }
+  .lavoro__azioni .btn[aria-expanded="true"] {
+    --btn-bg: var(--inchiostro);
+    --btn-fg: var(--carta);
+    border-color: var(--inchiostro);
+  }
+  .citazione-bib {
+    margin-top: var(--s-4);
+  }
+  .citazione-bib .nota {
+    margin-top: var(--s-2);
+  }
+  @media (max-width: 760px) {
+    .lavoro {
+      grid-template-columns: 1fr;
+      padding-block: var(--s-6);
+    }
+    .lavoro__dove {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--s-2) var(--s-3);
+    }
+  }
+
+  /* Blocco di codice con il pulsante «copia» fuori dall'area che scorre */
+  .blocco-codice {
+    position: relative;
+  }
+  .blocco-codice .codice {
+    margin: 0;
+    padding-right: 84px;
+  }
+
+  /* ---------- Codice e DOI ---------- */
+  .riproduci {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+  }
+  .riproduci__doi {
+    display: block;
+    margin-top: var(--s-3);
+    font-family: var(--f-mono);
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem);
+    letter-spacing: -0.01em;
+    color: var(--accento);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .riproduci__doi:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .versioni {
+    display: grid;
+    border-top: 1px solid var(--filetto);
+  }
+  .versione {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: var(--s-4);
+    padding-block: var(--s-4);
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+  }
+  .versione .mono {
+    color: var(--inchiostro);
+  }
+  @media (max-width: 860px) {
+    .riproduci {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 480px) {
+    .versione {
+      grid-template-columns: 1fr;
+      gap: var(--s-1);
+    }
+  }
+
+  /* ---------- Conferenza e intervento ---------- */
+  .eventi {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  .evento {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+  .evento__quando {
+    font-family: var(--f-titolo);
+    font-size: var(--t-2);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-variant-numeric: lining-nums;
+  }
+  .evento__dove {
+    font-size: var(--t-piccolo);
+    color: var(--inchiostro-2);
+    flex: 1;
+  }
+  .evento__dove strong {
+    display: block;
+    color: var(--inchiostro);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .evento__vai {
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--filetto);
+    font-size: var(--t-piccolo);
+  }
+  @media (max-width: 860px) {
+    .eventi {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Persone e sostegno ---------- */
+  .chi {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+  }
+  .chi h3 {
+    font-size: var(--t-piccolo);
+    font-weight: 600;
+    margin-bottom: var(--s-3);
+  }
+  .persone {
+    display: grid;
+    border-top: 1px solid var(--filetto);
+    padding: 0;
+    list-style: none;
+  }
+  .persone li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-1) var(--s-4);
+    padding-block: var(--s-3);
+    border-bottom: 1px solid var(--filetto);
+    font-size: var(--t-piccolo);
+  }
+  .persone .fila {
+    --fila: var(--s-4);
+    font-size: var(--t-nota);
+  }
+  @media (max-width: 860px) {
+    .chi {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="salta" href="#contenuto">Vai al contenuto</a>
+<header data-testata></header>
+
+<main id="contenuto">
+
+  <!-- Apertura -->
+  <section class="apertura">
+    <div class="pagina">
+      <p class="etichetta compare">Ricerca · Università di Milano-Bicocca</p>
+      <h1 class="titolo-1 compare" style="--ritardo:80ms">Il metodo è scritto, revisionato e <em>citabile</em>.</h1>
+      <p class="attacco compare" style="--ritardo:160ms">ParliamentRAG è descritto in due articoli accettati a ISWC 2026, a Bari dal 25 al 29 ottobre.</p>
+
+    </div>
+  </section>
+
+  <!-- Articoli -->
+  <section class="sezione-stretta" id="articoli" style="padding-top:0">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Articoli</p></div>
+
+      <article class="lavoro compare" aria-labelledby="a1-t">
+        <div class="lavoro__dove">
+          <span class="sigla sigla--accento">ISWC 2026</span>
+          <span class="etichetta">In-Use Track</span>
+          <span class="mono">LNCS 17128, cap. 24</span>
+          <span class="mono">Springer</span>
+        </div>
+        <div>
+          <h2 class="lavoro__t" id="a1-t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</h2>
+          <p class="lavoro__chi">Mirko Tritella, Riccardo Pozzi, Matteo Palmonari</p>
+          <p class="lavoro__cosa">L'articolo che descrive il metodo: come scegliere le voci autorevoli di ogni gruppo e come costruire una risposta che li comprenda tutti.</p>
+          <div class="fila lavoro__azioni">
+            <a class="btn btn--accento btn--piccolo" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">PDF</a>
+            <a class="btn btn--linea btn--piccolo" href="https://arxiv.org/abs/2608.13410" rel="noopener">arXiv</a>
+            <a class="btn btn--linea btn--piccolo" href="https://doi.org/10.1007/978-3-032-42029-9_24" rel="noopener">DOI</a>
+            <a class="btn btn--linea btn--piccolo" href="https://orkg.org/papers/R1909763" rel="noopener">ORKG</a>
+            <button class="btn btn--linea btn--piccolo" type="button" aria-expanded="false" aria-controls="cita-1" data-cita>Cita</button>
+          </div>
+          <div class="citazione-bib" id="cita-1" hidden>
+            <div class="blocco-codice">
+              <pre class="codice" id="bib-1">@inproceedings{tritella2026whospeaksmatters,
+  author    = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
+  title     = {Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings},
+  booktitle = {Proceedings of the 25th International Semantic Web Conference (ISWC 2026), In-Use Track},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {17128},
+  publisher = {Springer},
+  year      = {2026},
+  doi       = {10.1007/978-3-032-42029-9_24}
+}</pre>
+              <button class="copia" type="button" data-copia="bib-1">Copia</button>
+            </div>
+            <p class="nota">BibTeX. Se scrivi del progetto, cita questo articolo.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="lavoro compare" aria-labelledby="a2-t">
+        <div class="lavoro__dove">
+          <span class="sigla sigla--accento">ISWC 2026</span>
+          <span class="etichetta">Posters &amp; Demos</span>
+        </div>
+        <div>
+          <h2 class="lavoro__t" id="a2-t">ParliamentRAG: An Authority-Aware Multi-View RAG System for Italian Parliamentary Proceedings</h2>
+          <p class="lavoro__chi">Mirko Tritella, Riccardo Pozzi, Matteo Palmonari</p>
+          <p class="lavoro__cosa">Il sistema in funzione: la demo presentata alla conferenza, sugli stessi dati della Camera.</p>
+          <div class="fila lavoro__azioni">
+            <a class="btn btn--accento btn--piccolo" href="https://emeierkeio.github.io/papers/parliamentrag-demo-iswc2026.pdf" rel="noopener">PDF</a>
+            <a class="btn btn--linea btn--piccolo" href="https://truthful-amazement-production.up.railway.app" rel="noopener">Demo <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+
+  <!-- Conferenza e interventi -->
+  <section class="sezione-stretta" id="interventi">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Conferenza e interventi</p></div>
+      <div class="eventi">
+        <article class="foglio foglio--pad evento compare">
+          <span class="etichetta">Conferenza</span>
+          <p class="evento__quando">25–29 ottobre 2026</p>
+          <p class="evento__dove"><strong>ISWC 2026, Bari</strong>25th International Semantic Web Conference. Presentiamo l'articolo In-Use e la demo.</p>
+          <p class="evento__vai"><a class="collegamento" href="https://iswc2026.semanticweb.org/#/program/acceptedpapers" rel="noopener">Articoli accettati nel programma</a></p>
+        </article>
+        <article class="foglio foglio--pad evento compare" style="--ritardo:100ms">
+          <span class="etichetta">Intervento</span>
+          <p class="evento__quando">1 ottobre 2026</p>
+          <p class="evento__dove"><strong>Milano Digital Week 2026</strong>«ParliamentRAG», all'Università di Milano-Bicocca.</p>
+          <p class="evento__vai"><a class="collegamento" href="https://www.milanodigitalweek.com/event/parliamentrag-navigare-gli-atti-parlamentari-con-lia-affidabile" rel="noopener">Pagina dell'evento</a></p>
+        </article>
+      </div>
+      <p class="nota compare" style="margin-top:var(--s-5)">Per invitarci a parlare del progetto scrivi a <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a>.</p>
+    </div>
+  </section>
+
+  <!-- Persone e sostegno -->
+  <section class="sezione-stretta" id="persone">
+    <div class="pagina">
+      <div class="testata compare"><span class="testata__n">§ 3</span><p class="etichetta" style="padding-top:.55em">Persone e sostegno</p></div>
+      <div class="chi">
+        <div class="compare">
+          <h3>Autori</h3>
+          <ul class="persone">
+            <li>
+              <span>Mirko Tritella</span>
+              <span class="fila">
+                <a class="collegamento" href="https://emeierkeio.github.io" rel="noopener">Sito</a>
+                <a class="collegamento" href="https://orcid.org/0009-0000-8611-8189" rel="noopener">ORCID</a>
+                <a class="collegamento" href="https://github.com/Emeierkeio" rel="noopener">GitHub</a>
+              </span>
+            </li>
+            <li><span>Riccardo Pozzi</span></li>
+            <li><span>Matteo Palmonari</span></li>
+          </ul>
+          <p class="nota" style="margin-top:var(--s-3)">Università di Milano-Bicocca.</p>
+        </div>
+        <div class="compare" style="--ritardo:100ms">
+          <h3>Finanziamento</h3>
+          <p class="tenue" style="max-width:44ch">Il progetto ha il sostegno del programma EU Horizon Europe, grant 101189771 (DataPACT).</p>
+          <p style="margin-top:var(--s-4)"><a class="riproduci__doi" style="margin-top:0" href="https://doi.org/10.3030/101189771" rel="noopener">doi.org/10.3030/101189771</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer data-piede></footer>
+
+<script src="../shared/famiglia.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- «Cita»: apre e chiude il BibTeX sotto l'articolo ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-cita]");
+    if (!b) return;
+    var box = document.getElementById(b.getAttribute("aria-controls"));
+    var aperto = b.getAttribute("aria-expanded") === "true";
+    b.setAttribute("aria-expanded", aperto ? "false" : "true");
+    box.hidden = aperto;
+  });
+})();
+</script>
+</body>
+</html>
