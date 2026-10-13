@@ -116,7 +116,7 @@ function testata(o: Opzioni): string {
   ).join("");
   return (
     '<header class="sito" data-testata><div class="pagina sito__in">' +
-    `<a class="marchio" href="${percorso("home", o.lingua)}" aria-label="${t.home}">${marchioParliamentrag(true)}<span class="marchio__nome">ParliamentRAG</span></a>` +
+    `<a class="marchio" href="${percorso("home", o.lingua)}" aria-label="${t.home}">${marchioParliamentrag(false)}<span class="marchio__nome">ParliamentRAG</span></a>` +
     `<nav class="nav" id="nav" aria-label="${t.sezioni}">${nav}</nav>` +
     '<div class="sito__azioni">' +
     lingue(o.id, o.lingua) +
