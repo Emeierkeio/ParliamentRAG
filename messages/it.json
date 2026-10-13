@@ -1036,6 +1036,7 @@
           "Dati tecnici di navigazione: indirizzo IP, data e ora, pagina richiesta e tipo di browser. Il fornitore di hosting li registra per far funzionare il sito e per sicurezza.",
           "Risposte ai questionari facoltativi, come quello della demo: i punteggi, il ruolo che indichi e il commento, se lo scrivi.",
           "Indirizzo email, se ti iscrivi alla newsletter. Lo gestisce Brevo (vedi «Newsletter»).",
+          "Il testo che incolli nella pagina Verifica, con la domanda se la scrivi. Lo usiamo solo per il controllo delle tre garanzie: non lo salviamo e non lo registriamo nei log.",
           "Richieste di token per le API, se ce le mandi: nome, email e il token che ti assegniamo. Per le domande che invii alle API vale l'informativa di Fascicoli (www.fascicoli.it/privacy)."
         ]
       },
@@ -1054,6 +1055,7 @@
           "Ci affidiamo a questi fornitori. Trattano i dati per conto nostro, come responsabili del trattamento (art. 28 del GDPR).",
           "Railway Corp. (Stati Uniti): ospita il sito e, su server nell'Unione europea, il database con le risposte ai questionari.",
           "Hetzner Online GmbH (Germania): conserva, su un server in Finlandia, le risposte ai questionari arrivate fino al 5 ottobre 2026.",
+          "OpenAI (Stati Uniti): per la pagina Verifica trasforma in numeri (embedding) la domanda, o le prime righe della risposta se la domanda manca, per calcolare l'autorevolezza sul tema. OpenAI può conservare questi dati fino a 30 giorni per controllare gli abusi.",
           "Sendinblue SAS, marchio Brevo (Francia): gestisce la newsletter.",
           "Non vendiamo i dati e non li cediamo a terzi per pubblicità. Li comunichiamo alle autorità solo se la legge lo impone."
         ]
@@ -1070,6 +1072,7 @@
           "Risposte ai questionari: fino al 31 dicembre 2027.",
           "Richieste di token: finché il token resta attivo, al massimo fino al 31 dicembre 2027.",
           "Dati tecnici di navigazione: per il tempo di conservazione dei log del fornitore di hosting, al massimo 30 giorni.",
+          "Testo della pagina Verifica: non lo conserviamo. Resta in memoria solo per il tempo del controllo.",
           "Dopo queste scadenze cancelliamo i dati."
         ]
       },

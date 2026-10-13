@@ -1049,6 +1049,7 @@
           "Technical browsing data: IP address, date and time, requested page and browser type. The hosting provider records it to run the site and for security.",
           "Answers to optional surveys, such as the demo survey: the scores, the role you state and the comment, if you write one.",
           "Email address, if you subscribe to the newsletter. Brevo manages it (see “Newsletter”).",
+          "The text you paste on the Verification page, with the question if you write one. We use it only to check the three guarantees: we do not store it and do not log it.",
           "API token requests, if you send us one: name, email and the token we assign you. Questions you send to the API are covered by the Fascicoli privacy notice (www.fascicoli.it/privacy)."
         ]
       },
@@ -1067,6 +1068,7 @@
           "We rely on these providers. They process the data on our behalf, as processors (Art. 28 GDPR).",
           "Railway Corp. (United States): hosts the site and, on servers in the European Union, the database with the survey answers.",
           "Hetzner Online GmbH (Germany): keeps, on a server in Finland, the survey answers received until 5 October 2026.",
+          "OpenAI (United States): for the Verification page it turns the question into numbers (embeddings), or the first lines of the answer if there is no question, to compute authority on the topic. OpenAI may keep this data for up to 30 days to monitor abuse.",
           "Sendinblue SAS, Brevo brand (France): manages the newsletter.",
           "We do not sell the data or hand it to third parties for advertising. We disclose it to authorities only when the law requires it."
         ]
@@ -1083,6 +1085,7 @@
           "Survey answers: until 31 December 2027.",
           "Token requests: while the token is active, until 31 December 2027 at the latest.",
           "Technical browsing data: for the log retention period of the hosting provider, 30 days at most.",
+          "Text of the Verification page: we do not keep it. It stays in memory only while the check runs.",
           "After these periods we delete the data."
         ]
       },

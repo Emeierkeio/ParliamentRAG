@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Verification · ParliamentRAG",
-  descrizione: "The public verifier of the three guarantees, under construction: paste an answer about Parliament and check groups, voices and quotes.",
+  descrizione: "The public verifier of the three guarantees: paste the answer of an AI system and check groups, authoritative voices and quotes.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -13,9 +13,9 @@ const contenuto: Contenuto = {
         <p class="attacco compare" style="--ritardo:160ms">Paste the answer you got from an AI system: the verifier checks whether it meets the three guarantees we require of our own systems.</p>
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
-        <span class="etichetta cantiere__stato"><i aria-hidden="true"></i>Under construction</span>
-        <p>Below is a preview that runs in your browser. It works on a single topic, the minimum wage, and knows only the 11 verified quotes of the example.</p>
-        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Read the verification plan (in Italian)</a></p>
+        <span class="etichetta cantiere__stato cantiere__stato--attivo"><i aria-hidden="true"></i>What it covers</span>
+        <p>All the floor speeches of the Chamber of Deputies, 19th legislature, updated every night. Quotes go between «…» or "…".</p>
+        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Read the verification method (in Italian)</a></p>
       </div>
     </div>
   </section>
@@ -23,13 +23,17 @@ const contenuto: Contenuto = {
   <!-- § 1 Prova -->
   <section class="sezione-stretta" style="padding-top:0" id="prova">
     <div class="pagina">
-      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Preview · minimum wage topic</p></div>
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verification · Chamber, 19th legislature</p></div>
 
       <div class="banco">
         <form class="banco__input compare" id="modulo" novalidate>
+          <label class="titolo-4" for="domanda">The question <span class="nota">optional</span></label>
+          <div class="campo">
+            <input id="domanda" type="text" maxlength="300" autocomplete="off" placeholder="For example: what do the groups think about the minimum wage?">
+          </div>
           <label class="titolo-4" for="risposta">The answer to check</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste the answer an AI system gave you about the minimum wage here. Quotes go between «…» or &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste the answer an AI system gave you about a topic debated in the Chamber. Quotes go between «…» or &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 words</span><span class="scorciatoia">⌘/Ctrl + Enter to check</span></div>
           </div>
           <div class="banco__azioni">
@@ -38,7 +42,7 @@ const contenuto: Contenuto = {
             <button class="btn btn--linea btn--piccolo" type="button" id="svuota">Clear</button>
           </div>
           <p class="messaggio" id="msg" role="status"></p>
-          <p class="nota">The text stays in your browser: the preview does not send it to any server.</p>
+          <p class="nota">The text reaches our server only for the check: we do not store it or log it. The question goes to OpenAI to compute authority on the topic. <a class="collegamento" href="/en/privacy">Privacy</a></p>
         </form>
 
         <div class="foglio esito-box compare" style="--ritardo:120ms">
@@ -62,36 +66,36 @@ const contenuto: Contenuto = {
     </div>
   </section>
 
-  <!-- § 2 Anteprima e versione pubblica -->
+  <!-- § 2 Cosa controlla -->
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">What it checks, and how</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">The preview runs two checks out of three, on a small corpus.</h2>
-      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">The public version will use the whole graph of the 19th legislature. Below, for each guarantee, what this page does today and what the verifier will do.</p>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Three checks across the whole 19th legislature.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">The same ones we apply to the answers of our own systems. The verifier uses no language model: with the same data, the same answer gets the same result.</p>
       <div class="tabella-scorri compare confronto-v">
         <table class="tabella">
-          <thead><tr><th scope="col">Guarantee</th><th scope="col">Preview, on this page</th><th scope="col">Public verifier</th></tr></thead>
+          <thead><tr><th scope="col">Guarantee</th><th scope="col">What it checks</th><th scope="col">When it passes</th></tr></thead>
           <tbody>
             <tr>
               <td>All groups</td>
-              <td data-l="Preview">Looks in the text for the acronym or the name of each of the ten groups of the topic and of the Government. A word identical to a name counts as a mention even if it is used in another sense.</td>
-              <td data-l="Public verifier">Compares the groups quoted with those in office on the date of the question, components of the Mixed Group included, and looks for the sentence that states a group is absent.</td>
+              <td data-l="What it checks">Looks in the text for the acronym or name of every group in office, of the Mixed Group components with deputies and of the Government. The list comes from the graph, not from a hand-written list.</td>
+              <td data-l="When it passes">Every voice is named or quoted. A word identical to a name counts even if it is used in another sense.</td>
             </tr>
             <tr>
               <td>Exact quotes</td>
-              <td data-l="Preview">Extracts the text between «…» or "…", normalises spaces and apostrophes and compares it word for word with the 11 quotes of the example. Part of a quote also counts.</td>
-              <td data-l="Public verifier">Looks for every quote in all the speeches in the Chamber, checks that the speaker is the one stated and returns the link to the record.</td>
+              <td data-l="What it checks">Looks for every text in quotation marks, four words or longer, in all the floor speeches. It shows who said it, when, and the link to the record.</td>
+              <td data-l="When it passes">Every quote is a continuous stretch of one speech and the speaker's surname appears nearby. Only spaces, typographic apostrophes and the initial capital may differ; ellipses and skipped words may not.</td>
             </tr>
             <tr>
               <td>Authoritative voices</td>
-              <td data-l="Preview">Not checked. It needs the authority scores for the question, which we do not have here.</td>
-              <td data-l="Public verifier">Computes authority on the topic with the six public criteria and checks that for each group the speaker is a rapporteur, a member of the Government or one of the top five.</td>
+              <td data-l="What it checks">For every person quoted it computes authority on the topic of the question, with the six public criteria and weights, and their rank within the group.</td>
+              <td data-l="When it passes">The speaker is a member of the Government, the rapporteur of the bill or one of the top five of their group. Without a question, the topic comes from the first lines of the answer.</td>
             </tr>
           </tbody>
         </table>
       </div>
       <details class="domanda alias compare">
-        <summary>Names the preview uses to recognise the groups</summary>
+        <summary>Names the verifier uses to recognise the groups</summary>
         <div class="tabella-scorri">
           <table class="tabella">
             <thead><tr><th scope="col">Voice</th><th scope="col">Acronyms, only as written</th><th scope="col">Names, any capitalisation</th></tr></thead>
@@ -110,8 +114,8 @@ const contenuto: Contenuto = {
         <h2 class="titolo-2 compare">The data is public. The guarantees, so far, are not.</h2>
         <div class="perche__testo compare" style="--ritardo:120ms">
           <p>The Chamber publishes records, acts and votes. Yet people who get an answer from an AI assistant have no simple way to know whether a group is missing or a quote has been altered.</p>
-          <p><strong>A check that depends on whoever wrote the answer is not enough.</strong> That is why the verifier will be separate from our systems and will work with anyone's answers.</p>
-          <p>The method is described in the verification plan. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
+          <p><strong>A check that depends on whoever wrote the answer is not enough.</strong> That is why the verifier applies the same rules to every answer, ours included.</p>
+          <p>The method is described in the verification plan. The same check is available as a tool of our MCP server. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
           <div class="fila" style="margin-top:var(--s-2)">
             <a class="btn btn--accento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">The verification plan <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
             <a class="btn btn--linea" href="/en/method">How we apply the guarantees</a>

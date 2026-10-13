@@ -22,7 +22,7 @@
       grid-template-columns: minmax(0, 1fr);
     }
   }
-  /* Cartello «in costruzione»: discreto, ma il primo che si legge */
+  /* Riquadro su cosa copre la verifica: discreto, ma il primo che si legge */
   .cantiere {
     display: grid;
     gap: var(--s-3);
@@ -43,6 +43,10 @@
     border-radius: 50%;
     background: var(--voto-ast);
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--voto-ast) 22%, transparent);
+  }
+  .cantiere__stato--attivo i {
+    background: var(--voto-si);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--voto-si) 22%, transparent);
   }
 
   /* ---------- Banco di prova: testo a sinistra, esito a destra ---------- */
@@ -68,6 +72,10 @@
     .banco__input {
       position: static;
     }
+  }
+  .banco__input label .nota {
+    font-weight: 400;
+    margin-left: var(--s-2);
   }
   .banco__input .campo--area textarea {
     min-height: 340px;

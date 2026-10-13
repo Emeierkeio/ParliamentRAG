@@ -2,7 +2,7 @@ import type { Contenuto } from "../../guscio";
 
 const contenuto: Contenuto = {
   titolo: "Verifica · ParliamentRAG",
-  descrizione: "Il verificatore pubblico delle tre garanzie, in costruzione: incolla una risposta sul Parlamento e controlla gruppi, voci e citazioni.",
+  descrizione: "Il verificatore pubblico delle tre garanzie: incolla la risposta di un sistema di intelligenza artificiale e controlla gruppi, voci autorevoli e citazioni.",
   html: String.raw`
   <!-- Apertura -->
   <section class="apertura">
@@ -13,9 +13,9 @@ const contenuto: Contenuto = {
         <p class="attacco compare" style="--ritardo:160ms">Incolla la risposta che hai ricevuto da un sistema di intelligenza artificiale: il verificatore controlla se rispetta le tre garanzie che chiediamo ai nostri sistemi.</p>
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
-        <span class="etichetta cantiere__stato"><i aria-hidden="true"></i>In costruzione</span>
-        <p>Qui sotto c'è un'anteprima che gira nel tuo browser. Lavora su un solo tema, il salario minimo, e conosce solo le 11 citazioni verificate dell'esempio.</p>
-        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Leggi il piano della verifica</a></p>
+        <span class="etichetta cantiere__stato cantiere__stato--attivo"><i aria-hidden="true"></i>Cosa copre</span>
+        <p>Tutti gli interventi in Aula della Camera dei deputati, XIX legislatura, aggiornati ogni notte. Le citazioni vanno tra «…» o tra "…".</p>
+        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Leggi il metodo della verifica</a></p>
       </div>
     </div>
   </section>
@@ -23,13 +23,17 @@ const contenuto: Contenuto = {
   <!-- § 1 Prova -->
   <section class="sezione-stretta" style="padding-top:0" id="prova">
     <div class="pagina">
-      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Anteprima · tema salario minimo</p></div>
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verifica · Camera, XIX legislatura</p></div>
 
       <div class="banco">
         <form class="banco__input compare" id="modulo" novalidate>
+          <label class="titolo-4" for="domanda">La domanda <span class="nota">facoltativa</span></label>
+          <div class="campo">
+            <input id="domanda" type="text" maxlength="300" autocomplete="off" placeholder="Per esempio: cosa pensano i gruppi del salario minimo?">
+          </div>
           <label class="titolo-4" for="risposta">La risposta da controllare</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui la risposta che un sistema di intelligenza artificiale ti ha dato sul salario minimo. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui la risposta che un sistema di intelligenza artificiale ti ha dato su un tema discusso alla Camera. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 parole</span><span class="scorciatoia">⌘/Ctrl + Invio per verificare</span></div>
           </div>
           <div class="banco__azioni">
@@ -38,7 +42,7 @@ const contenuto: Contenuto = {
             <button class="btn btn--linea btn--piccolo" type="button" id="svuota">Svuota</button>
           </div>
           <p class="messaggio" id="msg" role="status"></p>
-          <p class="nota">Il testo resta nel tuo browser: l'anteprima non lo invia a nessun server.</p>
+          <p class="nota">Il testo arriva al nostro server solo per il controllo: non lo salviamo e non lo registriamo. La domanda passa a OpenAI per calcolare l'autorevolezza sul tema. <a class="collegamento" href="/privacy">Privacy</a></p>
         </form>
 
         <div class="foglio esito-box compare" style="--ritardo:120ms">
@@ -62,36 +66,36 @@ const contenuto: Contenuto = {
     </div>
   </section>
 
-  <!-- § 2 Anteprima e versione pubblica -->
+  <!-- § 2 Cosa controlla -->
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Cosa controlla, e come</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">L'anteprima fa due controlli su tre, su un corpus piccolo.</h2>
-      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">La versione pubblica userà tutto il grafo della XIX legislatura. Qui sotto, per ogni garanzia, cosa fa oggi la pagina e cosa farà il verificatore.</p>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Tre controlli su tutta la XIX legislatura.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">Gli stessi che applichiamo alle risposte dei nostri sistemi. Il verificatore non usa modelli linguistici: a parità di dati, la stessa risposta dà lo stesso esito.</p>
       <div class="tabella-scorri compare confronto-v">
         <table class="tabella">
-          <thead><tr><th scope="col">Garanzia</th><th scope="col">Anteprima, in questa pagina</th><th scope="col">Verificatore pubblico</th></tr></thead>
+          <thead><tr><th scope="col">Garanzia</th><th scope="col">Cosa controlla</th><th scope="col">Quando passa</th></tr></thead>
           <tbody>
             <tr>
               <td>Tutti i gruppi</td>
-              <td data-l="Anteprima">Cerca nel testo la sigla o il nome di ciascuno dei dieci gruppi del tema e del Governo. Una parola uguale a un nome conta come menzione anche se è usata in altro senso.</td>
-              <td data-l="Verificatore pubblico">Confronta i gruppi citati con quelli in carica alla data della domanda, componenti del Misto comprese, e cerca la frase che dichiara un gruppo assente.</td>
+              <td data-l="Cosa controlla">Cerca nel testo la sigla o il nome di ogni gruppo in carica, delle componenti del Misto con deputati e del Governo. L'elenco viene dal grafo, non da una lista scritta a mano.</td>
+              <td data-l="Quando passa">Ogni voce è nominata o citata. Una parola uguale a un nome conta anche se è usata in altro senso.</td>
             </tr>
             <tr>
               <td>Citazioni esatte</td>
-              <td data-l="Anteprima">Estrae il testo tra «…» o tra "…", normalizza spazi e apostrofi e lo confronta parola per parola con le 11 citazioni dell'esempio. Vale anche una parte di citazione.</td>
-              <td data-l="Verificatore pubblico">Cerca ogni citazione in tutti gli interventi in Aula, controlla che l'oratore sia quello indicato e restituisce il link al resoconto.</td>
+              <td data-l="Cosa controlla">Cerca ogni testo tra virgolette, da quattro parole in su, in tutti gli interventi in Aula. Indica chi l'ha detto, quando, e il link al resoconto.</td>
+              <td data-l="Quando passa">Ogni citazione è un tratto continuo di un intervento e il cognome di chi parla compare vicino. Contano solo spazi, apostrofi tipografici e la maiuscola iniziale; puntini e parole saltate no.</td>
             </tr>
             <tr>
               <td>Voci autorevoli</td>
-              <td data-l="Anteprima">Non la controlla. Servono i punteggi di autorevolezza per la domanda, che qui non abbiamo.</td>
-              <td data-l="Verificatore pubblico">Calcola l'autorevolezza sul tema con i sei criteri pubblici e controlla che per ogni gruppo parli un relatore, un membro del Governo o uno dei primi cinque.</td>
+              <td data-l="Cosa controlla">Per ogni persona citata calcola l'autorevolezza sul tema della domanda, con i sei criteri e i pesi pubblici, e la sua posizione nel gruppo.</td>
+              <td data-l="Quando passa">Chi parla è un membro del Governo, il relatore del provvedimento o uno dei primi cinque del suo gruppo. Senza domanda, il tema si ricava dalle prime righe della risposta.</td>
             </tr>
           </tbody>
         </table>
       </div>
       <details class="domanda alias compare">
-        <summary>Nomi con cui l'anteprima riconosce i gruppi</summary>
+        <summary>Nomi con cui il verificatore riconosce i gruppi</summary>
         <div class="tabella-scorri">
           <table class="tabella">
             <thead><tr><th scope="col">Voce</th><th scope="col">Sigle, solo come scritte</th><th scope="col">Nomi, maiuscole libere</th></tr></thead>
@@ -110,8 +114,8 @@ const contenuto: Contenuto = {
         <h2 class="titolo-2 compare">I dati sono pubblici. Le garanzie, finora, no.</h2>
         <div class="perche__testo compare" style="--ritardo:120ms">
           <p>La Camera pubblica resoconti, atti e voti. Chi riceve una risposta da un assistente AI non ha però un modo semplice per sapere se manca un gruppo o se una citazione è stata ritoccata.</p>
-          <p><strong>Un controllo che dipende da chi ha scritto la risposta non basta.</strong> Per questo il verificatore sarà separato dai nostri sistemi e funzionerà con le risposte di chiunque.</p>
-          <p>Il metodo è descritto nel piano della verifica. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
+          <p><strong>Un controllo che dipende da chi ha scritto la risposta non basta.</strong> Per questo il verificatore applica le stesse regole a ogni risposta, anche alle nostre.</p>
+          <p>Il metodo è descritto nel piano della verifica. Lo stesso controllo è disponibile come strumento del nostro server MCP. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
           <div class="fila" style="margin-top:var(--s-2)">
             <a class="btn btn--accento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Il piano della verifica <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
             <a class="btn btn--linea" href="/metodo">Come applichiamo le garanzie</a>
