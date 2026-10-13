@@ -51,7 +51,7 @@ const contenuto: Contenuto = {
           </div>
           <div class="notizia__corpo">
             <h2>Fascicoli è online</h2>
-            <p>I fascicoli su un tema ora sono un sistema a sé, su fascicoli.it. Per ogni tema trovi la posizione di ogni gruppo, le voci autorevoli e le citazioni esatte. Il Senato arriverà più avanti.</p>
+            <p>I fascicoli su un tema ora sono un sistema a sé, su fascicoli.it. Per ogni tema trovi la posizione di ogni gruppo, le voci autorevoli e le citazioni esatte.</p>
             <div class="fila notizia__link">
               <a class="collegamento" href="https://www.fascicoli.it">Apri Fascicoli</a>
             </div>
