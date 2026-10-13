@@ -157,7 +157,7 @@ const contenuto: Contenuto = {
         <a class="btn btn--linea" href="/dati">Scarica il grafo</a>
         <a class="btn btn--linea" href="/sviluppatori">Collega un assistente AI</a>
       </div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Fonti: open data della Camera dei Deputati e del Senato della Repubblica, thesaurus EuroVoc. Licenza CC BY-SA 4.0.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Fonti: open data della Camera dei Deputati e del Senato della Repubblica, thesaurus EuroVoc. Il grafo è rilasciato con licenza CC BY-SA 4.0.</p>
     </div>
   </section>
 

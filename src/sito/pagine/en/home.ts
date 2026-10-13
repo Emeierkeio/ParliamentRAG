@@ -157,7 +157,7 @@ const contenuto: Contenuto = {
         <a class="btn btn--linea" href="/en/data">Download the graph</a>
         <a class="btn btn--linea" href="/en/developers">Connect an AI assistant</a>
       </div>
-      <p class="nota compare" style="margin-top:var(--s-4)">Sources: open data of the Chamber of Deputies and the Senate of the Republic, EuroVoc thesaurus. Licence CC BY-SA 4.0.</p>
+      <p class="nota compare" style="margin-top:var(--s-4)">Sources: open data of the Chamber of Deputies and the Senate of the Republic, EuroVoc thesaurus. The graph is released under CC BY-SA 4.0.</p>
     </div>
   </section>
 
