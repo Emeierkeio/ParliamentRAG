@@ -1032,7 +1032,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Privacy notice",
-    "updated": "Last updated: 5 October 2026",
+    "updated": "Last updated: 13 October 2026",
     "sections": [
       {
         "h": "Who processes the data",
@@ -1091,11 +1091,8 @@
         "p": [
           "ParliamentRAG uses only first-party technical tools: they make the site work and remember your choices. We use no analytics, advertising or profiling tools.",
           "These tools do not need your consent, so you will not see a banner (Italian Data Protection Authority guidelines of 10 June 2021).",
-          "Local storage stays in your browser until you clear it. Session storage disappears when you close the tab. In your browser we store:",
-          "NEXT_LOCALE (cookie, 1 year): the language you choose.",
-          "prag-newsletter (local storage): remembers that you subscribed to the newsletter, so we do not show you the form again.",
-          "kgStatsCache and lastUpdateIso (local storage): a copy of the database figures and of the last update date, to show the page faster.",
-          "launched and logoDrawn (session storage): avoid replaying the opening animation.",
+          "Local storage stays in your browser until you clear it. In your browser we store one item only:",
+          "famiglia-tema (local storage): the light or dark theme you choose.",
           "You can clear this data in your browser settings. The site keeps working."
         ]
       },

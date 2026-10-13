@@ -1019,7 +1019,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Informativa sulla privacy",
-    "updated": "Ultimo aggiornamento: 5 ottobre 2026",
+    "updated": "Ultimo aggiornamento: 13 ottobre 2026",
     "sections": [
       {
         "h": "Chi tratta i dati",
@@ -1078,11 +1078,8 @@
         "p": [
           "ParliamentRAG usa solo strumenti tecnici di prima parte: servono a far funzionare il sito e a ricordare le tue scelte. Non usiamo strumenti di analisi, pubblicità o profilazione.",
           "Per questi strumenti non serve il tuo consenso, quindi non trovi un banner (linee guida del Garante del 10 giugno 2021).",
-          "La memoria locale del browser resta finché non la cancelli. La memoria di sessione sparisce quando chiudi la scheda. Nel tuo browser salviamo:",
-          "NEXT_LOCALE (cookie, 1 anno): la lingua che scegli.",
-          "prag-newsletter (memoria locale): ricorda che ti sei iscritto alla newsletter, così non ti riproponiamo il modulo.",
-          "kgStatsCache e lastUpdateIso (memoria locale): una copia dei numeri del database e della data dell'ultimo aggiornamento, per mostrare la pagina più in fretta.",
-          "launched e logoDrawn (memoria di sessione): evitano di ripetere l'animazione di apertura.",
+          "La memoria locale del browser resta finché non la cancelli. Nel tuo browser salviamo una sola cosa:",
+          "famiglia-tema (memoria locale): il tema chiaro o scuro che scegli.",
           "Puoi cancellare questi dati dalle impostazioni del browser. Il sito continua a funzionare."
         ]
       },

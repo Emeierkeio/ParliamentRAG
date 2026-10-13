@@ -176,14 +176,10 @@ const AVVIO = SPLASH.flatMap(([w, h, d]) =>
   ),
 ).join("");
 
-/*
- * Prima che la pagina si disegni: tema salvato (niente lampo chiaro→scuro) e
- * marchio già disegnato in questa sessione (niente animazione ripetuta).
- */
+/* Prima che la pagina si disegni: tema salvato (niente lampo chiaro→scuro). */
 const SUBITO =
   "(function(){var r=document.documentElement;r.classList.remove('no-js');" +
-  "try{var t=localStorage.getItem('famiglia-tema');if(t)r.setAttribute('data-theme',t)}catch(e){}" +
-  "try{if(sessionStorage.getItem('marchio-parliamentrag'))r.classList.add('marchio-visto');sessionStorage.setItem('marchio-parliamentrag','1')}catch(e){}})();";
+  "try{var t=localStorage.getItem('famiglia-tema');if(t)r.setAttribute('data-theme',t)}catch(e){}})();";
 
 export function documento(o: Opzioni): string {
   const t = T[o.lingua];
