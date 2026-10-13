@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Verifica</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">Una risposta, <em>tre</em> controlli.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">Stiamo costruendo un verificatore pubblico: gli dai una risposta sul Parlamento e ti dice se rispetta le tre garanzie. Funzionerà con le risposte di qualsiasi sistema, anche le nostre.</p>
+        <p class="attacco compare" style="--ritardo:160ms">Incolla la risposta che hai ricevuto da un sistema di intelligenza artificiale: il verificatore controlla se rispetta le tre garanzie che chiediamo ai nostri sistemi.</p>
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
         <span class="etichetta cantiere__stato"><i aria-hidden="true"></i>In costruzione</span>
@@ -29,7 +29,7 @@ const contenuto: Contenuto = {
         <form class="banco__input compare" id="modulo" novalidate>
           <label class="titolo-4" for="risposta">La risposta da controllare</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui una risposta sul salario minimo. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui la risposta che un sistema di intelligenza artificiale ti ha dato sul salario minimo. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 parole</span><span class="scorciatoia">⌘/Ctrl + Invio per verificare</span></div>
           </div>
           <div class="banco__azioni">

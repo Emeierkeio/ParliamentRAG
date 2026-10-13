@@ -113,8 +113,21 @@ const contenuto: Contenuto = {
                 <a class="collegamento" href="https://github.com/Emeierkeio" rel="noopener">GitHub</a>
               </span>
             </li>
-            <li><span>Riccardo Pozzi</span></li>
-            <li><span>Matteo Palmonari</span></li>
+            <li>
+              <span>Riccardo Pozzi</span>
+              <span class="fila">
+                <a class="collegamento" href="https://www.riccardopozzi.com/" rel="noopener">Website</a>
+                <a class="collegamento" href="https://orcid.org/0000-0002-4954-3837" rel="noopener">ORCID</a>
+                <a class="collegamento" href="https://github.com/rpo19" rel="noopener">GitHub</a>
+              </span>
+            </li>
+            <li>
+              <span>Matteo Palmonari</span>
+              <span class="fila">
+                <a class="collegamento" href="https://www.unimib.it/matteo-luigi-palmonari" rel="noopener">Website</a>
+                <a class="collegamento" href="https://orcid.org/0000-0002-1801-5118" rel="noopener">ORCID</a>
+              </span>
+            </li>
           </ul>
           <p class="nota" style="margin-top:var(--s-3)">University of Milano-Bicocca.</p>
         </div>

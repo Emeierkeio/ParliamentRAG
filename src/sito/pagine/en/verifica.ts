@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Verification</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">One answer, <em>three</em> checks.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">We are building a public verifier: you give it an answer about Parliament and it tells you whether it meets the three guarantees. It will work with answers from any system, ours included.</p>
+        <p class="attacco compare" style="--ritardo:160ms">Paste the answer you got from an AI system: the verifier checks whether it meets the three guarantees we require of our own systems.</p>
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
         <span class="etichetta cantiere__stato"><i aria-hidden="true"></i>Under construction</span>
@@ -29,7 +29,7 @@ const contenuto: Contenuto = {
         <form class="banco__input compare" id="modulo" novalidate>
           <label class="titolo-4" for="risposta">The answer to check</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste an answer about the minimum wage here. Quotes go between «…» or &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste the answer an AI system gave you about the minimum wage here. Quotes go between «…» or &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 words</span><span class="scorciatoia">⌘/Ctrl + Enter to check</span></div>
           </div>
           <div class="banco__azioni">
