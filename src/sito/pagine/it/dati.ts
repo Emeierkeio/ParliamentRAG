@@ -33,7 +33,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Come è pensato</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Un grafo che altri possono leggere senza chiederci niente.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Un grafo aperto, che chiunque può riusare.</h2>
       <div class="idee">
         <article class="idea compare">
           <span class="idea__n">01</span>
@@ -137,7 +137,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">Vocabolari</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Ogni parte del grafo parla una lingua che esiste già.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Il grafo usa vocabolari standard già esistenti.</h2>
       <div class="tabella-scorri compare vocabolari">
         <table class="tabella">
           <thead><tr><th scope="col">Nel grafo</th><th scope="col">Vocabolario</th><th scope="col">Cosa permette</th></tr></thead>

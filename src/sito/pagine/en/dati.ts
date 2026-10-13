@@ -33,7 +33,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">How it is designed</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">A graph others can read without asking us anything.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">An open graph anyone can reuse.</h2>
       <div class="idee">
         <article class="idea compare">
           <span class="idea__n">01</span>
@@ -137,7 +137,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 5</span><p class="etichetta" style="padding-top:.55em">Vocabularies</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Every part of the graph speaks a language that already exists.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">The graph uses existing standard vocabularies.</h2>
       <div class="tabella-scorri compare vocabolari">
         <table class="tabella">
           <thead><tr><th scope="col">In the graph</th><th scope="col">Vocabulary</th><th scope="col">What it allows</th></tr></thead>
