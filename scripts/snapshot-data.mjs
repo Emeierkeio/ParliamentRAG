@@ -16,6 +16,11 @@ async function get(path) {
 }
 
 const stats = await get("/api/data/stats");
+// The site shows Camera and Senato apart: a backend without the split would
+// leave the pages on the old fallback, so stop here instead.
+if (!stats.by_chamber?.camera || !stats.by_chamber?.senato) {
+  throw new Error("/api/data/stats has no by_chamber: deploy the backend first");
+}
 const { last_update } = await get("/api/config/last-update");
 
 const samples = [];
@@ -31,4 +36,8 @@ for (let i = 0; i < 80 && samples.length < 24; i++) {
 const site = { ...stats, triples: stats.triples ?? ZENODO_TRIPLES, last_update, snapshot_at: new Date().toISOString().slice(0, 10) };
 await writeFile(new URL("../src/data/site-data.json", import.meta.url), JSON.stringify(site, null, 2) + "\n");
 await writeFile(new URL("../src/data/graph-samples.json", import.meta.url), JSON.stringify(samples, null, 1) + "\n");
-console.log(`last_update ${last_update}, ${samples.length} samples, ${stats.people} people`);
+const { camera, senato } = stats.by_chamber;
+console.log(
+  `last_update ${last_update}, ${samples.length} samples, ` +
+    `Camera ${camera.speeches} speeches / ${camera.people} people, Senato ${senato.speeches} speeches / ${senato.people} people`,
+);

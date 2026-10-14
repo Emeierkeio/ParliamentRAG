@@ -152,7 +152,7 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Nel grafo, al <span id="data-agg">{{dataAgg}}</span></p></div>
       <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">La XIX legislatura di Camera e Senato, collegata fatto per fatto.</h2>
-      <div class="numeri__griglia" id="numeri">{{numeri}}</div>
+      <div id="numeri">{{numeri}}</div>
       <div class="fila compare" style="margin-top:var(--s-7)">
         <a class="btn btn--linea" href="/dati">Scarica il grafo</a>
         <a class="btn btn--linea" href="/sviluppatori">Collega un assistente AI</a>

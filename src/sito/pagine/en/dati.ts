@@ -24,7 +24,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta" style="padding-top:0">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">In the graph, as of <span id="data-agg">{{dataAgg}}</span></p></div>
-      <div class="registro" id="registro">{{registro}}</div>
+      <div id="registro">{{registro}}</div>
       <p class="nota compare" style="margin-top:var(--s-4)">Sources: open data of the Chamber (dati.camera.it) and the Senate (dati.senato.it), EuroVoc thesaurus. The figures update with the graph, after every new sitting.</p>
     </div>
   </section>

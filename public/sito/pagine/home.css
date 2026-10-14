@@ -446,17 +446,40 @@
   .numeri .nota {
     color: color-mix(in oklab, var(--carta) 62%, transparent);
   }
-  .numeri .testata {
-    border-top-color: var(--carta);
+  .numeri .testata,
+  .numeri .camere__nome {
+    border-color: var(--carta);
   }
-  .numeri__griglia {
+  /* Camera e Senato affiancati, mai sommati; sotto i numeri comuni */
+  .camere {
+    margin-top: var(--s-7);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-7) var(--s-6);
+  }
+  .camere__nome {
+    font-family: var(--f-titolo);
+    font-weight: 400;
+    font-size: var(--t-3);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--carta);
+  }
+  .camere__cifre {
+    margin-top: var(--s-5);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+  .numeri__comuni {
     margin-top: var(--s-7);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--s-7) var(--s-5);
   }
   .numeri .cifra__n {
-    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.75rem);
+    font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem);
   }
   .numeri .cifra {
     padding-top: var(--s-4);
@@ -480,7 +503,10 @@
     }
   }
   @media (max-width: 860px) {
-    .numeri__griglia {
+    .camere {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .numeri__comuni {
       grid-template-columns: 1fr 1fr;
     }
   }

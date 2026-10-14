@@ -10,6 +10,28 @@
   "chunks": 178806,
   "last_update": "2026-10-13",
   "triples": 863834,
+  "by_chamber": {
+   "camera": {
+    "people": 414,
+    "speeches": 47958,
+    "sessions": 727,
+    "acts": 36951,
+    "votes": 17575,
+    "individual_votes": 7004800,
+    "chunks": 179639,
+    "groups": 10
+   },
+   "senato": {
+    "people": 212,
+    "speeches": 17904,
+    "sessions": 464,
+    "acts": 15444,
+    "votes": 8338,
+    "individual_votes": 1214934,
+    "chunks": 85354,
+    "groups": 9
+   }
+  },
   "fonte": "grafo di Fascicoli e ParliamentRAG, /api/data/stats"
  },
  "tema": {

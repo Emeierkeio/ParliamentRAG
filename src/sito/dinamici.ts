@@ -48,6 +48,8 @@ function numero(n: number, l: Lingua): string {
 
 /* Numeri del grafo al build: la fotografia notturna (scripts/snapshot-data.mjs) */
 type Stats = typeof base.stats;
+type Camera = keyof Stats["by_chamber"];
+type CampoCamera = keyof Stats["by_chamber"]["camera"];
 const S: Stats = { ...base.stats };
 for (const k of Object.keys(S) as (keyof Stats)[]) {
   const v = (fotografia as Record<string, unknown>)[k];
@@ -66,51 +68,56 @@ function seggi(): Seggio[] {
   }
 }
 
-const CIFRE: Record<Lingua, [keyof Stats, string][]> = {
+/*
+ * Camera e Senato restano separati: ogni numero che ha una camera si legge
+ * per camera, mai sommato. Temi EuroVoc e triple sono comuni ai due rami.
+ */
+const CAMERE: Record<Lingua, [Camera, string, string][]> = {
+  it: [
+    ["camera", "Camera dei Deputati", "Camera"],
+    ["senato", "Senato della Repubblica", "Senato"],
+  ],
+  en: [
+    ["camera", "Chamber of Deputies", "Chamber"],
+    ["senato", "Senate of the Republic", "Senate"],
+  ],
+};
+
+const PER_CAMERA: Record<Lingua, [CampoCamera, string | Record<Camera, string>][]> = {
   it: [
     ["speeches", "interventi in Aula, con testo integrale"],
-    ["individual_votes", "voti individuali, uno per parlamentare"],
+    ["individual_votes", "voti individuali, uno per parlamentare e votazione"],
     ["acts", "atti parlamentari"],
     ["votes", "votazioni elettroniche"],
     ["sessions", "sedute"],
-    ["people", "parlamentari e membri del Governo"],
-    ["eurovoc_concepts", "temi EuroVoc collegati agli atti"],
-    ["triples", "triple RDF nell'export"],
+    ["people", { camera: "deputati della legislatura, subentrati compresi", senato: "senatori della legislatura, subentrati compresi" }],
   ],
   en: [
-    ["speeches", "speeches on the floor, with full text"],
-    ["individual_votes", "individual votes, one per member of Parliament"],
+    ["speeches", "speeches on the floor, with the full text"],
+    ["individual_votes", "individual votes, one per member and vote"],
     ["acts", "parliamentary acts"],
     ["votes", "electronic votes"],
     ["sessions", "sittings"],
-    ["people", "members of Parliament and of the Government"],
-    ["eurovoc_concepts", "EuroVoc topics linked to the acts"],
+    ["people", { camera: "deputies in this legislature, replacements included", senato: "senators in this legislature, replacements included" }],
+  ],
+};
+
+const COMUNI: Record<Lingua, ["eurovoc_concepts" | "triples", string][]> = {
+  it: [
+    ["eurovoc_concepts", "temi EuroVoc collegati agli atti, comuni ai due rami"],
+    ["triples", "triple RDF nell'export"],
+  ],
+  en: [
+    ["eurovoc_concepts", "EuroVoc topics linked to the acts, shared by both houses"],
     ["triples", "RDF triples in the export"],
   ],
 };
 
-const REGISTRO: Record<Lingua, string[]> = {
-  it: [
-    "interventi in Aula, con il testo integrale",
-    "voti individuali, uno per parlamentare e votazione",
-    "atti parlamentari",
-    "votazioni elettroniche",
-    "sedute",
-    "parlamentari e membri del Governo",
-    "temi EuroVoc collegati agli atti",
-    "triple RDF nell'export",
-  ],
-  en: [
-    "speeches on the floor, with the full text",
-    "individual votes, one per member of Parliament and vote",
-    "parliamentary acts",
-    "electronic votes",
-    "sittings",
-    "members of Parliament and of the Government",
-    "EuroVoc topics linked to the acts",
-    "RDF triples in the export",
-  ],
+const PERSONE: Record<Lingua, string> = {
+  it: "parlamentari della legislatura, subentrati compresi",
+  en: "members of Parliament in this legislature, replacements included",
 };
+const voce = (t: string | Record<Camera, string>, c: Camera) => (typeof t === "string" ? t : t[c]);
 
 function home(l: Lingua): Record<string, string> {
   const verbale = l === "en" ? "Official record" : "Verbale ufficiale";
@@ -168,12 +175,29 @@ function home(l: Lingua): Record<string, string> {
       );
     }).join(""),
     dataAgg: data(S.last_update, l),
-    numeri: CIFRE[l]
-      .map(
-        ([k, t], i) =>
-          `<div class="cifra compare" style="--ritardo:${(i % 4) * 80}ms"><p class="cifra__n" data-k="${k}">${numero(S[k] as number, l)}</p><p class="cifra__l">${t}</p></div>`,
-      )
-      .join(""),
+    numeri:
+      '<div class="camere">' +
+      CAMERE[l]
+        .map(
+          ([c, nome], j) =>
+            `<div class="camere__ramo compare" style="--ritardo:${j * 120}ms"><h3 class="camere__nome">${nome}</h3><div class="camere__cifre">` +
+            PER_CAMERA[l]
+              .map(
+                ([k, t]) =>
+                  `<div class="cifra"><p class="cifra__n" data-c="${c}" data-k="${k}">${numero(S.by_chamber[c][k], l)}</p><p class="cifra__l">${voce(t, c)}</p></div>`,
+              )
+              .join("") +
+            "</div></div>",
+        )
+        .join("") +
+      '</div><div class="numeri__comuni">' +
+      COMUNI[l]
+        .map(
+          ([k, t], i) =>
+            `<div class="cifra compare" style="--ritardo:${i * 80}ms"><p class="cifra__n" data-k="${k}">${numero(S[k], l)}</p><p class="cifra__l">${t}</p></div>`,
+        )
+        .join("") +
+      "</div>",
   };
 }
 
@@ -181,7 +205,6 @@ function dati(l: Lingua): Record<string, string> {
   const riga = (t: string, v: string) => `<div><dt>${t}</dt><dd>${v}</dd></div>`;
   const agg = `<span data-data-agg>${data(S.last_update, l)}</span>`;
   const onto = '<span class="mono">w3id.org/parliamentrag/ontology#</span>';
-  const chiavi: (keyof Stats)[] = ["speeches", "individual_votes", "acts", "votes", "sessions", "people", "eurovoc_concepts", "triples"];
   return {
     frontespizio:
       l === "en"
@@ -198,12 +221,27 @@ function dati(l: Lingua): Record<string, string> {
           riga("Aggiornato", agg) +
           riga("Ontologia", onto),
     dataAgg: data(S.last_update, l),
-    registro: chiavi
-      .map(
-        (k, i) =>
-          `<div class="registro__riga compare" style="--ritardo:${(i % 2) * 80}ms"><span class="registro__l">${REGISTRO[l][i]}</span><span class="registro__n" data-k="${k}">${numero(S[k] as number, l)}</span></div>`,
-      )
-      .join(""),
+    registro:
+      '<div class="registro registro--camere">' +
+      `<div class="registro__riga registro__testa"><span class="registro__l"></span>${CAMERE[l].map(([, , breve]) => `<span class="registro__ramo">${breve}</span>`).join("")}</div>` +
+      PER_CAMERA[l]
+        .map(
+          ([k, t], i) =>
+            `<div class="registro__riga compare" style="--ritardo:${(i % 2) * 80}ms"><span class="registro__l">${typeof t === "string" ? t : PERSONE[l]}</span>` +
+            CAMERE[l]
+              .map(([c]) => `<span class="registro__n" data-c="${c}" data-k="${k}">${numero(S.by_chamber[c][k], l)}</span>`)
+              .join("") +
+            "</div>",
+        )
+        .join("") +
+      '</div><div class="registro registro--comuni">' +
+      COMUNI[l]
+        .map(
+          ([k, t], i) =>
+            `<div class="registro__riga compare" style="--ritardo:${(i % 2) * 80}ms"><span class="registro__l">${t}</span><span class="registro__n" data-k="${k}">${numero(S[k], l)}</span></div>`,
+        )
+        .join("") +
+      "</div>",
     triple: numero(S.triples, l),
   };
 }

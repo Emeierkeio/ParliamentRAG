@@ -152,7 +152,7 @@ const contenuto: Contenuto = {
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">In the graph, as of <span id="data-agg">{{dataAgg}}</span></p></div>
       <h2 class="titolo-1 compare" style="margin-top:var(--s-6);max-width:18ch">The 19th legislature of the Chamber and the Senate, linked fact by fact.</h2>
-      <div class="numeri__griglia" id="numeri">{{numeri}}</div>
+      <div id="numeri">{{numeri}}</div>
       <div class="fila compare" style="margin-top:var(--s-7)">
         <a class="btn btn--linea" href="/en/data">Download the graph</a>
         <a class="btn btn--linea" href="/en/developers">Connect an AI assistant</a>

@@ -88,12 +88,68 @@
   .registro__riga:nth-child(2) .registro__n {
     color: var(--accento);
   }
+  /* Camera e Senato in due colonne, mai sommati */
+  .registro--camere {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .registro--camere .registro__riga {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) repeat(2, minmax(0, 15rem));
+    gap: var(--s-4);
+  }
+  .registro--camere .registro__riga:nth-child(-n + 2) {
+    border-top: 0;
+  }
+  .registro--camere .registro__testa {
+    border-bottom-color: var(--inchiostro);
+    padding-block: 0 var(--s-2);
+  }
+  .registro__ramo {
+    font-size: var(--t-micro);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--inchiostro-2);
+    text-align: right;
+  }
+  .registro--camere .registro__n {
+    text-align: right;
+    font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem);
+  }
+  .registro--camere .registro__riga:nth-child(2) .registro__n,
+  .registro--camere .registro__riga:nth-child(3) .registro__n {
+    color: var(--accento);
+  }
+  .registro--comuni {
+    margin-top: var(--s-6);
+  }
+  .registro--comuni .registro__n {
+    color: inherit;
+  }
+  .registro--comuni .registro__riga:first-child .registro__n,
+  .registro--comuni .registro__riga:nth-child(2) .registro__n {
+    color: inherit;
+  }
   @media (max-width: 760px) {
     .registro {
       grid-template-columns: minmax(0, 1fr);
     }
     .registro__riga:nth-child(2) {
       border-top: 0;
+    }
+    .registro--camere .registro__riga {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--s-2);
+    }
+    .registro--camere .registro__l {
+      grid-column: 1 / -1;
+      max-width: none;
+    }
+    .registro--camere .registro__testa .registro__l {
+      display: none;
+    }
+    .registro--camere .registro__n {
+      font-size: 1.75rem;
     }
   }
 

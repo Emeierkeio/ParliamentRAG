@@ -187,7 +187,8 @@
   var S = D.stats;
   document.getElementById("data-agg").textContent = dataLunga(S.last_update);
   document.querySelectorAll("#numeri [data-k]").forEach(function (el) {
-    var v = S[el.dataset.k];
+    var c = el.dataset.c;
+    var v = c ? S.by_chamber && S.by_chamber[c] && S.by_chamber[c][el.dataset.k] : S[el.dataset.k];
     if (typeof v === "number") el.textContent = numero(v);
   });
 })();

@@ -6,8 +6,11 @@
 
   /* ---------- Frontespizio e registro: l'HTML ha la fotografia del build, qui i valori vivi ---------- */
   document.querySelectorAll("[data-data-agg], #data-agg").forEach(function (el) { el.textContent = dataIt(S.last_update); });
+  /* Camera e Senato restano separati: data-c dice di quale ramo è il numero */
+  var C = S.by_chamber || {};
+  function perRamo(c, k) { return C[c] && C[c][k]; }
   document.querySelectorAll("#registro [data-k]").forEach(function (el) {
-    var v = S[el.dataset.k];
+    var v = el.dataset.c ? perRamo(el.dataset.c, el.dataset.k) : S[el.dataset.k];
     if (typeof v === "number") el.textContent = numero(v);
   });
   document.getElementById("triple-n").textContent = numero(S.triples);
@@ -30,26 +33,30 @@
   accendi("5");
 
   /* ---------- § 4 Schema: nodi disegnati a mano, archi con il loro nome ---------- */
+  function ramo(k) {
+    var a = perRamo("camera", k), b = perRamo("senato", k);
+    return typeof a === "number" && typeof b === "number" ? { camera: a, senato: b } : null;
+  }
   var NODI = EN ? {
-    deputato: { t: "Deputy", x: 360, y: 200, w: 112, classe: ["foaf:Person", "ocd:deputato"], n: S.people, nl: "deputies and members of the Government", d: "A person, with their mandate. The address is the one of the Chamber's official profile." },
+    deputato: { t: "Deputy", x: 360, y: 200, w: 112, classe: ["foaf:Person", "ocd:deputato"], n: ramo("people"), nl: "deputies and senators, replacements included", d: "A person, with their mandate. The address is the one of the Chamber's official profile." },
     appartenenza: { t: "Membership", x: 190, y: 96, w: 128, classe: ["org:Membership"], d: "Links a person to a group or a committee, with a start date and, when there is one, an end date. A change of group produces a new membership." },
     gruppo: { t: "Group", x: 70, y: 200, w: 96, classe: ["org:Organization", "ocd:gruppoParlamentare"], d: "A parliamentary group. The components of the Mixed Group are organisations of their own, so +Europa stays +Europa." },
-    intervento: { t: "Speech", x: 540, y: 96, w: 116, classe: [], n: S.speeches, nl: "speeches in the Chamber", d: "What a deputy said in the Chamber, with the full text of the verbatim record." },
-    seduta: { t: "Sitting", x: 660, y: 200, w: 92, classe: [], n: S.sessions, nl: "sittings", d: "A sitting of the Chamber, divided into debates. Every speech belongs to a debate of a sitting." },
-    atto: { t: "Act", x: 190, y: 306, w: 80, classe: ["ocd:atto"], n: S.acts, nl: "parliamentary acts", d: "A parliamentary act, with its signatories. Acts signed on the topic are one of the six authority criteria." },
+    intervento: { t: "Speech", x: 540, y: 96, w: 116, classe: [], n: ramo("speeches"), nl: "speeches on the floor", d: "What a deputy said in the Chamber, with the full text of the verbatim record." },
+    seduta: { t: "Sitting", x: 660, y: 200, w: 92, classe: [], n: ramo("sessions"), nl: "sittings", d: "A sitting of the Chamber, divided into debates. Every speech belongs to a debate of a sitting." },
+    atto: { t: "Act", x: 190, y: 306, w: 80, classe: ["ocd:atto"], n: ramo("acts"), nl: "parliamentary acts", d: "A parliamentary act, with its signatories. Acts signed on the topic are one of the six authority criteria." },
     tema: { t: "EuroVoc topic", x: 70, y: 380, w: 124, classe: ["skos:Concept"], n: S.eurovoc_concepts, nl: "EuroVoc topics linked to the acts", d: "A concept of the European Union's EuroVoc thesaurus, with labels in 24 languages." },
-    voto: { t: "Vote", x: 540, y: 306, w: 80, classe: ["ocd:voto"], n: S.individual_votes, nl: "individual votes, in a separate file", d: "A deputy's vote in a roll call: in favour, against, abstained." },
-    votazione: { t: "Roll call", x: 660, y: 380, w: 108, classe: ["ocd:votazione"], n: S.votes, nl: "electronic votes", d: "An electronic vote of the Chamber, with the outcome and the act being voted on." }
+    voto: { t: "Vote", x: 540, y: 306, w: 80, classe: ["ocd:voto"], n: ramo("individual_votes"), nl: "individual votes, in a separate file", d: "A deputy's vote in a roll call: in favour, against, abstained." },
+    votazione: { t: "Roll call", x: 660, y: 380, w: 108, classe: ["ocd:votazione"], n: ramo("votes"), nl: "electronic votes", d: "An electronic vote of the Chamber, with the outcome and the act being voted on." }
   } : {
-    deputato: { t: "Deputato", x: 360, y: 200, w: 112, classe: ["foaf:Person", "ocd:deputato"], n: S.people, nl: "deputati e membri del Governo", d: "Una persona, con il suo mandato. L'indirizzo è quello della scheda ufficiale della Camera." },
+    deputato: { t: "Deputato", x: 360, y: 200, w: 112, classe: ["foaf:Person", "ocd:deputato"], n: ramo("people"), nl: "deputati e senatori, subentrati compresi", d: "Una persona, con il suo mandato. L'indirizzo è quello della scheda ufficiale della Camera." },
     appartenenza: { t: "Appartenenza", x: 190, y: 96, w: 128, classe: ["org:Membership"], d: "Lega una persona a un gruppo o a una commissione, con data di inizio e, se c'è, di fine. Un cambio di gruppo produce una nuova appartenenza." },
     gruppo: { t: "Gruppo", x: 70, y: 200, w: 96, classe: ["org:Organization", "ocd:gruppoParlamentare"], d: "Un gruppo parlamentare. Le componenti del Gruppo Misto sono organizzazioni a sé, così +Europa resta +Europa." },
-    intervento: { t: "Intervento", x: 540, y: 96, w: 116, classe: [], n: S.speeches, nl: "interventi in Aula", d: "Quello che un deputato ha detto in Aula, con il testo integrale del resoconto stenografico." },
-    seduta: { t: "Seduta", x: 660, y: 200, w: 92, classe: [], n: S.sessions, nl: "sedute", d: "Una seduta dell'Aula, divisa in dibattiti. Ogni intervento sta in un dibattito di una seduta." },
-    atto: { t: "Atto", x: 190, y: 306, w: 80, classe: ["ocd:atto"], n: S.acts, nl: "atti parlamentari", d: "Un atto parlamentare, con i suoi firmatari. Gli atti firmati sul tema sono uno dei sei criteri di autorevolezza." },
+    intervento: { t: "Intervento", x: 540, y: 96, w: 116, classe: [], n: ramo("speeches"), nl: "interventi in Aula", d: "Quello che un deputato ha detto in Aula, con il testo integrale del resoconto stenografico." },
+    seduta: { t: "Seduta", x: 660, y: 200, w: 92, classe: [], n: ramo("sessions"), nl: "sedute", d: "Una seduta dell'Aula, divisa in dibattiti. Ogni intervento sta in un dibattito di una seduta." },
+    atto: { t: "Atto", x: 190, y: 306, w: 80, classe: ["ocd:atto"], n: ramo("acts"), nl: "atti parlamentari", d: "Un atto parlamentare, con i suoi firmatari. Gli atti firmati sul tema sono uno dei sei criteri di autorevolezza." },
     tema: { t: "Tema EuroVoc", x: 70, y: 380, w: 124, classe: ["skos:Concept"], n: S.eurovoc_concepts, nl: "temi EuroVoc collegati agli atti", d: "Un concetto del thesaurus EuroVoc dell'Unione europea, con le etichette in 24 lingue." },
-    voto: { t: "Voto", x: 540, y: 306, w: 80, classe: ["ocd:voto"], n: S.individual_votes, nl: "voti individuali, in un file a parte", d: "Il voto di un deputato in una votazione: favorevole, contrario, astenuto." },
-    votazione: { t: "Votazione", x: 660, y: 380, w: 108, classe: ["ocd:votazione"], n: S.votes, nl: "votazioni elettroniche", d: "Una votazione elettronica dell'Aula, con l'esito e l'atto su cui si vota." }
+    voto: { t: "Voto", x: 540, y: 306, w: 80, classe: ["ocd:voto"], n: ramo("individual_votes"), nl: "voti individuali, in un file a parte", d: "Il voto di un deputato in una votazione: favorevole, contrario, astenuto." },
+    votazione: { t: "Votazione", x: 660, y: 380, w: 108, classe: ["ocd:votazione"], n: ramo("votes"), nl: "votazioni elettroniche", d: "Una votazione elettronica dell'Aula, con l'esito e l'atto su cui si vota." }
   };
   var ARCHI = EN ? [
     ["appartenenza", "deputato", "member"],
@@ -124,7 +131,11 @@
       '<p class="etichetta">' + (EN ? "Node" : "Nodo") + '</p><h3 class="titolo-3">' + esc(n.t) + "</h3><p>" + esc(n.d) + "</p>" +
       (n.classe.length ? '<div class="classe">' + n.classe.map(function (c) { return '<span class="sigla">' + esc(c) + "</span>"; }).join("") + "</div>" : "") +
       '<ul class="relazioni">' + collegati.join("") + "</ul>" +
-      (n.n ? '<p class="quanti"><b>' + numero(n.n) + "</b>" + esc(n.nl) + (EN ? ", as of " : ", al ") + dataIt(S.last_update) + "</p>" : "");
+      (n.n ? '<p class="quanti">' + quanti(n.n) + esc(n.nl) + (EN ? ", as of " : ", al ") + dataIt(S.last_update) + "</p>" : "");
+  }
+  function quanti(v) {
+    if (typeof v === "number") return "<b>" + numero(v) + "</b>";
+    return (EN ? "Chamber " : "Camera ") + "<b>" + numero(v.camera) + "</b> · " + (EN ? "Senate " : "Senato ") + "<b>" + numero(v.senato) + "</b><br>";
   }
   svg.addEventListener("mouseover", function (e) { var g = e.target.closest(".nodo"); if (g) scegli(g.dataset.k); });
   svg.addEventListener("click", function (e) { var g = e.target.closest(".nodo"); if (g) scegli(g.dataset.k); });

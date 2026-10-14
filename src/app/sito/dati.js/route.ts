@@ -12,7 +12,7 @@ export const revalidate = 600;
 
 const BACKEND = (process.env.PARLIAMENTRAG_API || "https://thesis-parliamentrag-production.up.railway.app").replace(/\/$/, "");
 
-type Stats = Record<string, number | string | null>;
+type Stats = Record<string, unknown>;
 
 async function statsVive(): Promise<Stats | null> {
   try {
@@ -28,14 +28,23 @@ async function statsVive(): Promise<Stats | null> {
   }
 }
 
+function camereComplete(v: unknown): boolean {
+  const c = v as Record<string, Record<string, unknown>> | null;
+  return ["camera", "senato"].every((ch) => typeof c?.[ch]?.speeches === "number");
+}
+
 export async function GET() {
   const stats: Stats = { ...base.stats };
   // Prima la fotografia notturna, poi i valori vivi: vince il più recente disponibile.
   // `triples` viene dall'export RDF: il backend lo restituisce vuoto e resta quello salvato.
+  // `by_chamber` (Camera e Senato separati) passa solo intero: una fonte che non
+  // l'ha lascia quello precedente, mai mezza divisione.
   for (const fonte of [fotografia as Stats, await statsVive()]) {
     if (!fonte) continue;
     for (const k of Object.keys(base.stats)) {
-      if (k !== "fonte" && fonte[k] !== null && fonte[k] !== undefined) stats[k] = fonte[k];
+      if (k === "fonte" || fonte[k] === null || fonte[k] === undefined) continue;
+      if (k === "by_chamber" && !camereComplete(fonte[k])) continue;
+      stats[k] = fonte[k];
     }
   }
   const dati = { ...base, stats };
