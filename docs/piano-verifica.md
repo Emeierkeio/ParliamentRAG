@@ -32,7 +32,7 @@ nei vincoli di ParliamentRAG) e Scranno (l'Aula in prima persona) restano fuori 
 | Registro delle citazioni | `.../generation/citation_registry.py` | Segue ogni citazione dalla prova al testo finale | Pensato per la pipeline, non per una risposta esterna |
 | Copertura dei gruppi | `pipeline.py` (`_inject_missing_party_paragraphs`), `evaluation.py` (`ALL_PARTIES = 10`) | Aggiunge i gruppi mancanti, misura la copertura | Elenco dei gruppi fisso in `default.yaml`, non ricavato dal grafo alla data |
 | Autorevolezza | `backend/app/services/authority/` (`scorer.py`, `components.py`), pesi in `backend/config/default.yaml` | Sei componenti tra 0 e 1, pesati, per domanda | Richiede gli embedding di passaggi, atti, professioni e studi, che oggi non pubblichiamo |
-| Dataset tabellare | Hugging Face `emeierkeio/parliamentrag-camera-leg19` | `speeches` con testo integrale e `speaker_id`, `memberships` con date, `persons`, `organizations` (componenti del Misto incluse) | Niente chunk, niente embedding |
+| Dataset tabellare | Hugging Face `emeierkeio/parliamentrag-leg19` | `speeches` con testo integrale e `speaker_id`, `memberships` con date, `persons`, `organizations` (componenti del Misto incluse) | Niente chunk, niente embedding |
 | Grafo in RDF | Zenodo, DOI 10.5281/zenodo.21560331 | Lo stesso grafo, con gli URI ufficiali | Niente embedding |
 | Pipeline dei dati | `parliamentrag-iswc/build`, copia in `fascicoli/build` | Costruisce il grafo da dati.camera.it | Vive in due repository |
 
@@ -179,7 +179,7 @@ Autorevolezza (posizione nel gruppo)
 ## Interfacce
 
 1. **Libreria Python** `parliamentrag-verifica`: `verifica(risposta, dati) -> Rapporto`.
-2. **Riga di comando:** `parliamentrag-verifica risposta.json --dati ./camera-leg19`. Al primo avvio scarica
+2. **Riga di comando:** `parliamentrag-verifica risposta.json --dati ./leg19`. Al primo avvio scarica
    la versione dei dati indicata.
 3. **Pagina `/verifica` sul sito del centro.** Incolli il JSON e leggi il rapporto. Il primo controllo può
    girare nel browser (con Pyodide o un port in TypeScript); gli altri due chiamano una route.

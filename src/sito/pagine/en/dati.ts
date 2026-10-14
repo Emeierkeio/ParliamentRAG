@@ -191,7 +191,7 @@ const contenuto: Contenuto = {
           <div class="deposito__testa"><span class="etichetta">Hugging Face · tables</span></div>
           <div class="deposito__corpo">
             <div class="file">
-              <div><p class="file__nome">emeierkeio/parliamentrag-camera-leg19</p><p class="file__cosa">The data of the 19th legislature in table form, for people who work with pandas, R or a spreadsheet rather than RDF.</p></div>
+              <div><p class="file__nome">emeierkeio/parliamentrag-leg19</p><p class="file__cosa">The data of the 19th legislature in table form, for people who work with pandas, R or a spreadsheet rather than RDF.</p></div>
               <span class="sigla">Tables</span>
             </div>
             <div class="file">
@@ -200,7 +200,7 @@ const contenuto: Contenuto = {
             </div>
           </div>
           <div class="deposito__piede">
-            <a class="btn btn--accento btn--piccolo" href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19" rel="noopener">Open on Hugging Face <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--accento btn--piccolo" href="https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19" rel="noopener">Open on Hugging Face <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
             <a class="btn btn--linea btn--piccolo" href="https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/build" rel="noopener">The pipeline on GitHub <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
           </div>
         </article>

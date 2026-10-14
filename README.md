@@ -122,7 +122,7 @@ nei paper. Stenografo, Fascicoli e Scranno non sono in questa tabella.
 | | Dove | Licenza |
 |---|---|---|
 | **Grafo in RDF** | Zenodo, [DOI 10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331). Turtle, voti individuali in N-Triples a parte | CC BY-SA 4.0 |
-| **Grafo in tabelle** | Hugging Face, [emeierkeio/parliamentrag-camera-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19), aggiornato con i dati | CC BY-SA 4.0 |
+| **Grafo in tabelle** | Hugging Face, [emeierkeio/parliamentrag-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19), aggiornato con i dati | CC BY-SA 4.0 |
 | **Server MCP** | `https://mcp.parliamentrag.it/mcp`: interventi, sedute, votazioni voto per voto, emicicli | accesso libero |
 | **Sistema di ricerca** | [Emeierkeio/parliamentrag-iswc](https://github.com/Emeierkeio/parliamentrag-iswc): pipeline dei dati, retrieval, autorevolezza, prompt. Archiviato su Zenodo, [DOI 10.5281/zenodo.23173703](https://doi.org/10.5281/zenodo.23173703) | Apache 2.0 |
 

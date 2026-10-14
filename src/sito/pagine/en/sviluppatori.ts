@@ -134,10 +134,10 @@ const contenuto: Contenuto = {
           <span class="dump__cosa">The archived dataset, with a DOI to cite.</span>
           <span class="dump__dove">doi.org/10.5281/zenodo.21560331</span>
         </a>
-        <a class="dump__voce" href="https://huggingface.co/datasets/emeierkeio/parliamentrag-camera-leg19" rel="noopener">
+        <a class="dump__voce" href="https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19" rel="noopener">
           <span class="dump__nome">Hugging Face</span>
           <span class="dump__cosa">The dataset of the Chamber, 19th legislature.</span>
-          <span class="dump__dove">emeierkeio/parliamentrag-camera-leg19</span>
+          <span class="dump__dove">emeierkeio/parliamentrag-leg19</span>
         </a>
         <a class="dump__voce" href="https://github.com/Emeierkeio/parliamentrag-iswc/tree/main/build" rel="noopener">
           <span class="dump__nome">Pipeline</span>
