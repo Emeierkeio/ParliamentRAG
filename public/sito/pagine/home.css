@@ -477,7 +477,8 @@
   /* Chi c'è dietro il numero dei parlamentari */
   .camere__chi {
     margin-top: var(--s-6);
-    max-width: 68ch;
+    max-width: none;
+    text-wrap: pretty;
     font-size: var(--t-piccolo);
     line-height: 1.55;
     color: color-mix(in oklab, var(--su) 72%, transparent);
