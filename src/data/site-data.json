@@ -1,13 +1,13 @@
 {
-  "people": 555,
-  "speeches": 47782,
-  "sessions": 725,
-  "acts": 36926,
+  "people": 729,
+  "speeches": 65862,
+  "sessions": 1191,
+  "acts": 52395,
   "votes": 17575,
   "individual_votes": 7004800,
   "eurovoc_concepts": 1927,
-  "chunks": 178806,
-  "last_update": "2026-10-13",
+  "chunks": 264993,
+  "last_update": "2026-10-14",
   "triples": 863834,
-  "snapshot_at": "2026-10-13"
+  "snapshot_at": "2026-10-14"
 }
