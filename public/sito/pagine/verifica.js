@@ -9,8 +9,6 @@
   var esc = window.esc, numero = window.numero, dataIt = window.dataLunga;
   /* Le sigle e i nomi dei gruppi restano italiani; il Governo si scrive nella lingua della pagina */
   var sigla = function (g) { return EN && g === "Governo" ? "Government" : g; };
-  var nomeGruppo = function (q) { return EN && q.group === "Governo" ? "Government" : q.groupName; };
-
 
   /* ---------- Nomi con cui il verificatore riconosce i gruppi ----------
    * Copia della tabella VOICES di services/verifier.py in Fascicoli: serve
