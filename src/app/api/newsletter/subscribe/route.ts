@@ -35,6 +35,9 @@ export async function POST(request: Request) {
       includeListIds: [Number(process.env.BREVO_LIST_ID)],
       templateId: Number(process.env.BREVO_DOI_TEMPLATE_ID),
       redirectionUrl: `${SITE_URL}/newsletter/confirmed`,
+      // Every site of the family uses the same list and the same confirmation
+      // email, signed ParliamentRAG; ORIGINE only records which site it came from.
+      attributes: { ORIGINE: "parliamentrag" },
     }),
   });
   // An address already on the list gets the same answer as a new one: the
