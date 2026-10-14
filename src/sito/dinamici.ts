@@ -23,7 +23,7 @@ const SPUNTA =
 const ORDINE = ["FdI", "PD", "Lega", "M5S", "FI", "AVS", "Azione", "IV", "NM", "+Europa", "Governo"];
 const BREVE: Record<string, string> = {
   FdI: "Fratelli d'Italia", PD: "Partito Democratico", Lega: "Lega", M5S: "Movimento 5 Stelle", FI: "Forza Italia",
-  AVS: "Alleanza Verdi e Sinistra", Azione: "Azione", IV: "Italia Viva", NM: "Noi Moderati", "+Europa": "+Europa", Governo: "Governo",
+  AVS: "Alleanza Verdi e Sinistra", Azione: "Azione", IV: "Italia Viva", NM: "Noi Moderati", "+Europa": "+Europa (Gruppo Misto)", Governo: "Governo",
 };
 const GRUPPI_AULA: { k: string; seggi: string | null; componente?: string }[] = [
   { k: "AVS", seggi: "AVS" }, { k: "M5S", seggi: "M5S" }, { k: "PD", seggi: "PD" }, { k: "Azione", seggi: "Azione" },
@@ -31,7 +31,9 @@ const GRUPPI_AULA: { k: string; seggi: string | null; componente?: string }[] = 
   { k: "FI", seggi: "FI" }, { k: "Lega", seggi: "Lega" }, { k: "FdI", seggi: "FdI" }, { k: "Governo", seggi: null },
 ];
 
-const etichetta = (g: string, l: Lingua) => (l === "en" && g === "Governo" ? "Government" : g);
+/* +Europa non è un gruppo: è una componente del Gruppo Misto, e l'etichetta lo dice */
+const etichetta = (g: string, l: Lingua) =>
+  g === "+Europa" ? (l === "en" ? "Mixed · +Europa" : "Misto · +Europa") : l === "en" && g === "Governo" ? "Government" : g;
 const perGruppo: Record<string, Citazione> = Object.fromEntries(base.tema.citazioni.map((q) => [q.group, q]));
 
 function data(s: string, l: Lingua): string {
@@ -158,7 +160,7 @@ function home(l: Lingua): Record<string, string> {
     ).join(""),
     voci: ORDINE.map((g, i) => {
       const q = perGruppo[g];
-      const breve = l === "en" && g === "Governo" ? "Government" : BREVE[g];
+      const breve = l === "en" && g === "Governo" ? "Government" : l === "en" && g === "+Europa" ? "+Europa (Mixed Group)" : BREVE[g];
       return (
         `<blockquote class="cit cit--piccola"${i === 0 ? " data-on" : ""}><p class="cit__testo" lang="it">${esc(q.quote)}</p>` +
         `<footer class="cit__fonte"><span class="cit__chi">${esc(q.name)}</span><span>${esc(breve)}</span><span>${data(q.date, l)}</span>` +
