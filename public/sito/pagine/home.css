@@ -437,18 +437,20 @@
   }
 
   /* ---------- Numeri ---------- */
+  /* --su: il colore del testo sul fondo della sezione, in entrambi i temi */
   .numeri {
+    --su: var(--carta);
     background: var(--inchiostro);
-    color: var(--carta);
+    color: var(--su);
   }
   .numeri .etichetta,
   .numeri .cifra__l,
   .numeri .nota {
-    color: color-mix(in oklab, var(--carta) 62%, transparent);
+    color: color-mix(in oklab, var(--su) 62%, transparent);
   }
   .numeri .testata,
   .numeri .camere__nome {
-    border-color: var(--carta);
+    border-color: var(--su);
   }
   /* Camera e Senato affiancati, mai sommati; sotto i numeri comuni */
   .camere {
@@ -464,13 +466,25 @@
     letter-spacing: -0.02em;
     line-height: 1.1;
     padding-bottom: var(--s-3);
-    border-bottom: 1px solid var(--carta);
+    border-bottom: 1px solid var(--su);
   }
   .camere__cifre {
     margin-top: var(--s-5);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--s-6) var(--s-5);
+  }
+  /* Chi c'è dietro il numero dei parlamentari */
+  .camere__chi {
+    margin-top: var(--s-6);
+    max-width: 68ch;
+    font-size: var(--t-piccolo);
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--su) 72%, transparent);
+  }
+  .camere__chi b {
+    font-weight: 600;
+    color: var(--su);
   }
   .numeri__comuni {
     margin-top: var(--s-7);
@@ -483,23 +497,25 @@
   }
   .numeri .cifra {
     padding-top: var(--s-4);
-    border-top: 1px solid color-mix(in oklab, var(--carta) 20%, transparent);
+    border-top: 1px solid color-mix(in oklab, var(--su) 20%, transparent);
   }
   .numeri .btn--linea {
-    --btn-fg: var(--carta);
-    border-color: color-mix(in oklab, var(--carta) 30%, transparent);
+    --btn-fg: var(--su);
+    border-color: color-mix(in oklab, var(--su) 30%, transparent);
   }
   .numeri .btn--linea:hover {
-    --btn-bg: color-mix(in oklab, var(--carta) 10%, transparent);
+    --btn-bg: color-mix(in oklab, var(--su) 10%, transparent);
   }
   :root[data-theme="dark"] .numeri {
+    --su: var(--inchiostro);
     background: var(--carta-2);
-    color: var(--inchiostro);
+    color: var(--su);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .numeri {
+      --su: var(--inchiostro);
       background: var(--carta-2);
-      color: var(--inchiostro);
+      color: var(--su);
     }
   }
   @media (max-width: 860px) {

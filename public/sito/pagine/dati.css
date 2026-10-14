@@ -120,6 +120,18 @@
   .registro--camere .registro__riga:nth-child(3) .registro__n {
     color: var(--accento);
   }
+  /* Chi c'è dietro il numero dei parlamentari */
+  .registro__chi {
+    margin-top: var(--s-4);
+    max-width: 68ch;
+    font-size: var(--t-piccolo);
+    line-height: 1.55;
+    color: var(--inchiostro-2);
+  }
+  .registro__chi b {
+    font-weight: 600;
+    color: var(--inchiostro);
+  }
   .registro--comuni {
     margin-top: var(--s-6);
   }

@@ -7,6 +7,7 @@
  */
 import base from "@/sito/dati-base.json";
 import fotografia from "@/data/site-data.json";
+import { SOLO_BASE } from "@/sito/solo-base";
 
 export const revalidate = 600;
 
@@ -42,7 +43,7 @@ export async function GET() {
   for (const fonte of [fotografia as Stats, await statsVive()]) {
     if (!fonte) continue;
     for (const k of Object.keys(base.stats)) {
-      if (k === "fonte" || fonte[k] === null || fonte[k] === undefined) continue;
+      if (k === "fonte" || SOLO_BASE.includes(k) || fonte[k] === null || fonte[k] === undefined) continue;
       if (k === "by_chamber" && !camereComplete(fonte[k])) continue;
       stats[k] = fonte[k];
     }

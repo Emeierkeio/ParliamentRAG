@@ -11,6 +11,7 @@ import { join } from "node:path";
 import base from "./dati-base.json";
 import fotografia from "../data/site-data.json";
 import { esc } from "./guscio";
+import { SOLO_BASE } from "./solo-base";
 import type { Lingua } from "./rotte";
 
 type Citazione = (typeof base.tema.citazioni)[number];
@@ -53,7 +54,7 @@ type CampoCamera = keyof Stats["by_chamber"]["camera"];
 const S: Stats = { ...base.stats };
 for (const k of Object.keys(S) as (keyof Stats)[]) {
   const v = (fotografia as Record<string, unknown>)[k];
-  if (v !== null && v !== undefined && k !== "fonte") (S as Record<string, unknown>)[k] = v;
+  if (v !== null && v !== undefined && k !== "fonte" && !SOLO_BASE.includes(k)) (S as Record<string, unknown>)[k] = v;
 }
 
 /* Seggi dell'Aula da public/sito/aula.js (window.AULA=…) */
@@ -118,6 +119,28 @@ const PERSONE: Record<Lingua, string> = {
   en: "members of Parliament in this legislature, replacements included",
 };
 const voce = (t: string | Record<Camera, string>, c: Camera) => (typeof t === "string" ? t : t[c]);
+
+/*
+ * Chi c'è dietro il numero dei parlamentari: in carica, usciti durante la
+ * legislatura, senatori a vita, Governo senza seggio. I numeri sono span con
+ * data-c/data-k, che gli script delle pagine aggiornano con i valori vivi.
+ */
+function chi(l: Lingua): string {
+  const n = (k: string, c?: Camera) => {
+    const v = c ? (S.by_chamber[c] as Record<string, number>)[k] : (S as Record<string, unknown>)[k];
+    return `<span${c ? ` data-c="${c}"` : ""} data-k="${k}">${numero(v as number, l)}</span>`;
+  };
+  const napolitano = S.by_chamber.senato.life_senators_former === 1;
+  return l === "en"
+    ? `<b>Who they are.</b> In the Chamber, ${n("people_in_office", "camera")} deputies in office and ${n("people_former", "camera")} who left during the legislature. ` +
+        `In the Senate, ${n("people_in_office", "senato")} senators in office, ${n("life_senators_in_office", "senato")} of them for life, and ${n("people_former", "senato")} no longer in office` +
+        (napolitano ? ", including Giorgio Napolitano, senator for life, who died in 2023" : "") +
+        `. The graph also has ${n("government_without_seat")} members of the Government without a seat in Parliament.`
+    : `<b>Chi sono.</b> Alla Camera ${n("people_in_office", "camera")} deputati in carica e ${n("people_former", "camera")} che hanno lasciato durante la legislatura. ` +
+        `Al Senato ${n("people_in_office", "senato")} senatori in carica, di cui ${n("life_senators_in_office", "senato")} a vita, e ${n("people_former", "senato")} non più in carica` +
+        (napolitano ? ", tra cui il senatore a vita Giorgio Napolitano, scomparso nel 2023" : "") +
+        `. Nel grafo ci sono anche ${n("government_without_seat")} membri del Governo senza seggio in Parlamento.`;
+}
 
 function home(l: Lingua): Record<string, string> {
   const verbale = l === "en" ? "Official record" : "Verbale ufficiale";
@@ -190,7 +213,7 @@ function home(l: Lingua): Record<string, string> {
             "</div></div>",
         )
         .join("") +
-      '</div><div class="numeri__comuni">' +
+      `</div><p class="camere__chi compare">${chi(l)}</p><div class="numeri__comuni">` +
       COMUNI[l]
         .map(
           ([k, t], i) =>
@@ -234,7 +257,7 @@ function dati(l: Lingua): Record<string, string> {
             "</div>",
         )
         .join("") +
-      '</div><div class="registro registro--comuni">' +
+      `</div><p class="registro__chi compare">${chi(l)}</p><div class="registro registro--comuni">` +
       COMUNI[l]
         .map(
           ([k, t], i) =>

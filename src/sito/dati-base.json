@@ -1,37 +1,44 @@
 {
  "stats": {
-  "people": 555,
-  "speeches": 47782,
-  "sessions": 725,
-  "acts": 36926,
-  "votes": 17575,
-  "individual_votes": 7004800,
+  "people": 729,
+  "speeches": 65862,
+  "sessions": 1191,
+  "acts": 52395,
+  "votes": 25913,
+  "individual_votes": 8219734,
   "eurovoc_concepts": 1927,
-  "chunks": 178806,
-  "last_update": "2026-10-13",
+  "chunks": 264993,
+  "last_update": "2026-10-14",
   "triples": 863834,
   "by_chamber": {
    "camera": {
-    "people": 414,
-    "speeches": 47958,
-    "sessions": 727,
-    "acts": 36951,
-    "votes": 17575,
+    "speeches": 47889,
+    "chunks": 179255,
     "individual_votes": 7004800,
-    "chunks": 179639,
-    "groups": 10
+    "acts": 36951,
+    "sessions": 726,
+    "votes": 17575,
+    "people": 415,
+    "groups": 10,
+    "people_in_office": 399,
+    "people_former": 16
    },
    "senato": {
-    "people": 212,
-    "speeches": 17904,
-    "sessions": 464,
-    "acts": 15444,
-    "votes": 8338,
+    "speeches": 17973,
+    "chunks": 85738,
     "individual_votes": 1214934,
-    "chunks": 85354,
-    "groups": 9
+    "acts": 15444,
+    "sessions": 465,
+    "votes": 8338,
+    "people": 212,
+    "groups": 9,
+    "people_in_office": 205,
+    "people_former": 7,
+    "life_senators_in_office": 5,
+    "life_senators_former": 1
    }
   },
+  "government_without_seat": 23,
   "fonte": "grafo di Fascicoli e ParliamentRAG, /api/data/stats"
  },
  "tema": {
