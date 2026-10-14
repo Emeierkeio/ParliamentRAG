@@ -88,9 +88,9 @@ Sullo stesso grafo lavorano tre sistemi, ognuno con un compito:
 
 | Sistema | Cosa fa |
 |---|---|
-| [Stenografo](https://www.stenografo.it) | Risponde a domande sui lavori della Camera: sedute, atti, voti |
+| [Stenografo](https://www.stenografo.it) | Risponde a domande sui lavori di Camera e Senato: sedute, atti, voti |
 | [Fascicoli](https://www.fascicoli.it) | Riassume un tema rispettando i criteri fissati da ParliamentRAG |
-| [Scranno](https://www.scranno.it) | Ti porta in prima persona nell'Aula di Montecitorio, a vedere il lavoro di ognuno di quelli che ci lavorano ogni giorno |
+| [Scranno](https://www.scranno.it) | Ti porta in prima persona nell'Aula di Montecitorio e in quella di Palazzo Madama, a vedere il lavoro di ognuno di quelli che ci lavorano ogni giorno |
 
 Questo repository contiene il sito [parliamentrag.it](https://www.parliamentrag.it), la guida al
 [server MCP](docs/mcp.md) e il piano della verifica.
