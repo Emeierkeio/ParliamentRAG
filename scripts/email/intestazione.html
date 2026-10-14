@@ -1,41 +1,19 @@
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8">
-<!-- Intestazione delle email (Brevo, modelli 2 e 3): emiciclo di seggi e
-     marchio. Si rende con scripts/email/intestazione.py in
+<!-- Intestazione delle email (Brevo, modelli 2 e 3): marchio. I seggi stanno
+     in seggi.html, dietro il riquadro. Si rende con scripts/email/intestazione.py in
      public/email/intestazione@2x.png. -->
 <style>
 @font-face { font-family: Geist; src: url("../../public/sito/font/geist-normal-latin.woff2") format("woff2"); font-weight: 100 900; }
 html, body { margin: 0; }
-body { width: 560px; height: 160px; background: #f6f5f1; position: relative; overflow: hidden; }
-#seggi { position: absolute; inset: 0; }
-.marchio { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -38%); display: flex; align-items: center; gap: 12px;
+body { width: 560px; height: 76px; background: #f6f5f1; position: relative; overflow: hidden; }
+.marchio { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 12px;
   font-family: Geist, "Helvetica Neue", Arial, sans-serif; font-weight: 600; font-size: 30px; letter-spacing: -0.02em; color: #12171a; }
 .marchio svg { width: 40px; height: 32px; color: #12171a; }
 </style></head>
 <body>
-<svg id="seggi" width="560" height="160" viewBox="0 0 560 160"></svg>
 <div class="marchio">
   <svg viewBox="15 15 194 153" aria-hidden="true"><path d="M 35.91 139.73 A 81 81 0 1 1 188.09 139.73" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round"/><circle cx="112" cy="146" r="22" fill="#2D5F8F"/></svg>
   <span>ParliamentRAG</span>
 </div>
-<script>
-// Emiciclo: file concentriche di seggi, centro sotto il bordo inferiore.
-const s = document.getElementById("seggi"), cx = 280, cy = 210;
-const file = [120, 152, 184, 216];
-let n = 0;
-file.forEach((r, i) => {
-  const passi = Math.round(Math.PI * r / 30);
-  for (let k = 0; k <= passi; k++) {
-    const a = Math.PI + (Math.PI * k) / passi;
-    const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
-    if (y > 172 || y < 2) continue;
-    // pochi seggi appena più scuri, sempre gli stessi
-    const scuro = (n * 37 + i * 11) % 23 === 0;
-    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c.setAttribute("cx", x.toFixed(1)); c.setAttribute("cy", y.toFixed(1)); c.setAttribute("r", "11");
-    c.setAttribute("fill", scuro ? "#d9d5ca" : "#ebe8e0");
-    s.appendChild(c); n++;
-  }
-});
-</script>
 </body></html>
