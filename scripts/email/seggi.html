@@ -1,12 +1,28 @@
 <!doctype html>
 <html lang="it"><head><meta charset="utf-8">
-<!-- Sfondo delle email (Brevo, modelli 2 e 3): l'emiciclo dei seggi del volantino
-     ISWC (comunicazione/presentazioni/iswc2026-poster/assets/hemicycle-bg.svg, senza
-     il seggio blu), intero nella colonna di 600 px della mail (più largo verrebbe tagliato ai lati), dietro il riquadro.
-     Si rende con scripts/email/intestazione.py in public/email/seggi@2x.png. -->
-<style>
-html, body { margin: 0; background: transparent; }
-body { width: 600px; height: 420px; position: relative; overflow: hidden; }
-img { position: absolute; left: 50%; top: 2px; width: 598px; transform: translateX(-50%); }
-</style></head>
-<body><img src="emiciclo.svg" alt=""></body></html>
+<!-- Sfondo delle email (Brevo, modelli 2 e 3): emiciclo di seggi nello stile del
+     volantino ISWC (comunicazione/presentazioni/iswc2026-poster/assets/hemicycle-bg.svg,
+     stessi colori), con meno file e seggi più grandi, intero nella colonna di 600 px
+     della mail. Si rende con scripts/email/intestazione.py in public/email/seggi@2x.png. -->
+<style>html, body { margin: 0; background: transparent; } svg { display: block; }</style>
+</head><body>
+<svg id="seggi" width="600" height="420" viewBox="0 0 600 420"></svg>
+<script>
+const s = document.getElementById("seggi"), cx = 300, cy = 300, r = 17;
+let n = 0;
+[140, 190, 240, 278].forEach((R) => {
+  const passi = Math.round((Math.PI * R) / 50);
+  for (let k = 0; k <= passi; k++) {
+    const a = Math.PI + (Math.PI * k) / passi;
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", (cx + R * Math.cos(a)).toFixed(1));
+    c.setAttribute("cy", (cy + R * Math.sin(a)).toFixed(1));
+    c.setAttribute("r", r);
+    // pochi seggi più scuri, sempre gli stessi
+    c.setAttribute("fill", (n * 7) % 11 === 3 ? "#DCD8D1" : "#ECE7DD");
+    s.appendChild(c);
+    n++;
+  }
+});
+</script>
+</body></html>
