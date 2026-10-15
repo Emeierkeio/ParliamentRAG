@@ -78,7 +78,7 @@ const contenuto: Contenuto = {
           <tbody>
             <tr>
               <td>All groups</td>
-              <td data-l="What it checks">Looks in the text for the acronym or name of every group in office, of the Mixed Group components with deputies and of the Government. The list comes from the graph, not from a hand-written list.</td>
+              <td data-l="What it checks">Looks in the text for the acronym or name of every group in office, of the Mixed Group components with deputies or senators and of the Government. A senator in the Mixed Group counts for their component, for example Cucchi for AVS. The list comes from the graph, not from a hand-written list.</td>
               <td data-l="When it passes">Every voice is named or quoted. A word identical to a name counts even if it is used in another sense.</td>
             </tr>
             <tr>

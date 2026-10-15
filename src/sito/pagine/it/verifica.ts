@@ -78,7 +78,7 @@ const contenuto: Contenuto = {
           <tbody>
             <tr>
               <td>Tutti i gruppi</td>
-              <td data-l="Cosa controlla">Cerca nel testo la sigla o il nome di ogni gruppo in carica, delle componenti del Misto con deputati e del Governo. L'elenco viene dal grafo, non da una lista scritta a mano.</td>
+              <td data-l="Cosa controlla">Cerca nel testo la sigla o il nome di ogni gruppo in carica, delle componenti del Misto con deputati o senatori e del Governo. Un senatore del Misto conta per la sua componente, per esempio Cucchi per AVS. L'elenco viene dal grafo, non da una lista scritta a mano.</td>
               <td data-l="Quando passa">Ogni voce è nominata o citata. Una parola uguale a un nome conta anche se è usata in altro senso.</td>
             </tr>
             <tr>

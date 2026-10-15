@@ -26,6 +26,9 @@
     ["+Europa (Misto)", "+Europa", "Più Europa, + Europa, More Europe"],
     ["Futuro Nazionale Vannacci (Misto)", "FN", "Futuro Nazionale, Vannacci"],
     ["Minoranze linguistiche (Misto)", "SVP", "Minoranze linguistiche, Südtiroler Volkspartei, linguistic minorities"],
+    ["Sud chiama Nord (Misto)", "–", "Sud chiama Nord, South Calls North"],
+    ["Avanti PSI (Misto, Senato)", "PSI", "Avanti PSI, Partito Socialista"],
+    ["Per le Autonomie (Senato)", "–", "Per le Autonomie, Autonomie, Campobase, SVP-PATT"],
     [EN ? "Government" : "Governo", "–", "Governo, Esecutivo, ministro, ministra, sottosegretario, sottosegretaria, Government, minister, undersecretary"]
   ];
 
