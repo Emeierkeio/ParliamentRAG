@@ -1019,7 +1019,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Informativa sulla privacy",
-    "updated": "Ultimo aggiornamento: 14 ottobre 2026",
+    "updated": "Ultimo aggiornamento: 15 ottobre 2026",
     "sections": [
       {
         "h": "Chi tratta i dati",
@@ -1053,9 +1053,9 @@
         "h": "A chi arrivano i dati",
         "p": [
           "Ci affidiamo a questi fornitori. Trattano i dati per conto nostro, come responsabili del trattamento (art. 28 del GDPR).",
-          "Railway Corp. (Stati Uniti): ospita il sito e, su server nell'Unione europea, il database con le risposte ai questionari.",
-          "Hetzner Online GmbH (Germania): conserva, su un server in Finlandia, le risposte ai questionari arrivate fino al 5 ottobre 2026.",
-          "OpenAI (Stati Uniti): per la pagina Verifica trasforma in numeri (embedding) la domanda, o le prime righe della risposta se la domanda manca, per calcolare l'autorevolezza sul tema. OpenAI può conservare questi dati fino a 30 giorni per controllare gli abusi.",
+          "Railway Corp. (Stati Uniti): ospita il sito e il servizio che esegue la Verifica. Su server nell'Unione europea tiene anche il database con le risposte ai questionari.",
+          "Hetzner Online GmbH (Germania): su un server in Finlandia ospita il database degli atti parlamentari, in cui la Verifica cerca le citazioni, e conserva le risposte ai questionari arrivate fino al 5 ottobre 2026.",
+          "OpenAI Ireland Ltd. (Irlanda): per la pagina Verifica trasforma in numeri (embedding) la domanda, o le prime righe della risposta se la domanda manca, per calcolare l'autorevolezza sul tema. OpenAI può trattare questi dati anche negli Stati Uniti e conservarli fino a 30 giorni per controllare gli abusi. Non li usa per addestrare i modelli.",
           "Sendinblue SAS, marchio Brevo (Francia): gestisce la newsletter.",
           "Non vendiamo i dati e non li cediamo a terzi per pubblicità. Li comunichiamo alle autorità solo se la legge lo impone."
         ]
@@ -1063,7 +1063,7 @@
       {
         "h": "Trasferimenti fuori dall'UE",
         "p": [
-          "Alcuni fornitori hanno sede negli Stati Uniti. Per questi trasferimenti ci basiamo sull'EU-US Data Privacy Framework o sulle clausole contrattuali standard approvate dalla Commissione europea."
+          "Railway ha sede negli Stati Uniti e OpenAI può trattare i dati anche lì. Per questi trasferimenti ci basiamo sull'EU-US Data Privacy Framework o sulle clausole contrattuali standard approvate dalla Commissione europea."
         ]
       },
       {
