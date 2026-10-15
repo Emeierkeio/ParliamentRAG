@@ -1220,6 +1220,21 @@ a.bollino:hover {
   gap: var(--s-3) var(--s-6);
   color: var(--inchiostro-3);
 }
+.piede__social ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px var(--s-5);
+}
+.piede__social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.piede__social svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
 @media (max-width: 820px) {
   .piede__griglia {
     grid-template-columns: 1fr 1fr;
