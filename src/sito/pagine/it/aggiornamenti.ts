@@ -36,7 +36,7 @@ const contenuto: Contenuto = {
           </div>
           <div class="notizia__corpo">
             <h2>Arriva il Senato</h2>
-            <p>Fascicoli, la ricerca e il connettore per gli assistenti AI coprono ora Camera e Senato della XIX legislatura.</p>
+            <p>Fascicoli, Stenografo, Scranno, la ricerca e il connettore per gli assistenti AI coprono ora Camera e Senato della XIX legislatura.</p>
             <div class="fila notizia__link">
               <a class="collegamento" href="https://www.fascicoli.it">Apri Fascicoli</a>
               <a class="collegamento" href="/sviluppatori">Collega il connettore</a>

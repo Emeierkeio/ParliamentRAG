@@ -314,7 +314,7 @@ const contenuto: Contenuto = {
           </a>
           <a class="fonte" href="/en/verification">
             <span class="etichetta">On this site</span>
-            <span><span class="fonte__t">Verification</span><span class="fonte__d">The public verifier of the three guarantees, under construction.</span></span>
+            <span><span class="fonte__t">Verification</span><span class="fonte__d">Paste an answer about Parliament and check whether it meets the three guarantees.</span></span>
             <span class="etichetta">→</span>
           </a>
           <a class="fonte" href="/en/data">

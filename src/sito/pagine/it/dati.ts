@@ -241,6 +241,7 @@ const contenuto: Contenuto = {
         <li><code>get_vote_details</code><span>il voto per gruppo e per parlamentare</span></li>
         <li><code>get_vote_hemicycle</code><span>l'emiciclo di una votazione</span></li>
         <li><code>get_voted_text</code><span>il testo messo ai voti</span></li>
+        <li><code>verify_answer</code><span>controlla le tre garanzie su una risposta</span></li>
       </ul>
       </div>
     </div>

@@ -59,7 +59,7 @@ const contenuto: Contenuto = {
         </div>
 
         <div class="compare" style="--ritardo:120ms">
-          <h2 class="titolo-3">Seven tools</h2>
+          <h2 class="titolo-3">Eight tools</h2>
           <p class="tenue piccolo" style="margin-top:var(--s-2);margin-bottom:var(--s-4)">The assistant picks them on its own, based on the question.</p>
           <ol class="strumenti" id="strumenti">
             <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Hybrid search over speeches and acts of the Chamber and the Senate.</span></li>
@@ -69,6 +69,7 @@ const contenuto: Contenuto = {
             <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>A vote: results by group and individual votes.</span></li>
             <li class="strumento" data-s="get_vote_hemicycle"><code>get_vote_hemicycle</code><span>The hemicycle of a vote, as an image.</span></li>
             <li class="strumento" data-s="get_voted_text"><code>get_voted_text</code><span>The text voted on: amendments, articles, motions.</span></li>
+            <li class="strumento" data-s="verify_answer"><code>verify_answer</code><span>Checks an answer: all groups, authoritative voices, exact quotes.</span></li>
           </ol>
         </div>
       </div>
@@ -83,7 +84,7 @@ const contenuto: Contenuto = {
         <div class="compare" style="--ritardo:120ms">
           <div class="esempi__lista" id="esempi" role="group" aria-label="Example questions">
             <button class="esempio" type="button" aria-pressed="false" data-strumenti="list_sessions get_session_votes get_vote_details get_vote_hemicycle">Who voted against the confidence vote of 7 October? <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
-            <button class="esempio" type="button" aria-pressed="false" data-strumenti="search_parliament get_debate">What did the groups say in the Chamber about the minimum wage? <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
+            <button class="esempio" type="button" aria-pressed="false" data-strumenti="search_parliament get_debate verify_answer">What did the groups say in the Chamber about the minimum wage? <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
             <button class="esempio" type="button" aria-pressed="false" data-strumenti="list_sessions get_session_votes get_voted_text">Which amendments did the Chamber vote on in the last sitting? <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
           </div>
           <p class="percorso" id="percorso" aria-live="polite">No question selected.</p>

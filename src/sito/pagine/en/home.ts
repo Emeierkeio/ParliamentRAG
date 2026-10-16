@@ -139,7 +139,7 @@ const contenuto: Contenuto = {
         <a class="foglio sistema compare" style="--ritardo:200ms" href="https://www.scranno.it">
           <span class="sistema__marchio"><svg viewBox="14.3 8.3 36.5 45.5" aria-hidden="true" focusable="false"><path d="M18 12C18 24 18 32 20 36C22 40 30 40 42 40C46 40 47 43 47 50M24 40V50" fill="none" stroke="currentColor" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="24" r="6.4" fill="#167A68"/></svg></span>
           <span class="sistema__nome">Scranno</span>
-          <span class="sistema__cosa">You enter the Chamber at Montecitorio. Every seat leads to the deputy who sits there and to their work: speeches, acts, votes.</span>
+          <span class="sistema__cosa">You enter the floor of the Chamber or the Senate. Every seat leads to the member who sits there and to their work: speeches, acts, votes.</span>
           <span class="sistema__per">For people who want to know who sits where, and how they voted.</span>
           <span class="sistema__vai">Enter the Chamber <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
         </a>

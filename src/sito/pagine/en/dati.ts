@@ -241,6 +241,7 @@ const contenuto: Contenuto = {
         <li><code>get_vote_details</code><span>the vote by group and by member of Parliament</span></li>
         <li><code>get_vote_hemicycle</code><span>the hemicycle of a vote</span></li>
         <li><code>get_voted_text</code><span>the text put to the vote</span></li>
+        <li><code>verify_answer</code><span>checks the three guarantees on an answer</span></li>
       </ul>
       </div>
     </div>

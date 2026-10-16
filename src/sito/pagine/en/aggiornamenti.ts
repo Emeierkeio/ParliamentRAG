@@ -36,7 +36,7 @@ const contenuto: Contenuto = {
           </div>
           <div class="notizia__corpo">
             <h2>The Senate is here</h2>
-            <p>Fascicoli, search and the connector for AI assistants now cover the Chamber and the Senate in the 19th legislature.</p>
+            <p>Fascicoli, Stenografo, Scranno, search and the connector for AI assistants now cover the Chamber and the Senate in the 19th legislature.</p>
             <div class="fila notizia__link">
               <a class="collegamento" href="https://www.fascicoli.it">Open Fascicoli</a>
               <a class="collegamento" href="/en/developers">Set up the connector</a>
