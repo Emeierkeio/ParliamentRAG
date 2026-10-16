@@ -89,8 +89,8 @@ const contenuto: Contenuto = {
             </tr>
             <tr>
               <td>Authoritative voices</td>
-              <td data-l="What it checks">For every deputy or member of the Government quoted or named (by full name, or by surname when there are no namesakes) it computes authority on the topic of the question, with the six public criteria and weights, and their rank within the group. It flags a wrong group written next to a name.</td>
-              <td data-l="When it passes">The speaker is a member of the Government, the rapporteur of the bill or one of the top five of their group. Without a question, the topic comes from the first lines of the answer.</td>
+              <td data-l="What it checks">For every deputy or member of the Government quoted or named (by full name, or by surname when there are no namesakes) it computes authority on the topic of the question, with the six public criteria and weights, and their rank among the members of their group who spoke on the topic. It flags a wrong group written next to a name.</td>
+              <td data-l="When it passes">The speaker is a member of the Government, the rapporteur of the bill or one of the top five of their group among those who spoke on the topic (all of them, if fewer than five did). Without a question, the topic comes from the first lines of the answer.</td>
             </tr>
           </tbody>
         </table>

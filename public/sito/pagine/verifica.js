@@ -359,14 +359,16 @@
         var ok = v.authoritative;
         var perche = v.role === "governo" ? (EN ? "Government" : "Governo")
           : v.role === "relatore" ? (EN ? "rapporteur" : "relatore")
-          : v.rank ? v.rank + (EN ? (v.rank === 1 ? "st" : v.rank === 2 ? "nd" : v.rank === 3 ? "rd" : "th") + " of " : "° su ") + v.group_size
+          : v.on_topic === false ? (EN ? "did not speak on the topic" : "non ha parlato del tema")
+          : v.rank ? v.rank + (EN ? (v.rank === 1 ? "st" : v.rank === 2 ? "nd" : v.rank === 3 ? "rd" : "th") + " of " : "° su ") + (v.pool_size || v.group_size) +
+            (v.pool === "speakers_on_topic" ? (EN ? " who spoke on the topic" : " tra chi ha parlato del tema") : "")
           : (EN ? "not ranked" : "senza punteggio");
         return '<li data-c="' + (ok ? "si" : "no") + '">' + (ok ? SPUNTA : CROCE) +
           '<span class="appello__nome">' + esc(v.name) + ' <span class="sigla">' + esc(sigla(v.voice || v.group)) + "</span>" +
           (v.source === "named" ? ' <span class="nota">' + (EN ? "named" : "nominato") + "</span>" : "") + "</span>" +
           '<span class="appello__come">' + esc(perche) + "</span></li>";
       }).join("") + "</ul>";
-      h += "<p>" + (EN ? "A voice is authoritative if it speaks for the Government, is the rapporteur of the bill or is among the top five of its group on the topic: the number is the rank within the group. " : "Una voce è autorevole se parla per il Governo, è relatore del provvedimento o è tra i primi cinque del suo gruppo sul tema: il numero è la posizione nel gruppo. ") + tema + "</p>";
+      h += "<p>" + (EN ? "A voice is authoritative if it speaks for the Government, is the rapporteur of the bill or is among the top five of its group on the topic, counting only the members of the group who spoke on it: the number is the rank among them. " : "Una voce è autorevole se parla per il Governo, è relatore del provvedimento o è tra i primi cinque del suo gruppo sul tema, contando solo chi del gruppo ne ha parlato: il numero è la posizione tra loro. ") + tema + "</p>";
     }
     h += "</section>";
 

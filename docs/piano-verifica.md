@@ -155,8 +155,14 @@ riportati nel rapporto:
 ## Controllo 3: voci autorevoli
 
 Il verificatore ricalcola l'autorevolezza del deputato citato con lo stesso codice di
-`backend/app/services/authority/` e i pesi di `default.yaml`, e scrive la sua posizione nel gruppo:
-«3° su 41 per questa domanda», con i sei punteggi. Non decide se 3° basta.
+`backend/app/services/authority/` e i pesi di `default.yaml`, e scrive la sua posizione tra chi del suo
+gruppo ha parlato del tema: «3° su 7 tra chi ha parlato del tema», con i sei punteggi. Non decide se 3° basta.
+
+Chi ha parlato del tema (decisione del 16/10/2026): gli oratori del gruppo negli
+interventi che il retrieval di Fascicoli trova sulla domanda, gli stessi tra cui Fascicoli sceglie la voce
+di ogni gruppo, più chi è citato alla lettera. Non tutti i membri in carica: non si può citare chi non ha
+parlato. Il verificatore online (`/api/verify`) applica già la regola, con i primi 5 come soglia; la
+libreria offline dovrà avere anche l'elenco degli oratori sul tema, oltre agli embedding.
 
 Il ricalcolo ha bisogno di dati che oggi non pubblichiamo: embedding dei passaggi (circa 178.000), degli
 atti, delle professioni e dei titoli di studio, e l'embedding della domanda. Tre strade:
@@ -180,9 +186,9 @@ Verifica ParliamentRAG v0.1 · dati 2026-10-05 · pesi authority 2026-08
 Citazioni   11 su 12 esatte
   ✗ #7  non_trovata: «…» non compare nell'intervento leg19_sed0412_…
 Gruppi      9 citati, 1 assente confermato, 0 omessi
-Autorevolezza (posizione nel gruppo)
-  FdI       <deputato> 1° su 118
-  PD        <deputato> 2° su 69
+Autorevolezza (posizione tra chi ha parlato del tema)
+  FdI       <deputato> 1° su 9
+  PD        <deputato> 2° su 7
   …
 ```
 

@@ -89,8 +89,8 @@ const contenuto: Contenuto = {
             </tr>
             <tr>
               <td>Voci autorevoli</td>
-              <td data-l="Cosa controlla">Per ogni deputato o membro del Governo citato o nominato (per nome e cognome, o per cognome se non ci sono omonimi) calcola l'autorevolezza sul tema della domanda, con i sei criteri e i pesi pubblici, e la sua posizione nel gruppo. Se accanto al nome c'è un gruppo sbagliato, lo segnala.</td>
-              <td data-l="Quando passa">Chi parla è un membro del Governo, il relatore del provvedimento o uno dei primi cinque del suo gruppo. Senza domanda, il tema si ricava dalle prime righe della risposta.</td>
+              <td data-l="Cosa controlla">Per ogni deputato o membro del Governo citato o nominato (per nome e cognome, o per cognome se non ci sono omonimi) calcola l'autorevolezza sul tema della domanda, con i sei criteri e i pesi pubblici, e la sua posizione tra chi del suo gruppo ha parlato del tema. Se accanto al nome c'è un gruppo sbagliato, lo segnala.</td>
+              <td data-l="Quando passa">Chi parla è un membro del Governo, il relatore del provvedimento o uno dei primi cinque del suo gruppo tra chi ha parlato del tema (se ne hanno parlato in meno di cinque, tutti). Senza domanda, il tema si ricava dalle prime righe della risposta.</td>
             </tr>
           </tbody>
         </table>
