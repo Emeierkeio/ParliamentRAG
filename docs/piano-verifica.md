@@ -5,6 +5,12 @@
 > strumento `verify_answer` del server MCP. Copre le tre garanzie su Camera e Senato, XIX legislatura; l'autorevolezza
 > è calcolata dal server (strada B). Restano da fare il formato JSON verificabile, la libreria offline e gli
 > embedding pubblicati (strada A).
+>
+> 16 ottobre 2026: fasi 0–2 fatte. Formato e rapporto in `schema/`, libreria e riga di comando in `verifica/`
+> (citazioni), test in `tests/` su 20 risposte vere di Fascicoli e 30 casi costruiti. La pagina `/verifica`
+> accetta anche il JSON v1 (Fascicoli `POST /api/verify/v1`, stessa libreria sul grafo). Normalizzazione: solo
+> le due differenze della decisione 3, non apostrofi e virgolette tipografiche. Il dataset non dà l'URI dei
+> gruppi: lo ricava `verifica/gruppi_ufficiali.json` dagli endpoint SPARQL.
 
 ## Obiettivo
 
@@ -106,6 +112,9 @@ Per ogni affermazione il verificatore controlla, nell'ordine:
 
 Esiti possibili per ogni citazione: `esatta`, `esatta_dopo_normalizzazione`, `non_trovata`,
 `parole_di_terzi`, `oratore_errato`, `gruppo_errato`, `link_errato`, `intervento_inesistente`.
+
+Misura del 16 ottobre 2026: 174.760 chunk della Camera su 174.760, per gli interventi presenti nel dataset del
+3 settembre, sono sottostringhe esatte del testo integrale pubblicato.
 
 Misura del 6 ottobre 2026: tutti i 177.843 chunk del grafo sono sottostringhe esatte del testo integrale
 dell'intervento, quindi verificare sul testo integrale pubblicato equivale a verificare sui chunk. Su 626
