@@ -14,8 +14,8 @@ const contenuto: Contenuto = {
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
         <span class="etichetta cantiere__stato cantiere__stato--attivo"><i aria-hidden="true"></i>What it covers</span>
-        <p>All the floor speeches of the Chamber of Deputies, 19th legislature, updated every night. Quotes go between «…» or "…".</p>
-        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Read the verification method (in Italian)</a></p>
+        <p>All the floor speeches of the Chamber and the Senate, 19th legislature, updated every night. Quotes go between «…» or "…".</p>
+        <p><a class="collegamento" href="#come">Read how the verification works</a></p>
       </div>
     </div>
   </section>
@@ -68,7 +68,7 @@ const contenuto: Contenuto = {
   </section>
 
   <!-- § 2 Cosa controlla -->
-  <section class="sezione-stretta">
+  <section class="sezione-stretta" id="come">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">What it checks, and how</p></div>
       <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Three checks across the whole 19th legislature.</h2>
@@ -116,9 +116,9 @@ const contenuto: Contenuto = {
         <div class="perche__testo compare" style="--ritardo:120ms">
           <p>The Chamber publishes records, acts and votes. Yet people who get an answer from an AI assistant have no simple way to know whether a group is missing or a quote has been altered.</p>
           <p><strong>A check that depends on whoever wrote the answer is not enough.</strong> That is why the verifier applies the same rules to every answer, ours included.</p>
-          <p>The method is described in the verification plan. The same check is available as a tool of our MCP server. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
+          <p>The method is described above. The same check is available as a tool of our MCP server. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
           <div class="fila" style="margin-top:var(--s-2)">
-            <a class="btn btn--accento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">The verification plan <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--accento" href="#come">How the verification works</a>
             <a class="btn btn--linea" href="/en/method">How we apply the guarantees</a>
           </div>
           <p class="nota">Write to <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a>.</p>

@@ -14,8 +14,8 @@ const contenuto: Contenuto = {
       </div>
       <div class="cantiere compare" style="--ritardo:240ms">
         <span class="etichetta cantiere__stato cantiere__stato--attivo"><i aria-hidden="true"></i>Cosa copre</span>
-        <p>Tutti gli interventi in Aula della Camera dei deputati, XIX legislatura, aggiornati ogni notte. Le citazioni vanno tra «…» o tra "…".</p>
-        <p><a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Leggi il metodo della verifica</a></p>
+        <p>Tutti gli interventi in Aula di Camera e Senato, XIX legislatura, aggiornati ogni notte. Le citazioni vanno tra «…» o tra "…".</p>
+        <p><a class="collegamento" href="#come">Leggi come funziona la verifica</a></p>
       </div>
     </div>
   </section>
@@ -68,7 +68,7 @@ const contenuto: Contenuto = {
   </section>
 
   <!-- § 2 Cosa controlla -->
-  <section class="sezione-stretta">
+  <section class="sezione-stretta" id="come">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 2</span><p class="etichetta" style="padding-top:.55em">Cosa controlla, e come</p></div>
       <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Tre controlli su tutta la XIX legislatura.</h2>
@@ -116,9 +116,9 @@ const contenuto: Contenuto = {
         <div class="perche__testo compare" style="--ritardo:120ms">
           <p>La Camera pubblica resoconti, atti e voti. Chi riceve una risposta da un assistente AI non ha però un modo semplice per sapere se manca un gruppo o se una citazione è stata ritoccata.</p>
           <p><strong>Un controllo che dipende da chi ha scritto la risposta non basta.</strong> Per questo il verificatore applica le stesse regole a ogni risposta, anche alle nostre.</p>
-          <p>Il metodo è descritto nel piano della verifica. Lo stesso controllo è disponibile come strumento del nostro server MCP. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
+          <p>Il metodo è descritto qui sopra. Lo stesso controllo è disponibile come strumento del nostro server MCP. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
           <div class="fila" style="margin-top:var(--s-2)">
-            <a class="btn btn--accento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/piano-verifica.md" rel="noopener">Il piano della verifica <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--accento" href="#come">Come funziona la verifica</a>
             <a class="btn btn--linea" href="/metodo">Come applichiamo le garanzie</a>
           </div>
           <p class="nota">Scrivi a <a class="collegamento" href="mailto:contatti@parliamentrag.it">contatti@parliamentrag.it</a>.</p>

@@ -21,7 +21,7 @@ const contenuto: Contenuto = {
           <code id="url-mcp">https://mcp.parliamentrag.it/mcp</code>
           <button class="btn btn--linea btn--piccolo" type="button" data-copia="url-mcp">Copy</button>
         </div>
-        <p class="nota">Add it as a remote MCP server in your client's settings. <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/mcp.md" rel="noopener">Guide for each client</a>.</p>
+        <p class="nota">Add it as a remote MCP server in your client's settings. <a class="collegamento" href="#mcp">How to connect it</a>.</p>
       </div>
     </div>
   </section>
@@ -45,7 +45,7 @@ const contenuto: Contenuto = {
               <pre class="codice codice--a-capo" id="cod-remoto">https://mcp.parliamentrag.it/mcp</pre>
               <button class="copia" type="button" data-copia="cod-remoto">Copy</button>
             </div>
-            <p class="nota">Each client has its own menu. The steps for Claude, ChatGPT, Cursor and VS Code are in the <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/docs/mcp.md" rel="noopener">guide</a>.</p>
+            <p class="nota">Each client has its own menu. On claude.ai: Settings → Connectors → Add custom connector, then paste the address. On ChatGPT: Settings → Connectors, in developer mode, then add the address. In Cursor and VS Code: add a remote server with this address in <span class="mono">mcp.json</span>.</p>
           </div>
 
           <div role="tabpanel" id="pan-claude" aria-labelledby="tab-claude" hidden>
