@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Qual è la posizione dei gruppi sull'auto elettrica?",
+ "generated_at": "2026-10-15T00:28:51.616168+02:00",
+ "period": {
+  "from": "2022-11-10",
+  "to": "2026-07-01"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-15",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_urso_adolfo",
+   "government": true,
+   "speech": "leg19_sed83_tit00010.sub00030.int00040",
+   "quote": "noi dobbiamo incentivare chi ha bisogno dell'aiuto dello Stato per svecchiare la propria autovettura, per rottamare le autovetture Euro 0, Euro 1, Euro 2 ed Euro 3, ossia coloro che non se lo possono permettere, non chi invece ha le facoltà per permettersi di comprare, se vuole, anche - certamente lo auspichiamo - un'auto elettrica",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0083&tipo=stenografico#sed0083.stenografico.tit00010.sub00030.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed426_tit00110.sub00020.int00100",
+   "quote": "è piuttosto controverso trovare nella stessa mozione il tema della crisi dell' automotive e, al contempo, la richiesta di una spinta maggiore verso la transizione all'elettrico. Mi riferisco, per esempio, alla mozione del MoVimento 5 Stelle: probabilmente, quella dell'elettrico, una delle cause maggiori della stessa crisi del settore",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0426&tipo=stenografico#sed0426.stenografico.tit00110.sub00020.int00100"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306214",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed366_tit00120.sub00020.int00100",
+   "quote": "quando abbiamo tecnologie - fatemi dire - alla pari dell'energia elettrica, che possono concorrere a questa decarbonizzazione, le escludiamo per legge dalla possibilità di competere, e ne stiamo pagando le conseguenze",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00100"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308823",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed237_tit00090.sub00020.int00330",
+   "quote": "ciò implica soluzioni in linea con il principio di neutralità tecnologica, sia per i motori che per il carburante, e l'adeguata estensione dei periodi transitori per applicare la nuova normativa",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0237&tipo=stenografico#sed0237.stenografico.tit00090.sub00020.int00330"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308890",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed53_tit00030.sub00010.int00040",
+   "quote": "nel futuro disegnato dalla vostra affascinante ideologia green , quale mobilità, quale libertà di movimento spetterà a chi non avrà la possibilità di permettersi un'auto elettrica nel futuro",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0053&tipo=stenografico#sed0053.stenografico.tit00030.sub00010.int00040"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed19_tit00040.sub00010.int01440",
+   "quote": "un'impresa, un'industria che non punta sull'innovazione non è in grado di essere competitiva a livello europeo e a livello mondiale, tant'è vero che una parte consistente delle tecnologie, legate alla mobilità elettrica, viene importata nel nostro Paese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0019&tipo=stenografico#sed0019.stenografico.tit00040.sub00010.int01440"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307478",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed19_tit00040.sub00010.int01420",
+   "quote": "ci chiediamo se ci sarà la forza, la volontà, anche l'intenzione di raggiungere questo obiettivo, ma questo significherà che le colonnine di ricarica dovranno essere presenti nelle piazze più belle d'Italia e questo, in realtà, già c'è, già succede, ma anche nei piccoli borghi, anche nelle aree più decentrate",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0019&tipo=stenografico#sed0019.stenografico.tit00040.sub00010.int01420"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed366_tit00120.sub00020.int00020",
+   "quote": "la spiegazione è semplice, lo abbiamo detto e lo ribadisco: il costo, ancora eccessivamente elevato, soprattutto in confronto alla concorrenza cinese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00020"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308824",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed184_tit00040.sub00040.int00280",
+   "quote": "se voi non avete il coraggio di preparare questo Paese a far sì che quest'onda non venga subita ma cavalcata, è inutile che andiate nei salotti televisivi a dire che è colpa dell'auto elettrica se non ci sono i posti di lavoro",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0184&tipo=stenografico#sed0184.stenografico.tit00040.sub00040.int00280"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302746",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed83_tit00010.sub00030.int00060",
+   "quote": "il quesito era molto chiaro, non altrettanto le idee del Ministro, mentre è un fatto la scelta dell'Unione europea, che ha adottato definitivamente il regolamento, lo scorso 28 marzo, ed è un fatto anche la scelta dei più grandi produttori di auto per l'auto elettrica, che è una realtà tecnologica, industriale e di mercato",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0083&tipo=stenografico#sed0083.stenografico.tit00010.sub00030.int00060"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308928",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271",
+   "speech": "leg19_sed684_tit00040.sub00020.int00020",
+   "quote": "oggi, cercare di mettere una pezza a quello che si è votato in Europa diventa per noi insostenibile",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0684&tipo=stenografico#sed0684.stenografico.tit00040.sub00020.int00020"
+  }
+ ]
+}

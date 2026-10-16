@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sul documento programmatico di finanza pubblica?",
+ "generated_at": "2026-10-07T14:43:05.353202+02:00",
+ "period": {
+  "from": "2022-11-09",
+  "to": "2026-05-18"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-07",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_freni_federico",
+   "government": true,
+   "speech": "leg19_sed402_tit00080.sub00210.int00020",
+   "quote": "sull'ordine del giorno n. 9/2112- bis -A/21 Ciaburro, il parere è favorevole, con la seguente riformulazione dell'impegno: “compatibilmente con i vincoli di finanza pubblica, ad adottare le opportune misure, anche di carattere economico, volte a sostenere i piccoli comuni”",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0402&tipo=stenografico#sed0402.stenografico.tit00080.sub00210.int00020"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307496",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed545_tit00090.sub00040.int00220",
+   "quote": "allo stesso tempo, questo Governo non si è limitato alla mera contabilità di bilancio per far quadrare i conti, ma ha introdotto importanti misure in diversi settori e continuerà a farlo anche per la prossima legge di bilancio",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00220"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307340",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed8_tit00050.sub00010.int00340",
+   "quote": "la verità è che sino a questo momento ha speso male , lo ripeto, ha speso male, ed è questo il coraggio che ha avuto il Ministro Giorgetti: rimettere in ordine i conti, per razionalizzare la spesa e passare finalmente a parlare di investimenti",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0008&tipo=stenografico#sed0008.stenografico.tit00050.sub00010.int00340"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302764",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed284_tit00020.sub00010.int00140",
+   "quote": "un chiaro segnale che gli investitori non hanno giudicato in maniera negativa la decisione del Governo, al contrario delle opposizioni, ma è il loro lavoro. Ad ogni modo, la ragione di questa scelta è presto detta: a breve saranno cambiate le norme sulla gestione dei conti pubblici",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0284&tipo=stenografico#sed0284.stenografico.tit00020.sub00010.int00140"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300369",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed284_tit00040.sub00010.int00080",
+   "quote": "questa prudenza e questa serietà le ritroviamo tutte in questo Documento di economia e finanza che ci accingiamo a votare",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0284&tipo=stenografico#sed0284.stenografico.tit00040.sub00010.int00080"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308810",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed545_tit00090.sub00040.int00100",
+   "quote": "il Documento parla genericamente di una ricomposizione del prelievo fiscale riducendo l'incidenza del carico sui redditi da lavoro. Altrettanto fumoso è l'accenno a un ulteriore rifinanziamento del Fondo sanitario nazionale e a quello a preservare gli investimenti pubblici finanziati con risorse nazionali",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00100"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed545_tit00090.sub00040.int00120",
+   "quote": "questo Documento dà una stabilità al Paese? Sì",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00120"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed301_tit00040.sub00020.int00020",
+   "quote": "in particolar modo, siccome di qui in avanti ragioneremo sul concetto di spesa primaria netta e, quindi, di spesa depurata dalle misure anticicliche e dagli interessi, potremo lavorare sulle entrate discrezionali per aumentare eventualmente questo saldo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0301&tipo=stenografico#sed0301.stenografico.tit00040.sub00020.int00020"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307416",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed103_tit00080.sub00010.int00400",
+   "quote": "l'ordine del giorno chiede una cosa molto semplice, cioè di fornire nel più breve tempo possibile alle Camere una dettagliata analisi non solo dei costi previsti ma, soprattutto, delle risorse economiche e finanziarie, scritte in modo certo e definito nella contabilità pubblica, in modo da non incorrere in ambiguità previsionali",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0103&tipo=stenografico#sed0103.stenografico.tit00080.sub00010.int00400"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306412",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed545_tit00090.sub00040.int00320",
+   "quote": "il Documento cosiddetto programmatico di finanza pubblica, che oggi discutiamo, è un documento reticente. Reticente significa che non dice ciò che potrebbe e dovrebbe dire",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00320"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307328",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+   "speech": "leg19_sed545_tit00090.sub00040.int00420",
+   "quote": "questo è un Documento di finanza pubblica improntato al taglio della spesa corrente e alla prudenza dei conti. Io non posso votare contro un Documento improntato alla prudenza dei conti pubblici",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00420"
+  }
+ ]
+}

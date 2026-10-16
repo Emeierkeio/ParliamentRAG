@@ -1,0 +1,35 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa si è detto in Aula sul caso Garlasco?",
+ "generated_at": "2026-10-03T23:06:07.789516+02:00",
+ "period": {
+  "from": "2022-12-01",
+  "to": "2026-09-09"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-03",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308846",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed103_tit00100.sub00010.int00180",
+   "quote": "una valutazione d'impatto ambientale è necessaria, perché, a distanza di oltre 12 anni, è evidente che parliamo di un progetto di un'era preistorica",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0103&tipo=stenografico#sed0103.stenografico.tit00100.sub00010.int00180"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed111_tit00170.sub00020.int00040",
+   "quote": "le dichiarazioni dell'onorevole Sgarbi non possono vantare nessun collegamento con l'attività parlamentare e, quindi, non possono essere coperte assolutamente dalla prerogativa dell'insindacabilità",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0111&tipo=stenografico#sed0111.stenografico.tit00170.sub00020.int00040"
+  }
+ ]
+}

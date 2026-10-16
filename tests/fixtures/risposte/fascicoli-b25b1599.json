@@ -1,0 +1,91 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sulle adozioni per le coppie dello stesso sesso?",
+ "generated_at": "2026-10-03T22:48:26.878072+02:00",
+ "period": {
+  "from": "2022-11-23",
+  "to": "2026-07-01"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-03",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_ferrante_tullio",
+   "government": true,
+   "speech": "leg19_sed207_tit00030.sub00060.int00040",
+   "quote": "l'adozione si pone, cioè, come strumento diretto a tutelare l'interesse dell'adottato ad avere una famiglia idonea e, solo in via indiretta, assolve la funzione di soddisfare quello degli adottanti ad avere un figlio, in funzione servente rispetto alla irrecuperabilità del rapporto con la famiglia di origine",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0207&tipo=stenografico#sed0207.stenografico.tit00030.sub00060.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308794",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed199_tit00060.sub00010.int00320",
+   "quote": "noi, Presidente, invece, vediamo un Protocollo pragmatico e innovativo, un Protocollo che salva vite umane e che va nella direzione di regolare il tema migratorio",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0199&tipo=stenografico#sed0199.stenografico.tit00060.sub00010.int00320"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed96_tit00010.sub00050.int00060",
+   "quote": "serve una vera e propria cultura dell'adozione. Adottare non è dare un cognome o uno spazio, l'adozione è qualcosa di molto più complesso nella forma e nella sostanza: è ciò che permette a un bambino di realizzare il suo diritto di avere una famiglia adeguata ai suoi bisogni",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0096&tipo=stenografico#sed0096.stenografico.tit00010.sub00050.int00060"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308880",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed147_tit00140.sub00010.int00480",
+   "quote": "chiediamo di impegnare il Governo ad adottare misure normative urgenti che riconoscano lo status di figlio al minore nato da procreazione medicalmente assistita di tipo eterologo o da surrogazione di maternità, lasciando poi al legislatore il compito di individuare la disciplina tecnica",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00010.int00480"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed147_tit00090.sub00010.int00570",
+   "quote": "questo emendamento è il minimo sindacale rispetto alla tutela dei diritti dei bambini e delle bambine nati da maternità surrogata all'estero, ed è il minimo che possiamo fare per rispondere al monito - ripeto, al monito - della Corte costituzionale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00570"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307634",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed147_tit00140.sub00020.int00120",
+   "quote": "ecco, in questa proposta di legge, nulla c'è rispetto a questo rilevante aspetto, ci si concentra sull'ordine pubblico, sulle finalità general-preventive ma nulla si prevede rispetto ai diritti del minore",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00120"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed147_tit00140.sub00020.int00140",
+   "quote": "va estesa la platea dei beneficiari dell'adozione affrontando il tema delle coppie omosessuali, affrontando il tema delle adozioni per i single",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00140"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed551_tit00040.sub00060.int00080",
+   "quote": "come evidenziato anche da molte realtà del settore, servono meno controlli formali e più sostegno concreto alle famiglie affidatarie e a quelle di origine",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0551&tipo=stenografico#sed0551.stenografico.tit00040.sub00060.int00080"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+   "speech": "leg19_sed147_tit00090.sub00010.int00430",
+   "quote": "in tutta la discussione, sia in Commissione che qui in Aula, la maggioranza e il Governo non hanno mai risposto alle domande accorate, ai rilievi che gli sono stati rivolti su come questa normativa impatterà sui bambini e sulle bambine, sui figli. Questa risposta non è mai arrivata",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00430"
+  }
+ ]
+}

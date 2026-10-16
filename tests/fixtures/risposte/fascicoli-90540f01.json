@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Di quali temi si è discusso di recente alla Camera?",
+ "generated_at": "2026-10-05T10:40:11.872738+02:00",
+ "period": {
+  "from": "2022-11-10",
+  "to": "2026-08-05"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-05",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_meloni_giorgia",
+   "government": true,
+   "speech": "leg19_sed641_tit00020.sub00010.int00020",
+   "quote": "si continua a parlare di dimissioni imminenti del Governo, di rimpasti, di fase due, tre, quattro, di ripartenza; alchimie di Palazzo di un mondo caro ad altre maggioranze , ad altri partiti, ad altri Presidenti del Consiglio, un mondo distante anni luce da noi nel quale non intendiamo far ripiombare l'Italia",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0641&tipo=stenografico#sed0641.stenografico.tit00020.sub00010.int00020"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308814",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed152_tit00130.int00060",
+   "quote": "dagli organi di stampa ci giungono notizie gravi e molto preoccupanti: ieri in provincia di Varese è comparsa una scritta con minacce di morte rivolte al Presidente del consiglio Giorgia Meloni",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0152&tipo=stenografico#sed0152.stenografico.tit00130.int00060"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306349",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed450_tit00020.sub00010.int00180",
+   "quote": "presidente Meloni, la cronaca di oggi riporta due fatti: ovviamente, il suo intervento ieri in Senato e l'audizione qui alla Camera, congiuntamente col Senato, del presidente Draghi",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico#sed0450.stenografico.tit00020.sub00010.int00180"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300299",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed627_tit00040.sub00010.int00460",
+   "quote": "l'altro tema che interessa davvero alle opposizioni è chiedere se il Governo condanna o no l'attacco americano, come se davvero fosse questo il problema",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0627&tipo=stenografico#sed0627.stenografico.tit00040.sub00010.int00460"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed631_tit00050.int00580",
+   "quote": "non è questo il tema - perché avremmo argomentazioni, e parla la legge, parla la riforma -, il tema è se assoggettare la libera stampa alle parole che sono state pronunciate oggi e se sono parole che hanno necessità o meno di una spiegazione",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0631&tipo=stenografico#sed0631.stenografico.tit00050.int00580"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306176",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed531_tit00120.sub00010.int00810",
+   "quote": "qui si sta cercando - temo con un certo successo, poi, ovviamente, vedremo cosa accadrà con il referendum - di fare esattamente questa cosa: entrare in profondità, minando l'autogoverno della magistratura e, di conseguenza, minando l'autorevolezza della magistratura, anche di fronte ai cittadini",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0531&tipo=stenografico#sed0531.stenografico.tit00120.sub00010.int00810"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed475_tit00060.int00100",
+   "quote": "mi chiedo se il Ministro Nordio si degnerà di chiedere scusa ai cittadini e al Paese e si degnerà di ammettere che la sua riforma è tutta sbagliata e che va cancellata",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0475&tipo=stenografico#sed0475.stenografico.tit00060.int00100"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed675_tit00020.sub00010.int00080",
+   "quote": "si cercano piccoli aggiustamenti rispetto alle vicende che hanno portato, anche nel precedente decreto, a discutere sulla questione del pagamento dell'avvocato",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0675&tipo=stenografico#sed0675.stenografico.tit00020.sub00010.int00080"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308802",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed405_tit00050.int00140",
+   "quote": "quello che è, sì, offensivo - è forse l'elemento più inquietante di questa vicenda - è apprendere le cose prima dalle agenzie di stampa statunitensi e poi dai post su X di Elon Musk",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0405&tipo=stenografico#sed0405.stenografico.tit00050.int00140"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed511_tit00070.sub00050.int00020",
+   "quote": "qualche settimana fa, per esempio, ci siamo occupati del bombardamento da parte di operatori telefonici nei confronti di tutti noi, sui cellulari e via dicendo. Non si è voluto approvare un emendamento - non mi ricordo nel corso di quale provvedimento -, perché si rimanda sempre a qualcosa di più specifico",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0511&tipo=stenografico#sed0511.stenografico.tit00070.sub00050.int00020"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305733",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+   "speech": "leg19_sed310_tit00010.sub00090.int00020",
+   "quote": "dopodiché, si era anche detto che, comunque, a settembre, per esempio, il secondo altoforno di Taranto sarebbe stato messo in funzione, e questo non è banale anche nel contesto complessivo della produzione di Genova e di Novi Ligure",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0310&tipo=stenografico#sed0310.stenografico.tit00010.sub00090.int00020"
+  }
+ ]
+}

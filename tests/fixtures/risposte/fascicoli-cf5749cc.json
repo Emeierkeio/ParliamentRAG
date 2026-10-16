@@ -1,0 +1,99 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sull'assicurazione di responsabilità civile auto?",
+ "generated_at": "2026-10-06T20:17:24.143468+02:00",
+ "period": {
+  "from": "2023-05-03",
+  "to": "2026-07-21"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-06",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_urso_adolfo",
+   "government": true,
+   "speech": "leg19_sed654_tit00010.sub00060.int00040",
+   "quote": "il suggerimento del gruppo parlamentare di dare rilevanza in termini tariffari ai comportamenti virtuosi degli assicurati, che pur circolando in territorio ad elevato rischio, come la Campania e non solo, dimostrano di non aver avuto sinistri per un lungo lasso temporale, è apprezzabile",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0654&tipo=stenografico#sed0654.stenografico.tit00010.sub00060.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p309161",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed560_tit00060.sub00020.int00140",
+   "quote": "noi di Forza Italia vorremmo ricordare che il settore RC auto è stato già oggetto più volte di interventi volti ad arginare il problema dell'aumento dei prezzi, tanto che, se confrontiamo l'aumento del premio medio rispetto a dieci anni fa, notiamo che è sceso di quasi il 18 per cento, mentre l'inflazione e il costo della vita sono certamente in aumento",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00140"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308874",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed694_tit00020.sub00020.int00040",
+   "quote": "quello che noi oggi con questa interrogazione vogliamo chiedere, a gran voce, al Governo è di attenzionare questa situazione asimmetrica affinché i cittadini di Napoli, di Caserta e di altre zone d'Italia non vengano più penalizzati in maniera così pesante dal caro RC auto, che non ha motivo di esistere",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0694&tipo=stenografico#sed0694.stenografico.tit00020.sub00020.int00040"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307918",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed424_tit00020.sub00060.int00020",
+   "quote": "quindi, eliminiamo questa stortura burocratica, da una parte, e, dall'altra, controlliamo che non ci siano più delle pubblicità o delle possibilità, addirittura, di vendere dei prodotti assicurativi come fossero una lattina di Coca Cola o un biscotto per la colazione di prima mattina",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0424&tipo=stenografico#sed0424.stenografico.tit00020.sub00060.int00020"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed560_tit00060.sub00020.int00040",
+   "quote": "garantisce tutela, stabilità e sicurezza economica a cittadini e a imprese. È con questa visione e con questi obiettivi che la maggioranza si è mossa e continua a muoversi, attraverso misure concrete e coerenti, nella direzione di rendere il settore assicurativo più efficiente, più trasparente e più giusto",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00040"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308857",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed580_tit00100.sub00020.int00280",
+   "quote": "parlare della RC-auto, delle grandi compagnie di assicurazione, della palese discriminazione e disuguaglianza che esiste nell'applicazione della RC-auto, appare un tabù, che noi non smetteremo mai di combattere",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0580&tipo=stenografico#sed0580.stenografico.tit00100.sub00020.int00280"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed631_tit00080.sub00010.int00020",
+   "quote": "chiediamo quali iniziative di competenza intenda adottare per contrastare questo grave fenomeno",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0631&tipo=stenografico#sed0631.stenografico.tit00080.sub00010.int00020"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed560_tit00060.sub00020.int00020",
+   "quote": "noi condividiamo molto la mozione presentata dai colleghi di AVS e ci meravigliamo che da parte del Governo non ci sia stato un accoglimento più ampio dei vari punti",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00020"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308872",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed560_tit00060.sub00020.int00120",
+   "quote": "ciononostante, i livelli dei premi assicurativi, soprattutto per i giovani che si trovano ad assicurare per la prima volta la loro autovettura, sono veramente irragionevoli",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00120"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+   "speech": "leg19_sed348_tit00080.sub00070.int00040",
+   "quote": "il parere è favorevole sugli emendamenti 26.7 Gianassi, 26.8 e 26.9 Bonafe', 26.10 Di Biase, 26.11 Serracchiani, sugli identici emendamenti 26.13 Giachetti e 26.14 D'Orso e sull'emendamento 26.20 Di Biase. Sul subemendamento 0.26.500.1 Gianassi, il parere è favorevole, mentre il parere è contrario sull'emendamento 26.500 del Governo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0348&tipo=stenografico#sed0348.stenografico.tit00080.sub00070.int00040"
+  }
+ ]
+}

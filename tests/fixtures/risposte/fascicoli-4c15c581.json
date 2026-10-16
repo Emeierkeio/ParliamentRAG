@@ -1,0 +1,67 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Qual è la posizione del Movimento 5 Stelle sul riarmo europeo?",
+ "generated_at": "2026-10-03T22:58:08.100843+02:00",
+ "period": {
+  "from": "2022-11-10",
+  "to": "2026-08-05"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-03",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307457",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed590_tit00030.sub00010.int00450",
+   "quote": "beh, lezioni su questo, anche no. Ma veniamo al capitolo delle armi, perché oggi i “pacifinti” 5 Stelle devo dire che scrivono pagine memorabili",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0590&tipo=stenografico#sed0590.stenografico.tit00030.sub00010.int00450"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307151",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed527_tit00090.sub00020.int00260",
+   "quote": "presidente Mule', i 5 Stelle dicono “no” anche alla difesa, che, in realtà, è un “no” alla NATO, è un “no” alle nostre alleanze ed è un “sì” alla Cina",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0527&tipo=stenografico#sed0527.stenografico.tit00090.sub00020.int00260"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed497_tit00100.sub00010.int00220",
+   "quote": "credo che il MoVimento 5 Stelle dovrebbe portare grande rispetto per un popolo, il popolo ucraino, che da tre anni è stato invaso e ha continue, continue stragi di civili in quel Paese grazie all'aggressione della Russia di Putin che vuole candidarsi anche al premio Nobel per la pace",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0497&tipo=stenografico#sed0497.stenografico.tit00100.sub00010.int00220"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307418",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed120_tit00020.sub00020.int00060",
+   "quote": "per noi un euro del PNRR non deve mai andare alle armi e alle munizioni: deve andare agli asili, alle infrastrutture e ai progetti di sviluppo per il Paese, ma mai alle armi",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0120&tipo=stenografico#sed0120.stenografico.tit00020.sub00020.int00060"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed481_tit00090.int00040",
+   "quote": "noi lo ribadiamo qui: siamo stati contro e siamo contro qualunque politica di riarmo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0481&tipo=stenografico#sed0481.stenografico.tit00090.int00040"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed465_tit00050.sub00020.int00140",
+   "quote": "questo “giochino”, anzi, chiedo scusa, questa modalità molto diversa che porta i miei colleghi del MoVimento 5 stelle in piazza... Perché è molto più popolare parlare di pacifismo che di piano di riarmo: vi do una notizia",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0465&tipo=stenografico#sed0465.stenografico.tit00050.sub00020.int00140"
+  }
+ ]
+}

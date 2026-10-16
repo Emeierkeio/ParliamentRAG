@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sul salario minimo?",
+ "generated_at": "2026-10-14T16:59:34.280308+02:00",
+ "period": {
+  "from": "2022-11-29",
+  "to": "2026-06-10"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-14",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_durigon_claudio",
+   "government": true,
+   "speech": "leg19_sed15_tit00070.sub00020.int00020",
+   "quote": "nel nostro ordinamento, la determinazione del salario minimo non è rimessa alla legge, ma è demandata alla libera negoziazione delle parti sociali attraverso lo strumento della contrattazione collettiva",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00020.int00020"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed209_tit00080.int00410",
+   "quote": "sapete, colleghi, c'è solo un problema: tutti condividiamo che bisogna dare una risposta al salario povero ma c'è, grazie a Dio, una cultura politica diversa che ha la stessa dignità",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0209&tipo=stenografico#sed0209.stenografico.tit00080.int00410"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307456",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed672_tit00040.sub00010.int00120",
+   "quote": "il salario minimo legale è uno slogan, il salario giusto è una soluzione",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00040.sub00010.int00120"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed16_tit00040.sub00020.int00180",
+   "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto, gruppo Fratelli d'Italia, il 18 novembre 2015, laddove ci sono state, sul salario minimo garantito o sul salario minimo legale, quattro sedute rispetto alla discussione: Ministro del Lavoro Giuliano Poletti, sottosegretario Luigi Bobba",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307851",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed205_tit00040.sub00020.int00200",
+   "quote": "la direttiva non impone un salario minimo legale. La direttiva segna due strade: la strada che l'Italia deve percorrere, avendo oltre il 90 per cento di lavoratori abbracciati dalla contrattazione collettiva, non è quella del salario minimo legale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0205&tipo=stenografico#sed0205.stenografico.tit00040.sub00020.int00200"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308869",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed357_tit00110.sub00010.int00620",
+   "quote": "lo so che è un consiglio non richiesto, ma io direi alla maggioranza e al Governo di cominciare a rassegnarsi e anche un po' a preoccuparsi, perché noi sul salario minimo stabilito per legge ci torneremo ad ogni occasione, ogni volta che ne avremo la possibilità, perché è la questione centrale per questo Paese, checché ne dica il collega Marattin",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0357&tipo=stenografico#sed0357.stenografico.tit00110.sub00010.int00620"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed277_tit00160.sub00020.int00100",
+   "quote": "lavorare insieme su questo tema si può, però noi ci aspettiamo che il Governo si sforzi per realizzare degli impegni veri, degli impegni significativi, e avviare un processo realmente condiviso in Parlamento per l'attuazione del salario minimo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0277&tipo=stenografico#sed0277.stenografico.tit00160.sub00020.int00100"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed357_tit00110.sub00010.int00140",
+   "quote": "oltre a dire che siamo convinti del fatto il salario minimo serva in questo Paese, diciamo anche che non può essere fatto pagare con la fiscalità generale, cioè aumentando le tasse a imprenditori e ceto medio, che, invece, devono essere aiutati in questo Paese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0357&tipo=stenografico#sed0357.stenografico.tit00110.sub00010.int00140"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308820",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed275_tit00030.sub00010.int00040",
+   "quote": "noi insistiamo sul salario minimo. Siamo convinti che con il salario minimo si possa dare un minimo di dignità a milioni di lavoratori poveri",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0275&tipo=stenografico#sed0275.stenografico.tit00030.sub00010.int00040"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302069",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed510_tit00040.sub00010.int00020",
+   "quote": "quella soglia, noi l'abbiamo individuata a 9 euro lordi l'ora. Pensiamo sia una soglia giusta, certificata da tutti gli istituti",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0510&tipo=stenografico#sed0510.stenografico.tit00040.sub00010.int00020"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308929",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+   "speech": "leg19_sed210_tit00030.sub00010.int00020",
+   "quote": "la prima cosa era quella di istituire che il salario minimo dev'essere legale, che la remunerazione minima riguardante partite IVA e lavoratori dipendenti dev'essere istituita a livello di istituto legale. Il secondo elemento riguarda l'ammontare: a quanto dovrebbe ammontare il salario minimo legale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0210&tipo=stenografico#sed0210.stenografico.tit00030.sub00010.int00020"
+  }
+ ]
+}

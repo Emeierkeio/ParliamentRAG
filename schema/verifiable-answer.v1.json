@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/parliamentrag/verify/v1",
+  "title": "ParliamentRAG verifiable answer, version 1",
+  "description": "An answer about the Italian Parliament written so that anyone can check it against the open data. Every quote is a claim: who said it, in which speech, for which group, with the link to the record. Field names are in English so the format works for any system.",
+  "type": "object",
+  "required": ["schema", "system", "question", "data_version", "claims"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "https://w3id.org/parliamentrag/verify/v1"
+    },
+    "system": {
+      "description": "The system that wrote the answer.",
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "question": { "type": "string", "minLength": 1 },
+    "generated_at": {
+      "description": "When the answer was written (ISO 8601).",
+      "type": "string",
+      "format": "date-time"
+    },
+    "period": {
+      "description": "The period the answer covers.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": { "type": "string", "format": "date" },
+        "to": { "type": "string", "format": "date" }
+      }
+    },
+    "chambers": {
+      "description": "The chambers the answer covers.",
+      "type": "array",
+      "items": { "enum": ["camera", "senato"] },
+      "uniqueItems": true
+    },
+    "data_version": {
+      "description": "The data the answering system used: a release of the dataset emeierkeio/parliamentrag-leg19 (tag or commit on Hugging Face) or the date of the data (YYYY-MM-DD). A report made on a different version says so.",
+      "type": "string",
+      "minLength": 1
+    },
+    "declared_absent": {
+      "description": "Groups the answer leaves out on purpose, with the reason. Checked from version 1 of the groups control, not by the quotes control.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["group", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "group": { "$ref": "#/$defs/group" },
+          "reason": { "enum": ["no_speeches", "no_members", "other"] },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "text": {
+      "description": "The answer as the reader sees it. Optional: the verifier checks the claims.",
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "speech": {
+      "description": "speech_id of the dataset (never a chunk id). Chamber: leg19_sed15_tit00070.sub00020.int00020. Senate: sen_leg19_sed321_p16725_deb0_5.",
+      "type": "string",
+      "pattern": "^(sen_)?leg[0-9]+_sed[0-9]+_.+$"
+    },
+    "person": {
+      "description": "Official URI of the person (dati.camera.it or dati.senato.it). Government members without a seat: the dataset id (gov_surname_name).",
+      "type": "string",
+      "pattern": "^(https?://dati\\.camera\\.it/ocd/persona\\.rdf/p[0-9]+|https?://dati\\.senato\\.it/senatore/[0-9]+|gov_[a-z0-9_]+)$"
+    },
+    "group": {
+      "description": "Official URI of the parliamentary group (dati.camera.it gruppoParlamentare, dati.senato.it gruppo). For a member of a Misto component, the URI of the component, not of the whole Misto.",
+      "type": "string",
+      "pattern": "^(https?://dati\\.camera\\.it/ocd/(gruppoParlamentare\\.rdf/gr|componenteGruppoMisto\\.rdf/cgm)[0-9]+|https?://dati\\.senato\\.it/gruppo/[0-9]+|https://www\\.senato\\.it/composizione/gruppi-parlamentari/.+#.+)$"
+    },
+    "claim": {
+      "description": "One quote. The speaker either speaks for a group (group) or for the Government (government: true).",
+      "type": "object",
+      "required": ["speaker", "speech", "quote", "link"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "speaker": { "$ref": "#/$defs/person" },
+        "group": { "$ref": "#/$defs/group" },
+        "government": {
+          "description": "True when the speaker is quoted as a member of the Government.",
+          "type": "boolean"
+        },
+        "speech": { "$ref": "#/$defs/speech" },
+        "quote": {
+          "description": "The quoted words, as shown to the reader, without the quotation marks.",
+          "type": "string",
+          "minLength": 1
+        },
+        "link": {
+          "description": "Link to the official record of the sitting.",
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "oneOf": [
+        { "required": ["group"], "properties": { "government": { "const": false } } },
+        { "required": ["government"], "properties": { "government": { "const": true } }, "not": { "required": ["group"] } }
+      ]
+    }
+  }
+}

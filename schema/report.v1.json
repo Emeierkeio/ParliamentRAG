@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/parliamentrag/verify/report/v1",
+  "title": "ParliamentRAG verification report, version 1",
+  "description": "What the verifier found on a verifiable answer. Same answer, same data version and same verifier version give the same report: the report carries no clock time.",
+  "type": "object",
+  "required": ["schema", "verifier", "rules", "data", "answer", "warnings", "quotes"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "https://w3id.org/parliamentrag/verify/report/v1" },
+    "verifier": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" }
+      }
+    },
+    "rules": {
+      "description": "The rules applied, frozen in version 1 of the format.",
+      "type": "object",
+      "required": ["format", "quote_normalizations"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": 1 },
+        "quote_normalizations": {
+          "description": "The only differences allowed between a quote and the record.",
+          "type": "array",
+          "items": { "enum": ["whitespace", "first_letter_case"] }
+        }
+      }
+    },
+    "data": {
+      "description": "The data the verifier checked against.",
+      "type": "object",
+      "required": ["source", "version"],
+      "properties": {
+        "source": { "description": "huggingface: the public dataset; graph: the live graph of ParliamentRAG.", "enum": ["huggingface", "graph"] },
+        "dataset": { "type": "string" },
+        "version": { "type": ["string", "null"] },
+        "revision": { "type": ["string", "null"] },
+        "generated_at": { "type": ["string", "null"] },
+        "chambers": { "type": "array", "items": { "enum": ["camera", "senato"] } },
+        "through": {
+          "description": "Last sitting in the data, per chamber.",
+          "type": "object",
+          "additionalProperties": { "type": "string", "format": "date" }
+        }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "required": ["system", "question", "data_version", "claims", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "system": { "type": "object" },
+        "question": { "type": "string" },
+        "data_version": { "type": "string" },
+        "generated_at": { "type": "string" },
+        "claims": { "type": "integer", "minimum": 0 },
+        "sha256": { "description": "Hash of the answer as checked (canonical JSON).", "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code"],
+        "properties": {
+          "code": { "enum": ["data_version_differs", "chamber_not_in_data"] },
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "quotes": {
+      "type": "object",
+      "required": ["total", "exact", "by_outcome", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "exact": { "description": "Quotes with outcome esatta or esatta_dopo_normalizzazione.", "type": "integer", "minimum": 0 },
+        "by_outcome": {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/outcome" },
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "not_verifiable": {
+          "description": "Checks that the data could not settle, by check name.",
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/item" } }
+      }
+    }
+  },
+  "$defs": {
+    "outcome": {
+      "description": "esatta: the quote is a stretch of the speech, word for word. esatta_dopo_normalizzazione: same, with the allowed differences. Otherwise the first check that fails.",
+      "enum": [
+        "esatta",
+        "esatta_dopo_normalizzazione",
+        "non_trovata",
+        "parole_di_terzi",
+        "oratore_errato",
+        "gruppo_errato",
+        "link_errato",
+        "intervento_inesistente"
+      ]
+    },
+    "check": { "enum": ["ok", "fail", "not_verifiable", "not_checked"] },
+    "item": {
+      "type": "object",
+      "required": ["index", "speech", "speaker", "quote", "outcome", "normalizations", "checks", "reasons", "found"],
+      "additionalProperties": false,
+      "properties": {
+        "index": { "description": "Position of the claim in the answer, from 1.", "type": "integer", "minimum": 1 },
+        "id": { "type": "string" },
+        "speech": { "type": ["string", "null"] },
+        "speaker": { "type": ["string", "null"] },
+        "group": { "type": ["string", "null"] },
+        "government": { "type": "boolean" },
+        "quote": { "type": "string" },
+        "link": { "type": ["string", "null"] },
+        "outcome": { "$ref": "#/$defs/outcome" },
+        "normalizations": { "type": "array", "items": { "enum": ["whitespace", "first_letter_case"] } },
+        "checks": {
+          "type": "object",
+          "required": ["speech", "text", "own_words", "speaker", "group", "link"],
+          "additionalProperties": false,
+          "properties": {
+            "speech": { "$ref": "#/$defs/check" },
+            "text": { "$ref": "#/$defs/check" },
+            "own_words": { "$ref": "#/$defs/check" },
+            "speaker": { "$ref": "#/$defs/check" },
+            "group": { "$ref": "#/$defs/check" },
+            "link": { "$ref": "#/$defs/check" }
+          }
+        },
+        "reasons": {
+          "description": "Why a check failed or what it rests on, by check name.",
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "found": {
+          "description": "What the data say: date, chamber and speaker of the speech, groups and Government offices of the quoted person on that date.",
+          "type": "object"
+        }
+      }
+    }
+  }
+}

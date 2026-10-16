@@ -1,0 +1,259 @@
+{
+ "legislature": 19,
+ "groups": [
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "MISTO",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "MOVIMENTO 5 STELLE",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "LEGA - SALVINI PREMIER",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "FRATELLI D'ITALIA",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "AZIONE - ITALIA VIVA - RENEW EUROPE",
+     "from": null,
+     "to": "2023-11-20"
+    },
+    {
+     "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+     "from": "2022-10-18",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "NOI MODERATI",
+     "from": null,
+     "to": "2022-10-27"
+    },
+    {
+     "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC, ITALIA AL CENTRO)-MAIE",
+     "from": null,
+     "to": "2024-10-30"
+    },
+    {
+     "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+     "from": "2022-10-27",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "ALLEANZA VERDI E SINISTRA",
+     "from": "2022-10-27",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "chamber": "camera",
+   "names": [
+    {
+     "name": "ITALIA VIVA-IL CENTRO-RENEW EUROPE",
+     "from": null,
+     "to": "2026-06-16"
+    },
+    {
+     "name": "ITALIA VIVA-CASA RIFORMISTA",
+     "from": "2023-11-20",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/33",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Lega Salvini Premier - Partito Sardo d'Azione",
+     "from": "2022-10-13",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/49",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Partito Democratico - Italia Democratica e Progressista",
+     "from": "2022-10-13",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/56",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Forza Italia Berlusconi Presidente",
+     "from": "2022-10-13",
+     "to": "2022-10-18"
+    },
+    {
+     "name": "Forza Italia - Berlusconi Presidente - PPE",
+     "from": "2022-10-19",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/69",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Per le Autonomie (SVP-Patt, Campobase, Sud Chiama Nord)",
+     "from": "2022-10-13",
+     "to": "2023-11-06"
+    },
+    {
+     "name": "Per le Autonomie (SVP-PATT, Campobase)",
+     "from": "2023-11-07",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/71",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "MoVimento 5 Stelle",
+     "from": "2018-03-23",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/85",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Fratelli d'Italia",
+     "from": "2018-03-23",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/9",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Misto",
+     "from": "1946-06-25",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/91",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Azione-ItaliaViva-RenewEurope",
+     "from": "2022-10-13",
+     "to": "2023-11-08"
+    },
+    {
+     "name": "Italia Viva - Il Centro - Renew Europe",
+     "from": "2023-11-09",
+     "to": "2026-06-14"
+    },
+    {
+     "name": "Italia Viva - Casa Riformista",
+     "from": "2026-06-15",
+     "to": null
+    }
+   ]
+  },
+  {
+   "uri": "http://dati.senato.it/gruppo/92",
+   "chamber": "senato",
+   "names": [
+    {
+     "name": "Civici d'Italia - Noi Moderati (UDC - Coraggio Italia - Noi con l'Italia - Italia al Centro) - MAIE",
+     "from": "2022-10-13",
+     "to": "2024-10-29"
+    },
+    {
+     "name": "Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare",
+     "from": "2024-10-30",
+     "to": null
+    }
+   ]
+  }
+ ]
+}

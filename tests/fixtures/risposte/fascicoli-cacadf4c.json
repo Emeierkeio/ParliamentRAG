@@ -1,0 +1,91 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Qual è la posizione dei gruppi sulle adozioni da parte di coppie omosessuali?",
+ "generated_at": "2026-10-03T22:49:52.593406+02:00",
+ "period": {
+  "from": "2022-11-23",
+  "to": "2026-07-01"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-03",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_piantedosi_matteo",
+   "government": true,
+   "speech": "leg19_sed90_tit00010.sub00080.int00040",
+   "quote": "in Italia, la formazione di atti di nascita recante l'indicazione dei genitori dello stesso sesso, nonché il riconoscimento della filiazione da parte di altro genitore avente lo stesso sesso della madre partoriente, non sono consentiti dalla normativa vigente e tale preclusione è ampiamente suffragata da consolidata giurisprudenza",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0090&tipo=stenografico#sed0090.stenografico.tit00010.sub00080.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed207_tit00030.sub00060.int00020",
+   "quote": "la corte d'appello di Catania ne ha revocato l'adottabilità, con un provvedimento, ad avviso di noi interpellanti, violativo di legge, mentre il bambino era in affidamento preadottivo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0207&tipo=stenografico#sed0207.stenografico.tit00030.sub00060.int00020"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308852",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed147_tit00140.sub00020.int00160",
+   "quote": "non possiamo non vedere questo, non possiamo barattare la dignità umana come cifra della persona, per alcuna ragione e, condividendo queste riflessioni e queste finalità, Forza Italia esprime parere favorevole alla proposta di legge",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00160"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed96_tit00010.sub00050.int00060",
+   "quote": "adottare non è dare un cognome o uno spazio, l'adozione è qualcosa di molto più complesso nella forma e nella sostanza: è ciò che permette a un bambino di realizzare il suo diritto di avere una famiglia adeguata ai suoi bisogni",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0096&tipo=stenografico#sed0096.stenografico.tit00010.sub00050.int00060"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308934",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed274_tit00030.sub00020.int00060",
+   "quote": "succede che molti minori non ricevono, ad esempio, il cambio del cognome, che non è solamente un atto formale, ma diventa un atto sostanziale per la loro vita; non assumono, quindi, lo status giuridico di figlio della coppia o del singolo che attende la sentenza di adozione",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0274&tipo=stenografico#sed0274.stenografico.tit00030.sub00020.int00060"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed147_tit00090.sub00010.int00570",
+   "quote": "questo emendamento è il minimo sindacale rispetto alla tutela dei diritti dei bambini e delle bambine nati da maternità surrogata all'estero, ed è il minimo che possiamo fare per rispondere al monito - ripeto, al monito - della Corte costituzionale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00570"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed147_tit00140.sub00020.int00140",
+   "quote": "va estesa la platea dei beneficiari dell'adozione affrontando il tema delle coppie omosessuali, affrontando il tema delle adozioni per i single",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00140"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed551_tit00040.sub00060.int00080",
+   "quote": "l'affido familiare nasce come strumento di sostegno alla genitorialità, non come misura sostitutiva o punitiva nei confronti delle famiglie di origine",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0551&tipo=stenografico#sed0551.stenografico.tit00040.sub00060.int00080"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307360",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+   "speech": "leg19_sed659_tit00030.int00020",
+   "quote": "un figlio può avere soltanto un papà e una mamma, non una cooperativa di persone che decidono di mettersi d'accordo, perché di questo passo, Presidente, noi potremmo avere anche 4, 5, 6 genitori: basta una sentenza ideologica e questo diventa diritto. Il bambino - lo ripeto - deve avere una mamma e un papà",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0659&tipo=stenografico#sed0659.stenografico.tit00030.int00020"
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sul costo dell'RC auto?",
+ "generated_at": "2026-10-13T14:46:19.749020+02:00",
+ "period": {
+  "from": "2023-02-01",
+  "to": "2026-09-28"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-13",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_valentini_valentino",
+   "government": true,
+   "speech": "leg19_sed694_tit00020.sub00020.int00020",
+   "quote": "il Ministero sta valutando l'inserimento nel prossimo disegno di legge annuale per il mercato e la concorrenza di una delega per la riforma della disciplina della RC auto, con l'obiettivo di rivedere il sistema bonus-malus sulla base di metodologie di valutazione del rischio più evolute, valorizzare i comportamenti virtuosi, rafforzare il contrasto alle frodi e contribuire al contenimento del costo delle polizze",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0694&tipo=stenografico#sed0694.stenografico.tit00020.sub00020.int00020"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p309161",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed560_tit00060.sub00020.int00140",
+   "quote": "noi di Forza Italia vorremmo ricordare che il settore RC auto è stato già oggetto più volte di interventi volti ad arginare il problema dell'aumento dei prezzi, tanto che, se confrontiamo l'aumento del premio medio rispetto a dieci anni fa, notiamo che è sceso di quasi il 18 per cento, mentre l'inflazione e il costo della vita sono certamente in aumento",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00140"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308889",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed558_tit00050.sub00010.int00040",
+   "quote": "questo dimostra che le misure introdotte funzionano, ma il monitoraggio continuo serve per consolidare questi risultati e intervenire in tempo reale, se necessario",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0558&tipo=stenografico#sed0558.stenografico.tit00050.sub00010.int00040"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308890",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed596_tit00030.sub00010.int00080",
+   "quote": "da questo punto di vista, voglio rassicurare il collega del Partito Democratico che mi ha preceduto, perché il venire meno dell'obbligo della RC-auto per i mezzi aziendali che operano all'interno dell'azienda non significa che non continui a sussistere un'assicurazione per i danni contro terzi",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0596&tipo=stenografico#sed0596.stenografico.tit00030.sub00010.int00080"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308857",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed580_tit00100.sub00020.int00280",
+   "quote": "abbiamo fatto proposte di legge, ordini del giorno, emendamenti: parlare della RC-auto, delle grandi compagnie di assicurazione, della palese discriminazione e disuguaglianza che esiste nell'applicazione della RC-auto, appare un tabù, che noi non smetteremo mai di combattere",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0580&tipo=stenografico#sed0580.stenografico.tit00100.sub00020.int00280"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed165_tit00040.sub00050.int00060",
+   "quote": "non è, infatti, ammissibile che comportamenti analoghi che provocano incidenti, morte e sofferenza siano trattati differentemente, se ci si trovi alla guida di un'automobile o di una moto d'acqua o di un motoscafo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0165&tipo=stenografico#sed0165.stenografico.tit00040.sub00050.int00060"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308872",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed560_tit00060.sub00020.int00120",
+   "quote": "nonostante questo comportamento così compiacente, corretto e osservante delle regole, gli automobilisti napoletani pagano un premio assicurativo del 60 per cento superiore a quello degli omologhi residenti in provincia di Milano",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00120"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306398",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed192_tit00040.int00100",
+   "quote": "occorre un intervento dello Stato. Occorre una seria politica industriale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0192&tipo=stenografico#sed0192.stenografico.tit00040.int00100"
+  }
+ ]
+}

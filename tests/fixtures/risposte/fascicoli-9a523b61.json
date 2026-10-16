@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sulla legge elettorale?",
+ "generated_at": "2026-10-09T18:27:03.452553+02:00",
+ "period": {
+  "from": "2023-03-21",
+  "to": "2026-10-08"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-09",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_alberti_casellati_maria_elisabetta",
+   "government": true,
+   "speech": "leg19_sed618_tit00090.sub00080.int00040",
+   "quote": "la riforma, per contro, si limita a prescrivere che la legge elettorale garantisca rappresentatività politica e governabilità. Le soluzioni tecniche coerenti con questi principi sono molteplici nell'ambito di diversi sistemi elettorali, e non esistono ad oggi modelli vincolanti, né pregiudiziali da parte del Governo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0618&tipo=stenografico#sed0618.stenografico.tit00090.sub00080.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308899",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed682_tit00020.sub00010.int00470",
+   "quote": "ma perché risponde con rigore alle domande che il nostro sistema democratico ci sta ponendo: rimette al centro i partiti come soggetti costituzionalmente responsabili, restituisce agli elettori una rappresentanza più fedele, costruisce le condizioni per una stabilità che non è immobilismo, ma è una premessa necessaria per ogni trasformazione duratura",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0682&tipo=stenografico#sed0682.stenografico.tit00020.sub00010.int00470"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308848",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed690_tit00130.sub00040.int00940",
+   "quote": "oggi è incostituzionale la legge di elezione dei rappresentanti all'estero, ma non perché la legge lo sia, quanto perché la riduzione dei seggi ha comportato una trasformazione di fatto da un sistema proporzionale a un sistema maggioritario",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00130.sub00040.int00940"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307641",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed132_tit00080.sub00010.int00380",
+   "quote": "con una differenza: che la legge delega passa per il Parlamento, perché va in Commissione, viene espresso un parere dalla stessa Commissione, e, se il Governo, se la Sottosegretaria Wanda Ferro non si atterrà al parere, che noi daremo in Commissione, dovrà motivare il suo diniego. Con un regolamento no",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0132&tipo=stenografico#sed0132.stenografico.tit00080.sub00010.int00380"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed689_tit00080.int00420",
+   "quote": "questo testo base si fonda su alcuni cardini fondamentali. In questo testo base non erano previste le preferenze",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0689&tipo=stenografico#sed0689.stenografico.tit00080.int00420"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307634",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed689_tit00070.sub00010.int00140",
+   "quote": "ciò detto, io credo che sia arrivato il momento di bloccare i lavori su questo progetto di legge, preso atto dell'incostituzionalità sotto vari profili",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0689&tipo=stenografico#sed0689.stenografico.tit00070.sub00010.int00140"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed689_tit00070.sub00010.int00240",
+   "quote": "nel merito, il premio di maggioranza è troppo alto ed è un elemento che sbilancia tutto a discapito del criterio proporzionale e dell'esito espresso dalle urne",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0689&tipo=stenografico#sed0689.stenografico.tit00070.sub00010.int00240"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306160",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed267_tit00070.sub00010.int00020",
+   "quote": "anche su questo il nostro gruppo ha presentato varie proposte di legge, che, purtroppo, sono ferme",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0267&tipo=stenografico#sed0267.stenografico.tit00070.sub00010.int00020"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308846",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed682_tit00020.sub00010.int00820",
+   "quote": "questa legge contiene meccanismi che indeboliscono la rappresentanza parlamentare. La funzione di una legge elettorale non è quella di determinare un Governo, ma di conferire all'Assemblea legislativa la maggiore rappresentatività della volontà del popolo",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0682&tipo=stenografico#sed0682.stenografico.tit00020.sub00010.int00820"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305549",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed689_tit00070.sub00010.int00040",
+   "quote": "a voi interessa un sistema elettorale che sia più conveniente per voi e questo l'hanno capito tutti. Siccome con le attuali regole avevate davanti il rischio vero della sconfitta, avete pensato bene di cucirvi addosso una legge elettorale su misura",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0689&tipo=stenografico#sed0689.stenografico.tit00070.sub00010.int00040"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+   "speech": "leg19_sed690_tit00090.int00090",
+   "quote": "siccome secondo noi è una legge antidemocratica, plebiscitaria e che toglie ogni forza alla libertà di espressione dei cittadini, ci consenta almeno di segnalare questo fatto politico e di chiedere una Conferenza dei capigruppo perché venga discusso lì",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+  }
+ ]
+}

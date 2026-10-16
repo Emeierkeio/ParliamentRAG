@@ -1,0 +1,83 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sul caso Giulio Regeni?",
+ "generated_at": "2026-10-02T23:24:29.767877+02:00",
+ "period": {
+  "from": "2022-10-25",
+  "to": "2026-09-28"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-02",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_tajani_antonio",
+   "government": true,
+   "speech": "leg19_sed43_tit00050.sub00020.int00040",
+   "quote": "siamo aperti al dialogo, perché fare altrimenti vorrebbe dire abbandonare Giulio Regeni e la nostra richiesta di verità. Non c'è giustizia senza verità",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0043&tipo=stenografico#sed0043.stenografico.tit00050.sub00020.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308937",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed71_tit00060.sub00010.int00060",
+   "quote": "una Commissione che noi riteniamo possa contribuire in modo decisivo a far definitiva luce su queste due tragiche vicende che, purtroppo, non costituiscono casi isolati",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0071&tipo=stenografico#sed0071.stenografico.tit00060.sub00010.int00060"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed71_tit00060.sub00010.int00120",
+   "quote": "sono interrogativi drammatici, enormi, ai quali abbiamo il dovere, prima di tutto morale e, poi, politico, di dare una risposta o, almeno, fare tutto il possibile per arrivare a darla",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0071&tipo=stenografico#sed0071.stenografico.tit00060.sub00010.int00120"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302422",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed387_tit00090.sub00010.int00060",
+   "quote": "è vero, milioni di italiani vanno a visitare le Piramidi, vanno a fruire delle bellezze di quel Paese, ma in quel Paese un ragazzo di 27 anni, un nostro concittadino, è stato sequestrato, torturato e ucciso",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0387&tipo=stenografico#sed0387.stenografico.tit00090.sub00010.int00060"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307202",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed607_tit00150.int00140",
+   "quote": "giulio è stato vittima di un regime, il regime egiziano, che non è un Paese sicuro, perché in Egitto spariscono quotidianamente persone. Un regime che ha occultato, depistato, ha calpestato la dignità di Giulio, la sua memoria e quella del nostro Paese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico#sed0607.stenografico.tit00150.int00140"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed9_tit00020.sub00010.int00640",
+   "quote": "oppure Regeni era un italiano di “serie B”, un italiano che non meritava la verità, un italiano che non merita la tutela del suo Paese? Questo è un punto centrale che noi continueremo a chiedere",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0009&tipo=stenografico#sed0009.stenografico.tit00020.sub00010.int00640"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed277_tit00140.int00120",
+   "quote": "sarebbe una perdita di credibilità del Parlamento e sarebbe tradire la nostra funzione che, nel caso specifico, è quella dell'accertamento della verità. Lo chiedono le famiglie, ma non solo: lo chiede il dovere che abbiamo, senza preconcetti e senza condizionamenti, di far luce definitiva sulla vicenda",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0277&tipo=stenografico#sed0277.stenografico.tit00140.int00120"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+   "speech": "leg19_sed266_tit00040.sub00010.int00020",
+   "quote": "il problema non è continuare a porre la questione, il problema è: avete posto, insieme alla Presidente della Commissione europea, il caso Regeni, e quindi la necessità che il processo che si svolge a Roma non avvenga in contumacia , all'interno del pacchetto degli accordi con l'Egitto, sì o no? E la risposta è: no",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0266&tipo=stenografico#sed0266.stenografico.tit00040.sub00010.int00020"
+  }
+ ]
+}

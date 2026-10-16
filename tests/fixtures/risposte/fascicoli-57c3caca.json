@@ -1,0 +1,91 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "What did the parliamentary groups say about the minimum wage?",
+ "generated_at": "2026-10-06T01:23:33.386825+02:00",
+ "period": {
+  "from": "2022-11-29",
+  "to": "2026-06-10"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-06",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_calderone_marina_elvira",
+   "government": true,
+   "speech": "leg19_sed310_tit00010.sub00040.int00040",
+   "quote": "with reference to the issue of the minimum wage, I would stress that the European directive referred to by the honourable questioners, which may be transposed by 15 November 2024, is aimed at guaranteeing decent conditions for workers in the European Union, but does not intend to establish a uniform mechanism for determining minimum wages",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0310&tipo=stenografico#sed0310.stenografico.tit00010.sub00040.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed16_tit00040.sub00020.int00180",
+   "quote": "the first resolution on this issue was presented by me, on behalf of the Fratelli d'Italia group, on 18 November 2015, when there were four sittings concerning the discussion of the guaranteed minimum wage or statutory minimum wage: Minister of Labour Giuliano Poletti, Undersecretary Luigi Bobba",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307851",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed205_tit00040.sub00020.int00200",
+   "quote": "the directive does not impose a statutory minimum wage. The directive sets out two paths: the path that Italy must follow, given that over 90 per cent of workers are covered by collective bargaining, is not that of a statutory minimum wage",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0205&tipo=stenografico#sed0205.stenografico.tit00040.sub00020.int00200"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307456",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed672_tit00040.sub00010.int00120",
+   "quote": "the statutory minimum wage is a slogan; a fair wage is a solution",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00040.sub00010.int00120"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed210_tit00030.sub00010.int00100",
+   "quote": "that is why we oppose the minimum wage and why, in the past, we firmly fought against the citizenship income. We believe that the way forward is collective bargaining, because it means involving the social partners, it means guarantee systems, and it means fighting bogus agreements",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0210&tipo=stenografico#sed0210.stenografico.tit00030.sub00010.int00100"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307561",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed208_tit00050.sub00010.int00100",
+   "quote": "we are asking for 9 euros per hour in order to resolve, or try to contain, the plight of 3.5 million female and male workers living in poverty—that is, female and male workers who, despite working and having employment, receive a wage that, in our view, amounts to exploitation",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0208&tipo=stenografico#sed0208.stenografico.tit00050.sub00010.int00100"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307394",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed209_tit00120.sub00010.int00210",
+   "quote": "our bill aimed to fill this gap; it proposed guaranteeing workers economic treatment no lower than that established by collective agreements and introduced a non-derogable threshold of 9 gross euros",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0209&tipo=stenografico#sed0209.stenografico.tit00120.sub00010.int00210"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed15_tit00070.sub00010.int00100",
+   "quote": "the provision on the guaranteed minimum wage is a fundamental element, an element of civilisation, an indispensable element that we absolutely must put in place. It is clear that this makes us more European, because it brings us into line with the 21 European countries that already have such a provision",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00010.int00100"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed277_tit00160.sub00020.int00100",
+   "quote": "we can work together on this issue, but we expect the Government to make an effort to deliver real, significant commitments and to launch a genuinely shared process in Parliament for the implementation of the minimum wage",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0277&tipo=stenografico#sed0277.stenografico.tit00160.sub00020.int00100"
+  }
+ ]
+}

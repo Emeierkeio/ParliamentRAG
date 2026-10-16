@@ -1,0 +1,107 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sulla remigrazione?",
+ "generated_at": "2026-10-02T23:18:35.248658+02:00",
+ "period": {
+  "from": "2022-11-16",
+  "to": "2026-07-08"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-02",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_piantedosi_matteo",
+   "government": true,
+   "speech": "leg19_sed342_tit00060.sub00070.int00040",
+   "quote": "l'aumento del numero effettivo dei rimpatri forzosi di coloro che non hanno titolo a rimanere sul territorio nazionale possa determinare un effetto di deterrenza rispetto alle partenze dei migranti e a pretestuose richieste di asilo e a ricorsi privi di fondamento",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0342&tipo=stenografico#sed0342.stenografico.tit00060.sub00070.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308904",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed481_tit00050.sub00020.int00310",
+   "quote": "ecco, io vi do una notizia: signori, colleghi, non è così. Non è così e la vostra narrazione fuorviata e fuorviante non ha fatto altro che incancrenire il problema",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0481&tipo=stenografico#sed0481.stenografico.tit00050.sub00020.int00310"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307601",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed676_tit00110.sub00010.int00320",
+   "quote": "la Lega da sempre ritiene che una politica migratoria seria debba poggiare su tre pilastri fondamentali: ingressi regolari, protezione per chi ne ha realmente diritto e contrasto fermo e deciso all'immigrazione illegale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0676&tipo=stenografico#sed0676.stenografico.tit00110.sub00010.int00320"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302867",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed73_tit00040.sub00010.int00160",
+   "quote": "sarà indispensabile mettere in campo ogni azione utile verso un accordo sul nuovo quadro delle regole europee in materia di immigrazione e asilo, che porti a un nuovo sistema, basato su un adeguato bilanciamento fra i principi di solidarietà e responsabilità",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0073&tipo=stenografico#sed0073.stenografico.tit00040.sub00010.int00160"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed179_tit00040.sub00020.int00280",
+   "quote": "è necessario lavorare sull'incontro tra domanda e offerta di lavoro. Per questo chi delinque va rimpatriato: questo concetto deve essere chiaro, perché va a vantaggio, prima di tutto, di un'immigrazione regolare",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0179&tipo=stenografico#sed0179.stenografico.tit00040.sub00020.int00280"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306176",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed24_tit00030.sub00020.int00240",
+   "quote": "abbiamo fatto l'interesse dell'Italia quando, con lo scorso Governo, siamo andati al Consiglio europeo del giugno del 2021 e abbiamo proposto 8 piani d'azione per i Paesi di origine e di transito, cioè, sostanzialmente, quello di cui si parlerà anche in questa occasione, che lei ha provato ad intestarsi come proprio merito",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0024&tipo=stenografico#sed0024.stenografico.tit00030.sub00020.int00240"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308872",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed388_tit00030.sub00010.int00140",
+   "quote": "con un emendamento, poi, presentato all'ultimo momento dal collega Iezzi, abbiamo raggiunto l'apoteosi, perché viene proibito il ricongiungimento familiare per due anni al migrante che soggiorna regolarmente - lo diceva e lo sottolineava, giustamente, la collega Boschi - sul territorio italiano; una norma di pura cattiveria e ottusità, e cosa comporterà",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0388&tipo=stenografico#sed0388.stenografico.tit00030.sub00010.int00140"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed676_tit00110.sub00010.int00220",
+   "quote": "siete colpevoli - siete colpevoli! - di un reato gravissimo, Sottosegretario e amici della maggioranza: quello di aver sdoganato le posizioni più oltranziste e razziste nel nostro Paese , che cominciano a esprimersi in questo Parlamento",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0676&tipo=stenografico#sed0676.stenografico.tit00110.sub00010.int00220"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed204_tit00050.sub00010.int00120",
+   "quote": "anche per quanto riguarda l'allontanamento di chi ha il permesso di soggiorno prolungato, ne capiamo le ragioni, ma finché, oggi, non ci rendiamo conto che siamo un Paese con una presenza di irregolari che sono di fatto strutturalmente previsti dal sistema legislativo che abbiamo, non faremo un passo avanti",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0204&tipo=stenografico#sed0204.stenografico.tit00050.sub00010.int00120"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305553",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed337_tit00080.sub00070.int00040",
+   "quote": "allo stesso modo, tra gli ambiti di studio di questa Commissione d'inchiesta si citano i fenomeni migratori",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0337&tipo=stenografico#sed0337.stenografico.tit00080.sub00070.int00040"
+  },
+  {
+   "id": "11",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307143",
+   "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271",
+   "speech": "leg19_sed687_tit00040.int00200",
+   "quote": "facciamo un decreto Remigrazione , come vuole il generale Vannacci, se vogliamo veramente dare un segnale concreto alle persone che vivono, purtroppo, i problemi e le conseguenze di un'immigrazione malgovernata dal centrodestra che attualmente governa la nostra Nazione",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0687&tipo=stenografico#sed0687.stenografico.tit00040.int00200"
+  }
+ ]
+}

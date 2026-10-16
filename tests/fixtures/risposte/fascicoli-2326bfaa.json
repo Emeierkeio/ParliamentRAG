@@ -1,0 +1,99 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa si è detto in Aula sulla riduzione dell'orario di lavoro a parità di salario?",
+ "generated_at": "2026-10-05T15:38:09.594135+02:00",
+ "period": {
+  "from": "2022-10-25",
+  "to": "2026-07-15"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-05",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_calderone_marina_elvira",
+   "government": true,
+   "speech": "leg19_sed687_tit00090.sub00070.int00040",
+   "quote": "vi ricordo il decreto-legge n. 62 del 2026 con il quale il Governo ha ulteriormente rafforzato le tutele del lavoro, introducendo il principio del salario giusto",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0687&tipo=stenografico#sed0687.stenografico.tit00090.sub00070.int00040"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308886",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed512_tit00150.sub00010.int00220",
+   "quote": "le sfide che l'intelligenza artificiale generativa ci pone di fronte sono straordinarie, ma non potremo certo affrontare queste sfide con il salario minimo, il reddito di cittadinanza e la settimana corta, perché il lavoro è una cosa seria",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0512&tipo=stenografico#sed0512.stenografico.tit00150.sub00010.int00220"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307851",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed492_tit00060.sub00010.int00160",
+   "quote": "oggi parliamo di intelligenza artificiale, di come governare l'intelligenza artificiale, di come innovare il nostro Paese, di come utilizzare l'intelligenza artificiale per ridurre le insicurezze nel mondo del lavoro e per mettere al riparo i nostri lavoratori in determinati processi e qualcuno vorrebbe ritornare al 1970",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0492&tipo=stenografico#sed0492.stenografico.tit00060.sub00010.int00160"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307456",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed372_tit00050.sub00010.int00120",
+   "quote": "obbligare un'impresa ad adottare un orario di lavoro ridotto, a prescindere dalle peculiarità delle dinamiche produttive della stessa, finisce per nuocere all'impresa e, a catena, ai lavoratori che dalla crisi del proprio datore non ricaverebbero alcun beneficio",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0372&tipo=stenografico#sed0372.stenografico.tit00050.sub00010.int00120"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed499_tit00030.sub00010.int00100",
+   "quote": "l'utilizzo delle nuove tecnologie deve essere volto al miglioramento delle condizioni di lavoro e all'incremento delle prestazioni lavorative e della produttività",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0499&tipo=stenografico#sed0499.stenografico.tit00030.sub00010.int00100"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p302069",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed625_tit00090.sub00020.int00020",
+   "quote": "guardate, questo è il punto principale che ha spinto grandi Paesi a sperimentare la riduzione dell'orario di lavoro a parità di salario, perché non c'è mai stato nessun grande salto tecnologico che non fosse stato accompagnato da poderose riduzioni dell'orario di lavoro, ma voi questo lo rimuovete",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0625&tipo=stenografico#sed0625.stenografico.tit00090.sub00020.int00020"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307394",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed372_tit00050.sub00010.int00140",
+   "quote": "una riduzione dell'orario di lavoro fino a 32 ore settimanali, per quattro giorni lavorativi, avrebbe effetti positivi sia sull'occupazione che sulla produttività",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0372&tipo=stenografico#sed0372.stenografico.tit00050.sub00010.int00140"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308869",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed165_tit00110.sub00020.int00040",
+   "quote": "dobbiamo ridurlo a parità di salario, perché, con un orario mediamente così lungo, detassare semplicemente gli straordinari, care colleghe, cari colleghi e rappresentante del Governo, può essere una cosa che ha una sua utilità, ma significa aumentare la precarietà del lavoro , perché se si fanno più straordinari in molti settori quel lavoro, ahimè, diventa più pericoloso",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0165&tipo=stenografico#sed0165.stenografico.tit00110.sub00020.int00040"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed210_tit00030.sub00010.int00160",
+   "quote": "noi avremmo difeso un modo a cui siamo arrivati che non è proprio da scienziati, perché 9 euro sono poco meno di 1.200 euro al mese, che, secondo noi, è la soglia che nessun lavoro svolto per 8 ore al giorno - 40 ore alla settimana - può generare in termini di stipendio mensile",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0210&tipo=stenografico#sed0210.stenografico.tit00030.sub00010.int00160"
+  },
+  {
+   "id": "10",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+   "speech": "leg19_sed277_tit00160.sub00020.int00020",
+   "quote": "non si pianifica in maniera sovietica l'economia in questo Paese, imponendo per legge gli orari di lavoro, imponendo la riduzione degli orari di lavoro, imponendo per legge le assunzioni, imponendo per legge tutto",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0277&tipo=stenografico#sed0277.stenografico.tit00160.sub00020.int00020"
+  }
+ ]
+}

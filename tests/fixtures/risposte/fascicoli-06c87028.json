@@ -1,0 +1,91 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/v1",
+ "system": {
+  "name": "Fascicoli",
+  "url": "https://www.fascicoli.it"
+ },
+ "question": "Cosa hanno detto i gruppi sull'auto elettrica?",
+ "generated_at": "2026-10-03T23:01:03.975931+02:00",
+ "period": {
+  "from": "2022-11-10",
+  "to": "2026-07-01"
+ },
+ "chambers": [
+  "camera"
+ ],
+ "data_version": "2026-10-03",
+ "claims": [
+  {
+   "id": "1",
+   "speaker": "gov_foti_tommaso",
+   "government": true,
+   "speech": "leg19_sed24_tit00050.sub00010.int00360",
+   "quote": "il riferimento che ha fatto alla vicenda dei crediti di imposta sulle auto elettriche, principalmente pensata negli Stati Uniti, deve farci riflettere",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0024&tipo=stenografico#sed0024.stenografico.tit00050.sub00010.int00360"
+  },
+  {
+   "id": "2",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308889",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+   "speech": "leg19_sed259_tit00040.sub00010.int00080",
+   "quote": "nel frattempo, per sostenere la domanda, il Governo Meloni ha potenziato l'ecobonus, destinando 950 milioni di euro e ponendo maggiore attenzione agli obiettivi di sostenibilità ambientale e sociale. I contributi per i veicoli elettrici e ibridi plug-in sono stati aumentati a un massimo di 13.750 euro rispetto ai precedenti 5.000",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0259&tipo=stenografico#sed0259.stenografico.tit00040.sub00010.int00080"
+  },
+  {
+   "id": "3",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307502",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+   "speech": "leg19_sed626_tit00070.sub00010.int00160",
+   "quote": "noi, come Lega, come maggioranza e come Governo, vogliamo essere parte della soluzione , non parte del problema. Sarò chiaro, lo dico ai colleghi delle sinistre: ogni politica ambientale deve rispettare il principio di sostenibilità sociale e tutelare i cittadini e le imprese, altrimenti parliamo di politiche turbo-ambientaliste",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0626&tipo=stenografico#sed0626.stenografico.tit00070.sub00010.int00160"
+  },
+  {
+   "id": "4",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306214",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+   "speech": "leg19_sed366_tit00120.sub00020.int00100",
+   "quote": "quando abbiamo tecnologie - fatemi dire - alla pari dell'energia elettrica, che possono concorrere a questa decarbonizzazione, le escludiamo per legge dalla possibilità di competere, e ne stiamo pagando le conseguenze",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00100"
+  },
+  {
+   "id": "5",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+   "speech": "leg19_sed366_tit00120.sub00020.int00040",
+   "quote": "non è il motore elettrico, l'obiettivo, ma è introdurre in Europa la possibilità che la ricerca e lo sviluppo tecnologico possano, anche nel settore dell' automotive , contribuire a una sostenibilità ambientale",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00040"
+  },
+  {
+   "id": "6",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306398",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+   "speech": "leg19_sed192_tit00040.int00100",
+   "quote": "è un mondo che sta cambiando profondamente e che, con il passaggio all'elettrico, subirà un cambiamento epocale. Occorre un intervento dello Stato",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0192&tipo=stenografico#sed0192.stenografico.tit00040.int00100"
+  },
+  {
+   "id": "7",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p307829",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+   "speech": "leg19_sed352_tit00040.sub00010.int00040",
+   "quote": "questa è la conseguenza delle politiche arrancate del Governo, che generano incertezza sull'elettrico: in un contesto di indecisioni normative, politiche e tecnologiche non si può alimentare ulteriormente la confusione con soluzioni diverse, proposte da ogni parte; è necessaria, invece, la coerenza",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0352&tipo=stenografico#sed0352.stenografico.tit00040.sub00010.int00040"
+  },
+  {
+   "id": "8",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+   "speech": "leg19_sed19_tit00040.sub00010.int01440",
+   "quote": "un'impresa, un'industria che non punta sull'innovazione non è in grado di essere competitiva a livello europeo e a livello mondiale, tant'è vero che una parte consistente delle tecnologie, legate alla mobilità elettrica, viene importata nel nostro Paese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0019&tipo=stenografico#sed0019.stenografico.tit00040.sub00010.int01440"
+  },
+  {
+   "id": "9",
+   "speaker": "http://dati.camera.it/ocd/persona.rdf/p308802",
+   "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+   "speech": "leg19_sed352_tit00040.sub00010.int00020",
+   "quote": "tuttavia, l'Italia non può essere esclusa da questa transizione e da questo percorso: chiediamo che gli stabilimenti italiani siano parte integrante di questo piano, che vengano riconvertiti per la produzione di veicoli elettrici, garantendo così occupazione e investimenti nel nostro Paese",
+   "link": "https://www.camera.it/leg19/410?idSeduta=0352&tipo=stenografico#sed0352.stenografico.tit00040.sub00010.int00020"
+  }
+ ]
+}
