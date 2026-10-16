@@ -2,7 +2,7 @@
 
 > Stato: proposta del 6 ottobre 2026. Dal 13 ottobre 2026 è attiva una prima versione su testo libero:
 > `POST /api/verify` nel backend di Fascicoli (`services/verifier.py`), usata dalla pagina `/verifica` e dallo
-> strumento `verify_answer` del server MCP. Copre le tre garanzie sulla Camera, XIX legislatura; l'autorevolezza
+> strumento `verify_answer` del server MCP. Copre le tre garanzie su Camera e Senato, XIX legislatura; l'autorevolezza
 > è calcolata dal server (strada B). Restano da fare il formato JSON verificabile, la libreria offline e gli
 > embedding pubblicati (strada A).
 
