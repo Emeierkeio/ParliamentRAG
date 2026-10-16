@@ -227,6 +227,7 @@ In locale puoi lasciarle vuote. Il modello sta in `.env.example`.
 | `BREVO_API_KEY`, `BREVO_LIST_ID`, `BREVO_DOI_TEMPLATE_ID` | newsletter; senza, il modulo risponde che l'iscrizione non è disponibile |
 | `PUBLIC_SITE_URL` | URL pubblico, default `https://www.parliamentrag.it` (canonical, hreflang, sitemap) |
 | `PARLIAMENTRAG_API` | backend per i numeri del grafo, default `https://thesis-parliamentrag-production.up.railway.app` |
+| `FASCICOLI_API_URL`, `FASCICOLI_API_KEY` | backend di Fascicoli per `/api/verifica` (testo libero e formato v1) e per l'elenco dei nomi dei gruppi in `/verifica`; senza chiave la pagina risponde che il verificatore non è configurato |
 | `NOINDEX` | `1` aggiunge `X-Robots-Tag: noindex` (anteprime) |
 | `HOSTNAME` | `0.0.0.0` in produzione, serve al server standalone |
 

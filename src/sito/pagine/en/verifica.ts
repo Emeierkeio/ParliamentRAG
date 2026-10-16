@@ -42,6 +42,7 @@ const contenuto: Contenuto = {
             <button class="btn btn--linea btn--piccolo" type="button" id="svuota">Clear</button>
           </div>
           <p class="messaggio" id="msg" role="status"></p>
+          <p class="nota">Is your answer in the <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/schema/verifiable-answer.v1.json" rel="noopener">verifiable JSON format</a>? Paste it here: I check its quotes one by one, with the rules of the <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/verifica" rel="noopener">open verifier</a>. <button class="link-bottone" type="button" id="esempio-json">Paste a JSON example</button></p>
           <p class="nota">The text reaches our server only for the check: we do not store it or log it. The question goes to OpenAI to compute authority on the topic. <a class="collegamento" href="/en/privacy">Privacy</a></p>
         </form>
 

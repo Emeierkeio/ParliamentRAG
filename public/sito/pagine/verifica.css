@@ -390,6 +390,33 @@
     font-size: var(--t-nota);
     color: var(--inchiostro-3);
   }
+  /* Formato JSON v1: un pulsante che si legge come un link */
+  .link-bottone {
+    font: inherit;
+    color: var(--accento);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in oklab, var(--accento) 40%, transparent);
+  }
+  .link-bottone:hover {
+    text-decoration-color: currentColor;
+  }
+  .controlli {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
+    font-size: var(--t-micro);
+    font-family: var(--f-mono);
+    color: var(--inchiostro-3);
+  }
+  .controlli [data-c="no"] {
+    color: var(--errore);
+  }
   .chi-dice .bollino {
     margin-left: 6px;
     white-space: nowrap;

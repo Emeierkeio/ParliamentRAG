@@ -42,6 +42,7 @@ const contenuto: Contenuto = {
             <button class="btn btn--linea btn--piccolo" type="button" id="svuota">Svuota</button>
           </div>
           <p class="messaggio" id="msg" role="status"></p>
+          <p class="nota">Hai la risposta nel <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/blob/main/schema/verifiable-answer.v1.json" rel="noopener">formato JSON verificabile</a>? Incollala qui: controllo le citazioni, una per una, con le regole del <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG/tree/main/verifica" rel="noopener">verificatore aperto</a>. <button class="link-bottone" type="button" id="esempio-json">Incolla un esempio JSON</button></p>
           <p class="nota">Il testo arriva al nostro server solo per il controllo: non lo salviamo e non lo registriamo. La domanda passa a OpenAI per calcolare l'autorevolezza sul tema. <a class="collegamento" href="/privacy">Privacy</a></p>
         </form>
 

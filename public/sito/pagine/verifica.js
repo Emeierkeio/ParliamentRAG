@@ -10,27 +10,47 @@
   /* Le sigle e i nomi dei gruppi restano italiani; il Governo si scrive nella lingua della pagina */
   var sigla = function (g) { return EN && g === "Governo" ? "Government" : g; };
 
-  /* ---------- Nomi con cui il verificatore riconosce i gruppi ----------
-   * Copia della tabella VOICES di services/verifier.py in Fascicoli: serve
-   * solo a mostrarla qui sotto, il controllo lo fa il server. */
-  var NOMI = [
-    ["Fratelli d'Italia", "FdI, FDI", "Fratelli d'Italia, Brothers of Italy"],
-    ["Partito Democratico", "PD, Pd", "Partito Democratico, Italia Democratica e Progressista, Democratic Party"],
-    ["Lega - Salvini Premier", "Lega, League", "Lega Salvini, Salvini Premier"],
-    ["Movimento 5 Stelle", "M5S", "Movimento 5 Stelle, Movimento Cinque Stelle, 5 Stelle, Cinque Stelle, Five Star Movement"],
-    ["Forza Italia", "FI", "Forza Italia, Forward Italy, Go Italy"],
-    ["Alleanza Verdi e Sinistra", "AVS", "Alleanza Verdi e Sinistra, Verdi e Sinistra, Greens and Left Alliance"],
-    ["Azione - PER", "Azione, AZ, Action", "Popolari Europeisti Riformatori"],
-    ["Italia Viva - Casa Riformista", "IV, IV-CR", "Italia Viva, Casa Riformista, Italy Alive"],
-    ["Noi Moderati", "NM", "Noi Moderati, MAIE, Centro Popolare, Us Moderates"],
-    ["+Europa (Misto)", "+Europa", "Più Europa, + Europa, More Europe"],
-    ["Futuro Nazionale Vannacci (Misto)", "FN", "Futuro Nazionale, Vannacci"],
-    ["Minoranze linguistiche (Misto)", "SVP", "Minoranze linguistiche, Südtiroler Volkspartei, linguistic minorities"],
-    ["Sud chiama Nord (Misto)", "–", "Sud chiama Nord, South Calls North"],
-    ["Avanti PSI (Misto, Senato)", "PSI", "Avanti PSI, Partito Socialista"],
-    ["Per le Autonomie (Senato)", "–", "Per le Autonomie, Autonomie, Campobase, SVP-PATT"],
-    [EN ? "Government" : "Governo", "–", "Governo, Esecutivo, ministro, ministra, sottosegretario, sottosegretaria, Government, minister, undersecretary"]
-  ];
+  /* I nomi con cui il verificatore riconosce i gruppi vengono dal verificatore
+     stesso (VOICES in Fascicoli, via /api/verifica/nomi): nessuna copia qui. */
+  var NOMI_API = "/api/verifica/nomi";
+
+  /* Formato JSON verificabile, versione 1 */
+  var SCHEMA_V1 = "https://w3id.org/parliamentrag/verify/v1";
+  var P = "http://dati.camera.it/ocd/persona.rdf/";
+  /* Esempio scritto da noi: tre citazioni vere, la terza con una parola
+     cambiata («tenuti» al posto di «obbligati»). */
+  var ESEMPIO_V1 = {
+    schema: SCHEMA_V1,
+    system: { name: EN ? "Example" : "Esempio" },
+    question: EN ? "What do the groups think about the minimum wage?" : "Cosa pensano i gruppi del salario minimo?",
+    data_version: "2026-10-16",
+    claims: [
+      { speaker: P + "p305688", group: "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        speech: "leg19_sed16_tit00040.sub00020.int00180",
+        quote: "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+        link: "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180" },
+      { speaker: P + "p307436", group: "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+        speech: "leg19_sed690_tit00090.int00090",
+        quote: "siccome secondo noi è una legge antidemocratica, plebiscitaria",
+        link: "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090" },
+      { speaker: "gov_durigon_claudio", government: true,
+        speech: "leg19_sed15_tit00070.sub00020.int00020",
+        quote: "per gli Stati che, invece, non sono tenuti ad introdurre un salario minimo legale",
+        link: "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00020.int00020" }
+    ]
+  };
+
+  /* Il testo incollato è una risposta nel formato v1? */
+  function rispostaV1(testo) {
+    var t = testo.trim();
+    if (t.charAt(0) !== "{") return null;
+    try {
+      var o = JSON.parse(t);
+      return o && o.schema === SCHEMA_V1 ? o : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
   function norm(s) { return String(s || "").replace(/[’‘ʼ`´]/g, "'").replace(/\s+/g, " ").trim(); }
   function parole(s) { return norm(s).split(" ").filter(Boolean); }
@@ -100,6 +120,14 @@
     msg.textContent = EN ? "Example inserted. It contains three quotes: one has a changed word." : "Esempio inserito. Contiene tre citazioni: una ha una parola cambiata.";
     bottone.focus();
   });
+  document.getElementById("esempio-json").addEventListener("click", function () {
+    area.value = JSON.stringify(ESEMPIO_V1, null, 2);
+    domanda.value = "";
+    contaParole();
+    msg.removeAttribute("data-tipo");
+    msg.textContent = EN ? "JSON example inserted. It contains three quotes: one has a changed word." : "Esempio JSON inserito. Contiene tre citazioni: una ha una parola cambiata.";
+    bottone.focus();
+  });
   var vuoto = esito.innerHTML;
   document.getElementById("svuota").addEventListener("click", function () {
     area.value = "";
@@ -129,6 +157,13 @@
       return;
     }
     if (inCorso) return;
+    var v1 = rispostaV1(testo);
+    if (!v1 && testo.trim().charAt(0) === "{" && /"schema"\s*:/.test(testo)) {
+      msg.dataset.tipo = "errore";
+      msg.textContent = EN ? "This looks like JSON, but it is not a valid answer in the v1 format: check the schema field and the commas." : "Sembra JSON, ma non è una risposta valida nel formato v1: controlla il campo schema e le virgole.";
+      return;
+    }
+    if (v1) return verificaV1(v1);
     inCorso = true;
     bottone.disabled = true;
     msg.textContent = "";
@@ -156,6 +191,110 @@
       bottone.disabled = false;
       esito.setAttribute("aria-busy", "false");
     });
+  }
+
+  /* ---------- Formato v1: solo citazioni ---------- */
+  function verificaV1(risposta) {
+    inCorso = true;
+    bottone.disabled = true;
+    msg.textContent = "";
+    esito.setAttribute("aria-busy", "true");
+    stato.textContent = EN ? "Checking" : "Controllo in corso";
+    stato.style.color = "";
+    esito.innerHTML = '<div class="attesa"><span>' + (EN ? "Checking each quote against the record…" : "Controllo ogni citazione sul resoconto…") + '</span><span class="attesa__riga"><i></i></span></div>';
+    fetch(API, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ v1: risposta })
+    }).then(function (r) {
+      if (r.status === 429) throw new Error(EN ? "Too many checks from this connection: try again in an hour." : "Troppe verifiche da questa connessione: riprova tra un'ora.");
+      if (r.status === 422) return r.json().then(function (j) {
+        var e = (j && j.errors) || [];
+        throw new Error((EN ? "The JSON does not follow the v1 format: " : "Il JSON non segue il formato v1: ") + e.slice(0, 3).join("; ") + (e.length > 3 ? "…" : ""));
+      });
+      if (r.status === 413) throw new Error(EN ? "The answer is too long to check here." : "La risposta è troppo lunga per controllarla qui.");
+      if (!r.ok) throw new Error(EN ? "The verifier is not answering right now. Try again in a minute." : "Il verificatore non risponde in questo momento. Riprova tra un minuto.");
+      return r.json();
+    }).then(function (out) {
+      mostraV1(out.report);
+    }).catch(function (err) {
+      esito.innerHTML = vuoto;
+      stato.textContent = EN ? "Not checked" : "Non verificata";
+      msg.dataset.tipo = "errore";
+      msg.textContent = err.message;
+    }).then(function () {
+      inCorso = false;
+      bottone.disabled = false;
+      esito.setAttribute("aria-busy", "false");
+    });
+  }
+
+  var ESITI_V1 = EN ? {
+    esatta: ["Matches", "the record, word for word"],
+    esatta_dopo_normalizzazione: ["Matches", "with an allowed difference"],
+    non_trovata: ["Not found", "the words are not in the speech"],
+    parole_di_terzi: ["Someone else's words", "the speaker is quoting another person"],
+    oratore_errato: ["Wrong speaker", "someone else gives this speech"],
+    gruppo_errato: ["Wrong group", "not the speaker's group on that date"],
+    link_errato: ["Wrong link", "it does not lead to the record of that sitting"],
+    intervento_inesistente: ["Speech not found", "no speech with this id in the data"]
+  } : {
+    esatta: ["Coincide", "con il resoconto, parola per parola"],
+    esatta_dopo_normalizzazione: ["Coincide", "con una differenza ammessa"],
+    non_trovata: ["Non trovata", "le parole non sono nell'intervento"],
+    parole_di_terzi: ["Parole di altri", "l'oratore sta citando un'altra persona"],
+    oratore_errato: ["Oratore sbagliato", "l'intervento è di un'altra persona"],
+    gruppo_errato: ["Gruppo sbagliato", "non è il gruppo di chi parla, a quella data"],
+    link_errato: ["Link sbagliato", "non porta al resoconto di quella seduta"],
+    intervento_inesistente: ["Intervento inesistente", "nei dati non c'è un intervento con questo ID"]
+  };
+  var NORMALIZZAZIONI = EN ? { whitespace: "extra spaces", first_letter_case: "first letter case" }
+    : { whitespace: "spazi in più", first_letter_case: "maiuscola iniziale" };
+  var CONTROLLI = EN
+    ? [["speech", "speech"], ["text", "text"], ["own_words", "own words"], ["speaker", "speaker"], ["group", "group"], ["link", "link"]]
+    : [["speech", "intervento"], ["text", "testo"], ["own_words", "parole proprie"], ["speaker", "oratore"], ["group", "gruppo"], ["link", "link"]];
+  var STATI = { ok: "✓", fail: "✗", not_verifiable: "?", not_checked: "–" };
+
+  function mostraV1(R) {
+    var Q = R.quotes, D = R.data;
+    var eC = !Q.total ? "nd" : Q.exact === Q.total ? "ok" : "no";
+    var h = '<div class="sigillo"><span class="sigillo__da">' + (EN ? "Verification" : "Verifica") + "</span>" +
+      voce(EN ? "All groups" : "Tutti i gruppi", "nd", EN ? "not in v1" : "non in v1") +
+      voce(EN ? "Authoritative voices" : "Voci autorevoli", "nd", EN ? "not in v1" : "non in v1") +
+      voce(EN ? "Exact quotes" : "Citazioni esatte", eC, Q.total ? Q.exact + "/" + Q.total : "–") + "</div>";
+    var sbagliate = Q.total - Q.exact;
+    h += '<p class="riassunto">' + (EN
+      ? (!Q.total ? "The answer has no quotes to check." : !sbagliate ? "Every quote matches the record, the speaker, the group and the link." : sbagliate + " of " + Q.total + (sbagliate === 1 ? " quote does" : " quotes do") + " not pass.")
+      : (!Q.total ? "La risposta non ha citazioni da controllare." : !sbagliate ? "Ogni citazione coincide con il resoconto, con chi parla, con il gruppo e con il link." : (sbagliate === 1 ? "Una citazione su " + Q.total + " non passa." : sbagliate + " citazioni su " + Q.total + " non passano."))) + "</p>";
+    h += '<section class="prova" aria-labelledby="p-v1"><div class="prova__testa"><h3 class="titolo-4" id="p-v1"><span>03</span>' + (EN ? "Exact quotes" : "Citazioni esatte") + "</h3>" +
+      '<span class="prova__conto" data-esito="' + eC + '">' + Q.exact + (EN ? " of " : " su ") + Q.total + "</span></div>";
+    h += '<div class="citate">' + Q.items.map(schedaV1).join("") + "</div>";
+    var dati = (EN ? "Data: " : "Dati: ") + (D.source === "graph" ? (EN ? "ParliamentRAG graph, sittings up to " : "grafo di ParliamentRAG, sedute fino al ") + esc(D.version ? dataIt(D.version) : "–") : esc(D.dataset || "") + " " + esc(D.version || ""));
+    h += '<p class="brevi">' + dati + " · " + (EN ? "verifier " : "verificatore ") + esc(R.verifier.version) + " · " +
+      (EN ? "the answer says it used the data of " : "la risposta dichiara i dati del ") + esc(R.answer.data_version) + ".</p>";
+    h += "<p>" + (EN ? "Groups and authority are not checked in this format yet: they come in the next phases of the plan." : "Gruppi e autorevolezza in questo formato non si controllano ancora: arrivano nelle prossime fasi del piano.") + "</p>";
+    h += "</section>";
+    esito.innerHTML = h;
+    stato.textContent = !Q.total ? (EN ? "No quotes" : "Nessuna citazione") : (EN ? Q.exact + " of " + Q.total + " exact" : Q.exact + " su " + Q.total + " esatte");
+    stato.style.color = eC === "no" ? "var(--errore)" : "";
+  }
+
+  function schedaV1(v) {
+    var ok = v.outcome === "esatta" || v.outcome === "esatta_dopo_normalizzazione";
+    var e = ESITI_V1[v.outcome] || [v.outcome, ""];
+    var sotto = e[1];
+    if (v.outcome === "esatta_dopo_normalizzazione") sotto = v.normalizations.map(function (n) { return NORMALIZZAZIONI[n] || n; }).join(", ");
+    var f = v.found || {};
+    var chiParla = f.speaker_name ? "<strong>" + esc(f.speaker_name) + "</strong>" + (f.date ? ", " + dataIt(f.date) : "") : "";
+    var link = v.link ? ' <a class="bollino" href="' + esc(v.link) + '" rel="noopener">' + SPUNTA + (EN ? "Link in the answer" : "Link della risposta") + "</a>" : "";
+    var controlli = '<p class="controlli">' + CONTROLLI.map(function (c) {
+      var st = v.checks[c[0]];
+      return '<span data-c="' + (st === "fail" ? "no" : "si") + '">' + STATI[st] + " " + c[1] + "</span>";
+    }).join("") + "</p>";
+    return '<article class="citata" data-esito="' + (ok ? "ok" : "no") + '"><p class="citata__esito">' + (ok ? SPUNTA : CROCE) +
+      esc(e[0]) + " <span>" + esc(sotto) + "</span></p>" +
+      '<blockquote class="cit cit--piccola"><p class="cit__testo" lang="it">' + esc(norm(v.quote)) + "</p></blockquote>" +
+      '<p class="chi-dice">#' + v.index + " · " + esc(v.speech || "") + (chiParla ? " · " + chiParla : "") + link + "</p>" + controlli + "</article>";
   }
 
   function chi(s) {
@@ -291,9 +430,22 @@
       testo + '<p class="chi-dice">' + (EN ? "It may come from an interview, a press release or the Senate, which this check does not cover. If it is presented as said in the Chamber, it is not in the record." : "Può venire da un'intervista, da un comunicato o dal Senato, che questo controllo non copre. Se è presentata come detta alla Camera, nel resoconto non c'è.") + "</p></article>";
   }
 
-  document.getElementById("alias").innerHTML = NOMI.map(function (n) {
-    return "<tr><td>" + esc(n[0]) + '</td><td class="mono">' + esc(n[1]) + "</td><td>" + esc(n[2]) + "</td></tr>";
-  }).join("");
+  /* Tabella dei nomi, letta dal verificatore */
+  var alias = document.getElementById("alias");
+  function rigaNome(v) {
+    var nome = v.kind === "government" ? (EN ? "Government" : "Governo") : v.label;
+    if (v.chamber === "senato") nome = /\)$/.test(nome) ? nome.replace(/\)$/, EN ? ", Senate)" : ", Senato)") : nome + (EN ? " (Senate)" : " (Senato)");
+    return "<tr><td>" + esc(nome) + '</td><td class="mono">' + esc(v.abbreviations.length ? v.abbreviations.join(", ") : "–") +
+      "</td><td>" + esc(v.names.join(", ")) + "</td></tr>";
+  }
+  fetch(NOMI_API).then(function (r) {
+    if (!r.ok) throw new Error();
+    return r.json();
+  }).then(function (j) {
+    alias.innerHTML = j.voices.map(rigaNome).join("");
+  }).catch(function () {
+    alias.innerHTML = '<tr><td colspan="3">' + (EN ? "The list is not available right now: try again later." : "L'elenco non è disponibile in questo momento: riprova più tardi.") + "</td></tr>";
+  });
 
   contaParole();
   window.osservaComparse();
