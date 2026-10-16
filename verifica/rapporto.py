@@ -149,10 +149,14 @@ def markdown(r: dict) -> str:
         controllo = _CONTROLLO_PER_ESITO[esito]
         motivo = _MOTIVI.get(v["reasons"].get(controllo, ""), v["reasons"].get(controllo, ""))
         righe.append(f"  ✗ #{v['index']}  {esito}: «{_breve(v['quote'], 70)}» · {v['speech']}" + (f" · {motivo}" if motivo else ""))
-    normalizzate = [v for v in q["items"] if v["outcome"] == "esatta_dopo_normalizzazione"]
-    for v in normalizzate:
-        regole = ", ".join(_NORMALIZZAZIONI_IT[x] for x in v["normalizations"])
-        righe.append(f"  ~ #{v['index']}  esatta dopo normalizzazione ({regole})")
+    per_regole: dict = {}
+    for v in q["items"]:
+        if v["outcome"] == "esatta_dopo_normalizzazione":
+            per_regole.setdefault(tuple(v["normalizations"]), []).append(v["index"])
+    for regole, indici in per_regole.items():
+        nomi = " e ".join(_NORMALIZZAZIONI_IT[x] for x in regole)
+        quante = "1 esatta" if len(indici) == 1 else f"{len(indici)} esatte"
+        righe.append(f"  ~ {quante} dopo normalizzazione ({nomi}): " + ", ".join(f"#{i}" for i in indici))
     for v in q["items"]:
         aperti = [c for c, s in v["checks"].items() if s == "not_verifiable"]
         for c in aperti:

@@ -124,10 +124,35 @@ nei paper. Stenografo, Fascicoli e Scranno non sono in questa tabella.
 | **Grafo in RDF** | Zenodo, [DOI 10.5281/zenodo.21560331](https://doi.org/10.5281/zenodo.21560331). Turtle, voti individuali in N-Triples a parte | CC BY-SA 4.0 |
 | **Grafo in tabelle** | Hugging Face, [emeierkeio/parliamentrag-leg19](https://huggingface.co/datasets/emeierkeio/parliamentrag-leg19), aggiornato con i dati | CC BY-SA 4.0 |
 | **Server MCP** | `https://mcp.parliamentrag.it/mcp`: interventi, sedute, votazioni voto per voto, emicicli | accesso libero |
+| **Verificatore** | `verifica/` e `schema/` in questo repository: controlla le citazioni di una risposta sui dati aperti | Apache 2.0 |
 | **Sistema di ricerca** | [Emeierkeio/parliamentrag-iswc](https://github.com/Emeierkeio/parliamentrag-iswc): pipeline dei dati, retrieval, autorevolezza, prompt. Archiviato su Zenodo, [DOI 10.5281/zenodo.23173703](https://doi.org/10.5281/zenodo.23173703) | Apache 2.0 |
 
 I termini propri del progetto e gli URI delle entità usano il namespace persistente
 `https://w3id.org/parliamentrag/`.
+
+<br>
+
+## Verificatore
+
+Un sistema che risponde su quello che si dice in Parlamento può scrivere la risposta nel formato
+[`schema/verifiable-answer.v1.json`](schema/verifiable-answer.v1.json): per ogni citazione chi parla (URI
+ufficiale), per quale gruppo o componente del Misto, in quale intervento (lo `speech_id` del dataset) e il link al
+resoconto. Il verificatore confronta ogni citazione con il testo dell'intervento nel dataset pubblico e scrive un
+rapporto ([`schema/report.v1.json`](schema/report.v1.json)). Non usa modelli linguistici e non chiama i nostri
+server: stessa risposta e stessi dati danno lo stesso rapporto.
+
+```bash
+pip install ./verifica
+parliamentrag-verifica risposta.json --dati ./leg19          # scarica il dataset in ./leg19 se manca
+parliamentrag-verifica risposta.json --dati ./leg19 --json rapporto.json
+```
+
+Una citazione è esatta se è un tratto continuo dell'intervento. Sono ammesse due sole differenze: gli spazi
+multipli e la maiuscola della prima lettera. Gli altri esiti dicono cosa non torna: `non_trovata`,
+`parole_di_terzi`, `oratore_errato`, `gruppo_errato`, `link_errato`, `intervento_inesistente`. Il piano completo,
+con il controllo dei gruppi e dell'autorevolezza che arrivano dopo, è in
+[`docs/piano-verifica.md`](docs/piano-verifica.md). I test (`pytest tests`, con `pip install "./verifica[test]"`)
+girano su un estratto del dataset in `tests/fixtures/dati-hf` e su venti risposte vere di Fascicoli.
 
 <br>
 
@@ -149,6 +174,9 @@ ParliamentRAG/
 ├── src/data/             fotografia notturna del grafo (site-data.json)
 ├── messages/             testi di privacy e termini (e della newsletter) in it ed en
 ├── scripts/              snapshot dei dati e schermate di avvio iOS
+├── verifica/             verificatore delle citazioni (Python, Apache 2.0)
+├── schema/               formato della risposta verificabile e del rapporto (Apache 2.0)
+├── tests/                test del verificatore, risposte vere e casi costruiti
 └── docs/assets/          grafiche di questo README (build_banner.py)
 ```
 

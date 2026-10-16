@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parliamentrag-verifica"
+dynamic = ["version"]
+description = "Controlla le citazioni di una risposta sul Parlamento italiano con i dati aperti di ParliamentRAG"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = ["pyarrow>=14"]
+
+[project.optional-dependencies]
+# I test stanno in tests/ alla radice del repository: pytest tests
+test = ["pytest", "jsonschema"]
+
+[project.urls]
+Homepage = "https://www.parliamentrag.it/verifica"
+Source = "https://github.com/Emeierkeio/ParliamentRAG"
+
+[project.scripts]
+parliamentrag-verifica = "verifica.cli:main"
+
+[tool.setuptools]
+# Il pacchetto è questa cartella: si installa con `pip install ./verifica`
+package-dir = { "verifica" = "." }
+packages = ["verifica"]
+
+[tool.setuptools.package-data]
+verifica = ["gruppi_ufficiali.json", "LICENSE"]
+
+[tool.setuptools.dynamic]
+version = { attr = "verifica.__version__" }
