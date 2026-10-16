@@ -215,7 +215,7 @@ const contenuto: Contenuto = {
           <details class="domanda"><summary>Can I trust the quotes?</summary><p class="domanda__r">The words, yes: every quote is compared with the record and links to the source. The rest of the answer is written by an AI model, which can leave something out or make mistakes. When it matters, check the record.</p></details>
           <details class="domanda"><summary>Is it free?</summary><p class="domanda__r">Yes. Stenografo, Fascicoli and Scranno work without an account and without paying. The data can be downloaded freely.</p></details>
           <details class="domanda"><summary>Can I use an answer in an article?</summary><p class="domanda__r">Yes. Cite the official source linked next to every sentence, not the generated text. If you write about the project, the Research page has the BibTeX reference.</p></details>
-          <details class="domanda"><summary>What do you do with my data?</summary><p class="domanda__r">This site needs no account and uses no analytics or advertising tools. If you subscribe to updates, your email stays on Brevo and we do not link it to the questions you ask. <a class="collegamento" href="/en/privacy">Read the privacy notice</a>.</p></details>
+          <details class="domanda"><summary>What do you do with my data?</summary><p class="domanda__r">This site needs no account and uses no advertising tools. We count visits with Plausible, without cookies or data that identify you. If you subscribe to updates, your email stays on Brevo and we do not link it to the questions you ask. <a class="collegamento" href="/en/privacy">Read the privacy notice</a>.</p></details>
         </div>
       </div>
     </div>

@@ -215,7 +215,7 @@ const contenuto: Contenuto = {
           <details class="domanda"><summary>Posso fidarmi delle citazioni?</summary><p class="domanda__r">Delle parole sì: ogni citazione è confrontata con il resoconto e ha il link alla fonte. Il resto della risposta lo scrive un modello di AI, che può omettere qualcosa o sbagliare. Per un uso che conta, controlla sul resoconto.</p></details>
           <details class="domanda"><summary>È gratis?</summary><p class="domanda__r">Sì. Stenografo, Fascicoli e Scranno si usano senza account e senza pagare. I dati si scaricano liberamente.</p></details>
           <details class="domanda"><summary>Posso usare una risposta in un articolo?</summary><p class="domanda__r">Sì. Cita la fonte ufficiale linkata accanto a ogni frase, non il testo generato. Se scrivi del progetto, nella pagina Ricerca trovi il riferimento in BibTeX.</p></details>
-          <details class="domanda"><summary>Cosa fate dei miei dati?</summary><p class="domanda__r">Su questo sito non serve un account e non usiamo strumenti di analisi o pubblicità. Se ti iscrivi agli aggiornamenti, l'email resta su Brevo e non la colleghiamo alle domande che fai. <a class="collegamento" href="/privacy">Leggi l'informativa</a>.</p></details>
+          <details class="domanda"><summary>Cosa fate dei miei dati?</summary><p class="domanda__r">Su questo sito non serve un account e non usiamo strumenti di pubblicità. Contiamo le visite con Plausible, senza cookie e senza dati che ti identificano. Se ti iscrivi agli aggiornamenti, l'email resta su Brevo e non la colleghiamo alle domande che fai. <a class="collegamento" href="/privacy">Leggi l'informativa</a>.</p></details>
         </div>
       </div>
     </div>

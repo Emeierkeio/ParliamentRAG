@@ -1032,7 +1032,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Privacy notice",
-    "updated": "Last updated: 15 October 2026",
+    "updated": "Last updated: 16 October 2026",
     "sections": [
       {
         "h": "Who processes the data",
@@ -1069,6 +1069,7 @@
           "Railway Corp. (United States): hosts the site and the service that runs the Verification. On servers in the European Union it also holds the database with the survey answers.",
           "Hetzner Online GmbH (Germany): on a server in Finland it hosts the database of parliamentary records, where the Verification looks up the quotes, and keeps the survey answers received until 5 October 2026.",
           "OpenAI Ireland Ltd. (Ireland): for the Verification page it turns the question into numbers (embeddings), or the first lines of the answer if there is no question, to compute authority on the topic. OpenAI may also process this data in the United States and keep it for up to 30 days to monitor abuse. It does not use it to train its models.",
+          "Plausible Insights OÜ (Estonia): counts visits to the site on servers in the European Union, without cookies (see “Visit statistics”).",
           "Sendinblue SAS, Brevo brand (France): manages the newsletter.",
           "We do not sell the data or hand it to third parties for advertising. We disclose it to authorities only when the law requires it."
         ]
@@ -1092,11 +1093,20 @@
       {
         "h": "Cookies and browser storage",
         "p": [
-          "ParliamentRAG uses only first-party technical tools: they make the site work and remember your choices. We use no analytics, advertising or profiling tools.",
+          "ParliamentRAG uses only first-party technical tools: they make the site work and remember your choices. We use no advertising or profiling tools. We count visits with Plausible, which uses no cookies (see “Visit statistics”).",
           "These tools do not need your consent, so you will not see a banner (Italian Data Protection Authority guidelines of 10 June 2021).",
           "Local storage stays in your browser until you clear it. In your browser we store one item only:",
           "famiglia-tema (local storage): the light or dark theme you choose.",
           "You can clear this data in your browser settings. The site keeps working."
+        ]
+      },
+      {
+        "h": "Visit statistics",
+        "id": "statistiche",
+        "p": [
+          "To count visits we use Plausible Analytics, by Plausible Insights OÜ (Estonia), with servers in the European Union. Plausible uses no cookies and does not store the IP address: none of the data collected identifies who visits the site.",
+          "We collect, in aggregate form, the page visited, the referring site, the country, the device type and the browser.",
+          "The legal basis is our legitimate interest in knowing how much and how the sites are used (Art. 6(1)(f) GDPR)."
         ]
       },
       {
@@ -1896,7 +1906,7 @@
       },
       {
         "q": "What do you do with my data?",
-        "a": "This site needs no account and uses no analytics or advertising tools. If you sign up for the newsletter, your email stays with Brevo and is never linked to the questions you ask. Each system has its own privacy notice."
+        "a": "This site needs no account and uses no advertising tools. We count visits with Plausible, without cookies or data that identify you. If you sign up for the newsletter, your email stays with Brevo and is never linked to the questions you ask. Each system has its own privacy notice."
       }
     ],
     "faqPrivacy": "Read the privacy notice"

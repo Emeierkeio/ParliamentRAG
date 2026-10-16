@@ -33,6 +33,18 @@ export type Opzioni = {
 const VERSIONE = (process.env.RAILWAY_GIT_COMMIT_SHA || Date.now().toString(36)).slice(0, 8);
 const NOINDEX = process.env.NOINDEX === "1";
 
+/*
+ * Plausible (plausible.io, server UE, senza cookie): conta le visite. Solo nel
+ * build di produzione e non nelle anteprime (NOINDEX), così dev e preview non
+ * finiscono nelle statistiche. Lo script personale del sito sta in PLAUSIBLE_ID.
+ */
+const PLAUSIBLE_ID = "pa-QnwS3G68x6WF1VBQyK5lg";
+const PLAUSIBLE =
+  process.env.NODE_ENV === "production" && !NOINDEX
+    ? `<script async src="https://plausible.io/js/${PLAUSIBLE_ID}.js"></script>\n` +
+      "<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()</script>"
+    : "";
+
 export function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 }
@@ -258,6 +270,7 @@ ${AVVIO}
 <link rel="stylesheet" href="${v("/sito/famiglia.css")}">
 ${o.css ? `<link rel="stylesheet" href="${v(`/sito/pagine/${o.css}.css`)}">` : ""}
 <script>${SUBITO}</script>
+${PLAUSIBLE}
 </head>
 <body>
 <a class="salta" href="#contenuto">${t.salta}</a>

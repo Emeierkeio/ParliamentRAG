@@ -1019,7 +1019,7 @@
   "Privacy": {
     "metaTitle": "Privacy",
     "title": "Informativa sulla privacy",
-    "updated": "Ultimo aggiornamento: 15 ottobre 2026",
+    "updated": "Ultimo aggiornamento: 16 ottobre 2026",
     "sections": [
       {
         "h": "Chi tratta i dati",
@@ -1056,6 +1056,7 @@
           "Railway Corp. (Stati Uniti): ospita il sito e il servizio che esegue la Verifica. Su server nell'Unione europea tiene anche il database con le risposte ai questionari.",
           "Hetzner Online GmbH (Germania): su un server in Finlandia ospita il database degli atti parlamentari, in cui la Verifica cerca le citazioni, e conserva le risposte ai questionari arrivate fino al 5 ottobre 2026.",
           "OpenAI Ireland Ltd. (Irlanda): per la pagina Verifica trasforma in numeri (embedding) la domanda, o le prime righe della risposta se la domanda manca, per calcolare l'autorevolezza sul tema. OpenAI può trattare questi dati anche negli Stati Uniti e conservarli fino a 30 giorni per controllare gli abusi. Non li usa per addestrare i modelli.",
+          "Plausible Insights OÜ (Estonia): conta le visite al sito con server nell'Unione europea, senza cookie (vedi «Statistiche di visita»).",
           "Sendinblue SAS, marchio Brevo (Francia): gestisce la newsletter.",
           "Non vendiamo i dati e non li cediamo a terzi per pubblicità. Li comunichiamo alle autorità solo se la legge lo impone."
         ]
@@ -1079,11 +1080,20 @@
       {
         "h": "Cookie e memoria del browser",
         "p": [
-          "ParliamentRAG usa solo strumenti tecnici di prima parte: servono a far funzionare il sito e a ricordare le tue scelte. Non usiamo strumenti di analisi, pubblicità o profilazione.",
+          "ParliamentRAG usa solo strumenti tecnici di prima parte: servono a far funzionare il sito e a ricordare le tue scelte. Non usiamo strumenti di pubblicità o profilazione. Contiamo le visite con Plausible, che non usa cookie (vedi «Statistiche di visita»).",
           "Per questi strumenti non serve il tuo consenso, quindi non trovi un banner (linee guida del Garante del 10 giugno 2021).",
           "La memoria locale del browser resta finché non la cancelli. Nel tuo browser salviamo una sola cosa:",
           "famiglia-tema (memoria locale): il tema chiaro o scuro che scegli.",
           "Puoi cancellare questi dati dalle impostazioni del browser. Il sito continua a funzionare."
+        ]
+      },
+      {
+        "h": "Statistiche di visita",
+        "id": "statistiche",
+        "p": [
+          "Per contare le visite usiamo Plausible Analytics, di Plausible Insights OÜ (Estonia), con server nell'Unione europea. Plausible non usa cookie e non salva l'indirizzo IP: nessuno dei dati raccolti identifica chi visita il sito.",
+          "Raccogliamo, in forma aggregata, la pagina visitata, il sito di provenienza, il paese, il tipo di dispositivo e il browser.",
+          "La base giuridica è il nostro legittimo interesse a sapere quanto e come vengono usati i siti (art. 6, par. 1, lett. f del GDPR)."
         ]
       },
       {
@@ -1883,7 +1893,7 @@
       },
       {
         "q": "Cosa fate dei miei dati?",
-        "a": "Su questo sito non serve un account e non usiamo strumenti di analisi o pubblicità. Se ti iscrivi alla newsletter, l'email resta su Brevo e non la colleghiamo alle domande che fai. Ogni sistema ha la sua informativa."
+        "a": "Su questo sito non serve un account e non usiamo strumenti di pubblicità. Contiamo le visite con Plausible, senza cookie e senza dati che ti identificano. Se ti iscrivi alla newsletter, l'email resta su Brevo e non la colleghiamo alle domande che fai. Ogni sistema ha la sua informativa."
       }
     ],
     "faqPrivacy": "Leggi l'informativa privacy"
