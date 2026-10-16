@@ -25,9 +25,9 @@
       "properties": {
         "format": { "const": 1 },
         "quote_normalizations": {
-          "description": "The only differences allowed between a quote and the record.",
+          "description": "The only differences allowed between a quote and the record: runs of whitespace count as one space, the first letter may change case, typographic apostrophes and single quotes (U+2019, U+2018, U+201B, U+02BC, U+2032, U+0060, U+00B4) count as U+0027.",
           "type": "array",
-          "items": { "enum": ["whitespace", "first_letter_case"] }
+          "items": { "enum": ["whitespace", "first_letter_case", "typographic_apostrophe"] }
         }
       }
     },
@@ -123,7 +123,7 @@
         "quote": { "type": "string" },
         "link": { "type": ["string", "null"] },
         "outcome": { "$ref": "#/$defs/outcome" },
-        "normalizations": { "type": "array", "items": { "enum": ["whitespace", "first_letter_case"] } },
+        "normalizations": { "type": "array", "items": { "enum": ["whitespace", "first_letter_case", "typographic_apostrophe"] } },
         "checks": {
           "type": "object",
           "required": ["speech", "text", "own_words", "speaker", "group", "link"],

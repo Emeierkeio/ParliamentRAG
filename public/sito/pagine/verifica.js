@@ -248,8 +248,8 @@
     link_errato: ["Link sbagliato", "non porta al resoconto di quella seduta"],
     intervento_inesistente: ["Intervento inesistente", "nei dati non c'è un intervento con questo ID"]
   };
-  var NORMALIZZAZIONI = EN ? { whitespace: "extra spaces", first_letter_case: "first letter case" }
-    : { whitespace: "spazi in più", first_letter_case: "maiuscola iniziale" };
+  var NORMALIZZAZIONI = EN ? { whitespace: "extra spaces", first_letter_case: "first letter case", typographic_apostrophe: "typographic apostrophes" }
+    : { whitespace: "spazi in più", first_letter_case: "maiuscola iniziale", typographic_apostrophe: "apostrofi tipografici" };
   var CONTROLLI = EN
     ? [["speech", "speech"], ["text", "text"], ["own_words", "own words"], ["speaker", "speaker"], ["group", "group"], ["link", "link"]]
     : [["speech", "intervento"], ["text", "testo"], ["own_words", "parole proprie"], ["speaker", "oratore"], ["group", "gruppo"], ["link", "link"]];

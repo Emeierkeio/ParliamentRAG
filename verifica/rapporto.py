@@ -114,7 +114,8 @@ _ESITI_IT = {
     "intervento_inesistente": "intervento inesistente",
 }
 
-_NORMALIZZAZIONI_IT = {"whitespace": "spazi", "first_letter_case": "maiuscola iniziale"}
+_NORMALIZZAZIONI_IT = {"whitespace": "spazi", "first_letter_case": "maiuscola iniziale",
+                       "typographic_apostrophe": "apostrofi tipografici"}
 _CONTROLLO_PER_ESITO = {"intervento_inesistente": "speech", "non_trovata": "text", "parole_di_terzi": "own_words",
                         "oratore_errato": "speaker", "gruppo_errato": "group", "link_errato": "link"}
 _CONTROLLI_IT = {"speech": "intervento", "text": "testo", "own_words": "parole proprie", "speaker": "oratore",
@@ -166,5 +167,5 @@ def markdown(r: dict) -> str:
         righe.append("")
         righe.append("Esiti       " + ", ".join(f"{_ESITI_IT[e]} {n}" for e, n in q["by_outcome"].items()))
     righe.append("")
-    righe.append("Regole      citazione letterale; ammessi solo spazi multipli e maiuscola della prima lettera")
+    righe.append("Regole      citazione letterale; ammessi solo spazi multipli, maiuscola della prima lettera e apostrofi tipografici")
     return "\n".join(righe) + "\n"

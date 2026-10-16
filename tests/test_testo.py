@@ -3,13 +3,15 @@ from verifica.identificatori import chiave_nome, controlla_link, da_chunk, link_
 from verifica.testo import parole_di_terzi, trova
 
 
-def test_solo_due_differenze_ammesse():
+def test_solo_tre_differenze_ammesse():
     testo = "Signor Presidente, noi siamo contrari all'idea di un salario minimo legale."
     assert trova("noi siamo contrari", testo).letterale
     assert trova("Noi siamo contrari", testo).regole == ("first_letter_case",)
     assert trova("noi  siamo\ncontrari", testo).regole == ("whitespace",)
     assert trova("Noi  siamo contrari", testo).regole == ("whitespace", "first_letter_case")
-    assert trova("noi siamo contrari all’idea", testo) is None  # apostrofo diverso
+    assert trova("noi siamo contrari all’idea", testo).regole == ("typographic_apostrophe",)
+    assert trova("Noi  siamo contrari all’idea", testo).regole == ("whitespace", "first_letter_case", "typographic_apostrophe")
+    assert trova("noi siamo contrari all“idea", testo) is None  # virgoletta doppia: no
     assert trova("noi siamo contrari all'idea di un salario minimo legale!", testo) is None
     assert trova("noi siamo … contrari", testo) is None
     assert trova("NOI SIAMO", testo) is None  # solo la prima lettera
@@ -59,3 +61,14 @@ def test_nomi_dei_gruppi():
 
 def test_chunk_e_intervento():
     assert da_chunk("leg19_sed15_tit00070.sub00020.int00020_chunk_4") == "leg19_sed15_tit00070.sub00020.int00020"
+
+
+def test_apostrofi_ammessi_in_entrambi_i_sensi():
+    from verifica.testo import APOSTROFI
+    assert set(APOSTROFI) == set("\u2019\u2018\u201b\u02bc\u2032\u0060\u00b4")
+    for c in APOSTROFI:
+        assert trova(f"c{c}è un problema", "Sapete, c'è un problema.").regole == ("typographic_apostrophe",)
+    assert trova("c'è un problema", "Sapete, c’è un problema.").regole == ("typographic_apostrophe",)
+    r = trova("c’è un problema", "Il collega Rossi ha detto che c'è un problema.")
+    from verifica.testo import parole_di_terzi
+    assert parole_di_terzi("c’è un problema", "Il collega Rossi ha detto che c'è un problema.", r.inizio)

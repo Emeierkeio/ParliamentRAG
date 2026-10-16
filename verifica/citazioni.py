@@ -4,7 +4,7 @@ Per ogni affermazione della risposta, nell'ordine:
 
 1. l'intervento esiste nella versione dei dati;
 2. la citazione compare nel testo dell'intervento (alla lettera, oppure con
-   le due sole differenze ammesse da testo.py);
+   le tre sole differenze ammesse da testo.py);
 3. la citazione appartiene all'oratore, non è una frase di altri che riporta;
 4. l'oratore è la persona indicata;
 5. il gruppo è quello della persona alla data dell'intervento (per il Misto

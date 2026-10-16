@@ -8,7 +8,8 @@
   "format": 1,
   "quote_normalizations": [
    "whitespace",
-   "first_letter_case"
+   "first_letter_case",
+   "typographic_apostrophe"
   ]
  },
  "data": {

@@ -109,15 +109,15 @@
    }
   },
   {
-   "name": "apostrofo tipografico al posto di quello del resoconto",
+   "name": "virgolette doppie cambiate",
    "outcome": "non_trovata",
    "reason": "not_in_speech_text",
    "claim": {
-    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
-    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
-    "speech": "leg19_sed209_tit00080.int00410",
-    "quote": "sapete, colleghi, c’è solo un problema",
-    "link": "https://www.camera.it/leg19/410?idSeduta=0209&tipo=stenografico#sed0209.stenografico.tit00080.int00410"
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "speech": "leg19_sed24_tit00090.sub00050.int00080",
+    "quote": "Scrissero: «universali». Il principio vale per tutti",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0024&tipo=stenografico#sed0024.stenografico.tit00090.sub00050.int00080"
    }
   },
   {
@@ -393,6 +393,17 @@
     "speech": "leg19_sed690_tit00090.int00090",
     "quote": "siccome secondo noi è una legge\nantidemocratica,  plebiscitaria",
     "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "apostrofo tipografico al posto di quello del resoconto",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "speech": "leg19_sed209_tit00080.int00410",
+    "quote": "sapete, colleghi, c’è solo un problema",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0209&tipo=stenografico#sed0209.stenografico.tit00080.int00410"
    }
   },
   {

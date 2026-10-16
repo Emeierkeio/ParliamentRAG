@@ -8,9 +8,9 @@
 >
 > 16 ottobre 2026: fasi 0–2 fatte. Formato e rapporto in `schema/`, libreria e riga di comando in `verifica/`
 > (citazioni), test in `tests/` su 20 risposte vere di Fascicoli e 30 casi costruiti. La pagina `/verifica`
-> accetta anche il JSON v1 (Fascicoli `POST /api/verify/v1`, stessa libreria sul grafo). Normalizzazione: solo
-> le due differenze della decisione 3, non apostrofi e virgolette tipografiche. Il dataset non dà l'URI dei
-> gruppi: lo ricava `verifica/gruppi_ufficiali.json` dagli endpoint SPARQL.
+> accetta anche il JSON v1 (Fascicoli `POST /api/verify/v1`, stessa libreria sul grafo). Normalizzazione: le
+> tre differenze della decisione 3. Il dataset non dà l'URI dei gruppi: lo ricava
+> `verifica/gruppi_ufficiali.json` dagli endpoint SPARQL.
 
 ## Obiettivo
 
@@ -101,8 +101,9 @@ Per ogni affermazione il verificatore controlla, nell'ordine:
 
 1. **L'intervento esiste** nella versione dei dati.
 2. **La citazione compare nel testo dell'intervento.** Prima alla lettera, poi dopo una normalizzazione
-   dichiarata e chiusa: spazi multipli, apostrofi e virgolette tipografiche, maiuscola della prima lettera.
-   Nient'altro: niente ellissi, niente parole saltate.
+   dichiarata e chiusa, con tre differenze ammesse: spazi multipli, maiuscola della prima lettera, apostrofi
+   e virgolette singole tipografiche (vedi la decisione 3). Nient'altro: niente virgolette doppie diverse,
+   niente ellissi, niente parole saltate.
 3. **La citazione appartiene all'oratore.** Il verificatore rifiuta le parole di terzi riportate
    nell'intervento: riusa le regole di `_is_nested_quote` e di `reported_speech.py`.
 4. **L'oratore è il deputato indicato** (`speaker_id` dell'intervento).
@@ -245,10 +246,12 @@ Prese il 6 ottobre 2026:
 
 1. **Licenza del verificatore:** aperta, Apache 2.0 come il codice di ricerca.
 2. **Nomi dei campi:** in inglese.
-3. **Le due differenze ammesse nelle citazioni**, congelate nella versione 1: gli spazi multipli contano
-   come uno e la prima lettera può cambiare maiuscola. Tutto il resto conta come modifica: punteggiatura
-   corretta, parole saltate, puntini di sospensione, traduzioni. Fascicoli applica già questa regola
-   (`services/citation/verbatim.py`).
+3. **Le tre differenze ammesse nelle citazioni**, congelate nella versione 1: gli spazi multipli contano
+   come uno, la prima lettera può cambiare maiuscola, apostrofi e virgolette singole tipografiche valgono
+   come l'apostrofo dritto `'` (U+2019 ’, U+2018 ‘, U+201B ‛, U+02BC ʼ, U+2032 ′, U+0060 `` ` ``, U+00B4 ´;
+   la terza aggiunta il 16 ottobre 2026). Tutto il resto conta come modifica: punteggiatura corretta,
+   virgolette doppie diverse, parole saltate, puntini di sospensione, traduzioni. La stessa regola vale in
+   Fascicoli (`services/citation/verbatim.py`) e nel verificatore (`verifica/testo.py`).
 4. **Embedding per l'autorevolezza:** li pubblichiamo (strada A), con versione, su Hugging Face e Zenodo.
    I termini d'uso di OpenAI assegnano all'utente la proprietà dell'output, embedding compresi. L'endpoint
    (strada B) resta come scorciatoia; il modello aperto (strada C) diventa un esperimento per la rivista.

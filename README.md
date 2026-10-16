@@ -147,8 +147,8 @@ parliamentrag-verifica risposta.json --dati ./leg19          # scarica il datase
 parliamentrag-verifica risposta.json --dati ./leg19 --json rapporto.json
 ```
 
-Una citazione è esatta se è un tratto continuo dell'intervento. Sono ammesse due sole differenze: gli spazi
-multipli e la maiuscola della prima lettera. Gli altri esiti dicono cosa non torna: `non_trovata`,
+Una citazione è esatta se è un tratto continuo dell'intervento. Sono ammesse tre sole differenze: gli spazi
+multipli, la maiuscola della prima lettera e gli apostrofi tipografici (’ ‘ ‛ ʼ ′ ` ´ valgono come '). Gli altri esiti dicono cosa non torna: `non_trovata`,
 `parole_di_terzi`, `oratore_errato`, `gruppo_errato`, `link_errato`, `intervento_inesistente`. Il piano completo,
 con il controllo dei gruppi e dell'autorevolezza che arrivano dopo, è in
 [`docs/piano-verifica.md`](docs/piano-verifica.md). I test (`pytest tests`, con `pip install "./verifica[test]"`)
