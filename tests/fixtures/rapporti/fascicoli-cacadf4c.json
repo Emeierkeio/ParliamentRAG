@@ -1,0 +1,422 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Qual è la posizione dei gruppi sulle adozioni da parte di coppie omosessuali?",
+  "data_version": "2026-10-03",
+  "claims": 9,
+  "sha256": "5c7be5f6f1ff6b7fdb2e132bb50c44938aa32450cbf0cdfa0fe37708af8614d3",
+  "generated_at": "2026-10-03T22:49:52.593406+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-03, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 9,
+  "exact": 9,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 8
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed90_tit00010.sub00080.int00040",
+    "speaker": "gov_piantedosi_matteo",
+    "group": null,
+    "government": true,
+    "quote": "in Italia, la formazione di atti di nascita recante l'indicazione dei genitori dello stesso sesso, nonché il riconoscimento della filiazione da parte di altro genitore avente lo stesso sesso della madre partoriente, non sono consentiti dalla normativa vigente e tale preclusione è ampiamente suffragata da consolidata giurisprudenza",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0090&tipo=stenografico#sed0090.stenografico.tit00010.sub00080.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "in_government_on_date"
+    },
+    "found": {
+     "date": "2023-04-19",
+     "chamber": "camera",
+     "speaker": "gov_piantedosi_matteo",
+     "speaker_name": "Matteo Piantedosi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": true
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed207_tit00030.sub00060.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "la corte d'appello di Catania ne ha revocato l'adottabilità, con un provvedimento, ad avviso di noi interpellanti, violativo di legge, mentre il bambino era in affidamento preadottivo",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0207&tipo=stenografico#sed0207.stenografico.tit00030.sub00060.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-12-01",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+     "speaker_name": "Simonetta Matone",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed147_tit00140.sub00020.int00160",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308852",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "non possiamo non vedere questo, non possiamo barattare la dignità umana come cifra della persona, per alcuna ragione e, condividendo queste riflessioni e queste finalità, Forza Italia esprime parere favorevole alla proposta di legge",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00160",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308852",
+     "speaker_name": "Annarita Patriarca",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed96_tit00010.sub00050.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "adottare non è dare un cognome o uno spazio, l'adozione è qualcosa di molto più complesso nella forma e nella sostanza: è ciò che permette a un bambino di realizzare il suo diritto di avere una famiglia adeguata ai suoi bisogni",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0096&tipo=stenografico#sed0096.stenografico.tit00010.sub00050.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-03",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+     "speaker_name": "Martina Semenzato",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed274_tit00030.sub00020.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308934",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "succede che molti minori non ricevono, ad esempio, il cambio del cognome, che non è solamente un atto formale, ma diventa un atto sostanziale per la loro vita; non assumono, quindi, lo status giuridico di figlio della coppia o del singolo che attende la sentenza di adozione",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0274&tipo=stenografico#sed0274.stenografico.tit00030.sub00020.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-04-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308934",
+     "speaker_name": "Ilenia Malavasi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed147_tit00090.sub00010.int00570",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "questo emendamento è il minimo sindacale rispetto alla tutela dei diritti dei bambini e delle bambine nati da maternità surrogata all'estero, ed è il minimo che possiamo fare per rispondere al monito - ripeto, al monito - della Corte costituzionale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00570",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+     "speaker_name": "Valentina D'Orso",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed147_tit00140.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "va estesa la platea dei beneficiari dell'adozione affrontando il tema delle coppie omosessuali, affrontando il tema delle adozioni per i single",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+     "speaker_name": "Matteo Richetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed551_tit00040.sub00060.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "l'affido familiare nasce come strumento di sostegno alla genitorialità, non come misura sostitutiva o punitiva nei confronti delle famiglie di origine",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0551&tipo=stenografico#sed0551.stenografico.tit00040.sub00060.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-21",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+     "speaker_name": "Roberto Giachetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed659_tit00030.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307360",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+    "government": false,
+    "quote": "un figlio può avere soltanto un papà e una mamma, non una cooperativa di persone che decidono di mettersi d'accordo, perché di questo passo, Presidente, noi potremmo avere anche 4, 5, 6 genitori: basta una sentenza ideologica e questo diventa diritto. Il bambino - lo ripeto - deve avere una mamma e un papà",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0659&tipo=stenografico#sed0659.stenografico.tit00030.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-05-13",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307360",
+     "speaker_name": "Rossano Sasso",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   }
+  ]
+ }
+}

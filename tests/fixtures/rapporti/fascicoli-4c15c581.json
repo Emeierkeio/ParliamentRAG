@@ -1,0 +1,299 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Qual è la posizione del Movimento 5 Stelle sul riarmo europeo?",
+  "data_version": "2026-10-03",
+  "claims": 6,
+  "sha256": "7d4587f3acca7054b2cfe9ab0c5d0cf3f4f4ab519bccfd97c9fe38572972570a",
+  "generated_at": "2026-10-03T22:58:08.100843+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-03, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 6,
+  "exact": 5,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 4,
+   "non_trovata": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed590_tit00030.sub00010.int00450",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307457",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "beh, lezioni su questo, anche no. Ma veniamo al capitolo delle armi, perché oggi i “pacifinti” 5 Stelle devo dire che scrivono pagine memorabili",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0590&tipo=stenografico#sed0590.stenografico.tit00030.sub00010.int00450",
+    "outcome": "non_trovata",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "fail",
+     "own_words": "not_checked",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "text": "not_in_speech_text",
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-12-30",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307457",
+     "speaker_name": "Paolo Trancassini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed527_tit00090.sub00020.int00260",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307151",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "presidente Mule', i 5 Stelle dicono “no” anche alla difesa, che, in realtà, è un “no” alla NATO, è un “no” alle nostre alleanze ed è un “sì” alla Cina",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0527&tipo=stenografico#sed0527.stenografico.tit00090.sub00020.int00260",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-09-10",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307151",
+     "speaker_name": "Simone Billi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed497_tit00100.sub00010.int00220",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "credo che il MoVimento 5 Stelle dovrebbe portare grande rispetto per un popolo, il popolo ucraino, che da tre anni è stato invaso e ha continue, continue stragi di civili in quel Paese grazie all'aggressione della Russia di Putin che vuole candidarsi anche al premio Nobel per la pace",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0497&tipo=stenografico#sed0497.stenografico.tit00100.sub00010.int00220",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-06-23",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+     "speaker_name": "Maurizio Enzo Lupi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed120_tit00020.sub00020.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307418",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "per noi un euro del PNRR non deve mai andare alle armi e alle munizioni: deve andare agli asili, alle infrastrutture e ai progetti di sviluppo per il Paese, ma mai alle armi",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0120&tipo=stenografico#sed0120.stenografico.tit00020.sub00020.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-06-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307418",
+     "speaker_name": "Filippo Scerra",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed481_tit00090.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "noi lo ribadiamo qui: siamo stati contro e siamo contro qualunque politica di riarmo",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0481&tipo=stenografico#sed0481.stenografico.tit00090.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-05-15",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed465_tit00050.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "questo “giochino”, anzi, chiedo scusa, questa modalità molto diversa che porta i miei colleghi del MoVimento 5 stelle in piazza... Perché è molto più popolare parlare di pacifismo che di piano di riarmo: vi do una notizia",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0465&tipo=stenografico#sed0465.stenografico.tit00050.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-04-10",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+     "speaker_name": "Matteo Richetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   }
+  ]
+ }
+}

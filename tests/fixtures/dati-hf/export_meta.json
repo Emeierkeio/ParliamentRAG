@@ -1,0 +1,16 @@
+{
+  "row_counts": {
+    "persons": 455,
+    "organizations": 96,
+    "memberships": 2195,
+    "sessions": 705,
+    "debates": 7080,
+    "speeches": 46844,
+    "votes": 17295,
+    "acts": 35773,
+    "act_subjects": 148387,
+    "speech_references": 31495,
+    "individual_votes": 6893559
+  },
+  "generated_at": "2026-09-03T10:41:11+00:00"
+}

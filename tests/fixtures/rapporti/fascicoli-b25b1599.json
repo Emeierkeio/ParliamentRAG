@@ -1,0 +1,426 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sulle adozioni per le coppie dello stesso sesso?",
+  "data_version": "2026-10-03",
+  "claims": 9,
+  "sha256": "76ff7ed7e0ea976bcb8a977c8df2faa582941d6866a06d706203caa1ef9975f3",
+  "generated_at": "2026-10-03T22:48:26.878072+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-03, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 9,
+  "exact": 8,
+  "by_outcome": {
+   "esatta": 2,
+   "esatta_dopo_normalizzazione": 6,
+   "gruppo_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed207_tit00030.sub00060.int00040",
+    "speaker": "gov_ferrante_tullio",
+    "group": null,
+    "government": true,
+    "quote": "l'adozione si pone, cioè, come strumento diretto a tutelare l'interesse dell'adottato ad avere una famiglia idonea e, solo in via indiretta, assolve la funzione di soddisfare quello degli adottanti ad avere un figlio, in funzione servente rispetto alla irrecuperabilità del rapporto con la famiglia di origine",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0207&tipo=stenografico#sed0207.stenografico.tit00030.sub00060.int00040",
+    "outcome": "gruppo_errato",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2023-12-01",
+     "chamber": "camera",
+     "speaker": "gov_ferrante_tullio",
+     "speaker_name": "Tullio Ferrante",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed199_tit00060.sub00010.int00320",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308794",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "noi, Presidente, invece, vediamo un Protocollo pragmatico e innovativo, un Protocollo che salva vite umane e che va nella direzione di regolare il tema migratorio",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0199&tipo=stenografico#sed0199.stenografico.tit00060.sub00010.int00320",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-11-21",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308794",
+     "speaker_name": "Giangiacomo Calovini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed96_tit00010.sub00050.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "serve una vera e propria cultura dell'adozione. Adottare non è dare un cognome o uno spazio, l'adozione è qualcosa di molto più complesso nella forma e nella sostanza: è ciò che permette a un bambino di realizzare il suo diritto di avere una famiglia adeguata ai suoi bisogni",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0096&tipo=stenografico#sed0096.stenografico.tit00010.sub00050.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-03",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308797",
+     "speaker_name": "Martina Semenzato",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed147_tit00140.sub00010.int00480",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308880",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "chiediamo di impegnare il Governo ad adottare misure normative urgenti che riconoscano lo status di figlio al minore nato da procreazione medicalmente assistita di tipo eterologo o da surrogazione di maternità, lasciando poi al legislatore il compito di individuare la disciplina tecnica",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00010.int00480",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308880",
+     "speaker_name": "Federico Gianassi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed147_tit00090.sub00010.int00570",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "questo emendamento è il minimo sindacale rispetto alla tutela dei diritti dei bambini e delle bambine nati da maternità surrogata all'estero, ed è il minimo che possiamo fare per rispondere al monito - ripeto, al monito - della Corte costituzionale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00570",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+     "speaker_name": "Valentina D'Orso",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed147_tit00140.sub00020.int00120",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307634",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "ecco, in questa proposta di legge, nulla c'è rispetto a questo rilevante aspetto, ci si concentra sull'ordine pubblico, sulle finalità general-preventive ma nulla si prevede rispetto ai diritti del minore",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00120",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307634",
+     "speaker_name": "Devis Dori",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed147_tit00140.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "va estesa la platea dei beneficiari dell'adozione affrontando il tema delle coppie omosessuali, affrontando il tema delle adozioni per i single",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00140.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p305708",
+     "speaker_name": "Matteo Richetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed551_tit00040.sub00060.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "come evidenziato anche da molte realtà del settore, servono meno controlli formali e più sostegno concreto alle famiglie affidatarie e a quelle di origine",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0551&tipo=stenografico#sed0551.stenografico.tit00040.sub00060.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-21",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+     "speaker_name": "Roberto Giachetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed147_tit00090.sub00010.int00430",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "government": false,
+    "quote": "in tutta la discussione, sia in Commissione che qui in Aula, la maggioranza e il Governo non hanno mai risposto alle domande accorate, ai rilievi che gli sono stati rivolti su come questa normativa impatterà sui bambini e sulle bambine, sui figli. Questa risposta non è mai arrivata",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0147&tipo=stenografico#sed0147.stenografico.tit00090.sub00010.int00430",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2023-07-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+     "speaker_name": "Riccardo Magi",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+        "name": "+Europa - Stati Uniti d'Europa"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   }
+  ]
+ }
+}

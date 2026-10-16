@@ -1,0 +1,387 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sul caso Giulio Regeni?",
+  "data_version": "2026-10-02",
+  "claims": 8,
+  "sha256": "f989ba35b20ef11506e11330131de7d30a0d8d2350fdab822db54944a96d1f9f",
+  "generated_at": "2026-10-02T23:24:29.767877+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-02, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 8,
+  "exact": 7,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 6,
+   "gruppo_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed43_tit00050.sub00020.int00040",
+    "speaker": "gov_tajani_antonio",
+    "group": null,
+    "government": true,
+    "quote": "siamo aperti al dialogo, perché fare altrimenti vorrebbe dire abbandonare Giulio Regeni e la nostra richiesta di verità. Non c'è giustizia senza verità",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0043&tipo=stenografico#sed0043.stenografico.tit00050.sub00020.int00040",
+    "outcome": "gruppo_errato",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2023-01-25",
+     "chamber": "camera",
+     "speaker": "gov_tajani_antonio",
+     "speaker_name": "Antonio Tajani",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed71_tit00060.sub00010.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308937",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "una Commissione che noi riteniamo possa contribuire in modo decisivo a far definitiva luce su queste due tragiche vicende che, purtroppo, non costituiscono casi isolati",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0071&tipo=stenografico#sed0071.stenografico.tit00060.sub00010.int00060",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-03-20",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308937",
+     "speaker_name": "Alice Buonguerrieri",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed71_tit00060.sub00010.int00120",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "sono interrogativi drammatici, enormi, ai quali abbiamo il dovere, prima di tutto morale e, poi, politico, di dare una risposta o, almeno, fare tutto il possibile per arrivare a darla",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0071&tipo=stenografico#sed0071.stenografico.tit00060.sub00010.int00120",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-03-20",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308836",
+     "speaker_name": "Simonetta Matone",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed387_tit00090.sub00010.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p302422",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "è vero, milioni di italiani vanno a visitare le Piramidi, vanno a fruire delle bellezze di quel Paese, ma in quel Paese un ragazzo di 27 anni, un nostro concittadino, è stato sequestrato, torturato e ucciso",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0387&tipo=stenografico#sed0387.stenografico.tit00090.sub00010.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-11-26",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p302422",
+     "speaker_name": "Giovanni Cuperlo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed607_tit00150.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307202",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "giulio è stato vittima di un regime, il regime egiziano, che non è un Paese sicuro, perché in Egitto spariscono quotidianamente persone. Un regime che ha occultato, depistato, ha calpestato la dignità di Giulio, la sua memoria e quella del nostro Paese",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico#sed0607.stenografico.tit00150.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-02-03",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307202",
+     "speaker_name": "Gilda Sportiello",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed9_tit00020.sub00010.int00640",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "oppure Regeni era un italiano di “serie B”, un italiano che non meritava la verità, un italiano che non merita la tutela del suo Paese? Questo è un punto centrale che noi continueremo a chiedere",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0009&tipo=stenografico#sed0009.stenografico.tit00020.sub00010.int00640",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2022-11-10",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed277_tit00140.int00120",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "sarebbe una perdita di credibilità del Parlamento e sarebbe tradire la nostra funzione che, nel caso specifico, è quella dell'accertamento della verità. Lo chiedono le famiglie, ma non solo: lo chiede il dovere che abbiamo, senza preconcetti e senza condizionamenti, di far luce definitiva sulla vicenda",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0277&tipo=stenografico#sed0277.stenografico.tit00140.int00120",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-04-10",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+     "speaker_name": "Antonio D'Alessio",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed266_tit00040.sub00010.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "government": false,
+    "quote": "il problema non è continuare a porre la questione, il problema è: avete posto, insieme alla Presidente della Commissione europea, il caso Regeni, e quindi la necessità che il processo che si svolge a Roma non avvenga in contumacia , all'interno del pacchetto degli accordi con l'Egitto, sì o no? E la risposta è: no",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0266&tipo=stenografico#sed0266.stenografico.tit00040.sub00010.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2024-03-20",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+     "speaker_name": "Riccardo Magi",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+        "name": "+Europa - Stati Uniti d'Europa"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   }
+  ]
+ }
+}

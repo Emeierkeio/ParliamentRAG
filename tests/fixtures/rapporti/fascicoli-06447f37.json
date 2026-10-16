@@ -1,0 +1,505 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sul documento programmatico di finanza pubblica?",
+  "data_version": "2026-10-07",
+  "claims": 11,
+  "sha256": "0f5d5cdbb1b78baf71c320557ca61504eaac1b40f5867ebf103fad7713cdc148",
+  "generated_at": "2026-10-07T14:43:05.353202+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-07, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 11,
+  "exact": 10,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 9,
+   "gruppo_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed402_tit00080.sub00210.int00020",
+    "speaker": "gov_freni_federico",
+    "group": null,
+    "government": true,
+    "quote": "sull'ordine del giorno n. 9/2112- bis -A/21 Ciaburro, il parere è favorevole, con la seguente riformulazione dell'impegno: “compatibilmente con i vincoli di finanza pubblica, ad adottare le opportune misure, anche di carattere economico, volte a sostenere i piccoli comuni”",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0402&tipo=stenografico#sed0402.stenografico.tit00080.sub00210.int00020",
+    "outcome": "gruppo_errato",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2024-12-20",
+     "chamber": "camera",
+     "speaker": "gov_freni_federico",
+     "speaker_name": "Federico Freni",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed545_tit00090.sub00040.int00220",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307496",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "allo stesso tempo, questo Governo non si è limitato alla mera contabilità di bilancio per far quadrare i conti, ma ha introdotto importanti misure in diversi settori e continuerà a farlo anche per la prossima legge di bilancio",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00220",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307496",
+     "speaker_name": "Roberto Pella",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed8_tit00050.sub00010.int00340",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307340",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "la verità è che sino a questo momento ha speso male , lo ripeto, ha speso male, ed è questo il coraggio che ha avuto il Ministro Giorgetti: rimettere in ordine i conti, per razionalizzare la spesa e passare finalmente a parlare di investimenti",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0008&tipo=stenografico#sed0008.stenografico.tit00050.sub00010.int00340",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2022-11-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307340",
+     "speaker_name": "Ylenja Lucaselli",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed284_tit00020.sub00010.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p302764",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "un chiaro segnale che gli investitori non hanno giudicato in maniera negativa la decisione del Governo, al contrario delle opposizioni, ma è il loro lavoro. Ad ogni modo, la ragione di questa scelta è presto detta: a breve saranno cambiate le norme sulla gestione dei conti pubblici",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0284&tipo=stenografico#sed0284.stenografico.tit00020.sub00010.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-04-24",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p302764",
+     "speaker_name": "Silvana Andreina Comaroli",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed284_tit00040.sub00010.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300369",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "questa prudenza e questa serietà le ritroviamo tutte in questo Documento di economia e finanza che ci accingiamo a votare",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0284&tipo=stenografico#sed0284.stenografico.tit00040.sub00010.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-04-24",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300369",
+     "speaker_name": "Francesco Saverio Romano",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed545_tit00090.sub00040.int00100",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308810",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "il Documento parla genericamente di una ricomposizione del prelievo fiscale riducendo l'incidenza del carico sui redditi da lavoro. Altrettanto fumoso è l'accenno a un ulteriore rifinanziamento del Fondo sanitario nazionale e a quello a preservare gli investimenti pubblici finanziati con risorse nazionali",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00100",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308810",
+     "speaker_name": "Marco Grimaldi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed545_tit00090.sub00040.int00120",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "questo Documento dà una stabilità al Paese? Sì",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00120",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+     "speaker_name": "Elena Bonetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed301_tit00040.sub00020.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "in particolar modo, siccome di qui in avanti ragioneremo sul concetto di spesa primaria netta e, quindi, di spesa depurata dalle misure anticicliche e dagli interessi, potremo lavorare sulle entrate discrezionali per aumentare eventualmente questo saldo",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0301&tipo=stenografico#sed0301.stenografico.tit00040.sub00020.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-05-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+     "speaker_name": "Mauro Del Barba",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed103_tit00080.sub00010.int00400",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307416",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "l'ordine del giorno chiede una cosa molto semplice, cioè di fornire nel più breve tempo possibile alle Camere una dettagliata analisi non solo dei costi previsti ma, soprattutto, delle risorse economiche e finanziarie, scritte in modo certo e definito nella contabilità pubblica, in modo da non incorrere in ambiguità previsionali",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0103&tipo=stenografico#sed0103.stenografico.tit00080.sub00010.int00400",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307416",
+     "speaker_name": "Luciano Cantone",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed545_tit00090.sub00040.int00320",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306412",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "il Documento cosiddetto programmatico di finanza pubblica, che oggi discutiamo, è un documento reticente. Reticente significa che non dice ciò che potrebbe e dovrebbe dire",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00320",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306412",
+     "speaker_name": "Maria Cecilia Guerra",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   },
+   {
+    "index": 11,
+    "speech": "leg19_sed545_tit00090.sub00040.int00420",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307328",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+    "government": false,
+    "quote": "questo è un Documento di finanza pubblica improntato al taglio della spesa corrente e alla prudenza dei conti. Io non posso votare contro un Documento improntato alla prudenza dei conti pubblici",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0545&tipo=stenografico#sed0545.stenografico.tit00090.sub00040.int00420",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307328",
+     "speaker_name": "Luigi Marattin",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "11"
+   }
+  ]
+ }
+}

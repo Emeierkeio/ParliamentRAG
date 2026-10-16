@@ -1,0 +1,463 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sull'assicurazione RC auto?",
+  "data_version": "2026-10-07",
+  "claims": 10,
+  "sha256": "3e1013ba876043adac8fee6825f7341f0ffce8657654306a458f4a0eeaa8d1b5",
+  "generated_at": "2026-10-07T12:55:24.839658+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-07, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 10,
+  "exact": 10,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 9
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed694_tit00020.sub00020.int00020",
+    "speaker": "gov_valentini_valentino",
+    "group": null,
+    "government": true,
+    "quote": "il Ministero sta valutando l'inserimento nel prossimo disegno di legge annuale per il mercato e la concorrenza di una delega per la riforma della disciplina della RC auto, con l'obiettivo di rivedere il sistema bonus-malus sulla base di metodologie di valutazione del rischio più evolute, valorizzare i comportamenti virtuosi, rafforzare il contrasto alle frodi e contribuire al contenimento del costo delle polizze",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0694&tipo=stenografico#sed0694.stenografico.tit00020.sub00020.int00020",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "in_government_on_date"
+    },
+    "found": {
+     "date": "2026-07-21",
+     "chamber": "camera",
+     "speaker": "gov_valentini_valentino",
+     "speaker_name": "Valentino Valentini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": true
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed560_tit00060.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p309161",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "noi di Forza Italia vorremmo ricordare che il settore RC auto è stato già oggetto più volte di interventi volti ad arginare il problema dell'aumento dei prezzi, tanto che, se confrontiamo l'aumento del premio medio rispetto a dieci anni fa, notiamo che è sceso di quasi il 18 per cento, mentre l'inflazione e il costo della vita sono certamente in aumento",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-11-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p309161",
+     "speaker_name": "Maria Paola Boscaini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed694_tit00020.sub00020.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308874",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "quello che noi oggi con questa interrogazione vogliamo chiedere, a gran voce, al Governo è di attenzionare questa situazione asimmetrica affinché i cittadini di Napoli, di Caserta e di altre zone d'Italia non vengano più penalizzati in maniera così pesante dal caro RC auto, che non ha motivo di esistere",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0694&tipo=stenografico#sed0694.stenografico.tit00020.sub00020.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-07-21",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308874",
+     "speaker_name": "Marco Cerreto",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed424_tit00020.sub00060.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307918",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "quindi, eliminiamo questa stortura burocratica, da una parte, e, dall'altra, controlliamo che non ci siano più delle pubblicità o delle possibilità, addirittura, di vendere dei prodotti assicurativi come fossero una lattina di Coca Cola o un biscotto per la colazione di prima mattina",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0424&tipo=stenografico#sed0424.stenografico.tit00020.sub00060.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-02-07",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307918",
+     "speaker_name": "Andrea De Bertoldi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed560_tit00060.sub00020.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "garantisce tutela, stabilità e sicurezza economica a cittadini e a imprese. È con questa visione e con questi obiettivi che la maggioranza si è mossa e continua a muoversi, attraverso misure concrete e coerenti, nella direzione di rendere il settore assicurativo più efficiente, più trasparente e più giusto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-11-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+     "speaker_name": "Alessandro Colucci",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed580_tit00100.sub00020.int00280",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308857",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "abbiamo fatto proposte di legge, ordini del giorno, emendamenti: parlare della RC-auto, delle grandi compagnie di assicurazione, della palese discriminazione e disuguaglianza che esiste nell'applicazione della RC-auto, appare un tabù, che noi non smetteremo mai di combattere",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0580&tipo=stenografico#sed0580.stenografico.tit00100.sub00020.int00280",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-12-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308857",
+     "speaker_name": "Francesco Emilio Borrelli",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed560_tit00060.sub00020.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306064",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "tutto questo, in termini di miliardi, nel 2024 ha cubato 4,2 miliardi. Quindi, su un totale di premi assicurativi che i cittadini italiani pagano di 14,5 miliardi, il 29 per cento, ossia 4,2 miliardi, sono costi che gli italiani pagano tramite le polizze che non vanno alle compagnie di assicurazione",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-11-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306064",
+     "speaker_name": "Giulio Cesare Sottanelli",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed560_tit00060.sub00020.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "serve dunque, signor Presidente, una maggiore trasparenza nei criteri di calcolo dei premi, perché solo rendendo chiari i parametri che determinano le tariffe sarà poi possibile non solo permettere ai cittadini di comprendere il costo della propria polizza, ma anche stimolare una concorrenza più reale tra le diverse compagnie",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0560&tipo=stenografico#sed0560.stenografico.tit00060.sub00020.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-11-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+     "speaker_name": "Roberto Giachetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed370_tit00090.sub00040.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307250",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "si direbbe al Ministro per la Protezione civile di non risolvere il tema dei risarcimenti dicendo ai cittadini e alle imprese: fatevi un'assicurazione, andate ad ingrassare le compagnie assicurative, non interveniamo noi come Stato ma fatevi un'assicurazione",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0370&tipo=stenografico#sed0370.stenografico.tit00090.sub00040.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-10-22",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307250",
+     "speaker_name": "Riccardo Ricciardi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed215_tit00020.sub00010.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308600",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "ribadiamo che non è una questione di qualità, perché la proposta emendativa intende rendere effettiva la libera concorrenza tra le imprese di autoriparazione e, qui, è in ballo l'interesse pubblico alla sicurezza del parco auto circolante",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0215&tipo=stenografico#sed0215.stenografico.tit00020.sub00010.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-12-18",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308600",
+     "speaker_name": "Andrea Casu",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   }
+  ]
+ }
+}

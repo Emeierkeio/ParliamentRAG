@@ -1,0 +1,509 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sulle risorse della legge di bilancio?",
+  "data_version": "2026-10-07",
+  "claims": 11,
+  "sha256": "dc6c9020e633b55578d01e1cf544778751e4906458672b4ee5ab9ba8b321d2ab",
+  "generated_at": "2026-10-07T14:24:02.870980+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-07, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 11,
+  "exact": 10,
+  "by_outcome": {
+   "esatta_dopo_normalizzazione": 10,
+   "gruppo_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed552_tit00130.sub00080.int00060",
+    "speaker": "gov_giorgetti_giancarlo",
+    "group": null,
+    "government": true,
+    "quote": "vengono ora previste articolate misure che consentono di reperire risorse per continuare il processo di risanamento dei conti pubblici, assicurando, al contempo, sostanziali interventi a favore della sanità, della famiglia e dei meno abbienti",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0552&tipo=stenografico#sed0552.stenografico.tit00130.sub00080.int00060",
+    "outcome": "gruppo_errato",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2025-10-22",
+     "chamber": "camera",
+     "speaker": "gov_giorgetti_giancarlo",
+     "speaker_name": "Giancarlo Giorgetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed219_tit00050.sub00010.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307496",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "c'è sempre, come ho detto prima, la possibilità di fare di più, ma oggi con le risorse a disposizione, con gli attuali limiti di utilizzo dell'indebitamento e, soprattutto, con la necessità di tenere in continuo ordine, visto che dobbiamo affrontare anche quelle sfide europee importanti, abbiamo predisposto misure importanti per il nostro Paese",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0219&tipo=stenografico#sed0219.stenografico.tit00050.sub00010.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-12-28",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307496",
+     "speaker_name": "Roberto Pella",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed26_tit00060.sub00010.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307457",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "l'altro aspetto da considerare - che poi è un po' una novità – è che non si tratta di una manovra finanziaria da ragionieri ma contiene finalmente una visione politica. Riguardo ai 35 miliardi che vengono impiegati si evidenziano sostanzialmente due priorità: quella della crescita, finalmente, e quella della giustizia sociale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0026&tipo=stenografico#sed0026.stenografico.tit00060.sub00010.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2022-12-22",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307457",
+     "speaker_name": "Paolo Trancassini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed176_tit00030.sub00010.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307630",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "le risorse saranno, altresì, finalizzate a potenziare gli investimenti pubblici, con priorità per quelli previsti nell'ambito del Piano nazionale di ripresa e resilienza e a finanziare le politiche invariate",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0176&tipo=stenografico#sed0176.stenografico.tit00030.sub00010.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-10-11",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307630",
+     "speaker_name": "Rebecca Frassini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed362_tit00090.sub00010.int00120",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "l'ultimo aspetto che Noi Moderati sta seguendo non solo in questo disegno di legge, ma anche per quanto riguarda la prossima legge di bilancio, è la conciliazione fra lavoro e famiglia",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0362&tipo=stenografico#sed0362.stenografico.tit00090.sub00010.int00120",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-10-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+     "speaker_name": "Alessandro Colucci",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed588_tit00040.sub00010.int00330",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308810",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "avete persino immaginato di utilizzare la manovra per approvare, senza discussione, una nuova versione dell'autonomia differenziata. Che altro sono, se non questo, i livelli essenziali delle prestazioni infilati nella legge di bilancio, ma senza risorse",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0588&tipo=stenografico#sed0588.stenografico.tit00040.sub00010.int00330",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-12-28",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308810",
+     "speaker_name": "Marco Grimaldi",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed401_tit00050.sub00010.int00100",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "non si può non rilevare, effettivamente, che questa manovra è coerente con quel Piano strutturale di bilancio che ha come elemento definitivo - lo diranno sicuramente i colleghi della maggioranza in discussione generale - l'obiettivo della tenuta dei conti pubblici e questo va ricordato essere sicuramente un dato positivo",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0401&tipo=stenografico#sed0401.stenografico.tit00050.sub00010.int00100",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-12-19",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+     "speaker_name": "Elena Bonetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed402_tit00140.sub00020.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "è una manovra che non aiuta la crescita, che ancora si regge sul PNRR, peraltro in pesante ritardo. È buona per il rispetto del Piano strutturale di bilancio, anche se, Ministro, le suono il primo campanello d'allarme dall'Ufficio parlamentare di bilancio: mancano informazioni sulla crescita della spesa netta",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0402&tipo=stenografico#sed0402.stenografico.tit00140.sub00020.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-12-20",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+     "speaker_name": "Mauro Del Barba",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed196_tit00090.sub00010.int00660",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308841",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "pertanto, bisogna urgentemente modificare questa maldestra manovra di bilancio, insufficiente e truffaldina, stanziando le necessarie risorse per la sanità e per il contrasto alla povertà",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0196&tipo=stenografico#sed0196.stenografico.tit00090.sub00010.int00660",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-11-15",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308841",
+     "speaker_name": "Alfonso Colucci",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed401_tit00050.sub00010.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306412",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "nonostante sia stata ampiamente riscritta, questa legge appare priva di elementi cruciali",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0401&tipo=stenografico#sed0401.stenografico.tit00050.sub00010.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-12-19",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306412",
+     "speaker_name": "Maria Cecilia Guerra",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   },
+   {
+    "index": 11,
+    "speech": "leg19_sed220_tit00110.sub00010.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307902",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4137",
+    "government": false,
+    "quote": "nel merito della legge di bilancio, una considerazione è d'obbligo. In relazione alle risorse disponibili con una manovra di bilancio che opera inevitabilmente, per la maggior parte delle misure, in deficit, le priorità indicate dal Governo sono condivisibili",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0220&tipo=stenografico#sed0220.stenografico.tit00110.sub00010.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2023-12-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307902",
+     "speaker_name": "Dieter Steger",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4137",
+        "name": "Minoranze Linguistiche"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "11"
+   }
+  ]
+ }
+}

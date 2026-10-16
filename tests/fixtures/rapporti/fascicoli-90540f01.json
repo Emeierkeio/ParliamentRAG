@@ -1,0 +1,510 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Di quali temi si è discusso di recente alla Camera?",
+  "data_version": "2026-10-05",
+  "claims": 11,
+  "sha256": "3fb8a52ce68980eca916de7eafcd7e03050a2adb3134ea59cee249cca01cc7c5",
+  "generated_at": "2026-10-05T10:40:11.872738+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-05, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 11,
+  "exact": 10,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 9,
+   "gruppo_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed641_tit00020.sub00010.int00020",
+    "speaker": "gov_meloni_giorgia",
+    "group": null,
+    "government": true,
+    "quote": "si continua a parlare di dimissioni imminenti del Governo, di rimpasti, di fase due, tre, quattro, di ripartenza; alchimie di Palazzo di un mondo caro ad altre maggioranze , ad altri partiti, ad altri Presidenti del Consiglio, un mondo distante anni luce da noi nel quale non intendiamo far ripiombare l'Italia",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0641&tipo=stenografico#sed0641.stenografico.tit00020.sub00010.int00020",
+    "outcome": "gruppo_errato",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2026-04-09",
+     "chamber": "camera",
+     "speaker": "gov_meloni_giorgia",
+     "speaker_name": "Giorgia Meloni",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed152_tit00130.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308814",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "dagli organi di stampa ci giungono notizie gravi e molto preoccupanti: ieri in provincia di Varese è comparsa una scritta con minacce di morte rivolte al Presidente del consiglio Giorgia Meloni",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0152&tipo=stenografico#sed0152.stenografico.tit00130.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-08-02",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308814",
+     "speaker_name": "Luigi Giovanni Maiorano",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed450_tit00020.sub00010.int00180",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306349",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "presidente Meloni, la cronaca di oggi riporta due fatti: ovviamente, il suo intervento ieri in Senato e l'audizione qui alla Camera, congiuntamente col Senato, del presidente Draghi",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0450&tipo=stenografico#sed0450.stenografico.tit00020.sub00010.int00180",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-03-19",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306349",
+     "speaker_name": "Stefano Candiani",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed627_tit00040.sub00010.int00460",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300299",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "l'altro tema che interessa davvero alle opposizioni è chiedere se il Governo condanna o no l'attacco americano, come se davvero fosse questo il problema",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0627&tipo=stenografico#sed0627.stenografico.tit00040.sub00010.int00460",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-03-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300299",
+     "speaker_name": "Andrea Giorgio Felice Maria Orsini",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed631_tit00050.int00580",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "non è questo il tema - perché avremmo argomentazioni, e parla la legge, parla la riforma -, il tema è se assoggettare la libera stampa alle parole che sono state pronunciate oggi e se sono parole che hanno necessità o meno di una spiegazione",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0631&tipo=stenografico#sed0631.stenografico.tit00050.int00580",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-03-11",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+     "speaker_name": "Ilaria Cavo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed531_tit00120.sub00010.int00810",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306176",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "qui si sta cercando - temo con un certo successo, poi, ovviamente, vedremo cosa accadrà con il referendum - di fare esattamente questa cosa: entrare in profondità, minando l'autogoverno della magistratura e, di conseguenza, minando l'autorevolezza della magistratura, anche di fronte ai cittadini",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0531&tipo=stenografico#sed0531.stenografico.tit00120.sub00010.int00810",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-09-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306176",
+     "speaker_name": "Matteo Mauri",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed475_tit00060.int00100",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "mi chiedo se il Ministro Nordio si degnerà di chiedere scusa ai cittadini e al Paese e si degnerà di ammettere che la sua riforma è tutta sbagliata e che va cancellata",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0475&tipo=stenografico#sed0475.stenografico.tit00060.int00100",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-05-06",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307388",
+     "speaker_name": "Valentina D'Orso",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed675_tit00020.sub00010.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "si cercano piccoli aggiustamenti rispetto alle vicende che hanno portato, anche nel precedente decreto, a discutere sulla questione del pagamento dell'avvocato",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0675&tipo=stenografico#sed0675.stenografico.tit00020.sub00010.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-06-15",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed405_tit00050.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308802",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "quello che è, sì, offensivo - è forse l'elemento più inquietante di questa vicenda - è apprendere le cose prima dalle agenzie di stampa statunitensi e poi dai post su X di Elon Musk",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0405&tipo=stenografico#sed0405.stenografico.tit00050.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-01-08",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308802",
+     "speaker_name": "Valentina Grippo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed511_tit00070.sub00050.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "qualche settimana fa, per esempio, ci siamo occupati del bombardamento da parte di operatori telefonici nei confronti di tutti noi, sui cellulari e via dicendo. Non si è voluto approvare un emendamento - non mi ricordo nel corso di quale provvedimento -, perché si rimanda sempre a qualcosa di più specifico",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0511&tipo=stenografico#sed0511.stenografico.tit00070.sub00050.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-07-15",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p300480",
+     "speaker_name": "Roberto Giachetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   },
+   {
+    "index": 11,
+    "speech": "leg19_sed310_tit00010.sub00090.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305733",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "government": false,
+    "quote": "dopodiché, si era anche detto che, comunque, a settembre, per esempio, il secondo altoforno di Taranto sarebbe stato messo in funzione, e questo non è banale anche nel contesto complessivo della produzione di Genova e di Novi Ligure",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0310&tipo=stenografico#sed0310.stenografico.tit00010.sub00090.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2024-06-19",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p305733",
+     "speaker_name": "Luca Pastorino",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+        "name": "+Europa - Stati Uniti d'Europa"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "11"
+   }
+  ]
+ }
+}

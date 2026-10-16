@@ -1,0 +1,512 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Cosa hanno detto i gruppi sulla riforma delle pensioni?",
+  "data_version": "2026-10-07",
+  "claims": 11,
+  "sha256": "19d5d0d85d8b00d102f26e3198399928bf0444a2c79909cc27d9e5796f9e4b8f",
+  "generated_at": "2026-10-07T14:46:08.546794+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-07, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 11,
+  "exact": 10,
+  "by_outcome": {
+   "esatta_dopo_normalizzazione": 10,
+   "oratore_errato": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed128_tit00090.sub00020.int00060",
+    "speaker": "gov_bellucci_maria_teresa",
+    "group": null,
+    "government": true,
+    "quote": "sull'ordine del giorno n. 9/1238/71 Morfino il parere è favorevole con riformulazione dell'impegno: “a valutare l'opportunità di rivedere, compatibilmente con i vincoli di finanza pubblica, la disciplina dell'uscita pensionistica della cosiddetta opzione donna",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0128&tipo=stenografico#sed0128.stenografico.tit00090.sub00020.int00060",
+    "outcome": "oratore_errato",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "fail",
+     "group": "fail",
+     "link": "ok"
+    },
+    "reasons": {
+     "speaker": "different_speaker",
+     "group": "not_in_government_on_date"
+    },
+    "found": {
+     "date": "2023-06-28",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307426",
+     "speaker_name": "Maria Teresa Bellucci",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed604_tit00060.sub00020.int00160",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307456",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "la Costituzione lega il diritto alla previdenza alla dignità della persona e alla funzione sociale del lavoro. È per questo che, ogni volta che questo Parlamento discute di pensioni, non sta discutendo soltanto di requisiti o di finestre di uscita, ma della serietà dello Stato e della sua capacità di essere giusto oggi senza essere ingiusto domani",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00160",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-01-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307456",
+     "speaker_name": "Alessandro Battilocchio",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed100_tit00050.sub00020.int00240",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308796",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "nel prosieguo dell'azione di Governo, fermo restando il reperimento delle risorse economiche e nel rispetto dei vincoli di finanza pubblica, chiediamo un impegno anche per individuare necessarie forme di flessibilità di accesso per le donne al trattamento pensionistico e/o di anticipo pensionistico",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0100&tipo=stenografico#sed0100.stenografico.tit00050.sub00020.int00240",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308796",
+     "speaker_name": "Marcello Coppo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed100_tit00050.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307508",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "noi abbiamo anche provato a modificarla, e auspico che una riforma organica del sistema previdenziale vada fatta, perché questo è un Governo finalmente politico e ha l'ambizione di rimanere in carica 5 anni , che ci porteranno anche al superamento delle storture della legge Fornero",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0100&tipo=stenografico#sed0100.stenografico.tit00050.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-09",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307508",
+     "speaker_name": "Andrea Giaccone",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed604_tit00060.sub00020.int00080",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "garantire pensioni adeguate significa anche garantire la sostenibilità economica del sistema, perché solo un sistema sostenibile può assicurare equità nel tempo",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00080",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-01-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307603",
+     "speaker_name": "Alessandro Colucci",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed133_tit00150.sub00010.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308869",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "un salario minimo e pensioni minime che diano una vita dignitosa a queste famiglie è il minimo da fare per questo Governo e per questo Parlamento",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0133&tipo=stenografico#sed0133.stenografico.tit00150.sub00010.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-07-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308869",
+     "speaker_name": "Francesco Mari",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed337_tit00080.sub00070.int00130",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "sempre INPS e Istat denunciano che, se, come è vero, nel 2050 ci aspettiamo una popolazione il cui 35 per cento sia superiore ai 65 anni di età, noi dobbiamo rivedere totalmente l'approccio del welfare del nostro Paese. A questo affianchiamo il fatto che INPS dice che, entro 10 anni, ha già una previsione di un buco finanziario di 20 miliardi",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0337&tipo=stenografico#sed0337.stenografico.tit00080.sub00070.int00130",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-07-31",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308244",
+     "speaker_name": "Elena Bonetti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed604_tit00060.sub00020.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "signori del Governo, onorevoli colleghi, le pensioni sono un tema serio, sono uno di quei temi fondamentali che misurano il patto sociale Stato-cittadino. È talmente serio che deve richiedere nel nostro dibattito due piani: il piano dei principi e il piano dei conti",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-01-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306382",
+     "speaker_name": "Mauro Del Barba",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed604_tit00060.sub00020.int00140",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308844",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "chiediamo di rendere strutturali strumenti come APE sociale e di ripristinare una vera Opzione donna che, prima, avete ristretto e, poi, smontato del tutto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00140",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2026-01-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308844",
+     "speaker_name": "Dario Carotenuto",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed119_tit00030.sub00010.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p302069",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "di fronte a questo tema, le proposte avanzate all'interno della mozione di maggioranza, che ho letto e che ovviamente rispetto, mi sembrano molto, molto deboli. Capisco che non ci si possa muovere in maniera troppo disallineata rispetto all'attuale Governo ma si fa fatica a immaginare un innalzamento a 600 euro solo per gli ultra settantacinquenni",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0119&tipo=stenografico#sed0119.stenografico.tit00030.sub00010.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-06-15",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p302069",
+     "speaker_name": "Arturo Scotto",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   },
+   {
+    "index": 11,
+    "speech": "leg19_sed604_tit00060.sub00020.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p301577",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "government": false,
+    "quote": "l'Italia è il Paese che spende di più per pensioni nell'OCSE, a parte la Grecia, ed è il Paese con la demografia peggiore dal punto di vista dell'evoluzione della spesa previdenziale. Sempre secondo dati dell'OCSE del 2024, siamo il Paese con più popolazione sopra i 65 anni e con i tassi della dinamica demografica peggiori",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2026-01-29",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p301577",
+     "speaker_name": "Benedetto Della Vedova",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+        "name": "+Europa - Stati Uniti d'Europa"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "11"
+   }
+  ]
+ }
+}

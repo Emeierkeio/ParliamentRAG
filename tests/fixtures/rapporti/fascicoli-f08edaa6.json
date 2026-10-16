@@ -1,0 +1,505 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Qual è la posizione dei gruppi sull'auto elettrica?",
+  "data_version": "2026-10-15",
+  "claims": 11,
+  "sha256": "e9a1eddc67098d2191080409b88f69ec95ee135b48f0c89050a4dfdf5ec04ed6",
+  "generated_at": "2026-10-15T00:28:51.616168+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-15, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 11,
+  "exact": 11,
+  "by_outcome": {
+   "esatta": 3,
+   "esatta_dopo_normalizzazione": 8
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed83_tit00010.sub00030.int00040",
+    "speaker": "gov_urso_adolfo",
+    "group": null,
+    "government": true,
+    "quote": "noi dobbiamo incentivare chi ha bisogno dell'aiuto dello Stato per svecchiare la propria autovettura, per rottamare le autovetture Euro 0, Euro 1, Euro 2 ed Euro 3, ossia coloro che non se lo possono permettere, non chi invece ha le facoltà per permettersi di comprare, se vuole, anche - certamente lo auspichiamo - un'auto elettrica",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0083&tipo=stenografico#sed0083.stenografico.tit00010.sub00030.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "in_government_on_date"
+    },
+    "found": {
+     "date": "2023-04-05",
+     "chamber": "camera",
+     "speaker": "gov_urso_adolfo",
+     "speaker_name": "Adolfo Urso",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": true
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed426_tit00110.sub00020.int00100",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "government": false,
+    "quote": "è piuttosto controverso trovare nella stessa mozione il tema della crisi dell' automotive e, al contempo, la richiesta di una spinta maggiore verso la transizione all'elettrico. Mi riferisco, per esempio, alla mozione del MoVimento 5 Stelle: probabilmente, quella dell'elettrico, una delle cause maggiori della stessa crisi del settore",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0426&tipo=stenografico#sed0426.stenografico.tit00110.sub00020.int00100",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2025-02-11",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308785",
+     "speaker_name": "Ilaria Cavo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+        "name": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   },
+   {
+    "index": 3,
+    "speech": "leg19_sed366_tit00120.sub00020.int00100",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306214",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+    "government": false,
+    "quote": "quando abbiamo tecnologie - fatemi dire - alla pari dell'energia elettrica, che possono concorrere a questa decarbonizzazione, le escludiamo per legge dalla possibilità di competere, e ne stiamo pagando le conseguenze",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00100",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-10-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306214",
+     "speaker_name": "Luca Squeri",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4134",
+        "name": "FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "3"
+   },
+   {
+    "index": 4,
+    "speech": "leg19_sed237_tit00090.sub00020.int00330",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308823",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "government": false,
+    "quote": "ciò implica soluzioni in linea con il principio di neutralità tecnologica, sia per i motori che per il carburante, e l'adeguata estensione dei periodi transitori per applicare la nuova normativa",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0237&tipo=stenografico#sed0237.stenografico.tit00090.sub00020.int00330",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-01-31",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308823",
+     "speaker_name": "Antonio Giordano",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+        "name": "FRATELLI D'ITALIA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "4"
+   },
+   {
+    "index": 5,
+    "speech": "leg19_sed53_tit00030.sub00010.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308890",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+    "government": false,
+    "quote": "nel futuro disegnato dalla vostra affascinante ideologia green , quale mobilità, quale libertà di movimento spetterà a chi non avrà la possibilità di permettersi un'auto elettrica nel futuro",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0053&tipo=stenografico#sed0053.stenografico.tit00030.sub00010.int00040",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-02-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308890",
+     "speaker_name": "Andrea Barabotti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+        "name": "LEGA - SALVINI PREMIER"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "5"
+   },
+   {
+    "index": 6,
+    "speech": "leg19_sed19_tit00040.sub00010.int01440",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+    "government": false,
+    "quote": "un'impresa, un'industria che non punta sull'innovazione non è in grado di essere competitiva a livello europeo e a livello mondiale, tant'è vero che una parte consistente delle tecnologie, legate alla mobilità elettrica, viene importata nel nostro Paese",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0019&tipo=stenografico#sed0019.stenografico.tit00040.sub00010.int01440",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2022-12-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4154",
+        "name": "ALLEANZA VERDI E SINISTRA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "6"
+   },
+   {
+    "index": 7,
+    "speech": "leg19_sed19_tit00040.sub00010.int01420",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307478",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "ci chiediamo se ci sarà la forza, la volontà, anche l'intenzione di raggiungere questo obiettivo, ma questo significherà che le colonnine di ricarica dovranno essere presenti nelle piazze più belle d'Italia e questo, in realtà, già c'è, già succede, ma anche nei piccoli borghi, anche nelle aree più decentrate",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0019&tipo=stenografico#sed0019.stenografico.tit00040.sub00010.int01420",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2022-12-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p307478",
+     "speaker_name": "Daniela Ruffino",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "7"
+   },
+   {
+    "index": 8,
+    "speech": "leg19_sed366_tit00120.sub00020.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "government": false,
+    "quote": "la spiegazione è semplice, lo abbiamo detto e lo ribadisco: il costo, ancora eccessivamente elevato, soprattutto in confronto alla concorrenza cinese",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0366&tipo=stenografico#sed0366.stenografico.tit00120.sub00020.int00020",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2024-10-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+     "speaker_name": "Davide Faraone",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+        "name": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "8"
+   },
+   {
+    "index": 9,
+    "speech": "leg19_sed184_tit00040.sub00040.int00280",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308824",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "se voi non avete il coraggio di preparare questo Paese a far sì che quest'onda non venga subita ma cavalcata, è inutile che andiate nei salotti televisivi a dire che è colpa dell'auto elettrica se non ci sono i posti di lavoro",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0184&tipo=stenografico#sed0184.stenografico.tit00040.sub00040.int00280",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-10-25",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308824",
+     "speaker_name": "Chiara Appendino",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "9"
+   },
+   {
+    "index": 10,
+    "speech": "leg19_sed83_tit00010.sub00030.int00060",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p302746",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "government": false,
+    "quote": "il quesito era molto chiaro, non altrettanto le idee del Ministro, mentre è un fatto la scelta dell'Unione europea, che ha adottato definitivamente il regolamento, lo scorso 28 marzo, ed è un fatto anche la scelta dei più grandi produttori di auto per l'auto elettrica, che è una realtà tecnologica, industriale e di mercato",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0083&tipo=stenografico#sed0083.stenografico.tit00010.sub00030.int00060",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-04-05",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p302746",
+     "speaker_name": "Vinicio Giuseppe Guido Peluffo",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+        "name": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "10"
+   },
+   {
+    "index": 11,
+    "speech": "leg19_sed684_tit00040.sub00020.int00020",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308928",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271",
+    "government": false,
+    "quote": "oggi, cercare di mettere una pezza a quello che si è votato in Europa diventa per noi insostenibile",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0684&tipo=stenografico#sed0684.stenografico.tit00040.sub00020.int00020",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "misto_component_on_date"
+    },
+    "found": {
+     "date": "2026-07-01",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308928",
+     "speaker_name": "Davide Bergamini",
+     "on_date": {
+      "components": [
+       {
+        "uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271",
+        "name": "Futuro Nazionale Vannacci - Free"
+       }
+      ],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+        "name": "MISTO"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "11"
+   }
+  ]
+ }
+}

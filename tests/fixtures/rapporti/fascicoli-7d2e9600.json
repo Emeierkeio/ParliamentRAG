@@ -1,0 +1,135 @@
+{
+ "schema": "https://w3id.org/parliamentrag/verify/report/v1",
+ "verifier": {
+  "name": "parliamentrag-verifica",
+  "version": "0.1.0"
+ },
+ "rules": {
+  "format": 1,
+  "quote_normalizations": [
+   "whitespace",
+   "first_letter_case"
+  ]
+ },
+ "data": {
+  "source": "huggingface",
+  "dataset": "emeierkeio/parliamentrag-leg19",
+  "version": "2026-09-03",
+  "revision": "fa6566217075741f4100eb1994b90db885c09904",
+  "generated_at": "2026-09-03T10:41:11+00:00",
+  "chambers": [
+   "camera"
+  ],
+  "through": {
+   "camera": "2026-08-06"
+  }
+ },
+ "answer": {
+  "system": {
+   "name": "Fascicoli",
+   "url": "https://www.fascicoli.it"
+  },
+  "question": "Il caso Garlasco è stato discusso alla Camera?",
+  "data_version": "2026-10-03",
+  "claims": 2,
+  "sha256": "7533849861ac81f5a6544d6a137da3cfb379ea3fab721ad0ba88c636f8f731fc",
+  "generated_at": "2026-10-03T23:06:14.396141+02:00"
+ },
+ "warnings": [
+  {
+   "code": "data_version_differs",
+   "detail": "la risposta usa i dati 2026-10-03, la verifica i dati 2026-09-03"
+  }
+ ],
+ "quotes": {
+  "total": 2,
+  "exact": 2,
+  "by_outcome": {
+   "esatta": 1,
+   "esatta_dopo_normalizzazione": 1
+  },
+  "not_verifiable": {},
+  "items": [
+   {
+    "index": 1,
+    "speech": "leg19_sed103_tit00100.sub00010.int00180",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308846",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "government": false,
+    "quote": "una valutazione d'impatto ambientale è necessaria, perché, a distanza di oltre 12 anni, è evidente che parliamo di un progetto di un'era preistorica",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0103&tipo=stenografico#sed0103.stenografico.tit00100.sub00010.int00180",
+    "outcome": "esatta",
+    "normalizations": [],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-16",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308846",
+     "speaker_name": "Carmela Auriemma",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+        "name": "MOVIMENTO 5 STELLE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "1"
+   },
+   {
+    "index": 2,
+    "speech": "leg19_sed111_tit00170.sub00020.int00040",
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "government": false,
+    "quote": "le dichiarazioni dell'onorevole Sgarbi non possono vantare nessun collegamento con l'attività parlamentare e, quindi, non possono essere coperte assolutamente dalla prerogativa dell'insindacabilità",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0111&tipo=stenografico#sed0111.stenografico.tit00170.sub00020.int00040",
+    "outcome": "esatta_dopo_normalizzazione",
+    "normalizations": [
+     "first_letter_case"
+    ],
+    "checks": {
+     "speech": "ok",
+     "text": "ok",
+     "own_words": "ok",
+     "speaker": "ok",
+     "group": "ok",
+     "link": "ok"
+    },
+    "reasons": {
+     "group": "group_on_date"
+    },
+    "found": {
+     "date": "2023-05-30",
+     "chamber": "camera",
+     "speaker": "http://dati.camera.it/ocd/persona.rdf/p308875",
+     "speaker_name": "Antonio D'Alessio",
+     "on_date": {
+      "components": [],
+      "groups": [
+       {
+        "uri": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+        "name": "AZIONE-POPOLARI EUROPEISTI RIFORMATORI-RENEW EUROPE"
+       }
+      ],
+      "government": false
+     }
+    },
+    "id": "2"
+   }
+  ]
+ }
+}

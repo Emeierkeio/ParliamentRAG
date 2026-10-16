@@ -1,0 +1,465 @@
+{
+ "cases": [
+  {
+   "name": "intervento che non c'è in una seduta presente",
+   "outcome": "intervento_inesistente",
+   "reason": "speech_not_in_sitting",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int99990",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico"
+   }
+  },
+  {
+   "name": "seduta che non c'è nei dati",
+   "outcome": "intervento_inesistente",
+   "reason": "sitting_not_in_data",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed9999_tit00010.int00010",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=9999&tipo=stenografico"
+   }
+  },
+  {
+   "name": "intervento del Senato su dati della sola Camera",
+   "outcome": "intervento_inesistente",
+   "reason": "sitting_not_in_data",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "sen_leg19_sed100_p1103_deb1_0",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1387468&idoggetto=0"
+   }
+  },
+  {
+   "name": "ID di un chunk al posto dell'intervento",
+   "outcome": "intervento_inesistente",
+   "reason": "speech_not_in_sitting",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180_chunk_4",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "intervento di un'altra legislatura",
+   "outcome": "intervento_inesistente",
+   "reason": "sitting_not_in_data",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg18_sed100_tit00010.int00010",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg18/410?idSeduta=0100&tipo=stenografico"
+   }
+  },
+  {
+   "name": "una parola cambiata",
+   "outcome": "non_trovata",
+   "reason": "not_in_speech_text",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata depositata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "punteggiatura cambiata",
+   "outcome": "non_trovata",
+   "reason": "not_in_speech_text",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge antidemocratica; plebiscitaria",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "parole saltate con i puntini",
+   "outcome": "non_trovata",
+   "reason": "not_in_speech_text",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge antidemocratica … che toglie ogni forza alla libertà",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "citazione tradotta",
+   "outcome": "non_trovata",
+   "reason": "not_in_speech_text",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "the first resolution on this issue was presented by me",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "apostrofo tipografico al posto di quello del resoconto",
+   "outcome": "non_trovata",
+   "reason": "not_in_speech_text",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p300447",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4152",
+    "speech": "leg19_sed209_tit00080.int00410",
+    "quote": "sapete, colleghi, c’è solo un problema",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0209&tipo=stenografico#sed0209.stenografico.tit00080.int00410"
+   }
+  },
+  {
+   "name": "impegno citato tra «» dall'oratore",
+   "outcome": "parole_di_terzi",
+   "reason": "inside_quotation_marks",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306352",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "speech": "leg19_sed418_tit00080.sub00020.int00040",
+    "quote": "impegna il Governo ad adoperarsi per la convocazione di una conferenza sulla sicurezza in Europa",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0418&tipo=stenografico#sed0418.stenografico.tit00080.sub00020.int00040"
+   }
+  },
+  {
+   "name": "citazione che si apre con le virgolette del resoconto",
+   "outcome": "parole_di_terzi",
+   "reason": "opens_with_quotation_marks",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306352",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131",
+    "speech": "leg19_sed418_tit00080.sub00020.int00040",
+    "quote": "«impegna il Governo ad adoperarsi per la convocazione di una conferenza",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0418&tipo=stenografico#sed0418.stenografico.tit00080.sub00020.int00040"
+   }
+  },
+  {
+   "name": "parole di una collega riportate dall'oratore",
+   "outcome": "parole_di_terzi",
+   "reason": "attributed_to_someone_else",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307790",
+    "speech": "leg19_sed440_tit00060.sub00220.int00060",
+    "quote": "siamo al ventitreesimo mese di calo della produzione industriale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0440&tipo=stenografico#sed0440.stenografico.tit00060.sub00220.int00060",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131"
+   }
+  },
+  {
+   "name": "frase tra “” nel resoconto",
+   "outcome": "parole_di_terzi",
+   "reason": "inside_quotation_marks",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308840",
+    "speech": "leg19_sed489_tit00070.sub00010.int00060",
+    "quote": "Sono quello che il mio Paese definisce un'eccellenza, va bene così",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0489&tipo=stenografico#sed0489.stenografico.tit00070.sub00010.int00060",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131"
+   }
+  },
+  {
+   "name": "domande riportate tra “”",
+   "outcome": "parole_di_terzi",
+   "reason": "inside_quotation_marks",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307822",
+    "speech": "leg19_sed489_tit00070.sub00010.int00100",
+    "quote": "Perché non fai ricerca?",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0489&tipo=stenografico#sed0489.stenografico.tit00070.sub00010.int00100",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4131"
+   }
+  },
+  {
+   "name": "un altro deputato dello stesso gruppo",
+   "outcome": "oratore_errato",
+   "reason": "different_speaker",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p308910",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "un deputato di un altro gruppo, con il suo gruppo",
+   "outcome": "oratore_errato",
+   "reason": "different_speaker",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p302069",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "un altro membro del Governo",
+   "outcome": "oratore_errato",
+   "reason": "different_speaker",
+   "claim": {
+    "speaker": "gov_calderone_marina_elvira",
+    "government": true,
+    "speech": "leg19_sed15_tit00070.sub00020.int00020",
+    "quote": "per gli Stati che, invece, non sono obbligati ad introdurre un salario minimo legale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00020.int00020"
+   }
+  },
+  {
+   "name": "un senatore",
+   "outcome": "oratore_errato",
+   "reason": "different_speaker",
+   "claim": {
+    "speaker": "http://dati.senato.it/senatore/1103",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "una persona che non esiste",
+   "outcome": "oratore_errato",
+   "reason": "different_speaker",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p999999",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "un altro gruppo",
+   "outcome": "gruppo_errato",
+   "reason": "other_group_on_date",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4136",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "il Misto al posto della componente",
+   "outcome": "gruppo_errato",
+   "reason": "misto_instead_of_component",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge antidemocratica, plebiscitaria",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "un'altra componente del Misto",
+   "outcome": "gruppo_errato",
+   "reason": "other_group_on_date",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge antidemocratica, plebiscitaria",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "al Governo senza esserci",
+   "outcome": "gruppo_errato",
+   "reason": "not_in_government_on_date",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "government": true,
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "il gruppo di dopo, non quello alla data",
+   "outcome": "gruppo_errato",
+   "reason": "other_group_on_date",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4211",
+    "speech": "leg19_sed24_tit00090.sub00050.int00080",
+    "quote": "Coloro che definirono le dichiarazioni delle Nazioni Unite non scrissero qui sì e lì no",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0024&tipo=stenografico#sed0024.stenografico.tit00090.sub00050.int00080"
+   }
+  },
+  {
+   "name": "un'altra seduta",
+   "outcome": "link_errato",
+   "reason": "wrong_sitting",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0017&tipo=stenografico"
+   }
+  },
+  {
+   "name": "la pagina della seduta, non il resoconto",
+   "outcome": "link_errato",
+   "reason": "not_the_record",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=seduta"
+   }
+  },
+  {
+   "name": "il sito del Senato per un intervento della Camera",
+   "outcome": "link_errato",
+   "reason": "wrong_site",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1387468"
+   }
+  },
+  {
+   "name": "ancora su un altro intervento",
+   "outcome": "link_errato",
+   "reason": "wrong_anchor",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00200"
+   }
+  },
+  {
+   "name": "un'altra legislatura",
+   "outcome": "link_errato",
+   "reason": "wrong_page",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg18/410?idSeduta=0016&tipo=stenografico"
+   }
+  }
+ ],
+ "controls": [
+  {
+   "name": "alla lettera",
+   "outcome": "esatta",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "La prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "maiuscola iniziale cambiata",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "a capo e spazi doppi",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge\nantidemocratica,  plebiscitaria",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "componente del Misto",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p307436",
+    "group": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+    "speech": "leg19_sed690_tit00090.int00090",
+    "quote": "siccome secondo noi è una legge antidemocratica, plebiscitaria",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0690&tipo=stenografico#sed0690.stenografico.tit00090.int00090"
+   }
+  },
+  {
+   "name": "membro del Governo",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "gov_durigon_claudio",
+    "government": true,
+    "speech": "leg19_sed15_tit00070.sub00020.int00020",
+    "quote": "per gli Stati che, invece, non sono obbligati ad introdurre un salario minimo legale",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0015&tipo=stenografico#sed0015.stenografico.tit00070.sub00020.int00020"
+   }
+  },
+  {
+   "name": "link senza ancora",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=16&tipo=stenografico"
+   }
+  },
+  {
+   "name": "ancora sul dibattito",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040"
+   }
+  },
+  {
+   "name": "URI con https",
+   "outcome": "esatta_dopo_normalizzazione",
+   "claim": {
+    "speaker": "https://dati.camera.it/ocd/persona.rdf/p305688",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+    "speech": "leg19_sed16_tit00040.sub00020.int00180",
+    "quote": "la prima risoluzione su questo tema è stata presentata dal sottoscritto",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0016&tipo=stenografico#sed0016.stenografico.tit00040.sub00020.int00180"
+   }
+  },
+  {
+   "name": "gruppo con il nome di allora",
+   "outcome": "esatta",
+   "claim": {
+    "speaker": "http://dati.camera.it/ocd/persona.rdf/p306005",
+    "group": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4135",
+    "speech": "leg19_sed24_tit00090.sub00050.int00080",
+    "quote": "Coloro che definirono le dichiarazioni delle Nazioni Unite non scrissero qui sì e lì no",
+    "link": "https://www.camera.it/leg19/410?idSeduta=0024&tipo=stenografico#sed0024.stenografico.tit00090.sub00050.int00080"
+   }
+  }
+ ]
+}
