@@ -2,12 +2,12 @@
   "people": 729,
   "speeches": 66143,
   "sessions": 1194,
-  "acts": 52905,
+  "acts": 52907,
   "votes": 28378,
   "individual_votes": 9661389,
   "eurovoc_concepts": 3642,
   "chunks": 266097,
-  "last_update": "2026-10-18",
+  "last_update": "2026-10-19",
   "by_chamber": {
     "camera": {
       "speeches": 48038,
@@ -25,7 +25,7 @@
       "speeches": 18105,
       "chunks": 86312,
       "individual_votes": 1698055,
-      "acts": 15505,
+      "acts": 15507,
       "sessions": 467,
       "votes": 8400,
       "people": 212,
@@ -38,5 +38,5 @@
   },
   "government_without_seat": 23,
   "triples": 863834,
-  "snapshot_at": "2026-10-18"
+  "snapshot_at": "2026-10-19"
 }
