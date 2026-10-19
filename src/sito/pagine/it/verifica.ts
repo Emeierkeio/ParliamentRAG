@@ -80,7 +80,7 @@ const contenuto: Contenuto = {
             <tr>
               <td>Tutti i gruppi</td>
               <td data-l="Cosa controlla">Cerca nel testo la sigla o il nome di ogni gruppo in carica, delle componenti del Misto con deputati o senatori e del Governo. Un senatore del Misto conta per la sua componente, per esempio Cucchi per AVS. L'elenco viene dal grafo, non da una lista scritta a mano. Contano i gruppi della camera nominata nella domanda; se la domanda non ne nomina una, della camera di tutte le citazioni e i link della risposta; altrimenti di Camera e Senato.</td>
-              <td data-l="Quando passa">Ogni voce è nominata o citata. Una parola uguale a un nome conta anche se è usata in altro senso.</td>
+              <td data-l="Quando passa">Ogni voce è nominata o citata. Una parola uguale a un nome conta anche se è usata in altro senso. Un gruppo senza interventi sul tema dà un avviso, non un errore: non si può citare chi non ha parlato.</td>
             </tr>
             <tr>
               <td>Citazioni esatte</td>

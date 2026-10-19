@@ -4,6 +4,7 @@
   var CIT = D.tema.citazioni;
   var API = "/api/verifica";
   var SPUNTA = window.ICONE.spunta, CROCE = window.ICONE.croce;
+  var AVVISO = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M8 4.6v4.2"/><path d="M8 11.3v.1"/></svg>';
   var FORSE = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.5 8h5"/></svg>';
   var EN = window.LINGUA === "en";
   var esc = window.esc, numero = window.numero, dataIt = window.dataLunga;
@@ -142,10 +143,10 @@
   document.getElementById("modulo").addEventListener("submit", function (e) { e.preventDefault(); verifica(); });
 
   function voce(nome, e, extra) {
-    var icona = e === "ok" ? SPUNTA : e === "no" ? CROCE : FORSE;
+    var icona = e === "ok" ? SPUNTA : e === "no" ? CROCE : e === "av" ? AVVISO : FORSE;
     return '<span class="sigillo__voce" data-esito="' + e + '">' + icona + nome + (extra ? " <b>" + extra + "</b>" : "") + "</span>";
   }
-  var ESITO = { pass: "ok", fail: "no", na: "nd" };
+  var ESITO = { pass: "ok", warn: "av", fail: "no", na: "nd" };
 
   var inCorso = false;
   function verifica() {
@@ -313,12 +314,15 @@
       voce(EN ? "Exact quotes" : "Citazioni esatte", eC, C.total ? C.exact + "/" + C.total : "–") + "</div>";
 
     var mancanti = G.items.filter(function (g) { return g.status === "missing"; });
+    // Expected groups with no speech on the topic: a warning, not a failure.
+    var silenti = G.items.filter(function (g) { return g.status === "silent"; });
+    var nomiSilenti = silenti.map(function (g) { return esc(sigla(g.key)); }).join(", ");
     var frasi = [];
     if (EN) {
-      frasi.push(mancanti.length ? mancanti.length + (mancanti.length === 1 ? " voice is" : " voices are") + " missing out of " + G.total + "." : "Every group, Mixed Group component and the Government are there.");
+      frasi.push(mancanti.length ? mancanti.length + (mancanti.length === 1 ? " voice is" : " voices are") + " missing out of " + G.total + "." : (silenti.length ? "Every group that spoke on the topic is there; " + nomiSilenti + (silenti.length === 1 ? " has" : " have") + " no speeches on it." : "Every group, Mixed Group component and the Government are there."));
       frasi.push(!C.total ? "There are no quotes to check." : C.exact === C.total && eC === "ok" ? "The quotes match the record." : (C.total - C.exact) + " of " + C.total + (C.total - C.exact === 1 ? " quote does" : " quotes do") + " not match the record or the speaker.");
     } else {
-      frasi.push(mancanti.length ? "Mancano " + mancanti.length + (mancanti.length === 1 ? " voce" : " voci") + " su " + G.total + "." : "Ci sono tutti i gruppi, le componenti del Misto e il Governo.");
+      frasi.push(mancanti.length ? "Mancano " + mancanti.length + (mancanti.length === 1 ? " voce" : " voci") + " su " + G.total + "." : (silenti.length ? "Ci sono tutti i gruppi che hanno parlato del tema; " + nomiSilenti + (silenti.length === 1 ? " non ha interventi" : " non hanno interventi") + " su questo tema." : "Ci sono tutti i gruppi, le componenti del Misto e il Governo."));
       frasi.push(!C.total ? "Non ci sono citazioni da controllare." : C.exact === C.total && eC === "ok" ? "Le citazioni coincidono con il resoconto." : (C.total - C.exact === 1 ? "Una citazione su " + C.total + " non coincide" : (C.total - C.exact) + " citazioni su " + C.total + " non coincidono") + " con il resoconto o con chi parla.");
     }
     h += '<p class="riassunto">' + frasi.join(" ") + "</p>";
@@ -327,9 +331,9 @@
     h += '<section class="prova" data-entra style="--ritardo:80ms" aria-labelledby="p-a"><div class="prova__testa"><h3 class="titolo-4" id="p-a"><span>01</span>' + (EN ? "All groups" : "Tutti i gruppi") + "</h3>" +
       '<span class="prova__conto" data-esito="' + eG + '">' + G.named + (EN ? " of " : " su ") + G.total + (EN ? " present" : " presenti") + "</span></div>";
     h += '<ul class="appello">' + G.items.map(function (g) {
-      var c = g.status !== "missing";
-      var come = g.status === "quoted" ? '<span title="' + esc(g.quoted_by.join(", ")) + '">' + (EN ? "quoted" : "citato") + "</span>" : g.named_as ? "«" + esc(g.named_as) + "»" : (EN ? "absent" : "assente");
-      return '<li data-c="' + (c ? "si" : "no") + '">' + (c ? SPUNTA : CROCE) +
+      var c = g.status === "silent" ? "av" : g.status !== "missing" ? "si" : "no";
+      var come = g.status === "quoted" ? '<span title="' + esc(g.quoted_by.join(", ")) + '">' + (EN ? "quoted" : "citato") + "</span>" : g.status === "silent" ? (EN ? "did not speak on the topic" : "non ha parlato del tema") : g.named_as ? "«" + esc(g.named_as) + "»" : (EN ? "absent" : "assente");
+      return '<li data-c="' + c + '">' + (c === "si" ? SPUNTA : c === "av" ? AVVISO : CROCE) +
         '<span class="appello__nome"><span class="sigla">' + esc(sigla(g.key)) + "</span> " + esc(EN && g.key === "Governo" ? "Government" : g.label) + "</span>" +
         '<span class="appello__come">' + come + "</span></li>";
     }).join("") + "</ul>";
@@ -396,7 +400,8 @@
     var tot = [eG, eA, eC];
     var passate = tot.filter(function (x) { return x === "ok"; }).length;
     var nd = tot.filter(function (x) { return x === "nd"; }).length;
-    stato.textContent = (EN ? passate + " of 3 passed" : passate + " su 3 superate") + (nd ? (EN ? " · " + nd + " not checkable" : " · " + nd + " non verificabil" + (nd === 1 ? "e" : "i")) : "");
+    var av = tot.filter(function (x) { return x === "av"; }).length;
+    stato.textContent = (EN ? passate + " of 3 passed" : passate + " su 3 superate") + (av ? (EN ? " · " + av + " with a warning" : " · " + av + " con avviso") : "") + (nd ? (EN ? " · " + nd + " not checkable" : " · " + nd + " non verificabil" + (nd === 1 ? "e" : "i")) : "");
     stato.style.color = tot.indexOf("no") >= 0 ? "var(--errore)" : "";
   }
 

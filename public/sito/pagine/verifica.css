@@ -181,6 +181,14 @@
   .sigillo__voce[data-esito="nd"] {
     color: var(--inchiostro-3);
   }
+  /* Avviso: un gruppo atteso non ha parlato del tema */
+  .sigillo__voce[data-esito="av"] svg,
+  .appello [data-c="av"] svg {
+    color: var(--voto-ast);
+  }
+  .prova__conto[data-esito="av"] {
+    color: var(--voto-ast);
+  }
   .sigillo__voce b {
     font-family: var(--f-mono);
     font-weight: 400;
