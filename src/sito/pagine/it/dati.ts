@@ -10,7 +10,7 @@ const contenuto: Contenuto = {
       <div>
         <p class="etichetta compare">Dati aperti · CC BY-SA 4.0</p>
         <h1 class="titolo-1 compare" style="--ritardo:80ms">Il grafo, da <em>scaricare</em>.</h1>
-        <p class="attacco compare" style="--ritardo:160ms">La XIX legislatura di Camera e Senato come grafo RDF. Parlamentari, gruppi, atti, sedute, interventi e voti, collegati tra loro e ai temi EuroVoc. È lo stesso grafo che usano Stenografo, Fascicoli e Scranno.</p>
+        <p class="attacco compare" style="--ritardo:160ms">La XIX legislatura di Camera e Senato come grafo RDF. Parlamentari, gruppi, atti, emendamenti, documenti, leggi, sedute, interventi e voti, collegati tra loro e ai temi EuroVoc e TESEO. È lo stesso grafo che usano Stenografo, Fascicoli e Scranno.</p>
         <div class="fila apertura__azioni compare" style="--ritardo:240ms">
           <a class="btn btn--accento" href="#scarica">Scarica <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
           <a class="btn btn--linea" href="#deputato">Com'è fatto</a>
@@ -50,7 +50,7 @@ const contenuto: Contenuto = {
           <h3 class="titolo-3">Vocabolari condivisi</h3>
           <p>Usiamo vocabolari che esistono già. Un programma che conosce W3C ORG capisce i nostri gruppi; uno che conosce EuroVoc legge i temi degli atti in 24 lingue.</p>
           <div class="idea__vista">
-            <div class="vocabolari-mini"><span class="sigla">foaf</span><span class="sigla">org</span><span class="sigla">ocd</span><span class="sigla">skos</span><span class="sigla">prov</span><span class="sigla">eurovoc</span></div>
+            <div class="vocabolari-mini"><span class="sigla">foaf</span><span class="sigla">org</span><span class="sigla">ocd</span><span class="sigla">skos</span><span class="sigla">prov</span><span class="sigla">eli</span><span class="sigla">eurovoc</span><span class="sigla">teseo</span></div>
             <span class="nota">Il nostro spazio di nomi copre solo quello che manca: <span class="mono">w3id.org/parliamentrag/ontology#</span></span>
           </div>
         </article>
@@ -81,7 +81,7 @@ const contenuto: Contenuto = {
 <span class="k">@prefix</span> org:  <span class="s">&lt;http://www.w3.org/ns/org#&gt;</span> .
 <span class="k">@prefix</span> ocd:  <span class="s">&lt;http://dati.camera.it/ocd/&gt;</span> .
 <span class="k">@prefix</span> skos: <span class="s">&lt;http://www.w3.org/2004/02/skos/core#&gt;</span> .
-<span class="k">@prefix</span> pro:  <span class="s">&lt;https://w3id.org/parliamentrag/ontology#&gt;</span> .
+<span class="k">@prefix</span> pr:   <span class="s">&lt;https://w3id.org/parliamentrag/ontology#&gt;</span> .
 <span class="k">@prefix</span> xsd:  <span class="s">&lt;http://www.w3.org/2001/XMLSchema#&gt;</span> .
 <span class="k">@base</span>   <span class="s">&lt;https://w3id.org/parliamentrag/resource/&gt;</span> .
 </span>
@@ -101,12 +101,12 @@ const contenuto: Contenuto = {
     <span class="k">a</span> org:Membership ;
     org:member       <span class="m">&lt;http://dati.camera.it/ocd/persona.rdf/p308912&gt;</span> ;
     org:organization <span class="m">&lt;group/pd&gt;</span> ;
-    pro:startDate    <span class="s">"2022-10-18"</span>^^xsd:date .</span></pre>
+    pr:startDate     <span class="s">"2022-10-18"</span>^^xsd:date .</span></pre>
           <button class="copia" type="button" data-copia="ttl">Copia</button>
         </div>
 
         <ol class="note compare" style="--ritardo:120ms" id="note">
-          <li tabindex="0" data-n="1"><div><strong>Prefissi</strong><p>Abbreviazioni dei vocabolari usati. Tutti tranne <span class="mono">pro:</span> esistono già e sono mantenuti da altri.</p></div></li>
+          <li tabindex="0" data-n="1"><div><strong>Prefissi</strong><p>Abbreviazioni dei vocabolari usati. Tutti tranne <span class="mono">pr:</span> esistono già e sono mantenuti da altri.</p></div></li>
           <li tabindex="0" data-n="2"><div><strong>La persona</strong><p>L'URI è quello della scheda ufficiale della Camera. Per i senatori è quello di dati.senato.it. Lo stesso indirizzo vale in qualsiasi altro dataset che lo usi.</p></div></li>
           <li tabindex="0" data-n="3"><div><strong>Due tipi insieme</strong><p>È una persona per chiunque usi FOAF, ed è un deputato nel vocabolario open data della Camera.</p></div></li>
           <li tabindex="0" data-n="4"><div><strong>Il gruppo</strong><p>Un'organizzazione secondo W3C ORG, lo stesso modello usato per partiti, enti e aziende.</p></div></li>
@@ -120,12 +120,13 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 4</span><p class="etichetta" style="padding-top:.55em">Lo schema</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Nove tipi di nodo, e come si tengono.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:22ch">Quattordici tipi di nodo, e come si tengono.</h2>
+      <p class="attacco compare" style="margin-top:var(--s-4);max-width:52ch">È lo schema del file che scarichi da Zenodo. Non ci trovi i riassunti né i passaggi che usiamo per la ricerca: li produce ParliamentRAG, non vengono dagli open data.</p>
       <div class="schema" id="schema">
         <figure class="foglio schema__figura compare">
           <p class="etichetta" style="margin-bottom:var(--s-3)">Schema, non dati · scegli un nodo</p>
           <div class="schema__scorri">
-            <svg viewBox="0 62 720 362" id="schema-svg" role="group" aria-label="Schema del grafo: nove tipi di nodo e le relazioni tra loro"></svg>
+            <svg viewBox="0 62 740 482" id="schema-svg" role="group" aria-label="Schema del grafo: quattordici tipi di nodo e le relazioni tra loro"></svg>
           </div>
         </figure>
         <div class="schema-desc compare" style="--ritardo:120ms" id="schema-desc" aria-live="polite"></div>
@@ -142,10 +143,15 @@ const contenuto: Contenuto = {
         <table class="tabella">
           <thead><tr><th scope="col">Nel grafo</th><th scope="col">Vocabolario</th><th scope="col">Cosa permette</th></tr></thead>
           <tbody>
-            <tr><td>Deputato</td><td class="mono">ocd:deputato, foaf:Person</td><td>Lo stesso record ufficiale della Camera, riusabile ovunque. Per i senatori, quello di dati.senato.it.</td></tr>
+            <tr><td>Parlamentare</td><td class="mono">ocd:deputato, osr:Senatore, foaf:Person</td><td>Lo stesso record ufficiale della Camera, riusabile ovunque. Per i senatori, quello di dati.senato.it.</td></tr>
             <tr><td>Gruppo parlamentare, commissione</td><td class="mono">org:Organization</td><td>Il modello W3C per le organizzazioni.</td></tr>
             <tr><td>Appartenenza a un gruppo</td><td class="mono">org:Membership</td><td>Inizio e fine: i cambi di gruppo restano tracciati.</td></tr>
             <tr><td>Tema di un atto</td><td class="mono">EuroVoc, via SKOS</td><td>Gli stessi temi in 24 lingue.</td></tr>
+            <tr><td>Tema di un disegno di legge del Senato</td><td class="mono">TESEO, via SKOS</td><td>Il thesaurus del Senato, con gli stessi indirizzi di dati.senato.it.</td></tr>
+            <tr><td>Legge pubblicata</td><td class="mono">eli:LegalResource</td><td>L'identificativo europeo delle leggi (ELI), lo stesso di Normattiva.</td></tr>
+            <tr><td>Emendamento</td><td class="mono">pr:Amendment, sottoclasse di osr:Emendamento</td><td>La classe che il Senato usa per i suoi emendamenti, estesa a quelli della Camera.</td></tr>
+            <tr><td>Documento parlamentare</td><td class="mono">ocd:atto, pr:ParliamentaryDocument</td><td>È un atto come gli altri: una query su ocd:atto lo trova.</td></tr>
+            <tr><td>Percorso di una legge, versioni del testo</td><td class="mono">dcterms, prov</td><td>Le letture di Camera e Senato in ordine, fino alla legge che ne è uscita.</td></tr>
             <tr><td>Seduta, dibattito, intervento</td><td>Lo standard internazionale degli atti parlamentari</td><td>Una struttura che altri parlamenti già usano.</td></tr>
             <tr><td>Votazione e voto individuale</td><td class="mono">ocd</td><td>Il vocabolario open data della Camera.</td></tr>
             <tr><td>Provenienza</td><td class="mono">prov</td><td>Ogni costruzione dichiara quando è stata fatta e da quali fonti.</td></tr>
@@ -156,7 +162,9 @@ const contenuto: Contenuto = {
         <span><b>foaf</b>http://xmlns.com/foaf/0.1/</span>
         <span><b>org</b>http://www.w3.org/ns/org#</span>
         <span><b>ocd</b>http://dati.camera.it/ocd/</span>
-        <span><b>pro</b>https://w3id.org/parliamentrag/ontology#</span>
+        <span><b>eli</b>http://data.europa.eu/eli/ontology#</span>
+        <span><b>osr</b>http://dati.senato.it/osr/</span>
+        <span><b>pr</b>https://w3id.org/parliamentrag/ontology#</span>
       </p>
     </div>
   </section>
@@ -172,7 +180,7 @@ const contenuto: Contenuto = {
           <div class="deposito__testa"><span class="etichetta">Zenodo · RDF</span><span class="sigla sigla--accento">DOI</span></div>
           <div class="deposito__corpo">
             <div class="file">
-              <div><p class="file__nome">parliamentrag_kg.ttl</p><p class="file__cosa">Il grafo in Turtle: persone, gruppi, commissioni, atti, temi EuroVoc, sedute, dibattiti e interventi con il testo integrale.</p></div>
+              <div><p class="file__nome">parliamentrag_kg.ttl</p><p class="file__cosa">Il grafo in Turtle: persone, gruppi, commissioni, atti con relatori ed esiti, documenti parlamentari, emendamenti con testo, firmatari ed esito, leggi e percorsi tra Camera e Senato, temi EuroVoc e TESEO, sedute, dibattiti e interventi con il testo integrale.</p></div>
               <span class="sigla">Turtle</span>
             </div>
             <div class="file">
