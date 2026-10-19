@@ -230,7 +230,7 @@ const contenuto: Contenuto = {
       <div class="interroga" style="margin-top:var(--s-6)">
       <div class="compare">
         <h2 class="titolo-2">You do not need to download it to use it.</h2>
-        <p class="tenue" style="margin-top:var(--s-4);max-width:46ch">An MCP server exposes the graph to the AI assistants that support it. The assistant searches the speeches, opens a debate, reads a vote, and every result links to the record.</p>
+        <p class="tenue" style="margin-top:var(--s-4);max-width:46ch">An MCP server exposes the graph to the AI assistants that support it. The assistant searches the speeches and the acts, opens a debate, reads a vote or the text of an amendment, and every result links to the record.</p>
         <a class="btn btn--linea" style="margin-top:var(--s-5)" href="/en/developers">Connect an assistant <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
       </div>
       <ul class="strumenti compare" style="--ritardo:120ms" aria-label="Tools of the MCP server">

@@ -169,7 +169,7 @@ const contenuto: Contenuto = {
       <div class="articoli compare">
         <a class="articolo" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">
           <span class="etichetta">In-Use Track · LNCS 17128</span>
-          <span><span class="articolo__t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
+          <span><span class="articolo__t">Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
           <span class="etichetta">PDF ↗</span>
         </a>
         <a class="articolo" href="https://emeierkeio.github.io/papers/parliamentrag-demo-iswc2026.pdf" rel="noopener">
@@ -193,6 +193,7 @@ const contenuto: Contenuto = {
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Chamber of Deputies and Senate of the Republic in the 19th legislature, from 13 October 2022</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Records of the plenary sittings, with the full text</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Acts and electronic votes, with the vote of every member of Parliament</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Amendments with their outcome, documents voted on the floor and published laws, linked to the bill they come from</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Updated after every new sitting</li>
           </ul>
         </div>

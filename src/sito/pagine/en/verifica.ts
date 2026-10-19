@@ -23,7 +23,7 @@ const contenuto: Contenuto = {
   <!-- § 1 Prova -->
   <section class="sezione-stretta" style="padding-top:0" id="prova">
     <div class="pagina">
-      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verification · Chamber, 19th legislature</p></div>
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verification · Parliament, 19th legislature</p></div>
 
       <div class="banco">
         <form class="banco__input compare" id="modulo" novalidate>
@@ -33,7 +33,7 @@ const contenuto: Contenuto = {
           </div>
           <label class="titolo-4" for="risposta">The answer to check</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste the answer an AI system gave you about a topic debated in the Chamber. Quotes go between «…» or &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Paste the answer an AI system gave you about a topic debated in Parliament. Quotes go between «…» or &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 words</span><span class="scorciatoia">⌘/Ctrl + Enter to check</span></div>
           </div>
           <div class="banco__azioni">
@@ -89,7 +89,7 @@ const contenuto: Contenuto = {
             </tr>
             <tr>
               <td>Authoritative voices</td>
-              <td data-l="What it checks">For every deputy or member of the Government quoted or named (by full name, or by surname when there are no namesakes) it computes authority on the topic of the question, with the six public criteria and weights, and their rank among the members of their group who spoke on the topic. It flags a wrong group written next to a name.</td>
+              <td data-l="What it checks">For every member of Parliament or of the Government quoted or named (by full name, or by surname when there are no namesakes) it computes authority on the topic of the question, with the six public criteria and weights, and their rank among the members of their group who spoke on the topic. It flags a wrong group written next to a name.</td>
               <td data-l="When it passes">The speaker is a member of the Government, the rapporteur of the bill or one of the top five of their group among those who spoke on the topic (all of them, if fewer than five did). Without a question, the topic comes from the first lines of the answer.</td>
             </tr>
           </tbody>
@@ -114,9 +114,9 @@ const contenuto: Contenuto = {
       <div class="perche">
         <h2 class="titolo-2 compare">The data is public. The guarantees, so far, are not.</h2>
         <div class="perche__testo compare" style="--ritardo:120ms">
-          <p>The Chamber publishes records, acts and votes. Yet people who get an answer from an AI assistant have no simple way to know whether a group is missing or a quote has been altered.</p>
+          <p>The Chamber and the Senate publish records, acts and votes. Yet people who get an answer from an AI assistant have no simple way to know whether a group is missing or a quote has been altered.</p>
           <p><strong>A check that depends on whoever wrote the answer is not enough.</strong> That is why the verifier applies the same rules to every answer, ours included.</p>
-          <p>The method is described above. The same check is available as a tool of our MCP server. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
+          <p>The method is described above. The same check is the <code>verify_answer</code> tool of our <a class="collegamento" href="/en/developers#mcp">MCP server</a>. You can also check quotes on your own computer, with the open data: <code>pip install ./verifica</code> from the <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG" rel="noopener">repository</a>, then <code>parliamentrag-verifica answer.json</code>. If you have hard cases, answers that fool a check or ideas on what to measure, write to us.</p>
           <div class="fila" style="margin-top:var(--s-2)">
             <a class="btn btn--accento" href="#come">How the verification works</a>
             <a class="btn btn--linea" href="/en/method">How we apply the guarantees</a>

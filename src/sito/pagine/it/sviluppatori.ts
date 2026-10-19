@@ -64,9 +64,9 @@ const contenuto: Contenuto = {
           <ol class="strumenti" id="strumenti">
             <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Ricerca ibrida su interventi e atti di Camera e Senato.</span></li>
             <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sedute di Camera e Senato, con riassunto e dibattiti.</span></li>
-            <li class="strumento" data-s="get_debate"><code>get_debate</code><span>Un dibattito: riassunto, atti, oratori.</span></li>
+            <li class="strumento" data-s="get_debate"><code>get_debate</code><span>Un dibattito: riassunto, atti, oratori, e la legge che ne è uscita.</span></li>
             <li class="strumento" data-s="get_session_votes"><code>get_session_votes</code><span>Le votazioni di una seduta.</span></li>
-            <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>Una votazione: esiti per gruppo e voti dei singoli.</span></li>
+            <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>Una votazione: esiti per gruppo, voti dei singoli, l'atto votato e la sua legge.</span></li>
             <li class="strumento" data-s="get_vote_hemicycle"><code>get_vote_hemicycle</code><span>L'emiciclo di un voto, come immagine.</span></li>
             <li class="strumento" data-s="get_voted_text"><code>get_voted_text</code><span>Il testo votato: emendamenti, articoli, ordini del giorno.</span></li>
             <li class="strumento" data-s="verify_answer"><code>verify_answer</code><span>Controlla una risposta: tutti i gruppi, voci autorevoli, citazioni esatte.</span></li>

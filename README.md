@@ -249,7 +249,7 @@ dominio senza `www` reindirizza a quello con `www`.
 
 Due articoli accettati a ISWC 2026 (Bari, 25–29 ottobre 2026):
 
-- **Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian
+- **Who Speaks Matters: Authority-Aware Multi-View RAG over Italian
   Parliamentary Proceedings**. In-Use Track, LNCS 17128, cap. 24.
   [DOI 10.1007/978-3-032-42029-9_24](https://doi.org/10.1007/978-3-032-42029-9_24) ·
   [arXiv 2608.13410](https://arxiv.org/abs/2608.13410)
@@ -275,7 +275,7 @@ Zenodo archivia entrambi i tag: [DOI 10.5281/zenodo.23173703](https://doi.org/10
 ```bibtex
 @inproceedings{tritella2026whospeaksmatters,
   author    = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
-  title     = {Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings},
+  title     = {Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings},
   booktitle = {Proceedings of the 25th International Semantic Web Conference (ISWC 2026), In-Use Track},
   series    = {Lecture Notes in Computer Science},
   volume    = {17128},

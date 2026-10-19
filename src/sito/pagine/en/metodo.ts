@@ -299,7 +299,7 @@ const contenuto: Contenuto = {
         <div class="fonti compare">
           <a class="fonte" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">
             <span class="etichetta">Paper · ISWC 2026</span>
-            <span><span class="fonte__t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</span><span class="fonte__d">M. Tritella, R. Pozzi, M. Palmonari. Pipeline, weights and evaluation.</span></span>
+            <span><span class="fonte__t">Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings</span><span class="fonte__d">M. Tritella, R. Pozzi, M. Palmonari. Pipeline, weights and evaluation.</span></span>
             <span class="etichetta">PDF ↗</span>
           </a>
           <a class="fonte" href="https://arxiv.org/abs/2608.13410" rel="noopener">

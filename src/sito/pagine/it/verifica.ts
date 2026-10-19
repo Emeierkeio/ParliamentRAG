@@ -23,7 +23,7 @@ const contenuto: Contenuto = {
   <!-- § 1 Prova -->
   <section class="sezione-stretta" style="padding-top:0" id="prova">
     <div class="pagina">
-      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verifica · Camera, XIX legislatura</p></div>
+      <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em">Verifica · Parlamento, XIX legislatura</p></div>
 
       <div class="banco">
         <form class="banco__input compare" id="modulo" novalidate>
@@ -33,7 +33,7 @@ const contenuto: Contenuto = {
           </div>
           <label class="titolo-4" for="risposta">La risposta da controllare</label>
           <div class="campo campo--area">
-            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui la risposta che un sistema di intelligenza artificiale ti ha dato su un tema discusso alla Camera. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
+            <textarea id="risposta" rows="14" spellcheck="false" placeholder="Incolla qui la risposta che un sistema di intelligenza artificiale ti ha dato su un tema discusso in Parlamento. Le citazioni vanno tra «…» o tra &quot;…&quot;."></textarea>
             <div class="banco__conta"><span id="conta">0 parole</span><span class="scorciatoia">⌘/Ctrl + Invio per verificare</span></div>
           </div>
           <div class="banco__azioni">
@@ -89,7 +89,7 @@ const contenuto: Contenuto = {
             </tr>
             <tr>
               <td>Voci autorevoli</td>
-              <td data-l="Cosa controlla">Per ogni deputato o membro del Governo citato o nominato (per nome e cognome, o per cognome se non ci sono omonimi) calcola l'autorevolezza sul tema della domanda, con i sei criteri e i pesi pubblici, e la sua posizione tra chi del suo gruppo ha parlato del tema. Se accanto al nome c'è un gruppo sbagliato, lo segnala.</td>
+              <td data-l="Cosa controlla">Per ogni parlamentare o membro del Governo citato o nominato (per nome e cognome, o per cognome se non ci sono omonimi) calcola l'autorevolezza sul tema della domanda, con i sei criteri e i pesi pubblici, e la sua posizione tra chi del suo gruppo ha parlato del tema. Se accanto al nome c'è un gruppo sbagliato, lo segnala.</td>
               <td data-l="Quando passa">Chi parla è un membro del Governo, il relatore del provvedimento o uno dei primi cinque del suo gruppo tra chi ha parlato del tema (se ne hanno parlato in meno di cinque, tutti). Senza domanda, il tema si ricava dalle prime righe della risposta.</td>
             </tr>
           </tbody>
@@ -114,9 +114,9 @@ const contenuto: Contenuto = {
       <div class="perche">
         <h2 class="titolo-2 compare">I dati sono pubblici. Le garanzie, finora, no.</h2>
         <div class="perche__testo compare" style="--ritardo:120ms">
-          <p>La Camera pubblica resoconti, atti e voti. Chi riceve una risposta da un assistente AI non ha però un modo semplice per sapere se manca un gruppo o se una citazione è stata ritoccata.</p>
+          <p>Camera e Senato pubblicano resoconti, atti e voti. Chi riceve una risposta da un assistente AI non ha però un modo semplice per sapere se manca un gruppo o se una citazione è stata ritoccata.</p>
           <p><strong>Un controllo che dipende da chi ha scritto la risposta non basta.</strong> Per questo il verificatore applica le stesse regole a ogni risposta, anche alle nostre.</p>
-          <p>Il metodo è descritto qui sopra. Lo stesso controllo è disponibile come strumento del nostro server MCP. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
+          <p>Il metodo è descritto qui sopra. Lo stesso controllo è lo strumento <code>verify_answer</code> del nostro <a class="collegamento" href="/sviluppatori#mcp">server MCP</a>. Le citazioni si controllano anche sul tuo computer, con i dati aperti: <code>pip install ./verifica</code> dal <a class="collegamento" href="https://github.com/Emeierkeio/ParliamentRAG" rel="noopener">repository</a>, poi <code>parliamentrag-verifica risposta.json</code>. Se hai casi difficili, risposte che ingannano un controllo o idee su cosa misurare, scrivici.</p>
           <div class="fila" style="margin-top:var(--s-2)">
             <a class="btn btn--accento" href="#come">Come funziona la verifica</a>
             <a class="btn btn--linea" href="/metodo">Come applichiamo le garanzie</a>

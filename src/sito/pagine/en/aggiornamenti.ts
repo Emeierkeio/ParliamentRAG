@@ -29,21 +29,6 @@ const contenuto: Contenuto = {
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em" id="conteggio" aria-live="polite">October 2026</p></div>
 
       <ol class="cronaca" id="cronaca">
-        <li class="notizia compare" data-tipo="sistemi">
-          <div class="notizia__quando">
-            <time datetime="2026-10-14">14 Oct 2026</time>
-            <span class="sigla">Systems</span>
-          </div>
-          <div class="notizia__corpo">
-            <h2>The Senate is here</h2>
-            <p>Fascicoli, Stenografo, Scranno, search and the connector for AI assistants now cover the Chamber and the Senate in the 19th legislature.</p>
-            <div class="fila notizia__link">
-              <a class="collegamento" href="https://www.fascicoli.it">Open Fascicoli</a>
-              <a class="collegamento" href="/en/developers">Set up the connector</a>
-            </div>
-          </div>
-        </li>
-
         <li class="notizia compare" data-tipo="pubblicazioni">
           <div class="notizia__quando">
             <time datetime="2026-10-25">25–29 Oct 2026</time>
@@ -55,6 +40,50 @@ const contenuto: Contenuto = {
             <div class="fila notizia__link">
               <a class="collegamento" href="/en/research">Read the papers and how to cite them</a>
               <a class="collegamento" href="https://iswc2026.semanticweb.org/#/program/acceptedpapers" rel="noopener">Conference programme <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-19">19 Oct 2026</time>
+            <span class="sigla">Systems</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Amendments, documents and laws in the graph</h2>
+            <p>The graph now holds the amendments of the Chamber and the Senate with their outcome, the documents voted on the floor, the orders of the day and the rapporteurs of the bills. When a bill becomes law, Fascicoli, Scranno, Stenografo and the connector show the published law, with a link to Normattiva.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.scranno.it">Open Scranno</a>
+              <a class="collegamento" href="/en/data">See the data</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-16">16 Oct 2026</time>
+            <span class="sigla">Systems</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>The verifier is open</h2>
+            <p>Paste the answer of an AI assistant and the verifier checks the three guarantees: all groups, authoritative voices, exact quotes. The same check is a tool of the connector. Quotes can also be checked on your own computer, with the open data.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="/en/verification">Try the verifier</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-14">14 Oct 2026</time>
+            <span class="sigla">Systems</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>The Senate is here</h2>
+            <p>Fascicoli, Stenografo, Scranno, search and the connector for AI assistants now cover the Chamber and the Senate in the 19th legislature.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.fascicoli.it">Open Fascicoli</a>
+              <a class="collegamento" href="/en/developers">Set up the connector</a>
             </div>
           </div>
         </li>

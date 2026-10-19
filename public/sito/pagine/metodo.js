@@ -61,10 +61,10 @@
 
   /* ---------- § 3 Tabella dei pesi ---------- */
   var CRITERI = EN ? [
-    { k: "interventi", t: "Speeches in the Chamber", p: 0.25, d: "How much, and how recently, they have spoken about the topic in the Chamber." },
+    { k: "interventi", t: "Floor speeches", p: 0.25, d: "How much, and how recently, they have spoken about the topic on the floor." },
     { k: "commissione", t: "Committee", p: 0.25, d: "How close their committee is to the topic." },
     { k: "atti", t: "Signed acts", p: 0.20, d: "Bills and other acts on the topic that they signed, weighted by recency." },
-    { k: "professione", t: "Profession", p: 0.15, d: "Affinity between their work outside the Chamber and the topic." },
+    { k: "professione", t: "Profession", p: 0.15, d: "Affinity between their work outside Parliament and the topic." },
     { k: "formazione", t: "Education", p: 0.10, d: "Affinity between their degrees and the topic." },
     { k: "ruolo", t: "Institutional role", p: 0.05, d: "Current offices, for example in the Government or in a committee." }
   ] : [

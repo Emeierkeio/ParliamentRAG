@@ -29,21 +29,6 @@ const contenuto: Contenuto = {
       <div class="testata compare"><span class="testata__n">§ 1</span><p class="etichetta" style="padding-top:.55em" id="conteggio" aria-live="polite">Ottobre 2026</p></div>
 
       <ol class="cronaca" id="cronaca">
-        <li class="notizia compare" data-tipo="sistemi">
-          <div class="notizia__quando">
-            <time datetime="2026-10-14">14 ott. 2026</time>
-            <span class="sigla">Sistemi</span>
-          </div>
-          <div class="notizia__corpo">
-            <h2>Arriva il Senato</h2>
-            <p>Fascicoli, Stenografo, Scranno, la ricerca e il connettore per gli assistenti AI coprono ora Camera e Senato della XIX legislatura.</p>
-            <div class="fila notizia__link">
-              <a class="collegamento" href="https://www.fascicoli.it">Apri Fascicoli</a>
-              <a class="collegamento" href="/sviluppatori">Collega il connettore</a>
-            </div>
-          </div>
-        </li>
-
         <li class="notizia compare" data-tipo="pubblicazioni">
           <div class="notizia__quando">
             <time datetime="2026-10-25">25–29 ott. 2026</time>
@@ -55,6 +40,50 @@ const contenuto: Contenuto = {
             <div class="fila notizia__link">
               <a class="collegamento" href="/ricerca">Leggi gli articoli e come citarli</a>
               <a class="collegamento" href="https://iswc2026.semanticweb.org/#/program/acceptedpapers" rel="noopener">Programma della conferenza <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-19">19 ott. 2026</time>
+            <span class="sigla">Sistemi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Emendamenti, documenti e leggi nel grafo</h2>
+            <p>Nel grafo ci sono ora gli emendamenti di Camera e Senato con il loro esito, i documenti votati in Aula, gli ordini del giorno e i relatori dei progetti. Quando un progetto diventa legge, Fascicoli, Scranno, Stenografo e il connettore mostrano la legge pubblicata, con il link a Normattiva.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.scranno.it">Apri Scranno</a>
+              <a class="collegamento" href="/dati">Vedi i dati</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-16">16 ott. 2026</time>
+            <span class="sigla">Sistemi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Il verificatore è aperto</h2>
+            <p>Incolli la risposta di un assistente AI e il verificatore controlla le tre garanzie: tutti i gruppi, voci autorevoli, citazioni esatte. Lo stesso controllo è uno strumento del connettore. Le citazioni si controllano anche sul proprio computer, con i dati aperti.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="/verifica">Prova la verifica</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="notizia compare" data-tipo="sistemi">
+          <div class="notizia__quando">
+            <time datetime="2026-10-14">14 ott. 2026</time>
+            <span class="sigla">Sistemi</span>
+          </div>
+          <div class="notizia__corpo">
+            <h2>Arriva il Senato</h2>
+            <p>Fascicoli, Stenografo, Scranno, la ricerca e il connettore per gli assistenti AI coprono ora Camera e Senato della XIX legislatura.</p>
+            <div class="fila notizia__link">
+              <a class="collegamento" href="https://www.fascicoli.it">Apri Fascicoli</a>
+              <a class="collegamento" href="/sviluppatori">Collega il connettore</a>
             </div>
           </div>
         </li>

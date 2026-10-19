@@ -230,7 +230,7 @@ const contenuto: Contenuto = {
       <div class="interroga" style="margin-top:var(--s-6)">
       <div class="compare">
         <h2 class="titolo-2">Non serve scaricarlo per usarlo.</h2>
-        <p class="tenue" style="margin-top:var(--s-4);max-width:46ch">Un server MCP espone il grafo agli assistenti AI che lo supportano. L'assistente cerca negli interventi, apre un dibattito, legge un voto, e ogni risultato porta il link al resoconto.</p>
+        <p class="tenue" style="margin-top:var(--s-4);max-width:46ch">Un server MCP espone il grafo agli assistenti AI che lo supportano. L'assistente cerca negli interventi e negli atti, apre un dibattito, legge un voto o il testo di un emendamento, e ogni risultato porta il link al resoconto.</p>
         <a class="btn btn--linea" style="margin-top:var(--s-5)" href="/sviluppatori">Collega un assistente <svg class="freccia" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
       </div>
       <ul class="strumenti compare" style="--ritardo:120ms" aria-label="Strumenti del server MCP">

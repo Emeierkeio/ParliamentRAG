@@ -169,7 +169,7 @@ const contenuto: Contenuto = {
       <div class="articoli compare">
         <a class="articolo" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">
           <span class="etichetta">In-Use Track · LNCS 17128</span>
-          <span><span class="articolo__t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
+          <span><span class="articolo__t">Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings</span><span class="articolo__a" style="display:block">M. Tritella, R. Pozzi, M. Palmonari</span></span>
           <span class="etichetta">PDF ↗</span>
         </a>
         <a class="articolo" href="https://emeierkeio.github.io/papers/parliamentrag-demo-iswc2026.pdf" rel="noopener">
@@ -193,6 +193,7 @@ const contenuto: Contenuto = {
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Camera dei Deputati e Senato della Repubblica nella XIX legislatura, dal 13 ottobre 2022</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Resoconti delle sedute in Aula, con il testo integrale</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Atti e votazioni elettroniche, con il voto di ogni parlamentare</li>
+            <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Emendamenti con il loro esito, documenti votati in Aula e leggi pubblicate, collegate al progetto da cui vengono</li>
             <li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.4l3 3 6-6.6"/></svg>Aggiornamento a ogni nuova seduta</li>
           </ul>
         </div>

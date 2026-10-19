@@ -64,9 +64,9 @@ const contenuto: Contenuto = {
           <ol class="strumenti" id="strumenti">
             <li class="strumento" data-s="search_parliament"><code>search_parliament</code><span>Hybrid search over speeches and acts of the Chamber and the Senate.</span></li>
             <li class="strumento" data-s="list_sessions"><code>list_sessions</code><span>Sittings of the Chamber and the Senate, with summary and debates.</span></li>
-            <li class="strumento" data-s="get_debate"><code>get_debate</code><span>A debate: summary, acts, speakers.</span></li>
+            <li class="strumento" data-s="get_debate"><code>get_debate</code><span>A debate: summary, acts, speakers, and the law that came out of it.</span></li>
             <li class="strumento" data-s="get_session_votes"><code>get_session_votes</code><span>The votes of a sitting.</span></li>
-            <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>A vote: results by group and individual votes.</span></li>
+            <li class="strumento" data-s="get_vote_details"><code>get_vote_details</code><span>A vote: results by group, individual votes, the act voted on and its law.</span></li>
             <li class="strumento" data-s="get_vote_hemicycle"><code>get_vote_hemicycle</code><span>The hemicycle of a vote, as an image.</span></li>
             <li class="strumento" data-s="get_voted_text"><code>get_voted_text</code><span>The text voted on: amendments, articles, motions.</span></li>
             <li class="strumento" data-s="verify_answer"><code>verify_answer</code><span>Checks an answer: all groups, authoritative voices, exact quotes.</span></li>

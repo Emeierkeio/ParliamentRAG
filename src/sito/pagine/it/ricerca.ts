@@ -27,21 +27,22 @@ const contenuto: Contenuto = {
           <span class="mono">Springer</span>
         </div>
         <div>
-          <h2 class="lavoro__t" id="a1-t">Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings</h2>
+          <h2 class="lavoro__t" id="a1-t">Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings</h2>
           <p class="lavoro__chi">Mirko Tritella, Riccardo Pozzi, Matteo Palmonari</p>
           <p class="lavoro__cosa">L'articolo che descrive il metodo: come scegliere le voci autorevoli di ogni gruppo e come costruire una risposta che li comprenda tutti.</p>
           <div class="fila lavoro__azioni">
             <a class="btn btn--accento btn--piccolo" href="https://emeierkeio.github.io/papers/who-speaks-matters-iswc2026.pdf" rel="noopener">PDF</a>
             <a class="btn btn--linea btn--piccolo" href="https://arxiv.org/abs/2608.13410" rel="noopener">arXiv</a>
-            <a class="btn btn--linea btn--piccolo" href="https://doi.org/10.1007/978-3-032-42029-9_24" rel="noopener">DOI</a>
+            <a class="btn btn--linea btn--piccolo" href="https://doi.org/10.5281/zenodo.23173703" rel="noopener">Codice</a>
             <a class="btn btn--linea btn--piccolo" href="https://orkg.org/papers/R1909763" rel="noopener">ORKG</a>
             <button class="btn btn--linea btn--piccolo" type="button" aria-expanded="false" aria-controls="cita-1" data-cita>Cita</button>
           </div>
+          <p class="nota">DOI 10.1007/978-3-032-42029-9_24, attivo all'uscita del volume.</p>
           <div class="citazione-bib" id="cita-1" hidden>
             <div class="blocco-codice">
               <pre class="codice" id="bib-1">@inproceedings{tritella2026whospeaksmatters,
   author    = {Tritella, Mirko and Pozzi, Riccardo and Palmonari, Matteo},
-  title     = {Who Speaks Matters: Authority-Aware Multi-View Retrieval-Augmented Generation over Italian Parliamentary Proceedings},
+  title     = {Who Speaks Matters: Authority-Aware Multi-View RAG over Italian Parliamentary Proceedings},
   booktitle = {Proceedings of the 25th International Semantic Web Conference (ISWC 2026), In-Use Track},
   series    = {Lecture Notes in Computer Science},
   volume    = {17128},
@@ -64,10 +65,11 @@ const contenuto: Contenuto = {
         <div>
           <h2 class="lavoro__t" id="a2-t">ParliamentRAG: An Authority-Aware Multi-View RAG System for Italian Parliamentary Proceedings</h2>
           <p class="lavoro__chi">Mirko Tritella, Riccardo Pozzi, Matteo Palmonari</p>
-          <p class="lavoro__cosa">Il sistema in funzione: la demo presentata alla conferenza, sugli stessi dati della Camera.</p>
+          <p class="lavoro__cosa">Il sistema in funzione: la demo presentata alla conferenza. A Bari la mostriamo dal vivo su Fascicoli, con i dati di Camera e Senato.</p>
           <div class="fila lavoro__azioni">
             <a class="btn btn--accento btn--piccolo" href="https://emeierkeio.github.io/papers/parliamentrag-demo-iswc2026.pdf" rel="noopener">PDF</a>
             <a class="btn btn--linea btn--piccolo" href="https://truthful-amazement-production.up.railway.app" rel="noopener">Demo <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+            <a class="btn btn--linea btn--piccolo" href="https://www.fascicoli.it" rel="noopener">Fascicoli <svg class="freccia-nord-est" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
           </div>
         </div>
       </article>

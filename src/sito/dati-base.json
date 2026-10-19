@@ -8,6 +8,7 @@
   "individual_votes": 8219734,
   "eurovoc_concepts": 1927,
   "chunks": 264993,
+  "amendments": 224173,
   "last_update": "2026-10-14",
   "triples": 863834,
   "by_chamber": {
@@ -21,7 +22,8 @@
     "people": 415,
     "groups": 10,
     "people_in_office": 399,
-    "people_former": 16
+    "people_former": 16,
+    "amendments": 96546
    },
    "senato": {
     "speeches": 17973,
@@ -35,7 +37,8 @@
     "people_in_office": 205,
     "people_former": 7,
     "life_senators_in_office": 5,
-    "life_senators_former": 1
+    "life_senators_former": 1,
+    "amendments": 127627
    }
   },
   "government_without_seat": 23,

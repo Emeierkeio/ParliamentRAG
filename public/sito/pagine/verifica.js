@@ -353,7 +353,7 @@
     if (!A.available) {
       h += "<p>" + (EN ? "Authority on the topic could not be computed right now: try again in a minute." : "In questo momento non riesco a calcolare l'autorevolezza sul tema: riprova tra un minuto.") + "</p>";
     } else if (!A.voices.length) {
-      h += "<p>" + (EN ? "Authority is checked on the deputies and members of the Government quoted or named in the answer. This answer has none." : "L'autorevolezza si controlla sui deputati e sui membri del Governo citati o nominati nella risposta. Questa risposta non ne ha.") + "</p>";
+      h += "<p>" + (EN ? "Authority is checked on the members of Parliament and of the Government quoted or named in the answer. This answer has none." : "L'autorevolezza si controlla sui parlamentari e sui membri del Governo citati o nominati nella risposta. Questa risposta non ne ha.") + "</p>";
     } else {
       h += '<ul class="appello">' + A.voices.map(function (v) {
         var ok = v.authoritative;
@@ -429,7 +429,7 @@
         '<p class="chi-dice">' + (EN ? "The closest passage: " : "Il passo più vicino: ") + chi(s) + "</p></article>";
     }
     return '<article class="citata" data-esito="no"><p class="citata__esito">' + CROCE + (EN ? "Not found <span>in any floor speech of the 19th legislature</span></p>" : "Non trovata <span>in nessun intervento in Aula della XIX legislatura</span></p>") +
-      testo + '<p class="chi-dice">' + (EN ? "It may come from an interview, a press release or the Senate, which this check does not cover. If it is presented as said in the Chamber, it is not in the record." : "Può venire da un'intervista, da un comunicato o dal Senato, che questo controllo non copre. Se è presentata come detta alla Camera, nel resoconto non c'è.") + "</p></article>";
+      testo + '<p class="chi-dice">' + (EN ? "It may come from an interview or a press release. If it is presented as said on the floor, it is not in the record." : "Può venire da un'intervista o da un comunicato. Se è presentata come detta in Aula, nel resoconto non c'è.") + "</p></article>";
   }
 
   /* Tabella dei nomi, letta dal verificatore */
