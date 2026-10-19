@@ -95,7 +95,7 @@ const contenuto: Contenuto = {
           </div>
           <div class="notizia__corpo">
             <h2>Fascicoli is online</h2>
-            <p>Dossiers on a topic are now a system of their own, on fascicoli.it. For each topic you find the position of every group, the authoritative voices and the exact quotes.</p>
+            <p>Dossiers on a topic are now a system of their own, on www.fascicoli.it. For each topic you find the position of every group, the authoritative voices and the exact quotes.</p>
             <div class="fila notizia__link">
               <a class="collegamento" href="https://www.fascicoli.it">Open Fascicoli</a>
             </div>

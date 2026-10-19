@@ -128,7 +128,7 @@ const contenuto: Contenuto = {
         <a class="dump__voce" href="/dati">
           <span class="dump__nome">RDF Turtle</span>
           <span class="dump__cosa">L'export del grafo, dalla pagina Dati.</span>
-          <span class="dump__dove">parliamentrag.it/dati</span>
+          <span class="dump__dove">www.parliamentrag.it/dati</span>
         </a>
         <a class="dump__voce" href="https://doi.org/10.5281/zenodo.21560331" rel="noopener">
           <span class="dump__nome">Zenodo</span>

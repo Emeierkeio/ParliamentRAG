@@ -32,7 +32,7 @@
         </picture>
         <br><b>ParliamentRAG</b>
       </a>
-      <br><sub>parliamentrag.it</sub>
+      <br><sub>www.parliamentrag.it</sub>
     </td>
     <td align="center" valign="bottom" width="160">
       <a href="https://www.stenografo.it">
@@ -42,7 +42,7 @@
         </picture>
         <br><b>Stenografo</b>
       </a>
-      <br><sub>stenografo.it</sub>
+      <br><sub>www.stenografo.it</sub>
     </td>
     <td align="center" valign="bottom" width="160">
       <a href="https://www.fascicoli.it">
@@ -52,7 +52,7 @@
         </picture>
         <br><b>Fascicoli</b>
       </a>
-      <br><sub>fascicoli.it</sub>
+      <br><sub>www.fascicoli.it</sub>
     </td>
     <td align="center" valign="bottom" width="160">
       <a href="https://www.scranno.it">
@@ -62,7 +62,7 @@
         </picture>
         <br><b>Scranno</b>
       </a>
-      <br><sub>scranno.it</sub>
+      <br><sub>www.scranno.it</sub>
     </td>
   </tr>
 </table>
