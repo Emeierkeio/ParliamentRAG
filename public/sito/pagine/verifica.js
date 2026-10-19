@@ -333,6 +333,13 @@
         '<span class="appello__nome"><span class="sigla">' + esc(sigla(g.key)) + "</span> " + esc(EN && g.key === "Governo" ? "Government" : g.label) + "</span>" +
         '<span class="appello__come">' + come + "</span></li>";
     }).join("") + "</ul>";
+    if (R.scope_chambers && R.scope_chambers.length && R.scope_source) {
+      var camere = R.scope_chambers.map(function (c) { return c === "senato" ? (EN ? "Senate" : "Senato") : (EN ? "Chamber of Deputies" : "Camera"); }).join(EN ? " and " : " e ");
+      var perche = EN
+        ? { request: "chosen in the request", question: "named in the question", answer: "where all the quotes and links of the answer come from", both: "the answer does not point to one house" }
+        : { request: "scelta nella richiesta", question: "nominata nella domanda", answer: "da cui vengono tutte le citazioni e i link della risposta", both: "la risposta non indica una sola camera" };
+      h += '<p class="piccolo tenue">' + (EN ? "Groups of: " : "Gruppi di: ") + esc(camere) + (perche[R.scope_source] ? " (" + perche[R.scope_source] + ")" : "") + ".</p>";
+    }
     h += mancanti.length
       ? (EN ? "<p>I cannot find " + mancanti.map(function (g) { return esc(sigla(g.key)); }).join(", ").replace(/\.$/, "") + ". A complete answer names them, or says that they did not speak on the topic.</p>"
             : "<p>Non trovo " + mancanti.map(function (g) { return esc(g.key); }).join(", ").replace(/\.$/, "") + ". Una risposta completa li nomina, o dice che sul tema non hanno parlato.</p>")
