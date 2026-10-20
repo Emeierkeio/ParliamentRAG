@@ -219,7 +219,7 @@ export function documento(o: Opzioni): string {
       `<link rel="alternate" hreflang="en" href="${url(PERCORSI[o.id].en)}">` +
       `<link rel="alternate" hreflang="x-default" href="${url(PERCORSI[o.id].it)}">`
     : "";
-  const og = o.lingua === "it" ? "/sito/og-it.png" : "/sito/og-en.png";
+  const og = o.lingua === "it" ? "/sito/og-it-2026-10.png" : "/sito/og-en-2026-10.png";
   const ogAlt =
     o.lingua === "it"
       ? "ParliamentRAG: tre garanzie per ogni risposta dell'AI sul Parlamento"
