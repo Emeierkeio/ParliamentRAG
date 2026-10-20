@@ -584,39 +584,12 @@ h3 {
   align-items: center;
   gap: var(--s-2);
 }
-.btn.menu-btn {
-  display: none;
-}
 @media (max-width: 900px) {
   .nav {
     display: none;
   }
   .sito__azioni {
     margin-left: auto;
-  }
-  .btn.menu-btn {
-    display: inline-flex;
-  }
-  .nav[data-aperto="true"] {
-    display: flex;
-    position: fixed;
-    inset: 64px 0 0 0;
-    flex-direction: column;
-    gap: 0;
-    padding: var(--s-4) var(--margine);
-    background: var(--carta);
-    border-top: 1px solid var(--filetto);
-    overflow-y: auto;
-  }
-  .nav[data-aperto="true"] a {
-    font-family: var(--f-titolo);
-    font-size: var(--t-2);
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--filetto);
-    border-radius: 0;
-  }
-  .nav[data-aperto="true"] a::after {
-    display: none;
   }
 }
 

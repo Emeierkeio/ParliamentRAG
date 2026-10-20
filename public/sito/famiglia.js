@@ -51,8 +51,6 @@
   var ICONA = {
     sole: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>',
     luna: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>',
-    menu: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>',
-    chiudi: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   };
   window.ICONE = {
     spunta: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6.6"/><path d="M5.2 8.2l1.9 1.9 3.8-4"/></svg>',
@@ -72,17 +70,6 @@
 
   var testata = document.querySelector("[data-testata]");
   if (testata) {
-    var menuBtn = testata.querySelector(".menu-btn");
-    var nav = testata.querySelector(".nav");
-    menuBtn.addEventListener("click", function () {
-      var aperto = nav.getAttribute("data-aperto") === "true";
-      nav.setAttribute("data-aperto", aperto ? "false" : "true");
-      menuBtn.setAttribute("aria-expanded", aperto ? "false" : "true");
-      menuBtn.setAttribute("aria-label", aperto ? (EN ? "Open the menu" : "Apri il menu") : (EN ? "Close the menu" : "Chiudi il menu"));
-      menuBtn.innerHTML = aperto ? ICONA.menu : ICONA.chiudi;
-      document.body.style.overflow = aperto ? "" : "hidden";
-    });
-
     var onScroll = function () {
       testata.setAttribute("data-scorre", window.scrollY > 8 ? "true" : "false");
     };
