@@ -85,6 +85,8 @@ const T = {
     licenza: "Licenza dei dati CC BY-SA 4.0",
     licenzaUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.it",
     sostegno: "Con il sostegno del programma EU Horizon Europe, grant",
+    dott: "Dott.",
+    uni: "Università di Milano-Bicocca",
     seguici: "Seguici",
     suLinkedin: "ParliamentRAG su LinkedIn",
     suX: "ParliamentRAG su X",
@@ -107,6 +109,8 @@ const T = {
     licenza: "Data licence CC BY-SA 4.0",
     licenzaUrl: "https://creativecommons.org/licenses/by-sa/4.0/deed.en",
     sostegno: "Supported by the EU Horizon Europe programme, grant",
+    dott: "Dr.",
+    uni: "University of Milano-Bicocca",
     seguici: "Follow us",
     suLinkedin: "ParliamentRAG on LinkedIn",
     suX: "ParliamentRAG on X",
@@ -182,7 +186,7 @@ function piede(lingua: Lingua): string {
     "</div>" +
     '<div class="piede__fondo">' +
     `<p>${t.sostegno} <a href="https://doi.org/10.3030/101189771" rel="noopener">101189771</a> (<a href="https://datapact.eu/" rel="noopener">DataPACT</a>)</p>` +
-    '<p>Mirko Tritella · <a href="https://emeierkeio.github.io" rel="noopener">emeierkeio.github.io</a></p>' +
+    `<p><a href="https://emeierkeio.github.io" rel="noopener">Mirko Tritella</a> · Prof. <a href="https://it.linkedin.com/in/matteo-palmonari-3aa95720" rel="noopener">Matteo Palmonari</a> · ${t.dott} <a href="https://www.riccardopozzi.com" rel="noopener">Riccardo Pozzi</a> · <a href="https://www.unimib.it/" rel="noopener">${t.uni}</a></p>` +
     "</div></div></footer>"
   );
 }
