@@ -217,3 +217,20 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* ---------- Newsletter ---------- */
+  .iscriviti {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--s-6) clamp(32px, 6vw, 96px);
+    align-items: start;
+  }
+  .iscriviti form {
+    display: grid;
+    gap: var(--s-4);
+  }
+  @media (max-width: 860px) {
+    .iscriviti {
+      grid-template-columns: 1fr;
+    }
+  }

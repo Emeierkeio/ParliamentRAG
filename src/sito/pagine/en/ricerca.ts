@@ -141,6 +141,25 @@ const contenuto: Contenuto = {
       </div>
     </div>
   </section>
+
+  <!-- Iscrizione -->
+  <section class="sezione-stretta" style="background:var(--carta-2);border-top:1px solid var(--filetto)">
+    <div class="pagina iscriviti">
+      <div class="compare">
+        <h2 class="titolo-2">New systems, new data, new papers.</h2>
+        <p class="tenue" style="margin-top:var(--s-3);max-width:44ch">Few emails, when there is something to say. Unsubscribe in one click.</p>
+      </div>
+      <form class="compare" id="iscrizione" novalidate style="--ritardo:120ms">
+        <label class="sr" for="email">Your email</label>
+        <div class="campo">
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com" required>
+          <button class="btn btn--accento" type="submit">Subscribe</button>
+        </div>
+        <label class="spunta"><input type="checkbox" id="consenso"> <span>I have read the <a class="collegamento" href="/en/privacy#newsletter">privacy notice</a> and agree to receive updates about ParliamentRAG.</span></label>
+        <p class="messaggio" id="iscrizione-msg" role="status"></p>
+      </form>
+    </div>
+  </section>
 `,
 };
 

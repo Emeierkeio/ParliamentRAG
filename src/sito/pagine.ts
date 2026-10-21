@@ -64,7 +64,7 @@ const PAGINE: Record<IdPagina, Pagina> = {
   ricerca: {
     contenuto: coppia(ricercaIt, ricercaEn),
     css: "ricerca",
-    script: ["famiglia.js", "pagine/ricerca.js"],
+    script: ["famiglia.js", "iscrizione.js", "pagine/ricerca.js"],
     voce: "ricerca",
   },
   sviluppatori: {
