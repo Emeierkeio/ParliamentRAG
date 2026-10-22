@@ -1,6 +1,51 @@
 [
  {
   "person": {
+   "id": "p301459",
+   "first_name": "LAURA",
+   "last_name": "RAVETTO"
+  },
+  "group": "MISTO",
+  "group_slug": "misto",
+  "membership_start": "2026-05-20",
+  "mandate": "mc19_301459_20221003",
+  "speech": "leg19_sed604_tit00040.sub00010.int00140",
+  "act": "aic3_01529_19",
+  "topic": "sicurezza sociale",
+  "vote": "leg19_sed38_vot_50"
+ },
+ {
+  "person": {
+   "id": "p302838",
+   "first_name": "MICHELA VITTORIA",
+   "last_name": "BRAMBILLA"
+  },
+  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+  "group_slug": "noi-moderati-noi-con-l-i",
+  "membership_start": "2023-03-02",
+  "mandate": "mc19_302838_20220930",
+  "speech": "leg19_sed85_tit00050.int00060",
+  "act": "aic4_00569_19",
+  "topic": "specie protetta",
+  "vote": "leg19_sed43_vot_23"
+ },
+ {
+  "person": {
+   "id": "p308912",
+   "first_name": "GIAN ANTONIO",
+   "last_name": "GIRELLI"
+  },
+  "group": "PD",
+  "group_slug": "pd",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_308912_20221010",
+  "speech": "leg19_sed134_tit00050.sub00010.int00300",
+  "act": "aic5_04329_19",
+  "topic": "politica di ricerca dell'UE",
+  "vote": "leg19_sed38_vot_53"
+ },
+ {
+  "person": {
    "id": "p307683",
    "first_name": "ANDREA",
    "last_name": "DARA"
@@ -16,33 +61,18 @@
  },
  {
   "person": {
-   "id": "p302838",
-   "first_name": "MICHELA VITTORIA",
-   "last_name": "BRAMBILLA"
+   "id": "p307657",
+   "first_name": "ALESSANDRO",
+   "last_name": "CATTANEO"
   },
-  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-  "group_slug": "noi-moderati-noi-con-l-i",
-  "membership_start": "2023-03-02",
-  "mandate": "mc19_302838_20220930",
-  "speech": "leg19_sed85_tit00050.int00060",
-  "act": "aic9_02088_AR_096_19",
-  "topic": "sostegno delle bilance dei pagamenti",
-  "vote": "leg19_sed43_vot_23"
- },
- {
-  "person": {
-   "id": "p300480",
-   "first_name": "ROBERTO",
-   "last_name": "GIACHETTI"
-  },
-  "group": "IV",
-  "group_slug": "iv",
-  "membership_start": "2023-11-20",
-  "mandate": "mc19_300480_20221008",
-  "speech": "leg19_sed333_tit00030.sub00020.int00160",
-  "act": "aic9_02822_A_013_19",
-  "topic": "ripartizione dei seggi",
-  "vote": "leg19_sed38_vot_35"
+  "group": "FI",
+  "group_slug": "fi",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307657_20221003",
+  "speech": "leg19_sed46_tit00080.int00500",
+  "act": "aic9_01038_A_052_19",
+  "topic": "domanda e offerta",
+  "vote": "leg19_sed38_vot_22"
  },
  {
   "person": {
@@ -55,54 +85,9 @@
   "membership_start": "2022-10-27",
   "mandate": "mc19_306521_20221008",
   "speech": "leg19_sed460_tit00070.sub00170.int00020",
-  "act": "aic4_07082_19",
-  "topic": "amministrazione locale",
+  "act": "aic4_08570_19",
+  "topic": "diritti umani",
   "vote": "leg19_sed33_vot_51"
- },
- {
-  "person": {
-   "id": "p301459",
-   "first_name": "LAURA",
-   "last_name": "RAVETTO"
-  },
-  "group": "MISTO",
-  "group_slug": "misto",
-  "membership_start": "2026-05-20",
-  "mandate": "mc19_301459_20221003",
-  "speech": "leg19_sed604_tit00040.sub00010.int00140",
-  "act": "aic9_02920_A_077_19",
-  "topic": "legge quadro",
-  "vote": "leg19_sed38_vot_50"
- },
- {
-  "person": {
-   "id": "p308912",
-   "first_name": "GIAN ANTONIO",
-   "last_name": "GIRELLI"
-  },
-  "group": "PD",
-  "group_slug": "pd",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_308912_20221010",
-  "speech": "leg19_sed134_tit00050.sub00010.int00300",
-  "act": "aic4_07040_19",
-  "topic": "sicurezza stradale",
-  "vote": "leg19_sed38_vot_53"
- },
- {
-  "person": {
-   "id": "p308781",
-   "first_name": "FEDERICA",
-   "last_name": "ONORI"
-  },
-  "group": "AZ",
-  "group_slug": "az",
-  "membership_start": "2024-02-01",
-  "mandate": "mc19_308781_20221004",
-  "speech": "leg19_sed247_tit00090.sub00010.int01530",
-  "act": "aic5_05531_19",
-  "topic": "esportazione (UE)",
-  "vote": "leg19_sed38_vot_16"
  },
  {
   "person": {
@@ -115,8 +100,8 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_308889_20221010",
   "speech": "leg19_sed388_tit00100.sub00010.int00020",
-  "act": "aic9_01239_A_005_19",
-  "topic": "accordo di Schengen",
+  "act": "aic9_01633_A_136_19",
+  "topic": "competenza amministrativa",
   "vote": "leg19_sed37_vot_2"
  },
  {
@@ -130,23 +115,38 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_307348_20221008",
   "speech": "leg19_sed260_tit00090.sub00010.int00460",
-  "act": "aic9_02750_059_19",
-  "topic": "esecutivo",
+  "act": "aic9_01060_AR_048_19",
+  "topic": "sviluppo industriale",
   "vote": "leg19_sed38_vot_58"
  },
  {
   "person": {
-   "id": "p307657",
-   "first_name": "ALESSANDRO",
-   "last_name": "CATTANEO"
+   "id": "p300480",
+   "first_name": "ROBERTO",
+   "last_name": "GIACHETTI"
   },
-  "group": "FI",
-  "group_slug": "fi",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_307657_20221003",
-  "speech": "leg19_sed46_tit00080.int00500",
-  "act": "aic3_02891_19",
-  "topic": "competenza giurisdizionale",
-  "vote": "leg19_sed38_vot_22"
+  "group": "IV",
+  "group_slug": "iv",
+  "membership_start": "2023-11-20",
+  "mandate": "mc19_300480_20221008",
+  "speech": "leg19_sed333_tit00030.sub00020.int00160",
+  "act": "aic4_06230_19",
+  "topic": "amministrazione penitenziaria",
+  "vote": "leg19_sed38_vot_35"
+ },
+ {
+  "person": {
+   "id": "p308781",
+   "first_name": "FEDERICA",
+   "last_name": "ONORI"
+  },
+  "group": "AZ",
+  "group_slug": "az",
+  "membership_start": "2024-02-01",
+  "mandate": "mc19_308781_20221004",
+  "speech": "leg19_sed247_tit00090.sub00010.int01530",
+  "act": "aic8_00088_19",
+  "topic": "Mercosur",
+  "vote": "leg19_sed38_vot_16"
  }
 ]
