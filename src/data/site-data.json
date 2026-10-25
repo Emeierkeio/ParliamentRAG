@@ -8,7 +8,7 @@
   "eurovoc_concepts": 3648,
   "chunks": 267593,
   "amendments": 225423,
-  "last_update": "2026-10-24",
+  "last_update": "2026-10-25",
   "by_chamber": {
     "camera": {
       "speeches": 48434,
@@ -41,5 +41,5 @@
   },
   "government_without_seat": 23,
   "triples": 863834,
-  "snapshot_at": "2026-10-24"
+  "snapshot_at": "2026-10-25"
 }
