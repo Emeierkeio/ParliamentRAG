@@ -1,111 +1,6 @@
 [
  {
   "person": {
-   "id": "p308912",
-   "first_name": "GIAN ANTONIO",
-   "last_name": "GIRELLI"
-  },
-  "group": "PD",
-  "group_slug": "pd",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_308912_20221010",
-  "speech": "leg19_sed134_tit00050.sub00010.int00300",
-  "act": "aic5_02010_19",
-  "topic": "malattia",
-  "vote": "leg19_sed38_vot_53"
- },
- {
-  "person": {
-   "id": "p306521",
-   "first_name": "FILIBERTO",
-   "last_name": "ZARATTI"
-  },
-  "group": "ALLEANZA VERDI E SINISTRA",
-  "group_slug": "alleanza-verdi-e-sinistr",
-  "membership_start": "2022-10-27",
-  "mandate": "mc19_306521_20221008",
-  "speech": "leg19_sed460_tit00070.sub00170.int00020",
-  "act": "aic4_01636_19",
-  "topic": "espropriazione",
-  "vote": "leg19_sed33_vot_51"
- },
- {
-  "person": {
-   "id": "p301459",
-   "first_name": "LAURA",
-   "last_name": "RAVETTO"
-  },
-  "group": "MISTO",
-  "group_slug": "misto",
-  "membership_start": "2026-05-20",
-  "mandate": "mc19_301459_20221003",
-  "speech": "leg19_sed604_tit00040.sub00010.int00140",
-  "act": "aic4_04079_19",
-  "topic": "circostanza attenuante",
-  "vote": "leg19_sed38_vot_50"
- },
- {
-  "person": {
-   "id": "p302838",
-   "first_name": "MICHELA VITTORIA",
-   "last_name": "BRAMBILLA"
-  },
-  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-  "group_slug": "noi-moderati-noi-con-l-i",
-  "membership_start": "2023-03-02",
-  "mandate": "mc19_302838_20220930",
-  "speech": "leg19_sed85_tit00050.int00060",
-  "act": "aic4_02714_19",
-  "topic": "riserva naturale",
-  "vote": "leg19_sed43_vot_23"
- },
- {
-  "person": {
-   "id": "p308781",
-   "first_name": "FEDERICA",
-   "last_name": "ONORI"
-  },
-  "group": "AZ",
-  "group_slug": "az",
-  "membership_start": "2024-02-01",
-  "mandate": "mc19_308781_20221004",
-  "speech": "leg19_sed247_tit00090.sub00010.int01530",
-  "act": "aic3_01891_19",
-  "topic": "accordo economico",
-  "vote": "leg19_sed38_vot_16"
- },
- {
-  "person": {
-   "id": "p300480",
-   "first_name": "ROBERTO",
-   "last_name": "GIACHETTI"
-  },
-  "group": "IV",
-  "group_slug": "iv",
-  "membership_start": "2023-11-20",
-  "mandate": "mc19_300480_20221008",
-  "speech": "leg19_sed333_tit00030.sub00020.int00160",
-  "act": "aic9_02088_AR_013_19",
-  "topic": "allontanamento",
-  "vote": "leg19_sed38_vot_35"
- },
- {
-  "person": {
-   "id": "p307657",
-   "first_name": "ALESSANDRO",
-   "last_name": "CATTANEO"
-  },
-  "group": "FI",
-  "group_slug": "fi",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_307657_20221003",
-  "speech": "leg19_sed46_tit00080.int00500",
-  "act": "aic1_00055_19",
-  "topic": "rendimento energetico",
-  "vote": "leg19_sed38_vot_22"
- },
- {
-  "person": {
    "id": "p307683",
    "first_name": "ANDREA",
    "last_name": "DARA"
@@ -130,9 +25,24 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_307348_20221008",
   "speech": "leg19_sed260_tit00090.sub00010.int00460",
-  "act": "aic9_02460_A_019_19",
-  "topic": "politica fiscale",
+  "act": "aic3_02015_19",
+  "topic": "malattia del sistema nervoso",
   "vote": "leg19_sed38_vot_58"
+ },
+ {
+  "person": {
+   "id": "p308781",
+   "first_name": "FEDERICA",
+   "last_name": "ONORI"
+  },
+  "group": "AZ",
+  "group_slug": "az",
+  "membership_start": "2024-02-01",
+  "mandate": "mc19_308781_20221004",
+  "speech": "leg19_sed247_tit00090.sub00010.int01530",
+  "act": "aic4_03762_19",
+  "topic": "disinformazione",
+  "vote": "leg19_sed38_vot_16"
  },
  {
   "person": {
@@ -145,8 +55,98 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_308889_20221010",
   "speech": "leg19_sed388_tit00100.sub00010.int00020",
-  "act": "aic9_02750_161_19",
-  "topic": "patrimonio culturale",
+  "act": "aic9_01633_A_136_19",
+  "topic": "competenza amministrativa",
   "vote": "leg19_sed37_vot_2"
+ },
+ {
+  "person": {
+   "id": "p307657",
+   "first_name": "ALESSANDRO",
+   "last_name": "CATTANEO"
+  },
+  "group": "FI",
+  "group_slug": "fi",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307657_20221003",
+  "speech": "leg19_sed46_tit00080.int00500",
+  "act": "aic9_01627_088_19",
+  "topic": "distribuzione delle risorse",
+  "vote": "leg19_sed38_vot_22"
+ },
+ {
+  "person": {
+   "id": "p302838",
+   "first_name": "MICHELA VITTORIA",
+   "last_name": "BRAMBILLA"
+  },
+  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+  "group_slug": "noi-moderati-noi-con-l-i",
+  "membership_start": "2023-03-02",
+  "mandate": "mc19_302838_20220930",
+  "speech": "leg19_sed85_tit00050.int00060",
+  "act": "aic4_05043_19",
+  "topic": "legislazione veterinaria",
+  "vote": "leg19_sed43_vot_23"
+ },
+ {
+  "person": {
+   "id": "p306521",
+   "first_name": "FILIBERTO",
+   "last_name": "ZARATTI"
+  },
+  "group": "ALLEANZA VERDI E SINISTRA",
+  "group_slug": "alleanza-verdi-e-sinistr",
+  "membership_start": "2022-10-27",
+  "mandate": "mc19_306521_20221008",
+  "speech": "leg19_sed460_tit00070.sub00170.int00020",
+  "act": "aic9_03053_025_19",
+  "topic": "comunicazione dei dati",
+  "vote": "leg19_sed33_vot_51"
+ },
+ {
+  "person": {
+   "id": "p308912",
+   "first_name": "GIAN ANTONIO",
+   "last_name": "GIRELLI"
+  },
+  "group": "PD",
+  "group_slug": "pd",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_308912_20221010",
+  "speech": "leg19_sed134_tit00050.sub00010.int00300",
+  "act": "aic5_04479_19",
+  "topic": "vaccino",
+  "vote": "leg19_sed38_vot_53"
+ },
+ {
+  "person": {
+   "id": "p300480",
+   "first_name": "ROBERTO",
+   "last_name": "GIACHETTI"
+  },
+  "group": "IV",
+  "group_slug": "iv",
+  "membership_start": "2023-11-20",
+  "mandate": "mc19_300480_20221008",
+  "speech": "leg19_sed333_tit00030.sub00020.int00160",
+  "act": "aic9_02329_A_030_19",
+  "topic": "protocollo (UE)",
+  "vote": "leg19_sed38_vot_35"
+ },
+ {
+  "person": {
+   "id": "p301459",
+   "first_name": "LAURA",
+   "last_name": "RAVETTO"
+  },
+  "group": "MISTO",
+  "group_slug": "misto",
+  "membership_start": "2026-05-20",
+  "mandate": "mc19_301459_20221003",
+  "speech": "leg19_sed604_tit00040.sub00010.int00140",
+  "act": "aic9_02245_041_19",
+  "topic": "magistrato non professionale",
+  "vote": "leg19_sed38_vot_50"
  }
 ]

@@ -7,8 +7,8 @@
   "individual_votes": 9661389,
   "eurovoc_concepts": 3648,
   "chunks": 267593,
-  "amendments": 225423,
-  "last_update": "2026-10-25",
+  "amendments": 234721,
+  "last_update": "2026-10-26",
   "by_chamber": {
     "camera": {
       "speeches": 48434,
@@ -19,7 +19,7 @@
       "votes": 19978,
       "people": 415,
       "groups": 10,
-      "amendments": 96884,
+      "amendments": 106159,
       "people_in_office": 398,
       "people_former": 17
     },
@@ -32,7 +32,7 @@
       "votes": 8400,
       "people": 212,
       "groups": 9,
-      "amendments": 128539,
+      "amendments": 128562,
       "people_in_office": 205,
       "people_former": 7,
       "life_senators_in_office": 5,
@@ -41,5 +41,5 @@
   },
   "government_without_seat": 23,
   "triples": 863834,
-  "snapshot_at": "2026-10-25"
+  "snapshot_at": "2026-10-26"
 }
