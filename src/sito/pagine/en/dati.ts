@@ -165,7 +165,7 @@ const contenuto: Contenuto = {
   <section class="sezione-stretta" id="scarica" style="background:var(--carta-2);border-top:1px solid var(--filetto);scroll-margin-top:64px">
     <div class="pagina">
       <div class="testata compare"><span class="testata__n">§ 6</span><p class="etichetta" style="padding-top:.55em">Download</p></div>
-      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Two repositories, one source code.</h2>
+      <h2 class="titolo-2 compare" style="margin-top:var(--s-6);max-width:20ch">Where to download the data.</h2>
 
       <div class="scarica">
         <article class="foglio deposito compare">
