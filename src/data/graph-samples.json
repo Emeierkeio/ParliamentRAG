@@ -1,63 +1,18 @@
 [
  {
   "person": {
-   "id": "p301459",
-   "first_name": "LAURA",
-   "last_name": "RAVETTO"
+   "id": "p300480",
+   "first_name": "ROBERTO",
+   "last_name": "GIACHETTI"
   },
-  "group": "MISTO",
-  "group_slug": "misto",
-  "membership_start": "2026-05-20",
-  "mandate": "mc19_301459_20221003",
-  "speech": "leg19_sed604_tit00040.sub00010.int00140",
-  "act": "aic1_00365_19",
-  "topic": "violenza",
-  "vote": "leg19_sed38_vot_50"
- },
- {
-  "person": {
-   "id": "p306521",
-   "first_name": "FILIBERTO",
-   "last_name": "ZARATTI"
-  },
-  "group": "ALLEANZA VERDI E SINISTRA",
-  "group_slug": "alleanza-verdi-e-sinistr",
-  "membership_start": "2022-10-27",
-  "mandate": "mc19_306521_20221008",
-  "speech": "leg19_sed460_tit00070.sub00170.int00020",
-  "act": "aic3_02087_19",
-  "topic": "rete ferroviaria",
-  "vote": "leg19_sed33_vot_51"
- },
- {
-  "person": {
-   "id": "p308912",
-   "first_name": "GIAN ANTONIO",
-   "last_name": "GIRELLI"
-  },
-  "group": "PD",
-  "group_slug": "pd",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_308912_20221010",
-  "speech": "leg19_sed134_tit00050.sub00010.int00300",
-  "act": "aic7_00121_19",
-  "topic": "diritto alla salute",
-  "vote": "leg19_sed38_vot_53"
- },
- {
-  "person": {
-   "id": "p302838",
-   "first_name": "MICHELA VITTORIA",
-   "last_name": "BRAMBILLA"
-  },
-  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
-  "group_slug": "noi-moderati-noi-con-l-i",
-  "membership_start": "2023-03-02",
-  "mandate": "mc19_302838_20220930",
-  "speech": "leg19_sed85_tit00050.int00060",
-  "act": "aic4_06639_19",
-  "topic": "protezione dell'infanzia",
-  "vote": "leg19_sed43_vot_23"
+  "group": "IV",
+  "group_slug": "iv",
+  "membership_start": "2023-11-20",
+  "mandate": "mc19_300480_20221008",
+  "speech": "leg19_sed333_tit00030.sub00020.int00160",
+  "act": "aic4_08078_19",
+  "topic": "amministrazione penitenziaria",
+  "vote": "leg19_sed38_vot_35"
  },
  {
   "person": {
@@ -70,69 +25,24 @@
   "membership_start": "2022-10-18",
   "mandate": "mc19_308889_20221010",
   "speech": "leg19_sed388_tit00100.sub00010.int00020",
-  "act": "aic1_00439_19",
-  "topic": "mercato internazionale",
+  "act": "aic9_01633_A_136_19",
+  "topic": "competenza amministrativa",
   "vote": "leg19_sed37_vot_2"
  },
  {
   "person": {
-   "id": "p300480",
-   "first_name": "ROBERTO",
-   "last_name": "GIACHETTI"
+   "id": "p308912",
+   "first_name": "GIAN ANTONIO",
+   "last_name": "GIRELLI"
   },
-  "group": "IV",
-  "group_slug": "iv",
-  "membership_start": "2023-11-20",
-  "mandate": "mc19_300480_20221008",
-  "speech": "leg19_sed333_tit00030.sub00020.int00160",
-  "act": "aic4_06904_19",
-  "topic": "minore età civile",
-  "vote": "leg19_sed38_vot_35"
- },
- {
-  "person": {
-   "id": "p307683",
-   "first_name": "ANDREA",
-   "last_name": "DARA"
-  },
-  "group": "LEGA",
-  "group_slug": "lega",
+  "group": "PD",
+  "group_slug": "pd",
   "membership_start": "2022-10-18",
-  "mandate": "mc19_307683_20221003",
-  "speech": "leg19_sed73_tit00070.sub00080.int00080",
-  "act": "aic9_01902_A_094_19",
-  "topic": "prestazione di servizi",
-  "vote": "leg19_sed33_vot_60"
- },
- {
-  "person": {
-   "id": "p307348",
-   "first_name": "LEONARDO",
-   "last_name": "DONNO"
-  },
-  "group": "M5S",
-  "group_slug": "m5s",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_307348_20221008",
-  "speech": "leg19_sed260_tit00090.sub00010.int00460",
-  "act": "aic9_03131_011_19",
-  "topic": "licenziamento",
-  "vote": "leg19_sed38_vot_58"
- },
- {
-  "person": {
-   "id": "p307657",
-   "first_name": "ALESSANDRO",
-   "last_name": "CATTANEO"
-  },
-  "group": "FI",
-  "group_slug": "fi",
-  "membership_start": "2022-10-18",
-  "mandate": "mc19_307657_20221003",
-  "speech": "leg19_sed46_tit00080.int00500",
-  "act": "aic3_00198_19",
-  "topic": "pubblica amministrazione",
-  "vote": "leg19_sed38_vot_22"
+  "mandate": "mc19_308912_20221010",
+  "speech": "leg19_sed134_tit00050.sub00010.int00300",
+  "act": "aic8_00114_19",
+  "topic": "diritto alla salute",
+  "vote": "leg19_sed38_vot_53"
  },
  {
   "person": {
@@ -145,8 +55,98 @@
   "membership_start": "2024-02-01",
   "mandate": "mc19_308781_20221004",
   "speech": "leg19_sed247_tit00090.sub00010.int01530",
-  "act": "aic9_02245_093_19",
-  "topic": "cittadinanza",
+  "act": "aic9_01930_A_010_19",
+  "topic": "sicurezza pubblica",
   "vote": "leg19_sed38_vot_16"
+ },
+ {
+  "person": {
+   "id": "p306521",
+   "first_name": "FILIBERTO",
+   "last_name": "ZARATTI"
+  },
+  "group": "ALLEANZA VERDI E SINISTRA",
+  "group_slug": "alleanza-verdi-e-sinistr",
+  "membership_start": "2022-10-27",
+  "mandate": "mc19_306521_20221008",
+  "speech": "leg19_sed460_tit00070.sub00170.int00020",
+  "act": "aic4_01035_19",
+  "topic": "UNHCR",
+  "vote": "leg19_sed33_vot_51"
+ },
+ {
+  "person": {
+   "id": "p307657",
+   "first_name": "ALESSANDRO",
+   "last_name": "CATTANEO"
+  },
+  "group": "FI",
+  "group_slug": "fi",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307657_20221003",
+  "speech": "leg19_sed46_tit00080.int00500",
+  "act": "aic3_00209_19",
+  "topic": "elaborazione del diritto dell'UE",
+  "vote": "leg19_sed38_vot_22"
+ },
+ {
+  "person": {
+   "id": "p301459",
+   "first_name": "LAURA",
+   "last_name": "RAVETTO"
+  },
+  "group": "MISTO",
+  "group_slug": "misto",
+  "membership_start": "2026-05-20",
+  "mandate": "mc19_301459_20221003",
+  "speech": "leg19_sed604_tit00040.sub00010.int00140",
+  "act": "aic9_02420_033_19",
+  "topic": "politica sanitaria",
+  "vote": "leg19_sed38_vot_50"
+ },
+ {
+  "person": {
+   "id": "p302838",
+   "first_name": "MICHELA VITTORIA",
+   "last_name": "BRAMBILLA"
+  },
+  "group": "NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, UDC E ITALIA AL CENTRO)-MAIE-CENTRO POPOLARE",
+  "group_slug": "noi-moderati-noi-con-l-i",
+  "membership_start": "2023-03-02",
+  "mandate": "mc19_302838_20220930",
+  "speech": "leg19_sed85_tit00050.int00060",
+  "act": "aic4_01769_19",
+  "topic": "foresta",
+  "vote": "leg19_sed43_vot_23"
+ },
+ {
+  "person": {
+   "id": "p307348",
+   "first_name": "LEONARDO",
+   "last_name": "DONNO"
+  },
+  "group": "M5S",
+  "group_slug": "m5s",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307348_20221008",
+  "speech": "leg19_sed260_tit00090.sub00010.int00460",
+  "act": "aic9_02460_A_019_19",
+  "topic": "politica fiscale",
+  "vote": "leg19_sed38_vot_58"
+ },
+ {
+  "person": {
+   "id": "p307683",
+   "first_name": "ANDREA",
+   "last_name": "DARA"
+  },
+  "group": "LEGA",
+  "group_slug": "lega",
+  "membership_start": "2022-10-18",
+  "mandate": "mc19_307683_20221003",
+  "speech": "leg19_sed73_tit00070.sub00080.int00080",
+  "act": "aic4_02831_19",
+  "topic": "integralismo religioso",
+  "vote": "leg19_sed33_vot_60"
  }
 ]
