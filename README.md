@@ -92,6 +92,13 @@ The model is a property graph stored in PostgreSQL 16: nodes and edges become ta
 
 **Provenance down to the character.** Every row keeps its source, source key and content hash. Speech segments, reactions from the floor ("Applausi dei deputati del gruppo…") and search passages keep start and end offsets into the canonical text. You can rebuild any quote from the official text.
 
+The schema of the graph: node types grouped by area, with the relations between them. Counts from the load of 1 November 2026.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/grafo-scuro.png">
+  <img alt="Schema of the graph: people and bodies, sittings and business, votes, acts, with node types such as Person, Group, Body, Sitting, AgendaItem, Speech, Vote, Act, Amendment, Document and their relations." src="docs/assets/grafo-chiaro.png">
+</picture>
+
 Core tables:
 
 | Area | Tables |
