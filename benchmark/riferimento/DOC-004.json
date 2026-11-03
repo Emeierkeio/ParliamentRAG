@@ -1,0 +1,94 @@
+{
+  "id": "DOC-004",
+  "domanda": "schema dell'iter della legge sul femminicidio, dal Consiglio dei ministri alla Gazzetta",
+  "sql": [
+    "WITH atti AS (SELECT 'it:senato:19:ddl:1433'::text AS sen, 'it:camera:19:ac:2528'::text AS cam),\neventi AS (\n  SELECT a.date, 1 AS ord, 'Senato' AS ramo, 'Presentazione del ddl S. ' || a.number || ' (' || a.initiative || ')' AS passaggio, a.card_url AS link\n  FROM act a, atti WHERE a.uri = atti.sen\n  UNION ALL\n  SELECT min(s.date), 2, 'Senato', 'Prima seduta di commissione (' || min(s.body_name) || ')', NULL\n  FROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting, atti\n  WHERE x.act = atti.sen AND s.kind = 'committee_summary' AND i.stage ILIKE '%referente%'\n  UNION ALL\n  SELECT min(s.date), 3, 'Senato', 'Inizio della discussione in Aula', NULL\n  FROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting, atti\n  WHERE x.act = atti.sen AND s.kind = 'assembly_verbatim' AND i.title ILIKE '%discussione%'\n  UNION ALL\n  SELECT v.date, 4, 'Senato', format('Voto finale: approvato con %s sì, %s no, %s astenuti', v.favor, v.against, v.abstain), NULL\n  FROM vote_act x JOIN vote v ON v.uri = x.vote, atti WHERE x.act = atti.sen AND v.final\n  UNION ALL\n  SELECT t.date, 5, 'Camera', t.title, NULL FROM act_transmission t, atti WHERE t.act = atti.cam\n  UNION ALL\n  SELECT g.date, 6, 'Camera', g.title, NULL FROM act_assignment g, atti WHERE g.act = atti.cam\n  UNION ALL\n  SELECT st.date, 7, 'Camera', st.title, NULL FROM act_step st, atti WHERE st.act = atti.cam AND st.ord > 2\n  UNION ALL\n  SELECT v.date, 8, 'Camera', format('Voto finale: approvato con %s sì, %s no, %s astenuti', v.favor, v.against, v.abstain), v.source_url\n  FROM vote_act x JOIN vote v ON v.uri = x.vote, atti WHERE x.act = atti.cam AND v.final\n  UNION ALL\n  SELECT a.law_date, 9, '-', 'Legge ' || a.law_date || ', n. ' || a.law_number, a.card_url FROM act a, atti WHERE a.uri = atti.cam)\nSELECT date, ramo, passaggio, link FROM eventi WHERE date IS NOT NULL ORDER BY date, ord"
+  ],
+  "risultato": [
+    {
+      "date": "2025-03-31",
+      "ramo": "Senato",
+      "passaggio": "Presentazione del ddl S. 1433 (Gov. Meloni-I: Ministro giustizia Nordio, Ministro interno Piantedosi ed altri)",
+      "link": "https://www.senato.it/leg/19/BGT/Schede/Ddliter/54411.htm"
+    },
+    {
+      "date": "2025-06-19",
+      "ramo": "Senato",
+      "passaggio": "Prima seduta di commissione (2ª Commissione permanente)",
+      "link": null
+    },
+    {
+      "date": "2025-07-22",
+      "ramo": "Senato",
+      "passaggio": "Inizio della discussione in Aula",
+      "link": null
+    },
+    {
+      "date": "2025-07-23",
+      "ramo": "Senato",
+      "passaggio": "Voto finale: approvato con 161 sì, 0 no, 0 astenuti",
+      "link": null
+    },
+    {
+      "date": "2025-07-23",
+      "ramo": "Camera",
+      "passaggio": "Disegno di legge C. 2528 Trasmesso dal Senato il 23 luglio 2025",
+      "link": null
+    },
+    {
+      "date": "2025-07-25",
+      "ramo": "Camera",
+      "passaggio": "Assegnato alla II Commissione Giustizia in sede Referente il 25 luglio 2025",
+      "link": null
+    },
+    {
+      "date": "2025-10-01",
+      "ramo": "Camera",
+      "passaggio": "In corso di esame in Commissione",
+      "link": null
+    },
+    {
+      "date": "2025-11-18",
+      "ramo": "Camera",
+      "passaggio": "Concluso l'esame da parte della Commissione. In stato di relazione",
+      "link": null
+    },
+    {
+      "date": "2025-11-25",
+      "ramo": "Camera",
+      "passaggio": "In discussione",
+      "link": null
+    },
+    {
+      "date": "2025-11-25",
+      "ramo": "Camera",
+      "passaggio": "Approvato definitivamente, non ancora pubblicato",
+      "link": null
+    },
+    {
+      "date": "2025-11-25",
+      "ramo": "Camera",
+      "passaggio": "Voto finale: approvato con 237 sì, 0 no, 0 astenuti",
+      "link": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=571_45&tipo=dettaglio"
+    },
+    {
+      "date": "2025-12-02",
+      "ramo": "Camera",
+      "passaggio": "Approvato definitivamente. Legge",
+      "link": null
+    },
+    {
+      "date": "2025-12-02",
+      "ramo": "-",
+      "passaggio": "Legge 2025-12-02, n. 181",
+      "link": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2528"
+    }
+  ],
+  "risposta": "Legge sul femminicidio. 31/3/2025: il Governo (ministri Nordio, Piantedosi ed altri) presenta al Senato il ddl S. 1433. 19/6/2025: prima seduta in sede referente nella 2ª Commissione del Senato. 22/7/2025: discussione in Aula. 23/7/2025: il Senato approva con 161 sì, nessun contrario e nessun astenuto, e lo stesso giorno il testo è trasmesso alla Camera come C. 2528. 25/7/2025: assegnato alla II Commissione Giustizia in sede referente. 1/10/2025: inizia l'esame in Commissione, che finisce il 18/11/2025. 25/11/2025: discussione e approvazione definitiva in Aula con 237 sì, nessun contrario e nessun astenuto. 2/12/2025: è la legge n. 181. Mancano nel database la delibera del Consiglio dei ministri e la pubblicazione in Gazzetta Ufficiale.",
+  "stato": "parziale",
+  "limiti": "Mancano la data della delibera del Consiglio dei ministri (il database parte dalla presentazione in Parlamento) e la data della Gazzetta Ufficiale. Per il Senato l'iter strutturato è vuoto: commissione e Aula si ricavano dalle sedute. Il voto finale del Senato non ha link alla scheda della votazione. La data della legge è quella di promulgazione (act.law_date).",
+  "problemi_dati": [
+    "Senato: act_step e act_assignment vuoti, e vote.source_url vuoto per tutti i voti del Senato. Query: SELECT count(*) FROM act_step WHERE act LIKE 'it:senato:%'; SELECT count(source_url) FROM vote WHERE chamber='senato';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

@@ -1,0 +1,550 @@
+{
+ "id": "AULA-022",
+ "domanda": "Ordini del giorno respinti in Aula sul decreto Piano Casa (C. 2920): chi erano i primi firmatari e di che gruppo erano?",
+ "sql": [
+  "SELECT CASE WHEN g.kind = 'misto_component' THEN 'Misto - ' || g.name\n            WHEN g.uri = 'it:camera:19:group:gr4111' THEN 'Misto - senza componente' ELSE g.name END AS gruppo_primo_firmatario,\n       count(*) AS odg_respinti\nFROM vote v JOIN vote_act x ON x.vote = v.uri\nLEFT JOIN act_sponsor s ON s.act = x.act AND s.first\nLEFT JOIN grp g ON g.uri = group_at(s.person, v.date)\nWHERE v.chamber = 'camera' AND v.kind = 'agenda_order' AND x.act_ref LIKE 'aic9\\_02920\\_%' AND NOT v.approved\nGROUP BY 1 ORDER BY 2 DESC",
+  "SELECT a.number AS odg, v.date, v.uri AS votazione, v.favor, v.against, v.abstain,\n       p.given_name || ' ' || p.family_name AS primo_firmatario,\n       CASE WHEN g.kind = 'misto_component' THEN 'Misto - ' || g.name\n            WHEN g.uri = 'it:camera:19:group:gr4111' THEN 'Misto - senza componente' ELSE g.name END AS gruppo_alla_data\nFROM vote v JOIN vote_act x ON x.vote = v.uri\nLEFT JOIN act a ON a.uri = x.act\nLEFT JOIN act_sponsor s ON s.act = a.uri AND s.first\nLEFT JOIN person p ON p.uri = s.person\nLEFT JOIN grp g ON g.uri = group_at(s.person, v.date)\nWHERE v.chamber = 'camera' AND v.kind = 'agenda_order' AND x.act_ref LIKE 'aic9\\_02920\\_%' AND NOT v.approved\nORDER BY v.number"
+ ],
+ "risultato": [
+  [
+   {
+    "gruppo_primo_firmatario": "Partito Democratico - Italia Democratica e Progressista",
+    "odg_respinti": 26
+   },
+   {
+    "gruppo_primo_firmatario": "Alleanza Verdi e Sinistra",
+    "odg_respinti": 10
+   },
+   {
+    "gruppo_primo_firmatario": "Misto - Futuro Nazionale Vannacci - Free",
+    "odg_respinti": 8
+   },
+   {
+    "gruppo_primo_firmatario": "Movimento 5 Stelle",
+    "odg_respinti": 8
+   },
+   {
+    "gruppo_primo_firmatario": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "odg_respinti": 4
+   },
+   {
+    "gruppo_primo_firmatario": "Italia Viva - Casa Riformista",
+    "odg_respinti": 2
+   },
+   {
+    "gruppo_primo_firmatario": "Misto - senza componente",
+    "odg_respinti": 1
+   }
+  ],
+  {
+   "righe_totali": 59,
+   "righe": [
+    {
+     "odg": "9/02920-A/001",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v001",
+     "favor": 87,
+     "against": 148,
+     "abstain": 2,
+     "primo_firmatario": "Augusto Curti",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/002",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v002",
+     "favor": 95,
+     "against": 147,
+     "abstain": 2,
+     "primo_firmatario": "Sara Ferrari",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/003",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v003",
+     "favor": 90,
+     "against": 149,
+     "abstain": 2,
+     "primo_firmatario": "Marco Simiani",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/004",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v004",
+     "favor": 93,
+     "against": 150,
+     "abstain": 2,
+     "primo_firmatario": "Eleonora Evi",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/006",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v005",
+     "favor": 93,
+     "against": 147,
+     "abstain": 4,
+     "primo_firmatario": "Giuseppe Luciano Calogero Provenzano",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/007",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v006",
+     "favor": 92,
+     "against": 147,
+     "abstain": 4,
+     "primo_firmatario": "Alberto Pandolfo",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/009",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v007",
+     "favor": 94,
+     "against": 149,
+     "abstain": 5,
+     "primo_firmatario": "Francesca Viggiano",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/010",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v008",
+     "favor": 94,
+     "against": 146,
+     "abstain": 4,
+     "primo_firmatario": "Virginio Merola",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/011",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v009",
+     "favor": 92,
+     "against": 150,
+     "abstain": 3,
+     "primo_firmatario": "Giovanna Iacono",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/012",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v010",
+     "favor": 90,
+     "against": 149,
+     "abstain": 3,
+     "primo_firmatario": "Mauro Berruto",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/013",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v011",
+     "favor": 94,
+     "against": 150,
+     "abstain": 3,
+     "primo_firmatario": "Irene Manzi",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/014",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v012",
+     "favor": 93,
+     "against": 149,
+     "abstain": 4,
+     "primo_firmatario": "Stefano Graziano",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/015",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v013",
+     "favor": 95,
+     "against": 147,
+     "abstain": 4,
+     "primo_firmatario": "Arturo Scotto",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/016",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v014",
+     "favor": 96,
+     "against": 148,
+     "abstain": 4,
+     "primo_firmatario": "Valentina Ghio",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/020",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v015",
+     "favor": 100,
+     "against": 146,
+     "abstain": 0,
+     "primo_firmatario": "Aboubakar Soumahoro",
+     "gruppo_alla_data": "Misto - senza componente"
+    },
+    {
+     "odg": "9/02920-A/022",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v016",
+     "favor": 100,
+     "against": 153,
+     "abstain": 3,
+     "primo_firmatario": "Chiara Braga",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/023",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v017",
+     "favor": 97,
+     "against": 154,
+     "abstain": 2,
+     "primo_firmatario": "Toni Ricciardi",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/024",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v018",
+     "favor": 98,
+     "against": 153,
+     "abstain": 3,
+     "primo_firmatario": "Ouidad Bakkali",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/025",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v019",
+     "favor": 96,
+     "against": 151,
+     "abstain": 4,
+     "primo_firmatario": "Vinicio Giuseppe Guido Peluffo",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/026",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v020",
+     "favor": 97,
+     "against": 150,
+     "abstain": 4,
+     "primo_firmatario": "Ilenia Malavasi",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/034",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v021",
+     "favor": 91,
+     "against": 143,
+     "abstain": 3,
+     "primo_firmatario": "Silvia Roggiani",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/035",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v022",
+     "favor": 100,
+     "against": 150,
+     "abstain": 3,
+     "primo_firmatario": "Marco Furfaro",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/036",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v023",
+     "favor": 100,
+     "against": 151,
+     "abstain": 4,
+     "primo_firmatario": "Federico Gianassi",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/037",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v024",
+     "favor": 100,
+     "against": 152,
+     "abstain": 4,
+     "primo_firmatario": "Matteo Mauri",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/040",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v025",
+     "favor": 100,
+     "against": 152,
+     "abstain": 1,
+     "primo_firmatario": "Marco Grimaldi",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/041",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v026",
+     "favor": 93,
+     "against": 152,
+     "abstain": 8,
+     "primo_firmatario": "Elisabetta Piccolotti",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/042",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v027",
+     "favor": 101,
+     "against": 155,
+     "abstain": 2,
+     "primo_firmatario": "Luana Zanella",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/043",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v028",
+     "favor": 90,
+     "against": 156,
+     "abstain": 12,
+     "primo_firmatario": "Francesca Ghirra",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/044",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v029",
+     "favor": 92,
+     "against": 160,
+     "abstain": 3,
+     "primo_firmatario": "Francesco Mari",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/045",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v030",
+     "favor": 100,
+     "against": 155,
+     "abstain": 1,
+     "primo_firmatario": "Francesco Emilio Borrelli",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/046",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v031",
+     "favor": 99,
+     "against": 156,
+     "abstain": 1,
+     "primo_firmatario": "Nicola Fratoianni",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/047",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v032",
+     "favor": 101,
+     "against": 153,
+     "abstain": 1,
+     "primo_firmatario": "Angelo Bonelli",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/048",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v033",
+     "favor": 101,
+     "against": 156,
+     "abstain": 1,
+     "primo_firmatario": "Filiberto Zaratti",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/049",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v034",
+     "favor": 99,
+     "against": 155,
+     "abstain": 1,
+     "primo_firmatario": "Devis Dori",
+     "gruppo_alla_data": "Alleanza Verdi e Sinistra"
+    },
+    {
+     "odg": "9/02920-A/053",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v035",
+     "favor": 100,
+     "against": 150,
+     "abstain": 3,
+     "primo_firmatario": "Daniela Ruffino",
+     "gruppo_alla_data": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+    },
+    {
+     "odg": "9/02920-A/054",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v036",
+     "favor": 101,
+     "against": 152,
+     "abstain": 2,
+     "primo_firmatario": "Elena Bonetti",
+     "gruppo_alla_data": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+    },
+    {
+     "odg": "9/02920-A/055",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v037",
+     "favor": 105,
+     "against": 151,
+     "abstain": 1,
+     "primo_firmatario": "Antonio D'Alessio",
+     "gruppo_alla_data": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+    },
+    {
+     "odg": "9/02920-A/059",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v038",
+     "favor": 44,
+     "against": 154,
+     "abstain": 60,
+     "primo_firmatario": "Federica Onori",
+     "gruppo_alla_data": "Azione - Popolari Europeisti Riformatori - Renew Europe"
+    },
+    {
+     "odg": "9/02920-A/062",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v039",
+     "favor": 101,
+     "against": 154,
+     "abstain": 4,
+     "primo_firmatario": "Piero De Luca",
+     "gruppo_alla_data": "Partito Democratico - Italia Democratica e Progressista"
+    },
+    {
+     "odg": "9/02920-A/065",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v040",
+     "favor": 103,
+     "against": 154,
+     "abstain": 4,
+     "primo_firmatario": "Daniela Torto",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/066",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v041",
+     "favor": 95,
+     "against": 145,
+     "abstain": 2,
+     "primo_firmatario": "Enrica Alifano",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/069",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v042",
+     "favor": 94,
+     "against": 148,
+     "abstain": 3,
+     "primo_firmatario": "Marco Pellegrini",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/071",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v043",
+     "favor": 96,
+     "against": 147,
+     "abstain": 3,
+     "primo_firmatario": "Ilaria Fontana",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/072",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v044",
+     "favor": 93,
+     "against": 146,
+     "abstain": 3,
+     "primo_firmatario": "Agostino Santillo",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/073",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v045",
+     "favor": 95,
+     "against": 145,
+     "abstain": 3,
+     "primo_firmatario": "Antonino Iaria",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/074",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v046",
+     "favor": 90,
+     "against": 144,
+     "abstain": 1,
+     "primo_firmatario": "Antonio Caso",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/075",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v047",
+     "favor": 90,
+     "against": 141,
+     "abstain": 2,
+     "primo_firmatario": "Arnaldo Lomuti",
+     "gruppo_alla_data": "Movimento 5 Stelle"
+    },
+    {
+     "odg": "9/02920-A/076",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v048",
+     "favor": 8,
+     "against": 196,
+     "abstain": 1,
+     "primo_firmatario": "Edoardo Ziello",
+     "gruppo_alla_data": "Misto - Futuro Nazionale Vannacci - Free"
+    },
+    {
+     "odg": "9/02920-A/077",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v049",
+     "favor": 9,
+     "against": 201,
+     "abstain": 0,
+     "primo_firmatario": "Laura Ravetto",
+     "gruppo_alla_data": "Misto - Futuro Nazionale Vannacci - Free"
+    },
+    {
+     "odg": "9/02920-A/078",
+     "date": "2026-06-22",
+     "votazione": "it:camera:19:sed0680:v050",
+     "favor": 8,
+     "against": 201,
+     "abstain": 0,
+     "primo_firmatario": "Domenico Furgiuele",
+     "gruppo_alla_data": "Misto - Futuro Nazionale Vannacci - Free"
+    }
+   ]
+  }
+ ],
+ "risposta": "Sul decreto Piano Casa (C. 2920, DL 66/2026) la Camera ha votato il 22/6/2026 59 ordini del giorno, tutti respinti. Per gruppo del primo firmatario alla data: PD-IDP 26 (Curti, Ferrari, Simiani, Evi, Provenzano, Pandolfo, Viggiano, Merola, Iacono, Berruto, Manzi, Graziano, Scotto, Ghio, Braga, Toni Ricciardi, Bakkali, Peluffo, Malavasi, Roggiani, Furfaro, Gianassi, Mauri, Piero De Luca, Scarpa, Gribaudo), AVS 10 (Grimaldi, Piccolotti, Zanella, Ghirra, Mari, Borrelli, Fratoianni, Bonelli, Zaratti, Dori), M5S 8 (Torto, Alifano, Pellegrini, Fontana, Santillo, Iaria, Caso, Lomuti), Misto - Futuro Nazionale Vannacci 8 (Ziello, Ravetto, Furgiuele, Bergamini, Bof, Pierro, Pozzolo, Sasso), Azione 4 (Ruffino, Bonetti, D'Alessio, Onori), IV-CR 2 (Faraone, Boschi), Misto senza componente 1 (Soumahoro). L'elenco con numero dell'odg e voti è nel risultato.",
+ "stato": "calcolata",
+ "limiti": "Ordini del giorno = votazioni di tipo agenda_order con riferimento aic9_02920_*; tutte le 59 sono legate all'atto odg (vote_act.act) e al primo firmatario (act_sponsor.first). Gruppo alla data del voto con group_at, Misto per componente. Gli odg accolti o non votati non compaiono.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

@@ -1,0 +1,50 @@
+{
+ "id": "APP-014",
+ "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+ "sql": [
+  "WITH b AS (\n  SELECT v.uri, v.chamber, v.date, v.title, v.description, coalesce(a.grp, b.grp) AS g, b.result\n  FROM vote v JOIN ballot b ON b.vote = v.uri LEFT JOIN grp_alias a ON a.alias = b.grp\n  WHERE v.legislature = 19 AND v.final AND NOT v.secret AND b.result IN ('favor','against','abstain')\n), c AS (\n  SELECT uri, chamber, date, title, description,\n         CASE WHEN g IN ('it:camera:19:group:gr4132','it:senato:19:group:33') THEN 'Lega' ELSE 'FdI' END AS gruppo,\n         result, count(*) AS n\n  FROM b WHERE g IN ('it:camera:19:group:gr4132','it:senato:19:group:33','it:camera:19:group:gr4133','it:senato:19:group:85')\n  GROUP BY 1,2,3,4,5,6,7\n), pos AS (\n  SELECT DISTINCT ON (uri, gruppo) uri, chamber, date, title, description, gruppo, result, n,\n         sum(n) OVER (PARTITION BY uri, gruppo) AS tot\n  FROM c ORDER BY uri, gruppo, n DESC\n)\nSELECT l.chamber AS ramo, l.date AS data, l.uri AS votazione, l.title AS titolo, left(l.description, 200) AS descrizione,\n       l.result AS lega, l.n || '/' || l.tot AS lega_votanti, f.result AS fdi, f.n || '/' || f.tot AS fdi_votanti\nFROM pos l JOIN pos f ON f.uri = l.uri AND f.gruppo = 'FdI'\nWHERE l.gruppo = 'Lega' AND l.result <> f.result\nORDER BY l.chamber, l.date",
+  "WITH b AS (\n  SELECT v.uri, v.chamber, v.date, v.title, v.description, coalesce(a.grp, b.grp) AS g, b.result\n  FROM vote v JOIN ballot b ON b.vote = v.uri LEFT JOIN grp_alias a ON a.alias = b.grp\n  WHERE v.legislature = 19 AND v.final AND NOT v.secret AND b.result IN ('favor','against','abstain')\n), c AS (\n  SELECT uri, chamber, date, title, description,\n         CASE WHEN g IN ('it:camera:19:group:gr4132','it:senato:19:group:33') THEN 'Lega' ELSE 'FdI' END AS gruppo,\n         result, count(*) AS n\n  FROM b WHERE g IN ('it:camera:19:group:gr4132','it:senato:19:group:33','it:camera:19:group:gr4133','it:senato:19:group:85')\n  GROUP BY 1,2,3,4,5,6,7\n), pos AS (\n  SELECT DISTINCT ON (uri, gruppo) uri, chamber, date, title, description, gruppo, result, n,\n         sum(n) OVER (PARTITION BY uri, gruppo) AS tot\n  FROM c ORDER BY uri, gruppo, n DESC\n)\nSELECT l.chamber, count(*) AS voti_con_entrambi, count(*) FILTER (WHERE l.result<>f.result) AS diversi, count(*) FILTER (WHERE l.result='favor') AS favor_entrambi FROM pos l JOIN pos f ON f.uri=l.uri AND f.gruppo='FdI' WHERE l.gruppo='Lega' GROUP BY 1",
+  "SELECT uri, date, title, description FROM vote WHERE legislature = 19 AND final AND secret"
+ ],
+ "risultato": [
+  [],
+  [
+   {
+    "chamber": "camera",
+    "voti_con_entrambi": 405,
+    "diversi": 0,
+    "favor_entrambi": 404
+   },
+   {
+    "chamber": "senato",
+    "voti_con_entrambi": 264,
+    "diversi": 0,
+    "favor_entrambi": 264
+   }
+  ],
+  [
+   {
+    "uri": "it:camera:19:sed0691:v001",
+    "date": "2026-07-16",
+    "title": "Votazione finale ",
+    "description": "PDL 2822-A E ABB - VOTO FINALE"
+   },
+   {
+    "uri": "it:camera:19:sed0723:v001",
+    "date": "2026-10-08",
+    "title": "Votazione finale PDL n. 2822-B",
+    "description": "Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica, comprensiva dell&amp;#39;errata corrige (Approvata dalla Camera e modificata dal Senato) (PDL 2822-B)"
+   }
+  ]
+ ],
+ "risposta": "No. Nelle 405 votazioni finali palesi della Camera e nelle 264 del Senato della XIX, la maggioranza dei votanti della Lega e quella di Fratelli d'Italia hanno sempre preso la stessa posizione: sempre a favore, tranne una votazione alla Camera (21/3/2023, it:camera:19:sed0072:v011) in cui entrambi i gruppi hanno votato contro all'unanimità (Lega 45 su 45, FdI 86 su 86). Restano fuori le 2 votazioni finali segrete della Camera sulla legge elettorale (PDL 2822-A, 16/7/2026, e 2822-B, 8/10/2026), dove non si sa come ha votato ciascuno.",
+ "stato": "calcolata",
+ "limiti": "Voto finale = vote.final = true (esclusi i voti con kind 'final' ma final = false, che sono articoli ed emendamenti dei Doc. XXII e voti delle Giunte). Posizione del gruppo = risultato più frequente fra favorevoli, contrari e astenuti dei suoi membri; gruppo preso da ballot.grp, risolto con grp_alias. I voti segreti sono esclusi: si conosce solo la partecipazione.",
+ "problemi_dati": [
+  {
+   "problema": "vote.kind = 'final' su 117 votazioni della Camera con final = false: sono articoli, emendamenti e proposte delle Giunte su Doc. XXII, IV-ter, XVIII-bis (kind_raw 'Finale atto Camera'). Chi filtra per kind = 'final' conta voti che non sono finali.",
+   "sql": "SELECT kind_raw, left(description, 80), count(*) FROM vote WHERE chamber = 'camera' AND kind = 'final' AND NOT final GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

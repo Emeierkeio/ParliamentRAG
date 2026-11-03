@@ -1,0 +1,121 @@
+{
+ "id": "RIC-040",
+ "domanda": "Applica la classificazione di Döring dell'agenda power: quante sedute d'Aula sono dedicate a provvedimenti del governo rispetto a quelli parlamentari?",
+ "sql": [
+  "WITH s AS (\n  SELECT st.chamber, st.uri,\n    bool_or(CASE WHEN a.chamber = 'senato' THEN a.initiative ~* '^(gov\\.|pres\\. consiglio|ministro)' ELSE a.initiative = 'Governo' END) AS gov,\n    bool_or(CASE WHEN a.chamber = 'senato' THEN a.initiative ~* '^(sen\\.|dep\\.)|^parlamentare' ELSE a.initiative = 'Parlamentare' END) AS parl\n  FROM sitting st LEFT JOIN agenda_item i ON i.sitting = st.uri\n  LEFT JOIN agenda_item_act x ON x.item = i.uri LEFT JOIN act a ON a.uri = x.act AND a.kind = 'bill'\n  WHERE st.body IN ('it:camera:19:aula', 'it:senato:19:aula') AND st.status = 'held'\n  GROUP BY 1, 2\n)\nSELECT chamber AS ramo,\n  count(*) FILTER (WHERE gov AND NOT coalesce(parl, false)) AS solo_governo,\n  count(*) FILTER (WHERE parl AND NOT coalesce(gov, false)) AS solo_parlamentari,\n  count(*) FILTER (WHERE gov AND parl) AS entrambi,\n  count(*) FILTER (WHERE NOT coalesce(gov, false) AND NOT coalesce(parl, false)) AS nessun_progetto_di_legge,\n  count(*) AS sedute\nFROM s GROUP BY 1 ORDER BY 1",
+  "WITH arg AS (\n  SELECT st.chamber, st.uri AS seduta, i.uri AS argomento,\n    bool_or(CASE WHEN a.chamber = 'senato' THEN a.initiative ~* '^(gov\\.|pres\\. consiglio|ministro)' ELSE a.initiative = 'Governo' END) AS gov,\n    bool_or(a.title ~* 'conversione in legge') AS dl,\n    bool_or(CASE WHEN a.chamber = 'senato' THEN a.initiative ~* '^(sen\\.|dep\\.)|^parlamentare' ELSE a.initiative = 'Parlamentare' END) AS parl\n  FROM sitting st JOIN agenda_item i ON i.sitting = st.uri\n  JOIN agenda_item_act x ON x.item = i.uri JOIN act a ON a.uri = x.act AND a.kind = 'bill'\n  WHERE st.body IN ('it:camera:19:aula', 'it:senato:19:aula') AND st.status = 'held'\n  GROUP BY 1, 2, 3\n), cl AS (\n  SELECT *, CASE WHEN gov AND dl THEN 'governo: decreto-legge' WHEN gov THEN 'governo: altro ddl'\n                 WHEN parl THEN 'parlamentare' ELSE 'altra iniziativa (regioni, CNEL, popolare)' END AS iniziativa\n  FROM arg\n)\nSELECT chamber AS ramo, iniziativa, count(*) AS argomenti, count(DISTINCT seduta) AS sedute_con_almeno_un_argomento,\n       (SELECT count(*) FROM sitting s WHERE s.body = 'it:' || cl.chamber || ':19:aula' AND s.status = 'held') AS sedute_aula_totali\nFROM cl GROUP BY ROLLUP (1, 2) ORDER BY 1, 2"
+ ],
+ "risultato": [
+  [
+   {
+    "ramo": "camera",
+    "solo_governo": 301,
+    "solo_parlamentari": 81,
+    "entrambi": 164,
+    "nessun_progetto_di_legge": 190,
+    "sedute": 736
+   },
+   {
+    "ramo": "senato",
+    "solo_governo": 207,
+    "solo_parlamentari": 45,
+    "entrambi": 88,
+    "nessun_progetto_di_legge": 129,
+    "sedute": 469
+   }
+  ],
+  [
+   {
+    "ramo": "camera",
+    "iniziativa": "altra iniziativa (regioni, CNEL, popolare)",
+    "argomenti": 8,
+    "sedute_con_almeno_un_argomento": 8,
+    "sedute_aula_totali": 736
+   },
+   {
+    "ramo": "camera",
+    "iniziativa": "governo: altro ddl",
+    "argomenti": 369,
+    "sedute_con_almeno_un_argomento": 233,
+    "sedute_aula_totali": 736
+   },
+   {
+    "ramo": "camera",
+    "iniziativa": "governo: decreto-legge",
+    "argomenti": 339,
+    "sedute_con_almeno_un_argomento": 293,
+    "sedute_aula_totali": 736
+   },
+   {
+    "ramo": "camera",
+    "iniziativa": "parlamentare",
+    "argomenti": 274,
+    "sedute_con_almeno_un_argomento": 204,
+    "sedute_aula_totali": 736
+   },
+   {
+    "ramo": "camera",
+    "iniziativa": null,
+    "argomenti": 990,
+    "sedute_con_almeno_un_argomento": 548,
+    "sedute_aula_totali": 736
+   },
+   {
+    "ramo": "senato",
+    "iniziativa": "altra iniziativa (regioni, CNEL, popolare)",
+    "argomenti": 9,
+    "sedute_con_almeno_un_argomento": 4,
+    "sedute_aula_totali": 469
+   },
+   {
+    "ramo": "senato",
+    "iniziativa": "governo: altro ddl",
+    "argomenti": 458,
+    "sedute_con_almeno_un_argomento": 162,
+    "sedute_aula_totali": 469
+   },
+   {
+    "ramo": "senato",
+    "iniziativa": "governo: decreto-legge",
+    "argomenti": 451,
+    "sedute_con_almeno_un_argomento": 166,
+    "sedute_aula_totali": 469
+   },
+   {
+    "ramo": "senato",
+    "iniziativa": "parlamentare",
+    "argomenti": 249,
+    "sedute_con_almeno_un_argomento": 104,
+    "sedute_aula_totali": 469
+   },
+   {
+    "ramo": "senato",
+    "iniziativa": null,
+    "argomenti": 1167,
+    "sedute_con_almeno_un_argomento": 341,
+    "sedute_aula_totali": 469
+   },
+   {
+    "ramo": null,
+    "iniziativa": null,
+    "argomenti": 2157,
+    "sedute_con_almeno_un_argomento": 889,
+    "sedute_aula_totali": 0
+   }
+  ]
+ ],
+ "risposta": "Camera, 736 sedute d'Aula della XIX: 301 trattano solo progetti di legge del governo, 81 solo progetti di iniziativa parlamentare, 164 entrambi, 190 nessun progetto di legge (mozioni, interrogazioni, altro). Per argomenti all'ordine del giorno legati a un progetto di legge: 708 del governo (339 decreti-legge, 369 altri ddl), 274 parlamentari, 8 di altra iniziativa. Senato, 469 sedute: 207 solo governo, 45 solo parlamentari, 88 entrambi, 129 nessun progetto di legge; argomenti: 909 del governo (451 decreti-legge, 458 altri ddl), 249 parlamentari, 9 di altra iniziativa. In entrambi i rami le sedute con provvedimenti del governo (Camera 465, Senato 295) sono più di quelle con provvedimenti parlamentari (Camera 245, Senato 133).",
+ "stato": "parziale",
+ "limiti": "Si contano sedute e argomenti, non il tempo: il database non ha la durata di ogni argomento. Argomento = agenda_item legato via agenda_item_act a un act di tipo bill; un argomento con atti di iniziativa diversa conta come governo se c'è un atto del governo. Iniziativa del Senato normalizzata dal testo grezzo («Gov.», «Pres. Consiglio», «Sen.», «Dep.»). I Doc. (relazioni, documenti) non sono legati ad atti e restano fuori. Sedute d'Aula = sitting.body it:camera:19:aula / it:senato:19:aula con status held. La classificazione di Döring è applicata come semplice divisione governo/parlamento.",
+ "problemi_dati": [
+  {
+   "problema": "Negli argomenti d'Aula i riferimenti ai Doc. (135 alla Camera, 156 al Senato) non sono mai risolti in agenda_item_act.act: i documenti non sono in act.",
+   "sql": "SELECT st.chamber, split_part(x.act_ref, ':', 1), count(*), count(x.act) FROM sitting st JOIN agenda_item i ON i.sitting = st.uri JOIN agenda_item_act x ON x.item = i.uri WHERE st.body LIKE '%:aula' GROUP BY 1, 2"
+  },
+  {
+   "problema": "Una seduta della Camera futura (3/11/2026) è in sitting con body aula e kind assembly_agenda: chi conta le sedute senza filtrare status = 'held' la include.",
+   "sql": "SELECT uri, date, status, kind FROM sitting WHERE body = 'it:camera:19:aula' AND date > DATE '2026-11-02'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

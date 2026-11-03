@@ -1,0 +1,338 @@
+{
+ "id": "AULA-017",
+ "domanda": "Quali ministri hanno risposto al question time della Camera nell'ultimo mese, e quale gruppo aveva presentato ciascuna interrogazione?",
+ "sql": [
+  "WITH qt AS (\n  SELECT i.uri AS item, st.date, st.number AS seduta\n  FROM agenda_item i JOIN sitting st ON st.uri = i.sitting\n  WHERE st.chamber = 'camera' AND st.kind = 'assembly_verbatim' AND st.date BETWEEN '2026-10-02' AND '2026-11-02'\n    AND i.title ILIKE 'Svolgimento di interrogazioni a risposta immediata%'),\nsp AS (\n  SELECT q.date, q.seduta, s.item, s.ord, s.person, s.speaker_label, s.as_group,\n         substring(s.text FROM '^\\s*,\\s*([^.]+)\\.') AS carica_nel_testo\n  FROM qt q JOIN speech s ON s.item = q.item),\nrisposte AS (\n  SELECT a.*, b.ord AS ord_interrogante, b.speaker_label AS interrogante, b.as_group AS gruppo_interrogante\n  FROM sp a CROSS JOIN LATERAL (SELECT * FROM sp b WHERE b.item = a.item AND b.ord < a.ord AND b.as_group IS NOT NULL ORDER BY b.ord DESC LIMIT 1) b\n  WHERE a.carica_nel_testo ~* '^(ministr|vice ?presidente del consiglio|sottosegretari)'),\nuniche AS (\n  SELECT DISTINCT ON (item, ord_interrogante) * FROM risposte ORDER BY item, ord_interrogante, ord)\nSELECT date, seduta, initcap(speaker_label) AS risponde, carica_nel_testo AS carica, initcap(interrogante) AS illustra, gruppo_interrogante\nFROM uniche ORDER BY date, ord"
+ ],
+ "risultato": [
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Matteo Salvini",
+   "carica": "Ministro delle Infrastrutture e dei trasporti",
+   "illustra": "Antonella Forattini",
+   "gruppo_interrogante": "PD-IDP"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Matteo Salvini",
+   "carica": "Ministro delle Infrastrutture e dei trasporti",
+   "illustra": "Davide Faraone",
+   "gruppo_interrogante": "IV-CR"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Matteo Salvini",
+   "carica": "Ministro delle Infrastrutture e dei trasporti",
+   "illustra": "Elisa Montemagni",
+   "gruppo_interrogante": "LEGA"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Matteo Salvini",
+   "carica": "Ministro delle Infrastrutture e dei trasporti",
+   "illustra": "Francesco Emilio Borrelli",
+   "gruppo_interrogante": "AVS"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Francesco Lollobrigida",
+   "carica": "Ministro dell'Agricoltura, della sovranità alimentare e delle foreste",
+   "illustra": "Alessandro Caramiello",
+   "gruppo_interrogante": "M5S"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Francesco Lollobrigida",
+   "carica": "Ministro dell'Agricoltura, della sovranità alimentare e delle foreste",
+   "illustra": "Marina Marchetto Aliprandi",
+   "gruppo_interrogante": "FDI"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Francesco Lollobrigida",
+   "carica": "Ministro dell'Agricoltura, della sovranità alimentare e delle foreste",
+   "illustra": "Ilaria Cavo",
+   "gruppo_interrogante": "NM(N-C-U-I)M-CP"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Anna Maria Bernini",
+   "carica": "Ministro dell'Università e della ricerca",
+   "illustra": "Rosaria Tassinari",
+   "gruppo_interrogante": "FI-PPE"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Andrea Abodi",
+   "carica": "Ministro per lo Sport e i giovani",
+   "illustra": "Daniela Ruffino",
+   "gruppo_interrogante": "AZ-PER-RE"
+  },
+  {
+   "date": "2026-10-07",
+   "seduta": 722,
+   "risponde": "Andrea Abodi",
+   "carica": "Ministro per lo Sport e i giovani",
+   "illustra": "Luca Pastorino",
+   "gruppo_interrogante": "MISTO-+EU-SUEU"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Orazio Schillaci",
+   "carica": "Ministro della Salute",
+   "illustra": "Paolo Ciani",
+   "gruppo_interrogante": "PD-IDP"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Orazio Schillaci",
+   "carica": "Ministro della Salute",
+   "illustra": "Davide Faraone",
+   "gruppo_interrogante": "IV-CR"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Domenico Furgiuele",
+   "gruppo_interrogante": "MISTO-FNV-F"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Fabrizio Benzoni",
+   "gruppo_interrogante": "AZ-PER-RE"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Giorgio Lovecchio",
+   "gruppo_interrogante": "FI-PPE"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Antonio Ferrara",
+   "gruppo_interrogante": "M5S"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Novo Umberto Maerna",
+   "gruppo_interrogante": "FDI"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Marco Grimaldi",
+   "gruppo_interrogante": "AVS"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Ilaria Cavo",
+   "gruppo_interrogante": "NM(N-C-U-I)M-CP"
+  },
+  {
+   "date": "2026-10-14",
+   "seduta": 727,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Riccardo Molinari",
+   "gruppo_interrogante": "LEGA"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Adolfo Urso",
+   "carica": "Ministro delle Imprese e del made in Italy",
+   "illustra": "Alberto Pandolfo",
+   "gruppo_interrogante": "PD-IDP"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Antonio Tajani",
+   "carica": "Ministro degli Affari esteri e della cooperazione internazionale",
+   "illustra": "Benedetto Della Vedova",
+   "gruppo_interrogante": "MISTO-+EU-SUEU"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Antonio Tajani",
+   "carica": "Ministro degli Affari esteri e della cooperazione internazionale",
+   "illustra": "Paolo Emilio Russo",
+   "gruppo_interrogante": "FI-PPE"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Antonio D'Alessio",
+   "gruppo_interrogante": "AZ-PER-RE"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Carlo Nordio",
+   "carica": "Ministro della Giustizia",
+   "illustra": "Jacopo Morrone",
+   "gruppo_interrogante": "LEGA"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Carlo Nordio",
+   "carica": "Ministro della Giustizia",
+   "illustra": "Grazia Di Maggio",
+   "gruppo_interrogante": "FDI"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Gianmarco Mazzi",
+   "carica": "Ministro del Turismo",
+   "illustra": "Luana Zanella",
+   "gruppo_interrogante": "AVS"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Paolo Zangrillo",
+   "carica": "Ministro per la Pubblica amministrazione",
+   "illustra": "Carmela Auriemma",
+   "gruppo_interrogante": "M5S"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Paolo Zangrillo",
+   "carica": "Ministro per la Pubblica amministrazione",
+   "illustra": "Francesco Saverio Romano",
+   "gruppo_interrogante": "NM(N-C-U-I)M-CP"
+  },
+  {
+   "date": "2026-10-21",
+   "seduta": 730,
+   "risponde": "Francesco Lollobrigida",
+   "carica": "Ministro dell'Agricoltura, della sovranità alimentare e delle foreste",
+   "illustra": "Maria Chiara Gadda",
+   "gruppo_interrogante": "IV-CR"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Eugenia Roccella",
+   "carica": "Ministra per la Famiglia, la natalità e le pari opportunità",
+   "illustra": "Ilenia Malavasi",
+   "gruppo_interrogante": "PD-IDP"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Laura Ravetto",
+   "gruppo_interrogante": "MISTO-FNV-F"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Giovanni Maiorano",
+   "gruppo_interrogante": "FDI"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Erica Mazzetti",
+   "gruppo_interrogante": "FI-PPE"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Andrea Barabotti",
+   "gruppo_interrogante": "LEGA"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Emma Pavanelli",
+   "gruppo_interrogante": "M5S"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Mauro Del Barba",
+   "gruppo_interrogante": "IV-CR"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Angelo Bonelli",
+   "gruppo_interrogante": "AVS"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i Rapporti con il Parlamento",
+   "illustra": "Alessandro Colucci",
+   "gruppo_interrogante": "NM(N-C-U-I)M-CP"
+  },
+  {
+   "date": "2026-10-28",
+   "seduta": 735,
+   "risponde": "Luca Ciriani",
+   "carica": "Ministro per i rapporti con il Parlamento",
+   "illustra": "Fabrizio Benzoni",
+   "gruppo_interrogante": "AZ-PER-RE"
+  }
+ ],
+ "risposta": "Dal 2/10 al 2/11/2026 la Camera ha svolto 4 question time (sedute 722 del 7/10, 727 del 14/10, 730 del 21/10, 735 del 28/10), con 40 interrogazioni. Hanno risposto: 7/10 Salvini (PD-IDP, IV-CR, Lega, AVS), Lollobrigida (M5S, FdI, Noi Moderati), Bernini (FI-PPE), Abodi (Azione, Misto-+Europa); 14/10 Schillaci (PD-IDP, IV-CR), Urso (Misto-Futuro Nazionale Vannacci, Azione, FI-PPE, M5S, FdI, AVS, Noi Moderati, Lega); 21/10 Urso (PD-IDP), Tajani (Misto-+Europa, FI-PPE), Ciriani (Azione), Nordio (Lega, FdI), Mazzi (AVS), Zangrillo (M5S, Noi Moderati), Lollobrigida (IV-CR); 28/10 Roccella (PD-IDP), Ciriani (Misto-Futuro Nazionale Vannacci, FdI, FI-PPE, Lega, M5S, IV-CR, AVS, Noi Moderati, Azione). Il gruppo è quello del deputato che illustra l'interrogazione.",
+ "stato": "calcolata",
+ "limiti": "«Ultimo mese» = dal 2/10 al 2/11/2026 (ultimo resoconto d'Aula: 30/10). Le interrogazioni a risposta immediata non sono legate agli atti (agenda_item_act vuoto per questi argomenti): il gruppo presentatore si ricava dal gruppo dichiarato (as_group) del deputato che illustra, non dai firmatari dell'atto. La carica del ministro non è in as_office: si legge dall'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»).",
+ "problemi_dati": [
+  "Camera: speech.as_office è vuoto per i ministri (2.747 interventi che iniziano con «, Ministro…»), la carica resta all'inizio del testo. Query: SELECT count(*) FROM speech WHERE uri LIKE 'it:camera:%' AND as_office IS NULL AND text ~ '^\\s*,\\s*Ministr';",
+  "Camera: speech.as_group troncato o concatenato: «NM(N-C-U-I» in 1.627 interventi, e valori come «NM(N-C-U-I)M-CP)(FDI)(LEGA)(FI-PPE». Query: SELECT as_group, count(*) FROM speech WHERE uri LIKE 'it:camera:%' AND as_group LIKE 'NM%' GROUP BY 1;",
+  "Le interrogazioni a risposta immediata d'Aula della Camera non sono legate agli atti 3-xxxxx (nessuna riga in agenda_item_act). Query: SELECT count(*) FROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item WHERE i.title ILIKE 'Svolgimento di interrogazioni a risposta immediata%' AND i.uri LIKE 'it:camera:%';"
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act, office e dei gruppi negli interventi)"
+}

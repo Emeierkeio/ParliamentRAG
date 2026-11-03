@@ -1,0 +1,143 @@
+{
+ "id": "PARL-034",
+ "domanda": "Su quali temi ha presentato più atti l'on. Eleonora Evi? Classifica per argomento.",
+ "sql": [
+  "SELECT c.label_it AS tema, c.uri AS concetto,\n       count(DISTINCT a.uri) FILTER (WHERE sp.first) AS atti_prima_firma,\n       count(DISTINCT a.uri) AS atti_anche_cofirmati\nFROM act_sponsor sp\nJOIN act a ON a.uri = sp.act\nJOIN act_subject s ON s.act = a.uri\nJOIN concept c ON c.uri = s.concept\nWHERE sp.person = 'it:person:camera:308893'   -- Eleonora Evi\nGROUP BY 1,2\nORDER BY atti_prima_firma DESC, atti_anche_cofirmati DESC, tema\nLIMIT 20"
+ ],
+ "risultato": [
+  {
+   "tema": "protezione dell'ambiente",
+   "concetto": "http://eurovoc.europa.eu/2825",
+   "atti_prima_firma": 36,
+   "atti_anche_cofirmati": 63
+  },
+  {
+   "tema": "benessere degli animali",
+   "concetto": "http://eurovoc.europa.eu/5462",
+   "atti_prima_firma": 35,
+   "atti_anche_cofirmati": 43
+  },
+  {
+   "tema": "protezione degli animali",
+   "concetto": "http://eurovoc.europa.eu/2830",
+   "atti_prima_firma": 31,
+   "atti_anche_cofirmati": 39
+  },
+  {
+   "tema": "allevamento",
+   "concetto": "http://eurovoc.europa.eu/711",
+   "atti_prima_firma": 27,
+   "atti_anche_cofirmati": 30
+  },
+  {
+   "tema": "protezione del consumatore",
+   "concetto": "http://eurovoc.europa.eu/2836",
+   "atti_prima_firma": 18,
+   "atti_anche_cofirmati": 41
+  },
+  {
+   "tema": "protezione della fauna",
+   "concetto": "http://eurovoc.europa.eu/2826",
+   "atti_prima_firma": 17,
+   "atti_anche_cofirmati": 23
+  },
+  {
+   "tema": "fauna",
+   "concetto": "http://eurovoc.europa.eu/972",
+   "atti_prima_firma": 16,
+   "atti_anche_cofirmati": 20
+  },
+  {
+   "tema": "sanità pubblica",
+   "concetto": "http://eurovoc.europa.eu/3885",
+   "atti_prima_firma": 15,
+   "atti_anche_cofirmati": 42
+  },
+  {
+   "tema": "impatto ambientale",
+   "concetto": "http://eurovoc.europa.eu/3139",
+   "atti_prima_firma": 15,
+   "atti_anche_cofirmati": 29
+  },
+  {
+   "tema": "diritto dell'UE",
+   "concetto": "http://eurovoc.europa.eu/525",
+   "atti_prima_firma": 12,
+   "atti_anche_cofirmati": 30
+  },
+  {
+   "tema": "studio d'impatto",
+   "concetto": "http://eurovoc.europa.eu/3085",
+   "atti_prima_firma": 11,
+   "atti_anche_cofirmati": 18
+  },
+  {
+   "tema": "energia rinnovabile",
+   "concetto": "http://eurovoc.europa.eu/754",
+   "atti_prima_firma": 10,
+   "atti_anche_cofirmati": 29
+  },
+  {
+   "tema": "malattia",
+   "concetto": "http://eurovoc.europa.eu/1754",
+   "atti_prima_firma": 10,
+   "atti_anche_cofirmati": 23
+  },
+  {
+   "tema": "suino",
+   "concetto": "http://eurovoc.europa.eu/2560",
+   "atti_prima_firma": 10,
+   "atti_anche_cofirmati": 11
+  },
+  {
+   "tema": "allevamento intensivo",
+   "concetto": "http://eurovoc.europa.eu/715",
+   "atti_prima_firma": 9,
+   "atti_anche_cofirmati": 12
+  },
+  {
+   "tema": "cambiamento climatico",
+   "concetto": "http://eurovoc.europa.eu/5482",
+   "atti_prima_firma": 8,
+   "atti_anche_cofirmati": 42
+  },
+  {
+   "tema": "diritto alla salute",
+   "concetto": "http://eurovoc.europa.eu/6628",
+   "atti_prima_firma": 8,
+   "atti_anche_cofirmati": 28
+  },
+  {
+   "tema": "energia dolce",
+   "concetto": "http://eurovoc.europa.eu/744",
+   "atti_prima_firma": 8,
+   "atti_anche_cofirmati": 20
+  },
+  {
+   "tema": "produzione d'energia",
+   "concetto": "http://eurovoc.europa.eu/2715",
+   "atti_prima_firma": 8,
+   "atti_anche_cofirmati": 17
+  },
+  {
+   "tema": "zona protetta",
+   "concetto": "http://eurovoc.europa.eu/4801",
+   "atti_prima_firma": 8,
+   "atti_anche_cofirmati": 14
+  }
+ ],
+ "risposta": "Per gli atti a prima firma di Eleonora Evi con temi EuroVoc, i temi più frequenti sono: protezione dell'ambiente (36 atti), benessere degli animali (35), protezione degli animali (31), allevamento (27), protezione del consumatore (18), protezione della fauna (17), fauna (16), sanità pubblica (15), impatto ambientale (15), diritto dell'UE (12). Contando anche gli atti che ha solo cofirmato, l'ordine in testa resta protezione dell'ambiente (63), poi benessere degli animali (43), sanità pubblica (42), cambiamento climatico (42), protezione del consumatore (41).",
+ "stato": "parziale",
+ "limiti": "I temi coprono solo atti di indirizzo e di sindacato ispettivo (interrogazioni, interpellanze, mozioni, risoluzioni, ordini del giorno): nessun progetto di legge ha righe in act_subject, quindi le 11 proposte di legge a prima firma di Evi (61 con le cofirme) restano fuori dalla classifica. Un atto conta in più temi; i temi sono i descrittori EuroVoc così come assegnati, senza raggruppamento per aree. Classifica per numero di atti a prima firma, poi per atti anche cofirmati; mostrati i primi 20.",
+ "problemi_dati": [
+  {
+   "problema": "Nessun progetto di legge (kind bill, 3.199 alla Camera e 2.116 al Senato) ha temi in act_subject.",
+   "sql": "SELECT a.chamber, count(*) tot, count(*) FILTER (WHERE EXISTS (SELECT 1 FROM act_subject x WHERE x.act=a.uri)) con_temi FROM act a WHERE a.kind='bill' GROUP BY 1"
+  },
+  {
+   "problema": "493 righe di act_subject puntano a concetti EuroVoc assenti dalla tabella concept.",
+   "sql": "SELECT count(*) FROM act_subject s LEFT JOIN concept c ON c.uri=s.concept WHERE c.uri IS NULL"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

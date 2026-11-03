@@ -1,0 +1,30 @@
+{
+ "id": "CIT-021",
+ "trappola": true,
+ "domanda": "che tempo fa a Roma domani?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Fuori dominio: rifiutare con garbo e dire cosa il sistema sa fare.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso fornire previsioni meteo. ParliamentRAG riguarda i lavori, gli atti, gli interventi e le votazioni di Camera e Senato nella XIX legislatura.",
+ "eventi": {
+  "status": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [],
+ "errori": [],
+ "extra": {
+  "suggestions": [
+   "Qual è il calendario dei lavori della Camera questa settimana?",
+   "Quali argomenti sono all’ordine del giorno del Senato?",
+   "Di cosa si è discusso nell’ultima seduta parlamentare?"
+  ]
+ },
+ "tempo_s": 5.3,
+ "verifica": null
+}

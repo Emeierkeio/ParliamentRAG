@@ -1,0 +1,43 @@
+{
+ "id": "DJ-013",
+ "domanda": "Quali parlamentari intervengono di più in Aula? Top 20 per numero di interventi e per parole, Camera.",
+ "categoria": "interventi",
+ "ramo": "camera",
+ "tipo_risposta": "classifica",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Escludere i Presidenti di turno (speaker_label PRESIDENTE). Gli interventi in commissione vengono dal sommario e non si sommano a quelli d'Aula.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Alla Camera, il primato per numero di interventi in Aula è di [Marco Grimaldi (AVS)](#/strumenti/deputato/308810), con 980 interventi. I dati sono aggiornati al 19 ottobre 2026.\n\n| Pos. | Deputato/a | Gruppo/componente | Interventi |\n|---:|---|---|---:|\n| 1 | [Marco Grimaldi](#/strumenti/deputato/308810) | AVS | 980 |\n| 2 | [Roberto Giachetti](#/strumenti/deputato/300480) | Italia Viva – Casa riformista | 674 |\n| 3 | [Francesco Emilio Borrelli](#/strumenti/deputato/308857) | AVS | 626 |\n| 4 | [Federico Fornaro](#/strumenti/deputato/306398) | PD | 592 |\n| 5 | [Andrea Casu](#/strumenti/deputato/308600) | PD | 553 |\n| 6 | [Francesca Ghirra](#/strumenti/deputato/308861) | AVS | 538 |\n| 7 | [Andrea Quartini](#/strumenti/deputato/308896) | M5S | 504 |\n| 8 | [Filiberto Zaratti](#/strumenti/deputato/306521) | AVS | 494 |\n| 9 | [Angelo Bonelli](#/strumenti/deputato/302080) | AVS | 492 |\n| 10 | [Benedetto Della Vedova](#/strumenti/deputato/301577) | +Europa – Stati Uniti d’Europa | 445 |\n| 11 | [Valentina D’Orso](#/strumenti/deputato/307388) | M5S | 441 |\n| 12 | [Devis Dori](#/strumenti/deputato/307634) | AVS | 439 |\n| 13 | [Luana Zanella](#/strumenti/deputato/300469) | AVS | 431 |\n| 14 | [Antonino Iaria](#/strumenti/deputato/308809) | M5S | 413 |\n| 15 | [Alfonso Colucci](#/strumenti/deputato/308841) | M5S | 412 |\n| 16 | [Matilde Siracusano](#/strumenti/deputato/307402) | FI | 407 |\n| 17 | [Elisabetta Piccolotti](#/strumenti/deputato/308816) | AVS | 397 |\n| 18 | [Riccardo Magi](#/strumenti/deputato/307436) | +Europa – Stati Uniti d’Europa | 364 |\n| 19 | [Riccardo Ricciardi](#/strumenti/deputato/307250) | M5S | 359 |\n| 20 | [Enrica Alifano](#/strumenti/deputato/308872) | M5S | 352 |\n\nIl conteggio disponibile registra gli **interventi**, non il totale delle **parole pronunciate**: quindi non è possibile ricavare una top 20 affidabile per parole dai dati disponibili. Le schede indicano anche in quante sedute ciascuno è intervenuto: per esempio Grimaldi ha parlato in 376 sedute, Giachetti in 260 e Borrelli in 307.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "parlamentari",
+  "parlamentari",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare"
+ ],
+ "errori": [],
+ "tempo_s": 11.6,
+ "riferimento": {
+  "risposta": "Camera, Aula XIX (sedute fino al 30/10/2026), presidenti di turno e membri del governo esclusi. Top 20 per numero di interventi: 1 Marco Grimaldi (AVS) 1.194; 2 Roberto Giachetti (IV-CR) 957; 3 Federico Fornaro (PD-IDP) 793; 4 Francesco Emilio Borrelli (AVS) 708; 5 Andrea Casu (PD-IDP) 658; 6 Andrea Quartini (M5S) 598; 7 Angelo Bonelli (AVS) 597; 8 Filiberto Zaratti (AVS) 575; 9 Francesca Ghirra (AVS) 569; 10 Valentina D'Orso (M5S) 536; 11 Antonino Iaria (M5S) 530; 12 Alfonso Colucci (M5S) 528; 13 Benedetto Della Vedova (Misto-+Europa) 490; 14 Luana Zanella (AVS) 487; 15 Riccardo Ricciardi (M5S) 482; 16 Devis Dori (AVS) 453; 17 Elisabetta Piccolotti (AVS) 440; 18 Enrica Alifano (M5S) 398; 19 Emma Pavanelli (M5S) 395; 20 Debora Serracchiani (PD-IDP) 379. Top 20 per parole: 1 Grimaldi 416.005; 2 Casu 339.769; 3 Giachetti 320.990; 4 Zaratti 293.609; 5 Ghirra 260.293; 6 Giuseppe Bicchielli (FI-PPE) 238.302; 7 Borrelli 234.828; 8 Bonelli 230.820; 9 D'Orso 225.437; 10 Dori 221.463; 11 Quartini 215.002; 12 Piccolotti 197.670; 13 Zanella 187.136; 14 Della Vedova 162.881; 15 Alfonso Colucci 162.118; 16 Mauro Del Barba (IV-CR) 161.657; 17 Ilaria Cavo (NM) 159.952; 18 Nicola Fratoianni (AVS) 152.567; 19 Fabrizio Benzoni (Azione) 152.350; 20 Elena Bonetti (Azione) 150.126.",
+  "stato": "calcolata",
+  "limiti": "Solo sedute d'Aula della Camera con resoconto (736). Intervento = riga di speech con persona, senza as_office (esclude PRESIDENTE) e con gruppo dichiarato nel resoconto (esclude chi parla come membro del governo). Parole = parole del testo canonico. Gruppo = l'ultimo o l'attuale di membership, componente del Misto quando c'è. Una replica breve conta come un intervento."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 11.6
+ },
+ "causa_probabile": "dati",
+ "note": "Top 20 per interventi con l'ordine quasi giusto ma numeri vecchi (Grimaldi 980 contro 1.194, Giachetti 674 contro 957) e due intrusi: Matilde Siracusano, membro del governo, e Riccardo Magi (non nei primi 20 del riferimento); mancano Serracchiani e Pavanelli. Non dà la classifica per parole, che il riferimento ha."
+}

@@ -1,0 +1,95 @@
+{
+  "id": "STU-001",
+  "domanda": "per la tesina: come funziona l'iter di una legge, con un esempio vero dalla presentazione alla Gazzetta",
+  "sql": [
+    "WITH atti AS (SELECT 'it:senato:19:ddl:615'::text AS sen, 'it:camera:19:ac:1665'::text AS cam),\neventi AS (\n  SELECT a.date, 1 AS ord, 'Senato' AS ramo, 'Presentazione del ddl S. ' || a.number || ' (' || a.initiative || ')' AS passaggio, a.card_url AS link\n  FROM act a, atti WHERE a.uri = atti.sen\n  UNION ALL\n  SELECT min(s.date), 2, 'Senato', 'Prima seduta di commissione (' || min(s.body_name) || ')', NULL\n  FROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting, atti\n  WHERE x.act = atti.sen AND s.kind = 'committee_summary' AND i.stage ILIKE '%referente%'\n  UNION ALL\n  SELECT min(s.date), 3, 'Senato', 'Inizio della discussione in Aula', NULL\n  FROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting, atti\n  WHERE x.act = atti.sen AND s.kind = 'assembly_verbatim' AND i.title ILIKE '%discussione%'\n  UNION ALL\n  SELECT v.date, 4, 'Senato', format('Voto finale: approvato con %s sì, %s no, %s astenuti', v.favor, v.against, v.abstain), NULL\n  FROM vote_act x JOIN vote v ON v.uri = x.vote, atti WHERE x.act = atti.sen AND v.final\n  UNION ALL\n  SELECT t.date, 5, 'Camera', t.title, NULL FROM act_transmission t, atti WHERE t.act = atti.cam\n  UNION ALL\n  SELECT g.date, 6, 'Camera', g.title, NULL FROM act_assignment g, atti WHERE g.act = atti.cam\n  UNION ALL\n  SELECT st.date, 7, 'Camera', st.title, NULL FROM act_step st, atti WHERE st.act = atti.cam AND st.ord > 2\n  UNION ALL\n  SELECT v.date, 8, 'Camera', format('Voto finale: approvato con %s sì, %s no, %s astenuti', v.favor, v.against, v.abstain), v.source_url\n  FROM vote_act x JOIN vote v ON v.uri = x.vote, atti WHERE x.act = atti.cam AND v.final\n  UNION ALL\n  SELECT a.law_date, 9, '-', 'Legge ' || a.law_date || ', n. ' || a.law_number, a.card_url FROM act a, atti WHERE a.uri = atti.cam)\nSELECT date, ramo, passaggio, link FROM eventi WHERE date IS NOT NULL ORDER BY date, ord"
+  ],
+  "risultato": [
+    {
+      "date": "2023-03-23",
+      "ramo": "Senato",
+      "passaggio": "Presentazione del ddl S. 615 (Gov. Meloni-I: Ministro affari regionali e le autonomie Calderoli)",
+      "link": "https://www.senato.it/leg/19/BGT/Schede/Ddliter/52493.htm"
+    },
+    {
+      "date": "2023-05-03",
+      "ramo": "Senato",
+      "passaggio": "Prima seduta di commissione (1ª Commissione permanente)",
+      "link": null
+    },
+    {
+      "date": "2024-01-16",
+      "ramo": "Senato",
+      "passaggio": "Inizio della discussione in Aula",
+      "link": null
+    },
+    {
+      "date": "2024-01-23",
+      "ramo": "Senato",
+      "passaggio": "Voto finale: approvato con 110 sì, 64 no, 3 astenuti",
+      "link": null
+    },
+    {
+      "date": "2024-01-24",
+      "ramo": "Camera",
+      "passaggio": "Disegno di legge C. 1665 Trasmesso dal Senato il 24 gennaio 2024",
+      "link": null
+    },
+    {
+      "date": "2024-01-26",
+      "ramo": "Camera",
+      "passaggio": "Assegnato alla I Commissione Affari Costituzionali in sede Referente il 26 gennaio 2024",
+      "link": null
+    },
+    {
+      "date": "2024-02-14",
+      "ramo": "Camera",
+      "passaggio": "In corso di esame in Commissione",
+      "link": null
+    },
+    {
+      "date": "2024-04-27",
+      "ramo": "Camera",
+      "passaggio": "Concluso l'esame da parte della Commissione. In stato di relazione",
+      "link": null
+    },
+    {
+      "date": "2024-04-29",
+      "ramo": "Camera",
+      "passaggio": "In discussione",
+      "link": null
+    },
+    {
+      "date": "2024-06-19",
+      "ramo": "Camera",
+      "passaggio": "Approvato definitivamente, non ancora pubblicato",
+      "link": null
+    },
+    {
+      "date": "2024-06-19",
+      "ramo": "Camera",
+      "passaggio": "Voto finale: approvato con 172 sì, 99 no, 1 astenuti",
+      "link": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=309_246&tipo=dettaglio"
+    },
+    {
+      "date": "2024-06-26",
+      "ramo": "Camera",
+      "passaggio": "Approvato definitivamente. Legge",
+      "link": null
+    },
+    {
+      "date": "2024-06-26",
+      "ramo": "-",
+      "passaggio": "Legge 2024-06-26, n. 86",
+      "link": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1665"
+    }
+  ],
+  "risposta": "Esempio: l'autonomia differenziata. 23/3/2023: il Governo (ministro Calderoli) presenta al Senato il ddl S. 615. 3/5/2023: prima seduta in sede referente nella 1ª Commissione del Senato. 16/1/2024: inizia la discussione in Aula. 23/1/2024: il Senato approva con 110 sì, 64 no, 3 astenuti. 24/1/2024: il testo arriva alla Camera come C. 1665. 26/1/2024: assegnato alla I Commissione Affari costituzionali in sede referente. 14/2/2024: inizia l'esame in Commissione, che finisce il 27/4/2024. 29/4/2024: discussione in Aula. 19/6/2024: la Camera approva in via definitiva con 172 sì, 99 no, 1 astenuto. 26/6/2024: è la legge n. 86. La data di pubblicazione in Gazzetta Ufficiale non è nel database.",
+  "stato": "parziale",
+  "limiti": "Manca la pubblicazione in Gazzetta Ufficiale (data e numero). Per il Senato l'iter strutturato (assegnazione, fasi) è vuoto: la prima seduta di commissione e l'inizio della discussione in Aula si ricavano dalle sedute che trattano il ddl. Il voto finale del Senato non ha link alla scheda della votazione (vote.source_url vuoto). La «data della legge» è quella di promulgazione (act.law_date).",
+  "problemi_dati": [
+    "Senato: act_step e act_assignment vuoti, l'iter si ricostruisce solo dalle sedute. Query: SELECT count(*) FROM act_step WHERE act LIKE 'it:senato:%';",
+    "Titoli degli argomenti del Senato con parole attaccate («Ripresa della discussione dei disegni di leggenn.»). Query: SELECT count(*) FROM agenda_item WHERE uri LIKE 'it:senato:%' AND title LIKE '%leggenn.%';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

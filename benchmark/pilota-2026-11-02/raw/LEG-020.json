@@ -1,0 +1,177 @@
+{
+ "id": "LEG-020",
+ "trappola": false,
+ "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dossier D26190 del 27/10/2026.",
+ "endpoint": "agente",
+ "risposta_sistema": "Sì. Il decreto-legge 22 ottobre 2026, n. 190 è all’esame della Camera come disegno di legge di conversione [A.C. 3159](#/strumenti/atto/camera-3159?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D3159), intitolato *«Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile»*. Nella pagina dell’atto della Camera sono pubblicati i documenti istruttori, incluso il dossier del Servizio Studi quando disponibile.\n\nIn breve, il provvedimento riguarda:\n- misure di sicurezza pubblica e prevenzione/contrasto dei reati;\n- interventi specifici sulla criminalità minorile;\n- modifiche alla disciplina relativa agli imputati minorenni ultraquattordicenni, secondo quanto illustrato dal Governo in Aula il 21 ottobre; quella dichiarazione non sostituisce il testo del decreto né il dossier.",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "A che punto è l’[A.C. 3159](https://www.camera.it/leg19/126?tab=1&leg=19&idDocumento=3159)?",
+   "Cosa ha detto il Governo alla Camera sulla criminalità minorile il 21 ottobre 2026?",
+   "Come si sono espressi i gruppi parlamentari sulla sicurezza pubblica nel 2026?"
+  ]
+ },
+ "tempo_s": 94.8,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "Governo"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)"
+    ],
+    "silent": [
+     "Futuro Nazionale Vannacci (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile",
+     "status": "modified",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0485&tipo=stenografico#sed0485.stenografico.tit00050.sub00010.int00180"
+    }
+   ],
+   "authority": {
+    "topic": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": []
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

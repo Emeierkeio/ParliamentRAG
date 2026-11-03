@@ -1,0 +1,95 @@
+{
+ "id": "CIT-034",
+ "domanda": "quante leggi ha fatto questo governo?",
+ "sql": [
+  "WITH a AS (\n  SELECT uri, chamber, number, law_number, law_date, title, coalesce(constitutional, false) AS cost,\n         CASE WHEN chamber = 'senato' THEN\n                CASE WHEN initiative ~* '^(gov\\.|pres\\. consiglio|ministro)' THEN 'Governo'\n                     WHEN initiative ~* '^(sen\\.|dep\\.)|^parlamentare' THEN 'Parlamentare'\n                     WHEN initiative ~* '^regione' THEN 'Regioni'\n                     WHEN initiative ~* 'cnel|c\\.n\\.e\\.l\\.' THEN 'CNEL'\n                     WHEN initiative ~* 'popolare' THEN 'Popolare' ELSE initiative END\n              WHEN initiative LIKE 'Mista%' THEN 'Mista' ELSE initiative END AS ini\n  FROM act\n  WHERE legislature = 19 AND kind = 'bill' AND law_number IS NOT NULL AND law_date <= DATE '2026-11-02'\n), leggi AS (\n  SELECT cost, law_number, extract(year FROM law_date)::int AS anno,\n         array_agg(DISTINCT ini) FILTER (WHERE ini IS NOT NULL) AS iniziative,\n         bool_or(title ~* 'conversione in legge') AS conversione_dl\n  FROM a GROUP BY 1, 2, 3\n)\nSELECT CASE WHEN cost THEN 'legge costituzionale' ELSE 'legge ordinaria' END AS tipo,\n       CASE WHEN iniziative = ARRAY['Governo'] AND conversione_dl THEN 'Governo: conversione di decreto-legge'\n            WHEN iniziative = ARRAY['Governo'] THEN 'Governo: altro disegno di legge'\n            WHEN iniziative = ARRAY['Parlamentare'] THEN 'Parlamentare'\n            WHEN cardinality(iniziative) = 1 THEN iniziative[1]\n            ELSE 'Mista (' || array_to_string(iniziative, ', ') || ')' END AS iniziativa,\n       count(*) AS leggi\nFROM leggi GROUP BY ROLLUP (1, 2) ORDER BY 1 NULLS LAST, 3 DESC"
+ ],
+ "risultato": [
+  {
+   "tipo": "legge costituzionale",
+   "iniziativa": null,
+   "leggi": 3
+  },
+  {
+   "tipo": "legge costituzionale",
+   "iniziativa": "Governo: altro disegno di legge",
+   "leggi": 1
+  },
+  {
+   "tipo": "legge costituzionale",
+   "iniziativa": "Regioni",
+   "leggi": 1
+  },
+  {
+   "tipo": "legge costituzionale",
+   "iniziativa": "Parlamentare",
+   "leggi": 1
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": null,
+   "leggi": 363
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Governo: altro disegno di legge",
+   "leggi": 148
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Governo: conversione di decreto-legge",
+   "leggi": 125
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Parlamentare",
+   "leggi": 86
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Mista (Mista, Parlamentare)",
+   "leggi": 2
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Mista (CNEL, Parlamentare)",
+   "leggi": 1
+  },
+  {
+   "tipo": "legge ordinaria",
+   "iniziativa": "Popolare",
+   "leggi": 1
+  },
+  {
+   "tipo": null,
+   "iniziativa": null,
+   "leggi": 366
+  }
+ ],
+ "risposta": "Dall'insediamento del governo Meloni (22/10/2022) al 2/11/2026 sono state approvate e promulgate 366 leggi: 363 ordinarie e 3 costituzionali. Tutte cadono sotto il governo Meloni (la prima è del 17/11/2022). Di iniziativa del governo sono 274: 125 leggi di conversione di decreti-legge, 148 altri disegni di legge del governo e 1 legge costituzionale. Di iniziativa parlamentare 87 (86 ordinarie e 1 costituzionale); 3 hanno iniziativa mista, 1 popolare e 1 costituzionale è di iniziativa regionale.",
+ "stato": "calcolata",
+ "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. «Questo governo» = I Governo Meloni (it:gov:202, dal 21-22/10/2022): tutte le leggi della XIX in archivio sono successive.",
+ "problemi_dati": [
+  {
+   "problema": "I ddl costituzionali S. 1353 e S. 1353-B (separazione delle carriere) hanno law_number '690' e law_date 2100-01-01: valori segnaposto, non una legge vera.",
+   "sql": "SELECT uri, status, law_number, law_date FROM act WHERE law_date > DATE '2026-11-02'"
+  },
+  {
+   "problema": "La stessa legge ha date diverse nei due rami: L. 11/2026 al 19/1/2026 alla Camera (AC 2369) e al 19/2/2026 al Senato (S. 1683); L. 162/2025 al 22/10/2025 (AC 1803) e al 4/11/2025 (S. 982).",
+   "sql": "SELECT law_number, extract(year FROM law_date) AS anno, array_agg(DISTINCT law_date), array_agg(chamber || ' ' || number) FROM act WHERE legislature = 19 AND kind = 'bill' AND law_number IS NOT NULL AND NOT coalesce(constitutional, false) GROUP BY 1, 2 HAVING count(DISTINCT law_date) > 1"
+  },
+  {
+   "problema": "Leggi costituzionali e ordinarie condividono law_number (L. cost. 1/2026 e L. 1/2026): senza la colonna constitutional la deduplica per numero e anno fonde due leggi diverse.",
+   "sql": "SELECT uri, constitutional, law_number, law_date FROM act WHERE legislature = 19 AND law_number = '1' AND extract(year FROM law_date) = 2026"
+  },
+  {
+   "problema": "Al Senato act.initiative è testo grezzo e incoerente («Regione Friuli-Venezia Giulia» e «REGIONE Friuli-Venezia Giulia», «Popolare» e «POPOLARE», «Dep. Foti Tommaso»): va normalizzato.",
+   "sql": "SELECT initiative, count(*) FROM act WHERE chamber = 'senato' AND legislature = 19 AND kind = 'bill' AND initiative !~* '^(sen\\.|gov\\.)' GROUP BY 1 ORDER BY 2 DESC"
+  },
+  {
+   "problema": "government assegna il I Governo Draghi (2021-02-12 / 2022-10-21) alla legislatura 19: un filtro per legislature = 19 lo prende come governo della XIX.",
+   "sql": "SELECT uri, name, start_date, end_date, legislature FROM government ORDER BY start_date"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

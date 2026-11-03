@@ -1,0 +1,233 @@
+{
+ "id": "COM-028",
+ "trappola": false,
+ "domanda": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "testo",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Presentata il 22/10/2026.",
+ "endpoint": "agente",
+ "risposta_sistema": "Il [testo ufficiale integrale della risoluzione 7/00423](https://aic.camera.it/aic/scheda.html?numero=7%2F00423&ramo=CAMERA&leg=19) è disponibile nella scheda della Camera. L’atto, presentato il 22 ottobre 2026 da Irene Manzi (PD-IDP), riguarda il Programma degli itinerari culturali del Consiglio d’Europa e reca come intestazione «La VII Commissione».\n\nStato: dai dati disponibili risulta **presentata**; non emergono ancora discussione, approvazione, respingimento o altro esito della VII Commissione. L’ultima seduta dell’Assemblea registrata è del 28 ottobre 2026; inoltre, il programma della Camera per la settimana 2-6 novembre non indica l’esame della risoluzione tra i lavori della VII Commissione. [Scheda dell’atto](https://aic.camera.it/aic/scheda.html?numero=7%2F00423&ramo=CAMERA&leg=19) · [programma dei lavori della Camera](https://comunicazione.camera.it/comma/documento-intero)",
+ "eventi": {
+  "status": 1,
+  "tool": 18,
+  "dati": 9,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 16
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 2
+  },
+  {
+   "name": "lavori_camera",
+   "label": "Leggo il programma dei lavori",
+   "state": "start"
+  },
+  {
+   "name": "lavori_camera",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "lavori_camera",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "A che punto è la risoluzione 7/00423 di Irene Manzi?",
+   "Quali altri atti ha presentato Irene Manzi nella XIX legislatura?",
+   "Che cosa prevede il Programma degli itinerari culturali del Consiglio d’Europa secondo la risoluzione 7/00423?"
+  ]
+ },
+ "tempo_s": 102.1,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "na"
+   },
+   "groups": {
+    "present": [
+     "Partito Democratico"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [],
+   "authority": {
+    "topic": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": [
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p305771",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305771",
+      "name": "Irene Manzi",
+      "group": "Partito Democratico",
+      "voice": "PD",
+      "role": null,
+      "source": "named",
+      "pool": "speakers_on_topic",
+      "rank": 10,
+      "pool_size": 11,
+      "group_size": 11,
+      "authoritative": false
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

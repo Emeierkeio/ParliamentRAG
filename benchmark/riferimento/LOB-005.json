@@ -1,0 +1,40 @@
+{
+ "id": "LOB-005",
+ "domanda": "Chi presiede oggi la XIII Commissione Agricoltura della Camera? A me risultava Mirco Carloni.",
+ "sql": [
+  "SELECT p.given_name || ' ' || p.family_name AS presidente, o.person, o.start_date, o.end_date, o.title_raw\nFROM office o JOIN person p ON p.uri = o.person\nWHERE o.target = 'it:camera:19:body:o19_3513'   -- XIII Commissione (Agricoltura)\n  AND o.title = 'chair'\nORDER BY o.start_date DESC, o.end_date NULLS FIRST"
+ ],
+ "risultato": [
+  {
+   "presidente": "Francesco Bruzzone",
+   "person": "it:person:camera:307762",
+   "start_date": "2026-10-13",
+   "end_date": null,
+   "title_raw": "PRESIDENTE"
+  },
+  {
+   "presidente": "Mirco Carloni",
+   "person": "it:person:camera:308763",
+   "start_date": "2025-06-10",
+   "end_date": "2026-09-09",
+   "title_raw": "PRESIDENTE"
+  },
+  {
+   "presidente": "Mirco Carloni",
+   "person": "it:person:camera:308763",
+   "start_date": "2022-11-09",
+   "end_date": "2025-06-09",
+   "title_raw": "PRESIDENTE"
+  }
+ ],
+ "risposta": "Oggi presiede la XIII Commissione (Agricoltura) Francesco Bruzzone (Lega), presidente dal 13/10/2026. Mirco Carloni l'ha presieduta dal 9/11/2022 al 9/9/2026 (rinnovo di metà legislatura il 10/6/2025); il suo mandato di deputato è finito il 19/10/2026 per dimissioni per incompatibilità.",
+ "stato": "calcolata",
+ "limiti": "Si prende la presidenza con la data di inizio più recente.",
+ "problemi_dati": [
+  {
+   "problema": "Tre comitati permanenti della III Commissione (Artico, Africa, Area Indo-Mediterranea) hanno due presidenze aperte della stessa persona, dal 18/9/2025 e dal 1/10/2025 (Formentini, Maullu, Bergamini).",
+   "sql": "SELECT o.target, b.name, count(*) aperte, count(DISTINCT o.person) persone FROM office o JOIN body b ON b.uri=o.target WHERE o.title='chair' AND o.end_date IS NULL GROUP BY 1,2 HAVING count(*)>1 ORDER BY 3 DESC"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

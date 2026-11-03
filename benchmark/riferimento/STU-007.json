@@ -1,0 +1,572 @@
+{
+ "id": "STU-007",
+ "domanda": "tesi sulla decretazione d'urgenza: su quanti decreti convertiti è stata messa la fiducia alla Camera?",
+ "sql": [
+  "WITH f AS (   -- votazioni di fiducia della Camera e numero dell'AC, preso dal riferimento della fonte o dalla descrizione\n  SELECT v.uri, v.date, v.kind, v.description, x.act AS act_legato,\n         coalesce(substring(x.act_ref from '^ac19_(\\d+)'),\n                  substring(v.description from '(?i)(?:A\\.C\\.|DDL\\.?\\s*n\\.)\\s*(\\d+)')) AS numero_ac\n  FROM vote v LEFT JOIN vote_act x ON x.vote = v.uri AND x.act_ref LIKE 'ac19%'\n  WHERE v.chamber = 'camera' AND v.legislature = 19 AND v.confidence\n)\nSELECT f.numero_ac, a.uri AS atto_camera, substring(a.title from '(?i)decreto-legge\\s+(\\d{1,2}\\S*\\s+\\S+\\s+\\d{4},\\s+n\\.\\s*\\d+)') AS decreto,\n       count(*) AS votazioni_di_fiducia, min(f.date) AS data,\n       a.law_number || '/' || extract(year FROM a.law_date) AS legge_di_conversione, a.status,\n       bool_or(f.act_legato IS NULL) AS voto_senza_atto_in_vote_act,\n       bool_or(f.act_legato LIKE 'it:senato:%') AS voto_legato_ad_atto_del_senato\nFROM f JOIN act a ON a.chamber = 'camera' AND a.legislature = 19 AND a.kind = 'bill'\n                 AND a.number = f.numero_ac AND a.title ~* 'conversione in legge'\nGROUP BY 1, 2, 3, a.law_number, a.law_date, a.status ORDER BY min(f.date)"
+ ],
+ "risultato": {
+  "righe_totali": 64,
+  "righe": [
+   {
+    "numero_ac": "730",
+    "atto_camera": "it:camera:19:ac:730",
+    "decreto": "18 novembre 2022, n. 176",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-01-11",
+    "legge_di_conversione": "6/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "750",
+    "atto_camera": "it:camera:19:ac:750",
+    "decreto": "2 gennaio 2023, n. 1",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-02-14",
+    "legge_di_conversione": "15/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "771",
+    "atto_camera": "it:camera:19:ac:771",
+    "decreto": "14 gennaio 2023, n. 5",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-02-20",
+    "legge_di_conversione": "23/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "888",
+    "atto_camera": "it:camera:19:ac:888",
+    "decreto": "29 dicembre 2022, n. 198",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-02-22",
+    "legge_di_conversione": "14/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "908",
+    "atto_camera": "it:camera:19:ac:908",
+    "decreto": "5 gennaio 2023, n. 2",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-03-01",
+    "legge_di_conversione": "17/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "889",
+    "atto_camera": "it:camera:19:ac:889",
+    "decreto": "16 febbraio 2023, n. 11",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-03-30",
+    "legge_di_conversione": "38/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1089",
+    "atto_camera": "it:camera:19:ac:1089",
+    "decreto": "24 febbraio 2023, n. 13",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-04-19",
+    "legge_di_conversione": "41/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1112",
+    "atto_camera": "it:camera:19:ac:1112",
+    "decreto": "10 marzo 2023, n. 20",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-05-03",
+    "legge_di_conversione": "50/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1067",
+    "atto_camera": "it:camera:19:ac:1067",
+    "decreto": "31 marzo 2023, n. 35",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-05-16",
+    "legge_di_conversione": "58/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1060",
+    "atto_camera": "it:camera:19:ac:1060",
+    "decreto": "30 marzo 2023, n. 34",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-05-18",
+    "legge_di_conversione": "56/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1114",
+    "atto_camera": "it:camera:19:ac:1114",
+    "decreto": "22 aprile 2023, n. 44",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-06-06",
+    "legge_di_conversione": "74/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1195",
+    "atto_camera": "it:camera:19:ac:1195",
+    "decreto": "14 aprile 2023, n. 39",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-06-08",
+    "legge_di_conversione": "68/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1151",
+    "atto_camera": "it:camera:19:ac:1151",
+    "decreto": "10 maggio 2023, n. 51",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-06-22",
+    "legge_di_conversione": "87/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1238",
+    "atto_camera": "it:camera:19:ac:1238",
+    "decreto": "4 maggio 2023, n. 48",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-06-27",
+    "legge_di_conversione": "85/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1183",
+    "atto_camera": "it:camera:19:ac:1183",
+    "decreto": "29 maggio 2023, n. 57",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-07-17",
+    "legge_di_conversione": "95/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1194",
+    "atto_camera": "it:camera:19:ac:1194",
+    "decreto": "1° giugno 2023, n. 61",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-07-25",
+    "legge_di_conversione": "100/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1239",
+    "atto_camera": "it:camera:19:ac:1239",
+    "decreto": "22 giugno 2023, n. 75",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-07-31",
+    "legge_di_conversione": "112/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1322",
+    "atto_camera": "it:camera:19:ac:1322",
+    "decreto": "13 giugno 2023, n. 69",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-08-02",
+    "legge_di_conversione": "103/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1373",
+    "atto_camera": "it:camera:19:ac:1373",
+    "decreto": "10 agosto 2023, n. 105",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-09-28",
+    "legge_di_conversione": "137/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1436",
+    "atto_camera": "it:camera:19:ac:1436",
+    "decreto": "10 agosto 2023, n. 104",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-10-04",
+    "legge_di_conversione": "136/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1416",
+    "atto_camera": "it:camera:19:ac:1416",
+    "decreto": "19 settembre 2023, n. 124",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-10-30",
+    "legge_di_conversione": "162/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1517",
+    "atto_camera": "it:camera:19:ac:1517",
+    "decreto": "15 settembre 2023, n. 123",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-11-07",
+    "legge_di_conversione": "159/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1437",
+    "atto_camera": "it:camera:19:ac:1437",
+    "decreto": "29 settembre 2023, n. 131",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-11-14",
+    "legge_di_conversione": "169/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1551",
+    "atto_camera": "it:camera:19:ac:1551",
+    "decreto": "29 settembre 2023, n. 132",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-11-22",
+    "legge_di_conversione": "170/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1458",
+    "atto_camera": "it:camera:19:ac:1458",
+    "decreto": "5 ottobre 2023, n. 133",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-11-27",
+    "legge_di_conversione": "176/2023",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1601",
+    "atto_camera": "it:camera:19:ac:1601",
+    "decreto": "18 ottobre 2023, n. 145",
+    "votazioni_di_fiducia": 1,
+    "data": "2023-12-13",
+    "legge_di_conversione": "191/2023",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1606",
+    "atto_camera": "it:camera:19:ac:1606",
+    "decreto": "9 dicembre 2023, n. 181",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-01-25",
+    "legge_di_conversione": "11/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1633",
+    "atto_camera": "it:camera:19:ac:1633",
+    "decreto": "30 dicembre 2023, n. 215",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-02-19",
+    "legge_di_conversione": "18/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1752",
+    "atto_camera": "it:camera:19:ac:1752",
+    "decreto": "2 marzo 2024, n. 19",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-04-16",
+    "legge_di_conversione": "56/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1877",
+    "atto_camera": "it:camera:19:ac:1877",
+    "decreto": "29 marzo 2024, n. 39",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-05-22",
+    "legge_di_conversione": "67/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1933",
+    "atto_camera": "it:camera:19:ac:1933",
+    "decreto": "7 maggio 2024, n. 60",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-07-02",
+    "legge_di_conversione": "95/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1946",
+    "atto_camera": "it:camera:19:ac:1946",
+    "decreto": "15 maggio 2024, n. 63",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-07-11",
+    "legge_di_conversione": "101/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1902",
+    "atto_camera": "it:camera:19:ac:1902",
+    "decreto": "31 maggio 2024, n. 71",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-07-16",
+    "legge_di_conversione": "106/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1896",
+    "atto_camera": "it:camera:19:ac:1896",
+    "decreto": "29 maggio 2024, n. 69",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-07-18",
+    "legge_di_conversione": "105/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "1937",
+    "atto_camera": "it:camera:19:ac:1937",
+    "decreto": "29 giugno 2024, n. 89",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-07-29",
+    "legge_di_conversione": "120/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2002",
+    "atto_camera": "it:camera:19:ac:2002",
+    "decreto": "4 luglio 2024, n. 92",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-08-06",
+    "legge_di_conversione": "112/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2066",
+    "atto_camera": "it:camera:19:ac:2066",
+    "decreto": "9 agosto 2024, n. 113",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-10-03",
+    "legge_di_conversione": "143/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2038",
+    "atto_camera": "it:camera:19:ac:2038",
+    "decreto": "16 settembre 2024, n. 131",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-10-30",
+    "legge_di_conversione": "166/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2088",
+    "atto_camera": "it:camera:19:ac:2088",
+    "decreto": "11 ottobre 2024, n. 145",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-11-26",
+    "legge_di_conversione": "187/2024",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2150",
+    "atto_camera": "it:camera:19:ac:2150",
+    "decreto": "19 ottobre 2024, n. 155",
+    "votazioni_di_fiducia": 1,
+    "data": "2024-12-04",
+    "legge_di_conversione": "189/2024",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2183",
+    "atto_camera": "it:camera:19:ac:2183",
+    "decreto": "27 dicembre 2024, n. 201",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-02-05",
+    "legge_di_conversione": "16/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2184",
+    "atto_camera": "it:camera:19:ac:2184",
+    "decreto": "31 dicembre 2024, n. 208",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-02-17",
+    "legge_di_conversione": "20/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2245",
+    "atto_camera": "it:camera:19:ac:2245",
+    "decreto": "27 dicembre 2024, n. 202",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-02-19",
+    "legge_di_conversione": "15/2025",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2281",
+    "atto_camera": "it:camera:19:ac:2281",
+    "decreto": "28 febbraio 2025, n. 19",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-04-15",
+    "legge_di_conversione": "60/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2308",
+    "atto_camera": "it:camera:19:ac:2308",
+    "decreto": "14 marzo 2025, n. 25",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-04-23",
+    "legge_di_conversione": "69/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2329",
+    "atto_camera": "it:camera:19:ac:2329",
+    "decreto": "28 marzo 2025, n. 37",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-05-14",
+    "legge_di_conversione": "75/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2355",
+    "atto_camera": "it:camera:19:ac:2355",
+    "decreto": "11 aprile 2025, n. 48",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-05-27",
+    "legge_di_conversione": "80/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2420",
+    "atto_camera": "it:camera:19:ac:2420",
+    "decreto": "7 aprile 2025, n. 45",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-06-03",
+    "legge_di_conversione": "79/2025",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2416",
+    "atto_camera": "it:camera:19:ac:2416",
+    "decreto": "21 maggio 2025, n. 73",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-07-10",
+    "legge_di_conversione": "105/2025",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   },
+   {
+    "numero_ac": "2527",
+    "atto_camera": "it:camera:19:ac:2527",
+    "decreto": "26 giugno 2025, n. 92",
+    "votazioni_di_fiducia": 1,
+    "data": "2025-07-31",
+    "legge_di_conversione": "113/2025",
+    "status": "Approvato definitivamente. Legge",
+    "voto_senza_atto_in_vote_act": false,
+    "voto_legato_ad_atto_del_senato": false
+   }
+  ]
+ },
+ "risposta": "Alla Camera, nella XIX, il governo ha posto la questione di fiducia su 64 decreti-legge distinti, tutti poi convertiti in legge: una votazione di fiducia per decreto (64 votazioni), dal DL sull'AC 730 (11/1/2023) al DL 144/2026 (AC 3083, 28/9/2026). Le altre 11 votazioni di fiducia della Camera riguardano 5 mozioni (fiducia iniziale e mozioni ex art. 115), 3 leggi di bilancio (AC 643-bis, 2112-bis, 2750) e 3 articoli della legge elettorale (AC 2822-B). Due dei 64 voti non sono legati all'atto in vote_act: DL 66/2026 (AC 2920, 22/6/2026) e DL 100/2026 (AC 3053, 5/8/2026); il numero si legge solo dalla descrizione.",
+ "stato": "calcolata",
+ "limiti": "Votazioni con vote.confidence = true alla Camera; l'atto si prende dal riferimento della fonte (ac19_<numero>) o, se manca, dalla descrizione, e si cerca fra gli atti della Camera con «conversione in legge» nel titolo. Si contano decreti distinti, non votazioni.",
+ "problemi_dati": [
+  {
+   "problema": "Due votazioni di fiducia della Camera non hanno righe in vote_act e hanno kind 'other' e titolo vuoto: it:camera:19:sed0680:v060 (DDL 2920-A) e it:camera:19:sed0704:v045 (A.C. 3053).",
+   "sql": "SELECT v.uri, v.kind, v.title, v.description FROM vote v WHERE v.chamber = 'camera' AND v.confidence AND NOT EXISTS (SELECT 1 FROM vote_act x WHERE x.vote = v.uri)"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

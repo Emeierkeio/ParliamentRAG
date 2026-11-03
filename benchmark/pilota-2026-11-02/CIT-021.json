@@ -1,0 +1,31 @@
+{
+ "id": "CIT-021",
+ "domanda": "che tempo fa a Roma domani?",
+ "categoria": "fonti",
+ "ramo": "entrambi",
+ "tipo_risposta": "fatto",
+ "difficolta": "facile",
+ "trappola": true,
+ "note_domanda": "Fuori dominio: rifiutare con garbo e dire cosa il sistema sa fare.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso fornire previsioni meteo. ParliamentRAG riguarda i lavori, gli atti, gli interventi e le votazioni di Camera e Senato nella XIX legislatura.",
+ "eventi": {
+  "status": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [],
+ "errori": [],
+ "tempo_s": 5.3,
+ "riferimento": null,
+ "punteggi": {
+  "correttezza": null,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": 1,
+  "tempo_s": 5.3
+ },
+ "causa_probabile": null,
+ "note": "Rifiuta con garbo e dice cosa sa fare."
+}

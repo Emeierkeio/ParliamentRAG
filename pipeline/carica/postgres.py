@@ -1,0 +1,707 @@
+"""Carica le uscite trasformate in Postgres (schema/v3.sql): una seduta per transazione, l'anagrafica di un ramo
+e di una legislatura in una transazione sola.
+
+Libreria standard: psql gira nel contenitore `testi` e riceve uno script con COPY. Una seduta cambiata si
+cancella e si ricarica nella stessa transazione (ON DELETE CASCADE porta via punti, interventi, segmenti,
+reazioni): o c'è la versione nuova intera o resta la vecchia intera.
+"""
+
+from __future__ import annotations
+
+import csv
+import hashlib
+import io
+import json
+import subprocess
+import time
+
+from ..ambiente import QUI
+
+COLONNE = {
+    "sitting": ["uri", "chamber", "body", "number", "date", "status", "source", "source_key", "source_hash", "kind"],
+    "agenda_item": ["uri", "sitting", "ord", "title"],
+    "agenda_item_act": ["item", "act_ref"],
+    "person": ["uri"],
+    "speech": ["uri", "item", "ord", "person", "speaker_label", "as_group", "as_office", "anchor", "hash", "text", "markup"],
+    "segment": ["uri", "speech", "ord", "start_char", "end_char", "kind", "hash"],
+    "reaction": ["uri", "speech", "kind", "offset_char", "raw", "from_raw"],
+    "reaction_from": ["reaction", "ord", "kind", "raw"],
+}
+
+
+def psql(script: str, timeout: int = 900) -> str:
+    cmd = ["docker", "compose", "exec", "-T", "testi", "psql", "-U", "parliamentrag", "-d", "parliamentrag", "-v", "ON_ERROR_STOP=1", "-q"]
+    r = subprocess.run(cmd, cwd=QUI, input=script, capture_output=True, text=True, timeout=timeout)
+    if r.returncode:
+        raise RuntimeError(r.stderr[-800:])
+    return r.stdout
+
+
+def righe_tabelle(righe: list[dict]) -> dict[str, list[list]]:
+    """Dai record dello schema v3 (nodi, archi, testi) alle righe delle tabelle."""
+    nodi = {r["uri"]: r for r in righe if r["tipo"] == "nodo"}
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    testi = {r["ref"]: r for r in righe if r["tipo"] == "testo"}
+    padre = {}       # figlio -> padre per HAS_ITEM, HAS_SPEECH, HAS_SEGMENT, DURING
+    chi, da, about, parti = {}, {}, [], []
+    for a in archi:
+        t = a["type"]
+        if t in ("HAS_ITEM", "HAS_SPEECH", "HAS_SEGMENT"):
+            padre[a["to"]] = a["from"]
+        elif t == "DURING":
+            padre[a["from"]] = a["to"]
+        elif t == "BY":
+            chi[a["from"]] = (a["to"], a.get("as_group"), a.get("as_office"))
+        elif t == "FROM":
+            da[a["from"]] = a["to_ref"]
+            parti += [[a["from"], k, x["kind"], x["name"]] for k, x in enumerate(a.get("parts") or [], 1)]   # chi reagisce, una riga per parte
+        elif t == "ABOUT":
+            about.append([a["from"], a["to_ref"]])
+    out = {k: [] for k in COLONNE}
+    for u, n in nodi.items():
+        l = n["label"]
+        if l == "Sitting":
+            out["sitting"].append([u, n["chamber"], n["body"], n["number"], n["date"], n["status"], n["source"], n.get("source_key"), n.get("source_hash"), n.get("kind")])
+        elif l == "AgendaItem":
+            out["agenda_item"].append([u, padre[u], n["order"], n.get("title")])
+        elif l == "Speech":
+            p, g, o = chi.get(u, (None, n.get("declared_group"), None))
+            t = testi[n["text_ref"]]
+            out["speech"].append([u, padre[u], n["order"], p, n.get("speaker_label"), g, o, n.get("anchor"), n["hash"], t["text"], t.get("markup")])
+            if p:
+                out["person"].append([p])
+        elif l == "Segment":
+            out["segment"].append([u, padre[u], int(u.rsplit(":p", 1)[1]), n["start"], n["end"], n["kind"], n["hash"]])
+        elif l == "Reaction":
+            out["reaction"].append([u, padre[u], n["kind"], n["offset"], n["raw"], da.get(u)])
+    out["reaction_from"] = parti
+    out["agenda_item_act"] = [list(x) for x in {tuple(x) for x in about}]
+    out["person"] = [list(x) for x in {tuple(x) for x in out["person"]}]
+    return out
+
+
+def _csv(righe: list[list]) -> str:
+    buf = io.StringIO()
+    csv.writer(buf, lineterminator="\n").writerows([["" if v is None else v for v in r] for r in righe])
+    return buf.getvalue()
+
+
+def script_seduta(righe: list[dict]) -> str:
+    """Uno script psql: transazione, cancella la seduta, ricarica tutto con COPY (i dati CSV inline)."""
+    t = righe_tabelle(righe)
+    seduta = t["sitting"][0][0]
+    parti = ["BEGIN;", f"DELETE FROM sitting WHERE uri = '{seduta.replace(chr(39), chr(39) * 2)}';"]
+    for tabella in ("sitting", "agenda_item", "agenda_item_act"):
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(COLONNE[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    if t["person"]:
+        parti.append(f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv(t['person'])}\\.\n"
+                     "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;")
+    for tabella in ("speech", "segment", "reaction", "reaction_from"):
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(COLONNE[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    parti.append(f"SELECT lega_argomenti({_lit(seduta)}, {int(seduta.split(':')[2])});")
+    if t["reaction_from"]:
+        parti.append(f"SELECT lega_reazioni({_lit(seduta + ':')});")
+    if seduta.startswith("it:senato:"):                  # membri del governo che non sono senatori
+        parti.append(f"SELECT lega_governo({_lit(seduta)});")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+ANAGRAFICA = {
+    "person": ["uri", "camera_id", "senato_id", "given_name", "family_name", "sort_name", "gender", "birth_date", "birth_place", "photo",
+               "education", "profession", "source", "source_uri"],
+    "grp": ["uri", "chamber", "legislature", "kind", "name", "short_name", "start_date", "end_date", "part_of", "source", "source_uri", "aliases"],
+    "body": ["uri", "chamber", "legislature", "kind", "kind_raw", "name", "start_date", "end_date", "part_of", "source", "source_uri"],
+    "mandate": ["person", "chamber", "legislature", "start_date", "end_date", "end_reason", "validated", "constituency", "college", "system", "list", "source_uri", "kind"],
+    "membership": ["person", "grp", "role", "start_date", "end_date", "end_reason"],
+    "seat": ["person", "body", "role", "role_raw", "start_date", "end_date", "end_reason"],
+    "office": ["person", "target", "title", "title_raw", "start_date", "end_date"],
+}
+# dal nome dell'arco alla tabella e alle colonne: from/to diventano le prime due colonne
+ARCHI = {"MANDATE": "mandate", "MEMBER_OF": "membership", "SITS_ON": "seat", "OFFICE": "office"}
+_RINOMINA = {"start": "start_date", "end": "end_date"}
+
+
+def _lit(v: str) -> str:
+    return "'" + str(v).replace("'", "''") + "'"
+
+
+def righe_anagrafica(righe: list[dict]) -> dict[str, list[list]]:
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    parte = {a["from"]: a["to"] for a in archi if a["type"] == "PART_OF"}
+    out = {k: [] for k in ANAGRAFICA}
+    for n in nodi:
+        t = {"Person": "person", "Group": "grp", "Body": "body"}[n["label"]]
+        x = {_RINOMINA.get(k, k): v for k, v in n.items()}
+        if t == "grp":
+            x["part_of"] = parte.get(n["uri"])
+        out[t].append([_array(x.get(c)) if c == "aliases" else x.get(c) for c in ANAGRAFICA[t]])
+    for a in archi:
+        t = ARCHI.get(a["type"])
+        if not t:
+            continue
+        x = {_RINOMINA.get(k, k): v for k, v in a.items()}
+        x[ANAGRAFICA[t][0]] = a["from"]
+        if t != "mandate":
+            x[ANAGRAFICA[t][1]] = a["to"]
+        out[t].append([x.get(c) for c in ANAGRAFICA[t]])
+    return out
+
+
+def script_anagrafica(righe: list[dict]) -> str:
+    """Una transazione: aggiorna le persone (non le cancella: gli interventi le citano), poi sostituisce gruppi, organi
+    e relazioni di quel ramo e di quella legislatura. O c'è l'anagrafica nuova intera o resta la vecchia intera."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    ramo, leg = _lit(amb["chamber"]), int(amb["legislature"])
+    t = righe_anagrafica(righe)
+    colp = ANAGRAFICA["person"]
+    parti = ["BEGIN;", "SET CONSTRAINTS ALL DEFERRED;",
+             f"CREATE TEMP TABLE p (LIKE person INCLUDING DEFAULTS) ON COMMIT DROP;\nCOPY p ({', '.join(colp)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t['person'])}\\.",
+             f"INSERT INTO person ({', '.join(colp)}, stub) SELECT {', '.join(colp)}, false FROM p ON CONFLICT (uri) DO UPDATE SET "
+             + ", ".join(f"{c} = EXCLUDED.{c}" for c in colp[1:]) + ", stub = false;",
+             f"DELETE FROM mandate WHERE chamber = {ramo} AND legislature = {leg};",
+             f"DELETE FROM office WHERE target IN (SELECT uri FROM grp WHERE chamber = {ramo} AND legislature = {leg} UNION SELECT uri FROM body WHERE chamber = {ramo} AND legislature = {leg});",
+             f"DELETE FROM grp WHERE chamber = {ramo} AND legislature = {leg};",
+             f"DELETE FROM body WHERE chamber = {ramo} AND legislature = {leg};"]
+    for tabella in ("grp", "body", "mandate", "membership", "seat", "office"):
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(ANAGRAFICA[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+VOTI = {
+    "vote": ["uri", "sitting", "chamber", "legislature", "number", "date", "title", "description", "kind", "kind_raw", "favor", "against",
+             "abstain", "present", "voting", "majority", "approved", "secret", "final", "confidence", "ballots_match", "presided_by", "source", "source_uri",
+             "source_url", "source_key", "source_hash"],
+    "vote_act": ["vote", "act_ref"],
+    "ballot": ["vote", "person", "result", "result_raw", "note", "grp"],
+}
+
+
+def script_voti(righe: list[dict]) -> str:
+    """Le votazioni di una seduta in una transazione: si cancellano e si ricaricano intere, con i voti di ognuno."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    voti = [r for r in righe if r["tipo"] == "nodo" and r["label"] == "Vote"]
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    t = {"vote": [[v.get(c) for c in VOTI["vote"]] for v in voti],
+         "vote_act": sorted({(a["from"], a["to_ref"]) for a in archi if a["type"] == "ON"}),
+         "ballot": [[a["to"], a["from"], a["result"], a.get("result_raw"), a.get("note"), a.get("group")] for a in archi if a["type"] == "VOTED"]}
+    persone = sorted({a["from"] for a in archi if a["type"] == "VOTED"})
+    parti = ["BEGIN;", f"DELETE FROM vote WHERE sitting = {_lit(amb['sitting'])} AND source = {_lit(amb.get('source', 'ocd'))};",
+             f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
+             "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
+    for tabella in ("vote", "vote_act", "ballot"):
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(VOTI[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    leg = int(amb["legislature"])
+    if amb.get("chamber", "camera") == "camera":
+        parti.append(f"UPDATE vote_act v SET act = a.uri FROM act a JOIN vote x ON x.sitting = {_lit(amb['sitting'])} "
+                     f"WHERE v.vote = x.uri AND a.chamber = 'camera' AND a.legislature = {leg} AND v.act_ref = 'ac{leg}_' || a.number;")
+    else:  # il Senato non dà il gruppo nel voto: lo si prende dall'anagrafica alla data della votazione
+        parti.append(f"UPDATE ballot b SET grp = group_at(b.person, x.date) FROM vote x WHERE x.sitting = {_lit(amb['sitting'])} AND b.vote = x.uri;")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+ATTI = {
+    "act": ["uri", "chamber", "legislature", "number", "kind", "kind_raw", "constitutional", "initiative", "title", "date", "description",
+            "law_number", "law_date", "status", "status_date", "card_url", "text_urls", "source", "source_uri"],
+    "act_step": ["uri", "act", "ord", "title", "date"],
+    "act_version": ["uri", "act", "title", "date", "url"],
+    "act_sponsor": ["act", "person", "first", "as_office"],
+    "act_assignment": ["act", "body", "seat", "date", "title"],
+    "act_rapporteur": ["act", "name_raw", "role", "raw"],
+    "act_joint": ["act", "main_act", "text_type"],
+    "act_transmission": ["act", "other_ref", "date", "title", "provenance"],
+}
+
+
+def _array(v: list | None) -> str | None:
+    return None if v is None else "{" + ",".join('"' + x.replace("\\", "\\\\").replace('"', '\\"') + '"' for x in v) + "}"
+
+
+def script_atti(righe: list[dict]) -> str:
+    """Gli atti di un ramo e di una legislatura in una transazione: si sostituiscono interi. Poi si legano ai voti
+    (vote_act) e i relatori alle persone, confrontando il nome con l'anagrafica."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    ramo, leg = _lit(amb["chamber"]), int(amb["legislature"])
+    nodi = {r["uri"]: r for r in righe if r["tipo"] == "nodo"}
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    padre = {a["to"]: a for a in archi if a["type"] in ("HAS_STEP", "HAS_VERSION")}
+    t = {k: [] for k in ATTI}
+    for u, n in nodi.items():
+        if n["label"] == "Act":
+            t["act"].append([n.get(c) if c != "text_urls" else _array(n.get("text_urls")) for c in ATTI["act"]])
+        elif n["label"] == "Step":
+            t["act_step"].append([u, padre[u]["from"], padre[u]["order"], n.get("title"), n.get("date")])
+        elif n["label"] == "TextVersion":
+            t["act_version"].append([u, padre[u]["from"], n.get("title"), n.get("date"), n.get("url")])
+    for a in archi:
+        if a["type"] == "SPONSORS":
+            t["act_sponsor"].append([a["to"], a["from"], a["first"], a.get("as_office")])
+        elif a["type"] == "ASSIGNED":
+            t["act_assignment"].append([a["from"], a["to"], a.get("seat"), a.get("date"), a.get("title")])
+        elif a["type"] == "RAPPORTEUR":
+            t["act_rapporteur"].append([a["to"], a["from_ref"], a.get("role"), a.get("raw")])
+        elif a["type"] == "JOINED":
+            t["act_joint"].append([a["from"], a["to"], a.get("text_type")])
+        elif a["type"] == "TRANSMITTED":
+            t["act_transmission"].append([a["from"], a.get("to_ref"), a.get("date"), a.get("title"), a.get("provenance")])
+    persone = sorted({r[1] for r in t["act_sponsor"]})
+    parti = ["BEGIN;", f"DELETE FROM act WHERE chamber = {ramo} AND legislature = {leg} AND kind = 'bill';",
+             f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
+             "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
+    for tabella in ATTI:
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(ATTI[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    parti += [
+        # relatore: «SCHIFONE Marta» = cognome in maiuscolo e nome; si lega solo se c'è una persona sola con quel nome
+        f"""UPDATE act_rapporteur r SET person = x.uri FROM (
+              SELECT r2.ctid AS c, min(p.uri) AS uri FROM act_rapporteur r2 JOIN act a ON a.uri = r2.act
+              JOIN person p ON upper(p.family_name || ' ' || p.given_name) = upper(r2.name_raw)
+              WHERE a.chamber = {ramo} AND a.legislature = {leg} GROUP BY r2.ctid HAVING count(*) = 1) x
+            WHERE r.ctid = x.c;""",
+        # poi cognome uguale e nome che comincia allo stesso modo («IEZZI Igor» = Iezzi Igor Giancarlo), sempre se unico
+        f"""UPDATE act_rapporteur r SET person = x.uri FROM (
+              SELECT r2.ctid AS c, min(p.uri) AS uri FROM act_rapporteur r2 JOIN act a ON a.uri = r2.act
+              JOIN person p ON upper(p.family_name) = upper(substring(r2.name_raw from '^((?:[[:upper:]''’]+ ?)+) '))
+               AND (upper(p.given_name) LIKE upper(regexp_replace(r2.name_raw, '^(?:[[:upper:]''’]+ ?)+ ', '')) || '%'
+                    OR upper(regexp_replace(r2.name_raw, '^(?:[[:upper:]''’]+ ?)+ ', '')) LIKE upper(split_part(p.given_name, ' ', 1)) || '%')
+              WHERE r2.person IS NULL AND a.chamber = {ramo} AND a.legislature = {leg} GROUP BY r2.ctid HAVING count(*) = 1) x
+            WHERE r.ctid = x.c;""",
+        # infine solo il cognome, se nella legislatura c'è un solo deputato con quel cognome («BICCHIELLI Pino»)
+        f"""UPDATE act_rapporteur r SET person = x.uri FROM (
+              SELECT r2.ctid AS c, min(p.uri) AS uri FROM act_rapporteur r2 JOIN act a ON a.uri = r2.act
+              JOIN person p ON upper(p.family_name) = upper(substring(r2.name_raw from '^((?:[[:upper:]''’]+ ?)+) '))
+              JOIN mandate m ON m.person = p.uri AND m.chamber = {ramo} AND m.legislature = {leg}
+              WHERE r2.person IS NULL AND a.chamber = {ramo} AND a.legislature = {leg} GROUP BY r2.ctid HAVING count(DISTINCT p.uri) = 1) x
+            WHERE r.ctid = x.c;""",
+        # «ac19_N» è un atto della Camera: si lega solo ai voti della Camera, anche quando il caricamento è quello del Senato
+        # (prima legava i voti della Camera al ddl del Senato con lo stesso numero)
+        f"UPDATE vote_act v SET act = a.uri FROM act a, vote x WHERE x.uri = v.vote AND x.chamber = 'camera' "
+        f"AND a.chamber = 'camera' AND a.legislature = {leg} AND v.act_ref = 'ac{leg}_' || a.number;",
+        # Senato: il voto porta l'uri del ddl di dati.senato.it
+        f"UPDATE vote_act v SET act = a.uri FROM act a, vote x WHERE x.uri = v.vote AND x.chamber = a.chamber "
+        f"AND a.chamber = {ramo} AND a.legislature = {leg} AND v.act_ref = a.source_uri;",
+        "COMMIT;"]
+    return "\n".join(parti) + "\n"
+
+
+GOVERNO = {
+    "government": ["uri", "name", "start_date", "end_date", "legislature", "source", "source_uri"],
+    "ministry": ["uri", "government", "name", "portfolio", "source", "source_uri"],
+    "office": ["person", "target", "title", "title_raw", "start_date", "end_date", "end_reason", "interim", "note", "source_uri"],
+}
+
+
+def script_governo(righe: list[dict]) -> str:
+    """Governi della legislatura, ministeri e incarichi in una transazione. Le persone si aggiungono o si completano
+    (solo i campi vuoti: per i deputati fa fede l'anagrafica della Camera), mai si cancellano."""
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    archi = [r for r in righe if r["tipo"] == "arco" and r["type"] == "OFFICE"]
+    rin = lambda d: {_RINOMINA.get(k, k): v for k, v in d.items()}
+    t = {"government": [[rin(n).get(c) for c in GOVERNO["government"]] for n in nodi if n["label"] == "Government"],
+         "ministry": [[rin(n).get(c) for c in GOVERNO["ministry"]] for n in nodi if n["label"] == "Ministry"],
+         "office": [[a["from"], a["to"]] + [rin(a).get(c) for c in GOVERNO["office"][2:]] for a in archi]}
+    persone = [[rin(n).get(c) for c in ANAGRAFICA["person"]] for n in nodi if n["label"] == "Person"]
+    governi = ", ".join(_lit(r[0]) for r in t["government"]) or "''"
+    colp = ANAGRAFICA["person"]
+    parti = ["BEGIN;",
+             f"CREATE TEMP TABLE p (LIKE person INCLUDING DEFAULTS) ON COMMIT DROP;\nCOPY p ({', '.join(colp)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(persone)}\\.",
+             f"INSERT INTO person ({', '.join(colp)}, stub) SELECT {', '.join(colp)}, false FROM p ON CONFLICT (uri) DO UPDATE SET "
+             + ", ".join(f"{c} = coalesce(person.{c}, EXCLUDED.{c})" for c in colp[1:]) + ", stub = false;",
+             f"DELETE FROM office WHERE target IN ({governi}) OR target IN (SELECT uri FROM ministry WHERE government IN ({governi}));",
+             f"DELETE FROM government WHERE uri IN ({governi});"]
+    for tabella in GOVERNO:
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(GOVERNO[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+BOLLETTINO = {
+    "sitting": ["uri", "chamber", "body", "number", "date", "status", "source", "source_key", "source_hash", "kind", "body_code", "body_name",
+                "seat", "bulletin_number", "provisional", "presidency", "presided_by", "government_present", "start_time", "end_time"],
+    "agenda_item": ["uri", "sitting", "ord", "title", "stage", "procedural"],
+    "agenda_item_act": ["item", "act_ref"],
+    "speech": ["uri", "item", "ord", "person", "speaker_label", "as_group", "as_office", "kind", "anchor", "hash", "text"],
+    "document": ["uri", "kind", "date", "body_code", "title", "anchor", "acts", "hash", "text", "source", "source_key"],
+    "speech_mention": ["speech", "ord", "person", "surface", "method"],
+}
+
+
+def script_commissione(righe: list[dict]) -> str:
+    """Un documento di commissione in una transazione: il comunicato del Bollettino di un giorno (sommario e allegati)
+    o uno stenografico (verbatim). Si sostituisce tutto ciò che viene dallo stesso documento della fonte.
+    L'organo si lega all'anagrafica: commissioni permanenti per numero, le altre per nome; le riunite restano col codice.
+    Chi parla senza link alla scheda si lega al deputato in carica quel giorno con lo stesso nome, se è uno solo."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    testi = {r["ref"]: r for r in righe if r["tipo"] == "testo"}
+    padre = {a["to"]: a["from"] for a in archi if a["type"] in ("HAS_ITEM", "HAS_SPEECH")}
+    chi = {a["from"]: a["to"] for a in archi if a["type"] == "BY"}
+    leg, codice, giorno = int(amb["legislature"]), amb["body_code"], amb["date"]
+    ramo = amb.get("chamber", "camera")
+    provvisorio = f"it:{ramo}:{leg}:comm:{codice}"
+    t = {k: [] for k in BOLLETTINO}
+    for n in nodi:
+        if n["label"] == "Sitting":
+            x = {**n, "body": provvisorio}
+            t["sitting"].append([x.get(c) for c in BOLLETTINO["sitting"]])
+        elif n["label"] == "AgendaItem":
+            t["agenda_item"].append([n["uri"], padre[n["uri"]], n["order"], n.get("title"), n.get("stage"), bool(n.get("service"))])
+            t["agenda_item_act"] += [[n["uri"], ref] for ref in n.get("acts", [])]
+        elif n["label"] == "Speech":
+            t["speech"].append([n["uri"], padre[n["uri"]], n["order"], chi.get(n["uri"]), n.get("speaker_label"), n.get("declared_group"),
+                                n.get("as_office"), n["kind"], n.get("anchor"), n["hash"], testi[n["text_ref"]]["text"]])
+        elif n["label"] == "Document":
+            t["document"].append([n["uri"], n["kind"], n["date"], n["body_code"], n.get("title"), n.get("anchor"), _array(n.get("acts")),
+                                  n["hash"], testi[n["text_ref"]]["text"], n["source"], amb.get("source_key")])
+    t["speech_mention"] = [[a["from"], a["order"], a["to"], a.get("surface"), a["method"]] for a in archi if a["type"] == "MENTIONS"]
+    persone = sorted({r[3] for r in t["speech"] if r[3]} | {r[2] for r in t["speech_mention"]} | {r[BOLLETTINO["sitting"].index("presided_by")] for r in t["sitting"] if r[BOLLETTINO["sitting"].index("presided_by")]})
+    filtro = f"source = {_lit(amb['source'])} AND source_key = {_lit(amb['source_key'])}"
+    # la stessa seduta può arrivare da due documenti della fonte: la Camera a volte pubblica la bozza e la versione
+    # definitiva sotto numeri diversi (stenografico 0001 in bozza, 0003 definitivo, stessa seduta). La definitiva prende
+    # il posto di qualunque altra versione; una bozza non tocca una definitiva già caricata, e si salta
+    uris = ", ".join(_lit(r[0]) for r in t["sitting"]) or "NULL"
+    bozza = any(n.get("provisional") for n in nodi if n["label"] == "Sitting")
+    altre = f"uri IN ({uris}) AND NOT ({filtro})"
+    parti = ["BEGIN;", f"DELETE FROM sitting WHERE {filtro};", f"DELETE FROM document WHERE {filtro};",
+             f"DELETE FROM sitting WHERE {altre}{' AND provisional' if bozza else ''};",
+             f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
+             "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
+    for tabella in BOLLETTINO:
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(BOLLETTINO[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    numerica = ramo == "camera" and codice.isdigit() and len(codice) == 2 and 1 <= int(codice) <= 14
+    # Senato: il nome del sommario («7ª Commissione permanente») è l'inizio del nome in anagrafica, che aggiunge la materia
+    # (con le cifre: norm_nome le toglie e «1ª» e «10ª Commissione» diventerebbero uguali)
+    confronto = ("lower(regexp_replace(b.name, '[^0-9A-Za-z]', '', 'g')) LIKE lower(regexp_replace(s.body_name, '[^0-9A-Za-z]', '', 'g')) || '%'"
+                 if ramo == "senato" else "norm_nome(b.name) = norm_nome(s.body_name)")
+    risolto = (f"'it:camera:{leg}:body:o{leg}_35' || {_lit(codice)}" if numerica else
+               f"(SELECT min(b.uri) FROM body b WHERE b.chamber = {_lit(ramo)} AND b.legislature = {leg} AND {confronto} "
+               f"HAVING count(*) = 1)")
+    parti += [f"UPDATE sitting s SET body = coalesce({risolto}, s.body) WHERE s.{filtro.replace('AND ', 'AND s.')};",
+              f"UPDATE document d SET body = (SELECT s.body FROM sitting s WHERE s.{filtro.replace('AND ', 'AND s.')} LIMIT 1) WHERE d.{filtro.replace('AND ', 'AND d.')};",
+              f"""UPDATE speech sp SET person = x.uri FROM (
+                    SELECT sp2.uri AS u, min(p.uri) AS uri FROM speech sp2 JOIN agenda_item i ON i.uri = sp2.item JOIN sitting s ON s.uri = i.sitting
+                    JOIN person p ON upper(p.given_name || ' ' || p.family_name) = upper(sp2.speaker_label)
+                    JOIN mandate m ON m.person = p.uri AND m.chamber = {_lit(ramo)} AND m.start_date <= s.date AND (m.end_date IS NULL OR m.end_date >= s.date)
+                    WHERE sp2.person IS NULL AND s.{filtro.replace('AND ', 'AND s.')} GROUP BY sp2.uri HAVING count(DISTINCT p.uri) = 1) x
+                  WHERE sp.uri = x.u;""",
+              f"SELECT lega_argomenti(s.uri, {leg}) FROM sitting s WHERE s.{filtro.replace('AND ', 'AND s.')};",
+              "COMMIT;"]
+    if bozza and "superata" in psql(f"SELECT 'superata' FROM sitting WHERE {altre} AND NOT coalesce(provisional, false) LIMIT 1;"):
+        return ""                                     # bozza superata: c'è già la versione definitiva
+    return "\n".join(parti) + "\n"
+
+
+AIC = {
+    "act": ["uri", "chamber", "legislature", "number", "kind", "kind_raw", "title", "text", "date", "closed_date", "concluded",
+            "card_url", "source", "source_uri", "source_key"],
+    "act_sponsor": ["act", "person", "first"],
+    "act_addressee": ["act", "ministry"],
+    "act_subject": ["act", "concept"],
+}
+
+
+def script_aic(righe: list[dict]) -> str:
+    """Gli atti di sindacato ispettivo presentati in un mese, in una transazione; poi si legano ai voti
+    (gli ordini del giorno votati) e agli argomenti del Bollettino (le interrogazioni svolte in commissione)."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    leg, k = int(amb["legislature"]), amb["source_key"]
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    archi = [r for r in righe if r["tipo"] == "arco"]
+    t = {"act": [[{**n, "source_key": k}.get(c) for c in AIC["act"]] for n in nodi],
+         "act_sponsor": [[a["to"], a["from"], a["first"]] for a in archi if a["type"] == "SPONSORS"],
+         "act_addressee": [[a["from"], a["to"]] for a in archi if a["type"] == "ADDRESSED_TO"],
+         "act_subject": [[a["from"], a["to"]] for a in archi if a["type"] == "SUBJECT"]}
+    persone = sorted({r[1] for r in t["act_sponsor"]})
+    ramo = amb.get("chamber", "camera")
+    parti = ["BEGIN;", f"DELETE FROM act WHERE source_key = {_lit(k)} AND chamber = {_lit(ramo)};",
+             f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
+             "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
+    for tabella in AIC:
+        if t[tabella]:
+            parti.append(f"COPY {tabella} ({', '.join(AIC[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
+    parti += [
+        # voti: aic9_00080_004_19 -> it:camera:19:aic:9-00080-004
+        f"""UPDATE vote_act v SET act = a.uri FROM act a WHERE a.source_key = {_lit(k)} AND v.act IS NULL
+              AND v.act_ref LIKE 'aic%' AND a.uri = 'it:{ramo}:{leg}:aic:' || replace(regexp_replace(v.act_ref, '^aic|_{leg}$', '', 'g'), '_', '-');""",
+        # ordini del giorno: il voto non porta il suffisso del testo esaminato («9/00115-A/002» -> aic9_00115_002_19);
+        # si lega se, con la stessa data fra presentazione e voto, il candidato è uno solo
+        f"""UPDATE vote_act v SET act = x.uri FROM (
+              SELECT v2.vote, v2.act_ref, min(a.uri) AS uri FROM vote_act v2 JOIN vote vo ON vo.uri = v2.vote
+              JOIN act a ON a.source_key = {_lit(k)} AND a.date = vo.date
+               AND regexp_replace(a.number, '^(\\d)/(\\d+)(-[A-Z]+)?/(\\d+)$', 'aic\\1_\\2_\\4_{leg}') = v2.act_ref
+              WHERE v2.act IS NULL AND v2.act_ref LIKE 'aic%' GROUP BY v2.vote, v2.act_ref HAVING count(*) = 1) x
+            WHERE v.vote = x.vote AND v.act_ref = x.act_ref;""",
+        # Bollettino: «aic:5-04321»
+        f"""UPDATE agenda_item_act x SET act = a.uri FROM act a WHERE a.source_key = {_lit(k)} AND x.act IS NULL
+              AND x.act_ref LIKE 'aic:%' AND a.uri = 'it:{ramo}:{leg}:' || x.act_ref;""",
+        "COMMIT;"]
+    return "\n".join(parti) + "\n"
+
+
+def script_video(righe: list[dict]) -> str:
+    """Il video di una seduta con i tratti degli interventi, in una transazione."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    v = next(r for r in righe if r["tipo"] == "nodo" and r["label"] == "Video")
+    tratti = [[a["to"], a["order"], a.get("from"), a.get("anchor"), a.get("label"), a.get("start"), a.get("end"), a.get("clock")]
+              for a in righe if a["tipo"] == "arco" and a["type"] == "HAS_VIDEO"]
+    col_v = ["uri", "event_id", "sitting", "kind", "title", "url", "start_ts", "end_ts", "source", "source_key"]
+    parti = ["BEGIN;", f"DELETE FROM video WHERE uri = {_lit(v['uri'])};",
+             f"COPY video ({', '.join(col_v)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv([[{**v, 'source_key': amb['source_key']}.get(c) for c in col_v]])}\\."]
+    if tratti:
+        parti.append(f"COPY video_segment (video, ord, speech, anchor, label, start_s, end_s, clock) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(tratti)}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+def script_odg(righe: list[dict]) -> str:
+    """Una seduta prevista con i suoi argomenti. Se la seduta si è già tenuta (c'è il resoconto) non si tocca:
+    il resoconto vince sempre sull'ordine del giorno."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    s = next(n for n in nodi if n["label"] == "Sitting")
+    voci = [n for n in nodi if n["label"] == "AgendaItem"]
+    col_s = ["uri", "chamber", "body", "number", "date", "status", "kind", "start_time", "source", "source_key", "source_hash"]
+    col_i = ["uri", "sitting", "ord", "title", "text", "scheduled_time", "rapporteurs"]
+    u, leg = _lit(s["uri"]), int(amb["legislature"])
+    prevista = f"EXISTS (SELECT 1 FROM sitting WHERE uri = {u} AND status = 'planned')"
+    parti = ["BEGIN;", f"DELETE FROM sitting WHERE uri = {u} AND status = 'planned';",
+             f"CREATE TEMP TABLE s_ (LIKE sitting INCLUDING DEFAULTS) ON COMMIT DROP;",
+             f"COPY s_ ({', '.join(col_s)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv([[s.get(c) for c in col_s]])}\\.",
+             f"INSERT INTO sitting ({', '.join(col_s)}) SELECT {', '.join(col_s)} FROM s_ WHERE NOT EXISTS (SELECT 1 FROM sitting WHERE uri = {u});",
+             "CREATE TEMP TABLE i_ (uri text, sitting text, ord int, title text, text text, scheduled_time text, rapporteurs text) ON COMMIT DROP;",
+             f"COPY i_ ({', '.join(col_i)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv([[v['uri'], s['uri'], v['order'], v.get('title'), v.get('text'), v.get('scheduled_time'), v.get('rapporteurs')] for v in voci])}\\.",
+             f"INSERT INTO agenda_item ({', '.join(col_i)}) SELECT {', '.join(col_i)} FROM i_ WHERE {prevista};",
+             "CREATE TEMP TABLE a_ (item text, act_ref text) ON COMMIT DROP;",
+             f"COPY a_ FROM STDIN WITH (FORMAT csv);\n{_csv(sorted({(v['uri'], a) for v in voci for a in v['acts']}))}\\.",
+             f"INSERT INTO agenda_item_act (item, act_ref) SELECT item, act_ref FROM a_ WHERE {prevista};",
+             f"SELECT lega_argomenti({u}, {leg});",
+             "COMMIT;"]
+    return "\n".join(parti) + "\n"
+
+
+DOC_META = ["uri", "kind", "date", "body_code", "body", "title", "author_raw", "hearing", "sitting_date", "acts", "url", "format",
+            "third_party", "hash", "source", "source_key"]
+
+
+def script_documenti(righe: list[dict]) -> str:
+    """Metadati dagli elenchi (aggiornano, non toccano il testo) o testo da un file (aggiorna solo il testo)."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    if amb["kind"] == "documenti_elenco":
+        dati = [[_array(n["acts"]) if c == "acts" else (amb["source_key"] if c == "source_key" else
+                 hashlib.sha256(n["url"].encode()).hexdigest()[:16] if c == "hash" else n.get(c)) for c in DOC_META] for n in nodi]
+        agg = ", ".join(f"{c} = EXCLUDED.{c}" for c in DOC_META[1:] if c != "hash")
+        return "\n".join(["BEGIN;", f"CREATE TEMP TABLE d_ (LIKE document INCLUDING DEFAULTS) ON COMMIT DROP;",
+                           f"COPY d_ ({', '.join(DOC_META)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(dati)}\\.",
+                           f"INSERT INTO document ({', '.join(DOC_META)}) SELECT {', '.join(DOC_META)} FROM d_ ON CONFLICT (uri) DO UPDATE SET {agg};",
+                           "COMMIT;"]) + "\n"
+    testi = {r["ref"]: r["text"] for r in righe if r["tipo"] == "testo"}
+    n = nodi[0]
+    t = testi.get(n.get("text_ref") or "")
+    riga = [[n["uri"], "document", n["hash"], t, n.get("format"), "camera_documenti", amb["source_key"]]]
+    return "\n".join(["BEGIN;", "CREATE TEMP TABLE t_ (uri text, kind text, hash text, text text, format text, source text, source_key text) ON COMMIT DROP;",
+                       f"COPY t_ FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(riga)}\\.",
+                       "INSERT INTO document (uri, kind, hash, text, format, source, source_key) SELECT * FROM t_ "
+                       "ON CONFLICT (uri) DO UPDATE SET text = EXCLUDED.text, hash = EXCLUDED.hash;", "COMMIT;"]) + "\n"
+
+
+DOC_INTERO = ["uri", "kind", "date", "title", "hearing", "author_raw", "code", "acts", "url", "format", "third_party", "hash", "text",
+              "source", "source_key"]
+
+
+def script_documento(righe: list[dict]) -> str:
+    """Un documento intero (metadati e testo), sostituito: per i dossier."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    n = next(r for r in righe if r["tipo"] == "nodo")
+    testo = next((r["text"] for r in righe if r["tipo"] == "testo"), None)
+    riga = [[_array(n.get("acts")) if c == "acts" else testo if c == "text" else amb["source_key"] if c == "source_key" else n.get(c)
+             for c in DOC_INTERO]]
+    return "\n".join(["BEGIN;", f"DELETE FROM document WHERE uri = {_lit(n['uri'])};",
+                       f"COPY document ({', '.join(DOC_INTERO)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(riga)}\\.", "COMMIT;"]) + "\n"
+
+
+EMENDAMENTI = ["uri", "act", "number", "kind", "action", "article", "venue", "committee", "sitting_number", "sitting_date", "group_title",
+               "status", "outcome", "decree", "identical", "hash", "text", "source_key", "presented"]
+
+
+def script_emendamenti(righe: list[dict]) -> str:
+    """Tutti gli emendamenti di un progetto di legge in una transazione: si sostituiscono interi."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    testi = {r["ref"]: r["text"] for r in righe if r["tipo"] == "testo"}
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    firme = [r for r in righe if r["tipo"] == "arco" and r["type"] == "SIGNS"]
+    dati = [[_array(n.get("identical")) if c == "identical" else testi.get(n.get("text_ref") or "") if c == "text"
+             else amb["source_key"] if c == "source_key" else n.get(c) for c in EMENDAMENTI] for n in nodi]
+    f = [[a["to"], a["order"], a.get("from"), a.get("first"), a.get("family_raw"), a.get("given_raw"), a.get("kind_raw")] for a in firme]
+    persone = sorted({a["from"] for a in firme if a.get("from")})
+    parti = ["BEGIN;", f"DELETE FROM amendment WHERE source_key = {_lit(amb['source_key'])};",
+             f"CREATE TEMP TABLE p (uri text) ON COMMIT DROP;\nCOPY p FROM STDIN WITH (FORMAT csv);\n{_csv([[x] for x in persone])}\\.",
+             "INSERT INTO person (uri) SELECT uri FROM p ON CONFLICT DO NOTHING;"]
+    if dati:
+        parti.append(f"COPY amendment ({', '.join(EMENDAMENTI)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(dati)}\\.")
+    if f:
+        parti.append(f"COPY amendment_signer (amendment, ord, person, first, family_raw, given_raw, kind_raw) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(f)}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+def script_testo_atto(righe: list[dict]) -> str:
+    """Il testo di una versione di un progetto di legge, con articoli e norme citate, in una transazione."""
+    amb = next(r for r in righe if r["tipo"] == "ambito")
+    n = next(r for r in righe if r["tipo"] == "nodo")
+    testo = next(r["text"] for r in righe if r["tipo"] == "testo")
+    c = amb["code"]
+    art = [[c, i, a.get("number"), a.get("anchor"), a.get("text")] for i, a in enumerate(n["articles"], 1)]
+    cit = [[c, x["urn"], x.get("label")] for x in n["citations"]]
+    parti = ["BEGIN;", f"DELETE FROM act_text WHERE code = {_lit(c)};",
+             f"COPY act_text (code, hash, text, source_key, act, kind) FROM STDIN WITH (FORMAT csv, NULL '');\n"
+             f"{_csv([[c, n['hash'], testo, amb['source_key'], n.get('act'), n.get('kind')]])}\\."]
+    if art:
+        parti.append(f"COPY act_article (code, ord, number, anchor, text) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(art)}\\.")
+    if cit:
+        parti.append(f"COPY act_citation (code, urn, label) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(cit)}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+def script_corrispondenze(righe: list[dict]) -> str:
+    """Le corrispondenze fra id della stessa persona, sostituite intere; le persone della Camera che sono senatori
+    si completano (solo i campi vuoti)."""
+    nodi = [r for r in righe if r["tipo"] == "nodo"]
+    archi = [[a["from"], a["to"], a["method"]] for a in righe if a["tipo"] == "arco" and a["type"] == "SAME_AS"]
+    colp = ["uri", "camera_id", "given_name", "family_name", "sort_name", "gender", "source", "source_uri"]
+    parti = ["BEGIN;", "CREATE TEMP TABLE p (LIKE person INCLUDING DEFAULTS) ON COMMIT DROP;",
+             f"COPY p ({', '.join(colp)}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv([[n.get(c) for c in colp] for n in nodi])}\\.",
+             f"INSERT INTO person ({', '.join(colp)}, stub) SELECT {', '.join(colp)}, false FROM p ON CONFLICT (uri) DO UPDATE SET "
+             + ", ".join(f"{c} = coalesce(person.{c}, EXCLUDED.{c})" for c in colp[1:]) + ", stub = false;",
+             "DELETE FROM person_same_as WHERE person LIKE 'it:person:camera:%' AND same_as LIKE 'it:person:senato:%';"]
+    if archi:
+        parti.append(f"COPY person_same_as (person, same_as, method) FROM STDIN WITH (FORMAT csv);\n{_csv(archi)}\\.")
+    parti.append("COMMIT;")
+    return "\n".join(parti) + "\n"
+
+
+def script_concetti(righe: list[dict]) -> str:
+    """Un thesaurus intero: si sostituisce in una transazione."""
+    ambito = next(r for r in righe if r["tipo"] == "ambito")
+    nodi = [[n["uri"], n["scheme"], n["label_it"], n.get("label_en"), _array(n.get("broader") or []), n["source"]]
+            for n in righe if n["tipo"] == "nodo"]
+    return "\n".join(["BEGIN;", f"DELETE FROM concept WHERE scheme = {_lit(ambito['scheme'])};",
+                      f"COPY concept (uri, scheme, label_it, label_en, broader, source) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(nodi)}\\.",
+                      "COMMIT;"]) + "\n"
+
+
+def script_allineamenti(cartella) -> str:
+    """Concetti TESEO e collegamenti fra thesauri da dati/allineamenti/: file piccoli e curati, si sostituiscono interi."""
+    teseo = [json.loads(x) for x in (cartella / "teseo-concetti.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+    righe = [json.loads(x) for x in (cartella / "teseo-eurovoc.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+    concetti = [[c["uri"], "teseo", c["label_it"], None, None, "dati.senato.it"] for c in teseo]
+    legami = [[r["teseo"], r["eurovoc"], r["relation"], r.get("confidence"), r.get("score"), r["method"], r.get("verified"),
+               r.get("verified_by"), r.get("verified_at")] for r in righe]
+    return "\n".join(["BEGIN;", "DELETE FROM concept WHERE scheme = 'teseo';",
+                      f"COPY concept (uri, scheme, label_it, label_en, broader, source) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(concetti)}\\.",
+                      "DELETE FROM concept_match;",
+                      f"COPY concept_match (from_concept, to_concept, relation, confidence, score, method, verified, verified_by, verified_at) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(legami)}\\.",
+                      "COMMIT;"]) + "\n"
+
+
+def carica(ctx) -> dict:
+    psql((QUI / "schema" / "v3.sql").read_text())
+    cartella = ctx.cartella / "uscite" / "v3"
+    segno = ctx.cartella / "uscite" / ".postgres.ultimo"
+    da = float(segno.read_text()) if segno.exists() else 0.0
+    inizio, sedute, anagrafiche, votazioni, errori = time.time(), 0, 0, 0, []
+    # prima l'anagrafica (gli interventi e i voti citano le persone), poi gli atti (i voti si legano agli atti)
+    ordine = lambda f: (0 if f.name.endswith("-anagrafica.jsonl") else 1 if f.name.endswith(("-governo.jsonl", "-corrispondenze.jsonl"))
+                        else 2 if f.name.endswith("-atti.jsonl") or "-aic-" in f.name else 3, str(f))
+    for f in sorted(cartella.rglob("*.jsonl"), key=ordine):
+        if f.stat().st_mtime < da:
+            continue
+        righe = [json.loads(x) for x in f.read_text(encoding="utf-8").split("\n") if x.strip()]  # non splitlines(): spezza anche su U+2028, che nei testi c'è
+        try:
+            tipo = righe[0].get("kind") if righe and righe[0]["tipo"] == "ambito" else None
+            if tipo == "anagrafica":
+                psql(script_anagrafica(righe))
+                anagrafiche += 1
+                continue
+            if tipo == "voti":
+                psql(script_voti(righe))
+                votazioni += 1
+                continue
+            if tipo == "commissione":
+                psql(script_commissione(righe))
+                sedute += 1
+                continue
+            if tipo == "testo_atto":
+                if not any(r["tipo"] == "testo" for r in righe):
+                    continue                               # versione annunciata, testo non ancora pubblicato alla fonte
+                psql(script_testo_atto(righe))
+                sedute += 1
+                continue
+            if tipo == "emendamenti":
+                psql(script_emendamenti(righe))
+                sedute += 1
+                continue
+            if tipo == "dossier":
+                psql(script_documento(righe))
+                sedute += 1
+                continue
+            if tipo in ("documenti_elenco", "documento_testo"):
+                psql(script_documenti(righe))
+                sedute += 1
+                continue
+            if tipo == "odg":
+                psql(script_odg(righe))
+                sedute += 1
+                continue
+            if tipo == "video":
+                psql(script_video(righe))
+                sedute += 1
+                continue
+            if tipo == "aic":
+                psql(script_aic(righe))
+                anagrafiche += 1
+                continue
+            if tipo == "corrispondenze":
+                psql(script_corrispondenze(righe))
+                anagrafiche += 1
+                continue
+            if tipo == "governo":
+                psql(script_governo(righe))
+                anagrafiche += 1
+                continue
+            if tipo == "concetti":
+                psql(script_concetti(righe))
+                anagrafiche += 1
+                continue
+            if tipo == "atti":
+                psql(script_atti(righe))
+                anagrafiche += 1
+                continue
+            psql(script_seduta(righe))
+            sedute += 1
+        except Exception as e:  # la seduta resta com'era, intera; le altre vanno avanti
+            errori.append(f"{f.name}: {str(e)[:300]}")
+    if votazioni or anagrafiche:
+        # dopo voti e atti: gli id dei gruppi nei voti e gli ordini del giorno votati (schema/v3.sql)
+        psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;")
+    if anagrafiche:
+        psql("SELECT lega_reazioni('it:');")
+    allineamenti = ctx.cartella / "allineamenti"
+    if (allineamenti / "teseo-eurovoc.jsonl").exists():
+        psql(script_allineamenti(allineamenti))          # gruppi o persone nuovi: le reazioni ancora senza chi reagisce
+    if errori:
+        # gli altri file sono caricati (ognuno nella sua transazione); il segno non avanza, così i falliti si riprovano
+        raise RuntimeError(f"{len(errori)} file non caricati ({sedute + anagrafiche + votazioni} sì): " + "; ".join(errori[:3]))
+    segno.write_text(str(inizio))
+    return {"anagrafiche_e_atti_caricati": anagrafiche, "sedute_caricate": sedute, "voti_caricati": votazioni, "errori": errori[:10]}

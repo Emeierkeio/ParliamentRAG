@@ -1,0 +1,124 @@
+{
+  "id": "LOB-041",
+  "domanda": "Chi segue la manovra per ciascun gruppo in commissione Bilancio? Mi servono i capigruppo in V Commissione e in 5ª al Senato.",
+  "sql": [
+    "SELECT b.name AS commissione, p.given_name || ' ' || p.family_name AS capogruppo, o.start_date, o.end_date,\n       (SELECT g.short_name FROM membership m JOIN grp g ON g.uri = m.grp\n        WHERE m.person = o.person AND g.chamber = 'camera' AND m.start_date <= coalesce(o.end_date, DATE '2026-11-02')\n          AND (m.end_date IS NULL OR m.end_date >= coalesce(o.end_date, DATE '2026-11-02'))\n        ORDER BY (g.kind = 'misto_component') DESC LIMIT 1) AS gruppo\nFROM office o JOIN person p ON p.uri = o.person JOIN body b ON b.uri = o.target\nWHERE o.target = 'it:camera:19:body:o19_3505' AND o.title = 'group_whip' AND o.end_date IS NULL\n  AND EXISTS (SELECT 1 FROM mandate md WHERE md.person = o.person AND md.chamber = 'camera' AND md.legislature = 19 AND md.end_date IS NULL)\nORDER BY gruppo, o.start_date DESC",
+    "SELECT b.name AS commissione, o.title_raw AS carica, p.given_name || ' ' || p.family_name AS persona, o.start_date,\n       (SELECT g.short_name FROM membership m JOIN grp g ON g.uri = m.grp\n        WHERE m.person = o.person AND g.chamber = 'senato' AND (m.start_date IS NULL OR m.start_date <= DATE '2026-11-02')\n          AND (m.end_date IS NULL OR m.end_date >= DATE '2026-11-02') LIMIT 1) AS gruppo\nFROM office o JOIN person p ON p.uri = o.person JOIN body b ON b.uri = o.target\nWHERE o.target = 'it:senato:19:body:0-5' AND o.end_date IS NULL\nORDER BY o.title, p.family_name"
+  ],
+  "risultato": [
+    [
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Marco Grimaldi",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "AVS"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Elena Bonetti",
+        "start_date": "2024-10-11",
+        "end_date": null,
+        "gruppo": "AZ-PER-RE"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Ylenja Lucaselli",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "FDI"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Roberto Pella",
+        "start_date": "2025-06-30",
+        "end_date": null,
+        "gruppo": "FI-PPE"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Davide Faraone",
+        "start_date": "2024-09-18",
+        "end_date": null,
+        "gruppo": "IV-CR"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Silvana Andreina Comaroli",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "LEGA"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Daniela Torto",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "M5S"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Dieter Steger",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "MISTO-MIN.LING."
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Francesco Saverio Romano",
+        "start_date": "2022-11-09",
+        "end_date": null,
+        "gruppo": "NM(N-C-U-I)M-CP"
+      },
+      {
+        "commissione": "V Commissione",
+        "capogruppo": "Maria Cecilia Guerra",
+        "start_date": "2026-02-04",
+        "end_date": null,
+        "gruppo": "PD-IDP"
+      }
+    ],
+    [
+      {
+        "commissione": "5ª Commissione permanente (Bilancio)",
+        "carica": "Presidente",
+        "persona": "Nicola Calandrini",
+        "start_date": "2025-06-10",
+        "gruppo": "FdI"
+      },
+      {
+        "commissione": "5ª Commissione permanente (Bilancio)",
+        "carica": "Segretario",
+        "persona": "Concetta Damante",
+        "start_date": "2025-06-10",
+        "gruppo": "M5S"
+      },
+      {
+        "commissione": "5ª Commissione permanente (Bilancio)",
+        "carica": "Segretario",
+        "persona": "Elena Testor",
+        "start_date": "2025-06-10",
+        "gruppo": "LSP-PSd'Az"
+      },
+      {
+        "commissione": "5ª Commissione permanente (Bilancio)",
+        "carica": "Vicepresidente",
+        "persona": "Claudio Lotito",
+        "start_date": "2025-06-10",
+        "gruppo": "FI-BP-PPE"
+      },
+      {
+        "commissione": "5ª Commissione permanente (Bilancio)",
+        "carica": "Vicepresidente",
+        "persona": "Antonio Misiani",
+        "start_date": "2025-06-10",
+        "gruppo": "PD-IDP"
+      }
+    ]
+  ],
+  "risposta": "Camera, V Commissione Bilancio, capigruppo in carica: FdI Ylenja Lucaselli; Lega Silvana Andreina Comaroli; FI-PPE Roberto Pella; Noi Moderati Francesco Saverio Romano; PD-IDP Maria Cecilia Guerra (dal 4/2/2026); M5S Daniela Torto; AVS Marco Grimaldi; Azione Elena Bonetti; IV-CR Davide Faraone; Misto-Minoranze linguistiche Dieter Steger. Nessun capogruppo risulta per le altre componenti del Misto (+Europa, Futuro Nazionale Vannacci, Sud Chiama Nord) né per il Misto senza componente. Senato, 5ª Commissione Bilancio: i dati non hanno i capigruppo di commissione, solo l'ufficio di presidenza (presidente Nicola Calandrini, FdI; vicepresidenti Claudio Lotito, FI-BP-PPE, e Antonio Misiani, PD-IDP; segretari Concetta Damante, M5S, ed Elena Testor, Lega).",
+  "stato": "parziale",
+  "limiti": "Per la Camera i capigruppo di commissione ci sono (office con title_raw «CAPOGRUPPO»); si tengono le cariche aperte di chi ha ancora il mandato. Il gruppo è quello della persona al 2/11/2026. Per il Senato la fonte non dà i capigruppo di commissione: la parte del Senato manca.",
+  "problemi_dati": [],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

@@ -1,0 +1,103 @@
+{
+  "id": "RIC-024",
+  "domanda": "Quante sedute in sede referente, consultiva e di audizione ha tenuto la X Commissione della Camera per anno?",
+  "sql": [
+    "SELECT extract(year FROM date)::int AS anno,\n       count(*) FILTER (WHERE seat = 'SEDE REFERENTE') AS sede_referente,\n       count(*) FILTER (WHERE seat = 'SEDE CONSULTIVA') AS sede_consultiva,\n       count(*) FILTER (WHERE seat ~* '^AUDIZIONI') AS audizioni,\n       count(*) FILTER (WHERE seat = 'INDAGINE CONOSCITIVA') AS indagine_conoscitiva,\n       min(date) AS prima_seduta_nei_dati, max(date) AS ultima_seduta_nei_dati\nFROM sitting\nWHERE body = 'it:camera:19:body:o19_3510' AND source = 'camera_bollettino'\nGROUP BY 1 ORDER BY 1",
+    "SELECT s.date, s.seat AS stenografico, string_agg(DISTINCT b.seat, ' | ') AS sedi_bollettino_stesso_giorno\nFROM sitting s LEFT JOIN sitting b ON b.body = s.body AND b.date = s.date AND b.source = 'camera_bollettino'\nWHERE s.body = 'it:camera:19:body:o19_3510' AND s.seat = 'audiz2 audizione'\nGROUP BY 1, 2 ORDER BY 1"
+  ],
+  "risultato": [
+    [
+      {
+        "anno": 2023,
+        "sede_referente": 31,
+        "sede_consultiva": 37,
+        "audizioni": 31,
+        "indagine_conoscitiva": 10,
+        "prima_seduta_nei_dati": "2023-05-15",
+        "ultima_seduta_nei_dati": "2023-12-27"
+      },
+      {
+        "anno": 2024,
+        "sede_referente": 22,
+        "sede_consultiva": 32,
+        "audizioni": 36,
+        "indagine_conoscitiva": 11,
+        "prima_seduta_nei_dati": "2024-01-11",
+        "ultima_seduta_nei_dati": "2024-12-18"
+      },
+      {
+        "anno": 2025,
+        "sede_referente": 36,
+        "sede_consultiva": 34,
+        "audizioni": 45,
+        "indagine_conoscitiva": 10,
+        "prima_seduta_nei_dati": "2025-01-08",
+        "ultima_seduta_nei_dati": "2025-12-28"
+      },
+      {
+        "anno": 2026,
+        "sede_referente": 27,
+        "sede_consultiva": 28,
+        "audizioni": 32,
+        "indagine_conoscitiva": 49,
+        "prima_seduta_nei_dati": "2026-01-13",
+        "ultima_seduta_nei_dati": "2026-10-28"
+      }
+    ],
+    [
+      {
+        "date": "2023-12-14",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | SEDE REFERENTE | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2024-02-28",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | AVVERTENZA | SEDE CONSULTIVA"
+      },
+      {
+        "date": "2024-02-29",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2024-03-06",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | SEDE REFERENTE | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2024-03-20",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | INTERROGAZIONI A RISPOSTA IMMEDIATA | SEDE CONSULTIVA | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2024-10-02",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "ATTI DEL GOVERNO | AUDIZIONI | AUDIZIONI INFORMALI | SEDE CONSULTIVA | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2024-12-11",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | AUDIZIONI INFORMALI | INTERROGAZIONI A RISPOSTA IMMEDIATA | SEDE REFERENTE | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2025-02-12",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | AUDIZIONI INFORMALI | INTERROGAZIONI A RISPOSTA IMMEDIATA | RISOLUZIONI | SEDE CONSULTIVA | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      },
+      {
+        "date": "2025-12-10",
+        "stenografico": "audiz2 audizione",
+        "sedi_bollettino_stesso_giorno": "AUDIZIONI | SEDE CONSULTIVA | SEDE REFERENTE | UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI"
+      }
+    ]
+  ],
+  "risposta": "Sedute della X Commissione (Attività produttive) della Camera nel Bollettino, per anno. 2023 (dal 15/5): referente 31, consultiva 37, audizioni 31, indagine conoscitiva 10. 2024: referente 22, consultiva 32, audizioni 36, indagine conoscitiva 11. 2025: referente 36, consultiva 34, audizioni 45, indagine conoscitiva 10. 2026 (fino al 28/10): referente 27, consultiva 28, audizioni 32, indagine conoscitiva 49. Mancano le sedute dall'inizio della legislatura al 14/5/2023.",
+  "stato": "parziale",
+  "limiti": "Il Bollettino nel database parte dal 15/5/2023: il 2022 e i primi mesi del 2023 non ci sono. Una «seduta» è una sezione del Bollettino con la sua sede. «Audizioni» raggruppa «AUDIZIONI» e «AUDIZIONI INFORMALI»; le sedute d'indagine conoscitiva, che sono quasi tutte audizioni, stanno in una colonna a parte. Escluse le sedute dei resoconti stenografici («audiz2 audizione», «indag c10_…»), che ripetono sedute già nel Bollettino, e gli Uffici di presidenza.",
+  "problemi_dati": [
+    "Le sedute di commissione della Camera nel Bollettino iniziano il 15/5/2023: mancano i primi sette mesi della legislatura. Query: SELECT min(date) FROM sitting WHERE source='camera_bollettino';",
+    "Le sedute dai resoconti stenografici di commissione duplicano sedute del Bollettino con un valore di seat diverso («audiz2 audizione», «indag c10_settore_tessile»). Query: SELECT source, seat, count(*) FROM sitting WHERE body='it:camera:19:body:o19_3510' GROUP BY 1, 2;"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

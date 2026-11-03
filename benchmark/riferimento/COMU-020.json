@@ -1,0 +1,222 @@
+{
+ "id": "COMU-020",
+ "domanda": "Quante interrogazioni sono state rivolte al Ministero dell'Interno nel 2026, e quali gruppi ne hanno presentate di più?",
+ "sql": [
+  "select a.chamber, a.kind, count(*) n from act a join act_addressee x on x.act=a.uri and x.ministry='it:gov:202:og202_15'\n where a.kind in ('written_question','oral_question','committee_question','interpellation') and a.date between '2026-01-01' and '2026-12-31' group by 1,2 order by 1,2",
+  "select a.chamber, coalesce(g.short_name,'(gruppo non risolto)') gruppo, count(*) n from act a join act_addressee x on x.act=a.uri and x.ministry='it:gov:202:og202_15'\nleft join act_sponsor s on s.act=a.uri and s.first\nleft join lateral (select coalesce(group_at(s.person,a.date),\n   (select group_at(y.same_as,a.date) from person_same_as y where y.person=s.person and y.same_as like 'it:person:senato:%' limit 1)) g) gg on true\nleft join grp g on g.uri=gg.g\nwhere a.kind in ('written_question','oral_question','committee_question') and a.date between '2026-01-01' and '2026-12-31' group by 1,2 order by 1,3 desc",
+  "select p.given_name||' '||p.family_name senatore, count(*) n from act a join act_addressee x on x.act=a.uri and x.ministry='it:gov:202:og202_15'\njoin act_sponsor s on s.act=a.uri and s.first join person p on p.uri=s.person\njoin person_same_as y on y.person=s.person and y.same_as like 'it:person:senato:%'\nwhere a.chamber='senato' and a.kind in ('written_question','oral_question','committee_question') and a.date between '2026-01-01' and '2026-12-31'\nand group_at(y.same_as,a.date)='it:senato:19:group:9' group by 1 order by 2 desc",
+  "select p.given_name||' '||p.family_name deputato, count(*) n from act a join act_addressee x on x.act=a.uri and x.ministry='it:gov:202:og202_15'\njoin act_sponsor s on s.act=a.uri and s.first join person p on p.uri=s.person\nwhere a.chamber='camera' and a.kind in ('written_question','oral_question','committee_question') and a.date between '2026-01-01' and '2026-12-31'\nand group_at(s.person,a.date)='it:camera:19:group:gr4111' group by 1 order by 2 desc"
+ ],
+ "risultato": {
+  "per_tipo": [
+   {
+    "chamber": "camera",
+    "kind": "committee_question",
+    "n": 79
+   },
+   {
+    "chamber": "camera",
+    "kind": "interpellation",
+    "n": 41
+   },
+   {
+    "chamber": "camera",
+    "kind": "oral_question",
+    "n": 77
+   },
+   {
+    "chamber": "camera",
+    "kind": "written_question",
+    "n": 642
+   },
+   {
+    "chamber": "senato",
+    "kind": "interpellation",
+    "n": 2
+   },
+   {
+    "chamber": "senato",
+    "kind": "oral_question",
+    "n": 55
+   },
+   {
+    "chamber": "senato",
+    "kind": "written_question",
+    "n": 148
+   }
+  ],
+  "per_gruppo_primo_firmatario": [
+   {
+    "chamber": "camera",
+    "gruppo": "PD-IDP",
+    "n": 199
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "AZ-PER-RE",
+    "n": 163
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "M5S",
+    "n": 142
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "AVS",
+    "n": 97
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "FDI",
+    "n": 93
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "LEGA",
+    "n": 41
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "FI-PPE",
+    "n": 21
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO",
+    "n": 11
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-+EU-SUEU",
+    "n": 11
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-FNV-F",
+    "n": 8
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "IV-CR",
+    "n": 7
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "n": 5
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Misto",
+    "n": 44
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "PD-IDP",
+    "n": 34
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "M5S",
+    "n": 33
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "IV-CR",
+    "n": 29
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "FdI",
+    "n": 24
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "LSP-PSd'Az",
+    "n": 22
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "FI-BP-PPE",
+    "n": 12
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "n": 3
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "n": 2
+   }
+  ],
+  "senato_misto_per_persona": [
+   {
+    "senatore": "Ilaria Cucchi",
+    "n": 16
+   },
+   {
+    "senatore": "Giuseppe De Cristofaro",
+    "n": 11
+   },
+   {
+    "senatore": "Celestino Magni",
+    "n": 9
+   },
+   {
+    "senatore": "Marco Lombardo",
+    "n": 5
+   },
+   {
+    "senatore": "Carlo Calenda",
+    "n": 3
+   }
+  ],
+  "camera_misto_senza_componente": [
+   {
+    "deputato": "Aboubakar Soumahoro",
+    "n": 6
+   },
+   {
+    "deputato": "Attilio Pierro",
+    "n": 1
+   },
+   {
+    "deputato": "Francesco Gallo",
+    "n": 1
+   },
+   {
+    "deputato": "Lorenzo Cesa",
+    "n": 1
+   },
+   {
+    "deputato": "Luigi Marattin",
+    "n": 1
+   },
+   {
+    "deputato": "Rossano Sasso",
+    "n": 1
+   }
+  ]
+ },
+ "risposta": "Dal 1/1/2026 al 2/11/2026 le interrogazioni rivolte al Ministero dell'Interno sono 798 alla Camera (642 a risposta scritta, 77 a risposta orale, 79 in commissione) e 203 al Senato (148 scritte, 55 orali); a parte ci sono 41 interpellanze alla Camera e 2 al Senato. Camera, per gruppo del primo firmatario: PD-IDP 199, Azione-PER-RE 163, M5S 142, AVS 97, FdI 93, Lega 41, FI-PPE 21, Misto-+Europa 11, Misto-Futuro Nazionale Vannacci 8, IV-CR 7, Noi Moderati 5, Misto senza componente 11 (Soumahoro 6, Pierro, Gallo, Cesa, Marattin, Sasso 1 ciascuno). Senato: Misto 44 (Cucchi 16, De Cristofaro 11, Magni 9, Lombardo 5, Calenda 3), PD-IDP 34, M5S 33, IV-CR 29, FdI 24, Lega-PSd'Az 22, FI-BP-PPE 12, Autonomie 3, Civici d'Italia-UDC-NM 2.",
+ "stato": "parziale",
+ "limiti": "Interrogazioni = atti written_question, oral_question e committee_question con destinatario il Ministero dell'Interno (act_addressee); le interpellanze sono contate a parte. «Nel 2026» = data di presentazione dal 1/1 al 2/11/2026. Gruppo del primo firmatario alla data di presentazione. Al Senato il Misto non è diviso per componente nel DB (grp non ha componenti del Misto del Senato): si danno i nomi dei senatori, non la componente. Al Senato il gruppo si ricava via person_same_as, perché act_sponsor usa l'id Camera e membership l'id Senato.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato act_sponsor usa id it:person:camera:* mentre membership usa it:person:senato:*: group_at sul primo firmatario restituisce sempre null senza passare da person_same_as.",
+   "sql": "select count(*) from act_sponsor s join act a on a.uri=s.act where a.chamber='senato' and s.first and group_at(s.person,a.date) is null"
+  },
+  {
+   "problema": "Le componenti del Misto del Senato non esistono in grp (nessuna riga misto_component per il Senato).",
+   "sql": "select chamber, kind, count(*) from grp group by 1,2"
+  },
+  {
+   "problema": "I gruppi del Senato in grp hanno start_date e end_date vuoti.",
+   "sql": "select uri, name, start_date, end_date from grp where chamber='senato'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "RIC-016",
+ "domanda": "Nei resoconti della Camera, quali gruppi applaudono gli interventi di quali altri gruppi? Voglio la matrice degli applausi incrociati.",
+ "categoria": "reazioni",
+ "ramo": "camera",
+ "tipo_risposta": "confronto_gruppi",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Gli applausi «dai banchi della maggioranza» non nominano un gruppo e non vanno attribuiti a caso. La diagonale (un gruppo che applaude sé stesso) va distinta. Il gruppo di chi parla si prende da group_at alla data, non da speech.as_group.",
+ "endpoint": "/api/fascicolo",
+ "risposta_sistema": "## Introduzione\n\nLa discussione riguarda le dinamiche degli applausi incrociati tra gruppi parlamentari durante gli interventi in Aula, con particolare attenzione alle manifestazioni di consenso e dissenso tra deputati di diversi schieramenti. Sono stati analizzati 61 interventi di 47 deputati nel periodo dal 31/01/2023 al 28/10/2026.\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Fratelli d'Italia, nel dibattito sulle dinamiche d'Aula e sul rispetto tra gruppi parlamentari, emerge una forte attenzione da parte di Fratelli d'Italia verso la disparità di reazioni riservate agli interventi dei propri esponenti rispetto a quelli di altri gruppi. **Paolo Trancassini** denuncia, [«la collega si è potuta esprimere con enfasi, con rabbia, con decisione e nessuno ha fatto un fiato; nel momento in cui è intervenuto il collega Deidda urla, strilli»](leg19_sed495_tit00110.int00340_chunk_0). Dalle evidenze disponibili non risultano riferimenti espliciti ad applausi incrociati tra Fratelli d'Italia e altri gruppi; il tema centrale sollevato è piuttosto quello delle interruzioni e delle manifestazioni di dissenso, non di consenso, durante gli interventi in Aula. Nel corpus analizzato non emergono elementi sufficienti per attribuire al gruppo una posizione definita sugli applausi incrociati tra gruppi parlamentari.\n\nPer Lega - Salvini Premier, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Italia Viva - Casa Riformista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Movimento 5 Stelle, nei passaggi trovati nessuna delle voci più autorevoli del gruppo sul tema dice una frase che si possa citare alla lettera.\n\nPer Partito Democratico - Italia Democratica e Progressista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Gruppo Misto\n\nPer i parlamentari del Misto senza componente, nei passaggi trovati chi è intervenuto non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer +Europa - Stati Uniti d'Europa, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Futuro Nazionale Vannacci - Free, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Minoranze Linguistiche, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Sud chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "eventi": {
+  "waiting": 1,
+  "progress": 5,
+  "commissioni": 1,
+  "experts": 2,
+  "compass": 1,
+  "topic_stats": 1,
+  "citations": 1,
+  "citation_details": 1,
+  "chunk": 33,
+  "trace": 1,
+  "complete": 1
+ },
+ "strumenti": [
+  "Avvio retrieval...",
+  "Trovate 125 evidenze",
+  "Calcolo authority scores...",
+  "Analisi compass ideologico...",
+  "Generazione risposta multi-view..."
+ ],
+ "errori": [],
+ "tempo_s": 131.4,
+ "riferimento": {
+  "risposta": "Nei resoconti d'Aula della Camera ci sono 49.003 applausi; 45.886 nominano almeno un gruppo risolto. Ogni gruppo applaude soprattutto i propri oratori: M5S 13.912 su 15.617, PD-IDP 9.451 su 11.815, FdI 5.649 su 7.517, AVS 5.549 su 7.198, Lega 3.333 su 5.012, FI-PPE 2.263 su 3.597. Fuori dalla diagonale, gli applausi incrociati seguono gli schieramenti: PD-IDP applaude soprattutto AVS (988) e M5S (638), M5S applaude PD-IDP (847) e AVS (457), AVS applaude PD-IDP (1.065) e M5S (278); FdI applaude Lega (553) e FI (532), Lega applaude FdI (820) e FI (330), FI applaude FdI (684) e Lega (215). Le righe complete per gruppo che applaude, con il conteggio verso ogni gruppo dell'oratore, sono in «risultato».",
+  "stato": "calcolata",
+  "limiti": "Un applauso conta una volta per ogni coppia (gruppo che applaude, gruppo dell'oratore): «Applausi dei gruppi PD-IDP e AVS» conta per entrambi. Gruppo che applaude da reaction_from (kind = group, grp risolto alla data); gruppo dell'oratore da group_at(speech.person, data), non dal testo as_group. Esclusi 3.117 applausi senza gruppo risolto (2.599 sono solo «Applausi», gli altri nominano singoli deputati o «i banchi della maggioranza»). «(oratore senza gruppo)» = membri del governo non deputati e Presidenza. Componenti del Misto separate."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "pass",
+   "quotes": "pass"
+  },
+  "trappola": null,
+  "tempo_s": 131.4
+ },
+ "causa_probabile": "routing",
+ "note": "Nessuna matrice (riferimento: 49.003 applausi, es. PD-IDP applaude AVS 988 volte). Tutti i gruppi «non esprimono una posizione»: il fascicolo cerca opinioni sugli applausi invece di contarli. Verifica gruppi: fail.",
+ "verifica_citazioni": [
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0495&tipo=stenografico#sed0495.stenografico.tit00110.int00340"
+  }
+ ]
+}

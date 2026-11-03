@@ -1,0 +1,83 @@
+{
+ "id": "TER-033",
+ "trappola": false,
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "categoria": "temi",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso stabilirlo con un conteggio affidabile dai dati interrogabili qui: la ricerca restituisce risultati per pertinenza, non un archivio filtrabile e aggregabile per tema, e può includere anche atti diversi dalle interrogazioni.\n\nCome indicazione **non conclusiva**, le ricerche restituiscono più risultati per **pensioni/previdenza** (438) che per **ammortizzatori sociali** (434) e **sicurezza sul lavoro** (402). Lo scarto fra pensioni e ammortizzatori è però troppo ridotto per trattarlo come una graduatoria certa.\n\nI tre temi compaiono effettivamente in interrogazioni indirizzate al Ministero: per esempio, la sicurezza nell’[interrogazione 5-02027](https://aic.camera.it/aic/scheda.html?numero=5%2F02027&ramo=CAMERA&leg=19), le pensioni nella [3-00292](#/strumenti/atto/camera-3~00292?u=https%3A%2F%2Faic.camera.it%2Faic%2Fscheda.html%3Fnumero%3D3%252F00292%26ramo%3DCAMERA%26leg%3D19) e gli ammortizzatori nella [5-00640](#/strumenti/atto/camera-5~00640?u=https%3A%2F%2Faic.camera.it%2Faic%2Fscheda.html%3Fnumero%3D5%252F00640%26ramo%3DCAMERA%26leg%3D19)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Chi ha firmato l’interrogazione 5-02027 sulla sicurezza sul lavoro?",
+   "Come si è discusso in Aula dell’interrogazione 3-00292 sulle pensioni?",
+   "Quali interrogazioni sugli ammortizzatori sociali sono state presentate da Tiziana Nisini?"
+  ]
+ },
+ "tempo_s": 19.8,
+ "verifica": null
+}

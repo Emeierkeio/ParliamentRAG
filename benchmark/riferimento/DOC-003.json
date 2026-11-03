@@ -1,0 +1,202 @@
+{
+ "id": "DOC-003",
+ "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+ "sql": [
+  "select v.chamber, count(*) voti_finali_palesi, count(*) filter (where against=0 and abstain=0) senza_contrari_ne_astenuti\nfrom vote v where kind='final' and not coalesce(secret,false) group by 1",
+  "select v.uri, v.chamber, v.date, v.present, v.voting, v.favor, v.against, v.abstain, a.law_number, a.law_date, a.title\nfrom vote v join vote_act x on x.vote=v.uri join act a on a.uri=x.act\nwhere v.uri in ('it:camera:19:sed0571:v045','it:senato:19:sed0332:v001')",
+  "select v.uri, v.date, v.favor, a.uri atto, a.law_number, a.law_date, left(a.title,150) titolo\nfrom vote v join vote_act x on x.vote=v.uri join act a on a.uri=x.act\nwhere v.chamber='camera' and v.kind='final' and not coalesce(v.secret,false) and v.against=0 and v.abstain=0\n  and a.chamber='camera' and a.law_number is not null order by v.favor desc limit 15"
+ ],
+ "risultato": {
+  "conteggi": [
+   {
+    "chamber": "camera",
+    "voti_finali_palesi": 522,
+    "senza_contrari_ne_astenuti": 110
+   },
+   {
+    "chamber": "senato",
+    "voti_finali_palesi": 264,
+    "senza_contrari_ne_astenuti": 61
+   }
+  ],
+  "esempio_femminicidio": [
+   {
+    "uri": "it:camera:19:sed0571:v045",
+    "chamber": "camera",
+    "date": "2025-11-25",
+    "present": 237,
+    "voting": 237,
+    "favor": 237,
+    "against": 0,
+    "abstain": 0,
+    "law_number": "181",
+    "law_date": "2025-12-02",
+    "title": "S. 1433. - \"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\" <em>(approvato dal Senato)</em> (2528)"
+   },
+   {
+    "uri": "it:senato:19:sed0332:v001",
+    "chamber": "senato",
+    "date": "2025-07-23",
+    "present": 162,
+    "voting": 161,
+    "favor": 161,
+    "against": 0,
+    "abstain": 0,
+    "law_number": "181",
+    "law_date": "2025-12-02",
+    "title": "Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime"
+   }
+  ],
+  "altre_leggi_camera_senza_contrari": [
+   {
+    "uri": "it:camera:19:sed0165:v009",
+    "date": "2023-09-20",
+    "favor": 312,
+    "atto": "it:camera:19:ac:715-B",
+    "law_number": "1",
+    "law_date": "2023-09-26",
+    "titolo": "S. 13-B. - PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEI SENATORI IANNONE ed altri: \"Modifica all’articolo 33 della Costituzione, in materia di at"
+   },
+   {
+    "uri": "it:camera:19:sed0111:v016",
+    "date": "2023-05-30",
+    "favor": 302,
+    "atto": "it:camera:19:ac:916",
+    "law_number": "77",
+    "law_date": "2023-06-08",
+    "titolo": "S. 332. - Senatori CRAXI ed altri: \"Adesione al Protocollo addizionale alla Carta europea dell’autonomia locale sul diritto di partecipare agli affari"
+   },
+   {
+    "uri": "it:camera:19:sed0111:v031",
+    "date": "2023-05-30",
+    "favor": 300,
+    "atto": "it:camera:19:ac:974",
+    "law_number": "126",
+    "law_date": "2023-09-12",
+    "titolo": "\"Ratifica ed esecuzione del Protocollo emendativo dell’Accordo di collaborazione in materia radiotelevisiva fra il Governo della Repubblica italiana e"
+   },
+   {
+    "uri": "it:camera:19:sed0111:v026",
+    "date": "2023-05-30",
+    "favor": 299,
+    "atto": "it:camera:19:ac:914",
+    "law_number": "84",
+    "law_date": "2023-06-08",
+    "titolo": "S. 330. - Senatori CRAXI ed altri: \"Ratifica ed esecuzione delle seguenti Convenzioni: <em>a)</em> Convenzione sulla salute e la sicurezza dei lavorat"
+   },
+   {
+    "uri": "it:camera:19:sed0111:v005",
+    "date": "2023-05-30",
+    "favor": 299,
+    "atto": "it:camera:19:ac:912",
+    "law_number": "80",
+    "law_date": "2023-06-08",
+    "titolo": "S. 328. - Senatori CRAXI ed altri: \"Ratifica ed esecuzione dell’Accordo in materia di coproduzione cinematografica tra il Governo della Repubblica ita"
+   },
+   {
+    "uri": "it:camera:19:sed0111:v011",
+    "date": "2023-05-30",
+    "favor": 299,
+    "atto": "it:camera:19:ac:915",
+    "law_number": "76",
+    "law_date": "2023-06-08",
+    "titolo": "S. 331. - Senatori CRAXI ed altri: \"Ratifica ed esecuzione dell’Accordo di cooperazione culturale, scientifica e tecnologica tra il Governo della Repu"
+   },
+   {
+    "uri": "it:camera:19:sed0037:v005",
+    "date": "2023-01-17",
+    "favor": 288,
+    "atto": "it:camera:19:ac:698",
+    "law_number": "7",
+    "law_date": "2023-01-27",
+    "titolo": "\"Conversione in legge del decreto-legge 12 dicembre 2022, n. 190, recante disposizioni urgenti in materia di prolungamento delle operazioni di votazio"
+   },
+   {
+    "uri": "it:camera:19:sed0180:v002",
+    "date": "2023-10-18",
+    "favor": 283,
+    "atto": "it:camera:19:ac:1295",
+    "law_number": "158",
+    "law_date": "2023-10-20",
+    "titolo": "S. 614. - \"Istituzione del Museo della Shoah in Roma\" <em>(approvato dal Senato)</em> (1295)"
+   },
+   {
+    "uri": "it:camera:19:sed0176:v028",
+    "date": "2023-10-11",
+    "favor": 281,
+    "atto": "it:camera:19:ac:854",
+    "law_number": "187",
+    "law_date": "2023-11-24",
+    "titolo": "SCHIFONE e FOTI: \"Istituzione della Settimana nazionale delle discipline scientifiche, tecnologiche, ingegneristiche e matematiche\" (854)"
+   },
+   {
+    "uri": "it:camera:19:sed0153:v034",
+    "date": "2023-08-03",
+    "favor": 281,
+    "atto": "it:camera:19:ac:249",
+    "law_number": "193",
+    "law_date": "2023-12-07",
+    "titolo": "MARROCCO ed altri: \"Disposizioni per la prevenzione delle discriminazioni e la tutela dei diritti delle persone che sono state affette da malattie onc"
+   },
+   {
+    "uri": "it:camera:19:sed0527:v039",
+    "date": "2025-09-10",
+    "favor": 277,
+    "atto": "it:camera:19:ac:2292",
+    "law_number": "136",
+    "law_date": "2025-09-17",
+    "titolo": "S. 1352. - \"Ratifica ed esecuzione dell’Accordo tra il Governo della Repubblica Italiana e il Governo del Giappone in materia di vacanza-lavoro, fatto"
+   },
+   {
+    "uri": "it:camera:19:sed0082:v040",
+    "date": "2023-04-04",
+    "favor": 277,
+    "atto": "it:camera:19:ac:795",
+    "law_number": "63",
+    "law_date": "2023-05-15",
+    "titolo": "\"Ratifica ed esecuzione dello Scambio di Note verbali concernente il rinnovo dell’Accordo di cooperazione nel settore della difesa tra il Governo dell"
+   },
+   {
+    "uri": "it:camera:19:sed0405:v012",
+    "date": "2025-01-08",
+    "favor": 273,
+    "atto": "it:camera:19:ac:1916",
+    "law_number": "29",
+    "law_date": "2025-03-11",
+    "titolo": "\"Ratifica ed esecuzione dell’Accordo tra la Repubblica italiana e la Repubblica di Albania in materia di sicurezza sociale, fatto a Roma il 6 febbraio"
+   },
+   {
+    "uri": "it:camera:19:sed0350:v014",
+    "date": "2024-09-19",
+    "favor": 273,
+    "atto": "it:camera:19:ac:1149",
+    "law_number": "151",
+    "law_date": "2024-09-30",
+    "titolo": "S. 613. - \"Ratifica ed esecuzione del Trattato di assistenza giudiziaria in materia penale tra il Governo della Repubblica italiana ed il Governo dell"
+   },
+   {
+    "uri": "it:camera:19:sed0350:v020",
+    "date": "2024-09-19",
+    "favor": 272,
+    "atto": "it:camera:19:ac:1150",
+    "law_number": "157",
+    "law_date": "2024-09-30",
+    "titolo": "S. 563. - \"Ratifica ed esecuzione dell'Accordo tra il Governo della Repubblica italiana e il Governo della Repubblica del Ghana in materia di cooperaz"
+   }
+  ]
+ },
+ "risposta": "Un esempio è la legge 181/2025 sul delitto di femminicidio (S. 1433, C. 2528): il Senato l'ha approvata il 23/7/2025 con 161 sì, 0 no e 0 astenuti, la Camera in via definitiva il 25/11/2025 con 237 sì, 0 no e 0 astenuti. È l'unanimità dei votanti, non di tutti i parlamentari: alla Camera 89 deputati risultano assenti e 72 in missione. Altri esempi alla Camera, senza voti contrari né astenuti: la legge costituzionale 1/2023 che modifica l'art. 33 della Costituzione sullo sport (20/9/2023, 312 sì), la legge 158/2023 che istituisce il Museo della Shoah a Roma (18/10/2023, 283 sì) e molte ratifiche di accordi internazionali. In tutta la legislatura sono 110 su 522 i voti finali palesi della Camera senza contrari né astenuti, e 61 su 264 al Senato.",
+ "stato": "calcolata",
+ "limiti": "«Approvata da tutti» letto come voto finale palese senza contrari né astenuti (unanimità dei votanti). La lista della Camera (prime 15 per numero di sì) prende i voti legati a un atto della Camera con numero di legge: 77 dei 110 voti finali palesi senza contrari né astenuti; gli altri non hanno atto in vote_act o l'atto non ha numero di legge.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato il totale dei presenti del voto non torna con i voti individuali: it:senato:19:sed0332:v001 ha present 162, ma i voti individuali danno 161 favorevoli e 4 presenti non votanti; ballots_match è true perché confronta solo favorevoli, contrari e astenuti.",
+   "sql": "select result, count(*) from ballot where vote='it:senato:19:sed0332:v001' group by 1"
+  },
+  {
+   "problema": "Alcuni titoli degli atti contengono marcatori HTML («S. 1669<em>.</em>», «<em>startup</em>»).",
+   "sql": "select count(*) from act where title like '%<em>%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

@@ -1,0 +1,133 @@
+{
+ "id": "COMU-004",
+ "trappola": false,
+ "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+ "categoria": "reazioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+ "endpoint": "agente",
+ "risposta_sistema": "Sì. Alla conclusione dell’informativa del ministro Piantedosi, il resoconto della Camera registra:\n\n*(Applausi dei deputati dei gruppi di maggioranza, che si levano in piedi).*\n\nLa nota è nel [resoconto stenografico della seduta n. 607 del 3 febbraio 2026, all’intervento di Matteo Piantedosi](https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico#sed0607.stenografico.tit00050.sub00010.int00020)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 7
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 3
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 4
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 5
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 2
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 15
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Che cosa ha detto Nazario Pagano (Forza Italia) dopo l’informativa di Piantedosi?",
+   "Che cosa ha detto Matteo Mauri (PD-IDP) nella stessa informativa?",
+   "Quali gruppi sono intervenuti nel dibattito sugli scontri di Torino del 3 febbraio 2026?"
+  ]
+ },
+ "tempo_s": 38.1,
+ "verifica": null
+}

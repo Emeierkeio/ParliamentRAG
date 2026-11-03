@@ -1,0 +1,124 @@
+{
+ "id": "LOB-058",
+ "domanda": "Nella legge di bilancio 2026 (S. 1689), quali emendamenti sui bonus edilizi sono stati approvati in 5ª Commissione al Senato?",
+ "sql": [
+  "SELECT venue AS sede, count(*) AS emendamenti,\n       count(*) FILTER (WHERE text ~* '(bonus|superbonus|ecobonus|sismabonus|ristrutturazion|riqualificazione energetica|efficientamento energetico|barriere architettoniche|119 del decreto-legge 19 maggio 2020|16-bis del testo unico)') AS su_bonus_edilizi_per_parole_chiave,\n       count(outcome) AS con_esito\nFROM amendment WHERE act = 'it:senato:19:ddl:1689' GROUP BY 1 ORDER BY 1 DESC",
+  "SELECT venue, presented, count(*) FROM amendment WHERE act = 'it:senato:19:ddl:1689' GROUP BY 1, 2 ORDER BY 1, 2"
+ ],
+ "risultato": [
+  [
+   {
+    "sede": "committee",
+    "emendamenti": 6175,
+    "su_bonus_edilizi_per_parole_chiave": 146,
+    "con_esito": 0
+   },
+   {
+    "sede": "assembly",
+    "emendamenti": 3559,
+    "su_bonus_edilizi_per_parole_chiave": 86,
+    "con_esito": 0
+   }
+  ],
+  [
+   {
+    "venue": "assembly",
+    "presented": "2025-12-22",
+    "count": 22
+   },
+   {
+    "venue": "assembly",
+    "presented": "2025-12-23",
+    "count": 3537
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-11-05",
+    "count": 33
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-11-06",
+    "count": 3
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-11-07",
+    "count": 10
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-11-18",
+    "count": 1
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-11",
+    "count": 3
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-15",
+    "count": 102
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-16",
+    "count": 1
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-17",
+    "count": 15
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-19",
+    "count": 9
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-23",
+    "count": 85
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-27",
+    "count": 71
+   },
+   {
+    "venue": "committee",
+    "presented": "2025-12-29",
+    "count": 5726
+   },
+   {
+    "venue": "committee",
+    "presented": "2026-01-07",
+    "count": 114
+   },
+   {
+    "venue": "committee",
+    "presented": "2026-01-13",
+    "count": 2
+   }
+  ]
+ ],
+ "risposta": "Non si può dire quali siano stati approvati: nessuno dei 9.734 emendamenti al ddl di bilancio 2026 (S. 1689, poi L. 199/2025) ha l'esito nel database. Si può dire solo quanti ne sono stati presentati: 6.175 in 5ª Commissione e 3.559 in Aula; fra quelli in Commissione, 146 citano nel testo bonus edilizi, detrazioni per ristrutturazione o riqualificazione energetica, superbonus, sismabonus o barriere architettoniche (ricerca per parole chiave).",
+ "stato": "non_calcolabile",
+ "limiti": "amendment.outcome e status sono vuoti per tutti gli emendamenti del Senato: l'approvazione non si ricava. Il conteggio dei presentati sui bonus edilizi è indicativo (espressione regolare sul testo, senza tema assegnato). Per sapere quali sono stati approvati servirebbero gli esiti delle sedute della 5ª Commissione o il confronto col testo approvato.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato nessun emendamento ha amendment.outcome: per S. 1689 tutti i 9.734 sono senza esito.",
+   "sql": "SELECT count(*), count(outcome) FROM amendment WHERE act LIKE 'it:senato:%'"
+  },
+  {
+   "problema": "amendment.presented degli emendamenti in commissione su S. 1689 vale 29/12/2025 per 5.726 righe e anche 7/1/2026 e 13/1/2026, dopo la pubblicazione della legge (L. 199/2025 del 30/12/2025): sembra la data del fascicolo, non della presentazione.",
+   "sql": "SELECT presented, count(*) FROM amendment WHERE act = 'it:senato:19:ddl:1689' AND venue = 'committee' GROUP BY 1 ORDER BY 1"
+  },
+  {
+   "problema": "amendment.committee è vuoto per gli emendamenti in commissione del Senato: la 5ª Commissione non è indicata.",
+   "sql": "SELECT venue, committee, count(*) FROM amendment WHERE act = 'it:senato:19:ddl:1689' GROUP BY 1, 2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

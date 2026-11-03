@@ -1,0 +1,95 @@
+{
+ "id": "RIC-017",
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "sql": [
+  "WITH sp AS (\n  SELECT s.uri, st.chamber, st.date, s.person, s.as_group, s.as_office,\n         array_length(regexp_split_to_array(s.text, '\\s+'), 1) AS parole\n  FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\n  WHERE st.body IN ('it:camera:19:aula', 'it:senato:19:aula')\n), cl AS (\n  SELECT sp.*,\n    CASE WHEN chamber = 'senato' AND as_office ~* '(ministr|sottosegretari|presidente del consiglio)' THEN 'governo'\n         WHEN chamber = 'camera' AND as_office IS NULL AND as_group IS NULL AND EXISTS (\n              SELECT 1 FROM office o WHERE o.person = sp.person AND o.target LIKE 'it:gov:%'\n                AND o.start_date <= sp.date AND (o.end_date IS NULL OR o.end_date >= sp.date)) THEN 'governo'\n         WHEN chamber = 'camera' AND as_office IS NULL AND as_group IS NOT NULL THEN 'deputati'\n         WHEN chamber = 'senato' AND as_office ~* '^(senatore|relat)' THEN 'senatori'\n         ELSE 'altro (presidenza, non classificati)' END AS chi\n  FROM sp\n), r AS (\n  SELECT speech, count(*) FILTER (WHERE kind = 'protests') AS proteste,\n         count(*) FILTER (WHERE kind = 'comments') AS commenti,\n         count(*) FILTER (WHERE kind IN ('applause')) AS applausi\n  FROM reaction GROUP BY 1\n)\nSELECT cl.chamber AS ramo, cl.chi, count(*) AS interventi, sum(parole) AS parole,\n       coalesce(sum(r.proteste), 0) AS proteste, coalesce(sum(r.commenti), 0) AS commenti, coalesce(sum(r.applausi), 0) AS applausi,\n       round(100.0 * coalesce(sum(r.proteste), 0) / count(*), 2) AS proteste_per_100_interventi,\n       round(100.0 * coalesce(sum(r.commenti), 0) / count(*), 2) AS commenti_per_100_interventi,\n       round(10000.0 * (coalesce(sum(r.proteste), 0) + coalesce(sum(r.commenti), 0)) / sum(parole), 2) AS proteste_e_commenti_per_10mila_parole\nFROM cl LEFT JOIN r ON r.speech = cl.uri\nGROUP BY 1, 2 ORDER BY 1, 2"
+ ],
+ "risultato": [
+  {
+   "ramo": "camera",
+   "chi": "altro (presidenza, non classificati)",
+   "interventi": 70358,
+   "parole": 3882937,
+   "proteste": 229,
+   "commenti": 539,
+   "applausi": 1792,
+   "proteste_per_100_interventi": 0.33,
+   "commenti_per_100_interventi": 0.77,
+   "proteste_e_commenti_per_10mila_parole": 1.98
+  },
+  {
+   "ramo": "camera",
+   "chi": "deputati",
+   "interventi": 47530,
+   "parole": 19473387,
+   "proteste": 719,
+   "commenti": 2579,
+   "applausi": 45518,
+   "proteste_per_100_interventi": 1.51,
+   "commenti_per_100_interventi": 5.43,
+   "proteste_e_commenti_per_10mila_parole": 1.69
+  },
+  {
+   "ramo": "camera",
+   "chi": "governo",
+   "interventi": 7281,
+   "parole": 2286178,
+   "proteste": 82,
+   "commenti": 447,
+   "applausi": 1693,
+   "proteste_per_100_interventi": 1.13,
+   "commenti_per_100_interventi": 6.14,
+   "proteste_e_commenti_per_10mila_parole": 2.31
+  },
+  {
+   "ramo": "senato",
+   "chi": "altro (presidenza, non classificati)",
+   "interventi": 33813,
+   "parole": 1696350,
+   "proteste": 27,
+   "commenti": 441,
+   "applausi": 3069,
+   "proteste_per_100_interventi": 0.08,
+   "commenti_per_100_interventi": 1.3,
+   "proteste_e_commenti_per_10mila_parole": 2.76
+  },
+  {
+   "ramo": "senato",
+   "chi": "governo",
+   "interventi": 2855,
+   "parole": 978008,
+   "proteste": 0,
+   "commenti": 88,
+   "applausi": 1509,
+   "proteste_per_100_interventi": 0.0,
+   "commenti_per_100_interventi": 3.08,
+   "proteste_e_commenti_per_10mila_parole": 0.9
+  },
+  {
+   "ramo": "senato",
+   "chi": "senatori",
+   "interventi": 29862,
+   "parole": 9631481,
+   "proteste": 44,
+   "commenti": 960,
+   "applausi": 29512,
+   "proteste_per_100_interventi": 0.15,
+   "commenti_per_100_interventi": 3.21,
+   "proteste_e_commenti_per_10mila_parole": 1.04
+  }
+ ],
+ "risposta": "Camera, Aula XIX: i membri del governo hanno 7.281 interventi con 82 proteste e 447 commenti (1,13 proteste e 6,14 commenti ogni 100 interventi; 2,31 fra proteste e commenti ogni 10.000 parole); i deputati 47.530 interventi con 719 proteste e 2.579 commenti (1,51 e 5,43 ogni 100 interventi; 1,69 ogni 10.000 parole). Per parola il governo riceve più reazioni dei deputati, per intervento un po' meno proteste e più commenti. Senato: governo 2.855 interventi, 0 proteste e 88 commenti (3,08 commenti ogni 100 interventi; 0,90 ogni 10.000 parole); senatori 29.862 interventi, 44 proteste e 960 commenti (0,15 e 3,21 ogni 100; 1,04 ogni 10.000 parole). Al Senato gli interventi del governo ricevono meno reazioni di quelli dei senatori.",
+ "stato": "calcolata",
+ "limiti": "Solo sedute d'Aula (body it:camera:19:aula e it:senato:19:aula). Governo: al Senato speech.as_office con ministro, viceministro, sottosegretario o presidente del Consiglio; alla Camera as_office è vuoto per tutti, quindi governo = oratore senza gruppo dichiarato che alla data ha un incarico in office con target it:gov:*. Presidenti di turno ed altri esclusi dal confronto (riga «altro»). Le reazioni sono quelle che il resoconto registra dentro l'intervento: non si sa sempre se sono rivolte all'oratore. Parole = parole del testo canonico.",
+ "problemi_dati": [
+  {
+   "problema": "Alla Camera speech.as_office è vuoto per i membri del governo (es. GIORGIA MELONI, LUCA CIRIANI): la carica si ricava solo da office; al Senato invece è valorizzato. Nei resoconti delle commissioni as_office contiene anche qualifiche di auditi («membro dell'equipaggio dell'imbarcazione», «giornalista»).",
+   "sql": "SELECT st.chamber, left(s.as_office, 50), count(*) FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting WHERE st.body LIKE '%aula' GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20"
+  },
+  {
+   "problema": "Refusi in speech.as_office alla Camera: 'PRESDENTE', 'PRESIDENZA', 'L''AGCM'.",
+   "sql": "SELECT as_office, count(*) FROM speech WHERE as_office IN ('PRESDENTE', 'PRESIDENZA', 'L''AGCM') GROUP BY 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act, office e dei gruppi negli interventi)"
+}

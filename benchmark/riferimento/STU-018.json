@@ -1,0 +1,55 @@
+{
+ "id": "STU-018",
+ "domanda": "c'è un dossier del Servizio Studi sulla separazione delle carriere? mi serve il link",
+ "sql": [
+  "select code, date, title, author_raw, url from document where kind='dossier'\nand (code ilike 'gi0010%' or title ilike '%separazione delle carriere%' or title ilike '%corte disciplinare%') order by date",
+  "select kind, count(*) dossier, count(*) filter (where acts is null or cardinality(acts)=0) senza_atto from document where kind='dossier' group by 1"
+ ],
+ "risultato": [
+  {
+   "code": "gi0010b",
+   "date": "2025-02-03",
+   "title": "Norme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura",
+   "author_raw": "Studi - Giustizia",
+   "url": "https://temi.camera.it/leg19/dossier/OCD18-21123/norme-l-attuazione-della-separazione-carriere-giudicante-e-requirente-della-magistratura.html"
+  },
+  {
+   "code": "gi0010c",
+   "date": "2025-07-28",
+   "title": "Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare",
+   "author_raw": "Studi - Istituzioni",
+   "url": "https://temi.camera.it/leg19/dossier/OCD18-21966/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html"
+  },
+  {
+   "code": "gi0010d",
+   "date": "2025-09-16",
+   "title": "Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare",
+   "author_raw": "Studi - Istituzioni",
+   "url": "https://temi.camera.it/leg19/dossier/OCD18-22059/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare-1.html"
+  },
+  {
+   "code": "gi0010e",
+   "date": "2025-09-30",
+   "title": "Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare",
+   "author_raw": "Studi - Istituzioni",
+   "url": "https://temi.camera.it/leg19/dossier/OCD18-22140/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html"
+  }
+ ],
+ "risposta": "Sì. Il database ha quattro dossier del Servizio Studi della Camera sulla riforma (dipartimenti Giustizia e Istituzioni): «Norme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura» (gi0010b, 3/2/2025) https://temi.camera.it/leg19/dossier/OCD18-21123/norme-l-attuazione-della-separazione-carriere-giudicante-e-requirente-della-magistratura.html e tre edizioni di «Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare»: gi0010c (28/7/2025) https://temi.camera.it/leg19/dossier/OCD18-21966/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html, gi0010d (16/9/2025) https://temi.camera.it/leg19/dossier/OCD18-22059/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare-1.html e gi0010e (30/9/2025, il più recente) https://temi.camera.it/leg19/dossier/OCD18-22140/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html.",
+ "stato": "calcolata",
+ "limiti": "Cercati i dossier (document.kind = dossier) con codice gi0010* o con «separazione delle carriere» / «Corte disciplinare» nel titolo. Mancano i codici gi0010 e gi0010a, che la serie lascia supporre: non si sa se esistano.",
+ "problemi_dati": [
+  {
+   "problema": "I dossier della serie gi0010 non hanno atti collegati (acts vuoto), come 1.884 dossier su 2.353: non si arriva al dossier partendo dall'AC 1917.",
+   "sql": "select kind, count(*) dossier, count(*) filter (where acts is null or cardinality(acts)=0) senza_atto from document where kind='dossier' group by 1",
+   "righe": [
+    {
+     "kind": "dossier",
+     "dossier": 2353,
+     "senza_atto": 1884
+    }
+   ]
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

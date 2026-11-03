@@ -1,0 +1,441 @@
+{
+ "id": "COMU-035",
+ "domanda": "Quali interrogazioni ha presentato il Movimento 5 Stelle al Senato sulla sanità nel 2026? E gli altri gruppi?",
+ "sql": [
+  "WITH RECURSIVE salute AS (   -- temi EuroVoc della salute: questi concetti e tutti quelli più specifici\n  SELECT uri FROM concept WHERE uri IN ('http://eurovoc.europa.eu/2479',  -- politica sanitaria\n                                        'http://eurovoc.europa.eu/1754',  -- malattia\n                                        'http://eurovoc.europa.eu/2789',  -- professione sanitaria\n                                        'http://eurovoc.europa.eu/5881',  -- scienze mediche\n                                        'http://eurovoc.europa.eu/6628')  -- diritto alla salute\n  UNION\n  SELECT c.uri FROM concept c JOIN salute s ON s.uri = ANY (c.broader)\n), q AS (\n  SELECT a.uri, a.number, a.kind, a.date, a.title,\n         (SELECT sp.person FROM act_sponsor sp WHERE sp.act = a.uri AND sp.first LIMIT 1) AS primo\n  FROM act a\n  WHERE a.chamber = 'senato' AND a.legislature = 19 AND a.kind IN ('written_question', 'oral_question')\n    AND a.date BETWEEN DATE '2026-01-01' AND DATE '2026-12-31'\n    AND EXISTS (SELECT 1 FROM act_subject x JOIN salute s ON s.uri = x.concept WHERE x.act = a.uri)\n)\nSELECT coalesce(g.name, '(gruppo non trovato)') AS gruppo_primo_firmatario, count(*) AS interrogazioni,\n       count(*) FILTER (WHERE q.kind = 'written_question') AS scritte, count(*) FILTER (WHERE q.kind = 'oral_question') AS orali\nFROM q LEFT JOIN grp g ON g.uri = coalesce(group_at(q.primo, q.date),\n  -- al Senato i firmatari hanno l'id della Camera: il gruppo sta sull'id del Senato (person_same_as)\n  (SELECT group_at(x.same_as, q.date) FROM person_same_as x WHERE x.person = q.primo AND x.same_as LIKE 'it:person:senato:%' LIMIT 1))\nGROUP BY ROLLUP (1) ORDER BY 2 DESC",
+  "WITH RECURSIVE salute AS (   -- temi EuroVoc della salute: questi concetti e tutti quelli più specifici\n  SELECT uri FROM concept WHERE uri IN ('http://eurovoc.europa.eu/2479',  -- politica sanitaria\n                                        'http://eurovoc.europa.eu/1754',  -- malattia\n                                        'http://eurovoc.europa.eu/2789',  -- professione sanitaria\n                                        'http://eurovoc.europa.eu/5881',  -- scienze mediche\n                                        'http://eurovoc.europa.eu/6628')  -- diritto alla salute\n  UNION\n  SELECT c.uri FROM concept c JOIN salute s ON s.uri = ANY (c.broader)\n), q AS (\n  SELECT a.uri, a.number, a.kind, a.date, a.title,\n         (SELECT sp.person FROM act_sponsor sp WHERE sp.act = a.uri AND sp.first LIMIT 1) AS primo\n  FROM act a\n  WHERE a.chamber = 'senato' AND a.legislature = 19 AND a.kind IN ('written_question', 'oral_question')\n    AND a.date BETWEEN DATE '2026-01-01' AND DATE '2026-12-31'\n    AND EXISTS (SELECT 1 FROM act_subject x JOIN salute s ON s.uri = x.concept WHERE x.act = a.uri)\n)\nSELECT q.number, q.kind, q.date, p.given_name || ' ' || p.family_name AS primo_firmatario,\n       (SELECT string_agg(c.label_it, ', ' ORDER BY c.label_it) FROM act_subject x JOIN salute s ON s.uri = x.concept JOIN concept c ON c.uri = x.concept WHERE x.act = q.uri) AS temi_salute\nFROM q LEFT JOIN grp g ON g.uri = coalesce(group_at(q.primo, q.date),\n  (SELECT group_at(x.same_as, q.date) FROM person_same_as x WHERE x.person = q.primo AND x.same_as LIKE 'it:person:senato:%' LIMIT 1))\nLEFT JOIN person p ON p.uri = q.primo\nWHERE g.uri = 'it:senato:19:group:71'\nORDER BY q.date, q.number"
+ ],
+ "risultato": [
+  [
+   {
+    "gruppo_primo_firmatario": null,
+    "interrogazioni": 313,
+    "scritte": 197,
+    "orali": 116
+   },
+   {
+    "gruppo_primo_firmatario": "MoVimento 5 Stelle",
+    "interrogazioni": 87,
+    "scritte": 57,
+    "orali": 30
+   },
+   {
+    "gruppo_primo_firmatario": "Partito Democratico - Italia Democratica e Progressista",
+    "interrogazioni": 66,
+    "scritte": 14,
+    "orali": 52
+   },
+   {
+    "gruppo_primo_firmatario": "Misto",
+    "interrogazioni": 47,
+    "scritte": 40,
+    "orali": 7
+   },
+   {
+    "gruppo_primo_firmatario": "Italia Viva - Casa Riformista",
+    "interrogazioni": 40,
+    "scritte": 34,
+    "orali": 6
+   },
+   {
+    "gruppo_primo_firmatario": "Lega Salvini Premier - Partito Sardo d'Azione",
+    "interrogazioni": 32,
+    "scritte": 26,
+    "orali": 6
+   },
+   {
+    "gruppo_primo_firmatario": "Fratelli d'Italia",
+    "interrogazioni": 22,
+    "scritte": 15,
+    "orali": 7
+   },
+   {
+    "gruppo_primo_firmatario": "Forza Italia - Berlusconi Presidente - PPE",
+    "interrogazioni": 11,
+    "scritte": 5,
+    "orali": 6
+   },
+   {
+    "gruppo_primo_firmatario": "Per le Autonomie (SVP-PATT, Campobase)",
+    "interrogazioni": 5,
+    "scritte": 4,
+    "orali": 1
+   },
+   {
+    "gruppo_primo_firmatario": "Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare",
+    "interrogazioni": 3,
+    "scritte": 2,
+    "orali": 1
+   }
+  ],
+  {
+   "righe_totali": 87,
+   "righe": [
+    {
+     "number": "3/02322",
+     "kind": "oral_question",
+     "date": "2026-01-08",
+     "primo_firmatario": "Mario Turco",
+     "temi_salute": "diritto alla salute, ispezione sanitaria, politica sanitaria, sanità pubblica"
+    },
+    {
+     "number": "4/02663",
+     "kind": "written_question",
+     "date": "2026-01-14",
+     "primo_firmatario": "Alessandra Maiorino",
+     "temi_salute": "diritto alla salute, medicina, politica sanitaria, sanità pubblica"
+    },
+    {
+     "number": "4/02673",
+     "kind": "written_question",
+     "date": "2026-01-15",
+     "primo_firmatario": "Luca Pirondini",
+     "temi_salute": "diritto alla salute, malattia"
+    },
+    {
+     "number": "4/02676",
+     "kind": "written_question",
+     "date": "2026-01-15",
+     "primo_firmatario": "Bruno Marton",
+     "temi_salute": "spese sanitarie"
+    },
+    {
+     "number": "4/02718",
+     "kind": "written_question",
+     "date": "2026-01-28",
+     "primo_firmatario": "Ada Lopreiato",
+     "temi_salute": "trapianto di organi"
+    },
+    {
+     "number": "4/02728",
+     "kind": "written_question",
+     "date": "2026-02-04",
+     "primo_firmatario": "Orfeo Mazzella",
+     "temi_salute": "diritto alla salute, esame medico, malattia, medico, prevenzione delle malattie, professione sanitaria"
+    },
+    {
+     "number": "4/02729",
+     "kind": "written_question",
+     "date": "2026-02-04",
+     "primo_firmatario": "Orfeo Mazzella",
+     "temi_salute": "diritto alla salute, politica sanitaria, rischio sanitario, sanità pubblica"
+    },
+    {
+     "number": "4/02741",
+     "kind": "written_question",
+     "date": "2026-02-04",
+     "primo_firmatario": "Elisa Pirro",
+     "temi_salute": "diritto alla salute, medicina convenzionata, professione sanitaria, servizio sanitario, servizio sanitario nazionale, sistema sanitario"
+    },
+    {
+     "number": "4/02773",
+     "kind": "written_question",
+     "date": "2026-02-11",
+     "primo_firmatario": "Anna Bilotti",
+     "temi_salute": "diritto alla salute"
+    },
+    {
+     "number": "4/02780",
+     "kind": "written_question",
+     "date": "2026-02-12",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute"
+    },
+    {
+     "number": "4/02781",
+     "kind": "written_question",
+     "date": "2026-02-12",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diagnostica medica, diritto alla salute, esame medico, medicina convenzionata, servizio sanitario, servizio sanitario nazionale, sistema sanitario"
+    },
+    {
+     "number": "3/02418",
+     "kind": "oral_question",
+     "date": "2026-02-24",
+     "primo_firmatario": "Mario Turco",
+     "temi_salute": "sanità pubblica"
+    },
+    {
+     "number": "4/02794",
+     "kind": "written_question",
+     "date": "2026-02-24",
+     "primo_firmatario": "Concetta Damante",
+     "temi_salute": "diritto alla salute, medicina convenzionata, politica sanitaria, prestazioni sanitarie gratuite, servizio sanitario, servizio sanitario nazionale, sistema sanitario"
+    },
+    {
+     "number": "3/02425",
+     "kind": "oral_question",
+     "date": "2026-02-25",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "ricerca medica, sanità pubblica"
+    },
+    {
+     "number": "4/02807",
+     "kind": "written_question",
+     "date": "2026-02-25",
+     "primo_firmatario": "Elena Sironi",
+     "temi_salute": "diritto alla salute, sanità pubblica"
+    },
+    {
+     "number": "3/02430",
+     "kind": "oral_question",
+     "date": "2026-03-03",
+     "primo_firmatario": "Mario Turco",
+     "temi_salute": "diritto alla salute, rischio sanitario"
+    },
+    {
+     "number": "3/02432",
+     "kind": "oral_question",
+     "date": "2026-03-03",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "diritto alla salute, rischio sanitario, sanità pubblica"
+    },
+    {
+     "number": "3/02444",
+     "kind": "oral_question",
+     "date": "2026-03-05",
+     "primo_firmatario": "Marco Croatti",
+     "temi_salute": "istituto ospedaliero, malattia, medico, prestazioni sanitarie gratuite, professioni paramediche, trattamento sanitario"
+    },
+    {
+     "number": "3/02445",
+     "kind": "oral_question",
+     "date": "2026-03-05",
+     "primo_firmatario": "Orfeo Mazzella",
+     "temi_salute": "diritto alla salute, malattia mentale"
+    },
+    {
+     "number": "3/02466",
+     "kind": "oral_question",
+     "date": "2026-03-12",
+     "primo_firmatario": "Maria Domenica Castellone",
+     "temi_salute": "medico, professione sanitaria"
+    },
+    {
+     "number": "3/02478",
+     "kind": "oral_question",
+     "date": "2026-03-18",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "diritto alla salute, politica sanitaria, rischio sanitario"
+    },
+    {
+     "number": "4/02861",
+     "kind": "written_question",
+     "date": "2026-03-20",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute, medicina convenzionata, odontoiatria, politica sanitaria, pronto soccorso, sanità pubblica, servizio sanitario nazionale, sistema sanitario, spese sanitarie"
+    },
+    {
+     "number": "3/02492",
+     "kind": "oral_question",
+     "date": "2026-03-24",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "prevenzione delle malattie"
+    },
+    {
+     "number": "4/02886",
+     "kind": "written_question",
+     "date": "2026-03-31",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "politica sanitaria"
+    },
+    {
+     "number": "3/02504",
+     "kind": "oral_question",
+     "date": "2026-04-01",
+     "primo_firmatario": "Marco Croatti",
+     "temi_salute": "prevenzione delle malattie"
+    },
+    {
+     "number": "4/02898",
+     "kind": "written_question",
+     "date": "2026-04-01",
+     "primo_firmatario": "Elisa Pirro",
+     "temi_salute": "professione sanitaria"
+    },
+    {
+     "number": "4/02934",
+     "kind": "written_question",
+     "date": "2026-04-15",
+     "primo_firmatario": "Bruno Marton",
+     "temi_salute": "prevenzione delle malattie"
+    },
+    {
+     "number": "3/02557",
+     "kind": "oral_question",
+     "date": "2026-04-28",
+     "primo_firmatario": "Marco Croatti",
+     "temi_salute": "diritto alla salute, esame medico"
+    },
+    {
+     "number": "4/02965",
+     "kind": "written_question",
+     "date": "2026-04-28",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute"
+    },
+    {
+     "number": "4/02967",
+     "kind": "written_question",
+     "date": "2026-04-28",
+     "primo_firmatario": "Orfeo Mazzella",
+     "temi_salute": "ispezione sanitaria, malattia infettiva, politica sanitaria"
+    },
+    {
+     "number": "3/02567",
+     "kind": "oral_question",
+     "date": "2026-04-29",
+     "primo_firmatario": "Anna Bilotti",
+     "temi_salute": "diritto alla salute, malattia, pronto soccorso, trasfusione di sangue"
+    },
+    {
+     "number": "3/02570",
+     "kind": "oral_question",
+     "date": "2026-04-30",
+     "primo_firmatario": "Gisella Naturale",
+     "temi_salute": "malattia del sistema nervoso"
+    },
+    {
+     "number": "3/02605",
+     "kind": "oral_question",
+     "date": "2026-05-13",
+     "primo_firmatario": "Gisella Naturale",
+     "temi_salute": "prevenzione delle malattie"
+    },
+    {
+     "number": "3/02622",
+     "kind": "oral_question",
+     "date": "2026-05-19",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "istituto ospedaliero, professione sanitaria, pronto soccorso, servizio sanitario, servizio sanitario nazionale"
+    },
+    {
+     "number": "4/03069",
+     "kind": "written_question",
+     "date": "2026-05-27",
+     "primo_firmatario": "Mario Turco",
+     "temi_salute": "sanità pubblica"
+    },
+    {
+     "number": "3/02642",
+     "kind": "oral_question",
+     "date": "2026-06-03",
+     "primo_firmatario": "Maria Domenica Castellone",
+     "temi_salute": "medicina, medicina generale, politica sanitaria"
+    },
+    {
+     "number": "4/03095",
+     "kind": "written_question",
+     "date": "2026-06-04",
+     "primo_firmatario": "Elisa Pirro",
+     "temi_salute": "diritto alla salute, spese farmaceutiche, spese sanitarie"
+    },
+    {
+     "number": "3/02660",
+     "kind": "oral_question",
+     "date": "2026-06-11",
+     "primo_firmatario": "Elena Sironi",
+     "temi_salute": "prevenzione delle malattie"
+    },
+    {
+     "number": "3/02673",
+     "kind": "oral_question",
+     "date": "2026-06-17",
+     "primo_firmatario": "Gisella Naturale",
+     "temi_salute": "diritto alla salute, politica sanitaria, sanità pubblica"
+    },
+    {
+     "number": "3/02676",
+     "kind": "oral_question",
+     "date": "2026-06-18",
+     "primo_firmatario": "Elena Sironi",
+     "temi_salute": "ispezione sanitaria, malattia congenita, sanità pubblica"
+    },
+    {
+     "number": "4/03138",
+     "kind": "written_question",
+     "date": "2026-06-23",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "medicina di emergenza, medico, professione sanitaria, specialità medica, spese sanitarie"
+    },
+    {
+     "number": "4/03140",
+     "kind": "written_question",
+     "date": "2026-06-23",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute"
+    },
+    {
+     "number": "4/03144",
+     "kind": "written_question",
+     "date": "2026-06-24",
+     "primo_firmatario": "Orfeo Mazzella",
+     "temi_salute": "diritti del malato, diritto alla salute, malattia, malattia del sistema nervoso, ricerca medica, trattamento sanitario"
+    },
+    {
+     "number": "3/02696",
+     "kind": "oral_question",
+     "date": "2026-07-02",
+     "primo_firmatario": "Elena Sironi",
+     "temi_salute": "diritto alla salute, politica sanitaria"
+    },
+    {
+     "number": "3/02697",
+     "kind": "oral_question",
+     "date": "2026-07-02",
+     "primo_firmatario": "Gisella Naturale",
+     "temi_salute": "professione sanitaria"
+    },
+    {
+     "number": "4/03166",
+     "kind": "written_question",
+     "date": "2026-07-02",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "politica sanitaria, sanità pubblica"
+    },
+    {
+     "number": "4/03169",
+     "kind": "written_question",
+     "date": "2026-07-02",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute, medicina convenzionata, medicina generale, professione sanitaria, servizio sanitario nazionale, spese sanitarie, telemedicina"
+    },
+    {
+     "number": "3/02709",
+     "kind": "oral_question",
+     "date": "2026-07-14",
+     "primo_firmatario": "Pietro Lorefice",
+     "temi_salute": "diritto alla salute, malattia, politica sanitaria, professione sanitaria, pronto soccorso"
+    },
+    {
+     "number": "4/03208",
+     "kind": "written_question",
+     "date": "2026-07-16",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute, sanità pubblica"
+    },
+    {
+     "number": "4/03209",
+     "kind": "written_question",
+     "date": "2026-07-16",
+     "primo_firmatario": "Vincenza Aloisio",
+     "temi_salute": "diritto alla salute, sanità pubblica"
+    }
+   ]
+  }
+ ],
+ "risposta": "Al Senato, dal 1/1/2026 al 2/11/2026, le interrogazioni (scritte e orali) con almeno un tema EuroVoc della salute sono 313. Il M5S ne ha presentate 87 come primo firmatario (57 scritte, 30 orali), più di ogni altro gruppo; l'elenco con numero, data, primo firmatario e temi è nel risultato. Gli altri gruppi: PD-IDP 66 (14 scritte, 52 orali), Misto 47, IV-CR 40, LSP-PSd'Az 32, FdI 22, FI-BP-PPE 11, Per le Autonomie 5, Civici d'Italia-UDC-NM 3. Il Misto del Senato non si può dividere per componente.",
+ "stato": "calcolata",
+ "limiti": "Sanità = interrogazioni con almeno un concetto EuroVoc in act_subject fra politica sanitaria, malattia, professione sanitaria, scienze mediche, diritto alla salute e i loro concetti più specifici (gerarchia di concept.broader). Interrogazioni = act.kind written_question e oral_question (escluse le interpellanze); anno 2026 per data di presentazione. Gruppo del primo firmatario alla data, passando per person_same_as perché al Senato act_sponsor usa l'id della Camera. La scelta dei temi è un'interpretazione: con altri concetti il numero cambia.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato act_sponsor usa gli id della Camera (it:person:camera:…) mentre membership usa gli id del Senato: group_at sul firmatario restituisce sempre vuoto se non si passa da person_same_as.",
+   "sql": "SELECT sp.person, (SELECT count(*) FROM membership m WHERE m.person = sp.person) AS iscrizioni_gruppo FROM act_sponsor sp JOIN act a ON a.uri = sp.act WHERE a.chamber = 'senato' AND a.kind = 'written_question' LIMIT 10"
+  },
+  {
+   "problema": "act.title delle interrogazioni del Senato è generico («INTERROGAZIONE A RISPOSTA SCRITTA 4/02663 presentata da …»): l'oggetto si ricava solo dal testo o dai temi.",
+   "sql": "SELECT number, title FROM act WHERE chamber = 'senato' AND kind = 'written_question' ORDER BY date DESC LIMIT 5"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

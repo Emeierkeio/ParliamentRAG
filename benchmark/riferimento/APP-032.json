@@ -1,0 +1,203 @@
+{
+  "id": "APP-032",
+  "domanda": "ho letto che la Camera ha già approvato il fine vita, è vero?",
+  "sql": [
+    "SELECT a.uri, a.chamber, a.number, left(a.title, 120) AS titolo, a.date, a.status, a.status_date, a.law_number\nFROM act a\nWHERE a.legislature = 19 AND a.kind = 'bill' AND a.title ~* 'morte (volontaria )?medicalmente assistita|suicidio medicalmente assistito|eutanasi|aiuto medico alla morte'\nORDER BY a.chamber, a.date",
+    "SELECT count(*) AS voti_camera_su_questi_atti\nFROM vote_act x JOIN act a ON a.uri = x.act\nWHERE a.chamber = 'camera' AND a.legislature = 19 AND a.title ~* 'morte (volontaria )?medicalmente assistita|suicidio medicalmente assistito|eutanasi'",
+    "SELECT s.date, s.kind, coalesce(s.body_name, 'Assemblea') AS organo, x.act_ref, left(i.title, 90) AS argomento, i.stage\nFROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting\nWHERE x.act IN ('it:senato:19:ddl:1408', 'it:senato:19:ddl:104')\n  AND (s.kind = 'assembly_verbatim' OR s.date >= '2026-05-01')\nGROUP BY 1, 2, 3, 4, 5, 6 ORDER BY 1 DESC"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:ac:313",
+        "chamber": "camera",
+        "number": "313",
+        "titolo": "SPORTIELLO ed altri: \"Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico\" (313)",
+        "date": "2022-10-13",
+        "status": "Assegnato",
+        "status_date": "2022-11-23",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:87",
+        "chamber": "camera",
+        "number": "87",
+        "titolo": "ENRICO COSTA: \"Disposizioni in materia di morte volontaria medicalmente assistita\" (87)",
+        "date": "2022-10-13",
+        "status": "Assegnato",
+        "status_date": "2022-11-18",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:251",
+        "chamber": "camera",
+        "number": "251",
+        "titolo": "MAGI: \"Disposizioni in materia di morte volontaria medicalmente assistita\" (251)",
+        "date": "2022-10-13",
+        "status": "Assegnato",
+        "status_date": "2022-12-22",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:949",
+        "chamber": "camera",
+        "number": "949",
+        "titolo": "ZANELLA ed altri: \"Disposizioni in materia di morte volontaria medicalmente assistita\" (949)",
+        "date": "2023-03-03",
+        "status": "Assegnato",
+        "status_date": "2023-05-08",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:1559",
+        "chamber": "camera",
+        "number": "1559",
+        "titolo": "SERRACCHIANI: \"Disposizioni in materia di morte volontaria medicalmente assistita\" (1559)",
+        "date": "2023-11-20",
+        "status": "Assegnato",
+        "status_date": "2024-02-07",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:1656",
+        "chamber": "camera",
+        "number": "1656",
+        "titolo": "ZAN: \"Disposizioni in materia di rifiuto di trattamenti sanitari e di eutanasia\" (1656)",
+        "date": "2024-01-17",
+        "status": "Da assegnare",
+        "status_date": "2024-01-17",
+        "law_number": null
+      },
+      {
+        "uri": "it:camera:19:ac:1659",
+        "chamber": "camera",
+        "number": "1659",
+        "titolo": "ZANELLA ed altri: \"Disciplina delle procedure e dei tempi per l’assistenza sanitaria al suicidio medicalmente assistito\"",
+        "date": "2024-01-19",
+        "status": "Assegnato",
+        "status_date": "2024-05-07",
+        "law_number": null
+      },
+      {
+        "uri": "it:senato:19:ddl:124",
+        "chamber": "senato",
+        "number": "124",
+        "titolo": "Disposizioni in materia di suicidio medicalmente assistito e di trattamento eutanasico",
+        "date": "2022-10-13",
+        "status": "esame in comm.",
+        "status_date": null,
+        "law_number": null
+      },
+      {
+        "uri": "it:senato:19:ddl:104",
+        "chamber": "senato",
+        "number": "104",
+        "titolo": "Disposizioni in materia di morte volontaria medicalmente assistita",
+        "date": "2022-10-13",
+        "status": "esame in comm.",
+        "status_date": null,
+        "law_number": null
+      },
+      {
+        "uri": "it:senato:19:ddl:570",
+        "chamber": "senato",
+        "number": "570",
+        "titolo": "Disposizioni in materia di morte volontaria medicalmente assistita",
+        "date": "2023-03-02",
+        "status": "esame in comm.",
+        "status_date": null,
+        "law_number": null
+      },
+      {
+        "uri": "it:senato:19:ddl:1408",
+        "chamber": "senato",
+        "number": "1408",
+        "titolo": "Disposizioni in materia di morte medicalmente assistita",
+        "date": "2025-03-04",
+        "status": "esame in comm.",
+        "status_date": null,
+        "law_number": null
+      },
+      {
+        "uri": "it:senato:19:ddl:1597",
+        "chamber": "senato",
+        "number": "1597",
+        "titolo": "Disposizioni in materia di aiuto medico alla morte volontaria",
+        "date": "2025-07-15",
+        "status": "esame in comm.",
+        "status_date": null,
+        "law_number": null
+      }
+    ],
+    [
+      {
+        "voti_camera_su_questi_atti": 0
+      }
+    ],
+    [
+      {
+        "date": "2026-09-29",
+        "kind": "committee_summary",
+        "organo": "5ª Commissione permanente",
+        "act_ref": "ddl:104",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE CONSULTIVA"
+      },
+      {
+        "date": "2026-09-29",
+        "kind": "committee_summary",
+        "organo": "5ª Commissione permanente",
+        "act_ref": "ddl:1408",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE CONSULTIVA"
+      },
+      {
+        "date": "2026-06-10",
+        "kind": "committee_summary",
+        "organo": "2ª e 10ª riunite",
+        "act_ref": "ddl:104",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE REFERENTE"
+      },
+      {
+        "date": "2026-06-10",
+        "kind": "committee_summary",
+        "organo": "2ª e 10ª riunite",
+        "act_ref": "ddl:1408",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE REFERENTE"
+      },
+      {
+        "date": "2026-06-03",
+        "kind": "assembly_verbatim",
+        "organo": "Assemblea",
+        "act_ref": "ddl:104",
+        "argomento": "Rinvio in Commissione del disegno di legge:",
+        "stage": null
+      },
+      {
+        "date": "2026-05-26",
+        "kind": "committee_summary",
+        "organo": "2ª e 10ª riunite",
+        "act_ref": "ddl:104",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE REFERENTE"
+      },
+      {
+        "date": "2026-05-26",
+        "kind": "committee_summary",
+        "organo": "2ª e 10ª riunite",
+        "act_ref": "ddl:1408",
+        "argomento": "Disposizioni in materia di terapia del dolore e dignità nella fase finale della vita, nonc",
+        "stage": "IN SEDE REFERENTE"
+      }
+    ]
+  ],
+  "risposta": "No. Nei dati la Camera non ha approvato alcuna legge sul fine vita: le proposte della Camera (AC 87 Costa, 251 Magi, 313 Sportiello, 949 e 1659 Zanella, 1559 Serracchiani) risultano «Assegnato», la AC 1656 Zan «Da assegnare», e nessuna votazione della Camera è legata a questi atti. Il testo è all'esame del Senato: i ddl 1408 «Disposizioni in materia di morte medicalmente assistita» e connessi (104, 124, 570, 1597) sono «esame in comm.»; il 3/6/2026 l'Aula del Senato ha rinviato in Commissione il ddl 104, le Commissioni 2ª e 10ª riunite lo hanno esaminato in sede referente fino al 10/6/2026 e la 5ª Commissione in sede consultiva il 29/9/2026.",
+  "stato": "calcolata",
+  "limiti": "Per il Senato l'iter strutturato (act_step, act_assignment, status_date) è vuoto: lo stato viene da act.status e le fasi dalle sedute (agenda_item_act). Si considerano i progetti con «morte medicalmente assistita», «suicidio medicalmente assistito», «eutanasia», «aiuto medico alla morte» nel titolo; le proposte sulla prevenzione del suicidio non sono fine vita.",
+  "problemi_dati": [
+    "Al Senato act.status_date è vuoto per tutti i progetti di legge e act_step/act_assignment non hanno righe. Query: SELECT chamber, count(*), count(status_date) FROM act WHERE kind='bill' AND legislature=19 GROUP BY 1; SELECT count(*) FROM act_step WHERE act LIKE 'it:senato:%';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

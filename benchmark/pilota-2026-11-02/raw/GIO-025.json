@@ -1,0 +1,1313 @@
+{
+ "id": "GIO-025",
+ "trappola": false,
+ "domanda": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+ "categoria": "gruppi",
+ "tipo_risposta": "confronto_gruppi",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Misto per componente alla Camera; al Senato il Misto non si può dividere: avvertire.",
+ "endpoint": "fascicolo",
+ "risposta_sistema": "## Introduzione\n\nIl tema affronta il livello di compattezza nei voti dei gruppi parlamentari, con particolare attenzione all’indice di coesione della Lega rispetto agli altri gruppi e alle dinamiche interne che influenzano la disciplina di voto. Sono stati analizzati 39 interventi di 32 deputati nel periodo dal 25/10/2022 al 07/10/2026.\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Fratelli d'Italia, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Lega - Salvini Premier, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, il gruppo non è intervenuto nei dibattiti sul tema.\n\nPer Italia Viva - Casa Riformista, nel valutare la compattezza dei gruppi parlamentari nei voti, Italia Viva - Casa Riformista sottolinea le profonde differenze interne alla maggioranza di Governo, soprattutto in relazione alle scelte compiute in ambito europeo. **Davide Faraone** osserva, [«infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta»](leg19_sed314_tit00040.sub00010.int00050_chunk_0). Il gruppo mette così in dubbio la reale coesione della maggioranza, evidenziando come la Lega, Forza Italia e Fratelli d’Italia manifestino spesso orientamenti divergenti, soprattutto su temi di politica europea, e suggerendo che l’indice di coesione della Lega sia inferiore rispetto a quello di altri gruppi.\n\nPer Movimento 5 Stelle, nei passaggi trovati nessuna delle voci più autorevoli del gruppo sul tema dice una frase che si possa citare alla lettera.\n\nPer Partito Democratico - Italia Democratica e Progressista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Gruppo Misto\n\nPer +Europa - Stati Uniti d'Europa, il gruppo non è intervenuto nei dibattiti sul tema.\n\nPer Futuro Nazionale Vannacci - Free, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Minoranze Linguistiche, nel dibattito sulle regole che dovrebbero favorire la coesione interna dei gruppi parlamentari, la componente Minoranze Linguistiche del gruppo Misto sottolinea l'importanza dei valori e delle idee condivise rispetto agli incentivi economici. **Manfred Schullian** afferma: [«sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera»](leg19_sed617_tit00080.sub00020.int00080_chunk_1). La componente evidenzia così una visione della coesione fondata sulla condivisione politica piuttosto che su meccanismi regolamentari o finanziari, e invita a riflettere su strumenti che valorizzino il ruolo istituzionale dei gruppi più piccoli.\n\nPer Sud chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "eventi": {
+  "progress": 5,
+  "commissioni": 1,
+  "experts": 2,
+  "compass": 1,
+  "topic_stats": 1,
+  "citations": 1,
+  "citation_details": 1,
+  "chunk": 36,
+  "trace": 1,
+  "complete": 1
+ },
+ "strumenti": [
+  {
+   "progress": "Avvio retrieval..."
+  },
+  {
+   "progress": "Trovate 106 evidenze"
+  },
+  {
+   "progress": "Calcolo authority scores..."
+  },
+  {
+   "progress": "Analisi compass ideologico..."
+  },
+  {
+   "progress": "Generazione risposta multi-view..."
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "experts": [
+   {
+    "group": "ITALIA VIVA-CASA RIFORMISTA (IV-CR)",
+    "authority_score": 0.41
+   },
+   {
+    "group": "MISTO",
+    "authority_score": 0.26
+   }
+  ],
+  "topic_stats": {
+   "intervention_count": 39,
+   "speaker_count": 32,
+   "first_date": "2022-10-25",
+   "last_date": "2026-10-07",
+   "speakers_detail": [
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306005",
+     "speaker_name": "Davide Faraone",
+     "party": "Italia Viva - Casa Riformista",
+     "coalition": "opposizione",
+     "intervention_count": 3,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-306005",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306005.jpg",
+     "profession": "Professione non rilevata",
+     "education": "Laurea in scienze politiche",
+     "committee": "COMMISSIONE PARLAMENTARE DI CONTROLLO SULL'ATTIVITÀ DEGLI ENTI GESTORI DI FORME OBBLIGATORIE DI PREVIDENZA E ASSISTENZA SOCIALE"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307143",
+     "speaker_name": "Edoardo Ziello",
+     "party": "Futuro Nazionale Vannacci - Free",
+     "coalition": "misto",
+     "intervention_count": 2,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307143",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307143.jpg",
+     "profession": "Giurista",
+     "education": "Laurea in giurisprudenza",
+     "committee": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308810",
+     "speaker_name": "Marco Grimaldi",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "intervention_count": 2,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308810",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308810.jpg",
+     "profession": null,
+     "education": null,
+     "committee": "V COMMISSIONE (BILANCIO, TESORO E PROGRAMMAZIONE)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308848",
+     "speaker_name": "Angelo Rossi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 2,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308848",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308848.jpg",
+     "profession": "Funzionario pubblico",
+     "education": "Laurea in scienze dell'amministrazione",
+     "committee": "V COMMISSIONE (BILANCIO, TESORO E PROGRAMMAZIONE)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308862",
+     "speaker_name": "Alessandro Urzi'",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 2,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308862",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308862.jpg",
+     "profession": null,
+     "education": "Giornalista",
+     "committee": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308832",
+     "speaker_name": "Alessia Ambrosi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 2,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308832",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308832.jpg",
+     "profession": "Dipendente di azienda bancaria",
+     "education": "Diploma di liceo scientifico, Master in commercio estero",
+     "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SUGLI EFFETTI ECONOMICI E SOCIALI DERIVANTI DALLA TRANSIZIONE DEMOGRAFICA IN ATTO"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305586",
+     "speaker_name": "Manfred Schullian",
+     "party": "Minoranze Linguistiche",
+     "coalition": "misto",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-305586",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305586.jpg",
+     "profession": "Avvocato amministrativista",
+     "education": "Laurea in giurisprudenza",
+     "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SUL RISCHIO IDROGEOLOGICO E SISMICO DEL TERRITORIO ITALIANO, SULL'ATTUAZIONE DELLE NORME DI PREVENZIONE E SICUREZZA E SUGLI INTERVENTI DI EMERGENZA E DI RICOSTRUZIONE A SEGUITO DEGLI EVENTI CALAMITOSI VERIFICATISI DALL'ANNO 2019"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308766",
+     "speaker_name": "Tommaso Antonino Calderone",
+     "party": "Futuro Nazionale Vannacci - Free",
+     "coalition": "misto",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308766",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308766.jpg",
+     "profession": "Avvocato patrocinante in cassazione",
+     "education": "Laurea in giurisprudenza",
+     "committee": "COMMISSIONE PARLAMENTARE PER IL CONTRASTO DEGLI SVANTAGGI DERIVANTI DALL'INSULARITA'"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307250",
+     "speaker_name": "Riccardo Ricciardi",
+     "party": "Movimento 5 Stelle",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307250",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307250.jpg",
+     "profession": "Regista teatrale",
+     "education": "Laurea in lettere",
+     "committee": "CONFERENZA DEI PRESIDENTI DI GRUPPO"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307863",
+     "speaker_name": "Marco Pellegrini",
+     "party": "Movimento 5 Stelle",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307863",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307863.jpg",
+     "profession": "INGEGNERE, IMPRENDITORE",
+     "education": "LAUREA IN INGEGNERIA CIVILE - EDILE",
+     "committee": "IV COMMISSIONE (DIFESA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305880",
+     "speaker_name": "Nicola Fratoianni",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-305880",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305880.jpg",
+     "profession": null,
+     "education": "Laurea in lettere e filosofia",
+     "committee": "COMITATO PERMANENTE PER L'ATTUAZIONE DELL'AGENDA 2030 E LO SVILUPPO SOSTENIBILE"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308861",
+     "speaker_name": "Francesca Ghirra",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308861",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308861.jpg",
+     "profession": null,
+     "education": "Funzionario Regione Sardegna",
+     "committee": "IX COMMISSIONE (TRASPORTI, POSTE E TELECOMUNICAZIONI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307634",
+     "speaker_name": "Devis Dori",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307634",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307634.jpg",
+     "profession": "Diploma accademico in pianoforte; Avvocato",
+     "education": "Laurea in giurisprudenza",
+     "committee": "COMITATO PARLAMENTARE PER I PROCEDIMENTI DI ACCUSA"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p300369",
+     "speaker_name": "Francesco Saverio Romano",
+     "party": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-300369",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300369.jpg",
+     "profession": "Avvocato",
+     "education": "Laurea in giurisprudenza",
+     "committee": "COMMISSIONE PARLAMENTARE PER LA SEMPLIFICAZIONE"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307857",
+     "speaker_name": "Nazario Pagano",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307857",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307857.jpg",
+     "profession": "Avvocato, Docente universitario a contratto",
+     "education": "Laurea in giurisprudenza",
+     "committee": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305549",
+     "speaker_name": "Simona Bonafe'",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-305549",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305549.jpg",
+     "profession": null,
+     "education": "Laurea in scienze politiche",
+     "committee": "COMMISSIONE PARLAMENTARE PER LA SEMPLIFICAZIONE"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308826",
+     "speaker_name": "Fabrizio Comba",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308826",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308826.jpg",
+     "profession": "Imprenditore",
+     "education": "Laurea in giurisprudenza",
+     "committee": "IV COMMISSIONE (DIFESA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302980",
+     "speaker_name": "Elena Maccanti",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-302980",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302980.jpg",
+     "profession": "Giornalista professionista",
+     "education": "Giornalista professionista",
+     "committee": "IX COMMISSIONE (TRASPORTI, POSTE E TELECOMUNICAZIONI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p300447",
+     "speaker_name": "Maurizio Enzo Lupi",
+     "party": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-300447",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300447.jpg",
+     "profession": "Dirigente di azienda privata",
+     "education": "Laurea in scienze politiche",
+     "committee": "II COMMISSIONE (GIUSTIZIA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308795",
+     "speaker_name": "Carmine Fabio Raimondo",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308795",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308795.jpg",
+     "profession": "Avvocato",
+     "education": "Laurea in giurisprudenza",
+     "committee": "IX COMMISSIONE (TRASPORTI, POSTE E TELECOMUNICAZIONI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307223",
+     "speaker_name": "Pietro Pittalis",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307223",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307223.jpg",
+     "profession": "Avvocato patrocinante presso le Magistrature superiori",
+     "education": "Laurea in giurisprudenza",
+     "committee": "GIUNTA DELLE ELEZIONI"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308852",
+     "speaker_name": "Annarita Patriarca",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308852",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308852.jpg",
+     "profession": "Avvocato",
+     "education": "Laurea in giurisprudenza",
+     "committee": "COMITATO PER GLI AFFARI DEL PERSONALE"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-306521",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306521.jpg",
+     "profession": "Consulente aziendale",
+     "education": "Laurea in scienze politiche",
+     "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SULLA GESTIONE DELL'EMERGENZA SANITARIA CAUSATA DALLA DIFFUSIONE EPIDEMICA DEL VIRUS SARS-COV-2 E SULLE MISURE ADOTTATE PER PREVENIRE E AFFRONTARE L'EMERGENZA EPIDEMIOLOGICA DA SARS-COV-2"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307507",
+     "speaker_name": "Riccardo Molinari",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307507",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307507.jpg",
+     "profession": "Libero professionista",
+     "education": "Laurea in giurisprudenza",
+     "committee": "XIII COMMISSIONE (AGRICOLTURA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308899",
+     "speaker_name": "Paolo Emilio Russo",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308899",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308899.jpg",
+     "profession": "Giornalista parlamentare",
+     "education": "Laurea in scienze politiche e delle relazioni internazionali, Master in Scienze elettorali e del governo",
+     "committee": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302422",
+     "speaker_name": "Giovanni Cuperlo",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-302422",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302422.jpg",
+     "profession": "Funzionario",
+     "education": "Laurea in discipline dell'arte, della musica e dello spettacolo",
+     "committee": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302069",
+     "speaker_name": "Arturo Scotto",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-302069",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302069.jpg",
+     "profession": "Dirigente di partito",
+     "education": "Laurea in scienze politiche",
+     "committee": "COMMISSIONE PARLAMENTARE DI INCHIESTA SULLE CONDIZIONI DI LAVORO IN ITALIA, SULLO SFRUTTAMENTO E SULLA TUTELA DELLA SALUTE E DELLA SICUREZZA NEI LUOGHI DI LAVORO PUBBLICI E PRIVATI"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308942",
+     "speaker_name": "Graziano Pizzimenti",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308942",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308942.jpg",
+     "profession": "Insegnante di scuola secondaria superiore",
+     "education": "Laurea in economia e commercio",
+     "committee": "VIII COMMISSIONE (AMBIENTE, TERRITORIO E LAVORI PUBBLICI)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307502",
+     "speaker_name": "Alessandro Giglio Vigna",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307502",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307502.jpg",
+     "profession": "Imprenditore",
+     "education": "Diploma di istituto tecnico commerciale",
+     "committee": "XIV COMMISSIONE (POLITICHE DELL'UNIONE EUROPEA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307334",
+     "speaker_name": "Gianluca Vinci",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-307334",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307334.jpg",
+     "profession": "Avvocato penalista",
+     "education": "Laurea in giurisprudenza",
+     "committee": "II COMMISSIONE (GIUSTIZIA)"
+    },
+    {
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308863",
+     "speaker_name": "Maddalena Morgante",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": "https://www.camera.it/deputati/elenco/19-308863",
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308863.jpg",
+     "profession": "Avvocato civilista",
+     "education": "Laurea in giurisprudenza",
+     "committee": "GIUNTA DELLE ELEZIONI"
+    },
+    {
+     "speaker_id": "gov_montaruli_augusta",
+     "speaker_name": "Augusta Montaruli",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "intervention_count": 1,
+     "camera_profile_url": 307464,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307464.jpg",
+     "profession": null,
+     "education": null,
+     "committee": "COLLEGIO D'APPELLO"
+    }
+   ],
+   "interventions_detail": [
+    {
+     "speech_id": "leg19_sed722_tit00040.sub00010.int00060",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308810",
+     "speaker_name": "Marco Grimaldi",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2026-10-07",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 722,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308810.jpg"
+    },
+    {
+     "speech_id": "leg19_sed722_tit00040.sub00010.int00120",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308899",
+     "speaker_name": "Paolo Emilio Russo",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "date": "2026-10-07",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 722,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308899.jpg"
+    },
+    {
+     "speech_id": "leg19_sed722_tit00040.sub00010.int00180",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308862",
+     "speaker_name": "Alessandro Urzi'",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-10-07",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 722,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308862.jpg"
+    },
+    {
+     "speech_id": "leg19_sed721_tit00040.sub00010.int00020",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308766",
+     "speaker_name": "Tommaso Antonino Calderone",
+     "party": "Futuro Nazionale Vannacci - Free",
+     "coalition": "misto",
+     "date": "2026-10-06",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 721,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308766.jpg"
+    },
+    {
+     "speech_id": "leg19_sed721_tit00040.sub00010.int00080",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p300369",
+     "speaker_name": "Francesco Saverio Romano",
+     "party": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+     "coalition": "maggioranza",
+     "date": "2026-10-06",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 721,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300369.jpg"
+    },
+    {
+     "speech_id": "leg19_sed721_tit00040.sub00010.int00200",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305549",
+     "speaker_name": "Simona Bonafe'",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "date": "2026-10-06",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 721,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305549.jpg"
+    },
+    {
+     "speech_id": "leg19_sed717_tit00070.sub00020.int00020",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308848",
+     "speaker_name": "Angelo Rossi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-09-30",
+     "debate_title": "Discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica (Approvata dalla Camera e modificata dal Senato) (A.C. 2822-B).",
+     "session_number": 717,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308848.jpg"
+    },
+    {
+     "speech_id": "leg19_sed694_tit00090.sub00020.int00060",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307634",
+     "speaker_name": "Devis Dori",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2026-07-21",
+     "debate_title": "Seguito della discussione della relazione della I Commissione (Affari Costituzionali, della Presidenza del Consiglio e Interni) sullo schema di intesa preliminare tra il Governo della Repubblica italiana e la Regione Lombardia per l'attribuzione di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione, nelle materie \"protezione civile\", \"professioni\" e \"previdenza complementare e integrativa\" (Doc. CCXLVII, n. 3) e sullo schema di intesa preliminare tra il Governo della Repubblica italiana e la Regione Lombardia per l'attribuzione di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione, nelle materie \"tutela della salute - coordinamento della finanza pubblica\" (Doc. CCXLVII, n. 4) (Doc. XVI, n. 7) (ore 17,15). (ore 17,15).",
+     "session_number": 694,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307634.jpg"
+    },
+    {
+     "speech_id": "leg19_sed690_tit00090.int00150",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307334",
+     "speaker_name": "Gianluca Vinci",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-07-15",
+     "debate_title": "Sull'ordine dei lavori.",
+     "session_number": 690,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307334.jpg"
+    },
+    {
+     "speech_id": "leg19_sed689_tit00100.int00100",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307250",
+     "speaker_name": "Riccardo Ricciardi",
+     "party": "Movimento 5 Stelle",
+     "coalition": "opposizione",
+     "date": "2026-07-14",
+     "debate_title": "Sull'ordine dei lavori.",
+     "session_number": 689,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307250.jpg"
+    },
+    {
+     "speech_id": "leg19_sed689_tit00110.sub00010.int00040",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302422",
+     "speaker_name": "Giovanni Cuperlo",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "date": "2026-07-14",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 689,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302422.jpg"
+    },
+    {
+     "speech_id": "leg19_sed687_tit00040.int00200",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307143",
+     "speaker_name": "Edoardo Ziello",
+     "party": "Futuro Nazionale Vannacci - Free",
+     "coalition": "misto",
+     "date": "2026-07-08",
+     "debate_title": "Dichiarazione d'urgenza della proposta di legge n. 2124 (ore 9,37). (ore 9,37) (ore 9,37)",
+     "session_number": 687,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307143.jpg"
+    },
+    {
+     "speech_id": "leg19_sed682_tit00020.sub00010.int00020",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308848",
+     "speaker_name": "Angelo Rossi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-06-26",
+     "debate_title": "Discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,36). (ore 9,36) (ore 9,36)",
+     "session_number": 682,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308848.jpg"
+    },
+    {
+     "speech_id": "leg19_sed682_tit00020.sub00010.int00510",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308862",
+     "speaker_name": "Alessandro Urzi'",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-06-26",
+     "debate_title": "Discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,36). (ore 9,36) (ore 9,36)",
+     "session_number": 682,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308862.jpg"
+    },
+    {
+     "speech_id": "leg19_sed680_tit00100.sub00010.int00020",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307143",
+     "speaker_name": "Edoardo Ziello",
+     "party": "Futuro Nazionale Vannacci - Free",
+     "coalition": "misto",
+     "date": "2026-06-22",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 680,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307143.jpg"
+    },
+    {
+     "speech_id": "leg19_sed643_tit00100.sub00020.int00180",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308795",
+     "speaker_name": "Carmine Fabio Raimondo",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2026-04-14",
+     "debate_title": "Seguito della discussione delle mozioni Casu, Iaria, Ghirra, Gadda ed altri n. 1-00563, Pastorella ed altri n. 1-00565 e Maccanti, Raimondo, Caroppo, Tirelli ed altri n. 1-00566 in materia di trasporto pubblico locale (ore 16,22). (ore 16,22) (ore 16,22)",
+     "session_number": 643,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308795.jpg"
+    },
+    {
+     "speech_id": "leg19_sed617_tit00080.sub00020.int00080",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305586",
+     "speaker_name": "Manfred Schullian",
+     "party": "Minoranze Linguistiche",
+     "coalition": "misto",
+     "date": "2026-02-17",
+     "debate_title": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione del lavoro parlamentare e la valorizzazione del ruolo delle Commissioni, per l'abolizione del termine delle 24 ore in caso di posizione della questione di fiducia, per il rafforzamento dello statuto delle opposizioni, delle attività di indirizzo, informazione e controllo, per la revisione della disciplina dei gruppi e delle procedure di collegamento con l'Unione europea e per l'aggiornamento del testo) (Doc. II, n. 11) (ore 17,52). (ore 17,52)",
+     "session_number": 617,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305586.jpg"
+    },
+    {
+     "speech_id": "leg19_sed617_tit00080.sub00020.int00200",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308861",
+     "speaker_name": "Francesca Ghirra",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2026-02-17",
+     "debate_title": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione del lavoro parlamentare e la valorizzazione del ruolo delle Commissioni, per l'abolizione del termine delle 24 ore in caso di posizione della questione di fiducia, per il rafforzamento dello statuto delle opposizioni, delle attività di indirizzo, informazione e controllo, per la revisione della disciplina dei gruppi e delle procedure di collegamento con l'Unione europea e per l'aggiornamento del testo) (Doc. II, n. 11) (ore 17,52). (ore 17,52)",
+     "session_number": 617,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308861.jpg"
+    },
+    {
+     "speech_id": "leg19_sed601_tit00050.sub00010.int00020",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302069",
+     "speaker_name": "Arturo Scotto",
+     "party": "Partito Democratico - Italia Democratica e Progressista",
+     "coalition": "opposizione",
+     "date": "2026-01-26",
+     "debate_title": "Discussione della mozione Braga ed altri n. 1-00532 concernente iniziative in materia previdenziale (ore 12,04). (ore 12,04)",
+     "session_number": 601,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302069.jpg"
+    },
+    {
+     "speech_id": "leg19_sed586_tit00050.sub00010.int00110",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306005",
+     "speaker_name": "Davide Faraone",
+     "party": "Italia Viva - Casa Riformista",
+     "coalition": "opposizione",
+     "date": "2025-12-17",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 586,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306005.jpg"
+    },
+    {
+     "speech_id": "leg19_sed552_tit00060.sub00010.int00100",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308832",
+     "speaker_name": "Alessia Ambrosi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2025-10-22",
+     "debate_title": "Si riprende la discussione delle mozioni.",
+     "session_number": 552,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308832.jpg"
+    },
+    {
+     "speech_id": "leg19_sed552_tit00060.sub00010.int00120",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308832",
+     "speaker_name": "Alessia Ambrosi",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2025-10-22",
+     "debate_title": "Si riprende la discussione delle mozioni.",
+     "session_number": 552,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308832.jpg"
+    },
+    {
+     "speech_id": "leg19_sed531_tit00120.sub00010.int00520",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308942",
+     "speaker_name": "Graziano Pizzimenti",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "date": "2025-09-16",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 531,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308942.jpg"
+    },
+    {
+     "speech_id": "leg19_sed508_tit00090.sub00020.int00210",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p302980",
+     "speaker_name": "Elena Maccanti",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "date": "2025-07-10",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 508,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d302980.jpg"
+    },
+    {
+     "speech_id": "leg19_sed483_tit00120.sub00040.int00200",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307502",
+     "speaker_name": "Alessandro Giglio Vigna",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "date": "2025-05-21",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 483,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307502.jpg"
+    },
+    {
+     "speech_id": "leg19_sed445_tit00040.sub00020.int00120",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307223",
+     "speaker_name": "Pietro Pittalis",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "date": "2025-03-12",
+     "debate_title": "Discussione della relazione della Giunta delle elezioni sull'elezione contestata della deputata Anna Laura Orrico per il Collegio uninominale n. 2 della XXIII Circoscrizione Calabria (Doc. III, n. 1).",
+     "session_number": 445,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307223.jpg"
+    },
+    {
+     "speech_id": "leg19_sed445_tit00040.sub00010.int00060",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308863",
+     "speaker_name": "Maddalena Morgante",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2025-03-12",
+     "debate_title": "Discussione della relazione della Giunta delle elezioni sull'elezione contestata della deputata Anna Laura Orrico per il Collegio uninominale n. 2 della XXIII Circoscrizione Calabria (Doc. III, n. 1).",
+     "session_number": 445,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308863.jpg"
+    },
+    {
+     "speech_id": "leg19_sed427_tit00040.sub00020.int00260",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308826",
+     "speaker_name": "Fabrizio Comba",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2025-02-12",
+     "debate_title": "Seguito della discussione delle mozioni Richetti ed altri n. 1-00371, Scutella' ed altri n. 1-00372, Della Vedova ed altri n. 1-00377, Faraone ed altri n. 1-00382, Bonelli ed altri n. 1-00384 e De Luca ed altri n. 1-00395 concernenti iniziative per il rilancio della competitività europea, in relazione al \"Rapporto Draghi\".",
+     "session_number": 427,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308826.jpg"
+    },
+    {
+     "speech_id": "leg19_sed399_tit00040.sub00010.int00090",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306005",
+     "speaker_name": "Davide Faraone",
+     "party": "Italia Viva - Casa Riformista",
+     "coalition": "opposizione",
+     "date": "2024-12-17",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 399,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306005.jpg"
+    },
+    {
+     "speech_id": "leg19_sed366_tit00060.sub00020.int00090",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307857",
+     "speaker_name": "Nazario Pagano",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "date": "2024-10-16",
+     "debate_title": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione di fasi e di tempi dei procedimenti e per l'aggiornamento del testo) (Doc. II, n. 9) (ore 11). ore 11)",
+     "session_number": 366,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307857.jpg"
+    },
+    {
+     "speech_id": "leg19_sed314_tit00040.sub00010.int00050",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306005",
+     "speaker_name": "Davide Faraone",
+     "party": "Italia Viva - Casa Riformista",
+     "coalition": "opposizione",
+     "date": "2024-06-26",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 314,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306005.jpg"
+    },
+    {
+     "speech_id": "leg19_sed309_tit00110.sub00010.int01420",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307863",
+     "speaker_name": "Marco Pellegrini",
+     "party": "Movimento 5 Stelle",
+     "coalition": "opposizione",
+     "date": "2024-06-18",
+     "debate_title": "Si riprende la discussione del disegno di legge n. 1665.",
+     "session_number": 309,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307863.jpg"
+    },
+    {
+     "speech_id": "leg19_sed309_tit00130.sub00010.int00640",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308810",
+     "speaker_name": "Marco Grimaldi",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2024-06-18",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 309,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308810.jpg"
+    },
+    {
+     "speech_id": "leg19_sed305_tit00050.sub00010.int00160",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p305880",
+     "speaker_name": "Nicola Fratoianni",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2024-06-12",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 305,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305880.jpg"
+    },
+    {
+     "speech_id": "leg19_sed272_tit00140.sub00010.int00080",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p300447",
+     "speaker_name": "Maurizio Enzo Lupi",
+     "party": "Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare",
+     "coalition": "maggioranza",
+     "date": "2024-04-03",
+     "debate_title": "Seguito della discussione della mozione Richetti, Braga, Francesco Silvestri, Zanella ed altri n. 1-00249 presentata a norma dell'articolo 115, comma 3, del Regolamento, nei confronti del Vicepresidente del Consiglio dei ministri e Ministro delle Infrastrutture e dei trasporti, Matteo Salvini.",
+     "session_number": 272,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d300447.jpg"
+    },
+    {
+     "speech_id": "leg19_sed272_tit00140.sub00010.int00300",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "gov_montaruli_augusta",
+     "speaker_name": "Augusta Montaruli",
+     "party": "Fratelli d'Italia",
+     "coalition": "maggioranza",
+     "date": "2024-04-03",
+     "debate_title": "Seguito della discussione della mozione Richetti, Braga, Francesco Silvestri, Zanella ed altri n. 1-00249 presentata a norma dell'articolo 115, comma 3, del Regolamento, nei confronti del Vicepresidente del Consiglio dei ministri e Ministro delle Infrastrutture e dei trasporti, Matteo Salvini.",
+     "session_number": 272,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307464.jpg"
+    },
+    {
+     "speech_id": "leg19_sed152_tit00060.sub00020.int00110",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p308852",
+     "speaker_name": "Annarita Patriarca",
+     "party": "Forza Italia - Berlusconi Presidente - PPE",
+     "coalition": "maggioranza",
+     "date": "2023-08-02",
+     "debate_title": "doc Doc. VIII, n. 1",
+     "session_number": 152,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d308852.jpg"
+    },
+    {
+     "speech_id": "leg19_sed16_tit00130.sub00010.int00080",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p306521",
+     "speaker_name": "Filiberto Zaratti",
+     "party": "Alleanza Verdi e Sinistra",
+     "coalition": "opposizione",
+     "date": "2022-11-30",
+     "debate_title": "Seguito della discussione della proposta di modificazione al Regolamento (Modifiche al Regolamento relative ad adeguamenti conseguenti alla riduzione del numero dei deputati) (Doc. II, n. 5).",
+     "session_number": 16,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306521.jpg"
+    },
+    {
+     "speech_id": "leg19_sed4_tit00040.sub00030.int00240",
+     "chamber": "camera",
+     "url": null,
+     "speaker_id": "http://dati.camera.it/ocd/persona.rdf/p307507",
+     "speaker_name": "Riccardo Molinari",
+     "party": "Lega - Salvini Premier",
+     "coalition": "maggioranza",
+     "date": "2022-10-25",
+     "debate_title": "Si riprende la discussione.",
+     "session_number": 4,
+     "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d307507.jpg"
+    }
+   ],
+   "sessions_detail": [
+    {
+     "session_number": 4,
+     "session_id": "leg19_sed4",
+     "chamber": "camera",
+     "url": null,
+     "date": "2022-10-25",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 16,
+     "session_id": "leg19_sed16",
+     "chamber": "camera",
+     "url": null,
+     "date": "2022-11-30",
+     "debate_title": "Seguito della discussione della proposta di modificazione al Regolamento (Modifiche al Regolamento relative ad adeguamenti conseguenti alla riduzione del numero dei deputati) (Doc. II, n. 5)."
+    },
+    {
+     "session_number": 152,
+     "session_id": "leg19_sed152",
+     "chamber": "camera",
+     "url": null,
+     "date": "2023-08-02",
+     "debate_title": "doc Doc. VIII, n. 1"
+    },
+    {
+     "session_number": 272,
+     "session_id": "leg19_sed272",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-04-03",
+     "debate_title": "Seguito della discussione della mozione Richetti, Braga, Francesco Silvestri, Zanella ed altri n. 1-00249 presentata a norma dell'articolo 115, comma 3, del Regolamento, nei confronti del Vicepresidente del Consiglio dei ministri e Ministro delle Infrastrutture e dei trasporti, Matteo Salvini."
+    },
+    {
+     "session_number": 305,
+     "session_id": "leg19_sed305",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-06-12",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 309,
+     "session_id": "leg19_sed309",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-06-18",
+     "debate_title": "Si riprende la discussione del disegno di legge n. 1665."
+    },
+    {
+     "session_number": 314,
+     "session_id": "leg19_sed314",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-06-26",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 366,
+     "session_id": "leg19_sed366",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-10-16",
+     "debate_title": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione di fasi e di tempi dei procedimenti e per l'aggiornamento del testo) (Doc. II, n. 9) (ore 11). ore 11)"
+    },
+    {
+     "session_number": 399,
+     "session_id": "leg19_sed399",
+     "chamber": "camera",
+     "url": null,
+     "date": "2024-12-17",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 427,
+     "session_id": "leg19_sed427",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-02-12",
+     "debate_title": "Seguito della discussione delle mozioni Richetti ed altri n. 1-00371, Scutella' ed altri n. 1-00372, Della Vedova ed altri n. 1-00377, Faraone ed altri n. 1-00382, Bonelli ed altri n. 1-00384 e De Luca ed altri n. 1-00395 concernenti iniziative per il rilancio della competitività europea, in relazione al \"Rapporto Draghi\"."
+    },
+    {
+     "session_number": 445,
+     "session_id": "leg19_sed445",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-03-12",
+     "debate_title": "Discussione della relazione della Giunta delle elezioni sull'elezione contestata della deputata Anna Laura Orrico per il Collegio uninominale n. 2 della XXIII Circoscrizione Calabria (Doc. III, n. 1)."
+    },
+    {
+     "session_number": 483,
+     "session_id": "leg19_sed483",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-05-21",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 508,
+     "session_id": "leg19_sed508",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-07-10",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 531,
+     "session_id": "leg19_sed531",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-09-16",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 552,
+     "session_id": "leg19_sed552",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-10-22",
+     "debate_title": "Si riprende la discussione delle mozioni."
+    },
+    {
+     "session_number": 586,
+     "session_id": "leg19_sed586",
+     "chamber": "camera",
+     "url": null,
+     "date": "2025-12-17",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 601,
+     "session_id": "leg19_sed601",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-01-26",
+     "debate_title": "Discussione della mozione Braga ed altri n. 1-00532 concernente iniziative in materia previdenziale (ore 12,04). (ore 12,04)"
+    },
+    {
+     "session_number": 617,
+     "session_id": "leg19_sed617",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-02-17",
+     "debate_title": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione del lavoro parlamentare e la valorizzazione del ruolo delle Commissioni, per l'abolizione del termine delle 24 ore in caso di posizione della questione di fiducia, per il rafforzamento dello statuto delle opposizioni, delle attività di indirizzo, informazione e controllo, per la revisione della disciplina dei gruppi e delle procedure di collegamento con l'Unione europea e per l'aggiornamento del testo) (Doc. II, n. 11) (ore 17,52). (ore 17,52)"
+    },
+    {
+     "session_number": 643,
+     "session_id": "leg19_sed643",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-04-14",
+     "debate_title": "Seguito della discussione delle mozioni Casu, Iaria, Ghirra, Gadda ed altri n. 1-00563, Pastorella ed altri n. 1-00565 e Maccanti, Raimondo, Caroppo, Tirelli ed altri n. 1-00566 in materia di trasporto pubblico locale (ore 16,22). (ore 16,22) (ore 16,22)"
+    },
+    {
+     "session_number": 680,
+     "session_id": "leg19_sed680",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-06-22",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 682,
+     "session_id": "leg19_sed682",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-06-26",
+     "debate_title": "Discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236) (ore 9,36). (ore 9,36) (ore 9,36)"
+    },
+    {
+     "session_number": 687,
+     "session_id": "leg19_sed687",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-07-08",
+     "debate_title": "Dichiarazione d'urgenza della proposta di legge n. 2124 (ore 9,37). (ore 9,37) (ore 9,37)"
+    },
+    {
+     "session_number": 689,
+     "session_id": "leg19_sed689",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-07-14",
+     "debate_title": "Sull'ordine dei lavori."
+    },
+    {
+     "session_number": 690,
+     "session_id": "leg19_sed690",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-07-15",
+     "debate_title": "Sull'ordine dei lavori."
+    },
+    {
+     "session_number": 694,
+     "session_id": "leg19_sed694",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-07-21",
+     "debate_title": "Seguito della discussione della relazione della I Commissione (Affari Costituzionali, della Presidenza del Consiglio e Interni) sullo schema di intesa preliminare tra il Governo della Repubblica italiana e la Regione Lombardia per l'attribuzione di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione, nelle materie \"protezione civile\", \"professioni\" e \"previdenza complementare e integrativa\" (Doc. CCXLVII, n. 3) e sullo schema di intesa preliminare tra il Governo della Repubblica italiana e la Regione Lombardia per l'attribuzione di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione, nelle materie \"tutela della salute - coordinamento della finanza pubblica\" (Doc. CCXLVII, n. 4) (Doc. XVI, n. 7) (ore 17,15). (ore 17,15)."
+    },
+    {
+     "session_number": 717,
+     "session_id": "leg19_sed717",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-09-30",
+     "debate_title": "Discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica (Approvata dalla Camera e modificata dal Senato) (A.C. 2822-B)."
+    },
+    {
+     "session_number": 721,
+     "session_id": "leg19_sed721",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-10-06",
+     "debate_title": "Si riprende la discussione."
+    },
+    {
+     "session_number": 722,
+     "session_id": "leg19_sed722",
+     "chamber": "camera",
+     "url": null,
+     "date": "2026-10-07",
+     "debate_title": "Si riprende la discussione."
+    }
+   ]
+  },
+  "n_citations": 2,
+  "citations_sample": [
+   {
+    "chunk_id": "leg19_sed314_tit00040.sub00010.int00050_chunk_0",
+    "deputy_first_name": "Davide",
+    "deputy_last_name": "Faraone",
+    "text": "Infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta.",
+    "quote_text": "Infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta.",
+    "full_text": "Grazie, Presidente. Io, sinceramente, ho ascoltato in maniera abbastanza sorpresa l'intervento della Presidente del Consiglio Meloni perché ha parlato facendo riferimento a un 54 per cento di europarlamentari di maggioranza italiana trasferita in Europa. Poi, Presidente, guardavo plasticamente seduti accanto Salvini, Meloni e Tajani e ragionavo sul fatto che la Presidente Meloni mette insieme cose che insieme non stanno. Infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta. Si può dire che non potete perdere: avete giocato una schedina “1 X 2”. Infatti, c'è la Lega che è all'opposizione, l'ha dichiarato e farà opposizione comunque a tutto quello che verrà fuori come leadership europea; c'è Forza Italia che invece è al Governo: la von der Leyen è espressione del Partito Popolare Europeo e Tajani è un leader autorevole di questo partito; e, poi, c'è Fratelli d'Italia che è un piede dentro e un piede fuori dalla maggioranza e dall'opposizione.",
+    "group": "Italia Viva - Casa Riformista",
+    "coalition": "opposizione",
+    "date": "2024-06-26",
+    "span_start": 0,
+    "span_end": 1118,
+    "debate": "Si riprende la discussione.",
+    "intervention_id": "leg19_sed314_tit00040.sub00010.int00050",
+    "url": null,
+    "camera_profile_url": "https://www.camera.it/deputati/elenco/19-306005",
+    "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d306005.jpg",
+    "verified": true,
+    "chamber": "camera",
+    "topic_rank": 2,
+    "topic_pool_size": 5
+   },
+   {
+    "chunk_id": "leg19_sed617_tit00080.sub00020.int00080_chunk_1",
+    "deputy_first_name": "Manfred",
+    "deputy_last_name": "Schullian",
+    "text": "Sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera.",
+    "quote_text": "Sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera.",
+    "full_text": "Temo, invece, che l'effetto reale non sarà quello di scoraggiare il singolo parlamentare ad abbandonare il proprio gruppo ma, piuttosto, quello di rendere meno doloroso, sotto il profilo meramente economico, l'abbandono per il gruppo che viene lasciato. Un deputato lascia il suo partito - e quindi anche il relativo gruppo parlamentare - perché non condivide più le proposte politiche di quel partito o perché intravede altrove un diverso futuro politico per sé stesso. Sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera. L'unico effetto concreto di questa disposizione sarà quello di rendere più complessa la gestione per il gruppo di approdo, con possibili conseguenze anche molto pesanti, in prospettiva, soprattutto per il gruppo Misto, il quale rappresento. Riteniamo, comunque, che nel suo complesso la riforma sia positiva ed equilibrata. Per queste ragioni, annuncio il voto favorevole della componente per le Minoranze Linguistiche .",
+    "group": "Minoranze Linguistiche",
+    "coalition": "misto",
+    "date": "2026-02-17",
+    "span_start": 859,
+    "span_end": 1925,
+    "debate": "Seguito della discussione del documento: Proposta di modificazione al Regolamento (Modifiche al Regolamento per la razionalizzazione del lavoro parlamentare e la valorizzazione del ruolo delle Commissioni, per l'abolizione del termine delle 24 ore in caso di posizione della questione di fiducia, per il rafforzamento dello statuto delle opposizioni, delle attività di indirizzo, informazione e controllo, per la revisione della disciplina dei gruppi e delle procedure di collegamento con l'Unione europea e per l'aggiornamento del testo) (Doc. II, n. 11) (ore 17,52). (ore 17,52)",
+    "intervention_id": "leg19_sed617_tit00080.sub00020.int00080",
+    "url": null,
+    "camera_profile_url": "https://www.camera.it/deputati/elenco/19-305586",
+    "photo": "https://documenti.camera.it/_dati/leg19/schededeputatinuovosito/fotoDefinitivo/big/d305586.jpg",
+    "verified": true,
+    "chamber": "camera",
+    "topic_rank": 1,
+    "topic_pool_size": 2
+   }
+  ]
+ },
+ "tempo_s": 64.8,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "warn",
+    "authority": "pass",
+    "quotes": "pass"
+   },
+   "groups": {
+    "present": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Governo"
+    ],
+    "missing": [],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0314&tipo=stenografico#sed0314.stenografico.tit00040.sub00010.int00050"
+    },
+    {
+     "quote": "sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0617&tipo=stenografico#sed0617.stenografico.tit00080.sub00020.int00080"
+    }
+   ],
+   "authority": {
+    "topic": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": [
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p306005",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p306005",
+      "name": "Davide Faraone",
+      "group": "Italia Viva - Casa Riformista",
+      "voice": "IV",
+      "role": null,
+      "source": "quoted",
+      "pool": "speakers_on_topic",
+      "rank": 2,
+      "pool_size": 5,
+      "group_size": 5,
+      "authoritative": true
+     },
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p305586",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305586",
+      "name": "Manfred Schullian",
+      "group": "Minoranze linguistiche (Misto)",
+      "voice": "Min. ling.",
+      "role": null,
+      "source": "quoted",
+      "pool": "speakers_on_topic",
+      "rank": 1,
+      "pool_size": 2,
+      "group_size": 2,
+      "authoritative": true
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

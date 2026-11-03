@@ -1,0 +1,73 @@
+{
+ "id": "COMU-036",
+ "domanda": "Quante audizioni ha fatto la Camera sulla legge annuale per la concorrenza 2026 e chi è stato sentito?",
+ "sql": [
+  "-- sedute della Camera sul C. 3120 (per legame o per titolo), con le audizioni\nSELECT s.date, s.body_code, s.seat, ai.uri, left(ai.title, 150) AS titolo, ai.stage,\n       (s.seat ILIKE '%AUDIZION%' OR ai.title ILIKE 'Audizion%') AS audizione\nFROM agenda_item ai\nJOIN sitting s ON s.uri = ai.sitting\nWHERE s.chamber = 'camera'\n  AND (EXISTS (SELECT 1 FROM agenda_item_act x WHERE x.item = ai.uri AND x.act_ref = 'ac:3120')\n       OR ai.title ~ 'C\\. ?3120')\nORDER BY s.date",
+  "-- memorie e contributi depositati sul C. 3120\nSELECT uri, kind, date, body_code, author_raw, hearing, url\nFROM document\nWHERE 'ac:3120' = ANY(acts) OR hearing ILIKE '%3120%'\nORDER BY date"
+ ],
+ "risultato": {
+  "q1": [
+   {
+    "date": "2026-10-21",
+    "body_code": "05",
+    "seat": "ESAME, AI SENSI DELL'ARTICOLO 123-BIS, COMMA 1, DEL REGOLAMENTO",
+    "uri": "it:camera:19:bol20261021:c05:sede00010:tit00010",
+    "titolo": "Legge annuale per il mercato e la concorrenza 2026.",
+    "stage": "Esame per la verifica del contenuto proprio del disegno di legge e conclusione",
+    "audizione": false
+   },
+   {
+    "date": "2026-10-27",
+    "body_code": "10",
+    "seat": "SEDE REFERENTE",
+    "uri": "it:camera:19:bol20261027:c10:sede00030:tit00010",
+    "titolo": "Legge annuale per il mercato e la concorrenza per il 2026.",
+    "stage": "Esame e rinvio",
+    "audizione": false
+   },
+   {
+    "date": "2026-10-28",
+    "body_code": "10",
+    "seat": "SEDE REFERENTE",
+    "uri": "it:camera:19:bol20261028:c10:sede00010:tit00010",
+    "titolo": "Legge annuale per il mercato e la concorrenza per il 2026.",
+    "stage": "Seguito dell'esame e rinvio",
+    "audizione": false
+   },
+   {
+    "date": "2026-11-03",
+    "body_code": null,
+    "seat": null,
+    "uri": "it:camera:19:sed0737:odg03",
+    "titolo": "Deliberazioni, ai sensi dell'articolo 123-bis, comma 3, del Regolamento, in ordine ai termini per la conclusione dell'esame in Assemblea dei disegni d",
+    "stage": null,
+    "audizione": null
+   }
+  ],
+  "q2": [
+   {
+    "uri": "it:camera:19:doc:com08-103539-20261028101348646",
+    "kind": "written_contribution",
+    "date": "2026-10-28",
+    "body_code": "10",
+    "author_raw": "Conferenza unificata",
+    "hearing": "A.C. 3120 - \"Legge annuale per il mercato e la concorrenza 2026\" (3120)",
+    "url": "https://documenti.camera.it/leg19/documentiAcquisiti/COM08/Progettodilegge/leg19.com08.Progettodilegge.Contributo Scritto.PUBBLICO.ideGes.103539.28-10-2026-10-13-48.646.pdf"
+   },
+   {
+    "uri": "it:camera:19:doc:com10-103539-20261030160744835",
+    "kind": "written_contribution",
+    "date": "2026-10-30",
+    "body_code": "10",
+    "author_raw": "FIAIP",
+    "hearing": "A.C. 3120 - \"Legge annuale per il mercato e la concorrenza 2026\" (3120)",
+    "url": "https://documenti.camera.it/leg19/documentiAcquisiti/COM10/Progettodilegge/leg19.com10.Progettodilegge.Contributo Scritto.PUBBLICO.ideGes.103539.30-10-2026-16-07-44.835.pdf"
+   }
+  ]
+ },
+ "risposta": "Nei dati la Camera non ha ancora svolto audizioni sul C. 3120 (legge annuale per il mercato e la concorrenza 2026): ci sono l'esame in V Commissione ai sensi dell'art. 123-bis (21/10/2026) e due sedute della X Commissione in sede referente (27/10/2026, relazione di Gusmeroli, e 28/10/2026), nessuna in sede di audizione. Sono stati depositati due contributi scritti: Conferenza unificata (28/10/2026) e FIAIP (30/10/2026).",
+ "stato": "parziale",
+ "limiti": "Il Bollettino delle commissioni è caricato fino al 29/10/2026: audizioni successive non sono visibili. Le audizioni informali senza memoria depositata compaiono solo come punti del Bollettino; qui non ce ne sono. I contributi scritti non dicono se l'autore è stato anche audito.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

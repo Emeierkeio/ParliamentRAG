@@ -1,0 +1,97 @@
+{
+ "id": "LOB-042",
+ "domanda": "Quando è convocata la prossima seduta della VIII Commissione sul DL 177/2026 (C. 3133) e cosa c'è all'ordine del giorno?",
+ "sql": [
+  "-- sedute future/programmate di qualunque organo\nSELECT uri, chamber, kind, body, date, start_time, status FROM sitting\nWHERE status = 'planned' OR date > '2026-11-02'",
+  "-- ultime sedute della VIII Commissione sul C. 3133 (DL 177/2026)\nSELECT s.uri, s.date, s.start_time, s.seat, ai.stage, left(ai.title, 120) AS titolo\nFROM agenda_item_act iaa\nJOIN agenda_item ai ON ai.uri = iaa.item\nJOIN sitting s ON s.uri = ai.sitting\nWHERE iaa.act_ref = 'ac:3133' AND s.chamber = 'camera' AND s.body_code = '08'\nORDER BY s.date DESC, s.uri DESC"
+ ],
+ "risultato": {
+  "sedute_programmate": [
+   {
+    "uri": "it:camera:19:sed0737",
+    "chamber": "camera",
+    "kind": "assembly_agenda",
+    "body": "it:camera:19:aula",
+    "date": "2026-11-03",
+    "start_time": "10:00",
+    "status": "planned"
+   }
+  ],
+  "sedute_viii_su_c3133": [
+   {
+    "uri": "it:camera:19:bol20261027:c08:sede00020",
+    "date": "2026-10-27",
+    "start_time": "13:05",
+    "seat": "SEDE REFERENTE",
+    "stage": "Seguito dell'esame e rinvio",
+    "titolo": "DL 177/2026: Disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici,"
+   },
+   {
+    "uri": "it:camera:19:bol20261027:c08:sede00010",
+    "date": "2026-10-27",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale di rappresentanti del Comieco – Consorzio nazionale per il recupero e il riciclo degli imballaggi a "
+   },
+   {
+    "uri": "it:camera:19:bol20261022:c08:sede00010",
+    "date": "2026-10-22",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale di rappresentanti del WWF Italia, in videoconferenza, di rappresentanti di Unirima, di rappresentant"
+   },
+   {
+    "uri": "it:camera:19:bol20261021:c08:sede00080",
+    "date": "2026-10-21",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale di rappresentanti della Commissione tecnica PNRR-PNIEC, nell'ambito dell'esame, in sede referente, d"
+   },
+   {
+    "uri": "it:camera:19:bol20261021:c08:sede00020",
+    "date": "2026-10-21",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale di rappresentanti dell'Istituto superiore per la protezione e la ricerca ambientale (ISPRA), di rapp"
+   },
+   {
+    "uri": "it:camera:19:bol20261021:c08:sede00010",
+    "date": "2026-10-21",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale del Commissario unico per la realizzazione degli interventi necessari all'adeguamento alla normativa"
+   },
+   {
+    "uri": "it:camera:19:bol20261020:c08:sede00010",
+    "date": "2026-10-20",
+    "start_time": null,
+    "seat": "AUDIZIONI INFORMALI",
+    "stage": null,
+    "titolo": "Audizione informale di rappresentanti di SPRING – Sustainable Processes and Resources for Innovation and National Growth"
+   },
+   {
+    "uri": "it:camera:19:bol20261014:c08:sede00010",
+    "date": "2026-10-14",
+    "start_time": "13:45",
+    "seat": "SEDE REFERENTE",
+    "stage": "Esame e rinvio",
+    "titolo": "DL 177/2026: Disposizioni urgenti per il rafforzamento delle istruttorie ambientali, la gestione dei problemi climatici,"
+   }
+  ]
+ },
+ "risposta": "Nei dati non c'è la prossima convocazione della VIII Commissione sul C. 3133: l'unica seduta programmata nel database è l'Aula della Camera del 3/11/2026 (seduta 737), che non ha il C. 3133 all'ordine del giorno. L'ultima seduta registrata della VIII Commissione sul DL 177/2026 è del 27/10/2026, in sede referente alle 13:05, con «Seguito dell'esame e rinvio»; lo stesso giorno si sono svolte audizioni informali (fra gli altri Comieco, autorità di bacino distrettuali, Legambiente, ISS, ENEA, ANCI).",
+ "stato": "non_calcolabile",
+ "limiti": "Le convocazioni future delle commissioni non sono caricate: sitting ha una sola seduta in stato planned (Aula, 3/11/2026), non le 120 indicate nel benchmark. Il Bollettino delle commissioni arriva al 29/10/2026. Il risultato riporta solo l'ultima seduta svolta come contesto.",
+ "problemi_dati": [
+  {
+   "problema": "Una sola seduta con status planned in tutto il database (it:camera:19:sed0737), nessuna di commissione.",
+   "sql": "SELECT count(*) FROM sitting WHERE status='planned'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

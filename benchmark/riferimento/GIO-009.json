@@ -1,0 +1,37 @@
+{
+ "id": "GIO-009",
+ "domanda": "Quante sedute d'Aula ha fatto la Camera nel 2026 e quante ore in totale? Confronto con il Senato.",
+ "sql": [
+  "WITH s AS (\n  SELECT uri, chamber FROM sitting\n  WHERE kind = 'assembly_verbatim' AND date BETWEEN '2026-01-01' AND '2026-12-31'\n), v AS (\n  SELECT sitting, sum(extract(epoch FROM end_ts - start_ts)) AS secondi, count(*) AS video\n  FROM video WHERE sitting IN (SELECT uri FROM s) GROUP BY sitting\n)\nSELECT s.chamber, count(*) AS sedute,\n       count(v.sitting) AS sedute_con_video,\n       round(sum(v.secondi) / 3600.0, 1) AS ore_da_video,\n       round(avg(v.secondi) / 3600.0, 2) AS ore_medie_per_seduta_con_video,\n       min(v.secondi) AS min_secondi, max(v.secondi) AS max_secondi\nFROM s LEFT JOIN v ON v.sitting = s.uri\nGROUP BY s.chamber ORDER BY s.chamber"
+ ],
+ "risultato": [
+  {
+   "chamber": "camera",
+   "sedute": 146,
+   "sedute_con_video": 146,
+   "ore_da_video": 854.0,
+   "ore_medie_per_seduta_con_video": 5.85,
+   "min_secondi": 290.0,
+   "max_secondi": 138344.0
+  },
+  {
+   "chamber": "senato",
+   "sedute": 93,
+   "sedute_con_video": 0,
+   "ore_da_video": null,
+   "ore_medie_per_seduta_con_video": null,
+   "min_secondi": null,
+   "max_secondi": null
+  }
+ ],
+ "risposta": "Nel 2026, fino al 30/10 per la Camera e al 28/10 per il Senato, la Camera ha tenuto 146 sedute d'Aula (dalla n. 591 alla n. 736) e il Senato 93 (dalla n. 377 alla n. 469). Alla Camera la durata dalle registrazioni della WebTV somma circa 854 ore, in media 5,85 ore per seduta (dalla più breve, 4 minuti e 50 secondi il 5/1/2026, alla seduta 648 del 22-24/4/2026 sul decreto sicurezza, con due video per circa 38 ore). Per il Senato le ore non sono calcolabili.",
+ "stato": "parziale",
+ "limiti": "Le ore si ricavano solo dai video della Camera (end_ts - start_ts, sospensioni comprese): sitting non ha orari di inizio e fine per le sedute d'Aula di nessuno dei due rami e per il Senato non ci sono video. Il confronto sulle ore con il Senato non è quindi possibile; il confronto sul numero di sedute sì.",
+ "problemi_dati": [
+  {
+   "problema": "Le sedute d'Aula non hanno start_time né end_time (0 su 736 alla Camera e 0 su 469 al Senato).",
+   "sql": "SELECT chamber, count(*), count(start_time), count(end_time) FROM sitting WHERE kind='assembly_verbatim' GROUP BY 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

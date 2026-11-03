@@ -1,0 +1,419 @@
+{
+ "id": "PARL-043",
+ "trappola": false,
+ "domanda": "Quali membri del Governo sono anche deputati, e quante votazioni hanno fatto in questa legislatura?",
+ "categoria": "governo",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Missioni da incarico di governo: non sono assenze.",
+ "endpoint": "agente",
+ "risposta_sistema": "Alla Camera risultano **20 componenti del Governo anche deputati**. Hanno partecipato alle seguenti votazioni dell’Assemblea, su dati aggiornati al **19 ottobre 2026**:\n\n- Presidente del Consiglio e ministri: [Giorgia Meloni](#/strumenti/deputato/302103) **14**; [Antonio Tajani](#/strumenti/deputato/308838) **361**; [Giancarlo Giorgetti](#/strumenti/deputato/50115) **128**; [Carlo Nordio](#/strumenti/deputato/308798) **490**; [Francesco Lollobrigida](#/strumenti/deputato/307463) **154**; [Gilberto Pichetto Fratin](#/strumenti/deputato/303089) **591**; [Tommaso Foti](#/strumenti/deputato/50204) **7.588**; [Gianmarco Mazzi](#/strumenti/deputato/308860) **2.593**.\n- Viceministri: [Maria Teresa Bellucci](#/strumenti/deputato/307426) **1.226**; [Maurizio Leo](#/strumenti/deputato/300444) **1.328**; [Edoardo Rixi](#/strumenti/deputato/304521) **396**; [Edmondo Cirielli](#/strumenti/deputato/300319) **631**; [Vannia Gava](#/strumenti/deputato/307138) **1.240**.\n- Sottosegretari: [Andrea Delmastro Delle Vedove](#/strumenti/deputato/307479) **3.630**; [Federico Freni](#/strumenti/deputato/308837) **396**; [Marcello Gemmato](#/strumenti/deputato/307332) **1.900**; [Nicola Molteni](#/strumenti/deputato/302762) **1.295**; [Emanuele Prisco](#/strumenti/deputato/307452) **1.702**; [Paola Frassinetti](#/strumenti/deputato/301457) **2.864**; [Tullio Ferrante](#/strumenti/deputato/308876) **6.851**.\n\nIl numero è la somma di voti favorevoli, contrari e astensioni registrati nelle votazioni nominali della Camera; il totale delle votazioni considerate è quasi sempre **19.968** (per alcuni deputati 19.967).",
+ "eventi": {
+  "status": 1,
+  "tool": 48,
+  "dati": 24,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 24
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 29
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato i deputati del Governo sulla legge più recente approvata dalla Camera?",
+   "Che cosa ha detto Giorgia Meloni in Aula nelle comunicazioni del 14 ottobre 2026?",
+   "In quali votazioni ha partecipato Tommaso Foti?"
+  ]
+ },
+ "tempo_s": 28.4,
+ "verifica": null
+}

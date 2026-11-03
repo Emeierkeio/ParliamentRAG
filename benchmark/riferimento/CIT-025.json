@@ -1,0 +1,1061 @@
+{
+ "id": "CIT-025",
+ "domanda": "il parlamento ha votato per mandare armi all'Ucraina? chi era contro",
+ "sql": [
+  "select uri, chamber, number, date, law_number, law_date from act where kind='bill' and title ilike '%proroga dell%autorizzazione alla cessione%' order by date",
+  "select v.uri, v.chamber, v.date, v.kind, v.confidence, v.title, v.favor, v.against, v.abstain, v.approved from vote v where v.uri in ('it:camera:19:sed0042:v011','it:camera:19:sed0241:v001','it:camera:19:sed0418:v015','it:camera:19:sed0613:v016','it:senato:19:sed0027:v004','it:senato:19:sed0149:v008','it:senato:19:sed0265:v002','it:senato:19:sed0393:v001') order by v.chamber, v.date",
+  "with voti(uri, decreto) as (values\n ('it:camera:19:sed0042:v011','DL 185/2022 (C. 761)'), ('it:camera:19:sed0241:v001','DL 200/2023 (C. 1666)'),\n ('it:camera:19:sed0418:v015','DL 200/2024 (C. 2206)'), ('it:camera:19:sed0613:v016','DL 201/2025 (C. 2754)'),\n ('it:senato:19:sed0027:v004','DL 185/2022 (S. 389)'), ('it:senato:19:sed0149:v008','DL 200/2023 (S. 974)'),\n ('it:senato:19:sed0265:v002','DL 200/2024 (S. 1335)'), ('it:senato:19:sed0393:v001','DL 201/2025 (S. 1793, fiducia)')),\nb as (\n select v.chamber, x.decreto, v.date, b.result,\n   coalesce(case when coalesce(al.grp,b.grp) in ('it:camera:19:group:gr4111','it:camera:19:group:gr9999') then group_at(b.person,v.date) end, al.grp, b.grp) g\n from voti x join vote v on v.uri=x.uri join ballot b on b.vote=v.uri left join grp_alias al on al.alias=b.grp)\nselect b.chamber, b.decreto, b.date, coalesce(g.short_name, b.g, '(senza gruppo)') gruppo,\n  count(*) filter (where result='favor') favorevoli, count(*) filter (where result='against') contrari,\n  count(*) filter (where result='abstain') astenuti\nfrom b left join grp g on g.uri=b.g\ngroup by 1,2,3,4 having count(*) filter (where result in ('favor','against','abstain'))>0\norder by 1,3,6 desc,5 desc",
+  "select v.uri, p.given_name||' '||p.family_name nome, b.result from ballot b join vote v on v.uri=b.vote join person p on p.uri=b.person\nwhere v.uri in ('it:camera:19:sed0042:v011','it:camera:19:sed0241:v001','it:camera:19:sed0418:v015','it:camera:19:sed0613:v016','it:senato:19:sed0027:v004','it:senato:19:sed0149:v008','it:senato:19:sed0265:v002','it:senato:19:sed0393:v001')\nand b.result in ('favor','against') and (group_at(b.person,v.date)='it:camera:19:group:gr4111' or b.grp in ('it:camera:19:group:gr4111','it:camera:19:group:cgm4111','it:senato:19:group:9')) order by 1,3"
+ ],
+ "risultato": {
+  "atti": [
+   {
+    "uri": "it:senato:19:ddl:389",
+    "chamber": "senato",
+    "number": "389",
+    "date": "2022-12-02",
+    "law_number": "8",
+    "law_date": "2023-01-27"
+   },
+   {
+    "uri": "it:camera:19:ac:761",
+    "chamber": "camera",
+    "number": "761",
+    "date": "2023-01-12",
+    "law_number": "8",
+    "law_date": "2023-01-27"
+   },
+   {
+    "uri": "it:senato:19:ddl:974",
+    "chamber": "senato",
+    "number": "974",
+    "date": "2023-12-21",
+    "law_number": "12",
+    "law_date": "2024-02-13"
+   },
+   {
+    "uri": "it:camera:19:ac:1666",
+    "chamber": "camera",
+    "number": "1666",
+    "date": "2024-01-25",
+    "law_number": "12",
+    "law_date": "2024-02-13"
+   },
+   {
+    "uri": "it:senato:19:ddl:1335",
+    "chamber": "senato",
+    "number": "1335",
+    "date": "2024-12-27",
+    "law_number": "7",
+    "law_date": "2025-01-31"
+   },
+   {
+    "uri": "it:camera:19:ac:2206",
+    "chamber": "camera",
+    "number": "2206",
+    "date": "2025-01-22",
+    "law_number": "7",
+    "law_date": "2025-01-31"
+   },
+   {
+    "uri": "it:camera:19:ac:2754",
+    "chamber": "camera",
+    "number": "2754",
+    "date": "2025-12-31",
+    "law_number": "27",
+    "law_date": "2026-02-27"
+   },
+   {
+    "uri": "it:senato:19:ddl:1793",
+    "chamber": "senato",
+    "number": "1793",
+    "date": "2026-02-12",
+    "law_number": "27",
+    "law_date": "2026-02-27"
+   }
+  ],
+  "voti_finali": [
+   {
+    "uri": "it:camera:19:sed0042:v011",
+    "chamber": "camera",
+    "date": "2023-01-24",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale DDL n. 0761",
+    "favor": 215,
+    "against": 46,
+    "abstain": 0,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0241:v001",
+    "chamber": "camera",
+    "date": "2024-02-08",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale DDL n. 1666",
+    "favor": 218,
+    "against": 42,
+    "abstain": 0,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0418:v015",
+    "chamber": "camera",
+    "date": "2025-01-28",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale DDL n. 2206",
+    "favor": 192,
+    "against": 41,
+    "abstain": 0,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0613:v016",
+    "chamber": "camera",
+    "date": "2026-02-11",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale DDL n. 2754",
+    "favor": 229,
+    "against": 40,
+    "abstain": 0,
+    "approved": true
+   },
+   {
+    "uri": "it:senato:19:sed0027:v004",
+    "chamber": "senato",
+    "date": "2023-01-11",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale",
+    "favor": 125,
+    "against": 28,
+    "abstain": 2,
+    "approved": true
+   },
+   {
+    "uri": "it:senato:19:sed0149:v008",
+    "chamber": "senato",
+    "date": "2024-01-24",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale",
+    "favor": 113,
+    "against": 18,
+    "abstain": 0,
+    "approved": true
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "chamber": "senato",
+    "date": "2025-01-22",
+    "kind": "final",
+    "confidence": false,
+    "title": "Votazione finale",
+    "favor": 123,
+    "against": 25,
+    "abstain": 1,
+    "approved": true
+   },
+   {
+    "uri": "it:senato:19:sed0393:v001",
+    "chamber": "senato",
+    "date": "2026-02-25",
+    "kind": "confidence",
+    "confidence": true,
+    "title": "Disegno di legge n. 1793. Votazione questione di fiducia.",
+    "favor": 106,
+    "against": 57,
+    "abstain": 2,
+    "approved": true
+   }
+  ],
+  "per_gruppo": [
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 37,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "AVS",
+    "favorevoli": 0,
+    "contrari": 7,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "PD-IDP",
+    "favorevoli": 51,
+    "contrari": 1,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "MISTO",
+    "favorevoli": 2,
+    "contrari": 1,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "FDI",
+    "favorevoli": 74,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "LEGA",
+    "favorevoli": 38,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "FI-PPE",
+    "favorevoli": 24,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "AZ-PER-RE",
+    "favorevoli": 15,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "favorevoli": 7,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 185/2022 (C. 761)",
+    "date": "2023-01-24",
+    "gruppo": "MISTO-MIN.LING.",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "M5S",
+    "favorevoli": 1,
+    "contrari": 31,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "AVS",
+    "favorevoli": 0,
+    "contrari": 10,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "MISTO",
+    "favorevoli": 1,
+    "contrari": 1,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "FDI",
+    "favorevoli": 78,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "PD-IDP",
+    "favorevoli": 53,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "LEGA",
+    "favorevoli": 33,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "FI-PPE",
+    "favorevoli": 30,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "AZ-PER-RE",
+    "favorevoli": 10,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "IV-CR",
+    "favorevoli": 5,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "MISTO-MIN.LING.",
+    "favorevoli": 2,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2023 (C. 1666)",
+    "date": "2024-02-08",
+    "gruppo": "MISTO-+EU-SUEU",
+    "favorevoli": 1,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 30,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "AVS",
+    "favorevoli": 0,
+    "contrari": 10,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "MISTO",
+    "favorevoli": 1,
+    "contrari": 1,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "FDI",
+    "favorevoli": 69,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "PD-IDP",
+    "favorevoli": 48,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "LEGA",
+    "favorevoli": 29,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "FI-PPE",
+    "favorevoli": 27,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "AZ-PER-RE",
+    "favorevoli": 7,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "MISTO-MIN.LING.",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "IV-CR",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "favorevoli": 2,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 200/2024 (C. 2206)",
+    "date": "2025-01-28",
+    "gruppo": "MISTO-+EU-SUEU",
+    "favorevoli": 1,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 29,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "AVS",
+    "favorevoli": 0,
+    "contrari": 8,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "MISTO",
+    "favorevoli": 1,
+    "contrari": 3,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "FDI",
+    "favorevoli": 84,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "PD-IDP",
+    "favorevoli": 57,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "LEGA",
+    "favorevoli": 39,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "FI-PPE",
+    "favorevoli": 29,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "AZ-PER-RE",
+    "favorevoli": 6,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "favorevoli": 6,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "MISTO-MIN.LING.",
+    "favorevoli": 3,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "MISTO-+EU-SUEU",
+    "favorevoli": 2,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "camera",
+    "decreto": "DL 201/2025 (C. 2754)",
+    "date": "2026-02-11",
+    "gruppo": "IV-CR",
+    "favorevoli": 2,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 23,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "Misto",
+    "favorevoli": 0,
+    "contrari": 3,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "PD-IDP",
+    "favorevoli": 27,
+    "contrari": 2,
+    "astenuti": 2
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "FdI",
+    "favorevoli": 50,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "LSP-PSd'Az",
+    "favorevoli": 21,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "FI-BP-PPE",
+    "favorevoli": 10,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "IV-CR",
+    "favorevoli": 8,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "favorevoli": 5,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 185/2022 (S. 389)",
+    "date": "2023-01-11",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 16,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "Misto",
+    "favorevoli": 2,
+    "contrari": 2,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "FdI",
+    "favorevoli": 46,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "PD-IDP",
+    "favorevoli": 23,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "LSP-PSd'Az",
+    "favorevoli": 16,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "FI-BP-PPE",
+    "favorevoli": 11,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "IV-CR",
+    "favorevoli": 6,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "favorevoli": 5,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2023 (S. 974)",
+    "date": "2024-01-24",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 21,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "Misto",
+    "favorevoli": 1,
+    "contrari": 4,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "FdI",
+    "favorevoli": 50,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "PD-IDP",
+    "favorevoli": 30,
+    "contrari": 0,
+    "astenuti": 1
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "LSP-PSd'Az",
+    "favorevoli": 14,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "FI-BP-PPE",
+    "favorevoli": 12,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "favorevoli": 7,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "IV-CR",
+    "favorevoli": 5,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 200/2024 (S. 1335)",
+    "date": "2025-01-22",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "favorevoli": 4,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "PD-IDP",
+    "favorevoli": 0,
+    "contrari": 31,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "M5S",
+    "favorevoli": 0,
+    "contrari": 18,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "IV-CR",
+    "favorevoli": 0,
+    "contrari": 6,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "Misto",
+    "favorevoli": 0,
+    "contrari": 2,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "FdI",
+    "favorevoli": 57,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "LSP-PSd'Az",
+    "favorevoli": 24,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "FI-BP-PPE",
+    "favorevoli": 17,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "favorevoli": 7,
+    "contrari": 0,
+    "astenuti": 0
+   },
+   {
+    "chamber": "senato",
+    "decreto": "DL 201/2025 (S. 1793, fiducia)",
+    "date": "2026-02-25",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "favorevoli": 1,
+    "contrari": 0,
+    "astenuti": 2
+   }
+  ],
+  "misto_per_persona": [
+   {
+    "uri": "it:camera:19:sed0042:v011",
+    "nome": "Aboubakar Soumahoro",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0042:v011",
+    "nome": "Michela Vittoria Brambilla",
+    "result": "favor"
+   },
+   {
+    "uri": "it:camera:19:sed0042:v011",
+    "nome": "Francesco Gallo",
+    "result": "favor"
+   },
+   {
+    "uri": "it:camera:19:sed0241:v001",
+    "nome": "Aboubakar Soumahoro",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0241:v001",
+    "nome": "Francesco Gallo",
+    "result": "favor"
+   },
+   {
+    "uri": "it:camera:19:sed0418:v015",
+    "nome": "Aboubakar Soumahoro",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0418:v015",
+    "nome": "Francesco Gallo",
+    "result": "favor"
+   },
+   {
+    "uri": "it:camera:19:sed0613:v016",
+    "nome": "Edoardo Ziello",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0613:v016",
+    "nome": "Rossano Sasso",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0613:v016",
+    "nome": "Emanuele Pozzolo",
+    "result": "against"
+   },
+   {
+    "uri": "it:camera:19:sed0613:v016",
+    "nome": "Aboubakar Soumahoro",
+    "result": "favor"
+   },
+   {
+    "uri": "it:senato:19:sed0027:v004",
+    "nome": "Aurora Floridia",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0027:v004",
+    "nome": "Peppe De Cristofaro",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0027:v004",
+    "nome": "Tino Magni",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0149:v008",
+    "nome": "Peppe De Cristofaro",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0149:v008",
+    "nome": "Tino Magni",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0149:v008",
+    "nome": "Giusy Versace",
+    "result": "favor"
+   },
+   {
+    "uri": "it:senato:19:sed0149:v008",
+    "nome": "Marco Lombardo",
+    "result": "favor"
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "nome": "Ilaria Cucchi",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "nome": "Peppe De Cristofaro",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "nome": "Aurora Floridia",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "nome": "Tino Magni",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0265:v002",
+    "nome": "Marco Lombardo",
+    "result": "favor"
+   },
+   {
+    "uri": "it:senato:19:sed0393:v001",
+    "nome": "Tino Magni",
+    "result": "against"
+   },
+   {
+    "uri": "it:senato:19:sed0393:v001",
+    "nome": "Marco Lombardo",
+    "result": "against"
+   }
+  ]
+ },
+ "risposta": "Sì. Il Parlamento ha convertito quattro decreti che prorogano la cessione di mezzi militari all'Ucraina: DL 185/2022 (legge 8/2023), DL 200/2023 (legge 12/2024), DL 200/2024 (legge 7/2025), DL 201/2025 (legge 27/2026). Voti finali alla Camera: 24/1/2023 215 sì, 46 no; 8/2/2024 218 sì, 42 no; 28/1/2025 192 sì, 41 no; 11/2/2026 229 sì, 40 no. Contro hanno votato ogni volta M5S (37, 31, 30, 29) e AVS (7, 10, 10, 8), più un deputato PD nel 2023; nel Misto senza componente Soumahoro contro nel 2023, 2024 e 2025, e nel 2026 Ziello, Sasso e Pozzolo. Al Senato: 11/1/2023 125 sì, 28 no, 2 astenuti; 24/1/2024 113 sì, 18 no; 22/1/2025 123 sì, 25 no, 1 astenuto. Contro M5S (23, 16, 21), 2 senatori PD nel 2023, e nel Misto De Cristofaro, Magni, Floridia e (2025) Cucchi. Il DL 201/2025 al Senato è passato il 25/2/2026 con la fiducia (106 sì, 57 no): contro PD, M5S, IV e nel Misto Magni e Lombardo, ma è un voto sulla fiducia al Governo, non sul merito.",
+ "stato": "calcolata",
+ "limiti": "Considerati i quattro decreti di proroga (non solo i due della nota). Voti finali della Camera da vote_act; al Senato la votazione è stata scelta nella seduta in cui l'atto è all'ordine del giorno (agenda_item_act) e confermata da vote_act per S. 389, 974 e 1335; S. 1793 è passato con la questione di fiducia, che al Senato vale come approvazione e non è legata all'atto. Gruppo del votante: quello del voto della Camera (con grp_alias), per il Misto la componente alla data; al Senato il Misto non ha componenti nel DB, si danno i nomi.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato 2.546 righe di vote_act su 12.877 restano senza atto, tra cui la fiducia su S. 1793.",
+   "sql": "select split_part(x.act,':',2) ach, count(*) from vote_act x join vote v on v.uri=x.vote where v.chamber='senato' group by 1"
+  },
+  {
+   "problema": "Nella seduta 27 del Senato l'argomento sul DL 185/2022 ha act_ref «doc:389» invece di «ddl:389».",
+   "sql": "select x.* from agenda_item_act x join agenda_item i on i.uri=x.item where i.sitting='it:senato:19:sed0027'"
+  },
+  {
+   "problema": "Al Senato il Misto non è diviso per componente (ballot.grp = it:senato:19:group:9).",
+   "sql": "select grp, count(*) from ballot where vote='it:senato:19:sed0265:v002' group by 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

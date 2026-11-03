@@ -1,0 +1,42 @@
+{
+ "id": "LOB-012",
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "categoria": "emendamenti",
+ "ramo": "camera",
+ "tipo_risposta": "conteggio",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non trovo il progetto di legge **C. 3148** né il relativo fascicolo emendamenti nei dati della XIX legislatura disponibili. Non posso quindi contare gli emendamenti dichiarati inammissibili né attribuire i primi firmatari ai gruppi.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "emendamenti_cerca",
+  "search_parliament",
+  "list_sessions",
+  "emendamenti_cerca"
+ ],
+ "errori": [],
+ "tempo_s": 14.3,
+ "riferimento": {
+  "risposta": "Al C. 3148 (conversione del DL 157/2026) sono stati presentati in sede referente 89 emendamenti; 28 risultano inammissibili. Per gruppo del primo firmatario: PD-IDP 17 (fra i primi firmatari Amendola, Barbagallo, Braga, Ferrari, Forattini, Gnassi, Pandolfo, Peluffo, Simiani), M5S 7 (Appendino, Cappelletti, L'Abbate, Pavanelli, Raffa), AVS 2 (Bonelli), IV-CR 1 (Del Barba), Misto-componente Futuro Nazionale Vannacci-Free 1 (Ziello). Nessun inammissibile della maggioranza. Gli altri 61 hanno esito vuoto, che non significa respinti.",
+  "stato": "calcolata",
+  "limiti": "Gruppo del primo firmatario alla data di presentazione (amendment.presented). Esito vuoto = esito non caricato."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 14.3
+ },
+ "causa_probabile": "dati",
+ "note": "Dice di non trovare il C. 3148 e i suoi emendamenti; nel DB ci sono 89 emendamenti, 28 inammissibili (PD-IDP 17, M5S 7, AVS 2, IV-CR 1, FNV 1). Lo strumento emendamenti_cerca non arriva a questi dati."
+}

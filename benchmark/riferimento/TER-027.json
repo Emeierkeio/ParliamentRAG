@@ -1,0 +1,138 @@
+{
+  "id": "TER-027",
+  "domanda": "Al Senato, come ha votato ciascun gruppo nel voto finale sulla delega nucleare (S. 1924)? Il Misto per componente.",
+  "sql": [
+    "SELECT v.uri, v.date, v.title, v.favor, v.against, v.abstain, v.present, v.voting, v.approved, v.source_url\nFROM vote v WHERE v.uri = 'it:senato:19:sed0458:v011'",
+    "SELECT coalesce(g.short_name, b.grp, '(senza gruppo)') AS gruppo,\n       count(*) FILTER (WHERE b.result = 'favor') AS favorevoli,\n       count(*) FILTER (WHERE b.result = 'against') AS contrari,\n       count(*) FILTER (WHERE b.result = 'abstain') AS astenuti,\n       count(*) FILTER (WHERE b.result = 'present_not_voting') AS presenti_non_votanti,\n       count(*) FILTER (WHERE b.result = 'mission') AS in_missione\nFROM ballot b LEFT JOIN grp g ON g.uri = b.grp\nWHERE b.vote = 'it:senato:19:sed0458:v011'\nGROUP BY 1 ORDER BY favorevoli DESC, contrari DESC",
+    "SELECT p.given_name || ' ' || p.family_name AS senatore, b.result\nFROM ballot b JOIN person p ON p.uri = b.person\nWHERE b.vote = 'it:senato:19:sed0458:v011' AND b.grp = 'it:senato:19:group:9'\nORDER BY b.result, p.family_name"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:senato:19:sed0458:v011",
+        "date": "2026-09-23",
+        "title": "Votazione finale",
+        "favor": 81,
+        "against": 51,
+        "abstain": 7,
+        "present": 140,
+        "voting": 139,
+        "approved": true,
+        "source_url": null
+      }
+    ],
+    [
+      {
+        "gruppo": "FdI",
+        "favorevoli": 48,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 1,
+        "in_missione": 12
+      },
+      {
+        "gruppo": "LSP-PSd'Az",
+        "favorevoli": 17,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 1,
+        "in_missione": 10
+      },
+      {
+        "gruppo": "FI-BP-PPE",
+        "favorevoli": 10,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 2,
+        "in_missione": 5
+      },
+      {
+        "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+        "favorevoli": 4,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 4
+      },
+      {
+        "gruppo": "Misto",
+        "favorevoli": 2,
+        "contrari": 3,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "PD-IDP",
+        "favorevoli": 0,
+        "contrari": 27,
+        "astenuti": 0,
+        "presenti_non_votanti": 3,
+        "in_missione": 3
+      },
+      {
+        "gruppo": "M5S",
+        "favorevoli": 0,
+        "contrari": 19,
+        "astenuti": 0,
+        "presenti_non_votanti": 3,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "Aut (SVP-PATT, Cb)",
+        "favorevoli": 0,
+        "contrari": 2,
+        "astenuti": 2,
+        "presenti_non_votanti": 1,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "IV-CR",
+        "favorevoli": 0,
+        "contrari": 0,
+        "astenuti": 5,
+        "presenti_non_votanti": 1,
+        "in_missione": 1
+      }
+    ],
+    [
+      {
+        "senatore": "Ilaria Cucchi",
+        "result": "against"
+      },
+      {
+        "senatore": "Peppe De Cristofaro",
+        "result": "against"
+      },
+      {
+        "senatore": "Tino Magni",
+        "result": "against"
+      },
+      {
+        "senatore": "Carlo Calenda",
+        "result": "favor"
+      },
+      {
+        "senatore": "Marco Lombardo",
+        "result": "favor"
+      },
+      {
+        "senatore": "Mario Monti",
+        "result": "mission"
+      },
+      {
+        "senatore": "Liliana Segre",
+        "result": "mission"
+      }
+    ]
+  ],
+  "risposta": "Voto finale sul ddl S. 1924 (delega al Governo sull'energia nucleare sostenibile, poi legge 169/2026), Senato, 23/9/2026: approvato con 81 favorevoli, 51 contrari, 7 astenuti (140 presenti, 139 votanti). Per gruppo: FdI 48 sì; Lega-PSd'Az 17 sì; FI-BP-PPE 10 sì; Civici d'Italia-UDC-NM-MAIE-CP 4 sì; PD-IDP 27 no; M5S 19 no; Per le Autonomie 2 no e 2 astenuti; IV-CR 5 astenuti; Misto 2 sì e 3 no. Nel Misto, per persona (le componenti non ci sono nei dati): Calenda e Lombardo sì; Cucchi, De Cristofaro e Magni no; Monti e Segre in missione.",
+  "stato": "parziale",
+  "limiti": "Il Misto del Senato non è diviso per componente nel database: si danno i voti dei singoli senatori del Misto, senza attribuirli a una componente. I senatori in missione e quelli «presenti non votanti» sono nel risultato ma non nella risposta; i senatori assenti non hanno righe.",
+  "problemi_dati": [
+    "Senato: il conteggio dei «presenti non votanti» nelle schede (ballot.result='present_not_voting') non torna con vote.present - vote.voting in 7.794 votazioni palesi su 8.397 (qui 12 schede contro 1). Query: SELECT count(*) FILTER (WHERE present - voting <> (SELECT count(*) FROM ballot b WHERE b.vote=v.uri AND b.result='present_not_voting')) FROM vote v WHERE chamber='senato' AND NOT secret;",
+    "Senato: grp non ha start_date/end_date né componenti del Misto. Query: SELECT uri, kind, start_date, end_date FROM grp WHERE chamber='senato';",
+    "Senato: vote.source_url è vuoto (nessun link alla votazione). Query: SELECT count(*), count(source_url) FROM vote WHERE chamber='senato';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

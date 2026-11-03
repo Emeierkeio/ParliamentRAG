@@ -1,0 +1,66 @@
+{
+  "id": "COM-007",
+  "domanda": "Elenco degli auditi nell'indagine conoscitiva della VII Commissione sulle nuove tecnologie nella scuola.",
+  "sql": [
+    "WITH sedute AS (\n  SELECT s.date, i.title, i.stage\n  FROM sitting s JOIN agenda_item i ON i.sitting = s.uri\n  WHERE s.chamber = 'camera' AND s.body = 'it:camera:19:body:o19_3507'\n    AND i.title ILIKE '%impatto delle nuove tecnologie nella scuola%'),\nmemorie AS (\n  SELECT sitting_date AS date, min(hearing) AS hearing, string_agg(author_raw, '; ' ORDER BY author_raw) AS memorie\n  FROM document WHERE hearing ILIKE '%impatto delle nuove tecnologie nella scuola%' GROUP BY 1)\nSELECT s.date, s.stage,\n       coalesce(substring(m.hearing FROM '(?i)audizione di:?\\s*(.*)$'), nullif(substring(s.title FROM '(?i)audizione di:?\\s*(.*)$'), '')) AS auditi,\n       CASE WHEN m.hearing IS NOT NULL THEN 'document.hearing' WHEN s.title ~* 'audizione di:?\\s*[[:alpha:]]' THEN 'agenda_item.title' END AS fonte_elenco,\n       m.memorie\nFROM sedute s LEFT JOIN memorie m ON m.date = s.date\nORDER BY s.date"
+  ],
+  "risultato": [
+    {
+      "date": "2026-06-17",
+      "stage": "Deliberazione",
+      "auditi": null,
+      "fonte_elenco": null,
+      "memorie": null
+    },
+    {
+      "date": "2026-09-29",
+      "stage": "Svolgimento e conclusione",
+      "auditi": "Esther Flocco, presidente nazionale dell'Associazione italiana maestri cattolici (AIMC) e Giuseppe Desideri, presidente della Fondazione AIMC Onlus; Ivano Zoppi, segretario generale della Fondazione Carolina, in videoconferenza; Angelo Boccato, psicologo dell'orientamento, in video-conferenza; Sileno Rampado, direttore generale del La Salle International Campus, in videoconferenza; Paola Bortoletto, presidente nazionale dell'Associazione nazionale dirigenti scolastici (ANDIS), in videoconferenza",
+      "fonte_elenco": "document.hearing",
+      "memorie": "01_Memoria Antonia Salzano Acutis; 02_Memoria Associazione Italiana Maestri Cattolici; 03_Memoria Associazione Nazionale Dirigenti Scolastici"
+    },
+    {
+      "date": "2026-09-30",
+      "stage": "Svolgimento e conclusione",
+      "auditi": "Marco Crepaldi, presidente dell'Associazione Hikikomori Italia, in videoconferenza, Suor Anna Monia Alfieri, esperta di politiche scolastiche, in videoconferenza, Michele Liuzzi, esperto, in videoconferenza, Carlo Nofri, presidente Osservatorio nazionale della mediazione linguistica e culturale (OSSMED), in videoconferenza, Concita De Simone, coordinatrice della comunicazione della Fondazione Oltre, in videoconferenza, Marco Gui, presidente della Fondazione Patti digitali, in videoconferenza, Vincenzo Pantalena, coordinatore del Tavolo interassociativo della scuola, in videoconferenza, e Daniele Grassucci, direttore di Skuola.net",
+      "fonte_elenco": "document.hearing",
+      "memorie": "Carlo Nofri - OSSMED; Fondazione Oltre; Marco Crepaldi; Michele Liuzzi; Skuola.net; Suor Anna Monia Alfieri; Tavolo interassociativo della scuola"
+    },
+    {
+      "date": "2026-10-13",
+      "stage": "Svolgimento e conclusione",
+      "auditi": "Ernesto Caffo, presidente della Fondazione SOS Il Telefono Azzurro ETS",
+      "fonte_elenco": "document.hearing",
+      "memorie": "Telefono Azzurro"
+    },
+    {
+      "date": "2026-10-14",
+      "stage": "Svolgimento e conclusione",
+      "auditi": null,
+      "fonte_elenco": null,
+      "memorie": null
+    },
+    {
+      "date": "2026-10-20",
+      "stage": "Svolgimento e conclusione",
+      "auditi": "Giusy D'Alconzo e Damiano Sabuzi Giuliani, rispettivamente responsabile delle politiche per l'infanzia e l'adolescenza e coordinatore dell'advocacy educazione e povertà di Save the children, Angela Nava Mambretti, presidente nazionale del Coordinamento genitori democratici (CGD), Sandra Scicolone, componente dello staff del presidente dell'Associazione nazionale dirigenti pubblici (ANP), in videoconferenza, Liboria Pantaleo, membro della segreteria nazionale del Movimento di cooperazione educativa (MCE), in videoconferenza, Giulia Bovassi, ricercatrice presso la Fondazione Machiavelli e presso la cattedra UNESCO di Bioetica e diritti umani, in videoconferenza, Valentina Chinnici, presidente nazionale del Centro iniziativa democratica insegnanti (CIDI), in videoconferenza, e Antonio Affinita, direttore generale del Movimento italiano genitori (MOIGE), in videoconferenza",
+      "fonte_elenco": "document.hearing",
+      "memorie": "ANP; Coordinamento genitori democratici; MOIGE"
+    },
+    {
+      "date": "2026-10-28",
+      "stage": "Svolgimento e conclusione",
+      "auditi": "Gabriele Benassi, docente del Liceo Galvani di Bologna, componente del Servizio Marconi TSI. Elena Fazi, presidente nazionale dell'Unione Cattolica Italiana Insegnanti, Dirigenti, Educatori, Formatori (UCIIM). Giovanna Mascheroni, professoressa ordinaria di sociologia dei media digitali, in videoconferenza",
+      "fonte_elenco": "document.hearing",
+      "memorie": "Benassi; scritta Giovanna Mascheroni; scritta UCIIM"
+    }
+  ],
+  "risposta": "L'indagine conoscitiva della VII Commissione «sulle sfide educative e culturali e sull'impatto delle nuove tecnologie nella scuola» è stata deliberata il 17/6/2026; le audizioni si sono tenute il 29/9, 30/9, 13/10, 14/10, 20/10 e 28/10/2026. Auditi: 29/9 Esther Flocco (AIMC) e Giuseppe Desideri (Fondazione AIMC), Ivano Zoppi (Fondazione Carolina), Angelo Boccato (psicologo dell'orientamento), Sileno Rampado (La Salle International Campus), Paola Bortoletto (ANDIS); 30/9 Marco Crepaldi (Hikikomori Italia), suor Anna Monia Alfieri, Michele Liuzzi, Carlo Nofri (OSSMED), Concita De Simone (Fondazione Oltre), Marco Gui (Fondazione Patti digitali), Vincenzo Pantalena (Tavolo interassociativo della scuola), Daniele Grassucci (Skuola.net); 13/10 Ernesto Caffo (Telefono Azzurro); 20/10 Giusy D'Alconzo e Damiano Sabuzi Giuliani (Save the Children), Angela Nava Mambretti (CGD), Sandra Scicolone (ANP), Liboria Pantaleo (MCE), Giulia Bovassi (Fondazione Machiavelli), Valentina Chinnici (CIDI), Antonio Affinita (MOIGE); 28/10 Gabriele Benassi (Liceo Galvani, Servizio Marconi TSI), Elena Fazi (UCIIM), Giovanna Mascheroni. Per la seduta del 14/10 il database non ha i nomi degli auditi.",
+  "stato": "parziale",
+  "limiti": "Gli auditi non sono strutturati (entity vuota): l'elenco si legge dal campo hearing delle memorie depositate, che ripete il titolo completo dell'audizione, oppure dal titolo dell'argomento del Bollettino. Il Bollettino tronca il titolo a «Audizione di:» per 29/9, 30/9, 14/10, 20/10 e 28/10; per il 14/10 non ci sono memorie, quindi quell'elenco manca. Dati fino al 2/11/2026.",
+  "problemi_dati": [
+    "Titoli degli argomenti del Bollettino troncati a «Audizione di:» senza i nomi (7 argomenti della Camera). Query: SELECT count(*) FROM agenda_item WHERE uri LIKE 'it:camera:19:bol%' AND title ~* '(audizione|audizioni) di:\\s*$';",
+    "document.author_raw sporco: «01_Memoria Antonia Salzano Acutis», «scritta Giovanna Mascheroni», «scritta UCIIM». Query: SELECT author_raw FROM document WHERE kind='memorandum' AND (author_raw ~ '^[0-9]+_' OR author_raw ILIKE 'scritta %');"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,107 @@
+{
+  "id": "COMU-004",
+  "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+  "sql": [
+    "SELECT st.date, st.uri AS seduta, s.uri AS intervento, s.speaker_label, r.offset_char, r.kind, r.raw AS didascalia,\n       substr(s.text, greatest(r.offset_char - 160, 1), least(r.offset_char, 160)) AS testo_prima\nFROM reaction r JOIN speech s ON s.uri = r.speech JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\nWHERE st.uri = 'it:camera:19:sed0607' AND i.uri LIKE 'it:camera:19:sed0607:tit00050%' AND s.speaker_label ILIKE '%PIANTEDOSI%'\n  AND r.raw ILIKE '%in piedi%'\nORDER BY r.offset_char",
+    "SELECT f.reaction, f.ord, f.kind, f.raw, f.grp\nFROM reaction_from f\nWHERE f.reaction IN ('it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1', 'it:camera:19:sed0607:tit00050.sub00010.int00020:r25.2.1')\nORDER BY f.reaction, f.ord"
+  ],
+  "risultato": [
+    [
+      {
+        "date": "2026-02-03",
+        "seduta": "it:camera:19:sed0607",
+        "intervento": "it:camera:19:sed0607:tit00050.sub00010.int00020",
+        "speaker_label": "MATTEO PIANTEDOSI",
+        "offset_char": 236,
+        "kind": "other",
+        "didascalia": "L'Assemblea e i membri del Governo si levano in piedi",
+        "testo_prima": "tire - consentitemelo - innanzitutto esprimendo, anche in questa sede, a nome mio e di tutto il Governo, la solidarietà agli agenti rimasti feriti negli scontri"
+      },
+      {
+        "date": "2026-02-03",
+        "seduta": "it:camera:19:sed0607",
+        "intervento": "it:camera:19:sed0607:tit00050.sub00010.int00020",
+        "speaker_label": "MATTEO PIANTEDOSI",
+        "offset_char": 13974,
+        "kind": "applause",
+        "didascalia": "Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi",
+        "testo_prima": "a anche grazie a coperture politiche ben identificabili. Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità"
+      },
+      {
+        "date": "2026-02-03",
+        "seduta": "it:camera:19:sed0607",
+        "intervento": "it:camera:19:sed0607:tit00050.sub00010.int00020",
+        "speaker_label": "MATTEO PIANTEDOSI",
+        "offset_char": 16271,
+        "kind": "applause",
+        "didascalia": "Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi",
+        "testo_prima": "ive e antidemocratiche, sostenendo le Forze di Polizia attraverso l'individuazione di ulteriori misure di tutela da ogni violenza e forma di aggressione. Grazie"
+      }
+    ],
+    [
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4134"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4152"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r25.2.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r25.2.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r25.2.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4134"
+      },
+      {
+        "reaction": "it:camera:19:sed0607:tit00050.sub00010.int00020:r25.2.1",
+        "ord": 1,
+        "kind": "group",
+        "raw": "Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare)",
+        "grp": "it:camera:19:group:gr4152"
+      }
+    ]
+  ],
+  "risposta": "Sì. Nel resoconto della seduta 607 della Camera (3/2/2026, informativa urgente del Governo sugli scontri di Torino durante il corteo pro Askatasuna), l'intervento del ministro Matteo Piantedosi si chiude con «Grazie» seguito dalla didascalia: «(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)». La stessa didascalia compare anche a metà intervento, dopo la frase «Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità». All'inizio, dopo la solidarietà agli agenti feriti, il resoconto scrive «L'Assemblea e i membri del Governo si levano in piedi», con applausi. Intervento: it:camera:19:sed0607:tit00050.sub00010.int00020.",
+  "stato": "calcolata",
+  "limiti": "Didascalie riportate come sono in reaction.raw (la parentesi chiusa dopo «Centro Popolare» è nel testo della fonte). Il gruppo di chi applaude viene da reaction_from (FdI, Lega, FI-PPE, Noi Moderati).",
+  "problemi_dati": [
+    "reaction_from: le quattro righe dei gruppi di una stessa didascalia hanno tutte ord = 1, quindi l'ordine delle parti si perde, e raw ripete l'intero elenco invece della parte. Query: SELECT ord, raw, grp FROM reaction_from WHERE reaction = 'it:camera:19:sed0607:tit00050.sub00010.int00020:r22.1.1';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

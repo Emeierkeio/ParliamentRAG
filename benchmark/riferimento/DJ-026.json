@@ -1,0 +1,79 @@
+{
+ "id": "DJ-026",
+ "domanda": "Quanti interventi ha fatto la presidente del Consiglio Giorgia Meloni in Parlamento, e quanti question time?",
+ "sql": [
+  "with m as (\n select st.chamber, st.uri seduta, st.date, st.body, i.title, s.uri\n from speech s join agenda_item i on i.uri=s.item join sitting st on st.uri=i.sitting\n where s.person in ('it:person:camera:302103')\n    or s.person in (select same_as from person_same_as where person='it:person:camera:302103')),\nqt as (select distinct seduta from m where title ilike '%risposta immediata%')\nselect chamber,\n count(*) interventi,\n count(*) filter (where title ilike 'Consegna del testo%' or title ilike 'TESTI DEGLI INTERVENTI%') testi_consegnati,\n count(distinct seduta) sedute,\n count(distinct seduta) filter (where body not like '%:aula') sedute_commissione,\n count(distinct seduta) filter (where seduta in (select seduta from qt)) sedute_question_time,\n count(*) filter (where seduta in (select seduta from qt)) interventi_question_time,\n string_agg(distinct date::text, ', ') filter (where seduta in (select seduta from qt)) date_question_time\nfrom m group by 1 order by 1",
+  "select st.chamber, st.date, i.title from agenda_item i join sitting st on st.uri=i.sitting where st.chamber='senato' and st.body like '%aula' and i.ord>0 and i.title is null order by 2"
+ ],
+ "risultato": {
+  "riepilogo": [
+   {
+    "chamber": "camera",
+    "interventi": 159,
+    "testi_consegnati": 16,
+    "sedute": 26,
+    "sedute_commissione": 2,
+    "sedute_question_time": 3,
+    "interventi_question_time": 40,
+    "date_question_time": "2023-03-15, 2024-01-24, 2025-05-14"
+   },
+   {
+    "chamber": "senato",
+    "interventi": 68,
+    "testi_consegnati": 8,
+    "sedute": 25,
+    "sedute_commissione": 0,
+    "sedute_question_time": 3,
+    "interventi_question_time": 30,
+    "date_question_time": "2023-11-23, 2025-05-07, 2026-05-13"
+   }
+  ],
+  "senato_argomenti_senza_titolo": [
+   {
+    "chamber": "senato",
+    "date": "2024-07-30",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-07-31",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-08-01",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-08-06",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-09-11",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-09-18",
+    "title": null
+   },
+   {
+    "chamber": "senato",
+    "date": "2024-09-19",
+    "title": null
+   }
+  ]
+ },
+ "risposta": "Giorgia Meloni (it:person:camera:302103; al Senato it:person:senato:23006) ha 159 interventi registrati alla Camera in 26 sedute (24 d'Aula e 2 audizioni in commissione) e 68 al Senato in 25 sedute d'Aula: 227 in tutto. Di questi, 16 alla Camera e 8 al Senato sono testi consegnati e non letti. Question time (premier time): 3 alla Camera (15/3/2023, 24/1/2024, 14/5/2025, 40 interventi) e 3 al Senato (23/11/2023, 7/5/2025, 13/5/2026, 30 interventi): 6 in tutto.",
+ "stato": "calcolata",
+ "limiti": "«Interventi» = righe di speech attribuite a lei, comprese repliche e testi consegnati per la pubblicazione (contati a parte). Question time = sedute in cui un suo intervento sta sotto un argomento «interrogazioni a risposta immediata». Esclusi Marco Meloni (senatore) e Giuseppe Meloni (assessore audito).",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato alcuni argomenti d'Aula hanno title vuoto: nelle sedute di premier time le risposte di Meloni (8, 10 e 9 interventi) stanno sotto un argomento senza titolo e non si riconoscono come question time dall'argomento.",
+   "sql": "select st.chamber, st.date, i.title from agenda_item i join sitting st on st.uri=i.sitting where st.chamber='senato' and st.body like '%aula' and i.ord>0 and i.title is null order by 2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,245 @@
+{
+ "id": "AULA-017",
+ "trappola": false,
+ "domanda": "Quali ministri hanno risposto al question time della Camera nell'ultimo mese, e quale gruppo aveva presentato ciascuna interrogazione?",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Argomenti «Svolgimento di interrogazioni a risposta immediata» (sedute 722, 727, 730, 735). Alla Camera as_office è vuoto per i ministri: la carica sta all'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»).",
+ "endpoint": "agente",
+ "risposta_sistema": "Nell’ultimo mese (7-28 ottobre 2026) si sono svolti quattro question time della Camera, con dieci interrogazioni ciascuno. I ministri che hanno risposto e il gruppo presentatore di ciascuna interrogazione sono:\n\n- **7 ottobre**: Matteo Salvini ha risposto alle n. **3-02924** del **PD-IDP** e **3-02925** di **Italia Viva-Casa Riformista**; **Gianmarco Mazzi** alla n. **3-02926** della **Lega**; Salvini alla n. **3-02927** di **AVS**; **Francesco Lollobrigida** alle n. **3-02928** del **M5S**, **3-02929** di **FdI** e **3-02930** di **Noi Moderati**; **Anna Maria Bernini** alla n. **3-02931** di **Forza Italia**; **Andrea Abodi** alle n. **3-02932** di **Azione** e **3-02933** della componente **+Europa-Stati Uniti d’Europa**.\n- **14 ottobre**: Orazio Schillaci alle n. **3-02941** del **PD-IDP** e **3-02942** di **Italia Viva-Casa Riformista**; **Adolfo Urso** alle n. **3-02943** della componente **Futuro Nazionale Vannacci-Free**, **3-02944** di **Azione**, **3-02945** di **Forza Italia**, **3-02946** del **M5S**, **3-02947** di **FdI**, **3-02948** di **AVS**, **3-02949** di **Noi Moderati** e **3-02950** della **Lega**.\n- **21 ottobre**: Adolfo Urso alla n. **3-02962** del **PD-IDP**; **Antonio Tajani** alle n. **3-02963** e **3-02964**, entrambe della componente **+Europa-Stati Uniti d’Europa**; **Luca Ciriani** alle n. **3-02965** di **Forza Italia** e **3-02967** di **Azione**; **Carlo Nordio** alla n. **3-02968** della **Lega**; **Gianmarco Mazzi** alla n. **3-02969** di **AVS**; **Paolo Zangrillo** alle n. **3-02970** di **Azione** e **3-02971** del **M5S**; **Francesco Lollobrigida** alla n. **3-02966** di **Noi Moderati**.\n- **28 ottobre**: Eugenia Roccella alla n. **3-02980** del **PD-IDP**; Luca Ciriani alle n. **3-02981** della componente **Futuro Nazionale Vannacci-Free**, **3-02982** di **FdI**, **3-02983** di **Forza Italia**, **3-02984** della **Lega**, **3-02985** del **M5S**, **3-02986** di **Italia Viva-Casa Riformista**, **3-02987** di **AVS**, **3-02988** di **Noi Moderati** e **3-02989** di **Azione**.",
+ "eventi": {
+  "status": 2,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 4
+  },
+  {
+   "name": "get_debate",
+   "label": "Leggo il dibattito",
+   "state": "start"
+  },
+  {
+   "name": "get_debate",
+   "label": "Leggo il dibattito",
+   "state": "start"
+  },
+  {
+   "name": "get_debate",
+   "label": "Leggo il dibattito",
+   "state": "start"
+  },
+  {
+   "name": "get_debate",
+   "label": "Leggo il dibattito",
+   "state": "start"
+  },
+  {
+   "name": "get_debate",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "get_debate",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "get_debate",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "get_debate",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 2
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 2
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_debate",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_debate",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_debate",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_debate",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno risposto i ministri alle interrogazioni 3-02980-3-02989?",
+   "Cosa ha detto il PD-IDP nell’interrogazione 3-02962 sul prezzo dei carburanti?",
+   "Quali interrogazioni ha presentato la componente Futuro Nazionale Vannacci-Free nei question time di ottobre?"
+  ]
+ },
+ "tempo_s": 51.0,
+ "verifica": null
+}

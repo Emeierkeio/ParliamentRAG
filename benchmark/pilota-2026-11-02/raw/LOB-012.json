@@ -1,0 +1,99 @@
+{
+ "id": "LOB-012",
+ "trappola": false,
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non trovo il progetto di legge **C. 3148** né il relativo fascicolo emendamenti nei dati della XIX legislatura disponibili. Non posso quindi contare gli emendamenti dichiarati inammissibili né attribuire i primi firmatari ai gruppi.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "emendamenti_cerca",
+   "label": "Cerco la legge negli emendamenti",
+   "state": "start"
+  },
+  {
+   "name": "emendamenti_cerca",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "emendamenti_cerca",
+   "label": "Cerco la legge negli emendamenti",
+   "state": "start"
+  },
+  {
+   "name": "emendamenti_cerca",
+   "state": "done",
+   "count": 0
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "emendamenti_cerca",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "emendamenti_cerca",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Quali progetti di legge con emendamenti sono disponibili sul tema della concorrenza?",
+   "A che punto è il C. 3120 sulla legge annuale per il mercato e la concorrenza 2026?",
+   "Chi ha presentato il C. 301 sulla disciplina delle attività funerarie?"
+  ]
+ },
+ "tempo_s": 14.3,
+ "verifica": null
+}

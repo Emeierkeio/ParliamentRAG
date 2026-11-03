@@ -1,0 +1,113 @@
+{
+ "id": "GIO-005",
+ "trappola": false,
+ "domanda": "È vero che è la prima volta in questa legislatura che si mette la fiducia su una legge elettorale?",
+ "categoria": "governo",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "La XIX dice di sì o no dai dati; il confronto storico con il Rosatellum (2017) chiede la XVII: avvertire.",
+ "endpoint": "agente",
+ "risposta_sistema": "No, se ci si riferisce al voto del 7 ottobre 2026: era il **terzo** voto di fiducia sulla stessa riforma elettorale, la proposta [A.C. 2822-B](#/strumenti/atto/camera-2822-B?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D2822-B), poi divenuta [legge n. 180 del 9 ottobre 2026](https://www.normattiva.it/eli/id/2026/10/09/26G00201/ORIGINAL)\n\nIl Governo ha posto la fiducia:\n- il **6 ottobre**, sull’articolo 1: approvata con 226 sì, 147 no e 3 astensioni;\n- il **6 ottobre**, sull’articolo 2: 227 sì, 149 no e 3 astensioni;\n- il **7 ottobre**, sull’articolo 3: 228 sì, 144 no e 3 astensioni.\n\nQuindi il 6 ottobre è stata la prima occasione della XIX legislatura in cui la fiducia è stata votata su questa legge elettorale; ma complessivamente le votazioni di fiducia sul provvedimento sono state tre.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 5
+  },
+  {
+   "name": "get_session_votes",
+   "label": "Leggo le votazioni della seduta",
+   "state": "start"
+  },
+  {
+   "name": "get_session_votes",
+   "state": "done",
+   "count": 34
+  },
+  {
+   "name": "get_session_votes",
+   "label": "Leggo le votazioni della seduta",
+   "state": "start"
+  },
+  {
+   "name": "get_session_votes",
+   "state": "done",
+   "count": 2
+  },
+  {
+   "name": "votazioni_per_tipo",
+   "label": "Conto le votazioni",
+   "state": "start"
+  },
+  {
+   "name": "votazioni_per_tipo",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "suggestions": [
+   "Come hanno votato i gruppi sulle tre fiducie dell’A.C. 2822-B?",
+   "Che cosa hanno detto i gruppi in Aula sulla legge elettorale A.C. 2822-B?",
+   "Qual era l’iter dell’A.C. 2822-B tra Camera e Senato?"
+  ]
+ },
+ "tempo_s": 34.6,
+ "verifica": null
+}

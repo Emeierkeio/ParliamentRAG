@@ -1,0 +1,336 @@
+{
+"atti": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"numero": "1001",
+"titolo": " \"Ratifica ed esecuzione dell&rsquo;Accordo sullo spazio aereo comune tra l&rsquo;Unione europea e i suoi Stati membri, da una parte, e l&rsquo;Ucraina, dall&rsquo;altra, firmato a Kiev il 12 ottobre 2021\" (1001) ",
+"tipo": "Progetto di Legge",
+"natura": "http://dati.camera.it/ocd/natura.rdf/disegno_legge_ordinario",
+"iniziativa": "Governo",
+"data": "20230315",
+"descrizione": "Legge 199 del 7 dicembre 2023  pubblicata nella Gazzetta Ufficiale n. 297 del 21 dicembre 2023 ",
+"scheda": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1001",
+"testo": "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0029920.pdf"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"numero": "1001",
+"titolo": " \"Ratifica ed esecuzione dell&rsquo;Accordo sullo spazio aereo comune tra l&rsquo;Unione europea e i suoi Stati membri, da una parte, e l&rsquo;Ucraina, dall&rsquo;altra, firmato a Kiev il 12 ottobre 2021\" (1001) ",
+"tipo": "Progetto di Legge",
+"natura": "http://dati.camera.it/ocd/natura.rdf/disegno_legge_ordinario",
+"iniziativa": "Governo",
+"data": "20230315",
+"descrizione": "Legge 199 del 7 dicembre 2023  pubblicata nella Gazzetta Ufficiale n. 297 del 21 dicembre 2023 ",
+"scheda": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1001",
+"testo": "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0046130.pdf"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"numero": "1305",
+"titolo": " S. 226. - Senatori CANTU&#39; ed altri: &quot;Istituzione della Giornata nazionale per la prevenzione veterinaria&quot; &lt;em&gt;(approvata dal Senato)&lt;/em&gt; (1305) ",
+"tipo": "Progetto di Legge",
+"natura": "http://dati.camera.it/ocd/natura.rdf/proposta_legge_ordinaria",
+"iniziativa": "Parlamentare",
+"data": "20230713",
+"descrizione": "Legge 49 del 1° aprile 2025  pubblicata nella Gazzetta Ufficiale n. 86 del 12 aprile 2025 ",
+"scheda": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;1305",
+"testo": "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0045180.pdf"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"numero": "151",
+"titolo": " RAVETTO ed altri: \"Istituzione di un emolumento mensile di maternit&agrave; e delega al Governo in materia di riconoscimento dei servizi educativi essenziali per l&rsquo;infanzia\" (151) ",
+"tipo": "Progetto di Legge",
+"natura": "http://dati.camera.it/ocd/natura.rdf/proposta_legge_ordinaria",
+"iniziativa": "Parlamentare",
+"data": "20221013",
+"scheda": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;151",
+"testo": "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0003510.pdf"
+}
+],
+"firmatari": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p308838",
+"primo": "1",
+"carica": "Ministro degli Affari esteri e della cooperazione internazionale"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p50115",
+"primo": "1",
+"carica": "Ministro dell'Economia e delle finanze"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p309042",
+"primo": "1",
+"carica": "Ministro dell'Interno"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p300356",
+"primo": "1",
+"carica": "Ministro della Difesa"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p308798",
+"primo": "1",
+"carica": "Ministro della Giustizia"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p39200",
+"primo": "1",
+"carica": "Ministro delle Imprese e del made in Italy"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p302741",
+"primo": "1",
+"carica": "Ministro delle Infrastrutture e dei trasporti"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"firmatario": "http://dati.camera.it/ocd/persona.rdf/p301551",
+"primo": "1",
+"carica": "Ministro per gli Affari europei"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d301459_19",
+"primo": "1"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d302824_19",
+"primo": "0"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d307285_19",
+"primo": "0"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d307507_19",
+"primo": "0"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d307630_19",
+"primo": "0"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d307680_19",
+"primo": "0"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"firmatario": "http://dati.camera.it/ocd/deputato.rdf/d308791_19",
+"primo": "0"
+}
+],
+"iter": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_82745",
+"titolo": "Da assegnare",
+"data": "20230315"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_83001",
+"titolo": "Assegnato",
+"data": "20230405"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_83172",
+"titolo": "In corso di esame in Commissione",
+"data": "20230427"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_84073",
+"titolo": "Concluso l'esame da parte della Commissione. In stato di relazione",
+"data": "20230705"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_84519",
+"titolo": "In discussione",
+"data": "20230905"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_84603",
+"titolo": "Approvato. Trasmesso al Senato",
+"data": "20230914"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_85736",
+"titolo": "Approvato definitivamente dal Senato, non ancora pubblicato",
+"data": "20231129"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_85737",
+"titolo": "Approvato definitivamente dal Senato. Legge",
+"data": "20231207"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_84164",
+"titolo": "Da assegnare",
+"data": "20230713"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_84175",
+"titolo": "Assegnato",
+"data": "20230717"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_85623",
+"titolo": "In corso di esame in Commissione",
+"data": "20231214"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_87960",
+"titolo": "Concluso l'esame da parte della Commissione. In stato di relazione",
+"data": "20240724"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_88870",
+"titolo": "In discussione",
+"data": "20241209"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_89642",
+"titolo": "Approvato definitivamente, non ancora pubblicato",
+"data": "20250326"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_89818",
+"titolo": "Approvato definitivamente. Legge",
+"data": "20250401"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_80636",
+"titolo": "Da assegnare",
+"data": "20221013"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"stato": "http://dati.camera.it/ocd/statoIter.rdf/si19_82599",
+"titolo": "Assegnato",
+"data": "20230310"
+}
+],
+"assegnazioni": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"assegnazione": "http://dati.camera.it/ocd/assegnazione.rdf/a19_41741",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3512",
+"sede": "Referente",
+"data": "20230310",
+"titolo": "Assegnato  alla XII Commissione Affari sociali in sede Referente il 10 marzo 2023"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"assegnazione": "http://dati.camera.it/ocd/assegnazione.rdf/a19_41858",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3503",
+"sede": "Referente",
+"data": "20230405",
+"titolo": "Assegnato  alla III Commissione Affari Esteri in sede Referente il 5 aprile 2023"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"assegnazione": "http://dati.camera.it/ocd/assegnazione.rdf/a19_42194",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3512",
+"sede": "Referente",
+"data": "20230717",
+"titolo": "Assegnato  alla XII Commissione Affari sociali in sede Referente il 17 luglio 2023"
+}
+],
+"relatori": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"relatore": "http://dati.camera.it/ocd/relatore.rdf/rel19_13234",
+"titolo": "CALOVINI Giangiacomo"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"relatore": "http://dati.camera.it/ocd/relatore.rdf/rel19_8478",
+"titolo": "FORMENTINI Paolo, relatore per la maggioranza",
+"tipo": "maggioranza"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"relatore": "http://dati.camera.it/ocd/relatore.rdf/rel19_13804",
+"titolo": "PANIZZUT Massimiliano"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"relatore": "http://dati.camera.it/ocd/relatore.rdf/rel19_9298",
+"titolo": "PANIZZUT Massimiliano"
+}
+],
+"abbinamenti": [],
+"trasmissioni": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"trasmissione": "http://dati.camera.it/ocd/trasmissione.rdf/tr19_5202",
+"titolo": "Disegno di legge (S. 872) Trasmesso dalla Camera il 14 settembre 2023",
+"data": "20230914",
+"provenienza": "Camera"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"trasmissione": "http://dati.camera.it/ocd/trasmissione.rdf/tr19_12003",
+"titolo": "Disegno di legge C. 1305 Trasmesso dal Senato il 13 luglio 2023",
+"data": "20230713",
+"provenienza": "Senato"
+}
+],
+"versioni": [
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"versione": "http://dati.camera.it/ocd/versioneTestoAtto.rdf/vta19_leg.19.pdl.camera.1001.19PDL0029920",
+"titolo": "Disegno di Legge presentato il 15 marzo 2023",
+"data": "20230315",
+"url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=testo_pdl&idlegislatura=19&codice=leg.19.pdl.camera.1001.19PDL0029920"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1001",
+"versione": "http://dati.camera.it/ocd/versioneTestoAtto.rdf/vta19_leg.19.pdl.camera.1001_A.19PDL0046130",
+"titolo": "Richiesta autorizzazione a riferire oralmente il 5 luglio 2023",
+"data": "20230705",
+"url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=testo_pdl&idlegislatura=19&codice=leg.19.pdl.camera.1001_A.19PDL0046130"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_1305",
+"versione": "http://dati.camera.it/ocd/versioneTestoAtto.rdf/vta19_leg.19.pdl.camera.1305.19PDL0045180",
+"titolo": "Disegno di legge trasmesso dal Senato il 13 luglio 2023",
+"data": "20230713",
+"url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=testo_pdl&idlegislatura=19&codice=leg.19.pdl.camera.1305.19PDL0045180"
+},
+{
+"atto": "http://dati.camera.it/ocd/attocamera.rdf/ac19_151",
+"versione": "http://dati.camera.it/ocd/versioneTestoAtto.rdf/vta19_leg.19.pdl.camera.151.19PDL0003510",
+"titolo": "Disegno di Legge presentato il 13 ottobre 2022",
+"data": "20221013",
+"url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=testo_pdl&idlegislatura=19&codice=leg.19.pdl.camera.151.19PDL0003510"
+}
+]
+}

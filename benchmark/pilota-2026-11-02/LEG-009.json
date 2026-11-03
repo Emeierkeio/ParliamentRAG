@@ -1,0 +1,40 @@
+{
+ "id": "LEG-009",
+ "domanda": "Quante leggi sono state approvate definitivamente nella XIX legislatura finora, distinte fra iniziativa governativa e parlamentare?",
+ "categoria": "statistiche",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "La stessa legge compare in entrambi i rami: deduplicare per law_number e law_date. Al Senato initiative è testo grezzo («Gov. Meloni-I: …», «Sen. …») e va ricondotto a governo o parlamento.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso ricavare un numero affidabile di **leggi definitivamente approvate distinte per iniziativa governativa o parlamentare** dai dati disponibili: il conteggio delle votazioni finali non coincide con quello delle leggi, perché lo stesso provvedimento può essere votato in entrambe le Camere e avere più passaggi.\n\nFino all’ultima seduta registrata, il **28 ottobre 2026**, risultano **670 votazioni finali**: **407 alla Camera** e **263 al Senato**. Sono votazioni su provvedimenti, non un conteggio di leggi né una classificazione per iniziativa. Per esempio, è disponibile la [votazione finale della Camera del 28 ottobre 2026](#/strumenti/voto/camera_leg19_sed735_v017)\n\nPer la ripartizione richiesta servirebbe un elenco completo e deduplicato delle leggi promulgate nella XIX legislatura, con l’indicazione dell’iniziativa del disegno/proposta di legge originario; questa classificazione aggregata non è presente nei dati qui consultabili.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "votazioni_per_tipo",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 17.0,
+ "riferimento": {
+  "risposta": "Nella XIX, fino al 2/11/2026, le leggi approvate definitivamente e pubblicate sono 366 (363 ordinarie, 3 costituzionali), contate una volta sola anche se l'atto compare in tutti e due i rami. Iniziativa governativa: 274 (125 conversioni di decreti-legge, 148 altri disegni di legge, 1 legge costituzionale). Iniziativa parlamentare: 87 (86 ordinarie, 1 costituzionale). Altre: 3 miste (2 testi unificati con atti del governo e parlamentari, 1 con un atto del CNEL), 1 popolare, 1 costituzionale regionale (Statuto del Friuli-Venezia Giulia, L. cost. 1/2026).",
+  "stato": "calcolata",
+  "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. Non sono contati i ddl approvati in via definitiva ma non ancora pubblicati (senza law_number)."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 17.0
+ },
+ "causa_probabile": "dati",
+ "note": "Non risponde; dà 670 votazioni finali, che non sono leggi. Riferimento: 366 leggi, governative 274, parlamentari 87."
+}

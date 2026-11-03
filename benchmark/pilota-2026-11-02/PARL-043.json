@@ -1,0 +1,62 @@
+{
+ "id": "PARL-043",
+ "domanda": "Quali membri del Governo sono anche deputati, e quante votazioni hanno fatto in questa legislatura?",
+ "categoria": "governo",
+ "ramo": "camera",
+ "tipo_risposta": "classifica",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Missioni da incarico di governo: non sono assenze.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Alla Camera risultano **20 componenti del Governo anche deputati**. Hanno partecipato alle seguenti votazioni dell’Assemblea, su dati aggiornati al **19 ottobre 2026**:\n\n- Presidente del Consiglio e ministri: [Giorgia Meloni](#/strumenti/deputato/302103) **14**; [Antonio Tajani](#/strumenti/deputato/308838) **361**; [Giancarlo Giorgetti](#/strumenti/deputato/50115) **128**; [Carlo Nordio](#/strumenti/deputato/308798) **490**; [Francesco Lollobrigida](#/strumenti/deputato/307463) **154**; [Gilberto Pichetto Fratin](#/strumenti/deputato/303089) **591**; [Tommaso Foti](#/strumenti/deputato/50204) **7.588**; [Gianmarco Mazzi](#/strumenti/deputato/308860) **2.593**.\n- Viceministri: [Maria Teresa Bellucci](#/strumenti/deputato/307426) **1.226**; [Maurizio Leo](#/strumenti/deputato/300444) **1.328**; [Edoardo Rixi](#/strumenti/deputato/304521) **396**; [Edmondo Cirielli](#/strumenti/deputato/300319) **631**; [Vannia Gava](#/strumenti/deputato/307138) **1.240**.\n- Sottosegretari: [Andrea Delmastro Delle Vedove](#/strumenti/deputato/307479) **3.630**; [Federico Freni](#/strumenti/deputato/308837) **396**; [Marcello Gemmato](#/strumenti/deputato/307332) **1.900**; [Nicola Molteni](#/strumenti/deputato/302762) **1.295**; [Emanuele Prisco](#/strumenti/deputato/307452) **1.702**; [Paola Frassinetti](#/strumenti/deputato/301457) **2.864**; [Tullio Ferrante](#/strumenti/deputato/308876) **6.851**.\n\nIl numero è la somma di voti favorevoli, contrari e astensioni registrati nelle votazioni nominali della Camera; il totale delle votazioni considerate è quasi sempre **19.968** (per alcuni deputati 19.967).",
+ "eventi": {
+  "status": 1,
+  "tool": 48,
+  "dati": 24,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "parlamentari",
+  "parlamentari",
+  "parlamentari",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare",
+  "scheda_parlamentare"
+ ],
+ "errori": [],
+ "tempo_s": 28.4,
+ "riferimento": {
+  "risposta": "29 deputati hanno avuto un incarico nel Governo Meloni durante il mandato (24 lo hanno ancora). Votazioni a cui hanno partecipato nella XIX, sulle 20.260 della Camera: Montaruli 17.404 (sottosegretaria solo all'inizio), Foti 7.618, Barelli 7.288, Ferrante 7.038, Delmastro delle Vedove 3.939, Siracusano 3.639, Frassinetti 2.911, Mazzi 2.631, Albano 2.552, Gemmato 2.070, Bignami 1.910, Ferro 1.852, Prisco 1.730, Bitonci 1.522, Leo 1.363, Molteni 1.312, Gava 1.283, Bellucci 1.271, Roccella 693, Cirielli 666, Pichetto Fratin 631, Nordio 524, Fitto 432, Rixi 411, Freni 403, Tajani 375, Lollobrigida 161, Giorgetti 134, Meloni 17. Per quasi tutti la gran parte delle altre votazioni risulta in missione (es. Meloni 19.829, Giorgetti 19.959), che non è assenza.",
+  "stato": "calcolata",
+  "limiti": "Membri del governo = persone con un incarico (office) nel Governo Meloni (it:gov:202) che si sovrappone a un mandato da deputato nella XIX. Le votazioni contate sono tutte quelle della legislatura, anche fuori dal periodo dell'incarico (es. Montaruli, Barelli, Foti ministro dal 2/12/2024). «Ha votato» = favorevole, contrario, astenuto o voto segreto. Bitonci e Fitto hanno meno schede perché il mandato è finito prima."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 28.4
+ },
+ "causa_probabile": "dati",
+ "note": "Elenca 20 membri del governo deputati; il riferimento ne ha 29 (mancano fra gli altri Montaruli, Barelli, Siracusano, Bignami, Roccella, Fitto, Albano, Ferro, Bitonci). I numeri sono vicini ma vecchi (Meloni 14 contro 17, Foti 7.588 contro 7.618). Non spiega che le altre votazioni sono missioni."
+}

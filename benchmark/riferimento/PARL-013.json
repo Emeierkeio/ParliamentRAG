@@ -1,0 +1,457 @@
+{
+ "id": "PARL-013",
+ "domanda": "Elenco delle interrogazioni a risposta scritta dell'on. Francesco Emilio Borrelli ancora senza risposta, divise per ministero.",
+ "sql": [
+  "-- per ministero destinatario (un'interrogazione rivolta a più ministeri conta in ciascuno)\nSELECT coalesce(m.name, '(destinatario non indicato)') AS ministero, count(DISTINCT a.uri) AS interrogazioni\nFROM act a\nJOIN act_sponsor sp ON sp.act = a.uri AND sp.first\nLEFT JOIN act_addressee ad ON ad.act = a.uri\nLEFT JOIN ministry m ON m.uri = ad.ministry\nWHERE sp.person = 'it:person:camera:308857'   -- Francesco Emilio Borrelli\n  AND a.kind = 'written_question' AND a.legislature = 19\n  AND coalesce(a.concluded, false) = false\nGROUP BY 1 ORDER BY 2 DESC, 1",
+  "-- elenco delle interrogazioni (più recenti prima)\nSELECT a.number, a.date, left(a.title, 140) AS titolo,\n       string_agg(m.name, '; ' ORDER BY m.name) AS ministeri, a.card_url\nFROM act a\nJOIN act_sponsor sp ON sp.act = a.uri AND sp.first\nLEFT JOIN act_addressee ad ON ad.act = a.uri\nLEFT JOIN ministry m ON m.uri = ad.ministry\nWHERE sp.person = 'it:person:camera:308857'\n  AND a.kind = 'written_question' AND a.legislature = 19\n  AND coalesce(a.concluded, false) = false\nGROUP BY a.uri, a.number, a.date, a.title, a.card_url\nORDER BY a.date DESC, a.number DESC"
+ ],
+ "risultato": {
+  "per_ministero": [
+   {
+    "ministero": "Ministero dell'Interno",
+    "interrogazioni": 27
+   },
+   {
+    "ministero": "Ministero della Salute",
+    "interrogazioni": 20
+   },
+   {
+    "ministero": "Ministero delle Infrastrutture e dei Trasporti",
+    "interrogazioni": 17
+   },
+   {
+    "ministero": "Ministero dell'Ambiente e della Sicurezza Energetica",
+    "interrogazioni": 16
+   },
+   {
+    "ministero": "Ministero della Cultura",
+    "interrogazioni": 12
+   },
+   {
+    "ministero": "Ministero dell'Economia e delle Finanze",
+    "interrogazioni": 11
+   },
+   {
+    "ministero": "Ministero dell'Istruzione e del Merito",
+    "interrogazioni": 10
+   },
+   {
+    "ministero": "Ministero del Lavoro e delle Politiche Sociali",
+    "interrogazioni": 8
+   },
+   {
+    "ministero": "(destinatario non indicato)",
+    "interrogazioni": 7
+   },
+   {
+    "ministero": "Ministero dell'Universita' e della Ricerca",
+    "interrogazioni": 7
+   },
+   {
+    "ministero": "Ministero delle Imprese e del Made in Italy",
+    "interrogazioni": 5
+   },
+   {
+    "ministero": "Sport e Giovani",
+    "interrogazioni": 4
+   },
+   {
+    "ministero": "Ministero della Difesa",
+    "interrogazioni": 3
+   },
+   {
+    "ministero": "Ministero della Giustizia",
+    "interrogazioni": 2
+   },
+   {
+    "ministero": "Ministero del Turismo",
+    "interrogazioni": 2
+   },
+   {
+    "ministero": "Presidenza del Consiglio dei Ministri",
+    "interrogazioni": 2
+   },
+   {
+    "ministero": "Affari Europei, il Sud, le Politiche di Coesione e il Pnrr",
+    "interrogazioni": 1
+   },
+   {
+    "ministero": "Disabilita'",
+    "interrogazioni": 1
+   },
+   {
+    "ministero": "Protezione Civile e le Politiche del Mare",
+    "interrogazioni": 1
+   }
+  ],
+  "elenco": {
+   "righe": [
+    {
+     "number": "4/09436",
+     "date": "2026-10-26",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/09436 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 26/10/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/09436"
+    },
+    {
+     "number": "4/09379",
+     "date": "2026-10-20",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/09379 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 20/10/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/09379"
+    },
+    {
+     "number": "4/09289",
+     "date": "2026-10-09",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/09289 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 09/10/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/09289"
+    },
+    {
+     "number": "4/09053",
+     "date": "2026-09-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/09053 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/09/2026",
+     "ministeri": "Ministero della Cultura",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/09053"
+    },
+    {
+     "number": "4/09033",
+     "date": "2026-09-28",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/09033 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 28/09/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica; Ministero della Salute; Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/09033"
+    },
+    {
+     "number": "4/08952",
+     "date": "2026-09-18",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08952 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 18/09/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08952"
+    },
+    {
+     "number": "4/08898",
+     "date": "2026-09-14",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08898 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 14/09/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08898"
+    },
+    {
+     "number": "4/08859",
+     "date": "2026-09-09",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08859 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 09/09/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti; Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08859"
+    },
+    {
+     "number": "4/08752",
+     "date": "2026-08-06",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08752 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 06/08/2026",
+     "ministeri": "Ministero della Salute",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08752"
+    },
+    {
+     "number": "4/08740",
+     "date": "2026-08-05",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08740 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 05/08/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08740"
+    },
+    {
+     "number": "4/08686",
+     "date": "2026-07-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08686 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/07/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica; Ministero della Salute",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08686"
+    },
+    {
+     "number": "4/08631",
+     "date": "2026-07-24",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08631 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 24/07/2026",
+     "ministeri": "Ministero dell'Economia e delle Finanze; Ministero delle Imprese e del Made in Italy",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08631"
+    },
+    {
+     "number": "4/08616",
+     "date": "2026-07-23",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08616 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 23/07/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08616"
+    },
+    {
+     "number": "4/08602",
+     "date": "2026-07-22",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08602 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 22/07/2026",
+     "ministeri": "Ministero della Giustizia",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08602"
+    },
+    {
+     "number": "4/08599",
+     "date": "2026-07-22",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08599 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 22/07/2026",
+     "ministeri": "Ministero dell'Universita' e della Ricerca",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08599"
+    },
+    {
+     "number": "4/08575",
+     "date": "2026-07-21",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08575 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 21/07/2026",
+     "ministeri": "Ministero della Difesa; Ministero dell'Ambiente e della Sicurezza Energetica; Ministero della Salute; Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08575"
+    },
+    {
+     "number": "4/08555",
+     "date": "2026-07-17",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08555 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 17/07/2026",
+     "ministeri": "Ministero della Cultura",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08555"
+    },
+    {
+     "number": "4/08449",
+     "date": "2026-07-08",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08449 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 08/07/2026",
+     "ministeri": "Ministero della Cultura",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08449"
+    },
+    {
+     "number": "4/08428",
+     "date": "2026-07-07",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08428 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 07/07/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08428"
+    },
+    {
+     "number": "4/08389",
+     "date": "2026-07-03",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08389 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 03/07/2026",
+     "ministeri": "Ministero della Salute",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08389"
+    },
+    {
+     "number": "4/08207",
+     "date": "2026-06-15",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08207 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 15/06/2026",
+     "ministeri": "Ministero dell'Universita' e della Ricerca",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08207"
+    },
+    {
+     "number": "4/08202",
+     "date": "2026-06-12",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08202 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 12/06/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08202"
+    },
+    {
+     "number": "4/08123",
+     "date": "2026-06-09",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08123 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 09/06/2026",
+     "ministeri": "Ministero della Giustizia",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08123"
+    },
+    {
+     "number": "4/08075",
+     "date": "2026-06-03",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08075 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 03/06/2026",
+     "ministeri": "Ministero dell'Economia e delle Finanze; Protezione Civile e le Politiche del Mare",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08075"
+    },
+    {
+     "number": "4/08063",
+     "date": "2026-06-03",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08063 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 03/06/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08063"
+    },
+    {
+     "number": "4/08028",
+     "date": "2026-05-26",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/08028 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 26/05/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/08028"
+    },
+    {
+     "number": "4/07975",
+     "date": "2026-05-20",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07975 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 20/05/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07975"
+    },
+    {
+     "number": "4/07920",
+     "date": "2026-05-14",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07920 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 14/05/2026",
+     "ministeri": "Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07920"
+    },
+    {
+     "number": "4/07774",
+     "date": "2026-04-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07774 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/04/2026",
+     "ministeri": "Ministero dell'Universita' e della Ricerca",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07774"
+    },
+    {
+     "number": "4/07762",
+     "date": "2026-04-29",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07762 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 29/04/2026",
+     "ministeri": "Ministero della Difesa; Ministero dell'Economia e delle Finanze; Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07762"
+    },
+    {
+     "number": "4/07722",
+     "date": "2026-04-27",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07722 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 27/04/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07722"
+    },
+    {
+     "number": "4/07562",
+     "date": "2026-04-13",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07562 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 13/04/2026",
+     "ministeri": "Ministero dell'Istruzione e del Merito; Ministero dell'Universita' e della Ricerca",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07562"
+    },
+    {
+     "number": "4/07525",
+     "date": "2026-04-08",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07525 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 08/04/2026",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica; Ministero della Salute; Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07525"
+    },
+    {
+     "number": "4/07524",
+     "date": "2026-04-08",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07524 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 08/04/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07524"
+    },
+    {
+     "number": "4/07105",
+     "date": "2026-02-23",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07105 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 23/02/2026",
+     "ministeri": "Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07105"
+    },
+    {
+     "number": "4/07033",
+     "date": "2026-02-13",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/07033 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 13/02/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/07033"
+    },
+    {
+     "number": "4/06909",
+     "date": "2026-01-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06909 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/01/2026",
+     "ministeri": "Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06909"
+    },
+    {
+     "number": "4/06835",
+     "date": "2026-01-23",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06835 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 23/01/2026",
+     "ministeri": "Ministero dell'Interno; Presidenza del Consiglio dei Ministri",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06835"
+    },
+    {
+     "number": "4/06810",
+     "date": "2026-01-20",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06810 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 20/01/2026",
+     "ministeri": null,
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06810"
+    },
+    {
+     "number": "4/06773",
+     "date": "2026-01-15",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06773 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 15/01/2026",
+     "ministeri": "Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06773"
+    },
+    {
+     "number": "4/06718",
+     "date": "2026-01-13",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06718 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 13/01/2026",
+     "ministeri": "Ministero della Salute; Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06718"
+    },
+    {
+     "number": "4/06694",
+     "date": "2025-12-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06694 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/12/2025",
+     "ministeri": "Ministero dell'Universita' e della Ricerca",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06694"
+    },
+    {
+     "number": "4/06583",
+     "date": "2025-12-12",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06583 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 12/12/2025",
+     "ministeri": "Ministero dell'Interno",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06583"
+    },
+    {
+     "number": "4/06555",
+     "date": "2025-12-10",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06555 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 10/12/2025",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica; Ministero della Salute",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06555"
+    },
+    {
+     "number": "4/06399",
+     "date": "2025-11-19",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06399 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 19/11/2025",
+     "ministeri": "Ministero dell'Economia e delle Finanze; Ministero dell'Istruzione e del Merito",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06399"
+    },
+    {
+     "number": "4/06348",
+     "date": "2025-11-14",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06348 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 14/11/2025",
+     "ministeri": "Ministero della Cultura",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06348"
+    },
+    {
+     "number": "4/06340",
+     "date": "2025-11-13",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06340 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 13/11/2025",
+     "ministeri": "Ministero del Lavoro e delle Politiche Sociali",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06340"
+    },
+    {
+     "number": "4/06241",
+     "date": "2025-10-30",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06241 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 30/10/2025",
+     "ministeri": "Ministero delle Imprese e del Made in Italy; Ministero delle Infrastrutture e dei Trasporti",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06241"
+    },
+    {
+     "number": "4/06054",
+     "date": "2025-10-02",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/06054 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 02/10/2025",
+     "ministeri": "Ministero dell'Ambiente e della Sicurezza Energetica; Ministero delle Imprese e del Made in Italy",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/06054"
+    },
+    {
+     "number": "4/05971",
+     "date": "2025-09-23",
+     "titolo": "INTERROGAZIONE A RISPOSTA SCRITTA 4/05971 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 23/09/2025",
+     "ministeri": "Ministero della Salute",
+     "card_url": "http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/05971"
+    }
+   ],
+   "righe_totali": 113
+  }
+ },
+ "risposta": "Francesco Emilio Borrelli (AVS) ha presentato a prima firma 132 interrogazioni a risposta scritta; 113 risultano con iter non concluso (19 concluse). Per ministero destinatario: Interno 27, Salute 20, Infrastrutture e Trasporti 17, Ambiente e Sicurezza energetica 16, Cultura 12, Economia e Finanze 11, Istruzione e Merito 10, Lavoro 8, Università e Ricerca 7, Imprese e Made in Italy 5, Sport e Giovani 4, Difesa 3, Giustizia 2, Turismo 2, Presidenza del Consiglio 2, Affari europei-Sud-PNRR 1, Disabilità 1, Protezione civile e Politiche del mare 1; 7 senza destinatario nei dati (fra cui le più recenti, 4/09436 del 26/10/2026, 4/09379 e 4/09289). Una interrogazione rivolta a più ministeri conta in ciascuno.",
+ "stato": "parziale",
+ "limiti": "«Senza risposta» è approssimato con act.concluded = false: il database non dice se una risposta scritta è stata pubblicata, né la data o il testo della risposta. L'elenco completo (113 righe) è nella seconda query; il titolo dell'atto è generico e non riporta l'oggetto.",
+ "problemi_dati": [
+  {
+   "problema": "act.title delle 13.007 interrogazioni a risposta scritta è generico («INTERROGAZIONE A RISPOSTA SCRITTA 4/09436 presentata da …»), senza oggetto; act.status è NULL per tutte.",
+   "sql": "SELECT count(*), count(status) FROM act WHERE kind='written_question' AND title ~ '^INTERROGAZIONE A RISPOSTA SCRITTA'"
+  },
+  {
+   "problema": "783 interrogazioni a risposta scritta non hanno destinatario in act_addressee (581 Camera, 202 Senato).",
+   "sql": "SELECT a.chamber, count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM act_addressee x WHERE x.act=a.uri)) senza FROM act a WHERE kind='written_question' GROUP BY 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,91 @@
+{
+ "id": "AULA-025",
+ "domanda": "Nel voto di fiducia sul decreto giustizia (S. 1939) del 30 luglio 2026 al Senato, quali senatori di maggioranza non hanno partecipato al voto o hanno votato contro?",
+ "sql": [
+  "-- senatori dei gruppi di maggioranza in carica il 30/7/2026 e loro comportamento nella fiducia sul DDL 1939\n-- (chi non ha riga in ballot non ha partecipato; «mission» = in congedo o missione, non assente)\nWITH v AS (SELECT 'it:senato:19:sed0444:v001'::text AS uri, date '2026-07-30' AS d),\nsen AS (\n  SELECT m.person, g.short_name AS gruppo\n  FROM mandate md\n  JOIN membership m ON m.person = md.person\n  JOIN grp g ON g.uri = m.grp AND g.chamber = 'senato'\n  CROSS JOIN v\n  WHERE md.chamber = 'senato' AND md.legislature = 19\n    AND md.start_date <= v.d AND (md.end_date IS NULL OR md.end_date >= v.d)\n    AND m.start_date <= v.d AND (m.end_date IS NULL OR m.end_date >= v.d)\n    AND g.uri IN ('it:senato:19:group:85','it:senato:19:group:33','it:senato:19:group:56','it:senato:19:group:92')\n)\nSELECT sen.gruppo, p.family_name || ' ' || p.given_name AS senatore, sen.person,\n       coalesce(b.result, 'nessuna riga (non partecipa al voto)') AS esito,\n       (SELECT string_agg(o.title || ' ' || coalesce(b2.name, o.target), '; ') FROM office o LEFT JOIN body b2 ON b2.uri = o.target\n         WHERE o.person = sen.person AND o.start_date <= v.d AND (o.end_date IS NULL OR o.end_date >= v.d)\n           AND o.title IN ('chair','minister','vice_minister','undersecretary','prime_minister','deputy_prime_minister','minister_without_portfolio')) AS cariche\nFROM sen CROSS JOIN v\nJOIN person p ON p.uri = sen.person\nLEFT JOIN ballot b ON b.vote = v.uri AND b.person = sen.person\nWHERE b.person IS NULL OR b.result NOT IN ('favor','mission')\nORDER BY sen.gruppo, senatore",
+  "-- riepilogo per gruppo di maggioranza (gruppo del ballot)\nSELECT g.short_name AS gruppo, b.result, count(*) AS senatori\nFROM ballot b JOIN grp g ON g.uri = b.grp\nWHERE b.vote = 'it:senato:19:sed0444:v001'\n  AND b.grp IN ('it:senato:19:group:85','it:senato:19:group:33','it:senato:19:group:56','it:senato:19:group:92')\nGROUP BY 1,2 ORDER BY 1,2",
+  "-- chi presiedeva al momento della votazione\nSELECT sp.uri, sp.person, p.given_name || ' ' || p.family_name AS presidente_di_turno, left(sp.text, 120) AS testo\nFROM speech sp JOIN agenda_item ai ON ai.uri = sp.item JOIN person p ON p.uri = sp.person\nWHERE ai.sitting = 'it:senato:19:sed0444' AND sp.as_office = 'PRESIDENTE' AND sp.text LIKE 'Indìco la votazione dell''articolo unico del disegno di legge n. 1939%'"
+ ],
+ "risultato": {
+  "maggioranza_non_favorevoli": [
+   {
+    "gruppo": "FdI",
+    "senatore": "La Russa Ignazio",
+    "person": "it:person:senato:1275",
+    "esito": "nessuna riga (non partecipa al voto)",
+    "cariche": "chair Giunta per il Regolamento"
+   },
+   {
+    "gruppo": "LSP-PSd'Az",
+    "senatore": "Centinaio Gian Marco",
+    "person": "it:person:senato:29067",
+    "esito": "nessuna riga (non partecipa al voto)",
+    "cariche": null
+   }
+  ],
+  "riepilogo_per_gruppo": [
+   {
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "result": "favor",
+    "senatori": 7
+   },
+   {
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "result": "mission",
+    "senatori": 1
+   },
+   {
+    "gruppo": "FdI",
+    "result": "favor",
+    "senatori": 51
+   },
+   {
+    "gruppo": "FdI",
+    "result": "mission",
+    "senatori": 11
+   },
+   {
+    "gruppo": "FI-BP-PPE",
+    "result": "favor",
+    "senatori": 14
+   },
+   {
+    "gruppo": "FI-BP-PPE",
+    "result": "mission",
+    "senatori": 6
+   },
+   {
+    "gruppo": "LSP-PSd'Az",
+    "result": "favor",
+    "senatori": 20
+   },
+   {
+    "gruppo": "LSP-PSd'Az",
+    "result": "mission",
+    "senatori": 8
+   }
+  ],
+  "presidente_di_turno": [
+   {
+    "uri": "it:senato:19:sed0444:int00043",
+    "person": "it:person:senato:29067",
+    "presidente_di_turno": "Gian Marco Centinaio",
+    "testo": "Indìco la votazione dell'articolo unico del disegno di legge n. 1939, di conversione in legge del decreto-legge 12 giugn"
+   }
+  ]
+ },
+ "risposta": "Nella votazione di fiducia del 30/7/2026 sull'articolo unico del DDL S. 1939 (conversione del DL 100/2026), approvata con 92 sì e 63 no, nessun senatore dei gruppi di maggioranza (FdI, Lega, FI, Civici d'Italia-NM) ha votato contro. Dei 120 senatori di maggioranza in carica, 92 hanno votato sì e 26 erano in congedo o missione (FdI 11, Lega 8, FI 6, Civici d'Italia-NM 1: non sono assenze). Due non hanno partecipato al voto: Gian Marco Centinaio (Lega), che presiedeva la seduta in quel momento, e Ignazio La Russa (FdI), senza riga nei voti individuali.",
+ "stato": "calcolata",
+ "limiti": "Gli assenti si ricavano per differenza: senatori con mandato in corso il 30/7/2026 e gruppo di maggioranza a quella data, senza riga in ballot. Maggioranza = FdI, LSP-PSd'Az, FI-BP-PPE, Cd'I-UDC-NM-MAIE-CP (regola dichiarata, non un dato); i senatori del Misto non sono considerati perché al Senato il Misto non è diviso per componente. Il database non registra le cariche di Presidente e vicepresidente del Senato: il presidente di turno si ricava dal resoconto (chi indice la votazione).",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato vote.presided_by è sempre NULL (0 su 8.410 voti) e office non ha le cariche di Presidente e vicepresidenti del Senato (La Russa risulta solo presidente della Giunta per il Regolamento).",
+   "sql": "SELECT chamber, count(*), count(presided_by) FROM vote GROUP BY 1"
+  },
+  {
+   "problema": "Al Senato membership non ha le componenti del Misto: 8 senatori nel Misto il 30/7/2026 senza componente, mentre i resoconti usano «Misto-AVS» e «Misto-Az-RE».",
+   "sql": "SELECT g.short_name, g.kind, count(DISTINCT m.person) FROM membership m JOIN grp g ON g.uri=m.grp WHERE g.chamber='senato' AND m.start_date <= '2026-07-30' AND (m.end_date IS NULL OR m.end_date >= '2026-07-30') GROUP BY 1,2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

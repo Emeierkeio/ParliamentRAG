@@ -1,0 +1,40 @@
+{
+ "id": "RIC-017",
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "categoria": "reazioni",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "speech.as_office distingue chi parla come membro del governo. Al Senato i membri del governo hanno id propri legati con person_same_as.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso dare un numero affidabile: i resoconti stenografici registrano reazioni come “Commenti” o “Proteste”, ma i dati disponibili non hanno un conteggio aggregato di queste annotazioni né una classificazione automatica che separi tutti gli interventi dei ministri da quelli dei deputati e senatori.\n\nPer calcolarlo occorrerebbe analizzare integralmente i resoconti d’Aula della XIX legislatura, individuare le annotazioni di reazione e associare ogni intervento al ruolo dell’oratore. I singoli resoconti ufficiali restano consultabili, ad esempio nella seduta della Camera del 12 novembre 2025.",
+ "eventi": {
+  "status": 2,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 21.2,
+ "riferimento": {
+  "risposta": "Camera, Aula XIX: i membri del governo hanno 7.281 interventi con 82 proteste e 447 commenti (1,13 proteste e 6,14 commenti ogni 100 interventi; 2,31 fra proteste e commenti ogni 10.000 parole); i deputati 47.530 interventi con 719 proteste e 2.579 commenti (1,51 e 5,43 ogni 100 interventi; 1,69 ogni 10.000 parole). Per parola il governo riceve più reazioni dei deputati, per intervento un po' meno proteste e più commenti. Senato: governo 2.855 interventi, 0 proteste e 88 commenti (3,08 commenti ogni 100 interventi; 0,90 ogni 10.000 parole); senatori 29.862 interventi, 44 proteste e 960 commenti (0,15 e 3,21 ogni 100; 1,04 ogni 10.000 parole). Al Senato gli interventi del governo ricevono meno reazioni di quelli dei senatori.",
+  "stato": "calcolata",
+  "limiti": "Solo sedute d'Aula (body it:camera:19:aula e it:senato:19:aula). Governo: al Senato speech.as_office con ministro, viceministro, sottosegretario o presidente del Consiglio; alla Camera as_office è vuoto per tutti, quindi governo = oratore senza gruppo dichiarato che alla data ha un incarico in office con target it:gov:*. Presidenti di turno ed altri esclusi dal confronto (riga «altro»). Le reazioni sono quelle che il resoconto registra dentro l'intervento: non si sa sempre se sono rivolte all'oratore. Parole = parole del testo canonico."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 21.2
+ },
+ "causa_probabile": "dati",
+ "note": "Non risponde (riferimento: Camera governo 1,13 proteste e 6,14 commenti ogni 100 interventi, deputati 1,51 e 5,43). Le reazioni ci sono nel DB ma l'agente non ha uno strumento per contarle."
+}

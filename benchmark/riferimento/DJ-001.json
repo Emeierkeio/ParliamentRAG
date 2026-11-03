@@ -1,0 +1,369 @@
+{
+  "id": "DJ-001",
+  "domanda": "Classifica dei deputati con più assenze nelle votazioni della XIX, escluse le missioni.",
+  "sql": [
+    "WITH c AS (\n  SELECT b.person, count(*) AS votazioni,\n         count(*) FILTER (WHERE b.result = 'absent') AS assenze,\n         count(*) FILTER (WHERE b.result = 'mission') AS missioni,\n         count(*) FILTER (WHERE b.result = 'chair') AS presiede\n  FROM ballot b WHERE b.vote LIKE 'it:camera:19:%'\n  GROUP BY 1)\nSELECT rank() OVER (ORDER BY c.assenze DESC) AS pos,\n       p.given_name || ' ' || p.family_name AS deputato,\n       (SELECT g.short_name FROM membership m JOIN grp g ON g.uri = m.grp WHERE m.person = c.person AND g.chamber = 'camera'\n        ORDER BY (m.end_date IS NULL) DESC, m.start_date DESC, (g.kind = 'misto_component') DESC LIMIT 1) AS gruppo_attuale,\n       c.votazioni, c.assenze, round(100.0 * c.assenze / c.votazioni, 1) AS pct_assenze, c.missioni,\n       EXISTS (SELECT 1 FROM office o WHERE o.person = c.person AND o.target LIKE 'it:gov:202%') AS membro_governo_meloni,\n       (SELECT max(end_date) FROM mandate md WHERE md.person = c.person AND md.chamber = 'camera' AND md.legislature = 19) AS fine_mandato\nFROM c JOIN person p ON p.uri = c.person\nORDER BY c.assenze DESC LIMIT 30",
+    "SELECT p.given_name || ' ' || p.family_name AS deputato, count(*) FILTER (WHERE b.result = 'chair') AS presiede, count(*) FILTER (WHERE b.result = 'absent') AS assenze, count(*) AS votazioni\nFROM ballot b JOIN person p ON p.uri = b.person\nWHERE b.vote LIKE 'it:camera:19:%' AND b.person IN (SELECT person FROM ballot WHERE result = 'chair' AND vote LIKE 'it:camera:19:%' GROUP BY 1 HAVING count(*) > 5000)\nGROUP BY 1"
+  ],
+  "risultato": [
+    [
+      {
+        "pos": 1,
+        "deputato": "Antonio Angelucci",
+        "gruppo_attuale": "LEGA",
+        "votazioni": 20256,
+        "assenze": 20140,
+        "pct_assenze": 99.4,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 2,
+        "deputato": "Marta Antonia Fascina",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20257,
+        "assenze": 17551,
+        "pct_assenze": 86.6,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 3,
+        "deputato": "Umberto Bossi",
+        "gruppo_attuale": "LEGA",
+        "votazioni": 17104,
+        "assenze": 17100,
+        "pct_assenze": 100.0,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": "2026-03-19"
+      },
+      {
+        "pos": 4,
+        "deputato": "Giuseppe Conte",
+        "gruppo_attuale": "M5S",
+        "votazioni": 20257,
+        "assenze": 16988,
+        "pct_assenze": 83.9,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 5,
+        "deputato": "Elena Ethel Schlein",
+        "gruppo_attuale": "PD-IDP",
+        "votazioni": 20257,
+        "assenze": 16587,
+        "pct_assenze": 81.9,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 6,
+        "deputato": "Valeria Carmela Maria Sudano",
+        "gruppo_attuale": "LEGA",
+        "votazioni": 20257,
+        "assenze": 15894,
+        "pct_assenze": 78.5,
+        "missioni": 2062,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 7,
+        "deputato": "Manlio Messina",
+        "gruppo_attuale": "MISTO-SCN",
+        "votazioni": 20257,
+        "assenze": 12547,
+        "pct_assenze": 61.9,
+        "missioni": 1,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 8,
+        "deputato": "Andrea Giorgio Felice Maria Orsini",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20257,
+        "assenze": 11758,
+        "pct_assenze": 58.0,
+        "missioni": 3769,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 9,
+        "deputato": "Franco Tirelli",
+        "gruppo_attuale": "NM(N-C-U-I)M-CP",
+        "votazioni": 20257,
+        "assenze": 11594,
+        "pct_assenze": 57.2,
+        "missioni": 252,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 10,
+        "deputato": "Claudio Mancini",
+        "gruppo_attuale": "PD-IDP",
+        "votazioni": 20257,
+        "assenze": 11026,
+        "pct_assenze": 54.4,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 11,
+        "deputato": "Francesco Bonifazi",
+        "gruppo_attuale": "IV-CR",
+        "votazioni": 20256,
+        "assenze": 11001,
+        "pct_assenze": 54.3,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 12,
+        "deputato": "Francesco Cannizzaro",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 18941,
+        "assenze": 10766,
+        "pct_assenze": 56.8,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": "2026-07-22"
+      },
+      {
+        "pos": 13,
+        "deputato": "Francesco Bruzzone",
+        "gruppo_attuale": "LEGA",
+        "votazioni": 20256,
+        "assenze": 10679,
+        "pct_assenze": 52.7,
+        "missioni": 264,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 14,
+        "deputato": "Carmela Di Lauro",
+        "gruppo_attuale": "M5S",
+        "votazioni": 20257,
+        "assenze": 10335,
+        "pct_assenze": 51.0,
+        "missioni": 202,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 15,
+        "deputato": "Luigi Marattin",
+        "gruppo_attuale": "MISTO",
+        "votazioni": 20257,
+        "assenze": 10322,
+        "pct_assenze": 51.0,
+        "missioni": 175,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 16,
+        "deputato": "Luciano D'Alfonso",
+        "gruppo_attuale": "PD-IDP",
+        "votazioni": 20257,
+        "assenze": 9718,
+        "pct_assenze": 48.0,
+        "missioni": 99,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 17,
+        "deputato": "Cristina Rossello",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20257,
+        "assenze": 9664,
+        "pct_assenze": 47.7,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 18,
+        "deputato": "Emanuele Pozzolo",
+        "gruppo_attuale": "MISTO-FNV-F",
+        "votazioni": 20257,
+        "assenze": 9282,
+        "pct_assenze": 45.8,
+        "missioni": 84,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 19,
+        "deputato": "Paola De Micheli",
+        "gruppo_attuale": "PD-IDP",
+        "votazioni": 20257,
+        "assenze": 9241,
+        "pct_assenze": 45.6,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 20,
+        "deputato": "Maria Rosaria Carfagna",
+        "gruppo_attuale": "NM(N-C-U-I)M-CP",
+        "votazioni": 20256,
+        "assenze": 9233,
+        "pct_assenze": 45.6,
+        "missioni": 2539,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 21,
+        "deputato": "Ilaria Cavo",
+        "gruppo_attuale": "NM(N-C-U-I)M-CP",
+        "votazioni": 20256,
+        "assenze": 9075,
+        "pct_assenze": 44.8,
+        "missioni": 369,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 22,
+        "deputato": "Nicola Fratoianni",
+        "gruppo_attuale": "AVS",
+        "votazioni": 20257,
+        "assenze": 9021,
+        "pct_assenze": 44.5,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 23,
+        "deputato": "Salvatore Marcello Di Mattina",
+        "gruppo_attuale": "LEGA",
+        "votazioni": 20257,
+        "assenze": 8664,
+        "pct_assenze": 42.8,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 24,
+        "deputato": "Andrea Di Giuseppe",
+        "gruppo_attuale": "FDI",
+        "votazioni": 20257,
+        "assenze": 8648,
+        "pct_assenze": 42.7,
+        "missioni": 79,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 25,
+        "deputato": "Giovanni Arruzzolo",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20256,
+        "assenze": 8235,
+        "pct_assenze": 40.7,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 26,
+        "deputato": "Christian Diego Di Sanzo",
+        "gruppo_attuale": "PD-IDP",
+        "votazioni": 20257,
+        "assenze": 8225,
+        "pct_assenze": 40.6,
+        "missioni": 75,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 27,
+        "deputato": "Naike Gruppioni",
+        "gruppo_attuale": "FDI",
+        "votazioni": 20257,
+        "assenze": 8004,
+        "pct_assenze": 39.5,
+        "missioni": 1213,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 28,
+        "deputato": "Michele Gubitosa",
+        "gruppo_attuale": "M5S",
+        "votazioni": 20257,
+        "assenze": 7934,
+        "pct_assenze": 39.2,
+        "missioni": 0,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 29,
+        "deputato": "Francesco Maria Rubano",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20257,
+        "assenze": 7804,
+        "pct_assenze": 38.5,
+        "missioni": 382,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      },
+      {
+        "pos": 30,
+        "deputato": "Luca Squeri",
+        "gruppo_attuale": "FI-PPE",
+        "votazioni": 20257,
+        "assenze": 7752,
+        "pct_assenze": 38.3,
+        "missioni": 179,
+        "membro_governo_meloni": false,
+        "fine_mandato": null
+      }
+    ],
+    [
+      {
+        "deputato": "Anna Ascani",
+        "presiede": 5298,
+        "assenze": 250,
+        "votazioni": 20256
+      },
+      {
+        "deputato": "Giorgio Mule'",
+        "presiede": 5632,
+        "assenze": 546,
+        "votazioni": 20257
+      },
+      {
+        "deputato": "Sergio Costa",
+        "presiede": 5198,
+        "assenze": 1088,
+        "votazioni": 20257
+      }
+    ]
+  ],
+  "risposta": "Deputati con più assenze nelle 20.257 votazioni elettroniche della Camera nella XIX (missioni escluse): 1. Antonio Angelucci (Lega) 20.140 assenze su 20.256 votazioni del suo mandato (99,4%); 2. Marta Antonia Fascina (FI-PPE) 17.551 (86,6%); 3. Umberto Bossi (Lega, mandato finito il 19/3/2026) 17.100 su 17.104 (100,0%); 4. Giuseppe Conte (M5S) 16.988 (83,9%); 5. Elly Schlein (PD-IDP) 16.587 (81,9%); 6. Valeria Sudano (Lega) 15.894 (78,5%); 7. Manlio Messina (Misto-Sud Chiama Nord) 12.547 (61,9%); 8. Andrea Orsini (FI-PPE) 11.758 (58,0%); 9. Franco Tirelli (Noi Moderati) 11.594 (57,2%); 10. Claudio Mancini (PD-IDP) 11.026 (54,4%). Nessuno dei primi 30 è membro del governo Meloni; il Presidente della Camera Lorenzo Fontana non ha schede di voto e non è in classifica. I vicepresidenti Ascani, Mulè e Costa presiedono circa 5.200-5.600 votazioni ciascuno, che non sono contate come assenze.",
+  "stato": "calcolata",
+  "limiti": "Assenza = scheda «Non ha partecipato» (result 'absent'); missione e presidenza della seduta non sono assenze. Il denominatore è il numero di votazioni con una scheda della persona, cioè quelle del suo mandato. Il gruppo indicato è quello attuale o l'ultimo. Le votazioni segrete contano come partecipazione se il deputato ha votato. Elenco dei primi 30 nel risultato.",
+  "problemi_dati": [
+    "government assegna il governo Draghi (it:gov:182, finito il 21/10/2022) alla XIX legislatura: chi filtra le cariche di governo per legislatura trova ministri di Draghi come Carfagna. Query: SELECT uri, name, legislature, end_date FROM government;"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

@@ -1,0 +1,134 @@
+{
+ "id": "DJ-006",
+ "domanda": "Chi sono i deputati che hanno presentato più interrogazioni a risposta scritta?",
+ "sql": [
+  "select p.given_name||' '||p.family_name deputato,\n  (select g.short_name from grp g where g.uri=group_at(s.person, current_date)) gruppo_oggi,\n  count(*) filter (where s.first) primo_firmatario, count(*) filter (where not s.first) cofirmatario\nfrom act a join act_sponsor s on s.act=a.uri join person p on p.uri=s.person\nwhere a.chamber='camera' and a.legislature=19 and a.kind='written_question'\ngroup by s.person, p.given_name, p.family_name\norder by primo_firmatario desc limit 20"
+ ],
+ "risultato": [
+  {
+   "deputato": "Stefania Ascari",
+   "gruppo_oggi": "M5S",
+   "primo_firmatario": 510,
+   "cofirmatario": 70
+  },
+  {
+   "deputato": "Fabrizio Benzoni",
+   "gruppo_oggi": "AZ-PER-RE",
+   "primo_firmatario": 487,
+   "cofirmatario": 27
+  },
+  {
+   "deputato": "Marco Grimaldi",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 340,
+   "cofirmatario": 108
+  },
+  {
+   "deputato": "Devis Dori",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 337,
+   "cofirmatario": 100
+  },
+  {
+   "deputato": "Francesca Ghirra",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 293,
+   "cofirmatario": 101
+  },
+  {
+   "deputato": "Elisabetta Piccolotti",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 216,
+   "cofirmatario": 97
+  },
+  {
+   "deputato": "Pasqua L'Abbate",
+   "gruppo_oggi": "M5S",
+   "primo_firmatario": 213,
+   "cofirmatario": 116
+  },
+  {
+   "deputato": "Luana Zanella",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 191,
+   "cofirmatario": 106
+  },
+  {
+   "deputato": "Emma Pavanelli",
+   "gruppo_oggi": "M5S",
+   "primo_firmatario": 164,
+   "cofirmatario": 143
+  },
+  {
+   "deputato": "Nicola Fratoianni",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 147,
+   "cofirmatario": 80
+  },
+  {
+   "deputato": "Ilenia Malavasi",
+   "gruppo_oggi": "PD-IDP",
+   "primo_firmatario": 141,
+   "cofirmatario": 80
+  },
+  {
+   "deputato": "Francesco Emilio Borrelli",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 132,
+   "cofirmatario": 83
+  },
+  {
+   "deputato": "Irene Manzi",
+   "gruppo_oggi": "PD-IDP",
+   "primo_firmatario": 128,
+   "cofirmatario": 80
+  },
+  {
+   "deputato": "Debora Serracchiani",
+   "gruppo_oggi": "PD-IDP",
+   "primo_firmatario": 127,
+   "cofirmatario": 94
+  },
+  {
+   "deputato": "Filiberto Zaratti",
+   "gruppo_oggi": "AVS",
+   "primo_firmatario": 118,
+   "cofirmatario": 85
+  },
+  {
+   "deputato": "Arturo Scotto",
+   "gruppo_oggi": "PD-IDP",
+   "primo_firmatario": 113,
+   "cofirmatario": 53
+  },
+  {
+   "deputato": "Sergio Costa",
+   "gruppo_oggi": "M5S",
+   "primo_firmatario": 112,
+   "cofirmatario": 67
+  },
+  {
+   "deputato": "Ettore Rosato",
+   "gruppo_oggi": "AZ-PER-RE",
+   "primo_firmatario": 110,
+   "cofirmatario": 5
+  },
+  {
+   "deputato": "Aboubakar Soumahoro",
+   "gruppo_oggi": "MISTO",
+   "primo_firmatario": 104,
+   "cofirmatario": 1
+  },
+  {
+   "deputato": "Ilaria Fontana",
+   "gruppo_oggi": "M5S",
+   "primo_firmatario": 102,
+   "cofirmatario": 167
+  }
+ ],
+ "risposta": "Su 9.503 interrogazioni a risposta scritta della Camera nella XIX, i primi firmatari più attivi sono: Stefania Ascari (M5S) 510, Fabrizio Benzoni (Azione-PER-RE) 487, Marco Grimaldi (AVS) 340, Devis Dori (AVS) 337, Francesca Ghirra (AVS) 293, Elisabetta Piccolotti (AVS) 216, Pasqua L'Abbate (M5S) 213, Luana Zanella (AVS) 191, Emma Pavanelli (M5S) 164, Nicola Fratoianni (AVS) 147. Seguono Malavasi (PD-IDP) 141, Borrelli (AVS) 132, Manzi (PD-IDP) 128, Serracchiani (PD-IDP) 127.",
+ "stato": "calcolata",
+ "limiti": "Classifica per numero di interrogazioni a risposta scritta (act.kind = written_question) come primo firmatario; le cofirme sono in una colonna a parte. Il gruppo è quello alla data di oggi (2/11/2026), non quello alla data di ogni atto.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

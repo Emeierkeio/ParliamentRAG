@@ -1,0 +1,45 @@
+{
+ "id": "DJ-014",
+ "domanda": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+ "categoria": "interventi",
+ "ramo": "entrambi",
+ "tipo_risposta": "linea_del_tempo",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Contare le occorrenze, non gli interventi. Includere tutti i gruppi, anche quelli con zero occorrenze.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso calcolare in modo affidabile quante volte «Gaza» sia stata pronunciata **mese per mese e per gruppo**: i resoconti sono ricercabili, ma i dati disponibili non forniscono il conteggio delle singole occorrenze di una parola nel testo integrale né un’aggregazione automatica per mese e gruppo.\n\nLa ricerca negli interventi d’Aula di Camera e Senato restituisce **1.711 risultati** per «Gaza», ma questo è il numero di risultati indicizzati, non il numero verificabile delle pronunce della parola. Per esempio, il termine compare in interventi della deputata M5S [Vittoria Baldino](https://www.camera.it/leg19/410?idSeduta=0175&tipo=stenografico#sed0175.stenografico.tit00070.sub00010.int00150), della deputata PD-IDP [Valentina Ghio](https://www.camera.it/leg19/410?idSeduta=0449&tipo=stenografico#sed0449.stenografico.tit00050.int00060), del deputato AVS [Nicola Fratoianni](https://www.camera.it/leg19/410?idSeduta=0513&tipo=stenografico#sed0513.stenografico.tit00030.sub00020.int00060) e del senatore PD-IDP [Alessandro Alfieri](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1475138&idoggetto=0&part=doc_dc-ressten_rs-gentit_rddscdmdaeedci-trattazione_ddv-intervento_alfieripdidp), ma non sarebbe corretto trasformare questi risultati in una statistica di occorrenze.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 66.5,
+ "riferimento": {
+  "risposta": "Nei resoconti stenografici d'Aula della XIX la parola «Gaza» ricorre 3.637 volte: 2.715 alla Camera e 922 al Senato. Nessuna occorrenza da ottobre 2022 a settembre 2023; la prima è di ottobre 2023 (144). I mesi con più occorrenze sono ottobre 2025 (445: Camera 255, Senato 190), maggio 2025 (432) e settembre 2025 (322). Per gruppo, Camera: M5S 572, PD-IDP 572, AVS 476, FI-PPE 164, FdI 135, Noi Moderati 93, Azione 75, IV 70 (IV-C-RE 68 + IV-CR 2), Misto senza componente 31, Misto-+Europa 30, Misto-Minoranze linguistiche 8, A-IV-RE 4, Misto-FNV-Free 0; governo e relatori 396, Presidenza 30. Senato: M5S 169, FdI 111, PD-IDP 107, Misto-AVS 77, FI-BP-PPE 66, Lega 40, IV 39, Civici d'Italia-NM 39 (con la denominazione precedente), Per le Autonomie 25, Misto-Azione 14, Az-IV-RE 7, Misto 4; governo e relatori 149, Presidenza 74.",
+  "stato": "calcolata",
+  "limiti": "Conta le occorrenze della parola intera «Gaza» (maiuscole e minuscole indifferenti) negli interventi d'Aula (sitting.kind = assembly_verbatim), dall'inizio della XIX al 30/10/2026 (Camera) e al 28/10/2026 (Senato). Il gruppo è l'etichetta del resoconto (speech.as_group), quindi i gruppi rinominati compaiono con più etichette; una occorrenza al Senato sta in un intervento con etichetta di gruppo non valida ed è esclusa dalla tabella per gruppo (921 su 922). Le righe «senza gruppo» sono Presidenza, membri del governo e relatori."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "na"
+  },
+  "trappola": null,
+  "tempo_s": 66.5
+ },
+ "causa_probabile": "dati",
+ "note": "Non dà conteggi (riferimento: 3.637 occorrenze, 2.715 Camera e 922 Senato, picco ottobre 2025). Lo dice chiaramente e non inventa. Manca uno strumento di conteggio sul testo dei resoconti.",
+ "verifica_citazioni": []
+}

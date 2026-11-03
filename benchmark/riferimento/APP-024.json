@@ -1,0 +1,41 @@
+{
+ "id": "APP-024",
+ "domanda": "Calderone è uscito da Forza Italia? quando",
+ "sql": [
+  "SELECT p.uri, p.given_name || ' ' || p.family_name AS persona, g.name AS gruppo, g.kind, m.start_date AS dal, m.end_date AS al, m.end_reason\nFROM person p JOIN membership m ON m.person = p.uri JOIN grp g ON g.uri = m.grp\nWHERE p.family_name ILIKE 'Calderone' AND g.legislature = 19\nORDER BY p.uri, m.start_date, g.kind"
+ ],
+ "risultato": [
+  {
+   "uri": "it:person:camera:308766",
+   "persona": "Tommaso Antonino Calderone",
+   "gruppo": "Forza Italia - Berlusconi Presidente - PPE",
+   "kind": "group",
+   "dal": "2022-10-18",
+   "al": "2026-09-21",
+   "end_reason": "Cessazione"
+  },
+  {
+   "uri": "it:person:camera:308766",
+   "persona": "Tommaso Antonino Calderone",
+   "gruppo": "Misto",
+   "kind": "group",
+   "dal": "2026-09-21",
+   "al": null,
+   "end_reason": null
+  },
+  {
+   "uri": "it:person:camera:308766",
+   "persona": "Tommaso Antonino Calderone",
+   "gruppo": "Futuro Nazionale Vannacci - Free",
+   "kind": "misto_component",
+   "dal": "2026-09-21",
+   "al": null,
+   "end_reason": null
+  }
+ ],
+ "risposta": "Sì. Il deputato Tommaso Antonino Calderone è stato nel gruppo Forza Italia - Berlusconi Presidente - PPE dal 18/10/2022 al 21/9/2026. Dal 21/9/2026 è nel gruppo Misto, componente Futuro Nazionale Vannacci - Free, e lo è ancora al 2/11/2026. Da non confondere con Marina Elvira Calderone, ministra del Lavoro, che non è deputata.",
+ "stato": "calcolata",
+ "limiti": "Si legge membership alla Camera. La fine in FI-PPE e l'ingresso nel Misto hanno la stessa data (21/9/2026, ultimo giorno incluso), come per gli altri cambi di gruppo.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

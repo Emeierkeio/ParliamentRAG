@@ -1,0 +1,271 @@
+{
+ "id": "AULA-034",
+ "domanda": "Ricostruisci la navetta della legge elettorale: C. 2822, S. 1971, C. 2822-B, con la data di ogni passaggio e l'esito di ogni lettura.",
+ "sql": [
+  "select uri, number, date, status, status_date, law_number, law_date from act where uri in ('it:camera:19:ac:2822','it:senato:19:ddl:1971','it:camera:19:ac:2822-B') order by date",
+  "select distinct other_ref, date, provenance, title from act_transmission where act like 'it:camera:19:ac:2822%' order by date",
+  "select act, ord, date, title from act_step where act in ('it:camera:19:ac:2822','it:camera:19:ac:2822-B') order by act, ord",
+  "select v.uri, v.date, v.kind, v.secret, v.confidence, v.title, v.present, v.voting, v.majority, v.favor, v.against, v.abstain, v.approved\nfrom vote v where v.uri='it:camera:19:sed0691:v001'\n   or v.uri in (select x.vote from vote_act x where x.act in ('it:camera:19:ac:2822','it:camera:19:ac:2822-B','it:senato:19:ddl:1971'))\n     and (v.kind in ('final','preliminary_question') or v.confidence)\norder by v.date, v.uri",
+  "select i.sitting, i.ord, (select string_agg(act_ref,',') from agenda_item_act x where x.item=i.uri) riferimenti,\n (select count(*) from vote_act x join vote v on v.uri=x.vote where v.sitting=i.sitting) voti_della_seduta_legati\nfrom agenda_item i where i.sitting='it:camera:19:sed0691' and i.ord=3"
+ ],
+ "risultato": {
+  "atti": [
+   {
+    "uri": "it:camera:19:ac:2822",
+    "number": "2822",
+    "date": "2026-02-26",
+    "status": "Approvato, segue Navette",
+    "status_date": "2026-07-16",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1971",
+    "number": "1971",
+    "date": "2026-07-17",
+    "status": "appr. con modificaz",
+    "status_date": null,
+    "law_number": "180",
+    "law_date": "2026-10-09"
+   },
+   {
+    "uri": "it:camera:19:ac:2822-B",
+    "number": "2822-B",
+    "date": "2026-09-15",
+    "status": "Approvato definitivamente. Legge",
+    "status_date": "2026-10-09",
+    "law_number": "180",
+    "law_date": "2026-10-09"
+   }
+  ],
+  "trasmissioni": [
+   {
+    "other_ref": "S.1971",
+    "date": "2026-07-17",
+    "provenance": "Camera",
+    "title": "Disegno di legge (S. 1971) Trasmesso dalla Camera il 17 luglio 2026"
+   },
+   {
+    "other_ref": null,
+    "date": "2026-09-15",
+    "provenance": "Senato",
+    "title": "Disegno di legge C. 2822-B Trasmesso dal Senato il 15 settembre 2026"
+   }
+  ],
+  "fasi_camera": [
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 1,
+    "date": "2026-02-26",
+    "title": "Da assegnare"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 2,
+    "date": "2026-03-03",
+    "title": "Assegnato"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 3,
+    "date": "2026-03-31",
+    "title": "In corso di esame in Commissione"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 4,
+    "date": "2026-06-24",
+    "title": "Concluso l'esame da parte della Commissione. In stato di relazione"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 5,
+    "date": "2026-06-26",
+    "title": "In discussione"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 6,
+    "date": "2026-07-16",
+    "title": "Approvato. Trasmesso al Senato"
+   },
+   {
+    "act": "it:camera:19:ac:2822",
+    "ord": 7,
+    "date": "2026-07-16",
+    "title": "Approvato, segue Navette"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 1,
+    "date": "2026-09-15",
+    "title": "Da assegnare"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 2,
+    "date": "2026-09-16",
+    "title": "Assegnato"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 3,
+    "date": "2026-09-16",
+    "title": "In corso di esame in Commissione"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 4,
+    "date": "2026-09-30",
+    "title": "Concluso l'esame da parte della Commissione. In stato di relazione"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 5,
+    "date": "2026-09-30",
+    "title": "In discussione"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 6,
+    "date": "2026-10-08",
+    "title": "Approvato definitivamente, non ancora pubblicato"
+   },
+   {
+    "act": "it:camera:19:ac:2822-B",
+    "ord": 7,
+    "date": "2026-10-09",
+    "title": "Approvato definitivamente. Legge"
+   }
+  ],
+  "votazioni": [
+   {
+    "uri": "it:camera:19:sed0691:v001",
+    "date": "2026-07-16",
+    "kind": "final",
+    "secret": true,
+    "confidence": false,
+    "title": "Votazione finale ",
+    "present": 371,
+    "voting": 369,
+    "majority": 185,
+    "favor": 217,
+    "against": 152,
+    "abstain": 2,
+    "approved": true
+   },
+   {
+    "uri": "it:senato:19:sed0454:v002",
+    "date": "2026-09-15",
+    "kind": "final",
+    "secret": false,
+    "confidence": false,
+    "title": "Votazione finale",
+    "present": 187,
+    "voting": 186,
+    "majority": 93,
+    "favor": 113,
+    "against": 71,
+    "abstain": 2,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0718:v025",
+    "date": "2026-10-01",
+    "kind": "preliminary_question",
+    "secret": true,
+    "confidence": false,
+    "title": "Votazione pregiudiziale PDL n. 2822-B",
+    "present": 380,
+    "voting": 380,
+    "majority": 191,
+    "favor": 151,
+    "against": 229,
+    "abstain": 0,
+    "approved": false
+   },
+   {
+    "uri": "it:camera:19:sed0721:v001",
+    "date": "2026-10-06",
+    "kind": "article",
+    "secret": false,
+    "confidence": true,
+    "title": "Votazione Articolo 1 PDL n. 2822-B",
+    "present": 376,
+    "voting": 373,
+    "majority": 187,
+    "favor": 226,
+    "against": 147,
+    "abstain": 3,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0721:v002",
+    "date": "2026-10-06",
+    "kind": "article",
+    "secret": false,
+    "confidence": true,
+    "title": "Votazione Articolo 2 PDL n. 2822-B",
+    "present": 379,
+    "voting": 376,
+    "majority": 189,
+    "favor": 227,
+    "against": 149,
+    "abstain": 3,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0722:v034",
+    "date": "2026-10-07",
+    "kind": "article",
+    "secret": false,
+    "confidence": true,
+    "title": "Votazione Articolo 3 PDL n. 2822-B",
+    "present": 375,
+    "voting": 372,
+    "majority": 187,
+    "favor": 228,
+    "against": 144,
+    "abstain": 3,
+    "approved": true
+   },
+   {
+    "uri": "it:camera:19:sed0723:v001",
+    "date": "2026-10-08",
+    "kind": "final",
+    "secret": true,
+    "confidence": false,
+    "title": "Votazione finale PDL n. 2822-B",
+    "present": 391,
+    "voting": 391,
+    "majority": 196,
+    "favor": 227,
+    "against": 164,
+    "abstain": 0,
+    "approved": true
+   }
+  ],
+  "seduta_16_7": [
+   {
+    "sitting": "it:camera:19:sed0691",
+    "ord": 3,
+    "riferimenti": "pdl:157,pdl:2236,pdl:2822-A",
+    "voti_della_seduta_legati": 0
+   }
+  ]
+ },
+ "risposta": "Prima lettura Camera (C. 2822, Bignami e altri): presentata il 26/2/2026, assegnata il 3/3, in commissione dal 31/3, in Aula dal 26/6; approvata il 16/7/2026 con voto finale segreto (presenti 371, votanti 369, 217 sì, 152 no, 2 astenuti). Trasmessa al Senato il 17/7/2026 (S. 1971). Senato: approvata con modificazioni il 15/9/2026 (113 sì, 71 no, 2 astenuti) e trasmessa alla Camera lo stesso giorno (C. 2822-B). Terza lettura Camera: assegnata il 16/9, esame in commissione concluso il 30/9; il 1/10 respinte le pregiudiziali (151 sì, 229 no); il 6 e 7/10 fiducia sugli articoli 1, 2 e 3 (226-147, 227-149, 228-144); l'8/10/2026 approvata definitivamente con voto finale segreto (presenti e votanti 391, 227 sì, 164 no). Legge n. 180 del 9/10/2026.",
+ "stato": "calcolata",
+ "limiti": "Il voto finale della prima lettura (it:camera:19:sed0691:v001, 16/7/2026) non è legato all'atto e ha titolo vuoto: è stato attribuito alla C. 2822 perché l'unico argomento con votazioni di quella seduta è il seguito della discussione della C. 2822-A ed è l'unica votazione finale della seduta. Il voto finale del Senato (15/9/2026) invece oggi è legato a S. 1971 in vote_act.",
+ "problemi_dati": [
+  {
+   "problema": "Dal giugno 2026 molti voti della Camera non hanno vote_act e alcuni hanno titolo «Votazione finale » senza atto (es. sed0691:v001, voto finale della legge elettorale in prima lettura): 949 voti senza atto da giugno, contro 9 nei cinque mesi precedenti.",
+   "sql": "select to_char(date,'YYYY-MM') mese, count(*) voti, count(*) filter (where not exists (select 1 from vote_act x where x.vote=v.uri)) senza_atto\nfrom vote v where chamber='camera' and date>='2026-01-01' group by 1 order by 1"
+  },
+  {
+   "problema": "Le trasmissioni della navetta sono duplicate su it:camera:19:ac:2822 e it:camera:19:ac:2822-B.",
+   "sql": "select act, date, provenance from act_transmission where act like 'it:camera:19:ac:2822%' order by date"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

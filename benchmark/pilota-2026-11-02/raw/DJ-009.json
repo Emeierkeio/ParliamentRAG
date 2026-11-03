@@ -1,0 +1,83 @@
+{
+ "id": "DJ-009",
+ "trappola": false,
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "categoria": "persone",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso dare un numero affidabile e aggiornato a oggi: i dati disponibili registrano la storia dei gruppi nelle singole schede, ma non forniscono un conteggio aggregato dei parlamentari che hanno cambiato gruppo dall’inizio della XIX legislatura. Inoltre l’ultimo aggiornamento disponibile è al **19 ottobre 2026** per la Camera e all’**8 ottobre 2026** per il Senato, non al 2 novembre.\n\nLa [composizione attuale di Camera e Senato](#/strumenti/gruppi) indica rispettivamente 399 deputati e 205 senatori in carica, ma non permette di ricavare senza un’estrazione completa delle storie individuali quante persone distinte abbiano cambiato gruppo — né di distinguere chi lo ha fatto più di una volta.",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "composizione",
+   "label": "Conto i parlamentari per gruppo",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "composizione",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "composizione",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Quali sono oggi i gruppi e le componenti del Misto alla Camera?",
+   "Quali sono oggi i gruppi e le componenti del Misto al Senato?",
+   "Qual è la scheda parlamentare di Alessandro Battilocchio?"
+  ]
+ },
+ "tempo_s": 16.9,
+ "verifica": null
+}

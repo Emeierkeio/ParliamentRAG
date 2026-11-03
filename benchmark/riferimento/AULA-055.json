@@ -1,0 +1,248 @@
+{
+ "id": "AULA-055",
+ "domanda": "Quali progetti di legge sono stati approvati in sede legislativa in commissione alla Camera in questa legislatura?",
+ "sql": [
+  "SELECT s.date AS data, s.body_name AS commissione, min(i.title) AS titolo, i.stage AS fase,\n       string_agg(DISTINCT 'AC ' || split_part(x.act_ref, ':', 2), ', ') AS atti,\n       string_agg(DISTINCT a.status, ' | ') AS stato_atti,\n       string_agg(DISTINCT CASE WHEN a.law_number IS NOT NULL THEN 'L. ' || a.law_number || '/' || extract(year FROM a.law_date) END, ', ') AS legge\nFROM sitting s JOIN agenda_item i ON i.sitting = s.uri\nJOIN agenda_item_act x ON x.item = i.uri LEFT JOIN act a ON a.uri = x.act\nWHERE s.chamber = 'camera' AND s.seat = 'SEDE LEGISLATIVA' AND i.stage ~* '(approva|conclusione)'\nGROUP BY s.uri, s.date, s.body_name, i.stage, norm_nome(i.title)\nORDER BY s.date",
+  "SELECT min(date) AS prima_seduta, max(date) AS ultima_seduta, count(*) AS sedute FROM sitting WHERE chamber = 'camera' AND kind = 'committee_summary'"
+ ],
+ "risultato": [
+  [
+   {
+    "data": "2023-12-20",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Istituzione di un contributo stabile all'Istituto della Enciclopedia italiana.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1550",
+    "stato_atti": "Approvato definitivamente. Legge",
+    "legge": "L. 223/2023"
+   },
+   {
+    "data": "2024-05-23",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Disposizioni in favore dell'Associazione Arena Sferisterio – Teatro di tradizione, per l'organizzazione del Macerata Opera Festival.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1127, AC 1289",
+    "stato_atti": "Approvato definitivamente dal Senato. Legge",
+    "legge": "L. 142/2024"
+   },
+   {
+    "data": "2024-05-23",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Modifiche all'articolo 2 della legge 20 dicembre 2012, n. 238, per il sostegno e la valorizzazione del Pistoia Blues Festival e per la realizzazione del Festival Internazionale Time in Jazz.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1764, AC 866",
+    "stato_atti": "Approvato definitivamente. Legge | Assorbito dall'approvazione di pdl abbinato",
+    "legge": "L. 79/2024"
+   },
+   {
+    "data": "2024-05-23",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Modifiche all'articolo 2 della legge 20 dicembre 2012, n. 238, per la realizzazione del Monteverdi Festival di Cremona.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1763",
+    "stato_atti": "Approvato definitivamente. Legge",
+    "legge": "L. 80/2024"
+   },
+   {
+    "data": "2024-08-07",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Disposizioni per la celebrazione del centenario della città di Latina 1932-2032.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1956",
+    "stato_atti": "Approvato definitivamente. Legge",
+    "legge": "L. 130/2024"
+   },
+   {
+    "data": "2024-10-17",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Istituzione del Museo del Ricordo in Roma.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1980",
+    "stato_atti": "Approvato definitivamente. Legge",
+    "legge": "L. 165/2024"
+   },
+   {
+    "data": "2024-10-17",
+    "commissione": "Ambiente, territorio e lavori pubblici (VIII)",
+    "titolo": "Disposizioni per la gestione e la salvaguardia della laguna di Orbetello.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1080, AC 1202, AC 1286, AC 400",
+    "stato_atti": "Approvato definitivamente dal Senato. Legge",
+    "legge": "L. 11/2025"
+   },
+   {
+    "data": "2025-02-12",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Introduzione dello sviluppo di competenze non cognitive e trasversali nei percorsi delle istituzioni scolastiche e dei centri provinciali per l'istruzione degli adulti nonché nei percorsi di istruzione e formazione professionale.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 418-B",
+    "stato_atti": "Approvato, segue Navette",
+    "legge": null
+   },
+   {
+    "data": "2025-02-26",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Disposizioni per la promozione delle manifestazioni in abiti storici e delle rievocazioni storiche. Istituzione della Giornata nazionale degli abiti storici.",
+    "fase": "Seguito discussione e conclusione – Approvazione",
+    "atti": "AC 1979",
+    "stato_atti": "Approvato definitivamente dal Senato. Legge",
+    "legge": "L. 59/2025"
+   },
+   {
+    "data": "2025-03-05",
+    "commissione": "Trasporti, poste e telecomunicazioni (IX)",
+    "titolo": "Modifiche all'articolo 9 del codice della strada, di cui al decreto legislativo 30 aprile 1992, n. 285, in materia di semplificazione delle procedure per il rilascio delle autorizzazioni per le competizioni sportive su strada.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1976",
+    "stato_atti": "Approvato definitivamente dal Senato. Legge",
+    "legge": "L. 58/2025"
+   },
+   {
+    "data": "2025-03-20",
+    "commissione": "Ambiente, territorio e lavori pubblici (VIII)",
+    "titolo": "Benefici in favore delle vittime di eventi dannosi derivanti da cedimenti totali o parziali di infrastrutture stradali o autostradali di rilievo nazionale.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 2145, AC 2146",
+    "stato_atti": "Approvato definitivamente. Legge | Assorbito dall'approvazione di pdl abbinato",
+    "legge": "L. 63/2025"
+   },
+   {
+    "data": "2025-06-11",
+    "commissione": "Affari sociali (XII)",
+    "titolo": "Istituzione della Giornata nazionale per la prevenzione del melanoma cutaneo e altre disposizioni per la prevenzione e la diagnosi precoce della malattia.",
+    "fase": "Seguito della discussione e approvazione",
+    "atti": "AC 813",
+    "stato_atti": "Approvato definitivamente dal Senato, non ancora pubblicato",
+    "legge": null
+   },
+   {
+    "data": "2025-11-12",
+    "commissione": "Bilancio, tesoro e programmazione (V)",
+    "titolo": "Disposizioni per il rilancio dell'economia nei territori delle regioni Marche e Umbria.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 2668",
+    "stato_atti": "Approvato definitivamente. Legge",
+    "legge": "L. 171/2025"
+   },
+   {
+    "data": "2026-02-11",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Istituzione della Giornata nazionale della scrittura a mano.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 758",
+    "stato_atti": "Approvato. Trasmesso al Senato",
+    "legge": null
+   },
+   {
+    "data": "2026-02-11",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Modifiche al decreto del Presidente della Repubblica 30 settembre 1963, n. 1409, e all'articolo 41 del codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42, in materia di cambio della denominazione dell'archivio centrale dello Stato in quella di Archivio nazionale.",
+    "fase": "Seguito discussione e conclusione – Approvazione",
+    "atti": "AC 2159",
+    "stato_atti": "Approvato. Trasmesso al Senato",
+    "legge": null
+   },
+   {
+    "data": "2026-04-29",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Istituzione della Giornata nazionale in memoria delle vittime della strage dello stadio Heysel di Bruxelles.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1858",
+    "stato_atti": "Approvato definitivamente dal Senato. Legge",
+    "legge": "L. 101/2026"
+   },
+   {
+    "data": "2026-05-13",
+    "commissione": "Affari sociali (XII)",
+    "titolo": "Disposizioni per la prevenzione e la diagnosi precoce del melanoma e istituzione della Giornata nazionale per la prevenzione del melanoma.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 813-B",
+    "stato_atti": "Approvato definitivamente dal Senato, non ancora pubblicato",
+    "legge": null
+   },
+   {
+    "data": "2026-07-29",
+    "commissione": "Commissioni Riunite (VII e XII)",
+    "titolo": "Disposizioni per l'istituzione di spazi adibiti all'allattamento dei neonati presso istituti e luoghi della cultura.",
+    "fase": "Seguito discussione e conclusione",
+    "atti": "AC 2637",
+    "stato_atti": "Approvato. Trasmesso al Senato",
+    "legge": null
+   },
+   {
+    "data": "2026-08-04",
+    "commissione": "Affari costituzionali, della Presidenza del Consiglio e Interni (I)",
+    "titolo": "Istituzione della Giornata nazionale per il diritto al divertimento in sicurezza.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1296",
+    "stato_atti": "Approvato con modificazioni. Trasmesso al Senato",
+    "legge": null
+   },
+   {
+    "data": "2026-08-04",
+    "commissione": "Ambiente, territorio e lavori pubblici (VIII)",
+    "titolo": "Istituzione dell'area marina protetta «Isola di Capri».",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 2057, AC 2772",
+    "stato_atti": "Approvato definitivamente. Legge | Assorbito dall'approvazione di pdl abbinato",
+    "legge": "L. 158/2026"
+   },
+   {
+    "data": "2026-10-01",
+    "commissione": "Affari sociali (XII)",
+    "titolo": "Istituzione della Giornata nazionale della meraviglia, al fine di sensibilizzare sulle sofferenze e far conoscere le fatiche dei bambini che vivono in guerra, per riflettere sul valore fondamentale del diritto alla meraviglia nella vita dei bambini e degli adulti.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1886",
+    "stato_atti": "In corso di esame in Commissione",
+    "legge": "L. 175/2026"
+   },
+   {
+    "data": "2026-10-07",
+    "commissione": "Cultura, scienza e istruzione (VII)",
+    "titolo": "Dichiarazione di monumento nazionale di Palazzo Fortunato in Rionero in Vulture.",
+    "fase": "Discussione e approvazione",
+    "atti": "AC 1738, AC 2239",
+    "stato_atti": "Approvato definitivamente. Legge | Assorbito dall'approvazione di pdl abbinato",
+    "legge": "L. 192/2026"
+   },
+   {
+    "data": "2026-10-14",
+    "commissione": "Ambiente, territorio e lavori pubblici (VIII)",
+    "titolo": "Modifica all'articolo 7 del decreto legislativo 24 giugno 2003, n. 209, in materia di destinazione di veicoli fuori uso alle scuole di indirizzo tecnico e agli istituti tecnici superiori per l'utilizzazione a fini didattici.",
+    "fase": "Discussione e conclusione – Approvazione",
+    "atti": "AC 1786, AC 2209",
+    "stato_atti": "Approvato. Trasmesso al Senato | Assorbito dall'approvazione di pdl abbinato",
+    "legge": null
+   }
+  ],
+  [
+   {
+    "prima_seduta": "2023-05-15",
+    "ultima_seduta": "2026-10-29",
+    "sedute": 17227
+   }
+  ]
+ ],
+ "risposta": "Dal Bollettino risultano 23 approvazioni in sede legislativa nelle commissioni della Camera, su 22 provvedimenti (il melanoma, AC 813, è approvato due volte: 11/6/2025 e, come AC 813-B, 13/5/2026). Per commissione: VII Cultura 12 (AC 1550, 1127-1289, 866-1764, 1763, 1956, 1980, 418-B, 1979, 758, 2159, 1858, 1738-2239), VIII Ambiente 4 (laguna di Orbetello AC 400 e abb., vittime dei crolli di infrastrutture AC 2145-2146, area marina di Capri AC 2057-2772, veicoli fuori uso alle scuole AC 1786-2209), XII Affari sociali 3 (AC 813, 813-B, 1886), IX Trasporti 1 (AC 1976), V Bilancio 1 (AC 2668), I Affari costituzionali 1 (AC 1296), VII e XII riunite 1 (AC 2637). Quindici sono già legge (fra cui L. 223/2023, 142/2024, 79/2024, 80/2024, 130/2024, 165/2024, 11/2025, 59/2025, 58/2025, 63/2025, 171/2025, 101/2026, 158/2026, 175/2026, 192/2026); le altre sono state trasmesse al Senato o sono in navetta.",
+ "stato": "parziale",
+ "limiti": "Il Bollettino delle commissioni c'è solo dal 15/5/2023: approvazioni in sede legislativa fra ottobre 2022 e maggio 2023 non si vedono. L'approvazione si legge da agenda_item.stage (contiene «approvazione» o «conclusione») nelle sedute con seat = 'SEDE LEGISLATIVA'; act_assignment non distingue la sede (solo 'referente'). Lo stato dell'atto è quello di act.status oggi.",
+ "problemi_dati": [
+  {
+   "problema": "act_assignment.seat vale sempre 'referente' alla Camera: le assegnazioni in sede legislativa non si distinguono.",
+   "sql": "SELECT x.seat, count(*) FROM act_assignment x JOIN act a ON a.uri = x.act WHERE a.chamber = 'camera' GROUP BY 1"
+  },
+  {
+   "problema": "AC 1886 ha act.status 'In corso di esame in Commissione' ma law_number 175/2026: lo stato non è aggiornato.",
+   "sql": "SELECT number, status, status_date, law_number, law_date FROM act WHERE uri = 'it:camera:19:ac:1886'"
+  },
+  {
+   "problema": "AC 813: l'ultimo passo dice 'Approvato definitivamente dal Senato, non ancora pubblicato' il 13/5/2026, giorno in cui è la XII Commissione della Camera ad approvare il testo 813-B in sede legislativa: il ramo indicato nello stato è dubbio.",
+   "sql": "SELECT ord, title, date FROM act_step WHERE act = 'it:camera:19:ac:813' ORDER BY ord"
+  },
+  {
+   "problema": "Il Bollettino delle commissioni della Camera parte dal 15/5/2023: mancano i primi sette mesi della XIX.",
+   "sql": "SELECT min(date), count(*) FROM sitting WHERE chamber = 'camera' AND kind = 'committee_summary'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,52 @@
+{
+ "id": "COM-028",
+ "domanda": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+ "categoria": "sindacato_ispettivo",
+ "ramo": "camera",
+ "tipo_risposta": "testo",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Presentata il 22/10/2026.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Il [testo ufficiale integrale della risoluzione 7/00423](https://aic.camera.it/aic/scheda.html?numero=7%2F00423&ramo=CAMERA&leg=19) è disponibile nella scheda della Camera. L’atto, presentato il 22 ottobre 2026 da Irene Manzi (PD-IDP), riguarda il Programma degli itinerari culturali del Consiglio d’Europa e reca come intestazione «La VII Commissione».\n\nStato: dai dati disponibili risulta **presentata**; non emergono ancora discussione, approvazione, respingimento o altro esito della VII Commissione. L’ultima seduta dell’Assemblea registrata è del 28 ottobre 2026; inoltre, il programma della Camera per la settimana 2-6 novembre non indica l’esame della risoluzione tra i lavori della VII Commissione. [Scheda dell’atto](https://aic.camera.it/aic/scheda.html?numero=7%2F00423&ramo=CAMERA&leg=19) · [programma dei lavori della Camera](https://comunicazione.camera.it/comma/documento-intero)",
+ "eventi": {
+  "status": 1,
+  "tool": 18,
+  "dati": 9,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "list_sessions",
+  "list_sessions",
+  "search_parliament",
+  "lavori_camera",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 102.1,
+ "riferimento": {
+  "risposta": "La risoluzione in commissione 7/00423 è stata presentata il 22/10/2026 (seduta n. 731) da Irene Manzi (PD-IDP) con Mollicone, Amorese (FdI), Curti, Berruto, Iacono, Orfini (PD-IDP), Latini, Miele (Lega), Caso (M5S), Giachetti (IV-CR), Grippo (Azione), Piccolotti (AVS) e Tassinari (FI-PPE). Riguarda la candidatura della European paper route (Fabriano con Angoulême, Santa Maria da Feira, Capellades, Heidelberg, Lione e Barcellona) agli itinerari culturali del Consiglio d'Europa. Impegna il Governo a sostenere la candidatura nel ciclo di certificazione 2027-2028 presso il Consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali; a valutare, compatibilmente con i vincoli di finanza pubblica, forme di sostegno alle attività della rete; a valutare iniziative per tutelare e valorizzare i saperi della carta fatta a mano, anche come patrimonio culturale immateriale. Stato: non conclusa; fino all'ultimo Bollettino della VII Commissione in archivio (29/10/2026) non risulta ancora iscritta né discussa in commissione.",
+  "stato": "calcolata",
+  "limiti": "Il testo integrale è in act.text (risultato della prima query). «Non discussa» vuol dire che nessun argomento del Bollettino fino al 29/10/2026 la cita; sedute successive non sono ancora caricate. act.status è vuoto per questo tipo di atto, lo stato si legge da concluded e closed_date."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "na"
+  },
+  "trappola": null,
+  "tempo_s": 102.1
+ },
+ "causa_probabile": "retrieval",
+ "note": "Link alla scheda ufficiale, data, presentatrice, tema e stato («presentata», non discussa) giusti. Manca il testo chiesto (gli impegni al Governo) e i cofirmatari. Verifica: fail spurio.",
+ "verifica_citazioni": []
+}

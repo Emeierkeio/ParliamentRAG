@@ -1,0 +1,271 @@
+{
+ "id": "PA-007",
+ "trappola": false,
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "categoria": "iter",
+ "tipo_risposta": "elenco",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non riesco a ricavare un elenco affidabile dai dati disponibili: la ricerca degli atti del Senato per proponente «Consiglio regionale della Toscana» non restituisce disegni di legge regionali identificabili, ma atti di altro tipo che menzionano la Toscana. Non posso quindi attribuire al Consiglio toscano né numeri di A.S. né stati dell’iter senza una fonte ufficiale dell’atto.\n\nLa verifica puntuale va fatta nel [motore degli atti del Senato](#/strumenti/atti?q=Consiglio%20regionale%20della%20Toscana), nelle schede dei disegni di legge con proponente indicato come Consiglio regionale della Toscana.",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Quali atti del Senato della XIX menzionano il Consiglio regionale della Toscana?",
+   "Quali interrogazioni dei senatori toscani riguardano la Regione Toscana?",
+   "Come è stato approvato al Senato l’A.S. 1308 sui reati contro gli animali?"
+  ]
+ },
+ "tempo_s": 68.8,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Futuro Nazionale Vannacci (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Consiglio regionale della Toscana",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0158&tipo=stenografico#sed0158.stenografico.tit00060.sub00100.int00150"
+    }
+   ],
+   "authority": {
+    "topic": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": [
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p305698",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305698",
+      "name": "Andrea De Maria",
+      "group": "Partito Democratico",
+      "voice": "PD",
+      "role": null,
+      "source": "quoted",
+      "pool": "speakers_on_topic",
+      "rank": 14,
+      "pool_size": 17,
+      "group_size": 17,
+      "authoritative": false
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

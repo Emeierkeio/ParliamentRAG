@@ -1,0 +1,42 @@
+{
+ "id": "COMU-051",
+ "domanda": "Quante leggi di iniziativa parlamentare sono diventate legge in questa legislatura rispetto a quelle del governo?",
+ "categoria": "statistiche",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Contare le leggi una volta sola: lo stesso atto ha un numero alla Camera e uno al Senato.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Al 13 giugno 2026, il dato disponibile distingue **78 leggi di iniziativa parlamentare** e **248 di iniziativa governativa**: circa **una legge parlamentare ogni 3,2 del Governo** (23,6% contro 74,9%). Il conteggio riguarda le 331 leggi approvate fino a quella data, come riportato nel [resoconto della Camera del 27 luglio 2026](https://www.camera.it/leg19/410?idSeduta=0698&tipo=stenografico#sed0698.stenografico.tit00030.sub00010.int00040)\n\nNon estendo il confronto alle leggi approvate dopo il 13 giugno: l’ultima votazione finale nei dati è del 28 ottobre 2026, ma manca un conteggio aggiornato per promotore.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "votazioni_per_tipo",
+  "search_parliament",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 75.1,
+ "riferimento": {
+  "risposta": "Nella XIX (dati al 2/11/2026) risultano 367 leggi pubblicate, contate una volta sola. Di iniziativa del governo: 273 leggi ordinarie più 1 legge costituzionale (274). Di iniziativa parlamentare: 86 leggi ordinarie più 1 legge costituzionale (87). Le altre: 2 di iniziativa mista governo-parlamento, 1 del CNEL, 1 popolare e 1 legge costituzionale di iniziativa regionale. Il rapporto è circa 3 a 1 a favore del governo.",
+  "stato": "calcolata",
+  "limiti": "Una legge = coppia (anno, numero) di act.law_number, distinta fra leggi ordinarie e costituzionali, unendo l'atto della Camera e quello del Senato. L'iniziativa è quella della scheda Camera quando c'è (campo pulito), altrimenti quella del Senato ricondotta a Governo/Parlamentare/Regioni/CNEL/Popolare dal testo. Escluso S. 1353 (approvato definitivamente, non pubblicato, con law_date 2100-01-01). Le leggi di conversione dei decreti contano come iniziativa del governo."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 75.1
+ },
+ "causa_probabile": "dati",
+ "note": "Dà 78 parlamentari contro 248 governative al 13/6/2026, presi da un intervento d'Aula; il riferimento al 2/11/2026 è 87 contro 274. Il rapporto ~3 a 1 è giusto e il sistema dichiara la data, ma i numeri non sono quelli di oggi: manca uno strumento di conteggio delle leggi."
+}

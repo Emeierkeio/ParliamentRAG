@@ -1,0 +1,69 @@
+{
+ "id": "RIC-011",
+ "trappola": false,
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso ricostruire in modo affidabile una classifica dell’intera XIX legislatura: i dati disponibili permettono di consultare le cofirme **per singolo provvedimento**, ma non forniscono un’aggregazione complessiva delle coppie di gruppi né un’esportazione di tutte le firme da cui calcolarla. Sarebbe quindi improprio indicare quali coppie cofirmano “più spesso”.\n\nIl perimetro è comunque molto ampio: solo sulla legge di bilancio 2026, [C. 2750 / S. 1689](#/strumenti/emendamenti/54965), risultano 11.905 emendamenti; sulla legge di bilancio 2024, [C. 1627 / S. 926](#/strumenti/emendamenti/53226), 5.640. Per una rete corretta occorrerebbe estrarre, emendamento per emendamento, primo firmatario e cofirmatari, attribuire a ciascuno il gruppo nella data della firma, escludere o trattare separatamente i cambi di gruppo e poi sommare le coppie intergruppo.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "emendamenti_cerca",
+   "label": "Cerco la legge negli emendamenti",
+   "state": "start"
+  },
+  {
+   "name": "emendamenti_cerca",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "emendamenti_cerca",
+   "label": "Cerco la legge negli emendamenti",
+   "state": "start"
+  },
+  {
+   "name": "emendamenti_cerca",
+   "state": "done",
+   "count": 8
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "emendamenti_cerca",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "emendamenti_cerca",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Chi ha firmato più emendamenti su [C. 2750 / S. 1689](#/strumenti/emendamenti/54965)?",
+   "Quali emendamenti sono stati approvati su [C. 1627 / S. 926](#/strumenti/emendamenti/53226)?",
+   "Quali emendamenti ha presentato un gruppo sul decreto PNRR [C. 1752 / S. 1110](#/strumenti/emendamenti/53562)?"
+  ]
+ },
+ "tempo_s": 9.9,
+ "verifica": null
+}

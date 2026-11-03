@@ -1,0 +1,160 @@
+{
+  "id": "RIC-015",
+  "domanda": "Come votano i deputati della componente Futuro Nazionale Vannacci rispetto alla Lega, prima e dopo l'uscita dal gruppo?",
+  "sql": [
+    "WITH panel(person) AS (VALUES ('it:person:camera:307718'), ('it:person:camera:307143'), ('it:person:camera:308791'), ('it:person:camera:308928')),\nuscita AS (\n  SELECT m.person, m.end_date AS uscita_lega FROM membership m JOIN panel USING (person)\n  WHERE m.grp = 'it:camera:19:group:gr4132'),\nsv AS (\n  SELECT b.vote, b.person, b.result, coalesce(a.grp, b.grp) AS grp_voto, v.date\n  FROM ballot b JOIN panel USING (person) JOIN vote v ON v.uri = b.vote LEFT JOIN grp_alias a ON a.alias = b.grp\n  WHERE b.vote LIKE 'it:camera:19:%' AND b.result IN ('favor', 'against', 'abstain')),\nlega AS (\n  SELECT vote, result, row_number() OVER (PARTITION BY vote ORDER BY count(*) DESC) AS rk\n  FROM ballot b\n  WHERE b.vote IN (SELECT vote FROM sv) AND b.grp = 'it:camera:19:group:gr4132' AND b.result IN ('favor', 'against', 'abstain')\n    AND b.person NOT IN (SELECT person FROM panel)\n  GROUP BY vote, result)\nSELECT p.given_name || ' ' || p.family_name AS deputato, u.uscita_lega,\n       CASE WHEN s.date <= u.uscita_lega THEN '1 nella Lega' ELSE '2 dopo l''uscita' END AS periodo,\n       string_agg(DISTINCT g.short_name, ', ') AS gruppi_nel_periodo,\n       count(*) AS votazioni_con_voto, count(*) FILTER (WHERE s.result = l.result) AS come_la_lega,\n       round(100.0 * count(*) FILTER (WHERE s.result = l.result) / count(*), 1) AS pct_come_la_lega\nFROM sv s JOIN uscita u USING (person) JOIN person p ON p.uri = s.person\nJOIN lega l ON l.vote = s.vote AND l.rk = 1 LEFT JOIN grp g ON g.uri = s.grp_voto\nGROUP BY 1, 2, 3 ORDER BY 1, 3",
+    "WITH panel(person) AS (VALUES ('it:person:camera:307718'), ('it:person:camera:307143'), ('it:person:camera:308791'), ('it:person:camera:308928')),\nsv AS (\n  SELECT b.vote, b.person, b.result, coalesce(a.grp, b.grp) AS grp_voto\n  FROM ballot b JOIN panel USING (person) JOIN vote v ON v.uri = b.vote LEFT JOIN grp_alias a ON a.alias = b.grp\n  WHERE b.vote LIKE 'it:camera:19:%' AND b.result IN ('favor', 'against', 'abstain') AND v.date >= '2025-12-31'),\nlega AS (\n  SELECT vote, result, row_number() OVER (PARTITION BY vote ORDER BY count(*) DESC) AS rk\n  FROM ballot b\n  WHERE b.vote IN (SELECT vote FROM sv) AND b.grp = 'it:camera:19:group:gr4132' AND b.result IN ('favor', 'against', 'abstain')\n    AND b.person NOT IN (SELECT person FROM panel)\n  GROUP BY vote, result)\nSELECT p.given_name || ' ' || p.family_name AS deputato, g.short_name AS gruppo_nel_voto,\n       count(*) AS votazioni_con_voto, round(100.0 * count(*) FILTER (WHERE s.result = l.result) / count(*), 1) AS pct_come_la_lega\nFROM sv s JOIN person p ON p.uri = s.person JOIN lega l ON l.vote = s.vote AND l.rk = 1 LEFT JOIN grp g ON g.uri = s.grp_voto\nGROUP BY 1, 2 ORDER BY 1, 2"
+  ],
+  "risultato": [
+    [
+      {
+        "deputato": "Attilio Pierro",
+        "uscita_lega": "2025-12-30",
+        "periodo": "1 nella Lega",
+        "gruppi_nel_periodo": "LEGA",
+        "votazioni_con_voto": 12709,
+        "come_la_lega": 12696,
+        "pct_come_la_lega": 99.9
+      },
+      {
+        "deputato": "Attilio Pierro",
+        "uscita_lega": "2025-12-30",
+        "periodo": "2 dopo l'uscita",
+        "gruppi_nel_periodo": "FI-PPE, MISTO, MISTO-FNV-F",
+        "votazioni_con_voto": 3363,
+        "come_la_lega": 3241,
+        "pct_come_la_lega": 96.4
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "uscita_lega": "2026-01-07",
+        "periodo": "1 nella Lega",
+        "gruppi_nel_periodo": "LEGA",
+        "votazioni_con_voto": 13750,
+        "come_la_lega": 13727,
+        "pct_come_la_lega": 99.8
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "uscita_lega": "2026-01-07",
+        "periodo": "2 dopo l'uscita",
+        "gruppi_nel_periodo": "FI-PPE, MISTO, MISTO-FNV-F",
+        "votazioni_con_voto": 3398,
+        "come_la_lega": 3251,
+        "pct_come_la_lega": 95.7
+      },
+      {
+        "deputato": "Domenico Furgiuele",
+        "uscita_lega": "2026-06-08",
+        "periodo": "1 nella Lega",
+        "gruppi_nel_periodo": "LEGA",
+        "votazioni_con_voto": 13982,
+        "come_la_lega": 13896,
+        "pct_come_la_lega": 99.4
+      },
+      {
+        "deputato": "Domenico Furgiuele",
+        "uscita_lega": "2026-06-08",
+        "periodo": "2 dopo l'uscita",
+        "gruppi_nel_periodo": "MISTO-FNV-F",
+        "votazioni_con_voto": 1323,
+        "come_la_lega": 1253,
+        "pct_come_la_lega": 94.7
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "uscita_lega": "2026-02-06",
+        "periodo": "1 nella Lega",
+        "gruppi_nel_periodo": "LEGA",
+        "votazioni_con_voto": 15551,
+        "come_la_lega": 15481,
+        "pct_come_la_lega": 99.5
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "uscita_lega": "2026-02-06",
+        "periodo": "2 dopo l'uscita",
+        "gruppi_nel_periodo": "MISTO, MISTO-FNV-F",
+        "votazioni_con_voto": 2827,
+        "come_la_lega": 2657,
+        "pct_come_la_lega": 94.0
+      }
+    ],
+    [
+      {
+        "deputato": "Attilio Pierro",
+        "gruppo_nel_voto": "FI-PPE",
+        "votazioni_con_voto": 1662,
+        "pct_come_la_lega": 99.0
+      },
+      {
+        "deputato": "Attilio Pierro",
+        "gruppo_nel_voto": "MISTO",
+        "votazioni_con_voto": 219,
+        "pct_come_la_lega": 99.5
+      },
+      {
+        "deputato": "Attilio Pierro",
+        "gruppo_nel_voto": "MISTO-FNV-F",
+        "votazioni_con_voto": 1482,
+        "pct_come_la_lega": 93.0
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "gruppo_nel_voto": "FI-PPE",
+        "votazioni_con_voto": 1726,
+        "pct_come_la_lega": 99.1
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "gruppo_nel_voto": "MISTO",
+        "votazioni_con_voto": 152,
+        "pct_come_la_lega": 98.7
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "gruppo_nel_voto": "MISTO-FNV-F",
+        "votazioni_con_voto": 1520,
+        "pct_come_la_lega": 91.5
+      },
+      {
+        "deputato": "Domenico Furgiuele",
+        "gruppo_nel_voto": "LEGA",
+        "votazioni_con_voto": 1691,
+        "pct_come_la_lega": 99.6
+      },
+      {
+        "deputato": "Domenico Furgiuele",
+        "gruppo_nel_voto": "MISTO-FNV-F",
+        "votazioni_con_voto": 1323,
+        "pct_come_la_lega": 94.7
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "gruppo_nel_voto": "LEGA",
+        "votazioni_con_voto": 764,
+        "pct_come_la_lega": 99.2
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "gruppo_nel_voto": "MISTO",
+        "votazioni_con_voto": 1216,
+        "pct_come_la_lega": 96.7
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "gruppo_nel_voto": "MISTO-FNV-F",
+        "votazioni_con_voto": 1611,
+        "pct_come_la_lega": 91.9
+      }
+    ]
+  ],
+  "risposta": "Quota di votazioni palesi in cui il deputato ha votato come la maggioranza del gruppo Lega, prima e dopo l'uscita. Attilio Pierro (fuori dalla Lega dal 30/12/2025): 99,9% prima, 96,4% dopo (99,0% nel periodo FI-PPE, 93,0% nella componente Futuro Nazionale Vannacci). Davide Bergamini (fuori dal 7/1/2026): 99,8% prima, 95,7% dopo (99,1% in FI-PPE, 91,5% in FNV). Domenico Furgiuele (fuori dall'8/6/2026): 99,4% prima, 94,7% dopo, tutto in FNV. Edoardo Ziello (fuori dal 6/2/2026): 99,5% prima, 94,0% dopo (96,7% nel Misto senza componente, 91,9% in FNV). Per tutti e quattro l'allineamento con la Lega resta alto, e scende soprattutto dopo l'ingresso nella componente Futuro Nazionale Vannacci.",
+  "stato": "calcolata",
+  "limiti": "Posizione della Lega = voto più frequente (sì, no, astensione) fra i deputati con gruppo Lega nel voto, esclusi i quattro del panel; contano solo le votazioni in cui la persona ha votato sì, no o astenuta (le segrete sono escluse). «Prima» = fino alla data di fine dell'appartenenza alla Lega compresa, «dopo» = dal giorno successivo; il gruppo del secondo blocco è quello che la Camera attribuisce nel voto. Il secondo blocco conta solo le votazioni dal 31/12/2025.",
+  "problemi_dati": [
+    "129 schede della Camera hanno un gruppo (ballot.grp) diverso da quello di membership alla data. Query: SELECT count(*) FROM ballot b JOIN vote v ON v.uri = b.vote LEFT JOIN grp_alias a ON a.alias = b.grp WHERE v.chamber='camera' AND coalesce(a.grp, b.grp) LIKE 'it:camera:19:group:gr%' AND coalesce(a.grp, b.grp) <> 'it:camera:19:group:gr9999' AND NOT EXISTS (SELECT 1 FROM membership m WHERE m.person = b.person AND m.grp = coalesce(a.grp, b.grp) AND m.start_date <= v.date AND (m.end_date IS NULL OR m.end_date >= v.date));",
+    "Le appartenenze si sovrappongono nel giorno di passaggio (Pierro: Lega fino al 30/12/2025 e Misto dal 30/12/2025), perché end_date è incluso. Query: SELECT grp, start_date, end_date FROM membership WHERE person = 'it:person:camera:308791' ORDER BY start_date;"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

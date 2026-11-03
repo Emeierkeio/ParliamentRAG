@@ -1,0 +1,67 @@
+{
+ "id": "RIC-017",
+ "trappola": false,
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "categoria": "reazioni",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "speech.as_office distingue chi parla come membro del governo. Al Senato i membri del governo hanno id propri legati con person_same_as.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso dare un numero affidabile: i resoconti stenografici registrano reazioni come “Commenti” o “Proteste”, ma i dati disponibili non hanno un conteggio aggregato di queste annotazioni né una classificazione automatica che separi tutti gli interventi dei ministri da quelli dei deputati e senatori.\n\nPer calcolarlo occorrerebbe analizzare integralmente i resoconti d’Aula della XIX legislatura, individuare le annotazioni di reazione e associare ogni intervento al ruolo dell’oratore. I singoli resoconti ufficiali restano consultabili, ad esempio nella seduta della Camera del 12 novembre 2025.",
+ "eventi": {
+  "status": 2,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Cosa ha detto Andrea Casu (PD-IDP) nell’Aula del 12 novembre 2025 sul comportamento del ministro Valditara?",
+   "Cosa ha detto Vittoria Baldino (M5S) nella stessa seduta?",
+   "Quali interventi in Aula ha svolto il ministro Valditara nella XIX legislatura?"
+  ]
+ },
+ "tempo_s": 21.2,
+ "verifica": null
+}

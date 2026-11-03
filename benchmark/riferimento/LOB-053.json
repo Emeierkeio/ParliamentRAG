@@ -1,0 +1,344 @@
+{
+  "id": "LOB-053",
+  "domanda": "Chi è stato audito più volte alla Camera fra le associazioni di categoria? Confindustria più di Confcommercio?",
+  "sql": [
+    "WITH ass(nome) AS (VALUES ('Confindustria'), ('Confcommercio'), ('Confesercenti'), ('Confartigianato'), ('CNA'), ('Casartigiani'),\n                          ('Coldiretti'), ('Confagricoltura'), ('Confcooperative'), ('Legacoop'), ('ABI'), ('ANIA'), ('Confapi'),\n                          ('Confprofessioni'), ('Federdistribuzione'), ('Confedilizia'), ('ANCE'), ('Assolombarda'), ('Federalberghi'), ('Confetra')),\nmem AS (SELECT uri, author_raw, hearing, coalesce(sitting_date, date) AS giorno, body FROM document\n        WHERE kind IN ('memorandum', 'written_contribution') AND uri LIKE 'it:camera:%')\nSELECT a.nome,\n       count(*) FILTER (WHERE lower(btrim(m.author_raw)) = lower(a.nome)) AS memorie_nome_esatto,\n       count(*) AS memorie_con_il_nome_in_firma,\n       count(DISTINCT (m.giorno, m.body, m.hearing)) AS audizioni_distinte_con_memoria\nFROM ass a JOIN mem m ON m.author_raw ~* ('(^|[^[:alnum:]])' || a.nome || '([^[:alnum:]]|$)')\nGROUP BY 1 ORDER BY memorie_con_il_nome_in_firma DESC",
+    "SELECT author_raw, count(*) AS memorie FROM document\nWHERE kind IN ('memorandum', 'written_contribution') AND author_raw ~* '(^|[^[:alnum:]])(confindustria|confcommercio)([^[:alnum:]]|$)'\nGROUP BY 1 ORDER BY 2 DESC, 1"
+  ],
+  "risultato": [
+    [
+      {
+        "nome": "Confindustria",
+        "memorie_nome_esatto": 56,
+        "memorie_con_il_nome_in_firma": 149,
+        "audizioni_distinte_con_memoria": 129
+      },
+      {
+        "nome": "CNA",
+        "memorie_nome_esatto": 12,
+        "memorie_con_il_nome_in_firma": 97,
+        "audizioni_distinte_con_memoria": 93
+      },
+      {
+        "nome": "Confartigianato",
+        "memorie_nome_esatto": 7,
+        "memorie_con_il_nome_in_firma": 91,
+        "audizioni_distinte_con_memoria": 89
+      },
+      {
+        "nome": "Confcommercio",
+        "memorie_nome_esatto": 55,
+        "memorie_con_il_nome_in_firma": 79,
+        "audizioni_distinte_con_memoria": 74
+      },
+      {
+        "nome": "ANCE",
+        "memorie_nome_esatto": 55,
+        "memorie_con_il_nome_in_firma": 61,
+        "audizioni_distinte_con_memoria": 60
+      },
+      {
+        "nome": "Confesercenti",
+        "memorie_nome_esatto": 34,
+        "memorie_con_il_nome_in_firma": 45,
+        "audizioni_distinte_con_memoria": 45
+      },
+      {
+        "nome": "Confprofessioni",
+        "memorie_nome_esatto": 36,
+        "memorie_con_il_nome_in_firma": 40,
+        "audizioni_distinte_con_memoria": 40
+      },
+      {
+        "nome": "Confcooperative",
+        "memorie_nome_esatto": 19,
+        "memorie_con_il_nome_in_firma": 37,
+        "audizioni_distinte_con_memoria": 34
+      },
+      {
+        "nome": "Casartigiani",
+        "memorie_nome_esatto": 0,
+        "memorie_con_il_nome_in_firma": 34,
+        "audizioni_distinte_con_memoria": 33
+      },
+      {
+        "nome": "Confagricoltura",
+        "memorie_nome_esatto": 30,
+        "memorie_con_il_nome_in_firma": 33,
+        "audizioni_distinte_con_memoria": 33
+      },
+      {
+        "nome": "Confapi",
+        "memorie_nome_esatto": 31,
+        "memorie_con_il_nome_in_firma": 32,
+        "audizioni_distinte_con_memoria": 32
+      },
+      {
+        "nome": "Coldiretti",
+        "memorie_nome_esatto": 25,
+        "memorie_con_il_nome_in_firma": 28,
+        "audizioni_distinte_con_memoria": 28
+      },
+      {
+        "nome": "Legacoop",
+        "memorie_nome_esatto": 11,
+        "memorie_con_il_nome_in_firma": 24,
+        "audizioni_distinte_con_memoria": 24
+      },
+      {
+        "nome": "Federdistribuzione",
+        "memorie_nome_esatto": 16,
+        "memorie_con_il_nome_in_firma": 19,
+        "audizioni_distinte_con_memoria": 19
+      },
+      {
+        "nome": "Federalberghi",
+        "memorie_nome_esatto": 12,
+        "memorie_con_il_nome_in_firma": 18,
+        "audizioni_distinte_con_memoria": 17
+      },
+      {
+        "nome": "Confetra",
+        "memorie_nome_esatto": 10,
+        "memorie_con_il_nome_in_firma": 15,
+        "audizioni_distinte_con_memoria": 14
+      },
+      {
+        "nome": "ANIA",
+        "memorie_nome_esatto": 7,
+        "memorie_con_il_nome_in_firma": 14,
+        "audizioni_distinte_con_memoria": 13
+      },
+      {
+        "nome": "Confedilizia",
+        "memorie_nome_esatto": 11,
+        "memorie_con_il_nome_in_firma": 11,
+        "audizioni_distinte_con_memoria": 11
+      },
+      {
+        "nome": "ABI",
+        "memorie_nome_esatto": 7,
+        "memorie_con_il_nome_in_firma": 11,
+        "audizioni_distinte_con_memoria": 11
+      },
+      {
+        "nome": "Assolombarda",
+        "memorie_nome_esatto": 0,
+        "memorie_con_il_nome_in_firma": 1,
+        "audizioni_distinte_con_memoria": 1
+      }
+    ],
+    {
+      "righe": [
+        {
+          "author_raw": "Confcommercio",
+          "memorie": 49
+        },
+        {
+          "author_raw": "Confindustria",
+          "memorie": 48
+        },
+        {
+          "author_raw": "CONFINDUSTRIA",
+          "memorie": 8
+        },
+        {
+          "author_raw": "Assosistema Confindustria",
+          "memorie": 6
+        },
+        {
+          "author_raw": "CONFCOMMERCIO",
+          "memorie": 6
+        },
+        {
+          "author_raw": "ANIMA Confindustria",
+          "memorie": 5
+        },
+        {
+          "author_raw": "Confindustria Radio Televisioni",
+          "memorie": 5
+        },
+        {
+          "author_raw": "Confindustria Ceramica",
+          "memorie": 4
+        },
+        {
+          "author_raw": "Confindustria dispositivi medici",
+          "memorie": 4
+        },
+        {
+          "author_raw": "Confcommercio-Imprese per l'Italia",
+          "memorie": 3
+        },
+        {
+          "author_raw": "Confindustria Assoimmobiliare",
+          "memorie": 3
+        },
+        {
+          "author_raw": "ANIMA Confindustria meccanica varia",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Confindustria accessori moda",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Confindustria alberghi",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Confindustria ceramica",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Confindustria Cisambiente",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Slides Confindustria",
+          "memorie": 2
+        },
+        {
+          "author_raw": "Anima Confindustria",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Associazione Aqua Italia-Federazione Anima-Confindustria",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Associazione Italiana Confindustria Alberghi",
+          "memorie": 1
+        },
+        {
+          "author_raw": "ASSOSISTEMA CONFINDUSTRIA",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Asstel Confindustria",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Cisambiente-Confindustria",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio (AG 324 e AG 332)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio (AG 324 e AG332)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio (C. 2258)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "CONFCOMMERCIO CONFTURISMO",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio-Federcarni",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio - Imprese per l'Italia",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio Palermo sulle botteghe storiche",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio professioni",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio Professioni",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio professioni - contributo AICQ",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio professioni - contributo AISE",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio professioni - contributo APPI",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio professioni - proposte AIAS",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confcommercio Trentino",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria.",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria (12/04/24)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria Accessori Moda",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria (AG 324)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria (AG 332)",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria Alberghi",
+          "memorie": 1
+        },
+        {
+          "author_raw": "CONFINDUSTRIA ALBERGHI",
+          "memorie": 1
+        },
+        {
+          "author_raw": "confindustria Assoimmobiliare",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria-Assoimmobiliare",
+          "memorie": 1
+        },
+        {
+          "author_raw": "CONFINDUSTRIA ASSOIMMOBILIARE",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria - C. 2543",
+          "memorie": 1
+        },
+        {
+          "author_raw": "CONFINDUSTRIA CISAMBIENTE",
+          "memorie": 1
+        },
+        {
+          "author_raw": "Confindustria Cisambiente (slide)",
+          "memorie": 1
+        }
+      ],
+      "righe_totali": 91
+    }
+  ],
+  "risposta": "Il database conta le memorie depositate alla Camera, non le audizioni. Con il nome esatto (maiuscole e minuscole unificate) Confindustria ha 56 memorie e Confcommercio 55: quasi pari (con la grafia esatta «Confcommercio» 49 e «Confindustria» 48). Contando ogni memoria in cui il nome compare fra i firmatari, comprese federazioni di settore e firme congiunte, Confindustria sale a 149 (129 audizioni distinte con memoria) e Confcommercio a 79 (74). Fra le associazioni di categoria della lista, dopo Confindustria vengono CNA (97 memorie con il nome in firma, 12 da sola), Confartigianato (91; 7), Confcommercio (79), ANCE (61) e Confesercenti (45).",
+  "stato": "parziale",
+  "limiti": "Si contano le memorie e i contributi scritti della Camera (document kind memorandum e written_contribution); chi è audito senza lasciare memoria non c'è e il Senato non ha memorie. author_raw non è normalizzato: «nome esatto» = author_raw uguale al nome ignorando maiuscole; «nome in firma» = il nome compare come parola in author_raw, quindi comprende federazioni aderenti («ANIMA Confindustria», «Confindustria Ceramica») e memorie congiunte («CNA, Confartigianato e Casartigiani», che conta per ciascuna). La lista delle associazioni di categoria è scelta a mano (20 nomi). «Audizioni distinte» = combinazioni distinte di giorno, commissione e audizione delle memorie.",
+  "problemi_dati": [
+    "document.author_raw non normalizzato: «Confindustria» 48 e «CONFINDUSTRIA» 8, «Confcommercio» 49 e «CONFCOMMERCIO» 6, «FLC CGIL», «FLC - CGIL», «FLC-CGIL». Query: SELECT author_raw, count(*) FROM document WHERE author_raw ~* 'confindustria|confcommercio|flc' GROUP BY 1 ORDER BY 2 DESC;"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

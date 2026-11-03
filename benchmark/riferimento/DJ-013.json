@@ -1,0 +1,222 @@
+{
+ "id": "DJ-013",
+ "domanda": "Quali parlamentari intervengono di più in Aula? Top 20 per numero di interventi e per parole, Camera.",
+ "sql": [
+  "WITH sp AS (\n  SELECT s.person, array_length(regexp_split_to_array(btrim(s.text), '\\s+'), 1) AS parole\n  FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\n  WHERE st.body = 'it:camera:19:aula' AND st.status = 'held'\n    AND s.as_office IS NULL          -- esclude PRESIDENTE e presidenti di turno\n    AND s.as_group IS NOT NULL       -- parla come deputato (esclude i membri del governo)\n    AND s.person IS NOT NULL\n), t AS (\n  SELECT person, count(*) AS interventi, sum(parole) AS parole FROM sp GROUP BY 1\n)\nSELECT * FROM (\nSELECT p.given_name || ' ' || p.family_name AS deputato, g.short_name AS gruppo_oggi_o_ultimo,\n       t.interventi, rank() OVER (ORDER BY t.interventi DESC) AS pos_interventi,\n       t.parole, rank() OVER (ORDER BY t.parole DESC) AS pos_parole\nFROM t JOIN person p ON p.uri = t.person\nLEFT JOIN grp g ON g.uri = (SELECT m.grp FROM membership m JOIN grp gg ON gg.uri = m.grp WHERE m.person = t.person AND gg.chamber = 'camera'\n                            ORDER BY m.end_date DESC NULLS FIRST, (gg.kind = 'misto_component') DESC LIMIT 1)\n) x WHERE pos_interventi <= 20 OR pos_parole <= 20\nORDER BY least(pos_interventi, pos_parole), interventi DESC"
+ ],
+ "risultato": [
+  {
+   "deputato": "Marco Grimaldi",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 1194,
+   "pos_interventi": 1,
+   "parole": 416005,
+   "pos_parole": 1
+  },
+  {
+   "deputato": "Roberto Giachetti",
+   "gruppo_oggi_o_ultimo": "IV-CR",
+   "interventi": 957,
+   "pos_interventi": 2,
+   "parole": 320990,
+   "pos_parole": 3
+  },
+  {
+   "deputato": "Andrea Casu",
+   "gruppo_oggi_o_ultimo": "PD-IDP",
+   "interventi": 658,
+   "pos_interventi": 5,
+   "parole": 339769,
+   "pos_parole": 2
+  },
+  {
+   "deputato": "Federico Fornaro",
+   "gruppo_oggi_o_ultimo": "PD-IDP",
+   "interventi": 793,
+   "pos_interventi": 3,
+   "parole": 138832,
+   "pos_parole": 26
+  },
+  {
+   "deputato": "Francesco Emilio Borrelli",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 708,
+   "pos_interventi": 4,
+   "parole": 234828,
+   "pos_parole": 7
+  },
+  {
+   "deputato": "Filiberto Zaratti",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 575,
+   "pos_interventi": 8,
+   "parole": 293609,
+   "pos_parole": 4
+  },
+  {
+   "deputato": "Francesca Ghirra",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 569,
+   "pos_interventi": 9,
+   "parole": 260293,
+   "pos_parole": 5
+  },
+  {
+   "deputato": "Andrea Quartini",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 598,
+   "pos_interventi": 6,
+   "parole": 215002,
+   "pos_parole": 11
+  },
+  {
+   "deputato": "Giuseppe Bicchielli",
+   "gruppo_oggi_o_ultimo": "FI-PPE",
+   "interventi": 369,
+   "pos_interventi": 23,
+   "parole": 238302,
+   "pos_parole": 6
+  },
+  {
+   "deputato": "Angelo Bonelli",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 597,
+   "pos_interventi": 7,
+   "parole": 230820,
+   "pos_parole": 8
+  },
+  {
+   "deputato": "Valentina D'Orso",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 536,
+   "pos_interventi": 10,
+   "parole": 225437,
+   "pos_parole": 9
+  },
+  {
+   "deputato": "Devis Dori",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 453,
+   "pos_interventi": 16,
+   "parole": 221463,
+   "pos_parole": 10
+  },
+  {
+   "deputato": "Antonino Iaria",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 530,
+   "pos_interventi": 11,
+   "parole": 128183,
+   "pos_parole": 36
+  },
+  {
+   "deputato": "Alfonso Colucci",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 528,
+   "pos_interventi": 12,
+   "parole": 162118,
+   "pos_parole": 15
+  },
+  {
+   "deputato": "Elisabetta Piccolotti",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 440,
+   "pos_interventi": 17,
+   "parole": 197670,
+   "pos_parole": 12
+  },
+  {
+   "deputato": "Benedetto Della Vedova",
+   "gruppo_oggi_o_ultimo": "MISTO-+EU-SUEU",
+   "interventi": 490,
+   "pos_interventi": 13,
+   "parole": 162881,
+   "pos_parole": 14
+  },
+  {
+   "deputato": "Luana Zanella",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 487,
+   "pos_interventi": 14,
+   "parole": 187136,
+   "pos_parole": 13
+  },
+  {
+   "deputato": "Riccardo Ricciardi",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 482,
+   "pos_interventi": 15,
+   "parole": 120000,
+   "pos_parole": 45
+  },
+  {
+   "deputato": "Mauro Del Barba",
+   "gruppo_oggi_o_ultimo": "IV-CR",
+   "interventi": 276,
+   "pos_interventi": 52,
+   "parole": 161657,
+   "pos_parole": 16
+  },
+  {
+   "deputato": "Ilaria Cavo",
+   "gruppo_oggi_o_ultimo": "NM(N-C-U-I)M-CP",
+   "interventi": 287,
+   "pos_interventi": 47,
+   "parole": 159952,
+   "pos_parole": 17
+  },
+  {
+   "deputato": "Enrica Alifano",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 398,
+   "pos_interventi": 18,
+   "parole": 138409,
+   "pos_parole": 27
+  },
+  {
+   "deputato": "Nicola Fratoianni",
+   "gruppo_oggi_o_ultimo": "AVS",
+   "interventi": 322,
+   "pos_interventi": 35,
+   "parole": 152567,
+   "pos_parole": 18
+  },
+  {
+   "deputato": "Emma Pavanelli",
+   "gruppo_oggi_o_ultimo": "M5S",
+   "interventi": 395,
+   "pos_interventi": 19,
+   "parole": 116666,
+   "pos_parole": 47
+  },
+  {
+   "deputato": "Fabrizio Benzoni",
+   "gruppo_oggi_o_ultimo": "AZ-PER-RE",
+   "interventi": 349,
+   "pos_interventi": 27,
+   "parole": 152350,
+   "pos_parole": 19
+  },
+  {
+   "deputato": "Debora Serracchiani",
+   "gruppo_oggi_o_ultimo": "PD-IDP",
+   "interventi": 379,
+   "pos_interventi": 20,
+   "parole": 133169,
+   "pos_parole": 31
+  },
+  {
+   "deputato": "Elena Bonetti",
+   "gruppo_oggi_o_ultimo": "AZ-PER-RE",
+   "interventi": 211,
+   "pos_interventi": 74,
+   "parole": 150126,
+   "pos_parole": 20
+  }
+ ],
+ "risposta": "Camera, Aula XIX (sedute fino al 30/10/2026), presidenti di turno e membri del governo esclusi. Top 20 per numero di interventi: 1 Marco Grimaldi (AVS) 1.194; 2 Roberto Giachetti (IV-CR) 957; 3 Federico Fornaro (PD-IDP) 793; 4 Francesco Emilio Borrelli (AVS) 708; 5 Andrea Casu (PD-IDP) 658; 6 Andrea Quartini (M5S) 598; 7 Angelo Bonelli (AVS) 597; 8 Filiberto Zaratti (AVS) 575; 9 Francesca Ghirra (AVS) 569; 10 Valentina D'Orso (M5S) 536; 11 Antonino Iaria (M5S) 530; 12 Alfonso Colucci (M5S) 528; 13 Benedetto Della Vedova (Misto-+Europa) 490; 14 Luana Zanella (AVS) 487; 15 Riccardo Ricciardi (M5S) 482; 16 Devis Dori (AVS) 453; 17 Elisabetta Piccolotti (AVS) 440; 18 Enrica Alifano (M5S) 398; 19 Emma Pavanelli (M5S) 395; 20 Debora Serracchiani (PD-IDP) 379. Top 20 per parole: 1 Grimaldi 416.005; 2 Casu 339.769; 3 Giachetti 320.990; 4 Zaratti 293.609; 5 Ghirra 260.293; 6 Giuseppe Bicchielli (FI-PPE) 238.302; 7 Borrelli 234.828; 8 Bonelli 230.820; 9 D'Orso 225.437; 10 Dori 221.463; 11 Quartini 215.002; 12 Piccolotti 197.670; 13 Zanella 187.136; 14 Della Vedova 162.881; 15 Alfonso Colucci 162.118; 16 Mauro Del Barba (IV-CR) 161.657; 17 Ilaria Cavo (NM) 159.952; 18 Nicola Fratoianni (AVS) 152.567; 19 Fabrizio Benzoni (Azione) 152.350; 20 Elena Bonetti (Azione) 150.126.",
+ "stato": "calcolata",
+ "limiti": "Solo sedute d'Aula della Camera con resoconto (736). Intervento = riga di speech con persona, senza as_office (esclude PRESIDENTE) e con gruppo dichiarato nel resoconto (esclude chi parla come membro del governo). Parole = parole del testo canonico. Gruppo = l'ultimo o l'attuale di membership, componente del Misto quando c'è. Una replica breve conta come un intervento.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act, office e dei gruppi negli interventi)"
+}

@@ -1,0 +1,59 @@
+{
+ "id": "AULA-013",
+ "domanda": "In quali sedute d'Aula della Camera è mancato il numero legale nel 2026, e su quale votazione?",
+ "sql": [
+  "select st.uri seduta, st.date, s.speaker_label, substring(s.text from greatest(1,strpos(lower(s.text),'numero legale')-200) for 350) brano\nfrom speech s join agenda_item i on i.uri=s.item join sitting st on st.uri=i.sitting\nwhere st.chamber='camera' and st.kind='assembly_verbatim' and s.speaker_label ilike 'PRESIDENTE%' and s.text ilike '%numero legale%' order by st.date",
+  "select count(distinct st.uri) sedute_aula_2026, count(distinct st.uri) filter (where s.text ~* '(manca|mancanza del|mancando il|assenza del|non (è|essendo) in) numero legale') sedute_con_mancanza\nfrom speech s join agenda_item i on i.uri=s.item join sitting st on st.uri=i.sitting\nwhere st.chamber='camera' and st.kind='assembly_verbatim' and st.date between '2026-01-01' and '2026-12-31'",
+  "select count(*) voti_camera_con_numero_legale_nel_titolo from vote where chamber='camera' and (title ilike '%numero legale%' or description ilike '%numero legale%')"
+ ],
+ "risultato": {
+  "presidente_numero_legale_legislatura": [
+   {
+    "seduta": "it:camera:19:sed0256",
+    "date": "2024-03-05",
+    "speaker_label": "PRESIDENTE",
+    "brano": "rocedimento elettronico, sull'emendamento 1.5 Ghirra, con il parere contrario della Commissione e del Governo.\n\nDichiaro aperta la votazione.\n\n(Segue la votazione).\n\nDichiaro chiusa la votazione.\n\nIl numero legale è raggiunto\n\nLa Camera respinge (Vedi votazione n. 43) (Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza "
+   },
+   {
+    "seduta": "it:camera:19:sed0305",
+    "date": "2024-06-12",
+    "speaker_label": "PRESIDENTE",
+    "brano": "Sì, onorevole Sarracino, c'è il numero legale, lo vedo da qui. Ci sono i colleghi che stanno prendendo la tessera, il numero legale c'è, quindi aspettiamo che i colleghi entrino. Prego, relatore, relatore di minoranza la aspettiamo a maggior ragione, tanto vedo che anche gli altri colleghi entrano con calma, collega Toni Ricciardi, quindi non è l'u"
+   },
+   {
+    "seduta": "it:camera:19:sed0572",
+    "date": "2025-11-26",
+    "speaker_label": "PRESIDENTE",
+    "brano": "sull'emendamento 44.1 Richetti, con il parere contrario della Commissione e del Governo.\n\nDichiaro aperta la votazione.\n\n(Segue la votazione).\n\nDichiaro chiusa la votazione.\n\nLa Camera respinge .\n\nIl numero legale è raggiunto, con i figurativi naturalmente . Adesso vi do il risultato della votazione: astenuti 2, favorevoli 1, contrari 103. La Camer"
+   },
+   {
+    "seduta": "it:camera:19:sed0572",
+    "date": "2025-11-26",
+    "speaker_label": "PRESIDENTE",
+    "brano": "Onorevole, come lei sa, leggo dal sistema il numero legale raggiunto o meno, che recepisce i nostri Regolamenti."
+   },
+   {
+    "seduta": "it:camera:19:sed0640",
+    "date": "2026-04-08",
+    "speaker_label": "PRESIDENTE",
+    "brano": "Onorevole Mancini, non c'è manco il numero legale…"
+   }
+  ],
+  "sedute_2026": [
+   {
+    "sedute_aula_2026": 146,
+    "sedute_con_mancanza": 0
+   }
+  ],
+  "voti": [
+   {
+    "voti_camera_con_numero_legale_nel_titolo": 0
+   }
+  ]
+ },
+ "risposta": "Nei resoconti d'Aula della Camera caricati per il 2026 non risulta alcuna seduta in cui il Presidente constati la mancanza del numero legale. In tutta la legislatura il Presidente nomina il numero legale solo 5 volte, per dire che è raggiunto (5/3/2024, 26/11/2025) o in battute (12/6/2024, 8/4/2026). Nessuna votazione della Camera porta l'indicazione del numero legale.",
+ "stato": "parziale",
+ "limiti": "Ricerca per testo nei resoconti stenografici d'Aula (sitting.kind = assembly_verbatim) con le formule «manca/mancanza del/mancando il/non è in numero legale»; nessun campo strutturato registra l'evento. Il risultato «nessuna» vale per i testi caricati: non si può escludere che la formula del Presidente sia scritta in altro modo o non sia nel testo canonico. Le sedute del Bollettino (commissioni) sono escluse.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

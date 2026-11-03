@@ -1,0 +1,44 @@
+{
+ "id": "COMU-004",
+ "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+ "categoria": "reazioni",
+ "ramo": "camera",
+ "tipo_risposta": "fatto",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì. Alla conclusione dell’informativa del ministro Piantedosi, il resoconto della Camera registra:\n\n*(Applausi dei deputati dei gruppi di maggioranza, che si levano in piedi).*\n\nLa nota è nel [resoconto stenografico della seduta n. 607 del 3 febbraio 2026, all’intervento di Matteo Piantedosi](https://www.camera.it/leg19/410?idSeduta=0607&tipo=stenografico#sed0607.stenografico.tit00050.sub00010.int00020)",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 38.1,
+ "riferimento": {
+  "risposta": "Sì. Nel resoconto della seduta 607 della Camera (3/2/2026, informativa urgente del Governo sugli scontri di Torino durante il corteo pro Askatasuna), l'intervento del ministro Matteo Piantedosi si chiude con «Grazie» seguito dalla didascalia: «(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)». La stessa didascalia compare anche a metà intervento, dopo la frase «Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità». All'inizio, dopo la solidarietà agli agenti feriti, il resoconto scrive «L'Assemblea e i membri del Governo si levano in piedi», con applausi. Intervento: it:camera:19:sed0607:tit00050.sub00010.int00020.",
+  "stato": "calcolata",
+  "limiti": "Didascalie riportate come sono in reaction.raw (la parentesi chiusa dopo «Centro Popolare» è nel testo della fonte). Il gruppo di chi applaude viene da reaction_from (FdI, Lega, FI-PPE, Noi Moderati)."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 38.1
+ },
+ "causa_probabile": "prompt",
+ "note": "Il fatto è giusto (maggioranza in piedi, seduta 607, link all'intervento), ma la «riga del resoconto» è riscritta: il sistema scrive «(Applausi dei deputati dei gruppi di maggioranza, che si levano in piedi)», il resoconto dice «(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (…)-MAIE-Centro Popolare), che si levano in piedi)». Presentata come testo esatto."
+}

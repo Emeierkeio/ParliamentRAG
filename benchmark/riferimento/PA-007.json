@@ -1,0 +1,128 @@
+{
+ "id": "PA-007",
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "sql": [
+  "select a.uri, a.number, a.date presentato, a.title, a.status, a.status_date, a.law_number,\n  (select string_agg(distinct s.body_name || ' ' || s.date, '; ') from agenda_item_act x join agenda_item i on i.uri=x.item join sitting s on s.uri=i.sitting where x.act=a.uri) sedute_di_esame,\n  (select string_agg(b.name||coalesce(' ('||t.seat||')',''), '; ') from act_assignment t left join body b on b.uri=t.body where t.act=a.uri) assegnazione\nfrom act a where a.chamber='senato' and a.legislature=19 and a.kind='bill' and a.initiative ilike 'regione toscana'\norder by a.date",
+  "select a.chamber, count(*) atti, count(a.status_date) con_data_stato, (select count(*) from act_assignment t join act b on b.uri=t.act where b.chamber=a.chamber) assegnazioni, (select count(*) from act_step t join act b on b.uri=t.act where b.chamber=a.chamber) fasi from act a where a.kind='bill' group by a.chamber"
+ ],
+ "risultato": [
+  {
+   "uri": "it:senato:19:ddl:476",
+   "number": "476",
+   "presentato": "2023-01-18",
+   "title": "Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42",
+   "status": "assegnato (no esame)",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": null,
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:477",
+   "number": "477",
+   "presentato": "2023-01-18",
+   "title": "Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero",
+   "status": "esame in comm.",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": "10ª Commissione permanente  2023-04-27; 2ª Commissione permanente  2023-04-12; 2ª Commissione permanente  2023-05-16; 2ª Commissione permanente  2023-05-30; 2ª Commissione permanente  2023-05-31; 2ª Commissione permanente  2023-06-07; 2ª Commissione permanente  2023-06-27; 2ª Commissione permanente  2023-07-04; 2ª Commissione permanente  2023-07-11; 2ª Commissione permanente  2023-08-03",
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:478",
+   "number": "478",
+   "presentato": "2023-01-18",
+   "title": "Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne",
+   "status": "assegnato (no esame)",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": null,
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:479",
+   "number": "479",
+   "presentato": "2023-01-18",
+   "title": "Modifica al codice delle leggi antimafia e delle misure di prevenzione, di cui al decreto legislativo 6 settembre 2011, n. 159, in materia di ampliamento delle destinazioni di uso degli immobili confiscati alle associazioni di criminalità organizzata",
+   "status": "esame in comm.",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": "2ª Commissione permanente 2026-03-10; 2ª Commissione permanente 2026-03-24",
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:1064",
+   "number": "1064",
+   "presentato": "2024-03-07",
+   "title": "Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica",
+   "status": "esame in comm.",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": "7ª Commissione permanente 2025-09-30; 7ª Commissione permanente 2025-10-15; 7ª Commissione permanente 2025-10-22; 7ª Commissione permanente 2026-05-26; 7ª Commissione permanente 2026-06-10; 7ª Commissione permanente 2026-06-16; 7ª Commissione permanente 2026-06-23; 7ª Commissione permanente 2026-07-21",
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:1527",
+   "number": "1527",
+   "presentato": "2025-06-12",
+   "title": "Norme per l'affrancazione dei canoni livellari",
+   "status": "assegnato (no esame)",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": null,
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:1643",
+   "number": "1643",
+   "presentato": "2025-09-10",
+   "title": "Disposizioni in materia di distretto estrattivo apuo-versiliese",
+   "status": "assegnato (no esame)",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": null,
+   "assegnazione": null
+  },
+  {
+   "uri": "it:senato:19:ddl:1801",
+   "number": "1801",
+   "presentato": "2026-02-13",
+   "title": "Riconoscimento dello Stato di Palestina",
+   "status": "assegnato (no esame)",
+   "status_date": null,
+   "law_number": null,
+   "sedute_di_esame": null,
+   "assegnazione": null
+  }
+ ],
+ "risposta": "Al Senato il Consiglio regionale della Toscana ha presentato 8 disegni di legge nella XIX, nessuno approvato. In esame in commissione: S. 477 (tribunali e uffici del PM, d.lgs. 155/2012; esaminato in 2ª Commissione dal 12/4 al 3/8/2023), S. 479 (immobili confiscati alla criminalità organizzata; 2ª Commissione il 10 e il 24/3/2026) e S. 1064 (educazione all'affettività e alla sessualità; 7ª Commissione, ultima seduta il 21/7/2026). Assegnati e non ancora esaminati: S. 476 (selvicoltura), S. 478 (agevolazione contributiva nelle aree interne), S. 1527 (affrancazione dei canoni livellari), S. 1643 (distretto estrattivo apuo-versiliese) e S. 1801 (riconoscimento dello Stato di Palestina, presentato il 13/2/2026).",
+ "stato": "calcolata",
+ "limiti": "Atti del Senato con act.initiative = «Regione Toscana». Lo stato è act.status (testo del Senato) senza data; le sedute di esame vengono dagli argomenti delle commissioni legati all'atto.",
+ "problemi_dati": [
+  {
+   "problema": "Per gli atti del Senato act_step e act_assignment sono vuoti e status_date è sempre nullo: lo stato dell'iter non ha data e non si sa a quale commissione l'atto è assegnato.",
+   "sql": "select a.chamber, count(*) atti, count(a.status_date) con_data_stato, (select count(*) from act_assignment t join act b on b.uri=t.act where b.chamber=a.chamber) assegnazioni, (select count(*) from act_step t join act b on b.uri=t.act where b.chamber=a.chamber) fasi from act a where a.kind='bill' group by a.chamber",
+   "righe": [
+    {
+     "chamber": "camera",
+     "atti": 3199,
+     "con_data_stato": 3199,
+     "assegnazioni": 3140,
+     "fasi": 10124
+    },
+    {
+     "chamber": "senato",
+     "atti": 2116,
+     "con_data_stato": 0,
+     "assegnazioni": 0,
+     "fasi": 0
+    }
+   ]
+  },
+  {
+   "problema": "act.initiative al Senato è testo libero non normalizzato: «Regione Friuli-Venezia Giulia» e «REGIONE Friuli-Venezia Giulia» sono due valori diversi.",
+   "sql": "select initiative, count(*) from act where chamber='senato' and initiative ilike 'regione friuli%' group by 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

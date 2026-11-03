@@ -1,0 +1,59 @@
+{
+ "id": "PA-007",
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "categoria": "iter",
+ "ramo": "senato",
+ "tipo_risposta": "elenco",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non riesco a ricavare un elenco affidabile dai dati disponibili: la ricerca degli atti del Senato per proponente «Consiglio regionale della Toscana» non restituisce disegni di legge regionali identificabili, ma atti di altro tipo che menzionano la Toscana. Non posso quindi attribuire al Consiglio toscano né numeri di A.S. né stati dell’iter senza una fonte ufficiale dell’atto.\n\nLa verifica puntuale va fatta nel [motore degli atti del Senato](#/strumenti/atti?q=Consiglio%20regionale%20della%20Toscana), nelle schede dei disegni di legge con proponente indicato come Consiglio regionale della Toscana.",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 68.8,
+ "riferimento": {
+  "risposta": "Al Senato il Consiglio regionale della Toscana ha presentato 8 disegni di legge nella XIX, nessuno approvato. In esame in commissione: S. 477 (tribunali e uffici del PM, d.lgs. 155/2012; esaminato in 2ª Commissione dal 12/4 al 3/8/2023), S. 479 (immobili confiscati alla criminalità organizzata; 2ª Commissione il 10 e il 24/3/2026) e S. 1064 (educazione all'affettività e alla sessualità; 7ª Commissione, ultima seduta il 21/7/2026). Assegnati e non ancora esaminati: S. 476 (selvicoltura), S. 478 (agevolazione contributiva nelle aree interne), S. 1527 (affrancazione dei canoni livellari), S. 1643 (distretto estrattivo apuo-versiliese) e S. 1801 (riconoscimento dello Stato di Palestina, presentato il 13/2/2026).",
+  "stato": "calcolata",
+  "limiti": "Atti del Senato con act.initiative = «Regione Toscana». Lo stato è act.status (testo del Senato) senza data; le sedute di esame vengono dagli argomenti delle commissioni legati all'atto."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 0,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "fail"
+  },
+  "trappola": null,
+  "tempo_s": 68.8
+ },
+ "causa_probabile": "retrieval",
+ "note": "Non trova gli 8 ddl del Consiglio regionale della Toscana (S. 476, 477, 478, 479, 1064, 1527, 1643, 1801). La ricerca per proponente non usa act.initiative.",
+ "verifica_citazioni": [
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0158&tipo=stenografico#sed0158.stenografico.tit00060.sub00100.int00150"
+  }
+ ]
+}

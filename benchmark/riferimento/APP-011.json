@@ -1,0 +1,79 @@
+{
+  "id": "APP-011",
+  "domanda": "mi trovi il video di Conte che parla della legge elettorale?",
+  "sql": [
+    "SELECT st.date, s.uri AS intervento, left(i.title, 100) AS argomento,\n       (length(s.text) - length(replace(lower(s.text), 'legge elettorale', ''))) / 16 AS menzioni_legge_elettorale,\n       v.url AS video, vs.start_s AS inizio_secondi, vs.end_s AS fine_secondi\nFROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\nLEFT JOIN video_segment vs ON vs.speech = s.uri LEFT JOIN video v ON v.uri = vs.video\nWHERE s.person = 'it:person:camera:307926'\n  AND (s.text ILIKE '%legge elettorale%' OR i.title ILIKE '%materia di elezione%' OR i.title ILIKE '%legge elettorale%')\nORDER BY st.date"
+  ],
+  "risultato": [
+    {
+      "date": "2022-10-25",
+      "intervento": "it:camera:19:sed0004:tit00040.sub00030.int00160",
+      "argomento": "Si riprende la discussione.",
+      "menzioni_legge_elettorale": 1,
+      "video": "https://webtv.camera.it/evento/21261",
+      "inizio_secondi": 29124,
+      "fine_secondi": 30011
+    },
+    {
+      "date": "2025-03-12",
+      "intervento": "it:camera:19:sed0445:tit00040.sub00020.int00260",
+      "argomento": "Discussione della relazione della Giunta delle elezioni sull'elezione contestata della deputata Anna",
+      "menzioni_legge_elettorale": 1,
+      "video": null,
+      "inizio_secondi": null,
+      "fine_secondi": null
+    },
+    {
+      "date": "2026-07-14",
+      "intervento": "it:camera:19:sed0689:tit00080.int00080",
+      "argomento": "Sull'ordine dei lavori e per richiami al Regolamento.",
+      "menzioni_legge_elettorale": 2,
+      "video": null,
+      "inizio_secondi": null,
+      "fine_secondi": null
+    },
+    {
+      "date": "2026-07-16",
+      "intervento": "it:camera:19:sed0691:tit00030.sub00010.int00210",
+      "argomento": "Seguito della discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di ele",
+      "menzioni_legge_elettorale": 3,
+      "video": "https://webtv.camera.it/evento/31988",
+      "inizio_secondi": 5710,
+      "fine_secondi": 6327
+    },
+    {
+      "date": "2026-10-08",
+      "intervento": "it:camera:19:sed0723:tit00040.sub00010.int00200",
+      "argomento": "Seguito della discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elez",
+      "menzioni_legge_elettorale": 1,
+      "video": "https://webtv.camera.it/evento/32457",
+      "inizio_secondi": 5794,
+      "fine_secondi": 6422
+    },
+    {
+      "date": "2026-10-08",
+      "intervento": "it:camera:19:sed0723:tit00040.sub00010.int00220",
+      "argomento": "Seguito della discussione della proposta di legge: Bignami ed altri: Disposizioni in materia di elez",
+      "menzioni_legge_elettorale": 1,
+      "video": null,
+      "inizio_secondi": null,
+      "fine_secondi": null
+    },
+    {
+      "date": "2026-10-14",
+      "intervento": "it:camera:19:sed0727:tit00130.sub00040.int00310",
+      "argomento": "Discussione sulle comunicazioni del Presidente del Consiglio dei ministri in vista della riunione de",
+      "menzioni_legge_elettorale": 2,
+      "video": "https://webtv.camera.it/evento/32546",
+      "inizio_secondi": 19138,
+      "fine_secondi": 19760
+    }
+  ],
+  "risposta": "Gli interventi di Giuseppe Conte in Aula sulla legge elettorale (proposta Bignami ed altri, A.C. 2822-A) con video sono due: 16/7/2026, https://webtv.camera.it/evento/31988 dal secondo 5710 al 6327 (intervento it:camera:19:sed0691:tit00030.sub00010.int00210); 8/10/2026, https://webtv.camera.it/evento/32457 dal secondo 5794 al 6422 (it:camera:19:sed0723:tit00040.sub00010.int00200, che prosegue in int00220 senza tratto video proprio). Ne parla anche il 14/10/2026 nelle comunicazioni del Presidente del Consiglio (https://webtv.camera.it/evento/32546, secondi 19138-19760) e il 14/7/2026 sull'ordine dei lavori (senza video legato: resta il resoconto, sed. 689).",
+  "stato": "calcolata",
+  "limiti": "Si cercano gli interventi di Conte nel resoconto della Camera con «legge elettorale» nel testo o nell'argomento sulla riforma elettorale. Il secondo d'inizio viene da video_segment.start_s; il formato del link WebTV al secondo esatto non è nel database, quindi si danno l'evento e i secondi. Le citazioni del 25/10/2022 e del 12/3/2025 sono menzioni di passaggio, non interventi sulla legge.",
+  "problemi_dati": [
+    "988 titoli di argomenti con l'orario ripetuto: «… (A.C. 157-2236) (ore 9,39). (ore 9,39) (ore 9,39)». Query: SELECT count(*) FROM agenda_item WHERE title ~ '\\(ore [0-9,]+\\)\\.? \\(ore [0-9,]+\\)';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

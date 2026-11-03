@@ -1,0 +1,37 @@
+{
+  "id": "STU-010",
+  "domanda": "chi è il presidente del Senato e come viene eletto?",
+  "sql": [
+    "SELECT st.date, st.uri AS seduta, p.given_name || ' ' || p.family_name AS presiede, s.uri AS intervento, s.text\nFROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting LEFT JOIN person p ON p.uri = s.person\nWHERE st.chamber = 'senato' AND s.text ILIKE '%proclamo eletto Presidente del Senato%'",
+    "SELECT p.given_name || ' ' || p.family_name AS persona, o.title_raw, b.name AS organo, o.start_date, o.end_date\nFROM office o JOIN person p ON p.uri = o.person JOIN body b ON b.uri = o.target\nWHERE o.person = 'it:person:senato:1275'"
+  ],
+  "risultato": [
+    [
+      {
+        "date": "2022-10-13",
+        "seduta": "it:senato:19:sed0001",
+        "presiede": "Liliana Segre",
+        "intervento": "it:senato:19:sed0001:int00010",
+        "text": "Proclamo il risultato della votazione a scrutinio segreto per l'elezione del Presidente del Senato:\n\nHanno ottenuto voti i senatori:\n\nProclamo eletto Presidente del Senato il senatore La Russa. (L'Assemblea si leva in piedi. Vivi, prolungati applausi).\n\nSospendo brevemente la seduta per comunicare il risultato di votazione al Presidente eletto."
+      }
+    ],
+    [
+      {
+        "persona": "Ignazio La Russa",
+        "title_raw": "Presidente",
+        "organo": "Giunta per il Regolamento",
+        "start_date": "2022-11-17",
+        "end_date": null
+      }
+    ]
+  ],
+  "risposta": "Il Presidente del Senato è Ignazio La Russa. Il resoconto della seduta del 13/10/2022 (it:senato:19:sed0001, presieduta da Liliana Segre) riporta: «Proclamo eletto Presidente del Senato il senatore La Russa.» dopo una votazione a scrutinio segreto. Nei dati La Russa è Presidente della Giunta per il Regolamento dal 17/11/2022, carica che spetta al Presidente del Senato. Come si elegge (maggioranze richieste nei vari scrutini) è scritto nel Regolamento del Senato, che non è nel database.",
+  "stato": "parziale",
+  "limiti": "Il database non ha una carica «Presidente del Senato» in office: la persona si ricava dalla proclamazione nel resoconto del 13/10/2022 (e dalla presidenza della Giunta per il Regolamento). I voti ottenuti non ci sono: nel testo l'elenco «Hanno ottenuto voti i senatori:» è vuoto. La procedura di elezione (art. 4 del Regolamento del Senato) non è nei dati.",
+  "problemi_dati": [
+    "Senato: nessuna riga di office per la Presidenza del Senato (e nessun body di tipo presidency per il Senato, mentre la Camera ne ha 11). Query: SELECT chamber, kind, count(*) FROM body GROUP BY 1, 2;",
+    "Senato: nel resoconto della prima seduta l'elenco dei voti per l'elezione del Presidente è vuoto («Hanno ottenuto voti i senatori:» seguito da nulla): le tabelle del resoconto si perdono nel testo. Query: SELECT text FROM speech WHERE uri = 'it:senato:19:sed0001:int00010';",
+    "Didascalie delle reazioni rimaste nel testo dell'intervento, che dovrebbe contenere solo il parlato («(L'Assemblea si leva in piedi. Vivi, prolungati applausi)»): 1.811 interventi del Senato e 6.775 della Camera. Query: SELECT count(*) FROM speech WHERE uri LIKE 'it:senato:%' AND text ~ '\\((L''Assemblea|Applausi|Commenti)[^)]*\\)';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

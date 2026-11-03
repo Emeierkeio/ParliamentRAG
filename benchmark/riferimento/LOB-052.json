@@ -1,0 +1,70 @@
+{
+  "id": "LOB-052",
+  "domanda": "Quante audizioni ha fatto la X Commissione nel 2026 e quanti soggetti diversi ha sentito?",
+  "sql": [
+    "SELECT count(DISTINCT s.uri) AS sedute_con_audizioni,\n       count(*) AS argomenti_di_audizione,\n       count(DISTINCT (s.date, lower(i.title))) AS argomenti_distinti_per_data\nFROM sitting s JOIN agenda_item i ON i.sitting = s.uri\nWHERE s.chamber = 'camera' AND s.source = 'camera_bollettino' AND s.body = 'it:camera:19:body:o19_3510'\n  AND s.date BETWEEN '2026-01-01' AND '2026-12-31' AND i.title ~* '^\\s*audizion'",
+    "SELECT count(*) AS memorie, count(DISTINCT lower(btrim(author_raw))) AS autori_distinti_memorie\nFROM document\nWHERE kind IN ('memorandum', 'written_contribution') AND body = 'it:camera:19:body:o19_3510'\n  AND coalesce(sitting_date, date) BETWEEN '2026-01-01' AND '2026-12-31'",
+    "SELECT to_char(s.date, 'YYYY-MM') AS mese, count(*) AS argomenti_di_audizione\nFROM sitting s JOIN agenda_item i ON i.sitting = s.uri\nWHERE s.chamber = 'camera' AND s.source = 'camera_bollettino' AND s.body = 'it:camera:19:body:o19_3510'\n  AND s.date BETWEEN '2026-01-01' AND '2026-12-31' AND i.title ~* '^\\s*audizion'\nGROUP BY 1 ORDER BY 1"
+  ],
+  "risultato": [
+    [
+      {
+        "sedute_con_audizioni": 62,
+        "argomenti_di_audizione": 100,
+        "argomenti_distinti_per_data": 100
+      }
+    ],
+    [
+      {
+        "memorie": 358,
+        "autori_distinti_memorie": 280
+      }
+    ],
+    [
+      {
+        "mese": "2026-01",
+        "argomenti_di_audizione": 4
+      },
+      {
+        "mese": "2026-02",
+        "argomenti_di_audizione": 2
+      },
+      {
+        "mese": "2026-03",
+        "argomenti_di_audizione": 2
+      },
+      {
+        "mese": "2026-04",
+        "argomenti_di_audizione": 33
+      },
+      {
+        "mese": "2026-05",
+        "argomenti_di_audizione": 7
+      },
+      {
+        "mese": "2026-06",
+        "argomenti_di_audizione": 15
+      },
+      {
+        "mese": "2026-07",
+        "argomenti_di_audizione": 16
+      },
+      {
+        "mese": "2026-09",
+        "argomenti_di_audizione": 16
+      },
+      {
+        "mese": "2026-10",
+        "argomenti_di_audizione": 5
+      }
+    ]
+  ],
+  "risposta": "Nel 2026 (dati fino al 28/10) il Bollettino registra per la X Commissione della Camera 100 argomenti di audizione (formali e informali, anche nelle indagini conoscitive) in 62 sedute; il mese più intenso è aprile (33). Ai fascicoli della Commissione sono state depositate 358 memorie e contributi scritti con 280 autori diversi: è il numero minimo di soggetti sentiti o che hanno scritto, non il numero esatto degli auditi.",
+  "stato": "parziale",
+  "limiti": "Un argomento di audizione può riunire più soggetti («Audizioni informali di rappresentanti di AGCI, Confcooperative, Legacoop…»): il numero di soggetti diversi auditi non è strutturato (entity vuota) e si ricava solo dal titolo. Come stima dei soggetti si usano gli autori distinti delle memorie (author_raw, non normalizzato: varianti dello stesso ente contano due volte, e chi è audito senza memoria non conta). Conteggio sulle sedute del Bollettino (resoconto sommario), per evitare il doppio conteggio con i resoconti stenografici delle indagini conoscitive.",
+  "problemi_dati": [
+    "Le audizioni delle indagini conoscitive compaiono due volte, nella seduta del Bollettino e in quella dei resoconti stenografici (es. 20/1/2026: it:camera:19:bol20260120:c10:sede00010 e it:camera:19:stc:10:indag:c10_settore_tessile:20260120:0009), con elenchi non identici (la Cooperativa Progetto Quid c'è solo nello stenografico). Query: SELECT s.uri, i.ord, i.title FROM sitting s JOIN agenda_item i ON i.sitting=s.uri WHERE s.body_code='10' AND s.date='2026-01-20' AND s.seat ~* 'indag' ORDER BY 1,2;",
+    "sitting.seat ha varianti per lo stesso tipo di sede («AUDIZIONI», «AUDIZIONI INFORMALI», «audiz2 audizione», «indag c10_…»). Query: SELECT seat, count(*) FROM sitting WHERE chamber='camera' AND body_code='10' GROUP BY 1;"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

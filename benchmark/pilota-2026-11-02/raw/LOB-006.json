@@ -1,0 +1,539 @@
+{
+ "id": "LOB-006",
+ "trappola": false,
+ "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Presidenti attesi: Fazzone (8ª), De Carlo (9ª), Zaffini (10ª), Gusmeroli (X). Le cariche hanno doppia riga per il rinnovo di metà legislatura (10/6/2025).",
+ "endpoint": "agente",
+ "risposta_sistema": "Non sono riuscito a chiudere la risposta in tempo: prova a fare una domanda più precisa.",
+ "eventi": {
+  "status": 1,
+  "tool": 70,
+  "dati": 35,
+  "delta": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 0
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   }
+  ]
+ },
+ "tempo_s": 40.4,
+ "verifica": null
+}

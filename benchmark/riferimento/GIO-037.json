@@ -1,0 +1,75 @@
+{
+ "id": "GIO-037",
+ "domanda": "Chi sono i relatori della legge elettorale e di che gruppo sono?",
+ "sql": [
+  "select r.act, r.name_raw, r.role, r.person, g.name gruppo\nfrom act_rapporteur r join act a on a.uri=r.act left join grp g on g.uri=group_at(r.person, a.date)\nwhere r.act in ('it:camera:19:ac:2822','it:camera:19:ac:2822-B','it:senato:19:ddl:1971') order by r.act, r.name_raw"
+ ],
+ "risultato": [
+  {
+   "act": "it:camera:19:ac:2822",
+   "name_raw": "COLUCCI Alessandro",
+   "role": "rapporteur",
+   "person": "it:person:camera:307603",
+   "gruppo": "Noi Moderati - MAIE - Centro Popolare"
+  },
+  {
+   "act": "it:camera:19:ac:2822",
+   "name_raw": "IEZZI Igor",
+   "role": "rapporteur",
+   "person": "it:person:camera:307641",
+   "gruppo": "Lega - Salvini Premier"
+  },
+  {
+   "act": "it:camera:19:ac:2822",
+   "name_raw": "PAGANO Nazario",
+   "role": "rapporteur",
+   "person": "it:person:camera:307857",
+   "gruppo": "Forza Italia - Berlusconi Presidente - PPE"
+  },
+  {
+   "act": "it:camera:19:ac:2822",
+   "name_raw": "ROSSI Angelo",
+   "role": "rapporteur",
+   "person": "it:person:camera:308848",
+   "gruppo": "Fratelli d'Italia"
+  },
+  {
+   "act": "it:camera:19:ac:2822-B",
+   "name_raw": "COLUCCI Alessandro",
+   "role": "rapporteur",
+   "person": "it:person:camera:307603",
+   "gruppo": "Noi Moderati - MAIE - Centro Popolare"
+  },
+  {
+   "act": "it:camera:19:ac:2822-B",
+   "name_raw": "IEZZI Igor",
+   "role": "rapporteur",
+   "person": "it:person:camera:307641",
+   "gruppo": "Lega - Salvini Premier"
+  },
+  {
+   "act": "it:camera:19:ac:2822-B",
+   "name_raw": "PAGANO Nazario",
+   "role": "rapporteur",
+   "person": "it:person:camera:307857",
+   "gruppo": "Forza Italia - Berlusconi Presidente - PPE"
+  },
+  {
+   "act": "it:camera:19:ac:2822-B",
+   "name_raw": "ROSSI Angelo",
+   "role": "rapporteur",
+   "person": "it:person:camera:308848",
+   "gruppo": "Fratelli d'Italia"
+  }
+ ],
+ "risposta": "Alla Camera i relatori della legge elettorale (C. 2822 in prima lettura e C. 2822-B in terza) sono gli stessi quattro: Nazario Pagano (Forza Italia-PPE), Angelo Rossi (Fratelli d'Italia), Igor Iezzi (Lega-Salvini Premier) e Alessandro Colucci (Noi Moderati-MAIE-Centro Popolare). Nel DB non risultano relatori di minoranza.",
+ "stato": "calcolata",
+ "limiti": "Gruppo alla data di presentazione dell'atto, uguale a quello di oggi per tutti e quattro. Per il S. 1971 il DB non ha relatori (act_rapporteur è vuota per il Senato).",
+ "problemi_dati": [
+  {
+   "problema": "act_rapporteur non ha righe per gli atti del Senato.",
+   "sql": "select split_part(act,':',2), count(*) from act_rapporteur group by 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

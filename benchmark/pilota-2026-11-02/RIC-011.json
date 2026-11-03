@@ -1,0 +1,40 @@
+{
+ "id": "RIC-011",
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "categoria": "emendamenti",
+ "ramo": "camera",
+ "tipo_risposta": "classifica",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso ricostruire in modo affidabile una classifica dell’intera XIX legislatura: i dati disponibili permettono di consultare le cofirme **per singolo provvedimento**, ma non forniscono un’aggregazione complessiva delle coppie di gruppi né un’esportazione di tutte le firme da cui calcolarla. Sarebbe quindi improprio indicare quali coppie cofirmano “più spesso”.\n\nIl perimetro è comunque molto ampio: solo sulla legge di bilancio 2026, [C. 2750 / S. 1689](#/strumenti/emendamenti/54965), risultano 11.905 emendamenti; sulla legge di bilancio 2024, [C. 1627 / S. 926](#/strumenti/emendamenti/53226), 5.640. Per una rete corretta occorrerebbe estrarre, emendamento per emendamento, primo firmatario e cofirmatari, attribuire a ciascuno il gruppo nella data della firma, escludere o trattare separatamente i cambi di gruppo e poi sommare le coppie intergruppo.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "emendamenti_cerca",
+  "emendamenti_cerca"
+ ],
+ "errori": [],
+ "tempo_s": 9.9,
+ "riferimento": {
+  "risposta": "Camera, XIX: delle 90.792 proposte emendative con firmatari deputati, 3.281 sono firmate da deputati di almeno due gruppi diversi (gruppo alla data). Le coppie di gruppi che cofirmano più spesso: PD-IDP e AVS 2.330 emendamenti; M5S e PD-IDP 943; M5S e AVS 833; PD-IDP e IV-CR 616; Misto-+Europa e PD-IDP 604; Misto-+Europa e AVS 577; Misto-+Europa e M5S 570; AVS e IV-CR 561; M5S e IV-CR 560; Misto-+Europa e IV-CR 507. Nella maggioranza: FdI e FI-PPE 326, Lega e FI-PPE 301, Lega e FdI 291, FdI e Noi Moderati 230, FI-PPE e Noi Moderati 227. Fra maggioranza e opposizione le coppie più frequenti sono FI-PPE e PD-IDP 95, FdI e PD-IDP 94, M5S e FI-PPE 94.",
+  "stato": "calcolata",
+  "limiti": "Proposta = (atto, sede, numero) distinti: le riformulazioni ripetono il numero e si contano una volta. Gruppo del firmatario = group_at alla data della seduta (o di presentazione), Misto per componente; firme senza persona (governo, relatori senza id) escluse; 49 firme senza gruppo alla data. Per coppia si conta il numero di proposte che hanno almeno un firmatario di ciascuno dei due gruppi. Gli emendamenti della Camera vengono dai fascicoli caricati (dal 31/10/2022 al 28/10/2026), la cui completezza non è verificata."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 9.9
+ },
+ "causa_probabile": "dati",
+ "note": "Non risponde (riferimento: PD-IDP e AVS 2.330 cofirme, M5S e PD-IDP 943…). Lo dice chiaramente."
+}

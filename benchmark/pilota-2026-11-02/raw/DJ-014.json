@@ -1,0 +1,149 @@
+{
+ "id": "DJ-014",
+ "trappola": false,
+ "domanda": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+ "categoria": "interventi",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Contare le occorrenze, non gli interventi. Includere tutti i gruppi, anche quelli con zero occorrenze.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso calcolare in modo affidabile quante volte «Gaza» sia stata pronunciata **mese per mese e per gruppo**: i resoconti sono ricercabili, ma i dati disponibili non forniscono il conteggio delle singole occorrenze di una parola nel testo integrale né un’aggregazione automatica per mese e gruppo.\n\nLa ricerca negli interventi d’Aula di Camera e Senato restituisce **1.711 risultati** per «Gaza», ma questo è il numero di risultati indicizzati, non il numero verificabile delle pronunce della parola. Per esempio, il termine compare in interventi della deputata M5S [Vittoria Baldino](https://www.camera.it/leg19/410?idSeduta=0175&tipo=stenografico#sed0175.stenografico.tit00070.sub00010.int00150), della deputata PD-IDP [Valentina Ghio](https://www.camera.it/leg19/410?idSeduta=0449&tipo=stenografico#sed0449.stenografico.tit00050.int00060), del deputato AVS [Nicola Fratoianni](https://www.camera.it/leg19/410?idSeduta=0513&tipo=stenografico#sed0513.stenografico.tit00030.sub00020.int00060) e del senatore PD-IDP [Alessandro Alfieri](https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1475138&idoggetto=0&part=doc_dc-ressten_rs-gentit_rddscdmdaeedci-trattazione_ddv-intervento_alfieripdidp), ma non sarebbe corretto trasformare questi risultati in una statistica di occorrenze.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Che cosa ha detto Vittoria Baldino (M5S) su Gaza il 10 ottobre 2023?",
+   "Come si sono espresse le mozioni discusse alla Camera il 9 dicembre 2024 sul conflitto a Gaza?",
+   "Che cosa ha detto Alessandro Alfieri (PD-IDP) nelle comunicazioni del Ministro degli esteri del 2 ottobre 2025?"
+  ]
+ },
+ "tempo_s": 66.5,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "na"
+   },
+   "groups": {
+    "present": [
+     "Partito Democratico",
+     "Movimento 5 Stelle",
+     "Alleanza Verdi e Sinistra"
+    ],
+    "missing": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier",
+     "Forza Italia",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Futuro Nazionale Vannacci (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [],
+   "authority": {
+    "topic": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": [
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p308871",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308871",
+      "name": "Valentina Ghio",
+      "group": "Partito Democratico",
+      "voice": "PD",
+      "role": null,
+      "source": "named",
+      "pool": "speakers_on_topic",
+      "rank": 7,
+      "pool_size": 13,
+      "group_size": 13,
+      "authoritative": false
+     },
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p307435",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p307435",
+      "name": "Vittoria Baldino",
+      "group": "Movimento 5 Stelle",
+      "voice": "M5S",
+      "role": null,
+      "source": "named",
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false
+     },
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p305880",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p305880",
+      "name": "Nicola Fratoianni",
+      "group": "Alleanza Verdi e Sinistra",
+      "voice": "AVS",
+      "role": null,
+      "source": "named",
+      "pool": "speakers_on_topic",
+      "rank": 1,
+      "pool_size": 6,
+      "group_size": 6,
+      "authoritative": true
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

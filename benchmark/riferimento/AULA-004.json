@@ -1,0 +1,36 @@
+{
+ "id": "AULA-004",
+ "domanda": "Esito della votazione sulla questione pregiudiziale riferita alla legge elettorale C. 2822-B del 1° ottobre 2026: presenti, votanti, maggioranza, favorevoli e contrari.",
+ "sql": [
+  "select v.uri, v.date, v.title, v.kind, v.secret, v.present, v.voting, v.majority, v.favor, v.against, v.abstain, v.approved, v.source_url\nfrom vote v where v.uri='it:camera:19:sed0718:v025'",
+  "select count(*) voti_con_entita_html_doppie from vote where description like '%&amp;%' or title like '%&amp;%'"
+ ],
+ "risultato": [
+  {
+   "uri": "it:camera:19:sed0718:v025",
+   "date": "2026-10-01",
+   "title": "Votazione pregiudiziale PDL n. 2822-B",
+   "kind": "preliminary_question",
+   "secret": true,
+   "present": 380,
+   "voting": 380,
+   "majority": 191,
+   "favor": 151,
+   "against": 229,
+   "abstain": 0,
+   "approved": false,
+   "source_url": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=718_25&tipo=dettaglio"
+  }
+ ],
+ "risposta": "Votazione it:camera:19:sed0718:v025 del 1/10/2026 sulle questioni pregiudiziali di costituzionalità riferite alla C. 2822-B (Magi n. 1, Bonafè n. 2, Colucci n. 3, Zaratti n. 4, Boschi n. 5): presenti 380, votanti 380, maggioranza 191, favorevoli 151, contrari 229, astenuti 0. Respinte. Il voto è a scrutinio segreto: si sa chi ha partecipato, non come ha votato.",
+ "stato": "calcolata",
+ "limiti": null,
+ "problemi_dati": [
+  {
+   "problema": "vote.description e title contengono entità HTML codificate due volte («costituzionalit&amp;agrave;», «BONAFE&amp;#39;»).",
+   "sql": "select count(*) voti_con_entita_html_doppie from vote where description like '%&amp;%' or title like '%&amp;%'",
+   "righe": 1690
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

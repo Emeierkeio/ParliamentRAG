@@ -1,0 +1,309 @@
+{
+ "id": "RIC-016",
+ "domanda": "Nei resoconti della Camera, quali gruppi applaudono gli interventi di quali altri gruppi? Voglio la matrice degli applausi incrociati.",
+ "sql": [
+  "with a as (\n  select distinct r.uri, f.grp da, group_at(s.person, st.date) verso, s.as_office\n  from reaction r join reaction_from f on f.reaction=r.uri and f.kind='group' and f.grp is not null\n  join speech s on s.uri=r.speech join agenda_item i on i.uri=s.item join sitting st on st.uri=i.sitting\n  where r.uri like 'it:camera:%' and r.kind='applause'),\nc as (\n  select gd.short_name applaude, coalesce(gv.short_name, '(oratore senza gruppo)') oratore, count(*) n, (a.da = a.verso) diag\n  from a join grp gd on gd.uri=a.da left join grp gv on gv.uri=a.verso group by 1,2,4)\nselect applaude, sum(n) totale, sum(n) filter (where diag) a_se_stesso, sum(n) filter (where not diag or diag is null) ad_altri,\n  jsonb_object_agg(oratore, n order by n desc) verso_oratori_di\nfrom c group by 1 order by 2 desc",
+  "select count(*) applausi_camera, count(*) filter (where not exists (select 1 from reaction_from f where f.reaction=r.uri and f.kind='group' and f.grp is not null)) senza_gruppo_risolto,\n count(*) filter (where r.raw='Applausi') solo_applausi from reaction r where r.uri like 'it:camera:%' and r.kind='applause'",
+  "select count(*) reazioni_camera, count(from_group) con_from_group from reaction where uri like 'it:camera:%'"
+ ],
+ "risultato": {
+  "matrice": [
+   {
+    "applaude": "M5S",
+    "totale": 15617,
+    "a_se_stesso": 13912,
+    "ad_altri": 1705,
+    "verso_oratori_di": {
+     "AVS": 457,
+     "FDI": 28,
+     "M5S": 13912,
+     "LEGA": 8,
+     "IV-CR": 162,
+     "MISTO": 37,
+     "FI-PPE": 20,
+     "PD-IDP": 847,
+     "AZ-PER-RE": 87,
+     "MISTO-+EU-SUEU": 57,
+     "NM(N-C-U-I)M-CP": 1,
+     "(oratore senza gruppo)": 1
+    }
+   },
+   {
+    "applaude": "PD-IDP",
+    "totale": 11815,
+    "a_se_stesso": 9451,
+    "ad_altri": 2364,
+    "verso_oratori_di": {
+     "AVS": 988,
+     "FDI": 34,
+     "M5S": 638,
+     "LEGA": 17,
+     "IV-CR": 275,
+     "MISTO": 34,
+     "FI-PPE": 32,
+     "PD-IDP": 9451,
+     "AZ-PER-RE": 208,
+     "MISTO-AVS": 4,
+     "MISTO-FNV-F": 1,
+     "MISTO-+EU-SUEU": 120,
+     "MISTO-MIN.LING.": 2,
+     "NM(N-C-U-I)M-CP": 1,
+     "(oratore senza gruppo)": 10
+    }
+   },
+   {
+    "applaude": "FDI",
+    "totale": 7517,
+    "a_se_stesso": 5649,
+    "ad_altri": 1868,
+    "verso_oratori_di": {
+     "AVS": 19,
+     "FDI": 5649,
+     "M5S": 24,
+     "LEGA": 553,
+     "IV-CR": 36,
+     "MISTO": 24,
+     "FI-PPE": 532,
+     "PD-IDP": 36,
+     "AZ-PER-RE": 94,
+     "MISTO-+EU-SUEU": 1,
+     "M-NM(N-C-U-I)-M": 3,
+     "MISTO-MIN.LING.": 4,
+     "NM(N-C-U-I)M-CP": 164,
+     "(oratore senza gruppo)": 378
+    }
+   },
+   {
+    "applaude": "AVS",
+    "totale": 7198,
+    "a_se_stesso": 5549,
+    "ad_altri": 1649,
+    "verso_oratori_di": {
+     "AVS": 5549,
+     "FDI": 12,
+     "M5S": 278,
+     "LEGA": 7,
+     "IV-CR": 105,
+     "MISTO": 20,
+     "FI-PPE": 10,
+     "PD-IDP": 1065,
+     "AZ-PER-RE": 91,
+     "MISTO-+EU-SUEU": 59,
+     "NM(N-C-U-I)M-CP": 1,
+     "(oratore senza gruppo)": 1
+    }
+   },
+   {
+    "applaude": "LEGA",
+    "totale": 5012,
+    "a_se_stesso": 3333,
+    "ad_altri": 1679,
+    "verso_oratori_di": {
+     "AVS": 5,
+     "FDI": 820,
+     "M5S": 7,
+     "LEGA": 3333,
+     "IV-CR": 20,
+     "MISTO": 11,
+     "FI-PPE": 330,
+     "PD-IDP": 15,
+     "AZ-PER-RE": 52,
+     "MISTO-MIN.LING.": 3,
+     "NM(N-C-U-I)M-CP": 102,
+     "(oratore senza gruppo)": 314
+    }
+   },
+   {
+    "applaude": "FI-PPE",
+    "totale": 3597,
+    "a_se_stesso": 2263,
+    "ad_altri": 1334,
+    "verso_oratori_di": {
+     "AVS": 2,
+     "FDI": 684,
+     "M5S": 11,
+     "LEGA": 215,
+     "IV-CR": 38,
+     "MISTO": 19,
+     "FI-PPE": 2263,
+     "PD-IDP": 19,
+     "AZ-PER-RE": 62,
+     "MISTO-+EU-SUEU": 3,
+     "MISTO-MIN.LING.": 8,
+     "NM(N-C-U-I)M-CP": 75,
+     "(oratore senza gruppo)": 198
+    }
+   },
+   {
+    "applaude": "AZ-PER-RE",
+    "totale": 2098,
+    "a_se_stesso": 1745,
+    "ad_altri": 353,
+    "verso_oratori_di": {
+     "AVS": 42,
+     "FDI": 26,
+     "M5S": 32,
+     "LEGA": 6,
+     "IV-CR": 54,
+     "MISTO": 5,
+     "FI-PPE": 29,
+     "PD-IDP": 108,
+     "AZ-PER-RE": 1745,
+     "MISTO-+EU-SUEU": 28,
+     "NM(N-C-U-I)M-CP": 2,
+     "(oratore senza gruppo)": 21
+    }
+   },
+   {
+    "applaude": "NM(N-C-U-I)M-CP",
+    "totale": 1584,
+    "a_se_stesso": 788,
+    "ad_altri": 796,
+    "verso_oratori_di": {
+     "AVS": 1,
+     "FDI": 416,
+     "M5S": 3,
+     "LEGA": 74,
+     "IV-CR": 10,
+     "MISTO": 2,
+     "FI-PPE": 153,
+     "PD-IDP": 6,
+     "AZ-PER-RE": 19,
+     "MISTO-+EU-SUEU": 1,
+     "MISTO-MIN.LING.": 1,
+     "NM(N-C-U-I)M-CP": 788,
+     "(oratore senza gruppo)": 110
+    }
+   },
+   {
+    "applaude": "IV-CR",
+    "totale": 1388,
+    "a_se_stesso": 1086,
+    "ad_altri": 302,
+    "verso_oratori_di": {
+     "AVS": 23,
+     "FDI": 18,
+     "M5S": 16,
+     "LEGA": 3,
+     "IV-CR": 1086,
+     "MISTO": 20,
+     "FI-PPE": 32,
+     "PD-IDP": 63,
+     "AZ-PER-RE": 43,
+     "MISTO-+EU-SUEU": 70,
+     "MISTO-MIN.LING.": 1,
+     "NM(N-C-U-I)M-CP": 2,
+     "(oratore senza gruppo)": 11
+    }
+   },
+   {
+    "applaude": "MISTO-FNV-F",
+    "totale": 698,
+    "a_se_stesso": 690,
+    "ad_altri": 8,
+    "verso_oratori_di": {
+     "M5S": 2,
+     "LEGA": 1,
+     "IV-CR": 1,
+     "MISTO": 3,
+     "FI-PPE": 1,
+     "MISTO-FNV-F": 690
+    }
+   },
+   {
+    "applaude": "MISTO-+EU-SUEU",
+    "totale": 270,
+    "a_se_stesso": 206,
+    "ad_altri": 64,
+    "verso_oratori_di": {
+     "AVS": 11,
+     "FDI": 2,
+     "M5S": 5,
+     "LEGA": 1,
+     "IV-CR": 13,
+     "MISTO": 4,
+     "PD-IDP": 21,
+     "AZ-PER-RE": 7,
+     "MISTO-+EU-SUEU": 206
+    }
+   },
+   {
+    "applaude": "MISTO-MIN.LING.",
+    "totale": 78,
+    "a_se_stesso": 72,
+    "ad_altri": 6,
+    "verso_oratori_di": {
+     "LEGA": 2,
+     "PD-IDP": 1,
+     "MISTO-+EU-SUEU": 1,
+     "MISTO-MIN.LING.": 72,
+     "NM(N-C-U-I)M-CP": 1,
+     "(oratore senza gruppo)": 1
+    }
+   },
+   {
+    "applaude": "MISTO",
+    "totale": 75,
+    "a_se_stesso": 25,
+    "ad_altri": 50,
+    "verso_oratori_di": {
+     "FDI": 10,
+     "M5S": 2,
+     "LEGA": 4,
+     "IV-CR": 4,
+     "MISTO": 25,
+     "FI-PPE": 10,
+     "PD-IDP": 5,
+     "AZ-PER-RE": 1,
+     "MISTO-+EU-SUEU": 12,
+     "MISTO-MIN.LING.": 1,
+     "(oratore senza gruppo)": 1
+    }
+   },
+   {
+    "applaude": "M-NM(N-C-U-I)-M",
+    "totale": 70,
+    "a_se_stesso": 3,
+    "ad_altri": 67,
+    "verso_oratori_di": {
+     "FDI": 63,
+     "FI-PPE": 4,
+     "M-NM(N-C-U-I)-M": 3
+    }
+   },
+   {
+    "applaude": "MISTO-AVS",
+    "totale": 13,
+    "a_se_stesso": 12,
+    "ad_altri": 1,
+    "verso_oratori_di": {
+     "PD-IDP": 1,
+     "MISTO-AVS": 12
+    }
+   }
+  ],
+  "copertura": [
+   {
+    "applausi_camera": 49003,
+    "senza_gruppo_risolto": 3117,
+    "solo_applausi": 2599
+   }
+  ],
+  "from_group": [
+   {
+    "reazioni_camera": 91428,
+    "con_from_group": 42470
+   }
+  ]
+ },
+ "risposta": "Nei resoconti d'Aula della Camera ci sono 49.003 applausi; 45.886 nominano almeno un gruppo risolto. Ogni gruppo applaude soprattutto i propri oratori: M5S 13.912 su 15.617, PD-IDP 9.451 su 11.815, FdI 5.649 su 7.517, AVS 5.549 su 7.198, Lega 3.333 su 5.012, FI-PPE 2.263 su 3.597. Fuori dalla diagonale, gli applausi incrociati seguono gli schieramenti: PD-IDP applaude soprattutto AVS (988) e M5S (638), M5S applaude PD-IDP (847) e AVS (457), AVS applaude PD-IDP (1.065) e M5S (278); FdI applaude Lega (553) e FI (532), Lega applaude FdI (820) e FI (330), FI applaude FdI (684) e Lega (215). Le righe complete per gruppo che applaude, con il conteggio verso ogni gruppo dell'oratore, sono in «risultato».",
+ "stato": "calcolata",
+ "limiti": "Un applauso conta una volta per ogni coppia (gruppo che applaude, gruppo dell'oratore): «Applausi dei gruppi PD-IDP e AVS» conta per entrambi. Gruppo che applaude da reaction_from (kind = group, grp risolto alla data); gruppo dell'oratore da group_at(speech.person, data), non dal testo as_group. Esclusi 3.117 applausi senza gruppo risolto (2.599 sono solo «Applausi», gli altri nominano singoli deputati o «i banchi della maggioranza»). «(oratore senza gruppo)» = membri del governo non deputati e Presidenza. Componenti del Misto separate.",
+ "problemi_dati": [
+  {
+   "problema": "reaction.from_group è pieno solo per le reazioni di un gruppo solo (42.470 su 91.428 alla Camera): per le reazioni di più gruppi serve reaction_from. Non è un errore ma una trappola per chi usa la vista reaction_flow.",
+   "sql": "select count(*) reazioni_camera, count(from_group) con_from_group from reaction where uri like 'it:camera:%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

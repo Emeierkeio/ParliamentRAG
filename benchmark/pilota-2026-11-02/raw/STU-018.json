@@ -1,0 +1,143 @@
+{
+ "id": "STU-018",
+ "trappola": false,
+ "domanda": "c'è un dossier del Servizio Studi sulla separazione delle carriere? mi serve il link",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dossier gi0010c/d/e su temi.camera.it. Dare il link ufficiale.",
+ "endpoint": "agente",
+ "risposta_sistema": "Sì. Il dossier del Servizio studi è collegato alla pagina della proposta di legge costituzionale A.C. 1917, «Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare», nella sezione **Documenti**.\n\nAl Senato, il corrispondente iter è il DDL S. 1353.",
+ "eventi": {
+  "status": 2,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato Camera e Senato sull’A.C. 1917 / S. 1353?",
+   "Che cosa hanno detto i gruppi sulla separazione delle carriere?",
+   "A che punto è arrivato l’A.C. 1917?"
+  ]
+ },
+ "tempo_s": 68.6,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare",
+     "status": "exact",
+     "closest_passage": null,
+     "url": "https://www.camera.it/leg19/410?idSeduta=0531&tipo=stenografico#sed0531.stenografico.tit00120.sub00010.int01130"
+    }
+   ],
+   "authority": {
+    "topic": "c'è un dossier del Servizio Studi sulla separazione delle carriere? mi serve il link",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": [
+     {
+      "person_id": "http://dati.camera.it/ocd/persona.rdf/p308834",
+      "uri": "http://dati.camera.it/ocd/persona.rdf/p308834",
+      "name": "Sara Ferrari",
+      "group": "Partito Democratico",
+      "voice": "PD",
+      "role": null,
+      "source": "quoted",
+      "pool": "speakers_on_topic",
+      "rank": 19,
+      "pool_size": 24,
+      "group_size": 24,
+      "authoritative": false
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

@@ -1,0 +1,194 @@
+{
+  "id": "LOB-003",
+  "domanda": "A che punto è il DL prezzi petroliferi, C. 3148? So che il Senato l'ha già approvato: quando va in Aula alla Camera?",
+  "sql": [
+    "SELECT a.uri, a.number, a.date, a.status, a.status_date, left(a.title, 200) AS titolo FROM act a\nWHERE a.uri IN ('it:camera:19:ac:3148', 'it:senato:19:ddl:2029')",
+    "SELECT 'passo' AS tipo, st.date, st.title AS descrizione FROM act_step st WHERE st.act = 'it:camera:19:ac:3148'\nUNION ALL\nSELECT 'assegnazione', g.date, g.title FROM act_assignment g WHERE g.act = 'it:camera:19:ac:3148'\nORDER BY 2, 1",
+    "SELECT s.date, s.status, s.kind, coalesce(s.body_name, 'Aula ' || s.chamber) AS organo, i.title, i.scheduled_time, x.act_ref\nFROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting s ON s.uri = i.sitting\nWHERE (x.act = 'it:camera:19:ac:3148' OR x.act = 'it:senato:19:ddl:2029') AND (s.kind IN ('assembly_verbatim', 'assembly_agenda') OR s.date >= '2026-10-27')\nGROUP BY 1, 2, 3, 4, 5, 6, 7 ORDER BY 1, 4",
+    "SELECT v.date, count(*) AS votazioni_senato_sul_ddl, count(*) FILTER (WHERE v.final) AS voti_finali, count(x.act) AS legate_all_atto\nFROM vote_act x JOIN vote v ON v.uri = x.vote\nWHERE x.act_ref = 'http://dati.senato.it/ddl/60442' GROUP BY 1"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:ac:3148",
+        "number": "3148",
+        "date": "2026-10-15",
+        "status": "Concluso l'esame da parte della Commissione. In stato di relazione",
+        "status_date": "2026-10-28",
+        "titolo": "S. 2029. - \"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi "
+      },
+      {
+        "uri": "it:senato:19:ddl:2029",
+        "number": "2029",
+        "date": "2026-09-10",
+        "status": "approvato",
+        "status_date": null,
+        "titolo": "Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati "
+      }
+    ],
+    [
+      {
+        "tipo": "assegnazione",
+        "date": "2026-10-15",
+        "descrizione": "Assegnato alle Commissioni riunite X Attività produttive e VIII Ambiente in sede Referente il 15 ottobre 2026"
+      },
+      {
+        "tipo": "assegnazione",
+        "date": "2026-10-15",
+        "descrizione": "Assegnato alle Commissioni riunite X Attività produttive e VIII Ambiente in sede Referente il 15 ottobre 2026"
+      },
+      {
+        "tipo": "passo",
+        "date": "2026-10-15",
+        "descrizione": "Da assegnare"
+      },
+      {
+        "tipo": "passo",
+        "date": "2026-10-15",
+        "descrizione": "Assegnato"
+      },
+      {
+        "tipo": "passo",
+        "date": "2026-10-21",
+        "descrizione": "In corso di esame in Commissione"
+      },
+      {
+        "tipo": "passo",
+        "date": "2026-10-28",
+        "descrizione": "Concluso l'esame da parte della Commissione. In stato di relazione"
+      }
+    ],
+    [
+      {
+        "date": "2026-10-14",
+        "status": "held",
+        "kind": "assembly_verbatim",
+        "organo": "Aula senato",
+        "title": "Discussione del disegno di legge:",
+        "scheduled_time": null,
+        "act_ref": "ddl:2029"
+      },
+      {
+        "date": "2026-10-15",
+        "status": "held",
+        "kind": "assembly_verbatim",
+        "organo": "Aula senato",
+        "title": "Ripresa della discussione del disegno di legge n.",
+        "scheduled_time": null,
+        "act_ref": "ddl:2029"
+      },
+      {
+        "date": "2026-10-15",
+        "status": "held",
+        "kind": "assembly_verbatim",
+        "organo": "Aula senato",
+        "title": "Seguito della discussione del disegno di legge:",
+        "scheduled_time": null,
+        "act_ref": "ddl:2029"
+      },
+      {
+        "date": "2026-10-27",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Affari costituzionali, della Presidenza del Consiglio e Interni (I)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-27",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Agricoltura (XIII)",
+        "title": "DL 157/26 – Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-27",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Commissioni Riunite (VIII e X)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-27",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Trasporti, poste e telecomunicazioni (IX)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche. C. 3148 Governo, approvato dal Senato.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-28",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Commissioni Riunite (VIII e X)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-28",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Finanze (VI)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-10-28",
+        "status": "held",
+        "kind": "committee_summary",
+        "organo": "Trasporti, poste e telecomunicazioni (IX)",
+        "title": "DL 157/2026: Disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche.",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-11-03",
+        "status": "planned",
+        "kind": "assembly_agenda",
+        "organo": "Aula camera",
+        "title": "Discussione sulle linee generali del disegno di legge",
+        "scheduled_time": "14:00",
+        "act_ref": "ac:3148"
+      },
+      {
+        "date": "2026-11-03",
+        "status": "planned",
+        "kind": "assembly_agenda",
+        "organo": "Aula camera",
+        "title": "Seguito della discussione del disegno di legge",
+        "scheduled_time": null,
+        "act_ref": "ac:3148"
+      }
+    ],
+    [
+      {
+        "date": "2026-10-14",
+        "votazioni_senato_sul_ddl": 1,
+        "voti_finali": 0,
+        "legate_all_atto": 1
+      },
+      {
+        "date": "2026-10-15",
+        "votazioni_senato_sul_ddl": 34,
+        "voti_finali": 0,
+        "legate_all_atto": 34
+      }
+    ]
+  ],
+  "risposta": "Il DL 10 settembre 2026, n. 157 (prezzi petroliferi) è stato esaminato dall'Aula del Senato come S. 2029 il 14 e 15/10/2026 e risulta «approvato». Alla Camera è il C. 3148, del 15/10/2026: assegnato lo stesso giorno alle Commissioni riunite VIII Ambiente e X Attività produttive in sede referente, esame iniziato il 21/10 e concluso il 28/10/2026 («In stato di relazione»), con i pareri di I, VI, VII, IX, XIII, XIV Commissione e del Comitato per la legislazione. In Aula è in programma martedì 3/11/2026 (seduta 737): discussione sulle linee generali alle 14:00, poi il seguito della discussione.",
+  "stato": "calcolata",
+  "limiti": "La data dell'Aula viene dall'ordine del giorno della seduta 737, l'unica seduta in programma (status 'planned') nel database; i lavori dopo il 3/11 non ci sono. Il voto finale del Senato sul S. 2029 non è nel database: ci sono solo 35 votazioni (questione pregiudiziale del 14/10, emendamenti e ordini del giorno del 15/10).",
+  "problemi_dati": [
+    "Manca il voto finale del Senato sul S. 2029, che risulta «approvato»: ci sono 35 votazioni legate al ddl (14 e 15/10/2026), nessuna finale. Query: SELECT v.date, v.final, count(*) FROM vote v JOIN vote_act x ON x.vote = v.uri WHERE x.act = 'it:senato:19:ddl:2029' GROUP BY 1, 2;",
+    "Nessuna riga in act_transmission per il C. 3148 (trasmesso dal Senato). Query: SELECT * FROM act_transmission WHERE act = 'it:camera:19:ac:3148';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

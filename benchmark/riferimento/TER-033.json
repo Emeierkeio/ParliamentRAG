@@ -1,0 +1,47 @@
+{
+ "id": "TER-033",
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "sql": [
+  "-- interrogazioni e interpellanze rivolte al Ministero del Lavoro, per tema EuroVoc (un atto conta una volta per tema)\nWITH atti AS (\n  SELECT DISTINCT a.uri, a.chamber\n  FROM act a JOIN act_addressee ad ON ad.act = a.uri\n  WHERE ad.ministry IN ('it:gov:202:og202_285', 'it:gov:182:og182_285')   -- Ministero del Lavoro e delle Politiche Sociali\n    AND a.kind IN ('written_question','oral_question','committee_question','interpellation')\n    AND a.legislature = 19\n), temi AS (\n  SELECT c.uri, c.label_it, CASE\n    WHEN c.label_it IN ('sicurezza del lavoro','infortunio sul lavoro','prevenzione degli infortuni','malattia professionale','assicurazione infortuni sul lavoro','sanità del lavoro') THEN 'sicurezza sul lavoro'\n    WHEN c.label_it IN ('pensionato','pensione complementare','pensionamento anticipato','condizione di pensionamento','regime pensionistico','cumulo delle pensioni') THEN 'pensioni'\n    WHEN c.label_it IN ('cassa integrazione','assicurazione di disoccupazione') THEN 'ammortizzatori sociali'\n  END AS tema\n  FROM concept c WHERE c.scheme = 'eurovoc'\n)\nSELECT t.tema,\n       count(DISTINCT atti.uri) AS atti,\n       count(DISTINCT atti.uri) FILTER (WHERE atti.chamber = 'camera') AS camera,\n       count(DISTINCT atti.uri) FILTER (WHERE atti.chamber = 'senato') AS senato,\n       string_agg(DISTINCT t.label_it, ', ') AS descrittori_trovati,\n       (SELECT count(*) FROM atti) AS totale_atti_al_ministero\nFROM atti JOIN act_subject s ON s.act = atti.uri JOIN temi t ON t.uri = s.concept\nWHERE t.tema IS NOT NULL\nGROUP BY t.tema ORDER BY atti DESC"
+ ],
+ "risultato": [
+  {
+   "tema": "sicurezza sul lavoro",
+   "atti": 341,
+   "camera": 285,
+   "senato": 56,
+   "descrittori_trovati": "infortunio sul lavoro, malattia professionale, prevenzione degli infortuni, sanità del lavoro, sicurezza del lavoro",
+   "totale_atti_al_ministero": 2783
+  },
+  {
+   "tema": "ammortizzatori sociali",
+   "atti": 216,
+   "camera": 186,
+   "senato": 30,
+   "descrittori_trovati": "assicurazione di disoccupazione, cassa integrazione",
+   "totale_atti_al_ministero": 2783
+  },
+  {
+   "tema": "pensioni",
+   "atti": 178,
+   "camera": 148,
+   "senato": 30,
+   "descrittori_trovati": "condizione di pensionamento, cumulo delle pensioni, pensionamento anticipato, pensionato, pensione complementare, regime pensionistico",
+   "totale_atti_al_ministero": 2783
+  }
+ ],
+ "risposta": "Fra le 2.783 interrogazioni e interpellanze della XIX rivolte al Ministero del Lavoro (2.207 Camera, 576 Senato), la sicurezza sul lavoro è il tema più frequente dei tre: 341 atti (285 Camera, 56 Senato). Seguono gli ammortizzatori sociali con 216 (186 e 30) e le pensioni con 178 (148 e 30). Un atto può toccare più temi.",
+ "stato": "calcolata",
+ "limiti": "I temi sono gruppi di descrittori EuroVoc scelti per la domanda (regola dichiarata): sicurezza sul lavoro = sicurezza del lavoro, infortunio sul lavoro, prevenzione degli infortuni, malattia professionale, sanità del lavoro (più assicurazione infortuni sul lavoro, mai trovato); pensioni = pensionato, pensione complementare, pensionamento anticipato, condizione di pensionamento, regime pensionistico, cumulo delle pensioni; ammortizzatori sociali = cassa integrazione, assicurazione di disoccupazione. Non inclusi i descrittori generici «disoccupazione» e «sicurezza sociale». Atti considerati: interrogazioni a risposta scritta, orale, in commissione e interpellanze.",
+ "problemi_dati": [
+  {
+   "problema": "Il descrittore EuroVoc «denominazione di origine» compare in 178 interrogazioni al Ministero del Lavoro su crisi aziendali e licenziamenti, dove non c'entra: probabile errore di mappatura dei temi (da verificare).",
+   "sql": "SELECT a.uri FROM act a JOIN act_subject s ON s.act=a.uri JOIN concept c ON c.uri=s.concept JOIN act_addressee ad ON ad.act=a.uri WHERE c.label_it='denominazione di origine' AND ad.ministry='it:gov:202:og202_285' LIMIT 10"
+  },
+  {
+   "problema": "government assegna il I Governo Draghi alla legislatura 19 (era in carica dal 12/2/2021, nella XVIII, fino al 21/10/2022).",
+   "sql": "SELECT uri, name, start_date, end_date, legislature FROM government"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

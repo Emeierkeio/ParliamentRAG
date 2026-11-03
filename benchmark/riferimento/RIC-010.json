@@ -1,0 +1,258 @@
+{
+ "id": "RIC-010",
+ "domanda": "Tasso di approvazione degli emendamenti dell'opposizione in commissione e in Aula nei decreti-legge della XIX alla Camera.",
+ "sql": [
+  "with dl as (\n  select uri, date from act where chamber='camera' and legislature=19 and kind='bill'\n    and title ilike '%conversione in legge%decreto-legge%'),\nrighe as (\n  select a.uri, a.act, case when a.venue='assembly' then 'Aula' else 'Commissione' end sede, a.number, a.outcome,\n         coalesce(a.sitting_date, dl.date) d,\n         (select min(n) from (select a.number n union all select regexp_replace(x, '^.*:', '') from unnest(coalesce(a.identical,'{}')) x) z) chiave\n  from amendment a join dl on dl.uri=a.act\n  where a.venue in ('referente','assembly')),\nprimo as (\n  select distinct on (g.amendment) g.amendment, g.person, g.kind_raw\n  from amendment_signer g join righe r on r.uri=g.amendment order by g.amendment, g.first desc nulls last, g.ord),\nschier as (\n  select r.*, case when p.kind_raw='governo' then 'Governo'\n         when p.kind_raw in ('relatore','relatori') then 'Relatori'\n         when gr.short_name in ('PD-IDP','M5S','AVS','AZ-PER-RE','IV-CR','MISTO-+EU-SUEU') then 'Opposizione'\n         when gr.short_name in ('FDI','LEGA','FI-PPE','NM(N-C-U-I)M-CP') then 'Maggioranza'\n         when p.kind_raw in ('commissione','commissioni','exArt86Comma4Bis','organo') then 'Commissione o organo'\n         when p.person is null then 'Firma senza persona (' || coalesce(p.kind_raw,'nessuna') || ')'\n         else 'Altri gruppi (Misto, Min. Ling., FNV, SCN): ' || coalesce(gr.short_name,'gruppo non risolto') end schieramento\n  from righe r left join primo p on p.amendment=r.uri left join grp gr on gr.uri=group_at(p.person, r.d)),\nuno as (  -- un emendamento per atto, sede e chiave degli identici, nello stesso schieramento; più sedute contano una volta\n  select sede, schieramento, act, chiave,\n         coalesce(bool_or(outcome='approvato'),false) approvato,\n         coalesce(bool_or(outcome in ('inammissibile','irricevibile')),false) and not coalesce(bool_or(outcome='approvato'),false) inammissibile\n  from schier group by 1,2,3,4)\nselect sede, schieramento, count(*) emendamenti, count(*) filter (where inammissibile) inammissibili,\n  count(*) filter (where approvato) approvati,\n  round(100.0*count(*) filter (where approvato)/nullif(count(*) filter (where not inammissibile),0),2) tasso_su_ammissibili_pct\nfrom uno group by 1,2 order by 1,2",
+  "with dl as (\n  select uri, date from act where chamber='camera' and legislature=19 and kind='bill'\n    and title ilike '%conversione in legge%decreto-legge%'),\nrighe as (\n  select a.uri, a.act, case when a.venue='assembly' then 'Aula' else 'Commissione' end sede, a.number, a.outcome,\n         coalesce(a.sitting_date, dl.date) d,\n         (select min(n) from (select a.number n union all select regexp_replace(x, '^.*:', '') from unnest(coalesce(a.identical,'{}')) x) z) chiave\n  from amendment a join dl on dl.uri=a.act\n  where a.venue in ('referente','assembly')),\nprimo as (\n  select distinct on (g.amendment) g.amendment, g.person, g.kind_raw\n  from amendment_signer g join righe r on r.uri=g.amendment order by g.amendment, g.first desc nulls last, g.ord),\nschier as (\n  select r.*, gr.short_name gruppo, case when p.kind_raw='governo' then 'Governo'\n         when p.kind_raw in ('relatore','relatori') then 'Relatori'\n         when gr.short_name in ('PD-IDP','M5S','AVS','AZ-PER-RE','IV-CR','MISTO-+EU-SUEU') then 'Opposizione'\n         when gr.short_name in ('FDI','LEGA','FI-PPE','NM(N-C-U-I)M-CP') then 'Maggioranza'\n         when p.kind_raw in ('commissione','commissioni','exArt86Comma4Bis','organo') then 'Commissione o organo'\n         when p.person is null then 'Firma senza persona (' || coalesce(p.kind_raw,'nessuna') || ')'\n         else 'Altri gruppi (Misto, Min. Ling., FNV, SCN): ' || coalesce(gr.short_name,'gruppo non risolto') end schieramento\n  from righe r left join primo p on p.amendment=r.uri left join grp gr on gr.uri=group_at(p.person, r.d)),\nuno as (  -- un emendamento per atto, sede e chiave degli identici, nello stesso schieramento; più sedute contano una volta\n  select sede, schieramento, gruppo, act, chiave,\n         coalesce(bool_or(outcome='approvato'),false) approvato,\n         coalesce(bool_or(outcome in ('inammissibile','irricevibile')),false) and not coalesce(bool_or(outcome='approvato'),false) inammissibile\n  from schier where schieramento='Opposizione' group by 1,2,3,4,5)\nselect sede, gruppo, count(*) emendamenti, count(*) filter (where inammissibile) inammissibili,\n  count(*) filter (where approvato) approvati,\n  round(100.0*count(*) filter (where approvato)/nullif(count(*) filter (where not inammissibile),0),2) tasso_su_ammissibili_pct\nfrom uno group by 1,2 order by 1,3 desc",
+  "select count(*) firme_governo_relatori, count(*) filter (where first) con_first from amendment_signer where kind_raw in ('governo','relatore','relatori')",
+  "select count(*) righe, count(distinct (act, venue, number)) emendamenti_distinti from amendment where act like 'it:camera:%'"
+ ],
+ "risultato": {
+  "per_schieramento": [
+   {
+    "sede": "Aula",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO",
+    "emendamenti": 56,
+    "inammissibili": 1,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO-FNV-F",
+    "emendamenti": 17,
+    "inammissibili": 1,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO-MIN.LING.",
+    "emendamenti": 3,
+    "inammissibili": 0,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "schieramento": "Commissione o organo",
+    "emendamenti": 41,
+    "inammissibili": 0,
+    "approvati": 35,
+    "tasso_su_ammissibili_pct": 85.37
+   },
+   {
+    "sede": "Aula",
+    "schieramento": "Maggioranza",
+    "emendamenti": 42,
+    "inammissibili": 0,
+    "approvati": 8,
+    "tasso_su_ammissibili_pct": 19.05
+   },
+   {
+    "sede": "Aula",
+    "schieramento": "Opposizione",
+    "emendamenti": 17506,
+    "inammissibili": 94,
+    "approvati": 1,
+    "tasso_su_ammissibili_pct": 0.01
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): gruppo non risolto",
+    "emendamenti": 3,
+    "inammissibili": 0,
+    "approvati": 1,
+    "tasso_su_ammissibili_pct": 33.33
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO",
+    "emendamenti": 124,
+    "inammissibili": 15,
+    "approvati": 9,
+    "tasso_su_ammissibili_pct": 8.26
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO-FNV-F",
+    "emendamenti": 17,
+    "inammissibili": 6,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO-MIN.LING.",
+    "emendamenti": 636,
+    "inammissibili": 107,
+    "approvati": 72,
+    "tasso_su_ammissibili_pct": 13.61
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Altri gruppi (Misto, Min. Ling., FNV, SCN): MISTO-SCN",
+    "emendamenti": 1,
+    "inammissibili": 1,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": null
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Commissione o organo",
+    "emendamenti": 1,
+    "inammissibili": 0,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Governo",
+    "emendamenti": 84,
+    "inammissibili": 0,
+    "approvati": 44,
+    "tasso_su_ammissibili_pct": 52.38
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Maggioranza",
+    "emendamenti": 6467,
+    "inammissibili": 1313,
+    "approvati": 779,
+    "tasso_su_ammissibili_pct": 15.11
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Opposizione",
+    "emendamenti": 20401,
+    "inammissibili": 2615,
+    "approvati": 327,
+    "tasso_su_ammissibili_pct": 1.84
+   },
+   {
+    "sede": "Commissione",
+    "schieramento": "Relatori",
+    "emendamenti": 349,
+    "inammissibili": 2,
+    "approvati": 188,
+    "tasso_su_ammissibili_pct": 54.18
+   }
+  ],
+  "opposizione_per_gruppo": [
+   {
+    "sede": "Aula",
+    "gruppo": "M5S",
+    "emendamenti": 6991,
+    "inammissibili": 48,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "gruppo": "PD-IDP",
+    "emendamenti": 6968,
+    "inammissibili": 32,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "gruppo": "AVS",
+    "emendamenti": 4057,
+    "inammissibili": 1,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "gruppo": "AZ-PER-RE",
+    "emendamenti": 843,
+    "inammissibili": 1,
+    "approvati": 1,
+    "tasso_su_ammissibili_pct": 0.12
+   },
+   {
+    "sede": "Aula",
+    "gruppo": "IV-CR",
+    "emendamenti": 803,
+    "inammissibili": 9,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Aula",
+    "gruppo": "MISTO-+EU-SUEU",
+    "emendamenti": 206,
+    "inammissibili": 5,
+    "approvati": 0,
+    "tasso_su_ammissibili_pct": 0.0
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "M5S",
+    "emendamenti": 8037,
+    "inammissibili": 1018,
+    "approvati": 122,
+    "tasso_su_ammissibili_pct": 1.74
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "PD-IDP",
+    "emendamenti": 7705,
+    "inammissibili": 1144,
+    "approvati": 207,
+    "tasso_su_ammissibili_pct": 3.16
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "AVS",
+    "emendamenti": 5178,
+    "inammissibili": 359,
+    "approvati": 84,
+    "tasso_su_ammissibili_pct": 1.74
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "AZ-PER-RE",
+    "emendamenti": 1369,
+    "inammissibili": 169,
+    "approvati": 85,
+    "tasso_su_ammissibili_pct": 7.08
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "IV-CR",
+    "emendamenti": 1043,
+    "inammissibili": 155,
+    "approvati": 39,
+    "tasso_su_ammissibili_pct": 4.39
+   },
+   {
+    "sede": "Commissione",
+    "gruppo": "MISTO-+EU-SUEU",
+    "emendamenti": 290,
+    "inammissibili": 30,
+    "approvati": 9,
+    "tasso_su_ammissibili_pct": 3.46
+   }
+  ]
+ },
+ "risposta": "Decreti-legge della XIX alla Camera, con gli esiti oggi nel DB. In commissione (sede referente): degli emendamenti dell'opposizione ne risultano approvati 327 su 17.786 ammissibili (1,84%; 20.401 presentati, 2.615 inammissibili); quelli della maggioranza 779 su 5.154 ammissibili (15,11%); relatori 188 su 347 (54,2%), Governo 44 su 84 (52,4%). In Aula: opposizione 1 approvato su 17.412 ammissibili (0,01%), maggioranza 8 su 42 (19,0%). Per gruppo in commissione: Azione-PER-RE 7,08%, IV-CR 4,39%, +Europa 3,46%, PD-IDP 3,16%, M5S 1,74%, AVS 1,74%; in Aula 0 per tutti salvo Azione (1 su 842).",
+ "stato": "parziale",
+ "limiti": "Il DB registra come esito solo approvato, inammissibile, irricevibile, ritirato: un emendamento senza esito è contato come non approvato (respinto, ritirato, decaduto o assorbito), ipotesi non verificabile. Opposizione = primo firmatario in PD-IDP, M5S, AVS, Azione-PER-RE, IV-CR o Misto-+Europa alla data della seduta; maggioranza = FdI, Lega, FI-PPE, Noi Moderati; le altre componenti del Misto sono a parte. Il denominatore esclude inammissibili e irricevibili. Un emendamento presente in più sedute conta una volta; gli identici (campo identical) contano una volta nello stesso schieramento (o gruppo, nella tabella per gruppo: per questo la somma per gruppo supera il totale). Decreti-legge = atti della Camera con «Conversione in legge del decreto-legge» nel titolo. La completezza degli emendamenti caricati non è verificata.",
+ "problemi_dati": [
+  {
+   "problema": "Le firme di Governo e relatori hanno first = false anche quando sono le uniche firme: chi cerca il primo firmatario con first = true li perde.",
+   "sql": "select count(*) firme_governo_relatori, count(*) filter (where first) con_first from amendment_signer where kind_raw in ('governo','relatore','relatori')"
+  },
+  {
+   "problema": "Lo stesso emendamento compare in più righe, una per seduta in cui è all'ordine del giorno, e l'esito sta solo in una: alla Camera 106.428 righe per circa 92 mila emendamenti distinti.",
+   "sql": "select count(*) righe, count(distinct (act, venue, number)) emendamenti_distinti from amendment where act like 'it:camera:%'"
+  },
+  {
+   "problema": "Nessun emendamento ha esito «respinto»: gli emendamenti senza esito non si distinguono fra respinti, ritirati, decaduti e non esaminati.",
+   "sql": "select outcome, count(*) from amendment where act like 'it:camera:%' group by 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

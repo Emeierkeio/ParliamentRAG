@@ -1,0 +1,60 @@
+{
+ "id": "TER-017",
+ "domanda": "La proposta del CNEL sulla nomina degli enti del Terzo settore (C. 2852, S. 1846) è stata esaminata? Da quale commissione?",
+ "sql": [
+  "SELECT a.uri, a.chamber, a.date AS presentato, a.initiative, a.status, a.status_date,\n       (SELECT json_agg(json_build_object('data', st.date, 'fase', st.title) ORDER BY st.ord) FROM act_step st WHERE st.act = a.uri) AS fasi,\n       (SELECT json_agg(json_build_object('data', aa.date, 'organo', b.name, 'sede', aa.seat)) FROM act_assignment aa LEFT JOIN body b ON b.uri = aa.body WHERE aa.act = a.uri) AS assegnazioni,\n       (SELECT count(*) FROM agenda_item_act x WHERE x.act = a.uri OR x.act_ref IN ('ac:' || a.number, 'ddl:' || a.number) AND a.chamber = split_part(x.item, ':', 2)) AS punti_odg\nFROM act a\nWHERE a.uri IN ('it:camera:19:ac:2852', 'it:senato:19:ddl:1846')\nORDER BY a.chamber"
+ ],
+ "risultato": [
+  {
+   "uri": "it:camera:19:ac:2852",
+   "chamber": "camera",
+   "presentato": "2026-03-23",
+   "initiative": "CNEL",
+   "status": "Assegnato",
+   "status_date": "2026-05-13",
+   "fasi": [
+    {
+     "data": "2026-03-23",
+     "fase": "Da assegnare"
+    },
+    {
+     "data": "2026-05-13",
+     "fase": "Assegnato"
+    }
+   ],
+   "assegnazioni": [
+    {
+     "data": "2026-05-13",
+     "organo": "II Commissione",
+     "sede": "referente"
+    }
+   ],
+   "punti_odg": 0
+  },
+  {
+   "uri": "it:senato:19:ddl:1846",
+   "chamber": "senato",
+   "presentato": "2026-03-19",
+   "initiative": "C.N.E.L.",
+   "status": "da assegn. a commis.",
+   "status_date": null,
+   "fasi": null,
+   "assegnazioni": null,
+   "punti_odg": 0
+  }
+ ],
+ "risposta": "Non è stata ancora esaminata. Il CNEL ha presentato la proposta in entrambi i rami: al Senato come S. 1846 il 19/3/2026 e alla Camera come C. 2852 il 23/3/2026 (due atti distinti). Il C. 2852 è stato assegnato il 13/5/2026 alla II Commissione Giustizia in sede referente, ma non risulta in nessuna seduta. Il S. 1846 risulta «da assegnare a commissione».",
+ "stato": "calcolata",
+ "limiti": "Per il Senato il database ha solo lo stato dell'atto: act_step e act_assignment non hanno righe del Senato, quindi l'iter al Senato si ricava solo da act.status.",
+ "problemi_dati": [
+  {
+   "problema": "act_step e act_assignment contengono solo atti della Camera (10.124 e 3.140 righe): nessuna fase o assegnazione per gli atti del Senato.",
+   "sql": "SELECT a.chamber, count(*) FROM act_step st JOIN act a ON a.uri=st.act GROUP BY 1"
+  },
+  {
+   "problema": "act.initiative del CNEL scritto in due modi: «CNEL» alla Camera, «C.N.E.L.» al Senato.",
+   "sql": "SELECT chamber, initiative, count(*) FROM act WHERE initiative ~* 'C\\.?N\\.?E\\.?L' GROUP BY 1,2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

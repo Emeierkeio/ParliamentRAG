@@ -1,0 +1,53 @@
+{
+ "id": "GIO-016",
+ "domanda": "A che punto è l'autonomia del Veneto? È già passata in commissione?",
+ "sql": [
+  "SELECT a.number, a.initiative, a.date AS presentato, a.status, a.status_date, a.title,\n       (SELECT string_agg(s.ord || '. ' || s.title || ' (' || s.date || ')', '; ' ORDER BY s.ord) FROM act_step s WHERE s.act = a.uri) AS iter,\n       (SELECT string_agg(x.title, '; ') FROM act_assignment x WHERE x.act = a.uri) AS assegnazione,\n       (SELECT count(*) FROM act_rapporteur r WHERE r.act = a.uri) AS relatori\nFROM act a WHERE a.uri = 'it:camera:19:ac:3164'",
+  "SELECT st.date, st.status, coalesce(st.body_name, st.body) AS organo, st.seat, i.stage, left(i.title, 160) AS argomento,\n       (SELECT string_agg('AC ' || split_part(y.act_ref, ':', 2), ', ' ORDER BY y.act_ref) FROM agenda_item_act y WHERE y.item = i.uri) AS atti_nell_argomento\nFROM agenda_item_act x JOIN agenda_item i ON i.uri = x.item JOIN sitting st ON st.uri = i.sitting\nWHERE x.act = 'it:camera:19:ac:3164' OR x.act_ref IN ('ac:3164', 'pdl:3164')\nORDER BY st.date"
+ ],
+ "risultato": [
+  [
+   {
+    "number": "3164",
+    "initiative": "Governo",
+    "presentato": "2026-10-22",
+    "status": "Assegnato",
+    "status_date": "2026-10-28",
+    "title": "\"Attribuzione alla regione Veneto di ulteriori forme e condizioni particolari di autonomia, ai sensi dell’articolo 116, terzo comma, della Costituzione\" (3164)",
+    "iter": "1. Da assegnare (2026-10-22); 2. Assegnato (2026-10-28)",
+    "assegnazione": "Assegnato alla I Commissione Affari Costituzionali in sede Referente il 28 ottobre 2026",
+    "relatori": 0
+   }
+  ],
+  [
+   {
+    "date": "2026-10-28",
+    "status": "held",
+    "organo": "Bilancio, tesoro e programmazione (V)",
+    "seat": "ESAME, AI SENSI DELL'ARTICOLO 123-BIS, COMMA 1, DEL REGOLAMENTO",
+    "stage": "Esame congiunto per la verifica del contenuto proprio dei disegni di legge e conclusione",
+    "argomento": "Attribuzione alla regione Liguria di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione.",
+    "atti_nell_argomento": "AC 3161, AC 3162, AC 3163, AC 3164"
+   },
+   {
+    "date": "2026-11-03",
+    "status": "planned",
+    "organo": "it:camera:19:aula",
+    "seat": null,
+    "stage": null,
+    "argomento": "Deliberazioni, ai sensi dell'articolo 123-bis, comma 3, del Regolamento, in ordine ai termini per la conclusione dell'esame in Assemblea dei disegni di legge co",
+    "atti_nell_argomento": "AC 3120, AC 3161, AC 3162, AC 3163, AC 3164"
+   }
+  ]
+ ],
+ "risposta": "L'autonomia del Veneto è il disegno di legge del governo AC 3164 («Attribuzione alla regione Veneto di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione»), presentato alla Camera il 22/10/2026 e assegnato il 28/10/2026 alla I Commissione Affari costituzionali in sede referente. Non è ancora passato in commissione: lo stato è «Assegnato», non ci sono relatori e la I Commissione non l'ha ancora esaminato (Bollettino fino al 29/10/2026). Il 28/10/2026 la V Commissione Bilancio ha concluso la verifica del contenuto proprio dei collegati alla manovra (art. 123-bis del Regolamento), insieme agli analoghi ddl per Liguria (AC 3161), Lombardia (3162), Piemonte (3163) e alla legge sulla concorrenza 2026 (AC 3120). Per il 3/11/2026 l'Aula ha in programma solo la deliberazione sui termini per concludere l'esame dei collegati, non la discussione del testo.",
+ "stato": "calcolata",
+ "limiti": "Si legge l'iter (act_step, act_assignment, act_rapporteur) e gli argomenti delle sedute legati all'atto. «Passata in commissione» = esame concluso in sede referente: non risulta. La seduta del 3/11/2026 è in calendario (status planned).",
+ "problemi_dati": [
+  {
+   "problema": "Nell'argomento della V Commissione del 28/10/2026 il titolo riporta solo il ddl Liguria, mentre l'argomento riguarda cinque atti (AC 3120, 3161-3164): chi legge solo agenda_item.title non trova il Veneto.",
+   "sql": "SELECT i.uri, i.title, array_agg(x.act_ref) FROM agenda_item i JOIN agenda_item_act x ON x.item = i.uri WHERE i.uri IN (SELECT item FROM agenda_item_act WHERE act_ref = 'ac:3164') GROUP BY 1, 2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

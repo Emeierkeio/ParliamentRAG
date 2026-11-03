@@ -1,0 +1,68 @@
+{
+  "id": "LEG-008",
+  "domanda": "La legge di conversione nata dall'AC 3131 è stata pubblicata? Numero, data e link al testo vigente.",
+  "sql": [
+    "SELECT a.uri, a.number, a.title, a.law_number, a.law_date, a.status, a.status_date, a.card_url, a.text_urls\nFROM act a WHERE a.uri = 'it:camera:19:ac:3131'",
+    "SELECT ord, title, date FROM act_step WHERE act = 'it:camera:19:ac:3131' ORDER BY ord"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:ac:3131",
+        "number": "3131",
+        "title": "S. 2023. - \"Conversione in legge, con modificazioni, del decreto-legge 28 agosto 2026, n. 154, recante misure urgenti per assicurare la continuità operativa di impianti di interesse strategico nazionale\" <i>(approvato dal Senato)</i> (3131)",
+        "law_number": "196",
+        "law_date": "2026-10-23",
+        "status": "Approvato definitivamente. Legge",
+        "status_date": "2026-10-23",
+        "card_url": "http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131",
+        "text_urls": [
+          "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0216860.pdf",
+          "http://documenti.camera.it/_dati/leg19/lavori/stampati/pdf/19PDL0217630.pdf"
+        ]
+      }
+    ],
+    [
+      {
+        "ord": 1,
+        "title": "Da assegnare",
+        "date": "2026-10-07"
+      },
+      {
+        "ord": 2,
+        "title": "Assegnato",
+        "date": "2026-10-07"
+      },
+      {
+        "ord": 3,
+        "title": "In corso di esame in Commissione",
+        "date": "2026-10-13"
+      },
+      {
+        "ord": 4,
+        "title": "Concluso l'esame da parte della Commissione. In stato di relazione",
+        "date": "2026-10-14"
+      },
+      {
+        "ord": 5,
+        "title": "In discussione",
+        "date": "2026-10-19"
+      },
+      {
+        "ord": 6,
+        "title": "Approvato definitivamente, non ancora pubblicato",
+        "date": "2026-10-20"
+      },
+      {
+        "ord": 7,
+        "title": "Approvato definitivamente. Legge",
+        "date": "2026-10-23"
+      }
+    ]
+  ],
+  "risposta": "Sì: l'AC 3131 (S. 2023, conversione del decreto-legge 28 agosto 2026, n. 154, sulla continuità operativa di impianti di interesse strategico nazionale) è stato approvato definitivamente dalla Camera il 20/10/2026 ed è diventato la legge 23 ottobre 2026, n. 196 (stato «Approvato definitivamente. Legge» dal 23/10/2026). Scheda: http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3131. Il database non ha la data di pubblicazione in Gazzetta Ufficiale né il link al testo vigente.",
+  "stato": "parziale",
+  "limiti": "Numero e data della legge ci sono (law_number, law_date); mancano data e numero della Gazzetta Ufficiale e il link al testo vigente su Normattiva (l'URN urn:nir:stato:legge:2026-10-23;196 si potrebbe costruire, ma non è nel database e non è verificato). «Pubblicata» si deduce solo dallo stato dell'iter «Approvato definitivamente. Legge», distinto da «non ancora pubblicato» del 20/10.",
+  "problemi_dati": [],
+  "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,131 @@
+{
+ "id": "DOC-003",
+ "trappola": false,
+ "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Es. femminicidio alla Camera (237 sì, 0 no). Dire che è unanimità dei presenti.",
+ "endpoint": "agente",
+ "risposta_sistema": "Un esempio adatto è la [legge n. 41 del 25 marzo 2025](https://www.normattiva.it/eli/id/2025/04/03/25G00048/ORIGINAL), sui **Nuovi giochi della gioventù** e la promozione dello sport nelle scuole.\n\nIl testo era stato già approvato all’unanimità dal Senato. Alla Camera, il 12 febbraio 2025, il voto finale sulla proposta [A.C. 1424](#/strumenti/atto/camera-1424?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D1424) è stato: **260 favorevoli, 0 contrari, 1 astenuto**. Quindi non votarono letteralmente “tutti”, perché molti deputati erano assenti, ma nessuno dei presenti votò contro.\n\nÈ un buon caso per spiegare in classe che una legge deve essere approvata nello stesso testo da Camera e Senato, e che un consenso molto ampio può unire maggioranza e opposizioni.",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "get_session_votes",
+   "label": "Leggo le votazioni della seduta",
+   "state": "start"
+  },
+  {
+   "name": "get_session_votes",
+   "state": "done",
+   "count": 62
+  },
+  {
+   "name": "get_debate",
+   "label": "Leggo il dibattito",
+   "state": "start"
+  },
+  {
+   "name": "get_debate",
+   "state": "done",
+   "count": 8
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_session_votes",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_debate",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come si sono divisi i gruppi nel voto finale sulla legge n. 41 del 2025?",
+   "Che cosa hanno detto i gruppi alla Camera sulla proposta A.C. 1424?",
+   "Chi ha presentato la proposta A.C. 1424?"
+  ]
+ },
+ "tempo_s": 42.7,
+ "verifica": null
+}

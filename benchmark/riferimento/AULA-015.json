@@ -1,0 +1,75 @@
+{
+ "id": "AULA-015",
+ "domanda": "Chi è intervenuto a fine seduta il 28 ottobre 2026 alla Camera e su quali argomenti?",
+ "sql": [
+  "SELECT sp.ord, sp.uri AS intervento, sp.speaker_label, sp.as_group, sp.person,\n       left(regexp_replace(sp.text, '\\s+', ' ', 'g'), 400) AS inizio_testo\nFROM speech sp\nWHERE sp.item = 'it:camera:19:sed0735:tit00160'\n  AND coalesce(sp.as_office, '') <> 'PRESIDENTE'\nORDER BY sp.ord"
+ ],
+ "risultato": [
+  {
+   "ord": 2,
+   "intervento": "it:camera:19:sed0735:tit00160.int00020",
+   "speaker_label": "MARIA STEFANIA MARINO",
+   "as_group": "PD-IDP",
+   "person": "it:person:camera:308901",
+   "inizio_testo": "Grazie, signora Presidente. Intervengo per esprimere la mia solidarietà e il mio sostegno alla richiesta degli agricoltori e degli autotrasportatori che stanno denunciando difficoltà ormai insostenibili. Ieri, e da diversi giorni a Roma e in tutta Italia, un intero settore sta manifestando pacificamente per chiedere aiuti rapidi ed efficaci di fronte ad un presente drammatico ed un futuro incerto."
+  },
+  {
+   "ord": 4,
+   "intervento": "it:camera:19:sed0735:tit00160.int00040",
+   "speaker_label": "MARIA STEFANIA MARINO",
+   "as_group": "PD-IDP",
+   "person": "it:person:camera:308901",
+   "inizio_testo": "…prima che altre aziende siano costrette a fermarsi ."
+  },
+  {
+   "ord": 6,
+   "intervento": "it:camera:19:sed0735:tit00160.int00060",
+   "speaker_label": "RACHELE SCARPA",
+   "as_group": "PD-IDP",
+   "person": "it:person:camera:308803",
+   "inizio_testo": "Grazie, Presidente. Oggi è accaduta una cosa molto grave. Oggi il nostro Paese si è astenuto, nell'ambito dell'Assemblea generale delle Nazioni Unite, in una votazione in cui si chiedeva la fine dell'embargo su Cuba, segnando un precedente molto grave: il tradimento della storica posizione che l'Italia ha tenuto negli ultimi 34 anni con Governi di tutti i colori e anche precedentemente col Governo"
+  },
+  {
+   "ord": 8,
+   "intervento": "it:camera:19:sed0735:tit00160.int00080",
+   "speaker_label": "RACHELE SCARPA",
+   "as_group": "PD-IDP",
+   "person": "it:person:camera:308803",
+   "inizio_testo": "…fuggendo dalle discussioni che vi imporrebbero di prendere una posizione scomoda nei confronti di Donald Trump. Ne dovrete rendere conto al Parlamento italiano, alla tradizione diplomatica del nostro Paese e al popolo cubano, che soffre delle sofferenze inimmaginabili per il blocco energetico voluto da Trump e per l'embargo che dura da più di 65 anni. Ignavia…"
+  },
+  {
+   "ord": 10,
+   "intervento": "it:camera:19:sed0735:tit00160.int00100",
+   "speaker_label": "RACHELE SCARPA",
+   "as_group": "PD-IDP",
+   "person": "it:person:camera:308803",
+   "inizio_testo": "…incoerenza e servilismo, oggi ci avete fatto vergognare del nostro Paese !"
+  },
+  {
+   "ord": 12,
+   "intervento": "it:camera:19:sed0735:tit00160.int00120",
+   "speaker_label": "STEFANIA ASCARI",
+   "as_group": "M5S",
+   "person": "it:person:camera:307302",
+   "inizio_testo": "Grazie, Presidente. Una sola parola: vergogna. Vergogna nei confronti del Governo italiano che ancora una volta ha dimostrato di essere servo degli Stati Uniti, servo del padrone Trump. Astenersi oggi alle Nazioni Unite su el bloqueo che Cuba subisce significa stare dalla parte della disumanità e di una politica genocida. Difendere Cuba significava semplicemente difendere una causa umana. Cuba che"
+  },
+  {
+   "ord": 14,
+   "intervento": "it:camera:19:sed0735:tit00160.int00140",
+   "speaker_label": "ARNALDO LOMUTI",
+   "as_group": "M5S",
+   "person": "it:person:camera:307829",
+   "inizio_testo": "Grazie, Presidente. Intervengo per portare la voce dei cittadini del Vulture-Melfese, in Basilicata, in particolare i cittadini di Venosa e di Lavello, che stanno vivendo un periodo di angoscia e di paura dovuto all'escalation di rapine e furti con modalità molto violente. Soltanto nell'ultimo mese, ottobre, per esempio il 1° ottobre è stata smantellata, è stata sventrata la filiale della BdM; il "
+  }
+ ],
+ "risposta": "Nella seduta n. 735 della Camera del 28/10/2026, punto «Interventi di fine seduta», sono intervenuti quattro deputati: Maria Stefania Marino (PD-IDP), solidarietà agli agricoltori e agli autotrasportatori che manifestano per chiedere aiuti; Rachele Scarpa (PD-IDP), l'astensione dell'Italia all'Assemblea generale dell'ONU sul voto per la fine dell'embargo a Cuba; Stefania Ascari (M5S), sullo stesso voto su Cuba («Una sola parola: vergogna»); Arnaldo Lomuti (M5S), rapine e furti violenti nel Vulture-Melfese (Venosa e Lavello). Gli interventi di Marino e Scarpa sono spezzati in più frammenti dalle interruzioni della Presidenza.",
+ "stato": "calcolata",
+ "limiti": "Esclusi gli interventi del PRESIDENTE. Gli argomenti sono ricavati dall'inizio del testo di ciascun intervento.",
+ "problemi_dati": [
+  {
+   "problema": "Nei titoli dei punti all'ordine del giorno della Camera l'orario è ripetuto tre volte in 555 punti (es. «Preavviso di votazioni elettroniche (ore 9,38). (ore 9,38) (ore 9,38)»).",
+   "sql": "SELECT count(*) FROM agenda_item WHERE title ~ '\\(ore [0-9,]+\\)\\. \\(ore [0-9,]+\\) \\(ore'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

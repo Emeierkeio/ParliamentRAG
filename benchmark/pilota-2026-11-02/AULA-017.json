@@ -1,0 +1,51 @@
+{
+ "id": "AULA-017",
+ "domanda": "Quali ministri hanno risposto al question time della Camera nell'ultimo mese, e quale gruppo aveva presentato ciascuna interrogazione?",
+ "categoria": "sindacato_ispettivo",
+ "ramo": "camera",
+ "tipo_risposta": "elenco",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Argomenti «Svolgimento di interrogazioni a risposta immediata» (sedute 722, 727, 730, 735). Alla Camera as_office è vuoto per i ministri: la carica sta all'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»).",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Nell’ultimo mese (7-28 ottobre 2026) si sono svolti quattro question time della Camera, con dieci interrogazioni ciascuno. I ministri che hanno risposto e il gruppo presentatore di ciascuna interrogazione sono:\n\n- **7 ottobre**: Matteo Salvini ha risposto alle n. **3-02924** del **PD-IDP** e **3-02925** di **Italia Viva-Casa Riformista**; **Gianmarco Mazzi** alla n. **3-02926** della **Lega**; Salvini alla n. **3-02927** di **AVS**; **Francesco Lollobrigida** alle n. **3-02928** del **M5S**, **3-02929** di **FdI** e **3-02930** di **Noi Moderati**; **Anna Maria Bernini** alla n. **3-02931** di **Forza Italia**; **Andrea Abodi** alle n. **3-02932** di **Azione** e **3-02933** della componente **+Europa-Stati Uniti d’Europa**.\n- **14 ottobre**: Orazio Schillaci alle n. **3-02941** del **PD-IDP** e **3-02942** di **Italia Viva-Casa Riformista**; **Adolfo Urso** alle n. **3-02943** della componente **Futuro Nazionale Vannacci-Free**, **3-02944** di **Azione**, **3-02945** di **Forza Italia**, **3-02946** del **M5S**, **3-02947** di **FdI**, **3-02948** di **AVS**, **3-02949** di **Noi Moderati** e **3-02950** della **Lega**.\n- **21 ottobre**: Adolfo Urso alla n. **3-02962** del **PD-IDP**; **Antonio Tajani** alle n. **3-02963** e **3-02964**, entrambe della componente **+Europa-Stati Uniti d’Europa**; **Luca Ciriani** alle n. **3-02965** di **Forza Italia** e **3-02967** di **Azione**; **Carlo Nordio** alla n. **3-02968** della **Lega**; **Gianmarco Mazzi** alla n. **3-02969** di **AVS**; **Paolo Zangrillo** alle n. **3-02970** di **Azione** e **3-02971** del **M5S**; **Francesco Lollobrigida** alla n. **3-02966** di **Noi Moderati**.\n- **28 ottobre**: Eugenia Roccella alla n. **3-02980** del **PD-IDP**; Luca Ciriani alle n. **3-02981** della componente **Futuro Nazionale Vannacci-Free**, **3-02982** di **FdI**, **3-02983** di **Forza Italia**, **3-02984** della **Lega**, **3-02985** del **M5S**, **3-02986** di **Italia Viva-Casa Riformista**, **3-02987** di **AVS**, **3-02988** di **Noi Moderati** e **3-02989** di **Azione**.",
+ "eventi": {
+  "status": 2,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "list_sessions",
+  "get_debate",
+  "get_debate",
+  "get_debate",
+  "get_debate",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 51.0,
+ "riferimento": {
+  "risposta": "Dal 2/10 al 2/11/2026 la Camera ha svolto 4 question time (sedute 722 del 7/10, 727 del 14/10, 730 del 21/10, 735 del 28/10), con 40 interrogazioni. Hanno risposto: 7/10 Salvini (PD-IDP, IV-CR, Lega, AVS), Lollobrigida (M5S, FdI, Noi Moderati), Bernini (FI-PPE), Abodi (Azione, Misto-+Europa); 14/10 Schillaci (PD-IDP, IV-CR), Urso (Misto-Futuro Nazionale Vannacci, Azione, FI-PPE, M5S, FdI, AVS, Noi Moderati, Lega); 21/10 Urso (PD-IDP), Tajani (Misto-+Europa, FI-PPE), Ciriani (Azione), Nordio (Lega, FdI), Mazzi (AVS), Zangrillo (M5S, Noi Moderati), Lollobrigida (IV-CR); 28/10 Roccella (PD-IDP), Ciriani (Misto-Futuro Nazionale Vannacci, FdI, FI-PPE, Lega, M5S, IV-CR, AVS, Noi Moderati, Azione). Il gruppo è quello del deputato che illustra l'interrogazione.",
+  "stato": "calcolata",
+  "limiti": "«Ultimo mese» = dal 2/10 al 2/11/2026 (ultimo resoconto d'Aula: 30/10). Le interrogazioni a risposta immediata non sono legate agli atti (agenda_item_act vuoto per questi argomenti): il gruppo presentatore si ricava dal gruppo dichiarato (as_group) del deputato che illustra, non dai firmatari dell'atto. La carica del ministro non è in as_office: si legge dall'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»)."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 51.0
+ },
+ "causa_probabile": "retrieval",
+ "note": "Le quattro sedute e quasi tutti gli abbinamenti sono giusti. Errori: 7/10 la 3-02926 della Lega attribuita a Mazzi (riferimento: Salvini); 21/10 Ciriani risponde a FI e Azione (riferimento: solo Azione; FI è con Tajani), Zangrillo ad Azione e M5S (riferimento: M5S e Noi Moderati), Lollobrigida a Noi Moderati (riferimento: IV-CR). Nessun link alle sedute."
+}

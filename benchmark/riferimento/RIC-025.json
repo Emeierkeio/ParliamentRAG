@@ -1,0 +1,59 @@
+{
+ "id": "RIC-025",
+ "domanda": "Quale quota del lavoro parlamentare si svolge in commissione? Numero di interventi in commissione e in Aula, per ramo.",
+ "sql": [
+  "SELECT s.chamber, s.kind AS tipo_resoconto,\n       count(DISTINCT s.uri) AS sedute,\n       count(sp.uri) AS interventi,\n       count(sp.uri) FILTER (WHERE coalesce(sp.as_office,'') <> 'PRESIDENTE' AND sp.person IS NOT NULL) AS interventi_con_oratore_escl_presidente_aula,\n       round(avg(length(sp.text))) AS caratteri_medi\nFROM sitting s\nJOIN agenda_item ai ON ai.sitting = s.uri\nJOIN speech sp ON sp.item = ai.uri\nWHERE s.kind IN ('assembly_verbatim','committee_summary','committee_verbatim')\nGROUP BY 1,2 ORDER BY 1,2"
+ ],
+ "risultato": [
+  {
+   "chamber": "camera",
+   "tipo_resoconto": "assembly_verbatim",
+   "sedute": 736,
+   "interventi": 125169,
+   "interventi_con_oratore_escl_presidente_aula": 57171,
+   "caratteri_medi": 1343
+  },
+  {
+   "chamber": "camera",
+   "tipo_resoconto": "committee_summary",
+   "sedute": 16958,
+   "interventi": 156618,
+   "interventi_con_oratore_escl_presidente_aula": 81971,
+   "caratteri_medi": 602
+  },
+  {
+   "chamber": "camera",
+   "tipo_resoconto": "committee_verbatim",
+   "sedute": 1604,
+   "interventi": 46222,
+   "interventi_con_oratore_escl_presidente_aula": 29733,
+   "caratteri_medi": 1353
+  },
+  {
+   "chamber": "senato",
+   "tipo_resoconto": "assembly_verbatim",
+   "sedute": 469,
+   "interventi": 66530,
+   "interventi_con_oratore_escl_presidente_aula": 33960,
+   "caratteri_medi": 1203
+  },
+  {
+   "chamber": "senato",
+   "tipo_resoconto": "committee_summary",
+   "sedute": 2622,
+   "interventi": 47719,
+   "interventi_con_oratore_escl_presidente_aula": 30459,
+   "caratteri_medi": 673
+  }
+ ],
+ "risposta": "Interventi nel database (XIX, fino a fine ottobre 2026). Camera: Aula 125.169 interventi in 736 sedute; commissioni 156.618 frammenti del resoconto sommario (Bollettino) in 16.958 sedute più 46.222 interventi in 1.604 resoconti stenografici di commissione. Senato: Aula 66.530 interventi in 469 sedute; commissioni 47.719 frammenti del resoconto sommario in 2.622 sedute. Contando come «in commissione» sommari e stenografici, alla Camera il 61,8% delle righe di intervento è in commissione, al Senato il 41,8%. Le unità non sono confrontabili: un frammento del sommario è un riassunto (602 caratteri in media alla Camera, 673 al Senato) e include frasi della Commissione senza oratore, mentre un intervento d'Aula è trascritto per intero (1.343 caratteri alla Camera, 1.203 al Senato).",
+ "stato": "parziale",
+ "limiti": "Il resoconto sommario delle commissioni riassume e non trascrive: il numero di «interventi» in commissione non è comparabile con quello d'Aula (resoconto stenografico), né per conteggio né per lunghezza. La colonna interventi_con_oratore_escl_presidente_aula toglie le righe senza oratore e quelle del Presidente d'Aula; nei sommari il presidente di commissione non è marcato e resta incluso. Al Senato le sedute di commissione caricate sono solo quelle delle commissioni permanenti e riunite (circa 600 l'anno); la Camera conta una seduta per ogni sede dello stesso giorno. La quota di lavoro va quindi presentata come ordine di grandezza, non come misura.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato la stessa sede riunita ha due codici diversi in sitting.body_code (es. «1ae2ariunite» 62 sedute e «commissioni1ae2ariunite» 27).",
+   "sql": "SELECT body_code, count(*) FROM sitting WHERE chamber='senato' AND kind='committee_summary' AND body_code ~ 'riunite' GROUP BY 1 ORDER BY 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

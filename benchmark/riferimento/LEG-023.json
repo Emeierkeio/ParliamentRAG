@@ -1,0 +1,117 @@
+{
+  "id": "LEG-023",
+  "domanda": "Riforma costituzionale sulla separazione delle carriere (AS 1353 / AC 1917-B): le deliberazioni dei due rami, con date e maggioranze raggiunte.",
+  "sql": [
+    "WITH voti AS (\n  SELECT v.uri, v.chamber, v.date, x.act_ref, v.favor, v.against, v.abstain, v.present, v.voting, v.majority AS maggioranza_nel_voto,\n         row_number() OVER (PARTITION BY v.chamber ORDER BY v.date) AS lettura\n  FROM vote v JOIN vote_act x ON x.vote = v.uri\n  WHERE v.final AND v.uri IN ('it:camera:19:sed0410:v031', 'it:senato:19:sed0331:v001', 'it:camera:19:sed0531:v001', 'it:senato:19:sed0361:v002'))\nSELECT v.date, v.chamber, CASE v.lettura WHEN 1 THEN 'prima deliberazione' ELSE 'seconda deliberazione' END AS deliberazione,\n       v.favor, v.against, v.abstain, v.present, v.voting, v.maggioranza_nel_voto,\n       c.componenti, c.componenti / 2 + 1 AS maggioranza_assoluta, ceil(2 * c.componenti / 3.0)::int AS due_terzi,\n       v.favor >= c.componenti / 2 + 1 AS raggiunta_assoluta, v.favor >= ceil(2 * c.componenti / 3.0) AS raggiunti_due_terzi\nFROM voti v CROSS JOIN LATERAL (\n  SELECT count(*) AS componenti FROM mandate m\n  WHERE m.chamber = v.chamber AND m.legislature = 19 AND m.start_date <= v.date AND (m.end_date IS NULL OR m.end_date >= v.date)) c\nORDER BY v.date",
+    "SELECT uri, number, status, status_date, law_number, law_date FROM act\nWHERE uri IN ('it:camera:19:ac:1917', 'it:camera:19:ac:1917-B', 'it:senato:19:ddl:1353', 'it:senato:19:ddl:1353-B')"
+  ],
+  "risultato": [
+    [
+      {
+        "date": "2025-01-16",
+        "chamber": "camera",
+        "deliberazione": "prima deliberazione",
+        "favor": 174,
+        "against": 92,
+        "abstain": 5,
+        "present": 271,
+        "voting": 266,
+        "maggioranza_nel_voto": 134,
+        "componenti": 400,
+        "maggioranza_assoluta": 201,
+        "due_terzi": 267,
+        "raggiunta_assoluta": false,
+        "raggiunti_due_terzi": false
+      },
+      {
+        "date": "2025-07-22",
+        "chamber": "senato",
+        "deliberazione": "prima deliberazione",
+        "favor": 106,
+        "against": 61,
+        "abstain": 11,
+        "present": 179,
+        "voting": 178,
+        "maggioranza_nel_voto": 84,
+        "componenti": 205,
+        "maggioranza_assoluta": 103,
+        "due_terzi": 137,
+        "raggiunta_assoluta": true,
+        "raggiunti_due_terzi": false
+      },
+      {
+        "date": "2025-09-18",
+        "chamber": "camera",
+        "deliberazione": "seconda deliberazione",
+        "favor": 243,
+        "against": 109,
+        "abstain": 6,
+        "present": 358,
+        "voting": 352,
+        "maggioranza_nel_voto": 201,
+        "componenti": 400,
+        "maggioranza_assoluta": 201,
+        "due_terzi": 267,
+        "raggiunta_assoluta": true,
+        "raggiunti_due_terzi": false
+      },
+      {
+        "date": "2025-10-30",
+        "chamber": "senato",
+        "deliberazione": "seconda deliberazione",
+        "favor": 112,
+        "against": 59,
+        "abstain": 9,
+        "present": 181,
+        "voting": 180,
+        "maggioranza_nel_voto": 103,
+        "componenti": 205,
+        "maggioranza_assoluta": 103,
+        "due_terzi": 137,
+        "raggiunta_assoluta": true,
+        "raggiunti_due_terzi": false
+      }
+    ],
+    [
+      {
+        "uri": "it:camera:19:ac:1917",
+        "number": "1917",
+        "status": "Approvato, segue Navette",
+        "status_date": "2025-01-16",
+        "law_number": null,
+        "law_date": null
+      },
+      {
+        "uri": "it:camera:19:ac:1917-B",
+        "number": "1917-B",
+        "status": "Approvato definitivamente dal Senato, non ancora pubblicato",
+        "status_date": "2025-10-30",
+        "law_number": null,
+        "law_date": null
+      },
+      {
+        "uri": "it:senato:19:ddl:1353",
+        "number": "1353",
+        "status": "approvato",
+        "status_date": null,
+        "law_number": "690",
+        "law_date": "2100-01-01"
+      },
+      {
+        "uri": "it:senato:19:ddl:1353-B",
+        "number": "1353-B",
+        "status": "appr. def. non pubbl",
+        "status_date": null,
+        "law_number": "690",
+        "law_date": "2100-01-01"
+      }
+    ]
+  ],
+  "risposta": "Riforma costituzionale sulla separazione delle carriere, quattro deliberazioni. 1) Camera, prima deliberazione (AC 1917), 16/1/2025: 174 sì, 92 no, 5 astenuti; basta la maggioranza semplice dei votanti (134 su 266). 2) Senato, prima deliberazione (AS 1353), 22/7/2025: 106 sì, 61 no, 11 astenuti. 3) Camera, seconda deliberazione (AC 1917-B), 18/9/2025: 243 sì, 109 no, 6 astenuti; con 400 componenti la maggioranza assoluta è 201 ed è raggiunta, i due terzi (267) no. 4) Senato, seconda deliberazione (AS 1353-B), 30/10/2025: 112 sì, 59 no, 9 astenuti; con 205 componenti la maggioranza assoluta è 103 ed è raggiunta, i due terzi (137) no. Senza i due terzi in seconda deliberazione, la legge si può sottoporre a referendum (art. 138). Stato alla Camera: «Approvato definitivamente dal Senato, non ancora pubblicato».",
+  "stato": "calcolata",
+  "limiti": "Componenti = mandati in corso alla data del voto (Camera 400; Senato 205, senatori a vita compresi). Maggioranza assoluta = metà dei componenti più uno; due terzi arrotondati per eccesso. La regola dell'art. 138 (referendum senza i due terzi) è un richiamo alla Costituzione, non un dato del database.",
+  "problemi_dati": [
+    "Senato: ddl 1353 e 1353-B hanno law_number '690' e law_date 2100-01-01, valori impossibili per una legge costituzionale non ancora pubblicata. Query: SELECT uri, law_number, law_date FROM act WHERE law_date > '2026-12-31';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

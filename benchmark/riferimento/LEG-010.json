@@ -1,0 +1,139 @@
+{
+ "id": "LEG-010",
+ "domanda": "Quanti decreti-legge sono decaduti nella XIX e quanti sono stati restituiti al Governo per essere ripresentati all'altro ramo?",
+ "sql": [
+  "WITH dl AS (\n  SELECT a.chamber, a.number, a.status, a.status_date, a.date,\n         substring(a.title from '(?i)decreto-legge\\s+(\\d{1,2}\\S*\\s+\\S+\\s+\\d{4},\\s+n\\.\\s*\\d+)') AS decreto,\n         CASE WHEN a.status IN ('Decreto-legge decaduto', 'D-L decaduto') THEN 'decaduto'\n              WHEN a.status ILIKE 'restit%' OR a.status ILIKE 'Restituito al Governo%' THEN 'restituito al Governo' END AS esito\n  FROM act a\n  WHERE a.legislature = 19 AND a.kind = 'bill' AND a.title ~* 'conversione in legge'\n)\nSELECT esito, decreto, string_agg(CASE chamber WHEN 'camera' THEN 'AC ' ELSE 'AS ' END || number || ' (' || status || coalesce(', ' || status_date, '') || ')', '; ' ORDER BY date) AS atti\nFROM dl WHERE esito IS NOT NULL\nGROUP BY 1, 2 ORDER BY 1, min(date)"
+ ],
+ "risultato": [
+  {
+   "esito": "decaduto",
+   "decreto": "20 ottobre 2022, n. 153",
+   "atti": "AC 422 (Decreto-legge decaduto, 2022-12-21)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "23 novembre 2022, n. 179",
+   "atti": "AS 361 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "11 gennaio 2023, n. 4",
+   "atti": "AS 463 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "28 giugno 2023, n. 79",
+   "atti": "AC 1268 (Decreto-legge decaduto, 2023-08-27)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "5 luglio 2023, n. 88",
+   "atti": "AC 1279 (Decreto-legge decaduto, 2023-09-03)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "31 agosto 2023, n. 118",
+   "atti": "AS 856 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "2 febbraio 2024, n. 9",
+   "atti": "AS 1011 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "2 luglio 2024, n. 91",
+   "atti": "AS 1180 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "23 ottobre 2024, n. 158",
+   "atti": "AS 1280 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "14 novembre 2024, n. 167",
+   "atti": "AS 1297 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "16 gennaio 2025, n. 1",
+   "atti": "AC 2199 (Decreto-legge decaduto, 2025-03-17)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "30 gennaio 2025, n. 5",
+   "atti": "AS 1366 (D-L decaduto)"
+  },
+  {
+   "esito": "decaduto",
+   "decreto": "26 agosto 2026, n. 153",
+   "atti": "AC 3086 (Decreto-legge decaduto, 2026-10-25)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "28 giugno 2023, n. 79",
+   "atti": "AS 781 (restit. al Governo)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "10 agosto 2023, n. 104",
+   "atti": "AC 1372 (Restituito al Governo per essere ripresentato all'altro ramo, 2023-08-11)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "29 marzo 2024, n. 39",
+   "atti": "AC 1809 (Restituito al Governo per essere ripresentato all'altro ramo, 2024-04-03)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "4 luglio 2024, n. 92",
+   "atti": "AC 1947 (Restituito al Governo per essere ripresentato all'altro ramo, 2024-07-05)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "23 ottobre 2024, n. 158",
+   "atti": "AC 2113 (Restituito al Governo per essere ripresentato all'altro ramo, 2024-10-28)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "27 dicembre 2024, n. 201",
+   "atti": "AS 1336 (restit. al Governo)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "8 agosto 2025, n. 116",
+   "atti": "AC 2569 (Restituito al Governo per essere ripresentato all'altro ramo, 2025-08-13)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "30 aprile 2026, n. 63",
+   "atti": "AC 2912 (Restituito al Governo per essere ripresentato all'altro ramo, 2026-05-05)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "7 agosto 2026, n. 144",
+   "atti": "AS 2021 (restit. al Governo)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "26 agosto 2026, n. 153",
+   "atti": "AS 2022 (restit. al Governo)"
+  },
+  {
+   "esito": "restituito al Governo",
+   "decreto": "16 ottobre 2026, n. 185",
+   "atti": "AC 3151 (Restituito al Governo per essere ripresentato all'altro ramo, 2026-10-19)"
+  }
+ ],
+ "risposta": "Nella XIX risultano decaduti 13 decreti-legge distinti: DL 153/2022, 179/2022, 4/2023, 79/2023, 88/2023, 118/2023, 9/2024, 91/2024, 158/2024, 167/2024, 1/2025, 5/2025 e 153/2026 (5 con l'atto della Camera, 8 con quello del Senato). Sono stati restituiti al Governo per essere ripresentati all'altro ramo 11 decreti: DL 79/2023, 104/2023, 39/2024, 92/2024, 158/2024, 201/2024, 116/2025, 63/2026, 144/2026, 153/2026 e 185/2026 (7 alla Camera, 4 al Senato). Tre decreti sono in entrambe le liste, restituiti in un ramo e poi decaduti nell'altro: DL 79/2023 (AS 781, poi AC 1268), DL 158/2024 (AC 2113, poi AS 1280) e DL 153/2026 (AS 2022, poi AC 3086, decaduto il 25/10/2026). L'ultimo restituito è il DL 185/2026 (AC 3151, 19/10/2026), ripresentato al Senato come AS 2065, in esame in commissione.",
+ "stato": "parziale",
+ "limiti": "Decaduto e restituito si leggono solo da act.status ('Decreto-legge decaduto' / 'D-L decaduto'; 'Restituito al Governo…' / 'restit. al Governo') dei disegni di legge di conversione. Un decreto si identifica dalla data e dal numero nel titolo, così lo stesso DL nei due rami conta una volta. I decreti non convertiti ma fatti confluire in un altro decreto non hanno uno stato proprio e possono mancare, o comparire come decaduti senza distinzione.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato act.status_date è vuota per gli atti decaduti e restituiti, e gli stati sono abbreviazioni diverse da quelle della Camera ('D-L decaduto', 'restit. al Governo', 'appr. definit. Legge').",
+   "sql": "SELECT chamber, status, count(*), count(status_date) FROM act WHERE legislature = 19 AND kind = 'bill' AND title ~* 'conversione in legge' GROUP BY 1, 2 ORDER BY 1, 3 DESC"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

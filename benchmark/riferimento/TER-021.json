@@ -1,0 +1,87 @@
+{
+ "id": "TER-021",
+ "domanda": "Quanti interventi in Aula hanno parlato di povertà assoluta nel 2026, divisi per gruppo?",
+ "sql": [
+  "with s as (\n  select st.chamber, sp.uri, sp.person, sp.as_group, sp.as_office, sp.speaker_label, st.date\n  from speech sp join agenda_item i on i.uri=sp.item join sitting st on st.uri=i.sitting\n  where st.body in ('it:camera:19:aula','it:senato:19:aula') and st.date between '2026-01-01' and '2026-12-31'\n    and sp.text ilike '%povertà assoluta%')\nselect s.chamber, coalesce(g.short_name, case when s.as_office is not null then 'Governo' when s.speaker_label ilike 'PRESIDENTE%' then 'Presidenza' end, s.as_group, '(non risolto)') gruppo,\n  count(*) interventi, count(distinct s.person) oratori\nfrom s left join grp g on g.uri=group_at(s.person, s.date)\ngroup by 1,2 order by 1,3 desc",
+  "select sp.speaker_label, st.date from speech sp join agenda_item i on i.uri=sp.item join sitting st on st.uri=i.sitting\nwhere st.body='it:senato:19:aula' and st.date between '2026-01-01' and '2026-12-31' and sp.text ilike '%povertà assoluta%'\nand group_at(sp.person, st.date)='it:senato:19:group:9'"
+ ],
+ "risultato": {
+  "per_gruppo": [
+   {
+    "chamber": "camera",
+    "gruppo": "M5S",
+    "interventi": 21,
+    "oratori": 12
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "AVS",
+    "interventi": 15,
+    "oratori": 5
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "PD-IDP",
+    "interventi": 11,
+    "oratori": 9
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "IV-CR",
+    "interventi": 1,
+    "oratori": 1
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "M5S",
+    "interventi": 7,
+    "oratori": 3
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "PD-IDP",
+    "interventi": 4,
+    "oratori": 3
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "IV-CR",
+    "interventi": 2,
+    "oratori": 2
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Misto",
+    "interventi": 2,
+    "oratori": 2
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "LSP-PSd'Az",
+    "interventi": 1,
+    "oratori": 1
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Governo",
+    "interventi": 1,
+    "oratori": 1
+   }
+  ],
+  "senato_misto": [
+   {
+    "speaker_label": "CUCCHI",
+    "date": "2026-10-13"
+   },
+   {
+    "speaker_label": "MAGNI",
+    "date": "2026-10-13"
+   }
+  ]
+ },
+ "risposta": "Interventi d'Aula del 2026 (al 2/11) che contengono «povertà assoluta». Camera, 48: M5S 21, AVS 15, PD-IDP 11, IV-CR 1. Senato, 17: M5S 7, PD-IDP 4, IV-CR 2, Misto 2 (Cucchi e Magni), Lega-PSd'Az 1, Governo 1 (la presidente del Consiglio Meloni). Nessun intervento degli altri gruppi contiene l'espressione.",
+ "stato": "calcolata",
+ "limiti": "Conteggio per espressione esatta «povertà assoluta» (ILIKE, comprese le varianti con apostrofo, che non cambiano il risultato) nel testo degli interventi delle sedute d'Aula, dal 1/1 al 2/11/2026. Un intervento conta una volta anche se la ripete. Gruppo dell'oratore alla data (group_at); al Senato il Misto non è diviso per componente nel DB.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

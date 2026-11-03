@@ -1,0 +1,202 @@
+{
+ "id": "APP-014",
+ "trappola": false,
+ "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+ "categoria": "confronto",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Voto del gruppo = posizione della maggioranza dei suoi votanti. Elencare i casi, separati per ramo.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso confermare un «mai» con i dati disponibili: ci sono **670 votazioni finali** registrate tra Camera e Senato nella XIX legislatura, ma non un confronto automatico, voto per voto, tra i due gruppi. Le verifiche puntuali vanno fatte sulla singola votazione.\n\nNell’ultima votazione finale disponibile alla Camera, del 28 ottobre 2026 sulla proposta [A.C. 2700](#/strumenti/atto/camera-2700?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D2700) sulle professioni sanitarie, hanno votato entrambi a favore: **Fratelli d’Italia 72 sì** e **Lega 27 sì**; nessun voto contrario o astensione dei due gruppi. Il provvedimento è stato approvato con 143 sì, 113 no e 3 astensioni.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "votazioni_per_tipo",
+   "label": "Conto le votazioni",
+   "state": "start"
+  },
+  {
+   "name": "votazioni_per_tipo",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "verify_answer",
+   "label": "Controllo le tre garanzie",
+   "state": "start"
+  },
+  {
+   "name": "verify_answer",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "votazioni_per_tipo",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "verify_answer",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato Lega e Fratelli d’Italia sulla votazione finale dell’A.C. 2700?",
+   "A che punto è l’A.C. 2700 sulle professioni sanitarie?",
+   "Quali gruppi hanno votato contro l’A.C. 2700?"
+  ]
+ },
+ "tempo_s": 101.2,
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "na"
+   },
+   "groups": {
+    "present": [
+     "Fratelli d'Italia",
+     "Lega - Salvini Premier"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [],
+   "authority": {
+    "topic": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+    "topic_source": "question",
+    "available": true,
+    "pool": "speakers_on_topic",
+    "voices": []
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "id": "APP-002",
+ "domanda": "quali deputati sono passati con Vannacci e da dove venivano?",
+ "sql": [
+  "SELECT p.given_name || ' ' || p.family_name AS deputato, m.start_date AS nella_componente_dal, m.end_date AS fino_al,\n       (SELECT string_agg(g2.name || ' (' || m2.start_date || ' → ' || coalesce(m2.end_date::text, '…') || ')', '; ' ORDER BY m2.start_date)\n        FROM membership m2 JOIN grp g2 ON g2.uri = m2.grp\n        WHERE m2.person = m.person AND g2.legislature = 19 AND m2.start_date < m.start_date AND g2.kind = 'group'\n          AND g2.uri <> 'it:camera:19:group:gr4111') AS gruppi_precedenti,\n       g0.name AS gruppo_il_giorno_prima\nFROM membership m JOIN person p ON p.uri = m.person\nLEFT JOIN grp g0 ON g0.uri = group_at(m.person, m.start_date - 1)\nWHERE m.grp = 'it:camera:19:group:cgm4271'\nORDER BY m.start_date, p.family_name"
+ ],
+ "risultato": [
+  {
+   "deputato": "Emanuele Pozzolo",
+   "nella_componente_dal": "2026-05-27",
+   "fino_al": null,
+   "gruppi_precedenti": "Fratelli d'Italia (2022-10-18 → 2025-05-14)",
+   "gruppo_il_giorno_prima": "Misto"
+  },
+  {
+   "deputato": "Laura Ravetto",
+   "nella_componente_dal": "2026-05-27",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-05-20)",
+   "gruppo_il_giorno_prima": "Misto"
+  },
+  {
+   "deputato": "Rossano Sasso",
+   "nella_componente_dal": "2026-05-27",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-02-06)",
+   "gruppo_il_giorno_prima": "Misto"
+  },
+  {
+   "deputato": "Edoardo Ziello",
+   "nella_componente_dal": "2026-05-27",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-02-06)",
+   "gruppo_il_giorno_prima": "Misto"
+  },
+  {
+   "deputato": "Davide Bergamini",
+   "nella_componente_dal": "2026-06-08",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-01-07); Forza Italia - Berlusconi Presidente - PPE (2026-01-20 → 2026-06-08)",
+   "gruppo_il_giorno_prima": "Forza Italia - Berlusconi Presidente - PPE"
+  },
+  {
+   "deputato": "Gianangelo Bof",
+   "nella_componente_dal": "2026-06-08",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-06-08)",
+   "gruppo_il_giorno_prima": "Lega - Salvini Premier"
+  },
+  {
+   "deputato": "Domenico Furgiuele",
+   "nella_componente_dal": "2026-06-08",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2026-06-08)",
+   "gruppo_il_giorno_prima": "Lega - Salvini Premier"
+  },
+  {
+   "deputato": "Attilio Pierro",
+   "nella_componente_dal": "2026-06-08",
+   "fino_al": null,
+   "gruppi_precedenti": "Lega - Salvini Premier (2022-10-18 → 2025-12-30); Forza Italia - Berlusconi Presidente - PPE (2026-01-20 → 2026-06-08)",
+   "gruppo_il_giorno_prima": "Forza Italia - Berlusconi Presidente - PPE"
+  },
+  {
+   "deputato": "Tommaso Antonino Calderone",
+   "nella_componente_dal": "2026-09-21",
+   "fino_al": null,
+   "gruppi_precedenti": "Forza Italia - Berlusconi Presidente - PPE (2022-10-18 → 2026-09-21)",
+   "gruppo_il_giorno_prima": "Forza Italia - Berlusconi Presidente - PPE"
+  }
+ ],
+ "risposta": "Nella componente del Misto «Futuro Nazionale Vannacci - Free» alla Camera ci sono 9 deputati. Dal 27/5/2026: Emanuele Pozzolo (eletto con FdI, nel gruppo fino al 14/5/2025, poi Misto), Laura Ravetto (Lega fino al 20/5/2026), Rossano Sasso ed Edoardo Ziello (Lega fino al 6/2/2026); questi quattro il giorno prima erano già nel Misto. Dall'8/6/2026: Gianangelo Bof e Domenico Furgiuele (direttamente dalla Lega), Davide Bergamini (Lega fino al 7/1/2026, poi FI-PPE dal 20/1/2026) e Attilio Pierro (Lega fino al 30/12/2025, poi FI-PPE dal 20/1/2026). Dal 21/9/2026: Tommaso Antonino Calderone (FI-PPE). Tutti sono ancora nella componente al 2/11/2026. Roberto Vannacci non è deputato.",
+ "stato": "calcolata",
+ "limiti": "Componente = it:camera:19:group:cgm4271. «Da dove venivano» = gruppi politici precedenti in membership (Misto senza componente escluso dall'elenco) e gruppo il giorno prima dell'ingresso (group_at). Vannacci non ha un mandato alla Camera nel database.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

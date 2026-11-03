@@ -1,0 +1,79 @@
+{
+ "id": "COMU-051",
+ "domanda": "Quante leggi di iniziativa parlamentare sono diventate legge in questa legislatura rispetto a quelle del governo?",
+ "sql": [
+  "WITH a AS (\n  SELECT extract(year FROM law_date)::int AS anno, law_number, chamber, constitutional,\n    CASE\n      WHEN chamber = 'camera' THEN CASE WHEN initiative LIKE 'Mista%' THEN 'Mista' WHEN initiative = 'CNEL' THEN 'CNEL' ELSE initiative END\n      WHEN initiative ~* '^(Gov\\.|Pres\\. Consiglio|Ministro)' THEN 'Governo'\n      WHEN initiative ~* '^(Sen\\.|Dep\\.)' THEN 'Parlamentare'\n      WHEN initiative ~* '^Regione' THEN 'Regioni'\n      WHEN initiative ~* 'C\\.?N\\.?E\\.?L' THEN 'CNEL'\n      WHEN initiative ~* 'popolare' THEN 'Popolare'\n      ELSE 'altro: ' || coalesce(initiative,'NULL') END AS iniziativa\n  FROM act\n  WHERE kind = 'bill' AND legislature = 19 AND law_number IS NOT NULL\n    AND law_date < '2100-01-01'  -- esclude S. 1353 (law_date 2100-01-01, «appr. def. non pubbl»)\n), leggi AS (\n  SELECT anno, law_number, constitutional AS costituzionale,\n         array_agg(DISTINCT iniziativa) AS iniziative,\n         coalesce(min(iniziativa) FILTER (WHERE chamber='camera'), min(iniziativa)) AS iniziativa\n  FROM a GROUP BY anno, law_number, constitutional\n)\nSELECT iniziativa, costituzionale, count(*) AS leggi,\n       count(*) FILTER (WHERE cardinality(iniziative) > 1) AS con_etichette_diverse_fra_rami\nFROM leggi GROUP BY 1,2 ORDER BY 2, 3 DESC"
+ ],
+ "risultato": [
+  {
+   "iniziativa": "Governo",
+   "costituzionale": false,
+   "leggi": 273,
+   "con_etichette_diverse_fra_rami": 0
+  },
+  {
+   "iniziativa": "Parlamentare",
+   "costituzionale": false,
+   "leggi": 86,
+   "con_etichette_diverse_fra_rami": 1
+  },
+  {
+   "iniziativa": "Mista",
+   "costituzionale": false,
+   "leggi": 2,
+   "con_etichette_diverse_fra_rami": 2
+  },
+  {
+   "iniziativa": "CNEL",
+   "costituzionale": false,
+   "leggi": 1,
+   "con_etichette_diverse_fra_rami": 1
+  },
+  {
+   "iniziativa": "Popolare",
+   "costituzionale": false,
+   "leggi": 1,
+   "con_etichette_diverse_fra_rami": 0
+  },
+  {
+   "iniziativa": "Parlamentare",
+   "costituzionale": true,
+   "leggi": 1,
+   "con_etichette_diverse_fra_rami": 0
+  },
+  {
+   "iniziativa": "Regioni",
+   "costituzionale": true,
+   "leggi": 1,
+   "con_etichette_diverse_fra_rami": 0
+  },
+  {
+   "iniziativa": "Governo",
+   "costituzionale": true,
+   "leggi": 1,
+   "con_etichette_diverse_fra_rami": 0
+  }
+ ],
+ "risposta": "Nella XIX (dati al 2/11/2026) risultano 367 leggi pubblicate, contate una volta sola. Di iniziativa del governo: 273 leggi ordinarie più 1 legge costituzionale (274). Di iniziativa parlamentare: 86 leggi ordinarie più 1 legge costituzionale (87). Le altre: 2 di iniziativa mista governo-parlamento, 1 del CNEL, 1 popolare e 1 legge costituzionale di iniziativa regionale. Il rapporto è circa 3 a 1 a favore del governo.",
+ "stato": "calcolata",
+ "limiti": "Una legge = coppia (anno, numero) di act.law_number, distinta fra leggi ordinarie e costituzionali, unendo l'atto della Camera e quello del Senato. L'iniziativa è quella della scheda Camera quando c'è (campo pulito), altrimenti quella del Senato ricondotta a Governo/Parlamentare/Regioni/CNEL/Popolare dal testo. Escluso S. 1353 (approvato definitivamente, non pubblicato, con law_date 2100-01-01). Le leggi di conversione dei decreti contano come iniziativa del governo.",
+ "problemi_dati": [
+  {
+   "problema": "S. 1353 e S. 1353-B hanno law_date 2100-01-01 e law_number 690 (valori segnaposto per una legge «appr. def. non pubbl»).",
+   "sql": "SELECT uri, law_number, law_date, status FROM act WHERE law_date >= '2100-01-01'"
+  },
+  {
+   "problema": "La stessa legge ha law_date diverse fra Camera e Senato: L. 162/2025 (C. 1803: 22/10/2025, data di approvazione; S. 982: 4/11/2025) e L. 11/2026 (C. 2369: 19/1/2026; S. 1683: 19/2/2026). Contare per (law_date, law_number) la conta due volte.",
+   "sql": "SELECT uri, law_number, law_date, status FROM act WHERE (law_number='162' AND law_date IN ('2025-10-22','2025-11-04')) OR (law_number='11' AND law_date IN ('2026-01-19','2026-02-19'))"
+  },
+  {
+   "problema": "Al Senato act.initiative è il testo libero dei presentatori (es. «Gov. Meloni-I: Pres. Consiglio Meloni…», «Dep. Foti Tommaso»), non una categoria; alla Camera C. 2149 (L. 26/2025) ha initiative NULL.",
+   "sql": "SELECT chamber, count(DISTINCT initiative) FROM act WHERE kind='bill' GROUP BY 1"
+  },
+  {
+   "problema": "L. 68/2026 (S. 1698) non ha l'atto Camera con lo stesso numero di legge.",
+   "sql": "SELECT uri, law_number, law_date FROM act WHERE law_number='68' AND extract(year FROM law_date)=2026"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,36 @@
+{
+ "id": "LEG-020",
+ "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+ "sql": [
+  "SELECT d.uri, d.code, d.date, d.title, d.author_raw, d.url, d.acts,\n       substring(d.text FROM 'Riferimenti:\\s+(AC N\\.[0-9A-Z/-]+)') AS riferimento,\n       substring(d.text FROM 'Dossier n\\. (\\d+)') AS numero_dossier\nFROM document d\nWHERE d.kind = 'dossier' AND 'dl:190/2026' = ANY(d.acts)"
+ ],
+ "risultato": [
+  {
+   "uri": "it:camera:19:dossier:OCD18-23777",
+   "code": "D26190",
+   "date": "2026-10-27",
+   "title": "Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile",
+   "author_raw": "Studi - Giustizia",
+   "url": "https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html",
+   "acts": [
+    "dl:190/2026"
+   ],
+   "riferimento": "AC N.3159/XIX",
+   "numero_dossier": "786"
+  }
+ ],
+ "risposta": "Sì. Il Servizio Studi della Camera (Dipartimento Giustizia) ha pubblicato il 27/10/2026 il dossier D26190 «Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile» sul D.L. 190/2026 (A.C. 3159, conversione del decreto-legge 22 ottobre 2026, n. 190), dossier n. 786, serie Progetti di legge n. 683: https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html. Contiene le schede di lettura dei 10 articoli: modifiche al codice penale (fra cui il regime di imputabilità dei minori ultraquattordicenni e nuove aggravanti per devastazione e saccheggio nel corso di manifestazioni), al codice di procedura penale, al d.P.R. 448/1988 sul processo minorile, al regio decreto 12/1941, una sanzione amministrativa per danni da condotte illecite, modifiche al codice antimafia (d.lgs. 159/2011), all'art. 11-bis del d.l. 59/1978, misure per la sicurezza dopo i gravi incidenti di Milano, la clausola di invarianza finanziaria e l'entrata in vigore.",
+ "stato": "calcolata",
+ "limiti": "Il contenuto in breve è ricavato dall'indice del testo del dossier.",
+ "problemi_dati": [
+  {
+   "problema": "1.322 dossier su 2.353 hanno caratteri rotti (U+FFFD al posto di lettere accentate e simboli), compreso D26190 («criminalit� minorile»).",
+   "sql": "SELECT kind, count(*) n, count(*) FILTER (WHERE strpos(text, chr(65533))>0) rotti FROM document GROUP BY 1"
+  },
+  {
+   "problema": "Il dossier D26190 è legato a 'dl:190/2026' ma non all'atto it:camera:19:ac:3159 citato nel testo («AC N.3159/XIX»).",
+   "sql": "SELECT uri, acts FROM document WHERE code='D26190'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

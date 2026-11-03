@@ -1,0 +1,343 @@
+{
+ "id": "PARL-043",
+ "domanda": "Quali membri del Governo sono anche deputati, e quante votazioni hanno fatto in questa legislatura?",
+ "sql": [
+  "with g as (\n  select o.person, string_agg(distinct o.title || coalesce(' ('||mi.name||')',''), '; ') incarichi,\n         min(o.start_date) dal, bool_or(o.end_date is null) in_carica\n  from office o join mandate m on m.person=o.person and m.chamber='camera' and m.legislature=19\n     and o.start_date <= coalesce(m.end_date, current_date) and coalesce(o.end_date, current_date) >= m.start_date\n  left join ministry mi on mi.uri=o.target\n  where o.target like 'it:gov:202%' group by o.person)\nselect p.given_name||' '||p.family_name deputato, g.incarichi, g.dal, g.in_carica,\n  count(b.vote) votazioni_con_scheda,\n  count(b.vote) filter (where b.result in ('favor','against','abstain','voted')) ha_votato,\n  count(b.vote) filter (where b.result='mission') in_missione,\n  count(b.vote) filter (where b.result='absent') assente,\n  count(b.vote) filter (where b.result='chair') presidenza\nfrom g join person p on p.uri=g.person\nleft join ballot b on b.person=g.person and b.vote like 'it:camera:19:%'\ngroup by 1,2,3,4 order by ha_votato desc",
+  "select v.uri, v.date, v.title, v.favor, v.against from vote v where v.chamber='camera' and not exists (select 1 from ballot b where b.vote=v.uri)"
+ ],
+ "risultato": [
+  {
+   "deputato": "Augusta Montaruli",
+   "incarichi": "undersecretary (Ministero dell'Universita' e della Ricerca)",
+   "dal": "2022-10-31",
+   "in_carica": false,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 17404,
+   "in_missione": 596,
+   "assente": 2257,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Tommaso Foti",
+   "incarichi": "minister_without_portfolio (Affari Europei, il Pnrr e le Politiche di Coesione); minister_without_portfolio (Presidenza del Consiglio dei Ministri)",
+   "dal": "2024-12-02",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 7618,
+   "in_missione": 11519,
+   "assente": 1120,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Paolo Barelli",
+   "incarichi": "undersecretary (Presidenza del Consiglio dei Ministri)",
+   "dal": "2026-04-22",
+   "in_carica": true,
+   "votazioni_con_scheda": 20256,
+   "ha_votato": 7288,
+   "in_missione": 9629,
+   "assente": 3339,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Tullio Ferrante",
+   "incarichi": "undersecretary (Ministero delle Infrastrutture e dei Trasporti); undersecretary (Ministero delle Infrastrutture e della Mobilita' Sostenibili)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 7038,
+   "in_missione": 11905,
+   "assente": 1314,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Andrea Delmastro delle Vedove",
+   "incarichi": "undersecretary (Ministero della Giustizia)",
+   "dal": "2022-10-31",
+   "in_carica": false,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 3939,
+   "in_missione": 14804,
+   "assente": 1514,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Matilde Siracusano",
+   "incarichi": "undersecretary (Rapporti con il Parlamento)",
+   "dal": "2022-11-12",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 3639,
+   "in_missione": 14041,
+   "assente": 2577,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Paola Frassinetti",
+   "incarichi": "undersecretary (Ministero dell'Istruzione); undersecretary (Ministero dell'Istruzione e del Merito)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 2911,
+   "in_missione": 15782,
+   "assente": 1564,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Gianmarco Mazzi",
+   "incarichi": "minister (Ministero del Turismo); undersecretary (Ministero della Cultura)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 2631,
+   "in_missione": 16514,
+   "assente": 1112,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Lucia Albano",
+   "incarichi": "undersecretary (Ministero dell'Economia e delle Finanze)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20256,
+   "ha_votato": 2552,
+   "in_missione": 16717,
+   "assente": 987,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Marcello Gemmato",
+   "incarichi": "undersecretary (Ministero della Salute)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 2070,
+   "in_missione": 16681,
+   "assente": 1506,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Galeazzo Bignami",
+   "incarichi": "undersecretary (Ministero delle Infrastrutture e dei Trasporti); undersecretary (Ministero delle Infrastrutture e della Mobilita' Sostenibili); vice_minister (Ministero delle Infrastrutture e dei Trasporti)",
+   "dal": "2022-10-31",
+   "in_carica": false,
+   "votazioni_con_scheda": 20256,
+   "ha_votato": 1910,
+   "in_missione": 17835,
+   "assente": 511,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Wanda Ferro",
+   "incarichi": "undersecretary (Ministero dell'Interno)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 1852,
+   "in_missione": 16925,
+   "assente": 1480,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Emanuele Prisco",
+   "incarichi": "undersecretary (Ministero dell'Interno)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 1730,
+   "in_missione": 17577,
+   "assente": 950,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Massimo Bitonci",
+   "incarichi": "undersecretary (Ministero delle Imprese e del Made in Italy); undersecretary (Ministero dello Sviluppo Economico)",
+   "dal": "2022-10-31",
+   "in_carica": false,
+   "votazioni_con_scheda": 15984,
+   "ha_votato": 1522,
+   "in_missione": 14093,
+   "assente": 369,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Maurizio Leo",
+   "incarichi": "undersecretary (Ministero dell'Economia e delle Finanze); vice_minister (Ministero dell'Economia e delle Finanze)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 1363,
+   "in_missione": 17846,
+   "assente": 1048,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Nicola Molteni",
+   "incarichi": "undersecretary (Ministero dell'Interno)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 1312,
+   "in_missione": 18107,
+   "assente": 838,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Vannia Gava",
+   "incarichi": "undersecretary (Ministero dell'Ambiente e della Sicurezza Energetica); undersecretary (Ministero della Transizione Ecologica); vice_minister (Ministero dell'Ambiente e della Sicurezza Energetica)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 1283,
+   "in_missione": 18012,
+   "assente": 962,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Maria Teresa Bellucci",
+   "incarichi": "undersecretary (Ministero del Lavoro e delle Politiche Sociali); vice_minister (Ministero del Lavoro e delle Politiche Sociali)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20256,
+   "ha_votato": 1271,
+   "in_missione": 17694,
+   "assente": 1291,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Eugenia Maria Roccella",
+   "incarichi": "minister_without_portfolio (Famiglia, Natalità e Pari Opportunità)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 693,
+   "in_missione": 17926,
+   "assente": 1638,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Edmondo Cirielli",
+   "incarichi": "undersecretary (Ministero degli Affari Esteri e della Cooperazione Internazionale); vice_minister (Ministero degli Affari Esteri e della Cooperazione Internazionale)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20256,
+   "ha_votato": 666,
+   "in_missione": 19060,
+   "assente": 530,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Gilberto Pichetto Fratin",
+   "incarichi": "minister (Ministero dell'Ambiente e della Sicurezza Energetica); minister (Ministero della Transizione Ecologica)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 631,
+   "in_missione": 18620,
+   "assente": 1006,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Carlo Nordio",
+   "incarichi": "minister (Ministero della Giustizia)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 524,
+   "in_missione": 17012,
+   "assente": 2721,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Raffaele Fitto",
+   "incarichi": "minister_without_portfolio (Affari Europei, il Sud, le Politiche di Coesione e il Pnrr); minister_without_portfolio (Affari Europei, Politiche di Coesione e Pnrr)",
+   "dal": "2022-10-23",
+   "in_carica": false,
+   "votazioni_con_scheda": 10649,
+   "ha_votato": 432,
+   "in_missione": 9969,
+   "assente": 248,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Edoardo Rixi",
+   "incarichi": "undersecretary (Ministero delle Infrastrutture e dei Trasporti); undersecretary (Ministero delle Infrastrutture e della Mobilita' Sostenibili); vice_minister (Ministero delle Infrastrutture e dei Trasporti)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 411,
+   "in_missione": 19540,
+   "assente": 306,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Federico Freni",
+   "incarichi": "undersecretary (Ministero dell'Economia e delle Finanze)",
+   "dal": "2022-10-31",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 403,
+   "in_missione": 19247,
+   "assente": 607,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Antonio Tajani",
+   "incarichi": "deputy_prime_minister; minister (Ministero degli Affari Esteri e della Cooperazione Internazionale)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 375,
+   "in_missione": 19470,
+   "assente": 412,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Francesco Lollobrigida",
+   "incarichi": "minister (Ministero dell'Agricoltura, della Sovranità Alimentare e delle Foreste); minister (Ministero delle Politiche Agricole Alimentari e Forestali)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 161,
+   "in_missione": 19824,
+   "assente": 272,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Giancarlo Giorgetti",
+   "incarichi": "minister (Ministero dell'Economia e delle Finanze)",
+   "dal": "2022-10-23",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 134,
+   "in_missione": 19959,
+   "assente": 164,
+   "presidenza": 0
+  },
+  {
+   "deputato": "Giorgia Meloni",
+   "incarichi": "minister (Ministero del Turismo); prime_minister",
+   "dal": "2022-10-21",
+   "in_carica": true,
+   "votazioni_con_scheda": 20257,
+   "ha_votato": 17,
+   "in_missione": 19829,
+   "assente": 411,
+   "presidenza": 0
+  }
+ ],
+ "risposta": "29 deputati hanno avuto un incarico nel Governo Meloni durante il mandato (24 lo hanno ancora). Votazioni a cui hanno partecipato nella XIX, sulle 20.260 della Camera: Montaruli 17.404 (sottosegretaria solo all'inizio), Foti 7.618, Barelli 7.288, Ferrante 7.038, Delmastro delle Vedove 3.939, Siracusano 3.639, Frassinetti 2.911, Mazzi 2.631, Albano 2.552, Gemmato 2.070, Bignami 1.910, Ferro 1.852, Prisco 1.730, Bitonci 1.522, Leo 1.363, Molteni 1.312, Gava 1.283, Bellucci 1.271, Roccella 693, Cirielli 666, Pichetto Fratin 631, Nordio 524, Fitto 432, Rixi 411, Freni 403, Tajani 375, Lollobrigida 161, Giorgetti 134, Meloni 17. Per quasi tutti la gran parte delle altre votazioni risulta in missione (es. Meloni 19.829, Giorgetti 19.959), che non è assenza.",
+ "stato": "calcolata",
+ "limiti": "Membri del governo = persone con un incarico (office) nel Governo Meloni (it:gov:202) che si sovrappone a un mandato da deputato nella XIX. Le votazioni contate sono tutte quelle della legislatura, anche fuori dal periodo dell'incarico (es. Montaruli, Barelli, Foti ministro dal 2/12/2024). «Ha votato» = favorevole, contrario, astenuto o voto segreto. Bitonci e Fitto hanno meno schede perché il mandato è finito prima.",
+ "problemi_dati": [
+  {
+   "problema": "Tre votazioni della Camera (seduta 385 del 21/11/2024) hanno titolo «Votazione » e nessun voto individuale.",
+   "sql": "select v.uri, v.date, v.title, v.favor, v.against from vote v where v.chamber='camera' and not exists (select 1 from ballot b where b.vote=v.uri)"
+  },
+  {
+   "problema": "Il governo Draghi (it:gov:182) è registrato con legislature = 19.",
+   "sql": "select * from government"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

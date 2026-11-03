@@ -1,0 +1,164 @@
+{
+  "id": "CIT-003",
+  "domanda": "chi ha votato contro il salario minimo?",
+  "sql": [
+    "SELECT v.uri, v.date, v.title, v.description, v.favor, v.against, v.abstain, v.approved, v.source_url, x.act_ref\nFROM vote v JOIN vote_act x ON x.vote = v.uri\nWHERE v.uri = 'it:camera:19:sed0210:v001'",
+    "SELECT coalesce(g.short_name, coalesce(a.grp, b.grp)) AS gruppo, g.kind,\n       count(*) FILTER (WHERE b.result = 'favor') AS favorevoli,\n       count(*) FILTER (WHERE b.result = 'against') AS contrari,\n       count(*) FILTER (WHERE b.result = 'abstain') AS astenuti,\n       count(*) FILTER (WHERE b.result = 'absent') AS assenti,\n       count(*) FILTER (WHERE b.result = 'mission') AS in_missione\nFROM ballot b LEFT JOIN grp_alias a ON a.alias = b.grp LEFT JOIN grp g ON g.uri = coalesce(a.grp, b.grp)\nWHERE b.vote = 'it:camera:19:sed0210:v001'\nGROUP BY 1, 2 ORDER BY contrari DESC, favorevoli DESC",
+    "SELECT a.number, a.law_number, a.law_date, a.status, left(a.title, 200) AS titolo\nFROM act a WHERE a.uri = 'it:camera:19:ac:1275'",
+    "SELECT p.given_name || ' ' || p.family_name AS deputato, b.grp AS gruppo_nel_voto, b.result\nFROM ballot b JOIN person p ON p.uri = b.person LEFT JOIN grp_alias a ON a.alias = b.grp\nWHERE b.vote = 'it:camera:19:sed0210:v001' AND coalesce(a.grp, b.grp) = 'it:camera:19:group:gr4111'"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:sed0210:v001",
+        "date": "2023-12-06",
+        "title": "Votazione finale PDL n. 1275",
+        "description": "Deleghe al Governo in materia di retribuzione dei lavoratori e di contrattazione collettiva nonch&amp;eacute; di procedure di controllo e informazione (PDL 1275 e abbinate PDL 141-210-216-306-432-1053-1328)",
+        "favor": 153,
+        "against": 118,
+        "abstain": 3,
+        "approved": true,
+        "source_url": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=210_1&tipo=dettaglio",
+        "act_ref": "ac19_1275"
+      }
+    ],
+    [
+      {
+        "gruppo": "PD-IDP",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 59,
+        "astenuti": 0,
+        "assenti": 6,
+        "in_missione": 4
+      },
+      {
+        "gruppo": "M5S",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 35,
+        "astenuti": 0,
+        "assenti": 7,
+        "in_missione": 10
+      },
+      {
+        "gruppo": "AVS",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 7,
+        "astenuti": 0,
+        "assenti": 1,
+        "in_missione": 3
+      },
+      {
+        "gruppo": "AZ-PER-RE",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 7,
+        "astenuti": 0,
+        "assenti": 2,
+        "in_missione": 3
+      },
+      {
+        "gruppo": "IV-CR",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 6,
+        "astenuti": 0,
+        "assenti": 2,
+        "in_missione": 1
+      },
+      {
+        "gruppo": "MISTO",
+        "kind": "group",
+        "favorevoli": 0,
+        "contrari": 2,
+        "astenuti": 0,
+        "assenti": 0,
+        "in_missione": 0
+      },
+      {
+        "gruppo": "MISTO-+EU-SUEU",
+        "kind": "misto_component",
+        "favorevoli": 0,
+        "contrari": 2,
+        "astenuti": 0,
+        "assenti": 0,
+        "in_missione": 1
+      },
+      {
+        "gruppo": "FDI",
+        "kind": "group",
+        "favorevoli": 86,
+        "contrari": 0,
+        "astenuti": 0,
+        "assenti": 8,
+        "in_missione": 23
+      },
+      {
+        "gruppo": "LEGA",
+        "kind": "group",
+        "favorevoli": 36,
+        "contrari": 0,
+        "astenuti": 0,
+        "assenti": 13,
+        "in_missione": 16
+      },
+      {
+        "gruppo": "FI-PPE",
+        "kind": "group",
+        "favorevoli": 25,
+        "contrari": 0,
+        "astenuti": 0,
+        "assenti": 11,
+        "in_missione": 8
+      },
+      {
+        "gruppo": "NM(N-C-U-I)M-CP",
+        "kind": "group",
+        "favorevoli": 5,
+        "contrari": 0,
+        "astenuti": 0,
+        "assenti": 2,
+        "in_missione": 3
+      },
+      {
+        "gruppo": "MISTO-MIN.LING.",
+        "kind": "misto_component",
+        "favorevoli": 1,
+        "contrari": 0,
+        "astenuti": 3,
+        "assenti": 0,
+        "in_missione": 0
+      }
+    ],
+    [
+      {
+        "number": "1275",
+        "law_number": "144",
+        "law_date": "2025-09-26",
+        "status": "Approvato definitivamente dal Senato. Legge",
+        "titolo": "CONTE ed altri (i firmatari hanno ritirato la propria sottoscrizione alla proposta di legge): \"Disposizioni per l’istituzione del salario minimo\" (1275)"
+      }
+    ],
+    [
+      {
+        "deputato": "Francesco Gallo",
+        "gruppo_nel_voto": "it:camera:19:group:cgm4111",
+        "result": "against"
+      },
+      {
+        "deputato": "Aboubakar Soumahoro",
+        "gruppo_nel_voto": "it:camera:19:group:cgm4111",
+        "result": "against"
+      }
+    ]
+  ],
+  "risposta": "Attenzione: il voto del 6/12/2023 alla Camera sulla PDL 1275 non fu un voto sul salario minimo. Il testo approvato era già stato trasformato in «Deleghe al Governo in materia di retribuzione dei lavoratori e di contrattazione collettiva» e i firmatari (Conte ed altri) avevano ritirato la firma; è poi diventato la legge 26 settembre 2025, n. 144. Il voto finale passò con 153 sì, 118 no e 3 astenuti. Votarono contro: PD-IDP 59, M5S 35, AVS 7, Azione 7, IV-CR 6, Misto-+Europa 2, Misto senza componente 2 (Francesco Gallo e Aboubakar Soumahoro). Votarono a favore FdI 86, Lega 36, FI-PPE 25, Noi Moderati 5 e 1 deputato delle Minoranze linguistiche; gli altri 3 delle Minoranze linguistiche si astennero.",
+  "stato": "calcolata",
+  "limiti": "Si risponde sul voto finale della Camera del 6/12/2023 (sed. 210, votazione 1), l'unico voto finale della Camera sul testo nato dalle proposte sul salario minimo; il gruppo è quello attribuito dalla Camera nel voto (ballot.grp, con grp_alias). Il voto finale del Senato del 23/9/2025 non è considerato.",
+  "problemi_dati": [
+    "vote.description della Camera ha entità HTML doppiamente codificate («nonch&amp;eacute;»). Query: SELECT count(*) FROM vote WHERE chamber='camera' AND description LIKE '%&amp;%';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

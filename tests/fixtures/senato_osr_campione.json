@@ -1,0 +1,808 @@
+{
+"persone": [
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"nome": "Lucio",
+"cognome": "Malan",
+"etichetta": "Lucio Malan",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001407.jpg",
+"professione": "Insegnante"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"nome": "Lucio",
+"cognome": "Malan",
+"etichetta": "Lucio Malan",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001407.jpg",
+"professione": "Insegnante, funzionario di partito"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"nome": "Massimiliano",
+"cognome": "Romeo",
+"etichetta": "Massimiliano Romeo",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00032706.jpg",
+"professione": "Consulente automobilistico"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"nome": "Massimiliano",
+"cognome": "Romeo",
+"etichetta": "Massimiliano Romeo",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00032706.jpg",
+"professione": "Consulente"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"nome": "Liliana",
+"cognome": "Segre",
+"etichetta": "Liliana Segre",
+"genere": "F",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00032435.jpg",
+"professione": "Imprenditore"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"nome": "Liliana",
+"cognome": "Segre",
+"etichetta": "Liliana Segre",
+"genere": "F",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00032435.jpg",
+"professione": "Imprenditrice"
+}
+],
+"mandati": [
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"mandato": "http://dati.senato.it/mandato/S_19_32706_1",
+"tipo": "elettivo",
+"inizio": "2022-10-13",
+"collegio": "LOMBARDIA - U01 (VARESE)",
+"elezione": "Eletto uninominale dalla XVIII legislatura",
+"regione": "Lombardia"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"mandato": "http://dati.senato.it/mandato/S_19_1407_1",
+"tipo": "elettivo",
+"inizio": "2022-10-13",
+"elezione": "Eletto proporzionale dalla XVIII legislatura",
+"regione": "Piemonte"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"mandato": "http://dati.senato.it/mandato/S_19_32435_1",
+"tipo": "a vita, di nomina del Presidente della Repubblica",
+"inizio": "2022-10-13"
+}
+],
+"adesioni": [
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"gruppo": "http://dati.senato.it/gruppo/9",
+"inizio": "2022-10-18",
+"carica": "Membro"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"gruppo": "http://dati.senato.it/gruppo/33",
+"inizio": "2022-10-18",
+"carica": "Presidente"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"gruppo": "http://dati.senato.it/gruppo/85",
+"inizio": "2022-11-09",
+"carica": "Presidente"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"gruppo": "http://dati.senato.it/gruppo/85",
+"inizio": "2022-10-18",
+"fine": "2022-11-08",
+"carica": "Vicepresidente"
+}
+],
+"commissioni": [
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"fine": "2023-05-08",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2019-10-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2019-10-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2019-10-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"fine": "2023-05-08",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2023-01-19"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2023-01-19"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-04-21",
+"carica": "Membro",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2023-01-19"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-145",
+"inizio": "2022-11-09",
+"carica": "Membro",
+"titolo": "3ª Commissione permanente",
+"materia": "Affari esteri e difesa",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-148",
+"inizio": "2023-11-10",
+"fine": "2024-11-28",
+"carica": "Membro",
+"titolo": "10ª Commissione permanente",
+"materia": "Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-20",
+"inizio": "2022-11-17",
+"carica": "Membro",
+"titolo": "Giunta per il regolamento",
+"materia": "Giunta per il regolamento",
+"dinizio": "1948-05-08",
+"dfine": "1992-04-22"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-20",
+"inizio": "2022-11-17",
+"carica": "Membro",
+"titolo": "Giunta per il Regolamento",
+"materia": "Giunta per il Regolamento",
+"dinizio": "1992-04-23"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-21",
+"inizio": "2026-06-05",
+"carica": "Membro",
+"titolo": "Giunta delle elezioni",
+"materia": "Giunta delle elezioni",
+"dinizio": "1948-05-08",
+"dfine": "1971-09-30"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-21",
+"inizio": "2026-06-05",
+"carica": "Membro",
+"titolo": "Giunta delle elezioni e delle immunita' parlamentari",
+"materia": "Giunta delle elezioni e delle immunita' parlamentari",
+"dinizio": "1971-10-01",
+"dfine": "1992-04-22"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-21",
+"inizio": "2026-06-05",
+"carica": "Membro",
+"titolo": "Giunta delle elezioni e delle immunita' parlamentari",
+"materia": "Giunta delle elezioni e delle immunita' parlamentari",
+"dinizio": "1992-04-23"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "1976-07-05",
+"dfine": "1976-07-05"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "1979-06-20",
+"dfine": "1979-06-20"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "1983-07-12",
+"dfine": "1983-07-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "1987-07-02",
+"dfine": "1987-07-02"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "1992-04-23",
+"dfine": "1992-04-23"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "2008-04-29",
+"dfine": "2008-04-29"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "2013-03-15",
+"dfine": "2013-06-05"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "2018-03-23",
+"dfine": "2018-07-17"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-24",
+"inizio": "2022-10-13",
+"fine": "2022-11-14",
+"carica": "Membro",
+"titolo": "Giunta provvisoria per la verifica dei poteri",
+"materia": "Giunta provvisoria per la verifica dei poteri",
+"dinizio": "2022-10-13",
+"dfine": "2022-11-14"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"fine": "2023-11-10",
+"carica": "Membro",
+"titolo": "6ª Commissione permanente",
+"materia": "Istruzione pubblica e belle arti",
+"dinizio": "1948-05-08",
+"dfine": "1971-09-30"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2025-04-07",
+"fine": "2025-05-06",
+"carica": "Membro",
+"titolo": "6ª Commissione permanente",
+"materia": "Istruzione pubblica e belle arti",
+"dinizio": "1948-05-08",
+"dfine": "1971-09-30"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"carica": "Membro",
+"titolo": "6ª Commissione permanente",
+"materia": "Istruzione pubblica e belle arti",
+"dinizio": "1948-05-08",
+"dfine": "1971-09-30"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2024-11-28",
+"carica": "Membro",
+"titolo": "6ª Commissione permanente",
+"materia": "Istruzione pubblica e belle arti",
+"dinizio": "1948-05-08",
+"dfine": "1971-09-30"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"fine": "2023-11-10",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica",
+"dinizio": "1971-10-01",
+"dfine": "1987-07-29"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2025-04-07",
+"fine": "2025-05-06",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica",
+"dinizio": "1971-10-01",
+"dfine": "1987-07-29"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica",
+"dinizio": "1971-10-01",
+"dfine": "1987-07-29"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2024-11-28",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica",
+"dinizio": "1971-10-01",
+"dfine": "1987-07-29"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"fine": "2023-11-10",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica, beni culturali",
+"dinizio": "1987-07-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2025-04-07",
+"fine": "2025-05-06",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica, beni culturali",
+"dinizio": "1987-07-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica, beni culturali",
+"dinizio": "1987-07-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2024-11-28",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Istruzione pubblica, beni culturali",
+"dinizio": "1987-07-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"fine": "2023-11-10",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Cultura e patrimonio culturale, istruzione pubblica",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2025-04-07",
+"fine": "2025-05-06",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Cultura e patrimonio culturale, istruzione pubblica",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2022-11-09",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Cultura e patrimonio culturale, istruzione pubblica",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-7",
+"inizio": "2024-11-28",
+"carica": "Membro",
+"titolo": "7ª Commissione permanente",
+"materia": "Cultura e patrimonio culturale, istruzione pubblica",
+"dinizio": "2022-10-13"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame di disegni di legge di conversione di decreti-legge",
+"materia": "Comm. spec. esame ddl di conversione di decreti legge",
+"dinizio": "2001-05-30",
+"dfine": "2001-06-27"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame di disegni di legge di conversione di decreti-legge",
+"materia": "Commissione speciale esame ddl di conversione di decreti-legge",
+"dinizio": "2006-05-19",
+"dfine": "2006-06-05"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame di disegni di legge di conversione di decreti-legge",
+"materia": "Commissione speciale esame ddl di conversione di decreti legge",
+"dinizio": "2008-05-08",
+"dfine": "2008-05-22"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame di disegni di legge di conversione di decreti-legge e di altri provvedimenti urgenti presentati dal Governo",
+"materia": "Commissione speciale su atti urgenti del Governo",
+"dinizio": "2013-03-26",
+"dfine": "2013-05-07"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame degli atti urgenti presentati dal Governo",
+"materia": "Commissione speciale su atti urgenti del Governo",
+"dinizio": "2018-03-29",
+"dfine": "2018-06-21"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/0-74",
+"inizio": "2022-10-25",
+"fine": "2022-11-10",
+"carica": "Membro",
+"titolo": "Commissione speciale per l'esame degli atti urgenti presentati dal Governo",
+"materia": "Commissione speciale su atti urgenti del Governo",
+"dinizio": "2022-10-19",
+"dfine": "2022-11-10"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/4-223",
+"inizio": "2023-06-29",
+"fine": "2023-07-12",
+"carica": "Membro",
+"titolo": "Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere",
+"materia": "Commissione di inchiesta femminicidio e violenza di genere",
+"dinizio": "2023-02-18"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-225",
+"inizio": "2024-03-14",
+"fine": "2024-03-20",
+"carica": "Membro",
+"titolo": "Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori",
+"materia": "Commissione di inchiesta scomparsa Orlandi e Gregori",
+"dinizio": "2024-01-06"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-226",
+"inizio": "2024-08-06",
+"fine": "2024-10-01",
+"carica": "Membro",
+"titolo": "Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2",
+"materia": "Commissione di inchiesta su emergenza sanitaria epidemiologica da SARS-CoV-2",
+"dinizio": "2024-03-28"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32706",
+"commissione": "http://dati.senato.it/commissione/4-226",
+"inizio": "2024-08-06",
+"carica": "Membro",
+"titolo": "Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2",
+"materia": "Commissione di inchiesta su emergenza sanitaria epidemiologica da SARS-CoV-2",
+"dinizio": "2024-03-28"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-226",
+"inizio": "2024-10-08",
+"carica": "Membro",
+"titolo": "Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2",
+"materia": "Commissione di inchiesta su emergenza sanitaria epidemiologica da SARS-CoV-2",
+"dinizio": "2024-03-28"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/4-27",
+"inizio": "2023-07-13",
+"carica": "Membro",
+"titolo": "Commissione parlamentare d'inchiesta sull'Azienda di Stato per gli interventi nel mercato agricolo",
+"materia": "Commissione d'inchiesta sull'AIMA",
+"dinizio": "1995-09-26",
+"dfine": "1996-05-08"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/4-27",
+"inizio": "2023-07-13",
+"carica": "Membro",
+"titolo": "Commissione parlamentare per l'infanzia",
+"materia": "Commissione parlamentare per l'infanzia",
+"dinizio": "1997-12-30",
+"dfine": "2009-08-02"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/4-27",
+"inizio": "2023-07-13",
+"carica": "Membro",
+"titolo": "Commissione parlamentare per l'infanzia e l'adolescenza",
+"materia": "Commissione parlamentare per l'infanzia e l'adolescenza",
+"dinizio": "2009-08-03"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-43",
+"inizio": "2026-06-05",
+"carica": "Membro",
+"titolo": "Comitato parlamentare per i procedimenti di accusa",
+"materia": "Comitato parlamentare per i procedimenti di accusa",
+"dinizio": "1989-07-04"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-71",
+"inizio": "2024-02-13",
+"carica": "Membro",
+"titolo": "Parlamentari membri della Commissione per la vigilanza sulla cassa depositi e prestiti",
+"materia": "Commissione di vigilanza Cassa Depositi e Prestiti",
+"dinizio": "1948-05-08",
+"dfine": "1976-06-14"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"commissione": "http://dati.senato.it/commissione/4-71",
+"inizio": "2024-02-13",
+"carica": "Membro",
+"titolo": "Parlamentari membri della Commissione di vigilanza sulla Cassa Depositi e Prestiti",
+"materia": "Commissione di vigilanza Cassa Depositi e Prestiti",
+"dinizio": "1976-06-15"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-05-09",
+"carica": "Presidente",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2019-10-30",
+"dfine": "2022-10-12"
+},
+{
+"senatore": "http://dati.senato.it/senatore/32435",
+"commissione": "http://dati.senato.it/commissione/0-143",
+"inizio": "2023-05-09",
+"carica": "Presidente",
+"titolo": "Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza",
+"materia": "Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza",
+"dinizio": "2023-01-19"
+}
+],
+"denominazioni": [
+{
+"gruppo": "http://dati.senato.it/gruppo/85",
+"titolo": "Fratelli d'Italia",
+"breve": "FdI",
+"inizio": "2018-03-23"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega-Salvini Premier",
+"breve": "L-SP",
+"inizio": "2018-03-23",
+"fine": "2018-07-29"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega-Salvini Premier-Partito Sardo d'Azione",
+"breve": "L-SP-PSd'Az",
+"inizio": "2018-07-30",
+"fine": "2022-10-12"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Forza Nord Padania",
+"breve": "LFNP",
+"inizio": "2000-02-17",
+"fine": "2001-05-29"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord e Autonomie",
+"breve": "LN-Aut",
+"inizio": "2013-03-15",
+"fine": "2018-03-22"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord Padania",
+"breve": "LNP",
+"inizio": "2001-05-30",
+"fine": "2002-03-11"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord Padania",
+"breve": "LNP",
+"inizio": "2006-04-28",
+"fine": "2008-04-28"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord Padania",
+"breve": "LNP",
+"inizio": "2008-04-29",
+"fine": "2013-03-14"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Padana",
+"breve": "LP",
+"inizio": "2002-03-12",
+"fine": "2006-04-27"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Salvini Premier - Partito Sardo d'Azione",
+"breve": "LSP-PSd'Az",
+"inizio": "2022-10-13"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Forza Padania per l'indipendenza del Nord",
+"breve": "Lega Forza Padania",
+"inizio": "1999-08-02",
+"fine": "2000-02-16"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord",
+"breve": "Lega Nord",
+"inizio": "1992-04-23",
+"fine": "1994-04-14"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord",
+"breve": "Lega Nord",
+"inizio": "1994-04-15",
+"fine": "1996-05-08"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega Nord - Per la Padania indipendente",
+"breve": "Lega Nord",
+"inizio": "1996-05-22",
+"fine": "1999-08-01"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/33",
+"titolo": "Lega",
+"breve": "Lega",
+"inizio": "1996-05-09",
+"fine": "1996-05-21"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/9",
+"titolo": "Misto",
+"breve": "Misto",
+"inizio": "1946-06-25"
+},
+{
+"gruppo": "http://dati.senato.it/gruppo/9",
+"titolo": "Misto",
+"breve": "Misto",
+"inizio": "1946-06-25"
+}
+]
+}

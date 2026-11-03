@@ -1,0 +1,875 @@
+{
+ "get_debate": {
+  "": [
+   "dict"
+  ],
+  "acts": [
+   "list"
+  ],
+  "acts[]": [
+   "dict"
+  ],
+  "acts[].law": [
+   "dict",
+   "null"
+  ],
+  "acts[].law.date": [
+   "null",
+   "str"
+  ],
+  "acts[].law.eli": [
+   "null",
+   "str"
+  ],
+  "acts[].law.gu_date": [
+   "null",
+   "str"
+  ],
+  "acts[].law.gu_number": [
+   "null",
+   "str"
+  ],
+  "acts[].law.kind": [
+   "null",
+   "str"
+  ],
+  "acts[].law.label": [
+   "null",
+   "str"
+  ],
+  "acts[].law.normattiva_url": [
+   "null",
+   "str"
+  ],
+  "acts[].law.number": [
+   "null",
+   "str"
+  ],
+  "acts[].law.title": [
+   "null",
+   "str"
+  ],
+  "acts[].number": [
+   "null",
+   "str"
+  ],
+  "acts[].status": [
+   "null",
+   "str"
+  ],
+  "acts[].subject": [
+   "null",
+   "str"
+  ],
+  "acts[].text_url": [
+   "null",
+   "str"
+  ],
+  "acts[].title": [
+   "null",
+   "str"
+  ],
+  "acts[].uri": [
+   "null",
+   "str"
+  ],
+  "acts[].url": [
+   "null",
+   "str"
+  ],
+  "id": [
+   "str"
+  ],
+  "next_step": [
+   "str"
+  ],
+  "phases": [
+   "list"
+  ],
+  "phases[]": [
+   "dict"
+  ],
+  "phases[].speech_count": [
+   "num"
+  ],
+  "phases[].title": [
+   "str"
+  ],
+  "recap": [
+   "str"
+  ],
+  "speakers": [
+   "list"
+  ],
+  "speakers[]": [
+   "dict"
+  ],
+  "speakers[].government_member": [
+   "bool"
+  ],
+  "speakers[].name": [
+   "str"
+  ],
+  "speakers[].party": [
+   "str"
+  ],
+  "speakers[].role": [
+   "null",
+   "str"
+  ],
+  "speakers[].speech_count": [
+   "num"
+  ],
+  "title": [
+   "str"
+  ],
+  "votes": [
+   "list"
+  ],
+  "votes[]": [
+   "dict"
+  ],
+  "votes[].description": [
+   "bool",
+   "null",
+   "str"
+  ],
+  "votes[].final_vote": [
+   "bool",
+   "null",
+   "str"
+  ],
+  "votes[].id": [
+   "bool",
+   "null",
+   "str"
+  ],
+  "votes[].outcome": [
+   "bool",
+   "null",
+   "str"
+  ],
+  "votes[].subject": [
+   "bool",
+   "null",
+   "str"
+  ]
+ },
+ "get_session_votes": {
+  "": [
+   "dict"
+  ],
+  "session_id": [
+   "str"
+  ],
+  "votes": [
+   "list"
+  ],
+  "votes[]": [
+   "dict"
+  ],
+  "votes[].abstained": [
+   "num"
+  ],
+  "votes[].act_number": [
+   "str"
+  ],
+  "votes[].act_subject": [
+   "null"
+  ],
+  "votes[].act_title": [
+   "str"
+  ],
+  "votes[].against": [
+   "num"
+  ],
+  "votes[].description": [
+   "str"
+  ],
+  "votes[].final_vote": [
+   "bool"
+  ],
+  "votes[].id": [
+   "str"
+  ],
+  "votes[].in_favor": [
+   "num"
+  ],
+  "votes[].number": [
+   "num"
+  ],
+  "votes[].outcome": [
+   "str"
+  ],
+  "votes[].subject": [
+   "str"
+  ]
+ },
+ "get_vote_details": {
+  "": [
+   "dict"
+  ],
+  "abstained": [
+   "num"
+  ],
+  "acts": [
+   "list"
+  ],
+  "acts[]": [
+   "dict"
+  ],
+  "acts[].law": [
+   "null"
+  ],
+  "acts[].law.date": [
+   "null",
+   "str"
+  ],
+  "acts[].law.eli": [
+   "null",
+   "str"
+  ],
+  "acts[].law.gu_date": [
+   "null",
+   "str"
+  ],
+  "acts[].law.gu_number": [
+   "null",
+   "str"
+  ],
+  "acts[].law.kind": [
+   "null",
+   "str"
+  ],
+  "acts[].law.label": [
+   "null",
+   "str"
+  ],
+  "acts[].law.normattiva_url": [
+   "null",
+   "str"
+  ],
+  "acts[].law.number": [
+   "null",
+   "str"
+  ],
+  "acts[].law.title": [
+   "null",
+   "str"
+  ],
+  "acts[].number": [
+   "str"
+  ],
+  "acts[].status": [
+   "null"
+  ],
+  "acts[].subject": [
+   "null"
+  ],
+  "acts[].text_url": [
+   "str"
+  ],
+  "acts[].title": [
+   "str"
+  ],
+  "acts[].uri": [
+   "str"
+  ],
+  "acts[].url": [
+   "str"
+  ],
+  "against": [
+   "num"
+  ],
+  "breakdown_by_group": [
+   "list"
+  ],
+  "breakdown_by_group[]": [
+   "dict"
+  ],
+  "breakdown_by_group[].absent": [
+   "num"
+  ],
+  "breakdown_by_group[].abstain": [
+   "num"
+  ],
+  "breakdown_by_group[].against": [
+   "num"
+  ],
+  "breakdown_by_group[].favor": [
+   "num"
+  ],
+  "breakdown_by_group[].party": [
+   "str"
+  ],
+  "breakdown_by_group[].secret": [
+   "num"
+  ],
+  "counts_consistency": [
+   "dict"
+  ],
+  "counts_consistency.consistent": [
+   "bool"
+  ],
+  "counts_consistency.official_totals": [
+   "dict"
+  ],
+  "counts_consistency.official_totals.abstained": [
+   "num"
+  ],
+  "counts_consistency.official_totals.against": [
+   "num"
+  ],
+  "counts_consistency.official_totals.in_favor": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown": [
+   "dict"
+  ],
+  "counts_consistency.sum_of_group_breakdown.abstained": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown.against": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown.in_favor": [
+   "num"
+  ],
+  "description": [
+   "str"
+  ],
+  "id": [
+   "str"
+  ],
+  "in_favor": [
+   "num"
+  ],
+  "individual_votes": [
+   "list"
+  ],
+  "individual_votes[]": [
+   "dict"
+  ],
+  "individual_votes[].first_name": [
+   "str"
+  ],
+  "individual_votes[].id": [
+   "str"
+  ],
+  "individual_votes[].last_name": [
+   "str"
+  ],
+  "individual_votes[].outcome": [
+   "str"
+  ],
+  "individual_votes[].party": [
+   "str"
+  ],
+  "individual_votes[].senato_id": [
+   "null"
+  ],
+  "majority": [
+   "num"
+  ],
+  "next_step": [
+   "str"
+  ],
+  "outcome": [
+   "str"
+  ],
+  "present": [
+   "num"
+  ],
+  "secret_vote": [
+   "bool"
+  ],
+  "subject": [
+   "str"
+  ]
+ },
+ "get_vote_hemicycle": {
+  "": [
+   "dict"
+  ],
+  "available": [
+   "bool"
+  ],
+  "breakdown_by_group": [
+   "list"
+  ],
+  "breakdown_by_group[]": [
+   "dict"
+  ],
+  "breakdown_by_group[].absent": [
+   "num"
+  ],
+  "breakdown_by_group[].abstain": [
+   "num"
+  ],
+  "breakdown_by_group[].against": [
+   "num"
+  ],
+  "breakdown_by_group[].favor": [
+   "num"
+  ],
+  "breakdown_by_group[].party": [
+   "str"
+  ],
+  "breakdown_by_group[].secret": [
+   "num"
+  ],
+  "chamber": [
+   "str"
+  ],
+  "chart_note": [
+   "str"
+  ],
+  "counts_consistency": [
+   "dict"
+  ],
+  "counts_consistency.consistent": [
+   "bool"
+  ],
+  "counts_consistency.official_totals": [
+   "dict"
+  ],
+  "counts_consistency.official_totals.abstained": [
+   "num"
+  ],
+  "counts_consistency.official_totals.against": [
+   "num"
+  ],
+  "counts_consistency.official_totals.in_favor": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown": [
+   "dict"
+  ],
+  "counts_consistency.sum_of_group_breakdown.abstained": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown.against": [
+   "num"
+  ],
+  "counts_consistency.sum_of_group_breakdown.in_favor": [
+   "num"
+  ],
+  "description": [
+   "str"
+  ],
+  "display": [
+   "str"
+  ],
+  "image_png_url": [
+   "str"
+  ],
+  "image_svg_url": [
+   "str"
+  ],
+  "individual_votes_drawn": [
+   "num"
+  ],
+  "official_totals": [
+   "dict"
+  ],
+  "official_totals.abstained": [
+   "num"
+  ],
+  "official_totals.against": [
+   "num"
+  ],
+  "official_totals.in_favor": [
+   "num"
+  ],
+  "official_totals.majority": [
+   "num"
+  ],
+  "official_totals.present": [
+   "num"
+  ],
+  "outcome": [
+   "str"
+  ],
+  "seat_map": [
+   "dict"
+  ],
+  "seat_map.box": [
+   "list"
+  ],
+  "seat_map.box[]": [
+   "num"
+  ],
+  "seat_map.dot": [
+   "num"
+  ],
+  "seat_map.empty": [
+   "list"
+  ],
+  "seat_map.groups": [
+   "dict"
+  ],
+  "seat_map.groups.+Eu": [
+   "str"
+  ],
+  "seat_map.groups.AVS": [
+   "str"
+  ],
+  "seat_map.groups.Azione": [
+   "str"
+  ],
+  "seat_map.groups.FI": [
+   "str"
+  ],
+  "seat_map.groups.FN": [
+   "str"
+  ],
+  "seat_map.groups.FdI": [
+   "str"
+  ],
+  "seat_map.groups.IV": [
+   "str"
+  ],
+  "seat_map.groups.Lega": [
+   "str"
+  ],
+  "seat_map.groups.M5S": [
+   "str"
+  ],
+  "seat_map.groups.Min.Ling.": [
+   "str"
+  ],
+  "seat_map.groups.Misto": [
+   "str"
+  ],
+  "seat_map.groups.NM": [
+   "str"
+  ],
+  "seat_map.groups.PD": [
+   "str"
+  ],
+  "seat_map.groups.Sud": [
+   "str"
+  ],
+  "seat_map.seats": [
+   "list"
+  ],
+  "seat_map.seats[]": [
+   "list"
+  ],
+  "seat_map.seats[][]": [
+   "num",
+   "str"
+  ],
+  "seat_map.tally": [
+   "dict"
+  ],
+  "seat_map.tally.absent": [
+   "num"
+  ],
+  "seat_map.tally.abstain": [
+   "num"
+  ],
+  "seat_map.tally.against": [
+   "num"
+  ],
+  "seat_map.tally.favor": [
+   "num"
+  ],
+  "subject": [
+   "str"
+  ],
+  "vote_id": [
+   "str"
+  ]
+ },
+ "get_voted_text": {
+  "": [
+   "dict"
+  ],
+  "available": [
+   "bool"
+  ],
+  "paragraphs": [
+   "list"
+  ],
+  "paragraphs[]": [
+   "str"
+  ],
+  "source_url": [
+   "str"
+  ]
+ },
+ "list_sessions": {
+  "": [
+   "dict"
+  ],
+  "has_more": [
+   "bool"
+  ],
+  "next_cursor": [
+   "str"
+  ],
+  "sessions": [
+   "list"
+  ],
+  "sessions[]": [
+   "dict"
+  ],
+  "sessions[].chamber": [
+   "str"
+  ],
+  "sessions[].date": [
+   "str"
+  ],
+  "sessions[].debates": [
+   "list"
+  ],
+  "sessions[].debates[]": [
+   "dict"
+  ],
+  "sessions[].debates[].id": [
+   "str"
+  ],
+  "sessions[].debates[].title": [
+   "str"
+  ],
+  "sessions[].id": [
+   "str"
+  ],
+  "sessions[].number": [
+   "num"
+  ],
+  "sessions[].recap": [
+   "str"
+  ],
+  "sessions[].speech_count": [
+   "num"
+  ],
+  "sessions[].vote_count": [
+   "num"
+  ]
+ },
+ "search_parliament": {
+  "": [
+   "dict"
+  ],
+  "next_step": [
+   "str"
+  ],
+  "results": [
+   "list"
+  ],
+  "results[]": [
+   "dict"
+  ],
+  "results[].act_kind": [
+   "str"
+  ],
+  "results[].act_number": [
+   "str"
+  ],
+  "results[].act_title": [
+   "str"
+  ],
+  "results[].act_type": [
+   "str"
+  ],
+  "results[].chamber": [
+   "str"
+  ],
+  "results[].date": [
+   "str"
+  ],
+  "results[].debate_title": [
+   "str"
+  ],
+  "results[].first_name": [
+   "str"
+  ],
+  "results[].group": [
+   "str"
+  ],
+  "results[].id": [
+   "str"
+  ],
+  "results[].is_exact": [
+   "bool"
+  ],
+  "results[].last_name": [
+   "str"
+  ],
+  "results[].match_type": [
+   "str"
+  ],
+  "results[].score": [
+   "num"
+  ],
+  "results[].session_number": [
+   "num"
+  ],
+  "results[].text": [
+   "str"
+  ],
+  "results[].type": [
+   "str"
+  ],
+  "results[].url": [
+   "str"
+  ],
+  "total": [
+   "num"
+  ]
+ },
+ "verify_answer": {
+  "": [
+   "dict"
+  ],
+  "authority": [
+   "dict"
+  ],
+  "authority.available": [
+   "bool"
+  ],
+  "authority.topic": [
+   "str"
+  ],
+  "authority.voices": [
+   "list"
+  ],
+  "authority.voices[]": [
+   "dict"
+  ],
+  "authority.voices[].authoritative": [
+   "bool"
+  ],
+  "authority.voices[].group": [
+   "str"
+  ],
+  "authority.voices[].group_size": [
+   "num"
+  ],
+  "authority.voices[].name": [
+   "str"
+  ],
+  "authority.voices[].pool": [
+   "str"
+  ],
+  "authority.voices[].pool_size": [
+   "num"
+  ],
+  "authority.voices[].rank": [
+   "num"
+  ],
+  "authority.voices[].role": [
+   "null"
+  ],
+  "authority.voices[].source": [
+   "str"
+  ],
+  "group_mismatches": [
+   "list"
+  ],
+  "groups": [
+   "dict"
+  ],
+  "groups.missing": [
+   "list"
+  ],
+  "groups.missing[]": [
+   "str"
+  ],
+  "groups.present": [
+   "list"
+  ],
+  "groups.present[]": [
+   "str"
+  ],
+  "groups.silent": [
+   "list"
+  ],
+  "groups.silent[]": [
+   "str"
+  ],
+  "groups_detail": [
+   "list"
+  ],
+  "groups_detail[]": [
+   "dict"
+  ],
+  "groups_detail[].key": [
+   "str"
+  ],
+  "groups_detail[].label": [
+   "str"
+  ],
+  "groups_detail[].status": [
+   "str"
+  ],
+  "outcome": [
+   "dict"
+  ],
+  "outcome.authority": [
+   "str"
+  ],
+  "outcome.groups": [
+   "str"
+  ],
+  "outcome.quotes": [
+   "str"
+  ],
+  "quotes": [
+   "list"
+  ],
+  "quotes[]": [
+   "dict"
+  ],
+  "quotes[].date": [
+   "str"
+  ],
+  "quotes[].group": [
+   "str"
+  ],
+  "quotes[].quote": [
+   "str"
+  ],
+  "quotes[].record_url": [
+   "str"
+  ],
+  "quotes[].speaker": [
+   "str"
+  ],
+  "quotes[].speaker_named_nearby": [
+   "bool"
+  ],
+  "quotes[].status": [
+   "str"
+  ],
+  "scope": [
+   "str"
+  ],
+  "status_meaning": [
+   "dict"
+  ],
+  "status_meaning.exact": [
+   "str"
+  ],
+  "status_meaning.modified": [
+   "str"
+  ],
+  "status_meaning.not_found": [
+   "str"
+  ],
+  "status_meaning.omissions": [
+   "str"
+  ],
+  "verdict": [
+   "list"
+  ],
+  "verdict[]": [
+   "str"
+  ],
+  "verify_page": [
+   "str"
+  ]
+ }
+}

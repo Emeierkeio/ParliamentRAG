@@ -1,0 +1,129 @@
+{
+  "id": "COMU-048",
+  "domanda": "Mi servono i numeri esatti dell'ultimo voto in Senato sulla manovra, con i favorevoli per gruppo, da mettere in una card social.",
+  "sql": [
+    "SELECT v.uri, v.date, v.title, v.favor, v.against, v.abstain, v.present, v.voting, v.approved, v.source_url\nFROM vote v WHERE v.uri = 'it:senato:19:sed0375:v003'",
+    "SELECT coalesce(g.short_name, b.grp, '(senza gruppo)') AS gruppo,\n       count(*) FILTER (WHERE b.result = 'favor') AS favorevoli,\n       count(*) FILTER (WHERE b.result = 'against') AS contrari,\n       count(*) FILTER (WHERE b.result = 'abstain') AS astenuti,\n       count(*) FILTER (WHERE b.result = 'present_not_voting') AS presenti_non_votanti,\n       count(*) FILTER (WHERE b.result = 'mission') AS in_missione\nFROM ballot b LEFT JOIN grp g ON g.uri = b.grp\nWHERE b.vote = 'it:senato:19:sed0375:v003'\nGROUP BY 1 ORDER BY favorevoli DESC, contrari DESC",
+    "SELECT p.given_name || ' ' || p.family_name AS senatore, b.result\nFROM ballot b JOIN person p ON p.uri = b.person\nWHERE b.vote = 'it:senato:19:sed0375:v003' AND b.grp = 'it:senato:19:group:9'\nORDER BY b.result, p.family_name"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:senato:19:sed0375:v003",
+        "date": "2025-12-23",
+        "title": "Votazione finale",
+        "favor": 110,
+        "against": 66,
+        "abstain": 2,
+        "present": 179,
+        "voting": 178,
+        "approved": true,
+        "source_url": null
+      }
+    ],
+    [
+      {
+        "gruppo": "FdI",
+        "favorevoli": 59,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "LSP-PSd'Az",
+        "favorevoli": 26,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 1,
+        "in_missione": 1
+      },
+      {
+        "gruppo": "FI-BP-PPE",
+        "favorevoli": 18,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+        "favorevoli": 7,
+        "contrari": 0,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 1
+      },
+      {
+        "gruppo": "PD-IDP",
+        "favorevoli": 0,
+        "contrari": 31,
+        "astenuti": 0,
+        "presenti_non_votanti": 1,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "M5S",
+        "favorevoli": 0,
+        "contrari": 24,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 0
+      },
+      {
+        "gruppo": "IV-CR",
+        "favorevoli": 0,
+        "contrari": 8,
+        "astenuti": 0,
+        "presenti_non_votanti": 0,
+        "in_missione": 0
+      },
+      {
+        "gruppo": "Misto",
+        "favorevoli": 0,
+        "contrari": 2,
+        "astenuti": 0,
+        "presenti_non_votanti": 1,
+        "in_missione": 2
+      },
+      {
+        "gruppo": "Aut (SVP-PATT, Cb)",
+        "favorevoli": 0,
+        "contrari": 1,
+        "astenuti": 2,
+        "presenti_non_votanti": 0,
+        "in_missione": 3
+      }
+    ],
+    [
+      {
+        "senatore": "Peppe De Cristofaro",
+        "result": "against"
+      },
+      {
+        "senatore": "Tino Magni",
+        "result": "against"
+      },
+      {
+        "senatore": "Mario Monti",
+        "result": "mission"
+      },
+      {
+        "senatore": "Liliana Segre",
+        "result": "mission"
+      },
+      {
+        "senatore": "Carlo Calenda",
+        "result": "present_not_voting"
+      }
+    ]
+  ],
+  "risposta": "Ultimo voto del Senato sulla manovra: voto finale sul ddl S. 1689 (bilancio di previsione 2026 e pluriennale 2026-2028, poi legge 30/12/2025 n. 199), 23/12/2025. Approvato con 110 favorevoli, 66 contrari e 2 astenuti (179 presenti, 178 votanti). Favorevoli per gruppo: FdI 59, Lega-PSd'Az 26, FI-BP-PPE 18, Civici d'Italia-UDC-NM-MAIE-CP 7; nessun favorevole da PD-IDP (31 contrari), M5S (24 contrari), IV-CR (8 contrari), Per le Autonomie (1 contrario, 2 astenuti) e Misto (2 contrari: De Cristofaro e Magni). Il Misto non è diviso per componente nei dati.",
+  "stato": "parziale",
+  "limiti": "Il Misto del Senato non è diviso per componente: si danno i nomi dei senatori del Misto. I senatori assenti non hanno righe nelle schede del Senato, quindi non si può dire chi mancava. Il voto è quello finale del Senato in prima lettura; la legge è stata poi approvata definitivamente dalla Camera. La votazione del Senato non ha link alla fonte nel database.",
+  "problemi_dati": [
+    "Senato: le schede non hanno righe per gli assenti: qui 194 schede (178 votanti, 3 presenti non votanti, 13 in missione) su 205 componenti, quindi 11 senatori senza scheda. Query: SELECT result, count(*) FROM ballot WHERE vote = 'it:senato:19:sed0375:v003' GROUP BY 1;",
+    "Senato: 3 schede «presente non votante» contro vote.present - vote.voting = 1. Stessa query."
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

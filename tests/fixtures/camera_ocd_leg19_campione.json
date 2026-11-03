@@ -1,0 +1,310 @@
+{
+"persone": [
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307298",
+"nome": "GALEAZZO",
+"cognome": "BIGNAMI",
+"genere": "male",
+"foto": "http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19",
+"nascita": "19751025",
+"luogo": "nato a BOLOGNA, BOLOGNA, EMILIA-ROMAGNA, il 25.10.1975",
+"descrizione": "Laurea in giurisprudenza; Avvocato"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307591",
+"nome": "LORENZO",
+"cognome": "FONTANA",
+"genere": "male",
+"foto": "http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307591&legislatura=19",
+"nascita": "19800410",
+"luogo": "nato a VERONA, VERONA, VENETO, il 10.04.1980",
+"descrizione": "Laurea in scienze politiche, Laurea in storia contemporanea, Laurea in filosofia; Dipendente"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307436",
+"nome": "RICCARDO",
+"cognome": "MAGI",
+"genere": "male",
+"foto": "http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307436&legislatura=19",
+"nascita": "19760807",
+"luogo": "nato a ROMA, ROMA, LAZIO, il 07.08.1976",
+"descrizione": "Laurea in scienze storiche; già Segretario Radicali italiani, Presidente di +Europa"
+}
+],
+"mandati": [
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307298",
+"mandato": "http://dati.camera.it/ocd/mandatoCamera.rdf/mc19_307298_20221010",
+"inizio": "20221010",
+"convalida": "2025-07-29",
+"circoscrizione": "EMILIA-ROMAGNA - P02",
+"sistema": "proporzionale",
+"lista": "FRATELLI D'ITALIA CON GIORGIA MELONI"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307436",
+"mandato": "http://dati.camera.it/ocd/mandatoCamera.rdf/mc19_307436_20220930",
+"inizio": "20220930",
+"convalida": "2024-07-03",
+"circoscrizione": "PIEMONTE 1 - P01",
+"collegio": "PIEMONTE 1 - U01",
+"sistema": "maggioritario"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307591",
+"mandato": "http://dati.camera.it/ocd/mandatoCamera.rdf/mc19_307591_20221005",
+"inizio": "20221005",
+"convalida": "2024-07-03",
+"circoscrizione": "VENETO 2 - P03",
+"collegio": "VENETO 2 - U06",
+"sistema": "maggioritario"
+}
+],
+"gruppi": [
+{
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+"titolo": "MISTO (MISTO) (18.10.2022",
+"sigla": "MISTO",
+"inizio": "20221018"
+},
+{
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+"titolo": "LEGA - SALVINI PREMIER (LEGA) (18.10.2022",
+"sigla": "LEGA",
+"inizio": "20221018"
+},
+{
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+"titolo": "FRATELLI D'ITALIA (FDI) (18.10.2022",
+"sigla": "FDI",
+"inizio": "20221018"
+}
+],
+"adesioni": [
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+"inizio": "20221018",
+"motivo": ""
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+"inizio": "20221018",
+"motivo": ""
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4132",
+"inizio": "20221018",
+"motivo": ""
+}
+],
+"componenti_misto": [
+{
+"componente": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4139",
+"titolo": "MISTO-+EUROPA - STATI UNITI D'EUROPA (MISTO-+EU-SUEU) (19.10.2022",
+"sigla": "MISTO-+EU-SUEU",
+"cinizio": "20221019",
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"inizio": "20221019"
+}
+],
+"organi": [
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3501",
+"titolo": "I COMMISSIONE (AFFARI COSTITUZIONALI, DELLA PRESIDENZA DEL CONSIGLIO E INTERNI)",
+"tipo": "COMMISSIONE PERMANENTE",
+"inizio": "20221013"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3502",
+"titolo": "II COMMISSIONE (GIUSTIZIA)",
+"tipo": "COMMISSIONE PERMANENTE",
+"inizio": "20221013"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3503",
+"titolo": "III COMMISSIONE (AFFARI ESTERI E COMUNITARI)",
+"tipo": "COMMISSIONE PERMANENTE",
+"inizio": "20221013"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3506",
+"titolo": "VI COMMISSIONE (FINANZE)",
+"tipo": "COMMISSIONE PERMANENTE",
+"inizio": "20221013"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3518",
+"titolo": "GIUNTA PER IL REGOLAMENTO",
+"tipo": "GIUNTA PER IL REGOLAMENTO",
+"inizio": "20221013"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3541",
+"titolo": "UFFICIO DI PRESIDENZA",
+"tipo": "ORGANO DELLA PRESIDENZA",
+"inizio": "20221019"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3601",
+"titolo": "CONFERENZA DEI PRESIDENTI DI GRUPPO",
+"tipo": "CONFERENZA DEI PRESIDENTI DI GRUPPO",
+"inizio": "20221019"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4281",
+"titolo": "COMMISSIONE PARLAMENTARE DI INCHIESTA SULLA GESTIONE DELL'EMERGENZA SANITARIA CAUSATA DALLA DIFFUSIONE EPIDEMICA DEL VIRUS SARS-COV-2 E SULLE MISURE ADOTTATE PER PREVENIRE E AFFRONTARE L'EMERGENZA EPIDEMIOLOGICA DA SARS-COV-2",
+"tipo": "COMMISSIONE BICAMERALE D'INCHIESTA",
+"inizio": "20240807"
+},
+{
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4301",
+"titolo": "COMMISSIONE PARLAMENTARE DI INCHIESTA SUGLI EFFETTI ECONOMICI E SOCIALI DERIVANTI DALLA TRANSIZIONE DEMOGRAFICA IN ATTO",
+"tipo": "COMMISSIONE MONOCAMERALE D'INCHIESTA",
+"inizio": "20250116"
+}
+],
+"membri_organi": [
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3506",
+"tipo": "Titolare",
+"inizio": "20221109",
+"fine": "20250610",
+"motivo": "Cessazione"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3503",
+"tipo": "Titolare",
+"inizio": "20250610",
+"fine": "20260327",
+"motivo": "Cessazione"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4281",
+"tipo": "Titolare",
+"inizio": "20250304",
+"fine": "20260630",
+"motivo": "Dimissioni"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3601",
+"tipo": "Titolare",
+"inizio": "20241203"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3502",
+"tipo": "Titolare",
+"inizio": "20260327"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4281",
+"tipo": "Titolare",
+"inizio": "20260722"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4301",
+"tipo": "Titolare",
+"inizio": "20250116",
+"fine": "20260325",
+"motivo": "Dimissioni"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3501",
+"tipo": "Titolare",
+"inizio": "20221109"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3541",
+"tipo": "Titolare",
+"inizio": "20221019"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3601",
+"tipo": "Titolare",
+"inizio": "20221019"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3518",
+"tipo": "Titolare",
+"inizio": "20221021"
+}
+],
+"uffici": [
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3601",
+"carica": "CAPOGRUPPO",
+"inizio": "20241203"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4301",
+"carica": "CAPOGRUPPO",
+"inizio": "20250217",
+"fine": "20260325"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3501",
+"carica": "CAPOGRUPPO",
+"inizio": "20221109"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_4301",
+"carica": "CAPOGRUPPO",
+"inizio": "20250217"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3541",
+"carica": "PRESIDENTE",
+"inizio": "20221019"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3601",
+"carica": "PRESIDENTE",
+"inizio": "20221019"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307591_19",
+"organo": "http://dati.camera.it/ocd/organo.rdf/o19_3518",
+"carica": "PRESIDENTE",
+"inizio": "20221021"
+}
+],
+"incarichi_gruppo": [
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307298_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4133",
+"ruolo": "PRESIDENTE",
+"inizio": "20241203"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+"ruolo": "RAPPRESENTANTE COMPONENTE GRUPPO MISTO",
+"inizio": "20221019"
+},
+{
+"deputato": "http://dati.camera.it/ocd/deputato.rdf/d307436_19",
+"gruppo": "http://dati.camera.it/ocd/gruppoParlamentare.rdf/gr4111",
+"ruolo": "VICEPRESIDENTE",
+"inizio": "20221019"
+}
+]
+}

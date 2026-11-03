@@ -1,0 +1,154 @@
+{
+"senatori_camera": [
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s200012_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p200012",
+"nome": "MARIA ELISABETTA",
+"cognome": "ALBERTI",
+"genere": "female"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s301569_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p301569",
+"nome": "GIUSEPPE",
+"cognome": "DE CRISTOFARO",
+"genere": "male"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s305999_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p305999",
+"nome": "ENRICO",
+"cognome": "BORGHI",
+"genere": "male"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s307254_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307254",
+"nome": "CLAUDIO",
+"cognome": "BORGHI",
+"genere": "male"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s307598_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p307598",
+"nome": "GIUSEPPINA",
+"cognome": "VERSACE",
+"genere": "female"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s33410_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p33410",
+"nome": "IGNAZIO BENITO MARIA",
+"cognome": "LA RUSSA",
+"genere": "male"
+},
+{
+"senatore": "http://dati.camera.it/ocd/senatore.rdf/s37300_19",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p37300",
+"nome": "LUCIO",
+"cognome": "MALAN",
+"genere": "male"
+}
+],
+"senatori_osr": [
+{
+"senatore": "http://dati.senato.it/senatore/32",
+"nome": "Maria Elisabetta",
+"cognome": "Alberti Casellati",
+"etichetta": "Maria Elisabetta Alberti Casellati",
+"genere": "F",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00000032.jpg",
+"professione": "Avvocato"
+},
+{
+"senatore": "http://dati.senato.it/senatore/33070",
+"nome": "Claudio",
+"cognome": "Borghi Aquilini",
+"etichetta": "Claudio Borghi Aquilini",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00033070.jpg",
+"professione": "Giornalista"
+},
+{
+"senatore": "http://dati.senato.it/senatore/29293",
+"nome": "Enrico",
+"cognome": "Borghi",
+"etichetta": "Enrico Borghi",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00029293.jpg",
+"professione": "Dirigente"
+},
+{
+"senatore": "http://dati.senato.it/senatore/22918",
+"nome": "Peppe",
+"cognome": "De Cristofaro",
+"etichetta": "Peppe De Cristofaro",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00022918.jpg",
+"professione": "Funzionario di partito"
+},
+{
+"senatore": "http://dati.senato.it/senatore/22918",
+"nome": "Peppe",
+"cognome": "De Cristofaro",
+"etichetta": "Peppe De Cristofaro",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00022918.jpg",
+"professione": "Impiegato"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1275",
+"nome": "Ignazio",
+"cognome": "La Russa",
+"etichetta": "Ignazio La Russa",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg",
+"professione": "Avvocato cassazionista"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1275",
+"nome": "Ignazio",
+"cognome": "La Russa",
+"etichetta": "Ignazio La Russa",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg",
+"professione": "Avvocato"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"nome": "Lucio",
+"cognome": "Malan",
+"etichetta": "Lucio Malan",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001407.jpg",
+"professione": "Insegnante"
+},
+{
+"senatore": "http://dati.senato.it/senatore/1407",
+"nome": "Lucio",
+"cognome": "Malan",
+"etichetta": "Lucio Malan",
+"genere": "M",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00001407.jpg",
+"professione": "Insegnante, funzionario di partito"
+},
+{
+"senatore": "http://dati.senato.it/senatore/33027",
+"nome": "Giusy",
+"cognome": "Versace",
+"etichetta": "Giusy Versace",
+"genere": "F",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00033027.jpg",
+"professione": "Libero professionista"
+},
+{
+"senatore": "http://dati.senato.it/senatore/33027",
+"nome": "Giusy",
+"cognome": "Versace",
+"etichetta": "Giusy Versace",
+"genere": "F",
+"foto": "http://www.senato.it/leg/19/Immagini/Senatori/00033027.jpg",
+"professione": "Professionista dello sport"
+}
+]
+}

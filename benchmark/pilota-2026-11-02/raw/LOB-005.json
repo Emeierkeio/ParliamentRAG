@@ -1,0 +1,51 @@
+{
+ "id": "LOB-005",
+ "trappola": false,
+ "domanda": "Chi presiede oggi la XIII Commissione Agricoltura della Camera? A me risultava Mirco Carloni.",
+ "categoria": "commissioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Dal 13/10/2026 la presidenza è di Francesco Bruzzone. Nei dati resta una riga di Carloni senza data di fine: il sistema deve usare la carica più recente e non indicare due presidenti.",
+ "endpoint": "agente",
+ "risposta_sistema": "Sì: **Mirco Carloni** (Lega - Salvini Premier) risulta presidente della **XIII Commissione Agricoltura della Camera**. I dati sono aggiornati al **19 ottobre 2026**; ecco la sua [scheda parlamentare](#/strumenti/deputato/308763)",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 1
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Quali atti ha presentato Mirco Carloni come primo firmatario?",
+   "Che cosa ha detto Mirco Carloni in Aula sull’agricoltura?",
+   "Quali gruppi compongono oggi la XIII Commissione Agricoltura?"
+  ]
+ },
+ "tempo_s": 4.6,
+ "verifica": null
+}

@@ -1,0 +1,67 @@
+{
+ "id": "LEG-009",
+ "trappola": false,
+ "domanda": "Quante leggi sono state approvate definitivamente nella XIX legislatura finora, distinte fra iniziativa governativa e parlamentare?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "La stessa legge compare in entrambi i rami: deduplicare per law_number e law_date. Al Senato initiative è testo grezzo («Gov. Meloni-I: …», «Sen. …») e va ricondotto a governo o parlamento.",
+ "endpoint": "agente",
+ "risposta_sistema": "Non posso ricavare un numero affidabile di **leggi definitivamente approvate distinte per iniziativa governativa o parlamentare** dai dati disponibili: il conteggio delle votazioni finali non coincide con quello delle leggi, perché lo stesso provvedimento può essere votato in entrambe le Camere e avere più passaggi.\n\nFino all’ultima seduta registrata, il **28 ottobre 2026**, risultano **670 votazioni finali**: **407 alla Camera** e **263 al Senato**. Sono votazioni su provvedimenti, non un conteggio di leggi né una classificazione per iniziativa. Per esempio, è disponibile la [votazione finale della Camera del 28 ottobre 2026](#/strumenti/voto/camera_leg19_sed735_v017)\n\nPer la ripartizione richiesta servirebbe un elenco completo e deduplicato delle leggi promulgate nella XIX legislatura, con l’indicazione dell’iniziativa del disegno/proposta di legge originario; questa classificazione aggregata non è presente nei dati qui consultabili.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "votazioni_per_tipo",
+   "label": "Conto le votazioni",
+   "state": "start"
+  },
+  {
+   "name": "votazioni_per_tipo",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 30
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "votazioni_per_tipo",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come si è votato nella votazione finale della Camera del 28 ottobre 2026?",
+   "Quali sono state le ultime votazioni finali del Senato il 28 ottobre 2026?",
+   "Quante votazioni finali ci sono state alla Camera nella XIX legislatura?"
+  ]
+ },
+ "tempo_s": 17.0,
+ "verifica": null
+}

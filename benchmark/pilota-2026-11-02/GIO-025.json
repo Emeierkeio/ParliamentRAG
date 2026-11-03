@@ -1,0 +1,61 @@
+{
+ "id": "GIO-025",
+ "domanda": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+ "categoria": "gruppi",
+ "ramo": "entrambi",
+ "tipo_risposta": "confronto_gruppi",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Misto per componente alla Camera; al Senato il Misto non si può dividere: avvertire.",
+ "endpoint": "/api/fascicolo",
+ "risposta_sistema": "## Introduzione\n\nIl tema affronta il livello di compattezza nei voti dei gruppi parlamentari, con particolare attenzione all’indice di coesione della Lega rispetto agli altri gruppi e alle dinamiche interne che influenzano la disciplina di voto. Sono stati analizzati 39 interventi di 32 deputati nel periodo dal 25/10/2022 al 07/10/2026.\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Fratelli d'Italia, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Lega - Salvini Premier, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, il gruppo non è intervenuto nei dibattiti sul tema.\n\nPer Italia Viva - Casa Riformista, nel valutare la compattezza dei gruppi parlamentari nei voti, Italia Viva - Casa Riformista sottolinea le profonde differenze interne alla maggioranza di Governo, soprattutto in relazione alle scelte compiute in ambito europeo. **Davide Faraone** osserva, [«infatti, è vero che sono seduti sugli stessi banchi del Governo qui in Italia, ma ogni forza politica, rappresentata plasticamente oggi nei banchi del Governo, ha una posizione politica in Europa radicalmente opposta»](leg19_sed314_tit00040.sub00010.int00050_chunk_0). Il gruppo mette così in dubbio la reale coesione della maggioranza, evidenziando come la Lega, Forza Italia e Fratelli d’Italia manifestino spesso orientamenti divergenti, soprattutto su temi di politica europea, e suggerendo che l’indice di coesione della Lega sia inferiore rispetto a quello di altri gruppi.\n\nPer Movimento 5 Stelle, nei passaggi trovati nessuna delle voci più autorevoli del gruppo sul tema dice una frase che si possa citare alla lettera.\n\nPer Partito Democratico - Italia Democratica e Progressista, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\n---\n\n## Gruppo Misto\n\nPer +Europa - Stati Uniti d'Europa, il gruppo non è intervenuto nei dibattiti sul tema.\n\nPer Futuro Nazionale Vannacci - Free, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera.\n\nPer Minoranze Linguistiche, nel dibattito sulle regole che dovrebbero favorire la coesione interna dei gruppi parlamentari, la componente Minoranze Linguistiche del gruppo Misto sottolinea l'importanza dei valori e delle idee condivise rispetto agli incentivi economici. **Manfred Schullian** afferma: [«sono le idee politiche e la condivisione delle stesse che dovrebbero tenere unito un partito o un gruppo parlamentare, non certo il contributo economico erogato dalla Camera»](leg19_sed617_tit00080.sub00020.int00080_chunk_1). La componente evidenzia così una visione della coesione fondata sulla condivisione politica piuttosto che su meccanismi regolamentari o finanziari, e invita a riflettere su strumenti che valorizzino il ruolo istituzionale dei gruppi più piccoli.\n\nPer Sud chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "eventi": {
+  "progress": 5,
+  "commissioni": 1,
+  "experts": 2,
+  "compass": 1,
+  "topic_stats": 1,
+  "citations": 1,
+  "citation_details": 1,
+  "chunk": 36,
+  "trace": 1,
+  "complete": 1
+ },
+ "strumenti": [
+  "Avvio retrieval...",
+  "Trovate 106 evidenze",
+  "Calcolo authority scores...",
+  "Analisi compass ideologico...",
+  "Generazione risposta multi-view..."
+ ],
+ "errori": [],
+ "tempo_s": 64.8,
+ "riferimento": {
+  "risposta": "Indice di accordo (Hix-Noury-Roland, 1 = tutti votano allo stesso modo) medio su tutte le votazioni palesi della XIX. Camera: FdI 0,998, M5S 0,997, PD-IDP 0,996, AVS 0,995, Lega 0,992, Noi Moderati 0,988, FI-PPE 0,987, IV-CR 0,975, Azione 0,975; componenti del Misto: Sud Chiama Nord 0,998 (solo dal 13/10/2026), Futuro Nazionale Vannacci 0,994 (dal 27/5/2026), +Europa 0,922, Minoranze linguistiche 0,842; i deputati del Misto senza componente 0,563. Alla Camera la Lega è quinta fra i gruppi: vota compatta nell'87,4% delle votazioni, contro il 93,6% di FdI. Senato: Lega (LSP-PSd'Az) 0,997, prima fra i gruppi, seguita da FdI 0,997, Civici d'Italia-UDC-NM 0,996, FI-BP-PPE 0,995, M5S 0,993, PD-IDP 0,976, IV-CR 0,970, Misto 0,899, Per le Autonomie 0,757. Al Senato il Misto non si può dividere per componente.",
+  "stato": "calcolata",
+  "limiti": "Indice di accordo per votazione = (max(Sì, No, Ast.) − ½ · (votanti − max)) / votanti, fra i membri del gruppo che hanno votato (almeno 2), poi media sulle votazioni; voti segreti esclusi; assenti, in missione e presenti non votanti esclusi. Gruppo = ballot.grp risolto con grp_alias (cgm4111, Misto senza componente, va al Misto). Al Senato ballot.grp non ha le componenti del Misto: il Misto resta un blocco unico. Le componenti nate da poco (SCN, FNV-F) hanno poche votazioni e non sono confrontabili con i gruppi presenti da inizio legislatura."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "warn",
+   "authority": "pass",
+   "quotes": "pass"
+  },
+  "trappola": null,
+  "tempo_s": 64.8
+ },
+ "causa_probabile": "routing",
+ "note": "Nessun indice di coesione (riferimento: Lega 0,992 quinta alla Camera, 0,997 prima al Senato). Il paragrafo di IV attribuisce al gruppo l'idea che «l'indice di coesione della Lega sia inferiore rispetto a quello di altri gruppi»: inferenza del modello, non detta da Faraone.",
+ "verifica_citazioni": [
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0314&tipo=stenografico#sed0314.stenografico.tit00040.sub00010.int00050"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0617&tipo=stenografico#sed0617.stenografico.tit00080.sub00020.int00080"
+  }
+ ]
+}

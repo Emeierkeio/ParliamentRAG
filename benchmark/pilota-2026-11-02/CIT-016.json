@@ -1,0 +1,42 @@
+{
+ "id": "CIT-016",
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "categoria": "video",
+ "ramo": "camera",
+ "tipo_risposta": "link",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì: l’approvazione definitiva della legge elettorale, la proposta [A.C. 2822-B](#/strumenti/atto/camera-2822-B?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F410%3FidSeduta%3D0723%26tipo%3Dstenografico%23sed0723.stenografico.tit00040.sub00010.int00140), è avvenuta alla Camera l’8 ottobre 2026, nella seduta n. 723. La votazione finale è stata approvata con 227 sì, 164 no e nessun astenuto.\n\nIl video è quello integrale della seduta della Camera dell’[8 ottobre 2026](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00140), nella parte dedicata al seguito dell’esame della proposta: la pagina ufficiale del resoconto consente di raggiungere la registrazione audiovisiva della seduta.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "list_sessions",
+  "get_session_votes",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 26.8,
+ "riferimento": {
+  "risposta": "Sì, alla Camera. La legge elettorale (PDL 2822-B) è stata approvata definitivamente l'8/10/2026 nella seduta 723, con voto finale segreto: 227 sì, 164 no. Il video della WebTV è «AULA, Seduta 723 - Legge elettorale, approvazione definitiva»: https://webtv.camera.it/evento/32457 (dalle 10:34 alle 12:52). La votazione finale inizia alle 12:37:15, al secondo 9.420 del video, con l'annuncio del presidente Fontana «Passiamo alla votazione finale»; prima ci sono le dichiarazioni di voto finale. Il passaggio al Senato non ha video nel database.",
+  "stato": "calcolata",
+  "limiti": "Nel database ci sono solo i video della Camera (743, tutti di Aula); per il Senato nessuno. L'offset in secondi è quello di video_segment.start_s; l'URL non porta un parametro di posizione."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 26.8
+ },
+ "causa_probabile": "dati",
+ "note": "Seduta 723 dell'8/10/2026, 227 sì e 164 no: giusto. Non dà il video WebTV (webtv.camera.it/evento/32457) né il minuto del voto: rimanda al resoconto stenografico. Scrive «nessun astenuto» su un voto segreto: il riferimento non lo dice."
+}

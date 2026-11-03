@@ -1,0 +1,115 @@
+{
+ "id": "LOB-006",
+ "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+ "sql": [
+  "SELECT CASE b.uri WHEN 'it:camera:19:body:o19_3510' THEN 'Camera, X Attività produttive' ELSE 'Senato, ' || split_part(b.name, ' (', 1) END AS commissione,\n       CASE o.title WHEN 'chair' THEN 'Presidente' ELSE 'Vicepresidente' END AS carica,\n       p.given_name || ' ' || p.family_name AS persona, g.name AS gruppo_oggi,\n       min(o.start_date) AS dal, string_agg(o.start_date || '→' || coalesce(o.end_date::text, 'in corso'), '; ' ORDER BY o.start_date) AS righe_office\nFROM office o JOIN body b ON b.uri = o.target JOIN person p ON p.uri = o.person\nLEFT JOIN grp g ON g.uri = group_at(o.person, DATE '2026-11-02')\nWHERE o.target IN ('it:senato:19:body:0-146','it:senato:19:body:0-147','it:senato:19:body:0-148','it:camera:19:body:o19_3510')\n  AND o.title IN ('chair','vice_chair')\n  AND (o.end_date IS NULL OR o.end_date >= DATE '2026-11-02')\nGROUP BY 1, 2, 3, 4 ORDER BY 1, 2, 3"
+ ],
+ "risultato": [
+  {
+   "commissione": "Camera, X Attività produttive",
+   "carica": "Presidente",
+   "persona": "Alberto Luigi Gusmeroli",
+   "gruppo_oggi": "Lega - Salvini Premier",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Camera, X Attività produttive",
+   "carica": "Vicepresidente",
+   "persona": "Ilaria Cavo",
+   "gruppo_oggi": "Noi Moderati - MAIE - Centro Popolare",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Camera, X Attività produttive",
+   "carica": "Vicepresidente",
+   "persona": "Vinicio Giuseppe Guido Peluffo",
+   "gruppo_oggi": "Partito Democratico - Italia Democratica e Progressista",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 10ª Commissione permanente",
+   "carica": "Presidente",
+   "persona": "Francesco Zaffini",
+   "gruppo_oggi": "Fratelli d'Italia",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 10ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Maria Cristina Cantu'",
+   "gruppo_oggi": "Lega Salvini Premier - Partito Sardo d'Azione",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 10ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Orfeo Mazzella",
+   "gruppo_oggi": "MoVimento 5 Stelle",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 8ª Commissione permanente",
+   "carica": "Presidente",
+   "persona": "Claudio Fazzone",
+   "gruppo_oggi": "Forza Italia - Berlusconi Presidente - PPE",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 8ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Gianni Rosa",
+   "gruppo_oggi": "Fratelli d'Italia",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 8ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Lorenzo Basso",
+   "gruppo_oggi": "Partito Democratico - Italia Democratica e Progressista",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 9ª Commissione permanente",
+   "carica": "Presidente",
+   "persona": "Luca De Carlo",
+   "gruppo_oggi": "Fratelli d'Italia",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 9ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Giorgio Maria Bergesio",
+   "gruppo_oggi": "Lega Salvini Premier - Partito Sardo d'Azione",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  },
+  {
+   "commissione": "Senato, 9ª Commissione permanente",
+   "carica": "Vicepresidente",
+   "persona": "Silvia Fregolent",
+   "gruppo_oggi": "Italia Viva - Casa Riformista",
+   "dal": "2025-06-10",
+   "righe_office": "2025-06-10→in corso"
+  }
+ ],
+ "risposta": "Cariche in corso al 2/11/2026 (dopo il rinnovo del 10/6/2025). Senato, 8ª Commissione (Ambiente, energia, lavori pubblici, comunicazioni): presidente Claudio Fazzone (FI-BP-PPE); vicepresidenti Lorenzo Basso (PD-IDP) e Gianni Rosa (FdI). 9ª Commissione (Industria, commercio, turismo, agricoltura): presidente Luca De Carlo (FdI); vicepresidenti Giorgio Maria Bergesio (LSP-PSd'Az) e Silvia Fregolent (IV-CR). 10ª Commissione (Affari sociali, sanità, lavoro): presidente Francesco Zaffini (FdI); vicepresidenti Maria Cristina Cantù (LSP-PSd'Az) e Orfeo Mazzella (M5S). Camera, X Attività produttive: presidente Alberto Luigi Gusmeroli (Lega); vicepresidenti Ilaria Cavo (Noi Moderati) e Vinicio Peluffo (PD-IDP).",
+ "stato": "calcolata",
+ "limiti": "Cariche = office con title chair o vice_chair, aperte al 2/11/2026; gruppo = group_at alla stessa data. I segretari non sono richiesti e sono esclusi.",
+ "problemi_dati": [
+  {
+   "problema": "body.name delle commissioni permanenti della Camera è solo il numero («X Commissione»): il nome per materia («Attività produttive») non c'è.",
+   "sql": "SELECT uri, name FROM body WHERE chamber = 'camera' AND legislature = 19 AND kind = 'standing_committee' AND name LIKE '%Commissione'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

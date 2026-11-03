@@ -1,0 +1,101 @@
+{
+ "id": "PARL-033",
+ "domanda": "Testo dell'articolo 2 del decreto Piano Casa come convertito, e quali emendamenti approvati lo hanno modificato.",
+ "sql": [
+  "select a.uri, a.law_number, a.law_date from act a where a.uri in ('it:camera:19:ac:2920','it:senato:19:ddl:1944')",
+  "select code, ord, text from act_article where code='leg.19.pdl.camera.2920.19PDL0195470' and text like 'Articolo 2.%'",
+  "select code, kind, substring(text from strpos(text, 'All''articolo 2:') for (strpos(text, 'All''articolo 3:') - strpos(text, 'All''articolo 2:'))) modificazioni_articolo_2\nfrom act_text where code='senato.19.01512585'",
+  "select a.uri, a.number, a.kind, a.venue, a.committee, a.sitting_date, a.outcome, a.text,\n (select string_agg(coalesce(g.given_raw||' ','')||coalesce(g.family_raw,'')||coalesce(' ['||g.kind_raw||']',''), ', ' order by g.ord) from amendment_signer g where g.amendment=a.uri) firmatari\nfrom amendment a where a.act in ('it:camera:19:ac:2920','it:senato:19:ddl:1944') and a.outcome='approvato' and a.article='2' order by a.number",
+  "select a.act, a.venue, count(*) n, count(outcome) con_esito from amendment a where a.act in ('it:camera:19:ac:2920','it:senato:19:ddl:1944') group by 1,2"
+ ],
+ "risultato": {
+  "atti": [
+   {
+    "uri": "it:camera:19:ac:2920",
+    "law_number": "116",
+    "law_date": "2026-07-02"
+   },
+   {
+    "uri": "it:senato:19:ddl:1944",
+    "law_number": "116",
+    "law_date": "2026-07-02"
+   }
+  ],
+  "articolo_2_testo_originario": [
+   {
+    "code": "leg.19.pdl.camera.2920.19PDL0195470",
+    "ord": 3,
+    "text": "Articolo 2.\n\n(Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale)\n\n1. Al fine di provvedere con urgenza all'ampliamento dell'offerta abitativa a canone sostenibile attraverso il ripristino del residuo storico degli alloggi di edilizia residenziale pubblica attualmente non assegnabili per carenze manutentive e il recupero di immobili destinati all'edilizia sociale, il presente articolo detta disposizioni finalizzate alla realizzazione di un programma straordinario nazionale di recupero e manutenzione del patrimonio di edilizia residenziale pubblica e sociale.\n\n2. Per le finalità di cui al comma 1, il Ministero delle infrastrutture e dei trasporti è autorizzato alla erogazione di contributi a favore degli enti costituiti o partecipati da enti territoriali titolari di funzioni in materia di edilizia pubblica e aventi come scopo l'acquisizione, la costruzione, la gestione e la cessione di beni destinati all'edilizia residenziale pubblica e sociale, comunque denominati, compresi gli ex Istituti autonomi case popolari, di seguito «soggetti attuatori», attraverso la stipula, sentito il Ministero dell'economia e delle finanze per gli aspetti economico-finanziari, di apposita convenzione con l'Agenzia nazionale per l'attrazione degli investimenti e lo sviluppo d'impresa S.p.A. (INVITALIA S.p.A.), di seguito «soggetto gestore».\n\n3. La convenzione di cui al comma 2 disciplina le modalità di gestione delle risorse di cui ai commi 4, 5 e 6, che sono accreditate, in coerenza con il cronoprogramma procedurale e finanziario, su un apposito conto corrente infruttifero intestato ad INVITALIA S.p.A., aperto presso la Tesoreria dello Stato, nonché le modalità di remunerazione degli oneri connessi all'attuazione della convenzione da parte del soggetto gestore, che sono posti a carico delle risorse accreditate sul citato conto corrente, nel limite massimo del 2 per cento dell'ammontare complessivamente affluito sul medesimo conto corrente in ciascun esercizio finanziario. La medesima convenzione definisce i criteri e le modalità di selezione, da parte di Invitalia, mediante uno o più avvisi pubblici, adottati di concerto con il Ministero delle infrastrutture e dei trasporti, delle offerte presentate dai soggetti attuatori, al fine di promuovere la presentazione di proposte integrate di manutenzione straordinaria delle unità immobiliari destinate all'edilizia residenziale pubblica e di recupero degli immobili destinati all'edilizia sociale che presentano più idonee condizioni di sostenibilità economica anche attraverso il ricorso a operazioni economiche di partenariato pubblico-privato coerenti con quanto indicato all'articolo 175, comma 9, del codice dei contratti pubblici, di cui al decreto legislativo 31 marzo 2023, n. 36. Al fine di consentire l'immediato avvio degli interventi di manutenzione straordinaria delle unità immobiliari destinate all'edilizia residenziale, gli avvisi di cui al secondo periodo possono prevedere la realizzazione delle proposte integrate presentate dai soggetti attuatori anche per fasi successive, in lotti funzionali, nei limiti delle risorse disponibili. I predetti avvisi considerano ammissibili le offerte che, relativamente alla componente di edilizia sociale:\n\na) prevedono la realizzazione di interventi volti a soddisfare i fabbisogni abitativi di cui all'articolo 1, comma 2, attraverso una riduzione del canone calmierato applicabile a livello territoriale, quantificata nell'offerta presentata dal soggetto attuatore;\n\nb) promuovono la realizzazione degli interventi di cui alla lettera a) mediante il recupero e la riconversione degli immobili individuati ai sensi dell'articolo 3, comma 3;\n\nc) promuovono l'inserimento degli interventi di cui alla lettera a) nell'ambito di programmi di contrasto al degrado urbanistico, edilizio, ambientale e sociale o di rigenerazione urbana, comunque denominati.\n\n4. Per l'attuazione del programma straordinario di cui al presente articolo, è autorizzata la spesa complessiva di 970 milioni di euro, da destinare all'alimentazione del conto corrente di cui al comma 3, primo periodo, in ragione di 116 milioni di euro per l'anno 2026, 216 milioni di euro per l'anno 2027, 228 milioni di euro per l'anno 2028, 180 milioni di euro per l'anno 2029 e 230 milioni di euro per l'anno 2030, ai quali si provvede:\n\na) quanto a 116 milioni di euro per l'anno 2026, 166 milioni di euro per l'anno 2027, 178 milioni di euro per l'anno 2028, 180 milioni di euro per l'anno 2029 e 230 milioni di euro per l'anno 2030, mediante corrispondente riduzione dell'autorizzazione di spesa di cui all'articolo 1, comma 403, primo periodo, della legge 30 dicembre 2024, n. 207, come modificata dalla legge 30 dicembre 2025, n. 199;\n\nb) quanto a 50 milioni di euro per ciascuno degli anni 2027 e 2028, mediante corrispondente riduzione dell'autorizzazione di spesa di cui all'articolo 1, comma 284, della legge 30 dicembre 2023, n. 213.\n\n5. Fermo quanto previsto dal comma 4, è altresì destinata al conto corrente di cui al comma 3, primo periodo, nel rispetto delle procedure previste dal regolamento (UE) 2023/955 del Parlamento europeo e del Consiglio, del 10 maggio 2023, una quota, pari al 50 per cento, delle risorse destinate al sostegno di famiglie vulnerabili per la componente edilizia residenziale pubblica del Fondo sociale per il clima di cui al citato regolamento (UE) 2023/955.\n\n6. Con il decreto di cui all'articolo 1, comma 43, terzo periodo, della legge 27 dicembre 2019, n. 160, può essere disposto il conferimento al conto corrente di cui al comma 3, primo periodo, di una quota delle risorse di cui all'articolo 1, comma 42, della medesima legge n. 160 del 2019, nel limite di spesa di 500 milioni di euro per ciascuno degli anni dal 2027 al 2030 e di 700 milioni di euro per ciascuno degli anni dal 2031 al 2034. Le risorse di cui al primo periodo sono oggetto di gestione separata rispetto a quelle di cui ai commi 4 e 5 e sono assegnate in deroga a quanto previsto dall'articolo 1, comma 43, secondo periodo, della legge n. 160 del 2019, mediante uno o più avvisi, adottati ai sensi del comma 3, secondo periodo, riservati ai comuni per la realizzazione dei progetti individuati nel rispetto dei criteri definiti dal predetto decreto di cui all'articolo 1, comma 43, terzo periodo, della legge n. 160 del 2019.\n\n7. Agli interventi realizzati dai soggetti attuatori ai sensi del presente articolo si applica il codice dei contratti pubblici, di cui al decreto legislativo del 31 marzo 2023, n. 36, fermo restando quanto previsto dall'articolo 3. Alle relative procedure possono partecipare anche i soggetti proponenti programmi di edilizia integrata di cui al capo III, per la parte di edilizia convenzionata di cui all'articolo 9, comma 3, lettera b)."
+   }
+  ],
+  "modificazioni_in_conversione": [
+   {
+    "code": "senato.19.01512585",
+    "kind": "message",
+    "modificazioni_articolo_2": "All'articolo 2:\n\nal comma 2, le parole: « enti costituiti o partecipati da » sono soppresse , le parole: « in materia di edilizia pubblica e » sono sostituite dalle seguenti: « in materia di edilizia pubblica o a favore degli enti dai medesimi costituiti o partecipati », dopo le parole: « popolari, di seguito » è inserita la seguente: « denominati » , la parola: « stipula » è sostituita dalla seguente: « stipulazione » e dopo le parole: « S.p.A.), di seguito » è inserita la seguente: « denominata »;\n\nal comma 3:\n\nall'alinea:\n\nal primo periodo, le parole: « ad INVITALIA S.p.A. » sono sostituite dalle seguenti: « al soggetto gestore » e dopo le parole: « da parte del » è inserita la seguente: « medesimo »;\n\nal secondo periodo, le parole: « di Invitalia » sono sostituite dalle seguenti: « del soggetto gestore » , le parole: « di concerto » sono sostituite dalle seguenti: « d'intesa » e la parola: « integrate » è soppressa;\n\nal terzo periodo, dopo le parole: « secondo periodo » sono inserite le seguenti: « del presente comma » e la parola: « integrate » è soppressa;\n\nalla lettera b), le parole: « ai sensi dell'articolo 3, comma 3 » sono sostituite dalle seguenti: « dai soggetti attuatori anche nell'ambito dell'elenco di cui all'articolo 3, comma 3 »;\n\nalla lettera c) , le parole: « contrasto al degrado » sono sostituite dalle seguenti: « contrasto del degrado » e sono aggiunte, in fine, le seguenti parole: « , definiti nel rispetto della normativa e della pianificazione territoriale di settore »;\n\nal comma 4:\n\nall'alinea, le parole: « articolo, è » sono sostituite dalle seguenti: « articolo è » e le parole: « , ai quali si provvede » sono sostituite dalle seguenti: « . Ai relativi oneri si provvede »;\n\nalla lettera a) , le parole: « , come modificata dalla legge 30 dicembre 2025, n. 199 » sono soppresse;\n\nal comma 5, dopo la parola: « Fermo » è inserita la seguente: « restando » e le parole: « componente edilizia » sono sostituite dalle seguenti: « componente dell'edilizia »;\n\nal comma 6:\n\nal primo periodo, dopo le parole: « comma 3, primo periodo, » sono inserite le seguenti: « del presente articolo »;\n\nal secondo periodo, dopo le parole: « comma 3, secondo periodo, » sono inserite le seguenti: « del presente articolo, »;\n\nal comma 7, primo periodo, le parole: « decreto legislativo del 31 marzo » sono sostituite dalle seguenti: « decreto legislativo 31 marzo » e sono aggiunte, in fine, le seguenti parole: « , del presente decreto ».\n\n"
+   }
+  ],
+  "emendamenti_approvati_art2": [
+   {
+    "uri": "it:camera:19:ac:2920:eme:com698:0.2.107.29",
+    "number": "0.2.107.29",
+    "kind": "subEmendamento",
+    "venue": "referente",
+    "committee": "08",
+    "sitting_date": "2026-06-18",
+    "outcome": "approvato",
+    "text": "All'emendamento 2.107 dei Relatori, alla parte consequenziale, lettera b), numero 2), ovunque ricorrono, sopprimere le parole: e all'articolo 5.",
+    "firmatari": "Daniela Morfino [deputato], Agostino Santillo [deputato], Ilaria Fontana [deputato], Patty L'Abbate [deputato]"
+   },
+   {
+    "uri": "it:camera:19:ac:2920:eme:com698:2.107",
+    "number": "2.107",
+    "kind": "emendamento",
+    "venue": "referente",
+    "committee": "08",
+    "sitting_date": "2026-06-18",
+    "outcome": "approvato",
+    "text": "Apportare le seguenti modificazioni:\na) al comma 2, sopprimere le parole: «enti costituiti o partecipati da» e sostituire le parole: «in materia di edilizia pubblica e» con le seguenti: «in materia di edilizia pubblica o a favore degli enti dai medesimi costituiti o partecipati»;\nb) al comma 3:\n1) all'alinea, ovunque ricorre, sopprimere la parola: «integrate»;\n2) alla lettera b), sostituire le parole: «ai sensi dell'articolo 3, comma 3» con le seguenti: «dai soggetti attuatori anche nell'ambito dell'elenco di cui all'articolo 3, comma 3»;\n3) alla lettera c), aggiungere, in fine, le seguenti parole: «, definiti nel rispetto della normativa e della pianificazione territoriale di settore».\nConseguentemente:\na) all'articolo 3:\n1) al comma 2, primo periodo, sostituire le parole: «Per l'esercizio dei propri compiti» con le seguenti: «Per l'esercizio dei compiti di cui al comma 4»;\n2) al comma 3, lettera b), aggiungere, in fine, le seguenti parole: «, fatta salva la possibilità di definire una durata diversa ove l'investimento preveda un ammortamento per un periodo inferiore»;\n3) al comma 10, primo periodo, sostituire le parole: «degli interventi di cui all'articolo 2» con le seguenti: «del programma straordinario di cui all'articolo 2 e il coordinamento delle amministrazioni competenti» e dopo le parole: «dal Commissario straordinario» inserire le seguenti: «, dal Presidente dell'Associazione nazionale dei comuni italiani (ANCI)»;\n4) al comma 10, quarto periodo, dopo le parole: «La Cabina di monitoraggio definisce» inserire le seguenti: «, per la componente di edilizia sociale del programma,», sostituire le parole: «le priorità territoriali» con le seguenti: «i criteri per l'individuazione delle priorità territoriali» e sostituire le parole: «verifica il grado di attuazione degli interventi» con le seguenti: «verifica il grado di attuazione del programma»;\nb) all'articolo 8:\n1) al comma 3, aggiungere, in fine, le seguenti parole: «da trascrivere nei registri immobiliari entro trenta giorni dal completamento dell'intervento»;\n2) al comma 5, al secondo periodo, sostituire le parole: «al fine di promuovere la realizzazione degli interventi di cui al presente capo» con le seguenti: «agli obiettivi di semplificazione di cui al primo periodo e all'articolo 5» e al terzo periodo, dopo le parole: «propria legislazione» inserire le seguenti: «agli obiettivi di semplificazione di cui al primo periodo e all'articolo 5».",
+    "firmatari": " [relatori]"
+   }
+  ],
+  "esiti_disponibili": [
+   {
+    "act": "it:senato:19:ddl:1944",
+    "venue": "committee",
+    "n": 399,
+    "con_esito": 0
+   },
+   {
+    "act": "it:camera:19:ac:2920",
+    "venue": "referente",
+    "n": 492,
+    "con_esito": 60
+   },
+   {
+    "act": "it:senato:19:ddl:1944",
+    "venue": "assembly",
+    "n": 372,
+    "con_esito": 0
+   }
+  ]
+ },
+ "risposta": "Il decreto Piano Casa è il DL 7 maggio 2026, n. 66 (C. 2920, S. 1944), convertito con modificazioni dalla legge 116 del 2/7/2026. Il DB ha il testo originario dell'articolo 2 («Programma straordinario nazionale di recupero e di manutenzione del patrimonio di edilizia pubblica e di edilizia sociale»), riportato in «risultato», e l'allegato «Modificazioni apportate in sede di conversione», che per l'articolo 2 cambia i commi 2, 3 (alinea e lettere b e c), 4, 5, 6 e 7: fra l'altro sostituisce «INVITALIA S.p.A.» con «il soggetto gestore» e aggiunge alla lettera c) «, definiti nel rispetto della normativa e della pianificazione territoriale di settore». Emendamenti approvati sull'articolo 2, tutti nella VIII Commissione della Camera il 18/6/2026: il 2.107 dei relatori e il subemendamento 0.2.107.29 di Morfino, Santillo, Fontana e L'Abbate (M5S). Il testo consolidato dell'articolo 2 come convertito non è nel DB.",
+ "stato": "parziale",
+ "limiti": "Il DB non ha il testo vigente coordinato (Normattiva): si danno il testo originario dell'art. 2 e le modificazioni della legge di conversione, che vanno lette insieme. Esiti degli emendamenti solo per la sede referente della Camera (VIII Commissione, 60 su 492 con esito); per la C. 2920 non ci sono emendamenti d'Aula nel DB, e i 771 emendamenti del Senato (399 in commissione, 372 in Aula) non hanno esito. Il legame emendamento-articolo è il campo amendment.article.",
+ "problemi_dati": [
+  {
+   "problema": "Le firme dei relatori non hanno nome né persona: l'emendamento 2.107 risulta firmato da « [relatori]».",
+   "sql": "select * from amendment_signer where amendment like 'it:camera:19:ac:2920:%' and kind_raw in ('relatori','relatore')"
+  },
+  {
+   "problema": "Il testo della commissione (C. 2920-A, leg.19.pdl.camera.2920_A.19PDL0198590, 210 mila caratteri) non è diviso in articoli in act_article.",
+   "sql": "select count(*) from act_article where code='leg.19.pdl.camera.2920_A.19PDL0198590'"
+  },
+  {
+   "problema": "Nessuno dei 771 emendamenti del Senato al S. 1944 ha l'esito; alla Camera solo 60 su 492.",
+   "sql": "select a.act, a.venue, count(*) n, count(outcome) con_esito from amendment a where a.act in ('it:camera:19:ac:2920','it:senato:19:ddl:1944') group by 1,2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

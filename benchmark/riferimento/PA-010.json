@@ -1,0 +1,64 @@
+{
+ "id": "PA-010",
+ "domanda": "La Commissione Giustizia della Camera ha dato il parere sullo schema di decreto legislativo di riforma dell'ordinamento forense (AG 450)?",
+ "sql": [
+  "SELECT s.date, s.body_code, s.body_name, s.seat, s.uri AS sitting, ai.uri AS item, ai.title, ai.stage\nFROM agenda_item_act iaa\nJOIN agenda_item ai ON ai.uri = iaa.item\nJOIN sitting s ON s.uri = ai.sitting\nWHERE iaa.act_ref = 'ag:450' AND s.chamber = 'camera'\nORDER BY s.date, s.body_code",
+  "SELECT sp.ord, sp.speaker_label, left(sp.text, 300) AS inizio_testo\nFROM speech sp\nJOIN agenda_item_act iaa ON iaa.item = sp.item\nWHERE iaa.act_ref = 'ag:450'\nORDER BY sp.item, sp.ord"
+ ],
+ "risultato": {
+  "sedute": [
+   {
+    "date": "2026-10-28",
+    "body_code": "02",
+    "body_name": "Giustizia (II)",
+    "seat": "ATTI DEL GOVERNO",
+    "sitting": "it:camera:19:bol20261028:c02:sede00010",
+    "item": "it:camera:19:bol20261028:c02:sede00010:tit00020",
+    "title": "Schema di decreto legislativo recante riforma dell'ordinamento forense.",
+    "stage": "Esame, ai sensi dell'articolo 143, comma 4, del Regolamento, e rinvio"
+   }
+  ],
+  "interventi": [
+   {
+    "ord": 1,
+    "speaker_label": null,
+    "inizio_testo": "La Commissione inizia l'esame dello schema di decreto."
+   },
+   {
+    "ord": 2,
+    "speaker_label": "Ciro MASCHIO",
+    "inizio_testo": "Ciro MASCHIO, presidente e relatore, evidenzia che lo schema è inteso ad attuare la delega conferita al Governo dall'articolo 1 della legge 28 luglio 2026, n. 137. Esso si compone di 95 articoli suddivisi in sei titoli e di una tabella allegata ed è destinato a sostituire integralmente la disciplina"
+   },
+   {
+    "ord": 3,
+    "speaker_label": "Valentina D'ORSO",
+    "inizio_testo": "Valentina D'ORSO (M5S), con riguardo a quanto da ultimo rappresentato dal presidente, esprime l'avviso di ritenere comunque utile procedere ad un ciclo, ancorché in tempi rapidi, di audizioni. Tale esigenza appare rafforzata da fatto che è stato trasmesso ai deputati un documento elaborato dal Consi"
+   },
+   {
+    "ord": 4,
+    "speaker_label": "Federico GIANASSI",
+    "inizio_testo": "Federico GIANASSI (PD-IDP) si associa alle considerazioni della collega D'Orso, concordando sull'opportunità di svolgere un breve ciclo di audizioni."
+   },
+   {
+    "ord": 5,
+    "speaker_label": "Devis DORI",
+    "inizio_testo": "Devis DORI (AVS) si associa alla richiesta dei colleghi."
+   },
+   {
+    "ord": 6,
+    "speaker_label": "Ciro MASCHIO",
+    "inizio_testo": "Ciro MASCHIO, presidente, rinvia quindi alla riunione dell'Ufficio di presidenza, integrato dai rappresentanti dei gruppi, ogni determinazione in ordine all'organizzazione dell'esame del provvedimento. Ribadisce, tuttavia, come pensa possa essere nell'interesse di tutti i gruppi concludere l'attivit"
+   }
+  ]
+ },
+ "risposta": "No, non ancora. La II Commissione Giustizia ha iniziato l'esame dell'AG 450 (schema di decreto legislativo di riforma dell'ordinamento forense) il 28/10/2026, in sede «Atti del Governo», con fase «Esame, ai sensi dell'articolo 143, comma 4, del Regolamento, e rinvio». Il presidente e relatore Ciro Maschio ha illustrato lo schema (95 articoli, attuazione della delega della legge 137/2026) e ha indicato che il termine per il parere scade il 25/11/2026; D'Orso (M5S), Gianassi (PD-IDP) e Dori (AVS) hanno chiesto un breve ciclo di audizioni e l'organizzazione dell'esame è stata rinviata all'Ufficio di presidenza. Il parere non risulta espresso.",
+ "stato": "calcolata",
+ "limiti": "Il Bollettino delle commissioni è caricato fino al 29/10/2026 (II Commissione fino al 28/10): un parere successivo non sarebbe visibile.",
+ "problemi_dati": [
+  {
+   "problema": "Gli atti del Governo (AG) non esistono come atti: 1.925 righe di agenda_item_act con act_ref 'ag:...' hanno tutte act NULL.",
+   "sql": "SELECT count(*) n, count(act) collegate FROM agenda_item_act WHERE act_ref LIKE 'ag:%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

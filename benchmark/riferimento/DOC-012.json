@@ -1,0 +1,60 @@
+{
+ "id": "DOC-012",
+ "domanda": "quante leggi sono andate avanti e indietro fra Camera e Senato più di due volte?",
+ "sql": [
+  "with t as (select distinct regexp_replace(split_part(act,':ac:',2),'-[A-Z]+(-bis|-ter)?$','') base, date d, provenance from act_transmission)\nselect passaggi, count(*) atti from (select base, count(*) passaggi from t group by 1) x group by 1 order by 1",
+  "with t as (select distinct regexp_replace(split_part(act,':ac:',2),'-[A-Z]+(-bis|-ter)?$','') base, date d, provenance from act_transmission)\nselect 'C. '||t.base atto, count(*) passaggi, string_agg('da '||provenance||' '||d, ', ' order by d) passi, max(left(a.title,120)) titolo\nfrom t left join act a on a.uri='it:camera:19:ac:'||t.base group by t.base having count(*)>=3 order by 1"
+ ],
+ "risultato": {
+  "distribuzione": [
+   {
+    "passaggi": 1,
+    "atti": 414
+   },
+   {
+    "passaggi": 2,
+    "atti": 30
+   },
+   {
+    "passaggi": 3,
+    "atti": 4
+   }
+  ],
+  "piu_di_due": [
+   {
+    "atto": "C. 1917",
+    "passaggi": 3,
+    "passi": "da Camera 2025-01-16, da Senato 2025-07-23, da Camera 2025-09-18",
+    "titolo": "DISEGNO DI LEGGE COSTITUZIONALE: \"Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplin"
+   },
+   {
+    "atto": "C. 2473",
+    "passaggi": 3,
+    "passi": "da Camera 2025-10-08, da Senato 2026-01-21, da Camera 2026-03-11",
+    "titolo": "DISEGNO DI LEGGE COSTITUZIONALE: \"Modifiche allo statuto speciale per il Trentino-Alto Adige/Südtirol\" (2473)"
+   },
+   {
+    "atto": "C. 715",
+    "passaggi": 3,
+    "passi": "da Senato 2022-12-13, da Camera 2023-04-04, da Senato 2023-05-18",
+    "titolo": "S. 13. - PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEI SENATORI IANNONE ed altri: \"Modifica all’articolo 33 della Co"
+   },
+   {
+    "atto": "C. 976",
+    "passaggi": 3,
+    "passi": "da Camera 2024-10-24, da Senato 2025-05-28, da Camera 2025-11-06",
+    "titolo": "PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEL CONSIGLIO REGIONALE DEL FRIULI VENEZIA GIULIA: \"Modifiche alla legge c"
+   }
+  ]
+ },
+ "risposta": "Quattro progetti, tutti di legge costituzionale, risultano trasmessi fra i due rami tre volte (più di due): C. 715 (S. 13, art. 33 della Costituzione: Senato 13/12/2022, Camera 4/4/2023, Senato 18/5/2023), C. 976 (S. 1279, Statuto del Friuli Venezia Giulia: 24/10/2024, 28/5/2025, 6/11/2025), C. 1917 (S. 1353, separazione delle carriere: 16/1/2025, 23/7/2025, 18/9/2025) e C. 2473 (S. 1670, Statuto del Trentino-Alto Adige: 8/10/2025, 21/1/2026, 11/3/2026). Altri 30 progetti hanno due passaggi e 414 uno solo.",
+ "stato": "calcolata",
+ "limiti": "«Più di due volte» letto come almeno tre trasmissioni da un ramo all'altro (act_transmission). Le trasmissioni sono registrate solo sugli atti della Camera; i passaggi del Senato si vedono dalle trasmissioni «da Senato». Le letture C. X e C. X-B sono state unite per numero base, togliendo i doppioni.",
+ "problemi_dati": [
+  {
+   "problema": "Le trasmissioni sono copiate sia sull'atto C. X sia sull'atto C. X-B (37 righe doppie): contare per atto senza unire raddoppia le navette.",
+   "sql": "select count(*) from act_transmission t1 join act_transmission t2 on t2.act=t1.act||'-B' and t1.date=t2.date and t1.provenance=t2.provenance"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

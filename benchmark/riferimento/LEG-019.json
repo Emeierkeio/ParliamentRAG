@@ -1,0 +1,63 @@
+{
+ "id": "LEG-019",
+ "domanda": "Il Governo e i relatori hanno presentato emendamenti al DL 190/2026 in II Commissione?",
+ "sql": [
+  "select uri, number, date, status, status_date from act where uri='it:camera:19:ac:3159'",
+  "select s.date, s.body_name, s.seat, i.stage from agenda_item_act x join agenda_item i on i.uri=x.item join sitting s on s.uri=i.sitting where x.act='it:camera:19:ac:3159' order by s.date",
+  "select count(*) emendamenti, count(*) filter (where exists (select 1 from amendment_signer g where g.amendment=a.uri and g.kind_raw in ('governo','relatore','relatori'))) di_governo_o_relatori from amendment a where a.act='it:camera:19:ac:3159'",
+  "select committee, max(sitting_date) ultima_seduta_con_emendamenti from amendment where act like 'it:camera:%' and committee='02' group by 1"
+ ],
+ "risultato": {
+  "atto": [
+   {
+    "uri": "it:camera:19:ac:3159",
+    "number": "3159",
+    "date": "2026-10-22",
+    "status": "In corso di esame in Commissione",
+    "status_date": "2026-10-28"
+   }
+  ],
+  "sedute": [
+   {
+    "date": "2026-10-27",
+    "body_name": "Difesa (IV)",
+    "seat": "SEDE CONSULTIVA",
+    "stage": "Esame e conclusione – Parere favorevole"
+   },
+   {
+    "date": "2026-10-28",
+    "body_name": "Giustizia (II)",
+    "seat": "SEDE REFERENTE",
+    "stage": "Esame e rinvio"
+   },
+   {
+    "date": "2026-11-03",
+    "body_name": null,
+    "seat": null,
+    "stage": null
+   }
+  ],
+  "emendamenti": [
+   {
+    "emendamenti": 0,
+    "di_governo_o_relatori": 0
+   }
+  ],
+  "copertura_emendamenti_II": [
+   {
+    "committee": "02",
+    "ultima_seduta_con_emendamenti": "2026-10-28"
+   }
+  ]
+ },
+ "risposta": "Nel database non risultano emendamenti al DL 190/2026 (AC 3159), né del Governo né dei relatori né di altri. L'atto è assegnato alla II Commissione in sede referente dal 22/10/2026; l'unica seduta di esame registrata è del 28/10/2026 («Esame e rinvio»), la IV Commissione ha dato parere favorevole il 27/10. Risposta: alla data dei dati (2/11/2026) non risultano.",
+ "stato": "parziale",
+ "limiti": "Il DB dice che non ci sono emendamenti caricati per l'AC 3159, ma non distingue fra «non presentati» e «non ancora caricati»: per la II Commissione gli emendamenti caricati arrivano alla seduta del 28/10/2026 (AC 3121). Le firme di Governo e relatori si riconoscono da amendment_signer.kind_raw (governo, relatore, relatori), con person vuoto.",
+ "problemi_dati": [
+  {
+   "problema": "document.acts usa riferimenti della fonte («ac:3159») e non l'uri dell'atto: un filtro per uri non trova gli allegati.",
+   "sql": "select uri, acts from document where title ilike '%DL 190/2026%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

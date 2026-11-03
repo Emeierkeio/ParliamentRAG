@@ -1,0 +1,41 @@
+{
+ "id": "COMU-025",
+ "domanda": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+ "categoria": "fonti",
+ "ramo": "entrambi",
+ "tipo_risposta": "fatto",
+ "difficolta": "media",
+ "trappola": true,
+ "note_domanda": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non sono riuscito a chiudere la risposta in tempo: prova a fare una domanda più precisa.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 62.3,
+ "riferimento": null,
+ "punteggi": {
+  "correttezza": null,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": 0,
+  "tempo_s": 62.3
+ },
+ "causa_probabile": "prompt",
+ "note": "Nessuna risposta: «Non sono riuscito a chiudere la risposta in tempo» dopo 8 ricerche. Non inventa, ma non dice che la frase non risulta e non mostra le frasi vere più vicine."
+}

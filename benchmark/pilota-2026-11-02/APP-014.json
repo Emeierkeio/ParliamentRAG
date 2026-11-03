@@ -1,0 +1,51 @@
+{
+ "id": "APP-014",
+ "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+ "categoria": "confronto",
+ "ramo": "entrambi",
+ "tipo_risposta": "elenco",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Voto del gruppo = posizione della maggioranza dei suoi votanti. Elencare i casi, separati per ramo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso confermare un «mai» con i dati disponibili: ci sono **670 votazioni finali** registrate tra Camera e Senato nella XIX legislatura, ma non un confronto automatico, voto per voto, tra i due gruppi. Le verifiche puntuali vanno fatte sulla singola votazione.\n\nNell’ultima votazione finale disponibile alla Camera, del 28 ottobre 2026 sulla proposta [A.C. 2700](#/strumenti/atto/camera-2700?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D2700) sulle professioni sanitarie, hanno votato entrambi a favore: **Fratelli d’Italia 72 sì** e **Lega 27 sì**; nessun voto contrario o astensione dei due gruppi. Il provvedimento è stato approvato con 143 sì, 113 no e 3 astensioni.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "votazioni_per_tipo",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "search_parliament",
+  "get_vote_details",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 101.2,
+ "riferimento": {
+  "risposta": "No. Nelle 405 votazioni finali palesi della Camera e nelle 264 del Senato della XIX, la maggioranza dei votanti della Lega e quella di Fratelli d'Italia hanno sempre preso la stessa posizione: sempre a favore, tranne una votazione alla Camera (21/3/2023, it:camera:19:sed0072:v011) in cui entrambi i gruppi hanno votato contro all'unanimità (Lega 45 su 45, FdI 86 su 86). Restano fuori le 2 votazioni finali segrete della Camera sulla legge elettorale (PDL 2822-A, 16/7/2026, e 2822-B, 8/10/2026), dove non si sa come ha votato ciascuno.",
+  "stato": "calcolata",
+  "limiti": "Voto finale = vote.final = true (esclusi i voti con kind 'final' ma final = false, che sono articoli ed emendamenti dei Doc. XXII e voti delle Giunte). Posizione del gruppo = risultato più frequente fra favorevoli, contrari e astenuti dei suoi membri; gruppo preso da ballot.grp, risolto con grp_alias. I voti segreti sono esclusi: si conosce solo la partecipazione."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "na",
+   "quotes": "na"
+  },
+  "trappola": null,
+  "tempo_s": 101.2
+ },
+ "causa_probabile": "dati",
+ "note": "Non risponde («non posso confermare un mai»); riferimento: no, mai, su 405 voti finali palesi della Camera e 264 del Senato. Mostra un solo voto (A.C. 2700). Verifica: fail spurio sui gruppi.",
+ "verifica_citazioni": []
+}

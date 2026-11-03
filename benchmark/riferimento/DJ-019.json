@@ -1,0 +1,323 @@
+{
+ "id": "DJ-019",
+ "domanda": "Quali deputati e senatori sono subentrati durante la legislatura e al posto di chi?",
+ "sql": [
+  "WITH entra AS (\n  SELECT m.* FROM mandate m WHERE m.legislature = 19 AND m.start_date > DATE '2022-10-20'\n), esce AS (\n  SELECT m.* FROM mandate m WHERE m.legislature = 19 AND m.end_date IS NOT NULL\n)\nSELECT e.chamber AS ramo, pe.given_name || ' ' || pe.family_name AS entrato, e.start_date AS dal,\n       coalesce(e.college, e.constituency) AS seggio, coalesce(e.system, e.kind) AS sistema, e.list AS lista,\n       CASE WHEN e.system ILIKE '%suppletiva%' OR (e.chamber = 'senato' AND e.system = 'majoritarian') THEN 'elezione suppletiva' ELSE 'subentro' END AS come,\n       pu.given_name || ' ' || pu.family_name AS al_posto_di, u.end_date AS uscito_il, u.end_reason AS causa,\n       u.college AS seggio_uscente\nFROM entra e JOIN person pe ON pe.uri = e.person\nLEFT JOIN LATERAL (\n  SELECT x.* FROM esce x\n  WHERE x.chamber = e.chamber AND x.end_date <= e.start_date\n    AND (split_part(x.college, ' (', 1) = split_part(e.college, ' (', 1)     -- stesso collegio uninominale\n         OR (x.college IS NULL AND e.college IS NULL AND x.constituency = e.constituency\n             AND x.list IS NOT DISTINCT FROM e.list)                        -- stessa circoscrizione e lista\n         OR (x.constituency = e.constituency AND x.end_reason ILIKE 'annullamento%'))\n  ORDER BY (split_part(x.college, ' (', 1) = split_part(e.college, ' (', 1)) DESC NULLS LAST, x.end_date DESC LIMIT 1\n) u ON true\nLEFT JOIN person pu ON pu.uri = u.person\nORDER BY e.chamber, e.start_date",
+  "SELECT m.chamber, p.given_name || ' ' || p.family_name AS nome, m.end_date, m.end_reason FROM mandate m JOIN person p ON p.uri = m.person WHERE m.legislature = 19 AND m.end_date IS NOT NULL AND NOT EXISTS (SELECT 1 FROM mandate e WHERE e.chamber = m.chamber AND e.legislature = 19 AND e.start_date >= m.end_date AND (split_part(e.college, ' (', 1) = split_part(m.college, ' (', 1) OR (e.constituency = m.constituency AND e.list IS NOT DISTINCT FROM m.list AND e.college IS NULL AND m.college IS NULL) OR (e.constituency = m.constituency AND m.end_reason ILIKE 'annullamento%'))) ORDER BY 1, 3"
+ ],
+ "risultato": [
+  [
+   {
+    "ramo": "camera",
+    "entrato": "Antonio Ferrara",
+    "dal": "2024-04-09",
+    "seggio": "LOMBARDIA 2 - P01",
+    "sistema": "proportional",
+    "lista": "MOVIMENTO 5 STELLE",
+    "come": "subentro",
+    "al_posto_di": "Alessandra Todde",
+    "uscito_il": "2024-04-09",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Maria Paola Boscaini",
+    "dal": "2024-07-09",
+    "seggio": "VENETO 2 - P03",
+    "sistema": "proportional",
+    "lista": "FORZA ITALIA",
+    "come": "subentro",
+    "al_posto_di": "Flavio Tosi",
+    "uscito_il": "2024-07-09",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Nadia Romeo",
+    "dal": "2024-07-09",
+    "seggio": "VENETO 2 - P01",
+    "sistema": "proportional",
+    "lista": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+    "come": "subentro",
+    "al_posto_di": "Alessandro Zan",
+    "uscito_il": "2024-07-09",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Patrizia Prestipino",
+    "dal": "2024-07-09",
+    "seggio": "LAZIO 1 - P01",
+    "sistema": "proportional",
+    "lista": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+    "come": "subentro",
+    "al_posto_di": "Nicola Zingaretti",
+    "uscito_il": "2024-07-09",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Antonio Maria Gabellone",
+    "dal": "2024-12-02",
+    "seggio": "PUGLIA - P04",
+    "sistema": "proportional",
+    "lista": "FRATELLI D'ITALIA CON GIORGIA MELONI",
+    "come": "subentro",
+    "al_posto_di": "Raffaele Fitto",
+    "uscito_il": "2024-12-02",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Rosanna Filippin",
+    "dal": "2024-12-20",
+    "seggio": "VENETO 2 - P02",
+    "sistema": "proportional",
+    "lista": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+    "come": "subentro",
+    "al_posto_di": "Enrico Letta",
+    "uscito_il": "2024-12-20",
+    "causa": "Dimissioni",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Alberto Pandolfo",
+    "dal": "2025-01-07",
+    "seggio": "LIGURIA - P01",
+    "sistema": "proportional",
+    "lista": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+    "come": "subentro",
+    "al_posto_di": "Andrea Orlando",
+    "uscito_il": "2025-01-07",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Andrea Gentile",
+    "dal": "2025-03-12",
+    "seggio": "CALABRIA - U02",
+    "sistema": "majoritarian",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Elisa Scutella'",
+    "uscito_il": "2025-03-12",
+    "causa": "Annullamento Elezione",
+    "seggio_uscente": "CALABRIA - U03"
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Mario Perantoni",
+    "dal": "2025-07-22",
+    "seggio": "SARDEGNA - P01",
+    "sistema": "proportional",
+    "lista": "MOVIMENTO 5 STELLE",
+    "come": "subentro",
+    "al_posto_di": "Emiliano Fenu",
+    "uscito_il": "2025-07-22",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Irene Gori",
+    "dal": "2025-12-03",
+    "seggio": "TOSCANA - P01",
+    "sistema": "proportional",
+    "lista": "FRATELLI D'ITALIA CON GIORGIA MELONI",
+    "come": "subentro",
+    "al_posto_di": "Chiara La Porta",
+    "uscito_il": "2025-12-03",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Francesca Viggiano",
+    "dal": "2026-02-02",
+    "seggio": "PUGLIA - P03",
+    "sistema": "proportional",
+    "lista": "PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA",
+    "come": "subentro",
+    "al_posto_di": "Ubaldo Pagano",
+    "uscito_il": "2026-02-02",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Manuela Maffioli",
+    "dal": "2026-03-25",
+    "seggio": "LOMBARDIA 2 - P01",
+    "sistema": "proportional",
+    "lista": "LEGA PER SALVINI PREMIER",
+    "come": "subentro",
+    "al_posto_di": "Umberto Bossi",
+    "uscito_il": "2026-03-19",
+    "causa": "Decesso",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Giulio Centenaro",
+    "dal": "2026-03-26",
+    "seggio": "VENETO 2 - U02",
+    "sistema": "maggioritario suppletiva",
+    "lista": null,
+    "come": "elezione suppletiva",
+    "al_posto_di": "Massimo Bitonci",
+    "uscito_il": "2025-12-28",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": "VENETO 2 - U02"
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Alberto Di Rubba",
+    "dal": "2026-03-26",
+    "seggio": "VENETO 2 - U01",
+    "sistema": "maggioritario suppletiva",
+    "lista": null,
+    "come": "elezione suppletiva",
+    "al_posto_di": "Alberto Stefani",
+    "uscito_il": "2025-12-09",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": "VENETO 2 - U01"
+   },
+   {
+    "ramo": "camera",
+    "entrato": "Fabio Roscioli",
+    "dal": "2026-10-01",
+    "seggio": "CALABRIA - U05",
+    "sistema": "maggioritario suppletiva",
+    "lista": null,
+    "come": "elezione suppletiva",
+    "al_posto_di": "Francesco Cannizzaro",
+    "uscito_il": "2026-07-22",
+    "causa": "Dimissioni per incompatibilita'",
+    "seggio_uscente": "CALABRIA - U05"
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Daniela Ternullo",
+    "dal": "2023-01-18",
+    "seggio": "Sicilia",
+    "sistema": "elected",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Gianfranco Micciche'",
+    "uscito_il": "2023-01-18",
+    "causa": "Dimissioni per incompatibilità",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Filippo Sensi",
+    "dal": "2023-03-21",
+    "seggio": "Lazio",
+    "sistema": "elected",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Bruno Astorre",
+    "uscito_il": "2023-03-03",
+    "causa": "Deceduto",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Cinzia Pellegrino",
+    "dal": "2023-05-09",
+    "seggio": "Lazio",
+    "sistema": "elected",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Andrea Augello",
+    "uscito_il": "2023-04-28",
+    "causa": "Deceduto",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Cristina Tajani",
+    "dal": "2023-05-31",
+    "seggio": "Lombardia",
+    "sistema": "elected",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Carlo Cottarelli",
+    "uscito_il": "2023-05-31",
+    "causa": "Dimissioni accettate",
+    "seggio_uscente": null
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Adriano Galliani",
+    "dal": "2023-10-30",
+    "seggio": "LOMBARDIA - U06",
+    "sistema": "majoritarian",
+    "lista": null,
+    "come": "elezione suppletiva",
+    "al_posto_di": "Silvio Berlusconi",
+    "uscito_il": "2023-06-12",
+    "causa": "Deceduto",
+    "seggio_uscente": "LOMBARDIA - U06 (MONZA)"
+   },
+   {
+    "ramo": "senato",
+    "entrato": "Felicia Gaudiano",
+    "dal": "2025-01-08",
+    "seggio": "Campania",
+    "sistema": "elected",
+    "lista": null,
+    "come": "subentro",
+    "al_posto_di": "Francesco Castiello",
+    "uscito_il": "2024-12-31",
+    "causa": "Deceduto",
+    "seggio_uscente": null
+   }
+  ],
+  [
+   {
+    "chamber": "camera",
+    "nome": "Alberto Bagnai",
+    "end_date": "2026-09-15",
+    "end_reason": "Dimissioni per incompatibilita'"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Mirco Carloni",
+    "end_date": "2026-10-19",
+    "end_reason": "Dimissioni per incompatibilita'"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Giorgio Napolitano",
+    "end_date": "2023-09-22",
+    "end_reason": "Deceduto"
+   }
+  ]
+ ],
+ "risposta": "Camera (15 ingressi): subentri da lista proporzionale — Antonio Ferrara al posto di Alessandra Todde (9/4/2024), Maria Paola Boscaini al posto di Flavio Tosi, Nadia Romeo al posto di Alessandro Zan e Patrizia Prestipino al posto di Nicola Zingaretti (9/7/2024), Antonio Maria Gabellone al posto di Raffaele Fitto (2/12/2024), Rosanna Filippin al posto di Enrico Letta (20/12/2024), Alberto Pandolfo al posto di Andrea Orlando (7/1/2025), Mario Perantoni al posto di Emiliano Fenu (22/7/2025), Irene Gori al posto di Chiara La Porta (3/12/2025), Francesca Viggiano al posto di Ubaldo Pagano (2/2/2026), Manuela Maffioli al posto di Umberto Bossi, deceduto (25/3/2026); Andrea Gentile al posto di Elisa Scutellà dopo l'annullamento della sua elezione (12/3/2025). Elezioni suppletive, non subentri: Alberto Di Rubba (collegio di Stefani) e Giulio Centenaro (collegio di Bitonci) dal 26/3/2026, Fabio Roscioli (collegio di Cannizzaro) dall'1/10/2026. Senato (6 ingressi): Daniela Ternullo al posto di Gianfranco Miccichè (18/1/2023), Filippo Sensi al posto di Bruno Astorre (21/3/2023), Cinzia Pellegrino al posto di Andrea Augello (9/5/2023), Cristina Tajani al posto di Carlo Cottarelli (31/5/2023), Felicia Gaudiano al posto di Francesco Castiello (8/1/2025); Adriano Galliani eletto nella suppletiva di Monza dopo la morte di Silvio Berlusconi (30/10/2023). Senza successore in archivio: Alberto Bagnai (uscito il 15/9/2026) e Mirco Carloni (19/10/2026) alla Camera, Giorgio Napolitano (senatore a vita, 22/9/2023).",
+ "stato": "parziale",
+ "limiti": "Il database non lega il subentrante all'uscente: la coppia è ricostruita per stesso ramo, stesso collegio uninominale, oppure stessa circoscrizione e lista per il proporzionale, con l'uscita più recente prima dell'ingresso. Al Senato la lista non c'è: si usa la sola regione, e l'abbinamento regge perché in ogni regione le uscite sono in ordine di data. Suppletiva = system 'maggioritario suppletiva' alla Camera, collegio uninominale al Senato.",
+ "problemi_dati": [
+  {
+   "problema": "Andrea Gentile entra il 12/3/2025 nel collegio CALABRIA - U02 al posto di Elisa Scutellà, la cui elezione annullata era nel collegio CALABRIA - U03: i collegi non tornano.",
+   "sql": "SELECT p.family_name, m.start_date, m.end_date, m.system, m.constituency, m.college, m.end_reason FROM mandate m JOIN person p ON p.uri = m.person WHERE m.legislature = 19 AND p.family_name IN ('Gentile', 'Scutella''') AND m.chamber = 'camera'"
+  },
+  {
+   "problema": "mandate non ha un campo comune per il tipo di elezione: alla Camera kind è vuoto e system vale 'proportional', 'majoritarian' o 'maggioritario suppletiva' (in italiano); al Senato kind = 'elected' e system è quasi sempre vuoto. Anche i collegi sono scritti in due modi ('LOMBARDIA - U06 (MONZA)' e 'LOMBARDIA - U06').",
+   "sql": "SELECT chamber, kind, system, count(*) FROM mandate WHERE legislature = 19 GROUP BY 1, 2, 3"
+  },
+  {
+   "problema": "Alla Camera mandate.start_date è la data di proclamazione (dal 30/9/2022 all'8-10/10/2022), prima dell'inizio della legislatura (13/10/2022).",
+   "sql": "SELECT start_date, count(*) FROM mandate WHERE chamber = 'camera' AND legislature = 19 AND start_date < DATE '2022-10-13' GROUP BY 1 ORDER BY 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

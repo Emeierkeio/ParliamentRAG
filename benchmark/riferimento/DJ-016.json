@@ -1,0 +1,186 @@
+{
+ "id": "DJ-016",
+ "domanda": "Quale commissione del Senato si riunisce di più? Classifica per numero di sedute nel 2026.",
+ "sql": [
+  "with s as (\n  select split_part(uri,':',5) organo, btrim(body_name) commissione, number, date\n  from sitting where chamber='senato' and body<>'it:senato:19:aula' and kind='committee_summary')\nselect commissione,\n  count(*) filter (where date between '2026-01-01' and '2026-12-31') sedute_nel_db_2026,\n  min(number) filter (where date >= '2026-01-01') primo_numero_2026,\n  max(number) filter (where date >= '2026-01-01') ultimo_numero_2026,\n  max(number) filter (where date < '2026-01-01') ultimo_numero_2025,\n  max(number) filter (where date >= '2026-01-01') - max(number) filter (where date < '2026-01-01') sedute_2026_dalla_numerazione,\n  max(date) ultima_seduta\nfrom s group by commissione\nhaving count(*) filter (where date between '2026-01-01' and '2026-12-31') > 0\norder by sedute_nel_db_2026 desc",
+  "select body_name, count(*) from sitting where chamber='senato' and body_name like '% ' group by 1 order by 1"
+ ],
+ "risultato": [
+  {
+   "commissione": "1ª Commissione permanente",
+   "sedute_nel_db_2026": 122,
+   "primo_numero_2026": 417,
+   "ultimo_numero_2026": 548,
+   "ultimo_numero_2025": 415,
+   "sedute_2026_dalla_numerazione": 133,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "2ª Commissione permanente",
+   "sedute_nel_db_2026": 76,
+   "primo_numero_2026": 350,
+   "ultimo_numero_2026": 451,
+   "ultimo_numero_2025": 349,
+   "sedute_2026_dalla_numerazione": 102,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "7ª Commissione permanente",
+   "sedute_nel_db_2026": 67,
+   "primo_numero_2026": 269,
+   "ultimo_numero_2026": 352,
+   "ultimo_numero_2025": 259,
+   "sedute_2026_dalla_numerazione": 93,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "8ª Commissione permanente",
+   "sedute_nel_db_2026": 63,
+   "primo_numero_2026": 235,
+   "ultimo_numero_2026": 312,
+   "ultimo_numero_2025": 234,
+   "sedute_2026_dalla_numerazione": 78,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "10ª Commissione permanente",
+   "sedute_nel_db_2026": 54,
+   "primo_numero_2026": 366,
+   "ultimo_numero_2026": 458,
+   "ultimo_numero_2025": 362,
+   "sedute_2026_dalla_numerazione": 96,
+   "ultima_seduta": "2026-10-27"
+  },
+  {
+   "commissione": "9ª Commissione permanente",
+   "sedute_nel_db_2026": 45,
+   "primo_numero_2026": 266,
+   "ultimo_numero_2026": 340,
+   "ultimo_numero_2025": 265,
+   "sedute_2026_dalla_numerazione": 75,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "6ª Commissione permanente",
+   "sedute_nel_db_2026": 45,
+   "primo_numero_2026": 286,
+   "ultimo_numero_2026": 349,
+   "ultimo_numero_2025": 275,
+   "sedute_2026_dalla_numerazione": 74,
+   "ultima_seduta": "2026-10-28"
+  },
+  {
+   "commissione": "3ª Commissione permanente",
+   "sedute_nel_db_2026": 29,
+   "primo_numero_2026": 164,
+   "ultimo_numero_2026": 209,
+   "ultimo_numero_2025": 160,
+   "sedute_2026_dalla_numerazione": 49,
+   "ultima_seduta": "2026-10-29"
+  },
+  {
+   "commissione": "4ª Commissione permanente",
+   "sedute_nel_db_2026": 14,
+   "primo_numero_2026": 315,
+   "ultimo_numero_2026": 382,
+   "ultimo_numero_2025": 314,
+   "sedute_2026_dalla_numerazione": 68,
+   "ultima_seduta": "2026-10-20"
+  },
+  {
+   "commissione": "1ª e 2ª riunite",
+   "sedute_nel_db_2026": 13,
+   "primo_numero_2026": 79,
+   "ultimo_numero_2026": 91,
+   "ultimo_numero_2025": 78,
+   "sedute_2026_dalla_numerazione": 13,
+   "ultima_seduta": "2026-07-28"
+  },
+  {
+   "commissione": "5ª Commissione permanente",
+   "sedute_nel_db_2026": 12,
+   "primo_numero_2026": 541,
+   "ultimo_numero_2026": 610,
+   "ultimo_numero_2025": 503,
+   "sedute_2026_dalla_numerazione": 107,
+   "ultima_seduta": "2026-09-30"
+  },
+  {
+   "commissione": "8ª e 9ª riunite",
+   "sedute_nel_db_2026": 11,
+   "primo_numero_2026": 27,
+   "ultimo_numero_2026": 37,
+   "ultimo_numero_2025": 26,
+   "sedute_2026_dalla_numerazione": 11,
+   "ultima_seduta": "2026-05-26"
+  },
+  {
+   "commissione": "7ª e 10ª riunite",
+   "sedute_nel_db_2026": 11,
+   "primo_numero_2026": 20,
+   "ultimo_numero_2026": 30,
+   "ultimo_numero_2025": 19,
+   "sedute_2026_dalla_numerazione": 11,
+   "ultima_seduta": "2026-10-07"
+  },
+  {
+   "commissione": "2ª e 10ª riunite",
+   "sedute_nel_db_2026": 3,
+   "primo_numero_2026": 26,
+   "ultimo_numero_2026": 28,
+   "ultimo_numero_2025": 25,
+   "sedute_2026_dalla_numerazione": 3,
+   "ultima_seduta": "2026-06-10"
+  },
+  {
+   "commissione": "1ª e 3ª riunite",
+   "sedute_nel_db_2026": 2,
+   "primo_numero_2026": 20,
+   "ultimo_numero_2026": 21,
+   "ultimo_numero_2025": null,
+   "sedute_2026_dalla_numerazione": null,
+   "ultima_seduta": "2026-01-28"
+  },
+  {
+   "commissione": "2ª e 3ª riunite",
+   "sedute_nel_db_2026": 1,
+   "primo_numero_2026": 3,
+   "ultimo_numero_2026": 3,
+   "ultimo_numero_2025": null,
+   "sedute_2026_dalla_numerazione": null,
+   "ultima_seduta": "2026-10-07"
+  },
+  {
+   "commissione": "7ª e 9ª riunite",
+   "sedute_nel_db_2026": 1,
+   "primo_numero_2026": 1,
+   "ultimo_numero_2026": 1,
+   "ultimo_numero_2025": null,
+   "sedute_2026_dalla_numerazione": null,
+   "ultima_seduta": "2026-10-27"
+  },
+  {
+   "commissione": "9ª e 10ª riunite",
+   "sedute_nel_db_2026": 1,
+   "primo_numero_2026": 13,
+   "ultimo_numero_2026": 13,
+   "ultimo_numero_2025": null,
+   "sedute_2026_dalla_numerazione": null,
+   "ultima_seduta": "2026-10-21"
+  }
+ ],
+ "risposta": "La commissione del Senato che si riunisce di più nel 2026 è la 1ª (Affari costituzionali): 122 sedute nel DB fino al 28/10/2026. Seguono, per sedute nel DB, la 2ª Giustizia 76, la 7ª Cultura e istruzione 67, l'8ª Ambiente 63, la 10ª Affari sociali 54, la 9ª Industria e agricoltura 45, la 6ª Finanze 45, la 3ª Esteri e difesa 29, la 4ª Politiche UE 14 e la 5ª Bilancio 12; fra le riunite, la 1ª e 2ª con 13. Il DB però non ha tutte le sedute: dalla numerazione delle sedute nel 2026 la 1ª arriva a 132-133, la 5ª Bilancio a 70-107, la 2ª a 102, la 10ª a 93-96, la 7ª a 84-93, l'8ª a 78, la 9ª a 75, la 4ª a 68, la 6ª a 64-74, la 3ª a 46-49. La 1ª resta prima in entrambi i conti.",
+ "stato": "parziale",
+ "limiti": "Contate le sedute plenarie (resoconti sommari del Senato, sitting.kind = committee_summary) dal 1/1 al 2/11/2026; le commissioni riunite sono a parte. Sottocommissioni e uffici di presidenza non sono nel DB, quindi non c'è niente da separare. La stima dalla numerazione va dal numero più alto meno il più basso del 2026 (+1) al numero più alto del 2026 meno il più alto del 2025: le sedute mancanti nel DB rendono la classifica per sedute caricate inaffidabile, soprattutto per 5ª, 4ª e 10ª.",
+ "problemi_dati": [
+  {
+   "problema": "Mancano molte sedute delle commissioni del Senato: nel 2026 la 5ª Bilancio ha 12 sedute caricate con numeri da 541 a 610, la 4ª 14 con numeri da 315 a 382.",
+   "sql": "with s as (\n  select split_part(uri,':',5) organo, btrim(body_name) commissione, number, date\n  from sitting where chamber='senato' and body<>'it:senato:19:aula' and kind='committee_summary')\nselect commissione,\n  count(*) filter (where date between '2026-01-01' and '2026-12-31') sedute_nel_db_2026,\n  min(number) filter (where date >= '2026-01-01') primo_numero_2026,\n  max(number) filter (where date >= '2026-01-01') ultimo_numero_2026,\n  max(number) filter (where date < '2026-01-01') ultimo_numero_2025,\n  max(number) filter (where date >= '2026-01-01') - max(number) filter (where date < '2026-01-01') sedute_2026_dalla_numerazione,\n  max(date) ultima_seduta\nfrom s group by commissione\nhaving count(*) filter (where date between '2026-01-01' and '2026-12-31') > 0\norder by sedute_nel_db_2026 desc\n"
+  },
+  {
+   "problema": "sitting.body_name del Senato ha due grafie della stessa commissione, una con spazio finale («1ª Commissione permanente » fino al 2024, senza spazio dopo): chi raggruppa per nome spezza la commissione.",
+   "sql": "select body_name, count(*) from sitting where chamber='senato' and body_name like '% ' group by 1 order by 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

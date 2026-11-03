@@ -1,0 +1,211 @@
+{
+ "id": "APP-002",
+ "trappola": false,
+ "domanda": "quali deputati sono passati con Vannacci e da dove venivano?",
+ "categoria": "gruppi",
+ "tipo_risposta": "elenco",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Componente Futuro Nazionale Vannacci - Free del Misto: Ziello, Pozzolo, Ravetto, Sasso dal 27/5/2026; Bergamini, Bof, Furgiuele, Pierro dall'8/6/2026; Calderone dal 21/9/2026 (prima FI-PPE). Vannacci non è deputato.",
+ "endpoint": "agente",
+ "risposta_sistema": "Alla Camera, la componente del Misto **Futuro Nazionale Vannacci - Free** conta 9 deputati (dati aggiornati al 19 ottobre 2026). Provengono quasi tutti dalla Lega; due da Forza Italia e uno da Fratelli d’Italia.\n\n- [Rossano Sasso](#/strumenti/deputato/307360): **Lega** fino al 6 febbraio 2026.\n- [Edoardo Ziello](#/strumenti/deputato/307143): **Lega** fino al 6 febbraio 2026.\n- [Gianangelo Bof](#/strumenti/deputato/308801): **Lega** fino all’8 giugno 2026.\n- [Domenico Furgiuele](#/strumenti/deputato/307718): **Lega** fino all’8 giugno 2026.\n- [Laura Ravetto](#/strumenti/deputato/301459): **Lega** fino al 20 maggio 2026.\n- [Davide Bergamini](#/strumenti/deputato/308928): eletto nella **Lega**, passato nel Misto il 7 gennaio 2026, quindi in **Forza Italia** dal 20 gennaio all’8 giugno 2026, poi nella componente Vannacci.\n- [Attilio Pierro](#/strumenti/deputato/308791): eletto nella **Lega**, passato nel Misto il 30 dicembre 2025, quindi in **Forza Italia** dal 20 gennaio all’8 giugno 2026, poi nella componente Vannacci.\n- [Tommaso Antonino Calderone](#/strumenti/deputato/308766): **Forza Italia** fino al 21 settembre 2026.\n- [Emanuele Pozzolo](#/strumenti/deputato/308822): **Fratelli d’Italia** fino al 14 maggio 2025; è rimasto nel Misto e oggi aderisce alla componente Vannacci.\n\nIn sintesi: **7** erano stati eletti nella Lega (compresi Bergamini e Pierro, transitati temporaneamente da Forza Italia), **1** in Forza Italia (Calderone) e **1** in Fratelli d’Italia (Pozzolo). La composizione della Camera riporta la componente con 9 membri [qui](#/strumenti/gruppi)",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "composizione",
+   "label": "Conto i parlamentari per gruppo",
+   "state": "start"
+  },
+  {
+   "name": "composizione",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "parlamentari",
+   "label": "Leggo le schede dei parlamentari",
+   "state": "start"
+  },
+  {
+   "name": "parlamentari",
+   "state": "done",
+   "count": 9
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "label": "Leggo la scheda",
+   "state": "start"
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "scheda_parlamentare",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "composizione",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "parlamentari",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "scheda_parlamentare",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato i deputati di Futuro Nazionale Vannacci sulla legge elettorale A.C. 2822-B?",
+   "Cosa ha detto Edoardo Ziello sulla legge elettorale A.C. 2822-B?",
+   "Quali atti ha firmato per primo Laura Ravetto?"
+  ]
+ },
+ "tempo_s": 14.3,
+ "verifica": null
+}

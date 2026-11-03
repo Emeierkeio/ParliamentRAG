@@ -1,0 +1,229 @@
+{
+  "id": "GIO-051",
+  "domanda": "Le parole più usate da Meloni nei suoi interventi in Parlamento nel 2026: una nuvola di parole per l'articolo.",
+  "sql": [
+    "WITH testi AS (\n  SELECT regexp_replace(s.text, '^\\s*,\\s*Presidente del Consiglio dei ministri\\.\\s*', '') AS t\n  FROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\n  WHERE s.person IN ('it:person:camera:302103', 'it:person:senato:23006')\n    AND st.date BETWEEN '2026-01-01' AND '2026-12-31'\n    AND coalesce(i.title, '') NOT ILIKE 'TESTI DEGLI INTERVENTI DI CUI%'),\nparole AS (\n  SELECT lower(w) AS w FROM testi, regexp_split_to_table(t, '[^[:alpha:]]+') AS w\n  WHERE length(w) >= 3)\nSELECT w AS parola, count(*) AS volte\nFROM parole\nWHERE to_tsvector('italian', w) <> ''::tsvector\n  AND w NOT IN ('presidente','signor','signora','onorevoli','onorevole','colleghi','colleghe','collega','senatori','senatrici',\n                'senatore','senatrice','deputati','deputate','grazie','ringrazio','ringraziare','ringraziamento','cioè','quindi','perché','però','anche','solo','ancora','già','così','molto','sempre','oggi',\n                'quando','fatto','fare','essere','può','dire','modo','proprio','deve','senza','qui','poi','altri','cosa','ogni','chiaramente','credo','prima')\nGROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 50",
+    "SELECT count(*) AS interventi, count(DISTINCT st.uri) AS sedute,\n       count(*) FILTER (WHERE st.chamber = 'camera') AS alla_camera, count(*) FILTER (WHERE st.chamber = 'senato') AS al_senato,\n       sum(array_length(regexp_split_to_array(btrim(s.text), '\\s+'), 1)) AS parole_totali\nFROM speech s JOIN agenda_item i ON i.uri = s.item JOIN sitting st ON st.uri = i.sitting\nWHERE s.person IN ('it:person:camera:302103', 'it:person:senato:23006') AND st.date BETWEEN '2026-01-01' AND '2026-12-31'\n  AND coalesce(i.title, '') NOT ILIKE 'TESTI DEGLI INTERVENTI DI CUI%'"
+  ],
+  "risultato": [
+    [
+      {
+        "parola": "italia",
+        "volte": 332
+      },
+      {
+        "parola": "governo",
+        "volte": 205
+      },
+      {
+        "parola": "europa",
+        "volte": 164
+      },
+      {
+        "parola": "stati",
+        "volte": 116
+      },
+      {
+        "parola": "stato",
+        "volte": 114
+      },
+      {
+        "parola": "sicurezza",
+        "volte": 111
+      },
+      {
+        "parola": "tema",
+        "volte": 98
+      },
+      {
+        "parola": "europea",
+        "volte": 95
+      },
+      {
+        "parola": "parte",
+        "volte": 92
+      },
+      {
+        "parola": "anni",
+        "volte": 89
+      },
+      {
+        "parola": "consiglio",
+        "volte": 89
+      },
+      {
+        "parola": "europeo",
+        "volte": 82
+      },
+      {
+        "parola": "energia",
+        "volte": 73
+      },
+      {
+        "parola": "politica",
+        "volte": 69
+      },
+      {
+        "parola": "crisi",
+        "volte": 66
+      },
+      {
+        "parola": "lavoro",
+        "volte": 61
+      },
+      {
+        "parola": "nazione",
+        "volte": 61
+      },
+      {
+        "parola": "tempo",
+        "volte": 61
+      },
+      {
+        "parola": "accordo",
+        "volte": 60
+      },
+      {
+        "parola": "cittadini",
+        "volte": 60
+      },
+      {
+        "parola": "miliardi",
+        "volte": 58
+      },
+      {
+        "parola": "paesi",
+        "volte": 58
+      },
+      {
+        "parola": "risorse",
+        "volte": 57
+      },
+      {
+        "parola": "rispetto",
+        "volte": 56
+      },
+      {
+        "parola": "euro",
+        "volte": 55
+      },
+      {
+        "parola": "difesa",
+        "volte": 53
+      },
+      {
+        "parola": "internazionale",
+        "volte": 53
+      },
+      {
+        "parola": "due",
+        "volte": 52
+      },
+      {
+        "parola": "nazionale",
+        "volte": 51
+      },
+      {
+        "parola": "penso",
+        "volte": 51
+      },
+      {
+        "parola": "detto",
+        "volte": 50
+      },
+      {
+        "parola": "imprese",
+        "volte": 50
+      },
+      {
+        "parola": "nazioni",
+        "volte": 49
+      },
+      {
+        "parola": "punto",
+        "volte": 48
+      },
+      {
+        "parola": "fronte",
+        "volte": 47
+      },
+      {
+        "parola": "insieme",
+        "volte": 47
+      },
+      {
+        "parola": "volte",
+        "volte": 47
+      },
+      {
+        "parola": "europei",
+        "volte": 46
+      },
+      {
+        "parola": "ucraina",
+        "volte": 46
+      },
+      {
+        "parola": "italiani",
+        "volte": 45
+      },
+      {
+        "parola": "rinnovabili",
+        "volte": 45
+      },
+      {
+        "parola": "voglio",
+        "volte": 45
+      },
+      {
+        "parola": "altra",
+        "volte": 44
+      },
+      {
+        "parola": "meno",
+        "volte": 44
+      },
+      {
+        "parola": "quali",
+        "volte": 44
+      },
+      {
+        "parola": "stesso",
+        "volte": 44
+      },
+      {
+        "parola": "dopodiché",
+        "volte": 43
+      },
+      {
+        "parola": "unione",
+        "volte": 43
+      },
+      {
+        "parola": "coraggio",
+        "volte": 42
+      },
+      {
+        "parola": "forza",
+        "volte": 42
+      }
+    ],
+    [
+      {
+        "interventi": 33,
+        "sedute": 9,
+        "alla_camera": 15,
+        "al_senato": 18,
+        "parole_totali": 53749
+      }
+    ]
+  ],
+  "risposta": "Nel 2026 Giorgia Meloni ha 33 interventi in 9 sedute (15 alla Camera, 18 al Senato), circa 53.700 parole. Le parole più frequenti, tolte quelle vuote e di cortesia: italia 332, governo 205, europa 164, stati 116, stato 114, sicurezza 111, tema 98, europea 95, parte 92, anni 89, consiglio 89, europeo 82, energia 73, politica 69, crisi 66, lavoro 61, nazione 61, tempo 61, accordo 60, cittadini 60. Elenco completo dei primi 50 nel risultato. È un conteggio di parole, non una citazione.",
+  "stato": "calcolata",
+  "limiti": "Parole: sequenze di lettere di almeno 3 caratteri, in minuscolo, senza stemming; tolte le parole vuote del dizionario italiano di Postgres, le formule di cortesia (presidente, signor, onorevoli, colleghi, senatori, grazie, ringrazio…) e alcune parole generiche (quando, fatto, fare, essere, può, dire…). Esclusi i «testi degli interventi di cui è stata autorizzata la pubblicazione» della Camera (11/3 e 14/10), che ripetono per iscritto le comunicazioni già pronunciate al Senato e raddoppierebbero i conteggi. Tolto il residuo «, Presidente del Consiglio dei ministri.» all'inizio dei testi della Camera. Dati fino al 2/11/2026.",
+  "problemi_dati": [
+    "Camera: 9.730 interventi su 328.009 iniziano con un residuo dell'intestazione («, Presidente del Consiglio dei ministri. …»), cioè la carica del relatore è rimasta nel testo invece che in as_office, che per Meloni alla Camera è vuoto. Query: SELECT count(*) FILTER (WHERE text ~ '^\\s*,') FROM speech WHERE uri LIKE 'it:camera:%';",
+    "Senato: 468 argomenti d'Aula su 6.022 hanno il titolo vuoto (es. il question time di Meloni del 13/5/2026). Query: SELECT count(*) FILTER (WHERE title IS NULL OR title='') FROM agenda_item WHERE uri LIKE 'it:senato:19:sed%';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

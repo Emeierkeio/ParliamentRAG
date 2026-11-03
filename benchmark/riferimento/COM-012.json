@@ -1,0 +1,206 @@
+{
+ "id": "COM-012",
+ "domanda": "Fascicolo degli emendamenti sul ddl caregiver in XII Commissione: quanti per articolo e quanti articoli aggiuntivi?",
+ "sql": [
+  "WITH p AS (   -- una riga per proposta: lo stesso numero torna nelle riformulazioni e fra le approvate\n  SELECT DISTINCT number, kind, article FROM amendment WHERE act = 'it:camera:19:ac:2789' AND venue = 'referente'\n)\nSELECT article::int AS articolo,\n       count(*) FILTER (WHERE kind = 'emendamento') AS emendamenti,\n       count(*) FILTER (WHERE kind = 'articoloAggiuntivo') AS articoli_aggiuntivi,\n       count(*) FILTER (WHERE kind = 'subEmendamento') AS subemendamenti,\n       count(*) AS totale\nFROM p GROUP BY ROLLUP (1) ORDER BY 1 NULLS LAST",
+  "SELECT group_title, kind, count(*) FROM amendment WHERE act = 'it:camera:19:ac:2789' GROUP BY 1, 2 ORDER BY 3 DESC",
+  "SELECT count(DISTINCT number) AS approvate FROM amendment WHERE act = 'it:camera:19:ac:2789' AND outcome = 'approvato'"
+ ],
+ "risultato": [
+  [
+   {
+    "articolo": 1,
+    "emendamenti": 29,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 29
+   },
+   {
+    "articolo": 2,
+    "emendamenti": 63,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 6,
+    "totale": 69
+   },
+   {
+    "articolo": 3,
+    "emendamenti": 18,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 18
+   },
+   {
+    "articolo": 4,
+    "emendamenti": 71,
+    "articoli_aggiuntivi": 1,
+    "subemendamenti": 0,
+    "totale": 72
+   },
+   {
+    "articolo": 5,
+    "emendamenti": 21,
+    "articoli_aggiuntivi": 3,
+    "subemendamenti": 0,
+    "totale": 24
+   },
+   {
+    "articolo": 6,
+    "emendamenti": 14,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 14
+   },
+   {
+    "articolo": 7,
+    "emendamenti": 50,
+    "articoli_aggiuntivi": 1,
+    "subemendamenti": 0,
+    "totale": 51
+   },
+   {
+    "articolo": 8,
+    "emendamenti": 33,
+    "articoli_aggiuntivi": 2,
+    "subemendamenti": 0,
+    "totale": 35
+   },
+   {
+    "articolo": 9,
+    "emendamenti": 9,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 9
+   },
+   {
+    "articolo": 10,
+    "emendamenti": 1,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 1
+   },
+   {
+    "articolo": 11,
+    "emendamenti": 3,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 3
+   },
+   {
+    "articolo": 12,
+    "emendamenti": 33,
+    "articoli_aggiuntivi": 2,
+    "subemendamenti": 0,
+    "totale": 35
+   },
+   {
+    "articolo": 13,
+    "emendamenti": 32,
+    "articoli_aggiuntivi": 14,
+    "subemendamenti": 0,
+    "totale": 46
+   },
+   {
+    "articolo": 14,
+    "emendamenti": 4,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 4
+   },
+   {
+    "articolo": 15,
+    "emendamenti": 8,
+    "articoli_aggiuntivi": 0,
+    "subemendamenti": 0,
+    "totale": 8
+   },
+   {
+    "articolo": null,
+    "emendamenti": 389,
+    "articoli_aggiuntivi": 23,
+    "subemendamenti": 6,
+    "totale": 418
+   }
+  ],
+  [
+   {
+    "group_title": "PROPOSTE EMENDATIVE PRESENTATE",
+    "kind": "emendamento",
+    "count": 387
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE APPROVATE",
+    "kind": "emendamento",
+    "count": 42
+   },
+   {
+    "group_title": "PROPOSTE DI RIFORMULAZIONE",
+    "kind": "emendamento",
+    "count": 28
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE PRESENTATE",
+    "kind": "articoloAggiuntivo",
+    "count": 23
+   },
+   {
+    "group_title": "EMENDAMENTO 2.100 DEL RELATORE E RELATIVI SUBEMENDAMENTI",
+    "kind": "subEmendamento",
+    "count": 6
+   },
+   {
+    "group_title": "PROPOSTA DI NUOVA FORMULAZIONE",
+    "kind": "emendamento",
+    "count": 5
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE APPROVATE",
+    "kind": "articoloAggiuntivo",
+    "count": 3
+   },
+   {
+    "group_title": "EMENDAMENTO 2.100 DEL RELATORE",
+    "kind": "emendamento",
+    "count": 1
+   },
+   {
+    "group_title": "PROPOSTE DI RIFORMULAZIONE",
+    "kind": "articoloAggiuntivo",
+    "count": 1
+   },
+   {
+    "group_title": "EMENDAMENTO 1.100 DEL RELATORE",
+    "kind": "emendamento",
+    "count": 1
+   },
+   {
+    "group_title": "PROPOSTA EMENDATIVA APPROVATA",
+    "kind": "emendamento",
+    "count": 1
+   },
+   {
+    "group_title": "EMENDAMENTO 2.100 DEL RELATORE E RELATIVI SUBEMENDAMENTI",
+    "kind": "emendamento",
+    "count": 1
+   }
+  ],
+  [
+   {
+    "approvate": 46
+   }
+  ]
+ ],
+ "risposta": "Il ddl caregiver è l'AC 2789 del governo («Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari»), in sede referente in XII Commissione. Le proposte distinte sono 418: 389 emendamenti (387 nel fascicolo del 22/4/2026 più gli emendamenti 1.100 e 2.100 del relatore), 23 articoli aggiuntivi e 6 subemendamenti al 2.100. Per articolo: art. 1: 29; art. 2: 63 emendamenti e 6 subemendamenti; art. 3: 18; art. 4: 71 e 1 articolo aggiuntivo; art. 5: 21 e 3; art. 6: 14; art. 7: 50 e 1; art. 8: 33 e 2; art. 9: 9; art. 10: 1; art. 11: 3; art. 12: 33 e 2; art. 13: 32 e 14; art. 14: 4; art. 15: 8. Ne risultano approvate 46.",
+ "stato": "calcolata",
+ "limiti": "Proposta = numero distinto (con tipo e articolo): lo stesso numero ricompare fra le riformulazioni e fra le approvate e va contato una volta (499 righe, 418 proposte). Gli articoli aggiuntivi sono contati sotto l'articolo dopo cui si inseriscono. Il dato degli approvati viene dai gruppi «PROPOSTE EMENDATIVE APPROVATE» del Bollettino.",
+ "problemi_dati": [
+  {
+   "problema": "act.title della Camera contiene markup HTML di evidenziazione (<em>caregiver</em>) in diversi progetti di legge.",
+   "sql": "SELECT uri, title FROM act WHERE chamber = 'camera' AND title LIKE '%<em>%' LIMIT 20"
+  },
+  {
+   "problema": "Lo stesso emendamento compare in più righe di amendment (presentato, riformulato, approvato) con uri diversi: contare righe gonfia i numeri (499 righe per 418 proposte sull'AC 2789).",
+   "sql": "SELECT number, count(*), array_agg(group_title) FROM amendment WHERE act = 'it:camera:19:ac:2789' GROUP BY 1 HAVING count(*) > 1"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

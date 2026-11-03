@@ -1,0 +1,82 @@
+{
+  "id": "COMU-016",
+  "domanda": "Da quando esiste la componente del Misto «Futuro Nazionale Vannacci - Free» e chi ne fa parte?",
+  "sql": [
+    "SELECT uri, name, short_name, start_date, end_date, part_of, source_uri FROM grp WHERE uri = 'it:camera:19:group:cgm4271'",
+    "SELECT p.given_name || ' ' || p.family_name AS deputato, m.start_date AS nella_componente_dal, m.end_date,\n       (SELECT g.short_name FROM membership m2 JOIN grp g ON g.uri = m2.grp\n        WHERE m2.person = m.person AND g.chamber = 'camera' AND g.kind = 'group' AND g.uri <> 'it:camera:19:group:gr4111' AND m2.start_date < m.start_date\n        ORDER BY m2.start_date DESC LIMIT 1) AS ultimo_gruppo_prima_del_misto\nFROM membership m JOIN person p ON p.uri = m.person\nWHERE m.grp = 'it:camera:19:group:cgm4271'\nORDER BY m.start_date, p.family_name"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:group:cgm4271",
+        "name": "Futuro Nazionale Vannacci - Free",
+        "short_name": "MISTO-FNV-F",
+        "start_date": "2026-05-27",
+        "end_date": null,
+        "part_of": "it:camera:19:group:gr4111",
+        "source_uri": "http://dati.camera.it/ocd/componenteGruppoMisto.rdf/cgm4271"
+      }
+    ],
+    [
+      {
+        "deputato": "Emanuele Pozzolo",
+        "nella_componente_dal": "2026-05-27",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "FDI"
+      },
+      {
+        "deputato": "Laura Ravetto",
+        "nella_componente_dal": "2026-05-27",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "LEGA"
+      },
+      {
+        "deputato": "Rossano Sasso",
+        "nella_componente_dal": "2026-05-27",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "LEGA"
+      },
+      {
+        "deputato": "Edoardo Ziello",
+        "nella_componente_dal": "2026-05-27",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "LEGA"
+      },
+      {
+        "deputato": "Davide Bergamini",
+        "nella_componente_dal": "2026-06-08",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "FI-PPE"
+      },
+      {
+        "deputato": "Gianangelo Bof",
+        "nella_componente_dal": "2026-06-08",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "LEGA"
+      },
+      {
+        "deputato": "Domenico Furgiuele",
+        "nella_componente_dal": "2026-06-08",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "LEGA"
+      },
+      {
+        "deputato": "Attilio Pierro",
+        "nella_componente_dal": "2026-06-08",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "FI-PPE"
+      },
+      {
+        "deputato": "Tommaso Antonino Calderone",
+        "nella_componente_dal": "2026-09-21",
+        "end_date": null,
+        "ultimo_gruppo_prima_del_misto": "FI-PPE"
+      }
+    ]
+  ],
+  "risposta": "La componente del Misto «Futuro Nazionale Vannacci - Free» (MISTO-FNV-F) esiste alla Camera dal 27/5/2026. Ne fanno parte 9 deputati: dal 27/5/2026 Emanuele Pozzolo (prima FdI), Laura Ravetto (Lega), Rossano Sasso (Lega) ed Edoardo Ziello (Lega); dall'8/6/2026 Davide Bergamini (FI-PPE), Gianangelo Bof (Lega), Domenico Furgiuele (Lega) e Attilio Pierro (FI-PPE); dal 21/9/2026 Tommaso Antonino Calderone (FI-PPE). Nessuno ne è uscito.",
+  "stato": "calcolata",
+  "limiti": "Tra parentesi l'ultimo gruppo diverso dal Misto a cui la persona apparteneva prima di entrare nella componente. Dati al 2/11/2026.",
+  "problemi_dati": [],
+  "controllato_su": "postgres v3 2026-11-02"
+}

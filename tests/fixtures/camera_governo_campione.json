@@ -1,0 +1,162 @@
+{
+"governi": [
+{
+"governo": "http://dati.camera.it/ocd/governo.rdf/g182",
+"titolo": "I Governo Draghi (12.02.2021 - 21.10.2022)",
+"inizio": "20210212",
+"fine": "20221021"
+},
+{
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"titolo": "I Governo Meloni (21.10.2022)",
+"inizio": "20221021"
+}
+],
+"persone": [
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302841",
+"nome": "ANNA MARIA",
+"cognome": "BERNINI",
+"genere": "female",
+"nascita": "19650817",
+"luogo": "nato a BOLOGNA, BOLOGNA, EMILIA-ROMAGNA, il 17.08.1965"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p308488",
+"nome": "MARIO",
+"cognome": "DRAGHI",
+"genere": "male"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302103",
+"nome": "GIORGIA",
+"cognome": "MELONI",
+"genere": "female",
+"foto": "http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19",
+"nascita": "19770115",
+"luogo": "nato a ROMA, ROMA, LAZIO, il 15.01.1977"
+},
+{
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302741",
+"nome": "MATTEO",
+"cognome": "SALVINI",
+"genere": "male",
+"nascita": "19730309",
+"luogo": "nato a MILANO, MILANO, LOMBARDIA, il 09.03.1973"
+}
+],
+"incarichi": [
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302103_3_202_665_20260326",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302103",
+"tipo": "MINISTRO",
+"carica": "Ministro del Turismo (26.03.2026-03.04.2026)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_665",
+"interim": "1",
+"inizio": "20260326",
+"fine": "20260403",
+"motivo": "Cessazione"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302841_3_202_626_20221023",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302841",
+"tipo": "MINISTRO",
+"carica": "Ministro dell'Università e della ricerca (23.10.2022)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_626",
+"interim": "0",
+"inizio": "20221023"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_3_202_707_20221112",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302741",
+"tipo": "MINISTRO",
+"carica": "Ministro delle Infrastrutture e dei trasporti (12.11.2022)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_707",
+"interim": "0",
+"inizio": "20221112"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_3_202_667_20221023",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302741",
+"tipo": "MINISTRO",
+"carica": "Ministro delle Infrastrutture e della mobilità sostenibili (23.10.2022-11.11.2022)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_667",
+"interim": "0",
+"inizio": "20221023",
+"fine": "20221111",
+"motivo": "Scioglimento"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg308488_1_182_1_20210212",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g182",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p308488",
+"tipo": "PRESIDENTE DEL CONSIGLIO",
+"carica": "Presidente del Consiglio dei Ministri (12.02.2021)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og182_1",
+"interim": "0",
+"inizio": "20210212"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302103_1_202_1_20221021",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302103",
+"tipo": "PRESIDENTE DEL CONSIGLIO",
+"carica": "Presidente del Consiglio dei ministri (21.10.2022)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_1",
+"interim": "0",
+"inizio": "20221021"
+},
+{
+"membro": "http://dati.camera.it/ocd/membroGoverno.rdf/mg302741_2_202_1_20221023",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"persona": "http://dati.camera.it/ocd/persona.rdf/p302741",
+"tipo": "VICEPRESIDENTE DEL CONSIGLIO",
+"carica": "Vicepresidente del Consiglio dei ministri (23.10.2022)",
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_1",
+"interim": "0",
+"inizio": "20221023"
+}
+],
+"ministeri": [
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og182_1",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g182",
+"nome": "PRESIDENZA DEL CONSIGLIO DEI MINISTRI",
+"dicastero": "0"
+},
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_1",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"nome": "PRESIDENZA DEL CONSIGLIO DEI MINISTRI",
+"dicastero": "0"
+},
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_665",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"nome": "MINISTERO DEL TURISMO",
+"dicastero": "1"
+},
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_626",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"nome": "MINISTERO DELL'UNIVERSITA' E DELLA RICERCA",
+"dicastero": "1"
+},
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_707",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"nome": "MINISTERO DELLE INFRASTRUTTURE E DEI TRASPORTI",
+"dicastero": "1"
+},
+{
+"organo": "http://dati.camera.it/ocd/organoGoverno.rdf/og202_667",
+"governo": "http://dati.camera.it/ocd/governo.rdf/g202",
+"nome": "MINISTERO DELLE INFRASTRUTTURE E DELLA MOBILITA' SOSTENIBILI",
+"dicastero": "1"
+}
+]
+}

@@ -1,0 +1,41 @@
+{
+ "id": "TER-033",
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "categoria": "temi",
+ "ramo": "entrambi",
+ "tipo_risposta": "classifica",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": null,
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso stabilirlo con un conteggio affidabile dai dati interrogabili qui: la ricerca restituisce risultati per pertinenza, non un archivio filtrabile e aggregabile per tema, e può includere anche atti diversi dalle interrogazioni.\n\nCome indicazione **non conclusiva**, le ricerche restituiscono più risultati per **pensioni/previdenza** (438) che per **ammortizzatori sociali** (434) e **sicurezza sul lavoro** (402). Lo scarto fra pensioni e ammortizzatori è però troppo ridotto per trattarlo come una graduatoria certa.\n\nI tre temi compaiono effettivamente in interrogazioni indirizzate al Ministero: per esempio, la sicurezza nell’[interrogazione 5-02027](https://aic.camera.it/aic/scheda.html?numero=5%2F02027&ramo=CAMERA&leg=19), le pensioni nella [3-00292](#/strumenti/atto/camera-3~00292?u=https%3A%2F%2Faic.camera.it%2Faic%2Fscheda.html%3Fnumero%3D3%252F00292%26ramo%3DCAMERA%26leg%3D19) e gli ammortizzatori nella [5-00640](#/strumenti/atto/camera-5~00640?u=https%3A%2F%2Faic.camera.it%2Faic%2Fscheda.html%3Fnumero%3D5%252F00640%26ramo%3DCAMERA%26leg%3D19)",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "search_parliament"
+ ],
+ "errori": [],
+ "tempo_s": 19.8,
+ "riferimento": {
+  "risposta": "Fra le 2.783 interrogazioni e interpellanze della XIX rivolte al Ministero del Lavoro (2.207 Camera, 576 Senato), la sicurezza sul lavoro è il tema più frequente dei tre: 341 atti (285 Camera, 56 Senato). Seguono gli ammortizzatori sociali con 216 (186 e 30) e le pensioni con 178 (148 e 30). Un atto può toccare più temi.",
+  "stato": "calcolata",
+  "limiti": "I temi sono gruppi di descrittori EuroVoc scelti per la domanda (regola dichiarata): sicurezza sul lavoro = sicurezza del lavoro, infortunio sul lavoro, prevenzione degli infortuni, malattia professionale, sanità del lavoro (più assicurazione infortuni sul lavoro, mai trovato); pensioni = pensionato, pensione complementare, pensionamento anticipato, condizione di pensionamento, regime pensionistico, cumulo delle pensioni; ammortizzatori sociali = cassa integrazione, assicurazione di disoccupazione. Non inclusi i descrittori generici «disoccupazione» e «sicurezza sociale». Atti considerati: interrogazioni a risposta scritta, orale, in commissione e interpellanze."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 19.8
+ },
+ "causa_probabile": "dati",
+ "note": "Classifica sbagliata: mette prime le pensioni (438 risultati di ricerca) e ultima la sicurezza sul lavoro (402). Riferimento: sicurezza sul lavoro 341 atti, ammortizzatori 216, pensioni 178. Il sistema avverte che il dato non è conclusivo, ma lo dà lo stesso."
+}

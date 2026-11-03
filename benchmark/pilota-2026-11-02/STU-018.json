@@ -1,0 +1,51 @@
+{
+ "id": "STU-018",
+ "domanda": "c'è un dossier del Servizio Studi sulla separazione delle carriere? mi serve il link",
+ "categoria": "fonti",
+ "ramo": "camera",
+ "tipo_risposta": "link",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Dossier gi0010c/d/e su temi.camera.it. Dare il link ufficiale.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì. Il dossier del Servizio studi è collegato alla pagina della proposta di legge costituzionale A.C. 1917, «Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare», nella sezione **Documenti**.\n\nAl Senato, il corrispondente iter è il DDL S. 1353.",
+ "eventi": {
+  "status": 2,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "verify_answer"
+ ],
+ "errori": [],
+ "tempo_s": 68.6,
+ "riferimento": {
+  "risposta": "Sì. Il database ha quattro dossier del Servizio Studi della Camera sulla riforma (dipartimenti Giustizia e Istituzioni): «Norme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura» (gi0010b, 3/2/2025) https://temi.camera.it/leg19/dossier/OCD18-21123/norme-l-attuazione-della-separazione-carriere-giudicante-e-requirente-della-magistratura.html e tre edizioni di «Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare»: gi0010c (28/7/2025) https://temi.camera.it/leg19/dossier/OCD18-21966/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html, gi0010d (16/9/2025) https://temi.camera.it/leg19/dossier/OCD18-22059/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare-1.html e gi0010e (30/9/2025, il più recente) https://temi.camera.it/leg19/dossier/OCD18-22140/norme-materia-ordinamento-giurisdizionale-e-istituzione-della-corte-disciplinare.html.",
+  "stato": "calcolata",
+  "limiti": "Cercati i dossier (document.kind = dossier) con codice gi0010* o con «separazione delle carriere» / «Corte disciplinare» nel titolo. Mancano i codici gi0010 e gi0010a, che la serie lascia supporre: non si sa se esistano."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "fail"
+  },
+  "trappola": null,
+  "tempo_s": 68.6
+ },
+ "causa_probabile": "retrieval",
+ "note": "Dice che il dossier esiste e dà il titolo giusto («Norme in materia di ordinamento giurisdizionale e di istituzione della Corte disciplinare»), ma non il link chiesto: rimanda alla pagina dell'A.C. 1917. Il riferimento ha quattro dossier su temi.camera.it.",
+ "verifica_citazioni": [
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0531&tipo=stenografico#sed0531.stenografico.tit00120.sub00010.int01130"
+  }
+ ]
+}

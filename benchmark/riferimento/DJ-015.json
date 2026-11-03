@@ -1,0 +1,159 @@
+{
+ "id": "DJ-015",
+ "domanda": "Ho un grafico con la composizione della Camera a inizio legislatura e oggi: i numeri dei gruppi sono giusti?",
+ "sql": [
+  "WITH d(data) AS (VALUES (DATE '2022-10-28'), (DATE '2026-11-02')),\ndep AS (\n  SELECT d.data, m.person, group_at(m.person, d.data) AS g\n  FROM d JOIN mandate m ON m.chamber = 'camera' AND m.legislature = 19\n   AND m.start_date <= d.data AND (m.end_date IS NULL OR m.end_date >= d.data)\n)\nSELECT dep.data, CASE WHEN g.kind = 'misto_component' THEN 'Misto - ' || g.name\n                      WHEN g.uri = 'it:camera:19:group:gr4111' THEN 'Misto - senza componente'\n                      ELSE coalesce(g.name, '(nessun gruppo)') END AS gruppo,\n       count(*) AS deputati\nFROM dep LEFT JOIN grp g ON g.uri = dep.g\nGROUP BY ROLLUP (1, 2) ORDER BY 1, 3 DESC"
+ ],
+ "risultato": [
+  {
+   "data": "2022-10-28",
+   "gruppo": null,
+   "deputati": 400
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Fratelli d'Italia",
+   "deputati": 118
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Partito Democratico - Italia Democratica e Progressista",
+   "deputati": 69
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Lega - Salvini Premier",
+   "deputati": 66
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Movimento 5 Stelle",
+   "deputati": 52
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Forza Italia - Berlusconi Presidente - PPE",
+   "deputati": 44
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+   "deputati": 21
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Alleanza Verdi e Sinistra",
+   "deputati": 12
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Noi Moderati - MAIE - Centro Popolare",
+   "deputati": 9
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Misto - Minoranze Linguistiche",
+   "deputati": 4
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Misto - +Europa - Stati Uniti d'Europa",
+   "deputati": 3
+  },
+  {
+   "data": "2022-10-28",
+   "gruppo": "Misto - senza componente",
+   "deputati": 2
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": null,
+   "deputati": 398
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Fratelli d'Italia",
+   "deputati": 117
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Partito Democratico - Italia Democratica e Progressista",
+   "deputati": 68
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Lega - Salvini Premier",
+   "deputati": 54
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Forza Italia - Berlusconi Presidente - PPE",
+   "deputati": 52
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Movimento 5 Stelle",
+   "deputati": 48
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+   "deputati": 10
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Alleanza Verdi e Sinistra",
+   "deputati": 10
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Misto - Futuro Nazionale Vannacci - Free",
+   "deputati": 9
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Noi Moderati - MAIE - Centro Popolare",
+   "deputati": 8
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Italia Viva - Casa Riformista",
+   "deputati": 7
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Misto - senza componente",
+   "deputati": 5
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Misto - Minoranze Linguistiche",
+   "deputati": 4
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Misto - Sud Chiama Nord",
+   "deputati": 3
+  },
+  {
+   "data": "2026-11-02",
+   "gruppo": "Misto - +Europa - Stati Uniti d'Europa",
+   "deputati": 3
+  },
+  {
+   "data": null,
+   "gruppo": null,
+   "deputati": 798
+  }
+ ],
+ "risposta": "Al 28/10/2022 (gruppi costituiti) i 400 deputati erano: FdI 118, PD-IDP 69, Lega 66, M5S 52, FI-PPE 44, Azione 21, AVS 12, Noi Moderati 9; Misto 9 (Minoranze linguistiche 4, +Europa 3, senza componente 2). Al 2/11/2026 i deputati in carica sono 398: FdI 117, PD-IDP 68, Lega 54, FI-PPE 52, M5S 48, Azione 10, AVS 10, Noi Moderati 8, IV-CR 7; Misto 24 (Futuro Nazionale Vannacci - Free 9, Minoranze linguistiche 4, +Europa 3, Sud Chiama Nord 3, senza componente 5: Soumahoro, Tabacci, Sala, Cesa, Marattin). I due seggi mancanti sono quelli lasciati da Bagnai (15/9/2026) e Carloni (19/10/2026), senza subentrante in archivio; Cannizzaro (22/7/2026) è stato sostituito da Fabio Roscioli (FI-PPE, dall'1/10/2026).",
+ "stato": "calcolata",
+ "limiti": "Inizio legislatura = 28/10/2022, primo giorno con tutti i gruppi costituiti (AVS e Noi Moderati erano componenti del Misto fino al 27/10). Deputati = mandati Camera XIX aperti alla data; gruppo = group_at alla data, con la componente del Misto al posto del Misto. Il grafico del richiedente non è nel database: i numeri vanno confrontati a mano.",
+ "problemi_dati": [
+  {
+   "problema": "Il 27/10/2022 le componenti Misto-AVS e Misto-Noi Moderati finiscono lo stesso giorno in cui iniziano i gruppi AVS e NM (end_date inclusa): quel giorno i deputati risultano in due gruppi e group_at li mette nella componente.",
+   "sql": "SELECT uri, name, start_date, end_date FROM grp WHERE uri IN ('it:camera:19:group:cgm4138','it:camera:19:group:cgm4148','it:camera:19:group:gr4152','it:camera:19:group:gr4154')"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

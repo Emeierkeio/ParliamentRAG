@@ -1,0 +1,44 @@
+{
+ "id": "CIT-016",
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "sql": [
+  "-- voto finale della legge elettorale (PDL 2822-B) e video della seduta, con il segmento della votazione finale\nSELECT v.uri AS voto, v.date, v.title, v.favor, v.against, v.abstain, v.secret, v.approved,\n       vi.uri AS video, vi.title AS titolo_video, vi.url, vi.start_ts, vi.end_ts,\n       vs.ord AS segmento, vs.label, vs.start_s, vs.end_s, vs.clock, vs.speech\nFROM vote v\nJOIN vote_act va ON va.vote = v.uri AND va.act = 'it:camera:19:ac:2822-B'\nJOIN video vi ON vi.sitting = v.sitting\nLEFT JOIN video_segment vs ON vs.video = vi.uri\n     AND vs.speech IN (SELECT sp.uri FROM speech sp JOIN agenda_item ai ON ai.uri = sp.item\n                       WHERE ai.sitting = v.sitting AND sp.text LIKE 'Passiamo alla votazione finale%')\nWHERE v.chamber = 'camera' AND v.final"
+ ],
+ "risultato": [
+  {
+   "voto": "it:camera:19:sed0723:v001",
+   "date": "2026-10-08",
+   "title": "Votazione finale PDL n. 2822-B",
+   "favor": 227,
+   "against": 164,
+   "abstain": 0,
+   "secret": true,
+   "approved": true,
+   "video": "it:camera:19:webtv:32457",
+   "titolo_video": "AULA, Seduta 723 - Legge elettorale, approvazione definitiva",
+   "url": "https://webtv.camera.it/evento/32457",
+   "start_ts": "2026-10-08T10:34:48",
+   "end_ts": "2026-10-08T12:52:13",
+   "segmento": 22,
+   "label": "FONTANA Lorenzo",
+   "start_s": 9420,
+   "end_s": 9515,
+   "clock": "2026-10-08T12:37:15",
+   "speech": "it:camera:19:sed0723:tit00040.sub00020.int00010"
+  }
+ ],
+ "risposta": "Sì, alla Camera. La legge elettorale (PDL 2822-B) è stata approvata definitivamente l'8/10/2026 nella seduta 723, con voto finale segreto: 227 sì, 164 no. Il video della WebTV è «AULA, Seduta 723 - Legge elettorale, approvazione definitiva»: https://webtv.camera.it/evento/32457 (dalle 10:34 alle 12:52). La votazione finale inizia alle 12:37:15, al secondo 9.420 del video, con l'annuncio del presidente Fontana «Passiamo alla votazione finale»; prima ci sono le dichiarazioni di voto finale. Il passaggio al Senato non ha video nel database.",
+ "stato": "calcolata",
+ "limiti": "Nel database ci sono solo i video della Camera (743, tutti di Aula); per il Senato nessuno. L'offset in secondi è quello di video_segment.start_s; l'URL non porta un parametro di posizione.",
+ "problemi_dati": [
+  {
+   "problema": "Alla Camera l'etichetta di gruppo di Noi Moderati è troncata («NM(N-C-U-I») e il resto («M-CP).») finisce all'inizio del testo dell'intervento: 1.634 interventi d'Aula iniziano così (es. Colucci, seduta 723).",
+   "sql": "SELECT count(*) FROM speech sp JOIN agenda_item ai ON ai.uri=sp.item JOIN sitting s ON s.uri=ai.sitting WHERE s.kind='assembly_verbatim' AND sp.text ~ '^[A-Z(+\\-.]{1,12}\\)\\. '"
+  },
+  {
+   "problema": "Tre segmenti del video della seduta 723 non hanno speech (ord 1, 2 e 23, quest'ultimo durante la votazione finale).",
+   "sql": "SELECT ord, label, start_s, clock FROM video_segment WHERE video='it:camera:19:webtv:32457' AND speech IS NULL"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

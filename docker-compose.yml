@@ -1,0 +1,18 @@
+# Database della pipeline: Postgres con pgvector, unico database (dati dello schema v3, testi, embedding).
+# Stesso file in locale e sul VPS: cambiano solo i valori in .env (password, memoria, porte).
+# La porta di default non tocca quelle dei tunnel di produzione.
+services:
+  testi:
+    image: pgvector/pgvector:${PG_VERSIONE:-pg16}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: parliamentrag
+      POSTGRES_USER: parliamentrag
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?imposta PG_PASSWORD in .env}
+    ports:
+      - "${PG_PORTA:-5440}:5432"
+    volumes:
+      - testi:/var/lib/postgresql/data
+
+volumes:
+  testi:

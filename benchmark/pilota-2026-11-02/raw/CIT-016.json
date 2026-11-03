@@ -1,0 +1,99 @@
+{
+ "id": "CIT-016",
+ "trappola": false,
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+ "endpoint": "agente",
+ "risposta_sistema": "Sì: l’approvazione definitiva della legge elettorale, la proposta [A.C. 2822-B](#/strumenti/atto/camera-2822-B?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F410%3FidSeduta%3D0723%26tipo%3Dstenografico%23sed0723.stenografico.tit00040.sub00010.int00140), è avvenuta alla Camera l’8 ottobre 2026, nella seduta n. 723. La votazione finale è stata approvata con 227 sì, 164 no e nessun astenuto.\n\nIl video è quello integrale della seduta della Camera dell’[8 ottobre 2026](https://www.camera.it/leg19/410?idSeduta=0723&tipo=stenografico#sed0723.stenografico.tit00040.sub00010.int00140), nella parte dedicata al seguito dell’esame della proposta: la pagina ufficiale del resoconto consente di raggiungere la registrazione audiovisiva della seduta.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 20
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "get_session_votes",
+   "label": "Leggo le votazioni della seduta",
+   "state": "start"
+  },
+  {
+   "name": "get_session_votes",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 5
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_session_votes",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato i gruppi sulla votazione finale dell’A.C. 2822-B?",
+   "Che cosa ha detto Alessandro Colucci sulla legge elettorale l’8 ottobre 2026?",
+   "Qual è stato l’iter dell’A.C. 2822-B tra Camera e Senato?"
+  ]
+ },
+ "tempo_s": 26.8,
+ "verifica": null
+}

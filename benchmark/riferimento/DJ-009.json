@@ -1,0 +1,507 @@
+{
+ "id": "DJ-009",
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "sql": [
+  "with m as (\n  select g.chamber, m.person, coalesce(g.part_of, g.uri) top, m.start_date, m.end_date\n  from membership m join grp g on g.uri=m.grp\n  where g.legislature=19 and (m.end_date is null or m.end_date >= '2022-11-01')),\nseq as (\n  select chamber, person, top, start_date,\n         lag(top) over (partition by chamber, person order by start_date, top) prev\n  from m),\ncambi as (select * from seq where prev is not null and prev <> top)\nselect chamber, count(distinct person) parlamentari_che_hanno_cambiato, count(*) cambi_di_gruppo\nfrom cambi group by 1 order by 1",
+  "with m as (\n  select g.chamber, m.person, coalesce(g.part_of, g.uri) top, m.start_date, m.end_date\n  from membership m join grp g on g.uri=m.grp\n  where g.legislature=19 and (m.end_date is null or m.end_date >= '2022-11-01')),\nseq as (\n  select chamber, person, top, start_date,\n         lag(top) over (partition by chamber, person order by start_date, top) prev\n  from m),\ncambi as (select * from seq where prev is not null and prev <> top)\nselect c.chamber, p.given_name||' '||p.family_name nome, c.start_date data, gp.short_name da, gt.short_name a\nfrom cambi c join person p on p.uri=c.person join grp gp on gp.uri=c.prev join grp gt on gt.uri=c.top\norder by c.chamber, c.start_date, nome"
+ ],
+ "risultato": {
+  "conteggi": [
+   {
+    "chamber": "camera",
+    "parlamentari_che_hanno_cambiato": 40,
+    "cambi_di_gruppo": 52
+   },
+   {
+    "chamber": "senato",
+    "parlamentari_che_hanno_cambiato": 13,
+    "cambi_di_gruppo": 15
+   }
+  ],
+  "cambi": [
+   {
+    "chamber": "camera",
+    "nome": "Aboubakar Soumahoro",
+    "data": "2023-01-09",
+    "da": "AVS",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Michela Vittoria Brambilla",
+    "data": "2023-03-02",
+    "da": "MISTO",
+    "a": "NM(N-C-U-I)M-CP"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Davide Faraone",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Francesco Bonifazi",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Isabella De Monte",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Luigi Marattin",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Maria Chiara Gadda",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Maria Elena Boschi",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Mauro Del Barba",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Naike Gruppioni",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Roberto Giachetti",
+    "data": "2023-11-20",
+    "da": "AZ-PER-RE",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Federica Onori",
+    "data": "2024-02-01",
+    "da": "M5S",
+    "a": "AZ-PER-RE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Lorenzo Cesa",
+    "data": "2024-04-18",
+    "da": "NM(N-C-U-I)M-CP",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Antonino Minardo",
+    "data": "2024-04-19",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Eleonora Evi",
+    "data": "2024-04-23",
+    "da": "AVS",
+    "a": "PD-IDP"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Giuseppe Castiglione",
+    "data": "2024-05-14",
+    "da": "AZ-PER-RE",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Andrea De Bertoldi",
+    "data": "2024-08-12",
+    "da": "FDI",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Giorgio Lovecchio",
+    "data": "2024-09-04",
+    "da": "M5S",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Luigi Marattin",
+    "data": "2024-09-09",
+    "da": "IV-CR",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Enrico Costa",
+    "data": "2024-09-16",
+    "da": "AZ-PER-RE",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Maria Rosaria Carfagna",
+    "data": "2024-09-24",
+    "da": "AZ-PER-RE",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Isabella De Monte",
+    "data": "2024-09-30",
+    "da": "IV-CR",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Maria Rosaria Carfagna",
+    "data": "2024-10-30",
+    "da": "MISTO",
+    "a": "NM(N-C-U-I)M-CP"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Andrea De Bertoldi",
+    "data": "2025-02-05",
+    "da": "MISTO",
+    "a": "LEGA"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Davide Bellomo",
+    "data": "2025-03-21",
+    "da": "LEGA",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Emanuele Pozzolo",
+    "data": "2025-05-14",
+    "da": "FDI",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Naike Gruppioni",
+    "data": "2025-06-05",
+    "da": "IV-CR",
+    "a": "FDI"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Antonino Minardo",
+    "data": "2025-07-18",
+    "da": "MISTO",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Manlio Messina",
+    "data": "2025-07-31",
+    "da": "FDI",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Giuseppe Bicchielli",
+    "data": "2025-09-16",
+    "da": "NM(N-C-U-I)M-CP",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Attilio Pierro",
+    "data": "2025-12-30",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Davide Bergamini",
+    "data": "2026-01-07",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Attilio Pierro",
+    "data": "2026-01-20",
+    "da": "MISTO",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Davide Bergamini",
+    "data": "2026-01-20",
+    "da": "MISTO",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Edoardo Ziello",
+    "data": "2026-02-06",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Rossano Sasso",
+    "data": "2026-02-06",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Calogero Pisano",
+    "data": "2026-02-25",
+    "da": "NM(N-C-U-I)M-CP",
+    "a": "FDI"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Roberto Traversi",
+    "data": "2026-04-29",
+    "da": "M5S",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Maria Anna Madia",
+    "data": "2026-05-06",
+    "da": "PD-IDP",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Laura Ravetto",
+    "data": "2026-05-20",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Erik Umberto Pretto",
+    "data": "2026-06-04",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Attilio Pierro",
+    "data": "2026-06-08",
+    "da": "FI-PPE",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Davide Bergamini",
+    "data": "2026-06-08",
+    "da": "FI-PPE",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Domenico Furgiuele",
+    "data": "2026-06-08",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Gianangelo Bof",
+    "data": "2026-06-08",
+    "da": "LEGA",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Erik Umberto Pretto",
+    "data": "2026-07-06",
+    "da": "MISTO",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Bruno Tabacci",
+    "data": "2026-07-09",
+    "da": "PD-IDP",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Roberto Traversi",
+    "data": "2026-07-28",
+    "da": "MISTO",
+    "a": "FDI"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Tommaso Antonino Calderone",
+    "data": "2026-09-21",
+    "da": "FI-PPE",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Luca Sbardella",
+    "data": "2026-10-09",
+    "da": "FDI",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Simonetta Matone",
+    "data": "2026-10-26",
+    "da": "LEGA",
+    "a": "FI-PPE"
+   },
+   {
+    "chamber": "camera",
+    "nome": "Fabrizio Sala",
+    "data": "2026-10-28",
+    "da": "FI-PPE",
+    "a": "MISTO"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Enrico Borghi",
+    "data": "2023-04-26",
+    "da": "PD-IDP",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Dafne Musolino",
+    "data": "2023-10-05",
+    "da": "Aut (SVP-PATT, Cb)",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Carlo Calenda",
+    "data": "2023-11-09",
+    "da": "IV-CR",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Giusy Versace",
+    "data": "2023-11-09",
+    "da": "IV-CR",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Marco Lombardo",
+    "data": "2023-11-09",
+    "da": "IV-CR",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Mariastella Gelmini",
+    "data": "2023-11-09",
+    "da": "IV-CR",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Raffaele De Rosa",
+    "data": "2024-02-21",
+    "da": "M5S",
+    "a": "FI-BP-PPE"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Antonio Salvatore Trevisi",
+    "data": "2024-08-07",
+    "da": "M5S",
+    "a": "FI-BP-PPE"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Mariastella Gelmini",
+    "data": "2024-10-30",
+    "da": "Misto",
+    "a": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Giusy Versace",
+    "data": "2024-11-27",
+    "da": "Misto",
+    "a": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Aurora Floridia",
+    "data": "2025-02-19",
+    "da": "Misto",
+    "a": "Aut (SVP-PATT, Cb)"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Annamaria Furlan",
+    "data": "2025-03-07",
+    "da": "PD-IDP",
+    "a": "IV-CR"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Luigi Nave",
+    "data": "2026-10-08",
+    "da": "M5S",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Antonio Guidi",
+    "data": "2026-10-21",
+    "da": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "a": "Misto"
+   },
+   {
+    "chamber": "senato",
+    "nome": "Andrea Crisanti",
+    "data": "2026-10-22",
+    "da": "PD-IDP",
+    "a": "Misto"
+   }
+  ]
+ },
+ "risposta": "Al 2/11/2026, dall'inizio della XIX: alla Camera 40 deputati hanno cambiato gruppo, per 52 passaggi in tutto (fra cui i 9 deputati di Italia Viva usciti da Azione-IV il 20/11/2023 per formare IV-CR); al Senato 13 senatori, per 15 passaggi. L'elenco con date, gruppo di partenza e di arrivo è in «risultato».",
+ "stato": "calcolata",
+ "limiti": "Gruppo = gruppo parlamentare, con le componenti del Misto ricondotte al Misto: entrare in una componente del Misto restando nel Misto non conta. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio e componenti AVS e NM prima della costituzione dei gruppi). Conta come cambio anche la nascita di IV-CR alla Camera. Un ritorno al gruppo di prima conta come un nuovo cambio.",
+ "problemi_dati": [
+  {
+   "problema": "I gruppi del Senato hanno solo il nome di oggi, senza date: nel 2022-2023 Calenda, Gelmini, Versace e Lombardo risultano in «Italia Viva - Casa Riformista», che allora era il gruppo Azione-Italia Viva.",
+   "sql": "select p.family_name, m.start_date, m.end_date, g.name from membership m join grp g on g.uri=m.grp join person p on p.uri=m.person where g.uri='it:senato:19:group:91' and m.start_date<'2023-11-09' order by 1"
+  },
+  {
+   "problema": "Al Senato alcune appartenenze durano un giorno (18/10/2022-18/10/2022) e precedono quella vera dal 19/10: passaggi tecnici da escludere.",
+   "sql": "select count(*) from membership m join grp g on g.uri=m.grp where g.chamber='senato' and m.start_date=m.end_date"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

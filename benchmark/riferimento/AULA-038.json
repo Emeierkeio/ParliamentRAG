@@ -1,0 +1,77 @@
+{
+ "id": "AULA-038",
+ "domanda": "Durante le comunicazioni della presidente del Consiglio al Senato del 14 ottobre 2026, prima del Consiglio europeo, quali gruppi hanno applaudito e quali hanno protestato?",
+ "sql": [
+  "SELECT s.uri AS intervento, i.title AS argomento, r.kind, r.raw, r.from_raw, count(*) AS volte,\n       count(f.reaction) AS righe_reaction_from\nFROM speech s JOIN agenda_item i ON i.uri = s.item JOIN reaction r ON r.speech = s.uri\nLEFT JOIN reaction_from f ON f.reaction = r.uri\nWHERE i.sitting = 'it:senato:19:sed0466' AND s.speaker_label ILIKE 'MELONI,%'\nGROUP BY 1, 2, 3, 4, 5 ORDER BY 1, 6 DESC"
+ ],
+ "risultato": [
+  {
+   "intervento": "it:senato:19:sed0466:int00005",
+   "argomento": "Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione",
+   "kind": "applause",
+   "raw": "Applausi",
+   "from_raw": null,
+   "volte": 33,
+   "righe_reaction_from": 0
+  },
+  {
+   "intervento": "it:senato:19:sed0466:int00005",
+   "argomento": "Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione",
+   "kind": "comments",
+   "raw": "Commenti",
+   "from_raw": null,
+   "volte": 3,
+   "righe_reaction_from": 0
+  },
+  {
+   "intervento": "it:senato:19:sed0466:int00055",
+   "argomento": "Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri",
+   "kind": "applause",
+   "raw": "Applausi",
+   "from_raw": null,
+   "volte": 12,
+   "righe_reaction_from": 0
+  },
+  {
+   "intervento": "it:senato:19:sed0466:int00055",
+   "argomento": "Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri",
+   "kind": "comments",
+   "raw": "Commenti",
+   "from_raw": null,
+   "volte": 3,
+   "righe_reaction_from": 0
+  },
+  {
+   "intervento": "it:senato:19:sed0466:int00055",
+   "argomento": "Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri",
+   "kind": "comments",
+   "raw": "Commenti del senatore Turco",
+   "from_raw": "Turco",
+   "volte": 1,
+   "righe_reaction_from": 0
+  },
+  {
+   "intervento": "it:senato:19:sed0466:int00055",
+   "argomento": "Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri",
+   "kind": "comments",
+   "raw": "Vivaci commenti",
+   "from_raw": null,
+   "volte": 1,
+   "righe_reaction_from": 0
+  }
+ ],
+ "risposta": "Non si può dire quali gruppi hanno applaudito o protestato. Nella seduta 466 del Senato (14/10/2026) la presidente del Consiglio Meloni parla due volte: nelle comunicazioni (it:senato:19:sed0466:int00005) il resoconto in archivio registra 33 applausi e 3 commenti, nella replica (int00055) 12 applausi e 5 commenti (fra cui «Vivaci commenti» e «Commenti del senatore Turco»). Proteste non ne risultano. Tranne il commento del senatore Turco, nessuna reazione dice da chi viene.",
+ "stato": "non_calcolabile",
+ "limiti": "Le reazioni del Senato vengono dal resoconto AKN e hanno solo il tipo («Applausi», «Commenti»), senza chi reagisce: reaction.from_raw è vuoto e reaction_from non ha righe per il Senato. Il gruppo di chi applaude o protesta non si ricava. Si contano solo le reazioni dentro gli interventi di Meloni; quelle durante gli interventi dei senatori nella stessa discussione sono escluse.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato reaction_from è vuota (0 righe su 53.751 reazioni) e reaction.from_raw è valorizzato solo in 102 casi: chi reagisce manca quasi sempre, anche se il resoconto originale del Senato riporta di norma i gruppi («Applausi dal Gruppo FdI»).",
+   "sql": "SELECT count(*), count(from_raw), (SELECT count(*) FROM reaction_from WHERE reaction LIKE 'it:senato:%') FROM reaction WHERE uri LIKE 'it:senato:%'"
+  },
+  {
+   "problema": "speech.markup è vuoto per gli interventi del Senato: non si può ricontrollare l'XML originale.",
+   "sql": "SELECT count(*), count(markup) FROM speech WHERE uri LIKE 'it:senato:%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

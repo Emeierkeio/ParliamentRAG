@@ -1,0 +1,265 @@
+{
+  "id": "AULA-047",
+  "domanda": "Nel voto finale sulla legge elettorale alla Camera, quanti deputati erano in missione e quanti assenti?",
+  "sql": [
+    "SELECT v.uri, v.date, v.title, v.secret, v.favor, v.against, v.abstain, v.present, v.voting,\n       count(*) FILTER (WHERE b.result = 'voted') AS hanno_votato,\n       count(*) FILTER (WHERE b.result = 'mission') AS in_missione,\n       count(*) FILTER (WHERE b.result = 'absent') AS assenti,\n       count(*) FILTER (WHERE b.result = 'chair') AS presidente_di_turno,\n       count(*) AS schede, v.source_url\nFROM vote v JOIN ballot b ON b.vote = v.uri\nWHERE v.uri IN ('it:camera:19:sed0723:v001', 'it:camera:19:sed0691:v001')\nGROUP BY v.uri ORDER BY v.date DESC",
+    "SELECT b.vote, p.given_name || ' ' || p.family_name AS deputato, b.result, b.grp\nFROM ballot b JOIN person p ON p.uri = b.person\nWHERE b.vote IN ('it:camera:19:sed0723:v001', 'it:camera:19:sed0691:v001') AND b.result IN ('mission', 'absent')\nORDER BY b.vote DESC, b.result, p.family_name"
+  ],
+  "risultato": [
+    [
+      {
+        "uri": "it:camera:19:sed0723:v001",
+        "date": "2026-10-08",
+        "title": "Votazione finale PDL n. 2822-B",
+        "secret": true,
+        "favor": 227,
+        "against": 164,
+        "abstain": 0,
+        "present": 391,
+        "voting": 391,
+        "hanno_votato": 391,
+        "in_missione": 3,
+        "assenti": 4,
+        "presidente_di_turno": 0,
+        "schede": 398,
+        "source_url": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=723_1&tipo=dettaglio"
+      },
+      {
+        "uri": "it:camera:19:sed0691:v001",
+        "date": "2026-07-16",
+        "title": "Votazione finale ",
+        "secret": true,
+        "favor": 217,
+        "against": 152,
+        "abstain": 2,
+        "present": 371,
+        "voting": 369,
+        "hanno_votato": 369,
+        "in_missione": 14,
+        "assenti": 14,
+        "presidente_di_turno": 0,
+        "schede": 399,
+        "source_url": "http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=691_1&tipo=dettaglio"
+      }
+    ],
+    [
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Antonio Angelucci",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Susanna Cherchi",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4131"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Paolo Formentini",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Manfred Schullian",
+        "result": "absent",
+        "grp": "it:camera:19:group:cgm4137"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Giancarlo Giorgetti",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Giorgia Meloni",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "vote": "it:camera:19:sed0723:v001",
+        "deputato": "Federica Onori",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4212"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Antonio Angelucci",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Deborah Bergamini",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4134"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Raffaele Bruno",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4131"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Federico Cafiero De Raho",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4131"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Francesco Cannizzaro",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4134"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Virginio Caparvi",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Vanessa Cattoi",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Domenico Furgiuele",
+        "result": "absent",
+        "grp": "it:camera:19:group:cgm4271"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Igor Giancarlo Iezzi",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Riccardo Augusto Marchetti",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Manlio Messina",
+        "result": "absent",
+        "grp": "it:camera:19:group:cgm4111"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Giulia Pastorella",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4212"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Aboubakar Soumahoro",
+        "result": "absent",
+        "grp": "it:camera:19:group:cgm4111"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Valeria Carmela Maria Sudano",
+        "result": "absent",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Alberto Bagnai",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Valentina Barzotti",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4131"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Michela Vittoria Brambilla",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4234"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Giangiacomo Calovini",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Mirco Carloni",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Wanda Ferro",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Valentina Grippo",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4212"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Giorgia Meloni",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Antonino Minardo",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4134"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Jacopo Morrone",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Emanuele Prisco",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4133"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Edoardo Rixi",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4132"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Manfred Schullian",
+        "result": "mission",
+        "grp": "it:camera:19:group:cgm4137"
+      },
+      {
+        "vote": "it:camera:19:sed0691:v001",
+        "deputato": "Antonio Tajani",
+        "result": "mission",
+        "grp": "it:camera:19:group:gr4134"
+      }
+    ]
+  ],
+  "risposta": "Voto finale definitivo sulla legge elettorale alla Camera (PDL 2822-B, 8/10/2026, scrutinio segreto): 391 deputati hanno votato (227 sì, 164 no), 3 erano in missione (Giancarlo Giorgetti, Giorgia Meloni, Federica Onori) e 4 assenti (Antonio Angelucci, Susanna Cherchi, Paolo Formentini, Manfred Schullian). In prima lettura (16/7/2026, sed. 691, anch'esso segreto) i votanti erano 369 (217 sì, 152 no) più 2 astenuti, con 14 deputati in missione e 14 assenti.",
+  "stato": "calcolata",
+  "limiti": "Si prende come «voto finale» quello definitivo dell'8/10/2026 sul testo tornato dal Senato (2822-B); si riporta anche la prima lettura del 16/7/2026. Il voto è segreto: le schede dicono chi ha partecipato, non come ha votato. Il Presidente della Camera non ha scheda.",
+  "problemi_dati": [
+    "Il voto finale della prima lettura (it:camera:19:sed0691:v001, 16/7/2026) non ha righe in vote_act e il titolo è solo «Votazione finale »: non si lega alla PDL 2822. Query: SELECT v.title, x.act_ref FROM vote v LEFT JOIN vote_act x ON x.vote = v.uri WHERE v.uri = 'it:camera:19:sed0691:v001';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

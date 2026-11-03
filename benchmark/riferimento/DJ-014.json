@@ -1,0 +1,552 @@
+{
+ "id": "DJ-014",
+ "domanda": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+ "sql": [
+  "WITH m AS (\n  SELECT s.chamber, date_trunc('month', s.date)::date AS mese,\n         regexp_count(sp.text, '\\mgaza\\M', 1, 'i') AS n\n  FROM speech sp JOIN agenda_item ai ON ai.uri = sp.item JOIN sitting s ON s.uri = ai.sitting\n  WHERE s.kind = 'assembly_verbatim' AND sp.text ~* '\\mgaza\\M'\n)\nSELECT to_char(g.mese,'YYYY-MM') AS mese,\n       coalesce(sum(m.n) FILTER (WHERE m.chamber='camera'),0) AS camera,\n       coalesce(sum(m.n) FILTER (WHERE m.chamber='senato'),0) AS senato,\n       coalesce(sum(m.n),0) AS totale\nFROM generate_series('2022-10-01'::date, '2026-10-01'::date, interval '1 month') AS g(mese)\nLEFT JOIN m ON m.mese = g.mese\nGROUP BY g.mese ORDER BY g.mese",
+  "WITH aula AS (\n  SELECT s.chamber, sp.as_group, sp.as_office, sp.text\n  FROM speech sp JOIN agenda_item ai ON ai.uri = sp.item JOIN sitting s ON s.uri = ai.sitting\n  WHERE s.kind = 'assembly_verbatim'\n), etichette AS (\n  SELECT DISTINCT chamber, as_group FROM aula\n  WHERE as_group IS NOT NULL\n    AND as_group !~ '^ore [0-9]' AND as_group !~* '(applaus|protest|comment|in piedi|silenzio|Agevolazioni)'\n)\nSELECT e.chamber, e.as_group AS gruppo,\n       coalesce(sum(regexp_count(a.text, '\\mgaza\\M', 1, 'i')),0) AS occorrenze,\n       count(a.text) FILTER (WHERE a.text ~* '\\mgaza\\M') AS interventi\nFROM etichette e LEFT JOIN aula a ON a.chamber = e.chamber AND a.as_group = e.as_group\nGROUP BY 1,2\nUNION ALL\nSELECT chamber, 'senza gruppo: ' || CASE WHEN as_office = 'PRESIDENTE' THEN 'Presidenza' ELSE 'governo, relatori e altri' END,\n       sum(regexp_count(text, '\\mgaza\\M', 1, 'i')), count(*) FILTER (WHERE text ~* '\\mgaza\\M')\nFROM aula WHERE as_group IS NULL GROUP BY 1,2\nORDER BY 1, 3 DESC"
+ ],
+ "risultato": {
+  "q1": [
+   {
+    "mese": "2022-10",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2022-11",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2022-12",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-01",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-02",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-03",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-04",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-05",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-06",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-07",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-08",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-09",
+    "camera": 0,
+    "senato": 0,
+    "totale": 0
+   },
+   {
+    "mese": "2023-10",
+    "camera": 101,
+    "senato": 43,
+    "totale": 144
+   },
+   {
+    "mese": "2023-11",
+    "camera": 51,
+    "senato": 2,
+    "totale": 53
+   },
+   {
+    "mese": "2023-12",
+    "camera": 107,
+    "senato": 14,
+    "totale": 121
+   },
+   {
+    "mese": "2024-01",
+    "camera": 90,
+    "senato": 11,
+    "totale": 101
+   },
+   {
+    "mese": "2024-02",
+    "camera": 78,
+    "senato": 3,
+    "totale": 81
+   },
+   {
+    "mese": "2024-03",
+    "camera": 163,
+    "senato": 56,
+    "totale": 219
+   },
+   {
+    "mese": "2024-04",
+    "camera": 17,
+    "senato": 0,
+    "totale": 17
+   },
+   {
+    "mese": "2024-05",
+    "camera": 63,
+    "senato": 0,
+    "totale": 63
+   },
+   {
+    "mese": "2024-06",
+    "camera": 40,
+    "senato": 9,
+    "totale": 49
+   },
+   {
+    "mese": "2024-07",
+    "camera": 62,
+    "senato": 3,
+    "totale": 65
+   },
+   {
+    "mese": "2024-08",
+    "camera": 3,
+    "senato": 0,
+    "totale": 3
+   },
+   {
+    "mese": "2024-09",
+    "camera": 17,
+    "senato": 24,
+    "totale": 41
+   },
+   {
+    "mese": "2024-10",
+    "camera": 72,
+    "senato": 40,
+    "totale": 112
+   },
+   {
+    "mese": "2024-11",
+    "camera": 24,
+    "senato": 0,
+    "totale": 24
+   },
+   {
+    "mese": "2024-12",
+    "camera": 46,
+    "senato": 5,
+    "totale": 51
+   },
+   {
+    "mese": "2025-01",
+    "camera": 91,
+    "senato": 11,
+    "totale": 102
+   },
+   {
+    "mese": "2025-02",
+    "camera": 32,
+    "senato": 36,
+    "totale": 68
+   },
+   {
+    "mese": "2025-03",
+    "camera": 50,
+    "senato": 9,
+    "totale": 59
+   },
+   {
+    "mese": "2025-04",
+    "camera": 57,
+    "senato": 0,
+    "totale": 57
+   },
+   {
+    "mese": "2025-05",
+    "camera": 299,
+    "senato": 133,
+    "totale": 432
+   },
+   {
+    "mese": "2025-06",
+    "camera": 114,
+    "senato": 56,
+    "totale": 170
+   },
+   {
+    "mese": "2025-07",
+    "camera": 182,
+    "senato": 21,
+    "totale": 203
+   },
+   {
+    "mese": "2025-08",
+    "camera": 22,
+    "senato": 0,
+    "totale": 22
+   },
+   {
+    "mese": "2025-09",
+    "camera": 188,
+    "senato": 134,
+    "totale": 322
+   },
+   {
+    "mese": "2025-10",
+    "camera": 255,
+    "senato": 190,
+    "totale": 445
+   },
+   {
+    "mese": "2025-11",
+    "camera": 15,
+    "senato": 2,
+    "totale": 17
+   },
+   {
+    "mese": "2025-12",
+    "camera": 40,
+    "senato": 19,
+    "totale": 59
+   },
+   {
+    "mese": "2026-01",
+    "camera": 65,
+    "senato": 18,
+    "totale": 83
+   },
+   {
+    "mese": "2026-02",
+    "camera": 133,
+    "senato": 1,
+    "totale": 134
+   },
+   {
+    "mese": "2026-03",
+    "camera": 32,
+    "senato": 22,
+    "totale": 54
+   },
+   {
+    "mese": "2026-04",
+    "camera": 50,
+    "senato": 23,
+    "totale": 73
+   },
+   {
+    "mese": "2026-05",
+    "camera": 38,
+    "senato": 0,
+    "totale": 38
+   },
+   {
+    "mese": "2026-06",
+    "camera": 41,
+    "senato": 9,
+    "totale": 50
+   },
+   {
+    "mese": "2026-07",
+    "camera": 25,
+    "senato": 15,
+    "totale": 40
+   },
+   {
+    "mese": "2026-08",
+    "camera": 2,
+    "senato": 0,
+    "totale": 2
+   },
+   {
+    "mese": "2026-09",
+    "camera": 13,
+    "senato": 3,
+    "totale": 16
+   },
+   {
+    "mese": "2026-10",
+    "camera": 37,
+    "senato": 10,
+    "totale": 47
+   }
+  ],
+  "q2": [
+   {
+    "chamber": "camera",
+    "gruppo": "PD-IDP",
+    "occorrenze": 572,
+    "interventi": 230
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "M5S",
+    "occorrenze": 572,
+    "interventi": 252
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "AVS",
+    "occorrenze": 476,
+    "interventi": 221
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "senza gruppo: governo, relatori e altri",
+    "occorrenze": 396,
+    "interventi": 116
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "FI-PPE",
+    "occorrenze": 164,
+    "interventi": 58
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "FDI",
+    "occorrenze": 135,
+    "interventi": 59
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "AZ-PER-RE",
+    "occorrenze": 75,
+    "interventi": 35
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "IV-C-RE",
+    "occorrenze": 68,
+    "interventi": 25
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "LEGA",
+    "occorrenze": 59,
+    "interventi": 32
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "NM(N-C-U-I)M-CP",
+    "occorrenze": 57,
+    "interventi": 20
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "NM(N-C-U-I)-M",
+    "occorrenze": 36,
+    "interventi": 18
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO",
+    "occorrenze": 31,
+    "interventi": 11
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "senza gruppo: Presidenza",
+    "occorrenze": 30,
+    "interventi": 30
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-+EUROPA",
+    "occorrenze": 29,
+    "interventi": 13
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-MIN.LING.",
+    "occorrenze": 8,
+    "interventi": 5
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "A-IV-RE",
+    "occorrenze": 4,
+    "interventi": 2
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "IV-CR",
+    "occorrenze": 2,
+    "interventi": 1
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-+EU-SUEU",
+    "occorrenze": 1,
+    "interventi": 1
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "M-NM(N-C-U-I)-M",
+    "occorrenze": 0,
+    "interventi": 0
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-FNV-F",
+    "occorrenze": 0,
+    "interventi": 0
+   },
+   {
+    "chamber": "camera",
+    "gruppo": "MISTO-AVS",
+    "occorrenze": 0,
+    "interventi": 0
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "M5S",
+    "occorrenze": 169,
+    "interventi": 92
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "senza gruppo: governo, relatori e altri",
+    "occorrenze": 150,
+    "interventi": 43
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "FdI",
+    "occorrenze": 111,
+    "interventi": 53
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "PD-IDP",
+    "occorrenze": 107,
+    "interventi": 64
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Misto-AVS",
+    "occorrenze": 77,
+    "interventi": 44
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "senza gruppo: Presidenza",
+    "occorrenze": 74,
+    "interventi": 32
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "FI-BP-PPE",
+    "occorrenze": 66,
+    "interventi": 38
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "LSP-PSd'Az",
+    "occorrenze": 40,
+    "interventi": 24
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "IV-C-RE",
+    "occorrenze": 39,
+    "interventi": 25
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+    "occorrenze": 34,
+    "interventi": 17
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Aut (SVP-PATT, Cb)",
+    "occorrenze": 22,
+    "interventi": 9
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Misto-Az-RE",
+    "occorrenze": 14,
+    "interventi": 10
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Az-IV-RE",
+    "occorrenze": 7,
+    "interventi": 4
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Cd'I-NM (UDC-CI-NcI-IaC)-MAIE",
+    "occorrenze": 5,
+    "interventi": 4
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Misto",
+    "occorrenze": 4,
+    "interventi": 1
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Aut (SVP-Patt, Cb, SCN)",
+    "occorrenze": 3,
+    "interventi": 2
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "IV-CR",
+    "occorrenze": 0,
+    "interventi": 0
+   },
+   {
+    "chamber": "senato",
+    "gruppo": "Aut (SVP-Patt, Cb)",
+    "occorrenze": 0,
+    "interventi": 0
+   }
+  ]
+ },
+ "risposta": "Nei resoconti stenografici d'Aula della XIX la parola «Gaza» ricorre 3.637 volte: 2.715 alla Camera e 922 al Senato. Nessuna occorrenza da ottobre 2022 a settembre 2023; la prima è di ottobre 2023 (144). I mesi con più occorrenze sono ottobre 2025 (445: Camera 255, Senato 190), maggio 2025 (432) e settembre 2025 (322). Per gruppo, Camera: M5S 572, PD-IDP 572, AVS 476, FI-PPE 164, FdI 135, Noi Moderati 93, Azione 75, IV 70 (IV-C-RE 68 + IV-CR 2), Misto senza componente 31, Misto-+Europa 30, Misto-Minoranze linguistiche 8, A-IV-RE 4, Misto-FNV-Free 0; governo e relatori 396, Presidenza 30. Senato: M5S 169, FdI 111, PD-IDP 107, Misto-AVS 77, FI-BP-PPE 66, Lega 40, IV 39, Civici d'Italia-NM 39 (con la denominazione precedente), Per le Autonomie 25, Misto-Azione 14, Az-IV-RE 7, Misto 4; governo e relatori 149, Presidenza 74.",
+ "stato": "calcolata",
+ "limiti": "Conta le occorrenze della parola intera «Gaza» (maiuscole e minuscole indifferenti) negli interventi d'Aula (sitting.kind = assembly_verbatim), dall'inizio della XIX al 30/10/2026 (Camera) e al 28/10/2026 (Senato). Il gruppo è l'etichetta del resoconto (speech.as_group), quindi i gruppi rinominati compaiono con più etichette; una occorrenza al Senato sta in un intervento con etichetta di gruppo non valida ed è esclusa dalla tabella per gruppo (921 su 922). Le righe «senza gruppo» sono Presidenza, membri del governo e relatori.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato speech.as_group contiene didascalie e orari invece del gruppo (es. «ore 10,05», «Il Presidente e l'Assemblea si levano in piedi»).",
+   "sql": "SELECT sp.as_group, count(*) FROM speech sp JOIN agenda_item ai ON ai.uri=sp.item JOIN sitting s ON s.uri=ai.sitting WHERE s.chamber='senato' AND s.kind='assembly_verbatim' AND (sp.as_group ~ '^ore [0-9]' OR sp.as_group ~* '(applaus|protest|comment|in piedi|silenzio)') GROUP BY 1 ORDER BY 2 DESC"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act, office e dei gruppi negli interventi)"
+}

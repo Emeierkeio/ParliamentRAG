@@ -1,0 +1,44 @@
+{
+ "id": "DOC-003",
+ "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+ "categoria": "voti",
+ "ramo": "entrambi",
+ "tipo_risposta": "elenco",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Es. femminicidio alla Camera (237 sì, 0 no). Dire che è unanimità dei presenti.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Un esempio adatto è la [legge n. 41 del 25 marzo 2025](https://www.normattiva.it/eli/id/2025/04/03/25G00048/ORIGINAL), sui **Nuovi giochi della gioventù** e la promozione dello sport nelle scuole.\n\nIl testo era stato già approvato all’unanimità dal Senato. Alla Camera, il 12 febbraio 2025, il voto finale sulla proposta [A.C. 1424](#/strumenti/atto/camera-1424?u=https%3A%2F%2Fwww.camera.it%2Fleg19%2F126%3Ftab%3D1%26leg%3D19%26idDocumento%3D1424) è stato: **260 favorevoli, 0 contrari, 1 astenuto**. Quindi non votarono letteralmente “tutti”, perché molti deputati erano assenti, ma nessuno dei presenti votò contro.\n\nÈ un buon caso per spiegare in classe che una legge deve essere approvata nello stesso testo da Camera e Senato, e che un consenso molto ampio può unire maggioranza e opposizioni.",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 6,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "search_parliament",
+  "search_parliament",
+  "list_sessions",
+  "get_session_votes",
+  "get_debate",
+  "get_vote_details"
+ ],
+ "errori": [],
+ "tempo_s": 42.7,
+ "riferimento": {
+  "risposta": "Un esempio è la legge 181/2025 sul delitto di femminicidio (S. 1433, C. 2528): il Senato l'ha approvata il 23/7/2025 con 161 sì, 0 no e 0 astenuti, la Camera in via definitiva il 25/11/2025 con 237 sì, 0 no e 0 astenuti. È l'unanimità dei votanti, non di tutti i parlamentari: alla Camera 89 deputati risultano assenti e 72 in missione. Altri esempi alla Camera, senza voti contrari né astenuti: la legge costituzionale 1/2023 che modifica l'art. 33 della Costituzione sullo sport (20/9/2023, 312 sì), la legge 158/2023 che istituisce il Museo della Shoah a Roma (18/10/2023, 283 sì) e molte ratifiche di accordi internazionali. In tutta la legislatura sono 110 su 522 i voti finali palesi della Camera senza contrari né astenuti, e 61 su 264 al Senato.",
+  "stato": "calcolata",
+  "limiti": "«Approvata da tutti» letto come voto finale palese senza contrari né astenuti (unanimità dei votanti). La lista della Camera (prime 15 per numero di sì) prende i voti legati a un atto della Camera con numero di legge: 77 dei 110 voti finali palesi senza contrari né astenuti; gli altri non hanno atto in vote_act o l'atto non ha numero di legge."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 42.7
+ },
+ "causa_probabile": null,
+ "note": "Esempio plausibile e spiegato bene (unanimità dei presenti), ma la legge 41/2025 ha 1 astenuto alla Camera (260-0-1): non è «approvata da tutti». Il riferimento propone la legge 181/2025 sul femminicidio (Senato 161-0-0, Camera 237-0-0)."
+}

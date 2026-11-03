@@ -1,0 +1,75 @@
+{
+ "id": "AULA-030",
+ "domanda": "Quando è stata votata l'ultima nota di variazione al bilancio alla Camera?",
+ "sql": [
+  "SELECT v.uri, v.date, v.kind, v.title, v.description, v.favor, v.against, v.abstain, v.approved,\n       va.act_ref, a.uri AS atto_camera, left(a.title, 160) AS titolo_atto\nFROM vote v\nLEFT JOIN vote_act va ON va.vote = v.uri\nLEFT JOIN act a ON a.uri = va.act AND a.chamber = 'camera'\nWHERE v.chamber = 'camera'\n  AND (v.kind = 'budget_note' OR v.title ILIKE '%nota di variazion%' OR v.description ILIKE '%nota di variazion%'\n       OR v.description ILIKE '%NOTA VAR%')\nORDER BY v.date DESC"
+ ],
+ "risultato": [
+  {
+   "uri": "it:camera:19:sed0590:v001",
+   "date": "2025-12-30",
+   "kind": "final",
+   "title": "Votazione finale DDL n. 2750",
+   "description": "Bilancio di previsione dello Stato per l&amp;#39;anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028 e relativa Nota di variazioni (Approvato dal Senato) (DDL 2750)",
+   "favor": 216,
+   "against": 126,
+   "abstain": 3,
+   "approved": true,
+   "act_ref": "ac19_2750",
+   "atto_camera": "it:camera:19:ac:2750",
+   "titolo_atto": "S. 1689. - \"Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028\" <em>(approvato dal Senato)</em> (27"
+  },
+  {
+   "uri": "it:camera:19:sed0402:v173",
+   "date": "2024-12-20",
+   "kind": "budget_note",
+   "title": "Votazione nota di variazione DDL n. 2112-bis",
+   "description": "Nota di variazioni al bilancio di previsione dello Stato per l&amp;#39;anno finanziario 2025 e bilancio pluriennale per il triennio 2025-2027",
+   "favor": 188,
+   "against": 100,
+   "abstain": 4,
+   "approved": true,
+   "act_ref": "ac19_2112-bis",
+   "atto_camera": "it:camera:19:ac:2112-bis",
+   "titolo_atto": "\"Bilancio di previsione dello Stato per l’anno finanziario 2025 e bilancio pluriennale per il triennio 2025-2027\" (<em>Testo risultante dallo stralcio, disposto"
+  },
+  {
+   "uri": "it:camera:19:sed0220:v165",
+   "date": "2023-12-29",
+   "kind": "final",
+   "title": "Votazione finale DDL n. 1627",
+   "description": "Bilancio di previsione dello Stato per l&amp;#39;anno finanziario 2024 e bilancio pluriennale per il triennio 2024-2026\" e relativa Nota di variazioni (Approvato dal Senato) (DDL 1627)",
+   "favor": 200,
+   "against": 112,
+   "abstain": 3,
+   "approved": true,
+   "act_ref": "ac19_1627",
+   "atto_camera": "it:camera:19:ac:1627",
+   "titolo_atto": "S. 926. - \"Bilancio di previsione dello Stato per l’anno finanziario 2024 e bilancio pluriennale per il triennio 2024-2026\" <em>(approvato dal Senato)</em> (162"
+  },
+  {
+   "uri": "it:camera:19:sed0027:v117",
+   "date": "2022-12-24",
+   "kind": "budget_note",
+   "title": "Votazione nota di variazione DDL n. 0643-bis",
+   "description": "Nota di variazioni al bilancio di previsione dello Stato per l&amp;#39;anno 2023 e bilancio pluriennale per il triennio 2023-2025",
+   "favor": 184,
+   "against": 122,
+   "abstain": 2,
+   "approved": true,
+   "act_ref": "ac19_643-bis",
+   "atto_camera": "it:camera:19:ac:643-bis",
+   "titolo_atto": "\"Bilancio di previsione dello Stato per l’anno finanziario 2023 e bilancio pluriennale per il triennio 2023-2025\" <em>(Testo risultante dallo stralcio, disposto"
+  }
+ ],
+ "risposta": "L'ultima votazione specifica su una nota di variazioni al bilancio alla Camera è del 20/12/2024: nota di variazioni al bilancio di previsione 2025 e pluriennale 2025-2027 (DDL 2112-bis), approvata con 188 sì, 100 no e 4 astenuti. L'altra nella XIX è del 24/12/2022 (DDL 643-bis, 184 sì, 122 no). Dopo, il 30/12/2025, la Camera ha approvato in seconda lettura il bilancio 2026-2028 «e relativa Nota di variazioni» (DDL 2750, già approvato dal Senato) con un unico voto finale: 216 sì, 126 no, 3 astenuti, senza voto separato sulla nota.",
+ "stato": "calcolata",
+ "limiti": "Si distingue il voto separato sulla nota (kind budget_note, quando la Camera è prima lettura) dal voto finale sul bilancio che la comprende (quando la Camera è seconda lettura).",
+ "problemi_dati": [
+  {
+   "problema": "Testi dei voti della Camera con entità HTML doppiamente codificate («l&amp;#39;anno» invece di «l'anno») in 1.604 voti.",
+   "sql": "SELECT count(*) FROM vote WHERE description LIKE '%&amp;#39;%' OR title LIKE '%&amp;#39;%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

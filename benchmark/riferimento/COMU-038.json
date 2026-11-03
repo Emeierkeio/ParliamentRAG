@@ -1,0 +1,227 @@
+{
+ "id": "COMU-038",
+ "domanda": "Mi fai un confronto tra quanto parla in Aula la maggioranza e quanto l'opposizione, per mese, nel 2026? Per una infografica.",
+ "sql": [
+  "WITH sp AS (\n  SELECT s.chamber, to_char(s.date,'YYYY-MM') AS mese, sp.as_group,\n         coalesce(array_length(regexp_split_to_array(btrim(sp.text), '\\s+'),1),0) AS parole\n  FROM speech sp\n  JOIN agenda_item ai ON ai.uri = sp.item\n  JOIN sitting s ON s.uri = ai.sitting\n  WHERE s.kind = 'assembly_verbatim' AND s.date >= '2026-01-01' AND s.date < '2027-01-01'\n    AND sp.as_group IS NOT NULL AND coalesce(sp.as_office,'') <> 'PRESIDENTE'\n), c AS (\n  SELECT *, CASE\n    WHEN as_group IN ('FDI','FdI','LEGA','LSP-PSd''Az','FI-PPE','FI-BP-PPE','NM(N-C-U-I)M-CP','NM(N-C-U-I)-M','M-NM(N-C-U-I)-M','NM(N-C-U-I)M','NM(N-C-U-I)-M-CP','Cd''I-UDC-NM (NcI, CI, IaC)-MAIE-CP') THEN 'maggioranza'\n    WHEN as_group IN ('M5S','PD-IDP','AVS','Misto-AVS','AZ-PER-RE','Misto-Az-RE','IV-CR','IV-C-RE','MISTO-+EUROPA','MISTO-+EU-SUEU') THEN 'opposizione'\n    WHEN as_group IN ('MISTO','Misto','MISTO-MIN.LING.','MISTO-FNV-F','Aut (SVP-PATT, Cb)') THEN 'non_classificati'\n    ELSE 'etichetta_non_valida' END AS schieramento\n  FROM sp\n)\nSELECT chamber, mese,\n  count(*) FILTER (WHERE schieramento='maggioranza') AS interventi_magg,\n  count(*) FILTER (WHERE schieramento='opposizione') AS interventi_opp,\n  count(*) FILTER (WHERE schieramento='non_classificati') AS interventi_altri,\n  sum(parole) FILTER (WHERE schieramento='maggioranza') AS parole_magg,\n  sum(parole) FILTER (WHERE schieramento='opposizione') AS parole_opp,\n  sum(parole) FILTER (WHERE schieramento='non_classificati') AS parole_altri\nFROM c WHERE schieramento <> 'etichetta_non_valida'\nGROUP BY chamber, mese ORDER BY chamber, mese"
+ ],
+ "risultato": [
+  {
+   "chamber": "camera",
+   "mese": "2026-01",
+   "interventi_magg": 203,
+   "interventi_opp": 578,
+   "interventi_altri": 20,
+   "parole_magg": 104129,
+   "parole_opp": 241568,
+   "parole_altri": 3997
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-02",
+   "interventi_magg": 248,
+   "interventi_opp": 645,
+   "interventi_altri": 23,
+   "parole_magg": 107124,
+   "parole_opp": 291407,
+   "parole_altri": 8358
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-03",
+   "interventi_magg": 238,
+   "interventi_opp": 480,
+   "interventi_altri": 40,
+   "parole_magg": 100973,
+   "parole_opp": 214920,
+   "parole_altri": 8427
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-04",
+   "interventi_magg": 251,
+   "interventi_opp": 1212,
+   "interventi_altri": 38,
+   "parole_magg": 112976,
+   "parole_opp": 481911,
+   "parole_altri": 14001
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-05",
+   "interventi_magg": 197,
+   "interventi_opp": 533,
+   "interventi_altri": 9,
+   "parole_magg": 111119,
+   "parole_opp": 275047,
+   "parole_altri": 2868
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-06",
+   "interventi_magg": 187,
+   "interventi_opp": 684,
+   "interventi_altri": 130,
+   "parole_magg": 103822,
+   "parole_opp": 316587,
+   "parole_altri": 33157
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-07",
+   "interventi_magg": 268,
+   "interventi_opp": 1097,
+   "interventi_altri": 154,
+   "parole_magg": 108117,
+   "parole_opp": 363376,
+   "parole_altri": 31022
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-08",
+   "interventi_magg": 217,
+   "interventi_opp": 394,
+   "interventi_altri": 70,
+   "parole_magg": 74472,
+   "parole_opp": 162427,
+   "parole_altri": 14410
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-09",
+   "interventi_magg": 129,
+   "interventi_opp": 334,
+   "interventi_altri": 65,
+   "parole_magg": 68504,
+   "parole_opp": 174674,
+   "parole_altri": 23730
+  },
+  {
+   "chamber": "camera",
+   "mese": "2026-10",
+   "interventi_magg": 235,
+   "interventi_opp": 800,
+   "interventi_altri": 86,
+   "parole_magg": 128831,
+   "parole_opp": 370214,
+   "parole_altri": 31156
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-01",
+   "interventi_magg": 246,
+   "interventi_opp": 337,
+   "interventi_altri": 18,
+   "parole_magg": 77860,
+   "parole_opp": 107359,
+   "parole_altri": 7390
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-02",
+   "interventi_magg": 125,
+   "interventi_opp": 210,
+   "interventi_altri": 11,
+   "parole_magg": 41759,
+   "parole_opp": 70271,
+   "parole_altri": 3256
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-03",
+   "interventi_magg": 243,
+   "interventi_opp": 386,
+   "interventi_altri": 14,
+   "parole_magg": 80222,
+   "parole_opp": 115715,
+   "parole_altri": 3477
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-04",
+   "interventi_magg": 287,
+   "interventi_opp": 1063,
+   "interventi_altri": 16,
+   "parole_magg": 99521,
+   "parole_opp": 209692,
+   "parole_altri": 5330
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-05",
+   "interventi_magg": 77,
+   "interventi_opp": 125,
+   "interventi_altri": 6,
+   "parole_magg": 27215,
+   "parole_opp": 49543,
+   "parole_altri": 2775
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-06",
+   "interventi_magg": 220,
+   "interventi_opp": 705,
+   "interventi_altri": 45,
+   "parole_magg": 80176,
+   "parole_opp": 168462,
+   "parole_altri": 9801
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-07",
+   "interventi_magg": 223,
+   "interventi_opp": 458,
+   "interventi_altri": 13,
+   "parole_magg": 85738,
+   "parole_opp": 154447,
+   "parole_altri": 3959
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-08",
+   "interventi_magg": 62,
+   "interventi_opp": 109,
+   "interventi_altri": 1,
+   "parole_magg": 31085,
+   "parole_opp": 49032,
+   "parole_altri": 769
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-09",
+   "interventi_magg": 190,
+   "interventi_opp": 782,
+   "interventi_altri": 34,
+   "parole_magg": 57721,
+   "parole_opp": 221189,
+   "parole_altri": 5406
+  },
+  {
+   "chamber": "senato",
+   "mese": "2026-10",
+   "interventi_magg": 203,
+   "interventi_opp": 472,
+   "interventi_altri": 13,
+   "parole_magg": 71556,
+   "parole_opp": 117449,
+   "parole_altri": 5302
+  }
+ ],
+ "risposta": "Interventi in Aula nel 2026 (1/1–30/10 Camera, 1/1–28/10 Senato), esclusa la Presidenza e i membri del governo. Camera: maggioranza 2.173 interventi e 1.020.067 parole (25,0% delle parole), opposizione 6.757 interventi e 2.892.131 parole (70,8%), non classificati (Misto senza componente, Minoranze linguistiche, FNV-Free) 635 interventi. Senato: maggioranza 1.876 interventi e 652.853 parole (33,2%), opposizione 4.647 interventi e 1.263.159 parole (64,3%), non classificati (Misto, Per le Autonomie) 171. In ogni mese e in entrambi i rami l'opposizione parla più della maggioranza; il divario maggiore è ad aprile 2026 (Camera 1.212 contro 251 interventi; Senato 1.063 contro 287). I valori mese per mese sono nel risultato.",
+ "stato": "parziale",
+ "limiti": "Regola dichiarata (non è un dato del DB): maggioranza = FdI, Lega, FI, Noi Moderati (Camera) e Civici d'Italia-UDC-NM-MAIE-CP (Senato); opposizione = PD, M5S, AVS (anche Misto-AVS al Senato), Azione (anche Misto-Az-RE), IV, +Europa; non classificati = Misto senza componente, Minoranze linguistiche, Futuro Nazionale Vannacci-Free, Per le Autonomie. Il gruppo è l'etichetta del resoconto (speech.as_group). Esclusi: Presidente di turno, ministri e sottosegretari, relatori senza etichetta di gruppo (alla Camera hanno as_group vuoto), e le etichette non valide. Parole = token separati da spazi nel testo dell'intervento. Ottobre è parziale (dati fino al 30/10 Camera e 28/10 Senato). Dopo la correzione della sigla di Noi Moderati (2/11/2026) le parole della maggioranza alla Camera passano da 1.020.371 a 1.020.067: i 304 in meno sono il pezzo «M-CP).» che prima finiva in testa agli interventi.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato speech.as_group contiene didascalie e orari invece del gruppo (es. «Il Presidente e l'Assemblea si levano in piedi», «ore 10,05», «Reiterate proteste»).",
+   "sql": "SELECT sp.as_group, count(*) FROM speech sp JOIN agenda_item ai ON ai.uri=sp.item JOIN sitting s ON s.uri=ai.sitting WHERE s.chamber='senato' AND s.kind='assembly_verbatim' AND sp.as_group ~ '^(ore|Viv|Il Pres|Reit|Prol)' GROUP BY 1 ORDER BY 2 DESC"
+  },
+  {
+   "problema": "L'etichetta di gruppo di Noi Moderati alla Camera è troncata: «NM(N-C-U-I» (1.627 interventi). Le coppie IV-C-RE/IV-CR e MISTO-+EUROPA/MISTO-+EU-SUEU sono invece cambi di nome consecutivi (giugno e luglio 2026), non errori.",
+   "sql": "SELECT s.chamber, sp.as_group, min(s.date), max(s.date), count(*) FROM speech sp JOIN agenda_item ai ON ai.uri=sp.item JOIN sitting s ON s.uri=ai.sitting WHERE s.kind='assembly_verbatim' AND sp.as_group IN ('IV-C-RE','IV-CR','MISTO-+EUROPA','MISTO-+EU-SUEU','NM(N-C-U-I') GROUP BY 1,2"
+  },
+  {
+   "problema": "Al Senato as_office è sempre valorizzato, anche per i senatori che parlano a titolo di gruppo («senatore»), mentre alla Camera è NULL: il campo ha semantica diversa fra i rami.",
+   "sql": "SELECT s.chamber, sp.as_office IS NULL vuoto, count(*) FROM speech sp JOIN agenda_item ai ON ai.uri=sp.item JOIN sitting s ON s.uri=ai.sitting WHERE s.kind='assembly_verbatim' AND sp.as_group IS NOT NULL GROUP BY 1,2"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act, office e dei gruppi negli interventi)"
+}

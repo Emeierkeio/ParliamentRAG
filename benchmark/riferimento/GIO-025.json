@@ -1,0 +1,235 @@
+{
+ "id": "GIO-025",
+ "domanda": "Quanto è compatta la Lega nei voti rispetto agli altri gruppi? Indice di coesione per gruppo.",
+ "sql": [
+  "WITH c AS (\n  SELECT v.chamber, b.vote, coalesce(a.grp, b.grp) AS g,\n         count(*) FILTER (WHERE b.result = 'favor') AS y,\n         count(*) FILTER (WHERE b.result = 'against') AS n,\n         count(*) FILTER (WHERE b.result = 'abstain') AS a\n  FROM ballot b JOIN vote v ON v.uri = b.vote LEFT JOIN grp_alias a ON a.alias = b.grp\n  WHERE v.legislature = 19 AND NOT v.secret AND b.result IN ('favor','against','abstain')\n  GROUP BY 1, 2, 3\n), ai AS (\n  SELECT chamber, g, y + n + a AS tot,\n         (greatest(y, n, a) - 0.5 * (y + n + a - greatest(y, n, a))) / (y + n + a)::numeric AS ai\n  FROM c WHERE y + n + a >= 2\n)\nSELECT ai.chamber AS ramo, coalesce(gr.short_name, ai.g) AS gruppo, gr.kind, count(*) AS votazioni,\n       round(avg(ai.ai), 4) AS indice_accordo_medio,\n       round(100.0 * avg((ai.ai = 1)::int), 1) AS pct_votazioni_unanimi\nFROM ai LEFT JOIN grp gr ON gr.uri = ai.g\nGROUP BY 1, 2, 3 ORDER BY 1, 5 DESC"
+ ],
+ "risultato": [
+  {
+   "ramo": "camera",
+   "gruppo": "M-NM(N-C-U-I)-M",
+   "kind": "misto_component",
+   "votazioni": 1,
+   "indice_accordo_medio": 1.0,
+   "pct_votazioni_unanimi": 100.0
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO-AVS",
+   "kind": "misto_component",
+   "votazioni": 1,
+   "indice_accordo_medio": 1.0,
+   "pct_votazioni_unanimi": 100.0
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "FDI",
+   "kind": "group",
+   "votazioni": 20204,
+   "indice_accordo_medio": 0.9983,
+   "pct_votazioni_unanimi": 93.6
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO-SCN",
+   "kind": "misto_component",
+   "votazioni": 363,
+   "indice_accordo_medio": 0.9979,
+   "pct_votazioni_unanimi": 99.7
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "M5S",
+   "kind": "group",
+   "votazioni": 20135,
+   "indice_accordo_medio": 0.9965,
+   "pct_votazioni_unanimi": 94.7
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "PD-IDP",
+   "kind": "group",
+   "votazioni": 20198,
+   "indice_accordo_medio": 0.9957,
+   "pct_votazioni_unanimi": 91.4
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "AVS",
+   "kind": "group",
+   "votazioni": 20199,
+   "indice_accordo_medio": 0.9951,
+   "pct_votazioni_unanimi": 98.3
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO-FNV-F",
+   "kind": "misto_component",
+   "votazioni": 1843,
+   "indice_accordo_medio": 0.9943,
+   "pct_votazioni_unanimi": 98.0
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "LEGA",
+   "kind": "group",
+   "votazioni": 20205,
+   "indice_accordo_medio": 0.9924,
+   "pct_votazioni_unanimi": 87.4
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "NM(N-C-U-I)M-CP",
+   "kind": "group",
+   "votazioni": 18617,
+   "indice_accordo_medio": 0.9884,
+   "pct_votazioni_unanimi": 97.3
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "FI-PPE",
+   "kind": "group",
+   "votazioni": 20205,
+   "indice_accordo_medio": 0.9867,
+   "pct_votazioni_unanimi": 85.4
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "IV-CR",
+   "kind": "group",
+   "votazioni": 15643,
+   "indice_accordo_medio": 0.9753,
+   "pct_votazioni_unanimi": 93.6
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "AZ-PER-RE",
+   "kind": "group",
+   "votazioni": 20144,
+   "indice_accordo_medio": 0.975,
+   "pct_votazioni_unanimi": 91.7
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO-+EU-SUEU",
+   "kind": "misto_component",
+   "votazioni": 8929,
+   "indice_accordo_medio": 0.9216,
+   "pct_votazioni_unanimi": 87.5
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO-MIN.LING.",
+   "kind": "misto_component",
+   "votazioni": 19429,
+   "indice_accordo_medio": 0.8423,
+   "pct_votazioni_unanimi": 70.6
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "MISTO",
+   "kind": "group",
+   "votazioni": 15825,
+   "indice_accordo_medio": 0.5626,
+   "pct_votazioni_unanimi": 35.1
+  },
+  {
+   "ramo": "camera",
+   "gruppo": "it:camera:19:group:gr9999",
+   "kind": null,
+   "votazioni": 111,
+   "indice_accordo_medio": 0.5541,
+   "pct_votazioni_unanimi": 12.6
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "LSP-PSd'Az",
+   "kind": "group",
+   "votazioni": 8283,
+   "indice_accordo_medio": 0.9972,
+   "pct_votazioni_unanimi": 96.5
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "FdI",
+   "kind": "group",
+   "votazioni": 8284,
+   "indice_accordo_medio": 0.9967,
+   "pct_votazioni_unanimi": 91.6
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP",
+   "kind": "group",
+   "votazioni": 8231,
+   "indice_accordo_medio": 0.9956,
+   "pct_votazioni_unanimi": 98.6
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "FI-BP-PPE",
+   "kind": "group",
+   "votazioni": 8284,
+   "indice_accordo_medio": 0.995,
+   "pct_votazioni_unanimi": 96.8
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "M5S",
+   "kind": "group",
+   "votazioni": 8111,
+   "indice_accordo_medio": 0.9928,
+   "pct_votazioni_unanimi": 92.6
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "PD-IDP",
+   "kind": "group",
+   "votazioni": 8263,
+   "indice_accordo_medio": 0.9761,
+   "pct_votazioni_unanimi": 79.8
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "IV-CR",
+   "kind": "group",
+   "votazioni": 8203,
+   "indice_accordo_medio": 0.9701,
+   "pct_votazioni_unanimi": 91.2
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "Misto",
+   "kind": "group",
+   "votazioni": 8124,
+   "indice_accordo_medio": 0.8989,
+   "pct_votazioni_unanimi": 80.6
+  },
+  {
+   "ramo": "senato",
+   "gruppo": "Aut (SVP-PATT, Cb)",
+   "kind": "group",
+   "votazioni": 8184,
+   "indice_accordo_medio": 0.7571,
+   "pct_votazioni_unanimi": 47.2
+  }
+ ],
+ "risposta": "Indice di accordo (Hix-Noury-Roland, 1 = tutti votano allo stesso modo) medio su tutte le votazioni palesi della XIX. Camera: FdI 0,998, M5S 0,997, PD-IDP 0,996, AVS 0,995, Lega 0,992, Noi Moderati 0,988, FI-PPE 0,987, IV-CR 0,975, Azione 0,975; componenti del Misto: Sud Chiama Nord 0,998 (solo dal 13/10/2026), Futuro Nazionale Vannacci 0,994 (dal 27/5/2026), +Europa 0,922, Minoranze linguistiche 0,842; i deputati del Misto senza componente 0,563. Alla Camera la Lega è quinta fra i gruppi: vota compatta nell'87,4% delle votazioni, contro il 93,6% di FdI. Senato: Lega (LSP-PSd'Az) 0,997, prima fra i gruppi, seguita da FdI 0,997, Civici d'Italia-UDC-NM 0,996, FI-BP-PPE 0,995, M5S 0,993, PD-IDP 0,976, IV-CR 0,970, Misto 0,899, Per le Autonomie 0,757. Al Senato il Misto non si può dividere per componente.",
+ "stato": "calcolata",
+ "limiti": "Indice di accordo per votazione = (max(Sì, No, Ast.) − ½ · (votanti − max)) / votanti, fra i membri del gruppo che hanno votato (almeno 2), poi media sulle votazioni; voti segreti esclusi; assenti, in missione e presenti non votanti esclusi. Gruppo = ballot.grp risolto con grp_alias (cgm4111, Misto senza componente, va al Misto). Al Senato ballot.grp non ha le componenti del Misto: il Misto resta un blocco unico. Le componenti nate da poco (SCN, FNV-F) hanno poche votazioni e non sono confrontabili con i gruppi presenti da inizio legislatura.",
+ "problemi_dati": [
+  {
+   "problema": "Alla Camera 545 voti individuali hanno il gruppo segnaposto gr9999 (deputati appena proclamati, 9/4/2024 - 3/12/2025), che non è in grp né in grp_alias.",
+   "sql": "SELECT b.person, min(v.date), max(v.date), count(*) FROM ballot b JOIN vote v ON v.uri = b.vote WHERE b.grp = 'it:camera:19:group:gr9999' GROUP BY 1"
+  },
+  {
+   "problema": "Al Senato ballot.grp non distingue le componenti del Misto (solo it:senato:19:group:9) e grp non ha date di inizio e fine per nessun gruppo.",
+   "sql": "SELECT uri, name, start_date, end_date FROM grp WHERE chamber = 'senato' AND legislature = 19"
+  },
+  {
+   "problema": "Al Senato un voto individuale ha ballot.grp vuoto.",
+   "sql": "SELECT b.* FROM ballot b JOIN vote v ON v.uri = b.vote WHERE v.chamber = 'senato' AND b.grp IS NULL"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

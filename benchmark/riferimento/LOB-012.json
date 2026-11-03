@@ -1,0 +1,44 @@
+{
+ "id": "LOB-012",
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "sql": [
+  "-- emendamenti inammissibili al C. 3148, per gruppo del primo firmatario alla data di presentazione (Misto per componente)\nWITH e AS (\n  SELECT am.uri, am.number, coalesce(am.presented, am.sitting_date) AS d, s.person\n  FROM amendment am\n  LEFT JOIN amendment_signer s ON s.amendment = am.uri AND s.first\n  WHERE am.act = 'it:camera:19:ac:3148' AND am.outcome = 'inammissibile'\n), g AS (\n  SELECT e.uri, e.number, e.person,\n    (SELECT string_agg(gr.short_name, ' / ' ORDER BY gr.kind) FROM membership m JOIN grp gr ON gr.uri = m.grp\n      WHERE m.person = e.person AND gr.chamber = 'camera'\n        AND m.start_date <= coalesce(e.d, current_date) AND (m.end_date IS NULL OR m.end_date >= coalesce(e.d, current_date))) AS gruppo\n  FROM e\n)\nSELECT coalesce(g.gruppo, CASE WHEN g.person IS NULL THEN '(primo firmatario non indicato)' ELSE '(gruppo non trovato)' END) AS gruppo,\n       count(*) AS inammissibili,\n       string_agg(DISTINCT p.family_name, ', ') AS primi_firmatari,\n       string_agg(g.number, ', ' ORDER BY g.number) AS emendamenti\nFROM g LEFT JOIN person p ON p.uri = g.person\nGROUP BY 1 ORDER BY 2 DESC"
+ ],
+ "risultato": [
+  {
+   "gruppo": "PD-IDP",
+   "inammissibili": 17,
+   "primi_firmatari": "Amendola, Barbagallo, Braga, Ferrari, Forattini, Gnassi, Pandolfo, Peluffo, Simiani",
+   "emendamenti": "1.020, 1.021, 1.030, 1.05, 2.013, 2.014, 2.015, 2.016, 2.05, 2.06, 2-ter.010, 2-ter.04, 2-ter.06, 2-ter.07, 2-ter.08, 2-ter.09, 2-ter.3"
+  },
+  {
+   "gruppo": "M5S",
+   "inammissibili": 7,
+   "primi_firmatari": "Appendino, Cappelletti, L'Abbate, Pavanelli, Raffa",
+   "emendamenti": "1.024, 1.027, 1.031, 1.033, 1.034, 2.07, 2-ter.05"
+  },
+  {
+   "gruppo": "AVS",
+   "inammissibili": 2,
+   "primi_firmatari": "Bonelli",
+   "emendamenti": "1.032, 2.4"
+  },
+  {
+   "gruppo": "IV-CR",
+   "inammissibili": 1,
+   "primi_firmatari": "Del Barba",
+   "emendamenti": "2.01"
+  },
+  {
+   "gruppo": "MISTO / MISTO-FNV-F",
+   "inammissibili": 1,
+   "primi_firmatari": "Ziello",
+   "emendamenti": "1.21"
+  }
+ ],
+ "risposta": "Al C. 3148 (conversione del DL 157/2026) sono stati presentati in sede referente 89 emendamenti; 28 risultano inammissibili. Per gruppo del primo firmatario: PD-IDP 17 (fra i primi firmatari Amendola, Barbagallo, Braga, Ferrari, Forattini, Gnassi, Pandolfo, Peluffo, Simiani), M5S 7 (Appendino, Cappelletti, L'Abbate, Pavanelli, Raffa), AVS 2 (Bonelli), IV-CR 1 (Del Barba), Misto-componente Futuro Nazionale Vannacci-Free 1 (Ziello). Nessun inammissibile della maggioranza. Gli altri 61 hanno esito vuoto, che non significa respinti.",
+ "stato": "calcolata",
+ "limiti": "Gruppo del primo firmatario alla data di presentazione (amendment.presented). Esito vuoto = esito non caricato.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

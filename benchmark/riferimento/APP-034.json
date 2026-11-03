@@ -1,0 +1,63 @@
+{
+ "id": "APP-034",
+ "domanda": "chi è il deputato più giovane e il più anziano?",
+ "sql": [
+  "WITH d AS (\n  SELECT p.uri, p.given_name || ' ' || p.family_name AS deputato, p.birth_date, g.short_name AS gruppo\n  FROM mandate m JOIN person p ON p.uri = m.person\n  LEFT JOIN grp g ON g.uri = group_at(m.person, DATE '2026-11-02')\n  WHERE m.chamber = 'camera' AND m.legislature = 19 AND m.start_date <= DATE '2026-11-02'\n    AND (m.end_date IS NULL OR m.end_date >= DATE '2026-11-02')\n)\n(SELECT 'più giovane' AS chi, deputato, gruppo, birth_date, date_part('year', age(DATE '2026-11-02', birth_date))::int AS anni\n FROM d WHERE birth_date IS NOT NULL ORDER BY birth_date DESC LIMIT 3)\nUNION ALL\n(SELECT 'più anziano', deputato, gruppo, birth_date, date_part('year', age(DATE '2026-11-02', birth_date))::int\n FROM d WHERE birth_date IS NOT NULL ORDER BY birth_date ASC LIMIT 3)\nUNION ALL\nSELECT 'senza data di nascita', count(*)::text, NULL, NULL, NULL FROM d WHERE birth_date IS NULL"
+ ],
+ "risultato": [
+  {
+   "chi": "più giovane",
+   "deputato": "Rachele Scarpa",
+   "gruppo": "PD-IDP",
+   "birth_date": "1997-01-29",
+   "anni": 29
+  },
+  {
+   "chi": "più giovane",
+   "deputato": "Grazia Di Maggio",
+   "gruppo": "FDI",
+   "birth_date": "1994-11-11",
+   "anni": 31
+  },
+  {
+   "chi": "più giovane",
+   "deputato": "Marianna Ricciardi",
+   "gruppo": "M5S",
+   "birth_date": "1994-01-13",
+   "anni": 32
+  },
+  {
+   "chi": "più anziano",
+   "deputato": "Antonio Angelucci",
+   "gruppo": "LEGA",
+   "birth_date": "1944-09-16",
+   "anni": 82
+  },
+  {
+   "chi": "più anziano",
+   "deputato": "Bruno Tabacci",
+   "gruppo": "MISTO",
+   "birth_date": "1946-08-27",
+   "anni": 80
+  },
+  {
+   "chi": "più anziano",
+   "deputato": "Carlo Nordio",
+   "gruppo": "FDI",
+   "birth_date": "1947-02-06",
+   "anni": 79
+  },
+  {
+   "chi": "senza data di nascita",
+   "deputato": "0",
+   "gruppo": null,
+   "birth_date": null,
+   "anni": null
+  }
+ ],
+ "risposta": "Fra i 398 deputati in carica al 2/11/2026 la più giovane è Rachele Scarpa (PD-IDP), nata il 29/1/1997, 29 anni; seguono Grazia Di Maggio (FdI, 11/11/1994) e Marianna Ricciardi (M5S, 13/1/1994). Il più anziano è Antonio Angelucci (Lega), nato il 16/9/1944, 82 anni; seguono Bruno Tabacci (Misto senza componente, 27/8/1946) e Carlo Nordio (FdI, 6/2/1947). Tutti i deputati in carica hanno la data di nascita.",
+ "stato": "calcolata",
+ "limiti": "Deputati in carica = mandato Camera XIX aperto al 2/11/2026. Età al 2/11/2026.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

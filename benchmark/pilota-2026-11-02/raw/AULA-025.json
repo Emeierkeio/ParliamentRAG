@@ -1,0 +1,227 @@
+{
+ "id": "AULA-025",
+ "trappola": false,
+ "domanda": "Nel voto di fiducia sul decreto giustizia (S. 1939) del 30 luglio 2026 al Senato, quali senatori di maggioranza non hanno partecipato al voto o hanno votato contro?",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "senato",
+ "difficolta": "difficile",
+ "garanzie": [],
+ "note": "Trappola: nei ballot del Senato gli assenti non hanno riga (non esiste «absent»): si ricavano dai mandati in corso. Chi è in missione non è assente. Votazione it:senato:19:sed0444:v001.",
+ "endpoint": "agente",
+ "risposta_sistema": "Nessun senatore dei gruppi di maggioranza ha votato contro la fiducia sul [ddl S. 1939](https://www.senato.it/leg/19/BGT/Schede/Ddliter/60214.htm). Hanno invece **non partecipato 28 senatori**; la fiducia è stata approvata con 92 favorevoli e 63 contrari.\n\n- **Fratelli d’Italia (12):** Alessio Butti, Alberto Balboni, Guido Castelli, Giovanbattista Fazzolari, Anna Maria Fallucchi, Ignazio La Russa, Nello Musumeci, Filippo Melchiorre, Marcello Pera, Isabella Rauti, Raoul Russo, Adolfo Urso.\n- **Lega (9):** Gian Marco Centinaio, Claudio Durigon, Marco Dreosto, Massimo Garavaglia, Alessandro Morelli, Roberto Marti, Tilde Minasi, Matteo Salvini, Paolo Tosato.\n- **Forza Italia (6):** Maria Elisabetta Alberti Casellati, Claudio Fazzone, Mario Occhiuto, Roberto Rosso, Antonio Salvatore Trevisi, Paolo Zangrillo.\n- **Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare (1):** Antonio Guidi.\n\nIl dettaglio nominale e per gruppo è nella [votazione di fiducia](#/strumenti/voto/senato_leg19_sed444_v001). Il ddl è poi divenuto [legge n. 145 del 7 agosto 2026](https://www.normattiva.it/eli/id/2026/08/08/26G00164/ORIGINAL)",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "search_parliament",
+   "label": "Cerco negli interventi e negli atti",
+   "state": "start"
+  },
+  {
+   "name": "search_parliament",
+   "state": "done",
+   "count": 10
+  },
+  {
+   "name": "list_sessions",
+   "label": "Cerco nelle sedute",
+   "state": "start"
+  },
+  {
+   "name": "list_sessions",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "get_session_votes",
+   "label": "Leggo le votazioni della seduta",
+   "state": "start"
+  },
+  {
+   "name": "get_session_votes",
+   "state": "done",
+   "count": 1
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "label": "Leggo la votazione",
+   "state": "start"
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  },
+  {
+   "name": "get_vote_details",
+   "state": "done",
+   "count": null
+  }
+ ],
+ "errori": [],
+ "extra": {
+  "dati": [
+   {
+    "type": "dati",
+    "name": "search_parliament",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "list_sessions",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_session_votes",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   },
+   {
+    "type": "dati",
+    "name": "get_vote_details",
+    "args": "dict",
+    "result": "dict"
+   }
+  ],
+  "suggestions": [
+   "Come hanno votato i gruppi nella fiducia sul ddl S. 1939?",
+   "Quali senatori della Lega hanno votato a favore della fiducia sul ddl S. 1939?",
+   "A che punto è arrivato il ddl S. 1939 dopo l’approvazione del Senato?"
+  ]
+ },
+ "tempo_s": 29.8,
+ "verifica": null
+}

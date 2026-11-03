@@ -1,0 +1,257 @@
+{
+  "id": "DJ-017",
+  "domanda": "Quali associazioni e aziende sono state audite più spesso in Parlamento nella XIX?",
+  "sql": [
+    "WITH mem AS (\n  SELECT uri, btrim(regexp_replace(regexp_replace(author_raw, '^\\s*[0-9]+_', ''), '^(memoria|scritta|memoria scritta)\\s+', '', 'i')) AS autore,\n         coalesce(sitting_date, date) AS giorno, body, hearing\n  FROM document WHERE kind IN ('memorandum', 'written_contribution') AND author_raw IS NOT NULL),\nparti AS (\n  SELECT m.*, regexp_split_to_array(m.autore, '\\s*,\\s*|\\s+e\\s+') AS p FROM mem m),\nsoggetti AS (\n  SELECT uri, giorno, body, hearing, lower(btrim(s)) AS soggetto\n  FROM parti, unnest(CASE WHEN cardinality(p) > 1 AND (SELECT max(array_length(regexp_split_to_array(btrim(x), '\\s+'), 1)) FROM unnest(p) x) <= 3\n                               AND NOT EXISTS (SELECT 1 FROM unnest(p) x WHERE btrim(x) ~* '^(del|dell|della|delle|dei|degli|di|per|la|il|le|i)\\M')\n                          THEN p ELSE ARRAY[autore] END) AS s\n  WHERE btrim(s) <> '')\nSELECT soggetto, count(DISTINCT uri) AS memorie, count(DISTINCT (giorno, body, hearing)) AS audizioni_con_memoria,\n       soggetto ~ '^(anci|upi|istat|ispra|anac|arera|agcm|agcom|enea|cnel|inps|inail|corte dei conti|banca d''italia|ufficio parlamentare di bilancio|conferenza delle regioni.*|garante.*|autorità.*)$' AS ente_pubblico\nFROM soggetti GROUP BY 1 ORDER BY audizioni_con_memoria DESC, memorie DESC LIMIT 40"
+  ],
+  "risultato": [
+    {
+      "soggetto": "cisl",
+      "memorie": 99,
+      "audizioni_con_memoria": 98,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "uil",
+      "memorie": 94,
+      "audizioni_con_memoria": 92,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "cgil",
+      "memorie": 88,
+      "audizioni_con_memoria": 88,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "cna",
+      "memorie": 64,
+      "audizioni_con_memoria": 63,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "anci",
+      "memorie": 61,
+      "audizioni_con_memoria": 61,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "ugl",
+      "memorie": 59,
+      "audizioni_con_memoria": 59,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confindustria",
+      "memorie": 57,
+      "audizioni_con_memoria": 57,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confcommercio",
+      "memorie": 56,
+      "audizioni_con_memoria": 56,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "ance",
+      "memorie": 55,
+      "audizioni_con_memoria": 55,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confartigianato",
+      "memorie": 45,
+      "audizioni_con_memoria": 44,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "legambiente",
+      "memorie": 38,
+      "audizioni_con_memoria": 38,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confprofessioni",
+      "memorie": 36,
+      "audizioni_con_memoria": 36,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "wwf",
+      "memorie": 35,
+      "audizioni_con_memoria": 35,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confesercenti",
+      "memorie": 35,
+      "audizioni_con_memoria": 35,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confapi",
+      "memorie": 31,
+      "audizioni_con_memoria": 31,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confagricoltura",
+      "memorie": 30,
+      "audizioni_con_memoria": 30,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "anac",
+      "memorie": 30,
+      "audizioni_con_memoria": 30,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "casartigiani",
+      "memorie": 26,
+      "audizioni_con_memoria": 25,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "coldiretti",
+      "memorie": 25,
+      "audizioni_con_memoria": 25,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "istat",
+      "memorie": 25,
+      "audizioni_con_memoria": 25,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "conferenza delle regioni e delle province autonome",
+      "memorie": 25,
+      "audizioni_con_memoria": 23,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "utilitalia",
+      "memorie": 24,
+      "audizioni_con_memoria": 23,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "conflavoro pmi",
+      "memorie": 23,
+      "audizioni_con_memoria": 23,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "ispra",
+      "memorie": 21,
+      "audizioni_con_memoria": 21,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "corte dei conti",
+      "memorie": 20,
+      "audizioni_con_memoria": 20,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "confcooperative",
+      "memorie": 20,
+      "audizioni_con_memoria": 19,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "arera",
+      "memorie": 18,
+      "audizioni_con_memoria": 18,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "federdistribuzione",
+      "memorie": 17,
+      "audizioni_con_memoria": 17,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "banca d'italia",
+      "memorie": 17,
+      "audizioni_con_memoria": 17,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "enea",
+      "memorie": 16,
+      "audizioni_con_memoria": 16,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "upi",
+      "memorie": 16,
+      "audizioni_con_memoria": 16,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "copagri",
+      "memorie": 16,
+      "audizioni_con_memoria": 16,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "cnel",
+      "memorie": 16,
+      "audizioni_con_memoria": 16,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "ecco",
+      "memorie": 16,
+      "audizioni_con_memoria": 16,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "altroconsumo",
+      "memorie": 15,
+      "audizioni_con_memoria": 15,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "confartigianato imprese",
+      "memorie": 14,
+      "audizioni_con_memoria": 14,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "asstra",
+      "memorie": 14,
+      "audizioni_con_memoria": 14,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "alleanza delle cooperative italiane",
+      "memorie": 14,
+      "audizioni_con_memoria": 14,
+      "ente_pubblico": false
+    },
+    {
+      "soggetto": "conferenza delle regioni",
+      "memorie": 13,
+      "audizioni_con_memoria": 13,
+      "ente_pubblico": true
+    },
+    {
+      "soggetto": "federalberghi",
+      "memorie": 13,
+      "audizioni_con_memoria": 13,
+      "ente_pubblico": false
+    }
+  ],
+  "risposta": "Contando le memorie depositate alla Camera (il Senato non ne ha nel database), i soggetti non pubblici presenti più spesso sono i sindacati e le associazioni d'impresa: CISL 98 audizioni con memoria, UIL 92, CGIL 88, CNA 63, UGL 59, Confindustria 57, Confcommercio 56, ANCE 55, Confartigianato 44 (più 14 come «Confartigianato imprese»), Legambiente 38, Confprofessioni 36, WWF 35, Confesercenti 35, Confapi 31, Confagricoltura 30. Fra gli enti pubblici: ANCI 61, ANAC 30, ISTAT 25, Conferenza delle Regioni e delle Province autonome 23 (più 13 con il nome breve). Fra i primi 40 non c'è nessuna singola azienda.",
+  "stato": "parziale",
+  "limiti": "Solo la Camera e solo chi ha lasciato una memoria o un contributo scritto (6.665 memorie e 867 contributi); il Senato non ha memorie nel database e chi è audito senza memoria non c'è. Il soggetto è author_raw ripulito di prefissi («01_», «Memoria», «scritta») e messo in minuscolo; le firme congiunte brevi («Confartigianato e CNA», «CGIL, CISL, UIL e UGL») contano per ciascun ente; varianti del nome restano separate. «Audizioni con memoria» = combinazioni distinte di giorno, commissione e audizione. La distinzione tra enti pubblici e associazioni è fatta a mano su una lista di nomi.",
+  "problemi_dati": [
+    "document.author_raw con prefissi e varianti: «01_Memoria …», «scritta UCIIM», «Confartigianato» e «Confartigianato imprese», «Conferenza delle Regioni» e «Conferenza delle Regioni e delle Province autonome»; 23 memorie hanno prefissi numerici o «Memoria/scritta». Query: SELECT count(*) FROM document WHERE kind IN ('memorandum','written_contribution') AND (author_raw ~ '^[0-9]+_' OR author_raw ILIKE 'scritta %' OR author_raw ILIKE 'memoria %');",
+    "Il Senato non ha memorie né audizioni in document. Query: SELECT count(*) FROM document WHERE uri NOT LIKE 'it:camera:%';"
+  ],
+  "controllato_su": "postgres v3 2026-11-02"
+}

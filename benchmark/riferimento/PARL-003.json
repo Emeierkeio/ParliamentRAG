@@ -1,0 +1,24 @@
+{
+ "id": "PARL-003",
+ "domanda": "Le presenze dell'on. Chiara Gribaudo nel 2026: quante votazioni ha fatto, in quante era in missione e in quante assente?",
+ "sql": [
+  "select count(*) votazioni_2026,\n count(*) filter (where b.result in ('favor','against','abstain','voted')) ha_votato,\n count(*) filter (where b.result='favor') favorevole, count(*) filter (where b.result='against') contraria,\n count(*) filter (where b.result='abstain') astenuta, count(*) filter (where b.result='voted') voto_segreto,\n count(*) filter (where b.result='mission') in_missione, count(*) filter (where b.result='absent') assente\nfrom vote v left join ballot b on b.vote=v.uri and b.person='it:person:camera:306008'\nwhere v.chamber='camera' and v.date between '2026-01-01' and '2026-12-31'"
+ ],
+ "risultato": [
+  {
+   "votazioni_2026": 4153,
+   "ha_votato": 1539,
+   "favorevole": 1194,
+   "contraria": 165,
+   "astenuta": 144,
+   "voto_segreto": 36,
+   "in_missione": 2385,
+   "assente": 229
+  }
+ ],
+ "risposta": "Nel 2026 (dal 1/1 al 2/11) la Camera ha tenuto 4.153 votazioni elettroniche. Chiara Gribaudo ha votato in 1.539 (1.194 favorevole, 165 contraria, 144 astenuta, 36 a scrutinio segreto), era in missione in 2.385 e assente in 229. La missione non è un'assenza.",
+ "stato": "calcolata",
+ "limiti": "Periodo dal 1/1/2026 al 2/11/2026 (dati disponibili).",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

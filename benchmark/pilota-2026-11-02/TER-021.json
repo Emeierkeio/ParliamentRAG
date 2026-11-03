@@ -1,0 +1,82 @@
+{
+ "id": "TER-021",
+ "domanda": "Quanti interventi in Aula hanno parlato di povertà assoluta nel 2026, divisi per gruppo?",
+ "categoria": "statistiche",
+ "ramo": "entrambi",
+ "tipo_risposta": "confronto_gruppi",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Conteggio per parola: dichiarare la parola cercata. Rami separati.",
+ "endpoint": "/api/fascicolo",
+ "risposta_sistema": "## Introduzione\n\nNel periodo considerato, il tema della povertà assoluta è stato discusso in Aula soprattutto nell’ambito del dibattito sulla legge di bilancio per il 2026 e delle misure di contrasto alla povertà, con particolare attenzione agli effetti delle nuove politiche di sostegno e alla revisione degli strumenti esistenti. Sono stati analizzati 82 interventi di 47 deputati tra il 29/11/2022 e il 14/10/2026.\n\n## Posizione del Governo\n\nNel corso del 2025, il tema della povertà assoluta è stato affrontato dal Governo anche in chiave comparativa rispetto ai dati degli anni precedenti. In Aula, **Giorgia Meloni** sottolinea, [«il balzo della povertà assoluta c'è stato tra il 2021 e il 2022. Nel 2021 era al 7,7 per cento, nel 2022 era arrivata all'8,3 per cento e quindi mi pare che, diciamo, se noi stiamo moltiplicando la povertà, non mi sembra che andasse meglio quando c'erano altri al Governo»](leg19_sed586_tit00030.sub00040.int00020_chunk_15). La posizione espressa evidenzia la volontà di respingere le accuse di un peggioramento recente, attribuendo l'aumento della povertà assoluta a periodi precedenti all'attuale esecutivo. Altri interventi del Governo nel 2026 si concentrano su strategie di contrasto e sulla revisione delle politiche adottate negli anni passati.\n\n---\n\n## Posizioni della Maggioranza\n\nPer Forza Italia - Berlusconi Presidente - PPE, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera. Al voto finale del 30/12/2025 alla Camera (Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028) il gruppo ha votato a favore: 47 favorevoli, 5 assenti.\n\nPer Fratelli d'Italia, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera. Al voto finale del 30/12/2025 alla Camera (Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028) il gruppo ha votato a favore: 110 favorevoli, 6 assenti.\n\nPer Lega - Salvini Premier, nel dibattito sulla legge di bilancio per il 2026, il gruppo ha posto l'accento sulle misure a sostegno delle fasce più deboli e delle famiglie in difficoltà. **Andrea Barabotti** rivendica, [«questa manovra prosegue con coerenza su quella strada: continuiamo a sostenere le famiglie fragili, rafforzando misure di sostegno diretto e incentivando il lavoro»](leg19_sed588_tit00040.sub00010.int00020_chunk_1). La posizione espressa sottolinea l'impegno del gruppo nel rafforzare gli strumenti di supporto economico e sociale, con particolare attenzione alle situazioni di maggiore vulnerabilità.\n\nPer Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro) - MAIE - Centro Popolare, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera. Al voto finale del 30/12/2025 alla Camera (Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028) il gruppo ha votato a favore: 6 favorevoli, 3 assenti.\n\n---\n\n## Posizioni dell'Opposizione\n\nPer Alleanza Verdi e Sinistra, nel dibattito parlamentare sulle misure di contrasto alla povertà, il gruppo ha espresso una forte critica verso la selettività dei nuovi strumenti introdotti in sostituzione del reddito di cittadinanza. **Marco Grimaldi** denuncia, [«avete diviso cinicamente le persone povere per categorie: meritevoli e degni di aiuti solo coloro che hanno non autosufficienti o minori a carico, tutti gli altri si arrangino, come se non fossero ugualmente poveri, come se dovessero scontare la colpa della loro condizione»](leg19_sed126_tit00050.sub00010.int00850_chunk_2). La posizione emersa dagli interventi del gruppo sottolinea la necessità di misure universali di sostegno contro la povertà assoluta, criticando la frammentazione e la riduzione delle tutele per ampie fasce di popolazione in difficoltà.\n\nPer Azione - Popolari Europeisti Riformatori - Renew Europe, nel 2026, il gruppo ha espresso in Aula forti preoccupazioni per le conseguenze sociali delle politiche economiche, con particolare attenzione all’impatto su povertà, salari e servizi pubblici. **Elena Bonetti** denuncia: [«allora, quando in quest'Aula si fanno grandi proclami, invece, ci si dovrebbe mettere a confronto con la propria coscienza e sapere che queste grandi parole che sentiamo decantare da una parte all'altra, hanno questo effetto: pensioni da fame, salari da fame, un Paese con i conti pubblici allo sfascio e servizi pubblici inesistenti»](leg19_sed604_tit00060.sub00020.int00120_chunk_2). Il gruppo, anche in altri interventi, ha sottolineato la crescita delle disuguaglianze e della povertà assoluta, criticando la mancanza di misure strutturali efficaci nella legge di bilancio 2026.\n\nPer Italia Viva - Casa Riformista, nel dibattito parlamentare sulla legge di bilancio, il gruppo ha espresso forte preoccupazione per l’aumento della povertà assoluta e per l’esclusione del ceto medio dalle misure di sostegno. **Maria Chiara Gadda** denuncia, [«oggi, dal 2014, abbiamo il record di famiglie in condizione di povertà assoluta e relativa, senza contare, poi, il cosiddetto ceto medio che si sta impoverendo, che oscilla su e giù dalla soglia di povertà ed è escluso da tutte le misure di sostegno al reddito»](leg19_sed402_tit00040.sub00010.int00100_chunk_6). Il gruppo ha quindi sottolineato la necessità di interventi più efficaci per contrastare la povertà e sostenere le fasce sociali più vulnerabili, criticando le politiche del Governo ritenute insufficienti rispetto all’emergenza sociale.\n\nPer Movimento 5 Stelle, nel dibattito parlamentare del 2026, il gruppo ha espresso forte preoccupazione per l’aumento della povertà assoluta in Italia, collegando questo fenomeno alle scelte della maggioranza e alla cancellazione del reddito di cittadinanza. **Dario Carotenuto** denuncia: [«ebbene, questo atteggiamento che cosa ha portato? Ha portato a un record di povertà assoluta nel nostro Paese»](leg19_sed672_tit00110.sub00010.int00700_chunk_0). Anche altri interventi del gruppo sottolineano la gravità della situazione sociale e la necessità di misure strutturali contro la povertà, criticando le politiche ritenute insufficienti o dannose per le fasce più deboli.\n\nPer Partito Democratico - Italia Democratica e Progressista, nel dibattito parlamentare il tema della povertà assoluta è stato affrontato con toni critici verso le misure adottate dal Governo, in particolare per quanto riguarda i provvedimenti che incidono sulle fasce più deboli della popolazione. **Arturo Scotto** denuncia, [«allo stesso tempo, però, da sapienti manipolatori avete varato un provvedimento che abusivamente porta il nome del 1° maggio, ma non si è mai visto un 1° maggio dove si tagliano i soldi per i poveri, dove si liberalizzano i contratti precari, dove si aumentano i voucher»](leg19_sed101_tit00010.sub00080.int00060_chunk_0). Il gruppo ha espresso una posizione di forte critica rispetto alle scelte di bilancio e alle politiche sociali, sottolineando la mancanza di risposte concrete per chi si trova in condizioni di maggiore difficoltà economica.\n\n---\n\n## Gruppo Misto\n\nPer i parlamentari del Misto senza componente, nei passaggi trovati chi è intervenuto non esprime sul tema una posizione che si possa citare alla lettera. Al voto finale del 30/12/2025 alla Camera (Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028) il gruppo si è diviso: 2 favorevoli, 1 contrari, 3 assenti.\n\nPer +Europa - Stati Uniti d'Europa, nei passaggi trovati il gruppo non esprime sul tema una posizione che si possa citare alla lettera. Al voto finale del 30/12/2025 alla Camera (Bilancio di previsione dello Stato per l’anno finanziario 2026 e bilancio pluriennale per il triennio 2026-2028) il gruppo ha votato contro: 3 contrari.\n\nPer Futuro Nazionale Vannacci - Free, il gruppo non è intervenuto nei dibattiti sul tema.\n\nPer Minoranze Linguistiche, nel corpus analizzato non risultano interventi rilevanti su questo tema.\n\nPer Sud chiama Nord, nel corpus analizzato non risultano interventi rilevanti su questo tema.",
+ "eventi": {
+  "waiting": 1,
+  "progress": 5,
+  "commissioni": 1,
+  "experts": 2,
+  "compass": 1,
+  "topic_stats": 1,
+  "citations": 1,
+  "citation_details": 1,
+  "chunk": 82,
+  "trace": 1,
+  "complete": 1
+ },
+ "strumenti": [
+  "Avvio retrieval...",
+  "Trovate 124 evidenze",
+  "Calcolo authority scores...",
+  "Analisi compass ideologico...",
+  "Generazione risposta multi-view..."
+ ],
+ "errori": [],
+ "tempo_s": 139.5,
+ "riferimento": {
+  "risposta": "Interventi d'Aula del 2026 (al 2/11) che contengono «povertà assoluta». Camera, 48: M5S 21, AVS 15, PD-IDP 11, IV-CR 1. Senato, 17: M5S 7, PD-IDP 4, IV-CR 2, Misto 2 (Cucchi e Magni), Lega-PSd'Az 1, Governo 1 (la presidente del Consiglio Meloni). Nessun intervento degli altri gruppi contiene l'espressione.",
+  "stato": "calcolata",
+  "limiti": "Conteggio per espressione esatta «povertà assoluta» (ILIKE, comprese le varianti con apostrofo, che non cambiano il risultato) nel testo degli interventi delle sedute d'Aula, dal 1/1 al 2/11/2026. Un intervento conta una volta anche se la ripete. Gruppo dell'oratore alla data (group_at); al Senato il Misto non è diviso per componente nel DB."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "warn",
+   "authority": "pass",
+   "quotes": "pass"
+  },
+  "trappola": null,
+  "tempo_s": 139.5
+ },
+ "causa_probabile": "routing",
+ "note": "Domanda di conteggio mandata al fascicolo: nessun numero. Il riferimento dà Camera 48 (M5S 21, AVS 15, PD-IDP 11, IV-CR 1) e Senato 17. Il sistema dice «82 interventi di 47 deputati tra il 29/11/2022 e il 14/10/2026»: periodo sbagliato (non solo 2026), solo Camera, nessuna ripartizione per gruppo. Citazioni esatte.",
+ "verifica_citazioni": [
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0586&tipo=stenografico#sed0586.stenografico.tit00030.sub00040.int00020"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0588&tipo=stenografico#sed0588.stenografico.tit00040.sub00010.int00020"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0126&tipo=stenografico#sed0126.stenografico.tit00050.sub00010.int00850"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0604&tipo=stenografico#sed0604.stenografico.tit00060.sub00020.int00120"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0402&tipo=stenografico#sed0402.stenografico.tit00040.sub00010.int00100"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0672&tipo=stenografico#sed0672.stenografico.tit00110.sub00010.int00700"
+  },
+  {
+   "status": "exact",
+   "url": "https://www.camera.it/leg19/410?idSeduta=0101&tipo=stenografico#sed0101.stenografico.tit00010.sub00080.int00060"
+  }
+ ]
+}

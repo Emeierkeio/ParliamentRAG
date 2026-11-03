@@ -1,0 +1,277 @@
+{
+ "id": "RIC-011",
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "sql": [
+  "WITH prop AS (   -- una proposta per atto, sede e numero (le riformulazioni ripetono il numero)\n  SELECT DISTINCT ON (e.act, e.venue, e.number) e.uri, coalesce(e.sitting_date, e.presented) AS d\n  FROM amendment e WHERE e.act LIKE 'it:camera:19:%'\n  ORDER BY e.act, e.venue, e.number, e.sitting_date\n), gs AS (       -- gruppi dei firmatari alla data, Misto per componente\n  SELECT DISTINCT p.uri, coalesce(group_at(s.person, p.d), '?') AS g\n  FROM prop p JOIN amendment_signer s ON s.amendment = p.uri\n  WHERE s.person IS NOT NULL\n), coppie AS (\n  SELECT a.g AS g1, b.g AS g2, count(*) AS emendamenti\n  FROM gs a JOIN gs b ON b.uri = a.uri AND a.g < b.g\n  GROUP BY 1, 2\n)\nSELECT coalesce(x1.short_name, c.g1) AS gruppo_1, coalesce(x2.short_name, c.g2) AS gruppo_2, c.emendamenti\nFROM coppie c LEFT JOIN grp x1 ON x1.uri = c.g1 LEFT JOIN grp x2 ON x2.uri = c.g2\nORDER BY 3 DESC",
+  "WITH prop AS (\n  SELECT DISTINCT ON (e.act, e.venue, e.number) e.uri, coalesce(e.sitting_date, e.presented) AS d\n  FROM amendment e WHERE e.act LIKE 'it:camera:19:%'\n  ORDER BY e.act, e.venue, e.number, e.sitting_date\n), gs AS (\n  SELECT p.uri, count(DISTINCT group_at(s.person, p.d)) AS gruppi, count(*) FILTER (WHERE group_at(s.person, p.d) IS NULL) AS senza_gruppo\n  FROM prop p JOIN amendment_signer s ON s.amendment = p.uri WHERE s.person IS NOT NULL GROUP BY 1\n)\nSELECT count(*) AS proposte_con_firmatari, count(*) FILTER (WHERE gruppi >= 2) AS proposte_di_piu_gruppi,\n       sum(senza_gruppo) AS firme_senza_gruppo_alla_data FROM gs"
+ ],
+ "risultato": [
+  {
+   "righe_totali": 79,
+   "righe": [
+    {
+     "gruppo_1": "PD-IDP",
+     "gruppo_2": "AVS",
+     "emendamenti": 2330
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 943
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "AVS",
+     "emendamenti": 833
+    },
+    {
+     "gruppo_1": "PD-IDP",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 616
+    },
+    {
+     "gruppo_1": "MISTO-+EU-SUEU",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 604
+    },
+    {
+     "gruppo_1": "MISTO-+EU-SUEU",
+     "gruppo_2": "AVS",
+     "emendamenti": 577
+    },
+    {
+     "gruppo_1": "MISTO-+EU-SUEU",
+     "gruppo_2": "M5S",
+     "emendamenti": 570
+    },
+    {
+     "gruppo_1": "AVS",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 561
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 560
+    },
+    {
+     "gruppo_1": "MISTO-+EU-SUEU",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 507
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "FI-PPE",
+     "emendamenti": 326
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "FI-PPE",
+     "emendamenti": 301
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "FDI",
+     "emendamenti": 291
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 230
+    },
+    {
+     "gruppo_1": "FI-PPE",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 227
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 188
+    },
+    {
+     "gruppo_1": "AZ-PER-RE",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 186
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 139
+    },
+    {
+     "gruppo_1": "AZ-PER-RE",
+     "gruppo_2": "AVS",
+     "emendamenti": 129
+    },
+    {
+     "gruppo_1": "FI-PPE",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 95
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "FI-PPE",
+     "emendamenti": 94
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 94
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "FDI",
+     "emendamenti": 91
+    },
+    {
+     "gruppo_1": "AZ-PER-RE",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 80
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 78
+    },
+    {
+     "gruppo_1": "PD-IDP",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 75
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 73
+    },
+    {
+     "gruppo_1": "FI-PPE",
+     "gruppo_2": "AVS",
+     "emendamenti": 73
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "AVS",
+     "emendamenti": 71
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 65
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 63
+    },
+    {
+     "gruppo_1": "M5S",
+     "gruppo_2": "LEGA",
+     "emendamenti": 61
+    },
+    {
+     "gruppo_1": "LEGA",
+     "gruppo_2": "AVS",
+     "emendamenti": 60
+    },
+    {
+     "gruppo_1": "MISTO-+EU-SUEU",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 59
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 58
+    },
+    {
+     "gruppo_1": "NM(N-C-U-I)M-CP",
+     "gruppo_2": "AVS",
+     "emendamenti": 57
+    },
+    {
+     "gruppo_1": "FI-PPE",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 57
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "LEGA",
+     "emendamenti": 56
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "FI-PPE",
+     "emendamenti": 54
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "AZ-PER-RE",
+     "emendamenti": 51
+    },
+    {
+     "gruppo_1": "FDI",
+     "gruppo_2": "IV-CR",
+     "emendamenti": 51
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "AVS",
+     "emendamenti": 50
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "M5S",
+     "emendamenti": 50
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 49
+    },
+    {
+     "gruppo_1": "?",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 47
+    },
+    {
+     "gruppo_1": "MISTO-MIN.LING.",
+     "gruppo_2": "FDI",
+     "emendamenti": 46
+    },
+    {
+     "gruppo_1": "AZ-PER-RE",
+     "gruppo_2": "NM(N-C-U-I)M-CP",
+     "emendamenti": 43
+    },
+    {
+     "gruppo_1": "MISTO",
+     "gruppo_2": "AVS",
+     "emendamenti": 42
+    },
+    {
+     "gruppo_1": "MISTO",
+     "gruppo_2": "M5S",
+     "emendamenti": 35
+    },
+    {
+     "gruppo_1": "MISTO",
+     "gruppo_2": "PD-IDP",
+     "emendamenti": 32
+    }
+   ]
+  },
+  [
+   {
+    "proposte_con_firmatari": 90792,
+    "proposte_di_piu_gruppi": 3281,
+    "firme_senza_gruppo_alla_data": 49
+   }
+  ]
+ ],
+ "risposta": "Camera, XIX: delle 90.792 proposte emendative con firmatari deputati, 3.281 sono firmate da deputati di almeno due gruppi diversi (gruppo alla data). Le coppie di gruppi che cofirmano più spesso: PD-IDP e AVS 2.330 emendamenti; M5S e PD-IDP 943; M5S e AVS 833; PD-IDP e IV-CR 616; Misto-+Europa e PD-IDP 604; Misto-+Europa e AVS 577; Misto-+Europa e M5S 570; AVS e IV-CR 561; M5S e IV-CR 560; Misto-+Europa e IV-CR 507. Nella maggioranza: FdI e FI-PPE 326, Lega e FI-PPE 301, Lega e FdI 291, FdI e Noi Moderati 230, FI-PPE e Noi Moderati 227. Fra maggioranza e opposizione le coppie più frequenti sono FI-PPE e PD-IDP 95, FdI e PD-IDP 94, M5S e FI-PPE 94.",
+ "stato": "calcolata",
+ "limiti": "Proposta = (atto, sede, numero) distinti: le riformulazioni ripetono il numero e si contano una volta. Gruppo del firmatario = group_at alla data della seduta (o di presentazione), Misto per componente; firme senza persona (governo, relatori senza id) escluse; 49 firme senza gruppo alla data. Per coppia si conta il numero di proposte che hanno almeno un firmatario di ciascuno dei due gruppi. Gli emendamenti della Camera vengono dai fascicoli caricati (dal 31/10/2022 al 28/10/2026), la cui completezza non è verificata.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

@@ -1,0 +1,184 @@
+{
+ "id": "GIO-049",
+ "domanda": "Quanti emendamenti ha presentato ogni gruppo sulla legge elettorale alla Camera, in prima lettura?",
+ "sql": [
+  "WITH p AS (   -- una riga per proposta e sede, col primo firmatario\n  SELECT DISTINCT ON (e.venue, e.number) e.venue, e.number, e.sitting_date, s.person, s.kind_raw\n  FROM amendment e LEFT JOIN amendment_signer s ON s.amendment = e.uri AND s.first\n  WHERE e.act = 'it:camera:19:ac:2822'\n  ORDER BY e.venue, e.number, (s.person IS NULL), e.sitting_date\n)\nSELECT CASE p.venue WHEN 'referente' THEN 'I Commissione (referente)' ELSE 'Aula' END AS sede,\n       CASE WHEN p.person IS NULL THEN '(commissione o relatore, senza primo firmatario)'\n            WHEN g.kind = 'misto_component' THEN 'Misto - ' || g.name\n            WHEN g.uri = 'it:camera:19:group:gr4111' THEN 'Misto - senza componente'\n            ELSE g.name END AS gruppo_primo_firmatario,\n       count(*) AS proposte\nFROM p LEFT JOIN grp g ON g.uri = group_at(p.person, p.sitting_date)\nGROUP BY ROLLUP (1, 2) ORDER BY 1 DESC NULLS LAST, 3 DESC",
+  "SELECT group_title, count(DISTINCT number) FROM amendment WHERE act = 'it:camera:19:ac:2822' AND venue = 'assembly' GROUP BY 1"
+ ],
+ "risultato": [
+  [
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": null,
+    "proposte": 731
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Alleanza Verdi e Sinistra",
+    "proposte": 386
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Partito Democratico - Italia Democratica e Progressista",
+    "proposte": 153
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Movimento 5 Stelle",
+    "proposte": 99
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Misto - +Europa - Stati Uniti d'Europa",
+    "proposte": 53
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Misto - senza componente",
+    "proposte": 15
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "proposte": 8
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Misto - Futuro Nazionale Vannacci - Free",
+    "proposte": 7
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Fratelli d'Italia",
+    "proposte": 4
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Noi Moderati - MAIE - Centro Popolare",
+    "proposte": 3
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Misto - Minoranze Linguistiche",
+    "proposte": 2
+   },
+   {
+    "sede": "I Commissione (referente)",
+    "gruppo_primo_firmatario": "Italia Viva - Casa Riformista",
+    "proposte": 1
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": null,
+    "proposte": 299
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Partito Democratico - Italia Democratica e Progressista",
+    "proposte": 102
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Movimento 5 Stelle",
+    "proposte": 66
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Misto - +Europa - Stati Uniti d'Europa",
+    "proposte": 53
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Alleanza Verdi e Sinistra",
+    "proposte": 14
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Azione - Popolari Europeisti Riformatori - Renew Europe",
+    "proposte": 12
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Fratelli d'Italia",
+    "proposte": 12
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "(commissione o relatore, senza primo firmatario)",
+    "proposte": 8
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Misto - Futuro Nazionale Vannacci - Free",
+    "proposte": 8
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Italia Viva - Casa Riformista",
+    "proposte": 7
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Misto - senza componente",
+    "proposte": 6
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Noi Moderati - MAIE - Centro Popolare",
+    "proposte": 4
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Misto - Minoranze Linguistiche",
+    "proposte": 4
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Forza Italia - Berlusconi Presidente - PPE",
+    "proposte": 2
+   },
+   {
+    "sede": "Aula",
+    "gruppo_primo_firmatario": "Lega - Salvini Premier",
+    "proposte": 1
+   },
+   {
+    "sede": null,
+    "gruppo_primo_firmatario": null,
+    "proposte": 1030
+   }
+  ],
+  [
+   {
+    "group_title": "EMENDAMENTI NON SEGNALATI PER LA VOTAZIONE",
+    "count": 55
+   },
+   {
+    "group_title": "PROPOSTA EMENDATIVA",
+    "count": 1
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE",
+    "count": 82
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE(1) Nel corso della seduta, i gruppi Partito Democratico, MoVimento 5 Stelle e Alleanza Verdi e Sinistra hanno desegnalato rispettivamente le seguenti proposte emendative: Bonafè nn. 1.1044, 1.1045, 1.1049, 1.1053, 1.134, 1.1031, 1.1059, 1.185, 1.188, 1.200, 1.208, 1.1072, Alfonso Colucci n. 1.281 e Zaratti n. 1.180.",
+    "count": 156
+   },
+   {
+    "group_title": "PROPOSTE EMENDATIVE(2) Nel corso della seduta, il gruppo parlamentare MoVimento 5 Stelle ha desegnalato la proposta emendativa Alfonso Colucci n. 2.71.",
+    "count": 39
+   }
+  ]
+ ],
+ "risposta": "Prima lettura della legge elettorale alla Camera (AC 2822), per gruppo del primo firmatario alla data. In I Commissione (fascicolo del 15/6/2026) 731 proposte: AVS 386, PD-IDP 153, M5S 99, Misto-+Europa 53, Misto senza componente 15, Azione 8, Misto-Futuro Nazionale Vannacci 7, FdI 4, Noi Moderati 3, Misto-Minoranze linguistiche 2, IV-CR 1; nessuna di Lega e FI-PPE. In Aula (14-15/7/2026) l'archivio ha 299 proposte: PD-IDP 102, M5S 66, Misto-+Europa 53, AVS 14, Azione 12, FdI 12, Misto-FNV 8, IV-CR 7, Misto senza componente 6, Noi Moderati 4, Misto-Minoranze linguistiche 4, FI-PPE 2, Lega 1, più 8 della Commissione o del relatore.",
+ "stato": "parziale",
+ "limiti": "Per l'Aula il database ha solo i fascicoli delle proposte segnalate per il voto e di quelle non segnalate pubblicate nel resoconto (299), non tutte le proposte presentate: la numerazione arriva a 1.1072 e i desegnalati citati nel Bollettino mostrano che erano molte di più. Il dato della Commissione è completo per il fascicolo del 15/6/2026. Conteggio per primo firmatario (amendment_signer.first), gruppo con group_at alla data della seduta, Misto per componente; ogni numero di emendamento conta una volta per sede.",
+ "problemi_dati": [
+  {
+   "problema": "In Aula alcuni group_title di amendment contengono note del resoconto (\"PROPOSTE EMENDATIVE(1) Nel corso della seduta, i gruppi ... hanno desegnalato ...\") invece di un'etichetta di gruppo.",
+   "sql": "SELECT DISTINCT group_title FROM amendment WHERE act = 'it:camera:19:ac:2822' AND venue = 'assembly'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

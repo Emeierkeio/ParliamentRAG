@@ -1,0 +1,41 @@
+{
+ "id": "DJ-009",
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "categoria": "persone",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Non posso dare un numero affidabile e aggiornato a oggi: i dati disponibili registrano la storia dei gruppi nelle singole schede, ma non forniscono un conteggio aggregato dei parlamentari che hanno cambiato gruppo dall’inizio della XIX legislatura. Inoltre l’ultimo aggiornamento disponibile è al **19 ottobre 2026** per la Camera e all’**8 ottobre 2026** per il Senato, non al 2 novembre.\n\nLa [composizione attuale di Camera e Senato](#/strumenti/gruppi) indica rispettivamente 399 deputati e 205 senatori in carica, ma non permette di ricavare senza un’estrazione completa delle storie individuali quante persone distinte abbiano cambiato gruppo — né di distinguere chi lo ha fatto più di una volta.",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "composizione",
+  "search_parliament",
+  "parlamentari"
+ ],
+ "errori": [],
+ "tempo_s": 16.9,
+ "riferimento": {
+  "risposta": "Al 2/11/2026, dall'inizio della XIX: alla Camera 40 deputati hanno cambiato gruppo, per 52 passaggi in tutto (fra cui i 9 deputati di Italia Viva usciti da Azione-IV il 20/11/2023 per formare IV-CR); al Senato 13 senatori, per 15 passaggi. L'elenco con date, gruppo di partenza e di arrivo è in «risultato».",
+  "stato": "calcolata",
+  "limiti": "Gruppo = gruppo parlamentare, con le componenti del Misto ricondotte al Misto: entrare in una componente del Misto restando nel Misto non conta. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio e componenti AVS e NM prima della costituzione dei gruppi). Conta come cambio anche la nascita di IV-CR alla Camera. Un ritorno al gruppo di prima conta come un nuovo cambio."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": null,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 16.9
+ },
+ "causa_probabile": "dati",
+ "note": "Non dà il numero (riferimento: Camera 40 deputati, 52 passaggi; Senato 13 senatori, 15 passaggi). Dichiara anche dati fermi al 19/10 (Camera) e 8/10 (Senato)."
+}

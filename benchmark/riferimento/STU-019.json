@@ -1,0 +1,414 @@
+{
+ "id": "STU-019",
+ "domanda": "quante proposte di legge di iniziativa popolare ci sono e che fine hanno fatto?",
+ "sql": [
+  "select chamber, status, count(*) n, string_agg(number, ', ' order by date) numeri from act\nwhere legislature=19 and kind='bill' and initiative ilike 'popolare' group by 1,2 order by 1,3 desc",
+  "select uri, number, date, title, status, status_date, law_number, law_date from act\nwhere legislature=19 and kind='bill' and initiative ilike 'popolare' order by chamber, date"
+ ],
+ "risultato": {
+  "per_stato": [
+   {
+    "chamber": "camera",
+    "status": "Assegnato",
+    "n": 6,
+    "numeri": "1, 3, 4, 1596, 2450, 2997"
+   },
+   {
+    "chamber": "camera",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "n": 6,
+    "numeri": "797, 796, 2035, 2036, 2037, 2755"
+   },
+   {
+    "chamber": "camera",
+    "status": "In corso di esame in Commissione",
+    "n": 2,
+    "numeri": "2179, 2841"
+   },
+   {
+    "chamber": "camera",
+    "status": "Assorbito dalla reiezione di pdl abbinato",
+    "n": 1,
+    "numeri": "2"
+   },
+   {
+    "chamber": "camera",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "n": 1,
+    "numeri": "1573"
+   },
+   {
+    "chamber": "senato",
+    "status": "esame in comm.",
+    "n": 5,
+    "numeri": "1317, 1196, 1394, 1597, 1760"
+   },
+   {
+    "chamber": "senato",
+    "status": "assegnato (no esame)",
+    "n": 5,
+    "numeri": "1720, 1740, 1946, 2039, 2050"
+   },
+   {
+    "chamber": "senato",
+    "status": "assorbito",
+    "n": 3,
+    "numeri": "956, 1365, 1656"
+   },
+   {
+    "chamber": "senato",
+    "status": "ritirato",
+    "n": 1,
+    "numeri": "1732"
+   },
+   {
+    "chamber": "senato",
+    "status": "appr. definit. Legge",
+    "n": 1,
+    "numeri": "1407"
+   },
+   {
+    "chamber": "senato",
+    "status": "respinto",
+    "n": 1,
+    "numeri": "764"
+   }
+  ],
+  "atti": [
+   {
+    "uri": "it:camera:19:ac:1",
+    "number": "1",
+    "date": "2018-04-19",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Misure a sostegno dei disoccupati e dell'uscita anticipata dal lavoro\" (1)",
+    "status": "Assegnato",
+    "status_date": "2022-11-09",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2",
+    "number": "2",
+    "date": "2018-04-19",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Misure a sostegno della maternità e della paternità\" (2)",
+    "status": "Assorbito dalla reiezione di pdl abbinato",
+    "status_date": "2026-02-24",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:3",
+    "number": "3",
+    "date": "2018-09-20",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Sospensione dell'obbligo vaccinale per l'età evolutiva\" (3)",
+    "status": "Assegnato",
+    "status_date": "2022-11-09",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:4",
+    "number": "4",
+    "date": "2021-04-29",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Norme contro la propaganda e la diffusione di messaggi inneggianti a fascismo e nazismo e la vendita e produzione di oggetti con simboli fascisti e nazisti\" (4)",
+    "status": "Assegnato",
+    "status_date": "2022-11-09",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:797",
+    "number": "797",
+    "date": "2023-01-20",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Abolizione delle botticelle\" (797)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2023-03-20",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:796",
+    "number": "796",
+    "date": "2023-01-20",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Abolizione della caccia\" (796)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2023-03-20",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:1573",
+    "number": "1573",
+    "date": "2023-11-27",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"La partecipazione al lavoro. Per una <em>governance</em> d’impresa partecipata dai lavoratori\" (1573)",
+    "status": "Approvato definitivamente dal Senato. Legge",
+    "status_date": "2025-05-15",
+    "law_number": "76",
+    "law_date": "2025-05-15"
+   },
+   {
+    "uri": "it:camera:19:ac:1596",
+    "number": "1596",
+    "date": "2023-12-05",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Introduzione del comma 1-<em>bis</em> dell’articolo 14 della legge 22 maggio 1978, n. 194\" (1596)",
+    "status": "Assegnato",
+    "status_date": "2024-02-21",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2037",
+    "number": "2037",
+    "date": "2024-09-13",
+    "title": "PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA POPOLARE: \"<em>Stop</em> all’indottrinamento <em>gender</em> nelle scuole\" (2037)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2025-01-27",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2035",
+    "number": "2035",
+    "date": "2024-09-13",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Diritto alla libertà di pagamento in contanti\" (2035)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2025-01-27",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2036",
+    "number": "2036",
+    "date": "2024-09-13",
+    "title": "PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA POPOLARE: \"Diritto all’autoproduzione del cibo\" (2036)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2025-01-27",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2179",
+    "number": "2179",
+    "date": "2024-12-19",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Disposizioni per l’istituzione del salario minimo\" (2179)",
+    "status": "In corso di esame in Commissione",
+    "status_date": "2026-04-09",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2450",
+    "number": "2450",
+    "date": "2025-05-29",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Modifiche alla tabella A allegata al decreto del Presidente della Repubblica 26 ottobre 1972, n. 633, concernenti la riduzione dell’aliquota dell’imposta sul valore aggiunto relativa ai prodotti per l’igiene femminile e ad alcuni prodotti per la prima infanzia\" (2450)",
+    "status": "Assegnato",
+    "status_date": "2025-07-01",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2755",
+    "number": "2755",
+    "date": "2025-12-31",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Legge Zuncheddu ed altri su risarcimento vittime di giustizia\" (2755)",
+    "status": "Non raggiunto il quorum di firme ex art. 71, comma 2, della Costituzione",
+    "status_date": "2026-01-28",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2841",
+    "number": "2841",
+    "date": "2026-03-11",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Modifiche all’articolo 64 del decreto-legge 25 giugno 2008, n. 112, convertito, con modificazioni, dalla legge 6 agosto 2008, n. 133, e altre disposizioni concernenti la formazione delle classi nelle scuole di ogni ordine e grado e rideterminazione del numero di alunni dell’istituzione scolastica necessario per l’assegnazione di un dirigente scolastico con incarico a tempo indeterminato\" (2841)",
+    "status": "In corso di esame in Commissione",
+    "status_date": "2026-10-01",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:camera:19:ac:2997",
+    "number": "2997",
+    "date": "2026-06-30",
+    "title": "PROPOSTA DI LEGGE D'INIZIATIVA POPOLARE: \"Remigrazione e riconquista: Disposizioni in materia di governo dei flussi migratori, istituzione del programma nazionale di remigrazione e di un fondo per la natalità italiana\" (2997)",
+    "status": "Assegnato",
+    "status_date": "2026-07-14",
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:764",
+    "number": "764",
+    "date": "2023-06-01",
+    "title": "Modifica dell'articolo 116, terzo comma, della Costituzione, concernente il riconoscimento alle Regioni di forme e condizioni particolari di autonomia, e modifiche all'articolo 117, commi primo, secondo e terzo, della Costituzione, con l'introduzione di una clausola di supremazia della legge statale e lo spostamento di alcune materie di potestà legislativa concorrente alla potestà legislativa esclusiva dello Stato",
+    "status": "respinto",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:956",
+    "number": "956",
+    "date": "2023-11-28",
+    "title": "Disposizioni in materia di salario minimo",
+    "status": "assorbito",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1317",
+    "number": "1317",
+    "date": "2024-06-05",
+    "title": "La depenalizzazione della coltivazione per uso personale ed in forma associata della cannabis",
+    "status": "esame in comm.",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1196",
+    "number": "1196",
+    "date": "2024-06-28",
+    "title": "Riconoscimento dello Stato di Palestina con capitale Gerusalemme Est",
+    "status": "esame in comm.",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1365",
+    "number": "1365",
+    "date": "2025-01-28",
+    "title": "Il nucleare nel mix elettrico nazionale ora",
+    "status": "assorbito",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1394",
+    "number": "1394",
+    "date": "2025-02-21",
+    "title": "Introduzione dell'insegnamento scolastico dell'educazione sentimentale in tutte le scuole di ogni ordine e grado, statali, private e paritarie",
+    "status": "esame in comm.",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1407",
+    "number": "1407",
+    "date": "2025-02-27",
+    "title": "Disposizioni per la partecipazione dei lavoratori alla gestione, al capitale e agli utili delle imprese",
+    "status": "appr. definit. Legge",
+    "status_date": null,
+    "law_number": "76",
+    "law_date": "2025-05-15"
+   },
+   {
+    "uri": "it:senato:19:ddl:1597",
+    "number": "1597",
+    "date": "2025-07-15",
+    "title": "Disposizioni in materia di aiuto medico alla morte volontaria",
+    "status": "esame in comm.",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1656",
+    "number": "1656",
+    "date": "2025-09-19",
+    "title": "Stop caccia! Stop uccisioni degli animali per divertimento. Per il divieto di caccia, il diritto alla vita degli animali selvatici e la promozione della convivenza con gli stessi",
+    "status": "assorbito",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1720",
+    "number": "1720",
+    "date": "2025-11-14",
+    "title": "Modifica all'articolo 75, quarto comma, della Costituzione, per abolire il quorum di partecipazione per la validità dei referendum abrogativi e favorire la partecipazione democratica: chi vota, decide",
+    "status": "assegnato (no esame)",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1732",
+    "number": "1732",
+    "date": "2025-12-01",
+    "title": "Voglio votare fuorisede",
+    "status": "ritirato",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1740",
+    "number": "1740",
+    "date": "2025-12-09",
+    "title": "Istituzione della Rete nazionale dei servizi pubblici per il benessere psicologico",
+    "status": "assegnato (no esame)",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1760",
+    "number": "1760",
+    "date": "2026-01-16",
+    "title": "Voglio votare fuorisede",
+    "status": "esame in comm.",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:1946",
+    "number": "1946",
+    "date": "2026-06-26",
+    "title": "Accisa generale sui prodotti da fumo e nicotina per la tutela della salute pubblica e il rafforzamento del Servizio sanitario nazionale",
+    "status": "assegnato (no esame)",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:2039",
+    "number": "2039",
+    "date": "2026-09-18",
+    "title": "Disposizioni per il divieto progressivo delle gabbie negli allevamenti e la transizione a sistemi cage free",
+    "status": "assegnato (no esame)",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   },
+   {
+    "uri": "it:senato:19:ddl:2050",
+    "number": "2050",
+    "date": "2026-09-25",
+    "title": "Istituzione e modalità di finanziamento del Dipartimento della difesa civile, non armata e nonviolenta",
+    "status": "assegnato (no esame)",
+    "status_date": null,
+    "law_number": null,
+    "law_date": null
+   }
+  ]
+ },
+ "risposta": "Nella XIX le proposte di legge di iniziativa popolare sono 16 alla Camera e 16 al Senato; una è la stessa (partecipazione dei lavoratori alla gestione delle imprese, C. 1573 e S. 1407), quindi 31 iniziative distinte. Una sola è diventata legge: la legge 76/2025 sulla partecipazione dei lavoratori. Camera: 6 non hanno raggiunto le 50.000 firme (fra cui abolizione della caccia e delle botticelle, contanti, «Stop indottrinamento gender»); 6 sono solo assegnate (fra cui le C. 1, 3 e 4, presentate nella XVIII); 2 sono in esame in commissione (C. 2179 sul salario minimo e C. 2841); 1 (C. 2, maternità e paternità) è assorbita dalla reiezione di una PDL abbinata. Senato: 5 in esame in commissione (cannabis, Stato di Palestina, educazione sentimentale, aiuto medico a morire, voto fuorisede S. 1760), 5 assegnate senza esame, 3 assorbite (salario minimo S. 956, nucleare, caccia), 1 respinta (S. 764, autonomia differenziata) e 1 ritirata (S. 1732, voto fuorisede).",
+ "stato": "calcolata",
+ "limiti": "act.initiative = «Popolare» (anche «POPOLARE»). Alla Camera la XIX conta anche le proposte popolari presentate nella XVIII, che non decadono (C. 1-4). Lo stato del Senato è senza data.",
+ "problemi_dati": [
+  {
+   "problema": "act.initiative al Senato ha «Popolare» e «POPOLARE» come valori diversi.",
+   "sql": "select initiative, count(*) from act where initiative ilike 'popolare' group by 1"
+  },
+  {
+   "problema": "I titoli della Camera contengono marcatori HTML («<em>governance</em>», «<em>Stop</em>»).",
+   "sql": "select count(*) from act where title like '%<em>%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

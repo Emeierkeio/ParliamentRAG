@@ -1,0 +1,86 @@
+{
+ "id": "DOC-019",
+ "domanda": "i lavori dell'Aula di questa settimana da proiettare il lunedì",
+ "sql": [
+  "select uri, chamber, date, status, start_time from sitting where body in ('it:camera:19:aula','it:senato:19:aula') and date between '2026-11-02' and '2026-11-08' order by date",
+  "select i.ord, i.scheduled_time, i.title, i.text from agenda_item i where i.sitting in\n (select uri from sitting where body in ('it:camera:19:aula','it:senato:19:aula') and date between '2026-11-02' and '2026-11-08') order by i.sitting, i.ord",
+  "select chamber, status, max(date) ultima from sitting where body in ('it:camera:19:aula','it:senato:19:aula') group by 1,2 order by 1,2"
+ ],
+ "risultato": {
+  "sedute": [
+   {
+    "uri": "it:camera:19:sed0737",
+    "chamber": "camera",
+    "date": "2026-11-03",
+    "status": "planned",
+    "start_time": "10:00"
+   }
+  ],
+  "ordine_del_giorno": [
+   {
+    "ord": 1,
+    "scheduled_time": "11:30",
+    "title": "Svolgimento di interrogazioni (vedi allegato).",
+    "text": null
+   },
+   {
+    "ord": 2,
+    "scheduled_time": "14:00",
+    "title": "Discussione sulle linee generali del disegno di legge",
+    "text": "S. 2029 - Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche (Approvato dal Senato). (C. 3148)\nRelatori: MILANI, per la VIII Commissione; ANDREUZZA, per la X Commissione."
+   },
+   {
+    "ord": 3,
+    "scheduled_time": null,
+    "title": "Deliberazioni, ai sensi dell'articolo 123-bis, comma 3, del Regolamento, in ordine ai termini per la conclusione dell'esame in Assemblea dei disegni di legge collegati alla manovra di finanza pubblica",
+    "text": "Legge annuale per il mercato e la concorrenza 2026. (C. 3120)\nAttribuzione alla regione Veneto di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione. (C. 3164)\nAttribuzione alla regione Liguria di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione. (C. 3161)\nAttribuzione alla regione Lombardia di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione. (C. 3162)\nAttribuzione alla regione Piemonte di ulteriori forme e condizioni particolari di autonomia, ai sensi dell'articolo 116, terzo comma, della Costituzione. (C. 3163)"
+   },
+   {
+    "ord": 4,
+    "scheduled_time": null,
+    "title": "Dichiarazione di urgenza della proposta di legge n. 2916 (vedi allegato).",
+    "text": null
+   },
+   {
+    "ord": 5,
+    "scheduled_time": null,
+    "title": "Esame e votazione delle questioni pregiudiziali riferite al disegno di legge",
+    "text": "Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile. (C. 3159) (vedi fascicoli di seduta stampati)"
+   },
+   {
+    "ord": 6,
+    "scheduled_time": null,
+    "title": "Seguito della discussione del disegno di legge",
+    "text": "S. 2029 - Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche (Approvato dal Senato). (C. 3148) (vedi fascicoli di seduta stampati)\nRelatori: MILANI, per la VIII Commissione; ANDREUZZA, per la X Commissione."
+   },
+   {
+    "ord": 7,
+    "scheduled_time": null,
+    "title": "Discussione sulle linee generali del disegno di legge",
+    "text": "Conversione in legge, con modificazioni, del decreto-legge 17 settembre 2026, n. 162, recante disposizioni urgenti per il sostegno economico e il contenimento degli effetti derivanti dal perdurante aumento del costo dei carburanti, nonché in materia fiscale. (C. 3106-A)\nRelatrice: MATERA."
+   }
+  ],
+  "ultime_sedute": [
+   {
+    "chamber": "camera",
+    "status": "held",
+    "ultima": "2026-10-30"
+   },
+   {
+    "chamber": "camera",
+    "status": "planned",
+    "ultima": "2026-11-03"
+   },
+   {
+    "chamber": "senato",
+    "status": "held",
+    "ultima": "2026-10-28"
+   }
+  ]
+ },
+ "risposta": "Settimana dal 2 all'8/11/2026. Camera: nel DB c'è una sola seduta convocata, martedì 3/11/2026 alle 10. Ordine del giorno: alle 11.30 interrogazioni; alle 14 discussione generale del DL 157/2026 sui prezzi petroliferi (S. 2029, approvato dal Senato, C. 3148); deliberazioni sui termini dei collegati alla manovra (concorrenza 2026, C. 3120, e autonomia di Veneto, Liguria e altre regioni, C. 3161-3164); dichiarazione d'urgenza della PDL 2916; questioni pregiudiziali sul DL 190/2026 sicurezza (C. 3159); seguito del DL 157/2026; discussione generale del DL 162/2026 carburanti (C. 3106-A, relatrice Matera). Senato: nel DB non c'è il calendario (ultima seduta registrata il 28/10/2026).",
+ "stato": "parziale",
+ "limiti": "«Questa settimana» = da lunedì 2 a domenica 8/11/2026. Per la Camera c'è solo la seduta del 3/11 (status planned), non il calendario dell'intera settimana; per il Senato mancano sedute future e calendario.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}

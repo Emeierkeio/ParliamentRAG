@@ -1,0 +1,48 @@
+{
+ "id": "GIO-036",
+ "domanda": "Quante volte Galeazzo Bignami, primo firmatario della legge elettorale, è intervenuto in Aula su questo testo?",
+ "sql": [
+  "-- interventi di Galeazzo Bignami nei punti d'Aula della Camera sulla legge elettorale (C. 2822-A e 2822-B),\n-- compresi i sottopunti (uri dell'item che inizia con quello del punto collegato)\nWITH punti AS (\n  SELECT DISTINCT ai.uri, iaa.act_ref\n  FROM agenda_item_act iaa JOIN agenda_item ai ON ai.uri = iaa.item\n  JOIN sitting s ON s.uri = ai.sitting\n  WHERE s.chamber = 'camera' AND s.kind = 'assembly_verbatim' AND iaa.act_ref ~ '^pdl:2822'\n)\nSELECT s.date, s.uri AS seduta, p.act_ref, sp.uri AS intervento, sp.as_group, sp.as_office,\n       length(sp.text) AS caratteri, left(regexp_replace(sp.text, '\\s+', ' ', 'g'), 160) AS inizio\nFROM speech sp\nJOIN agenda_item ai ON ai.uri = sp.item\nJOIN punti p ON ai.uri = p.uri OR ai.uri LIKE p.uri || '.%'\nJOIN sitting s ON s.uri = ai.sitting\nWHERE sp.person = 'it:person:camera:307298'   -- Galeazzo Bignami\nORDER BY s.date, sp.uri",
+  "-- interventi di Bignami negli altri punti delle stesse sedute in cui l'Aula ha esaminato la legge elettorale\nWITH sedute AS (\n  SELECT DISTINCT ai.sitting FROM agenda_item_act x JOIN agenda_item ai ON ai.uri = x.item\n  JOIN sitting s ON s.uri = ai.sitting\n  WHERE s.kind = 'assembly_verbatim' AND x.act_ref ~ '^pdl:2822'\n)\nSELECT s.date, ai.uri AS punto, ai.title, count(*) AS frammenti,\n       left(string_agg(sp.text, ' ' ORDER BY sp.ord), 300) AS inizio\nFROM speech sp JOIN agenda_item ai ON ai.uri = sp.item JOIN sitting s ON s.uri = ai.sitting\nWHERE sp.person = 'it:person:camera:307298' AND ai.sitting IN (SELECT sitting FROM sedute)\nGROUP BY 1,2,3 ORDER BY 1,2"
+ ],
+ "risultato": {
+  "q1": [],
+  "q2": [
+   {
+    "date": "2026-07-14",
+    "punto": "it:camera:19:sed0689:tit00080",
+    "title": "Sull'ordine dei lavori e per richiami al Regolamento.",
+    "frammenti": 5,
+    "inizio": "Presidente, credo che sia importante ristabilire un ordine dei fattori. Noi, come Fratelli d'Italia, insieme ai colleghi e agli amici di centrodestra, abbiamo assunto un impegno dinanzi agli italiani: quello di dare loro la possibilità di scegliere i deputati e le deputate che siedono in quest'Aula."
+   },
+   {
+    "date": "2026-07-14",
+    "punto": "it:camera:19:sed0689:tit00140",
+    "title": "Sull'ordine dei lavori e per richiami al Regolamento.",
+    "frammenti": 2,
+    "inizio": "Grazie, Presidente. Ringrazio l'onorevole Colucci. Rispetto alla richiesta formulata dal collega Fornaro, abbiamo compreso che l'obiettivo è quello di interrompere i lavori, l'avete più volte rappresentato. Noi crediamo, anche per rispetto degli uffici, che sia assentibile la richiesta di prendersi "
+   },
+   {
+    "date": "2026-10-07",
+    "punto": "it:camera:19:sed0722:tit00050",
+    "title": "Sull'ordine dei lavori e per un richiamo al Regolamento.",
+    "frammenti": 1,
+    "inizio": "Grazie, Presidente. Intervengo sempre come richiamo al Regolamento, ma anche in seguito all'intervento svolto dal collega Ricciardi, che non ho capito a che titolo fosse, però va comunque bene, perché sicuramente ci sarà stato un appiglio. Mi permetto, prima tuttavia di entrare nella vicenda, di pre"
+   }
+  ]
+ },
+ "risposta": "Nessuna volta nella discussione del testo: nei punti d'Aula della Camera collegati alla legge elettorale (C. 2822-A in prima lettura, 26/6-16/7/2026, e C. 2822-B in terza lettura, 30/9-8/10/2026) non c'è alcun intervento di Galeazzo Bignami. Nelle stesse sedute è intervenuto tre volte in punti procedurali: il 14/7/2026 due volte «Sull'ordine dei lavori e per richiami al Regolamento», una sulle preferenze e sui seggi per le candidate («ci dite che volete le preferenze e votate contro le preferenze»), una sull'organizzazione dell'esame dopo il ritiro degli emendamenti dell'opposizione; il 7/10/2026 un richiamo al Regolamento su un altro tema (la strage di Bologna).",
+ "stato": "calcolata",
+ "limiti": "«Su questo testo» è letto come: interventi nei punti all'ordine del giorno collegati al C. 2822 (con i sottopunti). Gli interventi sull'ordine dei lavori nelle stesse sedute non sono collegati all'atto e sono riportati a parte (seconda query). I resoconti spezzano un intervento in più frammenti a ogni interruzione: si contano gli interventi per punto, non i frammenti. Al Senato Bignami non siede.",
+ "problemi_dati": [
+  {
+   "problema": "Nei sommari di commissione speech.as_group concatena i gruppi di più deputati citati nella stessa riga (2.302 righe, es. «FDI)(M5S)(PD-IDP)(IV-C-RE)(FDI)(AVS»).",
+   "sql": "SELECT as_group, count(*) FROM speech WHERE as_group LIKE '%)(%' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"
+  },
+  {
+   "problema": "I punti «Si riprende la discussione.», che continuano l'esame di un atto, non hanno quasi mai righe in agenda_item_act (4 collegati su 510): gli interventi lì dentro non si legano all'atto.",
+   "sql": "SELECT count(*) n, count(*) FILTER (WHERE EXISTS (SELECT 1 FROM agenda_item_act x WHERE x.item=ai.uri)) collegati FROM agenda_item ai WHERE ai.title LIKE 'Si riprende la discussione%'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02"
+}

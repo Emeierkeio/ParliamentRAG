@@ -1,0 +1,89 @@
+{
+ "id": "APP-022",
+ "domanda": "è vero che il femminicidio è passato all'unanimità?",
+ "sql": [
+  "select v.uri, v.chamber, v.date, v.present, v.voting, v.favor, v.against, v.abstain, a.law_number, a.law_date, a.title\nfrom vote v join vote_act x on x.vote=v.uri join act a on a.uri=x.act\nwhere v.uri in ('it:camera:19:sed0571:v045','it:senato:19:sed0332:v001')",
+  "select vote, result, count(*) n from ballot where vote in ('it:camera:19:sed0571:v045','it:senato:19:sed0332:v001') group by 1,2 order by 1,2"
+ ],
+ "risultato": {
+  "voti_finali": [
+   {
+    "uri": "it:camera:19:sed0571:v045",
+    "chamber": "camera",
+    "date": "2025-11-25",
+    "present": 237,
+    "voting": 237,
+    "favor": 237,
+    "against": 0,
+    "abstain": 0,
+    "law_number": "181",
+    "law_date": "2025-12-02",
+    "title": "S. 1433. - \"Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime\" <em>(approvato dal Senato)</em> (2528)"
+   },
+   {
+    "uri": "it:senato:19:sed0332:v001",
+    "chamber": "senato",
+    "date": "2025-07-23",
+    "present": 162,
+    "voting": 161,
+    "favor": 161,
+    "against": 0,
+    "abstain": 0,
+    "law_number": "181",
+    "law_date": "2025-12-02",
+    "title": "Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime"
+   }
+  ],
+  "voti_individuali": [
+   {
+    "vote": "it:camera:19:sed0571:v045",
+    "result": "absent",
+    "n": 89
+   },
+   {
+    "vote": "it:camera:19:sed0571:v045",
+    "result": "chair",
+    "n": 1
+   },
+   {
+    "vote": "it:camera:19:sed0571:v045",
+    "result": "favor",
+    "n": 237
+   },
+   {
+    "vote": "it:camera:19:sed0571:v045",
+    "result": "mission",
+    "n": 72
+   },
+   {
+    "vote": "it:senato:19:sed0332:v001",
+    "result": "favor",
+    "n": 161
+   },
+   {
+    "vote": "it:senato:19:sed0332:v001",
+    "result": "mission",
+    "n": 30
+   },
+   {
+    "vote": "it:senato:19:sed0332:v001",
+    "result": "present_not_voting",
+    "n": 4
+   }
+  ]
+ },
+ "risposta": "Sì, all'unanimità dei votanti, non di tutti i parlamentari. La legge sul delitto di femminicidio (S. 1433, C. 2528, legge 181/2025) è passata al Senato il 23/7/2025 con 161 sì, 0 no e 0 astenuti (4 presenti non votanti: Zanettin, Delrio, Alfieri, Camusso; 30 in missione) e alla Camera, in via definitiva, il 25/11/2025 con 237 sì, 0 no e 0 astenuti (89 assenti, 72 in missione).",
+ "stato": "calcolata",
+ "limiti": "Al Senato i voti individuali non hanno righe per gli assenti, quindi gli assenti del Senato non si possono contare.",
+ "problemi_dati": [
+  {
+   "problema": "Al Senato present (162) non torna con i voti individuali (161 sì + 4 presenti non votanti).",
+   "sql": "select uri, present, voting, favor from vote where uri='it:senato:19:sed0332:v001'"
+  },
+  {
+   "problema": "Al Senato i voti individuali non hanno righe per gli assenti (195 righe su 200+ senatori).",
+   "sql": "select count(*) from ballot where vote='it:senato:19:sed0332:v001'"
+  }
+ ],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

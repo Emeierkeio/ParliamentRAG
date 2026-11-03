@@ -1,0 +1,113 @@
+# Configurazione della pipeline notturna. Ogni fonte ha la sua sezione: aggiungerne una è aggiungere un connettore e una sezione.
+
+[giro]
+timeout_minuti = 300          # oltre questo il giro si ferma e avvisa
+cartella_dati = "dati"        # lago dei grezzi, stato, uscite (fuori dal repo in produzione)
+
+[fonti.camera_resoconti]
+legislatura = 19
+url = "https://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=assemblea&tipoDoc=formato_xml&tipologia=stenografico&idNumero={num:04d}&idLegislatura={legislatura}"
+pausa_secondi = 0.5           # fra una richiesta e l'altra
+tentativi = 3
+ricontrolla = 3              # riscarica le ultime sedute: il resoconto recente può cambiare
+massimo_per_giro = 100       # sedute nuove per notte: il primo caricamento della XIX si completa in poche notti
+
+[fonti.camera_ocd]
+legislatura = 19
+pausa_secondi = 0.5           # fra una pagina e l'altra della stessa query
+
+[fonti.camera_voti]
+legislatura = 19
+pausa_secondi = 0.5
+ricontrolla = 3               # le ultime sedute: la Camera completa i dati nei giorni dopo
+massimo_per_giro = 1000       # primo giro: circa 700 sedute, un'ora scarsa
+
+[fonti.camera_atti]
+legislatura = 19
+pausa_secondi = 0.5
+
+[fonti.camera_governo]
+legislatura = 19
+inizio_legislatura = "20221013"   # per includere i governi ancora in carica all'inizio della legislatura
+pausa_secondi = 0.5
+
+[fonti.camera_bollettino]
+legislatura = 19
+pausa_secondi = 1.0           # pagine HTML del sito: una al secondo
+ricontrolla_giorni = 3        # gli ultimi Bollettini si completano nei giorni dopo
+massimo_giorni_per_giro = 90  # primo caricamento: circa 750 giorni in 8 notti (30 giorni = 22 minuti; tempo massimo del passo 90)
+
+[fonti.camera_stenografici_commissioni]
+legislatura = 19
+primo_mese = 202210           # primo mese con sedute di commissione
+pausa_secondi = 1.0
+massimo_per_giro = 200        # primo caricamento: qualche migliaio di stenografici, spalmati su più notti
+
+[fonti.camera_aic]
+legislatura = 19
+pausa_secondi = 0.5
+massimo_mesi_per_giro = 60    # primo giro: tutta la legislatura (circa 49 mesi); poi solo i mesi cambiati
+
+[fonti.camera_webtv]
+legislatura = 19
+pausa_secondi = 10            # il sito chiede 10 secondi fra le richieste (Crawl-delay)
+massimo_per_giro = 100        # pagine evento per notte: il primo caricamento (circa 740) si fa in 8 notti
+ricontrolla = 3               # l'indice degli interventi delle ultime sedute si completa nei giorni dopo
+
+[fonti.camera_odg]
+legislatura = 19
+primo_mese = 202210
+pausa_secondi = 1.0
+massimo_giorni_per_giro = 60  # ordini del giorno passati per notte (circa 740 in tutto); i futuri si leggono sempre
+
+[fonti.camera_documenti]
+legislatura = 19
+pausa_secondi = 1.0
+massimo_file_per_giro = 800   # file nuovi per giro (8.064 in tutto): 800 dal 2/11/2026, da alzare a 1.500 quando Bollettino, resoconti e stenografici sono finiti
+
+[fonti.camera_dossier]
+legislatura = 19
+pausa_secondi = 1.0
+massimo_per_giro = 300        # dossier nuovi per notte (circa 3.600 in tutto): il primo caricamento in 12 notti
+
+[fonti.camera_emendamenti]
+legislatura = 19
+pausa_secondi = 0.5
+massimo_per_giro = 4000       # richieste per notte: i file già scaricati costano un 304 se non sono cambiati
+
+[fonti.camera_testi]
+legislatura = 19
+pausa_secondi = 1.0
+massimo_per_giro = 500        # versioni nuove per notte (circa 3.900 in tutto): il primo caricamento in 8 notti
+
+[fonti.senato_osr]
+legislatura = 19
+pausa_secondi = 5             # dati.senato.it: richieste lente, senato.it blocca l'IP dopo ~400 richieste ravvicinate
+
+[fonti.senato_voti]
+legislatura = 19
+pausa_secondi = 5             # senato.it blocca l'IP dopo ~400 richieste ravvicinate
+massimo_sedute_per_giro = 500 # il tetto vero è sulle richieste
+massimo_richieste_per_giro = 150  # circa 45 votazioni per richiesta: la legislatura ne chiede qualche centinaio, su più notti
+ricontrolla = 5               # i voti delle ultime sedute arrivano in ritardo
+
+[fonti.senato_ddl]
+legislatura = 19
+pausa_secondi = 5
+
+[fonti.senato_aic]
+legislatura = 19               # sindacato ispettivo del Senato, da dati.camera.it (non tocca senato.it)
+pausa_secondi = 0.5
+massimo_mesi_per_giro = 60
+
+[fonti.senato_resoconti]
+legislatura = 19
+cartella_import = "../ricerca/data/senate_xml"   # resoconti AKN già scaricati; le sedute nuove aspettano il browser senza interfaccia
+
+[fonti.senato_akn]
+legislatura = 19
+tipi = ["resaula", "sommcomm", "ddlpres", "ddlcomm", "ddlmess", "emend", "emendc"]   # resoconti, sommari, testi dei ddl, emendamenti (GitHub, CC BY 4.0)
+cartella_clone = "cache/senato_akn"
+
+[fonti.eurovoc]
+pausa_secondi = 1.0           # Ufficio delle pubblicazioni dell'UE: nomi dei temi degli atti, due richieste

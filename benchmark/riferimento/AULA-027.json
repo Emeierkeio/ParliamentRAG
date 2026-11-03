@@ -1,0 +1,50 @@
+{
+ "id": "AULA-027",
+ "domanda": "Quante questioni sospensive sono state votate alla Camera in questa legislatura e con quale esito?",
+ "sql": [
+  "SELECT v.uri, v.date, v.title, v.description, v.favor, v.against, v.abstain, v.approved,\n       a.uri AS atto_camera, left(a.title, 160) AS titolo_atto\nFROM vote v\nLEFT JOIN vote_act va ON va.vote = v.uri\nLEFT JOIN act a ON a.uri = va.act AND a.chamber = 'camera'\nWHERE v.chamber = 'camera' AND v.legislature = 19\n  AND (v.kind = 'suspensive_question' OR v.title ILIKE '%sospensiv%' OR v.description ILIKE '%sospensiv%')\nORDER BY v.date"
+ ],
+ "risultato": [
+  {
+   "uri": "it:camera:19:sed0133:v037",
+   "date": "2023-07-05",
+   "title": "Votazione questione sospensiva PDL n. 0712",
+   "description": "Questione sospensiva n. 1 FOTI TOMMASO (FDI), MOLINARI RICCARDO (LEGA), BARELLI PAOLO (FI-PPE), LUPI MAURIZIO (NM-M) ed altri",
+   "favor": 195,
+   "against": 117,
+   "abstain": 0,
+   "approved": true,
+   "atto_camera": "it:camera:19:ac:712",
+   "titolo_atto": "DE LUCA: \"Ratifica ed esecuzione dell’Accordo recante modifica del Trattato che istituisce il Meccanismo europeo di stabilità, fatto a Bruxelles il 27 gennaio e"
+  },
+  {
+   "uri": "it:camera:19:sed0153:v001",
+   "date": "2023-08-03",
+   "title": "Votazione questione sospensiva PDL n. 1275",
+   "description": "Questione sospensiva n. 1 FOTI TOMMASO (FDI), MOLINARI RICCARDO (LEGA), BARELLI PAOLO (FI-PPE), LUPI MAURIZIO (NM-M) ed altri",
+   "favor": 168,
+   "against": 127,
+   "abstain": 3,
+   "approved": true,
+   "atto_camera": "it:camera:19:ac:1275",
+   "titolo_atto": "CONTE ed altri (i firmatari hanno ritirato la propria sottoscrizione alla proposta di legge): \"Disposizioni per l’istituzione del salario minimo\" (1275)"
+  },
+  {
+   "uri": "it:camera:19:sed0231:v003",
+   "date": "2024-01-23",
+   "title": "Votazione questione sospensiva DDL n. 1620",
+   "description": "Questione sospensiva n. 1 COLUCCI ALFONSO (M5S)",
+   "favor": 116,
+   "against": 152,
+   "abstain": 3,
+   "approved": false,
+   "atto_camera": "it:camera:19:ac:1620",
+   "titolo_atto": "\"Ratifica ed esecuzione del Protocollo tra il Governo della Repubblica italiana e il Consiglio dei ministri della Repubblica di Albania per il rafforzamento del"
+  }
+ ],
+ "risposta": "Alla Camera nella XIX sono state votate 3 questioni sospensive: 5/7/2023 sulla PDL 712 (ratifica della modifica al Trattato MES), presentata da Foti, Molinari, Barelli, Lupi e altri, approvata con 195 sì e 117 no; 3/8/2023 sulla PDL 1275 (salario minimo, Conte e altri), presentata dagli stessi capigruppo di maggioranza, approvata con 168 sì, 127 no e 3 astenuti; 23/1/2024 sul DDL 1620 (protocollo Italia-Albania in materia migratoria), presentata da Colucci (M5S), respinta con 116 sì, 152 no e 3 astenuti.",
+ "stato": "calcolata",
+ "limiti": null,
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02 (dopo le correzioni di vote_act e office)"
+}

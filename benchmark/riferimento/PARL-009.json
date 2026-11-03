@@ -1,0 +1,44 @@
+{
+ "id": "PARL-009",
+ "domanda": "Ricostruisci la storia dei gruppi dell'on. Rossano Sasso in questa legislatura.",
+ "sql": [
+  "SELECT g.short_name, g.name, g.kind, pg.short_name AS gruppo_padre, m.role, m.start_date, m.end_date, m.end_reason\nFROM membership m\nJOIN grp g ON g.uri = m.grp\nLEFT JOIN grp pg ON pg.uri = g.part_of\nWHERE m.person = 'it:person:camera:307360'   -- Rossano Sasso\nORDER BY m.start_date, g.kind"
+ ],
+ "risultato": [
+  {
+   "short_name": "LEGA",
+   "name": "Lega - Salvini Premier",
+   "kind": "group",
+   "gruppo_padre": null,
+   "role": "member",
+   "start_date": "2022-10-18",
+   "end_date": "2026-02-06",
+   "end_reason": "Cessazione"
+  },
+  {
+   "short_name": "MISTO",
+   "name": "Misto",
+   "kind": "group",
+   "gruppo_padre": null,
+   "role": "member",
+   "start_date": "2026-02-06",
+   "end_date": null,
+   "end_reason": null
+  },
+  {
+   "short_name": "MISTO-FNV-F",
+   "name": "Futuro Nazionale Vannacci - Free",
+   "kind": "misto_component",
+   "gruppo_padre": "MISTO",
+   "role": "member",
+   "start_date": "2026-05-27",
+   "end_date": null,
+   "end_reason": null
+  }
+ ],
+ "risposta": "Rossano Sasso nella XIX: gruppo Lega - Salvini Premier dal 18/10/2022 al 6/2/2026; dal 6/2/2026 gruppo Misto, senza componente fino al 26/5/2026; dal 27/5/2026 nel Misto con la componente Futuro Nazionale Vannacci - Free (MISTO-FNV-F), ancora in corso.",
+ "stato": "calcolata",
+ "limiti": "Il 6/2/2026 è insieme la data di fine nella Lega e di inizio nel Misto, come nel dato.",
+ "problemi_dati": [],
+ "controllato_su": "postgres v3 2026-11-02"
+}
