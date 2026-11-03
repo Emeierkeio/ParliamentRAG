@@ -1,10 +1,26 @@
-# ParliamentRAG
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/testata-scuro.png">
+  <img alt="ParliamentRAG: the records of the Italian Parliament in one database, and answers that you can check against them." src="docs/assets/testata-chiaro.png">
+</picture>
+
+<p>
+  <a href="LICENSE"><img alt="Licence: Apache 2.0" src="https://img.shields.io/badge/licence-Apache%202.0-2d5f8f?style=flat-square&labelColor=12171a"></a>
+  <a href="https://doi.org/10.5281/zenodo.23173703"><img alt="DOI 10.5281/zenodo.23173703" src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23173703-2d5f8f?style=flat-square&labelColor=12171a"></a>
+  <img alt="Python 3.13" src="https://img.shields.io/badge/python-3.13-2d5f8f?style=flat-square&labelColor=12171a">
+  <img alt="PostgreSQL 16 with pgvector" src="https://img.shields.io/badge/PostgreSQL%2016-pgvector-2d5f8f?style=flat-square&labelColor=12171a">
+  <a href="https://www.parliamentrag.it"><img alt="www.parliamentrag.it" src="https://img.shields.io/badge/live-www.parliamentrag.it-1f7a55?style=flat-square&labelColor=12171a"></a>
+</p>
 
 ParliamentRAG organises the records of the Italian Parliament, Chamber of Deputies and Senate, into one database, and answers questions about them under three guarantees that anyone can check:
 
 1. **Every parliamentary group is heard.** An answer about a debate covers majority and opposition, and the components of the Mixed Group one by one.
 2. **The voices quoted are authoritative on the topic.** For each group the system quotes the members who know the subject, by criteria that you can inspect.
 3. **Every quote is exact.** Text between «…» matches the official record word for word and links to it.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sigillo-scuro.png">
+  <img alt="Checked on every answer: every group, authoritative voices, exact quotes." src="docs/assets/sigillo-chiaro.png" width="640">
+</picture>
 
 This repository holds the whole system: the nightly pipeline from the official sources, the PostgreSQL schema, the semantic index, the public API, the MCP server for AI assistants, and the checks behind the three guarantees. The live service runs at [www.parliamentrag.it](https://www.parliamentrag.it).
 
@@ -92,10 +108,10 @@ Core tables:
 
 A nightly run downloads what changed, transforms it and loads it (`pipeline/`). It uses the Python standard library plus `pypdf` for PDF text.
 
-```
-sources ──► lake ──► transform ──► checks ──► PostgreSQL ──► passages ──► vectors
-fonti/      lago.py  trasforma/   controlli/  carica/        vettori.py   Batch API
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pipeline-scuro.png">
+  <img alt="The pipeline: official sources, lake, transform, checks, PostgreSQL, passages, vectors, then API, MCP and agent." src="docs/assets/pipeline-chiaro.png">
+</picture>
 
 - **Lake.** Each raw file is stored once, with source, key, hash, URL and date. Transforms start from the lake, so you can rebuild any table without downloading again.
 - **Transforms** are pure functions from a raw file to nodes, edges and texts. Each one has a test on a real sample in `tests/fixtures/`.
