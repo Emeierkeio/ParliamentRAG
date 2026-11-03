@@ -113,7 +113,7 @@ Core tables:
 
 ## Pipeline
 
-A nightly run downloads what changed, transforms it and loads it (`pipeline/`). It uses the Python standard library plus `pypdf` for PDF text.
+A nightly run downloads what changed, transforms it, loads it, then cuts the new texts into passages and sends them for vectors (`pipeline/`). It uses the Python standard library, plus `pypdf` and `cryptography` for PDF text.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/pipeline-scuro.png">
@@ -158,7 +158,9 @@ When a check fails, you see the failure next to the answer. The system keeps the
 
 **MCP server** (`POST /mcp`): eight tools for AI assistants (claude.ai, ChatGPT, Claude Desktop): `search_parliament`, `get_debate`, `list_sessions`, `get_session_votes`, `get_vote_details`, `get_voted_text`, `get_vote_hemicycle`, `verify_answer`. Every result links to the official record.
 
-**Agent** (`POST /v1/chat`): a language model that chooses among the typed tools of `api/strumenti/` and answers in Italian or English, with limits on steps, questions per address and daily spend outside the model.
+**Agent** (`POST /v1/chat`): a language model that chooses among the typed tools of `api/strumenti/` and answers in Italian or English, with limits on steps, questions per hour and daily spend outside the model. `GET /v1/uso` tells the interface how many questions remain in the current hour.
+
+**Chat log.** To find and fix errors, each question writes one row in `registro.chat` (`schema/registro.sql`): question, answer, tools called, errors, timings, cost. The row holds no IP address; the hourly limit counts a keyed hash of the address and deletes it after an hour. The read-only role behind the API and the MCP server cannot see the `registro` schema, and the role that writes it can only insert.
 
 ## Evaluation
 
@@ -181,7 +183,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m unittest discover -s tests -t .
 ```
 
-Vectors, after loading:
+The nightly run does the vector steps by itself; to run them by hand:
 
 ```sh
 .venv/bin/python -m pipeline.vettori taglia     # passages of new or changed texts
@@ -211,6 +213,7 @@ November 2026. The database holds both chambers of the XIX legislature; the nigh
 2. One service: site, agent, dossier, checks, API and MCP on PostgreSQL, on Railway, at www.parliamentrag.it.
 3. The authority score and the group check on PostgreSQL, with filters by chamber and period; a run on the full benchmark.
 4. Counting tools for numeric questions; the nightly run on a server; a public dump of the database with a DOI.
+5. A European language model, hosted by us, in place of OpenAI for the chat and the vectors. Whoever chooses what people read of their Parliament steers public debate, and that choice should stay under European rules. Today OpenAI is the only component outside the EU.
 
 ## Limitations
 
