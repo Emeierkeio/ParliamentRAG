@@ -615,25 +615,43 @@ CREATE INDEX IF NOT EXISTS concept_match_to ON concept_match (to_concept);
 
 -- ricerca per significato (10-decisioni/2026-11-03-modello-ricerca-significato): brani di circa 1.500 caratteri
 -- tagliati a fine frase, vettori text-embedding-3-large a 1.024 dimensioni. pipeline/vettori.py li riempie.
--- passage senza REFERENCES speech: il caricamento cancella e ricarica le sedute cambiate, e «taglia» rifà solo
--- i brani degli interventi il cui hash non torna più. I vettori stanno a parte, per impronta del testo del brano:
+-- Un brano viene da una fonte (interventi, atti, documenti, emendamenti, persone, organi: FONTI in vettori.py).
+-- passage senza REFERENCES: il caricamento cancella e ricarica le sedute cambiate, e «taglia» rifà solo
+-- i brani dei testi la cui impronta non torna più. I vettori stanno a parte, per impronta del testo del brano:
 -- sopravvivono ai ricaricamenti e un brano uguale non si paga due volte.
 CREATE TABLE IF NOT EXISTS passage (
-  speech text NOT NULL,
-  speech_hash text NOT NULL,                       -- hash dell'intervento quando è stato tagliato
+  source text NOT NULL,                            -- speech | act | act_title | act_text | document | amendment | profession | education | body
+  uri text NOT NULL,                               -- chiave nella tabella della fonte (act_text: code)
+  source_hash text NOT NULL,                       -- impronta del testo della fonte quando è stato tagliato
   ord int NOT NULL,
-  start_char int NOT NULL, end_char int NOT NULL,  -- posizioni in speech.text, da 0, fine esclusa
+  start_char int NOT NULL, end_char int NOT NULL,  -- posizioni nel testo della fonte, da 0, fine esclusa
   hash text NOT NULL,                              -- sha256 del testo del brano
-  PRIMARY KEY (speech, ord)
+  PRIMARY KEY (source, uri, ord)
 );
+DO $$ BEGIN                                        -- la prima versione (3/11) aveva solo gli interventi
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'passage' AND column_name = 'speech') THEN
+    ALTER TABLE passage RENAME COLUMN speech TO uri;
+    ALTER TABLE passage RENAME COLUMN speech_hash TO source_hash;
+    ALTER TABLE passage ADD COLUMN source text NOT NULL DEFAULT 'speech';
+    ALTER TABLE passage ALTER COLUMN source DROP DEFAULT;
+    ALTER TABLE passage DROP CONSTRAINT passage_pkey;
+    ALTER TABLE passage ADD PRIMARY KEY (source, uri, ord);
+  END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS passage_hash ON passage (hash);
 
+-- mezza precisione: metà dello spazio, e l'indice HNSW sta in memoria; per la ricerca dei vicini non cambia niente
 CREATE TABLE IF NOT EXISTS passage_vector (
   hash text NOT NULL,
   model text NOT NULL,                             -- text-embedding-3-large
-  embedding vector(1024) NOT NULL,
+  embedding halfvec(1024) NOT NULL,
   PRIMARY KEY (hash, model)
 );
+DO $$ BEGIN                                        -- la prima versione (3/11) era in vector(1024)
+  IF (SELECT udt_name FROM information_schema.columns WHERE table_name = 'passage_vector' AND column_name = 'embedding') = 'vector' THEN
+    ALTER TABLE passage_vector ALTER COLUMN embedding TYPE halfvec(1024) USING embedding::halfvec(1024);
+  END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS vector_batch (           -- i lavori della Batch API di OpenAI
   id text PRIMARY KEY,                             -- batch_…

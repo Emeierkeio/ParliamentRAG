@@ -1,7 +1,7 @@
-"""Vettori per la ricerca per significato: brani degli interventi e text-embedding-3-large a 1.024 dimensioni, sempre
-con la Batch API (10-decisioni/2026-11-03-modello-ricerca-significato). Tabelle in schema/v3.sql.
+"""Vettori per la ricerca per significato: brani dei testi del database e text-embedding-3-large a 1.024 dimensioni,
+sempre con la Batch API (10-decisioni/2026-11-03-modello-ricerca-significato). Tabelle in schema/v3.sql, fonti in FONTI.
 
-  python -m pipeline.vettori taglia         brani degli interventi nuovi o cambiati
+  python -m pipeline.vettori taglia [fonte] brani dei testi nuovi o cambiati, di tutte le fonti o di una
   python -m pipeline.vettori invia [quanti] impronte senza vettore, un batch ogni 2.000 brani (predefinito: 10 batch)
   python -m pipeline.vettori raccogli       scarica i batch finiti e scrive i vettori
   python -m pipeline.vettori stato          conteggi e batch aperti
@@ -30,13 +30,30 @@ from .carica.postgres import _csv, psql
 MODELLO = "text-embedding-3-large"
 DIMENSIONI = 1024
 LUNGHEZZA = 1_500          # come nella prova (benchmark/embedding/brani.py)
-MINIMO = 300               # interventi più corti: quasi sempre procedurali, esclusi come nella prova
+MINIMO = 300               # un resto più corto va col brano prima
 MASSIMO = 6_000            # una «frase» più lunga (testo senza punteggiatura) si spezza agli spazi: il modello regge ~8.000 token
 PER_RICHIESTA = 100
 PER_BATCH = 2_000          # la connessione non regge file grandi
-PER_GIRO = 20_000          # interventi letti da Postgres per volta
+PER_GIRO = 20_000          # testi letti da Postgres per volta
 CARTELLA = QUI / "dati" / "vettori"
 csv.field_size_limit(sys.maxsize)   # ci sono interventi da oltre 140 mila caratteri
+
+# fonte -> tabella, chiave, testo, impronta del testo, quali righe, lunghezza minima del testo. In ordine di invio:
+# prima quello che serve all'autorevolezza (interventi, atti, persone, organi), poi il resto.
+FONTI = {
+    # sotto i 300 caratteri quasi sempre procedurali, esclusi come nella prova
+    "speech": ("speech", "uri", "text", "hash", "true", 300),
+    # interrogazioni, mozioni, risoluzioni: conta il testo, il titolo è un'etichetta uguale per tutte
+    "act": ("act", "uri", "text", "md5(text)", "text IS NOT NULL", 50),
+    # progetti di legge: il titolo dice di cosa parlano
+    "act_title": ("act", "uri", "title", "md5(title)", "kind = 'bill' AND title IS NOT NULL", 1),
+    "profession": ("person", "uri", "profession", "md5(profession)", "profession IS NOT NULL", 1),
+    "education": ("person", "uri", "education", "md5(education)", "education IS NOT NULL", 1),
+    "body": ("body", "uri", "name", "md5(name)", "name IS NOT NULL", 1),
+    "act_text": ("act_text", "code", "text", "md5(text)", "text IS NOT NULL", 50),
+    "document": ("document", "uri", "text", "md5(text)", "text IS NOT NULL", 50),
+    "amendment": ("amendment", "uri", "text", "md5(text)", "text IS NOT NULL", 50),
+}
 
 FINE = re.compile(r"[.!?»]\s+(?=[A-ZÀ-Ú«(])")
 ABBREVIAZIONI = {"n", "nn", "on", "doc", "art", "artt", "v", "pag", "pagg", "cfr", "lett", "sen", "dott", "prof", "sig"}
@@ -77,9 +94,10 @@ def _spezza(testo: str, a: int, b: int) -> list[tuple[int, int]]:
     return pezzi + [(a, b)] if b > a else pezzi
 
 
-def taglia_testo(testo: str) -> list[tuple[int, int]]:
-    """Brani di circa LUNGHEZZA caratteri, mai a metà frase; un resto sotto MINIMO va col brano prima."""
-    if len(testo.strip()) < MINIMO:
+def taglia_testo(testo: str, minimo: int = MINIMO) -> list[tuple[int, int]]:
+    """Brani di circa LUNGHEZZA caratteri, mai a metà frase; un resto sotto MINIMO va col brano prima.
+    Un testo più corto di `minimo` non dà brani."""
+    if len(testo.strip()) < max(minimo, 1):
         return []
     brani: list[list[int]] = []
     for a, b in _frasi(testo):
@@ -107,25 +125,31 @@ def _leggi(sql: str) -> list[list[str]]:
     return list(csv.reader(io.StringIO(r.stdout.decode("utf-8"), newline="")))
 
 
-def taglia() -> dict:
-    # brani di interventi spariti o cambiati: via; i loro vettori restano, legati all'impronta
-    psql("DELETE FROM passage p WHERE NOT EXISTS (SELECT 1 FROM speech s WHERE s.uri = p.speech AND s.hash = p.speech_hash);")
-    ultimo, interventi, brani = "", 0, 0
-    while True:
-        righe = _leggi(f"""SELECT s.uri, s.hash, s.text FROM speech s
-            WHERE s.uri > {_letterale(ultimo)} AND length(s.text) >= {MINIMO}
-              AND NOT EXISTS (SELECT 1 FROM passage p WHERE p.speech = s.uri)
-            ORDER BY s.uri LIMIT {PER_GIRO}""")
-        if not righe:
-            break
-        nuovi = []
-        for uri, h, testo in righe:
-            nuovi += [[uri, h, k, a, b, impronta(testo[a:b])] for k, (a, b) in enumerate(taglia_testo(testo))]
-        psql("BEGIN;\nCOPY passage (speech, speech_hash, ord, start_char, end_char, hash) FROM STDIN WITH (FORMAT csv);\n"
-             f"{_csv(nuovi)}\\.\nCOMMIT;\n")
-        ultimo, interventi, brani = righe[-1][0], interventi + len(righe), brani + len(nuovi)
-        print(f"taglia: {interventi} interventi, {brani} brani", flush=True)
-    return {"interventi": interventi, "brani": brani}
+def taglia(solo: str | None = None) -> dict:
+    fuori = {}
+    for fonte, (tabella, chiave, campo, impronta_sql, filtro, minimo) in FONTI.items():
+        if solo and fonte != solo:
+            continue
+        # brani di testi spariti o cambiati: via; i loro vettori restano, legati all'impronta
+        psql(f"""DELETE FROM passage p WHERE p.source = '{fonte}' AND NOT EXISTS (SELECT 1 FROM {tabella} f
+                 WHERE f.{chiave} = p.uri AND {filtro} AND {impronta_sql} = p.source_hash);""")
+        ultimo, testi, brani = "", 0, 0
+        while True:
+            righe = _leggi(f"""SELECT {chiave}, {impronta_sql}, {campo} FROM {tabella} f
+                WHERE {chiave} > {_letterale(ultimo)} AND {filtro} AND length({campo}) >= {minimo}
+                  AND NOT EXISTS (SELECT 1 FROM passage p WHERE p.source = '{fonte}' AND p.uri = f.{chiave})
+                ORDER BY {chiave} LIMIT {PER_GIRO}""")
+            if not righe:
+                break
+            nuovi = []
+            for uri, h, testo in righe:
+                nuovi += [[fonte, uri, h, k, a, b, impronta(testo[a:b])] for k, (a, b) in enumerate(taglia_testo(testo, minimo))]
+            psql("BEGIN;\nCOPY passage (source, uri, source_hash, ord, start_char, end_char, hash) FROM STDIN WITH (FORMAT csv);\n"
+                 f"{_csv(nuovi)}\\.\nCOMMIT;\n")
+            ultimo, testi, brani = righe[-1][0], testi + len(righe), brani + len(nuovi)
+            print(f"taglia {fonte}: {testi} testi, {brani} brani", flush=True)
+        fuori[fonte] = {"testi": testi, "brani": brani}
+    return fuori
 
 
 def _letterale(s: str) -> str:
@@ -135,16 +159,24 @@ def _letterale(s: str) -> str:
 def invia(quanti: int = 10) -> dict:
     """Fino a `quanti` batch da PER_BATCH brani; ogni brano diverso una volta sola."""
     CARTELLA.mkdir(parents=True, exist_ok=True)
-    righe = _leggi(f"""WITH aperte AS (SELECT DISTINCT unnest(hashes) AS hash FROM vector_batch WHERE status = 'inviato')
-        SELECT DISTINCT ON (p.hash) p.hash, substr(s.text, p.start_char + 1, p.end_char - p.start_char)
-        FROM passage p JOIN speech s ON s.uri = p.speech AND s.hash = p.speech_hash
-        WHERE NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash AND v.model = '{MODELLO}')
-          AND NOT EXISTS (SELECT 1 FROM aperte a WHERE a.hash = p.hash)
-        ORDER BY p.hash LIMIT {quanti * PER_BATCH}""")
+    righe, viste = [], set()
+    for fonte, (tabella, chiave, campo, *_) in FONTI.items():   # una fonte alla volta, nell'ordine di FONTI
+        if len(righe) >= quanti * PER_BATCH:
+            break
+        for h, t in _leggi(f"""WITH aperte AS (SELECT DISTINCT unnest(hashes) AS hash FROM vector_batch WHERE status = 'inviato')
+            SELECT DISTINCT ON (p.hash) p.hash, substr(f.{campo}, p.start_char + 1, p.end_char - p.start_char)
+            FROM passage p JOIN {tabella} f ON f.{chiave} = p.uri
+            WHERE p.source = '{fonte}'
+              AND NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash AND v.model = '{MODELLO}')
+              AND NOT EXISTS (SELECT 1 FROM aperte a WHERE a.hash = p.hash)
+            ORDER BY p.hash LIMIT {quanti * PER_BATCH - len(righe)}"""):
+            if h not in viste:              # lo stesso brano in due fonti (un intervento citato in un documento)
+                viste.add(h)
+                righe.append((h, t))
     inviati = []
     for inizio in range(0, len(righe), PER_BATCH):
         parte = righe[inizio:inizio + PER_BATCH]
-        if any(impronta(t) != h for h, t in parte):
+        if any(impronta(t) != h for h, t in parte):   # il testo è cambiato dopo «taglia»: rilanciare «taglia»
             raise RuntimeError("un brano letto da Postgres non torna con la sua impronta")
         f = CARTELLA / f"richieste-{parte[0][0][:12]}.jsonl"
         with open(f, "w", encoding="utf-8") as out:
@@ -201,15 +233,18 @@ def raccogli() -> dict:
 def stato() -> dict:
     (brani, impronte, vettori), = _leggi(f"""SELECT (SELECT count(*) FROM passage), (SELECT count(DISTINCT hash) FROM passage),
         (SELECT count(*) FROM passage_vector WHERE model = '{MODELLO}')""")
+    per_fonte = {f: {"brani": int(n), "senza_vettore": int(m)} for f, n, m in _leggi(f"""SELECT p.source, count(*),
+        count(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM passage_vector v WHERE v.hash = p.hash AND v.model = '{MODELLO}'))
+        FROM passage p GROUP BY 1 ORDER BY 1""")}
     batch_ = {st: int(n) for st, n in _leggi("SELECT status, count(*) FROM vector_batch GROUP BY status")}
     (token,), = _leggi("SELECT coalesce(sum(tokens), 0) FROM vector_batch")
-    return {"brani": int(brani), "impronte": int(impronte), "vettori": int(vettori), "batch": batch_, "token": int(token),
+    return {"brani": int(brani), "impronte": int(impronte), "vettori": int(vettori), "per_fonte": per_fonte, "batch": batch_, "token": int(token),
             "spesa_dollari": round(int(token) / 1e6 * 0.065, 2)}   # 0,13 $ per milione di token, metà con la Batch API
 
 
 def indice() -> dict:
     psql("SET maintenance_work_mem = '2GB';\n"
-         "CREATE INDEX IF NOT EXISTS passage_vector_hnsw ON passage_vector USING hnsw (embedding vector_cosine_ops);\n", timeout=6 * 3600)
+         "CREATE INDEX IF NOT EXISTS passage_vector_hnsw ON passage_vector USING hnsw (embedding halfvec_cosine_ops);\n", timeout=6 * 3600)
     return {"indice": "passage_vector_hnsw"}
 
 
@@ -217,5 +252,5 @@ if __name__ == "__main__":
     comandi = {"taglia": taglia, "invia": invia, "raccogli": raccogli, "stato": stato, "indice": indice}
     if len(sys.argv) < 2 or sys.argv[1] not in comandi:
         sys.exit(__doc__)
-    argomenti = [int(x) for x in sys.argv[2:]]
+    argomenti = [x if sys.argv[1] == "taglia" else int(x) for x in sys.argv[2:]]
     print(json.dumps(comandi[sys.argv[1]](*argomenti), ensure_ascii=False, indent=1))
