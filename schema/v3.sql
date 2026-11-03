@@ -612,3 +612,36 @@ CREATE TABLE IF NOT EXISTS concept_match (
   PRIMARY KEY (from_concept, to_concept, relation, method)
 );
 CREATE INDEX IF NOT EXISTS concept_match_to ON concept_match (to_concept);
+
+-- ricerca per significato (10-decisioni/2026-11-03-modello-ricerca-significato): brani di circa 1.500 caratteri
+-- tagliati a fine frase, vettori text-embedding-3-large a 1.024 dimensioni. pipeline/vettori.py li riempie.
+-- passage senza REFERENCES speech: il caricamento cancella e ricarica le sedute cambiate, e «taglia» rifà solo
+-- i brani degli interventi il cui hash non torna più. I vettori stanno a parte, per impronta del testo del brano:
+-- sopravvivono ai ricaricamenti e un brano uguale non si paga due volte.
+CREATE TABLE IF NOT EXISTS passage (
+  speech text NOT NULL,
+  speech_hash text NOT NULL,                       -- hash dell'intervento quando è stato tagliato
+  ord int NOT NULL,
+  start_char int NOT NULL, end_char int NOT NULL,  -- posizioni in speech.text, da 0, fine esclusa
+  hash text NOT NULL,                              -- sha256 del testo del brano
+  PRIMARY KEY (speech, ord)
+);
+CREATE INDEX IF NOT EXISTS passage_hash ON passage (hash);
+
+CREATE TABLE IF NOT EXISTS passage_vector (
+  hash text NOT NULL,
+  model text NOT NULL,                             -- text-embedding-3-large
+  embedding vector(1024) NOT NULL,
+  PRIMARY KEY (hash, model)
+);
+
+CREATE TABLE IF NOT EXISTS vector_batch (           -- i lavori della Batch API di OpenAI
+  id text PRIMARY KEY,                             -- batch_…
+  model text NOT NULL,
+  status text NOT NULL,                            -- inviato | completed | failed | expired | cancelled
+  hashes text[] NOT NULL,                          -- in ordine: la richiesta k porta i brani da k*100
+  sent_at timestamptz NOT NULL DEFAULT now(),
+  collected_at timestamptz,
+  tokens bigint,
+  error text
+);

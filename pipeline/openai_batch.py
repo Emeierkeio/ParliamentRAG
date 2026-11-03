@@ -5,6 +5,7 @@ La chiave sta in OPENAI_API_KEY (ambiente o .env) e non si stampa.
 
 import json
 import time
+import urllib.error
 import urllib.request
 import uuid
 from pathlib import Path
@@ -15,10 +16,17 @@ BASE = "https://api.openai.com/v1"
 
 
 def _chiama(metodo: str, percorso: str, corpo: bytes | None = None, tipo: str = "application/json") -> bytes:
+    """Le letture si riprovano tre volte: la connessione a volte si blocca a metà di un file di risultati."""
     req = urllib.request.Request(BASE + percorso, corpo, method=metodo,
                                  headers={"Authorization": "Bearer " + env("OPENAI_API_KEY"), "Content-Type": tipo})
-    with urllib.request.urlopen(req, timeout=300) as r:
-        return r.read()
+    for tentativo in range(3 if metodo == "GET" else 1):
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                return r.read()
+        except (TimeoutError, urllib.error.URLError):
+            if tentativo == 2 or metodo != "GET":
+                raise
+            time.sleep(30)
 
 
 def invia(richieste: Path, endpoint: str, descrizione: str) -> str:
