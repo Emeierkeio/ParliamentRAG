@@ -1,7 +1,7 @@
 """Anagrafica del Senato da dati.senato.it (ontologia OSR, che riusa parte di OCD): senatori, mandati, gruppi con le
 loro denominazioni nel tempo, adesioni ai gruppi, appartenenza alle commissioni.
 
-dati.senato.it non è dietro al WAF di senato.it, ma ha limiti stretti (FONTI-CAMERA e memoria «Dati del Senato»):
+dati.senato.it non è dietro al WAF di senato.it, ma ha limiti stretti:
 niente BIND né VALUES, al massimo 10 mila righe contando l'OFFSET, URL lunghi rifiutati, e senato.it blocca l'IP
 dopo circa 400 richieste ravvicinate. Qui sono poche query piccole, con una pausa lunga fra l'una e l'altra.
 Le componenti del Misto non ci sono: stanno solo in una pagina di senato.it (dietro il WAF), da fare a parte.

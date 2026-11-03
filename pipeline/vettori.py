@@ -62,7 +62,7 @@ NUMERO = re.compile(r"^\d{1,3}\.$")            # «comma 1.», «n. 12.»; gli a
 
 
 def _abbreviazione(testo: str, punto: int) -> bool:
-    """Il punto in posizione `punto` chiude un'abbreviazione e non la frase."""
+    """Vero se il punto in posizione `punto` chiude un'abbreviazione: lì la frase continua."""
     inizio = testo.rfind(" ", 0, punto) + 1
     parola = re.split(r"['’]", testo[inizio:punto + 1].lstrip("(«\""))[-1]   # «dell'on.», «dall'art.»
     return parola[:-1].lower() in ABBREVIAZIONI or bool(SIGLA.match(parola)) or bool(NUMERO.match(parola))
@@ -116,7 +116,7 @@ def impronta(testo: str) -> str:
 
 
 def _leggi(sql: str) -> list[list[str]]:
-    """Righe di una SELECT, via COPY in CSV. In byte e non in testo: subprocess in modo testo tocca gli a capo."""
+    """Righe di una SELECT, via COPY in CSV. Legge in byte, perché subprocess in modo testo cambia gli a capo."""
     cmd = ["docker", "compose", "exec", "-T", "testi", "psql", "-U", "parliamentrag", "-d", "parliamentrag", "-v", "ON_ERROR_STOP=1", "-q",
            "-c", f"COPY ({sql}) TO STDOUT WITH (FORMAT csv)"]
     r = subprocess.run(cmd, cwd=QUI, capture_output=True, timeout=900)

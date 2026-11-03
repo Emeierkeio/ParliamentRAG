@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS body (
   source text NOT NULL, source_uri text
 );
 
--- relazioni datate (SCHEMA-V3 §2 e §4): end_date assente = in corso, ultimo giorno incluso
+-- relazioni datate: end_date assente = in corso; end_date è l'ultimo giorno incluso
 CREATE TABLE IF NOT EXISTS mandate (               -- MANDATE
   person text NOT NULL REFERENCES person (uri),
   chamber text NOT NULL, legislature int NOT NULL,
@@ -392,8 +392,8 @@ ALTER TABLE document ADD COLUMN IF NOT EXISTS format text;
 ALTER TABLE document ADD COLUMN IF NOT EXISTS author_raw text;          -- chi l'ha mandato, come lo scrive la Camera («UIL FP»)
 ALTER TABLE document ADD COLUMN IF NOT EXISTS hearing text;             -- l'audizione o l'esame per cui è stato depositato
 ALTER TABLE document ADD COLUMN IF NOT EXISTS sitting_date date;
-ALTER TABLE document ADD COLUMN IF NOT EXISTS third_party boolean;
-ALTER TABLE document ADD COLUMN IF NOT EXISTS code text;                -- codice del documento (dossier: AC0550, AS0473b …)      -- scritto di terzi: nel sito solo estratti con link
+ALTER TABLE document ADD COLUMN IF NOT EXISTS third_party boolean;      -- scritto di terzi: nel sito solo estratti con link
+ALTER TABLE document ADD COLUMN IF NOT EXISTS code text;                -- codice del documento (dossier: AC0550, AS0473b …)
 CREATE INDEX IF NOT EXISTS document_fts ON document USING gin (to_tsvector('italian', coalesce(text, '')));
 
 -- da nome a organo: confronto senza accenti, apostrofi, maiuscole e spazi

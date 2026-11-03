@@ -1,6 +1,6 @@
 """Agente della chat: un modello OpenAI (API Responses) che sceglie da sé gli strumenti del registro e risponde solo con
 quei dati. Chiamate a OpenAI con la libreria standard. Gli eventi escono in NDJSON: status, tool, dati, delta,
-suggestions, done, error (come nel prototipo).
+suggestions, done, error.
 
 Limiti fuori dal modello: passi massimi per domanda, domande per IP al giorno, tetto di spesa giornaliero (token
 contati dalle risposte di OpenAI, in `dati/api/spesa.sqlite`). I link della risposta che non compaiono nei dati letti
@@ -47,8 +47,6 @@ Regole
 - Alla fine, su una riga a parte, scrivi SEGUITI: e tre domande successive utili separate da « | »."""
 
 
-# ---------- limiti ----------
-
 _blocco = threading.Lock()
 
 
@@ -88,8 +86,6 @@ def _costo(modello: str, uso: dict) -> float:
     cache = (uso.get("input_tokens_details") or {}).get("cached_tokens", 0)
     return ((uso.get("input_tokens", 0) - cache) * pin + cache * pcache + uso.get("output_tokens", 0) * pout) / 1e6
 
-
-# ---------- modello ----------
 
 def schemi() -> list[dict]:
     return [{"type": "function", "name": s.nome, "description": s.descrizione, "parameters": s.schema()} for s in registro.STRUMENTI]

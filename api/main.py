@@ -1,5 +1,5 @@
-"""Rotte HTTP dell'API, tutte in lettura sotto /v1. Ogni rotta chiama uno strumento di `strumenti/`; nessuna rotta accetta
-query libere. Avvio in locale: `.venv/bin/uvicorn api.main:app --port 8790`."""
+"""Rotte HTTP dell'API: i dati in lettura e la chat sotto /v1, il server MCP su /mcp. Ogni rotta chiama uno strumento
+di `strumenti/`; nessuna rotta accetta query libere. Avvio in locale: `.venv/bin/uvicorn api.main:app --port 8790`."""
 
 from __future__ import annotations
 
@@ -142,8 +142,6 @@ def cerca_interventi(c: Db, q: Annotated[str, Query(min_length=2, max_length=200
                      include_summaries: bool = True, limit: Annotated[int, Query(ge=1, le=50)] = 20, offset: Scarto = 0):
     return ricerca.cerca_interventi(c, q, chamber, person, start, end, include_summaries, limit, offset)
 
-
-# ---------- agente e MCP ----------
 
 class Domanda(BaseModel):
     prompt: str = Field(min_length=2, max_length=2000)

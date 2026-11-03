@@ -1,5 +1,5 @@
-"""Connessione a Postgres con l'utente `lettura` (schema/lettura.sql): sola lettura e tempo massimo per query decisi dal
-database, non dal codice. Segreti solo da ambiente o `.env`."""
+"""Connessione a Postgres con l'utente `lettura` (schema/lettura.sql): la sola lettura e il tempo massimo per query li
+impone il database. Segreti solo da ambiente o `.env`."""
 
 from __future__ import annotations
 

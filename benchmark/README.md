@@ -1,8 +1,8 @@
 # Benchmark delle domande sul Parlamento
 
-658 domande che persone di 15 profili fanno davvero su Camera e Senato, scritte il 2/11/2026 da sei agenti che impersonavano ciascun profilo. Gli agenti hanno letto il database v3 in sola lettura, quindi atti, persone, sedute e numeri sono veri. Il formato dei campi è in [SCHEMA.md](SCHEMA.md); le domande sono in `domande.jsonl` e le parti di partenza in `parti/`.
+658 domande su Camera e Senato come le farebbero persone di 15 profili, scritte il 2/11/2026 da sei agenti che impersonavano ciascun profilo. Gli agenti hanno letto il database v3 in sola lettura, quindi atti, persone, sedute e numeri sono veri. Il formato dei campi è in [SCHEMA.md](SCHEMA.md); le domande sono in `domande.jsonl` e le parti di partenza in `parti/`.
 
-Non sono ancora validate da esperti veri. Per 100 domande c'è una risposta di riferimento calcolata in SQL (sotto).
+Non sono ancora validate da esperti. Per 100 domande c'è una risposta di riferimento calcolata in SQL (sotto).
 
 ## Quanto copre il v3 oggi
 
@@ -69,7 +69,7 @@ Stima per parole chiave sul campo `manca`, fatta sulla prima versione: 366 doman
 | XVIII e legislature precedenti | 24 |
 | Regolamenti parlamentari e precedenti | 23 |
 | Atti del governo (AG) come atti, atti UE, petizioni | 22 |
-| Autorevolezza e ricerca semantica (fase 3) | 21 |
+| Autorevolezza e ricerca semantica | 21 |
 | Senato: assenti nei voti, presidente di turno, Misto per componente | 18 |
 | Testo vigente (Normattiva) e decreti attuativi | 18 |
 | Nomi dei temi (EuroVoc, TESEO) | 16 |
@@ -86,7 +86,6 @@ Stima per parole chiave sul campo `manca`, fatta sulla prima versione: 366 doman
 - Al Senato 2.546 righe di `vote_act` su 12.877 non hanno l'atto: tutte le 58 fiducie, le mozioni, le risoluzioni e gli ordini del giorno. I voti finali e sugli articoli sono quasi tutti legati (all'inizio non lo era nessuno).
 - Al Senato i voti individuali non hanno righe per gli assenti.
 - 217.598 emendamenti su 229.617 non hanno l'esito; al Senato nessuno.
-- `government` assegna il governo Draghi alla XIX legislatura.
 - La XIII commissione della Camera aveva due presidenze aperte (Carloni senza data di fine, Bruzzone dal 13/10/2026): erano righe doppie di `office`, corrette il 2/11/2026.
 - `act.status` è vuoto per le 13.007 interrogazioni a risposta scritta.
 - `concept` era vuota: i temi EuroVoc sono entrati con il caricamento del 2/11/2026 (21.373 concetti).
@@ -127,7 +126,6 @@ Il dettaglio, con la query che li mostra, è nel campo `problemi_dati` di ogni r
 
 **Persone, gruppi e cariche**
 - Corretto il 2/11/2026: 272 righe aperte di `office` duplicavano una riga chiusa (stessa persona, organo, carica e data d'inizio). Restano tre comitati della III Commissione con due presidenze aperte della stessa persona (dal 18/9/2025 e dal 1/10/2025).
-- `government` assegna il governo Draghi alla XIX legislatura.
 - Al Senato il Misto non è diviso per componente, i gruppi non hanno date e `act_sponsor` usa gli id della Camera (serve `person_same_as`). `office` non ha la Presidenza del Senato.
 - Le appartenenze si sovrappongono nel giorno del passaggio (`end_date` inclusa). `mandate` non ha un campo comune per il tipo di elezione.
 - `body.name` delle commissioni permanenti della Camera è solo il numero («X Commissione»).

@@ -10,7 +10,7 @@ from collections import Counter
 from datetime import date
 
 
-# seggi per ramo: più mandati in corso di così vuol dire dati sbagliati, non una Camera più grande
+# seggi per ramo: più mandati in corso di così vuol dire dati sbagliati
 SEGGI = {"camera": 400, "senato": 212}   # Senato: 200 elettivi più i senatori a vita e di diritto
 
 
@@ -262,7 +262,7 @@ def avvisi_voti(nodi: list[dict], archi: list[dict]) -> list[str]:
     return [f"{u}: totali {t}, voti {c[0]}/{c[1]}/{c[2]}" for u, (t, c) in conti_voti(nodi, archi).items() if t != c]
 
 
-SOGLIA_VOTI = 0.02   # oltre il 2% di votazioni che non tornano, il problema è nostro e non della fonte
+SOGLIA_VOTI = 0.02   # oltre il 2% di votazioni che non tornano, l'errore sta nella trasformazione
 
 
 def controlla(ctx) -> dict:

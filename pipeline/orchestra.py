@@ -112,12 +112,12 @@ def _ferma(segnale, _frame):
 
 
 def esegui_passo(passo: Passo, ctx: Contesto) -> tuple[str, dict, str]:
-    """Il passo gira in un processo a parte: se supera il tempo massimo si termina davvero."""
+    """Il passo gira in un processo a parte, così il giro lo termina quando supera il tempo massimo."""
     coda: mp.Queue = mp.Queue()
     p = mp.Process(target=_in_processo, args=(passo.fai, ctx, coda), daemon=True)
     try:
         p.start()
-    except Exception:  # il passo non parte (per esempio non si può copiare nel processo): fallisce lui, non il giro
+    except Exception:  # il passo non parte (per esempio non si può copiare nel processo): fallisce il passo e il giro continua
         return "errore", {}, traceback.format_exc()
     _IN_CORSO[:] = [p]
     p.join(passo.timeout_minuti * 60)

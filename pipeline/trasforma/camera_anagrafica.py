@@ -4,7 +4,7 @@ e le relazioni datate fra loro (MANDATE, MEMBER_OF, PART_OF, SITS_ON, OFFICE).
 Trasformazione pura: stessi grezzi, stessi record. Riceve tutte le query insieme (`grezzi[nome] = righe`),
 perché una persona, i suoi gruppi e le sue commissioni stanno in query diverse.
 
-Convenzioni (SCHEMA-V3 §4): date ISO; `end` assente se il rapporto è in corso; `end` è l'ultimo giorno incluso.
+Convenzioni: date ISO; `end` assente se il rapporto è in corso; `end` è l'ultimo giorno incluso.
 I valori della Camera restano anche grezzi (`*_raw`), accanto a quelli normalizzati.
 """
 

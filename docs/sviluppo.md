@@ -40,7 +40,7 @@ Le rotte, l'agente e il server MCP (più avanti) usano gli stessi strumenti. Nes
 .venv/bin/python -m unittest discover -s tests -t .
 ```
 
-Prima volta: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`. L'unica dipendenza è `pypdf` (versione fissata), per il testo dei PDF; tutto il resto è libreria standard.
+Prima volta: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`. Le dipendenze sono `pypdf`, per il testo dei PDF, e `cryptography` (con `cffi` e `pycparser`) per i PDF cifrati, tutte con la versione fissata; il resto è libreria standard.
 
 ### Come è fatta
 
@@ -84,7 +84,7 @@ Fatto, tutto per la Camera XIX:
 - ordine del giorno dell'Assemblea: sedute previste (`status = planned`) con argomenti, orari, atti e relatori; il resoconto, quando arriva, sostituisce la seduta prevista e mai il contrario. Gli argomenti di ordine del giorno, Bollettino e stenografici si legano agli atti (`lega_argomenti`);
 - documenti acquisiti dalle commissioni permanenti (circa 4 mila memorie e contributi scritti): chi li ha mandati, per quale audizione o atto, quando, e il testo (PDF, DOCX, PPTX). Sono scritti di terzi (`third_party`): nel sito solo estratti con il link. 300 file per notte;
 - dossier dei Servizi di documentazione (circa 3.600, da temi.camera.it, CC BY-SA 4.0): data, servizio, codice, atto a cui si riferiscono e testo integrale dalla versione HTML. 300 per notte;
-- votazioni elettroniche e voto di ogni deputato, con il gruppo attribuito dalla Camera in quel voto; un controllo blocca il giro se i voti dei singoli non tornano con i totali.
+- votazioni elettroniche e voto di ogni deputato, con il gruppo attribuito dalla Camera in quel voto; un controllo blocca il giro se i voti dei singoli non tornano con i totali;
 - emendamenti (dagli XML di documenti.camera.it, riscaricati solo se cambiati) e testi degli atti, articolo per articolo.
 
 Senato XIX, con gli stessi record della Camera:
@@ -92,7 +92,7 @@ Senato XIX, con gli stessi record della Camera:
 - disegni di legge con firmatari (senatori e deputati) e votazioni elettroniche con il voto di ogni senatore; il gruppo nel voto si ricava dall'anagrafica alla data. Al massimo 60 sedute di voti per notte, con 5 secondi fra le richieste: senato.it blocca l'IP dopo circa 400 richieste ravvicinate;
 - sindacato ispettivo del Senato (da dati.camera.it);
 - resoconti stenografici dell'Assemblea in Akoma Ntoso: interventi singoli anche dentro gli scambi, con la persona, la carica e il presidente di turno; i membri del governo che non sono senatori si legano alla scheda del governo (`lega_governo`); didascalie come `reaction`; sezioni legate ai ddl;
-- dai bulk data ufficiali del Senato su GitHub (SenatoDellaRepubblica/AkomaNtosoBulkData, CC BY 4.0, aggiornati ogni giorno): resoconti d'Aula, resoconti sommari delle commissioni (marcati `summary`, come il Bollettino della Camera) testi dei ddl (presentato, testo della commissione, messaggio alla Camera) con gli articoli, ed emendamenti d'Aula e di commissione con testo, firmatari e data di presentazione (i bulk data non danno l'esito). Clone git parziale in `dati/cache/senato_akn`: ogni notte git scarica solo i file nuovi. Su GitHub non c'è il WAF di senato.it; le sedute più recenti del bulk restano qualche giorno indietro.
+- dai bulk data ufficiali del Senato su GitHub (SenatoDellaRepubblica/AkomaNtosoBulkData, CC BY 4.0, aggiornati ogni giorno): resoconti d'Aula, resoconti sommari delle commissioni (marcati `summary`, come il Bollettino della Camera), testi dei ddl (presentato, testo della commissione, messaggio alla Camera) con gli articoli, ed emendamenti d'Aula e di commissione con testo, firmatari e data di presentazione (i bulk data non danno l'esito). Clone git parziale in `dati/cache/senato_akn`: ogni notte git scarica solo i file nuovi. Su GitHub non c'è il WAF di senato.it; le sedute più recenti del bulk restano qualche giorno indietro.
 
 
 ### Note su dati.camera.it

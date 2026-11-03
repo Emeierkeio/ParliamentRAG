@@ -180,7 +180,7 @@ class TestHttp(unittest.TestCase):
         self.assertEqual((stato, json.loads(corpo)["error"]["code"]), (400, -32600))
 
 
-# ---------- contratto con la produzione ----------
+# contratto con la produzione
 
 def forma(x, p: str = "", out: dict | None = None) -> dict[str, set[str]]:
     """Percorso → tipi visti (num per int e float), con «[]» per gli elementi delle liste. Come genera_fixture."""

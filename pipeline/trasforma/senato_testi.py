@@ -66,7 +66,7 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
     h = hashlib.sha256(testo.encode()).hexdigest()[:16]
     nodo = {"label": "TextVersion", "code": codice, "hash": h, "articles": articoli, "citations": [],
             "act": f"it:senato:{leg}:ddl:{numero.group(1)}" if numero else None, "kind": TIPI.get(tipo, tipo), "source_uri": uri_fonte,
-            # alcuni messaggi alla Camera nel bulk hanno solo l'attestazione, senza il testo: lo dice la fonte, non è un errore nostro
+            # alcuni messaggi alla Camera nel bulk hanno solo l'attestazione, senza il testo: è così anche alla fonte
             "incomplete_at_source": len(testo) < 200 and not articoli and "Attesto che il Senato" in testo}
     return {"nodi": [nodo], "archi": [], "testi": [{"ref": f"version:{codice}", "text": testo, "hash": h}],
             "ambito": {"kind": "testo_atto", "chamber": "senato", "legislature": leg, "code": codice, "source_key": fonte.get("chiave")}}

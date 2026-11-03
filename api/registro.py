@@ -48,8 +48,6 @@ def _json(x) -> object:
     return x
 
 
-# ---------- parametri ----------
-
 class CercaPersone(Parametri):
     q: str | None = Field(None, description="nome o cognome, anche parziale")
     chamber: Ramo | None = Field(None, description="ramo; vuoto per Camera e Senato")
@@ -132,8 +130,6 @@ class CercaInterventi(Parametri):
 class VerificaCitazioni(Parametri):
     text: str = Field(max_length=20000, description="la risposta con le citazioni tra «…»")
 
-
-# ---------- esecuzione ----------
 
 def _seduta(c, p: Seduta):
     s = sedute.seduta(c, p.uri)

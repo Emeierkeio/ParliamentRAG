@@ -1,7 +1,7 @@
 """Resoconti stenografici dell'Assemblea del Senato in Akoma Ntoso (XML), da senato.it.
 
 senato.it è dietro un WAF che chiede di eseguire JavaScript: per scaricare le sedute nuove serve un browser senza
-interfaccia, che la pipeline non ha ancora (dipendenza da approvare). Intanto questo passo importa nel lago i
+interfaccia, che la pipeline non ha ancora. Intanto questo passo importa nel lago i
 resoconti già scaricati dalla pipeline precedente (`cartella_import`, file `resaula_leg19_0300.akn`): sono gli
 stessi file della fonte, con la loro data e il loro indirizzo ufficiale. Alcune sedute (XIX: 212, 213, 214, 216, 218,
 221, 222) il Senato le ha pubblicate solo come pagina web, senza AKN: per quelle si importa la pagina

@@ -6,7 +6,7 @@ seduta i file con il loro titolo («AG 439 - Memoria UIL FP»); poi si scaricano
 per notte. I nomi dei file contengono un identificativo e la data di deposito: un file non cambia, si scarica una volta.
 
 Sono scritti di terzi: restano nel lago (privato) e nel database per la ricerca; il sito ne mostra solo estratti con
-il link al file ufficiale (FONTI-CAMERA.md §9).
+il link al file ufficiale.
 """
 
 from __future__ import annotations

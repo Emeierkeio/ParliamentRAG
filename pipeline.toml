@@ -63,7 +63,7 @@ massimo_giorni_per_giro = 60  # ordini del giorno passati per notte (circa 740 i
 [fonti.camera_documenti]
 legislatura = 19
 pausa_secondi = 1.0
-massimo_file_per_giro = 800   # file nuovi per giro (8.064 in tutto): 800 dal 2/11/2026, da alzare a 1.500 quando Bollettino, resoconti e stenografici sono finiti
+massimo_file_per_giro = 800   # file nuovi per giro (8.064 in tutto): un tetto basso, perché il giro scarica anche le altre fonti della Camera
 
 [fonti.camera_dossier]
 legislatura = 19
