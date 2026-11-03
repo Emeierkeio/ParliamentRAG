@@ -5,3 +5,8 @@ __pycache__/
 .env
 graphify-out/
 .venv/
+benchmark/embedding/vettori/
+benchmark/embedding/*.jsonl
+!benchmark/embedding/domande.jsonl
+benchmark/embedding/batch-*.txt
+benchmark/embedding/giudizi.json
