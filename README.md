@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/testata-scuro.png">
-  <img alt="ParliamentRAG. The data of the Italian Parliament. Every answer with its source." src="docs/assets/testata-chiaro.png">
+  <img alt="ParliamentRAG. Ask Parliament. The official records answer." src="docs/assets/testata-chiaro.png">
 </picture>
 
 <p>
@@ -213,7 +213,7 @@ November 2026. The database holds both chambers of the XIX legislature; the nigh
 2. One service: site, agent, dossier, checks, API and MCP on PostgreSQL, on Railway, at www.parliamentrag.it.
 3. The authority score and the group check on PostgreSQL, with filters by chamber and period; a run on the full benchmark.
 4. Counting tools for numeric questions; the nightly run on a server; a public dump of the database with a DOI.
-5. A European language model, hosted by us, in place of OpenAI for the chat and the vectors. Whoever chooses what people read of their Parliament steers public debate, and that choice should stay under European rules. Today OpenAI is the only service that processes the questions outside the EU; the database and the service run on servers in the EU.
+5. A European language model, on servers in the EU, in place of OpenAI for the chat and the vectors. Whoever chooses what people read of their Parliament steers public debate, and that choice should stay under European rules. Today OpenAI is the only service that processes the questions outside the EU; the database and the service run on servers in the EU.
 
 ## Limitations
 
