@@ -1,4 +1,4 @@
-# Dipendenze dell'API (approvate da Mirko il 31/10/2026), versioni fissate anche per le dipendenze indirette.
+# Dipendenze dell'API, versioni fissate anche per le dipendenze indirette.
 # Installazione: .venv/bin/pip install -r requirements-api.txt
 fastapi==0.143.3
 starlette==1.8.0

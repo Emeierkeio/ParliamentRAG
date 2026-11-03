@@ -613,7 +613,7 @@ CREATE TABLE IF NOT EXISTS concept_match (
 );
 CREATE INDEX IF NOT EXISTS concept_match_to ON concept_match (to_concept);
 
--- ricerca per significato (10-decisioni/2026-11-03-modello-ricerca-significato): brani di circa 1.500 caratteri
+-- ricerca per significato (README, «Semantic retrieval»): brani di circa 1.500 caratteri
 -- tagliati a fine frase, vettori text-embedding-3-large a 1.024 dimensioni. pipeline/vettori.py li riempie.
 -- Un brano viene da una fonte (interventi, atti, documenti, emendamenti, persone, organi: FONTI in vettori.py).
 -- passage senza REFERENCES: il caricamento cancella e ricarica le sedute cambiate, e «taglia» rifà solo

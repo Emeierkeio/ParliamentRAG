@@ -2,7 +2,7 @@
 
 658 domande che persone di 15 profili fanno davvero su Camera e Senato, scritte il 2/11/2026 da sei agenti che impersonavano ciascun profilo. Gli agenti hanno letto il database v3 in sola lettura, quindi atti, persone, sedute e numeri sono veri. Il formato dei campi è in [SCHEMA.md](SCHEMA.md); le domande sono in `domande.jsonl` e le parti di partenza in `parti/`.
 
-Non sono ancora validate da esperti veri. Per 100 domande c'è una risposta di riferimento calcolata in SQL (sotto). Il lavoro aperto è nella lista «🧭 Benchmark, standard e ontologie» su Trello.
+Non sono ancora validate da esperti veri. Per 100 domande c'è una risposta di riferimento calcolata in SQL (sotto).
 
 ## Quanto copre il v3 oggi
 

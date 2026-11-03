@@ -1,5 +1,5 @@
 """Vettori per la ricerca per significato: brani dei testi del database e text-embedding-3-large a 1.024 dimensioni,
-sempre con la Batch API (10-decisioni/2026-11-03-modello-ricerca-significato). Tabelle in schema/v3.sql, fonti in FONTI.
+sempre con la Batch API (scelta del modello: README, «Semantic retrieval»). Tabelle in schema/v3.sql, fonti in FONTI.
 
   python -m pipeline.vettori taglia [fonte] brani dei testi nuovi o cambiati, di tutte le fonti o di una
   python -m pipeline.vettori invia [quanti] impronte senza vettore, un batch ogni 2.000 brani (predefinito: 10 batch)

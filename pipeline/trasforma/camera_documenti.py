@@ -1,7 +1,7 @@
 """Documenti acquisiti dalle commissioni: dagli elenchi i metadati (chi l'ha mandato, per quale audizione o atto,
 quando), dai file il testo. Due trasformazioni pure che riempiono la stessa riga di `document`.
 
-Testo: PDF con pypdf (via di Mirko del 31/10/2026; cryptography per i PDF cifrati, 2/11/2026), DOCX e PPTX con la libreria
+Testo: PDF con pypdf (cryptography per i PDF cifrati), DOCX e PPTX con la libreria
 standard (sono zip di XML). DOC, PPT, XLSX e firmati p7m restano senza testo: il documento c'è, il testo no.
 """
 

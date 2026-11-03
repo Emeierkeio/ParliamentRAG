@@ -1,6 +1,6 @@
-# dipendenze della pipeline: solo queste, con la versione fissata (via di Mirko del 31/10/2026)
+# dipendenze della pipeline: solo queste, con la versione fissata
 pypdf==6.20.1
-# per i PDF cifrati con AES (2 documenti di commissione della Camera), via di Mirko del 2/11/2026
+# per i PDF cifrati con AES (2 documenti di commissione della Camera)
 cryptography==50.0.2
 cffi==2.1.1
 pycparser==3.12
