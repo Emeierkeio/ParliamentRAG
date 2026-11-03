@@ -54,7 +54,7 @@ def _dati():
 
 
 def giudizi_invia() -> None:
-    from benchmark.embedding import batch
+    from pipeline import openai_batch as batch
     brani, domande = _dati()
     coppie = set()
     for b, d in modelli().values():
@@ -76,7 +76,7 @@ def giudizi_invia() -> None:
 
 
 def giudizi_raccogli() -> None:
-    from benchmark.embedding import batch
+    from pipeline import openai_batch as batch
     from benchmark.embedding.domande import _testo
     s = batch.aspetta((QUI / "batch-giudizi.txt").read_text().strip())
     voti = {}

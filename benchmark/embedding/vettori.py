@@ -29,7 +29,7 @@ def _testi(cosa: str) -> list[str]:
 
 def openai_invia(cosa: str) -> None:
     """Un batch ogni PER_FILE testi: la connessione non regge file da 20 MB in un colpo solo."""
-    from benchmark.embedding import batch
+    from pipeline import openai_batch as batch
     testi = _testi(cosa)
     ids = []
     for parte, inizio in enumerate(range(0, len(testi), PER_FILE)):
@@ -45,7 +45,7 @@ def openai_invia(cosa: str) -> None:
 
 def openai_raccogli(cosa: str) -> None:
     import numpy as np
-    from benchmark.embedding import batch
+    from pipeline import openai_batch as batch
     ris = {}
     for bid in (QUI / f"batch-vettori-{cosa}.txt").read_text().split():
         s = batch.aspetta(bid)

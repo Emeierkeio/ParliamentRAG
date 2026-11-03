@@ -11,7 +11,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-from benchmark.embedding import batch
+from pipeline import openai_batch as batch
 
 QUI = Path(__file__).parent
 MODELLO = "gpt-5.6-terra"  # lo stesso dell'agente del prototipo
