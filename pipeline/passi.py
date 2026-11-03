@@ -7,6 +7,7 @@ import json
 import re
 import time
 
+from . import vettori
 from .carica import postgres
 from .controlli import uscite as controlli_uscite
 from .fonti import eurovoc
@@ -250,4 +251,7 @@ PASSI = [
                                                           "trasforma_senato_emendamenti", "trasforma_senato_sommari",
                                                           "trasforma_senato_testi"], timeout_minuti=30, critico=True),
     Passo("carica_postgres", postgres.carica, dopo=["controlla_uscite"], timeout_minuti=120, critico=True),
+    Passo("raccogli_vettori", vettori.passo_raccogli, timeout_minuti=60, tentativi=2),
+    Passo("taglia_brani", vettori.passo_taglia, dopo=["carica_postgres"], timeout_minuti=60),
+    Passo("invia_vettori", vettori.passo_invia, dopo=["taglia_brani", "raccogli_vettori"], timeout_minuti=60, tentativi=2),
 ]

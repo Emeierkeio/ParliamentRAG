@@ -248,6 +248,19 @@ def indice() -> dict:
     return {"indice": "passage_vector_hnsw"}
 
 
+# passi del giro notturno (passi.py): si raccolgono i batch della notte prima, si tagliano i testi caricati, si inviano i brani nuovi
+def passo_raccogli(ctx) -> dict:
+    return raccogli()
+
+
+def passo_taglia(ctx) -> dict:
+    return taglia()
+
+
+def passo_invia(ctx) -> dict:
+    return invia(50)
+
+
 if __name__ == "__main__":
     comandi = {"taglia": taglia, "invia": invia, "raccogli": raccogli, "stato": stato, "indice": indice}
     if len(sys.argv) < 2 or sys.argv[1] not in comandi:
