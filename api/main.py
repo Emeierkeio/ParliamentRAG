@@ -20,7 +20,7 @@ from pydantic import BaseModel, Field
 from . import modelli as M
 from pipeline.ambiente import env
 
-from . import agente, mcp
+from . import agente, conversazioni, mcp
 from .db import connessione, per_richiesta
 from .strumenti import atti, persone, ricerca, sedute, voti
 
@@ -147,6 +147,8 @@ class Domanda(BaseModel):
     prompt: str = Field(min_length=2, max_length=2000)
     history: list[dict] = Field(default_factory=list, max_length=16)
     locale: Literal["it", "en"] = "it"
+    conversation: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{8,64}$")   # id casuale del browser, per il registro
+    turn: int | None = Field(default=None, ge=1, le=1000)
 
 
 @app.post("/v1/chat")
@@ -156,7 +158,10 @@ def chat(req: Request, d: Domanda):
     motivo = agente.controlla_limiti(ip)
     if motivo:
         raise HTTPException(429, motivo)
-    righe = (json.dumps(e, ensure_ascii=False, default=str) + "\n" for e in agente.rispondi(d.prompt, d.history, d.locale, ip))
+    misure: dict = {}
+    eventi = conversazioni.registra(agente.rispondi(d.prompt, d.history, d.locale, ip, misure), d.prompt, d.locale,
+                                    d.conversation, d.turn, misure)
+    righe = (json.dumps(e, ensure_ascii=False, default=str) + "\n" for e in eventi)
     return StreamingResponse(righe, media_type="application/x-ndjson")
 
 

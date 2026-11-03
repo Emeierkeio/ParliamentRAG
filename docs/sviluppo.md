@@ -22,6 +22,8 @@ Per la sicurezza la mappa serve a vedere chi tocca cosa: quali funzioni leggono 
 Legge Postgres con l'utente `lettura` (`schema/lettura.sql`): sola lettura, 8 secondi al massimo per query, 20 connessioni. La password sta in `.env` (`API_PG_PASSWORD`). Per crearlo o cambiarla:
 `{ printf '\\set password %s\n' "$(grep '^API_PG_PASSWORD=' .env | cut -d= -f2-)"; cat schema/lettura.sql; } | docker compose exec -T testi psql -U parliamentrag -d parliamentrag -v ON_ERROR_STOP=1`.
 
+La chat scrive ogni domanda in `registro.chat` (`schema/registro.sql`), per trovare gli errori: domanda, risposta, strumenti, tempi e costo, senza IP. Lo schema è a parte: `lettura` non lo vede, l'utente `registro` può solo inserire. Si crea come `lettura`, con `REGISTRO_PG_PASSWORD` in `.env` e `schema/registro.sql`. Senza la password la chat funziona e non scrive il registro.
+
 ```
 api/strumenti/   funzioni tipizzate su Postgres: persone, sedute, voti, atti ed emendamenti, ricerca negli interventi
 api/modelli.py   formati delle risposte (Pydantic)

@@ -130,9 +130,12 @@ def _conteggio(ris) -> int | None:
     return None
 
 
-def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str) -> Iterator[dict]:
-    """Generatore di eventi per una domanda. Ogni strumento usa una connessione di sola lettura."""
+def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str, misure: dict | None = None) -> Iterator[dict]:
+    """Generatore di eventi per una domanda. Ogni strumento usa una connessione di sola lettura. In `misure` lascia
+    modello e spesa, per il registro delle chat."""
+    misure = {} if misure is None else misure
     modello = env("AGENTE_MODELLO", "gpt-5.6-terra")
+    misure["modello"] = modello
     try:
         chiave = env("OPENAI_API_KEY")
     except KeyError:
@@ -184,6 +187,7 @@ def rispondi(domanda: str, storia: list[dict], lingua: str, ip: str) -> Iterator
             yield {"type": "delta", "text": "Non sono riuscito a chiudere la risposta: prova con una domanda più precisa."}
             yield {"type": "done"}
         finally:
+            misure["dollari"] = spesa
             _conta(ip, 1, spesa)
 
 
