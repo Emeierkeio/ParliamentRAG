@@ -153,7 +153,7 @@ class Domanda(BaseModel):
 
 @app.get("/v1/uso")
 def uso_chat(req: Request) -> dict:
-    """Domande alla chat usate nell'ultima ora da questo indirizzo, limite e secondi prima che se ne liberi una."""
+    """Domande alla chat usate nell'ora in corso da questo indirizzo, limite e secondi alla ripartenza del conteggio."""
     return agente.uso(_ip(req))
 
 

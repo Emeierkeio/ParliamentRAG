@@ -2,7 +2,7 @@
 quei dati. Chiamate a OpenAI con la libreria standard. Gli eventi escono in NDJSON: status, tool, dati, delta,
 suggestions, done, error.
 
-Limiti fuori dal modello: passi massimi per domanda, domande nell'ultima ora per IP (contate per impronta, mai per IP), tetto di spesa giornaliero (token
+Limiti fuori dal modello: passi massimi per domanda, domande nell'ora in corso per IP (contate per impronta, mai per IP), tetto di spesa giornaliero (token
 contati dalle risposte di OpenAI, in `dati/api/spesa.sqlite`). I link della risposta che non compaiono nei dati letti
 si tolgono; una risposta con citazioni passa sempre da `verifica_citazioni`.
 """
@@ -71,7 +71,7 @@ def _impronta(ip: str) -> str:
 
 
 def _registro_spesa() -> sqlite3.Connection:
-    """Domande dell'ultima ora per impronta dell'IP (mai l'IP) e spesa del giorno."""
+    """Domande dell'ora in corso per impronta dell'IP (mai l'IP) e spesa del giorno."""
     f = QUI / "dati" / "api" / "spesa.sqlite"
     f.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(f, check_same_thread=False)
@@ -87,12 +87,13 @@ def _oggi() -> str:
 
 
 def uso(ip: str) -> dict:
-    """Domande usate nell'ultima ora, limite e secondi prima che se ne liberi una."""
+    """Domande usate nell'ora in corso (il conteggio riparte allo scoccare dell'ora), limite e secondi alla ripartenza."""
     limite, ora = int(env("AGENTE_DOMANDE_ORA", "10")), time.time()
+    inizio = ora - ora % ORA
     with _blocco, _registro_spesa() as db:
-        db.execute("DELETE FROM domande WHERE ts < ?", (ora - ORA,))
-        orari = [t for (t,) in db.execute("SELECT ts FROM domande WHERE impronta = ? ORDER BY ts", (_impronta(ip),))]
-    return {"used": len(orari), "limit": limite, "resets_in": max(0, round(orari[0] + ORA - ora)) if orari else 0}
+        db.execute("DELETE FROM domande WHERE ts < ?", (inizio,))
+        n = db.execute("SELECT count(*) FROM domande WHERE impronta = ?", (_impronta(ip),)).fetchone()[0]
+    return {"used": n, "limit": limite, "resets_in": round(inizio + ORA - ora)}
 
 
 def controlla_limiti(ip: str) -> str | None:
@@ -100,7 +101,7 @@ def controlla_limiti(ip: str) -> str | None:
     u, tetto = uso(ip), float(env("AGENTE_DOLLARI_GIORNO", "10"))
     if u["used"] >= u["limit"]:
         minuti = max(1, -(-u["resets_in"] // 60))
-        return f"hai fatto {u['used']} domande nell'ultima ora: puoi chiederne un'altra fra {minuti} minuti"
+        return f"hai usato tutte le {u['limit']} domande di quest'ora: il conteggio riparte fra {minuti} minuti"
     with _blocco, _registro_spesa() as db:
         riga = db.execute("SELECT dollari FROM spesa WHERE giorno = ?", (_oggi(),)).fetchone()
     if riga and riga[0] >= tetto:

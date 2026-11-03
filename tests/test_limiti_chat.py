@@ -1,4 +1,4 @@
-"""Limite della chat: domande nell'ultima ora per impronta dell'IP, mai l'IP nel file; secondi prima che se ne liberi una."""
+"""Limite della chat: domande nell'ora in corso per impronta dell'IP, mai l'IP nel file; secondi alla ripartenza."""
 
 import sqlite3
 import tempfile
@@ -23,15 +23,15 @@ class TestLimiti(unittest.TestCase):
         self.qui.stop(), self.env.stop(), self.cartella.cleanup()
         agente._SALE = None
 
-    def test_finestra_di_un_ora(self):
-        with mock.patch.object(agente.time, "time", return_value=1000.0):
+    def test_ora_fissa(self):
+        with mock.patch.object(agente.time, "time", return_value=7200.0 + 600):      # 10 minuti dopo lo scoccare dell'ora
             for _ in range(3):
                 agente._conta("10.0.0.1", 1, 0.01)
-        with mock.patch.object(agente.time, "time", return_value=1600.0):
             self.assertEqual(agente.uso("10.0.0.1"), {"used": 3, "limit": 3, "resets_in": 3000})
-            self.assertIn("fra 50 minuti", agente.controlla_limiti("10.0.0.1"))
+            self.assertIn("riparte fra 50 minuti", agente.controlla_limiti("10.0.0.1"))
             self.assertIsNone(agente.controlla_limiti("10.0.0.2"))
-        with mock.patch.object(agente.time, "time", return_value=4601.0):
+            self.assertEqual(agente.uso("10.0.0.2"), {"used": 0, "limit": 3, "resets_in": 3000})
+        with mock.patch.object(agente.time, "time", return_value=10800.0 + 1):      # ora nuova
             self.assertEqual(agente.uso("10.0.0.1")["used"], 0)
 
     def test_nel_file_non_c_e_l_ip(self):
