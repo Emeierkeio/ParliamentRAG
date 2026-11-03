@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/testata-scuro.png">
-  <img alt="ParliamentRAG: the records of the Italian Parliament in one database, and answers that you can check against them." src="docs/assets/testata-chiaro.png">
+  <img alt="ParliamentRAG. The data of the Italian Parliament. Every answer with its source." src="docs/assets/testata-chiaro.png">
 </picture>
 
 <p>
@@ -18,8 +18,8 @@ ParliamentRAG organises the records of the Italian Parliament, Chamber of Deputi
 3. **Every quote is exact.** Text between «…» matches the official record word for word and links to it.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sigillo-scuro.png">
-  <img alt="Checked on every answer: every group, authoritative voices, exact quotes." src="docs/assets/sigillo-chiaro.png" width="640">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/garanzie-scuro.png">
+  <img alt="Three guarantees, checked on the final answer against the official records: every group, authoritative voices, exact quotes." src="docs/assets/garanzie-chiaro.png">
 </picture>
 
 This repository holds the whole system: the nightly pipeline from the official sources, the PostgreSQL schema, the semantic index, the public API, the MCP server for AI assistants, and the checks behind the three guarantees. The live service runs at [www.parliamentrag.it](https://www.parliamentrag.it).
