@@ -2,7 +2,7 @@
 quei dati. Chiamate a OpenAI con la libreria standard. Gli eventi escono in NDJSON: status, tool, dati, delta,
 suggestions, done, error.
 
-Limiti fuori dal modello: passi massimi per domanda, domande per IP al giorno, tetto di spesa giornaliero (token
+Limiti fuori dal modello: passi massimi per domanda, domande nell'ultima ora per IP (contate per impronta, mai per IP), tetto di spesa giornaliero (token
 contati dalle risposte di OpenAI, in `dati/api/spesa.sqlite`). I link della risposta che non compaiono nei dati letti
 si tolgono; una risposta con citazioni passa sempre da `verifica_citazioni`.
 """
@@ -10,10 +10,14 @@ si tolgono; una risposta con citazioni passa sempre da `verifica_citazioni`.
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
+import hmac
 import json
 import re
+import secrets
 import sqlite3
 import threading
+import time
 import urllib.error
 import urllib.request
 from collections.abc import Iterator
@@ -50,11 +54,31 @@ Regole
 _blocco = threading.Lock()
 
 
+ORA = 3600
+_SALE = None
+
+
+def _sale() -> bytes:
+    """Chiave dell'impronta degli IP: da LIMITE_SALE, o casuale per processo (un riavvio azzera i limiti)."""
+    global _SALE
+    if _SALE is None:
+        _SALE = env("LIMITE_SALE", secrets.token_hex(32)).encode()
+    return _SALE
+
+
+def _impronta(ip: str) -> str:
+    return hmac.new(_sale(), ip.encode(), hashlib.sha256).hexdigest()[:32]
+
+
 def _registro_spesa() -> sqlite3.Connection:
+    """Domande dell'ultima ora per impronta dell'IP (mai l'IP) e spesa del giorno."""
     f = QUI / "dati" / "api" / "spesa.sqlite"
     f.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(f, check_same_thread=False)
-    db.execute("CREATE TABLE IF NOT EXISTS uso (giorno TEXT, ip TEXT, domande INTEGER, dollari REAL, PRIMARY KEY (giorno, ip))")
+    db.execute("DROP TABLE IF EXISTS uso")          # la prima versione teneva l'IP per giorno, senza scadenza
+    db.execute("CREATE TABLE IF NOT EXISTS domande (impronta TEXT NOT NULL, ts REAL NOT NULL)")
+    db.execute("CREATE INDEX IF NOT EXISTS domande_impronta ON domande (impronta, ts)")
+    db.execute("CREATE TABLE IF NOT EXISTS spesa (giorno TEXT PRIMARY KEY, dollari REAL NOT NULL)")
     return db
 
 
@@ -62,23 +86,34 @@ def _oggi() -> str:
     return dt.date.today().isoformat()
 
 
+def uso(ip: str) -> dict:
+    """Domande usate nell'ultima ora, limite e secondi prima che se ne liberi una."""
+    limite, ora = int(env("AGENTE_DOMANDE_ORA", "10")), time.time()
+    with _blocco, _registro_spesa() as db:
+        db.execute("DELETE FROM domande WHERE ts < ?", (ora - ORA,))
+        orari = [t for (t,) in db.execute("SELECT ts FROM domande WHERE impronta = ? ORDER BY ts", (_impronta(ip),))]
+    return {"used": len(orari), "limit": limite, "resets_in": max(0, round(orari[0] + ORA - ora)) if orari else 0}
+
+
 def controlla_limiti(ip: str) -> str | None:
     """Il motivo del rifiuto, o None se si può rispondere."""
-    per_ip, tetto = int(env("AGENTE_DOMANDE_IP_GIORNO", "30")), float(env("AGENTE_DOLLARI_GIORNO", "10"))
+    u, tetto = uso(ip), float(env("AGENTE_DOLLARI_GIORNO", "10"))
+    if u["used"] >= u["limit"]:
+        minuti = max(1, -(-u["resets_in"] // 60))
+        return f"hai fatto {u['used']} domande nell'ultima ora: puoi chiederne un'altra fra {minuti} minuti"
     with _blocco, _registro_spesa() as db:
-        mie = db.execute("SELECT coalesce(sum(domande), 0) FROM uso WHERE giorno = ? AND ip = ?", (_oggi(), ip)).fetchone()[0]
-        tutti = db.execute("SELECT coalesce(sum(dollari), 0) FROM uso WHERE giorno = ?", (_oggi(),)).fetchone()[0]
-    if mie >= per_ip:
-        return f"hai fatto {mie} domande oggi: il limite è {per_ip} al giorno"
-    if tutti >= tetto:
+        riga = db.execute("SELECT dollari FROM spesa WHERE giorno = ?", (_oggi(),)).fetchone()
+    if riga and riga[0] >= tetto:
         return "la chat ha raggiunto il tetto di spesa di oggi: riprova domani"
     return None
 
 
 def _conta(ip: str, domande: int, dollari: float) -> None:
     with _blocco, _registro_spesa() as db:
-        db.execute("""INSERT INTO uso VALUES (?, ?, ?, ?) ON CONFLICT (giorno, ip)
-                      DO UPDATE SET domande = domande + excluded.domande, dollari = dollari + excluded.dollari""", (_oggi(), ip, domande, dollari))
+        if domande:
+            db.executemany("INSERT INTO domande VALUES (?, ?)", [(_impronta(ip), time.time())] * domande)
+        db.execute("""INSERT INTO spesa VALUES (?, ?) ON CONFLICT (giorno) DO UPDATE SET dollari = dollari + excluded.dollari""",
+                   (_oggi(), dollari))
 
 
 def _costo(modello: str, uso: dict) -> float:

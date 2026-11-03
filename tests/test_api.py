@@ -73,7 +73,8 @@ class TestAgenteEMcp(unittest.TestCase):
               "text": "Matteo Renzi è senatore ([scheda](https://inventato.example/x)) e ha detto «questa frase non esiste da nessuna parte».\nSEGUITI: a | b | c"}]}],
              "usage": {"input_tokens": 2000, "output_tokens": 200}}])
         db = sqlite3.connect(":memory:", check_same_thread=False)
-        db.execute("CREATE TABLE uso (giorno TEXT, ip TEXT, domande INTEGER, dollari REAL, PRIMARY KEY (giorno, ip))")
+        db.execute("CREATE TABLE domande (impronta TEXT NOT NULL, ts REAL NOT NULL)")
+        db.execute("CREATE TABLE spesa (giorno TEXT PRIMARY KEY, dollari REAL NOT NULL)")
         with mock.patch.object(agente, "chiama_openai", lambda *a: next(risposte)), mock.patch.object(agente, "_registro_spesa", lambda: db), \
              mock.patch.object(agente, "env", lambda n, d=None: {"OPENAI_API_KEY": "finta"}.get(n, d)):
             eventi = list(agente.rispondi("chi è renzi?", [], "it", "1.2.3.4"))
@@ -84,7 +85,7 @@ class TestAgenteEMcp(unittest.TestCase):
         verifica = next(e["result"] for e in eventi if e["type"] == "dati" and e["name"] == "verifica_citazioni")
         self.assertEqual(verifica["verified"], 0)
         self.assertEqual(next(e["questions"] for e in eventi if e["type"] == "suggestions"), ["a", "b", "c"])
-        self.assertEqual(db.execute("SELECT domande FROM uso").fetchone()[0], 1)
+        self.assertEqual(db.execute("SELECT count(*) FROM domande").fetchone()[0], 1)
 
     def test_mcp(self):
         from unittest import mock

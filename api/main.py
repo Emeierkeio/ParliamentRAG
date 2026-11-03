@@ -151,6 +151,12 @@ class Domanda(BaseModel):
     turn: int | None = Field(default=None, ge=1, le=1000)
 
 
+@app.get("/v1/uso")
+def uso_chat(req: Request) -> dict:
+    """Domande alla chat usate nell'ultima ora da questo indirizzo, limite e secondi prima che se ne liberi una."""
+    return agente.uso(_ip(req))
+
+
 @app.post("/v1/chat")
 def chat(req: Request, d: Domanda):
     """Risposta dell'agente in NDJSON: un evento per riga."""
