@@ -1,0 +1,58 @@
+{
+ "id": "RIC-017",
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "categoria": "reazioni",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "speech.as_office distingue chi parla come membro del governo. Al Senato i membri del governo hanno id propri legati con person_same_as.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "In Aula alla Camera, dal 13 ottobre 2022 al 3 novembre 2026:\n\n- **Interventi del Governo (ministri inclusi): 529 reazioni**  \n  - 82 proteste  \n  - 447 commenti\n- **Interventi dei deputati: 3.378 reazioni**  \n  - 733 proteste  \n  - 2.645 commenti\n\nGli interventi dei deputati hanno quindi ricevuto **2.849** proteste o commenti in più, cioè circa **6,4 volte** quelli degli esponenti del Governo.\n\nIl conteggio riguarda le didascalie di protesta e commento registrate nel resoconto all’interno degli interventi; non indicano necessariamente con certezza chi sia il destinatario della reazione.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "conta_reazioni",
+  "conta_reazioni"
+ ],
+ "errori": [],
+ "tempo_s": 8.1,
+ "riferimento": {
+  "risposta": "Camera, Aula XIX: i membri del governo hanno 7.281 interventi con 82 proteste e 447 commenti (1,13 proteste e 6,14 commenti ogni 100 interventi; 2,31 fra proteste e commenti ogni 10.000 parole); i deputati 47.530 interventi con 719 proteste e 2.579 commenti (1,51 e 5,43 ogni 100 interventi; 1,69 ogni 10.000 parole). Per parola il governo riceve più reazioni dei deputati, per intervento un po' meno proteste e più commenti. Senato: governo 2.855 interventi, 0 proteste e 88 commenti (3,08 commenti ogni 100 interventi; 0,90 ogni 10.000 parole); senatori 29.862 interventi, 44 proteste e 960 commenti (0,15 e 3,21 ogni 100; 1,04 ogni 10.000 parole). Al Senato gli interventi del governo ricevono meno reazioni di quelli dei senatori.",
+  "stato": "calcolata",
+  "limiti": "Solo sedute d'Aula (body it:camera:19:aula e it:senato:19:aula). Governo: al Senato speech.as_office con ministro, viceministro, sottosegretario o presidente del Consiglio; alla Camera as_office è vuoto per tutti, quindi governo = oratore senza gruppo dichiarato che alla data ha un incarico in office con target it:gov:*. Presidenti di turno ed altri esclusi dal confronto (riga «altro»). Le reazioni sono quelle che il resoconto registra dentro l'intervento: non si sa sempre se sono rivolte all'oratore. Parole = parole del testo canonico."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 8.1
+ },
+ "causa_probabile": "strumenti",
+ "note": "Proteste e commenti del governo (82 e 447) e dei deputati (733 e 2.645) alla Camera giusti, ma solo la Camera e senza rapportarli al numero di interventi.",
+ "prima": {
+  "risposta_sistema": "Non è possibile ricavare un confronto numerico attendibile dai dati disponibili. Nei resoconti d’Aula proteste e commenti compaiono come annotazioni nel testo, non come eventi strutturati e conteggiabili; inoltre una ricerca per parole includerebbe anche usi non pertinenti, per esempio quando un oratore parla di proteste avvenute fuori dal Parlamento o usa il verbo “commentare”.\n\nI resoconti mostrano che queste reazioni sono annotate sia durante interventi di parlamentari sia durante interventi del Governo. Per esempio, nella seduta del Senato del 14 ottobre 2026, l’intervento della presidente del Consiglio Giorgia Meloni reca più annotazioni di “Commenti”; alla Camera, nelle sedute più recenti, commenti e proteste risultano frequentemente annotati anche negli interventi dei deputati.\n\nPer una misura rigorosa servirebbe una codifica sistematica dei resoconti stenografici ufficiali di Camera e Senato: per ogni intervento, ruolo dell’oratore al momento della seduta e numero di annotazioni di protesta/commento. I dati consultabili arrivano fino al 3 novembre 2026.",
+  "strumenti": [
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi"
+  ],
+  "tempo_s": 15.3,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": null,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 15.3
+  },
+  "note": "Non risponde (riferimento: governo 1,13 proteste e 6,14 commenti ogni 100 interventi alla Camera)."
+ }
+}

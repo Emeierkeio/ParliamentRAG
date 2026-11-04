@@ -1,0 +1,50 @@
+{
+ "id": "APP-002",
+ "domanda": "quali deputati sono passati con Vannacci e da dove venivano?",
+ "categoria": "gruppi",
+ "ramo": "camera",
+ "tipo_risposta": "elenco",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Componente Futuro Nazionale Vannacci - Free del Misto: Ziello, Pozzolo, Ravetto, Sasso dal 27/5/2026; Bergamini, Bof, Furgiuele, Pierro dall'8/6/2026; Calderone dal 21/9/2026 (prima FI-PPE). Vannacci non è deputato.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Alla Camera, la componente **Futuro Nazionale Vannacci - Free** conta oggi 9 deputati. Ecco da quale gruppo provenivano immediatamente prima dell’adesione e, quando diverso, il loro gruppo d’origine nella legislatura:\n\n- **Davide Bergamini**: da **Forza Italia**; era stato eletto e aveva iniziato la legislatura nella **Lega**.\n- **Gianangelo Bof**: dalla **Lega**.\n- **Tommaso Antonino Calderone**: da **Forza Italia**.\n- **Domenico Furgiuele**: dalla **Lega**.\n- **Attilio Pierro**: da **Forza Italia**; eletto e inizialmente iscritto alla **Lega**.\n- **Emanuele Pozzolo**: era nel **Misto** dal 14 maggio 2025, dopo essere stato in **Fratelli d’Italia**.\n- **Laura Ravetto**: era nel **Misto** dal 20 maggio 2026, dopo la **Lega**.\n- **Rossano Sasso**: era nel **Misto** dal 6 febbraio 2026, dopo la **Lega**.\n- **Edoardo Ziello**: era nel **Misto** dal 6 febbraio 2026, dopo la **Lega**.\n\nIn sintesi, **sei** arrivano da un percorso nella Lega (Bergamini, Bof, Furgiuele, Pierro, Ravetto, Sasso e Ziello: sette contando tutti i casi), **uno** da Forza Italia senza precedenti cambi di gruppo in questa legislatura (Calderone) e **uno** da Fratelli d’Italia (Pozzolo). Per i deputati transitati dal Misto, il gruppo precedente indicato è quello effettivo prima dell’ingresso nella componente Vannacci.\n\nDati aggiornati al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_persone",
+  "composizione",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona"
+ ],
+ "errori": [],
+ "tempo_s": 33.7,
+ "riferimento": {
+  "risposta": "Nella componente del Misto «Futuro Nazionale Vannacci - Free» alla Camera ci sono 9 deputati. Dal 27/5/2026: Emanuele Pozzolo (eletto con FdI, nel gruppo fino al 14/5/2025, poi Misto), Laura Ravetto (Lega fino al 20/5/2026), Rossano Sasso ed Edoardo Ziello (Lega fino al 6/2/2026); questi quattro il giorno prima erano già nel Misto. Dall'8/6/2026: Gianangelo Bof e Domenico Furgiuele (direttamente dalla Lega), Davide Bergamini (Lega fino al 7/1/2026, poi FI-PPE dal 20/1/2026) e Attilio Pierro (Lega fino al 30/12/2025, poi FI-PPE dal 20/1/2026). Dal 21/9/2026: Tommaso Antonino Calderone (FI-PPE). Tutti sono ancora nella componente al 2/11/2026. Roberto Vannacci non è deputato.",
+  "stato": "calcolata",
+  "limiti": "Componente = it:camera:19:group:cgm4271. «Da dove venivano» = gruppi politici precedenti in membership (Misto senza componente escluso dall'elenco) e gruppo il giorno prima dell'ingresso (group_at). Vannacci non ha un mandato alla Camera nel database."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 33.7
+ },
+ "causa_probabile": null,
+ "note": "I nove deputati con la provenienza giusta; la frase di sintesi conta male («sei… sette»). Link solo interni."
+}

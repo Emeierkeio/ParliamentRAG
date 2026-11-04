@@ -1,0 +1,48 @@
+{
+ "id": "LOB-012",
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "categoria": "emendamenti",
+ "ramo": "camera",
+ "tipo_risposta": "conteggio",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sono **28** gli emendamenti al C. 3148 dichiarati inammissibili, tutti in sede referente il 27 ottobre 2026.\n\nI primi firmatari appartenevano a tre gruppi:\n- **Partito Democratico – Italia Democratica e Progressista (PD-IDP)**: 19;\n- **Movimento 5 Stelle (M5S)**: 7;\n- **Alleanza Verdi e Sinistra (AVS)**: 2.",
+ "eventi": {
+  "status": 1,
+  "tool": 20,
+  "dati": 10,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "emendamenti",
+  "atto",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti"
+ ],
+ "errori": [],
+ "tempo_s": 20.5,
+ "riferimento": {
+  "risposta": "Al C. 3148 (conversione del DL 157/2026) sono stati presentati in sede referente 89 emendamenti; 28 risultano inammissibili. Per gruppo del primo firmatario: PD-IDP 17 (fra i primi firmatari Amendola, Barbagallo, Braga, Ferrari, Forattini, Gnassi, Pandolfo, Peluffo, Simiani), M5S 7 (Appendino, Cappelletti, L'Abbate, Pavanelli, Raffa), AVS 2 (Bonelli), IV-CR 1 (Del Barba), Misto-componente Futuro Nazionale Vannacci-Free 1 (Ziello). Nessun inammissibile della maggioranza. Gli altri 61 hanno esito vuoto, che non significa respinti.",
+  "stato": "calcolata",
+  "limiti": "Gruppo del primo firmatario alla data di presentazione (amendment.presented). Esito vuoto = esito non caricato."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 20.5
+ },
+ "causa_probabile": "strumenti",
+ "note": "28 inammissibili: giusto. Per gruppo PD-IDP 19 (riferimento 17), M5S 7, AVS 2; mancano IV-CR 1 e FNV 1."
+}

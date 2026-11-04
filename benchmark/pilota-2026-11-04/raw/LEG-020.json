@@ -1,0 +1,157 @@
+{
+ "id": "LEG-020",
+ "trappola": false,
+ "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dossier D26190 del 27/10/2026.",
+ "endpoint": "agente",
+ "inizio": 1793752767.799008,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "bill",
+    "number": "190",
+    "signer": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:senato:19:ddl:190\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"190\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 21 aprile 2011, n. 67, ai fini dell'introduzione del personale infermieristico e degli operatori socio-sanitari tra le categorie usuranti\", \"date\": \"2022-10-19\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/51401.htm\"}, {\"uri\": \"it:camera:19:ac:190\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"190\", \"kind\": \"bill\", \"title\": \"COMAROLI ed altri: \\\"Disposizioni per la tutela, la valorizzazione e lo sviluppo economico delle città murate\\\" (190)\", \"date\": \"2022-10-13\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;190\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "190 2026",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3159\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"date\": \"2026-10-22\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3159"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3159\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3159\", \"kind\": \"bill\", \"title\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"date\": \"2026-10-22\", \"status\": \"In corso di esame in Commissione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159\", \"kind_raw\": \"disegno_legge_ordinario\", \"initiative\": \"Governo\", \"status_date\": \"2026-10-28\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3159\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:308798\", \"name\": \"Carlo Nordio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308798&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro della Giustizia\"}, {\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Economia e delle finanze\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}, {\"person\": {\"uri\": \"it:person:camera:300356\", \"name\": \"Guido Crosetto\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro della Difesa\"}, {\"person\": {\"uri\": \"it:person:camera:309042\", \"name\": \"Matteo Piantedosi\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro dell'Interno\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-22\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-22\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-28\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3159.19PDL0219630\", \"title\": \"Disegno di Legge presentato il 22 ottobre 2026\", \"date\": \"2026-10-22\", \"articles\": 11, \"length\": 16027}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "decreto legge 22 ottobre 2026 n. 190 sicurezza pubblica contrasto criminalità minorile disposizioni",
+    "fonti": [
+     "documenti",
+     "atti"
+    ],
+    "ramo": "camera",
+    "da": "2026-10-22",
+    "a": "2026-11-03",
+    "quanti": 15
+   },
+   "result": "{\"testo\": \"decreto legge 22 ottobre 2026 n. 190 sicurezza pubblica contrasto criminalità minorile disposizioni\", \"fonti\": [\"documenti\", \"atti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:ac:3159\", \"atto\": \"it:camera:19:ac:3159\", \"titolo\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"testo\": \"\\\"Conversione in legge del decreto-legge 22 ottobre 2026, n. 190, recante disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\\\" (3159)\", \"ramo\": \"camera\", \"data\": \"2026-10-22\", \"esito\": null, \"url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159\", \"similarita\": 0.914}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-23777\", \"atto\": null, \"titolo\": \"Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile\", \"testo\": \"Camera dei deputati - Legislatura - Dossier di documentazione (Versione per stampa)\\n\\nAutore:\\n\\nServizio Studi - Dipartimento Giustizia\\n\\nTitolo:\\n\\nDisposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalit� minorile\\n\\nRiferimenti:\\n\\nAC N.3159/XIX\\n\\nSerie:\\n\\nProgetti di legge Numero: 683\\n\\nData:\\n\\n27/10/2026\\n\\nOrgani della Camera:\\n\\nII Giustizia\\n\\n27 ottobre 2026\\n\\nDisposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalit� minorile\\n\\nD.L. 190/2026 � A.C. 3159\\n\\nServizio Studi\\n\\nTel. 06 6706-2451 - * studi1@senato.it � @SR_Studi\\n\\nDossier n. 786\\n\\nServizio Studi\\n\\nDipartimento Giustizia\\n\\nTel. 06 6760-9148 - * st_giustizia@camera.it @CD_giustizia\\n\\nProgetti di legge n\", \"ramo\": \"camera\", \"data\": \"2026-10-27\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html\", \"similarita\": 0.851}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:bol20261027:c04:allegato1\", \"atto\": null, \"titolo\": \"ALLEGATO – DL 190/2026: Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile. C. 3159 Governo.\", \"testo\": \"ALLEGATO\\nDL 190/2026: Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile. C. 3159 Governo.\\nPARERE APPROVATO\\nLa IV Commissione,\\nesaminato, per quanto di competenza, il disegno di legge C. 3159, di conversione in legge del decreto-legge 22 ottobre 2026, n. 190, disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile;\\npremesso che il provvedimento si compone di dieci articoli e reca, tra le altre, disposizioni urgenti per il potenziamento delle misure di sicurezza connesse ai gravi incidenti occorsi nella città di Milano;\\nvalutato che l'articolo 8 interviene sull'operazione «Strade sicure» al fine di rafforzare il cont\", \"ramo\": \"camera\", \"data\": \"2026-10-27\", \"esito\": "
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "D.L. 190/2026 A.C. 3159 contenuto articoli misure previste dossier Servizio Studi",
+    "fonti": [
+     "documenti"
+    ],
+    "ramo": "camera",
+    "da": "2026-10-27",
+    "a": "2026-10-27",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"D.L. 190/2026 A.C. 3159 contenuto articoli misure previste dossier Servizio Studi\", \"fonti\": [\"documenti\"], \"rami\": [\"camera\"], \"risultati\": [], \"nota\": \"brani per vicinanza di significato, non per parole: controlla che parlino davvero del tema; i riassunti (riassunto: true) non si citano tra «…»\"}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": null,
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 149, \"items\": [{\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:sed0736\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 736, \"date\": \"2026-10-30\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 30, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c27:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4022\", \"body_name\": \"Commissione parlamentare di controllo sull'attività degli enti ges"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"Strade sicure\", \"found\": false, \"reason\": \"troppo corta per verificarla\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "elenco_sedute"
+ ],
+ "tempo_s": 20.1,
+ "risposta_sistema": "Sì. È il dossier di documentazione del Servizio Studi sul **D.L. 22 ottobre 2026, n. 190**, all’esame della Camera come **A.C. 3159**:\n\n[Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile — dossier](https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html)\n\nÈ datato **27 ottobre 2026**, riferito alla **Commissione Giustizia (II)** e curato dal Dipartimento Giustizia del Servizio Studi. È indicato come *Progetti di legge n. 683* (con il corrispondente dossier del Senato n. 786).\n\nIn breve, documenta e analizza il decreto-legge sulla **sicurezza pubblica** e sul **contrasto alla criminalità minorile**. Il provvedimento consta di dieci articoli, oltre all’articolo di conversione: tra le misure segnalate figura il rafforzamento delle misure di sicurezza collegate ai gravi incidenti avvenuti a Milano e, all’articolo 8, un intervento sull’operazione **«Strade sicure»** per potenziarne il contributo alla sicurezza.\n\nL’A.C. 3159 risulta, nei dati aggiornati al 3 novembre 2026, **in corso di esame in Commissione** dal 28 ottobre. Scheda dell’atto: [A.C. 3159](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159).",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Sud chiama Nord (Misto)",
+     "Governo"
+    ],
+    "silent": []
+   },
+   "quotes": [
+    {
+     "quote": "Strade sicure",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+    "available": true,
+    "voices": []
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "id": "DJ-014",
+ "trappola": false,
+ "domanda": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+ "categoria": "interventi",
+ "tipo_risposta": "linea_del_tempo",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Contare le occorrenze, non gli interventi. Includere tutti i gruppi, anche quelli con zero occorrenze.",
+ "endpoint": "agente",
+ "inizio": 1793752872.025954,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Gaza",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0737:tit00120.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Dichiarazione di urgenza della proposta di legge n. 2916 (ore 16,30). (ore 16,30) (ore 16,30)\", \"person\": {\"uri\": \"it:person:camera:308243\", \"name\": \"Giuseppe Luciano Calogero Provenzano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308243&legislatura=19\"}, \"speaker_label\": \"GIUSEPPE PROVENZANO\", \"snippet\": \"molti casi, con la copertura dell'esercito, davanti alla pulizia etnica in Cisgiordania e al genocidio a [[Gaza]], le parole non bastavano più, occorreva fare qualcosa per provare a fermare Netanyahu. E, ogni volta che c'è stata l'occasione\"}, {\"uri\": \"it:camera:19:sed0737:tit00180.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per fatto personale.\", \"person\": {\"uri\": \"it:person:camera:307302\", \"name\": \"Stefania Ascari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307302&legislatura=19\"}, \"speaker_label\": \"STEFANIA ASCARI\", \"snippet\": \"rispondete a dove mettete le risorse: soprattutto in armi, sostenendo il complesso militare, industriale e il genocidio a [[Gaza]] .\\n\\nIn questo modo, non avete risposto alle richieste del dottor Ilyas Abu Safiya, che non è un terrorista come avete dipinto ... figlio ed è il figlio del dottor Hussam Abu Safiya, un pediatra, direttore di un ospedale a [[Gaza]] che, da oltre due anni, è prigioniero nelle carceri israeliane. Qual è il capo d'imputazione? Non si sa. C'è stato\"}, {\"uri\": \"it:camera:19:sed0734:tit00050.int00160\", \"sitting\": {\"uri\": \"it:camera:19:sed0734\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 734, \"date\": \"2026-10-27\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori. . .\", \"person\": {\"uri\": \"it:person:camera:308816\", \"name\": \"Elisabetta Piccolotti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308816&legislatura=19\"}, \"speaker_label\": \"ELISABETTA PICCOLOTTI\", \"snippet\": \"quel software di intelligenza artificiale che ha consentito di uccidere decine di migliaia di civili innocenti nella Striscia di [[Gaza]], come ha perfettamente raccontato il film Naza"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Gaza",
+    "chamber": "senato",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:senato:19:sed0466:int00005\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Comunicazioni del Presidente del Consiglio dei ministri in vista del Consiglio europeo del 15 e 16 ottobre 2026 e conseguente discussione\", \"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"speaker_label\": \"MELONI, presidente del Consiglio dei ministri\", \"snippet\": \"canale di dialogo. Dopodiché, però, ci preoccupa il perdurare della presenza israeliana nel Sud del Libano, in Siria, a [[Gaza]] e in Cisgiordania. Assistiamo a una pressione sulla popolazione palestinese che è intollerabile. Come abbiamo scritto insieme a Francia, Germania ... espansione senza fine degli insediamenti in Cisgiordania, al crollo dell'Autorità palestinese o alla ripresa della violenza a [[Gaza]] o nella stessa Cisgiordania, la soluzione dei due Stati diventerà impossibile e questo è un esito che non possiamo permetterci.\\n\\nProporrò\"}, {\"uri\": \"it:senato:19:sed0466:int00023\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032600.jpg\"}, \"speaker_label\": \"CASTELLONE\", \"snippet\": \"fino a un certo punto, e la sua vicinanza a Trump e Netanyahu non può giustificare il genocidio a [[Gaza]]. Serve riconoscere lo Stato di Palestina prima che di quello Stato restino solo macerie . E serve far arrivare senza filtri\"}, {\"uri\": \"it:senato:19:sed0466:int00043\", \"sitting\": {\"uri\": \"it:senato:19:sed0466\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 466, \"date\": \"2026-10-14\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione sulle comunicazioni del Presidente del Consiglio dei ministri\", \"person\": {\"uri\": \"it:person:senato:32658\", \"name\": \"Alessandra Maiorino\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032658.jpg\"}, \"speaker_label\": \"MAIORINO\", \"snippet\": \"giurista sudafricana che ha presieduto la Commissione per i diritti umani dell'ONU e ha document"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 0, \"verified\": 0, \"results\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 12.8,
+ "risposta_sistema": "Non posso produrre un conteggio affidabile delle singole occorrenze della parola «Gaza» mese per mese con i dati consultabili: i resoconti disponibili restituiscono gli **interventi che contengono** la parola, ma non un conteggio automatico di tutte le ripetizioni nel testo integrale né un’aggregazione mensile per gruppo.\n\nPosso però ricostruire una tabella contando gli **interventi d’Aula** che menzionano “Gaza”, distinta per Camera, Senato, mese e gruppo. I dati arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "na"
+   },
+   "groups": {
+    "present": [],
+    "missing": [
+     "Fratelli d'Italia",
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)",
+     "Avanti PSI (Misto)"
+    ]
+   },
+   "quotes": [],
+   "authority": {
+    "topic": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+    "available": true,
+    "voices": []
+   },
+   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

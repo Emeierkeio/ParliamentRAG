@@ -1,0 +1,72 @@
+{
+ "id": "APP-014",
+ "domanda": "Lega e Fratelli d'Italia hanno mai votato diversamente in un voto finale?",
+ "categoria": "confronto",
+ "ramo": "entrambi",
+ "tipo_risposta": "elenco",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Voto del gruppo = posizione della maggioranza dei suoi votanti. Elencare i casi, separati per ramo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "No. Nelle votazioni finali **palesi** della XIX legislatura disponibili fino al 28 ottobre 2026, Lega e Fratelli d’Italia hanno sempre avuto la stessa posizione prevalente.\n\n- **Camera:** 405 votazioni finali esaminate, 0 posizioni diverse; accordo **100%**.\n- **Senato:** 264 votazioni finali esaminate, 0 posizioni diverse; accordo **100%**.\n\nIl confronto esclude i voti segreti e considera la posizione maggioritaria dei membri votanti di ciascun gruppo; non misura quindi eventuali singoli dissensi interni. Alla Camera entrambi i gruppi sono risultati favorevoli 404 volte e contrari una volta; al Senato favorevoli in tutte le 264 votazioni finali.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "voto_gruppi",
+  "voto_gruppi"
+ ],
+ "errori": [],
+ "tempo_s": 9.1,
+ "riferimento": {
+  "risposta": "No. Nelle 405 votazioni finali palesi della Camera e nelle 264 del Senato della XIX, la maggioranza dei votanti della Lega e quella di Fratelli d'Italia hanno sempre preso la stessa posizione: sempre a favore, tranne una votazione alla Camera (21/3/2023, it:camera:19:sed0072:v011) in cui entrambi i gruppi hanno votato contro all'unanimità (Lega 45 su 45, FdI 86 su 86). Restano fuori le 2 votazioni finali segrete della Camera sulla legge elettorale (PDL 2822-A, 16/7/2026, e 2822-B, 8/10/2026), dove non si sa come ha votato ciascuno.",
+  "stato": "calcolata",
+  "limiti": "Voto finale = vote.final = true (esclusi i voti con kind 'final' ma final = false, che sono articoli ed emendamenti dei Doc. XXII e voti delle Giunte). Posizione del gruppo = risultato più frequente fra favorevoli, contrari e astenuti dei suoi membri; gruppo preso da ballot.grp, risolto con grp_alias. I voti segreti sono esclusi: si conosce solo la partecipazione."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 9.1
+ },
+ "causa_probabile": "strumenti",
+ "note": "No, con 405 votazioni finali palesi alla Camera e 264 al Senato e nessuna posizione diversa; manca la menzione dei 2 voti segreti.",
+ "prima": {
+  "risposta_sistema": "No: nei voti finali della XIX legislatura disponibili nei dati, Lega e Fratelli d’Italia risultano schierate nello stesso modo come maggioranza di gruppo. In particolare, nei casi verificati hanno votato entrambe a favore o entrambe contro; non emerge un voto finale con una maggioranza di gruppo favorevole e l’altra contraria o astenuta.\n\nVa distinta la posizione del gruppo dai singoli parlamentari: assenze, missioni o voti individuali non coincidenti possono esserci, ma non cambiano la posizione prevalente del gruppo nella votazione.\n\nI dati sulle sedute arrivano fino al 3 novembre 2026; l’ultima votazione finale qui disponibile è del 28 ottobre 2026.",
+  "strumenti": [
+   "elenco_votazioni",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "elenco_votazioni",
+   "elenco_votazioni",
+   "elenco_votazioni",
+   "cerca_atti",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione",
+   "votazione"
+  ],
+  "tempo_s": 28.4,
+  "punteggi": {
+   "correttezza": 1,
+   "fonti": 0,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 28.4
+  },
+  "note": "Conclusione giusta (mai in disaccordo), ma da una verifica a campione, senza i 405 e 264 voti finali palesi del riferimento."
+ }
+}

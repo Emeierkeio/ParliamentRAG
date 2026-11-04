@@ -1,0 +1,54 @@
+{
+ "id": "RIC-011",
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "categoria": "emendamenti",
+ "ramo": "camera",
+ "tipo_risposta": "classifica",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Alla Camera, la rete delle cofirme tra gruppi diversi è dominata da un blocco opposizione: **PD–AVS** è di gran lunga la coppia più frequente, con **2.396** proposte emendative cofirmate. Seguono **M5S–PD** (1.016) e **M5S–AVS** (894).\n\nLe 20 relazioni più forti nella rete sono:\n\n1. **PD–AVS** — 2.396  \n2. **M5S–PD** — 1.016  \n3. **M5S–AVS** — 894  \n4. **PD–Italia Viva–Casa Riformista** — 622  \n5. **+Europa–Stati Uniti d’Europa (componente del Misto)–PD** — 613  \n6. **+Europa–Stati Uniti d’Europa (componente del Misto)–AVS** — 580  \n7. **+Europa–Stati Uniti d’Europa (componente del Misto)–M5S** — 572  \n8. **M5S–Italia Viva–Casa Riformista** — 564  \n9. **AVS–Italia Viva–Casa Riformista** — 561  \n10. **+Europa–Stati Uniti d’Europa (componente del Misto)–Italia Viva–Casa Riformista** — 508  \n11. **FDI–Forza Italia** — 382  \n12. **Lega–Forza Italia** — 356  \n13. **Lega–FDI** — 341  \n14. **Forza Italia–Noi Moderati** — 252  \n15. **FDI–Noi Moderati** — 249  \n16. **Azione–PD** — 227  \n17. **Lega–Noi Moderati** — 205  \n18. **M5S–Azione** — 161  \n19. **Azione–AVS** — 142  \n20. **FDI–PD** — 120  \n\nIl disegno complessivo mostra quindi due sottoreti molto dense:\n\n- **Opposizioni e area riformista**: PD, AVS e M5S sono il triangolo centrale; Italia Viva–Casa Riformista e la componente **+Europa–Stati Uniti d’Europa** hanno molte connessioni con quel nucleo.  \n- **Maggioranza**: FDI, Lega, Forza Italia e Noi Moderati cofirmano spesso tra loro; la relazione più intensa è FDI–FI, seguita da Lega–FI e Lega–FDI.\n\nCi sono anche collegamenti trasversali, ma nettamente meno frequenti: tra i maggiori, **FDI–PD** (120), **FI–PD** (113), **M5S–FDI** (111) e **M5S–FI** (107).\n\nIl conteggio riguarda le proposte emendative della Camera nell’intera XIX legislatura disponibili fino al **3 novembre 2026**, soltanto quando hanno firmatari di almeno due gruppi diversi. Ogni proposta è identificata da atto, sede e numero: se un emendamento ha firmatari di tre o più gruppi, contribuisce a ciascuna coppia di gruppi coinvolta. Sono emerse **74 coppie** complessive. La fonte avverte che la completezza dei fascicoli degli emendamenti caricati non è verificata.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "conta_emendamenti"
+ ],
+ "errori": [],
+ "tempo_s": 27.4,
+ "riferimento": {
+  "risposta": "Camera, XIX: delle 90.792 proposte emendative con firmatari deputati, 3.281 sono firmate da deputati di almeno due gruppi diversi (gruppo alla data). Le coppie di gruppi che cofirmano più spesso: PD-IDP e AVS 2.330 emendamenti; M5S e PD-IDP 943; M5S e AVS 833; PD-IDP e IV-CR 616; Misto-+Europa e PD-IDP 604; Misto-+Europa e AVS 577; Misto-+Europa e M5S 570; AVS e IV-CR 561; M5S e IV-CR 560; Misto-+Europa e IV-CR 507. Nella maggioranza: FdI e FI-PPE 326, Lega e FI-PPE 301, Lega e FdI 291, FdI e Noi Moderati 230, FI-PPE e Noi Moderati 227. Fra maggioranza e opposizione le coppie più frequenti sono FI-PPE e PD-IDP 95, FdI e PD-IDP 94, M5S e FI-PPE 94.",
+  "stato": "calcolata",
+  "limiti": "Proposta = (atto, sede, numero) distinti: le riformulazioni ripetono il numero e si contano una volta. Gruppo del firmatario = group_at alla data della seduta (o di presentazione), Misto per componente; firme senza persona (governo, relatori senza id) escluse; 49 firme senza gruppo alla data. Per coppia si conta il numero di proposte che hanno almeno un firmatario di ciascuno dei due gruppi. Gli emendamenti della Camera vengono dai fascicoli caricati (dal 31/10/2022 al 28/10/2026), la cui completezza non è verificata."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 27.4
+ },
+ "causa_probabile": "strumenti",
+ "note": "Stesse coppie in testa del riferimento (PD-AVS, M5S-PD, M5S-AVS), numeri vicini ma non uguali (2.396 contro 2.330, Lega-FdI 341 contro 291): gruppo alla data con un altro criterio.",
+ "prima": {
+  "risposta_sistema": "Non posso ricostruire in modo affidabile una graduatoria dell’intera XIX legislatura con i dati disponibili qui: gli emendamenti sono consultabili soltanto **atto per atto**, mentre non è disponibile un’estrazione aggregata delle cofirme per gruppo. L’archivio contiene 5.316 progetti di legge, inclusi molti senza emendamenti: una classifica completa richiederebbe acquisire e normalizzare tutti gli emendamenti di ciascun atto, attribuendo i firmatari al gruppo alla data di presentazione.\n\nPer evitare risultati parziali o numeri non verificabili, non indico quindi quali coppie di gruppi “cofirmano più spesso”. Le schede ufficiali dei singoli atti e dei relativi emendamenti restano la fonte da cui effettuare il conteggio.\n\nPosso però fare un’analisi rigorosa delimitando il perimetro, per esempio: un provvedimento, una materia, un intervallo di date, oppure gli emendamenti esaminati in Assemblea anziché in Commissione.",
+  "strumenti": [
+   "cerca_atti"
+  ],
+  "tempo_s": 8.7,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": null,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 8.7
+  },
+  "note": "Non risponde (riferimento: PD-IDP e AVS 2.330 cofirme…). Lo dice."
+ }
+}

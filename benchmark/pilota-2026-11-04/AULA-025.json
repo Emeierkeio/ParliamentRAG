@@ -1,0 +1,50 @@
+{
+ "id": "AULA-025",
+ "domanda": "Nel voto di fiducia sul decreto giustizia (S. 1939) del 30 luglio 2026 al Senato, quali senatori di maggioranza non hanno partecipato al voto o hanno votato contro?",
+ "categoria": "voti",
+ "ramo": "senato",
+ "tipo_risposta": "elenco",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "Trappola: nei ballot del Senato gli assenti non hanno riga (non esiste «absent»): si ricavano dai mandati in corso. Chi è in missione non è assente. Votazione it:senato:19:sed0444:v001.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Nessun senatore dei gruppi di maggioranza ha votato contro la fiducia sul S. 1939: tutti i 92 voti della maggioranza sono stati favorevoli.\n\nNon risultano assenti; risultano invece **26 senatori in missione**, quindi non partecipanti al voto:\n- Fratelli d’Italia: 11\n- Lega Salvini Premier–Partito Sardo d’Azione: 8\n- Forza Italia–Berlusconi Presidente–PPE: 6\n- Civici d’Italia–UDC–Noi Moderati–MAIE–Centro Popolare: 1\n\nIl voto è stato approvato con 92 sì e 63 no. Nei dati della votazione disponibili qui, per i non partecipanti è riportato il totale per gruppo ma non l’elenco nominativo; la fonte ufficiale dell’iter del provvedimento è la [scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55442.htm).",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "elenco_votazioni",
+  "votazione",
+  "composizione",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "scheda_persona"
+ ],
+ "errori": [],
+ "tempo_s": 32.4,
+ "riferimento": {
+  "risposta": "Nella votazione di fiducia del 30/7/2026 sull'articolo unico del DDL S. 1939 (conversione del DL 100/2026), approvata con 92 sì e 63 no, nessun senatore dei gruppi di maggioranza (FdI, Lega, FI, Civici d'Italia-NM) ha votato contro. Dei 120 senatori di maggioranza in carica, 92 hanno votato sì e 26 erano in congedo o missione (FdI 11, Lega 8, FI 6, Civici d'Italia-NM 1: non sono assenze). Due non hanno partecipato al voto: Gian Marco Centinaio (Lega), che presiedeva la seduta in quel momento, e Ignazio La Russa (FdI), senza riga nei voti individuali.",
+  "stato": "calcolata",
+  "limiti": "Gli assenti si ricavano per differenza: senatori con mandato in corso il 30/7/2026 e gruppo di maggioranza a quella data, senza riga in ballot. Maggioranza = FdI, LSP-PSd'Az, FI-BP-PPE, Cd'I-UDC-NM-MAIE-CP (regola dichiarata, non un dato); i senatori del Misto non sono considerati perché al Senato il Misto non è diviso per componente. Il database non registra le cariche di Presidente e vicepresidente del Senato: il presidente di turno si ricava dal resoconto (chi indice la votazione)."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 32.4
+ },
+ "causa_probabile": "strumenti",
+ "note": "Nessun contrario, 92 sì e 63 no, 26 in missione per gruppo: giusto, e ora non li chiama assenti. Sbagliato «non risultano assenti»: Centinaio (presiedeva) e La Russa non hanno votato."
+}

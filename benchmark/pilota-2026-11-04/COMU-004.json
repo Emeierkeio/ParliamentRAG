@@ -1,0 +1,67 @@
+{
+ "id": "COMU-004",
+ "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+ "categoria": "reazioni",
+ "ramo": "camera",
+ "tipo_risposta": "fatto",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì. Durante l’informativa urgente del ministro Matteo Piantedosi alla Camera, il 3 febbraio 2026, i gruppi di maggioranza indicati nel resoconto si sono alzati in piedi applaudendo.\n\nLa riga del resoconto è:\n\n> (Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)\n\nLa medesima didascalia compare sia durante l’intervento sia alla sua conclusione. Seduta dell’Aula della Camera n. 607, 3 febbraio 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 6,
+  "dati": 3,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_interventi",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 8.7,
+ "riferimento": {
+  "risposta": "Sì. Nel resoconto della seduta 607 della Camera (3/2/2026, informativa urgente del Governo sugli scontri di Torino durante il corteo pro Askatasuna), l'intervento del ministro Matteo Piantedosi si chiude con «Grazie» seguito dalla didascalia: «(Applausi dei deputati dei gruppi Fratelli d'Italia, Lega-Salvini Premier, Forza Italia-Berlusconi Presidente-PPE e Noi Moderati (Noi con l'Italia, Coraggio Italia, UDC e Italia al Centro)-MAIE-Centro Popolare), che si levano in piedi)». La stessa didascalia compare anche a metà intervento, dopo la frase «Credo che chi sfila a fianco di questi delinquenti finisce per offrire loro una prospettiva di impunità». All'inizio, dopo la solidarietà agli agenti feriti, il resoconto scrive «L'Assemblea e i membri del Governo si levano in piedi», con applausi. Intervento: it:camera:19:sed0607:tit00050.sub00010.int00020.",
+  "stato": "calcolata",
+  "limiti": "Didascalie riportate come sono in reaction.raw (la parentesi chiusa dopo «Centro Popolare» è nel testo della fonte). Il gruppo di chi applaude viene da reaction_from (FdI, Lega, FI-PPE, Noi Moderati)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 8.7
+ },
+ "causa_probabile": "strumenti",
+ "note": "Sì, con la didascalia esatta «che si levano in piedi», a metà e alla fine dell'intervento, seduta 607.",
+ "prima": {
+  "risposta_sistema": "No. Nel resoconto stenografico dell’informativa alla Camera del 3 febbraio 2026 non risulta che la maggioranza si sia alzata in piedi.\n\nLa riga conclusiva è:\n\n> (Applausi dei deputati dei gruppi Fratelli d’Italia, Lega-Salvini Premier e Forza Italia-Berlusconi Presidente-PPE).\n\nQuindi il resoconto registra gli applausi di quei gruppi, ma non un applauso in piedi. Seduta n. 607 della Camera, informativa sugli scontri al corteo pro Askatasuna.",
+  "strumenti": [
+   "elenco_sedute",
+   "elenco_sedute",
+   "cerca_interventi",
+   "seduta",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_interventi"
+  ],
+  "tempo_s": 26.8,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": 0,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 26.8
+  },
+  "note": "Sbagliato: dice che la maggioranza non si è alzata; la didascalia vera elenca anche Noi Moderati e chiude con «che si levano in piedi». Primo giro: nessuna risposta dopo 8 passi; dopo la correzione dell'ultimo passo risponde, ma con il fatto sbagliato."
+ }
+}

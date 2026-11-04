@@ -1,0 +1,48 @@
+{
+ "id": "CIT-016",
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "categoria": "video",
+ "ramo": "camera",
+ "tipo_risposta": "link",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Se intendi la riforma elettorale A.C. 2822, la Camera l’ha approvata il 16 luglio 2026 e l’ha trasmessa al Senato; nei dati disponibili non compare un link al video della votazione. È però disponibile il resoconto stenografico della seduta del **16 luglio 2026**: [Camera, seduta n. 691](https://www.camera.it/leg19/410?idSeduta=0691&tipo=stenografico#sed0691.stenografico.tit00030.sub00010.int00510).\n\nL’atto è la proposta Bignami e altri, «Modifiche … in materia di elezione della Camera dei deputati … e … del Senato della Repubblica» (A.C. 2822). Il suo iter risulta ancora come “Approvato, segue Navette”, cioè non concluso definitivamente: [scheda dell’atto](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_atti",
+  "cerca_atti",
+  "elenco_votazioni",
+  "atto"
+ ],
+ "errori": [],
+ "tempo_s": 15.8,
+ "riferimento": {
+  "risposta": "Sì, alla Camera. La legge elettorale (PDL 2822-B) è stata approvata definitivamente l'8/10/2026 nella seduta 723, con voto finale segreto: 227 sì, 164 no. Il video della WebTV è «AULA, Seduta 723 - Legge elettorale, approvazione definitiva»: https://webtv.camera.it/evento/32457 (dalle 10:34 alle 12:52). La votazione finale inizia alle 12:37:15, al secondo 9.420 del video, con l'annuncio del presidente Fontana «Passiamo alla votazione finale»; prima ci sono le dichiarazioni di voto finale. Il passaggio al Senato non ha video nel database.",
+  "stato": "calcolata",
+  "limiti": "Nel database ci sono solo i video della Camera (743, tutti di Aula); per il Senato nessuno. L'offset in secondi è quello di video_segment.start_s; l'URL non porta un parametro di posizione."
+ },
+ "punteggi": {
+  "correttezza": 0,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "fail"
+  },
+  "trappola": null,
+  "tempo_s": 15.8
+ },
+ "causa_probabile": "strumenti",
+ "note": "Peggio della pilota: parla del voto del 16/7 e dice che l'iter non è concluso; niente video WebTV (riferimento: seduta 723 dell'8/10, webtv.camera.it/evento/32457)."
+}

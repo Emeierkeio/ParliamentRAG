@@ -1,0 +1,91 @@
+{
+ "id": "COMU-051",
+ "trappola": false,
+ "domanda": "Quante leggi di iniziativa parlamentare sono diventate legge in questa legislatura rispetto a quelle del governo?",
+ "categoria": "statistiche",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Contare le leggi una volta sola: lo stesso atto ha un numero alla Camera e uno al Senato.",
+ "endpoint": "agente",
+ "inizio": 1793752799.762856,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 5316, \"items\": [{\"uri\": \"it:senato:19:ddl:2083\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2083\", \"kind\": \"bill\", \"title\": \"Disposizioni per la prevenzione del burnout e per la tutela del benessere psico-fisico nella professione forense\", \"date\": \"2026-11-02\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55756.htm\"}, {\"uri\": \"it:camera:19:ac:3172\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3172\", \"kind\": \"bill\", \"title\": \"FARAONE ed altri: \\\"Istituzione della Giornata nazionale del cane guida\\\" (3172)\", \"date\": \"2026-10-29\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3172\"}, {\"uri\": \"it:senato:19:ddl:2080\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2080\", \"kind\": \"bill\", \"title\": \"Misure per la tutela del commercio di prossimità e per il contrasto alle pratiche elusive realizzate mediante il fenomeno delle partite IVA cosiddette «apri e chiudi»\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55751.htm\"}, {\"uri\": \"it:senato:19:ddl:2081\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2081\", \"kind\": \"bill\", \"title\": \"Modifiche agli articoli 56 e 57 della Costituzione, in materia di rappresentanza parlamentare della Sardegna e della Sicilia, in attuazione del principio di insularità\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55752.htm\"}, {\"uri\": \"it:senato:19:ddl:2082\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2082\", \"kind\": \"bill\", \"title\": \"Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55015.htm\"}, {\"uri\": \"it:camera:19:ac:2197-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2197-B\", \"kind\": \"bill\", \"title\": \"S. 427-731-888-891-B. - PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEI SENATORI IANNONE ed altri; MARTON ed altri; PARRINI ed altri; DE CRISTOFARO e MAGNI: \\\"Modifica all’articolo 24 della Costituzione in materia di tutela delle vittime di reato\\\" <i>(approvata, in seconda deliberazione, dal Senato con la maggioranza dei due terzi dei suoi componenti, già approvata, in prima deliberazione, dal Senato, in un testo unificato, e dalla Camera)</i> (2197-B)\", \"date\": \"2026-10-28\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2197-B\"}, {\"uri\": \"it:camera:19:ac:3170\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3170\", \"kind\": \"bill\", \"title\": \"D'ALFONSO: \\\"Modifica all’articolo 328 del codice penale, in materia di omissione di atti d’ufficio, nonché disposizioni concernenti l"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "quante leggi di iniziativa parlamentare e quante di iniziativa governativa sono state approvate nella XIX legislatura",
+    "fonti": [
+     "documenti",
+     "interventi",
+     "atti"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"quante leggi di iniziativa parlamentare e quante di iniziativa governativa sono state approvate nella XIX legislatura\", \"fonti\": [\"documenti\", \"interventi\", \"atti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-21500\", \"atto\": null, \"titolo\": \"La legislazione tra Stato, Regioni e Unione Europea - Rapporto 2024-2025\", \"testo\": \"Tale andamento � ribadito anche dall�analisi delle aree di intervento normativo, � infatti in crescita anche il numero delle leggi �multisettore�, che passano complessivamente dalle 9 della XVIII legislatura alle 26 della legislatura in corso (rispettivamente 6,5% e 14,4%, le percentuali sul totale delle leggi approvate). Infine, la multisettorialit� degli atti approvati nella XIX legislatura �, in termini percentuali, maggiore tra i decreti�legge convertiti 29,6% (21 su 71) rispetto a tutte le altre tipologie di intervento normativo. L�analogo dato nella legislatura precedente registra un valore inferiore, pari al 16,7% (8 su 48 i provvedimenti d�urgenza di natura multisettoriale).\\n\\n1.\\nTutt\", \"ramo\": \"camera\", \"data\": \"2025-04-14\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-21500/la-legislazione-stato-regioni-e-unione-europea-rapporto-2024-2025.html\", \"similarita\": 0.872}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-21655\", \"atto\": null, \"titolo\": \"I provvedimenti attuativi delle leggi - Monitoraggio e controllo - XIX Maggio 2025\", \"testo\": \"Dall�inizio della XIX Legislatura (13 ottobre 2022) al 1� maggio 2025, sono stati pubblicati nella Gazzetta Ufficiale 278 provvedimenti legislativi di iniziativa governativa, di cui 119 decreti legislativi, 86 decreti-legge, al netto di quelli confluiti in altri provvedimenti, e 73 altre leggi di iniziativa governativa. Nel medesimo periodo sono state approvate 54 leggi di iniziativa parlamentare.\\n\\nAlla medesima data del 1� maggio 2025:\\n\\n- i provvedimenti attuativi previsti da disposizioni legislative d�iniziativa del Governo Meloni, al netto di quelli abrogati o ritenuti superati da normativa successiva, sono pari a 1.015, di cui 447 da adottare;\\n\\n- i provvedimenti attuativi previsti da leg\", \"ramo\": \"camera\", \"data\": \"2025-05-22\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-21655/i-provvedimenti-attuativi-leggi-monitoraggio-e-controllo-xix-maggio-2025.html\", \"similarita\": 0.864}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-19271\", \"atto\": null, \"titolo\": \"L'attuazione degli atti di indirizzo - Monitoraggio e controllo - XIX Novembre 2023\", \"testo\": \"Gli atti d�indirizzo nel primo anno della XIX Legislatura\\n\\nNel primo anno della XIX Legislatura (13 ottobre 2022 - 13 ottobre 2023) sono state approvate 64 leggi: una legge di revisione costituzionale di iniziativa parlamentare (la legge costituzionale 26 settembre 2023, n. 1, per l�inserimento dello sport tra i valori costituzionalmente tutelati) e 63 leggi ordinarie (32 leggi di conversi"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "Nel secondo anno della XIX Legislatura 13 ottobre 2023 12 ottobre 2024 approvate leggi iniziativa governativa parlamentare",
+    "fonti": [
+     "documenti"
+    ],
+    "ramo": "camera",
+    "da": "2024-11-01",
+    "a": "2024-11-15",
+    "quanti": 10
+   },
+   "result": "{\"testo\": \"Nel secondo anno della XIX Legislatura 13 ottobre 2023 12 ottobre 2024 approvate leggi iniziativa governativa parlamentare\", \"fonti\": [\"documenti\"], \"rami\": [\"camera\"], \"risultati\": [{\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-20803\", \"atto\": null, \"titolo\": \"L'attuazione degli atti di indirizzo - Monitoraggio e controllo - XIX Novembre 2024\", \"testo\": \"Nel dettaglio, si tratta delle seguenti 14 Aree:\\n\\nLa classificazione di un determinato atto d�indirizzo nell�ambito di una specifica Area � stata effettuata tenendo conto di un criterio di prevalenza dell�oggetto cui lo stesso si riferisce e non ha altra portata se non quella di facilitare una lettura per ambiti tematici degli argomenti trattati. Attraverso appositi collegamenti ipertestuali sono indicati i riferimenti normativi e altri elementi conoscitivi utili in ordine alla materia sulla quale verte l�atto di indirizzo di volta in volta esaminato.\\n\\n1. Leggi e atti d�indirizzo nel secondo anno della XIX Legislatura\\n\\nNel secondo anno della XIX Legislatura (13 ottobre 2023 � 12 ottobre 2024\", \"ramo\": \"camera\", \"data\": \"2024-11-06\", \"esito\": null, \"url\": \"https://temi.camera.it/leg19/dossier/OCD18-20803/l-attuazione-degli-atti-indirizzo-monitoraggio-e-controllo-xix-novembre-2024.html\", \"similarita\": 0.836}], \"nota\": \"brani per vicinanza di significato, non per parole: controlla che parlino davvero del tema; i riassunti (riassunto: true) non si citano tra «…»\"}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "dall'inizio della XIX legislatura fino a ottobre 2026 leggi approvate iniziativa parlamentare iniziativa governativa numero",
+    "fonti": [
+     "interventi",
+     "documenti"
+    ],
+    "ramo": null,
+    "da": "2026-06-01",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"dall'inizio della XIX legislatura fino a ottobre 2026 leggi approvate iniziativa parlamentare iniziativa governativa numero\", \"fonti\": [\"interventi\", \"documenti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0698:tit00030.sub00010.int00040\", \"testo\": \"Nel periodo considerato, 13 ottobre 2022-13 giugno 2026, delle 331 leggi complessivamente approvate 248 sono di iniziativa governativa, il 74,9 per cento, 78 di iniziativa parlamentare, il 23,6 per cento, una di iniziativa popolare e una di iniziativa regionale. Questa concentrazione dell'attività legislativa sui decreti-legge, che assume in questa legislatura dimensioni ancora maggiori di quelle delle legislature precedenti, a carattere sempre più multisettoriale e frammentato, ha avuto e sta avendo un impatto significativo sulla qualità della legislazione, ma anche sulle procedure parlamentari e sull'attività parlamentare. I Parlamenti, espressione della sovranità popolare e sedi della rap\", \"chi\": \"Andrea De Maria\", \"persona\": \"it:person:camera:305698\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2026-07-27\", \"seduta\": 698, \"organo\": null, \"dibattito\": \"Discussione congiunta dei documenti: Conto consuntivo della Camera dei deputati per l'anno finanziario 2025 (Doc. VIII, n. 7); Progetto di bilancio della Camera dei deputati per l'anno finanziario 2026 (Doc. VIII, n. 8)\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0698&tipo=stenografico#sed0698.stenografico.tit00030.sub00010.int00040\", \"similarita\": 0.822}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0703:tit00170.sub00020.int00200\", \"testo\": \"A noi risultano bandi realizzati nel pieno rispetto della normativa vigente, peraltro non da organi politici, ma dalla struttura tecnica dell'Amministrazione della Camera.\\n\\nVoglio, poi, svolgere alcune riflessioni sul ruolo del Parlamento, di cui oggi esaminiamo il bilancio di una delle due Camere. Infatti, credo sia importante non fermarsi a una semplice analisi dei costi e dei risparmi che si sono realizzati, ma questa deve essere l'occasione per una riflessione più complessiva sul ruolo della nostra istituzione. L'ultimo rapporto sulla produzione legislativa, predisposto dall'Osservatorio sulla legislazione del Servizio studi della Camera, conferma - e in qualche modo aggrava - tendenze g\", \"chi\": \"Andrea De Maria\", \"persona\": \"it:person:camera:305698\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2026-08-04\", \"seduta\": 703, \"organo\": null, \"dibattito\": \"Si riprende la discussione del Doc. VIII, n. 7 e del Doc. VIII, n. 8.\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0703&tipo=stenografico#sed0703.stenografico.tit00170.sub00020.int00200\", \"similarita\": 0.804}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-23258\", \"atto\": null, \"titolo\": \"Disposiz"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_per_significato"
+ ],
+ "tempo_s": 22.1,
+ "risposta_sistema": "L’ultimo conteggio complessivo reperibile nei dati indica **78 leggi di iniziativa parlamentare** e **248 di iniziativa governativa**: circa **una legge parlamentare ogni 3,2 governative** (23,6% contro 74,9%).\n\nIl dato si riferisce alle leggi approvate dal **13 ottobre 2022 al 13 giugno 2026** ed è stato riportato in Aula il 27 luglio 2026 da Andrea De Maria (PD-IDP), durante la discussione sul bilancio della Camera: [resoconto della seduta](https://www.camera.it/leg19/410?idSeduta=0698&tipo=stenografico#sed0698.stenografico.tit00030.sub00010.int00040).\n\nNello stesso conteggio sono indicate 331 leggi complessive; oltre alle due categorie, vengono menzionate una legge di iniziativa popolare e una regionale. Il dettaglio disponibile non classifica esplicitamente le altre tre leggi nel totale. I dati delle sedute arrivano fino al 3 novembre 2026, ma non trovo un aggiornamento successivo di questa ripartizione per iniziativa.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

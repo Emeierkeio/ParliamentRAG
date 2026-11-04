@@ -1,0 +1,61 @@
+{
+ "id": "LEG-009",
+ "domanda": "Quante leggi sono state approvate definitivamente nella XIX legislatura finora, distinte fra iniziativa governativa e parlamentare?",
+ "categoria": "statistiche",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "difficile",
+ "trappola": false,
+ "note_domanda": "La stessa legge compare in entrambi i rami: deduplicare per law_number e law_date. Al Senato initiative è testo grezzo («Gov. Meloni-I: …», «Sen. …») e va ricondotto a governo o parlamento.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Finora, nella XIX legislatura, risultano **366 leggi definitivamente approvate e pubblicate**:\n\n- **274** di iniziativa **governativa**\n- **87** di iniziativa **parlamentare**\n\nLe altre 5 sono: 3 di iniziativa mista, 1 popolare e 1 regionale. Il conteggio considera ogni legge una sola volta, anche se l’iter ha coinvolto entrambi i rami, e include gli atti presentati dal 13 ottobre 2022 al 4 novembre 2026; l’ultima legge censita è del 23 ottobre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "conta_atti"
+ ],
+ "errori": [],
+ "tempo_s": 4.8,
+ "riferimento": {
+  "risposta": "Nella XIX, fino al 2/11/2026, le leggi approvate definitivamente e pubblicate sono 366 (363 ordinarie, 3 costituzionali), contate una volta sola anche se l'atto compare in tutti e due i rami. Iniziativa governativa: 274 (125 conversioni di decreti-legge, 148 altri disegni di legge, 1 legge costituzionale). Iniziativa parlamentare: 87 (86 ordinarie, 1 costituzionale). Altre: 3 miste (2 testi unificati con atti del governo e parlamentari, 1 con un atto del CNEL), 1 popolare, 1 costituzionale regionale (Statuto del Friuli-Venezia Giulia, L. cost. 1/2026).",
+  "stato": "calcolata",
+  "limiti": "Legge = coppia (law_number, anno di law_date) distinta, separando leggi ordinarie e costituzionali (constitutional); conta una volta la legge anche se compare in più atti o in tutti e due i rami. Esclusa la riga con law_date 2100-01-01. Iniziativa normalizzata dal testo grezzo del Senato; se gli atti di una legge hanno iniziative diverse è «Mista». Decreto convertito = titolo con «conversione in legge». Dati fino al 2/11/2026. Non sono contati i ddl approvati in via definitiva ma non ancora pubblicati (senza law_number)."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 4.8
+ },
+ "causa_probabile": "strumenti",
+ "note": "366 leggi, 274 governative, 87 parlamentari, 3 miste, 1 popolare, 1 regionale: come il riferimento.",
+ "prima": {
+  "risposta_sistema": "Non risulta nei dati un conteggio ufficiale aggiornato al 4 novembre 2026 che sommi tutte le leggi definitivamente approvate nella XIX legislatura per tipo d’iniziativa. Non è quindi possibile dare un totale affidabile “finora” senza ricostruirlo atto per atto.\n\nL’ultimo dato aggregato disponibile nei documenti della Camera riguarda il **terzo anno della legislatura** (13 ottobre 2024–12 ottobre 2025): **106 leggi ordinarie**, di cui:\n\n- **76** di iniziativa governativa;\n- **28** di iniziativa parlamentare;\n- **1** di iniziativa mista;\n- **1** di iniziativa popolare.\n\nNel primo anno (13 ottobre 2022–13 ottobre 2023), invece, furono approvate **64 leggi**: 32 conversioni di decreti-legge, 13 ulteriori leggi di iniziativa governativa, 17 di iniziativa parlamentare, 1 mista e 1 legge costituzionale di iniziativa parlamentare.\n\nFonte ufficiale: dossier della Camera, [L’attuazione degli atti di indirizzo – novembre 2025](https://temi.camera.it/leg19/dossier/OCD18-22358/l-attuazione-degli-atti-indirizzo-monitoraggio-e-controllo-xix-novembre-2025.html). I dati parlamentari disponibili arrivano alle sedute del **3 novembre 2026**.",
+  "strumenti": [
+   "cerca_atti",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_interventi",
+   "cerca_per_significato"
+  ],
+  "tempo_s": 33.3,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": 1,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 33.3
+  },
+  "note": "Non dà il totale; riporta i conti del primo e del terzo anno da un dossier (riferimento: 366 leggi, 274 governative, 87 parlamentari)."
+ }
+}

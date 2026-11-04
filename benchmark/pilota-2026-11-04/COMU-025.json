@@ -1,0 +1,45 @@
+{
+ "id": "COMU-025",
+ "domanda": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+ "categoria": "fonti",
+ "ramo": "entrambi",
+ "tipo_risposta": "fatto",
+ "difficolta": "media",
+ "trappola": true,
+ "note_domanda": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "No. La formulazione “l’Italia non manderà mai soldati in Ucraina” non risulta, parola per parola, nei resoconti parlamentari.\n\nGiorgia Meloni lo ha detto alla **Camera il 18 marzo 2025**, nelle comunicazioni in vista del Consiglio europeo. La frase registrata è: «l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno». La differenza è rilevante: parla di un tema che non era stato all’ordine del giorno, non di un impegno formulato come “non manderà mai soldati”. Il testo è nel [resoconto della Camera](https://www.camera.it/leg19/410?idSeduta=0449&tipo=stenografico#sed0449.stenografico.tit00150.int00010).",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_per_significato",
+  "cerca_persone",
+  "verifica_citazioni",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 23.2,
+ "riferimento": null,
+ "punteggi": {
+  "correttezza": null,
+  "fonti": null,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "fail",
+   "quotes": "warn"
+  },
+  "trappola": 1,
+  "tempo_s": 23.2
+ },
+ "causa_probabile": null,
+ "note": "Dice che la frase non risulta alla lettera e mostra la frase vera più vicina di Meloni (18/3/2025) con il link al resoconto. Nella pilota: nessuna risposta."
+}

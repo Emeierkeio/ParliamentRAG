@@ -1,0 +1,47 @@
+{
+ "id": "DJ-009",
+ "trappola": false,
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "categoria": "persone",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+ "endpoint": "agente",
+ "inizio": 1793752921.21309,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "camera",
+    "date": null
+   },
+   "result": "{\"chamber\": \"camera\", \"date\": \"2026-11-04\", \"members\": 398, \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"members\": 117, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 68, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"members\": 54, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"members\": 52, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 48, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"members\": 24, \"components\": [{\"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 9, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4137\", \"name\": \"Minoranze Linguistiche\", \"short_name\": \"MISTO-MIN.LING.\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 4, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4139\", \"name\": \"+Europa - Stati Uniti d'Europa\", \"short_name\": \"MISTO-+EU-SUEU\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4331\", \"name\": \"Sud Chiama Nord\", \"short_name\": \"MISTO-SCN\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"members\": 3, \"components\": []}]}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"members\": 10, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"members\": 8, \"components\": []}, {\"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  },
+  {
+   "name": "composizione",
+   "args": {
+    "chamber": "senato",
+    "date": null
+   },
+   "result": "{\"chamber\": \"senato\", \"date\": \"2026-11-04\", \"members\": 205, \"groups\": [{\"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"members\": 63, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"members\": 35, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"members\": 29, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"members\": 25, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"members\": 20, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:9\", \"name\": \"Misto\", \"short_name\": \"Misto\", \"kind\": \"group\"}, \"members\": 11, \"components\": [{\"group\": {\"uri\": \"it:senato:19:group:misto-avs\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 3, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-az\", \"name\": \"Azione-Renew Europe\", \"short_name\": \"Az-RE\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 2, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-cm\", \"name\": \"Italia Domani - Marco Rizzo\", \"short_name\": \"ID-MR\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-a-psi\", \"name\": \"Avanti PSI - Progetto Civico Italia\", \"short_name\": \"A-PSI-PrCivIt\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:misto-prc-se-os\", \"name\": \"Partito della Rifondazione Comunista - Sinistra Europea - Open Sinistra\", \"short_name\": \"PRC-SE-OS\", \"kind\": \"misto_component\", \"part_of\": \"it:senato:19:group:9\"}, \"members\": 1, \"components\": []}]}, {\"group\": {\"uri\": \"it:senato:19:group:91\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"members\": 8, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:92\", \"name\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare\", \"short_name\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}, {\"group\": {\"uri\": \"it:senato:19:group:69\", \"name\": \"Per le Autonomie (SVP-PATT, Campobase)\", \"short_name\": \"Aut (SVP-PATT, Cb)\", \"kind\": \"group\"}, \"members\": 7, \"components\": []}], \"not_in_group\": 0}"
+  }
+ ],
+ "strumenti": [
+  "composizione",
+  "composizione"
+ ],
+ "tempo_s": 13.4,
+ "risposta_sistema": "Non posso ricavare un **numero esatto e verificabile** dei parlamentari che hanno cambiato gruppo dall’inizio della XIX legislatura: i dati disponibili consentono di vedere gruppi e composizione alla data odierna, oltre alle storie individuali quando si conosce il parlamentare, ma non forniscono un elenco aggregato completo dei trasferimenti di gruppo né un conteggio già calcolato.\n\nAlla data dei dati, **4 novembre 2026**, risultano in carica:\n- **Camera:** 398 deputati;\n- **Senato:** 205 senatori.\n\nUn conteggio corretto dovrebbe includere anche chi ha cambiato gruppo e poi è cessato dal mandato, evitando di confondere i cambi di denominazione o di componente del Misto con i passaggi fra gruppi. Per questo non sarebbe affidabile dedurre il dato soltanto confrontando le composizioni iniziale e attuale.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

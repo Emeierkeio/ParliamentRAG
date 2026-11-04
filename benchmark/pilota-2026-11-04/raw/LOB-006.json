@@ -1,0 +1,121 @@
+{
+ "id": "LOB-006",
+ "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+ "endpoint": "/api/agente",
+ "inizio": 1793756105.698132,
+ "errori": [],
+ "risposta_sistema": "Dati aggiornati al **4 novembre 2026**.\n\n- **Senato — 8ª Commissione** (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)  \n  - Presidente: **Claudio Fazzone** (FI-BP-PPE)  \n  - Vicepresidenti: **Lorenzo Basso** (PD-IDP); **Gianni Rosa** (FdI)\n\n- **Senato — 9ª Commissione** (Industria, commercio, turismo, agricoltura e produzione agroalimentare)  \n  - Presidente: **Luca De Carlo** (FdI)  \n  - Vicepresidenti: **Silvia Fregolent** (IV-CR); **Giorgio Maria Bergesio** (LSP-PSd’Az)\n\n- **Senato — 10ª Commissione** (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)  \n  - Presidente: **Francesco Zaffini** (FdI)  \n  - Vicepresidenti: **Maria Cristina Cantù** (LSP-PSd’Az); **Orfeo Mazzella** (M5S)\n\n- **Camera — X Commissione** (Attività produttive)  \n  - Presidente: **Alberto Luigi Gusmeroli** (LEGA)  \n  - Vicepresidenti: **Vinicio Giuseppe Guido Peluffo** (PD-IDP); **Ilaria Cavo** (NM(N-C-U-I)M-CP)",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "organo",
+   "args": {
+    "q": "8ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   }
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "9ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   }
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "10ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   }
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "X Commissione",
+    "chamber": "camera",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   }
+  }
+ ],
+ "dati": [
+  {
+   "name": "organo",
+   "args": {
+    "q": "8ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:senato:19:body:0-146\", \"chamber\": \"senato\", \"kind\": \"standing_committee\", \"name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"members\": 23, \"offices\": [{\"title\": \"Presidente\", \"since\": \"2025-06-10\", \"person\": \"Claudio Fazzone\", \"uri\": \"it:person:senato:4192\", \"group\": \"FI-BP-PPE\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Lorenzo Basso\", \"uri\": \"it:person:senato:29270\", \"group\": \"PD-IDP\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Gianni Rosa\", \"uri\": \"it:person:senato:36420\", \"group\": \"FdI\"}]}]}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "9ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:senato:19:body:0-147\", \"chamber\": \"senato\", \"kind\": \"standing_committee\", \"name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"members\": 21, \"offices\": [{\"title\": \"Presidente\", \"since\": \"2025-06-10\", \"person\": \"Luca De Carlo\", \"uri\": \"it:person:senato:32898\", \"group\": \"FdI\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Silvia Fregolent\", \"uri\": \"it:person:senato:29406\", \"group\": \"IV-CR\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Giorgio Maria Bergesio\", \"uri\": \"it:person:senato:32586\", \"group\": \"LSP-PSd'Az\"}]}]}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "10ª Commissione",
+    "chamber": "senato",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:senato:19:body:0-148\", \"chamber\": \"senato\", \"kind\": \"standing_committee\", \"name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"members\": 25, \"offices\": [{\"title\": \"Presidente\", \"since\": \"2025-06-10\", \"person\": \"Francesco Zaffini\", \"uri\": \"it:person:senato:32732\", \"group\": \"FdI\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Maria Cristina Cantu'\", \"uri\": \"it:person:senato:32598\", \"group\": \"LSP-PSd'Az\"}, {\"title\": \"Vicepresidente\", \"since\": \"2025-06-10\", \"person\": \"Orfeo Mazzella\", \"uri\": \"it:person:senato:36406\", \"group\": \"M5S\"}]}]}"
+  },
+  {
+   "name": "organo",
+   "args": {
+    "q": "X Commissione",
+    "chamber": "camera",
+    "date": null,
+    "titles": [
+     "chair",
+     "vice_chair"
+    ]
+   },
+   "result": "{\"date\": \"2026-11-04\", \"counted\": \"Cariche in corso alla data (office), con il gruppo di ognuno alla stessa data, il Misto per componente; members = persone con un seggio nell'organo alla data. Camera: le commissioni permanenti si chiamano «I Commissione» … «XIV Commissione»; Senato: «1ª Commissione permanente (…)» … «10ª Commissione permanente (…)».\", \"total\": 1, \"items\": [{\"uri\": \"it:camera:19:body:o19_3510\", \"chamber\": \"camera\", \"kind\": \"standing_committee\", \"name\": \"X Commissione\", \"members\": 27, \"offices\": [{\"title\": \"PRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Alberto Luigi Gusmeroli\", \"uri\": \"it:person:camera:307475\", \"group\": \"LEGA\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Vinicio Giuseppe Guido Peluffo\", \"uri\": \"it:person:camera:302746\", \"group\": \"PD-IDP\"}, {\"title\": \"VICEPRESIDENTE\", \"since\": \"2025-06-10\", \"person\": \"Ilaria Cavo\", \"uri\": \"it:person:camera:308785\", \"group\": \"NM(N-C-U-I)M-CP\"}]}]}"
+  }
+ ],
+ "tempo_s": 5.8
+}

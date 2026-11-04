@@ -1,0 +1,46 @@
+{
+ "id": "TER-033",
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "categoria": "temi",
+ "ramo": "entrambi",
+ "tipo_risposta": "classifica",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": null,
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Il tema che emerge come più ricorrente è la **sicurezza sul lavoro**: infortuni, morti sul lavoro, controlli e prevenzione sono oggetto di numerose interrogazioni rivolte al Ministro del lavoro, in entrambi i rami.\n\nSeguono le **pensioni**. Gli **ammortizzatori sociali** — cassa integrazione, NASpI e sostegni al reddito — risultano presenti, ma meno frequentemente tra gli atti individuati.\n\nÈ un confronto tematico sugli atti della XIX legislatura fino al 3 novembre 2026, non un conteggio ufficiale per materia: una stessa interrogazione può riguardare più temi o più ministri.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "errori": [],
+ "tempo_s": 15.1,
+ "riferimento": {
+  "risposta": "Fra le 2.783 interrogazioni e interpellanze della XIX rivolte al Ministero del Lavoro (2.207 Camera, 576 Senato), la sicurezza sul lavoro è il tema più frequente dei tre: 341 atti (285 Camera, 56 Senato). Seguono gli ammortizzatori sociali con 216 (186 e 30) e le pensioni con 178 (148 e 30). Un atto può toccare più temi.",
+  "stato": "calcolata",
+  "limiti": "I temi sono gruppi di descrittori EuroVoc scelti per la domanda (regola dichiarata): sicurezza sul lavoro = sicurezza del lavoro, infortunio sul lavoro, prevenzione degli infortuni, malattia professionale, sanità del lavoro (più assicurazione infortuni sul lavoro, mai trovato); pensioni = pensionato, pensione complementare, pensionamento anticipato, condizione di pensionamento, regime pensionistico, cumulo delle pensioni; ammortizzatori sociali = cassa integrazione, assicurazione di disoccupazione. Non inclusi i descrittori generici «disoccupazione» e «sicurezza sociale». Atti considerati: interrogazioni a risposta scritta, orale, in commissione e interpellanze."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 15.1
+ },
+ "causa_probabile": "strumenti",
+ "note": "Sicurezza sul lavoro prima: giusto. Poi pensioni e ammortizzatori, invertiti (riferimento: ammortizzatori 216, pensioni 178). Nessun numero."
+}

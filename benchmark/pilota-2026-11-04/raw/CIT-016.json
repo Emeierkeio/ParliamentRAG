@@ -1,0 +1,170 @@
+{
+ "id": "CIT-016",
+ "trappola": false,
+ "domanda": "c'è il video di quando hanno approvato la legge elettorale?",
+ "categoria": "video",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Voto finale della PDL 2822-B alla Camera l'8/10/2026 (227 sì, 164 no, voto segreto), seduta 723: c'è un video della WebTV. Il Senato non ha video nel v3.",
+ "endpoint": "agente",
+ "inizio": 1793752923.00353,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"legge elettorale\"",
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "approvazione della legge elettorale votazione finale",
+    "fonti": [
+     "atti",
+     "interventi"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 20
+   },
+   "result": "{\"testo\": \"approvazione della legge elettorale votazione finale\", \"fonti\": [\"atti\", \"interventi\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0691:tit00030.sub00010.int00510\", \"testo\": \"In questa legge non c'è niente di quello che raccontate: c'è semplicemente la possibilità per gli italiani finalmente di scegliere qualcosa quando vanno a votare. Se passerà questa legge, tra qualche minuto, l'Italia sarà più stabile, la politica più credibile e la nostra Nazione più competitiva. Grazie. Questo è il voto a favore di Fratelli d'Italia (Applausi dei deputati dei gruppi Fratelli d'Italia e Forza Italia-Berlusconi Presidente-PPE – Proteste dei deputati dei gruppi Partito Democratico-Italia Democratica e Progressista, MoVimento 5 Stelle e Alleanza Verdi e Sinistra, che, levatisi in piedi, mostrano cartelli recanti le scritte: “Legge elettorale = legge truffa”, “Meloni ha fallito”\", \"chi\": \"Giovanni Donzelli\", \"persona\": \"it:person:camera:307246\", \"gruppo\": \"Fratelli d'Italia\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2026-07-16\", \"seduta\": 691, \"organo\": null, \"dibattito\": \"Seguito della discussione della proposta di legge: Bignami ed altri: “Disposizioni in materia di elezioni della Camera dei Deputati e del Senato della Repubblica” (A.C. 2822-A) e delle abbinate proposte di legge: Magi; Pavanelli ed altri (limitatamente all'articolo 5) (A.C. 157-2236)\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0691&tipo=stenografico#sed0691.stenografico.tit00030.sub00010.int00510\", \"similarita\": 0.812}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:stc:07:leg:20231220:0001:tit00030:int00010\", \"testo\": \"Ricordo che tutti i gruppi hanno rinunciato alla fissazione del termine della presentazione degli emendamenti, e pertanto, trattandosi di una proposta di legge composta da un solo articolo, si passerà ora direttamente alla votazione finale, ai sensi dell'articolo 87, comma 5, del Regolamento. Non essendoci richieste di intervento per dichiarazione di voto finale si procederà ora alla votazione nominale per appello nominale.\", \"chi\": \"Federico Mollicone\", \"persona\": \"it:person:camera:307424\", \"gruppo\": \"Fratelli d'Italia\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2023-12-20\", \"seduta\": 1, \"organo\": \"VII Commissione\", \"dibattito\": \"Discussione della proposta di legge C. 1550 sen. Marti, approvata dalla 7a Commissione permanente del Senato: Istituzione di un contributo stabile all'Istituto della Enciclopedia italiana.\", \"riassunto\": false, \"url\": null, \"similarita\": 0.81}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:9-02822-B-009\", \"atto\": \"it:camera:19:aic:9-02822-B-009\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/02822-B/009 presentata da BORRELLI FRANCESCO EMILIO (ALLEANZA VERDI E SINISTRA) in data 07/10/2026\", \"testo\": \"Atto Camera Ordine del Giorno 9/02822-B/009 presentato da BORRELLI Francesco Emilio testo di Mercoledì 7 ottobre 2026, seduta n. 722 La Camera, premesso che: il provvedimento i"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Disposizioni in materia di elezioni della Camera dei deputati e del Senato della Repubblica\"",
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822",
+    "signer": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "2822",
+    "signer": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\"}]}"
+  },
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": "camera",
+    "act": "it:camera:19:ac:2822",
+    "kind": null,
+    "final": true,
+    "start": null,
+    "end": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2822"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2822\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2822\", \"kind\": \"bill\", \"title\": \"BIGNAMI ed altri: \\\"Modifiche al testo unico di cui al decreto del Presidente della Repubblica 30 marzo 1957, n. 361, in materia di elezione della Camera dei deputati, e al testo unico di cui al decreto legislativo 20 dicembre 1993, n. 533, in materia di elezione del Senato della Repubblica\\\" (2822)\", \"date\": \"2026-02-26\", \"status\": \"Approvato, segue Navette\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822\", \"kind_raw\": \"proposta_legge_ordinaria\", \"initiative\": \"Parlamentare\", \"status_date\": \"2026-07-16\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2822\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:307456\", \"name\": \"Alessandro Battilocchio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307456&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307603\", \"name\": \"Alessandro Colucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307603&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308862\", \"name\": \"Alessandro Urzi'\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308862&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307641\", \"name\": \"Igor Giancarlo Iezzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307641&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:300447\", \"name\": \"Maurizio Enzo Lupi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300447&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 0, \"results\": [{\"quote\": \"Modifiche … in materia di elezione della Camera dei deputati … e … del Senato della Repubblica\", \"found\": false, \"speech\": \"it:senato:19:som:1acommissionepermanente:sed0501:tit00004:p1\", \"sitting\": \"it:senato:19:som:1acommissionepermanente:sed0501\", \"reason\": \"sta in un resoconto sommario: è il riassunto del funzionario, non parole testuali\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_atti",
+  "cerca_atti",
+  "elenco_votazioni",
+  "atto"
+ ],
+ "tempo_s": 15.8,
+ "risposta_sistema": "Se intendi la riforma elettorale A.C. 2822, la Camera l’ha approvata il 16 luglio 2026 e l’ha trasmessa al Senato; nei dati disponibili non compare un link al video della votazione. È però disponibile il resoconto stenografico della seduta del **16 luglio 2026**: [Camera, seduta n. 691](https://www.camera.it/leg19/410?idSeduta=0691&tipo=stenografico#sed0691.stenografico.tit00030.sub00010.int00510).\n\nL’atto è la proposta Bignami e altri, «Modifiche … in materia di elezione della Camera dei deputati … e … del Senato della Repubblica» (A.C. 2822). Il suo iter risulta ancora come “Approvato, segue Navette”, cioè non concluso definitivamente: [scheda dell’atto](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822).",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "fail"
+   },
+   "groups": {
+    "present": [
+     "FdI"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "Modifiche … in materia di elezione della Camera dei deputati … e … del Senato della Repubblica",
+     "status": "not_found",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "c'è il video di quando hanno approvato la legge elettorale?",
+    "available": true,
+    "voices": [
+     {
+      "name": "Galeazzo Bignami",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "pool": "speakers_on_topic",
+      "on_topic": false,
+      "authoritative": false,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati, XIX legislatura"
+  }
+ }
+}

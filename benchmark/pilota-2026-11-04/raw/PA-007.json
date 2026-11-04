@@ -1,0 +1,280 @@
+{
+ "id": "PA-007",
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "endpoint": "/api/agente",
+ "inizio": 1793756088.050396,
+ "errori": [],
+ "risposta_sistema": "Il Consiglio regionale della Toscana ha presentato **8 disegni di legge al Senato** nella XIX legislatura. Nessuno risulta approvato in via definitiva: **3 sono in esame in Commissione** e **5 sono assegnati ma non ancora esaminati**.\n\n- **S. 1801** — *Riconoscimento dello Stato di Palestina* (presentato il 13 febbraio 2026): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm)\n- **S. 1643** — *Disposizioni in materia di distretto estrattivo apuo-versiliese* (10 settembre 2025): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm)\n- **S. 1527** — *Norme per l'affrancazione dei canoni livellari* (12 giugno 2025): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm)\n- **S. 1064** — *Introduzione dell’educazione all’emotività, all’affettività e alla sessualità nell’insegnamento trasversale dell’educazione civica* (7 marzo 2024): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm)\n- **S. 476** — *Semplificazione in materia di selvicoltura e modifica al Codice dei beni culturali e del paesaggio* (18 gennaio 2023): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm)\n- **S. 477** — *Modifiche all’organizzazione dei tribunali ordinari e degli uffici del pubblico ministero* (18 gennaio 2023): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm)\n- **S. 478** — *Agevolazione contributiva per l’occupazione nelle aree interne* (18 gennaio 2023): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm)\n- **S. 479** — *Ampliamento delle destinazioni d’uso degli immobili confiscati alla criminalità organizzata* (18 gennaio 2023): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm)\n\nStato dei dati aggiornato fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Consiglio regionale della Toscana",
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "Toscana",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "bill",
+    "initiative": "Toscana",
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": null,
+    "start": null,
+    "end": null,
+    "laws": false,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "regione",
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Regione Toscana",
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1801"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1643"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1527"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1064"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:476"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:477"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:478"
+   }
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:479"
+   }
+  }
+ ],
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Consiglio regionale della Toscana",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "Toscana",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1479\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 7 maggio 2025, n. 65, recante ulteriori disposizioni urgenti per affrontare gli straordinari eventi alluvionali verificatisi nei territori di Emilia-Romagna, Toscana e Marche e gli effetti del fenomeno bradisismico nell'area dei Campi Flegrei, nonché disposizioni di carattere finanziario in materia di protezione civile\", \"date\": \"2025-05-07\", \"status\": \"approvato\", \"law_number\": \"101\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54507.htm\", \"initiative\": \"Gov. Meloni-I: Pres. Consiglio Meloni, Ministro politiche mare e sud Musumeci ed altri\"}]}"
+  },
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": "senato",
+    "kind": "bill",
+    "initiative": "Toscana",
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": null,
+    "start": null,
+    "end": null,
+    "laws": false,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Atti della XIX, Senato, presentati tutta la XIX legislatura; filtri: tipo bill, iniziativa Toscana. Tipi: bill (progetti di legge), written_question, oral_question, committee_question, interpellation, motion, resolution, agenda_order… Iniziativa per categoria: alla Camera dalla fonte (solo i progetti di legge), al Senato dal testo del presentatore; senza categoria = non indicata dalla fonte. Gruppo del primo firmatario alla data dell'atto, il Misto per componente; «(governo)» = primo firmatario un membro del governo come tale.\", \"total\": 8, \"rows_total\": 1, \"offset\": 0, \"rows\": [{\"iniziativa\": \"regione\", \"atti\": 8, \"dal\": \"2023-01-18\", \"al\": \"2026-02-13\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "regione",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 54, \"items\": [{\"uri\": \"it:senato:19:ddl:2061\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2061\", \"kind\": \"bill\", \"title\": \"Tutela del diritto alla libertà di pagamento in contanti: modifica dell'articolo 1277 del codice civile\", \"date\": \"2026-10-12\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55704.htm\", \"initiative\": \"Regione Veneto\"}, {\"uri\": \"it:senato:19:ddl:1985\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1985\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di attività libero-professionale del personale delle professioni sanitarie\", \"date\": \"2026-07-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55564.htm\", \"initiative\": \"Regione Lombardia\"}, {\"uri\": \"it:senato:19:ddl:1926\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1926\", \"kind\": \"bill\", \"title\": \"Riconoscimento del carattere usurante del lavoro degli internavigatori ai fini del pensionamento anticipato. Modifica all'articolo 1, comma 1, lettera d), del decreto legislativo 21 aprile 2011, n. 67 \\\"Accesso anticipato al pensionamento per gli addetti alle lavorazioni particolarmente faticose e pesanti, a norma dell'articolo 1 della legge 4 novembre 2010, n. 183\\\".\", \"date\": \"2026-06-08\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55429.htm\", \"initiative\": \"Regione Veneto\"}, {\"uri\": \"it:senato:19:ddl:1914\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1914\", \"kind\": \"bill\", \"title\": \"Integrazione all'articolo 43 della legge costituzionale 26 febbraio 1948, n. 3 (Statuto speciale per la Sardegna), in materia di elezione diretta degli organi di governo degli enti di area vasta\", \"date\": \"2026-05-22\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55403.htm\", \"initiative\": \"Regione Sardegna\"}, {\"uri\": \"it:senato:19:ddl:1866\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1866\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di localizzazione degli impianti di discarica nelle aree di confine interregionale\", \"date\": \"2026-04-02\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55292.htm\", \"initiative\": \"Regione Lombardia\"}, {\"uri\": \"it:senato:19:ddl:1801\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1801\", \"kind\": \"bill\", \"title\": \"Riconoscimento dello Stato di Palestina\", \"date\": \"2026-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1789\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1789\", \"kind\": \"bill\", \"title\": \"Disposizioni per l'organizzazione di eventi espressione del territorio e della tradizione e delega al Governo per il riordino complessivo della materia\", \"date\": \"2026-02-06\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55157.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:1279-B\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1279-B\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge costituzionale 31 gennaio 1963, n. 1, recante Statuto speciale della Regione Friuli-Venezia Giulia\", \"date\": \"2025-11-06\", \"status\": \"appr. definit. Legge\", \"law_number\": \"1\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52411.htm\", \"initiative\": \"REGIONE Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:1643\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1643\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di distretto estrattivo apuo-versiliese\", \"date\": \"2025-09-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1583\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1583\", \"kind\": \"bill\", \"title\": \"Modifiche all'articolo 1 della legge 7 aprile 2014, n. 56, in materia di elezione diretta del presidente della provincia, del consiglio provinciale, del sindaco e del consiglio metropolitani\", \"date\": \"2025-07-11\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54733.htm\", \"initiative\": \"Regione Sardegna\"}, {\"uri\": \"it:senato:19:ddl:1572\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1572\", \"kind\": \"bill\", \"title\": \"Norme specifiche per alcune tipologie di cani a tutela del loro benessere e della pubblica incolumità\", \"date\": \"2025-07-03\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54712.htm\", \"initiative\": \"Regione Lombardia\"}, {\"uri\": \"it:senato:19:ddl:1554\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1554\", \"kind\": \"bill\", \"title\": \"Istituzione della Giornata nazionale dell'antiracket\", \"date\": \"2025-06-24\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54671.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:1536\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1536\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2025-06-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54635.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:1537\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1537\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di impiego di dispositivi digitali funzionanti tramite onde a radiofrequenza e di videogiochi da parte di minori di anni dodici\", \"date\": \"2025-06-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54637.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:1538\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1538\", \"kind\": \"bill\", \"title\": \"Misure volte al contrasto della violenza nei confronti degli ufficiali di gara in occasione di manifestazioni sportive\", \"date\": \"2025-06-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54641.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:1527\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1527\", \"kind\": \"bill\", \"title\": \"Norme per l'affrancazione dei canoni livellari\", \"date\": \"2025-06-12\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1456\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1456\", \"kind\": \"bill\", \"title\": \"Norme urgenti per l'ordine pubblico, la sicurezza e la tutela dei diritti delle donne, dei minori e delle persone con disabilità\", \"date\": \"2025-04-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54458.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:1279\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1279\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge costituzionale 31 gennaio 1963, n. 1, recante Statuto speciale della Regione Friuli-Venezia Giulia\", \"date\": \"2024-10-24\", \"status\": \"approvato\", \"law_number\": \"1\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52411.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:1195\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1195\", \"kind\": \"bill\", \"title\": \"Disposizioni concernenti l'istituzione di zone produttive speciali e di zone franche montane in Valle d'Aosta/Vallée d'Aoste\", \"date\": \"2024-07-16\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53885.htm\", \"initiative\": \"Regione Valle d'Aosta\"}, {\"uri\": \"it:senato:19:ddl:1104\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1104\", \"kind\": \"bill\", \"title\": \"Modifica all'articolo 1 della legge 7 ottobre 1969, n. 742, in materia di sospensione dei termini processuali nel periodo feriale\", \"date\": \"2024-04-15\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53665.htm\", \"initiative\": \"Regione Marche\"}, {\"uri\": \"it:senato:19:ddl:1099\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1099\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n.155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2024-04-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53651.htm\", \"initiative\": \"Regione Piemonte\"}, {\"uri\": \"it:senato:19:ddl:1064\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1064\", \"kind\": \"bill\", \"title\": \"Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica\", \"date\": \"2024-03-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1029\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1029\", \"kind\": \"bill\", \"title\": \"Disposizioni per la tutela e la salvaguardia dei manufatti e delle macchine per la pesca tradizionali esistenti sul demanio marittimo, lacuale e fluviale italiano\", \"date\": \"2024-02-20\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53511.htm\", \"initiative\": \"Regione Abruzzo\"}, {\"uri\": \"it:senato:19:ddl:1022\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1022\", \"kind\": \"bill\", \"title\": \"Sostegno finanziario al Sistema sanitario nazionale a decorrere dall'anno 2024\", \"date\": \"2024-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53492.htm\", \"initiative\": \"Regione Puglia\"}, {\"uri\": \"it:senato:19:ddl:1023\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1023\", \"kind\": \"bill\", \"title\": \"Disposizioni per il riconoscimento della fibromialgia come malattia cronica e invalidante\", \"date\": \"2024-02-13\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53493.htm\", \"initiative\": \"Regione Veneto\"}, {\"uri\": \"it:senato:19:ddl:916\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"916\", \"kind\": \"bill\", \"title\": \"Delega al Governo per la revisione delle modalità di accesso ai corsi di laurea magistrale in medicina e chirurgia, in odontoiatria e protesi dentaria e in medicina veterinaria\", \"date\": \"2023-10-17\", \"status\": \"appr. in t.u.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53194.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:904\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"904\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di diagnosi, cura e abilitazione delle persone con disturbo da deficit di attenzione e iperattività (DDAI o ADHD)\", \"date\": \"2023-09-29\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53160.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:869\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"869\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-09-11\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53052.htm\", \"initiative\": \"Regione Veneto\"}, {\"uri\": \"it:senato:19:ddl:844\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"844\", \"kind\": \"bill\", \"title\": \"Abrogazione degli articoli 1, 2, 3, 4 e 5 della legge 2 agosto 1999, n. 264, recante norme in materia di accessi ai corsi universitari\", \"date\": \"2023-08-03\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53003.htm\", \"initiative\": \"Regione Liguria\"}, {\"uri\": \"it:senato:19:ddl:849\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"849\", \"kind\": \"bill\", \"title\": \"Riconoscimento del diritto all'oblio oncologico.Disposizioni in materia di parità di trattamento delle persone che sono state affette da patologie oncologiche\", \"date\": \"2023-08-03\", \"status\": \"assorbito\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53007.htm\", \"initiative\": \"Regione Basilicata\"}, {\"uri\": \"it:senato:19:ddl:820\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"820\", \"kind\": \"bill\", \"title\": \"Modifiche all'articolo 19 del decreto-legge 6 luglio 2011, n. 98, convertito, con modificazioni, dalla legge 15 luglio 2011, n. 111, in materia di dimensionamento scolastico\", \"date\": \"2023-07-19\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52953.htm\", \"initiative\": \"Regione Sicilia\"}, {\"uri\": \"it:senato:19:ddl:757\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"757\", \"kind\": \"bill\", \"title\": \"Modifiche all'articolo 1 della legge 27 dicembre 2019, n. 160, recante il bilancio di previsione dello Stato per l'anno finanziario 2020 e il bilancio pluriennale per il triennio 2020-2022\", \"date\": \"2023-06-08\", \"status\": \"ritirato\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52801.htm\", \"initiative\": \"Regione Puglia\"}, {\"uri\": \"it:senato:19:ddl:748\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"748\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-06-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52775.htm\", \"initiative\": \"Regione Puglia\"}, {\"uri\": \"it:senato:19:ddl:710\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"710\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-05-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52700.htm\", \"initiative\": \"Regione Umbria\"}, {\"uri\": \"it:senato:19:ddl:713\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"713\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 24 gennaio 1979, n. 18, concernenti l'istituzione delle circoscrizioni Sicilia e Sardegna per l'elezione dei membri del Parlamento europeo spettanti all'Italia\", \"date\": \"2023-05-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52703.htm\", \"initiative\": \"Regione Sardegna\"}, {\"uri\": \"it:senato:19:ddl:659\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"659\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-04-13\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52588.htm\", \"initiative\": \"Regione Campania\"}, {\"uri\": \"it:senato:19:ddl:652\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"652\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155 recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-04-11\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52569.htm\", \"initiative\": \"Regione Calabria\"}, {\"uri\": \"it:senato:19:ddl:593\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"593\", \"kind\": \"bill\", \"title\": \"Istituzione del servizio civile o militare obbligatorio\", \"date\": \"2023-03-15\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52430.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:594\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"594\", \"kind\": \"bill\", \"title\": \"Disposizioni per il riconoscimento della fibromialgia, dell'encefalomielite mialgica benigna e della sensibilità chimica multipla quali malattie croniche e invalidanti\", \"date\": \"2023-03-15\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52431.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:595\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"595\", \"kind\": \"bill\", \"title\": \"Modifica all'articolo 590 bis del codice penale, concernente il delitto di lesioni personali stradali gravi o gravissime, in materia di punibilità a querela della persona offesa\", \"date\": \"2023-03-15\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52432.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:596\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"596\", \"kind\": \"bill\", \"title\": \"Norme in materia di prevenzione dei danni causati dalla fauna selvatica. Modifica alla legge 11 febbraio 1992, n. 157, recante norme per la protezione della fauna selvatica omeoterma e per il prelievo venatorio\", \"date\": \"2023-03-15\", \"status\": \"assorbito\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52433.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:590\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"590\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge costituzionale 31 gennaio 1963, n. 1, recante statuto speciale della Regione Friuli-Venezia Giulia\", \"date\": \"2023-03-09\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52406.htm\", \"initiative\": \"Regione Friuli-Venezia Giulia\"}, {\"uri\": \"it:senato:19:ddl:476\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"476\", \"kind\": \"bill\", \"title\": \"Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:477\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"477\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:478\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"478\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"479\", \"kind\": \"bill\", \"title\": \"Modifica al codice delle leggi antimafia e delle misure di prevenzione, di cui al decreto legislativo 6 settembre 2011, n. 159, in materia di ampliamento delle destinazioni di uso degli immobili confiscati alle associazioni di criminalità organizzata\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:387\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"387\", \"kind\": \"bill\", \"title\": \"Modifiche agli articoli 28 e 29 del testo unico delle disposizioni concernenti la disciplina dell'immigrazione e norme sulla condizione dello straniero, di c"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "initiative": "Regione Toscana",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 8, \"items\": [{\"uri\": \"it:senato:19:ddl:1801\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1801\", \"kind\": \"bill\", \"title\": \"Riconoscimento dello Stato di Palestina\", \"date\": \"2026-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1643\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1643\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di distretto estrattivo apuo-versiliese\", \"date\": \"2025-09-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1527\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1527\", \"kind\": \"bill\", \"title\": \"Norme per l'affrancazione dei canoni livellari\", \"date\": \"2025-06-12\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:1064\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1064\", \"kind\": \"bill\", \"title\": \"Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica\", \"date\": \"2024-03-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:476\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"476\", \"kind\": \"bill\", \"title\": \"Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:477\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"477\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:478\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"478\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm\", \"initiative\": \"Regione Toscana\"}, {\"uri\": \"it:senato:19:ddl:479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"479\", \"kind\": \"bill\", \"title\": \"Modifica al codice delle leggi antimafia e delle misure di prevenzione, di cui al decreto legislativo 6 settembre 2011, n. 159, in materia di ampliamento delle destinazioni di uso degli immobili confiscati alle associazioni di criminalità organizzata\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm\", \"initiative\": \"Regione Toscana\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1801"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1801\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1801\", \"kind\": \"bill\", \"title\": \"Riconoscimento dello Stato di Palestina\", \"date\": \"2026-02-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59902\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01496723\", \"kind\": \"presented\", \"articles\": 1, \"length\": 4950}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1643"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1643\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1643\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di distretto estrattivo apuo-versiliese\", \"date\": \"2025-09-10\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59521\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01476236\", \"kind\": \"presented\", \"articles\": 2, \"length\": 5178}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1527"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1527\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1527\", \"kind\": \"bill\", \"title\": \"Norme per l'affrancazione dei canoni livellari\", \"date\": \"2025-06-12\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/59245\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01461501\", \"kind\": \"presented\", \"articles\": 2, \"length\": 1899}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1064"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1064\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1064\", \"kind\": \"bill\", \"title\": \"Modifica alla legge 20 agosto 2019, n. 92, in materia di introduzione dell'educazione all'emotività, all'affettività e alla sessualità nell'ambito dell'insegnamento trasversale dell'educazione civica\", \"date\": \"2024-03-07\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/58061\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01411265\", \"kind\": \"presented\", \"articles\": 1, \"length\": 3413}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:476"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:476\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"476\", \"kind\": \"bill\", \"title\": \"Disposizioni di semplificazione in materia di selvicoltura. Modifica al codice dei beni culturali e del paesaggio, di cui al decreto legislativo 22 gennaio 2004, n. 42\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56468\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372894\", \"kind\": \"presented\", \"articles\": 1, \"length\": 5209}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:477"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:477\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"477\", \"kind\": \"bill\", \"title\": \"Modifiche al decreto legislativo 7 settembre 2012, n. 155, recante nuova organizzazione dei tribunali ordinari e degli uffici del pubblico ministero\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56469\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372326\", \"kind\": \"presented\", \"articles\": 3, \"length\": 9884}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:478"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:478\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"478\", \"kind\": \"bill\", \"title\": \"Modifiche alla legge 30 dicembre 2020, n. 178, recante bilancio di previsione dello Stato per l'anno finanziario 2021 e bilancio pluriennale per il triennio 2021-2023, in materia di agevolazione contributiva per l'occupazione nelle aree interne\", \"date\": \"2023-01-18\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56470\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01375733\", \"kind\": \"presented\", \"articles\": 2, \"length\": 6284}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:479"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"479\", \"kind\": \"bill\", \"title\": \"Modifica al codice delle leggi antimafia e delle misure di prevenzione, di cui al decreto legislativo 6 settembre 2011, n. 159, in materia di ampliamento delle destinazioni di uso degli immobili confiscati alle associazioni di criminalità organizzata\", \"date\": \"2023-01-18\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm\", \"initiative\": \"Regione Toscana\", \"kind_raw\": \"ordinaria\", \"description\": \"Consiglio regionale Toscana\", \"source_uri\": \"http://dati.senato.it/ddl/56471\", \"sponsors\": [], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01372606\", \"kind\": \"presented\", \"articles\": 1, \"length\": 4261}], \"joined\": [], \"votes\": [], \"amendments\": {\"total\": 0, \"by_outcome\": {}}}"
+  }
+ ],
+ "tempo_s": 17.6
+}

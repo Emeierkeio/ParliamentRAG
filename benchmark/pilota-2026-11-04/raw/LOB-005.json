@@ -1,0 +1,83 @@
+{
+ "id": "LOB-005",
+ "trappola": false,
+ "domanda": "Chi presiede oggi la XIII Commissione Agricoltura della Camera? A me risultava Mirco Carloni.",
+ "categoria": "commissioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Dal 13/10/2026 la presidenza è di Francesco Bruzzone. Nei dati resta una riga di Carloni senza data di fine: il sistema deve usare la carica più recente e non indicare due presidenti.",
+ "endpoint": "agente",
+ "inizio": 1793752997.791536,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Mirco Carloni",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Carloni",
+    "chamber": "camera",
+    "group": null,
+    "in_office": false,
+    "limit": 20
+   },
+   "result": "[{\"uri\": \"it:person:camera:308763\", \"name\": \"Mirco Carloni\", \"chamber\": \"camera\", \"in_office\": false, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308763&legislatura=19\"}]"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308763"
+   },
+   "result": "{\"uri\": \"it:person:camera:308763\", \"name\": \"Mirco Carloni\", \"chamber\": \"camera\", \"in_office\": false, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308763&legislatura=19\", \"given_name\": \"Mirco\", \"family_name\": \"Carloni\", \"gender\": \"M\", \"birth_date\": \"1981-01-14\", \"birth_place\": \"Fano\", \"profession\": \"Professore a contratto di discipline economiche; Imprenditore\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308763\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"end_date\": \"2026-10-19\", \"end_reason\": \"Dimissioni per incompatibilita'\", \"constituency\": \"MARCHE - P01\", \"college\": \"MARCHE - U04\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-10-19\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2026-10-14\", \"end_date\": \"2026-10-19\"}, {\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"member\", \"start_date\": \"2026-10-12\", \"end_date\": \"2026-10-14\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-10-12\"}, {\"target\": \"it:camera:19:body:o19_3721\", \"target_name\": \"Conferenza dei Presidenti delle Commissioni Permanenti\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-09-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"chair\", \"start_date\": \"2025-06-10\", \"end_date\": \"2026-09-09\"}, {\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"chair\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 595, \"ballots\": 19967, \"ballots_cast\": 3314, \"ballots_mission\": 15426, \"bills_first_signer\": 5, \"amendments_signed\": 284}}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "it:camera:19:body:o19_3513",
+    "start": "2026-10-01",
+    "end": "2026-11-04",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 21, \"items\": [{\"uri\": \"it:camera:19:bol20261028:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c13:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 30, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c13:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 20, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261027:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c13:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 20, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261021:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-21\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261020:c13:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 30, \"date\": \"2026-10-20\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261020:c13:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 20, \"date\": \"2026-10-20\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261020:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-20\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261014:c13:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 20, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261014:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-14\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261013:c13:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 30, \"date\": \"2026-10-13\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261013:c13:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 20, \"date\": \"2026-10-13\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261028:c13:sede00010",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261028:c13:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3513\", \"body_name\": \"Agricoltura (XIII)\", \"number\": 10, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"start_time\": \"15:40\", \"end_time\": \"15:45\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c13:sede00010:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c13:sede00010:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Mercoledì 28 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c13:sede00010:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 15.40 alle 15.45.\", \"reactions\": []}]}], \"votes\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "elenco_sedute",
+  "seduta"
+ ],
+ "tempo_s": 13.5,
+ "risposta_sistema": "No: Mirco Carloni non presiede oggi la XIII Commissione Agricoltura. Il suo mandato da deputato è terminato il **19 ottobre 2026**, per dimissioni dovute a incompatibilità.\n\nNei dati disponibili, Carloni risulta presidente della Commissione fino al **9 settembre 2026**. Non è indicato chi gli sia subentrato alla presidenza; l’ultima seduta della XIII Commissione presente è del 28 ottobre e non riporta il nominativo di chi l’ha presieduta. I dati parlamentari arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

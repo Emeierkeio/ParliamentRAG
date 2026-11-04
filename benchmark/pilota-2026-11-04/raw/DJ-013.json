@@ -1,0 +1,111 @@
+{
+ "id": "DJ-013",
+ "domanda": "Quali parlamentari intervengono di più in Aula? Top 20 per numero di interventi e per parole, Camera.",
+ "endpoint": "/api/agente",
+ "inizio": 1793756060.580561,
+ "errori": [],
+ "risposta_sistema": "Dall’inizio della XIX legislatura al **3 novembre 2026**, in Aula alla Camera sono registrati **125.393 turni di parola** e **25.693.730 parole**. I gruppi indicati sono quelli attuali.\n\n| # | Per numero di interventi | Interventi | Per numero di parole | Parole |\n|---:|---|---:|---|---:|\n| 1 | Giorgio Mulè (FI-PPE) | 18.449 | Giorgio Mulè (FI-PPE) | 741.646 |\n| 2 | Sergio Costa (M5S) | 16.268 | Anna Ascani (PD-IDP) | 640.878 |\n| 3 | Anna Ascani (PD-IDP) | 14.981 | Sergio Costa (M5S) | 639.819 |\n| 4 | Fabio Rampelli (FDI) | 14.004 | Fabio Rampelli (FDI) | 561.618 |\n| 5 | Lorenzo Fontana (LEGA) | 4.582 | Marco Grimaldi (AVS) | 418.698 |\n| 6 | Marco Grimaldi (AVS) | 1.201 | Andrea Casu (PD-IDP) | 343.362 |\n| 7 | Roberto Giachetti (IV-CR) | 970 | Roberto Giachetti (IV-CR) | 327.679 |\n| 8 | Federico Fornaro (PD-IDP) | 806 | Filiberto Zaratti (AVS) | 296.221 |\n| 9 | Francesco Emilio Borrelli (AVS) | 708 | Francesca Ghirra (AVS) | 265.236 |\n| 10 | Andrea Casu (PD-IDP) | 668 | Giuseppe Bicchielli (FI-PPE) | 243.733 |\n| 11 | Andrea Quartini (M5S) | 605 | Francesco Emilio Borrelli (AVS) | 234.828 |\n| 12 | Angelo Bonelli (AVS) | 598 | Angelo Bonelli (AVS) | 230.884 |\n| 13 | Francesca Ghirra (AVS) | 582 | Devis Dori (AVS) | 229.436 |\n| 14 | Filiberto Zaratti (AVS) | 578 | Valentina D’Orso (M5S) | 226.668 |\n| 15 | Valentina D’Orso (M5S) | 538 | Andrea Quartini (M5S) | 217.472 |\n| 16 | Antonino Iaria (M5S) | 531 | Elisabetta Piccolotti (AVS) | 198.153 |\n| 17 | Alfonso Colucci (M5S) | 530 | Luana Zanella (AVS) | 189.418 |\n| 18 | Benedetto Della Vedova (Misto — +Europa) | 495 | Giorgia Meloni (FDI) | 182.909 |\n| 19 | Luana Zanella (AVS) | 492 | Benedetto Della Vedova (Misto — +Europa) | 165.657 |\n| 20 | Riccardo Ricciardi (M5S) | 485 | Alfonso Colucci (M5S) | 162.766 |\n\nUn “intervento” è un turno di parola nel resoconto d’Aula; le parole sono contate come parti del testo separate da spazi. La graduatoria include anche gli interventi svolti con ruoli di presidenza, Governo o relatore.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "persona"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   }
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "persona"
+    ],
+    "order_by": "parole",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   }
+  }
+ ],
+ "dati": [
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": false,
+    "group_by": [
+     "persona"
+    ],
+    "order_by": "interventi",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 125393}, \"rows_total\": 450, \"offset\": 0, \"rows\": [{\"persona\": \"Giorgio Mule'\", \"interventi\": 18449, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307130\", \"gruppo_oggi\": \"FI-PPE\"}, {\"persona\": \"Sergio Costa\", \"interventi\": 16268, \"dal\": \"2022-11-10\", \"al\": \"2026-10-30\", \"persona_uri\": \"it:person:camera:307922\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Anna Ascani\", \"interventi\": 14981, \"dal\": \"2022-11-16\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:305704\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Fabio Rampelli\", \"interventi\": 14004, \"dal\": \"2022-10-24\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:301436\", \"gruppo_oggi\": \"FDI\"}, {\"persona\": \"Lorenzo Fontana\", \"interventi\": 4582, \"dal\": \"2022-10-13\", \"al\": \"2026-10-14\", \"persona_uri\": \"it:person:camera:307591\", \"gruppo_oggi\": \"LEGA\"}, {\"persona\": \"Marco Grimaldi\", \"interventi\": 1201, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:308810\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Roberto Giachetti\", \"interventi\": 970, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:300480\", \"gruppo_oggi\": \"IV-CR\"}, {\"persona\": \"Federico Fornaro\", \"interventi\": 806, \"dal\": \"2022-11-08\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:306398\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Francesco Emilio Borrelli\", \"interventi\": 708, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:308857\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Andrea Casu\", \"interventi\": 668, \"dal\": \"2022-11-16\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:308600\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Andrea Quartini\", \"interventi\": 605, \"dal\": \"2022-11-10\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:308896\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Angelo Bonelli\", \"interventi\": 598, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:302080\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Francesca Ghirra\", \"interventi\": 582, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:308861\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Filiberto Zaratti\", \"interventi\": 578, \"dal\": \"2022-11-10\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:306521\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Valentina D'Orso\", \"interventi\": 538, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307388\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Antonino Iaria\", \"interventi\": 531, \"dal\": \"2022-12-05\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:308809\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Alfonso Colucci\", \"interventi\": 530, \"dal\": \"2022-12-05\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:308841\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Benedetto Della Vedova\", \"interventi\": 495, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:301577\", \"gruppo_oggi\": \"MISTO-+EU-SUEU\"}, {\"persona\": \"Luana Zanella\", \"interventi\": 492, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:300469\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Riccardo Ricciardi\", \"interventi\": 485, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307250\", \"gruppo_oggi\": \"M5S\"}], \"more\": \"altre 430 righe: richiama con offset=20\"}"
+  },
+  {
+   "name": "conta_interventi",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "phrase": null,
+    "person": null,
+    "group": null,
+    "role": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "words": true,
+    "group_by": [
+     "persona"
+    ],
+    "order_by": "parole",
+    "sum_chambers": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Interventi, Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026. Parole = parti del testo separate da spazi. Un intervento è un turno di parola nel resoconto. Ruolo: presidenza (chi presiede), governo (incarico di governo alla data), relatore, parlamentare, altro (auditi ed esterni). Gruppo = gruppo di chi parla alla data (group_at), il Misto per componente, solo per i parlamentari: gli altri ruoli sono «(senza gruppo)». Fonte: resoconti stenografici d'Aula e di commissione, resoconti sommari delle commissioni.\", \"totals\": {\"interventi\": 125393, \"parole\": 25693730}, \"rows_total\": 450, \"offset\": 0, \"rows\": [{\"persona\": \"Giorgio Mule'\", \"interventi\": 18449, \"parole\": 741646, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307130\", \"gruppo_oggi\": \"FI-PPE\"}, {\"persona\": \"Anna Ascani\", \"interventi\": 14981, \"parole\": 640878, \"dal\": \"2022-11-16\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:305704\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Sergio Costa\", \"interventi\": 16268, \"parole\": 639819, \"dal\": \"2022-11-10\", \"al\": \"2026-10-30\", \"persona_uri\": \"it:person:camera:307922\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Fabio Rampelli\", \"interventi\": 14004, \"parole\": 561618, \"dal\": \"2022-10-24\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:301436\", \"gruppo_oggi\": \"FDI\"}, {\"persona\": \"Marco Grimaldi\", \"interventi\": 1201, \"parole\": 418698, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:308810\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Andrea Casu\", \"interventi\": 668, \"parole\": 343362, \"dal\": \"2022-11-16\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:308600\", \"gruppo_oggi\": \"PD-IDP\"}, {\"persona\": \"Roberto Giachetti\", \"interventi\": 970, \"parole\": 327679, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:300480\", \"gruppo_oggi\": \"IV-CR\"}, {\"persona\": \"Filiberto Zaratti\", \"interventi\": 578, \"parole\": 296221, \"dal\": \"2022-11-10\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:306521\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Francesca Ghirra\", \"interventi\": 582, \"parole\": 265236, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:308861\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Giuseppe Bicchielli\", \"interventi\": 377, \"parole\": 243733, \"dal\": \"2022-10-25\", \"al\": \"2026-10-07\", \"persona_uri\": \"it:person:camera:308790\", \"gruppo_oggi\": \"FI-PPE\"}, {\"persona\": \"Francesco Emilio Borrelli\", \"interventi\": 708, \"parole\": 234828, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:308857\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Angelo Bonelli\", \"interventi\": 598, \"parole\": 230884, \"dal\": \"2022-11-10\", \"al\": \"2026-10-28\", \"persona_uri\": \"it:person:camera:302080\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Devis Dori\", \"interventi\": 459, \"parole\": 229436, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307634\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Valentina D'Orso\", \"interventi\": 538, \"parole\": 226668, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:307388\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Andrea Quartini\", \"interventi\": 605, \"parole\": 217472, \"dal\": \"2022-11-10\", \"al\": \"2026-10-27\", \"persona_uri\": \"it:person:camera:308896\", \"gruppo_oggi\": \"M5S\"}, {\"persona\": \"Elisabetta Piccolotti\", \"interventi\": 441, \"parole\": 198153, \"dal\": \"2022-11-10\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:308816\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Luana Zanella\", \"interventi\": 492, \"parole\": 189418, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:300469\", \"gruppo_oggi\": \"AVS\"}, {\"persona\": \"Giorgia Meloni\", \"interventi\": 157, \"parole\": 182909, \"dal\": \"2022-10-25\", \"al\": \"2026-10-14\", \"persona_uri\": \"it:person:camera:302103\", \"gruppo_oggi\": \"FDI\"}, {\"persona\": \"Benedetto Della Vedova\", \"interventi\": 495, \"parole\": 165657, \"dal\": \"2022-10-25\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:301577\", \"gruppo_oggi\": \"MISTO-+EU-SUEU\"}, {\"persona\": \"Alfonso Colucci\", \"interventi\": 530, \"parole\": 162766, \"dal\": \"2022-12-05\", \"al\": \"2026-11-03\", \"persona_uri\": \"it:person:camera:308841\", \"gruppo_oggi\": \"M5S\"}], \"more\": \"altre 430 righe: richiama con offset=20\"}"
+  }
+ ],
+ "tempo_s": 18.2
+}

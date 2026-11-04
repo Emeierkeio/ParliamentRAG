@@ -1,0 +1,129 @@
+{
+ "id": "COM-028",
+ "trappola": false,
+ "domanda": "Testo della risoluzione 7/00423 (Manzi) e stato della discussione in commissione.",
+ "categoria": "sindacato_ispettivo",
+ "tipo_risposta": "testo",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Presentata il 22/10/2026.",
+ "endpoint": "agente",
+ "inizio": 1793752958.906898,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "resolution",
+    "number": "7/00423",
+    "signer": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": null,
+    "number": "7-00423",
+    "signer": null,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:aic:7-00423\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"7/00423\", \"kind\": \"committee_resolution\", \"title\": \"RISOLUZIONE IN COMMISSIONE 7/00423 presentata da MANZI IRENE (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 22/10/2026\", \"date\": \"2026-10-22\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423\"}]}"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:aic:7-00423"
+   },
+   "result": "{\"uri\": \"it:camera:19:aic:7-00423\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"7/00423\", \"kind\": \"committee_resolution\", \"title\": \"RISOLUZIONE IN COMMISSIONE 7/00423 presentata da MANZI IRENE (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 22/10/2026\", \"date\": \"2026-10-22\", \"card_url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423\", \"kind_raw\": \"RISOLUZIONE IN COMMISSIONE\", \"text\": \"Atto Camera Risoluzione in commissione 7-00423 presentato da MANZI Irene testo di Giovedì 22 ottobre 2026, seduta n. 731 La VII Commissione, premesso che: il Programma degli itinerari culturali del Consiglio d'Europa, avviato nel 1987, riconosce reti transnazionali di territori, istituzioni culturali, università, imprese e comunità. Queste reti, attorno a un tema di rilevanza europea, promuovono la conoscenza reciproca, il dialogo interculturale e la consapevolezza di un patrimonio comune, in coerenza con la missione del Consiglio d'Europa a tutela della democrazia, dei diritti umani e dello Stato di diritto; gli itinerari certificati sono oggi 52, a seguito delle tre nuove certificazioni deliberate nel maggio 2026. L'Italia è attraversata da numerosi di essi, a partire dalla Via Francigena; la certificazione è rilasciata dal consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali, composto da un rappresentante designato da ciascuno Stato Membro, sulla base di requisiti stringenti: a) il tema deve essere comune ad almeno tre Paesi e fondato su una ricerca scientifica multidisciplinare; b) la rete deve disporre di una struttura giuridica e coinvolgere più Stati membri; c) la rete deve presentare un programma pluriennale, un piano finanziario e indicatori di impatto; d) la rete deve sviluppare attività di scambio educativo tra giovani e iniziative di turismo culturale sostenibile; la città di Fabriano ha promosso – a partire dal 2024 – insieme alla città di Angoulême la costituzione di un itinerario europeo dedicato alla cultura della carta, sottoscrivendo un manifesto per la costituzione di una European paper route nel quadro del Programma; Fabriano costituisce uno dei luoghi europei più identificati con la storia della carta: a) un documento del 1264, conservato a Matelica, attesta già allora la produzione cartaria in città; b) la tradizione attribuisce ai maestri cartai fabrianesi innovazioni decisive, tra cui la collatura con gelatina animale, la pila a magli multipli e la filigrana; c) nel 1782 Pietro Miliani avviò le cartiere che diedero alla produzione una dimensione industriale; il patrimonio cartario fabrianese è oggi custodito e valorizzato da un insieme articolato di soggetti: a) il Museo della carta e della filigrana; b) la Pia Università dei Cartai, che nel 2026 compie settecento anni; c) la Fondazione Fedrigoni Fabriano, che custodisce il museo d'impresa delle ex Cartiere Miliani; d) il Consorzio «Ca"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "7-00423",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "commissioni",
+    "start": "2026-10-22",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 142, \"items\": [{\"uri\": \"it:camera:19:bol20261029:c71:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 30, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c39:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4021\", \"body_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c03:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3503\", \"body_name\": \"Affari esteri e comunitari (III)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c71:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4201\", \"body_name\": \"Commissione parlamentare di inchiesta sulla scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:camera:19:bol20261029:c27:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4022\", \"body_"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261029:c07:sede00020",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261029:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"UFFICIO DI PRESIDENZA INTEGRATO DAI RAPPRESENTANTI DEI GRUPPI\", \"items\": [{\"uri\": \"it:camera:19:bol20261029:c07:sede00020:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261029:c07:sede00020:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Giovedì 29 ottobre 2026.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261029:c07:sede00020:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"L'ufficio di presidenza si è riunito dalle 14.15, alle 14.20.\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261029:c07:sede00010",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261029:c07:sede00010\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 10, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AUDIZIONI INFORMALI\", \"presided_by\": \"it:person:camera:308802\", \"items\": [{\"uri\": \"it:camera:19:bol20261029:c07:sede00010:tit00010\", \"order\": 1, \"title\": \"Audizione informale, in videoconferenza, nell'ambito dell'esame delle proposte di legge C. 2797 Cangiano e C. 2810 Tassinari, recanti Disposizioni in materia di accesso ai corsi di laurea magistrale a ciclo unico in medicina e chirurgia e in odontoiatria e protesi dentaria presso le università non statali legalmente riconosciute, di:\", \"acts\": [{\"ref\": \"ac:2797\", \"uri\": \"it:camera:19:ac:2797\", \"title\": \"CANGIANO: \\\"Disposizioni in materia di accesso ai corsi di laurea magistrale a ciclo unico in medicina e chirurgia e in odontoiatria e protesi dentaria presso le università non statali legalmente riconosciute\\\" (2797)\"}, {\"ref\": \"ac:2810\", \"uri\": \"it:camera:19:ac:2810\", \"title\": \"TASSINARI ed altri: \\\"Disposizioni in materia di accesso ai corsi di laurea magistrale a ciclo unico in medicina e chirurgia, in odontoiatria e protesi dentaria e in medicina veterinaria presso le università non statali legalmente riconosciute\\\" (2810)\"}], \"speeches\": [{\"uri\": \"it:camera:19:bol20261029:c07:sede00010:tit00010:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"L'audizione informale è stata svolta dalle 13.35, alle 14.15.\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261028:c07:sede00030",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261028:c07:sede00030\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 30, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"AVVERTENZA\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"I seguenti punti all'ordine del giorno non sono stati trattati:\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"INDAGINE CONOSCITIVA\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Sulle sfide educative e culturali e sull'impatto delle nuove tecnologie nella scuola: la dipendenza dagli schermi e dai social media, l'utilizzo dell'intelligenza artificiale, il contrasto dell'abbandono scolastico e il ruolo della comunità educante per il benessere degli studenti. (Deliberazione di un'integrazione del programma).\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000:p4\", \"order\": 4, \"kind\": \"summary\", \"text\": \"INDAGINE CONOSCITIVA\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00030:tit00000:p5\", \"order\": 5, \"kind\": \"summary\", \"text\": \"Sulle sfide educative e culturali e sull'impatto delle nuove tecnologie nella scuola: la dipendenza dagli schermi e dai social media, l'utilizzo dell'intelligenza artificiale, il contrasto dell'abbandono scolastico e il ruolo della comunità educante per il benessere degli studenti: audizione di Andrea Fontana, esperto.\", \"reactions\": []}]}], \"votes\": []}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:bol20261028:c07:sede00020",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:bol20261028:c07:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3507\", \"body_name\": \"Cultura, scienza e istruzione (VII)\", \"number\": 20, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"seat\": \"INDAGINE CONOSCITIVA\", \"presided_by\": \"it:person:camera:307173\", \"start_time\": \"15:25\", \"end_time\": \"16:00\", \"items\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00010\", \"order\": 1, \"title\": \"Sulla pubblicità dei lavori.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00010:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307173\", \"name\": \"Giorgia Latini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307173&legislatura=19\"}, \"speaker_label\": \"Giorgia LATINI\", \"as_office\": \"presidente\", \"kind\": \"summary\", \"text\": \"Giorgia LATINI, presidente, avverte che la pubblicità dei lavori sarà assicurata anche mediante la resocontazione stenografica e la trasmissione attraverso la web-tv della Camera dei deputati.\", \"reactions\": []}]}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00020\", \"order\": 2, \"title\": \"Sulle sfide educative e culturali e sull'impatto delle nuove tecnologie nella scuola: la dipendenza dagli schermi e dai social media, l'utilizzo dell'intelligenza artificiale, il contrasto dell'abbandono scolastico e il ruolo della comunità educante per il benessere degli studenti. Audizione di:\", \"stage\": \"Svolgimento e conclusione\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00020:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307173\", \"name\": \"Giorgia Latini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307173&legislatura=19\"}, \"speaker_label\": \"Giorgia LATINI\", \"as_office\": \"presidente\", \"kind\": \"summary\", \"text\": \"Giorgia LATINI, presidente, introduce l'audizione.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00020:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"Gabriele BENASSI, docente del Liceo Galvani di Bologna e componente del Servizio Marconi TSI, Elena FAZI, presidente nazionale dell'Unione cattolica italiana insegnanti, dirigenti, educatori, formatori (UCIIM) e Giovanna MASCHERONI, professoressa ordinaria di sociologia dei media digitali, svolgono relazioni sui temi oggetto dell'audizione.\", \"reactions\": []}, {\"uri\": \"it:camera:19:bol20261028:c07:sede00020:tit00020:p3\", \"order\": 3, \"person\": {\"uri\": \"it:person:camera:305771\", \"name\": \"Irene Manzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_nam"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "cerca_interventi",
+  "elenco_sedute",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta"
+ ],
+ "tempo_s": 27.0,
+ "risposta_sistema": "La risoluzione in commissione **7/00423**, prima firmataria Irene Manzi (PD-IDP), è stata presentata alla Camera il **22 ottobre 2026**. Dai dati disponibili fino al **3 novembre 2026**, non risultano avviati l’esame o la discussione in VII Commissione (Cultura, scienza e istruzione): l’atto non registra fasi dell’iter, votazioni, emendamenti o testi successivi.\n\n[Testo e scheda ufficiale dell’atto](http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=7/00423)\n\nTesto:\n\n> La VII Commissione,  \n>   \n> premesso che:  \n>   \n> il Programma degli itinerari culturali del Consiglio d'Europa, avviato nel 1987, riconosce reti transnazionali di territori, istituzioni culturali, università, imprese e comunità. Queste reti, attorno a un tema di rilevanza europea, promuovono la conoscenza reciproca, il dialogo interculturale e la consapevolezza di un patrimonio comune, in coerenza con la missione del Consiglio d'Europa a tutela della democrazia, dei diritti umani e dello Stato di diritto;  \n>   \n> gli itinerari certificati sono oggi 52, a seguito delle tre nuove certificazioni deliberate nel maggio 2026. L'Italia è attraversata da numerosi di essi, a partire dalla Via Francigena;  \n>   \n> la certificazione è rilasciata dal consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali, composto da un rappresentante designato da ciascuno Stato Membro, sulla base di requisiti stringenti:  \n> a) il tema deve essere comune ad almeno tre Paesi e fondato su una ricerca scientifica multidisciplinare;  \n> b) la rete deve disporre di una struttura giuridica e coinvolgere più Stati membri;  \n> c) la rete deve presentare un programma pluriennale, un piano finanziario e indicatori di impatto;  \n> d) la rete deve sviluppare attività di scambio educativo tra giovani e iniziative di turismo culturale sostenibile;  \n>   \n> la città di Fabriano ha promosso – a partire dal 2024 – insieme alla città di Angoulême la costituzione di un itinerario europeo dedicato alla cultura della carta, sottoscrivendo un manifesto per la costituzione di una European paper route nel quadro del Programma;  \n>   \n> Fabriano costituisce uno dei luoghi europei più identificati con la storia della carta:  \n> a) un documento del 1264, conservato a Matelica, attesta già allora la produzione cartaria in città;  \n> b) la tradizione attribuisce ai maestri cartai fabrianesi innovazioni decisive, tra cui la collatura con gelatina animale, la pila a magli multipli e la filigrana;  \n> c) nel 1782 Pietro Miliani avviò le cartiere che diedero alla produzione una dimensione industriale;  \n>   \n> il patrimonio cartario fabrianese è oggi custodito e valorizzato da un insieme articolato di soggetti:  \n> a) il Museo della carta e della filigrana;  \n> b) la Pia Università dei Cartai, che nel 2026 compie settecento anni;  \n> c) la Fondazione Fedrigoni Fabriano, che custodisce il museo d'impresa delle ex Cartiere Miliani;  \n> d) il Consorzio “Carta Fabriano”, costituito nel 2025 per tutelare la carta fatta a mano secondo la tradizione locale attraverso un marchio collettivo e un disciplinare di produzione;  \n>   \n> la città è inoltre città creativa Unesco per l'artigianato e le arti popolari dal 2013 e, dal 2025, socio fondatore della Rete nazionale delle Città di Carta;  \n>   \n> da iniziativa bilaterale, la proposta è divenuta una rete europea che comprende oggi, oltre a Fabriano ed Angoulême, Santa Maria da Feira, Capellades ed Heidelberg, cui nel 2026 si sono aggiunte Lione e Barcellona. Diverse di queste città fanno parte della Rete delle città creative Unesco; ciascun territorio porta nella rete una diversa espressione del patrimonio cartario europeo:  \n> a) Fabriano rappresenta la tradizione dei maestri cartai e della filigrana;  \n> b) Angoulême rappresenta l'incontro tra carta, arti grafiche e fumetto. Nel novembre 2024 i saperi legati alla carta fatta a mano sono stati iscritti nell'inventario francese del patrimonio culturale immateriale;  \n> c) Santa Maria da Feira rappresenta la memoria industriale e la museologia delle comunità cartarie;  \n> d) Capellades rappresenta la continuità di una produzione a mano ancora attiva;  \n> e) Heidelberg e Lione rappresentano il legame tra carta, stampa, libro ed editoria;  \n> f) Barcellona rappresenta il design e la cultura materiale contemporanea;  \n>   \n> la pluralità di queste esperienze, lungi dal costituire un limite, corrisponde all'impostazione del Programma: raccontare un patrimonio comune attraverso storie, luoghi e comunità differenti;  \n>   \n> il 17 novembre 2025 i rappresentanti della rete sono stati ricevuti a Lussemburgo dall'Istituto europeo degli itinerari culturali. L'incontro ha avuto per oggetto lo sviluppo strategico della proposta, i criteri di certificazione e il calendario di valutazione. In quella sede il direttore dell'Istituto ha riconosciuto il potenziale del progetto per il turismo culturale, la partecipazione dei giovani e la cooperazione transfrontaliera;  \n>   \n> la rete intende presentare la candidatura nel ciclo 2027-2028 e sta definendo in ciascun territorio un partenariato che coinvolge università, musei, archivi e biblioteche, scuole, Camere di commercio, imprese artigiane, fondazioni, festival, operatori turistici e professionisti delle industrie culturali e creative);  \n>   \n> la certificazione non rappresenterebbe un semplice riconoscimento turistico. Darebbe vita a una rete europea stabile, capace di generare progettazione, ricerca, scambi formativi e collaborazione tra istituzioni e operatori economici;  \n>   \n> per Fabriano e per l'area appenninica, interessate da una profonda trasformazione del modello produttivo, la valorizzazione della cultura della carta può aprire nuove connessioni tra patrimonio, formazione, artigianato, creatività e impresa;  \n>   \n> la storia della carta di Fabriano appartiene alla storia culturale del Paese. Il sostegno unitario del Parlamento alla candidatura riconoscerebbe questo patrimonio come parte integrante dell'identità italiana ed europea;  \n>   \n> il buon esito della candidatura dipende anche dal sostegno che lo Stato, per quanto di competenza, potrà assicurare in due direzioni: nelle sedi in cui si forma la decisione e nella fase di costruzione del dossier,  \n>   \n> impegna il Governo:  \n>   \n> a sostenere, nelle sedi competenti del Consiglio d'Europa e in particolare in seno al Consiglio di Direzione dell'Accordo parziale allargato sugli itinerari culturali, la candidatura della European paper route al ciclo di certificazione 2027-2028;  \n>   \n> a valutare, compatibilmente con i vincoli di finanza pubblica, di adottare iniziative per l'attivazione di forme di sostegno alle attività della rete, che potrebbero includere un migliore accesso ai programmi europei per la cultura, la cooperazione territoriale e le industrie creative;  \n>   \n> a valutare iniziative per la tutela e la valorizzazione dei saperi artigianali legati alla produzione della carta fatta a mano, anche ai fini del loro riconoscimento quale patrimonio culturale immateriale.\n\nI cofirmatari sono deputati di PD-IDP, Fratelli d’Italia, Lega, Movimento 5 Stelle, Forza Italia, Azione - Popolari Europeisti Riformatori - Renew Europe, Alleanza Verdi e Sinistra e Italia Viva - Casa Riformista.",
+ "eventi": {
+  "status": 1,
+  "tool": 18,
+  "dati": 9,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

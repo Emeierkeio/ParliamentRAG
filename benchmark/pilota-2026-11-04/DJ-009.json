@@ -1,0 +1,56 @@
+{
+ "id": "DJ-009",
+ "domanda": "Quanti parlamentari hanno cambiato gruppo dall'inizio della legislatura? Voglio il numero aggiornato a oggi, Camera e Senato.",
+ "categoria": "persone",
+ "ramo": "entrambi",
+ "tipo_risposta": "conteggio",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Escludere i passaggi tecnici dell'ottobre 2022 (Misto provvisorio prima della costituzione dei gruppi) e l'ingresso in una componente del Misto senza lasciare il Misto. Il numero va dato separato per ramo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Dall’inizio della XIX legislatura hanno cambiato gruppo:\n\n- **Camera:** **40 deputati** (per **52 passaggi** di gruppo).\n- **Senato:** **13 senatori** (per **15 passaggi** di gruppo).\n\nIl conteggio è aggiornato al **4 novembre 2026** e include anche entrate o uscite dalle componenti del Gruppo Misto. Sono esclusi i passaggi tecnici avvenuti nell’ottobre 2022, prima della costituzione definitiva dei gruppi.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cambi_gruppo",
+  "cambi_gruppo"
+ ],
+ "errori": [],
+ "tempo_s": 6.4,
+ "riferimento": {
+  "risposta": "Al 2/11/2026, dall'inizio della XIX: alla Camera 40 deputati hanno cambiato gruppo, per 52 passaggi in tutto (fra cui i 9 deputati di Italia Viva usciti da Azione-IV il 20/11/2023 per formare IV-CR); al Senato 13 senatori, per 15 passaggi. L'elenco con date, gruppo di partenza e di arrivo è in «risultato».",
+  "stato": "calcolata",
+  "limiti": "Gruppo = gruppo parlamentare, con le componenti del Misto ricondotte al Misto: entrare in una componente del Misto restando nel Misto non conta. Esclusi i passaggi tecnici dell'ottobre 2022 (appartenenze chiuse prima del 1/11/2022: Misto provvisorio e componenti AVS e NM prima della costituzione dei gruppi). Conta come cambio anche la nascita di IV-CR alla Camera. Un ritorno al gruppo di prima conta come un nuovo cambio."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 6.4
+ },
+ "causa_probabile": "strumenti",
+ "note": "Camera 40 deputati e 52 passaggi, Senato 13 e 15, come il riferimento. Scrive per errore che il conto include le componenti del Misto (ha chiamato lo strumento anche in quel modo, con lo stesso risultato).",
+ "prima": {
+  "risposta_sistema": "Non posso ricavare un **numero esatto e verificabile** dei parlamentari che hanno cambiato gruppo dall’inizio della XIX legislatura: i dati disponibili consentono di vedere gruppi e composizione alla data odierna, oltre alle storie individuali quando si conosce il parlamentare, ma non forniscono un elenco aggregato completo dei trasferimenti di gruppo né un conteggio già calcolato.\n\nAlla data dei dati, **4 novembre 2026**, risultano in carica:\n- **Camera:** 398 deputati;\n- **Senato:** 205 senatori.\n\nUn conteggio corretto dovrebbe includere anche chi ha cambiato gruppo e poi è cessato dal mandato, evitando di confondere i cambi di denominazione o di componente del Misto con i passaggi fra gruppi. Per questo non sarebbe affidabile dedurre il dato soltanto confrontando le composizioni iniziale e attuale.",
+  "strumenti": [
+   "composizione",
+   "composizione"
+  ],
+  "tempo_s": 13.4,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": null,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 13.4
+  },
+  "note": "Non dà il numero (riferimento: Camera 40, Senato 13). Lo dice."
+ }
+}

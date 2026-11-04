@@ -1,0 +1,76 @@
+{
+ "id": "PA-007",
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "categoria": "iter",
+ "ramo": "senato",
+ "tipo_risposta": "elenco",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Il Consiglio regionale della Toscana ha presentato **8 disegni di legge al Senato** nella XIX legislatura. Nessuno risulta approvato in via definitiva: **3 sono in esame in Commissione** e **5 sono assegnati ma non ancora esaminati**.\n\n- **S. 1801** — *Riconoscimento dello Stato di Palestina* (presentato il 13 febbraio 2026): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/55171.htm)\n- **S. 1643** — *Disposizioni in materia di distretto estrattivo apuo-versiliese* (10 settembre 2025): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54858.htm)\n- **S. 1527** — *Norme per l'affrancazione dei canoni livellari* (12 giugno 2025): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54616.htm)\n- **S. 1064** — *Introduzione dell’educazione all’emotività, all’affettività e alla sessualità nell’insegnamento trasversale dell’educazione civica* (7 marzo 2024): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/53577.htm)\n- **S. 476** — *Semplificazione in materia di selvicoltura e modifica al Codice dei beni culturali e del paesaggio* (18 gennaio 2023): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52139.htm)\n- **S. 477** — *Modifiche all’organizzazione dei tribunali ordinari e degli uffici del pubblico ministero* (18 gennaio 2023): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52140.htm)\n- **S. 478** — *Agevolazione contributiva per l’occupazione nelle aree interne* (18 gennaio 2023): **assegnato, non ancora esaminato**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52141.htm)\n- **S. 479** — *Ampliamento delle destinazioni d’uso degli immobili confiscati alla criminalità organizzata* (18 gennaio 2023): **in esame in Commissione**. [Scheda del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/52142.htm)\n\nStato dei dati aggiornato fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 26,
+  "dati": 13,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "conta_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto",
+  "atto"
+ ],
+ "errori": [],
+ "tempo_s": 17.6,
+ "riferimento": {
+  "risposta": "Al Senato il Consiglio regionale della Toscana ha presentato 8 disegni di legge nella XIX, nessuno approvato. In esame in commissione: S. 477 (tribunali e uffici del PM, d.lgs. 155/2012; esaminato in 2ª Commissione dal 12/4 al 3/8/2023), S. 479 (immobili confiscati alla criminalità organizzata; 2ª Commissione il 10 e il 24/3/2026) e S. 1064 (educazione all'affettività e alla sessualità; 7ª Commissione, ultima seduta il 21/7/2026). Assegnati e non ancora esaminati: S. 476 (selvicoltura), S. 478 (agevolazione contributiva nelle aree interne), S. 1527 (affrancazione dei canoni livellari), S. 1643 (distretto estrattivo apuo-versiliese) e S. 1801 (riconoscimento dello Stato di Palestina, presentato il 13/2/2026).",
+  "stato": "calcolata",
+  "limiti": "Atti del Senato con act.initiative = «Regione Toscana». Lo stato è act.status (testo del Senato) senza data; le sedute di esame vengono dagli argomenti delle commissioni legati all'atto."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 17.6
+ },
+ "causa_probabile": "strumenti",
+ "note": "Gli 8 ddl della Regione Toscana con lo stato giusto e il link alla scheda del Senato.",
+ "prima": {
+  "risposta_sistema": "Nei dati del Senato per la XIX legislatura non risultano disegni di legge di iniziativa del **Consiglio regionale della Toscana**.\n\nL’unico risultato collegato alla ricerca testuale del nome del Consiglio è l’A.S. 1452, ma la sua iniziativa risulta dei senatori Lucio Malan e altri, non del Consiglio regionale toscano: è quindi da escludere. L’A.S. 1452 è comunque divenuto legge n. 122 dell’8 agosto 2025. La relativa scheda ufficiale è disponibile sul [sito del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54448.htm).\n\nDati aggiornati fino al 3 novembre 2026.",
+  "strumenti": [
+   "cerca_atti",
+   "cerca_atti",
+   "cerca_per_significato",
+   "cerca_atti",
+   "cerca_atti",
+   "cerca_per_significato",
+   "atto",
+   "cerca_atti",
+   "cerca_atti",
+   "cerca_atti",
+   "cerca_atti"
+  ],
+  "tempo_s": 21.8,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": 1,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 21.8
+  },
+  "note": "Sbagliato: «non risultano» ddl del Consiglio regionale della Toscana (riferimento: 8, S. 476…1801). La ricerca degli atti non usa act.initiative."
+ }
+}

@@ -1,0 +1,144 @@
+{
+ "id": "TER-033",
+ "trappola": false,
+ "domanda": "Su quali temi il Ministero del Lavoro riceve più interrogazioni: sicurezza sul lavoro, pensioni o ammortizzatori sociali?",
+ "categoria": "temi",
+ "tipo_risposta": "classifica",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": null,
+ "endpoint": "agente",
+ "inizio": 1793752802.9895492,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "interrogazioni rivolte al Ministero del lavoro e delle politiche sociali sulla sicurezza sul lavoro, infortuni e morti sul lavoro",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"interrogazioni rivolte al Ministero del lavoro e delle politiche sociali sulla sicurezza sul lavoro, infortuni e morti sul lavoro\", \"fonti\": [\"atti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-02795\", \"atto\": \"it:camera:19:aic:4-02795\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/02795 presentata da GHIRRA FRANCESCA (ALLEANZA VERDI E SINISTRA) in data 13/05/2024\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-02795 presentato da GHIRRA Francesca testo di Lunedì 13 maggio 2024, seduta n. 291 GHIRRA .— Al Ministro del lavoro e delle politiche sociali, al Ministro per la pubblica amministrazione . — Per sapere – premesso che: il tema della sicurezza sui luoghi di lavoro è di fondamentale importanza, specie alla luce dell'impressionante numero di incidenti, molti dei quali mortali, che segnano le cronache del nostro Paese: nel solo anno 2023 sono state oltre mille le persone che hanno perso la vita sul lavoro e nei primi tre mesi di quest'anno si contano addirittura 191 vittime; sul punto è solo di pochi giorni fa, in occasione del Primo maggio, l'ultim\", \"ramo\": \"camera\", \"data\": \"2024-05-13\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/02795\", \"similarita\": 0.877}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:3-02150\", \"atto\": \"it:senato:19:aic:3-02150\", \"titolo\": \"INTERROGAZIONE A RISPOSTA ORALE 3/02150 presentata da PAITA RAFFAELLA (ITALIA VIVA - IL CENTRO - RENEW EUROPE) in data 17/09/2025\", \"testo\": \"Atto Senato Interrogazione a risposta orale 3-02150 presentata da RAFFAELLA PAITA mercoledì 17 settembre 2025, seduta n.342 PAITA, FURLAN, FREGOLENT, BORGHI Enrico, MUSOLINO, RENZI, SBROLLINI, SCALFAROTTO - Al Ministro del lavoro e delle politiche sociali - Premesso che: secondo gli ultimi dati dell'INAIL, sono state 432, nei primi sette mesi del 2025, le denunce di infortunio mortale presentate all'INAIL, un dato in linea con le vittime del 2024 (meno 3), ma peggiorativo rispetto agli anni scorsi (più 4 vittime rispetto al 2023 e più 21 vittime rispetto al 2022), mentre calano nettamente rispetto ai picchi del 2020 (601) e del 2021 (543), segnati, tuttavia, dalla pandemia: di fatto, rispett\", \"ramo\": \"senato\", \"data\": \"2025-09-17\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=3/02150\", \"similarita\": 0.873}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-04400\", \"atto\": \"it:camera:19:aic:4-04400\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/04400 presentata da RICCIARDI RICCARDO (MOVIMENTO 5 STELLE) in data 20/02/2025\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-04400 presentato da RICCIARDI Riccardo testo di Giovedì 20 febbraio 2025, seduta n. 432 RICCARDO RICCIARDI , QUARTINI , BARZOTTI , AIELLO , CAROTENUTO e TUCCI "
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "interrogazioni rivolte al Ministero del lavoro e delle politiche sociali sulle pensioni, previdenza e trattamento pensionistico",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"interrogazioni rivolte al Ministero del lavoro e delle politiche sociali sulle pensioni, previdenza e trattamento pensionistico\", \"fonti\": [\"atti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:3-00777\", \"atto\": \"it:camera:19:aic:3-00777\", \"titolo\": \"INTERROGAZIONE A RISPOSTA IMMEDIATA IN ASSEMBLEA 3/00777 presentata da ORLANDO ANDREA (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 07/11/2023\", \"testo\": \"Atto Camera Interrogazione a risposta immediata in Assemblea 3-00777 presentato da ORLANDO Andrea testo presentato Martedì 7 novembre 2023 modificato Mercoledì 8 novembre 2023, seduta n. 191 ORLANDO , SCOTTO , GUERRA , FOSSI , GRIBAUDO , LAUS , SARRACINO , BRAGA , BONAFÈ , CASU , CIANI , DE LUCA , DE MARIA , FERRARI , FORNARO , GHIO , MORASSUT , TONI RICCIARDI e ROGGIANI . — Al Ministro del lavoro e delle politiche sociali . — Per sapere – premesso che: anche quest'anno, come nella legge di bilancio per il 2023, nonostante le reiterate dichiarazioni di esponenti di Governo di superare la «legge Fornero», le misure in materia previdenziale contenute nel secondo disegno di legge di bilancio de\", \"ramo\": \"camera\", \"data\": \"2023-11-07\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=3/00777\", \"similarita\": 0.843}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-04557\", \"atto\": \"it:camera:19:aic:4-04557\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/04557 presentata da BERGAMINI DEBORAH (FORZA ITALIA - BERLUSCONI PRESIDENTE - PPE) in data 10/03/2025\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-04557 presentato da BERGAMINI Deborah testo di Lunedì 10 marzo 2025, seduta n. 443 DEBORAH BERGAMINI e TENERINI . — Al Ministro del lavoro e delle politiche sociali . — Per sapere – premesso che: l'articolo n. 14 del decreto-legge n. 4 del 2019 convertito con modificazioni dalla legge n. 27 del 2020 prevede, per gli iscritti all'assicurazione generale obbligatoria e alle forme esclusive e sostitutive della medesima, gestite dall'Inps nonché alla gestione separata di cui all'articolo 2, comma 26, della legge 335 del 1995, la facoltà di conseguire il diritto alla pensione anticipata, la cosiddetta «pensione quota 100», al perfezionamento, nel per\", \"ramo\": \"camera\", \"data\": \"2025-03-10\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/04557\", \"similarita\": 0.842}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:5-01909\", \"atto\": \"it:camera:19:aic:5-01909\", \"titolo\": \"INTERROGAZIONE A RISPOSTA IN COMMISSIONE 5/01909 presentata da SCOTTO ARTURO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 25/01/2024\", \"testo\": \"Atto Camera Interrogazione a risposta in commissione 5-01909 presentato da SCOTTO Arturo testo di Giovedì 25 gennaio 20"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "interrogazioni rivolte al Ministero del lavoro e delle politiche sociali su ammortizzatori sociali, cassa integrazione, NASpI e sostegni al reddito",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"interrogazioni rivolte al Ministero del lavoro e delle politiche sociali su ammortizzatori sociali, cassa integrazione, NASpI e sostegni al reddito\", \"fonti\": [\"atti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:4-04522\", \"atto\": \"it:camera:19:aic:4-04522\", \"titolo\": \"INTERROGAZIONE A RISPOSTA SCRITTA 4/04522 presentata da LACARRA MARCO (PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA) in data 05/03/2025\", \"testo\": \"Atto Camera Interrogazione a risposta scritta 4-04522 presentato da LACARRA Marco testo di Mercoledì 5 marzo 2025, seduta n. 440 LACARRA . — Al Ministro del lavoro e delle politiche sociali . — Per sapere – premesso che: la nuova assicurazione sociale per l'impiego (Naspi) è una indennità mensile di disoccupazione, istituita dal decreto legislativo 4 marzo 2015, n. 22, erogata su domanda dell'interessato e spettante ai lavoratori con rapporto di lavoro subordinato che hanno perduto involontariamente l'occupazione; l'articolo 11 del citato decreto legislativo n. 22 del 2015 dispone, al comma 1, lettera d) , che il «raggiungimento dei requisiti per il pensionamento di vecchiaia o anticipato» c\", \"ramo\": \"camera\", \"data\": \"2025-03-05\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=4/04522\", \"similarita\": 0.853}, {\"fonte\": \"atto\", \"uri\": \"it:camera:19:aic:5-03675\", \"atto\": \"it:camera:19:aic:5-03675\", \"titolo\": \"INTERROGAZIONE A RISPOSTA IN COMMISSIONE 5/03675 presentata da RICCIARDI MARIANNA (MOVIMENTO 5 STELLE) in data 05/03/2025\", \"testo\": \"Atto Camera Interrogazione a risposta in commissione 5-03675 presentato da RICCIARDI Marianna testo di Mercoledì 5 marzo 2025, seduta n. 440 MARIANNA RICCIARDI , BARZOTTI , AIELLO , CAROTENUTO e TUCCI . — Al Ministro del lavoro e delle politiche sociali . — Per sapere – premesso che: la Naspi è una prestazione temporanea, legata alla perdita del lavoro e ha una durata massima di 24 mesi.\", \"ramo\": \"camera\", \"data\": \"2025-03-05\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=camera&stile=6&idDocumento=5/03675\", \"similarita\": 0.847}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:3-01433\", \"atto\": \"it:senato:19:aic:3-01433\", \"titolo\": \"INTERROGAZIONE A RISPOSTA ORALE 3/01433 presentata da BIANCOFIORE MICHAELA (CIVICI D'ITALIA - UDC - NOI MODERATI (NOI CON L'ITALIA, CORAGGIO ITALIA, ITALIA AL CENTRO) - MAIE - CENTRO POPOLARE) in data 30/10/2024\", \"testo\": \"Atto Senato Interrogazione a risposta orale 3-01433 presentata da MICHAELA BIANCOFIORE giovedì 30 ottobre 2024, seduta n.236 BIANCOFIORE, SALVITTI - Al Ministro del lavoro e delle politiche sociali . - Premesso che: la nuova assicurazione sociale per l'impiego (di seguito \\\"NASpI\\\") è una indennità mensile di disoccupazione, istituita dal decreto legislativo 4 marzo 2015, n. 22, c"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"sicurezza sul lavoro\"",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 9, \"items\": [{\"uri\": \"it:camera:19:ac:2672\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2672\", \"kind\": \"bill\", \"title\": \"ZARATTI: \\\"Istituzione della Procura nazionale della Repubblica per i reati commessi con violazione delle norme in materia di tutela della salute e della sicurezza sul lavoro nonché modifica all’articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato per le persone offese da tali reati\\\" (2672)\", \"date\": \"2025-10-22\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2672\"}, {\"uri\": \"it:camera:19:ac:2648\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2648\", \"kind\": \"bill\", \"title\": \"MARINO ed altri: \\\"Norme per la tutela della salute e della sicurezza dei lavoratori operanti in ambienti sospetti di inquinamento o confinati\\\" (2648)\", \"date\": \"2025-10-07\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2648\"}, {\"uri\": \"it:senato:19:ddl:1574\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1574\", \"kind\": \"bill\", \"title\": \"Misure di sostegno al reddito e per la sicurezza dei lavoratori che svolgono attività di consegna di beni per conto terzi in ambito urbano\", \"date\": \"2025-07-08\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54714.htm\"}, {\"uri\": \"it:senato:19:ddl:1347\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1347\", \"kind\": \"bill\", \"title\": \"Norme in materia di verifiche periodiche di macchine e impianti elettrici nelle strutture sanitarie, nei luoghi di interesse ambientale e in quelli con rischio di esplosione, nonché disposizioni in materia di sicurezza sul lavoro\", \"date\": \"2025-01-15\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54213.htm\"}, {\"uri\": \"it:senato:19:ddl:1101\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1101\", \"kind\": \"bill\", \"title\": \"Nuove norme in materia di diffusione della cultura della salute e sicurezza sul lavoro nelle scuole e nelle aziende, sostegno alle famiglie delle vittime di gravi infortuni sul lavoro e adeguamento dei limiti di età per l'assegno di incollocabilità erogato dall'INAIL, nonché a tutela delle vittime dell'amianto e dei tumori professionali\", \"date\": \"2024-04-11\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/53657.htm\"}, {\"uri\": \"it:camera:19:ac:914\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"914\", \"kind\": \"bill\", \"title\": \"S. 330. - Senatori CRAXI ed altri: \\\"Ratifica ed esecuzione delle seguenti Convenzioni: <em>a)</em> Convenzione sulla salute e la sicurezza dei lavoratori, n. 155, fatta a Ginevra il 22 giugno 1981, e relativo Protocollo, fatto a Ginevra il 20 giugno 2002; <em>b)</em> Convenzione sul quadro promozion"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "pensioni",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 30, \"items\": [{\"uri\": \"it:senato:19:ddl:2008\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2008\", \"kind\": \"bill\", \"title\": \"Esenzione delle addizionali comunali e regionali per i pensionati delle pubbliche amministrazioni iscritti all'AIRE\", \"date\": \"2026-08-04\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55597.htm\"}, {\"uri\": \"it:senato:19:ddl:1926\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1926\", \"kind\": \"bill\", \"title\": \"Riconoscimento del carattere usurante del lavoro degli internavigatori ai fini del pensionamento anticipato. Modifica all'articolo 1, comma 1, lettera d), del decreto legislativo 21 aprile 2011, n. 67 \\\"Accesso anticipato al pensionamento per gli addetti alle lavorazioni particolarmente faticose e pesanti, a norma dell'articolo 1 della legge 4 novembre 2010, n. 183\\\".\", \"date\": \"2026-06-08\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55429.htm\"}, {\"uri\": \"it:camera:19:ac:2953\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2953\", \"kind\": \"bill\", \"title\": \"CONSIGLIO REGIONALE DEL VENETO: \\\"Riconoscimento del carattere usurante del lavoro degli internavigatori ai fini del pensionamento anticipato. Modifica all’articolo 1, comma 1, lettera <em>d)</em>, del decreto legislativo 21 aprile 2011, n. 67\\\" (2953)\", \"date\": \"2026-06-05\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2953\"}, {\"uri\": \"it:camera:19:ac:2918\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2918\", \"kind\": \"bill\", \"title\": \"CECCHETTI ed altri: \\\"Modifiche all’articolo 1 del decreto legislativo 21 aprile 2011, n. 67, concernenti l’accesso anticipato al pensionamento per il personale sanitario e sociosanitario operante presso i servizi psichiatrici e di salute mentale\\\" (2918)\", \"date\": \"2026-05-05\", \"status\": \"Assegnato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2918\"}, {\"uri\": \"it:senato:19:ddl:1830\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1830\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di incentivi fiscali per i titolari di redditi da pensione di fonte estera e per i lavoratori impatriati che trasferiscono la residenza fiscale nei piccoli comuni del Mezzogiorno\", \"date\": \"2026-03-11\", \"status\": \"esame in comm.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55234.htm\"}, {\"uri\": \"it:camera:19:ac:2815\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2815\", \"kind\": \"bill\", \"title\": \"AMICH ed altri: \\\"Modifica all’articolo 1 del decreto legislativo 21 aprile 2011, n. 67, e altre disposizioni concernenti l’accesso anticipato al pensionamento per il personale ferroviario di macchina, il personale viaggiante e il personale addetto alla manovra nei servizi ferroviari\\\" (2815)\", \"date\": \"2026-02-24\", \"status\": \"Assegnato\", \"card"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"ammortizzatori sociali\"",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "NASpI",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:senato:19:ddl:2000\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2000\", \"kind\": \"bill\", \"title\": \"Istituzione dell'infrastruttura di interoperabilità telematica per il rafforzamento del sistema di condizionalità e la tutela della Nuova Assicurazione Sociale per l'Impiego (NASpI)\", \"date\": \"2026-08-03\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55582.htm\"}, {\"uri\": \"it:senato:19:ddl:115\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"115\", \"kind\": \"bill\", \"title\": \"Modifiche all'articolo 3 del decreto legislativo 4 marzo 2015, n. 22, in materia di accesso alla nuova prestazione di assicurazione sociale per l'impiego (NASpI)\", \"date\": \"2022-10-13\", \"status\": \"assegnato (no esame)\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/50975.htm\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"cassa integrazione\"",
+    "chamber": null,
+    "kind": null,
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 15.1,
+ "risposta_sistema": "Il tema che emerge come più ricorrente è la **sicurezza sul lavoro**: infortuni, morti sul lavoro, controlli e prevenzione sono oggetto di numerose interrogazioni rivolte al Ministro del lavoro, in entrambi i rami.\n\nSeguono le **pensioni**. Gli **ammortizzatori sociali** — cassa integrazione, NASpI e sostegni al reddito — risultano presenti, ma meno frequentemente tra gli atti individuati.\n\nÈ un confronto tematico sugli atti della XIX legislatura fino al 3 novembre 2026, non un conteggio ufficiale per materia: una stessa interrogazione può riguardare più temi o più ministri.",
+ "eventi": {
+  "status": 1,
+  "tool": 16,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

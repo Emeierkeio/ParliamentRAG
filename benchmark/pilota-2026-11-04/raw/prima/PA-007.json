@@ -1,0 +1,180 @@
+{
+ "id": "PA-007",
+ "trappola": false,
+ "domanda": "Quali proposte di legge ha presentato il Consiglio regionale della Toscana al Senato nella XIX, e a che punto sono?",
+ "categoria": "iter",
+ "tipo_risposta": "elenco",
+ "ramo": "senato",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Al Senato l'iniziativa è testo libero: «Regione Toscana» ha 8 atti. Alla Camera l'iniziativa è solo «Regioni» (77) e la Regione va letta dal titolo.",
+ "endpoint": "agente",
+ "inizio": 1793752899.407367,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Consiglio regionale della Toscana\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "Toscana",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1479\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1479\", \"kind\": \"bill\", \"title\": \"Conversione in legge, con modificazioni, del decreto-legge 7 maggio 2025, n. 65, recante ulteriori disposizioni urgenti per affrontare gli straordinari eventi alluvionali verificatisi nei territori di Emilia-Romagna, Toscana e Marche e gli effetti del fenomeno bradisismico nell'area dei Campi Flegrei, nonché disposizioni di carattere finanziario in materia di protezione civile\", \"date\": \"2025-05-07\", \"status\": \"approvato\", \"law_number\": \"101\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54507.htm\"}]}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "proposta di legge presentata dal Consiglio regionale della Toscana",
+    "fonti": [
+     "atti"
+    ],
+    "ramo": "senato",
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"proposta di legge presentata dal Consiglio regionale della Toscana\", \"fonti\": [\"atti\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:1-00094\", \"atto\": \"it:senato:19:aic:1-00094\", \"titolo\": \"MOZIONE 1/00094 presentata da MAIORINO ALESSANDRA (MOVIMENTO 5 STELLE) in data 23/04/2024\", \"testo\": \"L'atto impegna la Giunta della Regione Toscana a intervenire in Conferenza Stato-Regioni per favorire l'istituzione di una normativa nazionale unica di riferimento, finalizzata alla realizzazione di \\\"residenze fittizie\\\" in tutto il territorio italiano, analogamente alle iniziative già intraprese nei Comuni di Roma, di Torino e in altre amministrazioni comunali che hanno deliberato ai fini della realizzazione di un sistema di protezione e di tutela per le donne vittime di violenza e per i loro figli, da realizzare attraverso la creazione di una residenza anagrafica sicura, alternativa a quella effettiva, presso cui far recapitare la corrispondenza di natura burocratica e amministrativa, mante\", \"ramo\": \"senato\", \"data\": \"2024-04-23\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=1/00094\", \"similarita\": 0.815}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:1-00101\", \"atto\": \"it:senato:19:aic:1-00101\", \"titolo\": \"MOZIONE 1/00101 presentata da MAIORINO ALESSANDRA (MOVIMENTO 5 STELLE) in data 06/08/2024\", \"testo\": \"Atto Senato Mozione 1-00101 presentata da ALESSANDRA MAIORINO martedì 6 agosto 2024, seduta n.216 MAIORINO, DI GIROLAMO, NATURALE, SIRONI, FLORIDIA Barbara, PIRRO - Il Senato, premesso che: con comunicazione del 30 luglio 2024, la Provincia autonoma di Trento ha reso noto che nella mattina del medesimo giorno era stata data esecuzione al decreto firmato dal presidente della Provincia autonoma di Trento Maurizio Fugatti.\", \"ramo\": \"senato\", \"data\": \"2024-08-06\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=1/00101\", \"similarita\": 0.808}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:9-01054-002\", \"atto\": \"it:senato:19:aic:9-01054-002\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/01054/002 presentata da TOSATO PAOLO (LEGA SALVINI PREMIER - PARTITO SARDO D'AZIONE) in data 30/10/2024\", \"testo\": \"Atto Senato Ordine del Giorno 9/1054/2 presentato da PAOLO TOSATO mercoledì 30 ottobre 2024, seduta n. 236 Il Senato, in sede di esame del disegno di legge recante \\\"Disposizioni per il riconoscimento e la promozione delle zone montane\\\" ; premesso che l'articolo 2 reca norme per la definizione dei criteri di classificazione dei comuni montani, alla luce della necessità di provvedere quanto prima all'attuazione dei criteri che permettano di superare l'attuale stato di frammentazione dei fondi in determinate zone del Paese, impegna il Governo a valutare l'opportunità di definire in maniera mag"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Consiglio regionale\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:senato:19:ddl:1452\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1452\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di composizione di giunte e consigli regionali e di incompatibilità\", \"date\": \"2025-04-08\", \"status\": \"approvato\", \"law_number\": \"122\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54448.htm\"}]}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Regione Toscana\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "disegno di legge di iniziativa del consiglio regionale Toscana",
+    "fonti": [
+     "documenti",
+     "atti"
+    ],
+    "ramo": "senato",
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"disegno di legge di iniziativa del consiglio regionale Toscana\", \"fonti\": [\"documenti\", \"atti\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:1-00094\", \"atto\": \"it:senato:19:aic:1-00094\", \"titolo\": \"MOZIONE 1/00094 presentata da MAIORINO ALESSANDRA (MOVIMENTO 5 STELLE) in data 23/04/2024\", \"testo\": \"L'atto impegna la Giunta della Regione Toscana a intervenire in Conferenza Stato-Regioni per favorire l'istituzione di una normativa nazionale unica di riferimento, finalizzata alla realizzazione di \\\"residenze fittizie\\\" in tutto il territorio italiano, analogamente alle iniziative già intraprese nei Comuni di Roma, di Torino e in altre amministrazioni comunali che hanno deliberato ai fini della realizzazione di un sistema di protezione e di tutela per le donne vittime di violenza e per i loro figli, da realizzare attraverso la creazione di una residenza anagrafica sicura, alternativa a quella effettiva, presso cui far recapitare la corrispondenza di natura burocratica e amministrativa, mante\", \"ramo\": \"senato\", \"data\": \"2024-04-23\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=1/00094\", \"similarita\": 0.822}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:9-00615-002\", \"atto\": \"it:senato:19:aic:9-00615-002\", \"titolo\": \"ODG IN ASSEMBLEA SU P.D.L. 9/00615/002 presentata da LICHERI SABRINA (MOVIMENTO 5 STELLE) in data 18/01/2024\", \"testo\": \"Atto Senato Ordine del Giorno 9/615/2 presentato da SABRINA LICHERI giovedì 18 gennaio 2024, seduta n. 147 Il Senato, in sede di esame del disegno di legge recante \\\"Disposizioni per l'attuazione dell'autonomia differenziata delle Regioni a statuto ordinario ai sensi dell'articolo 116, terzo comma, della Costituzione\\\" (A.S. 615), premesso che: l'articolo 2, comma 4 del disegno di legge in oggetto prevede che lo schema di intesa preliminare venga trasmesso alle Camere per l'esame da parte dei competenti organi parlamentari, che si esprimono con atti di indirizzo, secondo i rispettivi regolamenti; il ruolo essenziale del parlamento nel processo di trasferimento delle funzioni è storicamente dim\", \"ramo\": \"senato\", \"data\": \"2024-01-18\", \"esito\": null, \"url\": \"http://documenti.camera.it/apps/commonServices/getDocumento.ashx?sezione=lavori&tipoDoc=sicross&idlegislatura=19&ramo=senato&stile=6&idDocumento=9/00615/002\", \"similarita\": 0.811}, {\"fonte\": \"atto\", \"uri\": \"it:senato:19:aic:1-00118\", \"atto\": \"it:senato:19:aic:1-00118\", \"titolo\": \"MOZIONE 1/00118 presentata da DE CRISTOFARO PEPPE (MISTO-ALLEANZA VERDI E SINISTRA) in data 21/01/2025\", \"testo\": \"Atto Senato Mozione 1-00118 presentata da PEPPE DE CRISTOFARO martedì 21 gennaio 2025, seduta n.264 DE CRISTOFARO, CUCCHI, FLORIDIA Aurora, MAGNI, CAMUSSO - - Il Senato, premesso che: con il dichiarato intento di dare attuazione al disposto del terzo comma dell'articolo 116 della Costituzione, come riformulato dalla "
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:senato:19:ddl:1452"
+   },
+   "result": "{\"uri\": \"it:senato:19:ddl:1452\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"1452\", \"kind\": \"bill\", \"title\": \"Disposizioni in materia di composizione di giunte e consigli regionali e di incompatibilità\", \"date\": \"2025-04-08\", \"status\": \"approvato\", \"law_number\": \"122\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/54448.htm\", \"kind_raw\": \"ordinaria\", \"initiative\": \"Sen. Malan Lucio ed altri\", \"law_date\": \"2025-08-08\", \"source_uri\": \"http://dati.senato.it/ddl/59059\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:senato:1407\", \"name\": \"Lucio Malan\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001407.jpg\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:senato:32706\", \"name\": \"Massimiliano Romeo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032706.jpg\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:senato:1103\", \"name\": \"Maurizio Gasparri\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001103.jpg\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:senato:22871\", \"name\": \"Michaela Biancofiore\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:92\", \"name\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro)-MAIE-Centro Popolare\", \"short_name\": \"Cd'I-UDC-NM (NcI, CI, IaC)-MAIE-CP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00022871.jpg\"}, \"first\": false}], \"steps\": [], \"versions\": [{\"code\": \"senato.19.01452321\", \"kind\": \"presented\", \"articles\": 1, \"length\": 6298}, {\"code\": \"senato.19.01462385\", \"kind\": \"committee\", \"articles\": 0, \"length\": 4880}, {\"code\": \"senato.19.01462456\", \"kind\": \"message\", \"articles\": 2, \"length\": 2031}], \"joined\": [], \"votes\": [{\"uri\": \"it:senato:19:sed0324:v004\", \"sitting\": \"it:senato:19:sed0324\", \"chamber\": \"senato\", \"number\": 4, \"date\": \"2025-07-03\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 71, \"against\": 16, \"abstain\": 30, \"approved\": true, \"secret\": false}], \"amendments\": {\"total\": 31, \"by_outcome\": {\"Respinto\": 1, \"Ritirato\": 6, \"Approvato\": 4, \"Non posto in votazione (*)\": 1, \"non indicato\": 19}}}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Consiglio regionale della Regione Toscana\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Consiglio della Regione Toscana\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"Consiglio regionale toscano\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": "\"iniziativa regionale\"",
+    "chamber": "senato",
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_per_significato",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_per_significato",
+  "atto",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti",
+  "cerca_atti"
+ ],
+ "tempo_s": 21.8,
+ "risposta_sistema": "Nei dati del Senato per la XIX legislatura non risultano disegni di legge di iniziativa del **Consiglio regionale della Toscana**.\n\nL’unico risultato collegato alla ricerca testuale del nome del Consiglio è l’A.S. 1452, ma la sua iniziativa risulta dei senatori Lucio Malan e altri, non del Consiglio regionale toscano: è quindi da escludere. L’A.S. 1452 è comunque divenuto legge n. 122 dell’8 agosto 2025. La relativa scheda ufficiale è disponibile sul [sito del Senato](https://www.senato.it/leg/19/BGT/Schede/Ddliter/54448.htm).\n\nDati aggiornati fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 22,
+  "dati": 11,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

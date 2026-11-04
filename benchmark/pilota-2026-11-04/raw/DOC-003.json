@@ -1,0 +1,69 @@
+{
+ "id": "DOC-003",
+ "trappola": false,
+ "domanda": "un esempio di legge approvata da tutti da far vedere in classe",
+ "categoria": "voti",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Es. femminicidio alla Camera (237 sì, 0 no). Dire che è unanimità dei presenti.",
+ "endpoint": "agente",
+ "inizio": 1793753019.9415622,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_votazioni",
+   "args": {
+    "chamber": null,
+    "act": null,
+    "kind": null,
+    "final": true,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 671, \"items\": [{\"uri\": \"it:camera:19:sed0735:v017\", \"sitting\": \"it:camera:19:sed0735\", \"chamber\": \"camera\", \"number\": 17, \"date\": \"2026-10-28\", \"title\": \"Votazione finale \", \"kind\": \"final\", \"favor\": 143, \"against\": 113, \"abstain\": 3, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=735_17&tipo=dettaglio\"}, {\"uri\": \"it:senato:19:sed0469:v006\", \"sitting\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"number\": 6, \"date\": \"2026-10-28\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 140, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false}, {\"uri\": \"it:senato:19:sed0469:v003\", \"sitting\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"number\": 3, \"date\": \"2026-10-28\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 75, \"against\": 52, \"abstain\": 0, \"approved\": true, \"secret\": false}, {\"uri\": \"it:senato:19:sed0468:v004\", \"sitting\": \"it:senato:19:sed0468\", \"chamber\": \"senato\", \"number\": 4, \"date\": \"2026-10-27\", \"title\": \"Votazione finale\", \"kind\": \"final\", \"favor\": 80, \"against\": 51, \"abstain\": 0, \"approved\": true, \"secret\": false}, {\"uri\": \"it:camera:19:sed0731:v004\", \"sitting\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"number\": 4, \"date\": \"2026-10-22\", \"title\": \"Votazione finale PDL n. 2904\", \"kind\": \"final\", \"favor\": 220, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=731_4&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v097\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 97, \"date\": \"2026-10-21\", \"title\": \"Votazione finale PDL n. 0362\", \"kind\": \"final\", \"favor\": 137, \"against\": 0, \"abstain\": 94, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_97&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v055\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 55, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 3076\", \"kind\": \"final\", \"favor\": 131, \"against\": 0, \"abstain\": 95, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_55&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0730:v005\", \"sitting\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"number\": 5, \"date\": \"2026-10-21\", \"title\": \"Votazione finale DDL n. 2958\", \"kind\": \"final\", \"favor\": 239, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=730_5&tipo=dettaglio\"}, {\"uri\": \"it:camera:19:sed0729:v042\", \"sitting\": \"it:camera:19:sed0729\", \"chamber\": \"camera\", \"number\": 42, \"date\": \"2026-10-20\", \"title\": \"Votazione finale DDL n. 3131\", \"kind\": \"f"
+  },
+  {
+   "name": "votazione",
+   "args": {
+    "uri": "it:camera:19:sed0731:v004",
+    "with_ballots": false
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0731:v004\", \"sitting\": \"it:camera:19:sed0731\", \"chamber\": \"camera\", \"number\": 4, \"date\": \"2026-10-22\", \"title\": \"Votazione finale PDL n. 2904\", \"kind\": \"final\", \"favor\": 220, \"against\": 0, \"abstain\": 0, \"approved\": true, \"secret\": false, \"source_url\": \"http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=731_4&tipo=dettaglio\", \"description\": \"Modifica all&amp;#39;articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilit&amp;agrave; o decesso (PDL 2904)\", \"present\": 220, \"voting\": 220, \"majority\": 111, \"final\": true, \"confidence\": false, \"ballots_match\": true, \"acts\": [{\"ref\": \"ac19_2904\", \"uri\": \"it:camera:19:ac:2904\", \"title\": \"GRIBAUDO ed altri: \\\"Modifica all’articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso\\\" (2904)\"}], \"groups\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"favor\": 65, \"against\": 0, \"abstain\": 0, \"absent\": 18, \"mission\": 33, \"other\": 1, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"favor\": 45, \"against\": 0, \"abstain\": 0, \"absent\": 18, \"mission\": 5, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"favor\": 30, \"against\": 0, \"abstain\": 0, \"absent\": 11, \"mission\": 13, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"favor\": 20, \"against\": 0, \"abstain\": 0, \"absent\": 18, \"mission\": 14, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"favor\": 34, \"against\": 0, \"abstain\": 0, \"absent\": 8, \"mission\": 6, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"favor\": 5, \"against\": 0, \"abstain\": 0, \"absent\": 3, \"mission\": 2, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"favor\": 3, \"against\": 0, \"abstain\": 0, \"absent\": 4, \"mission\": 3, \"other\": 0, \"majority\": \"favor\"}, {\"group\": {\"uri\": "
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:act:2904"
+   },
+   "result": "null"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:2904"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:2904\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2904\", \"kind\": \"bill\", \"title\": \"GRIBAUDO ed altri: \\\"Modifica all’articolo 76 del testo unico di cui al decreto del Presidente della Repubblica 30 maggio 2002, n. 115, in materia di patrocinio a spese dello Stato in favore delle persone offese da reati commessi con violazione delle norme per la prevenzione degli infortuni sul lavoro, da cui consegua totale inabilità o decesso\\\" (2904)\", \"date\": \"2026-04-27\", \"status\": \"Approvato. Trasmesso al Senato\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2904\", \"kind_raw\": \"proposta_legge_ordinaria\", \"initiative\": \"Parlamentare\", \"status_date\": \"2026-10-22\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_2904\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:306008\", \"name\": \"Chiara Gribaudo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306008&legislatura=19\"}, \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308929\", \"name\": \"Aboubakar Soumahoro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308929&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308832\", \"name\": \"Alessia Ambrosi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308832&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:307508\", \"name\": \"Andrea Giaccone\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307508&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308896\", \"name\": \"Andrea Quartini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308896&legislatura=19\"}, \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308875\", \"name\": \"Antonio D'Alessio\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308875&legislatura=19\"}, \"first\": false}, "
+  }
+ ],
+ "strumenti": [
+  "elenco_votazioni",
+  "votazione",
+  "atto",
+  "atto"
+ ],
+ "tempo_s": 11.7,
+ "risposta_sistema": "Un buon esempio è la proposta di legge **Camera n. 2904**, sul patrocinio a spese dello Stato per le persone offese da gravi infortuni sul lavoro che abbiano causato inabilità totale o morte.\n\nLa Camera l’ha approvata il **22 ottobre 2026** con un voto finale di **220 favorevoli, 0 contrari e 0 astenuti**: quindi tutti i deputati che hanno partecipato al voto hanno votato a favore. I voti favorevoli sono arrivati da tutti i gruppi presenti, sia di maggioranza sia di opposizione.\n\nÈ utile per la classe perché mostra:\n- una proposta presentata da deputati di più forze politiche;\n- un tema concreto: l’assistenza legale alle vittime di infortuni sul lavoro;\n- che “approvata da tutti” non vuol dire che abbiano votato tutti i 400 deputati: quel giorno hanno votato in 220; gli altri erano assenti, in missione o non hanno partecipato.\n\nAttenzione: nei dati risulta **approvata dalla Camera e trasmessa al Senato**, quindi non è ancora una legge definitivamente entrata in vigore. Scheda ufficiale: [PDL 2904](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2904). Risultato del voto: [votazione finale](http://documenti.camera.it/apps/votazioni/votazionitutte/schedavotazione.asp?Legislatura=XIX&RifVotazione=731_4&tipo=dettaglio).",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

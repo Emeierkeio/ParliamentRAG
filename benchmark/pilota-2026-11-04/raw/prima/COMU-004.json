@@ -1,0 +1,201 @@
+{
+ "id": "COMU-004",
+ "trappola": false,
+ "domanda": "Dopo l'informativa di Piantedosi del 3 febbraio 2026 la maggioranza si è alzata in piedi ad applaudire? Mi serve la riga del resoconto.",
+ "categoria": "reazioni",
+ "tipo_risposta": "fatto",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Il resoconto scrive «che si levano in piedi»: va riportato il testo esatto della didascalia.",
+ "endpoint": "agente",
+ "inizio": 1793753131.0962849,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "camera",
+    "body": "aula",
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}]}"
+  },
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "aula",
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Piantedosi",
+    "chamber": null,
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00050.sub00010.int00010\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:305704\", \"name\": \"Anna Ascani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305704&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"snippet\": \"facoltà di parlare il Ministro dell'Interno, Matteo [[Piantedosi]]\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:307464\", \"name\": \"Augusta Montaruli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307464&legislatura=19\"}, \"speaker_label\": \"AUGUSTA MONTARULI\", \"snippet\": \"Grazie, Presidente. Grazie, signor Ministro [[Piantedosi]]. Un ringraziamento anche al Ministro della Difesa, Crosetto, al Presidente del Consiglio, Giorgia Meloni, e a tutto il Governo per l'immenso lavoro svolto nel seguire il dossier Askatasuna fin dall'inizio di questa\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00140\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:306176\", \"name\": \"Matteo Mauri\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306176&legislatura=19\"}, \"speaker_label\": \"MATTEO MAURI\", \"snippet\": \"Grazie, signora Presidente. Ministro [[Piantedosi]], io sono venuto qua, oggi, senza preconcetti, con idee chiare ma senza preconcetti, perché ho sperato fino all'ultimo momento che avrei sentito dalla sua bocca parole di responsabilità e che lei qua sarebbe venuto\"}, {\"uri\": \"it:camera:19:s"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:camera:19:sed0607",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:camera:19:sed0607:tit00010\", \"order\": 1, \"title\": \"Missioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0607:tit00010.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Comunico che, ai sensi dell'articolo 46, comma 2, del Regolamento, i deputati in missione a decorrere dalla seduta odierna sono complessivamente 84, come risulta dall'elenco consultabile presso la Presidenza e che sarà pubblicato nell'allegato A al resoconto stenografico della seduta in corso .\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Ulteriori comunicazioni all'Assemblea saranno pubblicate nell'allegato A al resoconto della seduta odierna\", \"offset_char\": 296}]}]}, {\"uri\": \"it:camera:19:sed0607:tit00020\", \"order\": 2, \"title\": \"Svolgimento di interrogazioni.\", \"acts\": [], \"speeches\": [{\"uri\": \"it:camera:19:sed0607:tit00020.int00010\", \"order\": 1, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'ordine del giorno reca lo svolgimento di interrogazioni.\", \"reactions\": []}, {\"uri\": \"it:camera:19:sed0607:tit00020.sub00010.int00010\", \"order\": 2, \"person\": {\"uri\": \"it:person:camera:307922\", \"name\": \"Sergio Costa\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307922&legislatura=19\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Passiamo alla prima interrogazione all'ordine del giorno Casu ed altri n. 3-02470 .\\n\\nLa Sottosegretaria di Stato per l'Istruzione e il merito, Paola Frassinetti, ha facoltà di rispondere.\", \"reactions\": [{\"kind\": \"procedure\", \"raw\": \"Vedi l'allegato A\", \"offset_char\": 84}]}, {\"uri\": \"it:camera:19:sed0607:tit00020.sub00010.int00020\", \"order\": 3, \"person\": {\"uri\": \"it:person:camera:301457\", \"name\": \"Paola Frassinetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301457&legislatura=19\"},"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "applausi",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00220\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:307857\", \"name\": \"Nazario Pagano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307857&legislatura=19\"}, \"speaker_label\": \"NAZARIO PAGANO\", \"snippet\": \"Grazie, Presidente. Intanto vorrei ringraziare il Ministro: Ministro Piantedosi, grazie per la sua informativa ; un [[applauso]] da parte dei deputati di Forza Italia per quello che lei sta svolgendo come Ministro dell'Interno. Oggi in Aula lei ha fatto\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00260\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:308824\", \"name\": \"Chiara Appendino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308824&legislatura=19\"}, \"speaker_label\": \"CHIARA APPENDINO\", \"snippet\": \"forse, sorridevano nel vedere quelle immagini, perché la verità è che gli anarchici sono i vostri migliori alleati ([[Applausi]] dei deputati del gruppo MoVimento 5 Stelle - Commenti di deputati del gruppo Fratelli d'Italia - La deputata Marrocco: “Ma che dici\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00300\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:300674\", \"name\": \"Ettore Rosato\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300674&legislatura=19\"}, \"speaker_label\": \"ETTORE ROSATO\", \"snippet\": \"città più insicura. Dobbiamo avere l'idea che i piani sulla sicurezza vanno implementati fino in fondo ([[Applausi]] dei"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "in piedi",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00100.sub00010.int00540\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Seguito della discussione del disegno di legge: Conversione in legge, con modificazioni, del decreto-legge 27 dicembre 2025, n. 196, recante disposizioni urgenti per le consultazioni elettorali e referendarie dell'anno 2026 (A.C. 2751-A) (ore 16,25). (ore 16,25)\", \"person\": {\"uri\": \"it:person:camera:307435\", \"name\": \"Vittoria Baldino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307435&legislatura=19\"}, \"speaker_label\": \"VITTORIA BALDINO\", \"snippet\": \"Sottosegretaria Ferro ha detto, che mi ha molto colpito, è stata la seguente: ai miei tempi noi andavamo a [[piedi]] a votare ogniqualvolta i cittadini erano chiamati a votare.\\n\\nIo vorrei ricordare che l'attuale sistema di voto, cioè quello\"}, {\"uri\": \"it:camera:19:stc:09:indag:c09_tpl_non_di_linea:20260203:0004:tit00020:int00270\", \"sitting\": {\"uri\": \"it:camera:19:stc:09:indag:c09_tpl_non_di_linea:20260203:0004\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3509\", \"body_name\": \"IX Commissione\", \"number\": 4, \"date\": \"2026-02-03\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione di rappresentanti di associazioni di categoria del settore del noleggio con conducente: ANC Trasporto persone, ANCCI NCC, ANITraV, ASINCC, Associazione NCC Italia, Confartigianato, Confcommercio, Federazione MuoverSì, FIA, SNA Casartigiani.\", \"person\": {\"uri\": \"it:person:camera:306379\", \"name\": \"Isabella De Monte\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306379&legislatura=19\"}, \"speaker_label\": \"ISABELLA DE MONTE\", \"kind\": \"verbatim\", \"snippet\": \"trasporto pubblico è pubblico perché deve rispettare la funzionalità del soggetto più debole, quindi nessuno deve rimanere a [[piedi]], nessuno deve rimanere in attesa, nessuno può rimanere senza servizio. Quello che io do per acquisito, cioè quanto detto fino\"}, {\"uri\": \"it:camera:19:stc:85:audiz2:audizione:20260203:0029:tit00020:int00020\", \"sitting\": {\"uri\": \"it:camera:19:stc:85:audiz2:audizione:20260203:0029\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4321\", \"body_name\": \"Commissione parlamentare di inchiesta sul rischio idrogeologico e sismico del territorio italiano, sull'attuazione delle norme di prevenzione e sicurezza e sugli interventi di emergenza e di ricostruzione a seguito degli eventi calamitosi verificatisi dall'anno 2019\", \"number\": 29, \"date\": \"2026-02-03\", \"kind\": \"committee_ve"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "prolungati applausi",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "deputati dei gruppi Fratelli d'Italia Lega",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Fratelli d'Italia",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00120\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:307464\", \"name\": \"Augusta Montaruli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307464&legislatura=19\"}, \"speaker_label\": \"AUGUSTA MONTARULI\", \"snippet\": \"famiglia in una città diversa ancora rispetto a casa. Ecco, guardando quel poliziotto, va la gratitudine immensa di [[Fratelli]] [[d]]'[[Italia]] allo Stato e a tutti gli uomini in divisa\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00260\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:308824\", \"name\": \"Chiara Appendino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308824&legislatura=19\"}, \"speaker_label\": \"CHIARA APPENDINO\", \"snippet\": \"sono i vostri migliori alleati (Applausi dei deputati del gruppo MoVimento 5 Stelle - Commenti di deputati del gruppo [[Fratelli]] [[d]]'[[Italia]] - La deputata Marrocco: “Ma che dici!”), cioè loro creano il caos e voi usate quel caos per fare\"}, {\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00460\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:301531\", \"name\": \"Maria Rosaria Carfagna\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301531&legislatura=19\"}, \"speaker_label\": \"MARIA ROSARIA CARFAGNA\", \"snippet\": \"Bonelli avvicinandosi ai banchi della Presidenza: “Due Ministri che mi ridono in faccia…” – Proteste di deputati del gruppo [[Fratelli]] [[d]]'[[Italia]] – Il deputato Pietrella: “Basta, vai al posto\"}, {\"uri\": \"it:cam"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Lega-Salvini Premier",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00080.int00140\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento.\", \"person\": {\"uri\": \"it:person:camera:307360\", \"name\": \"Rossano Sasso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307360&legislatura=19\"}, \"speaker_label\": \"ROSSANO SASSO\", \"snippet\": \"martello un altro ragazzo che era lì solo per difendere la loro sicurezza (Applausi dei deputati del gruppo [[Lega]]-[[Salvini]] [[Premier]] - Commenti di deputati dei gruppi MoVimento 5 Stelle e Alleanza Verdi e Sinistra). Questo fanno i cattivi maestri\"}, {\"uri\": \"it:camera:19:sed0607:tit00080.int00200\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento.\", \"person\": {\"uri\": \"it:person:camera:307360\", \"name\": \"Rossano Sasso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307360&legislatura=19\"}, \"speaker_label\": \"ROSSANO SASSO\", \"snippet\": \"sensi dell'articolo 21 della Costituzione. Grazie, Presidente (Applausi dei deputati del gruppo [[Lega]]-[[Salvini]] [[Premier]] – Proteste del deputato Amato\"}]"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Vivi applausi",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0607:tit00050.sub00020.int00260\", \"sitting\": {\"uri\": \"it:camera:19:sed0607\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 607, \"date\": \"2026-02-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Informativa urgente del Governo sugli scontri avvenuti a Torino durante il corteo pro Askatasuna (ore 14,02). (ore 14,02) (ore 14,02)\", \"person\": {\"uri\": \"it:person:camera:308824\", \"name\": \"Chiara Appendino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308824&legislatura=19\"}, \"speaker_label\": \"CHIARA APPENDINO\", \"snippet\": \"pacco bomba. Sono venuti a manifestare sotto casa con un manichino mozzato con la mia testa. Oggi io [[vivo]] ancora sotto scorta. Lo dico qui e sapete perché? Perché prima di lanciare accuse infamanti di connivenza tra queste persone, questi ... forse, sorridevano nel vedere quelle immagini, perché la verità è che gli anarchici sono i vostri migliori alleati ([[Applausi]] dei deputati del gruppo MoVimento 5 Stelle - Commenti di deputati del gruppo Fratelli d'Italia - La deputata Marrocco: “Ma che dici\"}]"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Berlusconi Presidente PPE",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-02-03",
+    "end": "2026-02-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[]"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "elenco_sedute",
+  "cerca_interventi",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 26.8,
+ "risposta_sistema": "No. Nel resoconto stenografico dell’informativa alla Camera del 3 febbraio 2026 non risulta che la maggioranza si sia alzata in piedi.\n\nLa riga conclusiva è:\n\n> (Applausi dei deputati dei gruppi Fratelli d’Italia, Lega-Salvini Premier e Forza Italia-Berlusconi Presidente-PPE).\n\nQuindi il resoconto registra gli applausi di quei gruppi, ma non un applauso in piedi. Seduta n. 607 della Camera, informativa sugli scontri al corteo pro Askatasuna.",
+ "eventi": {
+  "status": 1,
+  "tool": 24,
+  "dati": 12,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,119 @@
+{
+ "id": "RIC-017",
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "endpoint": "/api/agente",
+ "inizio": 1793755998.5484428,
+ "errori": [],
+ "risposta_sistema": "In Aula alla Camera, dal 13 ottobre 2022 al 3 novembre 2026:\n\n- **Interventi del Governo (ministri inclusi): 529 reazioni**  \n  - 82 proteste  \n  - 447 commenti\n- **Interventi dei deputati: 3.378 reazioni**  \n  - 733 proteste  \n  - 2.645 commenti\n\nGli interventi dei deputati hanno quindi ricevuto **2.849** proteste o commenti in più, cioè circa **6,4 volte** quelli degli esponenti del Governo.\n\nIl conteggio riguarda le didascalie di protesta e commento registrate nel resoconto all’interno degli interventi; non indicano necessariamente con certezza chi sia il destinatario della reazione.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "governo",
+    "contains": null,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   }
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "parlamentare",
+    "contains": null,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   }
+  }
+ ],
+ "dati": [
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "governo",
+    "contains": null,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi protests, comments, ruolo_oratore governo. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 529, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"tipo\": \"comments\", \"reazioni\": 447}, {\"tipo\": \"protests\", \"reazioni\": 82}]}"
+  },
+  {
+   "name": "conta_reazioni",
+   "args": {
+    "chamber": "camera",
+    "kinds": [
+     "protests",
+     "comments"
+    ],
+    "body": "aula",
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "speaker": null,
+    "speaker_group": null,
+    "from_group": null,
+    "speaker_role": "parlamentare",
+    "contains": null,
+    "group_by": [
+     "tipo"
+    ],
+    "sum_chambers": false,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Reazioni scritte nel resoconto dentro gli interventi (didascalie tra parentesi), Camera, sedute d'Aula, dal 13/10/2022 al 03/11/2026; filtri: tipi protests, comments, ruolo_oratore parlamentare. Tipi: applause, protests, comments, noise, laughter, ironic_applause, altercation, interruption, action, procedure, other. Gruppo dell'oratore alla data (group_at), solo per i parlamentari; ruolo dell'oratore come in conta_interventi. Una reazione non dice sempre a chi è rivolta: il resoconto la registra dentro l'intervento.\", \"total\": 3378, \"rows_total\": 2, \"offset\": 0, \"rows\": [{\"tipo\": \"comments\", \"reazioni\": 2645}, {\"tipo\": \"protests\", \"reazioni\": 733}]}"
+  }
+ ],
+ "tempo_s": 8.1
+}

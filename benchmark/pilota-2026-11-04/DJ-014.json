@@ -1,0 +1,69 @@
+{
+ "id": "DJ-014",
+ "domanda": "Quante volte la parola «Gaza» è stata pronunciata in Aula, mese per mese, e da quali gruppi?",
+ "categoria": "interventi",
+ "ramo": "entrambi",
+ "tipo_risposta": "linea_del_tempo",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Contare le occorrenze, non gli interventi. Includere tutti i gruppi, anche quelli con zero occorrenze.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "In Aula, dall’inizio della XIX legislatura fino al **3 novembre 2026**, «Gaza» ricorre **3.641 volte**, in **1.593 interventi**. Le occorrenze sono quelle della parola intera, senza distinzione tra maiuscole e minuscole.\n\n| Mese | Camera | Senato |\n|---|---:|---:|\n| ott. 2023 | 101 | 43 |\n| nov. 2023 | 51 | 2 |\n| dic. 2023 | 107 | 14 |\n| gen. 2024 | 90 | 11 |\n| feb. 2024 | 78 | 3 |\n| mar. 2024 | 163 | 56 |\n| apr. 2024 | 17 | 0 |\n| mag. 2024 | 63 | 0 |\n| giu. 2024 | 40 | 9 |\n| lug. 2024 | 62 | 3 |\n| ago. 2024 | 3 | 0 |\n| set. 2024 | 17 | 24 |\n| ott. 2024 | 72 | 40 |\n| nov. 2024 | 24 | 0 |\n| dic. 2024 | 46 | 5 |\n| gen. 2025 | 91 | 11 |\n| feb. 2025 | 32 | 36 |\n| mar. 2025 | 50 | 9 |\n| apr. 2025 | 57 | 0 |\n| mag. 2025 | **299** | **133** |\n| giu. 2025 | 114 | 56 |\n| lug. 2025 | 182 | 21 |\n| ago. 2025 | 22 | 0 |\n| set. 2025 | 188 | 134 |\n| ott. 2025 | 255 | **190** |\n| nov. 2025 | 15 | 2 |\n| dic. 2025 | 40 | 19 |\n| gen. 2026 | 65 | 18 |\n| feb. 2026 | 133 | 1 |\n| mar. 2026 | 32 | 22 |\n| apr. 2026 | 50 | 23 |\n| mag. 2026 | 38 | 0 |\n| giu. 2026 | 41 | 9 |\n| lug. 2026 | 25 | 15 |\n| ago. 2026 | 2 | 0 |\n| set. 2026 | 13 | 3 |\n| ott. 2026 | 37 | 10 |\n| nov. 2026* | 4 | 0 |\n\n\\*Dati fino alla seduta del 3 novembre.\n\nI gruppi con più occorrenze nell’intero periodo sono:\n\n- **Camera:** M5S 575; PD-IDP 573; AVS 476; FI-PPE 165; FdI 138; Noi Moderati-MAIE-Centro Popolare 93; Azione-PER-Renew 79; Italia Viva-Casa Riformista 70; Lega 60.  \n- **Senato:** M5S 176; FdI 111; PD-IDP 108; componente Misto-AVS 77; FI-BP-PPE 66; Italia Viva-Casa Riformista 46; Lega-SPd’Az 40; Civici d’Italia-UDC-Noi Moderati-MAIE-Centro Popolare 39; Per le Autonomie 25; componente Misto-Azione-Renew Europe 14.  \n- Ci sono inoltre **637 occorrenze attribuite a interventi senza gruppo** (421 alla Camera e 216 al Senato): per esempio Presidenza, Governo o altri ruoli non parlamentari. Nei dati compaiono anche alcune registrazioni nel Misto non articolate per componente.\n\nIl picco mensile è stato alla **Camera nel maggio 2025: 299 occorrenze**. Al Senato, il massimo è stato nell’**ottobre 2025: 190**.",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 30.0,
+ "riferimento": {
+  "risposta": "Nei resoconti stenografici d'Aula della XIX la parola «Gaza» ricorre 3.637 volte: 2.715 alla Camera e 922 al Senato. Nessuna occorrenza da ottobre 2022 a settembre 2023; la prima è di ottobre 2023 (144). I mesi con più occorrenze sono ottobre 2025 (445: Camera 255, Senato 190), maggio 2025 (432) e settembre 2025 (322). Per gruppo, Camera: M5S 572, PD-IDP 572, AVS 476, FI-PPE 164, FdI 135, Noi Moderati 93, Azione 75, IV 70 (IV-C-RE 68 + IV-CR 2), Misto senza componente 31, Misto-+Europa 30, Misto-Minoranze linguistiche 8, A-IV-RE 4, Misto-FNV-Free 0; governo e relatori 396, Presidenza 30. Senato: M5S 169, FdI 111, PD-IDP 107, Misto-AVS 77, FI-BP-PPE 66, Lega 40, IV 39, Civici d'Italia-NM 39 (con la denominazione precedente), Per le Autonomie 25, Misto-Azione 14, Az-IV-RE 7, Misto 4; governo e relatori 149, Presidenza 74.",
+  "stato": "calcolata",
+  "limiti": "Conta le occorrenze della parola intera «Gaza» (maiuscole e minuscole indifferenti) negli interventi d'Aula (sitting.kind = assembly_verbatim), dall'inizio della XIX al 30/10/2026 (Camera) e al 28/10/2026 (Senato). Il gruppo è l'etichetta del resoconto (speech.as_group), quindi i gruppi rinominati compaiono con più etichette; una occorrenza al Senato sta in un intervento con etichetta di gruppo non valida ed è esclusa dalla tabella per gruppo (921 su 922). Le righe «senza gruppo» sono Presidenza, membri del governo e relatori."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "na",
+   "quotes": "na"
+  },
+  "trappola": null,
+  "tempo_s": 30.0
+ },
+ "causa_probabile": "strumenti",
+ "note": "3.641 occorrenze (riferimento 3.637), mese per mese per ramo, per gruppo con governo e presidenza a parte; mancano i gruppi a zero.",
+ "prima": {
+  "risposta_sistema": "Non posso produrre un conteggio affidabile delle singole occorrenze della parola «Gaza» mese per mese con i dati consultabili: i resoconti disponibili restituiscono gli **interventi che contengono** la parola, ma non un conteggio automatico di tutte le ripetizioni nel testo integrale né un’aggregazione mensile per gruppo.\n\nPosso però ricostruire una tabella contando gli **interventi d’Aula** che menzionano “Gaza”, distinta per Camera, Senato, mese e gruppo. I dati arrivano fino al 3 novembre 2026.",
+  "strumenti": [
+   "cerca_interventi",
+   "cerca_interventi"
+  ],
+  "tempo_s": 12.8,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": 0,
+   "garanzie": {
+    "groups": "fail",
+    "authority": "na",
+    "quotes": "na"
+   },
+   "trappola": null,
+   "tempo_s": 12.8
+  },
+  "note": "Non conta le occorrenze (riferimento: 3.637). Lo dice."
+ }
+}

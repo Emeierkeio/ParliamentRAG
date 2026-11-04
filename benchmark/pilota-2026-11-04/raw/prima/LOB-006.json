@@ -1,0 +1,418 @@
+{
+ "id": "LOB-006",
+ "trappola": false,
+ "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+ "categoria": "commissioni",
+ "tipo_risposta": "elenco",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Presidenti attesi: Fazzone (8ª), De Carlo (9ª), Zaffini (10ª), Gusmeroli (X). Le cariche hanno doppia riga per il rinnovo di metà legislatura (10/6/2025).",
+ "endpoint": "agente",
+ "inizio": 1793753131.096525,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "elenco_sedute",
+   "args": {
+    "chamber": "senato",
+    "body": "commissioni",
+    "start": null,
+    "end": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2622, \"items\": [{\"uri\": \"it:senato:19:som:3acommissionepermanente:sed0209\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-145\", \"body_name\": \"3ª Commissione permanente\", \"number\": 209, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:1acommissionepermanente:sed0548\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-1\", \"body_name\": \"1ª Commissione permanente\", \"number\": 548, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:1acommissionepermanente:sed0547\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-1\", \"body_name\": \"1ª Commissione permanente\", \"number\": 547, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:2acommissionepermanente:sed0451\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-2\", \"body_name\": \"2ª Commissione permanente\", \"number\": 451, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:7acommissionepermanente:sed0352\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-7\", \"body_name\": \"7ª Commissione permanente\", \"number\": 352, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:7acommissionepermanente:sed0351\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-7\", \"body_name\": \"7ª Commissione permanente\", \"number\": 351, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:7acommissionepermanente:sed0350\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-7\", \"body_name\": \"7ª Commissione permanente\", \"number\": 350, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:6acommissionepermanente:sed0349\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-6\", \"body_name\": \"6ª Commissione permanente\", \"number\": 349, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-147\", \"body_name\": \"9ª Commissione permanente\", \"number\": 340, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-146\", \"body_name\": \"8ª Commissione permanente\", \"number\": 312, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:1acommissionepermanente:sed0546\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-1\", \"body_name\": \"1ª Commissione permanente\", \"number\": 546, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-148\", \"body_name\": \"10ª Commissione permanente\", \"number\": 458, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\"}, {\"uri\": \"it:senato:19:som:2acommissionepermanente:sed0450\", \"chamber\": \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Vice Presidente",
+    "chamber": "senato",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:senato:19:sed0469:int00029\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione dalla sede redigente del disegno di legge n.\", \"person\": {\"uri\": \"it:person:senato:36413\", \"name\": \"Mario Occhiuto\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036413.jpg\"}, \"speaker_label\": \"OCCHIUTO\", \"snippet\": \"Signor [[Presidente]], colleghe e colleghi, signor Sottosegretario, il disegno di legge che oggi stiamo votando, come dicevano i colleghi, è molto semplice. Esso cambia solo la denominazione dell'Archivio centrale dello Stato in Archivio nazionale e quella del suo responsabile ... grandi decisioni politiche, ma anche il lavoro quotidiano delle amministrazioni, le trasformazioni economiche, la costruzione delle infrastrutture, le [[vicende]] delle persone - proprio attraverso quelle carte. Io, ad esempio, occupandomi di città e di architettura, so quanto siano importanti i disegni\"}, {\"uri\": \"it:senato:19:sed0469:int00035\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione dalla sede redigente del disegno di legge n.\", \"person\": {\"uri\": \"it:person:senato:36013\", \"name\": \"Tilde Minasi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036013.jpg\"}, \"speaker_label\": \"MINASI\", \"snippet\": \"Signor [[Presidente]], sorrido, ma va bene. Il provvedimento sul quale siamo chiamati a esprimere il voto oggi certo può apparire come una modifica meramente formale, ma in realtà non lo è. La modifica del nome valorizza il ruolo ... luogo nel quale sono custodite le fonti indispensabili alla ricerca storica e i documenti essenziali per comprendere le [[vicende]] sociali, politiche e culturali del nostro Paese. La memoria dello Stato è un bene pubblico, quindi tutelarla significa tutelare la possibilità\"}, {\"uri\": \"it:senato:19:sed0469:int00058\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione dalla sede redigente e approvazione del disegno di legge:\", \"person\": {\"uri\": \"it:person:senato:25429\", \"name\": \"Giovanna Petrenga\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:92\", \"name\": \"Civici d'Italia-UDC-Noi Moderati (Noi con l'Italia, Coraggio Italia, Italia al Centro"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "Vicepresidente",
+    "chamber": "camera",
+    "person": null,
+    "start": "2026-01-01",
+    "end": "2026-11-03",
+    "include_summaries": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0737:tit00080.int00460\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:305771\", \"name\": \"Irene Manzi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305771&legislatura=19\"}, \"speaker_label\": \"IRENE MANZI\", \"snippet\": \"altrimenti non si spiega come possa aver approvato una manovra di bilancio che conteneva quelle cifre -, ma anche dal [[Vicepresidente]] del Consiglio, Matteo Salvini, che si diceva altrettanto attonito. Adesso il Ministro dell'Economia è il Ministro Giorgetti. Probabilmente\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020:tit00010:p2\", \"sitting\": {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Audizione di rappresentanti dell'Associazione Persone in cammino.\", \"kind\": \"summary\", \"snippet\": \"rappresentanza dell'Associazione Persone in cammino, il presidente Andrea SILLO, la [[vicepresidente]] Carmen AMADIO, la portavoce dei danneggiati Emilia PADOVANO, il consulente tecnico di parte dottore Mauro MANTOVANI e il legale avvocato Alberto POLI svolgono relazioni sui temi oggetto dell\"}, {\"uri\": \"it:camera:19:bol20261029:c83:sede00020:tit00010:p4\", \"sitting\": {\"uri\": \"it:camera:19:bol20261029:c83:sede00020\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_4281\", \"body_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2\", \"number\": 20, \"date\": \"2026-10-29\", \"kind\": \"committee_summary\", \"status\": \"held\"}, \"item_title\": \"Audizione di rappresentanti dell'Associazione Persone in cammino.\", \"kind\": \"summary\", \"snippet\": \"Rispondono alle domande il presidente SILLO, la segretaria Paola DALLE RIVE, la [[vicepresidente]] AMADIO, la signora PADOVANO, il dottore MANTOVANI e l'avvocato POLI\"}, {\"uri\": \"it:camera:19:bol20261028:c14:sede00080:tit00020:p4\", \"sitting\": {\"uri\": \"it:camera:19:bol20261028:c14:sede00080\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3514\", \"body_name\": \"Politiche dell'Unione europea (XIV)\", \"number\": 80, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"st"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Fazzone",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:4192\", \"name\": \"Claudio Fazzone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00004192.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "De Carlo",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:32898\", \"name\": \"Luca De Carlo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032898.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Zaffini",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:32732\", \"name\": \"Francesco Zaffini\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032732.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Gusmeroli",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\"}]"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:4192"
+   },
+   "result": "{\"uri\": \"it:person:senato:4192\", \"name\": \"Claudio Fazzone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00004192.jpg\", \"given_name\": \"Claudio\", \"family_name\": \"Fazzone\", \"gender\": \"M\", \"profession\": \"Avvocato; Imprenditore; Imprenditore, funzionario polizia di stato in pensione, avvocato\", \"source_uri\": \"http://dati.senato.it/senatore/4192\", \"same_as\": [\"it:person:camera:302225\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Lazio\", \"college\": \"LAZIO - U06 (LATINA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia Berlusconi Presidente\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:4-134\", \"target_name\": \"Commissione parlamentare per la semplificazione\", \"title\": \"member\", \"start_date\": \"2024-03-19\"}, {\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"member\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-11-09\"}, {\"target\": \"it:senato:19:body:4-222\", \"target_name\": \"Comitato parlamentare provvisorio per la sicurezza della Repubblica\", \"title\": \"member\", \"start_date\": \"2022-10-13\", \"end_date\": \"2022-12-05\"}], \"offices\": [{\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"chair\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 1303, \"ballots\": 6129, \"ballots_cast\": 2951, \"ballots_mission\": 836, \"bills_first_signer\": 5, \"amendments_signed\": 331}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:32898"
+   },
+   "result": "{\"uri\": \"it:person:senato:32898\", \"name\": \"Luca De Carlo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032898.jpg\", \"given_name\": \"Luca\", \"family_name\": \"De Carlo\", \"gender\": \"M\", \"profession\": \"Commerciante\", \"source_uri\": \"http://dati.senato.it/senatore/32898\", \"same_as\": [\"it:person:camera:307708\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Veneto\", \"college\": \"VENETO - U02 (TREVISO)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:4-128\", \"target_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari (Commissione di inchiesta sul ciclo dei rifiuti e illeciti ambientali e agroalimentari)\", \"title\": \"member\", \"start_date\": \"2023-09-07\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"chair\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 1724, \"ballots\": 8161, \"ballots_cast\": 7721, \"ballots_mission\": 115, \"bills_first_signer\": 6, \"amendments_signed\": 305}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:32732"
+   },
+   "result": "{\"uri\": \"it:person:senato:32732\", \"name\": \"Francesco Zaffini\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032732.jpg\", \"given_name\": \"Francesco\", \"family_name\": \"Zaffini\", \"gender\": \"M\", \"profession\": \"Dirigente bancario; Quadro direttivo bancario, sindacalista o esponente di associazione\", \"source_uri\": \"http://dati.senato.it/senatore/32732\", \"same_as\": [\"it:person:camera:307916\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Umbria\", \"college\": \"UMBRIA - U01 (PERUGIA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:4-226\", \"target_name\": \"Commissione parlamentare di inchiesta sulla gestione dell'emergenza sanitaria causata dalla diffusione epidemica del virus SARS-CoV-2 e sulle misure adottate per prevenire e affrontare l'emergenza epidemiologica da SARS-CoV-2 (Commissione di inchiesta su emergenza sanitaria epidemiologica da SARS-CoV-2)\", \"title\": \"member\", \"start_date\": \"2024-08-06\"}, {\"target\": \"it:senato:19:body:4-90\", \"target_name\": \"Delegazione parlamentare italiana presso l'Assemblea del Consiglio d'Europa (Delegazione italiana presso l'Assemblea Consiglio d'Europa)\", \"title\": \"member\", \"start_date\": \"2023-01-11\"}, {\"target\": \"it:senato:19:body:0-20\", \"target_name\": \"Giunta per il Regolamento\", \"title\": \"member\", \"start_date\": \"2022-11-17\"}, {\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"chair\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}], \"counts\": {\"speeches\": 1283, \"ballots\": 8143, \"ballots_cast\": 6271, \"ballots_mission\": 847, \"bills_first_signer\": 3, \"amendments_signed\": 206}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307475"
+   },
+   "result": "{\"uri\": \"it:person:camera:307475\", \"name\": \"Alberto Luigi Gusmeroli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307475&legislatura=19\", \"given_name\": \"Alberto Luigi\", \"family_name\": \"Gusmeroli\", \"gender\": \"M\", \"birth_date\": \"1961-02-27\", \"birth_place\": \"Varese\", \"profession\": \"Commercialista e revisore dei conti\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307475\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PIEMONTE 2 - P01\", \"college\": \"PIEMONTE 2 - U02\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"replacement\", \"start_date\": \"2023-03-27\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3721\", \"target_name\": \"Conferenza dei Presidenti delle Commissioni Permanenti\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3505\", \"target_name\": \"V Commissione\", \"title\": \"replacement\", \"start_date\": \"2022-11-09\", \"end_date\": \"2023-03-27\"}, {\"target\": \"it:camera:19:body:o19_3543\", \"target_name\": \"Commissione Speciale Istituita il 19 Ottobre 2022, ai Sensi dell'Articolo 22, Comma 2, del Regolamento\", \"title\": \"member\", \"start_date\": \"2022-10-21\", \"end_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"chair\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:camera:19:body:o19_3543\", \"target_name\": \"Commissione Speciale Istituita il 19 Ottobre 2022, ai Sensi dell'Articolo 22, Comma 2, del Regolamento\", \"title\": \"group_whip\", \"start_date\": \"2022-11-07\", \"end_date\": \"2022-11-09\"}], \"counts\": {\"speeches\": 3550, \"ballots\": 20257, \"ballots_cast\": 3129, \"ballots_mission\": 16592, \"bills_first_signer\": 19, \"amendments_signed\": 708}}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:som:8acommissionepermanente:sed0312",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-146\", \"body_name\": \"8ª Commissione permanente\", \"number\": 312, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"start_time\": \"13:30\", \"items\": [{\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La seduta inizia alle ore 13,30\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00001\", \"order\": 1, \"title\": \"Conversione in legge del decreto-legge 23 ottobre 2026, n. 193, recante disposizioni urgenti e misure di sostegno ai settori dell'autotrasporto, dell'agricoltura e della pesca\", \"stage\": \"IN SEDE REFERENTE\", \"acts\": [{\"ref\": \"ddl:2074\", \"uri\": \"it:senato:19:ddl:2074\", \"title\": \"Conversione in legge del decreto-legge 23 ottobre 2026, n. 193, recante disposizioni urgenti e misure di sostegno ai settori dell'autotrasporto, dell'agricoltura e della pesca\"}], \"speeches\": [{\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00001:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:4192\", \"name\": \"Claudio Fazzone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00004192.jpg\"}, \"as_office\": \"PRESIDENTE\", \"kind\": \"summary\", \"text\": \"Il PRESIDENTE propone di fissare a domani, 29 ottobre, alle ore 17, il termine per l'indicazione, da parte dei Gruppi, dei nominativi di eventuali sog…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00001:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:36424\", \"name\": \"Etelwardo Sigismondi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036424.jpg\"}, \"as_group\": \"FdI\", \"kind\": \"summary\", \"text\": \"Il relatore SIGISMONDI ( FdI ) illustra il provvedimento in titolo, approvato dal Consiglio dei ministri lo scorso 22 ottobre, al fine di contenere gl…\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00002\", \"order\": 2, \"title\": \"Schema di decreto legislativo recante attuazione della direttiva (UE) 2024/2881 del Parlamento europeo e del Consiglio, del 23 ottobre 2024, relativa alla qualità dell'aria ambiente e per un'aria più pulita in Europa\", \"stage\": \"IN SEDE CONSULTIVA SU ATTI DEL GOVERNO\", \"acts\": [{\"ref\": \"doc:n. 435\"}], \"speeches\": [{\"uri\": \"it:senato:19:som:8acommissionepermanente:sed0312:tit00002:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Prosegue l'esame, sospeso nella prima seduta pomeridiana di ieri.\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:8acommissionepermanent"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:som:9acommissionepermanente:sed0340",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-147\", \"body_name\": \"9ª Commissione permanente\", \"number\": 340, \"date\": \"2026-10-28\", \"kind\": \"committee_summary\", \"status\": \"held\", \"start_time\": \"00:00\", \"items\": [{\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La seduta inizia alle ore 9.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00001\", \"order\": 1, \"stage\": \"SULLA PUBBLICITA' DEI LAVORI\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00001:p1\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:32898\", \"name\": \"Luca De Carlo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032898.jpg\"}, \"as_office\": \"PRESIDENTE\", \"kind\": \"summary\", \"text\": \"Il PRESIDENTE comunica che, ai sensi dell'articolo 33, comma 4, del Regolamento, è stata chiesta l'attivazione dell'impianto audiovisivo per lo svolgi…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00001:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:32898\", \"name\": \"Luca De Carlo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032898.jpg\"}, \"as_office\": \"PRESIDENTE\", \"kind\": \"summary\", \"text\": \"Il PRESIDENTE ricorda inoltre che dell'atto di sindacato ispettivo sarà redatto il resoconto stenografico.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00002\", \"order\": 2, \"title\": \"Interrogazione\", \"stage\": \"SINDACATO ISPETTIVO\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00002:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"Il sottosegretario LA PIETRA fornisce risposta all'interrogazione 3-02841 del senatore Lorefice, premettendo che il Governo è pienamente consapevole d…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00002:p2\", \"order\": 2, \"kind\": \"summary\", \"text\": \"Riconosce dunque che le iniziative e le manifestazioni promosse in queste settimane dagli agricoltori rappresentano l'espressione di un disagio reale,…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00002:p3\", \"order\": 3, \"kind\": \"summary\", \"text\": \"Afferma altresì che l'Esecutivo è intervenuto anche su un'altra componente rilevante dei costi aziendali, quella dei fertilizzanti, mediante il cosidd…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:9acommissionepermanente:sed0340:tit00002:p4\", \"order\": 4, \"kind\": \"summary\", \"text\": \"Rammenta peraltro c"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:som:10acommissionepermanente:sed0458",
+    "full_text": false
+   },
+   "result": "{\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458\", \"chamber\": \"senato\", \"body\": \"it:senato:19:body:0-148\", \"body_name\": \"10ª Commissione permanente\", \"number\": 458, \"date\": \"2026-10-27\", \"kind\": \"committee_summary\", \"status\": \"held\", \"start_time\": \"14:20\", \"items\": [{\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00000:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"La seduta inizia alle ore 14,20\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00001\", \"order\": 1, \"title\": \"Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari\", \"stage\": \"IN SEDE REDIGENTE\", \"acts\": [{\"ref\": \"ddl:134\", \"uri\": \"it:senato:19:ddl:134\", \"title\": \"Disposizioni per il riconoscimento e il sostegno dell'attività del caregiver familiare\"}, {\"ref\": \"ddl:1909\", \"uri\": \"it:senato:19:ddl:1909\", \"title\": \"Disposizioni per il riconoscimento e l'inclusione lavorativa dei caregiver familiari mediante riserve di posti e titoli di preferenza nei concorsi pubblici\"}, {\"ref\": \"ddl:2063\", \"uri\": \"it:senato:19:ddl:2063\", \"title\": \"Riconoscimento e tutela delle persone che assistono e si prendono cura dei propri cari\"}, {\"ref\": \"ddl:24\", \"uri\": \"it:senato:19:ddl:24\", \"title\": \"Disposizioni per il riconoscimento ed il sostegno del caregiver familiare\"}, {\"ref\": \"ddl:874\", \"uri\": \"it:senato:19:ddl:874\", \"title\": \"Disposizioni per il riconoscimento e la tutela del caregiver familiare\"}], \"speeches\": [{\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00001:p1\", \"order\": 1, \"kind\": \"summary\", \"text\": \"- e petizioni nn. 878 e 1478 ad essi attinenti\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00001:p2\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:33110\", \"name\": \"Elena Murelli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00033110.jpg\"}, \"as_group\": \"LSP-PSd'Az\", \"kind\": \"summary\", \"text\": \"La relatrice MURELLI ( LSP-PSd'Az ) dà conto in primo luogo del disegno di legge n. 2063, recante una disciplina organica di riconoscimento e tutela d…\", \"reactions\": []}, {\"uri\": \"it:senato:19:som:10acommissionepermanente:sed0458:tit00001:p3\", \"order\": 3, \"person\": {\"uri\": \"it:person:senato:36406\", \"name\": \"Orfeo Mazzella\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036406.jpg\"}, \"as_group\": \"M5S\", \"kind\": \"summary\", \"text\": \"Intervenendo sull'ordine dei lavori, il senatore MAZZELLA ( M5S ) fa presente l'opportunità dello svolgimento di un ciclo di audizioni, particolarment…\", \"reactions\": []}, {\"uri\": \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "VICEPRESIDENTE",
+    "chamber": "senato",
+    "person": null,
+    "start": "2025-06-10",
+    "end": "2025-06-12",
+    "include_summaries": true,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Minasi",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:36013\", \"name\": \"Tilde Minasi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036013.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Misiani",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:23011\", \"name\": \"Antonio Misiani\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00023011.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Bergesio",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:32586\", \"name\": \"Giorgio Maria Bergesio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032586.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Fina",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:30294\", \"name\": \"Michele Fina\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00030294.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Murelli",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:33110\", \"name\": \"Elena Murelli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00033110.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Castellone",
+    "chamber": "senato",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032600.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Cavo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:308785\", \"name\": \"Ilaria Cavo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308785&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Peluffo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:302746\", \"name\": \"Vinicio Giuseppe Guido Peluffo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302746&legislatura=19\"}]"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:36013"
+   },
+   "result": "{\"uri\": \"it:person:senato:36013\", \"name\": \"Tilde Minasi\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036013.jpg\", \"given_name\": \"Tilde\", \"family_name\": \"Minasi\", \"gender\": \"F\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.senato.it/senatore/36013\", \"same_as\": [\"it:person:camera:308640\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Calabria\", \"college\": \"CALABRIA - U02 (REGGIO DI CALABRIA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2026-06-29\"}, {\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2026-06-30\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-223\", \"target_name\": \"Commissione parlamentare di inchiesta sul femminicidio, nonché su ogni forma di violenza di genere (Commissione di inchiesta femminicidio e violenza di genere)\", \"title\": \"member\", \"start_date\": \"2023-07-12\"}, {\"target\": \"it:senato:19:body:0-58\", \"target_name\": \"Consiglio di garanzia\", \"title\": \"member\", \"start_date\": \"2023-07-05\"}, {\"target\": \"it:senato:19:body:0-142\", \"target_name\": \"Commissione parlamentare di inchiesta sulle condizioni di lavoro in Italia, sullo sfruttamento e sulla sicurezza nei luoghi di lavoro (Commissione parlamentare di inchiesta condizioni di lavoro in Italia, sfruttamento e sicurezza luoghi di lavoro)\", \"title\": \"member\", \"start_date\": \"2023-06-01\"}, {\"target\": \"it:senato:19:body:4-53\", \"target_name\": \"Commissione parlamentare di inchiesta sul fenomeno delle mafie e sulle altre associazioni criminali, anche straniere (Commissione d'inchiesta sul fenomeno delle mafie)\", \"title\": \"member\", \"start_date\": \"2023-05-17\"}, {\"target\": \"it:senato:19:body:4-60\", \"target_name\": \"Commissione parlamentare per l'indirizzo generale e la vigilanza dei servizi radiotelevisivi (Commissione di vigilanza servizi radiotelevisivi)\", \"title\": \"member\", \"start_date\": \"2023-03-09\"}, {\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:senato:19:group:33\", \"target_name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"title\": \"deputy_leader\", \"start_date\": \"2026-06-30\"}], \"counts\": {\"speeches\""
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:23011"
+   },
+   "result": "{\"uri\": \"it:person:senato:23011\", \"name\": \"Antonio Misiani\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00023011.jpg\", \"given_name\": \"Antonio\", \"family_name\": \"Misiani\", \"gender\": \"M\", \"profession\": \"Consulente\", \"source_uri\": \"http://dati.senato.it/senatore/23011\", \"same_as\": [\"it:person:camera:301462\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Lombardia\", \"college\": \"LOMBARDIA - U03 (MILANO: NIL 21 - BUENOS AIRES - VENEZIA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-10-24\"}, {\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-25\", \"end_date\": \"2023-06-05\"}, {\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2023-06-06\"}], \"bodies\": [{\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"member\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-11-09\"}, {\"target\": \"it:senato:19:body:0-74\", \"target_name\": \"Commissione speciale per l'esame degli atti urgenti presentati dal Governo (Commissione speciale su atti urgenti del Governo)\", \"title\": \"member\", \"start_date\": \"2022-10-25\", \"end_date\": \"2022-11-10\"}], \"offices\": [{\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"vice_chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"vice_chair\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:group:49\", \"target_name\": \"Partito Democratico - Italia Democratica e Progressista\", \"title\": \"treasurer\", \"start_date\": \"2022-10-25\", \"end_date\": \"2023-06-05\"}], \"counts\": {\"speeches\": 149, \"ballots\": 7123, \"ballots_cast\": 6169, \"ballots_mission\": 23, \"bills_first_signer\": 9, \"amendments_signed\": 10001}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:32586"
+   },
+   "result": "{\"uri\": \"it:person:senato:32586\", \"name\": \"Giorgio Maria Bergesio\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032586.jpg\", \"given_name\": \"Giorgio Maria\", \"family_name\": \"Bergesio\", \"gender\": \"M\", \"profession\": \"Dirigente industria\", \"source_uri\": \"http://dati.senato.it/senatore/32586\", \"same_as\": [\"it:person:camera:307754\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Piemonte\", \"college\": \"PIEMONTE - U05 (CUNEO)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-128\", \"target_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari (Commissione di inchiesta sul ciclo dei rifiuti e illeciti ambientali e agroalimentari)\", \"title\": \"member\", \"start_date\": \"2026-04-23\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:senato:19:body:4-71\", \"target_name\": \"Parlamentari membri della Commissione di vigilanza sulla Cassa Depositi e Prestiti (Commissione di vigilanza Cassa Depositi e Prestiti)\", \"title\": \"member\", \"start_date\": \"2024-02-13\"}, {\"target\": \"it:senato:19:body:0-143\", \"target_name\": \"Commissione straordinaria per il contrasto dei fenomeni di intolleranza, razzismo, antisemitismo e istigazione all'odio e alla violenza (Commissione straordinaria intolleranza, razzismo, antisemitismo, istigazione all'odio e alla violenza)\", \"title\": \"member\", \"start_date\": \"2023-04-21\"}, {\"target\": \"it:senato:19:body:4-60\", \"target_name\": \"Commissione parlamentare per l'indirizzo generale e la vigilanza dei servizi radiotelevisivi (Commissione di vigilanza servizi radiotelevisivi)\", \"title\": \"member\", \"start_date\": \"2023-03-09\"}, {\"target\": \"it:senato:19:body:0-150\", \"target_name\": \"Commissione parlamentare di inchiesta sul sistema bancario, finanziario e assicurativo (Commissione parlamentare di inchiesta sistema bancario, finanziario e assicurativo)\", \"title\": \"member\", \"start_date\": \"2025-02-25\", \"end_date\": \"2025-02-26\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\": \"2022-11-10\", \"end_date\": \"2025-06-09\"}, {\"target\": \"it:senato:19:body:0-147\", \"target_name\": \"9ª Commissione permanente (Industria, commercio, turismo, agricoltura e produzione agroalimentare)\", \"title\": \"member\", \"start_date\":"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:30294"
+   },
+   "result": "{\"uri\": \"it:person:senato:30294\", \"name\": \"Michele Fina\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00030294.jpg\", \"given_name\": \"Michele\", \"family_name\": \"Fina\", \"gender\": \"M\", \"profession\": \"Altro; Esperto per il ministero del lavoro e delle politiche sociali\", \"source_uri\": \"http://dati.senato.it/senatore/30294\", \"same_as\": [\"it:person:camera:308979\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Abruzzo\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:49\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-128\", \"target_name\": \"Commissione parlamentare di inchiesta sulle attività illecite connesse al ciclo dei rifiuti e su altri illeciti ambientali e agroalimentari (Commissione di inchiesta sul ciclo dei rifiuti e illeciti ambientali e agroalimentari)\", \"title\": \"member\", \"start_date\": \"2023-09-07\"}, {\"target\": \"it:senato:19:body:0-146\", \"target_name\": \"8ª Commissione permanente (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [], \"counts\": {\"speeches\": 338, \"ballots\": 7303, \"ballots_cast\": 6499, \"ballots_mission\": 457, \"bills_first_signer\": 10, \"amendments_signed\": 10016}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:33110"
+   },
+   "result": "{\"uri\": \"it:person:senato:33110\", \"name\": \"Elena Murelli\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00033110.jpg\", \"given_name\": \"Elena\", \"family_name\": \"Murelli\", \"gender\": \"F\", \"profession\": \"Consulente sui finanziamenti europei - docente a contratto informatica aziendale\", \"source_uri\": \"http://dati.senato.it/senatore/33110\", \"same_as\": [\"it:person:camera:307336\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Emilia-Romagna\", \"college\": \"EMILIA-ROMAGNA - U01 (PARMA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:4-61\", \"target_name\": \"Sottocommissione permanente per l'accesso (Sottocommissione permanente RAI per l' accesso)\", \"title\": \"member\", \"start_date\": \"2023-07-06\"}, {\"target\": \"it:senato:19:body:0-142\", \"target_name\": \"Commissione parlamentare di inchiesta sulle condizioni di lavoro in Italia, sullo sfruttamento e sulla sicurezza nei luoghi di lavoro (Commissione parlamentare di inchiesta condizioni di lavoro in Italia, sfruttamento e sicurezza luoghi di lavoro)\", \"title\": \"member\", \"start_date\": \"2023-06-01\"}, {\"target\": \"it:senato:19:body:4-48\", \"target_name\": \"Delegazione parlamentare italiana presso l'Assemblea parlamentare dell'Iniziativa Centro Europea (Delegazione italiana presso l'Assemblea dell'INCE)\", \"title\": \"member\", \"start_date\": \"2023-04-18\"}, {\"target\": \"it:senato:19:body:4-60\", \"target_name\": \"Commissione parlamentare per l'indirizzo generale e la vigilanza dei servizi radiotelevisivi (Commissione di vigilanza servizi radiotelevisivi)\", \"title\": \"member\", \"start_date\": \"2023-03-09\"}, {\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:senato:19:body:0-14\", \"target_name\": \"4ª Commissione permanente (Politiche dell'Unione europea)\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:senato:19:body:0-74\", \"target_name\": \"Commissione speciale per l'esame degli atti urgenti presentati dal Governo (Commissione speciale su atti urgenti del Governo)\", \"title\": \"member\", \"start_date\": \"2022-10-25\", \"end_date\": \"2022-11-10\"}], \"offices\": [], \"counts\": {\"speeches\": 528, \"ballots\": 8087, \"ballots_cast\": 7749, \"ballots_mission\": 245, \"bills_first_signer\": 12, \"amendments_signed\": 1254}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:senato:32600"
+   },
+   "result": "{\"uri\": \"it:person:senato:32600\", \"name\": \"Maria Domenica Castellone\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032600.jpg\", \"given_name\": \"Maria Domenica\", \"family_name\": \"Castellone\", \"gender\": \"F\", \"profession\": \"Medico, ricercatore cnr; Ricercatore\", \"source_uri\": \"http://dati.senato.it/senatore/32600\", \"same_as\": [\"it:person:camera:307771\"], \"mandates\": [{\"chamber\": \"senato\", \"legislature\": 19, \"start_date\": \"2022-10-13\", \"kind\": \"elected\", \"constituency\": \"Campania\", \"college\": \"CAMPANIA - U05 (GIUGLIANO IN CAMPANIA)\"}], \"memberships\": [{\"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:senato:19:body:0-148\", \"target_name\": \"10ª Commissione permanente (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)\", \"title\": \"member\", \"start_date\": \"2024-02-08\"}, {\"target\": \"it:senato:19:body:4-93\", \"target_name\": \"Delegazione parlamentare italiana presso l'Assemblea parlamentare della NATO (Delegazione italiana presso l'Assemblea NATO)\", \"title\": \"member\", \"start_date\": \"2023-05-04\"}, {\"target\": \"it:senato:19:body:0-5\", \"target_name\": \"5ª Commissione permanente (Bilancio)\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-02-08\"}], \"offices\": [], \"counts\": {\"speeches\": 7587, \"ballots\": 5785, \"ballots_cast\": 4996, \"ballots_mission\": 729, \"bills_first_signer\": 16, \"amendments_signed\": 6483}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308785"
+   },
+   "result": "{\"uri\": \"it:person:camera:308785\", \"name\": \"Ilaria Cavo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308785&legislatura=19\", \"given_name\": \"Ilaria\", \"family_name\": \"Cavo\", \"gender\": \"F\", \"birth_date\": \"1973-10-11\", \"birth_place\": \"Genova\", \"profession\": \"Giornalista professionista in aspettativa\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308785\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"LIGURIA - P01\", \"college\": \"LIGURIA - U02\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4111\", \"name\": \"Misto\", \"short_name\": \"MISTO\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:cgm4148\", \"name\": \"Noi Moderati - MAIE\", \"short_name\": \"M-NM(N-C-U-I)-M\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"role\": \"member\", \"start_date\": \"2022-10-19\", \"end_date\": \"2022-10-27\"}, {\"group\": {\"uri\": \"it:camera:19:group:gr4152\", \"name\": \"Noi Moderati - MAIE - Centro Popolare\", \"short_name\": \"NM(N-C-U-I)M-CP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-27\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_4201\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"title\": \"member\", \"start_date\": \"2024-03-05\"}, {\"target\": \"it:camera:19:body:o19_4082\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Morte di David Rossi\", \"title\": \"member\", \"start_date\": \"2023-11-08\"}, {\"target\": \"it:camera:19:body:o19_3783\", \"target_name\": \"Comitato di Vigilanza sull'Attivita' di Documentazione\", \"title\": \"member\", \"start_date\": \"2023-02-23\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"vice_chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_4201\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"title\": \"group_whip\", \"start_date\": \"2024-03-26\"}, {\"target\": \"it:camera:19:body:o19_4082\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Morte di David Rossi\", \"title\": \"group_whip\", \"start_date\": \"2024-03-11\"}, {\"target\": \"it:camera:19:body:o19_4082\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Morte di David Rossi\", \"title\": \"group_whip\", \"start_date\": \"2024-03-05\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"vice_chair\", \"start_date\": \"2022-11-09\", \"end"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:302746"
+   },
+   "result": "{\"uri\": \"it:person:camera:302746\", \"name\": \"Vinicio Giuseppe Guido Peluffo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302746&legislatura=19\", \"given_name\": \"Vinicio Giuseppe Guido\", \"family_name\": \"Peluffo\", \"gender\": \"M\", \"birth_date\": \"1971-03-21\", \"birth_place\": \"Rho\", \"profession\": \"Dirigente di partito\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302746\", \"same_as\": [], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-10\", \"constituency\": \"LOMBARDIA 3 - P01\", \"list\": \"PARTITO DEMOCRATICO - ITALIA DEMOCRATICA E PROGRESSISTA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3801\", \"target_name\": \"Commissione Parlamentare per l'Indirizzo Generale e la Vigilanza dei Servizi Radiotelevisivi\", \"title\": \"member\", \"start_date\": \"2023-03-14\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"vice_chair\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3510\", \"target_name\": \"X Commissione\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-10\"}], \"counts\": {\"speeches\": 558, \"ballots\": 20257, \"ballots_cast\": 16937, \"ballots_mission\": 52, \"bills_first_signer\": 1, \"amendments_signed\": 2444}}"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "vicepresidenti della 8ª Commissione permanente del Senato Ambiente transizione ecologica energia lavori pubblici comunicazioni innovazione tecnologica",
+    "fonti": [
+     "documenti",
+     "interventi"
+    ],
+    "ramo": "senato",
+    "da": "2025-06-10",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"vicepresidenti della 8ª Commissione permanente del Senato Ambiente transizione ecologica energia lavori pubblici comunicazioni innovazione tecnologica\", \"fonti\": [\"documenti\", \"interventi\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:senato:19:sed0378:int00005\", \"testo\": \"Signora Presidente, onorevoli colleghi, sottosegretario Iannone, in premessa consentitemi di ringraziare l'8a Commissione permanente per il lavoro svolto in queste settimane su un decreto-legge particolarmente importante. Il disegno di legge oggi in discussione reca infatti la conversione in legge del decreto-legge sul Piano Transizione 5.0, sulla produzione di energia da fonti rinnovabili e anche le cosiddette aree idonee. Per questo in apertura di seduta vorrei ringraziare il presidente della 8a Commissione Fazzone, i componenti della stessa, nonché il sottosegretario Barbaro per il lavoro che è stato svolto fino a ieri a tarda sera.\", \"chi\": \"Etelwardo Sigismondi\", \"persona\": \"it:person:senato:36424\", \"gruppo\": \"Fratelli d'Italia\", \"carica\": \"Relatore\", \"ramo\": \"senato\", \"data\": \"2026-01-08\", \"seduta\": 378, \"organo\": null, \"dibattito\": \"Discussione del disegno di legge:\", \"riassunto\": false, \"url\": \"https://www.senato.it/show-doc?leg=19&tipodoc=Resaula&id=1491987\", \"similarita\": 0.787}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:8acommissionepermanente:sed0215:tit00002:p1\", \"testo\": \"Per quanto riguarda le materie di interesse per l'8ª Commissione, vengono esaminate: le misure infrastrutturali e le politiche abitative; la strategia per la transizione digitale, nonché la transizione verde, la sicurezza energetica e la protezione ambientale (con particolare riferimento all'attuazione del PNIEC e del PNRR, al Piano Mattei e al potenziamento delle infrastrutture energetiche, alla protezione dell'ambiente e agli investimenti per un sistema idrico più efficiente e resiliente, alle strategie e agli strumenti per la mobilizzazione di capitale pubblico e privato per la transizione energetica ed ecologica).\\n\\nViene quindi dato conto delle raccomandazioni del Consiglio dell'Unione e\", \"chi\": \"Claudio Fazzone\", \"persona\": \"it:person:senato:4192\", \"gruppo\": \"Forza Italia - Berlusconi Presidente - PPE\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2025-10-07\", \"seduta\": 215, \"organo\": \"8ª Commissione permanente\", \"dibattito\": \"Documento programmatico di finanza pubblica 2025 e connessi allegati\", \"riassunto\": true, \"url\": null, \"similarita\": 0.779}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:8acommissionepermanente:sed0287:tit00006:p3\", \"testo\": \"Prendono parte alla votazione i senatori BASSO ( PD-IDP ), DI GIROLAMO ( M5S ), FAROLFI ( FdI ), FAZZONE ( FI-BP-PPE ), FREGOLENT ( IV-CR ), IRTO ( PD-IDP ), MATERA ( FdI ), MINASI ( LSP-PSd'Az ), NAVE ( M5S ), PETRUCCI ( FdI ), POTENTI ( LSP-PSd'Az ), ROSA ( FdI ), ROSSO ( FI-BP-PPE ), Aurora FLORIDIA ( Aut (SVP-PATT, Cb) ) (in sostituzione del senatore Rubbia), SALVITTI ( Cd'I-UDC-NM (NcI, CI, IaC)"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "vicepresidenti della 10ª Commissione permanente del Senato Affari sociali sanità lavoro previdenza",
+    "fonti": [
+     "documenti",
+     "interventi"
+    ],
+    "ramo": "senato",
+    "da": "2025-06-10",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"vicepresidenti della 10ª Commissione permanente del Senato Affari sociali sanità lavoro previdenza\", \"fonti\": [\"documenti\", \"interventi\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:10acommissionepermanente:sed0374:tit00006:p1\", \"testo\": \"Il presidente ZAFFINI comunica che, nel corso delle audizioni svolte in sede di Ufficio di Presidenza integrato dai rappresentanti dei Gruppi nell'ambito dell'esame congiunto dei disegni di legge nn. 287 e 1231 (esercizio fisico come forma di prevenzione e terapia), nonché sulle problematiche affrontante dagli assistenti sociali nell'espletamento delle loro funzioni, è stata consegnata documentazione che, ove nulla osti, sarà resa disponibile per la pubblica consultazione sulla pagina web della Commissione, al pari dell'ulteriore documentazione che sarà eventualmente consegnata in relazione a tali argomenti.\\n\\nLa Commissione prende atto.\\n\\nLa seduta termina alle ore 16,20.\", \"chi\": \"Francesco Zaffini\", \"persona\": \"it:person:senato:32732\", \"gruppo\": \"Fratelli d'Italia\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2026-02-03\", \"seduta\": 374, \"organo\": \"10ª Commissione permanente\", \"dibattito\": null, \"riassunto\": true, \"url\": null, \"similarita\": 0.764}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:3acommissionepermanente:sed0169:tit00002:p1\", \"testo\": \"Il presidente Stefania CRAXI ( FI-BP-PPE ), in sostituzione del senatore Spagnolli, relatore, impossibilitato a partecipare all'odierna seduta, illustra il disegno di legge n. 1730, già approvato dalla Camera dei deputati, adottato dalla Commissione di merito come testo base per il prosieguo della discussione congiunta con l'Atto Senato n. 1187, disegno di legge, anch'esso di iniziativa parlamentare e inerente alla stessa materia.\\n\\nIl disegno di legge in via di approvazione, composto da 4 articoli, è finalizzato a garantire il diritto all'assistenza sanitaria in territorio italiano, previo pagamento di un contributo su base annua, anche ai cittadini italiani regolarmente iscritti all'Anagraf\", \"chi\": \"Stefania Gabriella Anastasia Craxi\", \"persona\": \"it:person:senato:22914\", \"gruppo\": \"Forza Italia - Berlusconi Presidente - PPE\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2026-02-04\", \"seduta\": 169, \"organo\": \"3ª Commissione permanente\", \"dibattito\": \"Modifica all'articolo 19 della legge 23 dicembre 1978, n. 833, e altre disposizioni in materia di assistenza sanitaria in favore dei cittadini iscritti all'Anagrafe degli italiani residenti all'estero, residenti in Paesi che non appartengono all'Unione europea e non aderiscono all'Associazione europea di libero scambio\", \"riassunto\": true, \"url\": null, \"similarita\": 0.76}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:sed0423:int00029\", \"testo\": \"Signor Presidente, le Commissioni 2ª e 10ª riunite, nella seduta del 26 maggio scorso, hanno proseguito l'esame congiunto in sede referente dei disegni di legge n. 65 e connessi in materia di morte volontaria medicalmente "
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "elezione vicepresidenti 8ª Commissione Senato Fazzone",
+    "fonti": [
+     "documenti",
+     "interventi"
+    ],
+    "ramo": "senato",
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"elezione vicepresidenti 8ª Commissione Senato Fazzone\", \"fonti\": [\"documenti\", \"interventi\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:6acommissionepermanente:sed0062:tit00002:p1\", \"testo\": \"Prendono parte alla votazione i senatori BOCCIA ( PD-IDP ), BORGHESI ( LSP-PSd'Az ), BARCAIUOLO ( FdI ), in sostituzione del senatore Castelli, CROATTI ( M5S ), il presidente GARAVAGLIA ( LSP-PSd'Az ), LOSACCO ( PD-IDP ), LOTITO ( FI-BP-PPE ), MAFFONI ( FdI ), MELCHIORRE ( FdI ), ORSOMARSO ( FdI ), SALVITTI ( Cd'I-NM (UDC-CI-NcI-IaC)-MAIE ), TAJANI ( PD-IDP ), TUBETTI ( FdI ) e ZEDDA ( FdI ).\\n\\nRisultando 13 voti per il senatore Melchiorre e 1 voto per il senatore Lotito, risulta eletto il senatore Melchiorre.\\n\\nElezione di un Segretario\\n\\nLa Commissione procede all'elezione di un Segretario.\", \"chi\": \"Francesco Boccia\", \"persona\": \"it:person:senato:25555\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2023-07-20\", \"seduta\": 62, \"organo\": \"6ª Commissione permanente \", \"dibattito\": null, \"riassunto\": true, \"url\": null, \"similarita\": 0.809}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:7acommissionepermanente:sed0097:tit00001:p3\", \"testo\": \"Alla votazione partecipano i senatori: Vincenza ALOISIO ( M5S ), Carmela BUCALO ( FdI ), CASTIELLO ( M5S ), Elena CATTANEO ( Aut (SVP-PATT, Cb) ), Giulia COSENZA ( FdI ), CRISANTI ( PD-IDP ), DAMIANI ( FI-BP-PPE ) (in sostituzione del senatore Occhiuto), Anna Maria FALLUCCHI ( FdI ), GUIDI ( Cd'I-NM (UDC-CI-NcI-IaC)-MAIE ), MARCHESCHI ( FdI ), MARTI ( LSP-PSd'Az ), Tilde MINASI ( LSP-PSd'Az ) (in sostituzione del senatore Romeo), PAGANELLA ( LSP-PSd'Az ), PIRONDINI ( M5S ), Vincenza RANDO ( PD-IDP ), SALLEMI ( FdI ) (in sostituzione del senatore Iannone), Daniela SBROLLINI ( IV-C-RE ) e SPERANZON ( FdI ).\\n\\nLa proposta di nomina è approvata con 14 voti favorevoli, 3 astenuti e una scheda null\", \"chi\": \"Vincenza Aloisio\", \"persona\": \"it:person:senato:36381\", \"gruppo\": \"MoVimento 5 Stelle\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2024-01-24\", \"seduta\": 97, \"organo\": \"7ª Commissione permanente \", \"dibattito\": \"Proposta di nomina del Generale di brigata Giovanni Capasso a Direttore generale per il supporto all'attuazione dei programmi\", \"riassunto\": true, \"url\": null, \"similarita\": 0.803}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:7acommissionepermanente:sed0179:tit00001:p3\", \"testo\": \"Alla votazione partecipano i senatori: Vincenza ALOISIO ( M5S ), Dolores BEVILACQUA ( M5S ) (in sostituzione del senatore Castiello), Carmela BUCALO ( FdI ), CANTALAMESSA ( LSP-PSd'Az ) (in sostituzione del senatore Romeo), Giulia COSENZA ( FdI ), CRISANTI ( PD-IDP ), Cecilia D'ELIA ( PD-IDP ), DAMIANI ( FI-BP-PPE ) (in sostituzione del senatore Galliani), DE ROSA ( FI-BP-PPE ) (in sostituzione del senatore Occhiuto), Anna Maria FALLUCCHI ( FdI ), MARCHESCHI ( FdI ), MARTI ( LSP-PSd'Az ), PAGANELLA ( LSP-PSd'Az )"
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "elezione vicepresidenti 10ª Commissione Senato Zaffini",
+    "fonti": [
+     "documenti",
+     "interventi"
+    ],
+    "ramo": "senato",
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"elezione vicepresidenti 10ª Commissione Senato Zaffini\", \"fonti\": [\"documenti\", \"interventi\"], \"rami\": [\"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:6acommissionepermanente:sed0062:tit00002:p1\", \"testo\": \"Prendono parte alla votazione i senatori BOCCIA ( PD-IDP ), BORGHESI ( LSP-PSd'Az ), BARCAIUOLO ( FdI ), in sostituzione del senatore Castelli, CROATTI ( M5S ), il presidente GARAVAGLIA ( LSP-PSd'Az ), LOSACCO ( PD-IDP ), LOTITO ( FI-BP-PPE ), MAFFONI ( FdI ), MELCHIORRE ( FdI ), ORSOMARSO ( FdI ), SALVITTI ( Cd'I-NM (UDC-CI-NcI-IaC)-MAIE ), TAJANI ( PD-IDP ), TUBETTI ( FdI ) e ZEDDA ( FdI ).\\n\\nRisultando 13 voti per il senatore Melchiorre e 1 voto per il senatore Lotito, risulta eletto il senatore Melchiorre.\\n\\nElezione di un Segretario\\n\\nLa Commissione procede all'elezione di un Segretario.\", \"chi\": \"Francesco Boccia\", \"persona\": \"it:person:senato:25555\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2023-07-20\", \"seduta\": 62, \"organo\": \"6ª Commissione permanente \", \"dibattito\": null, \"riassunto\": true, \"url\": null, \"similarita\": 0.811}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:8acommissionepermanente:sed0214:tit00006:p3\", \"testo\": \"Prendono parte alla votazione i senatori BASSO ( PD-IDP ), DE PRIAMO ( FdI ), DI GIROLAMO ( M5S ), FAROLFI ( FdI ), FAZZONE ( FI-BP-PPE ), NAVE ( M5S ), PETRUCCI ( FdI ), ROSA ( FdI ), ROSSO ( FI-BP-PPE ), SIGISMONDI ( FdI ) e TUBETTI ( FdI ).\\n\\nLa proposta di parere favorevole sulla nomina della dottoressa Emanuela Zappone è approvata con 8 voti favorevoli, 2 voti contrari e un astenuto.\", \"chi\": \"Lorenzo Basso\", \"persona\": \"it:person:senato:29270\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2025-09-30\", \"seduta\": 214, \"organo\": \"8ª Commissione permanente\", \"dibattito\": \"Proposta di nomina della dottoressa Emanuela Zappone a presidente dell'Ente parco nazionale del Circeo\", \"riassunto\": true, \"url\": null, \"similarita\": 0.797}, {\"fonte\": \"intervento\", \"uri\": \"it:senato:19:som:6acommissionepermanente:sed0062:tit00002:p2\", \"testo\": \"Prendono parte alla votazione i senatori BOCCIA ( PD-IDP ), BORGHESI ( LSP-PSd'Az ), BARCAIUOLO ( FdI ), in sostituzione del senatore Castelli, CROATTI ( M5S ), il presidente GARAVAGLIA ( LSP-PSd'Az ), LOSACCO ( PD-IDP ), LOTITO ( FI-BP-PPE ), MAFFONI ( FdI ), MELCHIORRE ( FdI ), ORSOMARSO ( FdI ), SALVITTI ( Cd'I-NM (UDC-CI-NcI-IaC)-MAIE ), TAJANI ( PD-IDP ), TUBETTI ( FdI ) e ZEDDA ( FdI ).\\n\\nRisultando 11 voti per la senatrice Tubetti e 3 schede bianche, risulta eletta la senatrice Tubetti.\", \"chi\": \"Francesco Boccia\", \"persona\": \"it:person:senato:25555\", \"gruppo\": \"Partito Democratico - Italia Democratica e Progressista\", \"carica\": null, \"ramo\": \"senato\", \"data\": \"2023-07-20\", \"seduta\": 62, \"organo\": \"6ª Commissione permanente \", \"dibattito\": null, \"riassunto\": true, \"url\": null, \"similarita\": 0.796}"
+  }
+ ],
+ "strumenti": [
+  "elenco_sedute",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "seduta",
+  "seduta",
+  "seduta",
+  "cerca_interventi",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "cerca_per_significato"
+ ],
+ "tempo_s": 50.6,
+ "risposta_sistema": "Ho trovato e verificato i presidenti attuali e alcuni vicepresidenti. I dati consultati arrivano fino al 3 novembre 2026.\n\n- **Senato, 8ª Commissione** (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)  \n  - Presidente: **Claudio Fazzone** — Forza Italia - Berlusconi Presidente - PPE.  \n  - Vicepresidenti: il dato non è emerso in modo verificabile nei materiali già consultati.\n\n- **Senato, 9ª Commissione** (Industria, commercio, turismo, agricoltura e produzione agroalimentare)  \n  - Presidente: **Luca De Carlo** — Fratelli d’Italia.  \n  - Vicepresidente verificato: **Giorgio Maria Bergesio** — Lega Salvini Premier - Partito Sardo d’Azione.  \n  - Secondo vicepresidente: non emerso in modo verificabile nei materiali già consultati.\n\n- **Senato, 10ª Commissione** (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)  \n  - Presidente: **Francesco Zaffini** — Fratelli d’Italia.  \n  - Vicepresidenti: il dato non è emerso in modo verificabile nei materiali già consultati. Nei resoconti risulta che **Maria Cristina Cantù** ha presieduto una seduta il 9 aprile 2026, ma questo da solo non consente di attribuirle con certezza la vicepresidenza.\n\n- **Camera, X Commissione** (Attività produttive, commercio e turismo)  \n  - Presidente: **Alberto Luigi Gusmeroli** — Lega - Salvini Premier.  \n  - Vicepresidenti: **Ilaria Cavo** — Noi Moderati - MAIE - Centro Popolare; **Vinicio Giuseppe Guido Peluffo** — Partito Democratico - Italia Democratica e Progressista.\n\nPer completare senza margini d’incertezza la mappa, va verificata la composizione dell’**Ufficio di Presidenza** nelle pagine ufficiali delle singole Commissioni sui siti di Senato e Camera, oppure nei resoconti della seduta di rinnovo degli uffici di presidenza del giugno 2025.",
+ "eventi": {
+  "status": 2,
+  "tool": 70,
+  "dati": 35,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

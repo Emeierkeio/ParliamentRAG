@@ -1,0 +1,91 @@
+{
+ "id": "LOB-006",
+ "domanda": "Mi servono presidenti e vicepresidenti della 8ª, 9ª e 10ª Commissione del Senato e della X Attività produttive della Camera, per la nostra mappa degli interlocutori.",
+ "categoria": "commissioni",
+ "ramo": "entrambi",
+ "tipo_risposta": "elenco",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Presidenti attesi: Fazzone (8ª), De Carlo (9ª), Zaffini (10ª), Gusmeroli (X). Le cariche hanno doppia riga per il rinnovo di metà legislatura (10/6/2025).",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Dati aggiornati al **4 novembre 2026**.\n\n- **Senato — 8ª Commissione** (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)  \n  - Presidente: **Claudio Fazzone** (FI-BP-PPE)  \n  - Vicepresidenti: **Lorenzo Basso** (PD-IDP); **Gianni Rosa** (FdI)\n\n- **Senato — 9ª Commissione** (Industria, commercio, turismo, agricoltura e produzione agroalimentare)  \n  - Presidente: **Luca De Carlo** (FdI)  \n  - Vicepresidenti: **Silvia Fregolent** (IV-CR); **Giorgio Maria Bergesio** (LSP-PSd’Az)\n\n- **Senato — 10ª Commissione** (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)  \n  - Presidente: **Francesco Zaffini** (FdI)  \n  - Vicepresidenti: **Maria Cristina Cantù** (LSP-PSd’Az); **Orfeo Mazzella** (M5S)\n\n- **Camera — X Commissione** (Attività produttive)  \n  - Presidente: **Alberto Luigi Gusmeroli** (LEGA)  \n  - Vicepresidenti: **Vinicio Giuseppe Guido Peluffo** (PD-IDP); **Ilaria Cavo** (NM(N-C-U-I)M-CP)",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "organo",
+  "organo",
+  "organo",
+  "organo"
+ ],
+ "errori": [],
+ "tempo_s": 5.8,
+ "riferimento": {
+  "risposta": "Cariche in corso al 2/11/2026 (dopo il rinnovo del 10/6/2025). Senato, 8ª Commissione (Ambiente, energia, lavori pubblici, comunicazioni): presidente Claudio Fazzone (FI-BP-PPE); vicepresidenti Lorenzo Basso (PD-IDP) e Gianni Rosa (FdI). 9ª Commissione (Industria, commercio, turismo, agricoltura): presidente Luca De Carlo (FdI); vicepresidenti Giorgio Maria Bergesio (LSP-PSd'Az) e Silvia Fregolent (IV-CR). 10ª Commissione (Affari sociali, sanità, lavoro): presidente Francesco Zaffini (FdI); vicepresidenti Maria Cristina Cantù (LSP-PSd'Az) e Orfeo Mazzella (M5S). Camera, X Attività produttive: presidente Alberto Luigi Gusmeroli (Lega); vicepresidenti Ilaria Cavo (Noi Moderati) e Vinicio Peluffo (PD-IDP).",
+  "stato": "calcolata",
+  "limiti": "Cariche = office con title chair o vice_chair, aperte al 2/11/2026; gruppo = group_at alla stessa data. I segretari non sono richiesti e sono esclusi."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 5.8
+ },
+ "causa_probabile": "strumenti",
+ "note": "Tutti i presidenti e i vicepresidenti delle quattro commissioni, con il gruppo.",
+ "prima": {
+  "risposta_sistema": "Ho trovato e verificato i presidenti attuali e alcuni vicepresidenti. I dati consultati arrivano fino al 3 novembre 2026.\n\n- **Senato, 8ª Commissione** (Ambiente, transizione ecologica, energia, lavori pubblici, comunicazioni, innovazione tecnologica)  \n  - Presidente: **Claudio Fazzone** — Forza Italia - Berlusconi Presidente - PPE.  \n  - Vicepresidenti: il dato non è emerso in modo verificabile nei materiali già consultati.\n\n- **Senato, 9ª Commissione** (Industria, commercio, turismo, agricoltura e produzione agroalimentare)  \n  - Presidente: **Luca De Carlo** — Fratelli d’Italia.  \n  - Vicepresidente verificato: **Giorgio Maria Bergesio** — Lega Salvini Premier - Partito Sardo d’Azione.  \n  - Secondo vicepresidente: non emerso in modo verificabile nei materiali già consultati.\n\n- **Senato, 10ª Commissione** (Affari sociali, sanità, lavoro pubblico e privato, previdenza sociale)  \n  - Presidente: **Francesco Zaffini** — Fratelli d’Italia.  \n  - Vicepresidenti: il dato non è emerso in modo verificabile nei materiali già consultati. Nei resoconti risulta che **Maria Cristina Cantù** ha presieduto una seduta il 9 aprile 2026, ma questo da solo non consente di attribuirle con certezza la vicepresidenza.\n\n- **Camera, X Commissione** (Attività produttive, commercio e turismo)  \n  - Presidente: **Alberto Luigi Gusmeroli** — Lega - Salvini Premier.  \n  - Vicepresidenti: **Ilaria Cavo** — Noi Moderati - MAIE - Centro Popolare; **Vinicio Giuseppe Guido Peluffo** — Partito Democratico - Italia Democratica e Progressista.\n\nPer completare senza margini d’incertezza la mappa, va verificata la composizione dell’**Ufficio di Presidenza** nelle pagine ufficiali delle singole Commissioni sui siti di Senato e Camera, oppure nei resoconti della seduta di rinnovo degli uffici di presidenza del giugno 2025.",
+  "strumenti": [
+   "elenco_sedute",
+   "cerca_interventi",
+   "cerca_interventi",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "seduta",
+   "seduta",
+   "seduta",
+   "cerca_interventi",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "cerca_persone",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "scheda_persona",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_per_significato",
+   "cerca_per_significato"
+  ],
+  "tempo_s": 50.6,
+  "punteggi": {
+   "correttezza": 1,
+   "fonti": 0,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 50.6
+  },
+  "note": "I quattro presidenti giusti (Fazzone, De Carlo, Zaffini, Gusmeroli) e i vicepresidenti della X; della 9ª solo Bergesio, della 8ª e 10ª nessuno. Primo giro: nessuna risposta dopo 8 passi."
+ }
+}

@@ -1,0 +1,89 @@
+{
+ "id": "RIC-017",
+ "trappola": false,
+ "domanda": "Quante proteste e commenti ricevono in Aula gli interventi dei ministri rispetto a quelli dei deputati?",
+ "categoria": "reazioni",
+ "tipo_risposta": "conteggio",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "speech.as_office distingue chi parla come membro del governo. Al Senato i membri del governo hanno id propri legati con person_same_as.",
+ "endpoint": "agente",
+ "inizio": 1793752943.567769,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "proteste",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0737:tit00040.sub00010.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di una interrogazione.\", \"person\": {\"uri\": \"it:person:camera:300624\", \"name\": \"Alberto Balboni\", \"in_office\": false}, \"speaker_label\": \"ALBERTO BALBONI\", \"snippet\": \"avranno maturato meno di 36 mesi di servizio a tempo determinato.\\n\\nPassando agli organici degli uffici notificazioni, esecuzioni e [[protesti]], la scopertura si attesta attualmente al 32,24 per cento. Al riguardo, occorre precisare che le dotazioni straordinarie destinate\"}, {\"uri\": \"it:camera:19:sed0737:tit00040.sub00010.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Svolgimento di una interrogazione.\", \"person\": {\"uri\": \"it:person:camera:307388\", \"name\": \"Valentina D'Orso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307388&legislatura=19\"}, \"speaker_label\": \"VALENTINA D'ORSO\", \"snippet\": \"interrogazione era puntuale: riguardava uno specifico concorso, appunto, per assumere unità di personale presso gli uffici notificazioni, esecuzioni e [[protesti]] e poi c'era un'aliquota anche più consistente che riguardava, invece, il profilo di assistenti giudiziari, mentre il sottosegretario\"}, {\"uri\": \"it:camera:19:sed0737:tit00050.sub00010.int00040\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Discussione del disegno di legge: S. 2029 - Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche (Approvato dal Senato) (A.C. 3148).\", \"person\": {\"uri\": \"it:person:camera:309140\", \"name\": \"Antonio Ferrara\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=309140&legislatura=19\"}, \"speaker_label\": \"ANTONIO FERRARA\", \"snippet\": \"nuovi interventi, anche a seguito delle mobilitazioni della categoria. Ne prendiamo atto, ma la domanda rimane: perché arrivare alle [[proteste]] prima di garantire risposte adeguate? Ministro Salvini, un credito d'imposta non può essere scritto in Gazzetta Ufficiale\"}, {\"uri\": \"it:camera:19:sed0737:tit00050.sub00010.int00080\", \"sitting\": {\""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "commenti",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0737:tit00080.int00120\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307250\", \"name\": \"Riccardo Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307250&legislatura=19\"}, \"speaker_label\": \"RICCARDO RICCIARDI\", \"snippet\": \"chissà cosa dicono, come se l'arabo non si potesse tradurre (Applausi dei deputati del gruppo MoVimento 5 Stelle – [[Commenti]] della deputata Kelany). Secondo noi, il problema non è Stefania Ascari che porta delle persone che danno dei messaggi, alla\"}, {\"uri\": \"it:camera:19:sed0737:tit00080.int00160\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307250\", \"name\": \"Riccardo Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307250&legislatura=19\"}, \"speaker_label\": \"RICCARDO RICCIARDI\", \"snippet\": \"proteste, con il vostro Governo, sbattendola e criminalizzandola immediatamente, perché voi siete garantisti a giorni alterni: quando dovete [[commentare]] la sentenza o un procedimento nei confronti di un politico o di un ricco, “attendiamo la magistratura”; quando è un altro\"}, {\"uri\": \"it:camera:19:sed0737:tit00080.int00200\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:308810\", \"name\": \"Marco Grimaldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308810&legislatura=19\"}, \"speaker_label\": \"MARCO GRIMALDI\", \"snippet\": \"Verdi e Sinistra, Partito Democratico-Italia Democratica e Progressista, MoVimento 5 Stelle e Azione-Popolari Europeisti Riformatori-Renew Europe - [[Commenti]] di deputati del gruppo Fratelli d'Italia – La deputata Caretta: “Di che articolo sta parlando?” ) -, hanno portato qua alla Camera\"}, {\"uri\": \"it:camera:19:sed0737:tit00080.int00320\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "proteste dei deputati",
+    "chamber": "camera",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0737:tit00080.int00120\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307250\", \"name\": \"Riccardo Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307250&legislatura=19\"}, \"speaker_label\": \"RICCARDO RICCIARDI\", \"snippet\": \"[[deputati]] dei gruppi Partito Democratico-Italia Democratica e Progressista e Alleanza Verdi e Sinistra - Applausi ironici dei [[deputati]] del gruppo Fratelli d'Italia). Voi citate i viaggi che faceva Stefania Ascari quando nessuno sapeva di cosa accadeva in Israele ... reato, la sbattete sui social continuamente , criminalizzandola, alla gogna per la vostra propaganda … Per la vostra propaganda, avete ([[Proteste]] dei [[deputati]] Kelany e Padovani - La [[deputata]] Kelany si dirige verso l'uscita dell'Aula dicendo: “Presidente, ci dà dei razzisti\"}, {\"uri\": \"it:camera:19:sed0737:tit00080.int00160\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:307250\", \"name\": \"Riccardo Ricciardi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307250&legislatura=19\"}, \"speaker_label\": \"RICCARDO RICCIARDI\", \"snippet\": \"macchinazione mediatica per dire che una persona era il capo di Al Qaeda in Italia e sobillava le [[proteste]], con il vostro Governo, sbattendola e criminalizzandola immediatamente, perché voi siete garantisti a giorni alterni: quando dovete commentare la sentenza ... vostra complicità con il genocidio del popolo palestinese, attaccate, insieme ai giornali di Angelucci, un nostro collega, una [[deputata]] come Stefania Ascari che si mobilita per il popolo palestinese, e cercate di trovare delle colpe perché qualcuno si sta mobilitando\"}, {\"uri\": \"it:camera:19:sed0737:tit00080.int00200\", \"sitting\": {\"uri\": \"it:camera:19:sed0737\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 737, \"date\": \"2026-11-03\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Per richiami al Regolamento e sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:308810\", \"name\": \"Marco Grimaldi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "commenti",
+    "chamber": "senato",
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:senato:19:sed0469:int00041\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione dalla sede redigente del disegno di legge n.\", \"person\": {\"uri\": \"it:person:senato:36428\", \"name\": \"Raffaele Speranzon\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036428.jpg\"}, \"speaker_label\": \"SPERANZON\", \"snippet\": \"giuridico; appartengono alla Nazione come comunità, perché all'interno di quell'archivio c'è la nostra Costituzione, collega Floridia. ([[Commenti]]).\\n\\nPRESIDENTE.Senatore Licheri, la prego, il suo Gruppo si è già espresso\"}, {\"uri\": \"it:senato:19:sed0469:int00074\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione dalla sede redigente del disegno di legge n.\", \"person\": {\"uri\": \"it:person:senato:33022\", \"name\": \"Manfredi Potenti\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:33\", \"name\": \"Lega Salvini Premier - Partito Sardo d'Azione\", \"short_name\": \"LSP-PSd'Az\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00033022.jpg\"}, \"speaker_label\": \"POTENTI\", \"snippet\": \"azione intellettuale che afferisce alla figura del giornalista, con il ripristino di un filtro professionale capace di riassumere e [[commentare]] la notizia.\\n\\nProverò a dividere in tre momenti la rapida evoluzione normativa di questi ultimi anni. In un primo momento\"}, {\"uri\": \"it:senato:19:sed0469:int00132\", \"sitting\": {\"uri\": \"it:senato:19:sed0469\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 469, \"date\": \"2026-10-28\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Interventi su argomenti non iscritti all'ordine del giorno\", \"person\": {\"uri\": \"it:person:senato:36421\", \"name\": \"Raoul Russo\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00036421.jpg\"}, \"speaker_label\": \"RUSSO\", \"snippet\": \"tutte persone perbene, che lui cavalcava la protesta e che se qualcuno avesse potuto semplicemente ipotizzare… .\\n\\nPRESIDENTE.Colleghi, per cortesia. ([[Commenti]]\"}, {\"uri\": \"it:senato:19:sed0467:int00069\", \"sitting\": {\"uri\": \"it:senato:19:sed0467\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 467, \"date\": \"2026-10-15\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Ripresa della discussione del disegno di legge n.\", \"person\": {\"uri\": \"it:person:senato:29425\", \"name\": \"Andrea Giorgis\", \"chamber\": \"senato\", \"in_office"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "tempo_s": 15.3,
+ "risposta_sistema": "Non è possibile ricavare un confronto numerico attendibile dai dati disponibili. Nei resoconti d’Aula proteste e commenti compaiono come annotazioni nel testo, non come eventi strutturati e conteggiabili; inoltre una ricerca per parole includerebbe anche usi non pertinenti, per esempio quando un oratore parla di proteste avvenute fuori dal Parlamento o usa il verbo “commentare”.\n\nI resoconti mostrano che queste reazioni sono annotate sia durante interventi di parlamentari sia durante interventi del Governo. Per esempio, nella seduta del Senato del 14 ottobre 2026, l’intervento della presidente del Consiglio Giorgia Meloni reca più annotazioni di “Commenti”; alla Camera, nelle sedute più recenti, commenti e proteste risultano frequentemente annotati anche negli interventi dei deputati.\n\nPer una misura rigorosa servirebbe una codifica sistematica dei resoconti stenografici ufficiali di Camera e Senato: per ogni intervento, ruolo dell’oratore al momento della seduta e numero di annotazioni di protesta/commento. I dati consultabili arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 8,
+  "dati": 4,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

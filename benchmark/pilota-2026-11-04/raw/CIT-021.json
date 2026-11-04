@@ -1,0 +1,25 @@
+{
+ "id": "CIT-021",
+ "trappola": true,
+ "domanda": "che tempo fa a Roma domani?",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Fuori dominio: rifiutare con garbo e dire cosa il sistema sa fare.",
+ "endpoint": "agente",
+ "inizio": 1793752470.601957,
+ "endpoint_usato": "/api/agente",
+ "dati": [],
+ "strumenti": [],
+ "tempo_s": 3.5,
+ "risposta_sistema": "Non posso consultare dati meteorologici: posso aiutare con informazioni su Camera e Senato nella XIX legislatura.",
+ "eventi": {
+  "status": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

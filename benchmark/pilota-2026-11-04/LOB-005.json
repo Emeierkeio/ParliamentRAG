@@ -1,0 +1,43 @@
+{
+ "id": "LOB-005",
+ "domanda": "Chi presiede oggi la XIII Commissione Agricoltura della Camera? A me risultava Mirco Carloni.",
+ "categoria": "commissioni",
+ "ramo": "camera",
+ "tipo_risposta": "fatto",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Dal 13/10/2026 la presidenza è di Francesco Bruzzone. Nei dati resta una riga di Carloni senza data di fine: il sistema deve usare la carica più recente e non indicare due presidenti.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "No: Mirco Carloni non presiede oggi la XIII Commissione Agricoltura. Il suo mandato da deputato è terminato il **19 ottobre 2026**, per dimissioni dovute a incompatibilità.\n\nNei dati disponibili, Carloni risulta presidente della Commissione fino al **9 settembre 2026**. Non è indicato chi gli sia subentrato alla presidenza; l’ultima seduta della XIII Commissione presente è del 28 ottobre e non riporta il nominativo di chi l’ha presieduta. I dati parlamentari arrivano fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 10,
+  "dati": 5,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "elenco_sedute",
+  "seduta"
+ ],
+ "errori": [],
+ "tempo_s": 13.5,
+ "riferimento": {
+  "risposta": "Oggi presiede la XIII Commissione (Agricoltura) Francesco Bruzzone (Lega), presidente dal 13/10/2026. Mirco Carloni l'ha presieduta dal 9/11/2022 al 9/9/2026 (rinnovo di metà legislatura il 10/6/2025); il suo mandato di deputato è finito il 19/10/2026 per dimissioni per incompatibilità.",
+  "stato": "calcolata",
+  "limiti": "Si prende la presidenza con la data di inizio più recente."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 13.5
+ },
+ "causa_probabile": "dati",
+ "note": "Dice giustamente che Carloni non presiede più (fino al 9/9/2026, dimesso il 19/10), ma non trova Bruzzone."
+}

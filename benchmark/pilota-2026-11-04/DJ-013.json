@@ -1,0 +1,56 @@
+{
+ "id": "DJ-013",
+ "domanda": "Quali parlamentari intervengono di più in Aula? Top 20 per numero di interventi e per parole, Camera.",
+ "categoria": "interventi",
+ "ramo": "camera",
+ "tipo_risposta": "classifica",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Escludere i Presidenti di turno (speaker_label PRESIDENTE). Gli interventi in commissione vengono dal sommario e non si sommano a quelli d'Aula.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Dall’inizio della XIX legislatura al **3 novembre 2026**, in Aula alla Camera sono registrati **125.393 turni di parola** e **25.693.730 parole**. I gruppi indicati sono quelli attuali.\n\n| # | Per numero di interventi | Interventi | Per numero di parole | Parole |\n|---:|---|---:|---|---:|\n| 1 | Giorgio Mulè (FI-PPE) | 18.449 | Giorgio Mulè (FI-PPE) | 741.646 |\n| 2 | Sergio Costa (M5S) | 16.268 | Anna Ascani (PD-IDP) | 640.878 |\n| 3 | Anna Ascani (PD-IDP) | 14.981 | Sergio Costa (M5S) | 639.819 |\n| 4 | Fabio Rampelli (FDI) | 14.004 | Fabio Rampelli (FDI) | 561.618 |\n| 5 | Lorenzo Fontana (LEGA) | 4.582 | Marco Grimaldi (AVS) | 418.698 |\n| 6 | Marco Grimaldi (AVS) | 1.201 | Andrea Casu (PD-IDP) | 343.362 |\n| 7 | Roberto Giachetti (IV-CR) | 970 | Roberto Giachetti (IV-CR) | 327.679 |\n| 8 | Federico Fornaro (PD-IDP) | 806 | Filiberto Zaratti (AVS) | 296.221 |\n| 9 | Francesco Emilio Borrelli (AVS) | 708 | Francesca Ghirra (AVS) | 265.236 |\n| 10 | Andrea Casu (PD-IDP) | 668 | Giuseppe Bicchielli (FI-PPE) | 243.733 |\n| 11 | Andrea Quartini (M5S) | 605 | Francesco Emilio Borrelli (AVS) | 234.828 |\n| 12 | Angelo Bonelli (AVS) | 598 | Angelo Bonelli (AVS) | 230.884 |\n| 13 | Francesca Ghirra (AVS) | 582 | Devis Dori (AVS) | 229.436 |\n| 14 | Filiberto Zaratti (AVS) | 578 | Valentina D’Orso (M5S) | 226.668 |\n| 15 | Valentina D’Orso (M5S) | 538 | Andrea Quartini (M5S) | 217.472 |\n| 16 | Antonino Iaria (M5S) | 531 | Elisabetta Piccolotti (AVS) | 198.153 |\n| 17 | Alfonso Colucci (M5S) | 530 | Luana Zanella (AVS) | 189.418 |\n| 18 | Benedetto Della Vedova (Misto — +Europa) | 495 | Giorgia Meloni (FDI) | 182.909 |\n| 19 | Luana Zanella (AVS) | 492 | Benedetto Della Vedova (Misto — +Europa) | 165.657 |\n| 20 | Riccardo Ricciardi (M5S) | 485 | Alfonso Colucci (M5S) | 162.766 |\n\nUn “intervento” è un turno di parola nel resoconto d’Aula; le parole sono contate come parti del testo separate da spazi. La graduatoria include anche gli interventi svolti con ruoli di presidenza, Governo o relatore.",
+ "eventi": {
+  "status": 1,
+  "tool": 4,
+  "dati": 2,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "conta_interventi",
+  "conta_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 18.2,
+ "riferimento": {
+  "risposta": "Camera, Aula XIX (sedute fino al 30/10/2026), presidenti di turno e membri del governo esclusi. Top 20 per numero di interventi: 1 Marco Grimaldi (AVS) 1.194; 2 Roberto Giachetti (IV-CR) 957; 3 Federico Fornaro (PD-IDP) 793; 4 Francesco Emilio Borrelli (AVS) 708; 5 Andrea Casu (PD-IDP) 658; 6 Andrea Quartini (M5S) 598; 7 Angelo Bonelli (AVS) 597; 8 Filiberto Zaratti (AVS) 575; 9 Francesca Ghirra (AVS) 569; 10 Valentina D'Orso (M5S) 536; 11 Antonino Iaria (M5S) 530; 12 Alfonso Colucci (M5S) 528; 13 Benedetto Della Vedova (Misto-+Europa) 490; 14 Luana Zanella (AVS) 487; 15 Riccardo Ricciardi (M5S) 482; 16 Devis Dori (AVS) 453; 17 Elisabetta Piccolotti (AVS) 440; 18 Enrica Alifano (M5S) 398; 19 Emma Pavanelli (M5S) 395; 20 Debora Serracchiani (PD-IDP) 379. Top 20 per parole: 1 Grimaldi 416.005; 2 Casu 339.769; 3 Giachetti 320.990; 4 Zaratti 293.609; 5 Ghirra 260.293; 6 Giuseppe Bicchielli (FI-PPE) 238.302; 7 Borrelli 234.828; 8 Bonelli 230.820; 9 D'Orso 225.437; 10 Dori 221.463; 11 Quartini 215.002; 12 Piccolotti 197.670; 13 Zanella 187.136; 14 Della Vedova 162.881; 15 Alfonso Colucci 162.118; 16 Mauro Del Barba (IV-CR) 161.657; 17 Ilaria Cavo (NM) 159.952; 18 Nicola Fratoianni (AVS) 152.567; 19 Fabrizio Benzoni (Azione) 152.350; 20 Elena Bonetti (Azione) 150.126.",
+  "stato": "calcolata",
+  "limiti": "Solo sedute d'Aula della Camera con resoconto (736). Intervento = riga di speech con persona, senza as_office (esclude PRESIDENTE) e con gruppo dichiarato nel resoconto (esclude chi parla come membro del governo). Parole = parole del testo canonico. Gruppo = l'ultimo o l'attuale di membership, componente del Misto quando c'è. Una replica breve conta come un intervento."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 18.2
+ },
+ "causa_probabile": "strumenti",
+ "note": "Classifica con i presidenti di turno (Mulè, Costa, Ascani, Rampelli, Fontana) che il riferimento esclude; dal sesto in giù gli stessi nomi del riferimento. Corretta poi la descrizione dello strumento (role=parlamentare per le classifiche).",
+ "prima": {
+  "risposta_sistema": "Non posso produrre una top 20 verificabile con i dati disponibili: le schede individuali della Camera riportano il **numero totale di interventi**, ma non una classifica complessiva né il **numero di parole pronunciate** per deputato. Le ricerche nei resoconti restituiscono inoltre risultati paginati, non un totale aggregabile per tutti i deputati.\n\nPer esempio, la scheda ufficiale di Davide Aiello indica 280 interventi, ma non le parole complessive e non permette di stabilirne la posizione rispetto all’intera Camera: [dati Camera](http://dati.camera.it/ocd/persona.rdf/p307394).\n\nI dati parlamentari disponibili arrivano fino alla seduta del **3 novembre 2026**.",
+  "strumenti": [
+   "cerca_persone",
+   "scheda_persona"
+  ],
+  "tempo_s": 12.5,
+  "punteggi": {
+   "correttezza": 0,
+   "fonti": 0,
+   "garanzie": null,
+   "trappola": null,
+   "tempo_s": 12.5
+  },
+  "note": "Non dà la classifica (riferimento: Grimaldi 1.194…). Lo dice."
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "id": "AULA-017",
+ "domanda": "Quali ministri hanno risposto al question time della Camera nell'ultimo mese, e quale gruppo aveva presentato ciascuna interrogazione?",
+ "categoria": "sindacato_ispettivo",
+ "ramo": "camera",
+ "tipo_risposta": "elenco",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "Argomenti «Svolgimento di interrogazioni a risposta immediata» (sedute 722, 727, 730, 735). Alla Camera as_office è vuoto per i ministri: la carica sta all'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»).",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Nel periodo 4 ottobre–3 novembre 2026 si sono svolti tre question time alla Camera: 14, 21 e 28 ottobre. I ministri intervenuti e i gruppi proponenti delle interrogazioni sono stati:\n\n- **14 ottobre**\n  - **Orazio Schillaci**, ministro della Salute: **PD-IDP** e **Italia Viva – Casa Riformista**.\n  - **Adolfo Urso**, ministro delle Imprese e del made in Italy: **Futuro Nazionale Vannacci – Free** (componente del Misto), **Azione – Popolari Europeisti Riformatori – Renew Europe**, **Forza Italia – Berlusconi Presidente – PPE**, **Movimento 5 Stelle**, **Fratelli d’Italia**, **Lega – Salvini Premier**, **Noi Moderati – MAIE – Centro Popolare** e **Alleanza Verdi e Sinistra**.\n\n- **21 ottobre**\n  - **Adolfo Urso**, ministro delle Imprese e del made in Italy: **PD-IDP**.\n  - **Antonio Tajani**, ministro degli Affari esteri e della cooperazione internazionale: **+Europa** (componente del Misto) e **Forza Italia – Berlusconi Presidente – PPE**.\n  - **Luca Ciriani**, ministro per i Rapporti con il Parlamento: **Azione – Popolari Europeisti Riformatori – Renew Europe**.\n  - **Carlo Nordio**, ministro della Giustizia: **Lega – Salvini Premier** e **Fratelli d’Italia**.\n  - **Gianmarco Mazzi**, ministro del Turismo: **Alleanza Verdi e Sinistra**.\n  - **Paolo Zangrillo**, ministro per la Pubblica amministrazione: **Movimento 5 Stelle** e **Noi Moderati – MAIE – Centro Popolare**.\n  - **Francesco Lollobrigida**, ministro dell’Agricoltura, della sovranità alimentare e delle foreste: **Italia Viva – Casa Riformista**.\n\n- **28 ottobre**\n  - **Eugenia Roccella**, ministra per la Famiglia, la natalità e le pari opportunità: **PD-IDP**.\n  - **Luca Ciriani**, ministro per i Rapporti con il Parlamento: **Futuro Nazionale Vannacci – Free** (componente del Misto), **Fratelli d’Italia**, **Forza Italia – Berlusconi Presidente – PPE**, **Lega – Salvini Premier**, **Movimento 5 Stelle**, **Alleanza Verdi e Sinistra**, **Italia Viva – Casa Riformista**, **Noi Moderati – MAIE – Centro Popolare** e **Azione – Popolari Europeisti Riformatori – Renew Europe**.\n\nI dati delle sedute arrivano fino al **3 novembre 2026**.",
+ "eventi": {
+  "status": 1,
+  "tool": 36,
+  "dati": 18,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "elenco_sedute",
+  "seduta",
+  "seduta",
+  "seduta",
+  "seduta",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 40.4,
+ "riferimento": {
+  "risposta": "Dal 2/10 al 2/11/2026 la Camera ha svolto 4 question time (sedute 722 del 7/10, 727 del 14/10, 730 del 21/10, 735 del 28/10), con 40 interrogazioni. Hanno risposto: 7/10 Salvini (PD-IDP, IV-CR, Lega, AVS), Lollobrigida (M5S, FdI, Noi Moderati), Bernini (FI-PPE), Abodi (Azione, Misto-+Europa); 14/10 Schillaci (PD-IDP, IV-CR), Urso (Misto-Futuro Nazionale Vannacci, Azione, FI-PPE, M5S, FdI, AVS, Noi Moderati, Lega); 21/10 Urso (PD-IDP), Tajani (Misto-+Europa, FI-PPE), Ciriani (Azione), Nordio (Lega, FdI), Mazzi (AVS), Zangrillo (M5S, Noi Moderati), Lollobrigida (IV-CR); 28/10 Roccella (PD-IDP), Ciriani (Misto-Futuro Nazionale Vannacci, FdI, FI-PPE, Lega, M5S, IV-CR, AVS, Noi Moderati, Azione). Il gruppo è quello del deputato che illustra l'interrogazione.",
+  "stato": "calcolata",
+  "limiti": "«Ultimo mese» = dal 2/10 al 2/11/2026 (ultimo resoconto d'Aula: 30/10). Le interrogazioni a risposta immediata non sono legate agli atti (agenda_item_act vuoto per questi argomenti): il gruppo presentatore si ricava dal gruppo dichiarato (as_group) del deputato che illustra, non dai firmatari dell'atto. La carica del ministro non è in as_office: si legge dall'inizio del testo dell'intervento («, Ministro delle Imprese e del made in Italy.»)."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 0,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 40.4
+ },
+ "causa_probabile": "prompt",
+ "note": "Abbinamenti ministro-gruppo giusti per il 14, 21 e 28/10; manca il question time del 7/10 (dentro l'ultimo mese). Nessun link."
+}

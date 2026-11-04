@@ -1,0 +1,737 @@
+{
+ "id": "PARL-043",
+ "trappola": false,
+ "domanda": "Quali membri del Governo sono anche deputati, e quante votazioni hanno fatto in questa legislatura?",
+ "categoria": "governo",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "media",
+ "garanzie": [],
+ "note": "Missioni da incarico di governo: non sono assenze.",
+ "endpoint": "agente",
+ "inizio": 1793752934.578701,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Meloni",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Tajani",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:308838\", \"name\": \"Antonio Tajani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308838&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Giorgetti",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Lollobrigida",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307463\", \"name\": \"Francesco Lollobrigida\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307463&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Zangrillo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Roccella",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:302748\", \"name\": \"Eugenia Maria Roccella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302748&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Locatelli",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Foti",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:50204\", \"name\": \"Tommaso Foti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50204&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Sisto",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Cirielli",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:300319\", \"name\": \"Edmondo Cirielli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300319&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Leo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:300444\", \"name\": \"Maurizio Leo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300444&legislatura=19\"}, {\"uri\": \"it:person:camera:308893\", \"name\": \"Eleonora Evi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308893&legislatura=19\"}, {\"uri\": \"it:person:camera:307348\", \"name\": \"Leonardo Donno\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307348&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Rixi",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:304521\", \"name\": \"Edoardo Rixi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=304521&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Bellucci",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307426\", \"name\": \"Maria Teresa Bellucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307426&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Gava",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307138\", \"name\": \"Vannia Gava\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307138&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Molteni",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:302762\", \"name\": \"Nicola Molteni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302762&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Prisco",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307452\", \"name\": \"Emanuele Prisco\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307452&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Ferro",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307567\", \"name\": \"Wanda Ferro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307567&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Delmastro",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307479\", \"name\": \"Andrea Delmastro delle Vedove\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307479&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "D'Eramo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "La Pietra",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Frassinetti",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:301457\", \"name\": \"Paola Frassinetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301457&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Bignami",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Siracusano",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307402\", \"name\": \"Matilde Siracusano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307402&legislatura=19\"}]"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:302103"
+   },
+   "result": "{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\", \"given_name\": \"Giorgia\", \"family_name\": \"Meloni\", \"gender\": \"F\", \"birth_date\": \"1977-01-15\", \"birth_place\": \"Roma\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302103\", \"same_as\": [\"it:person:senato:23006\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"ABRUZZO - P01\", \"college\": \"ABRUZZO - U03\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2024-10-31\"}, {\"target\": \"it:camera:19:body:o19_3501\", \"target_name\": \"I Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-10-31\"}], \"offices\": [{\"target\": \"it:gov:202\", \"target_name\": \"I Governo Meloni\", \"title\": \"prime_minister\", \"start_date\": \"2022-10-21\"}, {\"target\": \"it:gov:202:og202_665\", \"target_name\": \"Ministero del Turismo\", \"title\": \"minister\", \"start_date\": \"2026-03-26\", \"end_date\": \"2026-04-03\"}], \"counts\": {\"speeches\": 228, \"ballots\": 20257, \"ballots_cast\": 14, \"ballots_mission\": 19829, \"bills_first_signer\": 175, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308838"
+   },
+   "result": "{\"uri\": \"it:person:camera:308838\", \"name\": \"Antonio Tajani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308838&legislatura=19\", \"given_name\": \"Antonio\", \"family_name\": \"Tajani\", \"gender\": \"M\", \"birth_date\": \"1953-08-04\", \"birth_place\": \"Roma\", \"profession\": \"Giornalista professionista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308838\", \"same_as\": [\"it:person:senato:36609\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-05\", \"constituency\": \"LAZIO 1 - P02\", \"college\": \"LAZIO 1 - U08\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202\", \"target_name\": \"I Governo Meloni\", \"title\": \"deputy_prime_minister\", \"start_date\": \"2022-10-23\"}, {\"target\": \"it:gov:202:og202_504\", \"target_name\": \"Ministero degli Affari Esteri e della Cooperazione Internazionale\", \"title\": \"minister\", \"start_date\": \"2022-10-23\"}], \"counts\": {\"speeches\": 380, \"ballots\": 20257, \"ballots_cast\": 361, \"ballots_mission\": 19470, \"bills_first_signer\": 115, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:50115"
+   },
+   "result": "{\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\", \"given_name\": \"Giancarlo\", \"family_name\": \"Giorgetti\", \"gender\": \"M\", \"birth_date\": \"1966-12-16\", \"birth_place\": \"Cazzago Brabbia\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p50115\", \"same_as\": [\"it:person:senato:4451\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 2 - P02\", \"college\": \"LOMBARDIA 2 - U04\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_52\", \"target_name\": \"Ministero dell'Economia e delle Finanze\", \"title\": \"minister\", \"start_date\": \"2022-10-23\"}, {\"target\": \"it:gov:182:og182_169\", \"target_name\": \"Ministero dello Sviluppo Economico\", \"title\": \"minister\", \"start_date\": \"2021-02-12\", \"end_date\": \"2022-10-21\"}], \"counts\": {\"speeches\": 244, \"ballots\": 20257, \"ballots_cast\": 128, \"ballots_mission\": 19959, \"bills_first_signer\": 251, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307463"
+   },
+   "result": "{\"uri\": \"it:person:camera:307463\", \"name\": \"Francesco Lollobrigida\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307463&legislatura=19\", \"given_name\": \"Francesco\", \"family_name\": \"Lollobrigida\", \"gender\": \"M\", \"birth_date\": \"1972-03-21\", \"birth_place\": \"Tivoli\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307463\", \"same_as\": [\"it:person:senato:32962\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"LAZIO 2 - P02\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3513\", \"target_name\": \"XIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"member\", \"start_date\": \"2022-10-19\", \"end_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_705\", \"target_name\": \"Ministero dell'Agricoltura, della Sovranità Alimentare e delle Foreste\", \"title\": \"minister\", \"start_date\": \"2022-11-12\"}, {\"target\": \"it:gov:202:og202_604\", \"target_name\": \"Ministero delle Politiche Agricole Alimentari e Forestali\", \"title\": \"minister\", \"start_date\": \"2022-10-23\", \"end_date\": \"2022-11-11\"}, {\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"group_whip\", \"start_date\": \"2022-10-19\", \"end_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:group:gr4133\", \"target_name\": \"Fratelli d'Italia\", \"title\": \"leader\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-11-09\"}], \"counts\": {\"speeches\": 204, \"ballots\": 20257, \"ballots_cast\": 154, \"ballots_mission\": 19824, \"bills_first_signer\": 54, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:302748"
+   },
+   "result": "{\"uri\": \"it:person:camera:302748\", \"name\": \"Eugenia Maria Roccella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302748&legislatura=19\", \"given_name\": \"Eugenia Maria\", \"family_name\": \"Roccella\", \"gender\": \"F\", \"birth_date\": \"1953-11-15\", \"birth_place\": \"Bologna\", \"profession\": \"Giornalista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302748\", \"same_as\": [\"it:person:senato:25414\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-09\", \"constituency\": \"CALABRIA - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_687\", \"target_name\": \"Famiglia, Natalità e Pari Opportunità\", \"title\": \"minister_without_portfolio\", \"start_date\": \"2022-10-23\"}], \"counts\": {\"speeches\": 168, \"ballots\": 20257, \"ballots_cast\": 662, \"ballots_mission\": 17926, \"bills_first_signer\": 19, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:50204"
+   },
+   "result": "{\"uri\": \"it:person:camera:50204\", \"name\": \"Tommaso Foti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50204&legislatura=19\", \"given_name\": \"Tommaso\", \"family_name\": \"Foti\", \"gender\": \"M\", \"birth_date\": \"1960-04-28\", \"birth_place\": \"Piacenza\", \"profession\": \"Già dirigente di azienda privata\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p50204\", \"same_as\": [\"it:person:senato:4429\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"EMILIA-ROMAGNA - P01\", \"college\": \"EMILIA-ROMAGNA - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_4201\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Scomparsa di Emanuela Orlandi e di Mirella Gregori\", \"title\": \"member\", \"start_date\": \"2024-03-05\", \"end_date\": \"2024-05-23\"}, {\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:body:o19_3561\", \"target_name\": \"Comitato Parlamentare Provvisorio per la Sicurezza della Repubblica\", \"title\": \"member\", \"start_date\": \"2022-10-26\", \"end_date\": \"2022-11-29\"}], \"offices\": [{\"target\": \"it:gov:202:og202_745\", \"target_name\": \"Affari Europei, il Pnrr e le Politiche di Coesione\", \"title\": \"minister_without_portfolio\", \"start_date\": \"2024-12-03\"}, {\"target\": \"it:gov:202:og202_1\", \"target_name\": \"Presidenza del Consiglio dei Ministri\", \"title\": \"minister_without_portfolio\", \"start_date\": \"2024-12-02\", \"end_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"group_whip\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:group:gr4133\", \"target_name\": \"Fratelli d'Italia\", \"title\": \"leader\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:group:gr4133\", \"target_name\": \"Fratelli d'Italia\", \"title\": \"deputy_leader\", \"start_date\": \"2022-10-18\", \"end_date\": \"2022-11-09\"}], \"counts\": {\"speeches\": 593, \"ballots\": 20257, \"ballots_cast\": 7588, \"ballots_mission\": 11519, \"bills_first_signer\": 48, \"amendments_signed\": 120}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:300319"
+   },
+   "result": "{\"uri\": \"it:person:camera:300319\", \"name\": \"Edmondo Cirielli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300319&legislatura=19\", \"given_name\": \"Edmondo\", \"family_name\": \"Cirielli\", \"gender\": \"M\", \"birth_date\": \"1964-05-22\", \"birth_place\": \"Nocera Inferiore\", \"profession\": \"Generale di brigata dei Carabinieri della riserva\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p300319\", \"same_as\": [\"it:person:senato:17901\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"CAMPANIA 2 - P02\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2024-11-05\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2024-11-05\"}], \"offices\": [{\"target\": \"it:gov:202:og202_504\", \"target_name\": \"Ministero degli Affari Esteri e della Cooperazione Internazionale\", \"title\": \"vice_minister\", \"start_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_504\", \"target_name\": \"Ministero degli Affari Esteri e della Cooperazione Internazionale\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-12-15\"}], \"counts\": {\"speeches\": 170, \"ballots\": 20256, \"ballots_cast\": 631, \"ballots_mission\": 19060, \"bills_first_signer\": 20, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:300444"
+   },
+   "result": "{\"uri\": \"it:person:camera:300444\", \"name\": \"Maurizio Leo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=300444&legislatura=19\", \"given_name\": \"Maurizio\", \"family_name\": \"Leo\", \"gender\": \"M\", \"birth_date\": \"1955-07-25\", \"birth_place\": \"Roma\", \"profession\": \"Docente universitario, Avvocato tributarista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p300444\", \"same_as\": [\"it:person:senato:17922\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"SICILIA 2 - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_52\", \"target_name\": \"Ministero dell'Economia e delle Finanze\", \"title\": \"vice_minister\", \"start_date\": \"2022-11-11\"}, {\"target\": \"it:gov:202:og202_52\", \"target_name\": \"Ministero dell'Economia e delle Finanze\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-11-11\"}], \"counts\": {\"speeches\": 90, \"ballots\": 20257, \"ballots_cast\": 1328, \"ballots_mission\": 17846, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:304521"
+   },
+   "result": "{\"uri\": \"it:person:camera:304521\", \"name\": \"Edoardo Rixi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=304521&legislatura=19\", \"given_name\": \"Edoardo\", \"family_name\": \"Rixi\", \"gender\": \"M\", \"birth_date\": \"1974-06-08\", \"birth_place\": \"Genova\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p304521\", \"same_as\": [\"it:person:senato:27410\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"LIGURIA - P01\", \"college\": \"LIGURIA - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-12-13\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2022-12-13\"}], \"offices\": [{\"target\": \"it:gov:202:og202_707\", \"target_name\": \"Ministero delle Infrastrutture e dei Trasporti\", \"title\": \"vice_minister\", \"start_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_707\", \"target_name\": \"Ministero delle Infrastrutture e dei Trasporti\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\", \"end_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_667\", \"target_name\": \"Ministero delle Infrastrutture e della Mobilita' Sostenibili\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-11-11\"}], \"counts\": {\"speeches\": 287, \"ballots\": 20257, \"ballots_cast\": 396, \"ballots_mission\": 19540, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307426"
+   },
+   "result": "{\"uri\": \"it:person:camera:307426\", \"name\": \"Maria Teresa Bellucci\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307426&legislatura=19\", \"given_name\": \"Maria Teresa\", \"family_name\": \"Bellucci\", \"gender\": \"F\", \"birth_date\": \"1972-07-19\", \"birth_place\": \"Roma\", \"profession\": \"Master interuniversitario di II livello in organizzazione e funzionamento della pubblica amministrazione; Psicologa psicoterapeuta\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307426\", \"same_as\": [\"it:person:senato:33054\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"LAZIO 1 - P02\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3511\", \"target_name\": \"XI Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_285\", \"target_name\": \"Ministero del Lavoro e delle Politiche Sociali\", \"title\": \"vice_minister\", \"start_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_285\", \"target_name\": \"Ministero del Lavoro e delle Politiche Sociali\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-12-15\"}], \"counts\": {\"speeches\": 340, \"ballots\": 20256, \"ballots_cast\": 1226, \"ballots_mission\": 17694, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307138"
+   },
+   "result": "{\"uri\": \"it:person:camera:307138\", \"name\": \"Vannia Gava\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307138&legislatura=19\", \"given_name\": \"Vannia\", \"family_name\": \"Gava\", \"gender\": \"F\", \"birth_date\": \"1974-06-30\", \"birth_place\": \"Sacile\", \"profession\": \"Parlamentare\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307138\", \"same_as\": [\"it:person:senato:32938\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"FRIULI-VENEZIA GIULIA - P01\", \"college\": \"FRIULI-VENEZIA GIULIA - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3512\", \"target_name\": \"XII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_706\", \"target_name\": \"Ministero dell'Ambiente e della Sicurezza Energetica\", \"title\": \"vice_minister\", \"start_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_706\", \"target_name\": \"Ministero dell'Ambiente e della Sicurezza Energetica\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\", \"end_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_666\", \"target_name\": \"Ministero della Transizione Ecologica\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-11-11\"}, {\"target\": \"it:gov:182:og182_666\", \"target_name\": \"Ministero della Transizione Ecologica\", \"title\": \"undersecretary\", \"start_date\": \"2021-03-02\", \"end_date\": \"2022-10-21\"}, {\"target\": \"it:gov:182:og182_180\", \"target_name\": \"Ministero dell'Ambiente e della Tutela del Territorio e del Mare\", \"title\": \"undersecretary\", \"start_date\": \"2021-02-25\", \"end_date\": \"2021-03-01\"}], \"counts\": {\"speeches\": 452, \"ballots\": 20257, \"ballots_cast\": 1240, \"ballots_mission\": 18012, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:302762"
+   },
+   "result": "{\"uri\": \"it:person:camera:302762\", \"name\": \"Nicola Molteni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302762&legislatura=19\", \"given_name\": \"Nicola\", \"family_name\": \"Molteni\", \"gender\": \"M\", \"birth_date\": \"1976-03-06\", \"birth_place\": \"Cantu'\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p302762\", \"same_as\": [\"it:person:senato:25453\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 2 - P02\", \"college\": \"LOMBARDIA 2 - U03\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2025-01-30\"}, {\"target\": \"it:camera:19:body:o19_3514\", \"target_name\": \"XIV Commissione\", \"title\": \"member\", \"start_date\": \"2025-01-23\", \"end_date\": \"2025-01-30\"}, {\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-01-23\"}], \"offices\": [{\"target\": \"it:gov:202:og202_15\", \"target_name\": \"Ministero dell'Interno\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\"}, {\"target\": \"it:gov:182:og182_15\", \"target_name\": \"Ministero dell'Interno\", \"title\": \"undersecretary\", \"start_date\": \"2021-02-25\", \"end_date\": \"2022-10-21\"}], \"counts\": {\"speeches\": 355, \"ballots\": 20257, \"ballots_cast\": 1295, \"ballots_mission\": 18107, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307452"
+   },
+   "result": "{\"uri\": \"it:person:camera:307452\", \"name\": \"Emanuele Prisco\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307452&legislatura=19\", \"given_name\": \"Emanuele\", \"family_name\": \"Prisco\", \"gender\": \"M\", \"birth_date\": \"1977-11-23\", \"birth_place\": \"Perugia\", \"profession\": \"Funzionario\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307452\", \"same_as\": [\"it:person:senato:33129\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-10\", \"constituency\": \"UMBRIA - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2023-05-04\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2023-05-04\"}], \"offices\": [{\"target\": \"it:gov:202:og202_15\", \"target_name\": \"Ministero dell'Interno\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\"}], \"counts\": {\"speeches\": 124, \"ballots\": 20257, \"ballots_cast\": 1702, \"ballots_mission\": 17577, \"bills_first_signer\": 1, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307567"
+   },
+   "result": "{\"uri\": \"it:person:camera:307567\", \"name\": \"Wanda Ferro\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307567&legislatura=19\", \"given_name\": \"Wanda\", \"family_name\": \"Ferro\", \"gender\": \"F\", \"birth_date\": \"1968-03-24\", \"birth_place\": \"Catanzaro\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307567\", \"same_as\": [\"it:person:senato:32924\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-01\", \"constituency\": \"CALABRIA - P01\", \"college\": \"CALABRIA - U03\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_15\", \"target_name\": \"Ministero dell'Interno\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\"}], \"counts\": {\"speeches\": 358, \"ballots\": 20257, \"ballots_cast\": 1829, \"ballots_mission\": 16925, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307479"
+   },
+   "result": "{\"uri\": \"it:person:camera:307479\", \"name\": \"Andrea Delmastro delle Vedove\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307479&legislatura=19\", \"given_name\": \"Andrea\", \"family_name\": \"Delmastro delle Vedove\", \"gender\": \"M\", \"birth_date\": \"1976-10-22\", \"birth_place\": \"Gattinara\", \"profession\": \"Avvocato penalista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307479\", \"same_as\": [\"it:person:senato:32909\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-09-30\", \"constituency\": \"PIEMONTE 2 - P01\", \"college\": \"PIEMONTE 2 - U03\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2026-03-27\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2026-03-27\"}, {\"target\": \"it:camera:19:body:o19_3561\", \"target_name\": \"Comitato Parlamentare Provvisorio per la Sicurezza della Repubblica\", \"title\": \"member\", \"start_date\": \"2022-10-26\", \"end_date\": \"2022-11-29\"}], \"offices\": [{\"target\": \"it:gov:202:og202_49\", \"target_name\": \"Ministero della Giustizia\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2026-03-26\"}], \"counts\": {\"speeches\": 356, \"ballots\": 20257, \"ballots_cast\": 3897, \"ballots_mission\": 14804, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:301457"
+   },
+   "result": "{\"uri\": \"it:person:camera:301457\", \"name\": \"Paola Frassinetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=301457&legislatura=19\", \"given_name\": \"Paola\", \"family_name\": \"Frassinetti\", \"gender\": \"F\", \"birth_date\": \"1956-05-02\", \"birth_place\": \"Genova\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p301457\", \"same_as\": [\"it:person:senato:22956\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-03\", \"constituency\": \"LOMBARDIA 1 - P02\", \"college\": \"LOMBARDIA 1 - U01\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"member\", \"start_date\": \"2025-06-10\"}, {\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-10\"}], \"offices\": [{\"target\": \"it:gov:202:og202_708\", \"target_name\": \"Ministero dell'Istruzione e del Merito\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\"}, {\"target\": \"it:gov:202:og202_624\", \"target_name\": \"Ministero dell'Istruzione\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-11-11\"}], \"counts\": {\"speeches\": 322, \"ballots\": 20257, \"ballots_cast\": 2864, \"ballots_mission\": 15782, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307298"
+   },
+   "result": "{\"uri\": \"it:person:camera:307298\", \"name\": \"Galeazzo Bignami\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307298&legislatura=19\", \"given_name\": \"Galeazzo\", \"family_name\": \"Bignami\", \"gender\": \"M\", \"birth_date\": \"1975-10-25\", \"birth_place\": \"Bologna\", \"profession\": \"Avvocato\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307298\", \"same_as\": [\"it:person:senato:32849\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-10\", \"constituency\": \"EMILIA-ROMAGNA - P02\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_4281\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Gestione dell'Emergenza Sanitaria Causata Dalla Diffusione Epidemica del Virus Sars - Cov - 2 e sulle Misure Adottate per Prevenire e Affrontare l'Emergenza Epidemiologica da Sars - Cov - 2\", \"title\": \"member\", \"start_date\": \"2026-07-22\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2026-03-27\"}, {\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"member\", \"start_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:body:o19_3503\", \"target_name\": \"III Commissione\", \"title\": \"member\", \"start_date\": \"2025-06-10\", \"end_date\": \"2026-03-27\"}, {\"target\": \"it:camera:19:body:o19_4281\", \"target_name\": \"Commissione Parlamentare di Inchiesta sulla Gestione dell'Emergenza Sanitaria Causata Dalla Diffusione Epidemica del Virus Sars - Cov - 2 e sulle Misure Adottate per Prevenire e Affrontare l'Emergenza Epidemiologica da Sars - Cov - 2\", \"title\": \"member\", \"start_date\": \"2025-03-04\", \"end_date\": \"2026-06-30\"}, {\"target\": \"it:camera:19:body:o19_3506\", \"target_name\": \"VI Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-06-10\"}], \"offices\": [{\"target\": \"it:camera:19:body:o19_3601\", \"target_name\": \"Conferenza dei Presidenti di Gruppo\", \"title\": \"group_whip\", \"start_date\": \"2024-12-03\"}, {\"target\": \"it:camera:19:group:gr4133\", \"target_name\": \"Fratelli d'Italia\", \"title\": \"leader\", \"start_date\": \"2024-12-03\"}, {\"target\": \"it:gov:202:og202_707\", \"target_name\": \"Ministero delle Infrastrutture e dei Trasporti\", \"title\": \"vice_minister\", \"start_date\": \"2022-12-15\", \"end_date\": \"2024-12-04\"}, {\"target\": \"it:gov:202:og202_707\", \"target_name\": \"Ministero delle Infrastrutture e dei Trasporti\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\", \"end_date\": \"2022-12-15\"}, {\"target\": \"it:gov:202:og202_667\", \"target_name\": \"Ministero delle Infrastrutture e della Mobilita' Sostenibili\", \"title\": \"undersecretary\", \"start_date\": "
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307402"
+   },
+   "result": "{\"uri\": \"it:person:camera:307402\", \"name\": \"Matilde Siracusano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307402&legislatura=19\", \"given_name\": \"Matilde\", \"family_name\": \"Siracusano\", \"gender\": \"F\", \"birth_date\": \"1985-04-26\", \"birth_place\": \"Messina\", \"profession\": \"Imprenditore\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307402\", \"same_as\": [\"it:person:senato:32799\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"PIEMONTE 2 - P02\", \"list\": \"FORZA ITALIA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3507\", \"target_name\": \"VII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_524\", \"target_name\": \"Rapporti con il Parlamento\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\"}], \"counts\": {\"speeches\": 1113, \"ballots\": 20257, \"ballots_cast\": 3595, \"ballots_mission\": 14041, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Gemmato",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307332\", \"name\": \"Marcello Gemmato\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307332&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Ferrante",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:308876\", \"name\": \"Tullio Ferrante\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308876&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Castiello",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Albano",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:308421\", \"name\": \"Lucia Albano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308421&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Sisto",
+    "chamber": "camera",
+    "group": null,
+    "in_office": false,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Fazzolari",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "D'Urso",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Cattaneo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:307657\", \"name\": \"Alessandro Cattaneo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307657&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Rauti",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Bergamotto",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Durigon",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Mantovano",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:307332"
+   },
+   "result": "{\"uri\": \"it:person:camera:307332\", \"name\": \"Marcello Gemmato\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307332&legislatura=19\", \"given_name\": \"Marcello\", \"family_name\": \"Gemmato\", \"gender\": \"M\", \"birth_date\": \"1972-12-21\", \"birth_place\": \"Bari\", \"profession\": \"Farmacista\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p307332\", \"same_as\": [\"it:person:senato:32939\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"PUGLIA - P02\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3512\", \"target_name\": \"XII Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_264\", \"target_name\": \"Ministero della Salute\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\"}], \"counts\": {\"speeches\": 646, \"ballots\": 20257, \"ballots_cast\": 2041, \"ballots_mission\": 16681, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308876"
+   },
+   "result": "{\"uri\": \"it:person:camera:308876\", \"name\": \"Tullio Ferrante\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308876&legislatura=19\", \"given_name\": \"Tullio\", \"family_name\": \"Ferrante\", \"gender\": \"M\", \"birth_date\": \"1989-01-13\", \"birth_place\": \"San Giorgio a Cremano\", \"profession\": \"Avvocato. Senior Associate.\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308876\", \"same_as\": [\"it:person:senato:36600\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"CAMPANIA 2 - P02\", \"list\": \"FORZA ITALIA\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3508\", \"target_name\": \"VIII Commissione\", \"title\": \"member\", \"start_date\": \"2025-03-27\"}, {\"target\": \"it:camera:19:body:o19_3502\", \"target_name\": \"II Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\", \"end_date\": \"2025-03-27\"}], \"offices\": [{\"target\": \"it:gov:202:og202_707\", \"target_name\": \"Ministero delle Infrastrutture e dei Trasporti\", \"title\": \"undersecretary\", \"start_date\": \"2022-11-12\"}, {\"target\": \"it:gov:202:og202_667\", \"target_name\": \"Ministero delle Infrastrutture e della Mobilita' Sostenibili\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\", \"end_date\": \"2022-11-11\"}], \"counts\": {\"speeches\": 716, \"ballots\": 20257, \"ballots_cast\": 6991, \"ballots_mission\": 11905, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "scheda_persona",
+   "args": {
+    "uri": "it:person:camera:308421"
+   },
+   "result": "{\"uri\": \"it:person:camera:308421\", \"name\": \"Lucia Albano\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308421&legislatura=19\", \"given_name\": \"Lucia\", \"family_name\": \"Albano\", \"gender\": \"F\", \"birth_date\": \"1965-02-11\", \"birth_place\": \"San Benedetto del Tronto\", \"profession\": \"Dottore commercialista, Insegnante di scuola secondaria superiore\", \"source_uri\": \"http://dati.camera.it/ocd/persona.rdf/p308421\", \"same_as\": [\"it:person:senato:35418\"], \"mandates\": [{\"chamber\": \"camera\", \"legislature\": 19, \"start_date\": \"2022-10-08\", \"constituency\": \"MARCHE - P01\", \"list\": \"FRATELLI D'ITALIA CON GIORGIA MELONI\"}], \"memberships\": [{\"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"role\": \"member\", \"start_date\": \"2022-10-18\"}], \"bodies\": [{\"target\": \"it:camera:19:body:o19_3504\", \"target_name\": \"IV Commissione\", \"title\": \"member\", \"start_date\": \"2022-11-09\"}, {\"target\": \"it:camera:19:body:o19_3543\", \"target_name\": \"Commissione Speciale Istituita il 19 Ottobre 2022, ai Sensi dell'Articolo 22, Comma 2, del Regolamento\", \"title\": \"member\", \"start_date\": \"2022-10-21\", \"end_date\": \"2022-11-09\"}], \"offices\": [{\"target\": \"it:gov:202:og202_52\", \"target_name\": \"Ministero dell'Economia e delle Finanze\", \"title\": \"undersecretary\", \"start_date\": \"2022-10-31\"}], \"counts\": {\"speeches\": 2408, \"ballots\": 20256, \"ballots_cast\": 2508, \"ballots_mission\": 16717, \"bills_first_signer\": 0, \"amendments_signed\": 0}}"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Sbardella",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:308908\", \"name\": \"Luca Sbardella\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4331\", \"name\": \"Sud Chiama Nord\", \"short_name\": \"MISTO-SCN\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308908&legislatura=19\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Luca De Carlo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Valentina D'Urso",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Andrea Abodi",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Perego",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Cremnago",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Castiello",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:32601\", \"name\": \"Francesco Castiello\", \"chamber\": \"senato\", \"in_office\": false, \"group\": {\"uri\": \"it:senato:19:group:71\", \"name\": \"MoVimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00032601.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Sisto",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:senato:22263\", \"name\": \"Francesco Paolo Sisto\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:56\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-BP-PPE\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00022263.jpg\"}]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "D'Urso",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 10
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Matteo",
+    "chamber": "camera",
+    "group": null,
+    "in_office": true,
+    "limit": 100
+   },
+   "result": "[{\"uri\": \"it:person:camera:308941\", \"name\": \"Nicole Matteoni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308941&legislatura=19\"}, {\"uri\": \"it:person:camera:306176\", \"name\": \"Matteo Mauri\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306176&legislatura=19\"}, {\"uri\": \"it:person:camera:305815\", \"name\": \"Matteo Orfini\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305815&legislatura=19\"}, {\"uri\": \"it:person:camera:305708\", \"name\": \"Matteo Richetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4135\", \"name\": \"Azione - Popolari Europeisti Riformatori - Renew Europe\", \"short_name\": \"AZ-PER-RE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=305708&legislatura=19\"}, {\"uri\": \"it:person:camera:308868\", \"name\": \"Matteo Rosso\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308868&legislatura=19\"}]"
+  }
+ ],
+ "strumenti": [
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "scheda_persona",
+  "scheda_persona",
+  "scheda_persona",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone",
+  "cerca_persone"
+ ],
+ "tempo_s": 63.2,
+ "risposta_sistema": "Sono 19 i membri dell’attuale Governo che risultano deputati. Il numero indica le votazioni elettroniche in cui hanno espresso un voto alla Camera nella XIX legislatura, con dati aggiornati alla seduta del 3 novembre 2026.\n\n- Giorgia Meloni — Presidente del Consiglio; Fratelli d’Italia: **14** votazioni.\n- Antonio Tajani — vicepresidente del Consiglio e ministro degli Affari esteri e della cooperazione internazionale; Forza Italia - Berlusconi Presidente - PPE: **361**.\n- Giancarlo Giorgetti — ministro dell’Economia e delle finanze; Lega - Salvini Premier: **128**.\n- Francesco Lollobrigida — ministro dell’Agricoltura, della sovranità alimentare e delle foreste; Fratelli d’Italia: **154**.\n- Eugenia Maria Roccella — ministra per la Famiglia, la natalità e le pari opportunità; Fratelli d’Italia: **662**.\n- Tommaso Foti — ministro per gli Affari europei, il PNRR e le politiche di coesione; Fratelli d’Italia: **7.588**.\n- Edmondo Cirielli — viceministro degli Affari esteri e della cooperazione internazionale; Fratelli d’Italia: **631**.\n- Maurizio Leo — viceministro dell’Economia e delle finanze; Fratelli d’Italia: **1.328**.\n- Edoardo Rixi — viceministro delle Infrastrutture e dei trasporti; Lega - Salvini Premier: **396**.\n- Maria Teresa Bellucci — viceministra del Lavoro e delle politiche sociali; Fratelli d’Italia: **1.226**.\n- Vannia Gava — viceministra dell’Ambiente e della sicurezza energetica; Lega - Salvini Premier: **1.240**.\n- Nicola Molteni — sottosegretario all’Interno; Lega - Salvini Premier: **1.295**.\n- Emanuele Prisco — sottosegretario all’Interno; Fratelli d’Italia: **1.702**.\n- Wanda Ferro — sottosegretaria all’Interno; Fratelli d’Italia: **1.829**.\n- Paola Frassinetti — sottosegretaria all’Istruzione e al merito; Fratelli d’Italia: **2.864**.\n- Matilde Siracusano — sottosegretaria ai Rapporti con il Parlamento; Forza Italia - Berlusconi Presidente - PPE: **3.595**.\n- Marcello Gemmato — sottosegretario alla Salute; Fratelli d’Italia: **2.041**.\n- Tullio Ferrante — sottosegretario alle Infrastrutture e ai trasporti; Forza Italia - Berlusconi Presidente - PPE: **6.991**.\n- Lucia Albano — sottosegretaria all’Economia e alle finanze; Fratelli d’Italia: **2.508**.\n\nIl totale delle votazioni elettroniche registrate per ciascun deputato è circa **20.257**: le differenze rispetto ai voti espressi dipendono soprattutto dalle missioni parlamentari e dalle assenze.",
+ "eventi": {
+  "status": 1,
+  "tool": 132,
+  "dati": 66,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

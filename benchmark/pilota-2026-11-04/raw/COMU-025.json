@@ -1,0 +1,195 @@
+{
+ "id": "COMU-025",
+ "trappola": true,
+ "domanda": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+ "categoria": "fonti",
+ "tipo_risposta": "fatto",
+ "ramo": "entrambi",
+ "difficolta": "media",
+ "garanzie": [
+  "citazioni_esatte"
+ ],
+ "note": "Trappola: citazione probabilmente non presente alla lettera. Se non c'è, dirlo e mostrare le frasi vere più vicine, senza ricostruirla.",
+ "endpoint": "agente",
+ "inizio": 1793753037.542331,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"l'Italia non manderà mai soldati in Ucraina\"",
+    "chamber": null,
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "soldati Ucraina",
+    "chamber": null,
+    "person": null,
+    "start": "2022-10-13",
+    "end": "2026-11-03",
+    "include_summaries": false,
+    "limit": 50,
+    "offset": 0
+   },
+   "result": "[{\"uri\": \"it:camera:19:sed0734:tit00050.int00020\", \"sitting\": {\"uri\": \"it:camera:19:sed0734\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 734, \"date\": \"2026-10-27\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori. . .\", \"person\": {\"uri\": \"it:person:camera:307143\", \"name\": \"Edoardo Ziello\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:cgm4271\", \"name\": \"Futuro Nazionale Vannacci - Free\", \"short_name\": \"MISTO-FNV-F\", \"kind\": \"misto_component\", \"part_of\": \"it:camera:19:group:gr4111\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=307143&legislatura=19\"}, \"speaker_label\": \"EDOARDO ZIELLO\", \"snippet\": \"conflitto che coinvolge lo Stretto di Hormuz, e quindi in Iran, ma causato anche dal conflitto tra l'[[Ucraina]] e la Russia. Non lo dice l'ufficio studi di Futuro Nazionale, lo dice la Commissione europea che, nelle proprie comunicazioni ... congresso ai fatti del Governo.\\n\\nAbbiamo chiesto, infatti, come primo impegno quello di interrompere immediatamente l'invio di [[soldi]] e armi a Zelensky . Abbiamo chiesto di eliminare le sanzioni verso la Federazione Russa non perché Vannacci sia un pericoloso filorusso\"}, {\"uri\": \"it:camera:19:sed0730:tit00140.int00200\", \"sitting\": {\"uri\": \"it:camera:19:sed0730\", \"chamber\": \"camera\", \"body\": \"it:camera:19:aula\", \"number\": 730, \"date\": \"2026-10-21\", \"kind\": \"assembly_verbatim\", \"status\": \"held\"}, \"item_title\": \"Sull'ordine dei lavori.\", \"person\": {\"uri\": \"it:person:camera:306160\", \"name\": \"Maria Elena Boschi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4211\", \"name\": \"Italia Viva - Casa Riformista\", \"short_name\": \"IV-CR\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=306160&legislatura=19\"}, \"speaker_label\": \"MARIA ELENA BOSCHI\", \"snippet\": \"sarebbe stato un caro-carburante che sarebbe ricaduto sugli autotrasportatori. È successo infatti anche con l'invasione russa dell'[[Ucraina]] e, in quel caso, il Governo Draghi intervenne subito con 500 milioni per l'autotrasporto. Qui, forse, arriveranno tra qualche ... avranno più nemmeno la liquidità per fare il pieno, perché stanno facendo da banca al Governo, che i [[soldi]] li darà, se va bene, l'anno prossimo.\\n\\nE allora abbiamo provato oggi, con il Ministro Lollobrigida, a dirgli: guardi, Ministro\"}, {\"uri\": \"it:camera:19:stc:04:indag:c04_quantistiche:20261021:0003:tit00020:int00050\", \"sitting\": {\"uri\": \"it:camera:19:stc:04:indag:c04_quantistiche:20261021:0003\", \"chamber\": \"camera\", \"body\": \"it:camera:19:body:o19_3504\", \"body_name\": \"IV Commissione\", \"number\": 3, \"date\": \"2026-10-21\", \"kind\": \"committee_verbatim\", \"status\": \"held\"}, \"item_title\": \"Audizione dell'Ingegner Daniele Pavarin, CEO di T4i Technology for Propulsion and Innovation S.p.A.\", \"person\": {\"uri\": \"it:person:camera:308938\", \"name\": \"Mauro Malaguti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\""
+  },
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "L'Italia esclude di inviare soldati o truppe in Ucraina",
+    "fonti": [
+     "interventi"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-03",
+    "quanti": 30
+   },
+   "result": "{\"testo\": \"L'Italia esclude di inviare soldati o truppe in Ucraina\", \"fonti\": [\"interventi\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"intervento\", \"uri\": \"it:camera:19:bol20230726:c04:sede00020:tit00010:p2\", \"testo\": \"Il Governo, poi, ricorda che l'Italia sin dall'inizio della crisi causata all'aggressione militare russa nei confronti dell'Ucraina, ha espresso dure condanne verso la politica della Russia mostrando nel contempo fermo supporto all'Ucraina in termini di adesione agli sforzi della Comunità internazionale, invio di materiale letale e non letale e avvio di iniziative addestrative nel settore della manutenzione. Per il 2023, l'Italia intende contribuire alla missione in ambito PSDC di assistenza all'Ucraina (EUMAM Ukraine), a proposito della quale il Governo rileva che l'iniziativa deve costituire un valore aggiunto allo sforzo già in atto, evitando inutili e dispendiose duplicazioni con attivit\", \"chi\": \"Giuseppe Bicchielli\", \"persona\": \"it:person:camera:308790\", \"gruppo\": \"Noi Moderati - MAIE - Centro Popolare\", \"carica\": \"relatore\", \"ramo\": \"camera\", \"data\": \"2023-07-26\", \"seduta\": 20, \"organo\": \"Difesa (IV)\", \"dibattito\": \"Programma di lavoro della Commissione per il 2023 – Un'Unione salda e unita.\", \"riassunto\": true, \"url\": null, \"similarita\": 0.821}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0528:tit00020.sub00010.int00020\", \"testo\": \"L'Italia, insomma, è pronta a fare la sua parte concretamente per la sicurezza di Kyiv, ma voglio ribadire anche questo in maniera molto chiara: per il Governo non è all'ordine del giorno l'ipotesi di inviare militari italiani in Ucraina . Sono invece al vaglio ipotesi di monitoraggio e formazione di militari al di fuori dei confini ucraini solo una volta raggiunta la cessazione delle ostilità. Il coordinamento con i principali partner europei e tra le due sponde dell'Atlantico resta ovviamente serrato.\\n\\nAnche ieri il Presidente del Consiglio ha partecipato a consultazioni con gli alleati, dopo le violazioni dello spazio aereo polacco. In queste due settimane ho partecipato a due riunioni tr\", \"chi\": \"Antonio Tajani\", \"persona\": \"it:person:camera:308838\", \"gruppo\": \"Governo\", \"carica\": null, \"ramo\": \"camera\", \"data\": \"2025-09-11\", \"seduta\": 528, \"organo\": null, \"dibattito\": \"Informativa urgente del Governo sui recenti sviluppi delle crisi in Ucraina e in Medio Oriente e in materia di commercio internazionale.\", \"riassunto\": false, \"url\": \"https://www.camera.it/leg19/410?idSeduta=0528&tipo=stenografico#sed0528.stenografico.tit00020.sub00010.int00020\", \"similarita\": 0.816}, {\"fonte\": \"intervento\", \"uri\": \"it:camera:19:sed0287:tit00020.sub00010.int00080\", \"testo\": \"Poiché il Ministro Crosetto esclude categoricamente ogni invio di nostre truppe in Ucraina e poiché la storia insegna (vedi il Vietnam) che il primo passo di coinvolgimento diretto in un conflitto è l'invio di consiglieri e addestratori militari, il MoVimento 5 Stelle chiede al Governo la garanzia che la nostra parteci"
+  },
+  {
+   "name": "cerca_persone",
+   "args": {
+    "q": "Giorgia Meloni",
+    "chamber": null,
+    "group": null,
+    "in_office": false,
+    "limit": 10
+   },
+   "result": "[{\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}]"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {
+    "text": "No: nei resoconti parlamentari disponibili non risulta che Giorgia Meloni abbia detto esattamente «l'Italia non manderà mai soldati in Ucraina».\n\nAlla Camera, il 18 marzo 2025, nelle comunicazioni in vista del Consiglio europeo, la presidente del Consiglio ha detto: «l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno». L'intervento è riportato nei testi autorizzati pubblicati in calce al resoconto della seduta.\n\nLa formulazione è quindi diversa: non contiene né «non manderà mai» né «soldati», ma afferma che l'invio di truppe italiane non era mai stato all'ordine del giorno."
+   },
+   "result": "{\"quotes\": 3, \"verified\": 1, \"results\": [{\"quote\": \"l'Italia non manderà mai soldati in Ucraina\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}, {\"quote\": \"l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno\", \"found\": true, \"speech\": \"it:senato:19:sed0286:int00007\", \"sitting\": \"it:senato:19:sed0286\", \"chamber\": \"senato\", \"date\": \"2025-03-18\", \"speaker\": \"Ignazio La Russa\", \"group\": \"FdI\"}, {\"quote\": \"non manderà mai\", \"found\": false, \"reason\": \"non si trova, parola per parola, in nessun intervento\"}]}"
+  },
+  {
+   "name": "seduta",
+   "args": {
+    "uri": "it:senato:19:sed0286",
+    "full_text": true
+   },
+   "result": "{\"uri\": \"it:senato:19:sed0286\", \"chamber\": \"senato\", \"body\": \"it:senato:19:aula\", \"number\": 286, \"date\": \"2025-03-18\", \"kind\": \"assembly_verbatim\", \"status\": \"held\", \"items\": [{\"uri\": \"it:senato:19:sed0286:tit00000\", \"order\": 0, \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0286:int00001\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"La seduta è aperta (ore 14,31).\\n\\nSi dia lettura del processo verbale.\\n\\nMAFFONI, segretario, dà lettura del processo verbale della seduta del 13 marzo.\", \"reactions\": []}, {\"uri\": \"it:senato:19:sed0286:int00002\", \"order\": 2, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Non essendovi osservazioni, il processo verbale è approvato.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0286:d-d1e38\", \"order\": 2, \"title\": \"Comunicazioni della Presidenza\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0286:int00003\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"L'elenco dei senatori in congedo e assenti per incarico ricevuto dal Senato, nonché ulteriori comunicazioni all'Assemblea saranno pubblicati nell'allegato B al Resoconto della seduta odierna.\", \"reactions\": []}]}, {\"uri\": \"it:senato:19:sed0286:d-d1e46\", \"order\": 3, \"title\": \"Sull'ordine dei lavori\", \"acts\": [], \"speeches\": [{\"uri\": \"it:senato:19:sed0286:int00004\", \"order\": 1, \"person\": {\"uri\": \"it:person:senato:1275\", \"name\": \"Ignazio La Russa\", \"chamber\": \"senato\", \"in_office\": true, \"group\": {\"uri\": \"it:senato:19:group:85\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FdI\", \"kind\": \"group\"}, \"photo\": \"http://www.senato.it/leg/19/Immagini/Senatori/00001275.jpg\"}, \"speaker_label\": \"PRESIDENTE\", \"as_office\": \"PRESIDENTE\", \"text\": \"Informo l'Assemblea che all'inizio della seduta il Presidente del Gruppo MoVimento 5 Stelle ha fatto pervenire, ai sensi dell'articolo 113, comma 2, del Regolamento, la richiesta di votazione con procedimento elettronico per tutte le votazioni da effettuare nel corso della seduta. La richiesta è accolta ai sensi dell'articolo 113, comma 2, del Regolamento.\", \"reactions\": []}]}, {\"uri\": \""
+  },
+  {
+   "name": "cerca_interventi",
+   "args": {
+    "q": "\"non è mai stato all'ordine del giorno\"",
+    "chamber": "senato",
+    "person": "it:person:camera:302103",
+    "start": "2025-03-18",
+    "end": "2025-03-18",
+    "include_summaries": false,
+    "limit": 20,
+    "offset": 0
+   },
+   "result": "[]"
+  },
+  {
+   "name": "verifica_citazioni",
+   "args": {},
+   "result": "{\"quotes\": 1, \"verified\": 1, \"results\": [{\"quote\": \"l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno\", \"found\": true, \"speech\": \"it:senato:19:sed0286:int00007\", \"sitting\": \"it:senato:19:sed0286\", \"chamber\": \"senato\", \"date\": \"2025-03-18\", \"speaker\": \"Ignazio La Russa\", \"group\": \"FdI\"}]}"
+  }
+ ],
+ "strumenti": [
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_per_significato",
+  "cerca_persone",
+  "verifica_citazioni",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "tempo_s": 23.2,
+ "risposta_sistema": "No. La formulazione “l’Italia non manderà mai soldati in Ucraina” non risulta, parola per parola, nei resoconti parlamentari.\n\nGiorgia Meloni lo ha detto alla **Camera il 18 marzo 2025**, nelle comunicazioni in vista del Consiglio europeo. La frase registrata è: «l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno». La differenza è rilevante: parla di un tema che non era stato all’ordine del giorno, non di un impegno formulato come “non manderà mai soldati”. Il testo è nel [resoconto della Camera](https://www.camera.it/leg19/410?idSeduta=0449&tipo=stenografico#sed0449.stenografico.tit00150.int00010).",
+ "eventi": {
+  "status": 1,
+  "tool": 14,
+  "dati": 8,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": [],
+ "verifica": {
+  "dati": {
+   "outcome": {
+    "groups": "fail",
+    "authority": "fail",
+    "quotes": "warn"
+   },
+   "groups": {
+    "present": [
+     "FdI"
+    ],
+    "missing": [
+     "Partito Democratico",
+     "Lega - Salvini Premier",
+     "Movimento 5 Stelle",
+     "Forza Italia",
+     "Alleanza Verdi e Sinistra",
+     "Azione - PER",
+     "Italia Viva - Casa Riformista",
+     "Noi Moderati",
+     "+Europa (Misto)",
+     "Futuro Nazionale Vannacci (Misto)",
+     "Minoranze linguistiche (Misto)",
+     "Per le Autonomie (SVP-PATT, Campobase)",
+     "Governo"
+    ],
+    "silent": [
+     "Sud chiama Nord (Misto)",
+     "Avanti PSI (Misto)"
+    ]
+   },
+   "quotes": [
+    {
+     "quote": "l'invio di truppe italiane in Ucraina è un tema che non è mai stato all'ordine del giorno",
+     "status": "exact",
+     "closest_passage": null,
+     "url": null
+    }
+   ],
+   "authority": {
+    "topic": "La premier ha detto in Aula che «l'Italia non manderà mai soldati in Ucraina»? Verifica la frase esatta e dimmi quando.",
+    "available": true,
+    "voices": [
+     {
+      "name": "Ignazio La Russa",
+      "group": "Fratelli d'Italia",
+      "role": null,
+      "rank": 6,
+      "pool_size": 7,
+      "group_size": 7,
+      "pool": "speakers_on_topic",
+      "authoritative": false,
+      "source": "quoted"
+     },
+     {
+      "name": "Giorgia Meloni",
+      "group": "Fratelli d'Italia",
+      "role": "governo",
+      "rank": 2,
+      "pool_size": 8,
+      "group_size": 8,
+      "pool": "speakers_on_topic",
+      "authoritative": true,
+      "source": "named"
+     }
+    ]
+   },
+   "scope": "Camera dei deputati e Senato della Repubblica, XIX legislatura"
+  }
+ }
+}

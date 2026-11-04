@@ -1,0 +1,44 @@
+{
+ "id": "STU-018",
+ "trappola": false,
+ "domanda": "c'è un dossier del Servizio Studi sulla separazione delle carriere? mi serve il link",
+ "categoria": "fonti",
+ "tipo_risposta": "link",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Dossier gi0010c/d/e su temi.camera.it. Dare il link ufficiale.",
+ "endpoint": "agente",
+ "inizio": 1793752985.943701,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_per_significato",
+   "args": {
+    "testo": "dossier del Servizio Studi sulla separazione delle carriere dei magistrati",
+    "fonti": [
+     "documenti"
+    ],
+    "ramo": null,
+    "da": "2022-10-13",
+    "a": "2026-11-04",
+    "quanti": 10
+   },
+   "result": "{\"testo\": \"dossier del Servizio Studi sulla separazione delle carriere dei magistrati\", \"fonti\": [\"documenti\"], \"rami\": [\"camera\", \"senato\"], \"risultati\": [{\"fonte\": \"documento\", \"uri\": \"it:camera:19:doc:com01-44583-20240912093911296\", \"atto\": null, \"titolo\": \"C. 23 cost e abb -Memoria Prof. Gallo\", \"testo\": \"Separazione delle carriere: una necessità inventata, fondata su miti fasulli.\\n\\n3 \\n \\nIl tema della separazione delle carriere fra la magistratura giudicante e quella requirente è da oltre \\ntrent’anni che viene agitato nel dibattito pubblico e – di norma - viene confuso con il tema della \\nseparazione delle funzioni. Il tema è stato oggetto nel 2000 di un referendum promosso dai radicali che \\nproponeva l’abrogazione dell’art. 190, secondo comma, dell’Ordinamento giudiziario sul passaggio dei \\nmagistrati dalla funzione giudicante a quella requirente. Nell’ammettere il quesito la Corte \\nCostituzionale, con la sentenza 37/2000) rilevò che il titolo attribuito al quesito dall’Ufficio centrale per \\n\", \"ramo\": \"camera\", \"data\": \"2024-09-12\", \"esito\": null, \"url\": \"https://documenti.camera.it/leg19/documentiAcquisiti/COM01/Audizioni/leg19.com01.Audizioni.Memoria.PUBBLICO.ideGes.44583.12-09-2024-09-39-11.296.pdf\", \"similarita\": 0.859}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:doc:com01-38940-20240610124524050\", \"atto\": null, \"titolo\": \"C. 23 cost. e abb. Memoria di Armando Spataro\", \"testo\": \"Premessa: pag. 3; 2. Il succedersi delle regole vigenti e le diverse questioni in campo: pag. \\n5; 3. Le ragioni contro l’unicità di carriera: pag. 10; 3.a - La contiguità tra giudici e p.m., \\nderivante dall’appartenenza alla medesima carriera, condizionerebbe i primi, determinandone \\nl’ “appiattimento” sulle tesi dei p.m. o la predisposizione a prestare maggior attenzione alle \\nrichieste dell’accusa pubblica: pag. 10; 3.b – Occorre comunque evitare che il giudice, per \\neffetto della unicità della carriera, sia portatore della cultura della “lotta alla criminalità”, \\npropria della funzione del P.M. : pag. 12; 3.c – La separazione delle carriere andrebbe \\nperseguita perché favorisce la maggior\", \"ramo\": \"camera\", \"data\": \"2024-06-10\", \"esito\": null, \"url\": \"https://documenti.camera.it/leg19/documentiAcquisiti/COM01/Audizioni/leg19.com01.Audizioni.Memoria.PUBBLICO.ideGes.38940.10-06-2024-12-45-24.050.pdf\", \"similarita\": 0.858}, {\"fonte\": \"documento\", \"uri\": \"it:camera:19:dossier:OCD18-17629\", \"atto\": null, \"titolo\": \"Norme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura - seconda edizione\", \"testo\": \"Camera dei deputati - Legislatura - Dossier di documentazione (Versione per stampa)\\n\\nAutore:\\n\\nServizio Studi - Dipartimento Giustizia\\n\\nTitolo:\\n\\nNorme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura - seconda edizione\\n\\nRiferimenti:\\n\\nAC N.23/XIX AC N.434/XIX AC N.806/XIX AC N.824/XIX AC N.1917/XIX\\n\\nSerie:\\n\\nProgetti di legge Numero: 33\\n\\nData:\\n\\n09"
+  }
+ ],
+ "strumenti": [
+  "cerca_per_significato"
+ ],
+ "tempo_s": 5.7,
+ "risposta_sistema": "Sì. Il dossier più recente disponibile è:\n\n[Norme per l'attuazione della separazione delle carriere giudicante e requirente della magistratura](https://temi.camera.it/leg19/dossier/OCD18-21123/norme-l-attuazione-della-separazione-carriere-giudicante-e-requirente-della-magistratura.html) — Servizio Studi della Camera e del Senato, 3 febbraio 2025 (dossier n. 33/2; sull’A.S. 1353).\n\nC’è anche la [seconda edizione del dossier sui progetti di legge alla Camera](https://temi.camera.it/leg19/dossier/OCD18-17629/norme-l-attuazione-della-separazione-carriere-giudicante-e-requirente-della-magistratura-seconda-edizione.html), del 9 luglio 2024.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

@@ -1,0 +1,48 @@
+{
+ "id": "LEG-020",
+ "domanda": "C'è un dossier del Servizio Studi sul DL 190/2026? Link e contenuto in breve.",
+ "categoria": "fonti",
+ "ramo": "camera",
+ "tipo_risposta": "link",
+ "difficolta": "facile",
+ "trappola": false,
+ "note_domanda": "Dossier D26190 del 27/10/2026.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì. È il dossier di documentazione del Servizio Studi sul **D.L. 22 ottobre 2026, n. 190**, all’esame della Camera come **A.C. 3159**:\n\n[Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile — dossier](https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html)\n\nÈ datato **27 ottobre 2026**, riferito alla **Commissione Giustizia (II)** e curato dal Dipartimento Giustizia del Servizio Studi. È indicato come *Progetti di legge n. 683* (con il corrispondente dossier del Senato n. 786).\n\nIn breve, documenta e analizza il decreto-legge sulla **sicurezza pubblica** e sul **contrasto alla criminalità minorile**. Il provvedimento consta di dieci articoli, oltre all’articolo di conversione: tra le misure segnalate figura il rafforzamento delle misure di sicurezza collegate ai gravi incidenti avvenuti a Milano e, all’articolo 8, un intervento sull’operazione **«Strade sicure»** per potenziarne il contributo alla sicurezza.\n\nL’A.C. 3159 risulta, nei dati aggiornati al 3 novembre 2026, **in corso di esame in Commissione** dal 28 ottobre. Scheda dell’atto: [A.C. 3159](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3159).",
+ "eventi": {
+  "status": 1,
+  "tool": 12,
+  "dati": 7,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "cerca_atti",
+  "atto",
+  "cerca_per_significato",
+  "cerca_per_significato",
+  "elenco_sedute"
+ ],
+ "errori": [],
+ "tempo_s": 20.1,
+ "riferimento": {
+  "risposta": "Sì. Il Servizio Studi della Camera (Dipartimento Giustizia) ha pubblicato il 27/10/2026 il dossier D26190 «Disposizioni urgenti in materia di sicurezza pubblica e contrasto alla criminalità minorile» sul D.L. 190/2026 (A.C. 3159, conversione del decreto-legge 22 ottobre 2026, n. 190), dossier n. 786, serie Progetti di legge n. 683: https://temi.camera.it/leg19/dossier/OCD18-23777/disposizioni-urgenti-materia-sicurezza-pubblica-e-contrasto-alla-criminalita-minorile.html. Contiene le schede di lettura dei 10 articoli: modifiche al codice penale (fra cui il regime di imputabilità dei minori ultraquattordicenni e nuove aggravanti per devastazione e saccheggio nel corso di manifestazioni), al codice di procedura penale, al d.P.R. 448/1988 sul processo minorile, al regio decreto 12/1941, una sanzione amministrativa per danni da condotte illecite, modifiche al codice antimafia (d.lgs. 159/2011), all'art. 11-bis del d.l. 59/1978, misure per la sicurezza dopo i gravi incidenti di Milano, la clausola di invarianza finanziaria e l'entrata in vigore.",
+  "stato": "calcolata",
+  "limiti": "Il contenuto in breve è ricavato dall'indice del testo del dossier."
+ },
+ "punteggi": {
+  "correttezza": 2,
+  "fonti": 1,
+  "garanzie": {
+   "groups": "fail",
+   "authority": "na",
+   "quotes": "fail"
+  },
+  "trappola": null,
+  "tempo_s": 20.1
+ },
+ "causa_probabile": null,
+ "note": "Dossier del 27/10/2026 con il link giusto su temi.camera.it, A.C. 3159, dieci articoli. Verifica: fail spurio (le «…» sono un nome di operazione)."
+}

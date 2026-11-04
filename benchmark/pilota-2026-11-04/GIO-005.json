@@ -1,0 +1,53 @@
+{
+ "id": "GIO-005",
+ "domanda": "È vero che è la prima volta in questa legislatura che si mette la fiducia su una legge elettorale?",
+ "categoria": "governo",
+ "ramo": "camera",
+ "tipo_risposta": "fatto",
+ "difficolta": "media",
+ "trappola": false,
+ "note_domanda": "La XIX dice di sì o no dai dati; il confronto storico con il Rosatellum (2017) chiede la XVII: avvertire.",
+ "endpoint": "/api/agente",
+ "risposta_sistema": "Sì. Nei dati della XIX legislatura, la riforma elettorale A.C. 2822-B è il primo provvedimento sulle regole di elezione di Camera e Senato sul quale il Governo ha posto la questione di fiducia.\n\nLa fiducia è stata posta alla Camera, nel passaggio conclusivo, su tre articoli del provvedimento: il 6 ottobre 2026 sull’articolo 1 e il 7 ottobre sugli altri articoli interessati. La Camera ha poi approvato definitivamente la legge l’8 ottobre; è diventata la legge n. 180 del 9 ottobre 2026. Al Senato, sul corrispondente DDL 1971, non risulta una votazione di fiducia.\n\nIl provvedimento è [A.C. 2822-B](http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2822-B). Dati disponibili fino al 3 novembre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 30,
+  "dati": 15,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  "cerca_atti",
+  "cerca_interventi",
+  "elenco_votazioni",
+  "atto",
+  "atto",
+  "elenco_votazioni",
+  "elenco_votazioni",
+  "cerca_interventi",
+  "cerca_interventi",
+  "cerca_atti",
+  "atto",
+  "seduta",
+  "seduta",
+  "seduta",
+  "cerca_interventi"
+ ],
+ "errori": [],
+ "tempo_s": 21.4,
+ "riferimento": {
+  "risposta": "Sì, nei dati della XIX è la prima volta. Fra tutti i voti di fiducia della legislatura, gli unici su una legge elettorale sono i tre della Camera sul C. 2822-B (legge elettorale Bignami e altri, terza lettura): 6/10/2026 sull'articolo 1 (226 sì, 147 no, 3 astenuti) e sull'articolo 2 (227 sì, 149 no, 3 astenuti), 7/10/2026 sull'articolo 3 (228 sì, 144 no, 3 astenuti). Nelle letture precedenti la fiducia non c'è stata: prima lettura alla Camera con voto sugli emendamenti e voto finale il 16/7/2026 (217 sì, 152 no), Senato (S. 1971) con voto degli articoli e voto finale il 15/9/2026 (113 sì, 71 no). Il voto finale, segreto, è dell'8/10/2026 (227 sì, 164 no).",
+  "stato": "calcolata",
+  "limiti": "Il confronto storico (ad esempio con il Rosatellum del 2017, XVII legislatura) non è calcolabile: il database copre solo la XIX. Le tre votazioni del 6-7/10/2026 sono questioni di fiducia distinte, una per articolo. Alla Camera i voti di fiducia sulle mozioni (fiducia iniziale e mozioni di sfiducia) sono legati alla mozione e restano fuori dal filtro. Al Senato le fiducie non hanno vote_act e l'atto si legge dal titolo: due titoli non hanno il numero nella forma attesa (fiducia iniziale al Governo Meloni, 26/10/2022; fiducia sull'A.S 442, bilancio, 29/12/2022) e sono stati controllati a mano: nessuna riguarda leggi elettorali."
+ },
+ "punteggi": {
+  "correttezza": 1,
+  "fonti": 1,
+  "garanzie": null,
+  "trappola": null,
+  "tempo_s": 21.4
+ },
+ "causa_probabile": null,
+ "note": "Sì, prima volta nella XIX, sul C. 2822-B: giusto. Sbagliato un dettaglio: la fiducia sull'articolo 2 è del 6/10, non del 7. Mancano i numeri dei tre voti."
+}

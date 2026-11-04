@@ -1,0 +1,171 @@
+{
+ "id": "LOB-012",
+ "trappola": false,
+ "domanda": "Quanti emendamenti al C. 3148 sono stati dichiarati inammissibili e di quali gruppi erano i primi firmatari?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "conteggio",
+ "ramo": "camera",
+ "difficolta": "facile",
+ "garanzie": [],
+ "note": "Risultano 28 inammissibili su 89; gli altri hanno esito vuoto, che non vuol dire respinti.",
+ "endpoint": "agente",
+ "inizio": 1793752846.496667,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": "camera",
+    "kind": "bill",
+    "number": "3148",
+    "signer": null,
+    "limit": 10,
+    "offset": 0
+   },
+   "result": "{\"total\": 1, \"items\": [{\"uri\": \"it:camera:19:ac:3148\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3148\", \"kind\": \"bill\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\", \"date\": \"2026-10-15\", \"status\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148\"}]}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": null,
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 28, \"items\": [{\"uri\": \"it:camera:19:ac:3148:eme:com754:1.020\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"1.020\", \"venue\": \"referente\", \"article\": \"1\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Dopo l'articolo 1, aggiungere il seguente:\\nArt. 1.1. (Credito d'imposta per l'acquisto di fertilizzanti a favore delle imprese agricole)\\n1. Al fine di mitigare gli effetti economici derivanti dal perdurare dell'aumento eccezionale del prezzo dei fertilizzanti agricoli, in conseguenza dalle recenti crisi internazionali, è riconosciuto alle imprese esercenti l'attività agricola, nel limite di 30 milioni di euro per l'anno 2026, a parziale compensazione dei maggiori oneri effettivamente sostenuti per l'acquisto dei fertilizzanti agricoli, un contributo straordinario, sotto forma di credito d'imposta, commisurato alla maggiore spesa sostenuta per l'acquisto dei fertilizzanti effettuati nel terzo trimestre nell'anno 2026, comprovato mediante le relative fatture d'acquisto, al netto dell'imposta sul valore aggiunto. 2. Il credito d'imposta di cui al comma 1 è utilizzabile esclusivamente in compensazione ai sensi dell'articolo 17 del decreto legislativo 9 luglio 1997, n. 241, entro la data del 31 dicembre 2026. Non si applicano i limiti di cui all'articolo 1, comma 53, della legge 24 dicembre 2007, n. 244, e all'articolo 34 della legge 23 dicembre 2000, n. 388. Il credito d'imposta non concorre alla formazione del reddito d'impresa né della base imponibile dell'imposta regionale sulle attività produttive e non rileva ai fini del rapporto di cui agli articoli 61 e 109, comma 5, del testo unico delle imposte sui redditi, di cui al decreto del Presidente della Repubblica 22 dicembre 1986, n. 917. Il credito d'imposta è cumulabile con altre agevolazioni che abbiano ad oggetto i medesimi costi, a condizione che tale cumulo, tenuto conto anche della non concorrenza alla formazione del reddito e della base imponibile dell'imposta regionale sulle attività produttive, non porti al superamento del costo sostenuto. 3. Con decreto del Ministro dell'agricoltura, della sovranità alimentare e delle foreste, di concerto con il Ministro dell'economia e delle finanze, adottato entro trenta giorni dalla data di entrata in vigore della legge di conversione del presente decreto, sono definiti i criteri e le modalità di attuazione delle disposizioni di cui al comma 1, con particolare riguardo alle procedure di concessione dei contributi, sotto forma di credito d'imposta, anche ai fini del rispetto dei limiti di spesa previsti, nonché alla documentazione richiesta, alle condizioni di revoca e all'effettuazione dei controlli. 4. Agli oneri derivanti dal presente articolo, pari a 30 milioni di euro per l'anno 2026, si provvede mediante corrispondente riduzione del Fondo di cui all'articolo 10, comma 5, del decreto-legge 29 novembre 2004, n. 282, convertito, con modificazioni, dalla legge 27 dicembre 2004, n. 307.\", \"signers\": [{\"person\": {\"uri\": \"it:pe"
+  },
+  {
+   "name": "atto",
+   "args": {
+    "uri": "it:camera:19:ac:3148"
+   },
+   "result": "{\"uri\": \"it:camera:19:ac:3148\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3148\", \"kind\": \"bill\", \"title\": \"S. 2029. - \\\"Conversione in legge, con modificazioni, del decreto-legge 10 settembre 2026, n. 157, recante disposizioni urgenti in materia di prezzi petroliferi connessi al protrarsi della nuova crisi dei mercati internazionali e di infrastrutture e attività energetiche strategiche\\\" <i>(approvato dal Senato)</i> (3148)\", \"date\": \"2026-10-15\", \"status\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3148\", \"kind_raw\": \"disegno_legge_ordinario\", \"initiative\": \"Governo\", \"status_date\": \"2026-10-28\", \"source_uri\": \"http://dati.camera.it/ocd/attocamera.rdf/ac19_3148\", \"sponsors\": [{\"person\": {\"uri\": \"it:person:camera:50115\", \"name\": \"Giancarlo Giorgetti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4132\", \"name\": \"Lega - Salvini Premier\", \"short_name\": \"LEGA\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=50115&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Economia e delle finanze\"}, {\"person\": {\"uri\": \"it:person:camera:303089\", \"name\": \"Gilberto Pichetto Fratin\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4134\", \"name\": \"Forza Italia - Berlusconi Presidente - PPE\", \"short_name\": \"FI-PPE\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=303089&legislatura=19\"}, \"first\": true, \"as_office\": \"Ministro dell'Ambiente e della sicurezza energetica\"}, {\"person\": {\"uri\": \"it:person:camera:302103\", \"name\": \"Giorgia Meloni\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4133\", \"name\": \"Fratelli d'Italia\", \"short_name\": \"FDI\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302103&legislatura=19\"}, \"first\": true, \"as_office\": \"Presidente del Consiglio dei ministri\"}, {\"person\": {\"uri\": \"it:person:camera:302741\", \"name\": \"Matteo Salvini\", \"in_office\": false}, \"first\": true, \"as_office\": \"Ministro delle Infrastrutture e dei trasporti\"}], \"steps\": [{\"order\": 1, \"title\": \"Da assegnare\", \"date\": \"2026-10-15\"}, {\"order\": 2, \"title\": \"Assegnato\", \"date\": \"2026-10-15\"}, {\"order\": 3, \"title\": \"In corso di esame in Commissione\", \"date\": \"2026-10-21\"}, {\"order\": 4, \"title\": \"Concluso l'esame da parte della Commissione. In stato di relazione\", \"date\": \"2026-10-28\"}], \"versions\": [{\"code\": \"leg.19.pdl.camera.3148.19PDL0218420\", \"title\": \"Disegno di legge trasmesso dal Senato il 15 ottobre 2026\", \"date\": \"2026-10-15\", \"articles\": 1, \"length\": 22440}, {\"code\": \"leg.19.pdl.camera.3148_A.19PDL0219440\", \"title\": \"Richiesta autorizzazione a riferire oralmente il 28 ottobre 2026\", \"date\": \"2026-10-28\", \"articles\": 0, \"length\": 21551}], \"joined\": [], \"votes\": [], \"amendments\": {"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "PD-IDP",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 17, \"items\": [{\"uri\": \"it:camera:19:ac:3148:eme:com754:1.020\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"1.020\", \"venue\": \"referente\", \"article\": \"1\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Dopo l'articolo 1, aggiungere il seguente:\\nArt. 1.1. (Credito d'imposta per l'acquisto di fertilizzanti a favore delle imprese agricole)\\n1. Al fine di mitigare gli effetti economici derivanti dal perdurare dell'aumento eccezionale del prezzo dei fertilizzanti agricoli, in conseguenza dalle recenti crisi internazionali, è riconosciuto alle imprese esercenti l'attività agricola, nel limite di 30 milioni di euro per l'anno 2026, a parziale compensazione dei maggiori oneri effettivamente sostenuti per l'acquisto dei fertilizzanti agricoli, un contributo straordinario, sotto forma di credito d'imposta, commisurato alla maggiore spesa sostenuta per l'acquisto dei fertilizzanti effettuati nel terzo trimestre nell'anno 2026, comprovato mediante le relative fatture d'acquisto, al netto dell'imposta sul valore aggiunto. 2. Il credito d'imposta di cui al comma 1 è utilizzabile esclusivamente in compensazione ai sensi dell'articolo 17 del decreto legislativo 9 luglio 1997, n. 241, entro la data del 31 dicembre 2026. Non si applicano i limiti di cui all'articolo 1, comma 53, della legge 24 dicembre 2007, n. 244, e all'articolo 34 della legge 23 dicembre 2000, n. 388. Il credito d'imposta non concorre alla formazione del reddito d'impresa né della base imponibile dell'imposta regionale sulle attività produttive e non rileva ai fini del rapporto di cui agli articoli 61 e 109, comma 5, del testo unico delle imposte sui redditi, di cui al decreto del Presidente della Repubblica 22 dicembre 1986, n. 917. Il credito d'imposta è cumulabile con altre agevolazioni che abbiano ad oggetto i medesimi costi, a condizione che tale cumulo, tenuto conto anche della non concorrenza alla formazione del reddito e della base imponibile dell'imposta regionale sulle attività produttive, non porti al superamento del costo sostenuto. 3. Con decreto del Ministro dell'agricoltura, della sovranità alimentare e delle foreste, di concerto con il Ministro dell'economia e delle finanze, adottato entro trenta giorni dalla data di entrata in vigore della legge di conversione del presente decreto, sono definiti i criteri e le modalità di attuazione delle disposizioni di cui al comma 1, con particolare riguardo alle procedure di concessione dei contributi, sotto forma di credito d'imposta, anche ai fini del rispetto dei limiti di spesa previsti, nonché alla documentazione richiesta, alle condizioni di revoca e all'effettuazione dei controlli. 4. Agli oneri derivanti dal presente articolo, pari a 30 milioni di euro per l'anno 2026, si provvede mediante corrispondente riduzione del Fondo di cui all'articolo 10, comma 5, del decreto-legge 29 novembre 2004, n. 282, convertito, con modificazioni, dalla legge 27 dicembre 2004, n. 307.\", \"signers\": [{\"person\": {\"uri\": \"it:pe"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "M5S",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 7, \"items\": [{\"uri\": \"it:camera:19:ac:3148:eme:com754:1.024\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"1.024\", \"venue\": \"referente\", \"article\": \"1\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Dopo l'articolo 1, aggiungere il seguente:\\nArt. 1.1. (Misure in favore delle imprese del settore della moda per il contrasto al caro energia)\\n1. Alle imprese operanti nel settore della moda, con sede legale o stabile organizzazione in Italia, è riconosciuto un contributo straordinario, sotto forma di credito d'imposta, pari al 30 per cento della spesa sostenuta per l'acquisto della componente energetica, effettivamente utilizzata nel primo, nel secondo trimestre e nel terzo dell'anno 2026, a condizione che il prezzo medio della componente energetica, calcolato sulla base del primo trimestre 2026, abbia subito un incremento superiore al 25 per cento rispetto al prezzo medio del medesimo trimestre dell'anno 2019. 2. Il credito d'imposta è utilizzabile esclusivamente in compensazione ai sensi dell'articolo 17 del decreto legislativo 9 luglio 1997, n. 241, senza l'applicazione dei limiti di cui all'articolo 1, comma 53, della legge 24 dicembre 2007, n. 244, e all'articolo 34 della legge 23 dicembre 2000, n. 388, e non concorre alla formazione del reddito d'impresa né della base imponibile dell'imposta regionale sulle attività produttive. 3. Il credito d'imposta è cumulabile con altre agevolazioni che abbiano a oggetto i medesimi costi, a condizione che tale cumulo, tenuto conto anche della non concorrenza alla formazione del reddito e della base imponibile IRAP, non porti al superamento del costo sostenuto. 4. L'agevolazione di cui al comma 1 è concessa ai sensi e nel rispetto dei limiti e delle condizioni previste dal regolamento (UE) n. 651/2014. 5. Il beneficio di cui al comma 1 è riconosciuto nel limite massimo di spesa di 80 milioni di euro per l'anno 2026. 6. Agli oneri derivanti dal presente articolo, pari a 80 milioni di euro per l'anno 2026, si provvede mediante corrispondente riduzione delle risorse del Fondo per interventi strutturali di politica economica di cui all'articolo 10, comma 5, del decreto-legge 29 novembre 2004, n. 282, convertito, con modificazioni, dalla legge 27 dicembre 2004, n. 307.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308221\", \"name\": \"Emma Pavanelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308221&legislatura=19\"}, \"name_raw\": \"Emma Pavanelli\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308824\", \"name\": \"Chiara Appendino\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4131\", \"name\": \"Movimento 5 Stelle\", \"short_name\": \"M5S\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308824&legislatura=19\"}, \"name_raw\":"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "AVS",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 2, \"items\": [{\"uri\": \"it:camera:19:ac:3148:eme:com754:1.032\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"1.032\", \"venue\": \"referente\", \"article\": \"1\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Dopo l'articolo 1, aggiungere il seguente:\\nArt. 1.1. (Disposizioni per la promozione del lavoro agile a seguito dell'incremento dei prezzi dei prodotti energetici)\\n1. A decorrere dalla data di entrata in vigore della legge di conversione del presente decreto e fino al 31 dicembre 2026, in considerazione degli effetti economici derivanti dall'aumento eccezionale del prezzo dei prodotti energetici e dei carburanti, ai rapporti di lavoro organizzati ed eseguiti in modalità agile, si applica una riduzione pari al 3 per cento sui premi assicurativi a carico del datore di lavoro, dovuti all'Istituto nazionale per l'assicurazione contro gli infortuni sul lavoro (INAIL). 2. Agli oneri derivanti dall'attuazione del comma 1, pari a 55 milioni di euro per l'anno 2026, si provvede mediante corrispondente riduzione del «Fondo per interventi strutturali di politica economica» di cui all'articolo 10, comma 5, del decreto-legge 29 novembre 2004, n. 282, convertito, con modificazioni, dalla legge 27 dicembre 2004, n. 307.\\nConseguentemente, al titolo, dopo le parole: mercati internazionali aggiungere le seguenti: , di promozione del lavoro agile.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:302080\", \"name\": \"Angelo Bonelli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4154\", \"name\": \"Alleanza Verdi e Sinistra\", \"short_name\": \"AVS\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=302080&legislatura=19\"}, \"name_raw\": \"Angelo Bonelli\", \"first\": true}]}, {\"uri\": \"it:camera:19:ac:3148:eme:com754:2.4\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"2.4\", \"venue\": \"referente\", \"article\": \"2\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Sostituirlo con il seguente:\\nArt. 2. (Contributo di solidarietà per il settore energetico)\\n1. La disciplina di cui all'articolo 1, commi da 115 a 119, della legge 29 dicembre 2022, n. 197 si applica, fatte salve le previsioni di cui ai successivi commi 2 e 3, anche con riferimento al periodo d'imposta in corso al 1° gennaio 2026. 2. Il contributo di solidarietà è determinato applicando l'aliquota di cui al richiamato comma 116 sull'ammontare della quota del reddito complessivo determinato ai fini dell'imposta sul reddito delle società e relativo alla media dei redditi complessivi conseguiti nei quattro periodi di imposta antecedenti a quello in corso al 1° gennaio 2022. Non concorrono alla determinazione dell'ammontare di cui al precedente periodo le operazioni di cessione e di acquisto di azioni, obbligazioni o altri titoli non rappresentativi di merci e quote sociali che intercorrono tra i soggetti di cui al richiamato comma 115 dell'articolo 1 della legge 29 dicembre 2022, n. 197. 3. In deroga da quanto st"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "IV-C-RE",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "AZ",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": "NM",
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 0, \"items\": []}"
+  },
+  {
+   "name": "emendamenti",
+   "args": {
+    "act": "it:camera:19:ac:3148",
+    "signer": null,
+    "group": null,
+    "outcome": "inammissibile",
+    "venue": null,
+    "q": null,
+    "limit": 2,
+    "offset": 26
+   },
+   "result": "{\"total\": 28, \"items\": [{\"uri\": \"it:camera:19:ac:3148:eme:com754:2-ter.09\", \"act\": \"it:camera:19:ac:3148\", \"number\": \"2-ter.09\", \"venue\": \"referente\", \"article\": \"2-ter\", \"outcome\": \"inammissibile\", \"sitting_date\": \"2026-10-27\", \"text\": \"Dopo l'articolo 2-ter, aggiungere il seguente:\\nArt. 2-quater.(Mutualità delle comunità energetiche)\\n1. Le comunità di energia rinnovabile e le comunità energetiche dei cittadini costituite in forma cooperativa, in quanto tenute ad assicurare l'obiettivo principale di fornire benefici ambientali, economici o sociali alla comunità, ai soci o membri o alle aree locali, si intendono, in ogni caso, a mutualità prevalente, a condizione che i requisiti di cui all'articolo 2514 del codice civile siano previsti nei propri statuti.\", \"signers\": [{\"person\": {\"uri\": \"it:person:camera:308834\", \"name\": \"Sara Ferrari\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308834&legislatura=19\"}, \"name_raw\": \"Sara Ferrari\", \"first\": true}, {\"person\": {\"uri\": \"it:person:camera:308894\", \"name\": \"Marco Simiani\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308894&legislatura=19\"}, \"name_raw\": \"Marco Simiani\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308804\", \"name\": \"Augusto Curti\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308804&legislatura=19\"}, \"name_raw\": \"Augusto Curti\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:308893\", \"name\": \"Eleonora Evi\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=308893&legislatura=19\"}, \"name_raw\": \"Eleonora Evi\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:309220\", \"name\": \"Alberto Pandolfo\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:gr4136\", \"name\": \"Partito Democratico - Italia Democratica e Progressista\", \"short_name\": \"PD-IDP\", \"kind\": \"group\"}, \"photo\": \"http://documenti.camera.it/apps/nuovosito/deputato/getFoto.asp?id=309220&legislatura=19\"}, \"name_raw\": \"Alberto Pandolfo\", \"first\": false}, {\"person\": {\"uri\": \"it:person:camera:302856\", \"name\": \"Paola De Micheli\", \"chamber\": \"camera\", \"in_office\": true, \"group\": {\"uri\": \"it:camera:19:group:g"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti",
+  "emendamenti",
+  "atto",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti",
+  "emendamenti"
+ ],
+ "tempo_s": 20.5,
+ "risposta_sistema": "Sono **28** gli emendamenti al C. 3148 dichiarati inammissibili, tutti in sede referente il 27 ottobre 2026.\n\nI primi firmatari appartenevano a tre gruppi:\n- **Partito Democratico – Italia Democratica e Progressista (PD-IDP)**: 19;\n- **Movimento 5 Stelle (M5S)**: 7;\n- **Alleanza Verdi e Sinistra (AVS)**: 2.",
+ "eventi": {
+  "status": 1,
+  "tool": 20,
+  "dati": 10,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}

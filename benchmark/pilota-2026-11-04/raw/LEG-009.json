@@ -1,0 +1,68 @@
+{
+ "id": "LEG-009",
+ "domanda": "Quante leggi sono state approvate definitivamente nella XIX legislatura finora, distinte fra iniziativa governativa e parlamentare?",
+ "endpoint": "/api/agente",
+ "inizio": 1793756088.051202,
+ "errori": [],
+ "risposta_sistema": "Finora, nella XIX legislatura, risultano **366 leggi definitivamente approvate e pubblicate**:\n\n- **274** di iniziativa **governativa**\n- **87** di iniziativa **parlamentare**\n\nLe altre 5 sono: 3 di iniziativa mista, 1 popolare e 1 regionale. Il conteggio considera ogni legge una sola volta, anche se l’iter ha coinvolto entrambi i rami, e include gli atti presentati dal 13 ottobre 2022 al 4 novembre 2026; l’ultima legge censita è del 23 ottobre 2026.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "strumenti": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": true,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   }
+  }
+ ],
+ "dati": [
+  {
+   "name": "conta_atti",
+   "args": {
+    "chamber": null,
+    "kind": "bill",
+    "initiative": null,
+    "q": null,
+    "subject": null,
+    "signer": null,
+    "first_signer": false,
+    "group": null,
+    "became_law": true,
+    "start": "2022-10-13",
+    "end": "2026-11-04",
+    "laws": true,
+    "group_by": [
+     "iniziativa"
+    ],
+    "sum_chambers": true,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"counted\": \"Leggi nate da atti della XIX, Camera e Senato, atti presentati dal 13/10/2022 al 04/11/2026; filtri: tipo bill, diventati_legge sì. Una legge = numero e anno della legge (law_number, law_date), ordinarie e costituzionali a parte: conta una volta anche se l'atto compare in tutti e due i rami o in più atti. Iniziativa per categoria (governo, parlamentare, regione, cnel, popolare), «mista» se gli atti di una legge ne hanno più d'una; conversione_decreto = titolo con «conversione in legge». Esclusi i testi approvati non ancora pubblicati (senza numero di legge).\", \"total\": 366, \"rows_total\": 5, \"offset\": 0, \"rows\": [{\"iniziativa\": \"governo\", \"leggi\": 274, \"dal\": \"2022-11-17\", \"al\": \"2026-10-23\"}, {\"iniziativa\": \"parlamentare\", \"leggi\": 87, \"dal\": \"2023-02-09\", \"al\": \"2026-10-15\"}, {\"iniziativa\": \"mista\", \"leggi\": 3, \"dal\": \"2023-06-13\", \"al\": \"2025-09-26\"}, {\"iniziativa\": \"popolare\", \"leggi\": 1, \"dal\": \"2025-05-15\", \"al\": \"2025-05-15\"}, {\"iniziativa\": \"regione\", \"leggi\": 1, \"dal\": \"2026-01-26\", \"al\": \"2026-01-26\"}]}"
+  }
+ ],
+ "tempo_s": 4.8
+}

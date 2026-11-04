@@ -1,0 +1,45 @@
+{
+ "id": "RIC-011",
+ "trappola": false,
+ "domanda": "Ricostruisci la rete delle cofirme degli emendamenti fra deputati di gruppi diversi nella XIX: quali coppie di gruppi cofirmano più spesso?",
+ "categoria": "emendamenti",
+ "tipo_risposta": "classifica",
+ "ramo": "camera",
+ "difficolta": "difficile",
+ "garanzie": [
+  "tutti_i_gruppi"
+ ],
+ "note": "Il gruppo del firmatario va preso alla data dell'emendamento (group_at), non a oggi: 77 persone hanno cambiato gruppo.",
+ "endpoint": "agente",
+ "inizio": 1793753011.2446568,
+ "endpoint_usato": "/api/agente",
+ "dati": [
+  {
+   "name": "cerca_atti",
+   "args": {
+    "q": null,
+    "chamber": null,
+    "kind": "bill",
+    "number": null,
+    "signer": null,
+    "limit": 100,
+    "offset": 0
+   },
+   "result": "{\"total\": 5316, \"items\": [{\"uri\": \"it:senato:19:ddl:2083\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2083\", \"kind\": \"bill\", \"title\": \"Disposizioni per la prevenzione del burnout e per la tutela del benessere psico-fisico nella professione forense\", \"date\": \"2026-11-02\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55756.htm\"}, {\"uri\": \"it:camera:19:ac:3172\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3172\", \"kind\": \"bill\", \"title\": \"FARAONE ed altri: \\\"Istituzione della Giornata nazionale del cane guida\\\" (3172)\", \"date\": \"2026-10-29\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;3172\"}, {\"uri\": \"it:senato:19:ddl:2080\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2080\", \"kind\": \"bill\", \"title\": \"Misure per la tutela del commercio di prossimità e per il contrasto alle pratiche elusive realizzate mediante il fenomeno delle partite IVA cosiddette «apri e chiudi»\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55751.htm\"}, {\"uri\": \"it:senato:19:ddl:2081\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2081\", \"kind\": \"bill\", \"title\": \"Modifiche agli articoli 56 e 57 della Costituzione, in materia di rappresentanza parlamentare della Sardegna e della Sicilia, in attuazione del principio di insularità\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55752.htm\"}, {\"uri\": \"it:senato:19:ddl:2082\", \"chamber\": \"senato\", \"legislature\": 19, \"number\": \"2082\", \"kind\": \"bill\", \"title\": \"Delega al Governo in materia di professioni sanitarie e disposizioni relative alla responsabilità professionale degli esercenti le professioni sanitarie\", \"date\": \"2026-10-29\", \"status\": \"da assegn. a commis.\", \"card_url\": \"https://www.senato.it/leg/19/BGT/Schede/Ddliter/55015.htm\"}, {\"uri\": \"it:camera:19:ac:2197-B\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"2197-B\", \"kind\": \"bill\", \"title\": \"S. 427-731-888-891-B. - PROPOSTA DI LEGGE COSTITUZIONALE D'INIZIATIVA DEI SENATORI IANNONE ed altri; MARTON ed altri; PARRINI ed altri; DE CRISTOFARO e MAGNI: \\\"Modifica all’articolo 24 della Costituzione in materia di tutela delle vittime di reato\\\" <i>(approvata, in seconda deliberazione, dal Senato con la maggioranza dei due terzi dei suoi componenti, già approvata, in prima deliberazione, dal Senato, in un testo unificato, e dalla Camera)</i> (2197-B)\", \"date\": \"2026-10-28\", \"status\": \"Da assegnare\", \"card_url\": \"http://www.camera.it/uri-res/N2Ls?urn:camera-it:parlamento:scheda.progetto.legge:camera;19.legislatura;2197-B\"}, {\"uri\": \"it:camera:19:ac:3170\", \"chamber\": \"camera\", \"legislature\": 19, \"number\": \"3170\", \"kind\": \"bill\", \"title\": \"D'ALFONSO: \\\"Modifica all’articolo 328 del codice penale, in materia di omissione di atti d’ufficio, nonché disposizioni concernenti l"
+  }
+ ],
+ "strumenti": [
+  "cerca_atti"
+ ],
+ "tempo_s": 8.7,
+ "risposta_sistema": "Non posso ricostruire in modo affidabile una graduatoria dell’intera XIX legislatura con i dati disponibili qui: gli emendamenti sono consultabili soltanto **atto per atto**, mentre non è disponibile un’estrazione aggregata delle cofirme per gruppo. L’archivio contiene 5.316 progetti di legge, inclusi molti senza emendamenti: una classifica completa richiederebbe acquisire e normalizzare tutti gli emendamenti di ciascun atto, attribuendo i firmatari al gruppo alla data di presentazione.\n\nPer evitare risultati parziali o numeri non verificabili, non indico quindi quali coppie di gruppi “cofirmano più spesso”. Le schede ufficiali dei singoli atti e dei relativi emendamenti restano la fonte da cui effettuare il conteggio.\n\nPosso però fare un’analisi rigorosa delimitando il perimetro, per esempio: un provvedimento, una materia, un intervallo di date, oppure gli emendamenti esaminati in Assemblea anziché in Commissione.",
+ "eventi": {
+  "status": 1,
+  "tool": 2,
+  "dati": 1,
+  "delta": 1,
+  "suggestions": 1,
+  "done": 1
+ },
+ "errori": []
+}
