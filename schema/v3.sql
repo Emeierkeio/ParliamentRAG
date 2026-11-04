@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS sitting (
   loaded_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS sitting_date ON sitting (chamber, date);
+-- indirizzo del resoconto ufficiale (Senato: show-doc dall'id del documento Akoma Ntoso); alla Camera NULL, si costruisce dall'ancora
+ALTER TABLE sitting ADD COLUMN IF NOT EXISTS record_url text;
 -- sedute di commissione dal Bollettino (resoconto sommario): sede, chi presiede, orari, governo presente
 ALTER TABLE sitting ADD COLUMN IF NOT EXISTS kind text;              -- assembly_verbatim | committee_summary
 ALTER TABLE sitting ADD COLUMN IF NOT EXISTS body_code text;         -- codice della commissione nel Bollettino (01, 0109 …)
@@ -109,6 +111,27 @@ CREATE TABLE IF NOT EXISTS seat (                  -- SITS_ON: appartenenza agli
   start_date date NOT NULL, end_date date, end_reason text
 );
 CREATE INDEX IF NOT EXISTS seat_person ON seat (person);
+-- foto dei parlamentari quando la fonte non si può linkare: senato.it le serve dietro il WAF (passo senato_foto)
+CREATE TABLE IF NOT EXISTS person_photo (
+  person text PRIMARY KEY,
+  image bytea NOT NULL, media_type text NOT NULL DEFAULT 'image/jpeg',
+  source_url text, updated timestamptz NOT NULL DEFAULT now()
+);
+
+-- i nomi di un gruppo nel tempo (al Senato «Azione-ItaliaViva-RenewEurope» fino all'8/11/2023, poi «Italia Viva - Il
+-- Centro - Renew Europe»): grp.name è il nome di oggi, name_at(gruppo, giorno) quello in vigore quel giorno
+CREATE TABLE IF NOT EXISTS grp_name (
+  grp text NOT NULL REFERENCES grp (uri) ON DELETE CASCADE,
+  name text NOT NULL, short_name text,
+  start_date date, end_date date
+);
+CREATE INDEX IF NOT EXISTS grp_name_grp ON grp_name (grp);
+CREATE OR REPLACE FUNCTION name_at(g text, d date) RETURNS text LANGUAGE sql STABLE AS $$
+  SELECT coalesce((SELECT n.name FROM grp_name n WHERE n.grp = g AND (n.start_date IS NULL OR n.start_date <= d)
+                     AND (n.end_date IS NULL OR n.end_date >= d) ORDER BY n.start_date DESC NULLS LAST LIMIT 1),
+                  (SELECT name FROM grp WHERE uri = g))
+$$;
+
 CREATE TABLE IF NOT EXISTS office (                -- OFFICE: cariche negli organi e nei gruppi
   person text NOT NULL REFERENCES person (uri),
   target text NOT NULL,                            -- uri di un body o di un grp

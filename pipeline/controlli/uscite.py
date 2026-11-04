@@ -1,4 +1,6 @@
-"""Controlli sulle uscite trasformate, prima di caricarle: se una regola fallisce il giro non pubblica.
+"""Controlli sulle uscite trasformate, prima di caricarle: un file che non passa una regola va in quarantena e non si
+carica; gli altri vanno avanti. Si controllano solo i file nuovi o cambiati dall'ultimo caricamento (registro del
+caricamento, `carica/registro.py`), più quelli già in quarantena, che a ogni giro si ricontrollano.
 
 Sono le regole dello schema v3 che si possono verificare sui file (le altre girano sul grafo caricato).
 """
@@ -265,21 +267,44 @@ def avvisi_voti(nodi: list[dict], archi: list[dict]) -> list[str]:
 SOGLIA_VOTI = 0.02   # oltre il 2% di votazioni che non tornano, l'errore sta nella trasformazione
 
 
+def errori_file(righe: list[dict]) -> list[str]:
+    """Gli errori di un file di uscita: vuoto se si può caricare."""
+    return _regole(righe) if righe else ["file vuoto"]
+
+
 def controlla(ctx) -> dict:
+    from ..carica.postgres import destinazione, leggi_uscita
+    from ..carica.registro import Registro
+    registro = Registro(ctx.cartella, destinazione())
     cartella = ctx.cartella / "uscite" / "v3"
-    file_, problemi, avvisi, votazioni = 0, {}, [], 0
+    file_, problemi, avvisi, votazioni, file_voti = 0, {}, [], 0, []
     for f in sorted(cartella.rglob("*.jsonl")):
-        righe = [json.loads(x) for x in f.read_text(encoding="utf-8").split("\n") if x.strip()]  # non splitlines(): spezza anche su U+2028, che nei testi c'è
+        h = registro.da_caricare(f)
+        if h is None:
+            continue
         file_ += 1
-        e = _regole(righe)
+        try:
+            righe = leggi_uscita(f)
+            e = errori_file(righe)
+        except Exception as x:
+            righe, e = [], [f"file illeggibile: {x}"]
         if e:
             problemi[f.name] = e
-        if righe and righe[0].get("kind") == "voti":
+            registro.in_quarantena(f, h, "controllo", "; ".join(e), ctx.giro)
+            continue
+        registro.esci_di_quarantena(f, "controllo")
+        if righe[0].get("kind") == "voti":
             nodi, archi = [r for r in righe if r["tipo"] == "nodo"], [r for r in righe if r["tipo"] == "arco"]
             votazioni += sum(1 for n in nodi if n["label"] == "Vote")
             avvisi += avvisi_voti(nodi, archi)
+            file_voti.append((f, h))
     if votazioni and len(avvisi) / votazioni > SOGLIA_VOTI:
-        problemi["voti"] = [f"{len(avvisi)} votazioni su {votazioni} non tornano con i totali: troppe per essere errori della fonte"]
+        # troppe votazioni che non tornano: l'errore sta nella trasformazione, e restano fuori tutti i voti nuovi
+        motivo = f"{len(avvisi)} votazioni su {votazioni} non tornano con i totali: troppe per essere errori della fonte"
+        for f, h in file_voti:
+            registro.in_quarantena(f, h, "controllo", motivo, ctx.giro)
+            problemi[f.name] = [motivo]
+    r = {"file_controllati": file_, "in_quarantena": len(problemi), "avvisi": len(avvisi), "esempi_avvisi": avvisi[:10]}
     if problemi:
-        raise RuntimeError(f"{len(problemi)} file non passano i controlli: {json.dumps(dict(list(problemi.items())[:5]), ensure_ascii=False)}")
-    return {"file_controllati": file_, "avvisi": len(avvisi), "esempi_avvisi": avvisi[:10]}
+        r["avviso"] = f"{len(problemi)} file in quarantena, non si caricano: {json.dumps(dict(list(problemi.items())[:5]), ensure_ascii=False)[:1500]}"
+    return r

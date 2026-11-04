@@ -56,14 +56,34 @@ def _testo(frammento: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(TAG.sub("", frammento)).replace("\xa0", " ")).strip()
 
 
-def _da_html(pagina: str, fonte: dict, leg: int) -> dict:
+SHOW_DOC = "https://www.senato.it/show-doc?leg={leg}&tipodoc=Resaula&id={id}"
+
+
+def indirizzo_resoconto(url: str | None, leg: int, numero: int, documenti: dict[int, int] | None = None) -> str | None:
+    """L'indirizzo del resoconto ufficiale su senato.it. Dal grezzo del bulk (`…#Leg19/Atto…/resaula/01526543-ra.akn.xml`)
+    l'id del documento è il numero del file senza zeri davanti; una pagina importata ha già l'indirizzo show-doc. Per i
+    resoconti importati con il solo uri di dati.senato.it vale l'id del file del bulk per lo stesso numero di seduta
+    (`documenti`, numero -> id), se c'è."""
+    url = url or ""
+    m = re.search(r"/resaula/0*(\d+)-ra\.akn\.xml$", url)
+    if m:
+        return SHOW_DOC.format(leg=leg, id=int(m.group(1)))
+    if url.startswith("https://www.senato.it/show-doc?"):
+        return url
+    if documenti and numero in documenti:
+        return SHOW_DOC.format(leg=leg, id=documenti[numero])
+    return None
+
+
+def _da_html(pagina: str, fonte: dict, leg: int, documenti: dict | None = None) -> dict:
     """Le sedute pubblicate solo come pagina web (show-doc, part=doc_dc): titoli in grassetto centrati, ogni intervento
     apre con il link al senatore (lo stesso id di dati.senato.it), i paragrafi senza link continuano l'intervento."""
     t = re.search(r"seduta n\.\s*(\d+)\s+del\s+(\d{2})/(\d{2})/(\d{4})", pagina, re.I)
     numero, data = int(t.group(1)), f"{t.group(4)}-{t.group(3)}-{t.group(2)}"
     s_uri = f"it:senato:{leg}:sed{numero:04d}"
     nodi = [{"label": "Sitting", "uri": s_uri, "chamber": "senato", "body": f"it:senato:{leg}:aula", "number": numero, "date": data,
-             "status": "held", "kind": "assembly_verbatim", "source": "senato_html", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}]
+             "status": "held", "kind": "assembly_verbatim", "source": "senato_html", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta"),
+             "record_url": indirizzo_resoconto(fonte.get("url"), leg, numero, documenti)}]
     archi, testi = [], []
     punti: list[dict] = []
     titolo, in_attesa, punto = None, "", None
@@ -175,9 +195,9 @@ def _da_html(pagina: str, fonte: dict, leg: int) -> dict:
     return {"nodi": nodi, "archi": archi, "testi": testi}
 
 
-def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
+def trasforma(corpo: bytes, fonte: dict, leg: int = 19, documenti: dict[int, int] | None = None) -> dict:
     if corpo.lstrip()[:15].lower() == b"<!doctype html>":
-        return _da_html(corpo.decode("utf-8"), fonte, leg)
+        return _da_html(corpo.decode("utf-8"), fonte, leg, documenti)
     radice = ET.fromstring(corpo)
     numero = int(radice.find(f".//{AKN}FRBRnumber").get("value"))
     data = radice.find(f".//{AKN}FRBRdate").get("date")
@@ -186,7 +206,8 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
     ruoli = {e.get("id"): e.get("showAs") for e in radice.iter(AKN + "TLCRole")}
     padre = {c: p for p in radice.iter() for c in p}
     seduta = {"label": "Sitting", "uri": s_uri, "chamber": "senato", "body": f"it:senato:{leg}:aula", "number": numero, "date": data,
-              "status": "held", "kind": "assembly_verbatim", "source": "senato_akn", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta")}
+              "status": "held", "kind": "assembly_verbatim", "source": "senato_akn", "source_key": fonte.get("chiave"), "source_hash": fonte.get("impronta"),
+              "record_url": indirizzo_resoconto(fonte.get("url"), leg, numero, documenti)}
     nodi, archi, testi = [seduta], [], []
     punti: dict[ET.Element, dict] = {}
 

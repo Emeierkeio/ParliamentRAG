@@ -4,6 +4,8 @@ audizioni e sugli atti (associazioni, sindacati, aziende, esperti, enti), in PDF
 Per ogni commissione si leggono due pagine (documenti delle audizioni e altra documentazione), che elencano per
 seduta i file con il loro titolo («AG 439 - Memoria UIL FP»); poi si scaricano i file nuovi, `massimo_file_per_giro`
 per notte. I nomi dei file contengono un identificativo e la data di deposito: un file non cambia, si scarica una volta.
+Un file oltre MASSIMO_BYTE non entra nel lago e si annota in `camera_documenti_troppo_grandi.json` (cartella dei dati),
+così non si riscarica ogni notte.
 
 Sono scritti di terzi: restano nel lago (privato) e nel database per la ricerca; il sito ne mostra solo estratti con
 il link al file ufficiale.
@@ -12,6 +14,7 @@ il link al file ufficiale.
 from __future__ import annotations
 
 import html
+import json
 import re
 import time
 import urllib.parse
@@ -71,7 +74,12 @@ def scarica(ctx) -> dict:
     # alcune memorie RISERVATO puntano al server interno della Camera («Ncs03-pool40-server/vol40/…»): non sono pubbliche
     interni = [x for x in voci if not x["url"].startswith("http")]
     voci = [x for x in voci if x["url"].startswith("http")]
-    mancano = [v for v in dict((x["url"], x) for x in voci).values() if chiave_file(v["url"], leg) not in presenti]
+    f_grandi = ctx.cartella / "camera_documenti_troppo_grandi.json"
+    try:
+        grandi = json.loads(f_grandi.read_text())
+    except (OSError, ValueError):
+        grandi = {}
+    mancano = [v for v in dict((x["url"], x) for x in voci).values() if chiave_file(v["url"], leg) not in presenti and v["url"] not in grandi]
     mancano.sort(key=lambda v: chiave_file(v["url"], leg)[-17:], reverse=True)     # dai depositi più recenti
     fatti = saltati = 0
     for v in mancano[:massimo]:
@@ -87,12 +95,14 @@ def scarica(ctx) -> dict:
             continue
         if len(corpo) > MASSIMO_BYTE:
             saltati += 1
+            grandi[v["url"]] = len(corpo)
+            f_grandi.write_text(json.dumps(grandi, ensure_ascii=False, indent=0))
             continue
         estensione = v["url"].rsplit(".", 1)[-1].lower()[:5]
         lago.salva(NOME, chiave_file(v["url"], leg), corpo, v["url"], estensione)
         fatti += 1
     rimandati = max(0, len(mancano) - massimo)
-    ctx.log(f"{NOME}: {len(voci)} file negli elenchi; {fatti} scaricati, {saltati} troppo grandi, {rimandati} rimandati, {len(interni)} non pubblici")
+    ctx.log(f"{NOME}: {len(voci)} file negli elenchi; {fatti} scaricati, {saltati} troppo grandi ({len(grandi)} in tutto), {rimandati} rimandati, {len(interni)} non pubblici")
     # pochi file persi per la rete non fermano il giro: si riprendono al giro dopo e intanto si trasforma il resto;
     # se ne mancano molti il passo fallisce, perché di solito vuol dire che la Camera sta bloccando
     if fallite and len(fallite) > max(10, 0.05 * (fatti + saltati + len(fallite))):

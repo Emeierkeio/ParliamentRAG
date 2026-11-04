@@ -1,9 +1,16 @@
 """Carica le uscite trasformate in Postgres (schema/v3.sql): una seduta per transazione, l'anagrafica di un ramo
 e di una legislatura in una transazione sola.
 
-Libreria standard: psql gira nel contenitore `testi` e riceve uno script con COPY. Una seduta cambiata si
-cancella e si ricarica nella stessa transazione (ON DELETE CASCADE porta via punti, interventi, segmenti,
-reazioni): o c'è la versione nuova intera o resta la vecchia intera.
+Libreria standard: psql riceve uno script con COPY. Una seduta cambiata si cancella e si ricarica nella stessa
+transazione (ON DELETE CASCADE porta via punti, interventi, segmenti, reazioni): o c'è la versione nuova intera o resta
+la vecchia intera.
+
+Destinazione (`comando_psql`): senza PGHOST nell'ambiente (o in .env), il Postgres locale del contenitore `testi`;
+con PGHOST, un Postgres remoto (Railway), con il psql del sistema o, se manca, quello dell'immagine pgvector/pgvector:pg16.
+Le credenziali passano solo per variabili d'ambiente (PGHOST, PGPORT, PGUSER, PGPASSWORD, PGSSLMODE), mai negli argomenti.
+
+Il caricamento ricorda file per file cosa ha caricato (`registro.py`): salta i file invariati, riprende dopo
+un'interruzione, mette in quarantena i file che non passano i controlli o non si caricano e va avanti con gli altri.
 """
 
 from __future__ import annotations
@@ -12,13 +19,17 @@ import csv
 import hashlib
 import io
 import json
+import os
+import shutil
 import subprocess
 import time
+from pathlib import Path
 
-from ..ambiente import QUI
+from ..ambiente import QUI, env
+from .registro import Registro
 
 COLONNE = {
-    "sitting": ["uri", "chamber", "body", "number", "date", "status", "source", "source_key", "source_hash", "kind"],
+    "sitting": ["uri", "chamber", "body", "number", "date", "status", "source", "source_key", "source_hash", "kind", "record_url"],
     "agenda_item": ["uri", "sitting", "ord", "title"],
     "agenda_item_act": ["item", "act_ref"],
     "person": ["uri"],
@@ -29,12 +40,55 @@ COLONNE = {
 }
 
 
+IMMAGINE_PSQL = "pgvector/pgvector:pg16"            # la stessa del docker-compose.yml: psql 16
+VARIABILI_PG = ("PGHOST", "PGPORT", "PGUSER", "PGPASSWORD", "PGSSLMODE")
+
+
+def comando_psql() -> tuple[list[str], dict | None]:
+    """Il comando psql (senza lo script) e l'ambiente in cui lanciarlo: None vuol dire l'ambiente di chi chiama."""
+    opzioni = ["-d", "parliamentrag", "-v", "ON_ERROR_STOP=1", "-q"]
+    if not env("PGHOST", ""):
+        return ["docker", "compose", "exec", "-T", "testi", "psql", "-U", "parliamentrag", *opzioni], None
+    ambiente = dict(os.environ)
+    for v in VARIABILI_PG:                              # anche da .env: il processo le riceve per ambiente, non per argomento
+        if env(v, ""):
+            ambiente[v] = env(v)
+    ambiente.setdefault("PGUSER", "parliamentrag")
+    if shutil.which("psql"):
+        return ["psql", *opzioni], ambiente
+    # `-e NOME` senza valore: docker passa la variabile dal suo ambiente, senza scriverla negli argomenti
+    return ["docker", "run", "--rm", "-i", *[x for v in VARIABILI_PG for x in ("-e", v)], IMMAGINE_PSQL, "psql", *opzioni], ambiente
+
+
+def destinazione() -> str:
+    """Nome della destinazione per il registro del caricamento: «locale» o host:porta del Postgres remoto."""
+    host = env("PGHOST", "")
+    return f"{host}:{env('PGPORT', '5432')}" if host else "locale"
+
+
 def psql(script: str, timeout: int = 900) -> str:
-    cmd = ["docker", "compose", "exec", "-T", "testi", "psql", "-U", "parliamentrag", "-d", "parliamentrag", "-v", "ON_ERROR_STOP=1", "-q"]
-    r = subprocess.run(cmd, cwd=QUI, input=script, capture_output=True, text=True, timeout=timeout)
+    cmd, ambiente = comando_psql()
+    r = subprocess.run(cmd, cwd=QUI, input=script, capture_output=True, text=True, timeout=timeout, env=ambiente)
     if r.returncode:
         raise RuntimeError(r.stderr[-800:])
     return r.stdout
+
+
+def leggi_csv(sql: str, timeout: int = 900) -> list[list[str]]:
+    """Righe di una SELECT, via COPY in CSV. Legge in byte, perché subprocess in modo testo cambia gli a capo."""
+    cmd, ambiente = comando_psql()
+    r = subprocess.run([*cmd, "-c", f"COPY ({sql}) TO STDOUT WITH (FORMAT csv)"], cwd=QUI, capture_output=True, timeout=timeout, env=ambiente)
+    if r.returncode:
+        raise RuntimeError(r.stderr.decode()[-800:])
+    return list(csv.reader(io.StringIO(r.stdout.decode("utf-8"), newline="")))
+
+
+def prova() -> None:
+    """Il database risponde? Si fa all'inizio del giro: se no, il giro si ferma subito invece di fallire passo per passo."""
+    try:
+        psql("SELECT 1;\n", timeout=60)
+    except (RuntimeError, subprocess.TimeoutExpired, OSError) as e:
+        raise RuntimeError(f"il database ({destinazione()}) non risponde: {str(e)[-300:]}") from e
 
 
 def righe_tabelle(righe: list[dict]) -> dict[str, list[list]]:
@@ -61,7 +115,7 @@ def righe_tabelle(righe: list[dict]) -> dict[str, list[list]]:
     for u, n in nodi.items():
         l = n["label"]
         if l == "Sitting":
-            out["sitting"].append([u, n["chamber"], n["body"], n["number"], n["date"], n["status"], n["source"], n.get("source_key"), n.get("source_hash"), n.get("kind")])
+            out["sitting"].append([u, n["chamber"], n["body"], n["number"], n["date"], n["status"], n["source"], n.get("source_key"), n.get("source_hash"), n.get("kind"), n.get("record_url")])
         elif l == "AgendaItem":
             out["agenda_item"].append([u, padre[u], n["order"], n.get("title")])
         elif l == "Speech":
@@ -118,9 +172,11 @@ ANAGRAFICA = {
     "membership": ["person", "grp", "role", "start_date", "end_date", "end_reason"],
     "seat": ["person", "body", "role", "role_raw", "start_date", "end_date", "end_reason"],
     "office": ["person", "target", "title", "title_raw", "start_date", "end_date"],
+    "grp_name": ["grp", "name", "short_name", "start_date", "end_date"],
 }
 # dal nome dell'arco alla tabella e alle colonne: from/to diventano le prime due colonne
-ARCHI = {"MANDATE": "mandate", "MEMBER_OF": "membership", "SITS_ON": "seat", "OFFICE": "office"}
+ARCHI = {"MANDATE": "mandate", "MEMBER_OF": "membership", "SITS_ON": "seat", "OFFICE": "office", "NAMED": "grp_name"}
+SENZA_DESTINAZIONE = ("mandate", "grp_name")       # archi con la sola chiave di partenza
 _RINOMINA = {"start": "start_date", "end": "end_date"}
 
 
@@ -145,7 +201,7 @@ def righe_anagrafica(righe: list[dict]) -> dict[str, list[list]]:
             continue
         x = {_RINOMINA.get(k, k): v for k, v in a.items()}
         x[ANAGRAFICA[t][0]] = a["from"]
-        if t != "mandate":
+        if t not in SENZA_DESTINAZIONE:
             x[ANAGRAFICA[t][1]] = a["to"]
         out[t].append([x.get(c) for c in ANAGRAFICA[t]])
     return out
@@ -166,7 +222,7 @@ def script_anagrafica(righe: list[dict]) -> str:
              f"DELETE FROM office WHERE target IN (SELECT uri FROM grp WHERE chamber = {ramo} AND legislature = {leg} UNION SELECT uri FROM body WHERE chamber = {ramo} AND legislature = {leg});",
              f"DELETE FROM grp WHERE chamber = {ramo} AND legislature = {leg};",
              f"DELETE FROM body WHERE chamber = {ramo} AND legislature = {leg};"]
-    for tabella in ("grp", "body", "mandate", "membership", "seat", "office"):
+    for tabella in ("grp", "body", "mandate", "membership", "seat", "office", "grp_name"):
         if t[tabella]:
             parti.append(f"COPY {tabella} ({', '.join(ANAGRAFICA[tabella])}) FROM STDIN WITH (FORMAT csv, NULL '');\n{_csv(t[tabella])}\\.")
     parti.append("COMMIT;")
@@ -615,93 +671,134 @@ def script_allineamenti(cartella) -> str:
                       "COMMIT;"]) + "\n"
 
 
+def script_gruppi_voti(ramo: str, leg: int) -> str:
+    """Dopo un'anagrafica nuova, il gruppo nei voti già caricati di quel ramo: le componenti del Misto (o un'adesione
+    corretta) valgono anche per i voti di prima. Al Senato il gruppo viene sempre dall'anagrafica alla data del voto
+    (come in script_voti); alla Camera lo attribuisce la fonte, e si completa solo dove manca o è il Misto senza componente."""
+    filtro = ("" if ramo == "senato" else
+              f" AND (b2.grp IS NULL OR b2.grp IN (SELECT part_of FROM grp WHERE kind = 'misto_component' AND chamber = 'camera' AND legislature = {leg}))")
+    return (f"UPDATE ballot b SET grp = x.g FROM (SELECT b2.vote, b2.person, group_at(b2.person, v.date) AS g FROM ballot b2 "
+            f"JOIN vote v ON v.uri = b2.vote WHERE v.chamber = {_lit(ramo)} AND v.legislature = {leg}{filtro}) x\n"
+            f"WHERE b.vote = x.vote AND b.person = x.person AND x.g IS NOT NULL AND b.grp IS DISTINCT FROM x.g;\n")
+
+
+# tipo di uscita (kind dell'ambito) -> funzione che fa lo script e voce del riepilogo; senza ambito, una seduta
+SCRIPT = {"anagrafica": (script_anagrafica, "anagrafiche_e_atti"), "voti": (script_voti, "voti"),
+          "commissione": (script_commissione, "sedute"), "testo_atto": (script_testo_atto, "sedute"),
+          "emendamenti": (script_emendamenti, "sedute"), "dossier": (script_documento, "sedute"),
+          "documenti_elenco": (script_documenti, "sedute"), "documento_testo": (script_documenti, "sedute"),
+          "odg": (script_odg, "sedute"), "video": (script_video, "sedute"), "aic": (script_aic, "anagrafiche_e_atti"),
+          "corrispondenze": (script_corrispondenze, "anagrafiche_e_atti"), "governo": (script_governo, "anagrafiche_e_atti"),
+          "concetti": (script_concetti, "anagrafiche_e_atti"), "atti": (script_atti, "anagrafiche_e_atti")}
+
+
+def leggi_uscita(f: Path) -> list[dict]:
+    return [json.loads(x) for x in f.read_text(encoding="utf-8").split("\n") if x.strip()]  # non splitlines(): spezza anche su U+2028, che nei testi c'è
+
+
+def carica_righe(righe: list[dict]) -> str:
+    """Carica un file di uscita; restituisce la voce del riepilogo, o «vuoti» se non c'era niente da caricare."""
+    amb = righe[0] if righe and righe[0]["tipo"] == "ambito" else {}
+    funzione, voce = SCRIPT.get(amb.get("kind"), (script_seduta, "sedute"))
+    if amb.get("kind") == "testo_atto" and not any(r["tipo"] == "testo" for r in righe):
+        return "vuoti"                                 # versione annunciata, testo non ancora pubblicato alla fonte
+    script = funzione(righe)
+    if not script:
+        return "vuoti"                                 # bozza superata: c'è già la versione definitiva
+    psql(script)
+    if amb.get("kind") == "anagrafica":
+        psql(script_gruppi_voti(amb["chamber"], int(amb["legislature"])), timeout=3600)
+    return voce
+
+
+def ordine(f: Path) -> tuple:
+    """Prima l'anagrafica (gli interventi e i voti citano le persone), poi governo e corrispondenze, poi gli atti
+    (i voti si legano agli atti), poi il resto."""
+    return (0 if f.name.endswith("-anagrafica.jsonl") else 1 if f.name.endswith(("-governo.jsonl", "-corrispondenze.jsonl"))
+            else 2 if f.name.endswith("-atti.jsonl") or "-aic-" in f.name else 3, str(f))
+
+
+def applica_schema(registro: Registro) -> str:
+    """schema/v3.sql solo se è cambiato dall'ultima volta che è entrato in questa destinazione. Con lock_timeout:
+    se una tabella è occupata (un indice in costruzione, una query lunga) lo schema aspetta il giro dopo invece di
+    fermare il database."""
+    testo = (QUI / "schema" / "v3.sql").read_text()
+    h = hashlib.sha256(testo.encode()).hexdigest()
+    if registro.leggi("schema") == h:
+        return "invariato"
+    psql("SET lock_timeout = '5s';\n" + testo)
+    registro.scrivi("schema", h)
+    return "applicato"
+
+
+def _legami() -> None:
+    # dopo voti e atti: gli id dei gruppi nei voti e gli ordini del giorno votati (schema/v3.sql); poi le reazioni
+    # ancora senza chi reagisce, se sono arrivati gruppi o persone nuovi
+    psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;", timeout=3600)
+    psql("SELECT lega_reazioni('it:');", timeout=3600)
+
+
 def carica(ctx) -> dict:
-    psql((QUI / "schema" / "v3.sql").read_text())
+    """Carica i file delle uscite non ancora in questa destinazione, uno per transazione, nell'ordine di `ordine`.
+    Un file che non passa i controlli o non si carica va in quarantena e gli altri vanno avanti. Il caricamento ha un suo
+    tempo (`[carica] tempo_minuti`): finito quello si ferma fra un file e l'altro e il giro dopo riprende da lì."""
+    from ..controlli.uscite import errori_file
+    cfg = ctx.config.get("carica", {})
+    tempo = float(cfg.get("tempo_minuti", 150)) * 60
+    registro = Registro(ctx.cartella, destinazione())
+    avvisi = []
+    try:
+        schema = applica_schema(registro)
+    except Exception as e:                              # si carica con lo schema di prima; i file che ne hanno bisogno vanno in quarantena
+        schema = "non applicato"
+        avvisi.append(f"schema/v3.sql non applicato, si riprova al giro dopo: {str(e)[-300:]}")
     cartella = ctx.cartella / "uscite" / "v3"
-    segno = ctx.cartella / "uscite" / ".postgres.ultimo"
-    da = float(segno.read_text()) if segno.exists() else 0.0
-    inizio, sedute, anagrafiche, votazioni, errori = time.time(), 0, 0, 0, []
-    # prima l'anagrafica (gli interventi e i voti citano le persone), poi gli atti (i voti si legano agli atti)
-    ordine = lambda f: (0 if f.name.endswith("-anagrafica.jsonl") else 1 if f.name.endswith(("-governo.jsonl", "-corrispondenze.jsonl"))
-                        else 2 if f.name.endswith("-atti.jsonl") or "-aic-" in f.name else 3, str(f))
-    for f in sorted(cartella.rglob("*.jsonl"), key=ordine):
-        if f.stat().st_mtime < da:
+    inizio, conti, quarantena, di_fila = time.time(), {}, [], 0
+    file_ = sorted(cartella.rglob("*.jsonl"), key=ordine)
+    rimandati = 0
+    for n, f in enumerate(file_):
+        if time.time() - inizio > tempo:
+            rimandati = len(file_) - n                  # file non ancora guardati: il giro dopo riprende da qui
+            break
+        h = registro.da_caricare(f)
+        if h is None:
             continue
-        righe = [json.loads(x) for x in f.read_text(encoding="utf-8").split("\n") if x.strip()]  # non splitlines(): spezza anche su U+2028, che nei testi c'è
+        q = registro.quarantena_di(f)
+        if q and q["impronta"] == h and q["fase"] == "controllo":
+            quarantena.append(f"{f.name}: {q['motivo'][:200]}")      # lo ricontrolla controlla_uscite, a ogni giro
+            continue
         try:
-            tipo = righe[0].get("kind") if righe and righe[0]["tipo"] == "ambito" else None
-            if tipo == "anagrafica":
-                psql(script_anagrafica(righe))
-                anagrafiche += 1
-                continue
-            if tipo == "voti":
-                psql(script_voti(righe))
-                votazioni += 1
-                continue
-            if tipo == "commissione":
-                psql(script_commissione(righe))
-                sedute += 1
-                continue
-            if tipo == "testo_atto":
-                if not any(r["tipo"] == "testo" for r in righe):
-                    continue                               # versione annunciata, testo non ancora pubblicato alla fonte
-                psql(script_testo_atto(righe))
-                sedute += 1
-                continue
-            if tipo == "emendamenti":
-                psql(script_emendamenti(righe))
-                sedute += 1
-                continue
-            if tipo == "dossier":
-                psql(script_documento(righe))
-                sedute += 1
-                continue
-            if tipo in ("documenti_elenco", "documento_testo"):
-                psql(script_documenti(righe))
-                sedute += 1
-                continue
-            if tipo == "odg":
-                psql(script_odg(righe))
-                sedute += 1
-                continue
-            if tipo == "video":
-                psql(script_video(righe))
-                sedute += 1
-                continue
-            if tipo == "aic":
-                psql(script_aic(righe))
-                anagrafiche += 1
-                continue
-            if tipo == "corrispondenze":
-                psql(script_corrispondenze(righe))
-                anagrafiche += 1
-                continue
-            if tipo == "governo":
-                psql(script_governo(righe))
-                anagrafiche += 1
-                continue
-            if tipo == "concetti":
-                psql(script_concetti(righe))
-                anagrafiche += 1
-                continue
-            if tipo == "atti":
-                psql(script_atti(righe))
-                anagrafiche += 1
-                continue
-            psql(script_seduta(righe))
-            sedute += 1
-        except Exception as e:  # la seduta resta com'era, intera; le altre vanno avanti
-            errori.append(f"{f.name}: {str(e)[:300]}")
-    if votazioni or anagrafiche:
-        # dopo voti e atti: gli id dei gruppi nei voti e gli ordini del giorno votati (schema/v3.sql)
-        psql("SELECT lega_gruppi_voti();\nSELECT lega_odg_voti(l) FROM (SELECT DISTINCT legislature AS l FROM vote WHERE chamber = 'camera') x;")
-    if anagrafiche:
-        psql("SELECT lega_reazioni('it:');")
+            righe = leggi_uscita(f)
+            errori = errori_file(righe)
+        except Exception as e:
+            righe, errori = [], [f"file illeggibile: {e}"]
+        if errori:
+            registro.in_quarantena(f, h, "controllo", "; ".join(errori), ctx.giro)
+            quarantena.append(f"{f.name}: {'; '.join(errori)[:200]}")
+            continue
+        try:
+            voce = carica_righe(righe)
+        except Exception as e:                          # la seduta resta com'era, intera; le altre vanno avanti
+            registro.in_quarantena(f, h, "caricamento", str(e)[-1000:], ctx.giro)
+            quarantena.append(f"{f.name}: {str(e)[-200:]}")
+            di_fila += 1
+            if di_fila % 5 == 0:
+                prova()                                 # cinque errori di fila: se il database non risponde, inutile andare avanti
+            continue
+        di_fila = 0
+        registro.caricato(f, h)
+        conti[voce] = conti.get(voce, 0) + 1
+        if voce in ("voti", "anagrafiche_e_atti"):
+            registro.scrivi("legami", "da fare")        # si ricorda anche se il passo si interrompe prima dei legami
+    if registro.leggi("legami"):
+        _legami()
+        registro.scrivi("legami", "")
     allineamenti = ctx.cartella / "allineamenti"
     if (allineamenti / "teseo-eurovoc.jsonl").exists():
-        psql(script_allineamenti(allineamenti))          # gruppi o persone nuovi: le reazioni ancora senza chi reagisce
-    if errori:
-        # gli altri file sono caricati (ognuno nella sua transazione); il segno non avanza, così i falliti si riprovano
-        raise RuntimeError(f"{len(errori)} file non caricati ({sedute + anagrafiche + votazioni} sì): " + "; ".join(errori[:3]))
-    segno.write_text(str(inizio))
-    return {"anagrafiche_e_atti_caricati": anagrafiche, "sedute_caricate": sedute, "voti_caricati": votazioni, "errori": errori[:10]}
+        psql(script_allineamenti(allineamenti))
+    if quarantena:
+        avvisi.append(f"{len(quarantena)} file in quarantena, si riprovano al giro dopo: " + "; ".join(quarantena[:3]))
+    if rimandati:
+        avvisi.append(f"tempo del caricamento finito: {rimandati} file da guardare al giro dopo")
+    return {**{f"{k}_caricati": v for k, v in conti.items()}, "schema": schema, "in_quarantena": len(quarantena),
+            "esempi_quarantena": quarantena[:10], "rimandati": rimandati, **({"avviso": avvisi} if avvisi else {})}

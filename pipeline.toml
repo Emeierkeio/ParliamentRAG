@@ -1,8 +1,18 @@
 # Configurazione della pipeline notturna. Ogni fonte ha la sua sezione: aggiungerne una è aggiungere un connettore e una sezione.
 
 [giro]
-timeout_minuti = 300          # oltre questo il giro si ferma e avvisa
+timeout_minuti = 300          # oltre questo i download non partono più; trasformazioni, controlli e caricamento sì
 cartella_dati = "dati"        # lago dei grezzi, stato, uscite (fuori dal repo in produzione)
+spazio_minimo_gb = 5          # meno spazio libero di così sul disco dei dati: il giro non parte
+
+[carica]
+tempo_minuti = 150            # tempo del caricamento in Postgres: finito questo si ferma fra un file e l'altro e riprende al giro dopo
+
+[senato]
+massimo_richieste_giro = 350  # pagine di senato.it in un giro, sommate fra i passi (esiti, Misto, foto): il sito blocca l'IP dopo ~400
+
+[vettori]
+dollari_per_notte = 5         # tetto della Batch API di OpenAI per i vettori in 24 ore (stima dai caratteri)
 
 [fonti.camera_resoconti]
 legislatura = 19
@@ -84,6 +94,22 @@ massimo_per_giro = 500        # versioni nuove per notte (circa 3.900 in tutto):
 legislatura = 19
 pausa_secondi = 5             # dati.senato.it: richieste lente, senato.it blocca l'IP dopo ~400 richieste ravvicinate
 
+[fonti.senato_misto]
+legislatura = 19
+did = 9                       # il Gruppo Misto della XIX su senato.it
+file_import = "dati/import/senato_misto_storica.html"   # pagina salvata a mano dal browser (è dietro il WAF), solo se il lago non ne ha; relativa alla radice del repo
+
+[fonti.senato_esiti]
+legislatura = 19
+file_import = "dati/import/senato_esiti.csv"   # base: esiti estratti l'8/10/2026 dalle schede dei ddl su senato.it (relativa alla radice del repo)
+massimo_richieste = 150       # pagine di senato.it per giro: il sito blocca l'IP dopo ~400 richieste ravvicinate
+pausa_secondi = 3
+giorni_ricontrollo = 7        # le letture in esame in commissione si ricontrollano dopo una settimana
+
+[fonti.senato_foto]
+legislatura = 19
+massimo_richieste = 50
+
 [fonti.senato_voti]
 legislatura = 19
 pausa_secondi = 5             # senato.it blocca l'IP dopo ~400 richieste ravvicinate
@@ -102,7 +128,7 @@ massimo_mesi_per_giro = 60
 
 [fonti.senato_resoconti]
 legislatura = 19
-cartella_import = "../ricerca/data/senate_xml"   # resoconti AKN già scaricati; le sedute nuove aspettano il browser senza interfaccia
+cartella_import = "../ricerca/data/senate_xml"   # resoconti AKN già scaricati (relativa alla radice del repo); le sedute nuove vengono dal bulk (senato_akn)
 
 [fonti.senato_akn]
 legislatura = 19

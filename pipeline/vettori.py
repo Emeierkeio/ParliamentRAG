@@ -9,6 +9,10 @@ sempre con la Batch API (scelta del modello: README, «Semantic retrieval»). Ta
 
 Si rilancia senza danni: «invia» salta le impronte già in un batch aperto, «raccogli» salta i vettori già scritti.
 Un batch scaduto o fallito libera le sue impronte, che il prossimo «invia» rimanda.
+
+«invia» scrive la riga del batch (stato «in_invio») prima di crearlo su OpenAI e la completa con l'id dopo: se il
+processo muore in mezzo, «raccogli» ritrova il batch dai suoi metadati invece di pagarlo due volte. Ogni notte
+«invia» non supera `[vettori] dollari_per_notte` di pipeline.toml (stima dai caratteri, contando i batch delle 24 ore prima).
 """
 
 from __future__ import annotations
@@ -16,16 +20,18 @@ from __future__ import annotations
 import base64
 import csv
 import hashlib
-import io
 import json
 import re
-import subprocess
 import sys
+import time
+import tomllib
+import uuid
 from array import array
+from pathlib import Path
 
 from . import openai_batch as batch
 from .ambiente import QUI
-from .carica.postgres import _csv, psql
+from .carica.postgres import _csv, leggi_csv, psql
 
 MODELLO = "text-embedding-3-large"
 DIMENSIONI = 1024
@@ -35,7 +41,8 @@ MASSIMO = 6_000            # una «frase» più lunga (testo senza punteggiatura
 PER_RICHIESTA = 100
 PER_BATCH = 2_000          # la connessione non regge file grandi
 PER_GIRO = 20_000          # testi letti da Postgres per volta
-CARTELLA = QUI / "dati" / "vettori"
+DOLLARI_PER_MILIONE = 0.065   # text-embedding-3-large con la Batch API: metà di 0,13 $ per milione di token
+CARATTERI_PER_TOKEN = 3.5     # stima prudente per l'italiano
 csv.field_size_limit(sys.maxsize)   # ci sono interventi da oltre 140 mila caratteri
 
 # fonte -> tabella, chiave, testo, impronta del testo, quali righe, lunghezza minima del testo. In ordine di invio:
@@ -115,14 +122,18 @@ def impronta(testo: str) -> str:
     return hashlib.sha256(testo.encode("utf-8")).hexdigest()
 
 
+def _config() -> dict:
+    return tomllib.loads((QUI / "pipeline.toml").read_text())
+
+
+def _cartella(config: dict | None = None) -> Path:
+    """La cartella dei file di richiesta: `vettori/` dentro la cartella dei dati di pipeline.toml."""
+    config = config or _config()
+    return (QUI / config["giro"]["cartella_dati"]).resolve() / "vettori"
+
+
 def _leggi(sql: str) -> list[list[str]]:
-    """Righe di una SELECT, via COPY in CSV. Legge in byte, perché subprocess in modo testo cambia gli a capo."""
-    cmd = ["docker", "compose", "exec", "-T", "testi", "psql", "-U", "parliamentrag", "-d", "parliamentrag", "-v", "ON_ERROR_STOP=1", "-q",
-           "-c", f"COPY ({sql}) TO STDOUT WITH (FORMAT csv)"]
-    r = subprocess.run(cmd, cwd=QUI, capture_output=True, timeout=900)
-    if r.returncode:
-        raise RuntimeError(r.stderr.decode()[-800:])
-    return list(csv.reader(io.StringIO(r.stdout.decode("utf-8"), newline="")))
+    return leggi_csv(sql)
 
 
 def taglia(solo: str | None = None) -> dict:
@@ -156,14 +167,31 @@ def _letterale(s: str) -> str:
     return "'" + s.replace("'", "''") + "'"
 
 
-def invia(quanti: int = 10) -> dict:
-    """Fino a `quanti` batch da PER_BATCH brani; ogni brano diverso una volta sola."""
-    CARTELLA.mkdir(parents=True, exist_ok=True)
+def spesa_recente(ore: float = 24) -> float:
+    """Dollari stimati dei batch inviati nelle ultime `ore` ore (dai caratteri dei loro brani)."""
+    (caratteri,), = _leggi(f"""SELECT coalesce(sum(p.end_char - p.start_char), 0) FROM (SELECT DISTINCT unnest(hashes) AS hash
+        FROM vector_batch WHERE sent_at > now() - interval '{float(ore)} hours') b
+        JOIN LATERAL (SELECT start_char, end_char FROM passage WHERE hash = b.hash LIMIT 1) p ON true""")
+    return stima_dollari(int(caratteri))
+
+
+def stima_dollari(caratteri: int) -> float:
+    return caratteri / CARATTERI_PER_TOKEN / 1e6 * DOLLARI_PER_MILIONE
+
+
+def invia(quanti: int = 10, cartella: Path | None = None, tetto_dollari: float | None = None) -> dict:
+    """Fino a `quanti` batch da PER_BATCH brani; ogni brano diverso una volta sola; non oltre `tetto_dollari` in 24 ore."""
+    config = _config()
+    cartella = cartella or _cartella(config)
+    cartella.mkdir(parents=True, exist_ok=True)
+    if tetto_dollari is None:
+        tetto_dollari = float(config.get("vettori", {}).get("dollari_per_notte", 5))
+    speso = spesa_recente()
     righe, viste = [], set()
     for fonte, (tabella, chiave, campo, *_) in FONTI.items():   # una fonte alla volta, nell'ordine di FONTI
         if len(righe) >= quanti * PER_BATCH:
             break
-        for h, t in _leggi(f"""WITH aperte AS (SELECT DISTINCT unnest(hashes) AS hash FROM vector_batch WHERE status = 'inviato')
+        for h, t in _leggi(f"""WITH aperte AS (SELECT DISTINCT unnest(hashes) AS hash FROM vector_batch WHERE status IN ('inviato', 'in_invio'))
             SELECT DISTINCT ON (p.hash) p.hash, substr(f.{campo}, p.start_char + 1, p.end_char - p.start_char)
             FROM passage p JOIN {tabella} f ON f.{chiave} = p.uri
             WHERE p.source = '{fonte}'
@@ -173,24 +201,51 @@ def invia(quanti: int = 10) -> dict:
             if h not in viste:              # lo stesso brano in due fonti (un intervento citato in un documento)
                 viste.add(h)
                 righe.append((h, t))
-    inviati = []
+    inviati, fermo, brani = [], "", 0
     for inizio in range(0, len(righe), PER_BATCH):
         parte = righe[inizio:inizio + PER_BATCH]
+        costo = stima_dollari(sum(len(t) for _, t in parte))
+        if speso + costo > tetto_dollari:
+            fermo = f"tetto di {tetto_dollari} $ in 24 ore: {speso:.2f} $ già inviati, il batch dopo ne costerebbe {costo:.2f}"
+            break
         if any(impronta(t) != h for h, t in parte):   # il testo è cambiato dopo «taglia»: rilanciare «taglia»
             raise RuntimeError("un brano letto da Postgres non torna con la sua impronta")
-        f = CARTELLA / f"richieste-{parte[0][0][:12]}.jsonl"
+        f = cartella / f"richieste-{parte[0][0][:12]}.jsonl"
         with open(f, "w", encoding="utf-8") as out:
             for k in range(0, len(parte), PER_RICHIESTA):
                 out.write(json.dumps({"custom_id": str(k), "method": "POST", "url": "/v1/embeddings", "body": {
                     "model": MODELLO, "dimensions": DIMENSIONI, "encoding_format": "base64",
                     "input": [t for _, t in parte[k:k + PER_RICHIESTA]]}}, ensure_ascii=False) + "\n")
-        bid = batch.invia(f, "/v1/embeddings", f"vettori dei brani ({len(parte)})")
+        riga = f"in_invio-{uuid.uuid4().hex}"           # prima la riga, poi il batch: un crollo in mezzo non lo perde
         psql("COPY vector_batch (id, model, status, hashes) FROM STDIN WITH (FORMAT csv);\n"
-             f"{_csv([[bid, MODELLO, 'inviato', '{' + ','.join(h for h, _ in parte) + '}']])}\\.\n")
+             f"{_csv([[riga, MODELLO, 'in_invio', '{' + ','.join(h for h, _ in parte) + '}']])}\\.\n")
+        bid = batch.invia(f, "/v1/embeddings", f"vettori dei brani ({len(parte)})", {"riga": riga})
+        psql(f"UPDATE vector_batch SET id = {_letterale(bid)}, status = 'inviato' WHERE id = {_letterale(riga)};\n")
         f.unlink()
+        speso += costo
+        brani += len(parte)
         inviati.append(bid)
-        print(f"invia: {bid}, {len(parte)} brani", flush=True)
-    return {"batch": len(inviati), "brani": len(righe)}
+        print(f"invia: {bid}, {len(parte)} brani, circa {costo:.2f} $", flush=True)
+    r = {"batch": len(inviati), "brani": brani, "dollari_24_ore": round(speso, 2)}
+    return {**r, "avviso": fermo} if fermo else r
+
+
+def ritrova_in_invio(ore_perso: float = 6) -> dict:
+    """Righe rimaste «in_invio» (il processo è morto fra la riga e la risposta di OpenAI): se il batch c'è, prende il suo
+    id dai metadati; se non c'è dopo `ore_perso` ore, la riga diventa «perso» e le sue impronte tornano libere."""
+    righe = _leggi("SELECT id, extract(epoch FROM sent_at) FROM vector_batch WHERE status = 'in_invio'")
+    if not righe:
+        return {"ritrovati": 0, "persi": 0}
+    per_riga = {(b.get("metadata") or {}).get("riga"): b["id"] for b in batch.elenco()}
+    ritrovati = persi = 0
+    for riga, inviato in righe:
+        if riga in per_riga:
+            psql(f"UPDATE vector_batch SET id = {_letterale(per_riga[riga])}, status = 'inviato' WHERE id = {_letterale(riga)};\n")
+            ritrovati += 1
+        elif time.time() - float(inviato) > ore_perso * 3600:
+            psql(f"UPDATE vector_batch SET status = 'perso', error = 'invio interrotto, batch non trovato su OpenAI' WHERE id = {_letterale(riga)};\n")
+            persi += 1
+    return {"ritrovati": ritrovati, "persi": persi}
 
 
 def _vettore(b64: str) -> str:
@@ -202,6 +257,7 @@ def _vettore(b64: str) -> str:
 
 
 def raccogli() -> dict:
+    ritrova_in_invio()
     aperti = _leggi("SELECT id, array_to_string(hashes, ',') FROM vector_batch WHERE status = 'inviato' ORDER BY sent_at")
     scritti, ancora = 0, 0
     for bid, hashes in aperti:
@@ -243,9 +299,20 @@ def stato() -> dict:
 
 
 def indice() -> dict:
-    psql("SET maintenance_work_mem = '2GB';\n"
+    # senza processi paralleli: in Docker la memoria condivisa (/dev/shm) è di 64 MB e la costruzione parallela non ci sta
+    psql("SET maintenance_work_mem = '2GB';\nSET max_parallel_maintenance_workers = 0;\n"
          "CREATE INDEX IF NOT EXISTS passage_vector_hnsw ON passage_vector USING hnsw (embedding halfvec_cosine_ops);\n", timeout=6 * 3600)
     return {"indice": "passage_vector_hnsw"}
+
+
+def controlla_indice() -> dict:
+    """L'indice HNSW c'è ed è valido? Senza, la ricerca per significato legge tutti i vettori (secondi per domanda)."""
+    r = _leggi("""SELECT i.indisvalid FROM pg_class c JOIN pg_index i ON i.indexrelid = c.oid WHERE c.relname = 'passage_vector_hnsw'""")
+    if not r:
+        raise RuntimeError("manca l'indice passage_vector_hnsw: python -m pipeline.vettori indice")
+    if r[0][0] != "t":
+        raise RuntimeError("l'indice passage_vector_hnsw non è valido (costruzione interrotta?): va rifatto")
+    return {"indice": "passage_vector_hnsw", "valido": True}
 
 
 # passi del giro notturno (passi.py): si raccolgono i batch della notte prima, si tagliano i testi caricati, si inviano i brani nuovi
@@ -258,11 +325,15 @@ def passo_taglia(ctx) -> dict:
 
 
 def passo_invia(ctx) -> dict:
-    return invia(50)
+    return invia(50, ctx.cartella / "vettori", float(ctx.config.get("vettori", {}).get("dollari_per_notte", 5)))
+
+
+def passo_controlla_indice(ctx) -> dict:
+    return controlla_indice()
 
 
 if __name__ == "__main__":
-    comandi = {"taglia": taglia, "invia": invia, "raccogli": raccogli, "stato": stato, "indice": indice}
+    comandi = {"taglia": taglia, "invia": invia, "raccogli": raccogli, "stato": stato, "indice": indice, "controlla": controlla_indice}
     if len(sys.argv) < 2 or sys.argv[1] not in comandi:
         sys.exit(__doc__)
     argomenti = [x if sys.argv[1] == "taglia" else int(x) for x in sys.argv[2:]]

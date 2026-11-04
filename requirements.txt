@@ -4,3 +4,9 @@ pypdf==6.20.1
 cryptography==50.0.2
 cffi==2.1.1
 pycparser==3.12
+# browser senza interfaccia per le pagine di senato.it dietro il WAF (componenti del Misto, esiti degli emendamenti, foto);
+# dopo l'installazione: python -m playwright install chromium-headless-shell
+playwright==1.63.0
+greenlet==3.5.6
+pyee==13.0.1
+typing-extensions==4.16.0

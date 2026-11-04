@@ -13,7 +13,7 @@ import json
 import re
 import time
 
-from ..lago import Lago
+from ..lago import Lago, controlla_calo
 from .sparql import _richiesta
 
 NOME = "senato_ddl"
@@ -58,7 +58,10 @@ def scarica(ctx) -> dict:
         firmatari += righe
     presentatori = _richiesta(ENDPOINT, PRESENTATORI.replace("{LEG}", str(leg)), 2)
     esito = {}
-    for nome, righe in (("ddl", ddl), ("firmatari", firmatari), ("presentatori", presentatori)):
+    tabelle = (("ddl", ddl), ("firmatari", firmatari), ("presentatori", presentatori))
+    for nome, righe in tabelle:                          # sostituiscono intere tabelle: un calo forte è un errore dell'endpoint
+        controlla_calo(lago, NOME, f"leg{leg}-{nome}", len(righe), massimo=float(cfg.get("calo_massimo", 0.05)))
+    for nome, righe in tabelle:
         righe.sort(key=lambda r: json.dumps(r, sort_keys=True, ensure_ascii=False))
         esito[nome] = lago.salva(NOME, f"leg{leg}-{nome}", json.dumps(righe, ensure_ascii=False, indent=0).encode(), ENDPOINT, "json")["nuovo"]
     ctx.log(f"{NOME}: {len({r['ddl'] for r in ddl})} ddl, {len(firmatari)} firme, {len(presentatori)} presentatori")

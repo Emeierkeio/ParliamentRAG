@@ -12,7 +12,7 @@ from __future__ import annotations
 import gzip
 import json
 
-from ..lago import Lago
+from ..lago import Lago, controlla_calo
 from .camera_ocd import ENDPOINT, PREFISSI, leg_uri
 from .sparql import per_chiave
 
@@ -70,6 +70,8 @@ def scarica(ctx, nome: str = NOME) -> dict:
     indice = [unico[k] for k in sorted(unico)]
     if not indice:
         raise RuntimeError("indice degli atti di sindacato ispettivo vuoto")
+    # l'indice dice quali atti ci sono: un calo forte è l'endpoint a metà, e i mesi riscaricati perderebbero atti
+    controlla_calo(lago, nome, k_indice, len(indice), conta=lambda b: len(leggi(b)), massimo=float(cfg.get("calo_massimo", 0.05)))
     presenti = set(lago.chiavi(nome))
     mesi = sorted({r["inizio"][:6] for r in indice})
     cambiati = {r["inizio"][:6] for r in indice if vecchio.get(r["aic"]) != r} if vecchio else set()

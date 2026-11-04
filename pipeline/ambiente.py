@@ -22,3 +22,10 @@ def env(nome: str, predefinito: str | None = None) -> str:
     if predefinito is None:
         raise KeyError(f"manca {nome} in ambiente o in .env")
     return predefinito
+
+
+def percorso(p: str | Path) -> Path:
+    """Un percorso di pipeline.toml: `~` è la cartella di casa, un percorso relativo parte dalla radice del repo
+    (non dalla cartella da cui si lancia il comando)."""
+    q = Path(p).expanduser()
+    return q if q.is_absolute() else QUI / q

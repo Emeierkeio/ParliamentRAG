@@ -12,8 +12,8 @@ Chiave nel lago: `leg19-senato-sed0300`.
 from __future__ import annotations
 
 import re
-from pathlib import Path
 
+from ..ambiente import percorso
 from ..lago import Lago
 
 NOME = "senato_resoconti"
@@ -23,10 +23,10 @@ def scarica(ctx) -> dict:
     cfg = ctx.config["fonti"][NOME]
     leg = int(cfg["legislatura"])
     lago = Lago(ctx.cartella)
-    cartella = Path(cfg.get("cartella_import", "")).expanduser()
+    cartella = percorso(cfg["cartella_import"]) if cfg.get("cartella_import") else None
     presenti = set(lago.chiavi(NOME))
     importati = 0
-    if cartella.is_dir():
+    if cartella and cartella.is_dir():
         # prima gli AKN, poi le pagine web: un HTML entra solo per le sedute senza AKN
         for f in sorted(cartella.glob(f"resaula_leg{leg}_*.akn")) + sorted(cartella.glob(f"resaula_leg{leg}_*.html")):
             numero = int(re.search(r"_(\d+)\.(?:akn|html)$", f.name).group(1))

@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import time
 
-from ..lago import Lago
+from ..lago import Lago, controlla_calo
 from .sparql import interroga, per_chiave
 
 NOME = "camera_ocd"
@@ -75,10 +75,12 @@ def scarica(ctx) -> dict:
 
 def scarica_query(ctx, fonte: str, query: dict[str, str], per: str | None = None, endpoint: str = ENDPOINT, prefissi: str = PREFISSI,
                   leg_uri_di=leg_uri) -> dict:
-    """Esegue tutte le query di una fonte e le salva nel lago, una per file. La usano anche camera_atti e il Senato."""
+    """Esegue tutte le query di una fonte e le salva nel lago, una per file. La usano anche camera_atti e il Senato.
+    Si salvano solo se nessuna ha perso più di `calo_massimo` (5%) delle righe rispetto alla versione precedente: le
+    query insieme sostituiscono intere tabelle, e una risposta a metà dell'endpoint cancellerebbe dati veri."""
     cfg = ctx.config["fonti"][fonte]
     leg = int(cfg["legislatura"])
-    lago, esito = Lago(ctx.cartella), {}
+    lago, esito, corpi = Lago(ctx.cartella), {}, {}
     for nome, q in query.items():
         testo = prefissi + q.replace("{LEG}", leg_uri_di(leg)).replace("{INIZIO}", str(cfg.get("inizio_legislatura", "")))
         pausa = float(cfg.get("pausa_secondi", 0.5))
@@ -87,8 +89,10 @@ def scarica_query(ctx, fonte: str, query: dict[str, str], per: str | None = None
         if not righe:
             raise RuntimeError(f"{nome}: nessuna riga, l'endpoint della Camera potrebbe avere un problema")
         righe.sort(key=lambda r: json.dumps(r, sort_keys=True, ensure_ascii=False))
-        corpo = json.dumps(righe, ensure_ascii=False, indent=0).encode("utf-8")
+        controlla_calo(lago, fonte, chiave(nome, leg), len(righe), massimo=float(cfg.get("calo_massimo", 0.05)))
+        corpi[nome] = (len(righe), json.dumps(righe, ensure_ascii=False, indent=0).encode("utf-8"))
+    for nome, (n, corpo) in corpi.items():
         s = lago.salva(fonte, chiave(nome, leg), corpo, endpoint, "json")
-        esito[nome] = {"righe": len(righe), "nuovo": s["nuovo"]}
+        esito[nome] = {"righe": n, "nuovo": s["nuovo"]}
     ctx.log(f"{fonte}: " + ", ".join(f"{k} {v['righe']}{'*' if v['nuovo'] else ''}" for k, v in esito.items()))
     return esito

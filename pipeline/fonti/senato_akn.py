@@ -8,7 +8,9 @@ legislature: se ne tiene un clone parziale (`--filter=blob:none`, profondità 1)
 
 Nel lago:
 - resoconti stenografici dell'Assemblea (`resaula`): uno per seduta, `leg19-senato-sed0465`, la stessa chiave dei
-  resoconti importati dalla cartella (`senato_resoconti`), che restano se ci sono già;
+  resoconti importati dalla cartella (`senato_resoconti`), che restano se ci sono già. Una seduta venuta dal bulk si
+  aggiorna quando il file del bulk cambia; se la stessa seduta sta in più file diversi, vince il più recente (l'id del
+  documento più alto, poi la data del file);
 - resoconti sommari delle commissioni (`sommcomm`): uno per seduta, `leg19-senato-som-7acommissionepermanente-sed0344`;
 - testi dei ddl (`ddlpres` presentato, `ddlcomm` della commissione, `ddlmess` messaggio): uno per testo,
   `leg19-senato-testo-ddlcomm-01496679`;
@@ -65,6 +67,16 @@ def _ddl_e_sede(corpo: bytes) -> tuple[str, str] | None:
     return (m.group(1).decode().strip(), m.group(2).decode()) if m else None
 
 
+def sedute_resaula(radice: Path) -> dict[int, Path]:
+    """Numero della seduta -> file del resoconto. La stessa seduta compare sotto più atti: vince il file più recente."""
+    sedute: dict[int, Path] = {}
+    for f in sorted(radice.glob("*/resaula/*-ra.akn.xml")):
+        n = _numero_seduta(f.read_bytes()[:20000])
+        if n and (n not in sedute or (f.name, f.stat().st_mtime) > (sedute[n].name, sedute[n].stat().st_mtime)):
+            sedute[n] = f
+    return sedute
+
+
 def scarica(ctx) -> dict:
     cfg = ctx.config["fonti"][NOME]
     leg, tipi = int(cfg["legislatura"]), list(cfg.get("tipi", ["resaula", "emend", "emendc"]))
@@ -75,18 +87,17 @@ def scarica(ctx) -> dict:
     esito = {"commit": commit[:12]}
 
     if "resaula" in tipi:
-        presenti, nuove = set(lago.chiavi(RESOCONTI)), 0
-        sedute: dict[int, Path] = {}
-        for f in sorted(radice.glob("*/resaula/*-ra.akn.xml")):
-            n = _numero_seduta(f.read_bytes()[:20000])
-            if n and n not in sedute:
-                sedute[n] = f
+        nuove = 0
+        sedute = sedute_resaula(radice)
         for n, f in sorted(sedute.items()):
             k = f"leg{leg}-senato-sed{n:04d}"
-            if k not in presenti:
-                lago.salva(RESOCONTI, k, f.read_bytes(), f"{REPO}#{f.relative_to(cartella)}", "akn")
+            u = lago.ultimo(RESOCONTI, k)
+            # le sedute importate dalla cartella (da senato.it, con un'altra impaginazione) restano: si aggiornano solo quelle del bulk
+            if u and not (u.get("url") or "").startswith(REPO):
+                continue
+            if lago.salva(RESOCONTI, k, f.read_bytes(), f"{REPO}#{f.relative_to(cartella)}", "akn")["nuovo"]:
                 nuove += 1
-        esito["resoconti"] = {"sedute": len(sedute), "nuove": nuove}
+        esito["resoconti"] = {"sedute": len(sedute), "nuove_o_cambiate": nuove}
 
     if "sommcomm" in tipi:
         visti, nuovi = set(), 0

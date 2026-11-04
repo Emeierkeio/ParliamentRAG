@@ -3,7 +3,8 @@ testo e `(Person)-[:SIGNS]->(Amendment)`. Un file del lago contiene tutti gli em
 (A = Assemblea, C = commissione). Trasformazione pura.
 
 Differenze con la Camera: i bulk data non danno l'esito né l'articolo, ma danno la data di presentazione; i
-firmatari hanno l'id di dati.senato.it (it:person:senato:32608) e la carica (senatore, governo, relatore).
+firmatari hanno l'id di dati.senato.it (it:person:senato:32608) e la carica (senatore, governo, relatore). L'esito
+arriva a parte (`esiti`, dalla fonte senato_esiti), per id del file: 01521763-em.akn.xml ↔ 1521763.
 """
 
 from __future__ import annotations
@@ -42,7 +43,7 @@ def variante(ddl: str) -> str:
     return "-".join(x.lower() for x in parti)
 
 
-def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
+def trasforma(corpo: bytes, fonte: dict, leg: int = 19, esiti: dict[str, str] | None = None) -> dict:
     files = json.loads(gzip.decompress(corpo))
     nodi, archi, testi, visti = [], [], [], set()
     ddl = sede = None
@@ -66,7 +67,7 @@ def trasforma(corpo: bytes, fonte: dict, leg: int = 19) -> dict:
         nodi.append({"label": "Amendment", "uri": u, "act": atto, "number": num, "kind": None, "action": None, "article": None,
                      "venue": SEDI.get(sede, sede), "committee": None, "sitting_number": None, "sitting_date": None,
                      "presented": data.get("date") if data is not None else None, "group_title": None, "status": None,
-                     "outcome": None, "decree": None, "identical": [], "hash": h, "text_ref": f"amendment:{u}" if testo else None,
+                     "outcome": (esiti or {}).get(nome.split("-", 1)[0].lstrip("0")), "decree": None, "identical": [], "hash": h, "text_ref": f"amendment:{u}" if testo else None,
                      "source_uri": uri_fonte})
         if testo:
             testi.append({"ref": f"amendment:{u}", "text": testo, "hash": h})

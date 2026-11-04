@@ -9,6 +9,12 @@ services:
       POSTGRES_DB: parliamentrag
       POSTGRES_USER: parliamentrag
       POSTGRES_PASSWORD: ${PG_PASSWORD:?imposta PG_PASSWORD in .env}
+    # memoria: la cache deve tenere almeno una parte dell'indice HNSW dei vettori (3 GB); /dev/shm serve alle query e
+    # alle costruzioni di indici in parallelo (Docker ne dà 64 MB). Sulla VPS da 8 GB i predefiniti vanno bene.
+    command: >-
+      postgres -c shared_buffers=${PG_SHARED_BUFFERS:-1GB} -c effective_cache_size=${PG_CACHE:-4GB}
+      -c work_mem=${PG_WORK_MEM:-32MB} -c maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-1GB}
+    shm_size: ${PG_SHM:-1g}
     ports:
       - "${PG_PORTA:-5440}:5432"
     volumes:

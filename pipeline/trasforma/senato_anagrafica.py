@@ -6,13 +6,15 @@ Particolarità del Senato:
   durante la legislatura, le altre restano come alias;
 - una commissione ha una denominazione per periodo (la riforma del 2022 ha rinumerato le commissioni: la «7ª» è
   diventata «6ª»): ogni appartenenza prende il nome in vigore alla sua data d'inizio;
-- i senatori a vita e di diritto hanno un mandato di tipo `life` o `ex_officio`.
+- i senatori a vita e di diritto hanno un mandato di tipo `life` o `ex_officio`;
+- le componenti del Misto non sono nell'OSR: vengono dalla pagina della composizione storica (grezzo `misto`, senato_misto).
 Le persone del Senato hanno un id proprio (it:person:senato:17542); il legame con la stessa persona alla Camera o
 al governo (it:person:camera:…) è un lavoro a parte (corrispondenza delle persone).
 """
 
 from __future__ import annotations
 
+from . import senato_misto
 from .camera_anagrafica import data, leggibile
 
 CARICHE_GRUPPO = {"Presidente": "leader", "Vicepresidente Vicario": "deputy_leader", "Vicepresidente": "deputy_leader",
@@ -84,6 +86,9 @@ def trasforma(grezzi: dict[str, list[dict]], leg: int, fonte: dict | None = None
         nodi[u] = {"label": "Group", "uri": u, "chamber": ramo, "legislature": leg, "kind": "group", "name": leggibile(ultima["titolo"]) if ultima["titolo"].isupper() else ultima["titolo"],
                    "short_name": ultima.get("breve"), "start": None, "end": data(ultima.get("fine")),
                    "aliases": list(dict.fromkeys(d["titolo"] for d in ds)), "source": "osr", "source_uri": g}
+        if len(ds) > 1:                                 # il nome in vigore in ogni periodo della legislatura
+            archi.extend({"type": "NAMED", "from": u, "name": leggibile(d["titolo"]) if d["titolo"].isupper() else d["titolo"],
+                          "short_name": d.get("breve"), "start": data(d["inizio"]), "end": data(d.get("fine"))} for d in ds)
 
     for r in grezzi.get("adesioni", []):
         u = f"it:{ramo}:{leg}:group:{_id(r['gruppo'])}"
@@ -94,6 +99,15 @@ def trasforma(grezzi: dict[str, list[dict]], leg: int, fonte: dict | None = None
         if r.get("carica") and r["carica"] != "Membro":
             archi.append({"type": "OFFICE", "from": p, "to": u, "title": CARICHE_GRUPPO.get(r["carica"], "other"), "title_raw": r["carica"],
                           "start": data(r["inizio"]), "end": data(r.get("fine"))})
+
+    if grezzi.get("misto"):
+        misto = next((u for u, n in nodi.items() if n.get("kind") == "group" and (n["name"] or "").lower() == "misto"), None)
+        if misto is None:
+            raise ValueError("nell'anagrafica del Senato manca il Gruppo Misto")
+        persone = {u for u, n in nodi.items() if n["label"] == "Person"}
+        componenti, adesioni = senato_misto.trasforma(grezzi["misto"], leg, misto, persone, (fonte or {}).get("misto_url"))
+        nodi.update({n["uri"]: n for n in componenti})
+        archi.extend(adesioni)
 
     # commissioni: il nome in vigore alla data d'inizio dell'appartenenza
     for r in grezzi.get("commissioni", []):

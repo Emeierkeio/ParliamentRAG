@@ -29,8 +29,8 @@ def _chiama(metodo: str, percorso: str, corpo: bytes | None = None, tipo: str = 
             time.sleep(30)
 
 
-def invia(richieste: Path, endpoint: str, descrizione: str) -> str:
-    """Carica il file JSONL e crea il lavoro; restituisce l'id del batch."""
+def invia(richieste: Path, endpoint: str, descrizione: str, metadati: dict | None = None) -> str:
+    """Carica il file JSONL e crea il lavoro; restituisce l'id del batch. `metadati` restano sul batch (per ritrovarlo)."""
     confine = uuid.uuid4().hex
     corpo = (f"--{confine}\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n"
              f"--{confine}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{richieste.name}\"\r\n"
@@ -38,8 +38,13 @@ def invia(richieste: Path, endpoint: str, descrizione: str) -> str:
     file_id = json.loads(_chiama("POST", "/files", corpo, f"multipart/form-data; boundary={confine}"))["id"]
     lavoro = json.loads(_chiama("POST", "/batches", json.dumps({
         "input_file_id": file_id, "endpoint": endpoint, "completion_window": "24h",
-        "metadata": {"descrizione": descrizione}}).encode()))
+        "metadata": {"descrizione": descrizione, **(metadati or {})}}).encode()))
     return lavoro["id"]
+
+
+def elenco(quanti: int = 100) -> list[dict]:
+    """Gli ultimi batch creati con questa chiave, dal più recente."""
+    return json.loads(_chiama("GET", f"/batches?limit={int(quanti)}"))["data"]
 
 
 def stato(batch_id: str) -> dict:
