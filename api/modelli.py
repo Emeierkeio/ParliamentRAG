@@ -203,6 +203,7 @@ class ActBrief(BaseModel):
     status: str | None = None
     law_number: str | None = None
     card_url: str | None = None
+    initiative: str | None = None              # Governo, Parlamentare, Regioni…; al Senato il presentatore («Regione Toscana»)
 
 
 class Sponsor(BaseModel):
@@ -233,7 +234,6 @@ class AmendmentCounts(BaseModel):
 
 class Act(ActBrief):
     kind_raw: str | None = None
-    initiative: str | None = None
     description: str | None = None
     law_date: dt.date | None = None
     status_date: dt.date | None = None

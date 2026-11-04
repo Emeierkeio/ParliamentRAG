@@ -1,0 +1,108 @@
+/* knowledge graph v3 nella home (2/11): stessa mappa e scheda della pagina del grafo, con i token del sito */
+#grafo-s{--carta:var(--sup2);--carta-2:var(--sup2);--carta-3:var(--bordo);--foglio:var(--sup);--inchiostro:var(--t);--inchiostro-2:var(--t2);--inchiostro-3:var(--t3);--inchiostro-4:var(--t3);
+  --filetto:var(--bordo);--filetto-forte:var(--bordo2);--accento:var(--acc);--accento-scuro:var(--acc);--accento-tenue:var(--acc-f);--esterno:var(--av);
+  --f-titolo:var(--f-ui,inherit);--f-testo:inherit;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
+#grafo-s .g3-cifre{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14px;color:var(--t3);margin:0 0 16px}
+#grafo-s .g3-cifre b{color:var(--t);font-weight:600;font-variant-numeric:tabular-nums}
+#grafo-s .g3-mappa,#grafo-s .g3-scheda{border-radius:var(--raggio)}
+#grafo-s .g3-scheda h2{font-family:inherit;font-weight:600;letter-spacing:-.02em}
+#grafo-s .g3-nascosto{display:none}
+#grafo-s .g3-banco{ display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+@media (max-width: 1000px) { #grafo-s .g3-banco{ grid-template-columns: minmax(0, 1fr); } }
+#grafo-s .g3-mappa{ background: var(--foglio); border: 1px solid var(--filetto); border-radius: 6px; overflow-x: auto; min-width: 0; }
+#grafo-s .g3-mappa svg{ display: block; width: 100%; min-width: 860px; height: auto; }
+#grafo-s .legenda{ display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 10px 14px; border-top: 1px solid var(--filetto); font-size: 12.5px; color: var(--inchiostro-3); min-width: 860px; }
+#grafo-s .legenda span{ display: inline-flex; align-items: center; gap: 6px; }
+#grafo-s .legenda i{ width: 14px; height: 10px; border: 1.5px solid var(--inchiostro-3); border-radius: 2px; display: inline-block; }
+#grafo-s .legenda i.est{ border-style: dashed; border-color: var(--esterno); }
+#grafo-s .legenda i.rif{ border: 0; border-top: 1.5px dashed var(--inchiostro-3); height: 0; }
+#grafo-s .legenda i.lp{ border: 0; border-top: 2px dotted var(--inchiostro-4); height: 0; }
+#grafo-s .legenda label{ display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: var(--inchiostro-2); }
+#grafo-s /* mappa */
+.zona{ font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; fill: var(--inchiostro-4); }
+#grafo-s .zona-fondo{ fill: var(--carta); stroke: none; }
+#grafo-s .arco path{ fill: none; stroke: var(--filetto-forte); stroke-width: 1.4; }
+#grafo-s .arco.rif path{ stroke-dasharray: 5 4; }
+#grafo-s .arco.prop path{ stroke: var(--inchiostro-4); stroke-dasharray: 1.5 3.5; stroke-linecap: round; }
+#grafo-s .arco.prop text{ font-style: italic; }
+#grafo-s .senza-prop .arco.prop{ display: none; }
+#grafo-s .arco text{ font-family: var(--f-mono); font-size: 10.5px; fill: var(--inchiostro-3); paint-order: stroke; stroke: var(--foglio); stroke-width: 4px; stroke-linejoin: round; cursor: pointer; }
+#grafo-s .arco .freccia{ fill: var(--filetto-forte); stroke: none; }
+#grafo-s .arco.acceso path{ stroke: var(--accento); stroke-width: 2.2; }
+#grafo-s .arco.acceso .freccia{ fill: var(--accento); }
+#grafo-s .arco.acceso text{ fill: var(--accento-scuro); font-weight: 500; }
+#grafo-s .arco.spento{ opacity: .25; }
+#grafo-s .nodo{ cursor: pointer; }
+#grafo-s .nodo rect{ fill: var(--foglio); stroke: var(--inchiostro-3); stroke-width: 1.4; }
+#grafo-s .nodo.est rect{ stroke: var(--esterno); stroke-dasharray: 4 3; fill: var(--carta); }
+#grafo-s .nodo text.nome{ font-family: var(--f-testo); font-weight: 600; font-size: 14px; fill: var(--inchiostro); }
+#grafo-s .nodo text.num{ font-family: var(--f-mono); font-size: 11px; fill: var(--inchiostro-3); }
+#grafo-s .nodo:hover rect, #grafo-s .nodo:focus-visible rect{ stroke: var(--accento); }
+#grafo-s .nodo:focus-visible{ outline: none; }
+#grafo-s .nodo:focus-visible rect{ stroke-width: 2.6; }
+#grafo-s .nodo.acceso rect{ stroke: var(--accento); stroke-width: 2.4; fill: var(--accento-tenue); }
+#grafo-s .nodo.vicino rect{ stroke: var(--accento); }
+#grafo-s .nodo.spento{ opacity: .35; }
+#grafo-s .arco text:focus-visible{ outline: none; text-decoration: underline; }
+#grafo-s /* scheda */
+.g3-scheda{ background: var(--foglio); border: 1px solid var(--filetto); border-radius: 6px; padding: 18px 18px 8px; display: grid; gap: 14px; min-width: 0; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow: auto; }
+@media (max-width: 1000px) { #grafo-s .g3-scheda{ position: static; max-height: none; } }
+#grafo-s .g3-scheda .tipo{ font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--inchiostro-3); }
+#grafo-s .g3-scheda h2{ font-size: 28px; }
+#grafo-s .g3-scheda .desc{ margin: 0; color: var(--inchiostro-2); font-size: 14px; }
+#grafo-s .g3-scheda .meta{ font-family: var(--f-mono); font-size: 12px; color: var(--inchiostro-3); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+#grafo-s .g3-scheda .meta b{ color: var(--inchiostro); font-weight: 500; }
+#grafo-s .g3-scheda h3{ font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--inchiostro-3); margin: 6px 0 0; padding-bottom: 6px; border-bottom: 1px solid var(--filetto); }
+#grafo-s .prop{ list-style: none; margin: 0; padding: 0; display: grid; }
+#grafo-s .prop li{ display: grid; grid-template-columns: minmax(0, 1fr) 46px; gap: 2px 10px; padding: 7px 0; border-bottom: 1px solid var(--filetto); }
+#grafo-s .prop .k{ font-family: var(--f-mono); font-size: 13px; color: var(--inchiostro); overflow-wrap: anywhere; }
+#grafo-s .prop .p{ font-family: var(--f-mono); font-size: 12px; color: var(--inchiostro-3); text-align: right; font-variant-numeric: tabular-nums; }
+#grafo-s .prop .barra{ grid-column: 1 / -1; height: 3px; background: var(--carta-3); border-radius: 2px; overflow: hidden; }
+#grafo-s .prop .barra span{ display: block; height: 100%; background: var(--accento); }
+#grafo-s .prop .da{ grid-column: 1 / -1; font-size: 11.5px; color: var(--inchiostro-3); }
+#grafo-s .prop .da a, #grafo-s .fonti-nodo a, #grafo-s td.props a, #grafo-s .fonti-tab a{ color: var(--accento); text-decoration: none; border-bottom: 1px solid currentColor; }
+#grafo-s .fonti-nodo{ font-size: 12.5px; color: var(--inchiostro-3); margin: 8px 0 0; line-height: 1.6; }
+#grafo-s .prop .es{ grid-column: 1 / -1; font-family: var(--f-mono); font-size: 11.5px; color: var(--inchiostro-4); overflow-wrap: anywhere; }
+#grafo-s .rel-lista{ list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+#grafo-s .rel-lista button{ all: unset; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; width: 100%; box-sizing: border-box; padding: 6px 8px; border-radius: 4px; font-size: 13px; }
+#grafo-s .rel-lista button:hover, #grafo-s .rel-lista button:focus-visible{ background: var(--carta-2); }
+#grafo-s .rel-lista button:focus-visible{ outline: 2px solid var(--accento); outline-offset: -2px; }
+#grafo-s .rel-lista .t{ font-family: var(--f-mono); font-size: 12.5px; color: var(--inchiostro); overflow-wrap: anywhere; }
+#grafo-s .rel-lista .t em{ font-style: normal; color: var(--inchiostro-3); }
+#grafo-s .rel-lista .n{ font-family: var(--f-mono); font-size: 12px; color: var(--inchiostro-3); font-variant-numeric: tabular-nums; }
+#grafo-s .nota{ font-size: 13px; color: var(--inchiostro-2); background: var(--carta-2); border-radius: 4px; padding: 8px 10px; margin: 0; }
+#grafo-s .vuoto{ font-size: 13px; color: var(--inchiostro-3); margin: 0; }
+/* tutto in una schermata (2/11): la mappa e la scheda stanno nell'altezza della finestra, la scheda scorre dentro */
+#grafo-s .dentro{padding-top:8px}
+#grafo-s h2{margin-bottom:10px}
+#grafo-s .g3-cifre{margin:0 0 12px;font-size:13.5px}
+#grafo-s .g3-banco{--alto:calc(100vh - 290px);grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+#grafo-s .g3-mappa{display:flex;flex-direction:column;max-height:var(--alto)}
+#grafo-s .g3-mappa svg{flex:1 1 auto;min-height:0;max-height:calc(var(--alto) - 44px);width:100%;min-width:0}
+#grafo-s .legenda{min-width:0;padding:8px 12px;font-size:12px}
+#grafo-s .g3-scheda{max-height:var(--alto);overflow-y:auto;overscroll-behavior:contain;position:static;padding:16px 16px 8px;gap:10px}
+#grafo-s .g3-scheda h2{font-size:24px}
+/* la barretta della quota valorizzata: la classe .barra del sito (testata) non deve toccarla */
+#grafo-s .prop .barra{all:unset;grid-column:1 / -1;display:block;height:3px;background:var(--carta-3);border-radius:2px;overflow:hidden}
+#grafo-s .prop .barra span{display:block;height:100%;background:var(--accento)}
+@media (max-width:1000px){#grafo-s .g3-banco{grid-template-columns:minmax(0,1fr)}#grafo-s .g3-mappa,#grafo-s .g3-scheda{max-height:none}#grafo-s .g3-mappa svg{max-height:none;min-width:760px}}
+#grafo-s .legenda{align-items:center}
+#grafo-s .g3-tutto{margin-left:auto;font:inherit;font-size:12.5px;color:var(--t);background:var(--sup);border:1px solid var(--bordo2);border-radius:999px;padding:4px 12px;cursor:pointer}
+#grafo-s .g3-tutto:hover{border-color:var(--t3)}
+#grafo-s .g3-tutto.ic-a{width:30px;height:30px;padding:0;border-radius:8px;display:grid;place-items:center}
+#grafo-s .g3-tutto .ic{width:15px;height:15px}
+/* niente scorrimento orizzontale: la legenda va a capo, la mappa si stringe dentro il riquadro */
+#grafo-s .g3-mappa{overflow:hidden}
+#grafo-s .g3-mappa .legenda{min-width:0!important;width:auto;flex-wrap:wrap!important;white-space:normal;box-sizing:border-box}
+#grafo-s .g3-mappa svg{min-width:0!important}
+@media (max-width:1000px){#grafo-s .g3-mappa{overflow-x:auto}#grafo-s .g3-mappa svg{min-width:760px!important}}
+/* il suggerimento del bottone a destra si apre alla sua sinistra, dentro il riquadro della mappa che taglia ciò che esce */
+#grafo-s .g3-tutto[data-tip]::after{left:auto!important;right:calc(100% + 8px)!important;bottom:auto!important;top:50%!important;transform:translate(4px,-50%)!important}
+#grafo-s .g3-tutto[data-tip]:hover::after,#grafo-s .g3-tutto[data-tip]:focus-visible::after{transform:translate(0,-50%)!important}
+/* scheda più compatta: la vista «tutto il grafo» sta intera nell'altezza della mappa (2/11) */
+#grafo-s .g3-scheda{gap:8px}
+#grafo-s .g3-scheda .desc{font-size:13.5px;line-height:1.45}
+#grafo-s .g3-scheda h3{margin-top:4px}
+#grafo-s .g3-scheda .rel-lista{gap:0}
+#grafo-s .g3-scheda .rel-lista button{padding:4px 8px;font-size:12.5px}
+#grafo-s .g3-scheda .rel-lista .t{font-size:12.5px}

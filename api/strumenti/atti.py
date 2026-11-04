@@ -6,20 +6,29 @@ import psycopg
 
 from ..modelli import Act, ActBrief, ActRef, Amendment, AmendmentCounts, Signer, Sponsor, Step, TextVersion
 from .comune import LEGISLATURA, brevi, stessa_persona
+from .conti import INIZIATIVE, SQL_INIZIATIVA
 from .voti import SQL_VOTO_BREVE, voto_breve
 
-CAMPI_BREVI = "a.uri, a.chamber, a.legislature, a.number, a.kind, a.title, a.date, a.status, a.law_number, a.card_url"
+CAMPI_BREVI = "a.uri, a.chamber, a.legislature, a.number, a.kind, a.title, a.date, a.status, a.law_number, a.card_url, a.initiative"
 
 
 def cerca_atti(c: psycopg.Connection, q: str | None = None, chamber: str | None = None, kind: str | None = None,
-               number: str | None = None, signer: str | None = None, limit: int = 50, offset: int = 0) -> tuple[int, list[ActBrief]]:
-    """Atti per parole del titolo (ricerca in italiano), ramo, tipo, numero o firmatario (uri), dal più recente."""
+               number: str | None = None, signer: str | None = None, limit: int = 50, offset: int = 0,
+               initiative: str | None = None) -> tuple[int, list[ActBrief]]:
+    """Atti per parole del titolo (ricerca in italiano), ramo, tipo, numero, firmatario (uri) o iniziativa, dal più
+    recente. `initiative`: una categoria (governo, parlamentare, regione, cnel, popolare, mista) o parole del presentatore
+    come le scrive la fonte («Regione Toscana», «Consiglio regionale»)."""
     firmatari = stessa_persona(c, signer) if signer else None
-    filtro = """a.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR a.chamber = %(ramo)s) AND (%(tipo)s::text IS NULL OR a.kind = %(tipo)s)
+    ini = initiative.strip().lower() if initiative else None
+    categoria, testo = (ini, None) if ini in INIZIATIVE else (None, initiative)
+    filtro = f"""a.legislature = %(leg)s AND (%(ramo)s::text IS NULL OR a.chamber = %(ramo)s) AND (%(tipo)s::text IS NULL OR a.kind = %(tipo)s)
         AND (%(num)s::text IS NULL OR a.number = %(num)s OR replace(a.number, '/', '-') = %(num)s)
         AND (%(q)s::text IS NULL OR to_tsvector('italian', coalesce(a.title, '')) @@ websearch_to_tsquery('italian', %(q)s))
-        AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)))"""
-    p = {"leg": LEGISLATURA, "ramo": chamber, "tipo": kind, "num": number, "q": q, "firm": firmatari, "lim": limit, "off": offset}
+        AND (%(firm)s::text[] IS NULL OR EXISTS (SELECT 1 FROM act_sponsor s WHERE s.act = a.uri AND s.person = ANY(%(firm)s)))
+        AND (%(ini)s::text IS NULL OR ({SQL_INIZIATIVA}) = %(ini)s)
+        AND (%(ini_testo)s::text IS NULL OR a.initiative ILIKE '%%' || %(ini_testo)s || '%%')"""
+    p = {"leg": LEGISLATURA, "ramo": chamber, "tipo": kind, "num": number, "q": q, "firm": firmatari, "lim": limit, "off": offset,
+         "ini": categoria, "ini_testo": testo}
     totale = c.execute(f"SELECT count(*) AS n FROM act a WHERE {filtro}", p).fetchone()["n"]
     righe = c.execute(f"SELECT {CAMPI_BREVI} FROM act a WHERE {filtro} ORDER BY a.date DESC NULLS LAST, a.uri LIMIT %(lim)s OFFSET %(off)s", p)
     return totale, [ActBrief(**r) for r in righe]

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
+import time
 
 import psycopg
 
@@ -54,3 +56,51 @@ def stessa_persona(c: psycopg.Connection, uri: str) -> list[str]:
     righe = c.execute("""SELECT %(u)s AS u UNION SELECT same_as FROM person_same_as WHERE person = %(u)s
                          UNION SELECT person FROM person_same_as WHERE same_as = %(u)s""", {"u": uri})
     return sorted(r["u"] for r in righe)
+
+
+# ---------- link al resoconto ----------
+
+_colonne: dict[tuple[str, str], tuple[float, bool]] = {}
+
+
+def ha_colonna(c: psycopg.Connection, tabella: str, colonna: str) -> bool:
+    """Se la colonna c'è nel database (si ricontrolla ogni dieci minuti: la pipeline può aggiungerla mentre il servizio
+    gira)."""
+    k = (tabella, colonna)
+    x = _colonne.get(k)
+    if x is None or time.monotonic() - x[0] > 600:
+        r = c.execute("""SELECT EXISTS (SELECT 1 FROM information_schema.columns
+                                        WHERE table_schema = 'public' AND table_name = %s AND column_name = %s) AS ok""",
+                      k).fetchone()
+        x = _colonne[k] = (time.monotonic(), bool(r["ok"]))
+    return x[1]
+
+
+def url_intervento(uri: str | None, record_url: str | None = None) -> str | None:
+    """La pagina del resoconto di un intervento. Camera: lo stenografico con l'ancora dell'intervento. Senato (e ogni
+    intervento senza ancora): la pagina del resoconto della seduta (sitting.record_url), se c'è; se no None."""
+    m = re.match(r"it:camera:(\d+):sed(\d+):(.+)$", uri or "")
+    if m:
+        leg, sed, ancora = m.group(1), m.group(2).zfill(4), m.group(3)
+        return f"https://www.camera.it/leg{leg}/410?idSeduta={sed}&tipo=stenografico#sed{sed}.stenografico.{ancora}"
+    return record_url or None
+
+
+def url_sedute(c: psycopg.Connection, sedute: list[str]) -> dict[str, str]:
+    """sitting.record_url delle sedute che lo hanno; {} se la colonna non c'è ancora o è vuota."""
+    sedute = sorted({s for s in sedute if s})
+    if not sedute or not ha_colonna(c, "sitting", "record_url"):
+        return {}
+    righe = c.execute("SELECT uri, record_url FROM sitting WHERE uri = ANY(%s) AND record_url IS NOT NULL", (sedute,))
+    return {r["uri"]: r["record_url"] for r in righe}
+
+
+def url_interventi(c: psycopg.Connection, uris: list[str]) -> dict[str, str | None]:
+    """Il link al resoconto di ogni intervento (url_intervento); per quelli senza ancora si legge la seduta."""
+    out = {u: url_intervento(u) for u in dict.fromkeys(u for u in uris if u)}
+    senza = [u for u, x in out.items() if x is None]
+    if senza and ha_colonna(c, "sitting", "record_url"):
+        for r in c.execute("""SELECT s.uri, st.record_url FROM speech s JOIN agenda_item i ON i.uri = s.item
+                              JOIN sitting st ON st.uri = i.sitting WHERE s.uri = ANY(%s)""", (senza,)):
+            out[r["uri"]] = r["record_url"] or None
+    return out

@@ -1,5 +1,5 @@
 """Server MCP compatibile con la produzione (mcp.parliamentrag.it): id vecchi ↔ uri v3, protocollo, HTTP, e il contratto
-degli otto strumenti pubblici contro le forme delle risposte vere della produzione (fixtures/mcp_produzione_forme.json,
+dei sette strumenti pubblici contro le forme delle risposte vere della produzione (fixtures/mcp_produzione_forme.json,
 ricavate dalle risposte salvate il 2/11/2026 e, per le liste vuote nei campioni, dal sorgente di ricerca/mcp/server.py).
 I test che leggono il database si saltano se Postgres non risponde."""
 
@@ -72,7 +72,7 @@ class TestProtocollo(unittest.TestCase):
         self.assertEqual(res["serverInfo"]["icons"][0]["src"], "https://mcp.parliamentrag.it/icon.png")
         self.assertEqual({k: v.get("listChanged") for k, v in res["capabilities"].items() if k != "experimental"},
                          {"tools": False, "resources": False, "prompts": False})
-        self.assertIn("verify_answer", res["instructions"])
+        self.assertNotIn("verify_answer", res["instructions"])
         self.assertNotIn("MCP Apps", res["instructions"])                # v3 non ha viste né immagini
 
     def test_metodi_semplici(self):
@@ -91,7 +91,7 @@ class TestProtocollo(unittest.TestCase):
     def test_elenco_strumenti(self):
         with _env():
             nomi = [t["name"] for t in self.r("tools/list")["result"]["tools"]]
-        self.assertEqual(nomi, ["search_parliament", "verify_answer", "list_sessions", "get_session_votes", "get_vote_details",
+        self.assertEqual(nomi, ["search_parliament", "list_sessions", "get_session_votes", "get_vote_details",
                                 "get_voted_text", "get_debate", "get_vote_hemicycle"])
         with _env(MCP_STRUMENTI_INTERNI="1"):
             nomi = {t["name"] for t in self.r("tools/list")["result"]["tools"]}
@@ -100,7 +100,6 @@ class TestProtocollo(unittest.TestCase):
 
     def test_argomenti_come_in_produzione(self):
         attesi = {"search_parliament": {"query", "doc_type", "group", "start_date", "end_date", "max_results", "chamber"},
-                  "verify_answer": {"answer", "question", "chamber"},
                   "list_sessions": {"limit", "before", "search", "from_date", "to_date", "chamber"},
                   "get_session_votes": {"session_id"}, "get_vote_details": {"vote_id", "include_individual_votes", "deputy", "group"},
                   "get_voted_text": {"vote_id"}, "get_debate": {"debate_id"}, "get_vote_hemicycle": {"vote_id", "format"}}
@@ -233,7 +232,7 @@ class TestContratto(unittest.TestCase):
             with self.subTest(nome):
                 self.confronta(nome, pubblico.esegui(C, nome, argomenti))
 
-    def test_verify_answer_con_e_senza_fascicoli(self):
+    def test_verify_answer_del_sito(self):
         risposta = "Marianna Ricciardi (M5S) ha detto: «Chiedo di illustrare l'interpellanza»."
         finto = {"scope": "Camera dei deputati, XIX legislatura", "summary": {"groups": "fail", "authority": "pass", "quotes": "pass"},
                  "groups": {"items": [{"key": "M5S", "label": "Movimento 5 Stelle", "status": "quoted"},
@@ -243,14 +242,14 @@ class TestContratto(unittest.TestCase):
                      {"name": "Marianna Ricciardi", "group": "Movimento 5 Stelle", "role": None, "rank": 2, "pool_size": 7,
                       "group_size": 7, "pool": "speakers_on_topic", "authoritative": True, "source": "quoted"}]},
                  "quotes": {"items": []}}
-        with mock.patch.object(pubblico, "_fascicoli", lambda *a: finto):
-            r = pubblico.esegui(C, "verify_answer", {"answer": risposta, "question": "farmaci", "chamber": "camera"})
+        with mock.patch.object(pubblico, "_gruppi_autorevolezza", lambda *a: finto):
+            r = pubblico.verify_answer(C, pubblico.VerifyAnswer(answer=risposta, question="farmaci", chamber="camera"))
         self.confronta("verify_answer", r)
         self.assertEqual(r["quotes"][0]["status"], "exact")
         self.assertTrue(r["quotes"][0]["speaker_named_nearby"])
         self.assertTrue(r["verdict"][0].startswith("❌ All groups: 1/2"))
-        with mock.patch.object(pubblico, "_fascicoli", lambda *a: None):  # verificatore spento: la chiamata riesce lo stesso
-            r = pubblico.esegui(C, "verify_answer", {"answer": risposta})
+        with mock.patch.object(pubblico, "_gruppi_autorevolezza", lambda *a: None):   # il controllo non si è potuto fare
+            r = pubblico.verify_answer(C, pubblico.VerifyAnswer(answer=risposta))
         self.assertEqual(r["outcome"], {"groups": "na", "authority": "na", "quotes": "pass"})
         self.assertFalse(r["authority"]["available"])
         self.assertEqual(len(r["verdict"]), 4)

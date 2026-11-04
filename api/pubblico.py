@@ -1,4 +1,4 @@
-"""Gli otto strumenti pubblici del server MCP di produzione (mcp.parliamentrag.it) sul Postgres v3: stessi nomi, stessi
+"""I sette strumenti pubblici del server MCP di produzione (mcp.parliamentrag.it) sul Postgres v3: stessi nomi, stessi
 argomenti, stessi campi nelle risposte, perché i client già collegati (connettore di claude.ai, ChatGPT, Claude Desktop)
 continuino a funzionare dopo il cambio di DNS. In entrata valgono gli id vecchi (leg19_sed736, camera_leg19_sed734_v001)
 e gli uri v3; in uscita si danno gli id vecchi. Quello che v3 non sa calcolare resta null o vuoto, mai inventato."""
@@ -8,8 +8,6 @@ from __future__ import annotations
 import datetime as dt
 import json
 import re
-import urllib.error
-import urllib.request
 
 import psycopg
 from pydantic import Field
@@ -17,7 +15,7 @@ from pydantic import Field
 from pipeline.ambiente import env
 
 from .registro import Parametri, Strumento
-from .strumenti import atti, citazioni, ricerca, voti
+from .strumenti import atti, citazioni, comune, ricerca, voti
 from .strumenti.comune import LEGISLATURA, brevi
 
 
@@ -76,8 +74,7 @@ GOVERNO = re.compile(r"^(ministr|sottosegretari|vice ?ministr|presidente del con
 
 # Messo nei risultati che restituiscono interventi, come in produzione: il modello legge i risultati più delle istruzioni.
 VERIFICA_DOPO = ("Before you reply about what deputies or senators said: quote them verbatim in «…» with the speaker's name "
-                 "nearby, call verify_answer on your final answer and the user's question, and end the reply with its "
-                 "verdict lines. Do not rewrite the answer to make the checks pass.")
+                 "nearby and the link to the record, and give the position of every group, the Mixed Group by component.")
 NOTA_LEGGE = ("An act that became law carries `law`: `label` (e.g. \"Legge n. 180 del 9 ottobre 2026\"), Gazzetta Ufficiale "
               "number and date, and `eli`, the Normattiva page of the law. When you say an act became law, give the label "
               "and cite the `eli` link. Without `law`, the data do not link the act to a published law.")
@@ -111,13 +108,10 @@ def _data(s: str | None) -> dt.date | None:
         return None
 
 
-def url_intervento(uri: str | None) -> str | None:
-    """Pagina del resoconto stenografico della Camera, con l'ancora dell'intervento. Il Senato non ha ancore stabili: None."""
-    m = re.match(r"it:camera:(\d+):sed(\d+):(.+)$", uri or "")
-    if not m:
-        return None
-    leg, sed, ancora = m.group(1), m.group(2).zfill(4), m.group(3)
-    return f"https://www.camera.it/leg{leg}/410?idSeduta={sed}&tipo=stenografico#sed{sed}.stenografico.{ancora}"
+def url_intervento(uri: str | None, record_url: str | None = None) -> str | None:
+    """Pagina del resoconto: per la Camera lo stenografico con l'ancora dell'intervento, per il Senato la pagina della
+    seduta (sitting.record_url) se c'è (strumenti/comune.url_intervento)."""
+    return comune.url_intervento(uri, record_url)
 
 
 def _titolo_nome(given: str | None, family: str | None, etichetta: str | None) -> str:
@@ -375,6 +369,7 @@ def _cerca_interventi(c, p: SearchParliament, ramo, dal, al, quanti) -> tuple[in
         SELECT s.uri, s.text, s.speaker_label, s.as_group, s.as_office, p.given_name, p.family_name, s.person
         FROM speech s LEFT JOIN person p ON p.uri = s.person WHERE s.uri = ANY(%s)""", ([h.uri for h in colpi],))}
     frase, out = _frase(p.query), []
+    link = comune.url_interventi(c, [h.uri for h in colpi])
     for h in colpi:
         d = dettagli[h.uri]
         g = h.person.group if h.person else None
@@ -383,7 +378,7 @@ def _cerca_interventi(c, p: SearchParliament, ramo, dal, al, quanti) -> tuple[in
         gruppo = "Governo" if governo else (g.name if g else d["as_group"])
         if not _passa_gruppo(gruppo, g.short_name if g else d["as_group"], p.group):
             continue
-        out.append({"type": "speech", "id": id_vecchio(h.uri), "chamber": h.sitting.chamber, "url": url_intervento(h.uri),
+        out.append({"type": "speech", "id": id_vecchio(h.uri), "chamber": h.sitting.chamber, "url": link.get(h.uri),
                     # il testo v3 comincia dopo il nome di chi parla («, Sottosegretario…»): il nome si rimette davanti
                     "text": _estratto((d["speaker_label"] or "") + d["text"] if d["text"].startswith(",") else d["text"], frase), "date": str(h.sitting.date), "session_number": h.sitting.number,
                     "debate_title": h.item_title, "first_name": d["given_name"], "last_name": d["family_name"],
@@ -458,6 +453,7 @@ def _citazioni(c: psycopg.Connection, risposta: str) -> list[dict]:
     """Le citazioni tra «…» con verifica_citazioni, nella forma della produzione. «modified» (con il passo più vicino) v3
     non lo calcola: una citazione non trovata è «not_found»."""
     v = citazioni.verifica(c, risposta)
+    link = comune.url_interventi(c, [e["speech"] for e in v["results"] if e.get("found")])
     out = []
     for e in v["results"]:
         q = e["quote"]
@@ -467,7 +463,7 @@ def _citazioni(c: psycopg.Connection, risposta: str) -> list[dict]:
             k = risposta.find(q)
             vicino = risposta[max(0, k - 250):k + len(q) + 250].lower()
             cognome = (e["speaker"] or "").split(" ", 1)[-1].lower()
-            item.update(speaker=e["speaker"], group=e["group"], date=e["date"], record_url=url_intervento(e["speech"]),
+            item.update(speaker=e["speaker"], group=e["group"], date=e["date"], record_url=link.get(e["speech"]),
                         speaker_named_nearby=bool(cognome) and cognome in vicino)
         out.append(item)
     return out
@@ -487,20 +483,13 @@ def _riga_citazioni(cs: list[dict]) -> tuple[str, str]:
     return esito, testo
 
 
-def _fascicoli(risposta: str, domanda: str | None, rami: list[str]) -> dict | None:
-    """Gruppi e autorevolezza dal verificatore di Fascicoli (POST /api/verify). None se non risponde."""
-    corpo = json.dumps({"answer": risposta, "topic": (domanda or "")[:500] or None,
-                        "scope": [{"chamber": r, "legislature": LEGISLATURA} for r in rami]}).encode()
-    intestazioni = {"Content-Type": "application/json", "User-Agent": "parliamentrag-api/mcp"}
-    chiave = env("FASCICOLI_API_KEY", "")
-    if chiave:
-        intestazioni["x-api-key"] = chiave
-    req = urllib.request.Request(env("FASCICOLI_URL", "http://127.0.0.1:8781").rstrip("/") + "/api/verify", corpo, intestazioni)
+def _gruppi_autorevolezza(c: psycopg.Connection, risposta: str, domanda: str | None, rami: list[str]) -> dict | None:
+    """Gruppi e autorevolezza calcolati su Postgres (fascicolo/verifica.py), nella forma {summary, groups, authority,
+    scope}. None se il controllo non si può fare: le due righe dicono che non è disponibile."""
+    from .fascicolo import verifica
     try:
-        with urllib.request.urlopen(req, timeout=float(env("FASCICOLI_TIMEOUT", "120"))) as r:
-            v = json.loads(r.read())
-        return v if isinstance(v, dict) and {"summary", "groups", "authority"} <= v.keys() else None
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+        return verifica.verifica(c, risposta, domanda, rami)
+    except psycopg.Error:
         return None
 
 
@@ -543,19 +532,19 @@ def _riga_autorevolezza(a: dict) -> str:
 
 
 def verify_answer(c: psycopg.Connection, p: VerifyAnswer) -> dict:
-    """Le tre garanzie. Citazioni: verifica_citazioni, qui. Gruppi e autorevolezza: il verificatore di Fascicoli; se non
-    risponde, le due righe dicono che il controllo non è disponibile e la chiamata riesce lo stesso."""
+    """Le tre garanzie, per la verifica del sito (non è uno strumento MCP). Citazioni: verifica_citazioni. Gruppi e
+    autorevolezza: _gruppi_autorevolezza; se manca, le due righe dicono che il controllo non è disponibile."""
     risposta = p.answer[:20000]
     rami = {"camera": ["camera"], "senato": ["senato"]}.get(p.chamber, ["camera", "senato"])
     cs = _citazioni(c, risposta)
     esito_q, riga_q = _riga_citazioni(cs)
-    f = _fascicoli(risposta, p.question, rami)
+    f = _gruppi_autorevolezza(c, risposta, p.question, rami)
     if f is None:
         esiti = {"groups": "na", "authority": "na", "quotes": esito_q}
         gruppi = {"items": [], "mismatches": []}
         autorevolezza = {"topic": p.question, "available": False, "voices": []}
-        righe = ["All groups: not checked (the groups verifier is not reachable right now)",
-                 "Authoritative voices: not checked (the authority verifier is not reachable right now)"]
+        righe = ["All groups: not checked (not available yet)",
+                 "Authoritative voices: not checked (not available yet)"]
         ambito = ", ".join(AMBITI[r] for r in rami)
     else:
         esiti = {"groups": f["summary"]["groups"], "authority": f["summary"]["authority"], "quotes": esito_q}
@@ -818,17 +807,8 @@ STRUMENTI: list[Strumento] = [
         today). Each result says its `chamber`. Keyword search in Italian (plurals fold; "quoted phrase", -word, or):
         Italian queries work best ("salario minimo", "intelligenza artificiale", company names, people). `is_exact` says
         whether the phrase occurs verbatim. Acts are matched on their title. Every speech of the Chamber has `url`, its
-        page in the official record. For a speaker of the Mixed Group, `group` is the component they belonged to that day:
+        page in the official record; a Senate speech has the page of its sitting when known. For a speaker of the Mixed Group, `group` is the component they belonged to that day:
         attribute the position to the component, never to the Mixed Group as a whole."""), SearchParliament, search_parliament),
-    Strumento("verify_answer", _d("""Check an answer about the Italian Parliament against ParliamentRAG's three guarantees,
-        deterministically and without a language model: 1. All groups: every parliamentary group in office, every Mixed
-        Group component and the Government is named or quoted, for the houses in `chamber`. 2. Authoritative voices: every
-        deputy, senator or member of the Government quoted or named speaks for the Government, is the rapporteur, or is
-        among the top 5 of their group by authority on the question's topic. 3. Exact quotes: every text in «…» is copied
-        word for word from one speech of the 19th legislature, and the speaker's name appears near it. Call it on the final
-        answer whenever it reports what deputies or senators said, and end the answer with the `verdict` lines (three
-        checks and a closing line about ParliamentRAG), translated. It reports; it does not ask you to change the answer.
-        A check that could not run says so in its verdict line and in `outcome` ("na")."""), VerifyAnswer, verify_answer),
     Strumento("list_sessions", _d("""List plenary sittings of the Chamber of Deputies and the Senate (each says its
         `chamber`), most recent first, each with a one-line recap built from its agenda (Italian), its debates and counts
         of speeches/votes."""), ListSessions, list_sessions),
@@ -854,7 +834,7 @@ STRUMENTI: list[Strumento] = [
         Hemicycle, get_vote_hemicycle),
 ]
 PER_NOME = {s.nome: s for s in STRUMENTI}
-TITOLI = {"search_parliament": "Search parliamentary records", "verify_answer": "Check an answer against the three guarantees",
+TITOLI = {"search_parliament": "Search parliamentary records",
           "list_sessions": "List plenary sittings", "get_session_votes": "List roll-call votes of a sitting",
           "get_vote_details": "Get roll-call vote details", "get_voted_text": "Get the voted amendment/article text",
           "get_debate": "Get debate details", "get_vote_hemicycle": "Vote hemicycle: numbers"}

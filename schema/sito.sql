@@ -1,0 +1,37 @@
+-- Dati che il sito scrive: le conversazioni condivise con un link e le traduzioni in inglese dei testi ufficiali.
+-- Schema a parte, invisibile all'utente `lettura`. Lo scrive l'utente `sito`, che può solo leggere e inserire.
+-- Le conversazioni condivise non hanno IP né altri dati di chi le crea: solo domande e risposte, come le vede chi apre il link.
+-- La password arriva come variabile psql (:'password') da .env (SITO_PG_PASSWORD), mai negli argomenti dei comandi.
+CREATE SCHEMA IF NOT EXISTS sito;
+
+CREATE TABLE IF NOT EXISTS sito.condivisa (
+  id text PRIMARY KEY,                             -- casuale, non indovinabile (secrets.token_urlsafe)
+  creata timestamptz NOT NULL DEFAULT now(),
+  conversazione jsonb NOT NULL                     -- {titolo, lingua, creata, turni: [{q, html}]}
+);
+
+CREATE TABLE IF NOT EXISTS sito.traduzione (
+  testo text NOT NULL,
+  lingua text NOT NULL,
+  tradotto text NOT NULL,
+  creata timestamptz NOT NULL DEFAULT now(),
+  PRIMARY KEY (lingua, testo)
+);
+
+-- limiti della chat: le domande dell'ora in corso per impronta dell'IP (mai l'IP; si cancellano allo scoccare dell'ora)
+-- e la spesa di OpenAI, una riga per chiamata, sommata per giorno. In Postgres e non in un file del servizio, perché un
+-- rilascio non li azzeri.
+CREATE TABLE IF NOT EXISTS sito.domanda (impronta text NOT NULL, ts timestamptz NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS domanda_impronta ON sito.domanda (impronta, ts);
+CREATE TABLE IF NOT EXISTS sito.spesa (giorno date NOT NULL DEFAULT current_date, dollari numeric(12, 6) NOT NULL);
+CREATE INDEX IF NOT EXISTS spesa_giorno ON sito.spesa (giorno);
+
+SELECT format('CREATE ROLE sito LOGIN PASSWORD %L', :'password') WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'sito') \gexec
+SELECT format('ALTER ROLE sito PASSWORD %L', :'password') \gexec
+GRANT CONNECT ON DATABASE parliamentrag TO sito;
+GRANT USAGE ON SCHEMA sito TO sito;
+GRANT SELECT, INSERT ON sito.condivisa, sito.traduzione, sito.spesa TO sito;
+GRANT SELECT, INSERT, DELETE ON sito.domanda TO sito;
+REVOKE ALL ON SCHEMA sito FROM lettura;
+ALTER ROLE sito SET statement_timeout = '5s';
+ALTER ROLE sito CONNECTION LIMIT 10;

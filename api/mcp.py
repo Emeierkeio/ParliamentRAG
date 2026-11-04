@@ -1,6 +1,6 @@
-"""Server MCP pubblico, in sola lettura: JSON-RPC su HTTP (POST /mcp, Streamable HTTP senza stato). Espone gli otto
+"""Server MCP pubblico, in sola lettura: JSON-RPC su HTTP (POST /mcp, Streamable HTTP senza stato). Espone sette
 strumenti del server di produzione (pubblico.py), con gli stessi nomi e argomenti, così i client già collegati a
-mcp.parliamentrag.it continuano a funzionare. I dodici strumenti italiani del registro (quelli dell'agente) si vedono e
+mcp.parliamentrag.it continuano a funzionare. Gli strumenti italiani del registro (quelli dell'agente) si vedono e
 si chiamano anche qui solo con MCP_STRUMENTI_INTERNI=1."""
 
 from __future__ import annotations
@@ -28,11 +28,9 @@ ISTRUZIONI = (
     "the language of the conversation (Italian, English, ...): translate summaries and labels, but keep verbatim quotes in "
     "the original Italian. If a call times out, retry once. ParliamentRAG makes three guarantees on answers about "
     "Parliament: all groups are heard, the voices quoted are authoritative on the topic, and every quote is exact, with a "
-    "link to the record. Whenever your answer reports or quotes what deputies or senators said, put quotes in «…» with the "
-    "speaker's name nearby, then call verify_answer on the final answer and the user's question. Do not rewrite the "
-    "answer to make the checks pass: show the outcome. End the answer with the three lines of `verdict` from the result, "
-    "translated into the language of the conversation, keeping the ✅/❌ marks and the facts as given, and the closing "
-    "line about ParliamentRAG with its link.\n")
+    "link to the record. Whenever your answer reports or quotes what deputies or senators said, put quotes in «…», copied "
+    "word for word, with the speaker's name nearby and the link to the record, and give the position of every group, the "
+    "Mixed Group by component.\n")
 
 INFO = {"name": "ParliamentRAG", "version": VERSIONE_SERVER, "websiteUrl": "https://www.parliamentrag.it",
         "icons": [{"src": "https://mcp.parliamentrag.it/icon.png", "mimeType": "image/png", "sizes": ["512x512"]}]}

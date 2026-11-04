@@ -24,6 +24,8 @@ Legge Postgres con l'utente `lettura` (`schema/lettura.sql`): sola lettura, 8 se
 
 La chat scrive ogni domanda in `registro.chat` (`schema/registro.sql`), per trovare gli errori: domanda, risposta, strumenti, tempi e costo, senza IP. Lo schema è a parte: `lettura` non lo vede, l'utente `registro` può solo inserire. Si crea come `lettura`, con `REGISTRO_PG_PASSWORD` in `.env` e `schema/registro.sql`. Senza la password la chat funziona e non scrive il registro.
 
+Il sito (pagine in `sito/`, rotte in `api/sito.py`) scrive le conversazioni condivise e le traduzioni in inglese nello schema `sito` (`schema/sito.sql`), con l'utente `sito`, che può solo leggere e inserire. Si crea come il registro, con `SITO_PG_PASSWORD` in `.env`. Senza la password la condivisione non c'è e le traduzioni non restano in cache. Le segnalazioni partono via Brevo con `BREVO_API_KEY`.
+
 ```
 api/strumenti/   funzioni tipizzate su Postgres: persone, sedute, voti, atti ed emendamenti, ricerca negli interventi
 api/modelli.py   formati delle risposte (Pydantic)
@@ -35,10 +37,12 @@ Le rotte, l'agente e il server MCP (più avanti) usano gli stessi strumenti. Nes
 ## Pipeline notturna
 
 ```
-.venv/bin/python -m pipeline giro            # un giro completo
+.venv/bin/python -m pipeline giro [--forza]  # un giro completo (rifiutato se uno è riuscito nelle ultime 20 ore)
 .venv/bin/python -m pipeline riprendi [id]   # riprende un giro dai passi non riusciti
 .venv/bin/python -m pipeline passo <nome>    # solo alcuni passi
 .venv/bin/python -m pipeline stato [id]      # esito di ogni passo
+.venv/bin/python -m pipeline salute          # c'è un giro completo riuscito nelle ultime 26 ore?
+pipeline/notte.sh                            # il giro del cron: flock, log per giro, mail se non è ok (docs/produzione.md)
 .venv/bin/python -m unittest discover -s tests -t .
 ```
 
@@ -50,18 +54,23 @@ Prima volta: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 fonti/       un connettore per fonte: scarica nel lago, con i suoi limiti di velocità
 lago.py      grezzi salvati una volta sola, con fonte, chiave, impronta, url, data
 trasforma/   dal grezzo ai record dello schema v3 (nodi, archi, testi), funzioni pure
-controlli/   regole prima del caricamento: se una fallisce, il giro non pubblica
-carica/      Postgres: schema/v3.sql, una transazione per seduta
+controlli/   regole prima del caricamento: un file che non le passa va in quarantena, gli altri si caricano
+carica/      Postgres: schema/v3.sql, una transazione per seduta, registro dei file caricati (registro.py)
 orchestra.py passi con dipendenze, tempo massimo, tentativi, ripresa, stato in SQLite
 passi.py     il registro dei passi
 pipeline.toml configurazione, una sezione per fonte
 ```
 
 Regole:
-- un passo che fallisce ferma solo i passi che ne dipendono;
-- ogni passo gira in un processo a parte con un tempo massimo; il giro ha un tempo massimo;
-- un solo giro alla volta (lucchetto con pid, che scade se il processo è morto);
+- un passo che fallisce ferma solo i passi che ne dipendono (`dopo`); `dopo_comunque` dà solo l'ordine: i controlli e il caricamento vengono dopo tutte le trasformazioni, ma una trasformazione fallita non li ferma;
+- un grezzo che non si trasforma non ferma gli altri della stessa fonte: il segno va avanti e quel grezzo resta in `uscite/.<segno>.da_rifare.json`, che il giro dopo riprova; il passo riesce con un avviso (fallisce solo se non si trasforma niente);
+- per chiave si trasforma una versione sola, la più recente; se la fonte torna a una versione già vista, quella torna l'ultima;
+- le fonti a query che sostituiscono intere tabelle (anagrafiche, atti, governo, ddl del Senato, indice del sindacato ispettivo) non salvano una query che perde più del 5% delle righe rispetto alla versione precedente (`calo_massimo` della fonte per un calo vero);
+- ogni passo gira in un processo a parte, con un gruppo di processi suo, e un tempo massimo; il giro ha un tempo massimo per i download;
+- un solo giro alla volta (lucchetto creato con O_EXCL, con il pid, che scade se il processo è morto);
+- senato.it: un tetto di richieste per giro comune a tutti i passi (`[senato] massimo_richieste_giro`); un 404 si salta, 403, 429 e 5xx fermano la sessione;
 - i grezzi non si cambiano: ogni passo si rifà dai grezzi;
+- i percorsi di `pipeline.toml` (`file_import`, `cartella_import`) partono dalla radice del repo;
 - niente segreti negli argomenti dei comandi: solo variabili d'ambiente o `.env`.
 
 ### Aggiungere una fonte

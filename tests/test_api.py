@@ -75,7 +75,9 @@ class TestAgenteEMcp(unittest.TestCase):
         db = sqlite3.connect(":memory:", check_same_thread=False)
         db.execute("CREATE TABLE domande (impronta TEXT NOT NULL, ts REAL NOT NULL)")
         db.execute("CREATE TABLE spesa (giorno TEXT PRIMARY KEY, dollari REAL NOT NULL)")
-        with mock.patch.object(agente, "chiama_openai", lambda *a: next(risposte)), mock.patch.object(agente, "_registro_spesa", lambda: db), \
+        import contextlib
+        with mock.patch.object(agente, "chiama_openai", lambda *a, **k: next(risposte)), mock.patch.object(agente, "_registro_spesa", lambda: db), \
+             mock.patch.object(agente, "connessione_sito", lambda: contextlib.nullcontext(None)), \
              mock.patch.object(agente, "env", lambda n, d=None: {"OPENAI_API_KEY": "finta"}.get(n, d)):
             eventi = list(agente.rispondi("chi è renzi?", [], "it", "1.2.3.4"))
         tipi = [e["type"] for e in eventi]
@@ -90,7 +92,7 @@ class TestAgenteEMcp(unittest.TestCase):
     def test_mcp(self):
         from unittest import mock
         from api import mcp
-        # i dodici strumenti italiani stanno in tools/list solo con MCP_STRUMENTI_INTERNI=1 (test_mcp_pubblico.py per gli altri)
+        # gli strumenti italiani stanno in tools/list solo con MCP_STRUMENTI_INTERNI=1 (test_mcp_pubblico.py per gli altri)
         mock.patch.object(mcp, "env", lambda n, d=None: "1" if n == "MCP_STRUMENTI_INTERNI" else d).start()
         self.addCleanup(mock.patch.stopall)
         lista = mcp.gestisci(C, {"jsonrpc": "2.0", "id": 1, "method": "tools/list"})

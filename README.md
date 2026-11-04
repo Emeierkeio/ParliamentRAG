@@ -156,7 +156,7 @@ When a check fails, you see the failure next to the answer. The system keeps the
 
 **REST API** (`api/main.py`, FastAPI): people, composition of a chamber, sittings, votes with individual ballots, acts and amendments, search in speeches, under `/v1`. It reads PostgreSQL with a read-only role, an 8-second statement timeout and a rate limit per address. No route accepts free queries. Documentation at `/v1/docs`.
 
-**MCP server** (`POST /mcp`): eight tools for AI assistants (claude.ai, ChatGPT, Claude Desktop): `search_parliament`, `get_debate`, `list_sessions`, `get_session_votes`, `get_vote_details`, `get_voted_text`, `get_vote_hemicycle`, `verify_answer`. Every result links to the official record.
+**MCP server** (`POST /mcp`): seven tools for AI assistants (claude.ai, ChatGPT, Claude Desktop): `search_parliament`, `get_debate`, `list_sessions`, `get_session_votes`, `get_vote_details`, `get_voted_text`, `get_vote_hemicycle`. Every result links to the official record.
 
 **Agent** (`POST /v1/chat`): a language model that chooses among the typed tools of `api/strumenti/` and answers in Italian or English, with limits on steps, questions per hour and daily spend outside the model. `GET /v1/uso` tells the interface how many questions remain in the current hour.
 

@@ -1,5 +1,7 @@
-"""Limite della chat: domande nell'ora in corso per impronta dell'IP, mai l'IP nel file; secondi alla ripartenza."""
+"""Limite della chat: domande nell'ora in corso per impronta dell'IP, mai l'IP nel file; secondi alla ripartenza.
+Qui il file di riserva (senza lo schema del sito), con l'ora finta."""
 
+import contextlib
 import sqlite3
 import tempfile
 import unittest
@@ -17,10 +19,12 @@ class TestLimiti(unittest.TestCase):
         self.env = mock.patch.object(agente, "env", lambda nome, pred=None: {"AGENTE_DOMANDE_ORA": "3", "AGENTE_DOLLARI_GIORNO": "10",
                                                                               "LIMITE_SALE": "prova"}.get(nome, pred))
         self.env.start()
+        self.sito = mock.patch.object(agente, "connessione_sito", lambda: contextlib.nullcontext(None))
+        self.sito.start()
         agente._SALE = None
 
     def tearDown(self):
-        self.qui.stop(), self.env.stop(), self.cartella.cleanup()
+        self.qui.stop(), self.env.stop(), self.sito.stop(), self.cartella.cleanup()
         agente._SALE = None
 
     def test_ora_fissa(self):

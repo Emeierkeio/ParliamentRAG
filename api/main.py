@@ -1,5 +1,6 @@
-"""Rotte HTTP dell'API: i dati in lettura e la chat sotto /v1, il server MCP su /mcp. Ogni rotta chiama uno strumento
-di `strumenti/`; nessuna rotta accetta query libere. Avvio in locale: `.venv/bin/uvicorn api.main:app --port 8790`."""
+"""Rotte HTTP del servizio: i dati in lettura e la chat sotto /v1, il server MCP su /mcp, il sito (pagine in `sito/`,
+rotte /api e /dati in sito.py e nei moduli sito_*). Ogni rotta dei dati chiama uno strumento di `strumenti/`; nessuna
+rotta accetta query libere. Avvio in locale: `.venv/bin/uvicorn api.main:app --port 8790`."""
 
 from __future__ import annotations
 
@@ -13,15 +14,16 @@ from typing import Annotated, Literal
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi.responses import JSONResponse, Response
+from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
-from pydantic import BaseModel, Field
 
 from . import modelli as M
-from pipeline.ambiente import env
+from pipeline.ambiente import QUI
 
-from . import agente, conversazioni, mcp
+from . import agente, mcp, sito, sito_emendamenti, sito_parlamentari
 from .db import connessione, per_richiesta
+from .rete import ip as _ip
 from .strumenti import atti, persone, ricerca, sedute, voti
 
 Ramo = Literal["camera", "senato"]
@@ -32,28 +34,31 @@ Scarto = Annotated[int, Query(ge=0, le=100_000)]
 app = FastAPI(title="ParliamentRAG API", version="0.1.0", docs_url="/v1/docs", openapi_url="/v1/openapi.json", redoc_url=None,
               description="Dati ufficiali del Parlamento italiano (XIX legislatura) in sola lettura.")
 
-# Limite per IP: finestra scorrevole in memoria, per processo. Dietro un proxy l'IP vero arriva in X-Forwarded-For, che
-# si legge solo se l'ambiente lo dice (API_PROXY=1): altrimenti chiunque potrebbe scriverlo.
-RICHIESTE_PER_MINUTO = 120
-_finestre: dict[str, deque[float]] = defaultdict(deque)
+# Limite per IP: finestra scorrevole in memoria, per processo. Vale per le API e, più largo, per i dati del sito; le
+# pagine e i loro file non hanno limite: una pagina sola ne carica decine. Le domande alla chat hanno il loro limite.
+RICHIESTE_PER_MINUTO = {"api": 120, "dati": 600}
+_finestre: dict[tuple[str, str], deque[float]] = defaultdict(deque)
 
 
-def _ip(req: Request) -> str:
-    if env("API_PROXY", "0") == "1" and req.headers.get("x-forwarded-for"):
-        return req.headers["x-forwarded-for"].split(",")[-1].strip()
-    return req.client.host if req.client else "?"
+def _classe(percorso: str) -> str | None:
+    if percorso.startswith(("/v1/", "/mcp", "/api/")):
+        return "api"
+    return "dati" if percorso.startswith("/dati/") else None
 
 
 @app.middleware("http")
 async def limite_per_ip(req: Request, chiama):
-    ora, ip = time.monotonic(), _ip(req)
+    classe = _classe(req.url.path)
+    if classe is None:
+        return await chiama(req)
+    ora, chiave = time.monotonic(), (classe, _ip(req))
     if len(_finestre) > 50_000:                      # niente crescita senza fine: via gli IP fermi da più di un minuto
         for k in [k for k, f in _finestre.items() if not f or ora - f[-1] > 60]:
             del _finestre[k]
-    f = _finestre[ip]
+    f = _finestre[chiave]
     while f and ora - f[0] > 60:
         f.popleft()
-    if len(f) >= RICHIESTE_PER_MINUTO:
+    if len(f) >= RICHIESTE_PER_MINUTO[classe]:
         return JSONResponse({"detail": "troppe richieste: riprova fra un minuto"}, status_code=429, headers={"Retry-After": "60"})
     f.append(ora)
     return await chiama(req)
@@ -143,14 +148,6 @@ def cerca_interventi(c: Db, q: Annotated[str, Query(min_length=2, max_length=200
     return ricerca.cerca_interventi(c, q, chamber, person, start, end, include_summaries, limit, offset)
 
 
-class Domanda(BaseModel):
-    prompt: str = Field(min_length=2, max_length=2000)
-    history: list[dict] = Field(default_factory=list, max_length=16)
-    locale: Literal["it", "en"] = "it"
-    conversation: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{8,64}$")   # id casuale del browser, per il registro
-    turn: int | None = Field(default=None, ge=1, le=1000)
-
-
 @app.get("/v1/uso")
 def uso_chat(req: Request) -> dict:
     """Domande alla chat usate nell'ora in corso da questo indirizzo, limite e secondi alla ripartenza del conteggio."""
@@ -158,17 +155,9 @@ def uso_chat(req: Request) -> dict:
 
 
 @app.post("/v1/chat")
-def chat(req: Request, d: Domanda):
+def chat(req: Request, d: sito.Domanda):
     """Risposta dell'agente in NDJSON: un evento per riga."""
-    ip = _ip(req)
-    motivo = agente.controlla_limiti(ip)
-    if motivo:
-        raise HTTPException(429, motivo)
-    misure: dict = {}
-    eventi = conversazioni.registra(agente.rispondi(d.prompt, d.history, d.locale, ip, misure), d.prompt, d.locale,
-                                    d.conversation, d.turn, misure)
-    righe = (json.dumps(e, ensure_ascii=False, default=str) + "\n" for e in eventi)
-    return StreamingResponse(righe, media_type="application/x-ndjson")
+    return sito.risposta_ndjson(_ip(req), d)
 
 
 # CORS solo per /mcp, perché i client MCP nel browser (ispettori, app web) leggano le risposte e l'mcp-session-id
@@ -208,7 +197,7 @@ async def server_mcp(req: Request):
         msg = json.loads(await req.body())
     except ValueError:
         return _mcp_risposta(req, {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "JSON non valido"}}, 400)
-    # fuori dal ciclo degli eventi: le query e la verifica su Fascicoli (fino a un minuto) non fermano le altre richieste
+    # fuori dal ciclo degli eventi: le query lunghe non fermano le altre richieste
     risposta = await run_in_threadpool(_mcp_esegui, msg)
     if risposta is None:
         return Response(status_code=202)
@@ -232,3 +221,19 @@ ICONA = Path(__file__).with_name("icona.png")
 def icona():
     """L'icona dichiarata in serverInfo.icons (https://mcp.parliamentrag.it/icon.png)."""
     return Response(ICONA.read_bytes(), media_type="image/png", headers={"Cache-Control": "public, max-age=86400"})
+
+
+@app.middleware("http")
+async def pagine_sempre_fresche(req: Request, chiama):
+    """Le pagine e i loro file si riconvalidano a ogni visita (ETag): dopo un aggiornamento nessuno resta sul vecchio."""
+    risposta = await chiama(req)
+    if not req.url.path.startswith(("/v1/", "/mcp", "/api/")):
+        risposta.headers.setdefault("Cache-Control", "no-cache")
+    return risposta
+
+
+app.include_router(sito.router)
+app.include_router(sito_parlamentari.router)
+app.include_router(sito_emendamenti.router)
+# le pagine per ultime: le rotte sopra hanno la precedenza
+app.mount("/", StaticFiles(directory=QUI / "sito", html=True), name="sito")
