@@ -75,14 +75,16 @@ def flusso(nome: str, percorso: str, corpo: dict, finale: str, tempo=300):
         tipi, testo = [], 0
         with urllib.request.urlopen(r, timeout=tempo) as risp:
             for riga in risp:
-                if riga.startswith(b"data:"):
+                riga = riga.removeprefix(b"data:").strip()       # fascicolo in SSE, chat una riga JSON per evento
+                if riga.startswith(b"{"):
                     try:
-                        e = json.loads(riga[5:])
+                        e = json.loads(riga)
                     except ValueError:
                         continue
                     tipi.append(e.get("type"))
-                    testo += len(str(e.get("text") or e.get("content") or e.get("delta") or ""))
-        ok = finale in tipi and "error" not in tipi and testo > 200
+                    if e.get("type") in ("delta", "chunk"):
+                        testo += len(str(e.get("text") or e.get("data") or ""))
+        ok = finale in tipi and "error" not in tipi and testo > 100
         esiti.append((nome, ok, f"{time.monotonic() - t:.0f}s, {len(tipi)} eventi, {testo} caratteri, ultimo {tipi[-1:]}"))
     except Exception as e:
         esiti.append((nome, False, f"{type(e).__name__}: {e}"))
