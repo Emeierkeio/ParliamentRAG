@@ -29,6 +29,7 @@ from pipeline.ambiente import env
 
 from .. import agente, conversazioni
 from ..db import connessione
+from ..strumenti.comune import url_intervento
 from . import modello
 from .generazione import GenerationPipeline, gruppi
 from .generazione.contesto import IP, RAMI, in_parallelo
@@ -313,7 +314,7 @@ def dettagli_citazioni(citazioni: list[dict], per_id: dict[str, dict], buoni: se
             "full_text": e["chunk_text"], "group": "Governo" if governo else e["party"],
             "coalition": "governo" if governo else gruppi.parte(e["party"]), "date": str(e.get("date") or ""),
             "span_start": e.get("span_start", 0), "span_end": e.get("span_end", 0), "debate": e.get("debate_title", ""),
-            "intervention_id": e.get("speech_id", ""), "url": e.get("url"), "speaker_id": id_sito(e["speaker_id"]),
+            "intervention_id": e.get("speech_id", ""), "url": e.get("url") or url_intervento(e.get("speech_id")), "speaker_id": id_sito(e["speaker_id"]),
             "camera_profile_url": sch.get("camera_profile_url"), "photo": sch.get("photo"), "verified": True,
             "chamber": e.get("chamber"),
         }

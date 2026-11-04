@@ -30,6 +30,13 @@ _VOTO = re.compile(r"(camera|senato)_leg(\d+)_sed(\d+)_v(\d+)$")
 _SEDUTA = re.compile(r"(sen_)?leg(\d+)_sed(\d+)(?:_(.+))?$")
 
 
+def cognome_da_etichetta(etichetta: str | None) -> str | None:
+    """Il cognome scritto nel resoconto prima della carica («CALDERONE, ministro del lavoro…» → «Calderone»): per i
+    membri del governo che non sono parlamentari, la cui scheda nel v3 non ha il nome."""
+    nome = (etichetta or "").split(",")[0].strip()
+    return nome.title() if nome else None
+
+
 def id_vecchio(uri: str) -> str:
     """Uri v3 di seduta, punto all'ordine del giorno o votazione d'Aula → id del server di produzione. Il resto passa
     com'è. Seduta: leg19_sed736 / sen_leg19_sed469; voto: camera_leg19_sed734_v001 (seduta su tre cifre, come in
@@ -295,6 +302,7 @@ class ListSessions(Parametri):
     from_date: str | None = Field(None, description="Optional YYYY-MM-DD lower bound.")
     to_date: str | None = Field(None, description="Optional YYYY-MM-DD upper bound.")
     chamber: str = Field("both", description='"both" (default), "camera" or "senato".')
+    session_id: str | None = Field(None, description='Optional: only this sitting (e.g. "leg19_sed148", "sen_leg19_sed469").')
 
 
 class SessionId(Parametri):
@@ -381,7 +389,8 @@ def _cerca_interventi(c, p: SearchParliament, ramo, dal, al, quanti) -> tuple[in
         out.append({"type": "speech", "id": id_vecchio(h.uri), "chamber": h.sitting.chamber, "url": link.get(h.uri),
                     # il testo v3 comincia dopo il nome di chi parla («, Sottosegretario…»): il nome si rimette davanti
                     "text": _estratto((d["speaker_label"] or "") + d["text"] if d["text"].startswith(",") else d["text"], frase), "date": str(h.sitting.date), "session_number": h.sitting.number,
-                    "debate_title": h.item_title, "first_name": d["given_name"], "last_name": d["family_name"],
+                    "debate_title": h.item_title, "first_name": d["given_name"],
+                    "last_name": d["family_name"] or (None if d["given_name"] else cognome_da_etichetta(d["speaker_label"])),
                     "group": gruppo, "score": None, "match_type": "keyword", "is_exact": bool(frase) and frase in _norm(d["text"])})
     # il totale: quanti interventi d'Aula e di commissione (riassunti esclusi) contengono le parole, con gli stessi filtri
     totale = c.execute("""
@@ -613,11 +622,12 @@ def list_sessions(c: psycopg.Connection, p: ListSessions) -> dict:
         WHERE s.body LIKE '%%:aula' AND s.status = 'held' AND (%(ramo)s::text IS NULL OR s.chamber = %(ramo)s)
           AND (%(prima)s::date IS NULL OR s.date < %(prima)s)
           AND (%(dal)s::date IS NULL OR s.date >= %(dal)s) AND (%(al)s::date IS NULL OR s.date <= %(al)s)
+          AND (%(sed)s::text IS NULL OR s.uri = %(sed)s)
           AND (%(q)s::text IS NULL OR EXISTS (SELECT 1 FROM agenda_item i WHERE i.sitting = s.uri
                AND to_tsvector('italian', coalesce(i.title, '')) @@ websearch_to_tsquery('italian', %(q)s)))
         ORDER BY s.date DESC, s.chamber, s.number DESC LIMIT %(lim)s""",
         {"ramo": _ramo(p.chamber), "prima": _data(p.before), "dal": _data(p.from_date), "al": _data(p.to_date),
-         "q": p.search or None, "lim": quante + 1}).fetchall()
+         "q": p.search or None, "sed": (uri_v3(p.session_id) or "-") if p.session_id else None, "lim": quante + 1}).fetchall()
     altre, righe = len(righe) > quante, righe[:quante]
     punti: dict[str, list[dict]] = {}
     for r in c.execute(SQL_PUNTI + " WHERE i.sitting = ANY(%s) AND coalesce(i.title, '') <> '' ORDER BY i.sitting, i.ord",

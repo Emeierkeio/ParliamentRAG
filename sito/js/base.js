@@ -123,6 +123,14 @@
     m = /idSeduta=0*(\d+)/.exec(u); if (m && /camera\.it/.test(u)) return `#/strumenti/seduta/leg19_sed${m[1]}`;
     const q = new URLSearchParams({ u, t, ...extra }); return `#/strumenti/fonte?${q.toString()}`;
   };
+  // il resoconto ufficiale con la frase evidenziata dal browser (#:~:text=inizio,fine); senza link, la pagina interna
+  B.allaFonte = (url, frase) => {
+    const u = String(url || ""); if (!/^https?:/.test(u)) return null;
+    const p = String(frase || "").replace(/[«»"“”]/g, "").split(/\s+/).filter(Boolean);
+    if (p.length < 4) return u;
+    const enc = (xs) => encodeURIComponent(xs.join(" ")).replace(/-/g, "%2D").replace(/,/g, "%2C");
+    const b = u.split(":~:")[0]; return `${b}${b.includes("#") ? "" : "#"}:~:text=${p.length > 12 ? `${enc(p.slice(0, 6))},${enc(p.slice(-5))}` : enc(p)}`;
+  };
   // emiciclo del Senato dai voti individuali: un punto per senatore, gruppi da sinistra a destra
   // Senato: pianta reale dei posti (senato.it, «Dove siedono i senatori»)
   B.caricaSenato = async () => {

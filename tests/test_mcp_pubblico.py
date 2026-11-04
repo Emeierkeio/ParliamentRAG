@@ -100,7 +100,7 @@ class TestProtocollo(unittest.TestCase):
 
     def test_argomenti_come_in_produzione(self):
         attesi = {"search_parliament": {"query", "doc_type", "group", "start_date", "end_date", "max_results", "chamber"},
-                  "list_sessions": {"limit", "before", "search", "from_date", "to_date", "chamber"},
+                  "list_sessions": {"limit", "before", "search", "from_date", "to_date", "chamber", "session_id"},   # session_id dal 4/11, facoltativo
                   "get_session_votes": {"session_id"}, "get_vote_details": {"vote_id", "include_individual_votes", "deputy", "group"},
                   "get_voted_text": {"vote_id"}, "get_debate": {"debate_id"}, "get_vote_hemicycle": {"vote_id", "format"}}
         with _env():

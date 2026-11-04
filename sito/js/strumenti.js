@@ -415,7 +415,7 @@
     box.innerHTML = testa("sedute", "Seduta", "") + `<div id="sd">${carica("Apro la seduta")}</div>`;
     try {
       if (!s) { const r = await B.mcp("list_sessions", { limit: 30 }); ricorda(r.dati.sessions || []); s = sedute.get(id); }
-      if (!s) { const num = /sed(\d+)/.exec(id); const r = await B.mcp("list_sessions", { limit: 30, chamber: id.startsWith("sen") ? "senato" : "camera", search: num ? `seduta ${num[1]}` : null }); ricorda(r.dati.sessions || []); s = sedute.get(id); }
+      if (!s) { const r = await B.mcp("list_sessions", { limit: 1, session_id: id }); ricorda(r.dati.sessions || []); s = sedute.get(id); }
       box.querySelector(".testa-str h1").textContent = s ? `Seduta n. ${s.number}` : "Seduta";
       if (s) CH.imposta({ etichetta: `${TT("Seduta", "Sitting")} ${s.number}`, testo: `seduta n. ${s.number} della ${B.ramo(s.chamber)} del ${s.date} (session_id ${id}); dibattiti: ${s.debates.map((d) => d.title).join("; ").slice(0, 900)}` });
       { const h = box.querySelector(".testa-str h1"), p = box.querySelector(".testa-str p") || h.insertAdjacentElement("afterend", document.createElement("p")); p.textContent = s ? `${B.ramo(s.chamber)} · ${B.dataLunga(s.date)}` : id; }
