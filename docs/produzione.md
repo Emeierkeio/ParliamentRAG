@@ -87,7 +87,14 @@ docker compose exec -T -e PGOPTIONS='-c maintenance_work_mem=2GB -c max_parallel
 docker compose exec -T testi psql -U parliamentrag -d parliamentrag -c ANALYZE
 ```
 
-`pg_restore` crea l'estensione `vector` e ricostruisce i tre indici HNSW: in locale l'indice di tutti i brani ha richiesto circa due ore e mezza, quelli di interventi e atti meno di un'ora insieme. `ANALYZE` (circa due minuti) serve perché il dump non porta le statistiche del planner: senza, le query sui voti scelgono piani lenti.
+`pg_restore` crea l'estensione `vector` e ricostruisce i tre indici HNSW. Il modo veloce, usato il 4/11/2026 (20 minuti in tutto invece di 3-4 ore), con il sito spento:
+
+1. dati in parallelo: `docker cp` del dump nel contenitore, poi `pg_restore --section=pre-data` e `pg_restore --section=data -j 3`;
+2. Postgres con `PG_SHARED_BUFFERS=1GB` e `PG_SHM=5g` in `.env` (`docker compose up -d testi`), perché la costruzione in parallelo di un indice HNSW tiene il grafo nella memoria condivisa;
+3. `pg_restore --section=post-data` con `PGOPTIONS='-c maintenance_work_mem=4GB -c max_parallel_maintenance_workers=3'`: tutti gli indici e le chiavi in 11 minuti, l'indice di tutti i brani (3 GB) compreso;
+4. di nuovo `PG_SHARED_BUFFERS=2GB` e `PG_SHM=2g`, e riavvio di testi.
+
+Con `maintenance_work_mem` più piccolo dell'indice la costruzione esce dalla memoria e richiede ore. `ANALYZE` (circa due minuti) serve perché il dump non porta le statistiche del planner: senza, le query sui voti scelgono piani lenti. Dopo il ripristino: `TRUNCATE sito.spesa, sito.domanda, sito.visita`, perché il dump porta la spesa e i contatori delle prove in locale.
 
 ### Creare gli utenti `lettura`, `registro`, `sito`
 
