@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# Spegne e riaccende Neo4j sulla VPS senza perdere niente: il container e i dati restano.
+# Spegne e riaccende Neo4j e il Postgres dell'archivio sulla VPS senza perdere niente: container e dati restano.
 # Uso (da root):  neo4j.sh spegni | accendi | stato
 # Decisione del 4/11/2026 (vault/10-decisioni/2026-11-04-tutto-su-vps.md). Vedi README.md.
 #
 # spegni:  crea il segnale /opt/parliament-rag/neo4j-spento (backup.sh lo legge e salta Neo4j),
 #          sposta in /root/cron-sospesi/ i cron che usano o riavviano Neo4j,
-#          toglie il riavvio automatico e ferma il container (120 s per chiudere pulito).
+#          toglie il riavvio automatico e ferma i container (120 s per chiudere pulito).
 # accendi: il contrario, nell'ordine opposto.
 # Si può lanciare più volte: ogni passo controlla prima se è già fatto.
 
 set -euo pipefail
 
-CONTAINER=parliament-neo4j-v2
+# container da spegnere, con la politica di riavvio da rimettere quando si riaccendono (4/11: anche l'archivio)
+declare -A POLITICA=([parliament-neo4j-v2]=always [parliament-archivio]=unless-stopped)
+CONTAINERS=(parliament-neo4j-v2 parliament-archivio)
 SEGNALE=/opt/parliament-rag/neo4j-spento
 CRON_DIR=/etc/cron.d
 SOSPESI=/root/cron-sospesi
@@ -26,7 +28,8 @@ errore() { printf 'errore: %s\n' "$*" >&2; exit 1; }
 controlli() {
   [[ $EUID -eq 0 ]] || errore "va lanciato da root"
   command -v docker >/dev/null || errore "docker non trovato"
-  docker container inspect "$CONTAINER" >/dev/null 2>&1 || errore "container $CONTAINER non trovato"
+  local k
+  for k in "${CONTAINERS[@]}"; do docker container inspect "$k" >/dev/null 2>&1 || errore "container $k non trovato"; done
 }
 
 niente_in_corso() {
@@ -38,8 +41,8 @@ $p"
   fi
 }
 
-in_esecuzione() { [[ $(docker container inspect -f '{{.State.Running}}' "$CONTAINER") == true ]]; }
-politica() { docker container inspect -f '{{.HostConfig.RestartPolicy.Name}}' "$CONTAINER"; }
+in_esecuzione() { [[ $(docker container inspect -f '{{.State.Running}}' "$1") == true ]]; }
+politica() { docker container inspect -f '{{.HostConfig.RestartPolicy.Name}}' "$1"; }
 
 spegni() {
   controlli
@@ -61,33 +64,36 @@ spegni() {
   done
 
   # 3. niente riavvio automatico, poi stop pulito
-  if [[ $(politica) != no ]]; then docker update --restart=no "$CONTAINER" >/dev/null; dico "riavvio automatico tolto"
-  else dico "riavvio automatico già tolto"; fi
-  if in_esecuzione; then dico "fermo $CONTAINER (fino a 120 s)…"; docker stop -t 120 "$CONTAINER" >/dev/null; dico "fermato"
-  else dico "$CONTAINER già fermo"; fi
+  local k
+  for k in "${CONTAINERS[@]}"; do
+    if [[ $(politica "$k") != no ]]; then docker update --restart=no "$k" >/dev/null; dico "$k: riavvio automatico tolto"
+    else dico "$k: riavvio automatico già tolto"; fi
+    if in_esecuzione "$k"; then dico "fermo $k (fino a 120 s)…"; docker stop -t 120 "$k" >/dev/null; dico "$k fermato"
+    else dico "$k già fermo"; fi
+  done
 
-  dico "Neo4j spento. Per riaccenderlo: $0 accendi"
+  dico "Neo4j e archivio spenti. Per riaccenderli: $0 accendi"
 }
 
 accendi() {
   controlli
 
-  # 1. riavvio automatico e avvio
-  if [[ $(politica) != always ]]; then docker update --restart=always "$CONTAINER" >/dev/null; dico "riavvio automatico rimesso (always)"
-  else dico "riavvio automatico già always"; fi
-  if in_esecuzione; then dico "$CONTAINER già acceso"
-  else docker start "$CONTAINER" >/dev/null; dico "avviato $CONTAINER"; fi
-
-  # 2. attesa: il controllo di salute del container, se c'è, altrimenti basta che giri
-  local i s
-  for i in $(seq 1 60); do
-    s=$(docker container inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$CONTAINER")
-    [[ $s == healthy || $s == running ]] && break
-    [[ $s == exited || $s == dead ]] && errore "$CONTAINER si è fermato: docker logs --tail 50 $CONTAINER"
-    sleep 5
+  # 1. riavvio automatico e avvio, poi attesa: il controllo di salute del container, se c'è, altrimenti basta che giri
+  local k i s
+  for k in "${CONTAINERS[@]}"; do
+    if [[ $(politica "$k") != "${POLITICA[$k]}" ]]; then docker update --restart="${POLITICA[$k]}" "$k" >/dev/null; dico "$k: riavvio automatico rimesso (${POLITICA[$k]})"
+    else dico "$k: riavvio automatico già ${POLITICA[$k]}"; fi
+    if in_esecuzione "$k"; then dico "$k già acceso"
+    else docker start "$k" >/dev/null; dico "avviato $k"; fi
+    for i in $(seq 1 60); do
+      s=$(docker container inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$k")
+      [[ $s == healthy || $s == running ]] && break
+      [[ $s == exited || $s == dead ]] && errore "$k si è fermato: docker logs --tail 50 $k"
+      sleep 5
+    done
+    dico "$k: $s"
+    [[ $s == healthy || $s == running ]] || errore "$k non è pronto dopo 5 minuti: docker logs --tail 50 $k"
   done
-  dico "stato del container: $s"
-  [[ $s == healthy || $s == running ]] || errore "$CONTAINER non è pronto dopo 5 minuti: docker logs --tail 50 $CONTAINER"
 
   # 3. cron ripristinati
   local c
@@ -103,14 +109,16 @@ accendi() {
   if [[ -e $SEGNALE ]]; then rm -f "$SEGNALE"; dico "tolto $SEGNALE"
   else dico "segnale già assente"; fi
 
-  dico "Neo4j acceso."
+  dico "Neo4j e archivio accesi."
 }
 
 stato() {
   controlli
   dico "== container"
-  docker ps -a --filter "name=^/${CONTAINER}$" --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}'
-  dico "riavvio automatico: $(politica)"
+  local k
+  for k in "${CONTAINERS[@]}"; do
+    dico "$k: $(docker container inspect -f '{{.State.Status}}' "$k"), riavvio automatico $(politica "$k")"
+  done
   dico ""
   dico "== segnale per backup.sh"
   if [[ -e $SEGNALE ]]; then dico "presente ($SEGNALE, dal $(cat "$SEGNALE"))"; else dico "assente: backup.sh gestisce Neo4j come sempre"; fi
