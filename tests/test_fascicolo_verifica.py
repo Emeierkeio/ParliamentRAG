@@ -96,6 +96,7 @@ class TestPersoneNominate(unittest.TestCase):
         self.assertEqual(nomi("gli obiettivi del Piano nazionale e completare il Piano"), set())
         self.assertEqual(nomi("Per il M5S ha parlato Bruno, poi Graziano (PD-IDP)."), {"r", "g"})   # il cognome da solo conta ancora
         self.assertEqual(nomi("Lo ha detto Piano."), {"p"})
+        self.assertEqual(nomi("le mozioni Graziano ed altri n. 1-00369 e Bruno e altri n. 1-00388"), set())   # nomi di atti
 
 
 class TestRapporto(unittest.TestCase):

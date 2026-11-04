@@ -372,11 +372,13 @@ def _occorrenze(piegato: str, ago: str) -> list[tuple[int, int]]:
 # preposizione articolata, che davanti a un cognome non si usano)
 _NOME_DOPO = re.compile(r"[ \t]+[A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ'’]{2,}")
 _ARTICOLO_PRIMA = re.compile(r"(?:^|[\s(«\"])(?:il|lo|un|uno|del|dello|dal|dallo|al|allo|nel|nello|sul|sullo|col)\s+$", re.I)
+# né il nome di un atto: «mozioni Quartini ed altri n. 1-00369, Richetti ed altri n. 1-00388» nominano mozioni, non voci
+_ED_ALTRI = re.compile(r"\s+e(?:d)?\s+altri\b", re.I)
 
 
 def _da_cognome(testo: str, a: int, b: int) -> bool:
     """Se la parola in testo[a:b] può essere un cognome usato da solo."""
-    return not (_NOME_DOPO.match(testo, b) or _ARTICOLO_PRIMA.search(testo[max(0, a - 12):a]))
+    return not (_NOME_DOPO.match(testo, b) or _ARTICOLO_PRIMA.search(testo[max(0, a - 12):a]) or _ED_ALTRI.match(testo, b))
 
 
 def persone_nominate(risposta: str, persone: list[Persona]) -> list[dict]:
