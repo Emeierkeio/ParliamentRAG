@@ -18,9 +18,10 @@ from typing import Annotated, Literal
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from . import modelli as M
 from pipeline.ambiente import QUI
@@ -66,6 +67,17 @@ async def limite_per_ip(req: Request, chiama):
         return JSONResponse({"detail": "troppe richieste: riprova fra un minuto"}, status_code=429, headers={"Retry-After": "60"})
     f.append(ora)
     return await chiama(req)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def pagina_che_non_c_e(req: Request, e: StarletteHTTPException):
+    """Una pagina dei siti vecchi che non esiste più (/verifica, /chi-siamo, …) porta alla home invece che a un 404.
+    API, dati e file mancanti restano 404."""
+    ultimo = req.url.path.rsplit("/", 1)[-1]
+    if (e.status_code == 404 and req.method in ("GET", "HEAD") and "." not in ultimo
+            and not req.url.path.startswith(("/v1/", "/api/", "/mcp", "/dati/"))):
+        return RedirectResponse("/", status_code=301)
+    return JSONResponse({"detail": e.detail}, status_code=e.status_code, headers=getattr(e, "headers", None))
 
 
 @app.exception_handler(psycopg.errors.QueryCanceled)

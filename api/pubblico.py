@@ -575,7 +575,7 @@ def verify_answer(c: psycopg.Connection, p: VerifyAnswer) -> dict:
                                                    "authoritative", "source") if k in v} for v in autorevolezza.get("voices", [])]},
         "quotes": cs,
         "status_meaning": SIGNIFICATI,
-        "verify_page": "https://www.parliamentrag.it/verifica",
+        "verify_page": "https://www.parliamentrag.it/",
     }
 
 
